@@ -14,6 +14,7 @@ import '../../../../core/base/base_view_model.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/utils/constants/apis/api_info.dart';
+import '../../../_shared_feature_/data/models/response_body_model.dart';
 import '../../domain/entities/permit_apply_group_request_params.dart';
 import '../../domain/entities/permit_licenses_requests_params.dart';
 import '../../domain/entities/permit_required_types_params.dart';
@@ -289,19 +290,29 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
         base64: base64Decode(params.base64 ?? ""),
         fileName: params.fileName,
         mimeType: mimeType,
-        key: params.key);
+        key: params.key,
+        posterId: params.posterId,
+        posterTypeId: params.posterTypeId);
     ;
     bool state = body['state'];
     dynamic data = body['data'];
     String error = body['error'] ?? ("errors_server_error_1").tr();
-
+    print(params.id!);
     try {
+      print(body["data"]);
       if (state == true) {
         return PostersUploadResponse.fromJson(
             json.decode(body["data"])["data"]["result"]);
       } else {
+        print("fff");
+        error = ResponseBodyModel.fromMap(json.decode(body["data"]))
+                .data
+                ?.responseMessage ??
+            error;
+        print(error);
+
         throw ServerException(
-          "errors_server_error_2".tr(),
+          error,
           exception: APIException(
             errorMessage: data,
           ),
@@ -315,9 +326,13 @@ class PostersRemoteDataSourceImpl implements PostersRemoteDataSource {
             data: data,
             errorMsg: ex.toString());
       } catch (ex) {}
+      error = ResponseBodyModel.fromMap(json.decode(body["data"]))
+              .data
+              ?.responseMessage ??
+          error;
 
       throw ServerException(
-        "errors_server_error_2".tr(),
+        error,
         exception: APIException(
           errorMessage: ex.toString(),
         ),

@@ -97,6 +97,10 @@ class _RequestsListState extends State<RequestsList> {
                     onPress: () {
                       context.read<ObjectionsBloc>().add(
                           GetObjectionDetailsEvent(
+                              hashingRequestNumber:
+                                  state.requests[index].hashingRequestNumber,
+                              serviceTypeId:
+                                  state.requests[index].serviceTypeId,
                               params: state
                                       .requests[index].objectionRequestNumber ??
                                   ""));

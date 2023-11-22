@@ -17,6 +17,7 @@ import '../../../../core/utils/utils_exports.dart'
         PaginationConstants,
         RouteName,
         SortType;
+import '../../domain/entities/objection_details.dart';
 import '../../domain/use_cases/get_objection_details.dart';
 import '../../objections_exports.dart'
     show
@@ -333,6 +334,11 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
         detailsStatus: BlocRequestStatus.submissionGetSuccess,
         errorMessage: "",
       ));
+
+      ObjectionDetails details = success;
+
+      details.hashingRequestNumber = e.hashingRequestNumber;
+      details.serviceTypeId = e.serviceTypeId;
 
       NavigationService.navigatorKey.currentState!
           .pushNamed(RouteName.objectionsDetailsPage, arguments: success);

@@ -72,6 +72,8 @@ class NotAuthorizedIndivisualDialog extends StatelessWidget {
           const CustomTextWidget(
             "يجب ان تحول الى حساب منشأة حتى تتمكن من استخدام هذه الخدمة",
             fontSize: 12,
+            maxLines: 5,
+            height: 1.4,
             fontWeight: AppFontWeight.bold,
             fontColor: AppColor.blackModern500Light,
           ),

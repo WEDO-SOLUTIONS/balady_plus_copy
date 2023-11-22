@@ -14,7 +14,9 @@ class ObjectionModel extends ObjectionEntity {
       super.subMunicipalityName,
       super.requestCreationDate,
       super.objectionTypeId,
-      super.requestStatusName});
+      super.requestStatusName,
+      super.hashingRequestNumber,
+      super.serviceTypeId});
 
   factory ObjectionModel.fromMap(Map<String, dynamic> json) {
     return ObjectionModel(
@@ -34,6 +36,8 @@ class ObjectionModel extends ObjectionEntity {
             ? null
             : DateTime.parse(json["creationDate"]),
         objectionTypeId: json["ObjectionTypeId"],
-        requestStatusName: json["dashboardStatusName"]);
+        requestStatusName: json["dashboardStatusName"],
+        hashingRequestNumber: json["hashingRequestNumber"],
+        serviceTypeId: json["serviceTypeId"]);
   }
 }

@@ -12,6 +12,7 @@ import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
+import '../../../../core/utils/constants/remote_config.dart';
 import '../../../../core/utils/constants/route_names.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
 import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
@@ -143,14 +144,7 @@ class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
                         onShowViolation: () {
                           context
                               .read<ObjectionsDetailsBloc>()
-                              .add(GetTransactionDetailsEvent(
-                                  params: TransactionDetailsParams(
-                                applicationId:
-                                    state.details?.serviceGroupId ?? "13",
-                                id: state.details?.requestSubmitterData
-                                        ?.objectedTransactionId ??
-                                    "",
-                              )));
+                              .add(const OpenObjectableDetails());
                         },
                         //relation: widget.params.rel,
                       ),
@@ -206,7 +200,7 @@ class ObjectionsDetails extends StatelessWidget {
               FieldData(
                   title: ("objection_details_request_transaction").tr(),
                   subTitle: state.details?.requestSubmitterData
-                          ?.objectedTransactionId ??
+                          ?.objectedTransactionDisplayNumber ??
                       ""),
               const CustomVerticalSpace(height: 8),
               GestureDetector(

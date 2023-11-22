@@ -10,8 +10,6 @@ import 'package:webview_flutter/src/webview_cookie_manager.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/use_case.dart';
 import '../../../../core/utils/utils_exports.dart' show CommonProperties, Log;
-import '../../../entry_point/domain/use_cases/get_cookie.dart';
-import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../shared_feature_exports.dart' show DefaultAppBarWidget;
 
 class InAppWebViewPage extends StatefulWidget {
@@ -37,9 +35,12 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    ({String requestNum, String url}) args = ModalRoute.of(context)!
-        .settings
-        .arguments as ({String requestNum, String url});
+    ({String requestNum, String url, bool? isObjections}) args =
+        ModalRoute.of(context)!.settings.arguments as ({
+      String requestNum,
+      String url,
+      bool? isObjections
+    });
 
     return Scaffold(
       appBar: DefaultAppBarWidget(
@@ -86,6 +87,38 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                         "document.getElementsByClassName('site-header-cont')[0].style.display='none';document.getElementsByClassName('footer')[0].style.display='none';document.getElementsByClassName('breadcrumb')[0].style.display='none'");
               } catch (ex) {}
 
+              if (args.isObjections == true &&
+                  ((url?.path
+                              .toLowerCase()
+                              .contains("permits/permitsDetails/index") ??
+                          false) ||
+                      (url?.path.contains("dashboardclient/requests/details") ??
+                          false) ||
+                      (url?.path.contains("dashboardclient/licenses/details") ??
+                          false))) {
+                try {
+                  print("HIDEEE");
+                  _controller?.evaluateJavascript(
+                      source:
+                          "document.getElementsByClassName('btn-text-danger')[0].style.display='none'");
+                } catch (ex) {}
+
+                const Duration interval = Duration(seconds: 2);
+                const Duration timeout = Duration(minutes: 2);
+
+                Timer.periodic(interval, (Timer timer) {
+                  try {
+                    print("HIDEEE");
+                    _controller?.evaluateJavascript(
+                        source:
+                            "document.getElementsByClassName('btn-text-danger')[0].style.display='none'");
+                  } catch (ex) {}
+                  if (timer.tick >= timeout.inSeconds) {
+                    timer.cancel();
+                    print('Timer stopped after 2 minutes.');
+                  }
+                });
+              }
               setState(() {
                 isLoading = false;
               });

@@ -18,6 +18,7 @@ import '../../../../core/utils/utils_exports.dart'
         RouteName,
         ServiceAction;
 import '../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
+import '../../../_shared_feature_/presentation/dialogs/not_authorized_indivivisual.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetDialog, BottomSheetWithActions, DrawIconBasedTypeWidget;
 import '../../../daem/presentation/dialogs/daem_types_dialog.dart';
@@ -46,16 +47,28 @@ class ServiceIcon extends StatelessWidget {
     return InkWell(
       onTap: () async {
         if (service.id == 101) {
-          await BottomSheetDialog.showDraggableSheet(context,
-              isFullHeight: false, height: 300, child: CommercialPermitsDialog(
-            onSelect: (int item) async {
-              await BottomSheetDialog.showDraggableSheet(context,
-                  isFullHeight: true,
-                  child: PermitsLicenseBottomSheetList(
-                    groupId: item,
-                  ));
-            },
-          ));
+          if (CommonProperties.selectedDelegator != null) {
+            await BottomSheetDialog.showDraggableSheet(context,
+                isFullHeight: false,
+                height: 300, child: CommercialPermitsDialog(
+              onSelect: (int item) async {
+                await BottomSheetDialog.showDraggableSheet(context,
+                    isFullHeight: true,
+                    child: PermitsLicenseBottomSheetList(
+                      groupId: item,
+                    ));
+              },
+            ));
+          } else {
+            await BottomSheetDialog.showDraggableSheet(
+              context,
+              isFullHeight: false,
+              dialogKeyName: DialogName.notAuthorizedIndivisualDialog,
+              currentRouteName: RouteName.postersStartService,
+              child: NotAuthorizedIndivisualDialog(),
+            );
+          }
+
           return;
         }
 

@@ -92,11 +92,11 @@ class _PostersLicenseStartServiceState
                       child: ElevatedButtonWidget.startService(
                         onPressed: () async {
                           if (CommonProperties.isLoggedIn) {
-                            if (CommonProperties.selectedDelegator != null) {
-                              context
-                                  .read<PostersLicenseBloc>()
-                                  .add(ApplyLicenseEvent());
-                            } else {
+                            // if (CommonProperties.selectedDelegator != null) {
+                            context
+                                .read<PostersLicenseBloc>()
+                                .add(ApplyLicenseEvent());
+                            /* } else {
                               await BottomSheetDialog.showDraggableSheet(
                                 context,
                                 isFullHeight: false,
@@ -105,7 +105,7 @@ class _PostersLicenseStartServiceState
                                 currentRouteName: RouteName.postersStartService,
                                 child: NotAuthorizedIndivisualDialog(),
                               );
-                            }
+                            }*/
                           } else {
                             showDialog(
                                 context: context,
@@ -113,13 +113,13 @@ class _PostersLicenseStartServiceState
                                         onSuccessLogin:
                                             (bool? isSuccess) async {
                                       if (isSuccess ?? false) {
-                                        if (CommonProperties
+                                        /* if (CommonProperties
                                                 .selectedDelegator !=
-                                            null) {
-                                          context
-                                              .read<PostersLicenseBloc>()
-                                              .add(ApplyLicenseEvent());
-                                        } else {
+                                            null) {*/
+                                        context
+                                            .read<PostersLicenseBloc>()
+                                            .add(ApplyLicenseEvent());
+                                        /* } else {
                                           await BottomSheetDialog
                                               .showDraggableSheet(
                                             context,
@@ -131,7 +131,7 @@ class _PostersLicenseStartServiceState
                                             child:
                                                 NotAuthorizedIndivisualDialog(),
                                           );
-                                        }
+                                        }*/
                                       }
                                     }));
                           }

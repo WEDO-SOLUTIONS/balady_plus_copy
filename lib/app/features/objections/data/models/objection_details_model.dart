@@ -101,17 +101,17 @@ class CommitteeDecisionModel extends CommitteeDecision {
 }
 
 class RequestSubmitterDataModel extends RequestSubmitterData {
-  RequestSubmitterDataModel({
-    super.commercialRecord,
-    super.fullName,
-    super.objectedTransactionUrl,
-    super.id,
-    super.facilityUniqueId,
-    super.idType,
-    super.mobile,
-    super.objectedTransactionId,
-    super.submitterRole,
-  });
+  RequestSubmitterDataModel(
+      {super.commercialRecord,
+      super.fullName,
+      super.objectedTransactionUrl,
+      super.id,
+      super.facilityUniqueId,
+      super.idType,
+      super.mobile,
+      super.objectedTransactionId,
+      super.submitterRole,
+      super.objectedTransactionDisplayNumber});
 
   factory RequestSubmitterDataModel.fromJson(Map<String, dynamic> json) =>
       RequestSubmitterDataModel(
@@ -123,6 +123,8 @@ class RequestSubmitterDataModel extends RequestSubmitterData {
         idType: json["IDType"],
         mobile: json["Mobile"],
         objectedTransactionId: json["ObjectedTransactionID"],
+        objectedTransactionDisplayNumber:
+            json["ObjectedTransactionDisplayNumber"],
         submitterRole: json["SubmitterRole"],
       );
 }

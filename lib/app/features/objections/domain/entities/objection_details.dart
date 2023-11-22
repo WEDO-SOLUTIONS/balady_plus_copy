@@ -24,6 +24,8 @@ class ObjectionDetails {
 
   final String? requestStatusId;
   final String? objectionServiceName;
+  String? hashingRequestNumber;
+  String? serviceTypeId;
 
   ObjectionDetails(
       {this.subMunicipalityId,
@@ -45,7 +47,9 @@ class ObjectionDetails {
       this.objectionTypeId,
       this.objectionReasonsList,
       this.requestStatusId,
-      this.objectionServiceName});
+      this.objectionServiceName,
+      this.hashingRequestNumber,
+      this.serviceTypeId});
 
   String get getLastUpdatedDate =>
       lastUpdatedDate != null ? DateFormat.yMd().format(lastUpdatedDate!) : "";
@@ -77,18 +81,19 @@ class RequestSubmitterData {
   final String? mobile;
   final String? objectedTransactionId;
   final String? submitterRole;
+  final String? objectedTransactionDisplayNumber;
 
-  RequestSubmitterData({
-    this.commercialRecord,
-    this.fullName,
-    this.objectedTransactionUrl,
-    this.id,
-    this.facilityUniqueId,
-    this.idType,
-    this.mobile,
-    this.objectedTransactionId,
-    this.submitterRole,
-  });
+  RequestSubmitterData(
+      {this.commercialRecord,
+      this.fullName,
+      this.objectedTransactionUrl,
+      this.id,
+      this.facilityUniqueId,
+      this.idType,
+      this.mobile,
+      this.objectedTransactionId,
+      this.submitterRole,
+      this.objectedTransactionDisplayNumber});
 }
 
 class ObjectionReason {

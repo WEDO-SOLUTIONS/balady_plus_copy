@@ -142,7 +142,11 @@ class LicensesListItem extends StatelessWidget {
               }, (r) async {
                 Navigator.of(context).pushNamed(
                   RouteName.inappWebview,
-                  arguments: (requestNum: ''.tr(), url: license.redirectUrl),
+                  arguments: (
+                    requestNum: ''.tr(),
+                    url: license.redirectUrl,
+                    isObjections: false
+                  ),
                 );
               });
             }

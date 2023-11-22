@@ -192,8 +192,9 @@ class _CalcualtorWidgetState extends State<CalcualtorWidget> {
                         padding: const EdgeInsets.only(top: 8.0),
                         child: WidgetTitleInvoice(
                           money:
-                              '${state.requestDetails?.individualRequests?.length ?? 1}',
-                          title: "عدد الرخص",
+                              '${state.requestDetails?.costCalculationInfo?.licensesCount}',
+                          title:
+                              '${state.requestDetails?.costCalculationInfo?.licensesCountDescription}',
                         ),
                       ),
 
@@ -259,6 +260,9 @@ class _CalcualtorWidgetState extends State<CalcualtorWidget> {
                     /* */
                   ],
                 ),
+              ),
+              SizedBox(
+                height: 32,
               ),
               PostersPreviousNextButtons(
                 isBtnDisabled: !isAgreement,

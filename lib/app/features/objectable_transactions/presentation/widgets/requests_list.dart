@@ -158,14 +158,17 @@ class _RequestsListState extends State<RequestsList> {
     } else if (serviceTypeId == "1") {
       if (contentTypeId == "permit") {
         CommonFunctions.openBaladyWebView(
-            "${RemoteConfig.baladyCommercialUrl}/Permits/PermitsDetails/Index/${item.hashingTransactionNumber}/${item.hashingOriginalServiceId}");
+            "${RemoteConfig.baladyCommercialUrl}/Permits/PermitsDetails/Index/${item.hashingTransactionNumber}/${item.hashingOriginalServiceId}",
+            isObjections: true);
       } else {
         CommonFunctions.openBaladyWebView(
-            "${RemoteConfig.baladyBaseUrl}/dashboardclient/requests/details/${item.hashingTransactionNumber}");
+            "${RemoteConfig.baladyBaseUrl}/dashboardclient/requests/details/${item.hashingTransactionNumber}",
+            isObjections: true);
       }
     } else if (serviceTypeId == "2") {
       CommonFunctions.openBaladyWebView(
-          "${RemoteConfig.baladyBaseUrl}/dashboardclient/licenses/details/${item.hashingTransactionNumber}");
+          "${RemoteConfig.baladyBaseUrl}/dashboardclient/licenses/details/${item.hashingTransactionNumber}",
+          isObjections: true);
     }
   }
 
