@@ -18,7 +18,7 @@ import '../../objections_exports.dart'
         RequestTypeModel,
         ObjectionsParamsModel;
 import '../models/objection_details_model.dart';
- 
+
 abstract class RequestsRemoteDataSource {
   Future<List<ObjectionModel>> getObjectionRequests(
     ObjectionsParamsModel params,
@@ -32,6 +32,7 @@ abstract class RequestsRemoteDataSource {
   Future<ObjectionDetailsModel> getObjectionDetails(String id);
 
   Future<bool> cancelObjection(String id);
+  Future<String> getPermitURL(String id);
 }
 
 class RequestsRemoteDataSourceImplementation
@@ -266,6 +267,42 @@ class RequestsRemoteDataSourceImplementation
       // final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return true;
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<String> getPermitURL(String id) async {
+    var response;
+    try {
+      response = await webService.dio.get(ApiUrl.objectionPermitUrl(id));
+
+      final data = response.data;
+      data.toString().successLog();
+
+      // final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return data["data"]?["result"];
     } on DioError catch (error) {
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {

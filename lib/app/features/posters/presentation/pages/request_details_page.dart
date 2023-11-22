@@ -6,10 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:collection/collection.dart';
 
-import '../../../../core/utils/constants/app_colors.dart';
-import '../../../../core/utils/constants/paths/icon_paths.dart';
-import '../../../../core/utils/enums/app_font_weights.dart';
-import '../../../../core/utils/enums/bloc_status.dart';
+import '../../../_shared_feature_/presentation/cards/expandable_card.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../_shared_feature_/presentation/under_testing/custom_expansion_panel_widget.dart';
@@ -21,7 +18,9 @@ import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.
 import '../../../create_compliance/presentation/widgets/summery_widgets/field_data.dart';
 import '../../../home_page/presentation/widgets/home_tag.dart';
 import '../../data/models/allowed_actions_response.dart';
+import '../../data/models/poster_request_details_model.dart';
 import '../widgets/edit_posters_dialog.dart';
+import '../widgets/individual_request_widget.dart';
 import '../widgets/steps/step2/poster_view_item_widget.dart';
 
 class PostersReqeuestDetailsPage extends StatelessWidget {
@@ -60,35 +59,49 @@ class PostersReqeuestDetailsPage extends StatelessWidget {
                       child: BottomSheetWithActions(
                         title: "actions".tr(),
                         body: Column(
-                            children: act!.map((e) {
-                          return GestureDetector(
-                            onTap: () async {
-                              print(state.requestDetails?.alerts);
-                              if (e.id == "edit") {
-                                await BottomSheetDialog.showDraggableSheet(
-                                    context,
-                                    isFullHeight: true,
-                                    child: BlocProvider.value(
-                                        value:
-                                            context.read<PostersLicenseBloc>(),
-                                        child: EditPostersDialog()));
-                              }
+                            children: act!.isNotEmpty
+                                ? act.map((e) {
+                                    return GestureDetector(
+                                      onTap: () async {
+                                        Navigator.pop(context);
+                                        print(state.requestDetails?.alerts);
+                                        if (e.id == "edit") {
+                                          await BottomSheetDialog
+                                              .showDraggableSheet(context,
+                                                  isFullHeight: true,
+                                                  child: BlocProvider.value(
+                                                      value: context.read<
+                                                          PostersLicenseBloc>(),
+                                                      child:
+                                                          EditPostersDialog()));
+                                        }
 
-                              if (e.id == "cancel") {
-                                context
-                                    .read<PostersLicenseBloc>()
-                                    .add(DeletePosterRequestEvent());
-                                Navigator.of(context).pop();
-                              }
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.only(bottom: 8.0),
-                              child: FieldData(
-                                title: e.actionName ?? "",
-                              ),
-                            ),
-                          );
-                        }).toList()),
+                                        if (e.id == "cancel") {
+                                          context
+                                              .read<PostersLicenseBloc>()
+                                              .add(DeletePosterRequestEvent());
+                                          Navigator.of(context).pop();
+                                        }
+                                      },
+                                      child: Container(
+                                        margin:
+                                            const EdgeInsets.only(bottom: 8.0),
+                                        child: FieldData(
+                                          title: e.actionName ?? "",
+                                        ),
+                                      ),
+                                    );
+                                  }).toList()
+                                : [
+                                    Center(
+                                      child: CustomTextWidget(
+                                        ('data_not_have_actions').tr(),
+                                        fontSize: 14,
+                                        fontColor: AppColor.primary900Light,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    )
+                                  ]),
                       ));
                 },
               ),
@@ -128,24 +141,87 @@ class PostersReqeuestDetailsPage extends StatelessWidget {
                               ],
                             ),
                             const CustomVerticalSpace(height: 16),
+                            IndivisualRequestsData(),
+                            const CustomVerticalSpace(height: 16),
                             Step1SummeryWidget(),
-                            /*  Step1SummeryWidget(),
                             CustomVerticalSpace(height: 16),
-                            Step2SummeryWidget(),
-                            CustomVerticalSpace(height: 16),
-                            Step2_2SummeryWidget(),
-                            CustomVerticalSpace(height: 16),
-                            Step3SummeryWidget(),
-                            CustomVerticalSpace(height: 16),
-                            LocationSummuryWidget(),
-                            Step4SummeryWidget(),
-                            CustomVerticalSpace(height: 16),
-                            if (state.requestDetails?.submitterThrough ==
-                                "BENEFICARY")
-                              Step5SummeryWidget(),
-                            CustomVerticalSpace(height: 16),
-                            Step6SummeryWidget(),*/
-                            CustomVerticalSpace(height: 16),
+                            if (state.requestDetails?.requestNotes != null &&
+                                state.requestDetails!.requestNotes!.isNotEmpty)
+                              ExpandableCard(
+                                title: 'responses_request'.tr(),
+                                icon: IconPath.vdSummurySPL,
+                                children: [
+                                  state.requestDetails?.requestNotes != null
+                                      ? ListView.builder(
+                                          itemCount: state.requestDetails
+                                              ?.requestNotes!.length,
+                                          shrinkWrap: true,
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          itemBuilder: (ctx, index) {
+                                            RequestNote? requestNotesInfo =
+                                                state.requestDetails
+                                                    ?.requestNotes![index];
+                                            return Card(
+                                              color: AppColor.primary100Light,
+                                              margin: const EdgeInsets.only(
+                                                  top: 16),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(12.0),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        CustomTextWidget(
+                                                          ('notes_').tr(),
+                                                          fontSize: 12,
+                                                          fontColor: AppColor
+                                                              .primary900Light,
+                                                          fontWeight:
+                                                              AppFontWeight
+                                                                  .bold,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                        ),
+                                                        const Spacer(),
+                                                        CustomTextWidget(
+                                                          requestNotesInfo
+                                                                  ?.date ??
+                                                              "",
+                                                          fontSize: 12,
+                                                          fontColor: AppColor
+                                                              .blackModern500Light,
+                                                          fontWeight:
+                                                              AppFontWeight
+                                                                  .bold,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(height: 16),
+                                                    CustomTextWidget(
+                                                      requestNotesInfo?.note ??
+                                                          "",
+                                                      fontSize: 12,
+                                                      maxLines: 100,
+                                                      fontColor: AppColor
+                                                          .blackModern600Light,
+                                                      fontWeight:
+                                                          AppFontWeight.regular,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        )
+                                      : const SizedBox()
+                                ],
+                              ),
                           ],
                         ))),
                   if (state.detailsStatus == BlocStatus.loading ||
@@ -176,9 +252,9 @@ class Step1SummeryWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PostersLicenseBloc, PostersLicenseState>(
       builder: (context, state) {
-        return CustomExpansionPanelWidget(
+        return ExpandableCard(
           title: ("بيانات الملصقات").tr(),
-          leading: SvgPicture.asset(IconPath.vdSummurySPL),
+          icon: IconPath.vdSummurySPL,
           children: (state.requestDetails?.posters ?? []).mapIndexed((i, e) {
             return PosterViewItemWidget(
               index: i + 1,
@@ -187,6 +263,29 @@ class Step1SummeryWidget extends StatelessWidget {
             );
           }).toList(),
         );
+      },
+    );
+  }
+}
+
+class IndivisualRequestsData extends StatelessWidget {
+  const IndivisualRequestsData({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PostersLicenseBloc, PostersLicenseState>(
+      builder: (context, state) {
+        return state.requestDetails?.individualRequests != null &&
+                state.requestDetails!.individualRequests!.isNotEmpty
+            ? ExpandableCard(
+                title: ("الطلبات الفرعية").tr(),
+                icon: IconPath.vdSummurySPL,
+                children: (state.requestDetails?.individualRequests ?? [])
+                    .mapIndexed((i, e) {
+                  return IndividualRequestWidget(item: e);
+                }).toList(),
+              )
+            : const SizedBox();
       },
     );
   }

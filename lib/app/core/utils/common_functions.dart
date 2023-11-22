@@ -652,7 +652,8 @@ class CommonFunctions {
     }
   }
 
-  static void openBaladyWebView(String? url) async {
+  static void openBaladyWebView(String? url,
+      {bool isObjections = false}) async {
     print(url);
     EasyLoading.show();
     GetCookie getCookie = GetCookie(repository: sl());
@@ -663,7 +664,7 @@ class CommonFunctions {
     }, (r) async {
       Navigator.of(NavigationService.navigatorKey.currentContext!).pushNamed(
         RouteName.inappWebview,
-        arguments: (requestNum: ''.tr(), url: url),
+        arguments: (requestNum: ''.tr(), url: url, isObjections: isObjections),
       );
     });
   }
@@ -883,7 +884,11 @@ class CommonFunctions {
     }, (r) async {
       NavigationService.navigatorKey.currentState?.pushNamed(
         RouteName.inappWebview,
-        arguments: (requestNum: 'request'.tr(), url: redirectUrl),
+        arguments: (
+          requestNum: 'request'.tr(),
+          url: redirectUrl,
+          isObjections: false
+        ),
       );
     });
   }

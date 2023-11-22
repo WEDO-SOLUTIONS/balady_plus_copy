@@ -154,17 +154,19 @@ class CostCalculationInfo {
   final dynamic durationInDaysDescription;
   final double? totalCost;
   final dynamic totalCostDescription;
-
-  CostCalculationInfo({
-    this.postersCount,
-    this.postersCountDescription,
-    this.postersAreaSum,
-    this.postersAreaSumDescription,
-    this.durationInDays,
-    this.durationInDaysDescription,
-    this.totalCost,
-    this.totalCostDescription,
-  });
+  final dynamic licensesCountDescription;
+  final dynamic licensesCount;
+  CostCalculationInfo(
+      {this.postersCount,
+      this.postersCountDescription,
+      this.postersAreaSum,
+      this.postersAreaSumDescription,
+      this.durationInDays,
+      this.durationInDaysDescription,
+      this.totalCost,
+      this.totalCostDescription,
+      this.licensesCountDescription,
+      this.licensesCount});
 
   factory CostCalculationInfo.fromJson(Map<String, dynamic> json) =>
       CostCalculationInfo(
@@ -176,6 +178,8 @@ class CostCalculationInfo {
         durationInDaysDescription: json["durationInDaysDescription"],
         totalCost: json["totalCost"]?.toDouble(),
         totalCostDescription: json["totalCostDescription"],
+        licensesCountDescription: json["licensesCountDescription"],
+        licensesCount: json["licensesCount"],
       );
 
   Map<String, dynamic> toJson() => {

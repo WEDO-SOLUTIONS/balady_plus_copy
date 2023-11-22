@@ -59,7 +59,8 @@ class HelpScreen extends StatelessWidget {
                 RouteName.inappWebview,
                 arguments: (
                   requestNum: "موقع بلدي الالكتروني",
-                  url: "https://balady.gov.sa/ar"
+                  url: "https://balady.gov.sa/ar",
+                  isObjections: false
                 ),
               ),
               child: Container(

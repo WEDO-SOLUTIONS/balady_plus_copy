@@ -236,15 +236,17 @@ class HijriCalendarAddetionalField extends StatefulWidget {
   final bool isMandatory;
   final String? currentVlaue;
   final Function(String?) onChanged;
+  final HijriCalendar? minValue;
 
-  HijriCalendarAddetionalField({
-    Key? key,
-    this.fieldLength,
-    required this.fieldName,
-    required this.isMandatory,
-    this.currentVlaue,
-    required this.onChanged,
-  }) : super(key: key);
+  HijriCalendarAddetionalField(
+      {Key? key,
+      this.fieldLength,
+      required this.fieldName,
+      required this.isMandatory,
+      this.currentVlaue,
+      required this.onChanged,
+      this.minValue})
+      : super(key: key);
 
   @override
   State<HijriCalendarAddetionalField> createState() =>
@@ -272,14 +274,14 @@ class _HijriCalendarAddetionalFieldState
           textValue: currentValue,
           showOptional: !widget.isMandatory,
           onTap: () async {
-            showHijriDate(context);
+            showHijriDate(context, minValue: widget.minValue);
           },
         ),
       ],
     );
   }
 
-  void showHijriDate(BuildContext context) {
+  void showHijriDate(BuildContext context, {HijriCalendar? minValue}) {
     setSelectedDate();
     hijri_picker.Picker(
         isAr: CommonFunctions.isAppAR,
@@ -306,6 +308,7 @@ class _HijriCalendarAddetionalFieldState
         ),
         hideHeader: false,
         adapter: hijri_picker.DateTimePickerAdapter(
+            minValue: minValue,
             customColumnType: CommonFunctions.isAppAR ? [2, 1, 0] : [0, 1, 2],
             value: selectedDate),
         selectedTextStyle: const TextStyle(color: AppColor.baladyDarkGreen2),

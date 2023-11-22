@@ -32,6 +32,8 @@ class PermitAttachmentItem {
   int? requestId;
   String? base64;
   String? key;
+  int? posterTypeId;
+  int? posterId;
 
   PermitAttachmentItem(
       {this.id,
@@ -43,7 +45,9 @@ class PermitAttachmentItem {
       this.filePath,
       this.requestId,
       this.base64,
-      this.key});
+      this.key,
+      this.posterTypeId,
+      this.posterId});
 
   factory PermitAttachmentItem.fromJson(Map<String, dynamic> json) =>
       PermitAttachmentItem(
@@ -72,7 +76,9 @@ class PermitAttachmentItem {
       String? filePath,
       int? requestId,
       String? base64,
-      String? key}) {
+      String? key,
+      int? posterTypeId,
+      int? posterId}) {
     return PermitAttachmentItem(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -84,6 +90,8 @@ class PermitAttachmentItem {
         filePath: filePath ?? this.filePath,
         requestId: requestId ?? this.requestId,
         base64: base64 ?? this.base64,
-        key: key ?? this.key);
+        key: key ?? this.key,
+        posterTypeId: posterTypeId ?? this.posterTypeId,
+        posterId: posterId ?? this.posterId);
   }
 }

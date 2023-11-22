@@ -136,11 +136,17 @@ class PostersLicenseBloc
   }
 
   Future<List<AllowedActionItem>?> getAllowedActions() async {
+    emit(state.copyWith(status: BlocStatus.loading, error: ""));
+
     return (await _getPosterAllowedActions(state.requestId!)).fold((l) {
       emit(state.copyWith(
           status: BlocStatus.failure,
           error: (l as ServerFailure).errorMessage));
-    }, (r) async => r.result ?? []);
+    }, (r) async {
+      emit(state.copyWith(status: BlocStatus.success, error: ""));
+
+      return r.result ?? [];
+    });
   }
 
   Future<void> _applyLicenseHandler(
@@ -301,10 +307,16 @@ class PostersLicenseBloc
           error: (l as ServerFailure).errorMessage));
     }, (r) {
       emitter(state.copyWith(status: BlocStatus.success));
-      NavigationService.navigatorKey.currentState!.popAndPushNamed(
-        RouteName.submitApplicationSuccessfullyPosters,
-        arguments: r,
-      );
+      if (e.editMode) {
+        add(GetPosterRequestDetailsEvent());
+
+        NavigationService.navigatorKey.currentState!.pop();
+      } else {
+        NavigationService.navigatorKey.currentState!.popAndPushNamed(
+          RouteName.submitApplicationSuccessfullyPosters,
+          arguments: r,
+        );
+      }
     });
   }
 

@@ -147,6 +147,9 @@ class ApiUrl {
           String applicationId, String transactionId) =>
       '/v1/objection-generic-services/applications/$applicationId/transactions/$transactionId/validate';
 
+  static String objectionPermitUrl(String transactionId) =>
+      '/v1/balady-dashboard/permit-detail-url-transaction-number/$transactionId';
+
 //! VD
   static const gis = '/v1/crm/bcg/gis-info';
   static const vdCategories = '/v1/crm/bcg/categories';

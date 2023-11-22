@@ -207,16 +207,18 @@ class _AddPosterDialogState extends State<AddPosterDialog> {
                       PermitAttachmentItem? item = attachments?[index].copyWith(
                           base64: base64,
                           fileName: fileName,
+                          posterTypeId: posterType?.id,
                           filePath: filePath);
 
                       PostersUploadResponse? uploadResponse = await context
                           .read<PostersLicenseBloc>()
                           .uploadAttachment(item!);
+                      if (uploadResponse != null) {
+                        attachments?[index] =
+                            item.copyWith(key: uploadResponse?.key);
 
-                      attachments?[index] =
-                          item.copyWith(key: uploadResponse?.key);
-
-                      setState(() {});
+                        setState(() {});
+                      }
                     },
                   ),
                   /* if (attachments?.isNotEmpty ?? false)

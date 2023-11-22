@@ -46,7 +46,7 @@ class PosterViewItemWidget extends StatelessWidget {
           children: [
             Column(
               children: [
-                Row(
+                /*Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomTextWidget(
@@ -55,10 +55,10 @@ class PosterViewItemWidget extends StatelessWidget {
                         fontSize: 18,
                         fontWeight: AppFontWeight.bold,
                       ),
-                    ]),
-                const SizedBox(
+                    ]),*/
+                /*const SizedBox(
                   height: 16,
-                ),
+                ),*/
                 FieldData(
                     title: "poster_type".tr(), subTitle: item?.typeName ?? ""),
                 const CustomVerticalSpace(height: 4),
@@ -129,18 +129,12 @@ class PosterViewItemWidget extends StatelessWidget {
                         fileName: fileName,
                         key: item?.attachments?[index].key,
                         id: item?.attachments?[index].typeId,
-                        requestId: state.requestId);
+                        requestId: state.requestId,
+                        posterId: item?.posterId);
 
                     PostersUploadResponse? uploadResponse = await context
                         .read<PostersLicenseBloc>()
                         .uploadAttachment(item1!);
-
-                    print(uploadResponse?.key);
-                    context
-                        .read<PostersLicenseBloc>()
-                        .add(GetPosterRequestDetailsEvent());
-
-                    Navigator.of(context).pop();
                   },
                 ),
               ],
@@ -208,13 +202,10 @@ class AttachmentListWidget extends StatelessWidget {
                   fileName: attachments?[index].name,
                   onPress: () {
                     if (attachments?[index].attachUrl != null &&
-                        !attachments![index].attachUrl!.startsWith("http"))
-                      CommonFunctions.openFile(
-                          File(attachments![index].attachUrl!));
-                    else if (attachments?[index].attachUrl != null &&
                         attachments![index].attachUrl!.startsWith("http")) {
                       CommonFunctions.showApigeeFile(
-                          attachments?[index].attachUrl ?? "", "");
+                          attachments?[index].attachUrl ?? "",
+                          attachments?[index].originFileName ?? "");
                     }
                   },
                   hint: "",

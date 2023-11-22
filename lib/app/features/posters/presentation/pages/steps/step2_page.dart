@@ -2,6 +2,7 @@ import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:hijri/hijri_calendar.dart';
 
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../comercial_license_renew/presentation/commercial_license/widgets/cr_header_desc.dart';
@@ -41,6 +42,7 @@ class PostersStep2Page extends StatelessWidget {
                           fieldName: "posters_permit_start_date".tr(),
                           isMandatory: true,
                           currentVlaue: state.startDate,
+                          minValue: HijriCalendar.now(),
                           onChanged: (value) {
                             context
                                 .read<PostersLicenseBloc>()

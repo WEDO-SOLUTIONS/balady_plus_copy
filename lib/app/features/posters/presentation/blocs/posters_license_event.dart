@@ -54,7 +54,8 @@ class SavePostersInfo extends PostersLicenseEvent {
 }
 
 class SubmitPosterEvent extends PostersLicenseEvent {
-  const SubmitPosterEvent();
+  final bool editMode;
+  const SubmitPosterEvent({this.editMode = false});
 }
 
 class AddIndividualRequestsEvent extends PostersLicenseEvent {

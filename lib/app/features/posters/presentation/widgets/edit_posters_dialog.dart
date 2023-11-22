@@ -1,5 +1,6 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/home_page/presentation/widgets/home_app_bar/circle_icon.dart';
-import 'package:balady_plus/app/features/posters/presentation/widgets/steps/step2/poster_item_widget.dart';
 import 'package:balady_plus/app/features/posters/presentation/widgets/steps/step2/poster_view_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +9,8 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
+import '../../../../core/utils/enums/bloc_status.dart';
+import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../blocs/posters_license_bloc.dart';
 
@@ -21,9 +24,12 @@ class EditPostersDialog extends StatefulWidget {
 class _EditPostersDialogState extends State<EditPostersDialog> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PostersLicenseBloc, PostersLicenseState>(
-        builder: (context, state) {
-      print(state.requestDetails?.alerts);
+    return BlocConsumer<PostersLicenseBloc, PostersLicenseState>(
+        listener: (context, state) {
+      if (state.status == BlocStatus.failure) {
+        CommonFunctions.showError(state.error ?? "");
+      }
+    }, builder: (context, state) {
       return Container(
         color: AppColor.white,
         padding: EdgeInsets.all(16),
@@ -51,11 +57,25 @@ class _EditPostersDialogState extends State<EditPostersDialog> {
                   itemCount: state.requestDetails?.posters?.length ?? 0,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (ctx, index) {
-                    return PosterViewItemWidget(
-                      index: index + 1,
-                      item: state.requestDetails!.posters![index],
-                    );
+                    return ExpandableCard(
+                        title: "poster_index"
+                            .tr()
+                            .replaceAll("{}", (index + 1).toString()),
+                        icon: IconPath.vdSummuryDesc,
+                        children: [
+                          PosterViewItemWidget(
+                            index: index + 1,
+                            item: state.requestDetails!.posters![index],
+                          ),
+                        ]);
                   }),
+              ElevatedButtonWidget.primaryCustom(
+                  onPressed: () {
+                    context
+                        .read<PostersLicenseBloc>()
+                        .add(SubmitPosterEvent(editMode: true));
+                  },
+                  text: "إرسال الطلب")
             ],
           ),
         ),

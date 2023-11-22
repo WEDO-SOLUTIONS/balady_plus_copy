@@ -42,7 +42,10 @@ class GetRequestSubtypesEvent extends RequestsEvent {
 
 class GetObjectionDetailsEvent extends RequestsEvent {
   final String params;
-  GetObjectionDetailsEvent({required this.params});
+  final String? serviceTypeId;
+  final String? hashingRequestNumber;
+  const GetObjectionDetailsEvent(
+      {required this.params, this.serviceTypeId, this.hashingRequestNumber});
 }
 
 class RequestSubTypeSelectedEvent extends RequestsEvent {

@@ -15,6 +15,8 @@ class ObjectionEntity extends Equatable {
   final DateTime? requestCreationDate;
   final String? objectionTypeId;
   final String? requestStatusName;
+  final String? hashingRequestNumber;
+  final String? serviceTypeId;
 
   const ObjectionEntity(
       {this.lastUpdatedDate,
@@ -29,7 +31,9 @@ class ObjectionEntity extends Equatable {
       this.subMunicipalityName,
       this.requestCreationDate,
       this.objectionTypeId,
-      this.requestStatusName});
+      this.requestStatusName,
+      this.hashingRequestNumber,
+      this.serviceTypeId});
 
   String get createDateStr => requestCreationDate != null
       ? DateFormat.yMd().format(requestCreationDate!)
