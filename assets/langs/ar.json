@@ -1008,8 +1008,8 @@
   "services": "الخدمات",
   "total_cost": "التكلفة الاجمالية",
   "sar": "ريال",
-  "click_more_details": "عرض تفاصيل التكلفة",
-  "cost_details": "تفاصيل التكلفة",
+  "click_more_details": "استعراض تفاصيل العرض والتكلفة",
+  "cost_details": "تفاصيل العرض و التكلفة",
   "show_all": "عرض الكل",
   "most_ordered_services": "الخدمات الأكثر طلباً",
   "top_rated_providers": "المكاتب الاعلى تقييماًً",
@@ -3441,15 +3441,34 @@
   "notes_": "الملاحظة",
 
   "return_order_details": "العودة لتفاصيل الطلب",
-
+ 
   "time_serveis": "وقت تنفيذ الخدمة",
 
 
   "application_no_has_been_submitted": "تم تقديم الطلب رقم",
   "and_issue_invoice_service_amount": "واصدار الفاتورة الخاصة بالخدمة  بمبلغ",
 
+  "application_no_has_been_submitted_two": "سيتم إشعاركم برسالة نصية أخرى تحتوي على تفاصيل الفاتورة وآلية السداد ، مع تحيات وزارة الشؤون البلدية والقروية والإسكان", 
 
-  "application_no_has_been_submitted_two": "سيتم إشعاركم برسالة نصية أخرى تحتوي على تفاصيل الفاتورة وآلية السداد ، مع تحيات وزارة الشؤون البلدية والقروية والإسكان"
+"posters_licenses_list":"قائمة الرخص", 
+"posters_data":"بيانات الملصقات", 
+"posters_permit_start_date":"تاريخ بداية التصريح", 
+"posters_permit_duration": "مدة التصريح", 
+"posters_count":"عدد الملصقات {}", 
+"posters_area_total":"مجموع مساحات الملصقات {} سم٢", 
+"poster_index":"ملصق {}", 
+"poster_type":"نوع الملصق", 
+"poster_name":"اسم الملصق", 
+"poster_dim":"أبعاد الملصق", 
+"poster_length":"الطول", 
+"poster_width":"العرض", 
+"poster_area":"المساحه", 
+"poster_cm":"سم", 
+"poster_cm2":"سم٢"
+
+
+
+
 
 
 }
