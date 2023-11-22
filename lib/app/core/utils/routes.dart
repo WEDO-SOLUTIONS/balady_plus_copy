@@ -20,6 +20,10 @@ import 'package:balady_plus/app/features/profile_features/rate_us/rate_us.dart';
 import 'package:balady_plus/app/features/quran/presentation/pages/quran_bookmarks.dart';
 import 'package:balady_plus/app/features/quran/quran_exports.dart';
 import 'package:balady_plus/app/features/request_commercial_license_details/presentation/pages/request_commercial_license_details_page.dart';
+import 'package:balady_plus/app/features/tobacco_services/presentation/submit_disclosed_successfully/screens/submit_disclosed_successfully_screen.dart';
+import 'package:balady_plus/app/features/tobacco_services/presentation/tobacco_details/pages/tobacco_details_page.dart';
+import 'package:balady_plus/app/features/tobacco_services/presentation/tobacco_disclosed/screens/tobacco_disclosed_screen.dart';
+import 'package:balady_plus/app/features/tobacco_services/presentation/tobacco_list/pages/tobacco_list_page.dart';
 import 'package:balady_plus/app/features/weather/presentation/pages/weather_main_page.dart';
 import 'package:flutter/material.dart'
     show
@@ -34,6 +38,7 @@ import 'package:flutter/material.dart'
 import 'package:flutter/widgets.dart' show SizedBox;
 import 'package:balady_plus/etmam_app/features/home/presentation/pages/etmam_home_page.dart';
 import 'package:balady_plus/etmam_app/features/on_boarding_cities/presentation/pages/etmam_select_city_page.dart';
+
 //import '../../../etmam_app/features/dynamic_form/presentation/dialogs/bidding_types_dialog.dart';
 //import '../../../etmam_app/features/dynamic_form/presentation/pages/bidding_form_page.dart';
 //import '../../../etmam_app/features/dynamic_form/presentation/pages/bidding_type_page.dart';
@@ -42,6 +47,7 @@ import 'package:balady_plus/etmam_app/features/on_boarding_cities/presentation/p
 //    as etmamRequestsPage;
 import '../../../etmam_app/features/home/presentation/pages/etmam_main_city_page.dart';
 import '../../../etmam_app/features/home/presentation/pages/etmam_main_page.dart';
+
 //import '../../../etmam_app/features/my_orders/presentation/pages/delete_orders_page.dart';
 //import '../../../etmam_app/features/my_orders/presentation/pages/request_details_page.dart';
 //import '../../../etmam_app/features/my_orders/presentation/pages/request_offers_page.dart';
@@ -558,6 +564,10 @@ class Routes {
             const CommercialLicenseDetailsPage(),
         RouteName.requestCommercialLicenseDetails: (context) =>
             const RequestCommercialLicenseDetailsPage(),
+        RouteName.tobaccoServicesList: (context) => const TobaccoListPage(),
+    RouteName.tobaccoDetails: (context) => const TobaccoDetailsPage(),
+    RouteName.tobaccoDisclosed: (context) => const TobaccoDisclosedScreen(),
+    RouteName.submitDisclosedSuccessfully: (context) => const SubmitDisclosedSuccessfullyScreen(),
       };
 }
 

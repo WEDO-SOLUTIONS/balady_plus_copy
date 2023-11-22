@@ -9,10 +9,15 @@ import 'custom_spaces_widgets.dart';
 
 class ReloadWidget extends StatelessWidget {
   final double widgetHeight;
+  final String? errorMessage;
   final VoidCallback onTab;
 
-  const ReloadWidget({Key? key, this.widgetHeight = 150, required this.onTab})
-      : super(key: key);
+  const ReloadWidget({
+    Key? key,
+    this.widgetHeight = 150,
+    this.errorMessage,
+    required this.onTab,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +40,7 @@ class ReloadWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CustomTextWidget(
-            ('data_not_retrieved').tr(),
+            errorMessage ?? ('data_not_retrieved').tr(),
             fontSize: 14,
             fontColor: AppColor.primary900Light,
             fontWeight: AppFontWeight.regular,

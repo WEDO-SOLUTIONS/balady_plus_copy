@@ -399,6 +399,21 @@ Map<String, dynamic> servicesConfig = {
   ],
   "municipal_services": [
     {
+      "id": 0,
+      "icon": "toppaco_services",
+      "3d_icon": null,
+      "order": 0,
+      "isNew": false,
+      "isImportant": false,
+      "requireLogin": true,
+      "action": {
+        "type": "page",
+        "value": RouteName.tobaccoServicesList,
+      },
+      "ar": {"title": "tobaccoServices".tr(), "description": null, "tag": null},
+      "en": {"title": "Tobacco Services", "description": null, "tag": null}
+    },
+    {
       "id": 1,
       "icon": "municipal_commercial",
       "3d_icon": null,
