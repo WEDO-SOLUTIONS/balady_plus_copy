@@ -6,7 +6,8 @@ import '../../shared_feature_exports.dart'
 
 class ExpandableCard extends StatefulWidget {
   final String title;
-  final String icon;
+  final String? icon;
+  final String? badgeTitle;
   final List<Widget> children;
   final bool isExpandedByDefault;
 
@@ -16,6 +17,7 @@ class ExpandableCard extends StatefulWidget {
     required this.icon,
     required this.children,
     this.isExpandedByDefault = false,
+    this.badgeTitle,
   });
 
   @override
@@ -50,15 +52,32 @@ class _ExpandableCardState extends State<ExpandableCard> {
             },
             child: Row(
               children: [
-                DrawIconBasedTypeWidget(
-                  icon: widget.icon,
-                  iconSize: 20,
-                ),
+                widget.icon != null
+                    ? DrawIconBasedTypeWidget(
+                        icon: widget.icon!,
+                        iconSize: 20,
+                      )
+                    : const SizedBox(),
                 const SizedBox(width: 4),
                 CustomTextWidget(
                   widget.title,
                   textStyle: AppStyle.cardTitleTextStle,
                 ),
+                widget.badgeTitle != null
+                    ? Chip(
+                        label: Text(
+                          widget.badgeTitle!,
+                          style: AppStyle.requestParamterTitleTextStle.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
+                        backgroundColor: const Color(0xfff1b074),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 2,
+                          vertical: 0,
+                        ),
+                      )
+                    : const SizedBox(),
                 const Spacer(),
                 Container(
                   decoration: const BoxDecoration(

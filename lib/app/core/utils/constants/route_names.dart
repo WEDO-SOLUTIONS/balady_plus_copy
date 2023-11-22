@@ -189,6 +189,13 @@ class RouteName {
 
   static const commercialLicenseDetails = '/commercialLicenseDetails';
   static const requestCommercialLicenseDetails = '/requestCommercialLicenseDetails';
+
+
+  static const tobaccoServicesList = '/tobaccoServicesList';
+  static const tobaccoDetails = '/tobaccoDetails';
+  static const tobaccoDisclosed = '/tobaccoDisclosed';
+  static const submitDisclosedSuccessfully = '/submitDisclosedSuccessfully';
+
 }
 
 class EtmamRoutesNames {
