@@ -5,7 +5,8 @@ import 'package:localize_and_translate/localize_and_translate.dart'
 import '../../../../core/errors/errors_exports.dart'
     show APIException, NoDataFoundException, ServerException;
 import '../../../../core/services/services_exports.dart' show WebService;
-import '../../../../core/utils/utils_exports.dart' show ApiUrl, Log;
+import '../../../../core/utils/utils_exports.dart'
+    show ApiUrl, CommonProperties, Log;
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show ResponseBodyModel;
 import '../../objections_exports.dart'
@@ -29,6 +30,9 @@ abstract class RequestsRemoteDataSource {
   );
 
   Future<ObjectionDetailsModel> getObjectionDetails(String id);
+
+  Future<bool> cancelObjection(String id);
+  Future<String> getPermitURL(String id);
 }
 
 class RequestsRemoteDataSourceImplementation
@@ -223,6 +227,82 @@ class RequestsRemoteDataSourceImplementation
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return ObjectionDetailsModel.fromJson(result);
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<bool> cancelObjection(String id) async {
+    var response;
+    try {
+      response =
+          await webService.dio.delete(ApiUrl.cancelObjectionRequest, data: {
+        "ObjectionRequestNumber": id,
+        "SubmitterRole": CommonProperties.selectedDelegator?.roleId ?? "001"
+      });
+
+      final data = response.data;
+      data.toString().successLog();
+
+      // final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return true;
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<String> getPermitURL(String id) async {
+    var response;
+    try {
+      response = await webService.dio.get(ApiUrl.objectionPermitUrl(id));
+
+      final data = response.data;
+      data.toString().successLog();
+
+      // final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return data["data"]?["result"];
     } on DioError catch (error) {
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {

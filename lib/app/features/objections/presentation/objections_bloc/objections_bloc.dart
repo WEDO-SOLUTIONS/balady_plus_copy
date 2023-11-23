@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/objections/domain/use_cases/cancel_objection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,6 +17,7 @@ import '../../../../core/utils/utils_exports.dart'
         PaginationConstants,
         RouteName,
         SortType;
+import '../../domain/entities/objection_details.dart';
 import '../../domain/use_cases/get_objection_details.dart';
 import '../../objections_exports.dart'
     show
@@ -122,7 +124,6 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
     });
 
     on<GetRequestStatusesEvent>((event, emit) async {
-      print("GetRequestTypesEvent");
       emit(
         state.copyWith(
           requestStatusesStatus: BlocRequestStatus.submissionGetLoading,
@@ -160,7 +161,6 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
     });
 
     on<GetRequestTypesEvent>((event, emit) async {
-      print("GetRequestTypesEvent GetRequestTypesEvent");
       emit(
         state.copyWith(
           requestTypesStatus: BlocRequestStatus.submissionGetLoading,
@@ -171,7 +171,6 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
 
       failureOrSuccess.fold(
         (failure) {
-          print("GetRequestTypesEvent $failure");
           emit(
             state.copyWith(
               requestTypesStatus: BlocRequestStatus.submissionGetFailure,
@@ -180,8 +179,6 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
           );
         },
         (requestTypes) {
-          print("GetRequestTypesEvent $requestTypes");
-
           emit(
             state.copyWith(
               requestTypesStatus: BlocRequestStatus.submissionGetSuccess,
@@ -240,7 +237,6 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
           }
         },
         (requestSubTypes) {
-          print("FFFFFF $requestSubTypes");
           emit(
             state.copyWith(
               requestSubTypesStatus: BlocRequestStatus.submissionGetSuccess,
@@ -338,6 +334,11 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
         detailsStatus: BlocRequestStatus.submissionGetSuccess,
         errorMessage: "",
       ));
+
+      ObjectionDetails details = success;
+
+      details.hashingRequestNumber = e.hashingRequestNumber;
+      details.serviceTypeId = e.serviceTypeId;
 
       NavigationService.navigatorKey.currentState!
           .pushNamed(RouteName.objectionsDetailsPage, arguments: success);

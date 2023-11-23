@@ -90,4 +90,26 @@ class RequestsRepositoryImplementation implements RequestsRepository {
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
+
+  @override
+  Future<Either<Failure, bool>> cancelObjection(String id) async {
+    try {
+      final data = await remoteDataSource.cancelObjection(id);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> getPermitURL(String id) async {
+    try {
+      final data = await remoteDataSource.getPermitURL(id);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+    }
+  }
 }
