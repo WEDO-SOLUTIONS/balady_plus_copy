@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -6,6 +8,7 @@ import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
 import '../../../../../core/utils/constants/app_colors.dart';
+import '../../../../_shared_feature_/presentation/widgets/draw_icon_based_type_widget.dart';
 
 class PostersLicenseItemWidget extends StatelessWidget {
   final String? licenseNo;
@@ -13,13 +16,15 @@ class PostersLicenseItemWidget extends StatelessWidget {
   final String? status;
   final String? expiryDate;
   final Function? onDelete;
+  final Color? backgroundColor;
   const PostersLicenseItemWidget(
       {Key? key,
       this.licenseNo,
       this.location,
       this.status,
       this.expiryDate,
-      this.onDelete})
+      this.onDelete,
+      this.backgroundColor})
       : super(key: key);
 
   @override
@@ -30,7 +35,7 @@ class PostersLicenseItemWidget extends StatelessWidget {
             : const EdgeInsets.only(bottom: 16, top: 16, right: 16, left: 16),
         margin: const EdgeInsets.only(bottom: 16),
         decoration: ShapeDecoration(
-          color: Colors.white,
+          color: backgroundColor ?? Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -38,16 +43,41 @@ class PostersLicenseItemWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            if (onDelete != null)
-              IconButton(
-                icon: Icon(
-                  Icons.delete,
-                  color: AppColor.redBrown,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    DrawIconBasedTypeWidget(
+                      icon: IconPath.vdSummuryDesc,
+                      iconSize: 20.0,
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    CustomTextWidget(
+                      ("license".tr()),
+                      maxLines: 2,
+                      fontSize: 18,
+                      fontWeight: AppFontWeight.bold,
+                      fontColor: Color(0xFF52525B),
+                    ),
+                  ],
                 ),
-                onPressed: () {
-                  if (onDelete != null) onDelete!();
-                },
-              ),
+                if (onDelete != null)
+                  IconButton(
+                    icon: Icon(
+                      Icons.delete,
+                      color: Color(0xffD86581),
+                    ),
+                    onPressed: () {
+                      if (onDelete != null) onDelete!();
+                    },
+                  ),
+              ],
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,7 +146,8 @@ class PostersLicenseItemWidget extends StatelessWidget {
                             height: 4,
                           ),
                           CustomTextWidget(
-                            status ?? "",
+                            (status) ?? "",
+                            maxLines: 2,
                             textStyle: AppStyle.complianceSubtitleLicenseStyle,
                           ),
                         ],

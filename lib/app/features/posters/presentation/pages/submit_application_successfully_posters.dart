@@ -1,6 +1,8 @@
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 
 import 'package:flutter/material.dart';
@@ -52,10 +54,18 @@ class _SubmitApplicationSuccessfullyPostersState
                     SvgPicture.asset(
                         IconPath.submitApplicationSuccessfullyCancel),
                     const SizedBox(height: 16),
-                    CustomAutoSizeTextWidget(
-                      'commercial_request_submit'.tr().replaceAll(
-                          "{}", submitResponse.requestId.toString()),
-                      textStyle: AppStyle.sectionTitleStyle,
+                    CustomTextWidget(
+                      submitResponse.isGrouped
+                          ? 'posters_grouped_request_submit'.tr().replaceAll(
+                              "{}", submitResponse.requestId.toString())
+                          : 'commercial_request_submit'.tr().replaceAll(
+                              "{}", submitResponse.requestId.toString()),
+                      textAlign: TextAlign.center,
+                      maxLines: 100,
+                      height: 1.6,
+                      fontColor: AppColor.blackModern800Light,
+                      fontSize: 18,
+                      fontWeight: AppFontWeight.bold,
                     ),
                     // CustomAutoSizeTextWidget(
                     //   'submit_application_successfully_cancel_message'.tr(),
@@ -64,10 +74,10 @@ class _SubmitApplicationSuccessfullyPostersState
                     //   textAlign: TextAlign.center,
                     // ),
                     const SizedBox(height: 16),
-                    CustomAutoSizeTextWidget(
+                    CustomTextWidget(
                       submitResponse.message ?? "",
                       textStyle: AppStyle.serviceListTitleTextStyle,
-                      maxLines: 3,
+                      maxLines: 100,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),

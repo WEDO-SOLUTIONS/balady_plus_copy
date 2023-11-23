@@ -19,6 +19,7 @@ import '../../../../../../core/services/local/helpers.dart';
 import '../../../../../../core/services/local/navigation_services.dart';
 import '../../../../../../core/utils/common_functions.dart';
 import '../../../../../../core/utils/constants/app_colors.dart';
+import '../../../../../../core/utils/constants/app_style.dart';
 import '../../../../../../core/utils/constants/remote_config.dart';
 import '../../../../../../core/utils/constants/route_names.dart';
 import '../../../../../../core/utils/enums/app_font_weights.dart';
@@ -123,6 +124,20 @@ class _AddPosterDialogState extends State<AddPosterDialog> {
                   ),
                   const SizedBox(
                     height: 32,
+                  ),
+                  Row(
+                    children: [
+                      CustomTextWidget(
+                        Helpers.translatingWord("poster_dim".tr()),
+                        textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            color: AppColor.blackModern700Light),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 16,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

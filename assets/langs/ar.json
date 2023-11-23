@@ -3436,7 +3436,7 @@
   "boardTypeName": "نوع اللوحة ",
   "boardArea": "مساحة اللوحة ",
 
-  "responses_request": "الردود على طلب",
+  "responses_request": "الردود على الطلب",
 
   "notes_": "الملاحظة",
 
@@ -3453,24 +3453,31 @@
 "posters_licenses_list":"قائمة الرخص", 
 "posters_data":"بيانات الملصقات", 
 "posters_permit_start_date":"تاريخ بداية التصريح", 
-"posters_permit_duration": "مدة التصريح", 
+"posters_permit_duration": "مدة العرض بالأيام", 
 "posters_count":"عدد الملصقات {}", 
 "posters_area_total":"مجموع مساحات الملصقات {} سم٢", 
 "poster_index":"ملصق {}", 
 "poster_type":"نوع الملصق", 
 "poster_name":"اسم الملصق", 
 "poster_dim":"أبعاد الملصق", 
-"poster_length":"الطول", 
+"poster_length":"الطول",  
 "poster_width":"العرض", 
 "poster_area":"المساحه",  
 "poster_cm":"سم", 
 "poster_cm2":"سم٢", 
 "posters_add":"اضافة ملصق", 
-"permits_for_licenes":"التصاريح المتاحة لهذه الخدمة"
-
-
-
-
+"permits_for_licenes":"التصاريح المتاحة لهذه الخدمة", 
+"poster_start_request":"بدء الطلب", 
+"posters_grouped_request_submit":"تم تقديم طلب التصاريح المجمع رقم {} بنجاح", 
+"posters_indivisual_requests":"الطلبات الفرعية", 
+"posters_desc": "يتم احتساب الرسوم عن طريق حاصل ضرب مجموع مساحات جميع الملصقات في مدة العرض في قيمة اليوم بالريال في عدد الرخص المضاف عليها التصريح", 
+"posters_agreement_title":"أتعهد على جميع ماتم ذكره اعلاه", 
+"posters_agreement_desc": "اقر واتعهد بصحة كافة البيانات التي تم رفعها على موقع بلدي واتحمل كامل المسؤولية القانونية والنظامية في حال تبين خلاف ذلك. كما اتعهد بابلاغ وزارة الشؤون البلدية والقروية في حال طرء اي تغيير على البيانات واتحمل كامل المسؤولية في حال تبين خلاف ذلك.", 
+"posters_no_license":"عفوا , لا يوجد رخص يمكن التقديم عليها التصريح المحدد", 
+"poster_cancel_confirm_msg":"عزيزي المستفيد، هل تريد الاستمرار بإلغاء طلب تصريح الملصقات الدعائية رقم {}",
+"poster_cancel_confirm_yes":"موافق", 
+"poster_cancel_confirm_no":"إلغاء", 
+"posters_bill_number":"رقم الفاتورة"
 
 
 }

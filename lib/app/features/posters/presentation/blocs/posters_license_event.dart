@@ -91,3 +91,12 @@ class ApplyLicenseEvent extends PostersLicenseEvent {
 class DeletePosterRequestEvent extends PostersLicenseEvent {
   const DeletePosterRequestEvent();
 }
+
+class ToggleAgreementEvent extends PostersLicenseEvent {
+  final bool? agreement;
+  const ToggleAgreementEvent({this.agreement});
+}
+
+class GetMoreLicensesEvent extends PostersLicenseEvent {
+  const GetMoreLicensesEvent();
+}

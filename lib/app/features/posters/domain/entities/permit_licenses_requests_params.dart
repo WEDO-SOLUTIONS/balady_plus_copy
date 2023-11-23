@@ -14,6 +14,20 @@ class PermitLicenseRequestParams {
   });
 
   Map<String, dynamic> toMap() {
-    return {"page": 0, "size": 100};
+    return {"page": page, "size": size};
+  }
+
+  PermitLicenseRequestParams copyWith({
+    String? crNumber,
+    String? groupId,
+    int? page,
+    int? size,
+  }) {
+    return PermitLicenseRequestParams(
+      crNumber: crNumber ?? this.crNumber,
+      groupId: groupId ?? this.groupId,
+      page: page ?? this.page,
+      size: size ?? this.size,
+    );
   }
 }

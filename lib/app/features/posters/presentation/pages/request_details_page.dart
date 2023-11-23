@@ -6,13 +6,15 @@ import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:collection/collection.dart';
 
+import '../../../../core/services/local/navigation_services.dart';
+import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../_shared_feature_/presentation/cards/expandable_card.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
-import '../../../_shared_feature_/presentation/under_testing/custom_expansion_panel_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/details_header.dart';
+import '../../../_shared_feature_/presentation/widgets/notes_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../create_compliance/presentation/widgets/summery_widgets/field_data.dart';
@@ -37,7 +39,8 @@ class PostersReqeuestDetailsPage extends StatelessWidget {
         listener: (context, state) {},
         child: BlocConsumer<PostersLicenseBloc, PostersLicenseState>(
           listener: (context, state) {
-            if (state.detailsStatus == BlocStatus.failure) {
+            if (state.detailsStatus == BlocStatus.failure ||
+                state.status == BlocStatus.failure) {
               CommonFunctions.showError(state.error ?? "");
             }
           },
@@ -45,7 +48,30 @@ class PostersReqeuestDetailsPage extends StatelessWidget {
             return Scaffold(
               backgroundColor: AppColor.white2,
               appBar: DetailsHeader(
-                title: "order_details".tr(),
+                titleWidget: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    CustomTextWidget(
+                      "request".tr(),
+                      fontSize: 20,
+                      maxLines: 1,
+                      textOverflow: TextOverflow.ellipsis,
+                      fontWeight: AppFontWeight.bold,
+                      fontColor: AppColor.blackModern700Light,
+                    ),
+                    const SizedBox(
+                      width: 16,
+                    ),
+                    CustomTextWidget(
+                      "#${state.requestId}",
+                      fontSize: 14,
+                      maxLines: 1,
+                      textOverflow: TextOverflow.ellipsis,
+                      fontWeight: AppFontWeight.medium,
+                      fontColor: AppColor.blackModern700Light,
+                    ),
+                  ],
+                ),
                 procedures: () async {
                   List<AllowedActionItem> act = await context
                           .read<PostersLicenseBloc>()
@@ -59,7 +85,7 @@ class PostersReqeuestDetailsPage extends StatelessWidget {
                       child: BottomSheetWithActions(
                         title: "actions".tr(),
                         body: Column(
-                            children: act!.isNotEmpty
+                            children: act.isNotEmpty
                                 ? act.map((e) {
                                     return GestureDetector(
                                       onTap: () async {
@@ -77,10 +103,13 @@ class PostersReqeuestDetailsPage extends StatelessWidget {
                                         }
 
                                         if (e.id == "cancel") {
-                                          context
-                                              .read<PostersLicenseBloc>()
-                                              .add(DeletePosterRequestEvent());
-                                          Navigator.of(context).pop();
+                                          showCancelConfirmDialog(() {
+                                            context
+                                                .read<PostersLicenseBloc>()
+                                                .add(
+                                                    DeletePosterRequestEvent());
+                                            Navigator.of(context).pop();
+                                          }, state.requestId!);
                                         }
                                       },
                                       child: Container(
@@ -143,7 +172,7 @@ class PostersReqeuestDetailsPage extends StatelessWidget {
                             const CustomVerticalSpace(height: 16),
                             IndivisualRequestsData(),
                             const CustomVerticalSpace(height: 16),
-                            Step1SummeryWidget(),
+                            Step2SummeryWidget(),
                             CustomVerticalSpace(height: 16),
                             if (state.requestDetails?.requestNotes != null &&
                                 state.requestDetails!.requestNotes!.isNotEmpty)
@@ -243,25 +272,90 @@ class PostersReqeuestDetailsPage extends StatelessWidget {
       ),
     );
   }
+
+  void showCancelConfirmDialog(Function onConfirm, int requestId) {
+    BottomSheetDialog.showDraggableSheet(
+      NavigationService.navigatorKey.currentContext!,
+      child: BottomSheetWithActions(
+          title: "",
+          action: Row(
+            children: [
+              Expanded(
+                child: ElevatedButtonWidget.primaryCustom(
+                    text: "poster_cancel_confirm_yes".tr(),
+                    onPressed: () {
+                      onConfirm();
+                    }),
+              ),
+              const CustomHorizontalSpace(width: 32),
+              Expanded(
+                child: ElevatedButtonWidget.primaryCustomBorder(
+                    text: "poster_cancel_confirm_no".tr(),
+                    onPressed: () {
+                      NavigationService.goBack();
+                    }),
+              ),
+            ],
+          ),
+          body: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CustomVerticalSpace(height: 32),
+              NotesWidget(notes: [
+                "poster_cancel_confirm_msg"
+                    .tr()
+                    .replaceAll("{}", requestId.toString())
+              ])
+            ],
+          )),
+    );
+  }
 }
 
-class Step1SummeryWidget extends StatelessWidget {
-  const Step1SummeryWidget({super.key});
+class Step2SummeryWidget extends StatelessWidget {
+  const Step2SummeryWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PostersLicenseBloc, PostersLicenseState>(
       builder: (context, state) {
+        List<Widget> posters = [
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+          FieldData(
+            title: "posters_permit_start_date".tr(),
+            subTitle: state.requestDetails?.permitStartDate?.toString(),
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+          FieldData(
+            title: "posters_permit_duration".tr(),
+            subTitle: state.requestDetails?.permitDuration?.toString(),
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+          if (state.requestDetails?.billNumber?.isNotEmpty ?? false)
+            FieldData(
+              title: "posters_bill_number".tr(),
+              subTitle: state.requestDetails?.billNumber,
+            )
+        ];
+        posters.addAll((state.requestDetails?.posters ?? []).mapIndexed((i, e) {
+          return PosterViewItemWidget(
+            index: i + 1,
+            item: e,
+            showTitle: true,
+            showChangeImage: false,
+          );
+        }).toList());
+
         return ExpandableCard(
-          title: ("بيانات الملصقات").tr(),
+          title: ("posters_data").tr(),
           icon: IconPath.vdSummurySPL,
-          children: (state.requestDetails?.posters ?? []).mapIndexed((i, e) {
-            return PosterViewItemWidget(
-              index: i + 1,
-              item: e,
-              showChangeImage: false,
-            );
-          }).toList(),
+          children: posters,
         );
       },
     );
@@ -278,7 +372,7 @@ class IndivisualRequestsData extends StatelessWidget {
         return state.requestDetails?.individualRequests != null &&
                 state.requestDetails!.individualRequests!.isNotEmpty
             ? ExpandableCard(
-                title: ("الطلبات الفرعية").tr(),
+                title: ("posters_indivisual_requests").tr(),
                 icon: IconPath.vdSummurySPL,
                 children: (state.requestDetails?.individualRequests ?? [])
                     .mapIndexed((i, e) {
