@@ -14,6 +14,7 @@ class RequestEntity extends Equatable {
   final String? redirectUrl;
   final int? requestTypeId;
   final String? requestMainTypeId;
+  final String? serviceTypeId;
 
   const RequestEntity(
       {required this.requestNumber,
@@ -28,7 +29,8 @@ class RequestEntity extends Equatable {
       required this.lastUpdateDate,
       this.redirectUrl,
       this.requestTypeId,
-      this.requestMainTypeId});
+      this.requestMainTypeId,
+      this.serviceTypeId});
 
   @override
   List<Object?> get props => [
@@ -43,6 +45,7 @@ class RequestEntity extends Equatable {
         creationDate,
         lastUpdateDate,
         redirectUrl,
-        requestTypeId
+        requestTypeId,
+        serviceTypeId
       ];
 }

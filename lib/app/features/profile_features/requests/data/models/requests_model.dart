@@ -14,7 +14,8 @@ class RequestsModel extends RequestEntity {
       required super.lastUpdateDate,
       super.redirectUrl,
       super.requestTypeId,
-      super.requestMainTypeId});
+      super.requestMainTypeId,
+      super.serviceTypeId});
 
   factory RequestsModel.fromMap(Map<String, dynamic> json) {
     return RequestsModel(
@@ -30,6 +31,7 @@ class RequestsModel extends RequestEntity {
         lastUpdateDate: DateTime.parse(json['updateTime'] as String),
         redirectUrl: json['redirectUrl'] as String?,
         requestTypeId: json['requestTypeId'],
-        requestMainTypeId: json["requestMainTypeId"]);
+        requestMainTypeId: json["requestMainTypeId"],
+        serviceTypeId: json["serviceTypeId"]);
   }
 }

@@ -174,6 +174,8 @@ class RequestsListItem extends StatelessWidget {
                     await failureOrSuccess.fold((failure) {
                       EasyLoading.dismiss();
                     }, (success) async {
+                      success.serviceTypeId = request.serviceTypeId;
+
                       EasyLoading.dismiss();
                       NavigationService.navigatorKey.currentState!.pushNamed(
                           RouteName.objectionsDetailsPage,
