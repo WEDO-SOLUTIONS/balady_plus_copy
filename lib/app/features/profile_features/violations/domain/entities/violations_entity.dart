@@ -1,5 +1,7 @@
 import 'package:intl/intl.dart';
 
+import '../../../../objectable_transactions/domain/entities/objectable_transaction_entity.dart';
+
 class ViolationsEntity {
   String? billNumber;
   String? violationNumber;
@@ -13,6 +15,7 @@ class ViolationsEntity {
   String? licenseNumberBalady;
   String? licenseTypeId;
   String? licenseTypeName;
+  String? serviceTypeId;
   dynamic facilityName;
   String? billStatusName;
   String? billStatusId;
@@ -56,6 +59,7 @@ class ViolationsEntity {
     this.licenseNumberOrOwnerIdentityNumber,
     this.licenseNumberBalady,
     this.licenseTypeId,
+    this.serviceTypeId,
     this.licenseTypeName,
     this.facilityName,
     this.billStatusName,
@@ -97,5 +101,37 @@ class ViolationsEntity {
       ? DateFormat.yMd().format(violationIssueDate!)
       : "";
 
-
+  ObjectableTransactionsEntity getObjectableTransactionsEntity() {
+    return ObjectableTransactionsEntity(
+      objectionLastApplyDate: objectionLastApplyDate,
+      violationIssueDate: violationIssueDate,
+      serviceTypeId: serviceTypeId,
+      transactionId: violationNumber,
+      violationStatusName: violationStatusName,
+      violationStatusId: violationStatusId,
+      isAllowedForObjection: isAllowedForObjection,
+      isAllowedObjection: isAllowedObjection,
+      createdDate: createdDate,
+      updatedDate: updatedDate,
+      municipalityId: municipalityId,
+      municipalityName: municipalityName,
+      subMunicipalityId: subMunicipalityId,
+      subMunicipalityName: subMunicipalityName,
+      ownerIdentityNo: ownerIdentityNo,
+      ownerName: ownerName,
+      ownerIdentityTypeId: ownerIdentityTypeId,
+      ownerIdentityTypeName: ownerIdentityTypeName,
+      objectionTypeId: objectionTypeId,
+      objectionTypeName: objectionTypeName,
+      applicationId: applicationId,
+      applicationName: applicationName,
+      serviceId: serviceId,
+      serviceName: serviceName,
+      transactionNumber: violationNumber,
+      actions: actions,
+      originalOwnerIdentityTypeId: originalOwnerIdentityTypeId,
+      originalMunicipalityId: originalMunicipalityId,
+      originalSubMunicipalityId: originalSubMunicipalityId,
+    );
+  }
 }

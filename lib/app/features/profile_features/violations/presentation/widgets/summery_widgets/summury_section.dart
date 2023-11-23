@@ -17,7 +17,6 @@ class SummurySection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CreateObjectionBloc, CreateObjectionState>(
       builder: (context, state) {
-        // print("SummurySection build");
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/profile_features/violations/domain/entities/violation_details_params.dart';
 import 'package:dio/dio.dart' show DioError;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
@@ -24,7 +25,8 @@ abstract class ViolationsRemoteDataSource {
   Future<List<ViolationsStatusModel>> getViolationsStatuses();
   Future<List<InvoiceStatusesModel>> getInvoiceStatuses();
 
-  Future<ViolationDetailsModel> getViolationDetails(String id);
+  Future<ViolationDetailsModel> getViolationDetails(
+      ViolationDetailsParams params);
 }
 
 class ViolationsRemoteDataSourceImplementation
@@ -34,13 +36,12 @@ class ViolationsRemoteDataSourceImplementation
   ViolationsRemoteDataSourceImplementation({required this.webService});
 
   @override
-  Future<ViolationDetailsModel> getViolationDetails(String id) async {
+  Future<ViolationDetailsModel> getViolationDetails(
+      ViolationDetailsParams params) async {
     var response;
     try {
-      response =
-          await webService.dio.get(ApiUrl.violationDetails, queryParameters: {
-        "violationNumber": id,
-      });
+      response = await webService.dio
+          .get(ApiUrl.violationDetails, queryParameters: params.toMap());
 
       final data = response.data;
       data.toString().successLog();
@@ -58,12 +59,11 @@ class ViolationsRemoteDataSourceImplementation
         dioError: error,
       );
     } catch (ex) {
+      print(ex);
       "Catched $ex".errorLog();
       if (ex is ServerException) {
-        print(ex.toString());
         rethrow;
       } else {
-        print(ex.toString());
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: ex.toString(),
