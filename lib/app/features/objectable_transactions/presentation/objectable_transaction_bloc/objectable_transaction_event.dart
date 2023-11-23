@@ -108,3 +108,8 @@ class ResetRequestsFiltersEvent extends ObjectableTransactionEvent {
         dateForm
       ];
 }
+
+class ValidateObjectionTransactions extends ObjectableTransactionEvent {
+  final ObjectableTransactionsEntity params;
+  const ValidateObjectionTransactions({required this.params});
+}

@@ -10,10 +10,20 @@ abstract class ObjectionDetailsEvent extends Equatable {
 class GetTransactionDetailsEvent extends ObjectionDetailsEvent {
   final TransactionDetailsParams params;
   final bool apply;
-  GetTransactionDetailsEvent({required this.params, this.apply = false});
+  final bool refresh;
+  GetTransactionDetailsEvent(
+      {required this.params, this.apply = false, this.refresh = false});
 }
+
+class CancelObjectionEvent extends ObjectionDetailsEvent {}
 
 class GetObjectionDetailsEvent extends ObjectionDetailsEvent {
   final String params;
-  GetObjectionDetailsEvent({required this.params});
+  final bool refresh;
+
+  GetObjectionDetailsEvent({required this.params, this.refresh = false});
+}
+
+class OpenObjectableDetails extends ObjectionDetailsEvent {
+  const OpenObjectableDetails();
 }

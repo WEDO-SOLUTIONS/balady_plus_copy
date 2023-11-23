@@ -23,27 +23,27 @@ class RequestDataSummuryWidget extends StatelessWidget {
           children: [
             FieldData(
               title: ("objection_complain").tr(),
-              subTitle: state.details?.objectionTypeName,
+              subTitle: state.getObjectionTypeName,
             ),
             const CustomVerticalSpace(height: 8),
             FieldData(
               title: ("objection_service_group").tr(),
-              subTitle: state.details?.serviceGroupName,
+              subTitle: state.getServiceGroupName,
             ),
             const CustomVerticalSpace(height: 8),
             FieldData(
               title: ("objection_service").tr(),
-              subTitle: state.details?.serviceName,
+              subTitle: state.getServiceName,
             ),
             const CustomVerticalSpace(height: 8),
             FieldData(
               title: ("objection_municipality").tr(),
-              subTitle: state.details?.municipalityName,
+              subTitle: state.getMunicipalityName,
             ),
             const CustomVerticalSpace(height: 8),
             FieldData(
               title: ("objection_sub_municipality").tr(),
-              subTitle: state.details?.subMunicipalityName,
+              subTitle: state.getSubMunicipalityName,
             ),
           ],
         );

@@ -16,6 +16,7 @@ import '../../objections_exports.dart'
         CreateObjectionParams;
 import '../entities/transaction_details.dart';
 import '../entities/transaction_details_params.dart';
+import '../entities/validate_objection_params.dart';
 
 abstract class RequestsRepository {
   Future<Either<Failure, List<ObjectableTransactionsEntity>>>
@@ -38,4 +39,7 @@ abstract class RequestsRepository {
 
   Future<Either<Failure, TransactionDetails>> getTransactionDetails(
       TransactionDetailsParams params);
+
+  Future<Either<Failure, bool>> validateObjectableTransaction(
+      ValidateObjectionParams params);
 }

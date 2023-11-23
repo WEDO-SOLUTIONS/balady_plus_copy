@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/objectable_transactions/domain/entities/validate_objection_params.dart';
 import 'package:dio/dio.dart' show DioError, Options;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
@@ -42,6 +43,8 @@ abstract class RequestsRemoteDataSource {
   Future<ObjectionDetailsModel> getObjectionDetails(String id);
   Future<TransactionDetailsModel> getTransactionDetails(
       TransactionDetailsParams params);
+
+  Future<bool> validateObjectableTransaction(ValidateObjectionParams params);
 }
 
 class RequestsRemoteDataSourceImplementation
@@ -263,18 +266,14 @@ class RequestsRemoteDataSourceImplementation
   Future<UploadFileResponse> uploadFile(
       {required UploadFileParams params}) async {
     var response;
-    print(params.toMap());
     try {
       response = await webService.dio.post(ApiUrl.uploadFile,
           data: params.toMap(), options: Options(headers: {"X-Service-Id": 2}));
-      print(response.data);
 
       var data = response.data["data"]["result"]["Documents"][0]["Document"][0];
-      print("hhh");
-      print(data);
+
       var parsedResult =
           data != null ? UploadFileResponse.fromJson(data) : null;
-      print("hhh");
       parsedResult?.index = params.index;
 
       return parsedResult!.toFuture();
@@ -357,6 +356,44 @@ class RequestsRemoteDataSourceImplementation
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return TransactionDetailsModel.fromJson(result);
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<bool> validateObjectableTransaction(
+      ValidateObjectionParams params) async {
+    var response;
+    try {
+      response = await webService.dio.get(ApiUrl.validateObjectionSubmit(
+          params.applicationId!, params.transactionId!));
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return result;
     } on DioError catch (error) {
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {

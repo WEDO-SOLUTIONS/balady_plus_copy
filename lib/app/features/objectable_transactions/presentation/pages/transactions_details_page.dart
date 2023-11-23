@@ -42,13 +42,18 @@ class TransactionsDetailsPage extends StatefulWidget {
 class _TransactionsDetailsPageState extends State<TransactionsDetailsPage> {
   @override
   Widget build(BuildContext context) {
-  CreateObjectionPageParams  params =
+    CreateObjectionPageParams params =
         ModalRoute.of(context)!.settings.arguments as CreateObjectionPageParams;
 
     return BlocProvider(
-      create: (context) =>
-          TransactionDetailsBloc(transactionDetails: params.details),
-      child: BlocBuilder<TransactionDetailsBloc, TransactionDetailsState>(
+      create: (context) => TransactionDetailsBloc(
+          transactionDetails: params.details, item: params.item),
+      child: BlocConsumer<TransactionDetailsBloc, TransactionDetailsState>(
+        listener: (context, state) {
+          if (state.status == BlocStatus.failure) {
+            CommonFunctions.showError(state.errorMessage ?? "");
+          }
+        },
         builder: (context, state) {
           return Stack(
             children: [
@@ -490,11 +495,16 @@ class NoObjectionsData extends StatelessWidget {
               CustomVerticalSpace(height: 16),
               if (state.details?.isObjectionAllowed == true)
                 ElevatedButtonWidget.applyObjection(onPressed: () {
-                  NavigationService.navigatorKey.currentState!
-                      .pushNamed(RouteName.createObjectionDetails,
-                          arguments: CreateObjectionPageParams(
-                            details: state.details,
-                          ));
+                  context
+                      .read<TransactionDetailsBloc>()
+                      .add(ValidateObjectionDetailsTransactions());
+
+//Objection Before Validation
+                  /*
+                  NavigationService.navigatorKey.currentState!.pushNamed(
+                      RouteName.createObjectionDetails,
+                      arguments: CreateObjectionPageParams(
+                          details: state.details, item: state.item));*/
                 })
             ]);
       },

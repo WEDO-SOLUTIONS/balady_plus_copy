@@ -49,7 +49,7 @@ class _ObjectableTransactionsPageState
       child: Builder(builder: (context) {
         return Scaffold(
           appBar: DefaultAppBarWidget(
-            title: 'مخالفات قابلة للإعتراض'.tr(),
+            title: 'معاملات قابلة للإعتراض'.tr(),
             bottom: AppBarSeachBar(
               onChanged: (value) {
                 context.read<ObjectableTransactionBloc>().add(
