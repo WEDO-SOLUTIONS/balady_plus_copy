@@ -3477,8 +3477,65 @@
 "poster_cancel_confirm_msg":"عزيزي المستفيد، هل تريد الاستمرار بإلغاء طلب تصريح الملصقات الدعائية رقم {}",
 "poster_cancel_confirm_yes":"موافق", 
 "poster_cancel_confirm_no":"إلغاء", 
-"posters_bill_number":"رقم الفاتورة"
+"posters_bill_number":"رقم الفاتورة", 
+
+  "tobaccoServices": "الافصاح عن التبغ",
 
 
+  "authenticationـnumber": "رقم التوثيق",
+  "not_disclosed": "لم يتم الافصاح",
+  "disclosed": "تم الافصاح",
+
+  "monthsـdisclosed": "اشهر لم يتم الافصاح عنها",
+  "monthsـhaveـbeen_disclosed": "اشهر تم افصاحها",
+  "month": "شهر",
+  "dateـcreated": "تاريخ الانشاء",
+
+  "disclosure": "الافصاح",
+
+
+
+  "disclosure_month": "الافصاح عن شهر",
+
+  "you_must_choose_amount": "يجب ادخل المبلغ",
+
+
+  "required_field_must_number": "حقل اجباري يجب ان يكون رقم",
+  "error_please_try_again_later": "حدث خطأ، الرجاء إعادة المحاولة لاحقا",
+
+  "establishment_data": "بيانات المنشأة",
+
+  "additional_data_attachments": "البيانات الاضافية والمرفقات",
+  "applicants_status_data": "بيانات صفة مقدم الطلب",
+
+  "back_invoices": "الرجوع لصفحة الفواتير",
+  "disclosure_completed_successfully": "تم الافصاح بنجاح",
+  "disclosure_completed_successfully_message": "يمكنك متابعة كل ما يتعلق بحالات الافصاح من خلال خدمة الافصاح عن التبغ او صفحة الفواتير المتواجدة في الحساب الشخصي",
+  "pledges_submit_disclosure1": "أتعهد بأن مبلغ إجمالي إيرادات لشهر",
+  "pledges_submit_disclosure2": "هو",
+  "pledges_submit_disclosure3": "ر.س. و مبلغ الرسم المستحق هو",
+  "pledges_submit_disclosure4": "وفي حال خلاف ذلك ستطبق العقوبات المنصوص عليها نظاما",
+  "identityNumber": "",
+  "month1": "يناير",
+  "month2": "فبراير",
+  "month3": "مارس",
+  "month4": "أبريل",
+  "month5": "مايو",
+  "month6": "يونيو",
+  "month7": "يوليو",
+  "month8": "أغسطس",
+  "month9": "سبتمبر",
+  "month10": "أكتوبر",
+  "month11": "نوفمبر",
+  "month12": "ديسمبر",
+  "exit": "خروج",
+  "exit_message": "هل انت متأكد من الخروج",
+
+  "no_revenue_disclose": "لا يوجد لديك ايرادات لتفصح عنها؟",
+
+  "must_add_attachment": "يجب إرفاق الملف",
+
+  "select_reason": "حدد السبب",
+  "must_comment": "يجب اضافة تعليق"
 
 }

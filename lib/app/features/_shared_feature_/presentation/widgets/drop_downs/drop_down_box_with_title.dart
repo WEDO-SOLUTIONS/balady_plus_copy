@@ -15,6 +15,7 @@ class DropDownWithTitle extends StatelessWidget {
   final double? height;
   final VoidCallback onTap;
   final bool showArrow;
+  final bool isRequired;
   final BlocRequestStatus? status;
   final BlocStatus? blocStatus;
 
@@ -27,6 +28,7 @@ class DropDownWithTitle extends StatelessWidget {
     this.height,
     required this.onTap,
     this.showArrow = true,
+    this.isRequired = false,
     this.status,
     this.blocStatus,
     this.onRetry,
@@ -49,9 +51,19 @@ class DropDownWithTitle extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (title.isNotEmpty)
-              CustomTextWidget(
-                title,
-                textStyle: AppStyle.dropDownTitleTextStyle,
+              Row(
+                children: [
+                  CustomTextWidget(
+                    title,
+                    textStyle: AppStyle.dropDownTitleTextStyle,
+                  ),
+                  isRequired ? CustomTextWidget(
+                    '*'.tr(),
+                    textStyle: AppStyle.dropDownTitleTextStyle.copyWith(
+                      color: Colors.red.shade700,
+                    ),
+                  ) : const SizedBox(),
+                ],
               ),
             const SizedBox(height: 8),
             if (retry)

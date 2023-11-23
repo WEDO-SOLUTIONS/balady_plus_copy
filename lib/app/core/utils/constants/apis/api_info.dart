@@ -556,6 +556,12 @@ class ApiUrl {
       '/v1/balady-commercial-services/rating/submit';
   static String commercialLicenseCancelGetDetailsRequest(int requestId) =>
       '/v1/balady-commercial-services/mobile-cancel-request/request-details/$requestId';
+/////////////////////////////////////////////////////////
+  static const String getUserFacilities = '/v1/tobacco-services/user-facilities';
+  static const String getTobaccoDisclosure = '/v1/tobacco-services/disclosures';
+  static const String getTobaccoDisclosureUploadFile = '/v1/tobacco-services/stream/upload';
+  static const String getTobaccoDisclosureUpload = '/v1/tobacco-services/disclosures/upload';
+
 
 //! Posters Service
 
