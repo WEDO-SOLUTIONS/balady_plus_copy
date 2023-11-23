@@ -226,6 +226,11 @@ class RouteName {
   static const submitApplicationSuccessfullyPosters =
       '/submitApplicationSuccessfullyPosters';
   static const posterReqeuestDetailsPage = '/posterReqeuestDetailsPage';
+
+  static const tobaccoServicesList = '/tobaccoServicesList';
+  static const tobaccoDetails = '/tobaccoDetails';
+  static const tobaccoDisclosed = '/tobaccoDisclosed';
+  static const submitDisclosedSuccessfully = '/submitDisclosedSuccessfully';
 }
 
 class EtmamRoutesNames {
