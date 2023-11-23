@@ -143,6 +143,13 @@ class ApiUrl {
   static String cancelObjectionRequest =
       '/v1/objection-services/objection-request';
 
+  static String validateObjectionSubmit(
+          String applicationId, String transactionId) =>
+      '/v1/objection-generic-services/applications/$applicationId/transactions/$transactionId/validate';
+
+  static String objectionPermitUrl(String transactionId) =>
+      '/v1/balady-dashboard/permit-detail-url-transaction-number/$transactionId';
+
 //! VD
   static const gis = '/v1/crm/bcg/gis-info';
   static const vdCategories = '/v1/crm/bcg/categories';
@@ -549,6 +556,54 @@ class ApiUrl {
       '/v1/balady-commercial-services/rating/submit';
   static String commercialLicenseCancelGetDetailsRequest(int requestId) =>
       '/v1/balady-commercial-services/mobile-cancel-request/request-details/$requestId';
+
+//! Posters Service
+
+  static String getLicensesForPermits(
+          {required String crNumber, required String groupId}) =>
+      "/v1/commercial-promotions-services/licenses/$crNumber/$groupId";
+
+  static String getGroupsItems =
+      "v1/commercial-promotions-services/group-services";
+
+  static String savePoster(String requestId) =>
+      "v1/commercial-promotions-services/posters/$requestId";
+
+  static String getPermitAttachmentTypes(
+          {required int requestId, required int typeId}) =>
+      "v1/commercial-promotions-services/attachments-types/$requestId/$typeId";
+
+  static String getPermitPosterTypes =
+      "v1/commercial-promotions-services/poster-types";
+
+  static String applyPermitGroupLicense =
+      "v1/commercial-promotions-services/group-apply";
+
+  static String permitUploadAttachment(int requestId, int fileTypeId) =>
+      '/v1/commercial-promotions-services/stream/upload-attachments/$requestId/$fileTypeId';
+  static String postersSubmit(int requestId) =>
+      "v1/commercial-promotions-services/submits/$requestId";
+
+  static String addIndivisualRequests(int requestId) =>
+      "v1/commercial-promotions-services/group-requests/$requestId";
+
+  static String postersRequestDetails(int requestId) =>
+      "v1/commercial-promotions-services/requests-details/$requestId";
+
+  static String deleteLicenseFromPermit(int requestId, int licenseId) =>
+      "v1/commercial-promotions-services/requests-group/$requestId/$licenseId";
+
+  static String deletePermitRequest(int requestId) =>
+      "v1/commercial-promotions-services/requests/$requestId";
+
+  static String postersAlerts =
+      "v1/commercial-promotions-services/alerts/ALERTS";
+
+  static String applyLicense(int? licenseId) =>
+      "v1/commercial-promotions-services/apply/$licenseId";
+
+  static String posterRequestAlllowedAction(int? requestId) =>
+      "v1/commercial-promotions-services/allowed-actions/$requestId";
 
   //! POST
 
