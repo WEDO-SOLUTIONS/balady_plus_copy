@@ -4,18 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import '../../../../_shared_feature_/presentation/cards/expandable_card.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/undertaking_widget.dart';
 import '../../../../commercial_license_cancel/presentation/commercial_license_cancel/widgets/widget_title_invoice.dart';
 import '../../../../create_compliance/presentation/widgets/summery_widgets/field_data.dart';
+import '../../../data/models/poster_request_details_model.dart';
+import '../../widgets/license_widgets/license_item_widget.dart';
 import '../../widgets/previous_next_button.dart';
+import 'package:collection/collection.dart';
 
 import '../../../../_shared_feature_/presentation/under_testing/custom_expansion_panel_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../commercial_license/presentation/step3/widgets/map_widgets/cr_header_desc_widget.dart';
 import '../../blocs/posters_license_bloc.dart';
+import '../../widgets/steps/step2/poster_view_item_widget.dart';
 
 class PostersStep3Page extends StatefulWidget {
   const PostersStep3Page({super.key});
@@ -34,34 +39,47 @@ class _PostersStep3PageState extends State<PostersStep3Page> {
         .add(const GetPosterRequestDetailsEvent());
   }
 
+  bool isAgreement = false;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PostersLicenseBloc, PostersLicenseState>(
       builder: (context, state) {
-        return SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                margin: EdgeInsets.only(top: 24, left: 16, right: 16),
+        return Stack(
+          children: [
+            Container(
+              margin: EdgeInsets.only(top: 24, left: 16, right: 16),
+              child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    /*    VdHeaderDesc(
+                    VdHeaderDesc(
                       header: ("review_request").tr(),
-                    ),*/
-                    //  Step1SummeryWidget(),
-                    //  CustomVerticalSpace(height: 16),
-                    //   Step1SummeryWidget(),
-                    //  CustomVerticalSpace(height: 16),
+                    ),
+                    const Step1SummeryWidget(),
+                    const CustomVerticalSpace(height: 16),
+                    const Step2SummeryWidget(),
+                    const CustomVerticalSpace(height: 16),
+                    UndertakingWidget(
+                      text: "posters_agreement_title".tr(),
+                      desc: "posters_agreement_desc".tr(),
+                      onChange: (value) {
+                        context
+                            .read<PostersLicenseBloc>()
+                            .add(ToggleAgreementEvent(agreement: value));
+                      },
+                      initialValue: state.agreement ?? false,
+                    ),
+                    CustomVerticalSpace(height: 250),
                   ],
                 ),
               ),
-              CalcualtorWidget(),
-              if (state.status.isSubmissionLoading)
-                const CustomCircularLoadingWidget(),
-            ],
-          ),
+            ),
+            const Align(
+                alignment: Alignment.bottomCenter, child: CalcualtorWidget()),
+            if (state.status.isSubmissionLoading)
+              const CustomCircularLoadingWidget(),
+          ],
         );
       },
     );
@@ -75,21 +93,94 @@ class Step1SummeryWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PostersLicenseBloc, PostersLicenseState>(
       builder: (context, state) {
-        return CustomExpansionPanelWidget(
-          title: ("submission_document").tr(),
-          leading: SvgPicture.asset(IconPath.vdSummuryUserInfo),
+        return ExpandableCard(
+          title: ("posters_licenses_list").tr(),
+          icon: IconPath.vdSummuryDesc,
           children: [
-            FieldData(
-              title: ("submission_document").tr(),
-              subTitle: "",
-            ),
-            CustomVerticalSpace(height: 8),
-            FieldData(
-              title: ("license_no").tr(),
-              subTitle: state.requestDetails?.billNumber,
-            ),
-            CustomVerticalSpace(height: 8),
+            const CustomVerticalSpace(height: 16),
+            ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: state.selectedLicenses?.length ?? 0,
+                itemBuilder: (ctx, index) {
+                  return PostersLicenseItemWidget(
+                    backgroundColor: Color(0x80E6EFEF),
+                    onDelete: (state.selectedLicenses?.length ?? 0) > 1
+                        ? () {
+                            context.read<PostersLicenseBloc>().add(
+                                DeleteLicenseFromRequestEvent(index: index));
+                          }
+                        : null,
+                    licenseNo:
+                        state.selectedLicenses?[index].licenseId.toString(),
+                    location:
+                        "${state.selectedLicenses?[index].subMunicipalityName.toString()}, ${state.selectedLicenses?[index].municipalityName.toString()}",
+                    status: state.selectedLicenses?[index].statusName,
+                    expiryDate:
+                        state.selectedLicenses?[index].licenseExpirationDate,
+                  );
+                }),
           ],
+        );
+      },
+    );
+  }
+}
+
+class Step2SummeryWidget extends StatelessWidget {
+  const Step2SummeryWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PostersLicenseBloc, PostersLicenseState>(
+      builder: (context, state) {
+        List<Widget> posters = [
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+          FieldData(
+            title: "posters_permit_start_date".tr(),
+            subTitle: state.startDate,
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+          FieldData(
+            title: "posters_permit_duration".tr(),
+            subTitle: state.duration,
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          )
+        ];
+
+        posters.addAll((state.posters ?? []).mapIndexed((i, e) {
+          return PosterViewItemWidget(
+            index: i + 1,
+            showTitle: true,
+            item: Poster(
+                posterName: e.name,
+                width: e.width,
+                length: e.length,
+                typeName: e.posterType?.name,
+                typeId: e.posterType?.id,
+                area: ((e.length ?? 0) * (e.width ?? 0)),
+                attachments: e.attachedDocuments
+                    ?.map((e) => Attachment(
+                        id: e.id,
+                        typeId: e.posterTypeId,
+                        key: e.key,
+                        name: e.name,
+                        originFileName: e.fileName,
+                        attachUrl: e.filePath))
+                    .toList()),
+            showChangeImage: false,
+          );
+        }).toList());
+        return ExpandableCard(
+          title: ("posters_data").tr(),
+          icon: IconPath.vdSummuryDesc,
+          children: posters,
         );
       },
     );
@@ -105,7 +196,6 @@ class CalcualtorWidget extends StatefulWidget {
 
 class _CalcualtorWidgetState extends State<CalcualtorWidget> {
   bool showCostsInfo = false;
-  bool isAgreement = false;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PostersLicenseBloc, PostersLicenseState>(
@@ -113,22 +203,12 @@ class _CalcualtorWidgetState extends State<CalcualtorWidget> {
         return Container(
           color: Colors.transparent,
           child: Column(
-            mainAxisSize: MainAxisSize.max,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              UndertakingWidget(
-                text: "أتعهد على جميع ماتم ذكره اعلاه",
-                desc:
-                    "اقر واتعهد بصحة كافة البيانات التي تم رفعها على موقع بلدي واتحمل كامل المسؤولية القانونية والنظامية في حال تبين خلاف ذلك. كما اتعهد بابلاغ وزارة الشؤون البلدية والقروية في حال طرء اي تغيير على البيانات واتحمل كامل المسؤولية في حال تبين خلاف ذلك.",
-                onChange: (value) {
-                  setState(() {
-                    isAgreement = value ?? false;
-                  });
-                },
-                initialValue: isAgreement,
-              ),
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: const BoxDecoration(
+                  color: Colors.white,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(16),
                     topRight: Radius.circular(16),
@@ -140,7 +220,6 @@ class _CalcualtorWidgetState extends State<CalcualtorWidget> {
                       blurRadius: 32,
                     )
                   ],
-                  color: AppColor.blackModern50Light,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -239,7 +318,7 @@ class _CalcualtorWidgetState extends State<CalcualtorWidget> {
                           ),
                         ),
                         child: CustomTextWidget(
-                          'يتم احتساب الرسوم عن طريق حاصل ضرب مجموع مساحات جميع الملصقات في مدة العرض في قيمة اليوم بالريال في عدد الرخص المضاف عليها التصريح ',
+                          "posters_desc".tr(),
                           fontColor: Color(0xFF52525B),
                           fontSize: 12,
                           height: 1.4,
@@ -261,16 +340,16 @@ class _CalcualtorWidgetState extends State<CalcualtorWidget> {
                   ],
                 ),
               ),
-              SizedBox(
-                height: 32,
-              ),
-              PostersPreviousNextButtons(
-                isBtnDisabled: !isAgreement,
-                onPressed: () {
-                  context
-                      .read<PostersLicenseBloc>()
-                      .add(const SubmitPosterEvent());
-                },
+              Container(
+                color: AppColor.white,
+                child: PostersPreviousNextButtons(
+                  isBtnDisabled: !(state.agreement ?? false),
+                  onPressed: () {
+                    context
+                        .read<PostersLicenseBloc>()
+                        .add(const SubmitPosterEvent());
+                  },
+                ),
               ),
             ],
           ),

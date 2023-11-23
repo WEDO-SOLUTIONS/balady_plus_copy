@@ -22,11 +22,13 @@ class PosterViewItemWidget extends StatelessWidget {
   final Poster? item;
   final int index;
   final bool? showChangeImage;
+  final bool showTitle;
 
   const PosterViewItemWidget({
     super.key,
     this.item,
     this.showChangeImage = true,
+    this.showTitle = false,
     required this.index,
   });
 
@@ -46,19 +48,23 @@ class PosterViewItemWidget extends StatelessWidget {
           children: [
             Column(
               children: [
-                /*Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CustomTextWidget(
-                        "poster_index".tr().replaceAll("{}", index.toString()),
-                        fontColor: AppColor.blackModern600Light,
-                        fontSize: 18,
-                        fontWeight: AppFontWeight.bold,
-                      ),
-                    ]),*/
-                /*const SizedBox(
-                  height: 16,
-                ),*/
+                if (showTitle) ...[
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomTextWidget(
+                          "poster_index"
+                              .tr()
+                              .replaceAll("{}", index.toString()),
+                          fontColor: AppColor.blackModern600Light,
+                          fontSize: 18,
+                          fontWeight: AppFontWeight.bold,
+                        ),
+                      ]),
+                  const SizedBox(
+                    height: 16,
+                  )
+                ],
                 FieldData(
                     title: "poster_type".tr(), subTitle: item?.typeName ?? ""),
                 const CustomVerticalSpace(height: 4),

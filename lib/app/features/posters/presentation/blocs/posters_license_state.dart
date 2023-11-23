@@ -23,11 +23,14 @@ class PostersLicenseState extends Equatable {
   final List<PermitGroupItem>? permitGroups;
   final List<PermitAlertItem>? alerts;
   final int? licenseId;
+  final bool? agreement;
+  final PermitLicenseRequestParams searchedParams;
   const PostersLicenseState({
     this.status = BlocStatus.initial,
     this.detailsStatus = BlocStatus.initial,
     this.posterTypesStatus = BlocStatus.initial,
     this.alertsStatus = BlocStatus.initial,
+    required this.searchedParams,
     this.licenseId,
     this.groupId,
     this.posterTypes,
@@ -43,6 +46,7 @@ class PostersLicenseState extends Equatable {
     this.requestDetails,
     this.permitGroups,
     this.alerts,
+    this.agreement,
     this.pagesList = const [
       PostersStep1Page(),
       PostersStep2Page(),
@@ -71,7 +75,9 @@ class PostersLicenseState extends Equatable {
         groupId,
         alertsStatus,
         alerts,
-        licenseId
+        licenseId,
+        agreement,
+        searchedParams
       ];
 
   PostersLicenseState copyWith(
@@ -95,7 +101,9 @@ class PostersLicenseState extends Equatable {
       List<PermitGroupItem>? permitGroups,
       List<PermitAlertItem>? alerts,
       int? groupId,
-      int? licenseId}) {
+      int? licenseId,
+      bool? agreement,
+      PermitLicenseRequestParams? searchedParams}) {
     return PostersLicenseState(
         status: status ?? this.status,
         alertsStatus: alertsStatus ?? this.alertsStatus,
@@ -116,7 +124,9 @@ class PostersLicenseState extends Equatable {
         permitGroups: permitGroups ?? this.permitGroups,
         groupId: groupId ?? this.groupId,
         alerts: alerts ?? this.alerts,
-        licenseId: licenseId ?? this.licenseId);
+        licenseId: licenseId ?? this.licenseId,
+        agreement: agreement ?? this.agreement,
+        searchedParams: searchedParams ?? this.searchedParams);
   }
 
   String totalPostersArea() {

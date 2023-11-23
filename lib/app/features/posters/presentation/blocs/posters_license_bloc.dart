@@ -90,6 +90,11 @@ class PostersLicenseBloc
             groupId: groupId,
             requestId: requestId,
             licenseId: licenseId,
+            searchedParams: PermitLicenseRequestParams(
+                page: 0,
+                size: 30,
+                crNumber: CommonProperties.selectedDelegator?.crNumber,
+                groupId: groupId.toString()),
             selectedLicenses:
                 selectedLicense != null ? [selectedLicense] : null)) {
     on<GoToNextPageEvent>(_goToNextPageHandler);
@@ -115,8 +120,16 @@ class PostersLicenseBloc
     on<DeletePosterEvent>(_deletePosterEvent);
     on<ApplyLicenseEvent>(_applyLicenseHandler);
     on<DeletePosterRequestEvent>(_deleteRequestsHandler);
+    on<ToggleAgreementEvent>(_toggleAgreementHandler);
+    on<GetMoreLicensesEvent>(_getMoreSearchEventsHandler);
+
     add(const GetPosterTypesEvent());
     add(const GetPostersAlertsEvent());
+  }
+
+  Future<void> _toggleAgreementHandler(
+      ToggleAgreementEvent e, Emitter emitter) async {
+    emitter(state.copyWith(agreement: e.agreement));
   }
 
   Future<void> _deleteRequestsHandler(
@@ -312,6 +325,7 @@ class PostersLicenseBloc
 
         NavigationService.navigatorKey.currentState!.pop();
       } else {
+        r.isGrouped = state.licenseId == null;
         NavigationService.navigatorKey.currentState!.popAndPushNamed(
           RouteName.submitApplicationSuccessfullyPosters,
           arguments: r,
@@ -392,11 +406,7 @@ class PostersLicenseBloc
       GetLicensePermitsEvents e, Emitter emitter) async {
     print("GG");
     emitter(state.copyWith(status: BlocStatus.loading));
-    final failOrSuccess = await _getLicensePermits(PermitLicenseRequestParams(
-        page: 0,
-        size: 20,
-        crNumber: CommonProperties.selectedDelegator?.crNumber,
-        groupId: state.groupId.toString()));
+    final failOrSuccess = await _getLicensePermits(state.searchedParams);
 
     failOrSuccess.fold((l) {
       print(l);
@@ -408,6 +418,8 @@ class PostersLicenseBloc
       emitter(state.copyWith(
         permitsLiceses: r.result,
         status: BlocStatus.success,
+        searchedParams: state.searchedParams
+            .copyWith(page: (state.searchedParams.page ?? 0) + 1),
       ));
     });
   }
@@ -462,6 +474,47 @@ class PostersLicenseBloc
           currentPageValue: prvoiusPage));
     }
     hideKeyboard();
+  }
+
+  Future<void> _getMoreSearchEventsHandler(
+      GetMoreLicensesEvent e, Emitter emitter) async {
+    print("Called 12");
+    emitter(state.copyWith(
+      status: BlocStatus.loadMore,
+    ));
+    print("Called 333");
+
+    final failureOrSuccess = await _getLicensePermits(state.searchedParams);
+    print("Called 444");
+
+    failureOrSuccess.fold((l) {
+      /* if (l == NoDataFoundFailure())
+        emitter(
+          state.copyWith(status: BlocStatus.failure, error: ""),
+        );
+      else {*/
+
+      print("Called 1555 $l");
+
+      emitter(
+        state.copyWith(
+            status: BlocStatus.failure,
+            error: (l as ServerFailure).errorMessage),
+      );
+      //   }
+    }, (r) {
+      print("Called 666");
+
+      List<PermitsLicensesItem>? items = state.permitsLiceses ?? [];
+      items.addAll(r.result ?? []);
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+        permitsLiceses: items,
+        searchedParams: state.searchedParams
+            .copyWith(page: (state.searchedParams.page ?? 0) + 1),
+        error: "",
+      ));
+    });
   }
 
   bool isLastPage() {
