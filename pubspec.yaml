@@ -101,7 +101,7 @@ dependencies:
   # Get current device information
   device_info_plus: ^9.0.0
   # API for querying information about an application package
-  package_info_plus: ^3.0.3
+  package_info_plus:
   # parses Adobe After Effects animations
   lottie: ^2.2.0
   # Generate Unique ID

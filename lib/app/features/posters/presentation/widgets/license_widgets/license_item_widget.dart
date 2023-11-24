@@ -78,6 +78,10 @@ class PostersLicenseItemWidget extends StatelessWidget {
                   ),
               ],
             ),
+            if (onDelete == null)
+              SizedBox(
+                height: 16,
+              ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -23,6 +23,7 @@ import '../../data/models/allowed_actions_response.dart';
 import '../../data/models/poster_request_details_model.dart';
 import '../widgets/edit_posters_dialog.dart';
 import '../widgets/individual_request_widget.dart';
+import '../widgets/steps/step2/poster_area_count_widget.dart';
 import '../widgets/steps/step2/poster_view_item_widget.dart';
 
 class PostersReqeuestDetailsPage extends StatelessWidget {
@@ -323,9 +324,50 @@ class Step2SummeryWidget extends StatelessWidget {
           const CustomVerticalSpace(
             height: 16,
           ),
+          if (state.requestDetails?.licenseId != null) ...[
+            FieldData(
+              title: "posters_permit_licesnse_id".tr(),
+              subTitle: state.requestDetails?.licenseId.toString(),
+            ),
+            const CustomVerticalSpace(
+              height: 16,
+            ),
+            if (state.requestDetails?.licenseStatus != null)
+              FieldData(
+                title: "posters_permit_licesnse_status".tr(),
+                subTitle: state.requestDetails?.licenseStatus?.name,
+              ),
+            const CustomVerticalSpace(
+              height: 16,
+            ),
+            FieldData(
+              title: "posters_permit_licesnse_expiry".tr(),
+              subTitle: state.requestDetails?.licenseExpirationDate?.toString(),
+            ),
+            const CustomVerticalSpace(
+              height: 16,
+            ),
+          ],
+          if (state.requestDetails?.municipality != null &&
+              state.requestDetails?.subMunicipality != null)
+            FieldData(
+              title: "posters_permit_mun_sub".tr(),
+              subTitle:
+                  "${state.requestDetails?.municipality?.name.toString()}, ${state.requestDetails?.subMunicipality?.name.toString()}",
+            ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
           FieldData(
             title: "posters_permit_start_date".tr(),
             subTitle: state.requestDetails?.permitStartDate?.toString(),
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+          FieldData(
+            title: "posters_permit_end_date".tr(),
+            subTitle: state.requestDetails?.permitEndDate?.toString(),
           ),
           const CustomVerticalSpace(
             height: 16,
@@ -341,7 +383,19 @@ class Step2SummeryWidget extends StatelessWidget {
             FieldData(
               title: "posters_bill_number".tr(),
               subTitle: state.requestDetails?.billNumber,
-            )
+            ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+          PosterAreaCountWidget(
+            area: state.requestDetails?.costCalculationInfo?.postersAreaSum
+                .toString(),
+            count: state.requestDetails?.costCalculationInfo?.postersCount
+                .toString(),
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
         ];
         posters.addAll((state.requestDetails?.posters ?? []).mapIndexed((i, e) {
           return PosterViewItemWidget(
