@@ -3,8 +3,8 @@ class PosterRequestDetailsModel {
   final String? creationDate;
   final RequestStatus? requestStatus;
   final RequestStatus? requestType;
-  final dynamic municipality;
-  final dynamic subMunicipality;
+  final RequestStatus? municipality;
+  final RequestStatus? subMunicipality;
   final List<RequestStatus>? alerts;
   final OwnerResponseDto? ownerResponseDto;
   final SubmitterResponseDto? submitterResponseDto;
@@ -15,7 +15,7 @@ class PosterRequestDetailsModel {
   final dynamic permitDuration;
   final dynamic permitIssuingDate;
   final dynamic licenseExpirationDate;
-  final dynamic licenseStatus;
+  final RequestStatus? licenseStatus;
   final List<RequestNote>? requestNotes;
   final List<Poster>? posters;
   final CostCalculationInfo? costCalculationInfo;
@@ -55,8 +55,12 @@ class PosterRequestDetailsModel {
         requestType: json["requestType"] == null
             ? null
             : RequestStatus.fromJson(json["requestType"]),
-        municipality: json["municipality"],
-        subMunicipality: json["subMunicipality"],
+        municipality: json["municipality"] == null
+            ? null
+            : RequestStatus.fromJson(json["municipality"]),
+        subMunicipality: json["subMunicipality"] == null
+            ? null
+            : RequestStatus.fromJson(json["subMunicipality"]),
         alerts: json["alerts"] == null
             ? []
             : List<RequestStatus>.from(
@@ -74,7 +78,9 @@ class PosterRequestDetailsModel {
         permitDuration: json["permitDuration"],
         permitIssuingDate: json["permitIssuingDate"],
         licenseExpirationDate: json["licenseExpirationDate"],
-        licenseStatus: json["licenseStatus"],
+        licenseStatus: json["licenseStatus"] == null
+            ? null
+            : RequestStatus.fromJson(json["licenseStatus"]),
         requestNotes: json["requestNotes"] == null
             ? []
             : List<RequestNote>.from(

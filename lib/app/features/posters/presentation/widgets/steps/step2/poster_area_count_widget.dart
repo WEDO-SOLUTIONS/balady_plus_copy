@@ -10,24 +10,29 @@ class PosterAreaCountWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomTextWidget(
           "posters_count".tr().replaceAll(
                 "{}",
-                count ?? "",
+                ("  " + (count ?? "")),
               ),
           fontSize: 13,
+          maxLines: 3,
           fontWeight: AppFontWeight.bold,
           fontColor: const Color(0xff595959),
+        ),
+        const SizedBox(
+          height: 16,
         ),
         CustomTextWidget(
           "posters_area_total".tr().replaceAll(
                 "{}",
-                area ?? "",
+                ("  " + (area ?? "")),
               ),
           fontSize: 13,
+          maxLines: 3,
           fontWeight: AppFontWeight.bold,
           fontColor: const Color(0xff595959),
         )

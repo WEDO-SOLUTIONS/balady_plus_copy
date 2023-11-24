@@ -171,13 +171,13 @@ class _PostersLicenseStartServiceState
           "isImportant": false,
           "action": {"type": "cards", "value": ""},
           "ar": {
-            "title": 'تصريح ملصقات دعائية',
+            "title": 'تصريح إعلاني مؤقت',
             "description": "",
             "tag": null,
             "warning": ""
           },
           "en": {
-            "title": 'تصريح ملصقات دعائية',
+            "title": 'تصريح إعلاني مؤقت',
             "description": "",
             "tag": null,
             "warning": null
@@ -187,14 +187,14 @@ class _PostersLicenseStartServiceState
               "iconName": IconPath.serviceCardDesc,
               "type": ServiceCardsTypes.desc,
               "rate": 0,
-              "duration": "1 - 10 أيام",
+              "duration": "",
               "fees": -1,
-              "feesName": "حاسبة الرسوم المعلوماتية",
-              "feesLink": "https://apps.balady.gov.sa/Eservices/FeesCalculator",
+              "feesName": "",
+              "feesLink": "",
               "ar": {
                 "title": "وصف الخدمة",
                 "description":
-                    "من خلال هذه الخدمة يمكنك تعزيز استمرارية عملك التجاري حيث تمكنك هذه الخدمة من تجديد رخصتك التجارية، كما يمكنك تجديد مع تعديل بيانات الرخصة. وهنالك نوعين من التجديد فوري وغير فوري حسب النشاط وموقع منشأتك."
+                    "يمكن من خلال هذه الخدمة إصدار تصريح إعلاني مؤقت، للوحة إعلانية أو مجموعة من اللوحات الإعلانية،  ليتم عرضها على واجهة المحل أو الزجاج الأمامي للمحل، لمدة محددة، كما يمكنك تحديد نوع اللوحة الإعلانية (تخفيضات/منتج جديد/خدمة للمحل)."
               },
               "en": {"title": "Service Description", "description": ""}
             },
