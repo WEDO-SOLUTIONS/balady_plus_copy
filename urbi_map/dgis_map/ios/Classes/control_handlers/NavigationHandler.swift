@@ -15,6 +15,7 @@ class NavigationHandler {
     private let map: Map
     private let eventChannel: DgisStreamHandler
     private let navigationManager: NavigationManager
+    private let voiceManager: VoiceManager
     
     private var prevCameraBehaviour: CameraPosition?
     
@@ -37,6 +38,8 @@ class NavigationHandler {
         navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
         navigationManager.alternativeRoutesProviderSettings.betterRouteEnabled = false
         self.navigationManager.mapManager.addMap(map: self.map)
+        
+        self.voiceManager = getVoiceManager(context: context)
         
         let locationSource = MyLocationMapObjectSource(
             context: context,
@@ -142,6 +145,11 @@ class NavigationHandler {
             return
         }
         
+        completion(nil)
+    }
+    
+    func setNavigatorVoice(_ id: String, completion: @escaping (FlutterError?) -> Void) {
+        navigationManager.voiceSelector.voice = voiceManager.voices.first { $0.id == id }?.navigationVoice
         completion(nil)
     }
     

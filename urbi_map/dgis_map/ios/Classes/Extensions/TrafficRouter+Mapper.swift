@@ -25,15 +25,6 @@ extension RouteSearchOptionsMessage {
     
 }
 
-extension BriefRouteInfoSearchPointsMessage {
-    func toSearchPoint() -> BriefRouteInfoSearchPoints {
-        return BriefRouteInfoSearchPoints(
-                startPoint: startPoint.toRouteSearchPoint(),
-                finishPoint: finishPoint.toRouteSearchPoint()
-        )
-    }
-}
-
 extension BearingMessage {
     func toBearing() -> Bearing {
         return Bearing(value: Double(truncating: self.value))

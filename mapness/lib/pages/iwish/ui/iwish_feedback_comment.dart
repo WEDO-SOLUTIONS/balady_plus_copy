@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/features/iwish/providers/iwish_feedback.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/shared/ui/sheets/labeled_draggable_sheet.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_text_editing_field.dart';
 
 class IwishFeedbackComment extends ConsumerStatefulWidget {
   final String iwishId;
+
   const IwishFeedbackComment({required this.iwishId, super.key});
 
   @override
@@ -42,7 +44,7 @@ class _IwishFeedbackCommentState extends ConsumerState<IwishFeedbackComment> {
 
     return LabeledDraggableSheet(
       onClose: onClose,
-      title: 'Share feedback',
+      title: context.l10n.shareFeedback,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
@@ -54,7 +56,7 @@ class _IwishFeedbackCommentState extends ConsumerState<IwishFeedbackComment> {
           const SizedBox(height: 16),
           LabeledElevatedButton(
             onPressed: onSubmit,
-            label: 'Ready',
+            label: context.l10n.ready,
           ),
           const SizedBox(height: 20),
           SizedBox(height: bottomPadding),

@@ -34,13 +34,6 @@ fun RouteSearchOptionsMessage.toRouteSearchOptions(): RouteSearchOptions = when 
     RouteSearchOptionsMessage.TAXI -> RouteSearchOptions(taxi = TaxiRouteSearchOptions(CarRouteSearchOptions()))
 }
 
-fun Messages.BriefRouteInfoSearchPointsMessage.toSearchPoint(): BriefRouteInfoSearchPoints {
-    return BriefRouteInfoSearchPoints(
-            startPoint = this.startPoint.toRouteSearchPoint(),
-            finishPoint = this.finishPoint.toRouteSearchPoint()
-    )
-}
-
 fun BearingMessage.toBearing(): Bearing {
     return Bearing(this.value)
 }

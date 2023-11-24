@@ -229,8 +229,12 @@ const Story$json = {
     {'1': 'preview', '3': 2, '4': 1, '5': 11, '6': '.balady.protocol.Story.Preview', '10': 'preview'},
     {'1': 'frames', '3': 3, '4': 3, '5': 11, '6': '.balady.protocol.Story.Frame', '10': 'frames'},
     {'1': 'is_viewed', '3': 4, '4': 1, '5': 8, '10': 'isViewed'},
+    {'1': 'activate_every_n_launches', '3': 5, '4': 1, '5': 5, '9': 0, '10': 'activateEveryNLaunches', '17': true},
   ],
   '3': [Story_Preview$json, Story_Frame$json],
+  '8': [
+    {'1': '_activate_every_n_launches'},
+  ],
 };
 
 @$core.Deprecated('Use storyDescriptor instead')
@@ -253,12 +257,22 @@ const Story_Frame$json = {
     {'1': 'is_viewed', '3': 5, '4': 1, '5': 8, '10': 'isViewed'},
     {'1': 'duration', '3': 6, '4': 1, '5': 5, '10': 'duration'},
     {'1': 'style', '3': 7, '4': 1, '5': 11, '6': '.balady.protocol.Story.Frame.Style', '10': 'style'},
+    {'1': 'content', '3': 8, '4': 1, '5': 11, '6': '.balady.protocol.Story.Frame.Content', '9': 3, '10': 'content', '17': true},
   ],
-  '3': [Story_Frame_Style$json, Story_Frame_ActionButton$json],
+  '3': [Story_Frame_Content$json, Story_Frame_Style$json, Story_Frame_ActionButton$json],
   '8': [
     {'1': '_title'},
     {'1': '_description'},
     {'1': '_action_button'},
+    {'1': '_content'},
+  ],
+};
+
+@$core.Deprecated('Use storyDescriptor instead')
+const Story_Frame_Content$json = {
+  '1': 'Content',
+  '2': [
+    {'1': 'images', '3': 1, '4': 3, '5': 11, '6': '.balady.protocol.Image', '10': 'images'},
   ],
 };
 
@@ -311,25 +325,30 @@ const Story_Frame_ActionButton_Style$json = {
 final $typed_data.Uint8List storyDescriptor = $convert.base64Decode(
     'CgVTdG9yeRIOCgJpZBgBIAEoCVICaWQSOAoHcHJldmlldxgCIAEoCzIeLmJhbGFkeS5wcm90b2'
     'NvbC5TdG9yeS5QcmV2aWV3UgdwcmV2aWV3EjQKBmZyYW1lcxgDIAMoCzIcLmJhbGFkeS5wcm90'
-    'b2NvbC5TdG9yeS5GcmFtZVIGZnJhbWVzEhsKCWlzX3ZpZXdlZBgEIAEoCFIIaXNWaWV3ZWQaTQ'
-    'oHUHJldmlldxIsCgVpbWFnZRgBIAEoCzIWLmJhbGFkeS5wcm90b2NvbC5JbWFnZVIFaW1hZ2US'
-    'FAoFdGl0bGUYAiABKAlSBXRpdGxlGpUHCgVGcmFtZRI2CgpiYWNrZ3JvdW5kGAEgASgLMhYuYm'
-    'FsYWR5LnByb3RvY29sLkltYWdlUgpiYWNrZ3JvdW5kEhkKBXRpdGxlGAIgASgJSABSBXRpdGxl'
-    'iAEBEiUKC2Rlc2NyaXB0aW9uGAMgASgJSAFSC2Rlc2NyaXB0aW9uiAEBElMKDWFjdGlvbl9idX'
-    'R0b24YBCABKAsyKS5iYWxhZHkucHJvdG9jb2wuU3RvcnkuRnJhbWUuQWN0aW9uQnV0dG9uSAJS'
-    'DGFjdGlvbkJ1dHRvbogBARIbCglpc192aWV3ZWQYBSABKAhSCGlzVmlld2VkEhoKCGR1cmF0aW'
-    '9uGAYgASgFUghkdXJhdGlvbhI4CgVzdHlsZRgHIAEoCzIiLmJhbGFkeS5wcm90b2NvbC5TdG9y'
-    'eS5GcmFtZS5TdHlsZVIFc3R5bGUamwEKBVN0eWxlEjUKBXRpdGxlGAEgASgLMhouYmFsYWR5Ln'
-    'Byb3RvY29sLlRleHRTdHlsZUgAUgV0aXRsZYgBARJBCgtkZXNjcmlwdGlvbhgCIAEoCzIaLmJh'
-    'bGFkeS5wcm90b2NvbC5UZXh0U3R5bGVIAVILZGVzY3JpcHRpb26IAQFCCAoGX3RpdGxlQg4KDF'
-    '9kZXNjcmlwdGlvbhr/AgoMQWN0aW9uQnV0dG9uEhQKBXRpdGxlGAEgASgJUgV0aXRsZRJCCgRs'
-    'aW5rGAIgASgLMi4uYmFsYWR5LnByb3RvY29sLlN0b3J5LkZyYW1lLkFjdGlvbkJ1dHRvbi5MaW'
-    '5rUgRsaW5rEkUKBXN0eWxlGAMgASgLMi8uYmFsYWR5LnByb3RvY29sLlN0b3J5LkZyYW1lLkFj'
-    'dGlvbkJ1dHRvbi5TdHlsZVIFc3R5bGUaGAoETGluaxIQCgN1cmwYASABKAlSA3VybBqzAQoFU3'
-    'R5bGUSRgoQYmFja2dyb3VuZF9jb2xvchgBIAEoCzIWLmJhbGFkeS5wcm90b2NvbC5Db2xvckgA'
-    'Ug9iYWNrZ3JvdW5kQ29sb3KIAQESPgoKdGV4dF9zdHlsZRgCIAEoCzIaLmJhbGFkeS5wcm90b2'
-    'NvbC5UZXh0U3R5bGVIAVIJdGV4dFN0eWxliAEBQhMKEV9iYWNrZ3JvdW5kX2NvbG9yQg0KC190'
-    'ZXh0X3N0eWxlQggKBl90aXRsZUIOCgxfZGVzY3JpcHRpb25CEAoOX2FjdGlvbl9idXR0b24=');
+    'b2NvbC5TdG9yeS5GcmFtZVIGZnJhbWVzEhsKCWlzX3ZpZXdlZBgEIAEoCFIIaXNWaWV3ZWQSPg'
+    'oZYWN0aXZhdGVfZXZlcnlfbl9sYXVuY2hlcxgFIAEoBUgAUhZhY3RpdmF0ZUV2ZXJ5TkxhdW5j'
+    'aGVziAEBGk0KB1ByZXZpZXcSLAoFaW1hZ2UYASABKAsyFi5iYWxhZHkucHJvdG9jb2wuSW1hZ2'
+    'VSBWltYWdlEhQKBXRpdGxlGAIgASgJUgV0aXRsZRqhCAoFRnJhbWUSNgoKYmFja2dyb3VuZBgB'
+    'IAEoCzIWLmJhbGFkeS5wcm90b2NvbC5JbWFnZVIKYmFja2dyb3VuZBIZCgV0aXRsZRgCIAEoCU'
+    'gAUgV0aXRsZYgBARIlCgtkZXNjcmlwdGlvbhgDIAEoCUgBUgtkZXNjcmlwdGlvbogBARJTCg1h'
+    'Y3Rpb25fYnV0dG9uGAQgASgLMikuYmFsYWR5LnByb3RvY29sLlN0b3J5LkZyYW1lLkFjdGlvbk'
+    'J1dHRvbkgCUgxhY3Rpb25CdXR0b26IAQESGwoJaXNfdmlld2VkGAUgASgIUghpc1ZpZXdlZBIa'
+    'CghkdXJhdGlvbhgGIAEoBVIIZHVyYXRpb24SOAoFc3R5bGUYByABKAsyIi5iYWxhZHkucHJvdG'
+    '9jb2wuU3RvcnkuRnJhbWUuU3R5bGVSBXN0eWxlEkMKB2NvbnRlbnQYCCABKAsyJC5iYWxhZHku'
+    'cHJvdG9jb2wuU3RvcnkuRnJhbWUuQ29udGVudEgDUgdjb250ZW50iAEBGjkKB0NvbnRlbnQSLg'
+    'oGaW1hZ2VzGAEgAygLMhYuYmFsYWR5LnByb3RvY29sLkltYWdlUgZpbWFnZXMamwEKBVN0eWxl'
+    'EjUKBXRpdGxlGAEgASgLMhouYmFsYWR5LnByb3RvY29sLlRleHRTdHlsZUgAUgV0aXRsZYgBAR'
+    'JBCgtkZXNjcmlwdGlvbhgCIAEoCzIaLmJhbGFkeS5wcm90b2NvbC5UZXh0U3R5bGVIAVILZGVz'
+    'Y3JpcHRpb26IAQFCCAoGX3RpdGxlQg4KDF9kZXNjcmlwdGlvbhr/AgoMQWN0aW9uQnV0dG9uEh'
+    'QKBXRpdGxlGAEgASgJUgV0aXRsZRJCCgRsaW5rGAIgASgLMi4uYmFsYWR5LnByb3RvY29sLlN0'
+    'b3J5LkZyYW1lLkFjdGlvbkJ1dHRvbi5MaW5rUgRsaW5rEkUKBXN0eWxlGAMgASgLMi8uYmFsYW'
+    'R5LnByb3RvY29sLlN0b3J5LkZyYW1lLkFjdGlvbkJ1dHRvbi5TdHlsZVIFc3R5bGUaGAoETGlu'
+    'axIQCgN1cmwYASABKAlSA3VybBqzAQoFU3R5bGUSRgoQYmFja2dyb3VuZF9jb2xvchgBIAEoCz'
+    'IWLmJhbGFkeS5wcm90b2NvbC5Db2xvckgAUg9iYWNrZ3JvdW5kQ29sb3KIAQESPgoKdGV4dF9z'
+    'dHlsZRgCIAEoCzIaLmJhbGFkeS5wcm90b2NvbC5UZXh0U3R5bGVIAVIJdGV4dFN0eWxliAEBQh'
+    'MKEV9iYWNrZ3JvdW5kX2NvbG9yQg0KC190ZXh0X3N0eWxlQggKBl90aXRsZUIOCgxfZGVzY3Jp'
+    'cHRpb25CEAoOX2FjdGlvbl9idXR0b25CCgoIX2NvbnRlbnRCHAoaX2FjdGl2YXRlX2V2ZXJ5X2'
+    '5fbGF1bmNoZXM=');
 
 @$core.Deprecated('Use storiesResponseDescriptor instead')
 const StoriesResponse$json = {
@@ -649,18 +668,18 @@ final $typed_data.Uint8List iWishObjectDescriptor = $convert.base64Decode(
     'NlbnQYAiABKAhSDmlzRmVlZGJhY2tTZW50GjUKBVBob3RvEiwKBWltYWdlGAEgASgLMhYuYmFs'
     'YWR5LnByb3RvY29sLkltYWdlUgVpbWFnZUIWChRfc2VsZWN0ZWRfdmFyaWFudF9pZA==');
 
-@$core.Deprecated('Use iWishResponseDescriptor instead')
-const IWishResponse$json = {
-  '1': 'IWishResponse',
+@$core.Deprecated('Use iWishMarkersResponseDescriptor instead')
+const IWishMarkersResponse$json = {
+  '1': 'IWishMarkersResponse',
   '2': [
     {'1': 'markers', '3': 1, '4': 3, '5': 11, '6': '.balady.protocol.IWishObjectMarker', '10': 'markers'},
   ],
 };
 
-/// Descriptor for `IWishResponse`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List iWishResponseDescriptor = $convert.base64Decode(
-    'Cg1JV2lzaFJlc3BvbnNlEjwKB21hcmtlcnMYASADKAsyIi5iYWxhZHkucHJvdG9jb2wuSVdpc2'
-    'hPYmplY3RNYXJrZXJSB21hcmtlcnM=');
+/// Descriptor for `IWishMarkersResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List iWishMarkersResponseDescriptor = $convert.base64Decode(
+    'ChRJV2lzaE1hcmtlcnNSZXNwb25zZRI8CgdtYXJrZXJzGAEgAygLMiIuYmFsYWR5LnByb3RvY2'
+    '9sLklXaXNoT2JqZWN0TWFya2VyUgdtYXJrZXJz');
 
 @$core.Deprecated('Use iWishItemResponseDescriptor instead')
 const IWishItemResponse$json = {

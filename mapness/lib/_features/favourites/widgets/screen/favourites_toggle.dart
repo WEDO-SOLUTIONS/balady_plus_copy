@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class FavouritesToggle extends ConsumerWidget {
   final bool isEditing;
@@ -22,7 +23,7 @@ class FavouritesToggle extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            'Show favorites on map',
+            context.l10n.showFavoritesOnMap,
             textAlign: TextAlign.right,
             style: GoogleFonts.inter(
               color: const Color(0xFF001022),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ThanksSheet extends StatelessWidget {
   const ThanksSheet({super.key});
@@ -24,7 +25,7 @@ class ThanksSheet extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Thanks for your feedback',
+              context.l10n.thanksForYourFeedback,
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(
                 color: const Color(0xB21E2A36),

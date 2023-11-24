@@ -45,8 +45,12 @@ class DgisMapController {
   Stream<TapEvent> get objectTapEvents => _instance.objectTapEvents;
 
   /// User taps route when there are several of them available.
-  Stream<RouteChangedEvent> get routeChangedEvents =>
-      _instance.routeChangedEvents;
+  Stream<ActiveRouteChangedEvent> get activeRouteChangedEvents =>
+      _instance.activeRouteChangedEvents;
+
+  /// Available routes update.
+  Stream<RoutesInfoChangedEvent> get routesInfoChangedEvents =>
+      _instance.routesInfoChangedEvents;
 
   /// Events during navigation.
   Stream<NavigationEvent> get navigationEvents => _instance.navigationEvents;
@@ -72,6 +76,12 @@ class DgisMapController {
   Stream<PublicTransportActiveRouteChanged>
       get publicTransportActiveRouteChangedEvents =>
           _instance.publicTransportActiveRouteChangedEvents;
+
+  Stream<PackageProgressEvent> get packageProgressEvents =>
+      _instance.packageProgressEvents;
+
+  Stream<PackageInfoChangedEvent> get packagesInfoChangedEvents =>
+      _instance.packageInfoChangedEvents;
 
   late NaviSpeedController naviSpeedController = NaviSpeedController(
     _instance.naviSpeedEvents.asBroadcastStream(),
@@ -111,11 +121,6 @@ class DgisMapController {
     stop: _instance.stopFreeRoam,
   );
 
-  late NaviPedestrianController naviPedestrianController =
-      NaviPedestrianController(
-    routeChangedEvents,
-  )..init();
-
   Stream<NaviDashboardEvent> get naviDashboardEvents =>
       _instance.naviDashboardEvents;
 
@@ -126,7 +131,6 @@ class DgisMapController {
   Future<InitializeMessage> initialize() async => _instance.initialize(_viewId);
 
   Future<void> dispose() async {
-    naviPedestrianController.dispose();
     naviZoomController.dispose();
     await _instance.dispose();
   }
@@ -428,6 +432,14 @@ class DgisMapController {
     return _instance.containsRect(outer, inner);
   }
 
+  /// Checks if [outer] rect contains [inner]
+  Future<double> pointBearing(
+    GeoPointMessage from,
+    GeoPointMessage to,
+  ) async {
+    return _instance.pointBearing(from, to);
+  }
+
   Future<void> setRouteParams(RouteEditorRouteParamsMessage params) async {
     return _instance.setRouteParams(params);
   }
@@ -487,12 +499,27 @@ class DgisMapController {
     return _instance.setPublicTransportActiveRoute(routeIndex);
   }
 
-  Future<List<BriefRouteInfoMessage?>> findBriefRouteInfos(
-    RouteSearchOptionsMessage options,
-    List<BriefRouteInfoSearchPointsMessage?> searchPoints,
-  ) {
-    return _instance.findBriefRouteInfos(options, searchPoints);
+  Future<List<BriefRouteInfoMessage?>> findBriefRouteInfos({
+    required RouteSearchOptionsMessage options,
+    RouteSearchPointMessage? startPoint,
+    required RouteSearchPointMessage finishPoint,
+  }) {
+    return _instance.findBriefRouteInfos(
+      options,
+      startPoint,
+      finishPoint,
+    );
   }
+
+  Future<List<PackageMessage?>> listPackages() => _instance.listPackages();
+
+  Future<List<PackageMessage?>> listVoices() => _instance.listVoices();
+
+  Future<void> installPackage(String id) => _instance.installPackage(id);
+
+  Future<void> installVoice(String id) => _instance.installVoice(id);
+
+  Future<void> setNavigatorVoice(String id) => _instance.setNavigatorVoice(id);
 }
 
 extension WeekTimeFactory on WeekTimeSearchMessage {

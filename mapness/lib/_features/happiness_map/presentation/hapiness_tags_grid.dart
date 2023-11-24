@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/happiness_map/data/happiness_tags.dart';
 import 'package:mapness/_features/happiness_map/presentation/happiness_tag_widget.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 import '../data/happines_manager.dart';
 
@@ -37,7 +38,7 @@ class HappinessTagsGrid extends ConsumerWidget {
           },
         ),
         HappinessTagWidget(
-          title: 'Show\nmore',
+          title: context.l10n.showMore,
           iconAsset: 'assets/icons/svg/ic_ellipsis.svg',
           onPressed: () {},
           isSelected: false,

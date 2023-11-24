@@ -104,6 +104,13 @@ jobs:
           cd mapness
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: 🤖🔨 Download strings from Localazy
+        uses: localazy/download@v1
+        with:
+          read_key: ${{ secrets.LOCALAZY_READ_KEY }}
+          write_key: ${{ secrets.LOCALAZY_WRITE_KEY }}
+
       - name: 🤖🔨 Build Android app
         run: |
           flutter build apk --target lib/main_dev.dart --dart-define=GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)" --dart-define=GIT_COMMIT="$(git --no-pager show -s --format='%s')" --dart-define=VENDOR_CONFIG=prod

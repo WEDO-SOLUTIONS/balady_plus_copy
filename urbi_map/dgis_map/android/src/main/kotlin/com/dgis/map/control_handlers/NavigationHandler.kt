@@ -5,6 +5,7 @@ import com.dgis.map.control_handlers.navigation_controls.DashboardControlModel
 import com.dgis.map.control_handlers.navigation_controls.MessageControlModel
 import com.dgis.map.control_handlers.navigation_controls.ManeuverControlModel
 import com.dgis.map.control_handlers.navigation_controls.SpeedControlModel
+import com.dgis.map.map_api.Messages
 import com.dgis.map.map_api.Messages.Result
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.navigation.*
@@ -19,6 +20,7 @@ class NavigationHandler(
     private val eventSink: EventChannel.EventSink,
 ) : AutoCloseable {
     private val navigationManager = NavigationManager(sdkContext)
+    private val voicesManager = getVoiceManager(sdkContext)
     private lateinit var dashboardControlModel: DashboardControlModel
 
     private val stateClosable: AutoCloseable
@@ -69,6 +71,11 @@ class NavigationHandler(
 
     fun toggleSounds() {
         dashboardControlModel.toggleSounds()
+    }
+
+    fun setNavigatorVoice(id: String, result: Messages.Result<Void>?) {
+        navigationManager.voiceSelector.voice = voicesManager.voices.firstOrNull { it.id == id }?.navigationVoice
+        result?.success(null)
     }
 
     fun startNavigation(

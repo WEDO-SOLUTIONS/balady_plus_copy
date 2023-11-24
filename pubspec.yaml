@@ -94,7 +94,7 @@ dependencies:
   # A universal barcode and QR code scanner
   mobile_scanner: ^2.1.0
   # Location
-  geolocator: ^9.0.2
+  geolocator: ^10.1.0
   # Permissions
   permission_handler: ^11.0.1
   # Get current device information
@@ -157,6 +157,7 @@ dependencies:
   google_fonts: ^6.0.0
   wakelock_plus: ^1.1.3
   provider: ^6.0.5
+  flutter_compass: ^0.8.0
 #  provider: ^6.0.5
 
 dev_dependencies:
@@ -174,6 +175,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
+  shaders:
+    - shaders/radar.frag
   assets:
     - assets/
     - assets/icons/svg/
@@ -227,11 +230,13 @@ flutter:
           weight: 700
         - asset: assets/fonts/Arabic-UI-Text-Medium.otf
           weight: 500
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
+    - family: Frutiger
+      fonts:
+        - asset: fonts/FrutigerLTArabic45Light.ttf
+          weight: 300
+        - asset: fonts/FrutigerLTArabic55Roman.ttf
+          weight: 400
+        - asset: fonts/FrutigerLTArabic65Bold.ttf
+          weight: 700
+        - asset: fonts/frutigerltarabic75black.ttf
+          weight: 900

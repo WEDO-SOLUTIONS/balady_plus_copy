@@ -2,13 +2,14 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/_features/map/providers/object_manager.dart';
+import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/map_search/ui/map_search_content.dart';
 import 'package:mapness/pages/map_search/ui/map_search_header_delegate.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 
 const searchScope = 'MapSearch';
@@ -104,7 +105,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
             List<ItemMarkerInfoMessage>.empty())) {
           markers.add(
             Marker(
-              id: markerInfo?.objectId?.objectId.toString() ?? "invalid",
+              id: markerInfo?.objectId?.objectId.toString() ?? context.l10n.invalid,
               onTap: () {
                 PoiMapRoute(dgisObjectId: markerInfo.objectId!.objectId)
                     .push(context);
@@ -130,7 +131,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       }
     });
     ref.listen(currentRouteProvider, (prev, next) {
-      print(next);
       if (next != null && next.startsWith("/search")) {
         _controller
             .animateTo(

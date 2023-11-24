@@ -30,7 +30,7 @@ class NavButton extends StatelessWidget {
           package: PackageConfig.packageName,
           colorFilter: const ColorFilter.mode(
             Color(0xB21E2A36),
-            BlendMode.srcIn,
+            BlendMode.srcATop,
           ),
         ),
       ),

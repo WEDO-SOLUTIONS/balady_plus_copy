@@ -1,5 +1,4 @@
 import 'package:dgis_map_platform_interface/library.dart';
-import 'package:dgis_map_platform_interface/src/events/models/lat_lng.dart';
 
 abstract class TapEvent {
   const TapEvent();

@@ -16,16 +16,6 @@ class MapControlsStateDashboard extends MapControlsState {
   bool get controlsVisible => true;
 }
 
-class MapControlsStateNavigation extends MapControlsState {
-  @override
-  bool get controlsVisible => false;
-}
-
-// class MapControlsStateHappinessMap extends MapControlsState {
-//   @override
-//   bool get controlsVisible => false;
-// }
-
 class MapControlsStateLayers extends MapControlsState {
   @override
   bool get controlsVisible => true;

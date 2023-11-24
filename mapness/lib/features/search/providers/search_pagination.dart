@@ -1,5 +1,5 @@
 import 'package:dgis_map/library.dart';
-import 'package:mapness/_features/map/providers/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search_pagination.g.dart';

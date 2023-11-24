@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ProfileHeader extends StatelessWidget {
   const ProfileHeader({super.key});
@@ -18,7 +19,7 @@ class ProfileHeader extends StatelessWidget {
           ),
           const Spacer(),
           Text(
-            "Profile",
+            context.l10n.profile,
             style: GoogleFonts.inter(
               fontSize: 18,
               height: 1.4,

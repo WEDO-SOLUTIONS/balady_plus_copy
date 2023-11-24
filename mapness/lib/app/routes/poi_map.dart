@@ -19,9 +19,7 @@ class PoiMapRoute extends GoRouteData {
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return TransculentTransitionPage(
-      opaque: false,
-      transitionBuilder: (_, __, ___, child) => child,
+    return TransculentPage(
       child: GeneralMapCardWidget(
         DgisObjectIdMessage(
           objectId: dgisObjectId,

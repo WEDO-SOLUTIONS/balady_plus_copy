@@ -7,6 +7,7 @@ import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/entities/iwish/models/iwish_tags.dart';
 import 'package:mapness/features/iwish/providers/iwish_entity.dart';
 import 'package:mapness/features/iwish/providers/iwish_feedback.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/labeled_draggable_sheet.dart';
@@ -37,12 +38,12 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
     final feedbackState = ref.watch(iwishFeedbackProvider(widget.iwishId));
 
     if (entityState.isLoading || feedbackState.isLoading) {
-      return const LoadingSheet(text: 'Sending');
+      return LoadingSheet(text: context.l10n.sending);
     }
     if (entityState.hasError || feedbackState.hasError) {
       return ErrorSheet(
         onRetry: () => feedbackNotifier.submitFeedback(),
-        buttonLabel: 'Reload',
+        buttonLabel: context.l10n.reload,
         onClose: () => context.pop(),
       );
     }
@@ -66,8 +67,8 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
     return LabeledDraggableSheet(
       onClose: () => context.pop(),
       title: isCompleted
-          ? 'Share your feelings about park'
-          : 'Vote what do you want to have in the park?',
+          ? context.l10n.shareYourFeelingsAboutPark
+          : context.l10n.voteWhatDoYouWantToHaveInThePark,
       child: SafeArea(
         top: false,
         bottom: true,
@@ -101,7 +102,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
                       horizontal: 16,
                     ),
                     child: Text(
-                      feedback.comment ?? 'Share your feedback',
+                      feedback.comment ?? context.l10n.shareYourFeedback,
                       style: GoogleFonts.inter(
                         color: const Color(0xFF1D2A36),
                         fontSize: 16,
@@ -115,7 +116,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
               const SizedBox(height: 16),
               LabeledElevatedButton(
                   onPressed: () => feedbackNotifier.submitFeedback(),
-                  label: 'Send feedback'),
+                  label: context.l10n.sendFeedback),
             ],
             const SizedBox(height: 24),
           ],

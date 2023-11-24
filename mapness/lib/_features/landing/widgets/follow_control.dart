@@ -2,7 +2,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/_features/map/providers/follow_state.dart';
+import 'package:mapness/shared/providers/map/follow_state.dart';
 
 import '../../../shared/ui/buttons/map_button.dart';
 

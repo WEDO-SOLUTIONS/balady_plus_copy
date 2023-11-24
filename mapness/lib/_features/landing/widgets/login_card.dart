@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/config/package_fonts.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class LoginCard extends StatelessWidget {
   const LoginCard({super.key});
@@ -33,7 +34,7 @@ class LoginCard extends StatelessWidget {
                       children: [
                         const Spacer(),
                         Text(
-                          " تسجيل الدخول",
+                          context.l10n.signIn,
                           style: PackageFonts.frutigerArabic(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
@@ -42,7 +43,7 @@ class LoginCard extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "في نوفمبر",
+                          context.l10n.inNovember,
                           style: PackageFonts.frutigerArabic(
                             color: Colors.white.withOpacity(0.8),
                             fontWeight: FontWeight.w400,
@@ -64,7 +65,7 @@ class LoginCard extends StatelessWidget {
                         color: Colors.white,
                       ),
                       child: Text(
-                        "تسجيل الدخول",
+                        context.l10n.signIn,
                         textAlign: TextAlign.center,
                         style: PackageFonts.frutigerArabic(
                           color: const Color(0xFF4CA5B4),

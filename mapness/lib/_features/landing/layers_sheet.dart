@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_fonts.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/widgets/close_button.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class LayersSheet extends ConsumerStatefulWidget {
   const LayersSheet({super.key});
@@ -70,7 +71,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                       Row(
                         children: [
                           Text(
-                            "طبقات على الخريطة",
+                           context.l10n.layersOnTheMap,
                             style: PackageFonts.frutigerArabic(
                               fontSize: 22,
                               fontWeight: FontWeight.w500,
@@ -89,37 +90,37 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                       const SizedBox(
                         height: 16,
                       ),
-                      const FilterRow(
+                      FilterRow(
                         icon: "ic_transport",
-                        name: "النقل",
+                        name: context.l10n.mapLayerTransport,
                       ),
                       const SizedBox(
                         height: 16,
                       ),
-                      const FilterRow(
+                      FilterRow(
                         icon: "ic_car",
-                        name: "ازدحام المرور",
+                        name: context.l10n.mapLayerCar,
                       ),
                       const SizedBox(
                         height: 16,
                       ),
-                      const FilterRow(
+                      FilterRow(
                         icon: "ic_metro",
-                        name: "مترو",
+                        name: context.l10n.mapLayerMetro,
                       ),
                       const SizedBox(
                         height: 16,
                       ),
-                      const FilterRow(
+                      FilterRow(
                         icon: "ic_monorail",
-                        name: "أجهزة الصراف الآلي",
+                        name: context.l10n.mapLayerMonorail,
                       ),
                       const SizedBox(
                         height: 16,
                       ),
-                      const FilterRow(
+                      FilterRow(
                         icon: "ic_parking",
-                        name: "موقف سيارات",
+                        name: context.l10n.mapLayerParking,
                       ),
                     ],
                   ),

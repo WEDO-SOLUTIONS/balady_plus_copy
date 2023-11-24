@@ -52,7 +52,9 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents;
 
-  Stream<RouteChangedEvent> get routeChangedEvents;
+  Stream<ActiveRouteChangedEvent> get activeRouteChangedEvents;
+
+  Stream<RoutesInfoChangedEvent> get routesInfoChangedEvents;
 
   Stream<NavigationEvent> get navigationEvents;
 
@@ -77,6 +79,10 @@ abstract class DgisMapPlugin extends PlatformInterface {
       get publicTransportActiveRouteChangedEvents;
 
   Stream<RouteOptionsEvent> get routeOptionsEvent;
+
+  Stream<PackageProgressEvent> get packageProgressEvents;
+
+  Stream<PackageInfoChangedEvent> get packageInfoChangedEvents;
 
   Future<InitializeMessage> initialize(int viewId);
 
@@ -265,6 +271,11 @@ abstract class DgisMapPlugin extends PlatformInterface {
     GeoRectMessage inner,
   );
 
+  Future<double> pointBearing(
+    GeoPointMessage from,
+    GeoPointMessage to,
+  );
+
   Future<void> setPanoramasPaddings(CameraSetPaddingMessage message);
 
   Future<void> moveCameraToSelectedPanorama();
@@ -298,6 +309,18 @@ abstract class DgisMapPlugin extends PlatformInterface {
   Future<void> setPublicTransportActiveRoute(int routeIndex);
 
   Future<List<BriefRouteInfoMessage?>> findBriefRouteInfos(
-      RouteSearchOptionsMessage routeSearchOptions,
-      List<BriefRouteInfoSearchPointsMessage?> searchPoints);
+    RouteSearchOptionsMessage routeSearchOptions,
+    RouteSearchPointMessage? startPoint,
+    RouteSearchPointMessage finishPoint,
+  );
+
+  Future<List<PackageMessage?>> listPackages();
+
+  Future<List<PackageMessage?>> listVoices();
+
+  Future<void> installPackage(String id);
+
+  Future<void> installVoice(String id);
+
+  Future<void> setNavigatorVoice(String id);
 }

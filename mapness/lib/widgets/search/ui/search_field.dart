@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/config/package_fonts.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class SearchField extends StatefulWidget {
   const SearchField({
@@ -53,8 +55,8 @@ class _SearchFieldState extends State<SearchField> {
             textAlignVertical: TextAlignVertical.center,
             decoration: InputDecoration(
               filled: true,
-              hintText: "Search",
-              fillColor: const Color(0xFFF1F4F8),
+              hintText: context.l10n.search,
+              fillColor: const Color(0xFF1E2A36).withOpacity(0.05),
               contentPadding: const EdgeInsets.only(
                 right: 8,
                 left: 38,
@@ -70,9 +72,12 @@ class _SearchFieldState extends State<SearchField> {
               ),
             ),
             cursorHeight: 22,
-            style: PackageFonts.frutigerArabic(
-              fontSize: 16,
+            style: const TextStyle(
+              color: Color(0xFF1E2A36),
+              fontSize: 14,
               fontWeight: FontWeight.w400,
+              height: 1.5,
+              fontFamily: "Frutiger",
             ),
           ),
         ),
@@ -82,9 +87,11 @@ class _SearchFieldState extends State<SearchField> {
             padding: const EdgeInsets.all(8.0),
             child: SvgPicture.asset(
               "assets/icons/svg/ic_dashboard_search.svg",
+              width: 24,
+              height: 24,
               package: PackageConfig.packageName,
-              colorFilter: const ColorFilter.mode(
-                Color(0xFF4CA5B4),
+              colorFilter: ColorFilter.mode(
+                const Color(0xFFE2A3680).withOpacity(0.5),
                 BlendMode.srcIn,
               ),
             ),

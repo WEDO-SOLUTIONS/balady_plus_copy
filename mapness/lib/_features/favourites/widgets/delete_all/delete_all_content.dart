@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class DeleteAllContent extends StatelessWidget {
   final VoidCallback onConfirm;
@@ -29,7 +30,7 @@ class DeleteAllContent extends StatelessWidget {
           children: [
             const Spacer(),
             Text(
-              'Are you sure you want to delete all favorites?',
+              context.l10n.areYouSureYouWantToDeleteAllFavorites,
               style: textStyle,
               textDirection: TextDirection.ltr,
               textAlign: TextAlign.center,
@@ -42,7 +43,7 @@ class DeleteAllContent extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
               ),
-              child: Text('Delete', style: textStyle),
+              child: Text(context.l10n.delete, style: textStyle),
             ),
             ElevatedButton(
               onPressed: onCancel,
@@ -52,7 +53,7 @@ class DeleteAllContent extends StatelessWidget {
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
               ),
               child: Text(
-                'Cancel',
+                context.l10n.cancel,
                 style: textStyle.copyWith(color: color),
               ),
             ),

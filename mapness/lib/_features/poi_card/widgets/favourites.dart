@@ -6,8 +6,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
+import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/config/package_fonts.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class Favourites extends ConsumerWidget {
   final DirectoryObjectMessage? data;
@@ -42,14 +44,14 @@ class Favourites extends ConsumerWidget {
                           package: PackageConfig.packageName,
                           height: 24,
                           width: 24,
-                          color: const Color(0xff1E2A36).withAlpha(125),
+                          color: colorPrimary.withAlpha(125),
                         ),
                         const SizedBox(
                           width: 8,
                         ),
-                        const Text(
-                          'بيت',
-                          style: TextStyle(
+                        Text(
+                          context.l10n.home,
+                          style: const TextStyle(
                             color: colorPrimary,
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
@@ -61,6 +63,7 @@ class Favourites extends ConsumerWidget {
                 : const SizedBox.shrink(),
             isFavourite != null
                 ? CardContent(
+                    onTap: () => const FavouritesRoute().push(context),
                     child: Row(
                       children: [
                         SvgPicture.asset(
@@ -74,7 +77,7 @@ class Favourites extends ConsumerWidget {
                           width: 8,
                         ),
                         Text(
-                          'المفضلة',
+                          context.l10n.favourites,
                           style: PackageFonts.frutigerArabic(
                             color: colorPrimary,
                             fontSize: 16,

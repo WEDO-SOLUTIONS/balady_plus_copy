@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/_features/favourites/widgets/screen/delete_icon.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 import '../../../../shared/config/package_config.dart';
 
@@ -45,7 +46,7 @@ class PinnedPlaceWidget extends StatelessWidget {
                 horizontal: 4,
               ),
               child: Text(
-                'Delete',
+                context.l10n.delete,
                 style: GoogleFonts.inter(
                   fontSize: 14,
                   color: Colors.white,

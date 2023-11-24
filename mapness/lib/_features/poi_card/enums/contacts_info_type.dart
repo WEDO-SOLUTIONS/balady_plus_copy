@@ -33,6 +33,21 @@ extension ContactsInfoTypeExt on ContactsInfoType {
     };
   }
 
+  String? getTitle() {
+    return switch (this) {
+      ContactsInfoType.twitter => 'Twitter',
+      ContactsInfoType.instagram => 'Instagram',
+      ContactsInfoType.snapchat => 'Snapchat',
+      ContactsInfoType.facebook => 'Facebook',
+      ContactsInfoType.whatsApp => 'WhatsApp',
+      ContactsInfoType.vkontakte => 'VK',
+      ContactsInfoType.youtube => 'YouTube',
+      ContactsInfoType.telegram => 'Telegram',
+      ContactsInfoType.unknown => null,
+      _ => null,
+    };
+  }
+
   static ContactsInfoType fromString(String typeName) {
     return switch (typeName) {
       'phone' => ContactsInfoType.phone,

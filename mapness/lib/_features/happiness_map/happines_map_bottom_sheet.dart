@@ -9,8 +9,9 @@ import 'package:mapness/_features/happiness_map/presentation/close_happiness_but
 import 'package:mapness/_features/happiness_map/presentation/hapiness_tags_grid.dart';
 import 'package:mapness/_features/happiness_map/presentation/happiness_feedback_button.dart';
 import 'package:mapness/_features/happiness_map/presentation/happiness_submit_button.dart';
-import 'package:mapness/_features/navigation_dashboard/widgets/measured_widget.dart';
 import 'package:mapness/app/routes/happines_map.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/measure_size.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 import 'package:mapness/shared/ui/sheets/thanks_sheet.dart';
@@ -79,9 +80,9 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
     final isCollapsed = state.feedback == null;
 
     if (requestState is AsyncLoading) {
-      return const Align(
+      return Align(
         alignment: Alignment.bottomCenter,
-        child: LoadingSheet(text: 'Sending...'),
+        child: LoadingSheet(text: context.l10n.sending),
       );
     }
 
@@ -91,7 +92,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
         child: ErrorSheet(
           onRetry: () =>
               ref.read(happinessManagerProvider.notifier).submitFeedback(),
-          buttonLabel: 'Reload',
+          buttonLabel: context.l10n.reload,
           onClose: widget.onClose,
         ),
       );
@@ -163,7 +164,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      "Share your feelings",
+                                      context.l10n.shareYourFeelings,
                                       style: GoogleFonts.inter(
                                         color: const Color(0xFF1D2A36),
                                         fontSize: 19,
@@ -217,7 +218,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                                       ),
                                       child: Text(
                                         state.comment.isEmpty
-                                            ? 'Share your feedback'
+                                            ? context.l10n.shareYourFeedback
                                             : state.comment,
                                         style: GoogleFonts.inter(
                                           color: const Color(0xFF1D2A36),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/shared/config/package_fonts.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PrayerCard extends StatelessWidget {
   const PrayerCard({super.key});
@@ -32,7 +33,7 @@ class PrayerCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "الوقت الحالي",
+                          context.l10n.presentTime,
                           style: PackageFonts.frutigerArabic(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
@@ -51,7 +52,7 @@ class PrayerCard extends StatelessWidget {
                         ),
                         const Spacer(),
                         Text(
-                          "الوقت المتبقي الى الصلاة",
+                          context.l10n.remainingTimeForPrayer,
                           style: PackageFonts.frutigerArabic(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,

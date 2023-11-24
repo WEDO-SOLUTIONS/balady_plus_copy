@@ -1,0 +1,96 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:mapness/entities/path_nav/models/path_nav_speed_info.dart';
+import 'package:mapness/widgets/path_nav/lib/navi_direction_icon_extension.dart';
+
+class PathNavSpeedInfoWidget extends StatelessWidget {
+  final PathNavSpeedInfo info;
+
+  const PathNavSpeedInfoWidget({
+    super.key,
+    required this.info,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const red = Color(0xffE91C21);
+    return Material(
+      color: Colors.transparent,
+      child: SizedBox(
+        width: 94,
+        height: 94,
+        child: Stack(
+          children: [
+            /// speed
+            Positioned(
+              bottom: 0,
+              left: 0,
+              child: SizedBox(
+                width: 64,
+                height: 64,
+                child: Card(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(32)),
+                  ),
+                  // elevation: 2.0,
+                  child: Center(
+                    child: Text(
+                      '${info.speed}',
+                      style: GoogleFonts.inter(
+                        fontSize: 27,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            /// speed limit
+            Positioned(
+              top: 0,
+              right: 0,
+              child: SizedBox(
+                width: 54,
+                height: 54,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: red,
+                      width: 4,
+                    ),
+                    color: info.speedExceed ? red : Colors.white,
+                  ),
+                  child: Center(
+                    child: Text(
+                      "${info.speedLimit ?? '--'}",
+                      style: GoogleFonts.inter(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                        color: info.speedExceed ? Colors.white : Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            /// camera
+            if (info.direction != null)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: SvgPicture.asset(
+                  info.direction!.iconPath,
+                  width: 24,
+                  height: 24,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}

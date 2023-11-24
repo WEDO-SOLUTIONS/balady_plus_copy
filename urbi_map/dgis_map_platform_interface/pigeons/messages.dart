@@ -942,15 +942,39 @@ class BearingMessage {
 
 class BriefRouteInfoSearchPointsMessage {
   BriefRouteInfoSearchPointsMessage(this.startPoint, this.finishPoint);
-  final RouteSearchPointMessage startPoint;
+
+  final RouteSearchPointMessage? startPoint;
   final RouteSearchPointMessage finishPoint;
 }
 
 class BriefRouteInfoMessage {
   BriefRouteInfoMessage(this.duration, this.extraInfo);
+
   final double duration;
   final BriefExtraRouteInfoMessage extraInfo;
 }
+
+class PackageMessage {
+  PackageMessage(this.id, this.info);
+
+  final String id;
+  final PackageInfoMessage info;
+}
+
+class PackageInfoMessage {
+  PackageInfoMessage(this.name, this.installed, this.incomplete,
+      this.preinstalled, this.compatible, this.hasUpdate, this.updateStatus);
+
+  final String name;
+  final bool installed;
+  final bool incomplete;
+  final bool preinstalled;
+  final bool compatible;
+  final bool hasUpdate;
+  final PackageUpdateStatusMessage updateStatus;
+}
+
+enum PackageUpdateStatusMessage { notAvailable, inProgress, paused }
 
 enum BriefExtraRouteInfoMessage {
   bicycle,
@@ -1188,6 +1212,9 @@ abstract class MapApi {
   bool containsRect(GeoRectMessage outer, GeoRectMessage inner);
 
   @async
+  double pointBearing(GeoPointMessage from, GeoPointMessage to);
+
+  @async
   void setRouteParams(RouteEditorRouteParamsMessage params);
 
   @async
@@ -1243,9 +1270,25 @@ abstract class MapApi {
 
   @async
   List<BriefRouteInfoMessage?> findBriefRouteInfos(
-      RouteSearchOptionsMessage routeSearchOptions,
-      List<BriefRouteInfoSearchPointsMessage> searchPoints);
+    RouteSearchOptionsMessage routeSearchOptions,
+    RouteSearchPointMessage? startPoint,
+    RouteSearchPointMessage finishPoint,
+  );
 
+  @async
+  List<PackageMessage?> listPackages();
+
+  @async
+  List<PackageMessage?> listVoices();
+
+  @async
+  void installPackage(String id);
+
+  @async
+  void installVoice(String id);
+
+  @async
+  void setNavigatorVoice(String id);
 }
 
 @FlutterApi()

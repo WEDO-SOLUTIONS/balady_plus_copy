@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:intl/intl.dart';
 import 'package:mapness/_features/poi_card/domain/model/opening_hours_model.dart';
@@ -23,14 +24,17 @@ extension OpeningHoursMessageExt on OpeningHoursMessage {
         orElse: () => null,
       );
 
-      var displayStartFinishTime =
-          weekTimeInterval?.displayStartFinishTime(format24: true);
-      final timeString = displayStartFinishTime ?? 'weekend';
+      var displayStartTime =
+          weekTimeInterval?.displayStartTime(format24: true);
+
+      var displayFinishTime =
+          weekTimeInterval?.displayFinishTime(format24: true);
 
       return OpenHours(
-        isWeekend: displayStartFinishTime == null,
+        isWeekend: (displayStartTime == null || displayFinishTime == null),
         weekDay: toBeginningOfSentenceCase(weekDay)!,
-        openHours: timeString,
+        openHour: displayStartTime,
+        closeHour: displayFinishTime,
       );
     });
     return allWeekDays.toList();
@@ -42,7 +46,13 @@ extension OpeningHoursMessageExt on OpeningHoursMessage {
     final todayOpenHoursData = getDisplayOpenHours().firstWhere(
       (e) => e.weekDay.toLowerCase() == todayName.toLowerCase(),
     );
+    return 'Today ${todayOpenHoursData.openHour}';
+  }
 
-    return 'Today ${todayOpenHoursData.openHours}';
+  bool defineIsDailySameOpenHours() {
+    var groupListsBy = getDisplayOpenHours(format24: true).groupListsBy(
+      (element) => '${element.openHour}${element.closeHour}',
+    );
+    return groupListsBy.length == 1;
   }
 }

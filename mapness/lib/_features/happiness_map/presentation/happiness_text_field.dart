@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/_features/happiness_map/data/happines_manager.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class HappinessTextField extends ConsumerWidget {
   const HappinessTextField({Key? key}) : super(key: key);
@@ -25,7 +26,7 @@ class HappinessTextField extends ConsumerWidget {
       onChanged: happinessManager.updateComment,
       // focusNode: model.searchFocusNode,
       decoration: InputDecoration(
-        hintText: 'Share your feedback',
+        hintText: context.l10n.shareYourFeedback,
         enabledBorder: border,
         fillColor: const Color(0xfff4f4f5),
         filled: true,

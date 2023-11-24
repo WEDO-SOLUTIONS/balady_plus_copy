@@ -74,7 +74,7 @@ class DashboardHeader extends StatelessWidget {
                   curve: Curves.easeInOut,
                 );
               },
-              child: AbsorbPointer(
+              child: const AbsorbPointer(
                 child: SearchField(),
               ),
             ),

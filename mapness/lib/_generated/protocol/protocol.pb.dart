@@ -544,6 +544,50 @@ class Story_Preview extends $pb.GeneratedMessage {
   void clearTitle() => clearField(2);
 }
 
+class Story_Frame_Content extends $pb.GeneratedMessage {
+  factory Story_Frame_Content({
+    $core.Iterable<Image>? images,
+  }) {
+    final $result = create();
+    if (images != null) {
+      $result.images.addAll(images);
+    }
+    return $result;
+  }
+  Story_Frame_Content._() : super();
+  factory Story_Frame_Content.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory Story_Frame_Content.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'Story.Frame.Content', package: const $pb.PackageName(_omitMessageNames ? '' : 'balady.protocol'), createEmptyInstance: create)
+    ..pc<Image>(1, _omitFieldNames ? '' : 'images', $pb.PbFieldType.PM, subBuilder: Image.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  Story_Frame_Content clone() => Story_Frame_Content()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  Story_Frame_Content copyWith(void Function(Story_Frame_Content) updates) => super.copyWith((message) => updates(message as Story_Frame_Content)) as Story_Frame_Content;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static Story_Frame_Content create() => Story_Frame_Content._();
+  Story_Frame_Content createEmptyInstance() => create();
+  static $pb.PbList<Story_Frame_Content> createRepeated() => $pb.PbList<Story_Frame_Content>();
+  @$core.pragma('dart2js:noInline')
+  static Story_Frame_Content getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Story_Frame_Content>(create);
+  static Story_Frame_Content? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<Image> get images => $_getList(0);
+}
+
 class Story_Frame_Style extends $pb.GeneratedMessage {
   factory Story_Frame_Style({
     TextStyle? title,
@@ -821,6 +865,7 @@ class Story_Frame extends $pb.GeneratedMessage {
     $core.bool? isViewed,
     $core.int? duration,
     Story_Frame_Style? style,
+    Story_Frame_Content? content,
   }) {
     final $result = create();
     if (background != null) {
@@ -844,6 +889,9 @@ class Story_Frame extends $pb.GeneratedMessage {
     if (style != null) {
       $result.style = style;
     }
+    if (content != null) {
+      $result.content = content;
+    }
     return $result;
   }
   Story_Frame._() : super();
@@ -858,6 +906,7 @@ class Story_Frame extends $pb.GeneratedMessage {
     ..aOB(5, _omitFieldNames ? '' : 'isViewed')
     ..a<$core.int>(6, _omitFieldNames ? '' : 'duration', $pb.PbFieldType.O3)
     ..aOM<Story_Frame_Style>(7, _omitFieldNames ? '' : 'style', subBuilder: Story_Frame_Style.create)
+    ..aOM<Story_Frame_Content>(8, _omitFieldNames ? '' : 'content', subBuilder: Story_Frame_Content.create)
     ..hasRequiredFields = false
   ;
 
@@ -950,6 +999,17 @@ class Story_Frame extends $pb.GeneratedMessage {
   void clearStyle() => clearField(7);
   @$pb.TagNumber(7)
   Story_Frame_Style ensureStyle() => $_ensure(6);
+
+  @$pb.TagNumber(8)
+  Story_Frame_Content get content => $_getN(7);
+  @$pb.TagNumber(8)
+  set content(Story_Frame_Content v) { setField(8, v); }
+  @$pb.TagNumber(8)
+  $core.bool hasContent() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearContent() => clearField(8);
+  @$pb.TagNumber(8)
+  Story_Frame_Content ensureContent() => $_ensure(7);
 }
 
 class Story extends $pb.GeneratedMessage {
@@ -958,6 +1018,7 @@ class Story extends $pb.GeneratedMessage {
     Story_Preview? preview,
     $core.Iterable<Story_Frame>? frames,
     $core.bool? isViewed,
+    $core.int? activateEveryNLaunches,
   }) {
     final $result = create();
     if (id != null) {
@@ -972,6 +1033,9 @@ class Story extends $pb.GeneratedMessage {
     if (isViewed != null) {
       $result.isViewed = isViewed;
     }
+    if (activateEveryNLaunches != null) {
+      $result.activateEveryNLaunches = activateEveryNLaunches;
+    }
     return $result;
   }
   Story._() : super();
@@ -983,6 +1047,7 @@ class Story extends $pb.GeneratedMessage {
     ..aOM<Story_Preview>(2, _omitFieldNames ? '' : 'preview', subBuilder: Story_Preview.create)
     ..pc<Story_Frame>(3, _omitFieldNames ? '' : 'frames', $pb.PbFieldType.PM, subBuilder: Story_Frame.create)
     ..aOB(4, _omitFieldNames ? '' : 'isViewed')
+    ..a<$core.int>(5, _omitFieldNames ? '' : 'activateEveryNLaunches', $pb.PbFieldType.O3)
     ..hasRequiredFields = false
   ;
 
@@ -1038,6 +1103,15 @@ class Story extends $pb.GeneratedMessage {
   $core.bool hasIsViewed() => $_has(3);
   @$pb.TagNumber(4)
   void clearIsViewed() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.int get activateEveryNLaunches => $_getIZ(4);
+  @$pb.TagNumber(5)
+  set activateEveryNLaunches($core.int v) { $_setSignedInt32(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasActivateEveryNLaunches() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearActivateEveryNLaunches() => clearField(5);
 }
 
 class StoriesResponse extends $pb.GeneratedMessage {
@@ -2532,8 +2606,8 @@ class IWishObject extends $pb.GeneratedMessage {
   void clearFeedbackSent() => clearField(10);
 }
 
-class IWishResponse extends $pb.GeneratedMessage {
-  factory IWishResponse({
+class IWishMarkersResponse extends $pb.GeneratedMessage {
+  factory IWishMarkersResponse({
     $core.Iterable<IWishObjectMarker>? markers,
   }) {
     final $result = create();
@@ -2542,11 +2616,11 @@ class IWishResponse extends $pb.GeneratedMessage {
     }
     return $result;
   }
-  IWishResponse._() : super();
-  factory IWishResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory IWishResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  IWishMarkersResponse._() : super();
+  factory IWishMarkersResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory IWishMarkersResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'IWishResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'balady.protocol'), createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'IWishMarkersResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'balady.protocol'), createEmptyInstance: create)
     ..pc<IWishObjectMarker>(1, _omitFieldNames ? '' : 'markers', $pb.PbFieldType.PM, subBuilder: IWishObjectMarker.create)
     ..hasRequiredFields = false
   ;
@@ -2555,22 +2629,22 @@ class IWishResponse extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
   'Will be removed in next major version')
-  IWishResponse clone() => IWishResponse()..mergeFromMessage(this);
+  IWishMarkersResponse clone() => IWishMarkersResponse()..mergeFromMessage(this);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  IWishResponse copyWith(void Function(IWishResponse) updates) => super.copyWith((message) => updates(message as IWishResponse)) as IWishResponse;
+  IWishMarkersResponse copyWith(void Function(IWishMarkersResponse) updates) => super.copyWith((message) => updates(message as IWishMarkersResponse)) as IWishMarkersResponse;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
-  static IWishResponse create() => IWishResponse._();
-  IWishResponse createEmptyInstance() => create();
-  static $pb.PbList<IWishResponse> createRepeated() => $pb.PbList<IWishResponse>();
+  static IWishMarkersResponse create() => IWishMarkersResponse._();
+  IWishMarkersResponse createEmptyInstance() => create();
+  static $pb.PbList<IWishMarkersResponse> createRepeated() => $pb.PbList<IWishMarkersResponse>();
   @$core.pragma('dart2js:noInline')
-  static IWishResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<IWishResponse>(create);
-  static IWishResponse? _defaultInstance;
+  static IWishMarkersResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<IWishMarkersResponse>(create);
+  static IWishMarkersResponse? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.List<IWishObjectMarker> get markers => $_getList(0);

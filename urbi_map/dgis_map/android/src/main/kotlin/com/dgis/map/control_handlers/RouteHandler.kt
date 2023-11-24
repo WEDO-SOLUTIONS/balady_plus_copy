@@ -72,7 +72,8 @@ class RouteHandler(
     }
 
     private enum class Events {
-        onRouteChanged,
+        onRoutesInfoChanged,
+        onActiveRouteChanged,
     }
 
     override fun close() {
@@ -163,26 +164,6 @@ class RouteHandler(
         if (index == null) return
         val route = routesEditor.routesInfo.routes[index.value.toInt()]
 
-        val (stairwayCount, gateCount, altitudes) = getPedestrianRouteData(route.route)
-
-        val distance = route.route.geometry.last?.point?.distance?.meters ?: 0.0
-        val duration = route.route.geometry.first?.point?.let {
-            route.traffic.durations.calculateDuration(
-                it
-            ).inSeconds
-        } ?: 0
-
-        eventSink.success(
-            mapOf(
-                "event" to Events.onRouteChanged.name,
-                "distance" to distance,
-                "duration" to duration,
-                "stairwayCount" to stairwayCount,
-                "gateCount" to gateCount,
-                "altitudes" to altitudes,
-            )
-        )
-
         val geometries = route.route.geometry.entries
             .map { entry ->
                 PointGeometry(entry.value)
@@ -195,6 +176,13 @@ class RouteHandler(
             this@RouteHandler.map.camera.padding = padding
             this@RouteHandler.map.camera.move(calcPosition(map.camera, this))
         }
+
+        eventSink.success(
+            mapOf(
+                "event" to Events.onActiveRouteChanged.name,
+                "index" to index.value,
+            )
+        )
     }
 
     private fun onRoutesInfoChanged(routesInfo: RouteEditorRoutesInfo) {
@@ -214,6 +202,32 @@ class RouteHandler(
                 this@RouteHandler.map.camera.padding = padding
                 this@RouteHandler.map.camera.move(calcPosition(map.camera, this))
             }
+
+            val mappedRoutes = routesInfo.routes.map { route ->
+                val (stairwayCount, gateCount, altitudes) = getPedestrianRouteData(route.route)
+
+                val distance = route.route.geometry.last?.point?.distance?.meters ?: 0.0
+                val duration = route.route.geometry.first?.point?.let {
+                    route.traffic.durations.calculateDuration(
+                            it
+                    ).inSeconds
+                } ?: 0
+
+                mapOf(
+                    "distance" to distance,
+                    "duration" to duration,
+                    "stairwayCount" to stairwayCount,
+                    "gateCount" to gateCount,
+                    "altitudes" to altitudes
+                )
+            }
+
+            eventSink.success(
+                mapOf(
+                    "event" to Events.onRoutesInfoChanged.name,
+                    "routes" to mappedRoutes
+                )
+            )
         }
     }
 

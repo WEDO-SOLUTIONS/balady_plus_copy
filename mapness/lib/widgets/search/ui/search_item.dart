@@ -1,5 +1,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/config/package_fonts.dart';
 
@@ -74,7 +75,7 @@ class SearchItem extends StatelessWidget {
                   ),
                   const Spacer(),
                   Text(
-                    "1.3 km",
+                    "1.3 ${context.l10n.km}",
                     overflow: TextOverflow.ellipsis,
                     style: PackageFonts.frutigerArabic(
                       fontSize: 16,

@@ -8,17 +8,18 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../shared/config/package_config.dart';
 
 class ExpandableCell extends StatelessWidget {
-  const ExpandableCell(
-      {super.key,
-      required this.title,
-      this.subtitle,
-      required this.count,
-      required this.icon,
-      required this.content});
+  const ExpandableCell({
+    super.key,
+    required this.title,
+    this.subtitle,
+    this.count,
+    required this.icon,
+    required this.content,
+  });
 
   final String title;
   final String? subtitle;
-  final int count;
+  final int? count;
   final String icon;
   final Widget content;
 
@@ -64,17 +65,18 @@ class ExpandableCell extends StatelessWidget {
                     const SizedBox(
                       width: 2,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 2.0),
-                      child: Text(
-                        "$count",
-                        style: GoogleFonts.inter(
-                          fontSize: 16,
-                          height: 1.4,
-                          color: const Color(0xFF1E2A36),
+                    if (count != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 2.0),
+                        child: Text(
+                          "$count",
+                          style: GoogleFonts.inter(
+                            fontSize: 16,
+                            height: 1.4,
+                            color: const Color(0xFF1E2A36),
+                          ),
                         ),
                       ),
-                    ),
                     const Spacer(),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 2.0),
@@ -83,11 +85,11 @@ class ExpandableCell extends StatelessWidget {
                         children: [
                           Text(
                             title,
-                            style: GoogleFonts.inter(
-                              fontSize: 16,
-                              height: 1.4,
-                              color: const Color(0xFF1E2A36),
-                            ),
+                            style: DefaultTextStyle.of(context).style.copyWith(
+                                  fontSize: 16,
+                                  height: 1.4,
+                                  color: const Color(0xFF1E2A36),
+                                ),
                           ),
                           if (subtitle != null) ...[
                             const SizedBox(

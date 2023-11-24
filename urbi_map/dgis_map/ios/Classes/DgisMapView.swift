@@ -3,7 +3,6 @@ import Flutter
 import DGis
 
 class DgisMapView: NSObject, FlutterPlatformView, MapApi {
-
     
     private class Events {
         static let zoomOutEvent = "zoomOutState"
@@ -34,6 +33,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     private var routeHandler: RouteHandler?
     private var navigationHandler: NavigationHandler?
     private var searchHandler: SearchHandler?
+    private var packagesHandler: PackagesHandler?
     
     private var objectTapHandler: ObjectTapHandler?
     private var visibleRectHandler: VisibleRectHandler?
@@ -77,6 +77,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.navigationHandler?.cancel()
         self.compassControlHandler?.cancel()
         self.trafficAndParkingControlHandler?.cancel()
+        self.packagesHandler?.cancel()
     }
     
     // MARK: - Controls initialize
@@ -131,6 +132,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         self.trafficAndParkingControlHandler = TrafficAndParkingControlHandler(
             map: map,
+            eventChannel: eventChannel
+        )
+        
+        self.packagesHandler = PackagesHandler(
+            sdk: try! sdk.context,
             eventChannel: eventChannel
         )
         
@@ -705,6 +711,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(NSNumber(value: outer.geoRect.contains(rect2: inner.geoRect)), nil)
     }
     
+    func pointBearing(from: GeoPointMessage, to: GeoPointMessage, completion: @escaping (NSNumber?, FlutterError?) -> Void) {
+        completion(NSNumber(value: from.geoPoint.bearing(point: to.geoPoint).value), nil)
+    }
+    
     func onLocationPremissionGrantedDesiredAccuracy(
         _ desiredAccuracy: DesiredAccuracyMessage,
         completion: @escaping (FlutterError?) -> Void
@@ -934,18 +944,39 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         completion(nil)
     }
-    
-    func findBriefRouteInfosRouteSearchOptions(_ routeSearchOptions: RouteSearchOptionsMessage, searchPoints: [BriefRouteInfoSearchPointsMessage], completion: @escaping ([BriefRouteInfoMessage]?, FlutterError?) -> Void) {
-        
+
+    func findBriefRouteInfosRouteSearchOptions(_ routeSearchOptions: RouteSearchOptionsMessage, startPoint: RouteSearchPointMessage?, finishPoint: RouteSearchPointMessage, completion: @escaping ([BriefRouteInfoMessage]?, FlutterError?) -> Void) {
+
         let routeSearchOptionsConverted = routeSearchOptions.toRouteSearchOptions()
-        let searchPointsMap = searchPoints.map { point in
-            BriefRouteInfoSearchPoints(
-                startPoint: point.startPoint.toRouteSearchPoint(),
-                finishPoint: point.finishPoint.toRouteSearchPoint()
-            )
-        }
         
-        routeHandler?.findBriefRouteInfosRouteSearchOptions(routeSearchOptionsConverted, searchPoints: searchPointsMap,completion: completion)
+        let startSearchPoint = startPoint?.toRouteSearchPoint()
+        let finishSearchPoint  = finishPoint.toRouteSearchPoint()
         
+        routeHandler?.findBriefRouteInfosRouteSearchOptions(
+            routeSearchOptionsConverted,
+            startPoint: startSearchPoint,
+            finishPoint: finishSearchPoint,
+            completion: completion)
+
+    }
+    
+    func listPackages(completion: @escaping ([PackageMessage]?, FlutterError?) -> Void) {
+        packagesHandler?.listPackages(completion: completion)
+    }
+    
+    func installPackageId(_ id: String, completion: @escaping (FlutterError?) -> Void) {
+        packagesHandler?.installPackage(id, completion: completion)
+    }
+    
+    func listVoices(completion: @escaping ([PackageMessage]?, FlutterError?) -> Void) {
+        packagesHandler?.listVoices(completion: completion)
+    }
+    
+    func installVoiceId(_ id: String, completion: @escaping (FlutterError?) -> Void) {
+        packagesHandler?.installVoice(id, completion: completion)
+    }
+    
+    func setNavigatorVoiceId(_ id: String, completion: @escaping (FlutterError?) -> Void) {
+        navigationHandler?.setNavigatorVoice(id, completion: completion)
     }
 }

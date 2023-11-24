@@ -6,6 +6,7 @@ import 'package:mapness/features/iwish/providers/iwish_address.dart';
 import 'package:mapness/features/iwish/providers/iwish_car_eta.dart';
 import 'package:mapness/features/iwish/providers/iwish_distance.dart';
 import 'package:mapness/features/iwish/providers/iwish_entity.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_actions.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
@@ -26,11 +27,11 @@ class IwishPlaceCard extends ConsumerWidget {
     return entity.when(
       error: (_, __) => ErrorSheet(
         onRetry: () => entityNotifier.refresh(),
-        buttonLabel: 'Reload',
+        buttonLabel: context.l10n.reload,
         onClose: () => context.pop(),
       ),
-      loading: () => const LoadingSheet(
-        text: 'loading...',
+      loading: () =>  LoadingSheet(
+        text: context.l10n.loading,
       ),
       data: (entity) {
         final distance = ref.watch(iwishDistanceProvider(entity));

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 
 import '../../../shared/config/package_config.dart';
@@ -45,7 +46,7 @@ class DarkModeCell extends ConsumerWidget {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 2.0),
                     child: Text(
-                      "Dark mode",
+                      context.l10n.darkMode,
                       style: GoogleFonts.inter(
                         fontSize: 16,
                         height: 1.4,

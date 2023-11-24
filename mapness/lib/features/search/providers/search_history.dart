@@ -9,14 +9,15 @@ const _hiveBox = 'searchHistory';
 @riverpod
 class SearchHistory extends _$SearchHistory {
   @override
-  List<SearchHistoryItem> build() {
+  List<SearchHistoryItem> build(String scope) {
     _load();
 
     return [];
   }
 
   Future<void> _load() async {
-    final searchHistoryBox = await ref.watch(hiveProvider(_hiveBox).future);
+    final searchHistoryBox =
+        await ref.watch(hiveProvider("${_hiveBox}_$scope").future);
 
     final history =
         searchHistoryBox.values.map((e) => e as SearchHistoryItem).toList();

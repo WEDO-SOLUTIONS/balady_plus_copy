@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/landing_page.dart';
 import 'package:mapness/_features/profile/profile_page.dart';
+import 'package:mapness/pages/routing/routing_points.dart';
 import 'package:mapness/shared/routing/scaffold_with_nested_navigation.dart';
+import 'package:mapness/shared/routing/transculent_page.dart';
 
 part 'home_shell.g.dart';
 
@@ -46,13 +48,17 @@ class HomeShellRoute extends StatefulShellRouteData {
   static final GlobalKey<NavigatorState> $navigatorKey = shellNavigatorKey;
 
   @override
-  Widget builder(BuildContext context, GoRouterState state,
+  Page<void> pageBuilder(BuildContext context, GoRouterState state,
       StatefulNavigationShell navigationShell) {
     if (state.fullPath == "/profile") {
-      return navigationShell;
+      return TransculentPage(child: navigationShell);
     }
 
-    return ScaffoldWithNestedNavigation(navigationShell: navigationShell);
+    return TransculentPage(
+      child: ScaffoldWithNestedNavigation(
+        navigationShell: navigationShell,
+      ),
+    );
   }
 }
 
@@ -64,8 +70,9 @@ class LandingRoute extends GoRouteData {
   const LandingRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const LandingPage();
+  Page<void> buildPage(context, state) => const TransculentPage(
+        child: LandingPage(),
+      );
 }
 
 class RoutingBranch extends StatefulShellBranchData {
@@ -76,8 +83,9 @@ class RoutingRoute extends GoRouteData {
   const RoutingRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const SizedBox.shrink();
+  Page<void> buildPage(context, state) => const TransculentPage(
+        child: RoutingPointsPage(),
+      );
 }
 
 class ServicesBranch extends StatefulShellBranchData {

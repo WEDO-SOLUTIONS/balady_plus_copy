@@ -93,6 +93,10 @@ message Story {
   }
 
   message Frame {
+    message Content{
+      repeated Image images = 1;
+    }
+
     message Style {
       optional TextStyle title = 1;
       optional TextStyle description = 2;
@@ -120,12 +124,14 @@ message Story {
     bool is_viewed = 5; // deprecated
     int32 duration = 6;
     Style style = 7;
+    optional Content content = 8;
   }
 
   string id = 1;
   Preview preview = 2;
   repeated Frame frames = 3;
   bool is_viewed = 4; // deprecated
+  optional int32 activate_every_n_launches = 5;
 }
 
 message StoriesResponse {
@@ -252,7 +258,7 @@ message IWishObject {
   bool feedback_sent = 10;
 }
 
-message IWishResponse {
+message IWishMarkersResponse {
   repeated IWishObjectMarker markers = 1;
 }
 

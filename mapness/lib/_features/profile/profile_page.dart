@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/_features/profile/widgets/voice_picker.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/_features/common/providers/user_state.dart';
 import 'package:mapness/_features/profile/widgets/authorized_profile.dart';
@@ -41,8 +43,8 @@ class ProfilePage extends StatelessWidget {
             const SizedBox(
               height: 16,
             ),
-            const ExpandableCell(
-              title: "Personal Data",
+            ExpandableCell(
+              title: context.l10n.personalData,
               count: 7,
               icon: "assets/icons/svg/ic_profile_data.svg",
               content: PersonalData(),
@@ -71,7 +73,7 @@ class ProfilePage extends StatelessWidget {
                 final language = ref.watch(appLanguageProvider);
 
                 return ExpandableCell(
-                  title: "Language",
+                  title: context.l10n.language,
                   subtitle: language.title,
                   count: 2,
                   icon: "assets/icons/svg/ic_profile_lang.svg",
@@ -82,12 +84,20 @@ class ProfilePage extends StatelessWidget {
             const SizedBox(
               height: 16,
             ),
+            const ExpandableCell(
+              title: "Voice",
+              icon: "assets/icons/svg/ic_profile_lang.svg",
+              content: VoicePicker(),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
             const DarkModeCell(),
             const SizedBox(
               height: 16,
             ),
-            const ExpandableCell(
-              title: "About App",
+            ExpandableCell(
+              title: context.l10n.aboutApp,
               count: 1,
               icon: "assets/icons/svg/ic_profile_about.svg",
               content: SizedBox(

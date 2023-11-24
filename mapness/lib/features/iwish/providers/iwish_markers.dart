@@ -17,7 +17,7 @@ class _IwishMarkers extends _$IwishMarkers {
   Future<List<IwishMarker>> build() async {
     final dio = ref.watch(dGisNetworkProvider);
     final raw = await dio.get('iwish');
-    final response = pb.IWishResponse.fromBuffer(raw.data);
+    final response = pb.IWishMarkersResponse.fromBuffer(raw.data);
     // print(response.writeToJson());
 
     // final random = Random(42);

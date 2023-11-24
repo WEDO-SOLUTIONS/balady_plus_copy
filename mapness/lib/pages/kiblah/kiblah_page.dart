@@ -9,11 +9,12 @@ class KiblahPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("KiblahPage rebuild");
+
     return Material(
       color: Colors.black.withOpacity(0.6),
       child: Stack(
         fit: StackFit.expand,
-        // alignment: Alignment.center,
         children: [
           const SafeArea(
             bottom: false,

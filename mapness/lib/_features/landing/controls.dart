@@ -7,12 +7,12 @@ import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/layers_control.dart';
+import 'package:mapness/app/routes/kiblah.dart';
 
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/_features/landing/widgets/traffic_control.dart';
 import 'package:mapness/_features/landing/widgets/weather_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
-import 'package:mapness/app/routes/kiblah.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 
 class MapControls extends ConsumerWidget {

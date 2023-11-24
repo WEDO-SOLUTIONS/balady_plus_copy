@@ -9,9 +9,9 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
   OpeningHoursModel getOpeningHoursModel() {
     final displayOpenHours = openingHours?.getDisplayOpenHours();
     return OpeningHoursModel(
-      todayOpeningInfo: openingHours?.getTodayOpeningInfo(),
       isOpen24x7: openingHours?.isOpen24x7,
       openingHours: displayOpenHours,
+      isDailySameOpenHours: openingHours?.defineIsDailySameOpenHours(),
     );
   }
 

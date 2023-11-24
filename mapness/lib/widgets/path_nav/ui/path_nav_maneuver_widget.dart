@@ -1,0 +1,78 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/entities/path_nav/models/path_nav_maneuver.dart';
+
+class PathNavManeuverWidget extends StatelessWidget {
+  final PathNavManeuver maneuver;
+
+  const PathNavManeuverWidget({
+    super.key,
+    required this.maneuver,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.only(
+          top: 8,
+          bottom: 16,
+          left: 8,
+          right: 8,
+        ),
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+          color: Colors.white,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                if (maneuver.iconPath != null)
+                  SvgPicture.asset(
+                    maneuver.iconPath!,
+                    width: 36,
+                    height: 36,
+                    colorFilter: const ColorFilter.mode(
+                      Color(0xff3588fd),
+                      BlendMode.srcATop,
+                    ),
+                  ),
+                const SizedBox(width: 8.0),
+                Text(
+                  maneuver.distance,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 26,
+                  ),
+                ),
+                const SizedBox(width: 2.0),
+                Text(
+                  maneuver.unit,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 26,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4.0),
+            Text(
+              maneuver.roadName,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

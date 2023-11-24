@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/pages/kiblah/providers/kaaba_bearing.dart';
+import 'package:mapness/pages/kiblah/providers/kaaba_haptics.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/config/package_fonts.dart';
+import 'package:mapness/shared/providers/compass.dart';
 
-class KiblahHeader extends StatelessWidget {
+class KiblahHeader extends ConsumerWidget {
   const KiblahHeader({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(kaabaHapticsProvider);
+
+    final kaabaBearing = ref.watch(kaabaBearingProvider);
+    final userBearing = ref.watch(compassProvider);
+    final bearingDiff = kaabaBearing.floor() - userBearing.floor();
+
     return Padding(
       padding: const EdgeInsets.only(
         top: 12,
@@ -73,7 +83,7 @@ class KiblahHeader extends StatelessWidget {
             ),
           ),
           Text(
-            "121º القبلة",
+            "$bearingDiffº القبلة",
             style: PackageFonts.frutigerArabic(
               color: Colors.white,
               fontWeight: FontWeight.w400,

@@ -8,6 +8,7 @@ import 'package:mapness/features/iwish/providers/iwish_address.dart';
 import 'package:mapness/features/iwish/providers/iwish_distance.dart';
 import 'package:mapness/features/iwish/providers/iwish_entity.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_card.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
@@ -28,10 +29,10 @@ class IwishCarousel extends ConsumerWidget {
     return markers.when(
       error: (error, stackTrace) => ErrorSheet(
         onRetry: () => ref.read(iwishMarkersProvider.notifier).refresh(),
-        buttonLabel: 'refresh',
+        buttonLabel: context.l10n.refresh,
         onClose: () => context.pop(),
       ),
-      loading: () => const LoadingSheet(text: 'loading'),
+      loading: () => LoadingSheet(text: context.l10n.loading),
       data: (data) => CarouselSlider.builder(
         itemCount: data.length,
         itemBuilder: (context, index, realIndex) {
@@ -44,7 +45,7 @@ class IwishCarousel extends ConsumerWidget {
                     onPressed: () => ref
                         .read(iwishEntityProvider(data[index].id).notifier)
                         .refresh(),
-                    child: const Text('Reload'),
+                    child: Text(context.l10n.reload),
                   ),
                 ),
                 loading: () => const ShimmerEffectWidget(),

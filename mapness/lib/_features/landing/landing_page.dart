@@ -6,14 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
-import 'package:mapness/_features/landing/layers_sheet.dart';
-import 'package:mapness/_features/landing/providers/map_controls.dart';
-import 'package:mapness/_features/map/providers/dgis_controller.dart';
-import 'package:mapness/_features/routing_page/routing_overlay.dart';
 import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 
-import '../map/map_page_new.dart';
 import 'controls.dart' as controls;
 import 'dashboard.dart';
 
@@ -35,11 +31,6 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final controlsState = ref.watch(mapControlsProvider);
-    final currentRoute = ref.watch(currentRouteProvider);
-
-    final controlsVisible =
-        controlsState.controlsVisible && currentRoute == '/landing';
     ref.watch(favouriteMarkersProvider);
     _streamSubscription?.cancel();
     _streamSubscription = ref
@@ -49,24 +40,17 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Stack(
+      child: Material(
+        type: MaterialType.transparency,
+        child: Stack(
           children: [
-            const MapPage(),
             const controls.MapControls(),
-            if (controlsVisible)
-              LayoutBuilder(builder: (context, constraints) {
-                return Dashboard(
-                  biggestHeight: constraints.biggest.height,
-                  biggestWidth: constraints.biggest.width,
-                );
-              }),
-            switch (controlsState) {
-              MapControlsStateLayers() => const LayersSheet(),
-              MapControlsStateNavigation() => const RoutingOverlay(),
-              _ => const SizedBox.shrink(),
-            },
+            LayoutBuilder(builder: (context, constraints) {
+              return Dashboard(
+                biggestHeight: constraints.biggest.height,
+                biggestWidth: constraints.biggest.width,
+              );
+            }),
           ],
         ),
       ),

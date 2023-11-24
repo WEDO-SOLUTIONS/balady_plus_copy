@@ -19,6 +19,7 @@ import ru.dgis.sdk.NativeException
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.GeoRect
+import ru.dgis.sdk.coordinates.bearing
 import ru.dgis.sdk.directory.DirectoryFilter
 import ru.dgis.sdk.directory.ObjectType
 import ru.dgis.sdk.directory.SearchManager
@@ -28,6 +29,8 @@ import ru.dgis.sdk.map.*
 import ru.dgis.sdk.positioning.DefaultLocationSource
 import ru.dgis.sdk.positioning.LocationChangeListener
 import ru.dgis.sdk.positioning.LocationSource
+import ru.dgis.sdk.routing.BriefRouteInfoSearchPoints
+import ru.dgis.sdk.routing.RouteSearchPoint
 import java.io.FileNotFoundException
 import kotlin.collections.Map
 import kotlin.math.round
@@ -62,6 +65,12 @@ class DgisMapView(
             eventSink = eventSink,
         )
     }
+    private val packagesHandler by unsafeLazy {
+        PackagesHandler(
+            sdkContext = sdkContext,
+            eventSink = eventSink,
+        )
+    }
     private var compassControlHandler: CompassControlHandler? = null
     private var trafficAndParkingControlHandler: TrafficAndParkingControlHandler? = null
 
@@ -91,6 +100,7 @@ class DgisMapView(
         visibleRectHandler?.close()
         compassControlHandler?.close()
         trafficAndParkingControlHandler?.close()
+        packagesHandler?.close()
     }
 
     override fun initialize(result: ApiResult<InitializeMessage>) {
@@ -644,6 +654,10 @@ class DgisMapView(
         result?.success(outer.toGeoRect().contains(inner.toGeoRect()))
     }
 
+    override fun pointBearing(from: GeoPointMessage, to: GeoPointMessage, result: Messages.Result<Double>?) {
+        result?.success(from.toGeoPoint().bearing(to.toGeoPoint()).value)
+    }
+
     override fun setPanoramaMarkerAzimuth(
         message: MarkerAzimuthMessage,
         result: Messages.Result<Void>?
@@ -786,18 +800,27 @@ class DgisMapView(
                 .build()
         )
     }
+
     override fun findBriefRouteInfos(routeSearchOptions: RouteSearchOptionsMessage,
-                                     searchPoints: MutableList<BriefRouteInfoSearchPointsMessage>,
+                                     startPoint: RouteSearchPointMessage?,
+                                     finishPoint: RouteSearchPointMessage,
                                      result: Messages.Result<MutableList<BriefRouteInfoMessage>>?) {
-
         val searchOptions = routeSearchOptions.toRouteSearchOptions()
-        val searchPointsMap = searchPoints.map {
-            it.toSearchPoint()
-        }
 
+        val startSearchPoint = startPoint?.toRouteSearchPoint() ?: locationSource.lastLocation.let {
+            return@let RouteSearchPoint(
+                    coordinates = GeoPoint(it?.latitude ?: .0, it?.longitude ?: .0),
+                    objectId = DgisObjectId(
+                            objectId = 0,
+                            entranceId = 0))
+        }
+        val finishSearchPoint = finishPoint.toRouteSearchPoint()
+        val briefRouteInfoSearchPoints = listOf(BriefRouteInfoSearchPoints(
+                startPoint = startSearchPoint,
+                finishPoint = finishSearchPoint))
         routeHandler?.findBriefRouteInfos(
                 routeSearchOptions = searchOptions,
-                searchPoints = searchPointsMap)?.apply {
+                searchPoints = briefRouteInfoSearchPoints)?.apply {
             onResult { res ->
                 val map = res.mapNotNull {
                     it?.toBriefRouteInfoMessage()
@@ -809,5 +832,25 @@ class DgisMapView(
                 result?.error(error)
             }
         }
+    }
+
+    override fun listPackages(result: Messages.Result<List<PackageMessage>>?) {
+        packagesHandler.listPackages(result)
+    }
+
+    override fun installPackage(id: String, result: Messages.Result<Void>?) {
+        packagesHandler.installPackage(id, result)
+    }
+
+    override fun listVoices(result: Messages.Result<List<PackageMessage>>?) {
+        packagesHandler.listVoices(result)
+    }
+
+    override fun installVoice(id: String, result: Messages.Result<Void>?) {
+        packagesHandler.installVoice(id, result)
+    }
+
+    override fun setNavigatorVoice(id: String, result: Messages.Result<Void>?) {
+        navigationHandler.setNavigatorVoice(id, result)
     }
 }

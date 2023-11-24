@@ -2,7 +2,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mapness/_features/map/providers/traffic_state.dart';
+import 'package:mapness/shared/providers/map/traffic_state.dart';
 
 import '../../../shared/ui/buttons/map_button.dart';
 

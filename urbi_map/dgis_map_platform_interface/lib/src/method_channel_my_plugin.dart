@@ -9,6 +9,7 @@ import 'package:dgis_map_platform_interface/src/control_handlers/marker_tap_even
 import 'package:dgis_map_platform_interface/src/control_handlers/navigation/speed_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/navigation_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/object_tap_event_handler.dart';
+import 'package:dgis_map_platform_interface/src/control_handlers/package_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/public_transport_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/traffic_and_parking_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/visible_rect_event_handler.dart';
@@ -45,7 +46,7 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   late final _visibleRectEventHandler = VisibleRectEventHandler();
   late final _cameraStateEventHandler = CameraStateEventHandler();
   late final _markerTapEventHandler = MarkerTapEventHandler();
-  late final _routeChangedEventHandler = RouteChangedEventHandler();
+  late final _routesEventHandler = RoutesEventHandler();
   late final _navigationEventHandler = NavigationEventHandler();
   late final _naviSpeedEventHandler = SpeedEventHandler();
   late final _naviDashboardEventHandler = DashboardEventHandler();
@@ -55,6 +56,7 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   late final _naviManeuverEventHandler = ManeuverEventHandler();
   late final _trafficAndParkingStateEventHandler =
       TrafficAndParkingEventHandler();
+  late final _packagesHandler = PackageEventHandler();
 
   @override
   Stream<ZoomControlEnabledEvent> get zoomControlEnabledEvents =>
@@ -97,8 +99,12 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
       _markerTapEventHandler.markerWithPhotoTapEvents;
 
   @override
-  Stream<RouteChangedEvent> get routeChangedEvents =>
-      _routeChangedEventHandler.routeChangedEvents;
+  Stream<ActiveRouteChangedEvent> get activeRouteChangedEvents =>
+      _routesEventHandler.activeRouteChangedEvents;
+
+  @override
+  Stream<RoutesInfoChangedEvent> get routesInfoChangedEvents =>
+      _routesEventHandler.routesInfoChangedEvents;
 
   @override
   Stream<NavigationEvent> get navigationEvents =>
@@ -143,6 +149,14 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
           _publicTransportEventHandler.activeRouteChangedEvents;
 
   @override
+  Stream<PackageProgressEvent> get packageProgressEvents =>
+      _packagesHandler.packageProgressEvents;
+
+  @override
+  Stream<PackageInfoChangedEvent> get packageInfoChangedEvents =>
+      _packagesHandler.packagesInfoChangedEvents;
+
+  @override
   Stream<RouteOptionsEvent> get routeOptionsEvent =>
       _navigationEventHandler.routeOptionEvents;
 
@@ -172,7 +186,7 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     await _locationEventHandler.dispose();
     await _indoorEventHandler.dispose();
     await _objectTapEventHandler.dispose();
-    await _routeChangedEventHandler.dispose();
+    await _routesEventHandler.dispose();
     await _navigationEventHandler.dispose();
     await _naviSpeedEventHandler.dispose();
     await _naviDashboardEventHandler.dispose();
@@ -235,8 +249,10 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
             return _cameraStateEventHandler.cameraStateEvent(map);
           case MarkerWithPhotoTapEvent.name:
             return _markerTapEventHandler.markerWithPhotoTapEvent(map);
-          case RouteChangedEvent.name:
-            return _routeChangedEventHandler.routeChangedEvent(map);
+          case ActiveRouteChangedEvent.name:
+            return _routesEventHandler.activeRouteChangedEvent(map);
+          case RoutesInfoChangedEvent.name:
+            return _routesEventHandler.routesInfoChangedEvent(map);
           case NavigationEvent.name:
             return _navigationEventHandler.handleNavigationEvent(map);
           case IoTapEvent.name:
@@ -265,6 +281,10 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
             return _publicTransportEventHandler.routesChangedEvent(map);
           case PublicTransportActiveRouteChanged.name:
             return _publicTransportEventHandler.activeRouteChangedEvent(map);
+          case PackageProgressEvent.name:
+            return _packagesHandler.packageProgressEvent(map);
+          case PackageInfoChangedEvent.name:
+            return _packagesHandler.packageInfoChangedEvent(map);
         }
       },
     );
@@ -689,6 +709,12 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     return _api.containsRect(outer, inner);
   }
 
+  @override
+  Future<double> pointBearing(GeoPointMessage from, GeoPointMessage to) {
+    return _api.pointBearing(from, to);
+  }
+
+  @override
   Future<void> setRouteParams(RouteEditorRouteParamsMessage params) {
     return _api.setRouteParams(params);
   }
@@ -789,8 +815,39 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
 
   @override
   Future<List<BriefRouteInfoMessage?>> findBriefRouteInfos(
-      RouteSearchOptionsMessage routeSearchOptions,
-      List<BriefRouteInfoSearchPointsMessage?> searchPoints) {
-    return _api.findBriefRouteInfos(routeSearchOptions, searchPoints);
+    RouteSearchOptionsMessage routeSearchOptions,
+    RouteSearchPointMessage? startPoint,
+    RouteSearchPointMessage finishPoint,
+  ) {
+    return _api.findBriefRouteInfos(
+      routeSearchOptions,
+      startPoint,
+      finishPoint,
+    );
+  }
+
+  @override
+  Future<List<PackageMessage?>> listPackages() {
+    return _api.listPackages();
+  }
+
+  @override
+  Future<List<PackageMessage?>> listVoices() {
+    return _api.listVoices();
+  }
+
+  @override
+  Future<void> installPackage(String id) {
+    return _api.installPackage(id);
+  }
+
+  @override
+  Future<void> installVoice(String id) {
+    return _api.installVoice(id);
+  }
+
+  @override
+  Future<void> setNavigatorVoice(String id) {
+    return _api.setNavigatorVoice(id);
   }
 }

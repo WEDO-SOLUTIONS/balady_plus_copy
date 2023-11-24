@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class UnautorizedProfile extends StatelessWidget {
   const UnautorizedProfile({super.key});
@@ -41,7 +42,7 @@ class UnautorizedProfile extends StatelessWidget {
                   height: 20,
                 ),
                 Text(
-                  'Sign in to unlock the full potential\nof the Balady app',
+                  context.l10n.signInToUnlockTheFullPotentialOfTheBaladyApp,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.inter(
                     fontSize: 16,
@@ -67,7 +68,7 @@ class UnautorizedProfile extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                          'Connect to Momrah',
+                          context.l10n.connectToMomrah,
                           style: GoogleFonts.inter(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,

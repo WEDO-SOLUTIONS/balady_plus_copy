@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/happiness_map/data/happiness_repository.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
-import 'package:mapness/_features/map/providers/camera_position.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'happines_manager.g.dart';

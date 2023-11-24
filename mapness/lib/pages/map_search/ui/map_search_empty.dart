@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 import '../../../shared/config/package_config.dart';
 
@@ -25,7 +26,7 @@ class MapSearchEmpty extends StatelessWidget {
           SizedBox(
             width: 279,
             child: Text(
-              "We couldn't find anything. Try changing your request",
+              context.l10n.weCouldntFindAnythingTryChangingYourRequest,
               textDirection: TextDirection.ltr,
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(

@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class FavouritesHeader extends StatelessWidget {
   const FavouritesHeader({
@@ -26,7 +27,7 @@ class FavouritesHeader extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           Text(
-            "Favorites",
+            context.l10n.favourites,
             style: GoogleFonts.inter(
               fontSize: 18,
               height: 1.4,
@@ -42,7 +43,7 @@ class FavouritesHeader extends StatelessWidget {
                   ? GestureDetector(
                       onTap: onDeleteAllTap,
                       child: Text(
-                        "Delete all",
+                        context.l10n.deleteAll,
                         style: GoogleFonts.inter(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
@@ -78,7 +79,7 @@ class FavouritesHeader extends StatelessWidget {
               GestureDetector(
                 onTap: isEditing ? onEditTap : onDoneTap,
                 child: Text(
-                  isEditing ? "Done" : "Edit",
+                  isEditing ? context.l10n.done : context.l10n.edit,
                   style: GoogleFonts.inter(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,

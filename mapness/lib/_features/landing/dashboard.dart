@@ -13,6 +13,7 @@ import 'package:mapness/_features/landing/widgets/prayer_card.dart';
 import 'package:mapness/_features/stories/stories_widget.dart';
 import 'package:mapness/pages/iwish/ui/iwish_dashboard_widget.dart';
 import 'package:mapness/shared/config/package_fonts.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({
@@ -32,9 +33,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
   late final DraggableScrollableController _draggableScrollableController;
   late final PageController _pageController;
 
-  double _headerExtent() {
-    return 75 / widget.biggestHeight;
-  }
+  double get _headerExtent => 75 / widget.biggestHeight;
 
   @override
   void initState() {
@@ -45,7 +44,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
     _draggableScrollableController = DraggableScrollableController()
       ..addListener(() {
         Future.delayed(Duration.zero, () {
-          if (_draggableScrollableController.size > _headerExtent()) {
+          if (_draggableScrollableController.size > _headerExtent + 0.001) {
             ref.watch(mapControlsProvider.notifier).update(
                   MapControlsStateDashboard(),
                 );
@@ -71,9 +70,11 @@ class _DashboardState extends ConsumerState<Dashboard> {
 
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
-      initialChildSize: _headerExtent(),
-      minChildSize: _headerExtent(),
+      initialChildSize: .75,
+      minChildSize: _headerExtent,
       maxChildSize: .9,
+      snap: true,
+      snapSizes: [_headerExtent, .75, .9],
       builder: (BuildContext context, ScrollController scrollController) {
         return Directionality(
           textDirection: TextDirection.rtl,
@@ -117,7 +118,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                               right: 16.0,
                             ),
                             child: Text(
-                              'أماكن للزيارة',
+                              context.l10n.placesToVisit,
                               style: PackageFonts.frutigerArabic(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
@@ -205,7 +206,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                           Padding(
                             padding: const EdgeInsets.only(right: 16.0),
                             child: Text(
-                              'الفعاليات',
+                              context.l10n.events,
                               style: PackageFonts.frutigerArabic(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
@@ -254,7 +255,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                           Padding(
                             padding: const EdgeInsets.only(right: 16.0),
                             child: Text(
-                              'الفعاليات',
+                              context.l10n.events,
                               style: PackageFonts.frutigerArabic(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
@@ -276,7 +277,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                           Padding(
                             padding: const EdgeInsets.only(right: 16.0),
                             child: Text(
-                              ' أوقات الصلاة',
+                              context.l10n.prayerTime,
                               style: PackageFonts.frutigerArabic(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
@@ -298,7 +299,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                           Padding(
                             padding: const EdgeInsets.only(right: 16.0),
                             child: Text(
-                              'سجل للحصول على الفرص',
+                              context.l10n.registerForOpportunities,
                               style: PackageFonts.frutigerArabic(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
@@ -320,7 +321,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                           Padding(
                             padding: const EdgeInsets.only(right: 16.0),
                             child: Text(
-                              "تسجيل الدخول للوصول الى",
+                              context.l10n.loginToAccess,
                               style: PackageFonts.frutigerArabic(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
@@ -341,7 +342,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                             Padding(
                               padding: const EdgeInsets.only(right: 16.0),
                               child: Text(
-                                "مثيرة للاهتمام بالنسبة لك",
+                                context.l10n.interestingForYou,
                                 style: PackageFonts.frutigerArabic(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w700,

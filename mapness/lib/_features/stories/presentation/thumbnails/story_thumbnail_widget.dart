@@ -27,7 +27,7 @@ class StoryThumbnailWidget extends StatelessWidget {
             shape: RoundedRectangleBorder(
               side: BorderSide(
                 width: 2,
-                color: isWatched ? Colors.transparent : const Color(0xFF1BA135),
+                color: isWatched ? Colors.transparent : const Color(0xFF4CA5B4),
               ),
               borderRadius: BorderRadius.circular(16),
             ),
@@ -53,6 +53,7 @@ class StoryThumbnailWidget extends StatelessWidget {
                 ),
               ),
               Positioned(
+                top: 0,
                 left: 0,
                 right: 0,
                 bottom: 0,
@@ -63,22 +64,34 @@ class StoryThumbnailWidget extends StatelessWidget {
                     right: 8,
                     bottom: 12,
                   ),
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.vertical(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.vertical(
                       bottom: Radius.circular(13),
                       top: Radius.circular(4),
                     ),
-                    color: Color(0x441BA135),
-                  ),
-                  child: Text(
-                    title,
-                    // TODO: move to theme
-                    style: PackageFonts.frutigerArabic(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: -0.22,
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        const Color(0xFF35144900).withOpacity(0),
+                        const Color(0xFF2D103FA8).withOpacity(0.66),
+                      ],
                     ),
+                  ),
+                  child: Column(
+                    children: [
+                      const Spacer(),
+                      Text(
+                        title,
+                        // TODO: move to theme
+                        style: PackageFonts.frutigerArabic(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: -0.22,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               )

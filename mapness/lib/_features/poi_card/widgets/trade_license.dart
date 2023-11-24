@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class TradeLicense extends StatelessWidget {
   final TradeLicenseMessage? tradeLicense;
@@ -13,7 +14,7 @@ class TradeLicense extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final title = tradeLicense?.license ?? '11234567898765432';
-    const subtitle = 'رقم التعريف الضريبي';
+    final subtitle = context.l10n.tinId;
     return CardContent(
       child: Column(
         children: [

@@ -19,10 +19,8 @@ class HappinessMapRoute extends GoRouteData {
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return TransculentTransitionPage(
-      opaque: false,
-      transitionBuilder: (_, __, ___, child) => child,
-      child: const Align(
+    return const TransculentPage(
+      child: Align(
         alignment: Alignment.bottomCenter,
         child: HappinesOverlayContent(),
       ),
@@ -40,13 +38,11 @@ class HappinessMapCommentRoute extends GoRouteData {
       );
 }
 
-TransculentTransitionPage<void> _happinesTransition({
+TransculentPage<void> _happinesTransition({
   required BuildContext context,
   required Widget child,
 }) {
-  return TransculentTransitionPage(
-    opaque: false,
-    transitionBuilder: (_, __, ___, child) => child,
+  return TransculentPage(
     child: Directionality(
       textDirection: TextDirection.rtl,
       child: Align(alignment: Alignment.bottomCenter, child: child),

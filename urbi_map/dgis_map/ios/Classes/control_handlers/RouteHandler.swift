@@ -3,7 +3,8 @@ import Foundation
 
 class RouteHandler {
     private class Events {
-        static let onRouteChanged = "onRouteChanged"
+        static let onActiveRouteChanged = "onActiveRouteChanged"
+        static let onRoutesInfoChanged = "onRoutesInfoChanged"
     }
     
     private let positioningService: PlatformPositioningServicesFactory
@@ -163,24 +164,10 @@ class RouteHandler {
         guard let index else {
             return
         }
-        let route = routeEditor.routesInfo.routes[Int(index.value)]
-        
-        let distance = Double(route.route.geometry.last?.point.distance.millimeters ?? 0) / 1000.0
-        
-        var duration = 0
-        if let first = route.route.geometry.first {
-            duration = Int(route.traffic.durations.calculateDuration(routePoint: first.point).rounded())
-        }
-        
-        let (stairwayCount, gateCount, altitudes) = getPedestrianRouteData(route.route)
-        
+
         eventChannel.success([
-            "event": Events.onRouteChanged,
-            "distance": distance,
-            "duration": duration,
-            "stairwayCount": stairwayCount,
-            "gateCount": gateCount,
-            "altitudes" : altitudes
+            "event": Events.onActiveRouteChanged,
+            "index": index.value
         ])
     }
     
@@ -215,6 +202,30 @@ class RouteHandler {
         self.moveCameraCancellable = self.map.camera.move(
             position: position
         ).sink {_ in } failure: {_ in }
+        
+        let mappedRoutes = routesInfo.routes.map { route in
+            let distance = Double(route.route.geometry.last?.point.distance.millimeters ?? 0) / 1000.0
+            
+            var duration = 0
+            if let first = route.route.geometry.first {
+                duration = Int(route.traffic.durations.calculateDuration(routePoint: first.point).rounded())
+            }
+            
+            let (stairwayCount, gateCount, altitudes) = getPedestrianRouteData(route.route)
+            
+            return [
+                "distance": distance,
+                "duration": duration,
+                "stairwayCount": stairwayCount,
+                "gateCount": gateCount,
+                "altitudes" : altitudes
+            ]
+        }
+        
+        eventChannel.success([
+            "event": Events.onRoutesInfoChanged,
+            "routes": mappedRoutes
+        ])
     }
     
     func getActivePublicTransportRoute() -> TrafficRoute? {
@@ -234,12 +245,40 @@ class RouteHandler {
     
     func findBriefRouteInfosRouteSearchOptions(
         _ routeSearchOptions: RouteSearchOptions,
-        searchPoints: [BriefRouteInfoSearchPoints],
+        startPoint: RouteSearchPoint?,
+        finishPoint: RouteSearchPoint,
         completion: @escaping ([BriefRouteInfoMessage]?, FlutterError?)->Void)
     {
 
+
+        let startSearchPoint: RouteSearchPoint
+
+        if let pStartPoint = startPoint {
+            startSearchPoint = RouteSearchPoint(coordinates: GeoPoint(
+                latitude: pStartPoint.coordinates.latitude,
+                longitude: pStartPoint.coordinates.longitude
+            ))
+        } else if let lastLocation = positioningService.locationProvider?.lastLocation?.coordinate {
+            startSearchPoint = RouteSearchPoint(coordinates: GeoPoint(
+                latitude: lastLocation.latitude,
+                longitude: lastLocation.longitude
+            ))
+        } else {
+            completion(
+                nil,
+                FlutterError(
+                    code: "Failed to get route information",
+                    message: nil,
+                    details: nil
+                )
+            )
+            return // Возвращаем nil или промежуточное значение в случае ошибки получения стартовой точки
+        }
+
+        let briefRouteInfoSearchPoints = BriefRouteInfoSearchPoints(startPoint: startSearchPoint, finishPoint: finishPoint)
+        
         self.cancelable.append(trafficRouter.findBriefRouteInfos(
-            searchPoints: searchPoints,
+            searchPoints: [briefRouteInfoSearchPoints],
             routeSearchOptions: routeSearchOptions
         )
         .sink(receiveValue: {

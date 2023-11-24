@@ -1,5 +1,4 @@
 import 'package:dgis_map/library.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,9 +7,10 @@ import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
 import 'package:mapness/_features/favourites/widgets/screen/search_screen.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
-import 'package:mapness/_features/map/providers/suggest.dart';
-import 'package:mapness/_features/routing_page/data/directory_object_ext.dart';
+import 'package:mapness/shared/providers/map/suggest.dart';
 import 'package:mapness/shared/config/package_fonts.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/make_address.dart';
 
 class FavouritesSearch extends ConsumerStatefulWidget {
   final FavouriteItemMarkerType markerType;
@@ -134,7 +134,7 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
                     width: 12,
                   ),
                   Text(
-                    "0 km",
+                    "0 ${context.l10n.km}",
                     style: GoogleFonts.inter(
                       fontSize: 14,
                       fontWeight: FontWeight.w400,

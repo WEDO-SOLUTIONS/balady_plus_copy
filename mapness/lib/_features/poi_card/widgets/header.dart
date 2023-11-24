@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:mapness/_features/map/providers/point_of_interest.dart';
+import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_object_ext.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/config/package_fonts.dart';
+
+final mockArabickText =
+    'الملك فهد، الرياضالملك فهد، الرياضالملك فهد، الرياض 12261، المملكة العربية السعودية الرياض';
 
 class PoiCardHeaderDelegate extends SliverPersistentHeaderDelegate {
   final PoiModel? data;
@@ -19,40 +22,35 @@ class PoiCardHeaderDelegate extends SliverPersistentHeaderDelegate {
   Widget build(context, double shrinkOffset, bool overlapsContent) {
     return _Header(
       data: data,
-      ontapClose: ontapClose,
+      onTapClose: ontapClose,
     );
   }
 
   @override
-  double get maxExtent => 132;
+  double get maxExtent => headerHeight;
 
   @override
-  double get minExtent => 124;
+  double get minExtent => headerHeight;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;
 }
 
 class _Header extends StatelessWidget {
-  final Function()? ontapClose;
+  final Function()? onTapClose;
 
   const _Header({
     required this.data,
-    required this.ontapClose,
+    required this.onTapClose,
   });
 
   final PoiModel? data;
 
   @override
   Widget build(BuildContext context) {
-    final address = data?.directoryObjectMessage?.address;
-    final subTitle = data?.directoryObjectMessage?.makeAddress() ?? '';
-    final title = address?.buildingName ?? data?.directoryObjectMessage?.title;
-
-    final titleAddition = data?.directoryObjectMessage?.titleAddition ?? '';
-
     return Container(
-      padding: const EdgeInsets.all(16),
+      width: double.infinity,
+      padding: const EdgeInsets.only(left: 16, right: 16),
       decoration: const ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
@@ -74,106 +72,162 @@ class _Header extends StatelessWidget {
         children: [
           Align(
             alignment: Alignment.centerRight,
-            child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                  text: title,
-                                  style: GoogleFonts.inter(
-                                    color: colorPrimary,
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.w700,
-                                  )),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 2,
-                              textAlign: TextAlign.start,
-                            ),
-                            const SizedBox(
-                              width: 40,
-                            )
-                          ],
-                        ),
-                        Text(
-                          titleAddition,
-                          style: GoogleFonts.inter(
-                            color: colorPrimary.withOpacity(0.5),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                          textAlign: TextAlign.start,
-                        ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Flexible(
-                              child: RichText(
-                                text: TextSpan(
-                                  text: subTitle,
-                                  style: GoogleFonts.inter(
-                                    color: colorPrimary,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.3,
-                                  ),
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                                textAlign: TextAlign.start,
-                              ),
-                            ),
-                            buildBriefTime(data),
-                          ],
-                        ),
-                      ],
-                    ),
-                  )
-                ]),
+            child: _buildContent(data),
           ),
           Align(
             alignment: Alignment.topLeft,
-            child: GestureDetector(
-              onTap: ontapClose,
-              child: Container(
-                height: 40,
-                width: 40,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(8),
-                  ),
-                  color: colorPrimary.withAlpha(10),
-                ),
-                padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset(
-                  "assets/icons/svg/ic_search_close.svg",
-                  semanticsLabel: 'MinApps Screen',
-                  package: "mapness",
-                ),
-              ),
-            ),
+            child: _buildcloseButton(),
           ),
         ],
       ),
     );
   }
 
-  Widget buildBriefTime(PoiModel? data) {
+  Widget _buildContent(PoiModel? data) {
+    final address = data?.directoryObjectMessage?.address;
+    final subTitle = data?.directoryObjectMessage?.makeAddress() ?? '';
+    final title =
+        address?.buildingName ?? data?.directoryObjectMessage?.title ?? '';
+    final titleAddition = data?.directoryObjectMessage?.titleAddition ?? '';
+
+    return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const SizedBox(height: 6),
+                _scrollHandle(),
+                const SizedBox(height: 6),
+                _title(title),
+                _titleAddition(titleAddition),
+                const SizedBox(height: 2),
+                _subTitle(subTitle),
+              ],
+            ),
+          )
+        ]);
+  }
+
+  Widget _scrollHandle() {
+    return Center(
+        child: Container(
+      decoration: BoxDecoration(
+        borderRadius: borderRadius,
+        color: colorPrimary.withOpacity(0.1),
+      ),
+      height: 4,
+      width: 40,
+    ));
+  }
+
+  Widget _subTitle(String text) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          child: Text(
+            text,
+            style: PackageFonts.frutigerArabic(
+              color: colorPrimary,
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            textAlign: TextAlign.right,
+          ),
+        ),
+        _buildBriefTime(data),
+      ],
+    );
+  }
+
+  Widget _title(String text) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          child: Text(
+            text,
+            style: PackageFonts.frutigerArabic(
+              color: colorPrimary,
+              fontSize: 19,
+              fontWeight: FontWeight.w700,
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            textAlign: TextAlign.start,
+          ),
+        ),
+        const SizedBox(
+          width: 56,
+        )
+      ],
+    );
+  }
+
+  Widget _titleAddition(String text) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          child: Text(
+            text,
+            style: PackageFonts.frutigerArabic(
+              color: colorPrimary.withOpacity(0.5),
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            textAlign: TextAlign.start,
+          ),
+        ),
+        const SizedBox(
+          width: 56,
+        )
+      ],
+    );
+  }
+
+  Widget _buildcloseButton() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16),
+      child: Material(
+        borderRadius: borderRadius,
+        child: InkWell(
+          borderRadius: borderRadius,
+          onTap: onTapClose,
+          child: Container(
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(
+                Radius.circular(8),
+              ),
+              color: colorPrimary.withAlpha(10),
+            ),
+            padding: const EdgeInsets.all(8.0),
+            child: SvgPicture.asset(
+              "assets/icons/svg/ic_search_close.svg",
+              semanticsLabel: 'MinApps Screen',
+              package: "mapness",
+              color: colorPrimary.withOpacity(0.7),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBriefTime(PoiModel? data) {
     final desc = data?.getBriefRouteDescription();
     return desc != null
         ? Row(
@@ -187,12 +241,20 @@ class _Header extends StatelessWidget {
                 package: PackageConfig.packageName,
                 matchTextDirection: true,
               ),
-              buildText(
-                text: desc,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: colorPrimary.withOpacity(0.7),
+              const SizedBox(
+                width: 4,
               ),
+              Text(
+                desc,
+                style: PackageFonts.frutigerArabic(
+                  color: colorPrimary.withOpacity(0.7),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                textAlign: TextAlign.right,
+              )
             ],
           )
         : const SizedBox.shrink();

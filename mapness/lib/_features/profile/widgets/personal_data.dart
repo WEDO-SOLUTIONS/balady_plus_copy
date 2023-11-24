@@ -1,43 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/shared/config/package_fonts.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PersonalData extends StatelessWidget {
   const PersonalData({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         PersonalDataRow(
           title: "Ahmed",
-          subtitle: "First name",
+          subtitle: context.l10n.firstName,
         ),
         PersonalDataRow(
           title: "El Usman",
-          subtitle: "Last name",
+          subtitle: context.l10n.lastName,
         ),
         PersonalDataRow(
           title: "Ahmed.Usman@gmail.com",
-          subtitle: "Email",
+          subtitle: context.l10n.email,
         ),
         PersonalDataRow(
           title: "05.04.1978",
-          subtitle: "Date of birth",
+          subtitle: context.l10n.dateOfBirth,
         ),
         PersonalDataRow(
           title: "أحمد عبده أحمد أفه العثمان",
-          subtitle: "Arabic full name",
+          subtitle: context.l10n.arabicFullName,
           isArabic: true,
         ),
         PersonalDataRow(
           title: "Ahmed Abdu Ahmed Avh El Usman",
-          subtitle: "English full name",
+          subtitle: context.l10n.englishFullName,
         ),
         PersonalDataRow(
           title: "Saudi Arabia",
-          subtitle: "Nationality",
+          subtitle: context.l10n.nationality,
         ),
       ],
     );

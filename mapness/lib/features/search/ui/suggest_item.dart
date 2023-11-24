@@ -35,7 +35,7 @@ class SuggestItem extends ConsumerWidget {
               .searchByQuery(suggest.handler.performSearchHandler!.searchQuery);
         } else {
           final objectItem = suggest.handler.objectHandler!.item;
-          ref.read(searchHistoryProvider.notifier).put(
+          ref.read(searchHistoryProvider(scope.value).notifier).put(
                 SearchHistoryItem.fromDirectoryObject(objectItem),
               );
           onObjectTap(objectItem);

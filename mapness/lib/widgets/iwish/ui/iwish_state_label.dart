@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class IwishStateLabel extends StatelessWidget {
   final IwishState state;
@@ -20,9 +21,9 @@ class IwishStateLabel extends StatelessWidget {
           }),
       child: Text(
         switch (state) {
-          IwishState.unknown => 'Unknown',
-          IwishState.planned => 'Planned',
-          IwishState.completed => 'Completed',
+          IwishState.unknown => context.l10n.unknown,
+          IwishState.planned => context.l10n.planned,
+          IwishState.completed => context.l10n.completed,
         },
         style: GoogleFonts.inter(
           color: Colors.white,

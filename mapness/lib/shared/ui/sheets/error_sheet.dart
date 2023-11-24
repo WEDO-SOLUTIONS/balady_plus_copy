@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
@@ -48,9 +49,9 @@ class ErrorSheet extends StatelessWidget {
               package: PackageConfig.packageName,
             ),
             const SizedBox(height: 16),
-            text('Something went wrong'),
+            text(context.l10n.somethingWentWrong),
             const SizedBox(height: 4),
-            text('Please try again later'),
+            text(context.l10n.pleaseTryAgainLater),
             const SizedBox(height: 24),
             LabeledElevatedButton(onPressed: onRetry, label: buttonLabel),
           ],

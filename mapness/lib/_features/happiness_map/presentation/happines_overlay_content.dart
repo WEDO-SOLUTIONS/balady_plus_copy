@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/happiness_map/happines_map_bottom_sheet.dart';
-import 'package:mapness/_features/map/providers/camera_position.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/config/package_config.dart';
 
 class HappinesOverlayContent extends ConsumerStatefulWidget {

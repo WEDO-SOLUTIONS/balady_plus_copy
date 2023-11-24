@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
-import 'package:mapness/_features/map/providers/zoom_state.dart';
+import 'package:mapness/shared/providers/map/zoom_state.dart';
 
 class ZoomControl extends ConsumerWidget {
   const ZoomControl({super.key});

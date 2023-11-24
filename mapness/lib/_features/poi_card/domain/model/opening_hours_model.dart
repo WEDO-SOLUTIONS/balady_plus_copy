@@ -3,13 +3,13 @@ import 'package:mapness/_features/poi_card/extensions/date_time_ext.dart';
 
 class OpeningHoursModel {
   bool? isOpen24x7;
+  bool? isDailySameOpenHours;
   List<OpenHours>? openingHours;
-  String? todayOpeningInfo;
 
   OpeningHoursModel({
     required this.isOpen24x7,
+    required this.isDailySameOpenHours,
     required this.openingHours,
-    required this.todayOpeningInfo,
   });
 
   OpenHours? getTodayOpeningInfo() {
@@ -23,11 +23,13 @@ class OpeningHoursModel {
 class OpenHours {
   bool isWeekend;
   String weekDay;
-  String openHours;
+  String? openHour;
+  String? closeHour;
 
   OpenHours({
     required this.isWeekend,
     required this.weekDay,
-    required this.openHours,
+    this.openHour,
+    this.closeHour,
   });
 }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/poi_card/widgets/shimmer.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
 import 'package:mapness/pages/iwish/ui/iwish_dashboard_item.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
 class IwishDashboardWidget extends StatelessWidget {
@@ -22,7 +23,7 @@ class IwishDashboardWidget extends StatelessWidget {
       if (markers.hasError) {
         return LabeledElevatedButton(
           onPressed: () => ref.read(iwishMarkersProvider.notifier).refresh(),
-          label: "Reload",
+          label: context.l10n.reload,
         );
       }
 

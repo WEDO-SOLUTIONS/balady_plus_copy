@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/config/package_fonts.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 // TODO: rewrite this (wi/mo)cked widget
 class Favorites extends StatelessWidget {
@@ -53,7 +54,7 @@ class Favorites extends StatelessWidget {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
+                      horizontal: 10,
                       vertical: 8,
                     ),
                     child: Row(
@@ -96,10 +97,12 @@ class Favorites extends StatelessWidget {
                   ),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 14,
-                    vertical: 10,
+                    vertical: 8.0,
                   ),
                   child: SvgPicture.asset(
-                    "assets/icons/svg/ic_fav.svg",
+                    "assets/icons/svg/ic_bookmark.svg",
+                    height: 24,
+                    width: 24,
                     semanticsLabel: 'MinApps Screen',
                     package: "mapness",
                   ),
@@ -117,15 +120,19 @@ class Favorites extends StatelessWidget {
                 ),
               ),
               padding: const EdgeInsets.symmetric(
-                horizontal: 12,
+                horizontal: 8,
                 vertical: 8,
               ),
               child: Row(
                 children: [
-                  Text(
-                    '12 دقيقة',
-                    style: PackageFonts.frutigerArabic(
-                      fontSize: 12,
+                  const Text(
+                    'العودة إلى المنزل',
+                    style: TextStyle(
+                      color: Color(0xFF1E2A36),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      height: 1.4,
+                      fontFamily: "Frutiger",
                     ),
                   ),
                   const SizedBox(
@@ -133,8 +140,8 @@ class Favorites extends StatelessWidget {
                   ),
                   SvgPicture.asset(
                     index % 2 == 1
-                        ? "assets/icons/svg/ic_fav_home.svg"
-                        : "assets/icons/svg/ic_fav_work.svg",
+                        ? "assets/icons/svg/ic_home.svg"
+                        : "assets/icons/svg/ic_work.svg",
                     semanticsLabel: 'MinApps Screen',
                     package: "mapness",
                   ),

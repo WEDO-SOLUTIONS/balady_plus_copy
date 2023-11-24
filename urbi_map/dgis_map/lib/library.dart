@@ -16,8 +16,6 @@ export 'widgets/zoom_control_widget.dart';
 
 export 'widgets/traffic_parking_control_widget.dart';
 
-export 'widgets/pedestrian_bar_widget.dart';
-
 export 'widgets/message_widget.dart';
 
 export 'navi/free_roam_controller.dart';
@@ -25,8 +23,6 @@ export 'navi/free_roam_controller.dart';
 export 'navi/compass_controller.dart';
 
 export 'navi/maneuver_controller.dart';
-
-export 'navi/pedestrian_contoller.dart';
 
 export 'navi/speed_controller.dart';
 

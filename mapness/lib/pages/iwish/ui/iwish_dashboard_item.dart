@@ -4,6 +4,7 @@ import 'package:mapness/_features/landing/widgets/service_card.dart';
 import 'package:mapness/_features/poi_card/widgets/shimmer.dart';
 import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/features/iwish/providers/iwish_entity.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class IwishDashboardItem extends ConsumerWidget {
   final String id;
@@ -17,7 +18,7 @@ class IwishDashboardItem extends ConsumerWidget {
       error: (_, __) => Center(
         child: TextButton(
           onPressed: () => ref.read(iwishEntityProvider(id).notifier).refresh(),
-          child: const Text('Reload'),
+          child:  Text(context.l10n.reload),
         ),
       ),
       loading: () => const ShimmerEffectWidget(),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class HappinessSubmitButton extends ConsumerWidget {
   final VoidCallback onPress;
@@ -22,7 +23,7 @@ class HappinessSubmitButton extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
           child: Text(
-            'Send feedback',
+            context.l10n.sendFeedback,
             style: GoogleFonts.inter(
               color: Colors.white,
               fontSize: 16,

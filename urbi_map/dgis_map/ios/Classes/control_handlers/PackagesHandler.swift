@@ -1,0 +1,105 @@
+import Foundation
+import DGis
+
+class PackagesHandler {
+    private class Events {
+        static let packageProgressEvent = "packageProgressEvent"
+        static let packageInfoChangedEvent = "packageInfoChangedEvent"
+    }
+    
+    private let sdk: Context
+    private let eventChannel: DgisStreamHandler
+    
+    private let packageManager: PackageManager
+    private let voiceManager: VoiceManager
+    
+    private var cancelable: Array<Cancellable> = []
+    
+    init(sdk: Context, eventChannel: DgisStreamHandler) {
+        self.sdk = sdk
+        self.eventChannel = eventChannel
+        self.packageManager = getPackageManager(context: sdk)
+        self.voiceManager = getVoiceManager(context: sdk)
+    }
+    
+    func mapStatus(_ status: PackageUpdateStatus) -> String {
+        switch status {
+        case .notAvailable:
+            return "notAvailable"
+        case .inProgress:
+            return "inProgress"
+        case .paused:
+            return "paused"
+        }
+    }
+    
+    func mapInfo(info: PackageInfo) -> [String: Any] {
+        return [
+            "name": info.name,
+            "installed": info.installed,
+            "incomplete": info.incomplete,
+            "preinstalled": info.preinstalled,
+            "compatible": info.compatible,
+            "hasUpdate": info.hasUpdate,
+            "updateStatus": mapStatus(info.updateStatus),
+        ]
+    }
+    
+    func cancel() {
+        cancelable.forEach { $0.cancel() }
+        cancelable.removeAll()
+    }
+    
+    func listPackages(completion: @escaping ([PackageMessage]?, FlutterError?) -> Void) {
+        completion(packageManager.packages.map { $0.toMessage() }, nil)
+    }
+    
+    func installPackage(_ id: String, completion: @escaping (FlutterError?) -> Void) {
+        if let package = packageManager.packages.first(where: { $0.id == id }) {
+            cancelable.append(package.progressChannel.sink { [weak self] in
+                self?.eventChannel.success([
+                    "event": Events.packageProgressEvent,
+                    "packageId": id,
+                    "progress": $0
+                ])
+            })
+            cancelable.append(package.infoChannel.sink { [weak self] in
+                guard let self else { return }
+
+                self.eventChannel.success([
+                    "event": Events.packageInfoChangedEvent,
+                    "id": package.id,
+                    "info": self.mapInfo(info: $0)
+                ])
+            })
+            package.install()
+        }
+        completion(nil)
+    }
+    
+    func listVoices(completion: @escaping ([PackageMessage]?, FlutterError?) -> Void) {
+        completion(voiceManager.voices.map { $0.toMessage() }, nil)
+    }
+    
+    func installVoice(_ id: String, completion: @escaping (FlutterError?) -> Void) {
+        if let package = voiceManager.voices.first(where: { $0.id == id }) {
+            cancelable.append(package.progressChannel.sink { [weak self] in
+                self?.eventChannel.success([
+                    "event": Events.packageProgressEvent,
+                    "packageId": id,
+                    "progress": $0
+                ])
+            })
+            cancelable.append(package.infoChannel.sink { [weak self] in
+                guard let self else { return }
+                self.eventChannel.success([
+                    "event": Events.packageInfoChangedEvent,
+                    "id": package.id,
+                    "info": self.mapInfo(info: $0)
+                ])
+            })
+            package.install()
+        }
+        completion(nil)
+    }
+}

@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_fonts.dart';
-
-import '../../../map/providers/suggest.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/map/suggest.dart';
 
 class FavouriteTextField extends ConsumerStatefulWidget {
   const FavouriteTextField({Key? key}) : super(key: key);
@@ -60,7 +60,7 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
               decoration: InputDecoration(
                 filled: true,
                 // isDense: true,
-                hintText: "Search",
+                hintText: context.l10n.search,
                 fillColor: Colors.white,
                 contentPadding: const EdgeInsets.only(
                   //   // horizontal: 8,

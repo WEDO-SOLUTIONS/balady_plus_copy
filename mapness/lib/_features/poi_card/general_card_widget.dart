@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/_features/map/providers/point_of_interest.dart';
+import 'package:mapness/shared/providers/map/highlight.dart';
+import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/widgets/about.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
@@ -18,7 +19,7 @@ import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/config/package_fonts.dart';
 
-class GeneralMapCardWidget extends ConsumerWidget {
+class GeneralMapCardWidget extends ConsumerStatefulWidget {
   final DgisObjectIdMessage objectId;
 
   const GeneralMapCardWidget(
@@ -27,8 +28,18 @@ class GeneralMapCardWidget extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(pointOfInterestProvider(objectId));
+  ConsumerState<GeneralMapCardWidget> createState() =>
+      _GeneralMapCardWidgetState();
+}
+
+class _GeneralMapCardWidgetState extends ConsumerState<GeneralMapCardWidget> {
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(
+      pointOfInterestProvider(
+        widget.objectId,
+      ),
+    );
 
     final poiCardViewModel = PoiCardViewModel(ref: ref);
 
@@ -54,7 +65,7 @@ class GeneralMapCardWidget extends ConsumerWidget {
   }
 }
 
-class _Content extends StatefulWidget {
+class _Content extends ConsumerStatefulWidget {
   final PoiCardViewModel viewModel;
   final PoiModel data;
 
@@ -69,11 +80,18 @@ class _Content extends StatefulWidget {
   });
 
   @override
-  State<_Content> createState() => _ContentState();
+  ConsumerState<_Content> createState() => _ContentState();
 }
 
-class _ContentState extends State<_Content> {
+class _ContentState extends ConsumerState<_Content> {
   late final DraggableScrollableController _draggableScrollableController;
+
+  bool showEntrances = false;
+
+  double _headerExtent() {
+    // TODO: calculate based on bottom (safearea + footerHeight + headerHeight) / biggestHeight
+    return (footerHeight + headerHeight) / widget.biggestHeight;
+  }
 
   @override
   void dispose() {
@@ -87,6 +105,7 @@ class _ContentState extends State<_Content> {
     _draggableScrollableController.addListener(() {
       if (_draggableScrollableController.size <= 0.001) {
         context.pop();
+        widget.viewModel.resetMapControlsState();
       }
     });
     super.initState();
@@ -96,13 +115,12 @@ class _ContentState extends State<_Content> {
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
-      initialChildSize:
-          .2, // TODO: calculate based on bottom (safearea + footerHeight + headerHeight) / biggestHeight
+      initialChildSize: _headerExtent(),
       minChildSize: .0,
       maxChildSize: .9,
       snap: true,
-      snapSizes: const [
-        .2,
+      snapSizes: [
+        _headerExtent(),
         .5,
         .9,
       ],
@@ -111,72 +129,105 @@ class _ContentState extends State<_Content> {
         ScrollController scrollController,
       ) {
         final data = widget.data.directoryObjectMessage;
-        return Directionality(
-          textDirection: TextDirection.rtl,
-          child: Material(
-            color: const Color(0xFFF1F4F8),
-            borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(16.0),
-              topLeft: Radius.circular(16.0),
-            ),
-            child: Stack(
-              children: [
-                CustomScrollView(
-                  controller: scrollController,
-                  keyboardDismissBehavior:
-                      ScrollViewKeyboardDismissBehavior.onDrag,
-                  physics: const ClampingScrollPhysics(),
-                  slivers: [
-                    SliverPersistentHeader(
-                      delegate: PoiCardHeaderDelegate(
-                        data: widget.data,
-                        ontapClose: () =>
-                            _draggableScrollableController.animateTo(
-                          0,
-                          duration: const Duration(milliseconds: 250),
-                          curve: Curves.easeInOut,
-                        ),
-                      ),
-                      pinned: true,
-                    ),
-                    SliverList.list(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Favourites(data),
-                              About(data),
-                              if (data?.openingHours != null)
-                                OpeningHours(widget.data.directoryObjectMessage
-                                    ?.getOpeningHoursModel()),
-                              if (data?.contactInfos != null)
-                                ContactsInfo(
-                                  viewModel: widget.viewModel,
-                                  data: data!,
-                                ),
-                              if (data?.tradeLicense != null)
-                                TradeLicense(data?.tradeLicense),
-                              const SafeArea(
-                                top: false,
-                                child: SizedBox(height: footerHeight),
-                              ),
-                            ],
+        return Material(
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: DecoratedBox(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(16.0),
+                  topLeft: Radius.circular(16.0),
+                ),
+              ),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: colorPrimary.withOpacity(0.05),
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(16.0),
+                    topLeft: Radius.circular(16.0),
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    CustomScrollView(
+                      controller: scrollController,
+                      keyboardDismissBehavior:
+                          ScrollViewKeyboardDismissBehavior.onDrag,
+                      physics: const ClampingScrollPhysics(),
+                      slivers: [
+                        SliverPersistentHeader(
+                          delegate: PoiCardHeaderDelegate(
+                            data: widget.data,
+                            ontapClose: () =>
+                                _draggableScrollableController.animateTo(
+                              0,
+                              duration: const Duration(milliseconds: 250),
+                              curve: Curves.easeInOut,
+                            ),
                           ),
+                          pinned: true,
+                        ),
+                        SliverList.list(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Favourites(data),
+                                  About(data),
+                                  if (data?.openingHours != null)
+                                    OpeningHours(widget
+                                        .data.directoryObjectMessage
+                                        ?.getOpeningHoursModel()),
+                                  if (data?.contactInfos != null)
+                                    ContactsInfo(
+                                      viewModel: widget.viewModel,
+                                      data: data!,
+                                    ),
+                                  if (data?.tradeLicense != null)
+                                    TradeLicense(data?.tradeLicense),
+                                  const SafeArea(
+                                    top: false,
+                                    child: SizedBox(height: footerHeight),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: PoiCardFooter(
+                        data: widget.data,
+                        viewModel: widget.viewModel,
+                        onEntranceTap: () {
+                          setState(() {
+                            showEntrances = !showEntrances;
+                          });
+                          final highlightController =
+                              ref.read(highlightProvider.notifier);
+
+                          if (showEntrances) {
+                            for (var entrance in widget
+                                .data.directoryObjectMessage!.entrances) {
+                              highlightController.addHighlight(entrance!.id);
+                            }
+                          } else {
+                            for (var entrance in widget
+                                .data.directoryObjectMessage!.entrances) {
+                              highlightController.removeHighlight(entrance!.id);
+                            }
+                          }
+                        },
+                      ),
+                    ),
                   ],
                 ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: PoiCardFooter(
-                    data: widget.data,
-                    viewModel: widget.viewModel,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         );
@@ -233,7 +284,7 @@ class _WorkStatus extends StatelessWidget {
                 package: PackageConfig.packageName,
                 height: 24,
                 width: 24,
-                color: const Color(0xffD14733),
+                color: colorIconError,
               ),
               const SizedBox(
                 width: 8,

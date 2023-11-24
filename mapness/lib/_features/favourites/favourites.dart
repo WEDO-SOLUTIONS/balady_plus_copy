@@ -11,6 +11,7 @@ import 'package:mapness/_features/favourites/widgets/screen/favourite_item_widge
 import 'package:mapness/_features/favourites/widgets/screen/favourites_toggle.dart';
 import 'package:mapness/_features/favourites/widgets/screen/pinned_place_widget.dart';
 import 'package:mapness/app/routes/favourites.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class Favourites extends ConsumerStatefulWidget {
   const Favourites({Key? key}) : super(key: key);
@@ -100,8 +101,8 @@ class _FavouritesState extends ConsumerState<Favourites> {
                   SizedBox(height: 8),
                   PinnedPlaceWidget(
                     key: Key(state.home?.id ?? 'home'),
-                    title: state.home?.title ?? 'Home',
-                    address: state.home?.subtitle ?? 'Add address',
+                    title: state.home?.title ?? context.l10n.home,
+                    address: state.home?.subtitle ?? context.l10n.addAddress,
                     iconAsset: 'assets/icons/svg/ic_home.svg',
                     isEditing: isEditing,
                     isAdded: state.home != null,
@@ -115,8 +116,8 @@ class _FavouritesState extends ConsumerState<Favourites> {
                   SizedBox(height: 8),
                   PinnedPlaceWidget(
                     key: Key(state.work?.id ?? 'work'),
-                    title: state.work?.title ?? 'Work',
-                    address: state.work?.subtitle ?? 'Add address',
+                    title: state.work?.title ?? context.l10n.work,
+                    address: state.work?.subtitle ?? context.l10n.addAddress,
                     iconAsset: 'assets/icons/svg/ic_case.svg',
                     isEditing: isEditing,
                     isAdded: state.work != null,
