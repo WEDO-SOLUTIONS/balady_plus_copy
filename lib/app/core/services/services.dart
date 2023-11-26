@@ -396,7 +396,7 @@ Map<String, dynamic> servicesConfig = {
         "tag": "Services"
       }
     },
-    /* {
+    {
       "id": 11,
       "icon": "violation-guide",
       "3d_icon": null,
@@ -406,7 +406,7 @@ Map<String, dynamic> servicesConfig = {
       "action": {"type": "page", "value": RouteName.violationGuideMainPage},
       "ar": {"title": "دليل المخالفات", "description": null, "tag": null},
       "en": {"title": "Zamzam Points", "description": null, "tag": null}
-    },*/
+    },
   ],
   "municipal_services": [
     {

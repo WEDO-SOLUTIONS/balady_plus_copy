@@ -82,6 +82,8 @@ class AppInterceptors extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     "On-Sending-Request ${options.uri}".actionLog();
+    CommonProperties.token.actionLog();
+    print(CommonProperties.token);
     // Update language
     options.headers[ApiHeader.language.eName] = languageCode;
 

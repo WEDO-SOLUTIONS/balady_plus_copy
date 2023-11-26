@@ -26,7 +26,9 @@ class ViolationApprovedHortizantalList extends StatelessWidget {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             CustomTextWidget(
-              'approved_violation_text_1'.tr(),
+              state.selectedRegulationClauseItem?.regulationClauseText ?? "",
+              maxLines: 20,
+              height: 1.4,
               textStyle: AppStyle.approvedViolationSectiontitleStyle,
             ),
             CustomTextWidget(

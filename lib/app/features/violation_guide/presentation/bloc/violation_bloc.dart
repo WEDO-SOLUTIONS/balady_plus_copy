@@ -74,12 +74,11 @@ class ViolationBloc extends Bloc<ViolationEvent, ViolationState> {
   Future<void> _categoryHandler(
       CategorySelectedEvent e, Emitter emitter) async {
     int selectedIndex = e.index;
-    emitter(state.copyWith(
-      selectedIndex: selectedIndex,
-    ));
 
     add(GetRegulationClausesDetails(
-        item: state.selectedRegulationClauseItem!, refresh: true));
+        item: state.selectedRegulationClauseItem!,
+        refresh: true,
+        index: selectedIndex));
   }
 
   Future<void> _getEstablishmentSizeHanlder(
@@ -190,7 +189,7 @@ class ViolationBloc extends Bloc<ViolationEvent, ViolationState> {
     emitter(state.copyWith(
         status: BlocStatus.loading,
         selectedRegulationClauseItem: e.item,
-        selectedIndex: e.refresh == false ? 0 : null));
+        selectedIndex: e.refresh == false ? 0 : e.index));
 
     var failureOrSuccess =
         await _getRegulationClauseDetails(RegulationClauseDetailsParams(

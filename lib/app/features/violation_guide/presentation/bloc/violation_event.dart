@@ -41,5 +41,7 @@ class GetRegulationClausess extends ViolationEvent {
 class GetRegulationClausesDetails extends ViolationEvent {
   final RegulationClauseItem item;
   final bool refresh;
-  const GetRegulationClausesDetails({required this.item, this.refresh = false});
+  final int? index;
+  const GetRegulationClausesDetails(
+      {required this.item, this.refresh = false, this.index});
 }

@@ -120,4 +120,19 @@ class ViolationState extends Equatable {
         noOfRepetition,
         selectedRegulationClauseItem
       ];
+
+  bool isFormValid() {
+    bool isValid = true;
+    if (violatorItem?.violatorIdNumber != null &&
+        violatorItem?.violatorIdNumber != "003" &&
+        selectedEstablishmentSizeItem == null) {
+      isValid = false;
+    }
+
+    if (violationClassificationResponse == null) {
+      isValid = false;
+    }
+
+    return isValid;
+  }
 }

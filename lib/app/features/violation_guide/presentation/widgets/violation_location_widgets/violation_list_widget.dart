@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../vd/domain/entities/map/map_screen_params.dart';
 import '../../bloc/violation_bloc.dart';
 import '../../bloc/violation_event.dart';
@@ -75,9 +76,9 @@ class ViolationLocationListWidget extends StatelessWidget {
                         state1.violatorItem?.violatorIdNumber != "003")
                       const ViolationEstabloshmentWidget(),
                     const SizedBox(height: 50),
-                    CustomElevatedButtonWidget(
+                    ElevatedButtonWidget.custom(
                       text: 'result-1'.tr(),
-                      btnColor: AppColor.blueSkyLight800,
+                      isDisabled: !state1.isFormValid(),
                       onPressed: () {
                         context
                             .read<ViolationBloc>()
