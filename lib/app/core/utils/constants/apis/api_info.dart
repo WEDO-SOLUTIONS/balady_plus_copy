@@ -557,11 +557,13 @@ class ApiUrl {
   static String commercialLicenseCancelGetDetailsRequest(int requestId) =>
       '/v1/balady-commercial-services/mobile-cancel-request/request-details/$requestId';
 /////////////////////////////////////////////////////////
-  static const String getUserFacilities = '/v1/tobacco-services/user-facilities';
+  static const String getUserFacilities =
+      '/v1/tobacco-services/user-facilities';
   static const String getTobaccoDisclosure = '/v1/tobacco-services/disclosures';
-  static const String getTobaccoDisclosureUploadFile = '/v1/tobacco-services/stream/upload';
-  static const String getTobaccoDisclosureUpload = '/v1/tobacco-services/disclosures/upload';
-
+  static const String getTobaccoDisclosureUploadFile =
+      '/v1/tobacco-services/stream/upload';
+  static const String getTobaccoDisclosureUpload =
+      '/v1/tobacco-services/disclosures/upload';
 
 //! Posters Service
 
@@ -610,6 +612,53 @@ class ApiUrl {
 
   static String posterRequestAlllowedAction(int? requestId) =>
       "v1/commercial-promotions-services/allowed-actions/$requestId";
+
+// Ekram
+  static const ekramNationalities = '/v1/ekram-mobile-services/nationalities';
+
+  static const ekramCities = '/v1/ekram-mobile-services/cities';
+
+  static const ekramHospitals = '/v1/ekram-mobile-services/hospitals';
+
+  static const ekramMosques = '/v1/ekram-mobile-services/mosques';
+
+  static const ekramLaundries = '/v1/ekram-mobile-services/laundries';
+
+  static const ekramLookup = '/v1/ekram-mobile-services/lookups';
+
+  static const deceasedTransportRequests =
+      '/v1/ekram-mobile-services/deceased-transport/deceased-transport-requests';
+
+  static const deceasedTransportRequestDetails =
+      '/v1/ekram-mobile-services/deceased-transport/deceased-transport-details';
+
+  static const ekramDeceasedTransportApply =
+      '/v1/ekram-mobile-services/deceased-transport/apply';
+
+  static const ekramGetTrips = '/v1/ekram-mobile-services/trip-step/trips';
+
+  static const applyTrip = '/v1/ekram-mobile-services/trip-step/apply';
+
+  static const deleteTrip =
+      '/v1/ekram-mobile-services/trip-step/delete-trip-step';
+
+  static const completeTrip =
+      '/v1/ekram-mobile-services/deceased-transport/complete';
+
+  static const uploadLetter = '/v1/ekram-mobile-services/attachments/upload';
+
+  static const updateLocation =
+      '/v1/ekram-mobile-services/trip-step/add-trip-location';
+
+  static const tripLocations =
+      '/v1/ekram-mobile-services/trip-step/trip-locations';
+
+  static const ekramRequestStatus = '/v1/ekram-mobile-services/status-list';
+
+  static const ekramLocations = '/v1/ekram-mobile-services/locations';
+
+  static const ekramAttachments =
+      '/v1/ekram-mobile-services/download-attachments';
 
   //! POST
 
