@@ -1,0 +1,119 @@
+import 'package:balady_new_app/app/core/core_exports.dart';
+import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
+import 'package:balady_new_app/etmam_app/core/utils/utils_exports.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
+
+class DeceasedInfoSection extends StatelessWidget {
+  const DeceasedInfoSection({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<EkramRequestTransportationBloc,
+        EkramRequestTransportationState>(
+      builder: (context, state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Container(
+                  margin: EdgeInsets.only(top: 24, left: 16, right: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      VdHeaderDesc(
+                        header: Helpers.translatingWord("deceasedInfo"),
+                      ),
+                      CustomTextButtonWithIconWidget(
+                          btnPressed: () async {
+                            final result =
+                                await CustomPopUpsWidgets.showBottomSheet(
+                                    context,
+                                    child: AddDeceasedDialog(
+                                      params: AddDeceasedDialogParams(
+                                          cities: state.cities,
+                                          nationalities: state.nationalities,
+                                          data: DeceasedInfoDto()),
+                                    ),
+                                    height: MediaQuery.of(context).size.height *
+                                        0.95);
+                            print(result);
+                            context
+                                .read<EkramRequestTransportationBloc>()
+                                .add(AddDeceasedEvent(result));
+                          },
+                          icon: Image.asset(
+                            Constants.imgPath + "add_ekram_button@3x.png",
+                            height: 14,
+                            width: 14,
+                            color: AppColors.darkTurquoise,
+                          ),
+                          mainAxisSize: MainAxisSize.min,
+                          buttonIconPosition: BUTTON_ICON_POSITION.right,
+                          btnTextColor: AppColors.darkTurquoise,
+                          btnTextSize: 16,
+                          btnTextWeight: FONT_WEIGHT.medium,
+                          padding:
+                              const EdgeInsets.all(Constants.semiMediumPadding),
+                          btnText: Helpers.translatingWord('addDeceased')),
+                      SizedBox(
+                          height: 290,
+                          child: ListView.builder(
+                            itemCount: state.deceasedInfoDto?.length ?? 0,
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            itemBuilder: (ctx, index) {
+                              return DeceasedCardWidget(
+                                deceasedItem: state.deceasedInfoDto![index],
+                                onDelete: () async {
+                                  bool r = await CustomPopUpsWidgets
+                                      .showConfirmAppMessageDialog(
+                                          context, trans("delete_confirm"),
+                                          primaryBtn: () {
+                                    Navigator.of(context).pop(true);
+                                    context
+                                        .read<EkramRequestTransportationBloc>()
+                                        .add(DeleteDeceasedEvent(index: index));
+                                  });
+                                },
+                                onEdit: () async {
+                                  final result =
+                                      await CustomPopUpsWidgets.showBottomSheet(
+                                          context,
+                                          child: AddDeceasedDialog(
+                                            params: AddDeceasedDialogParams(
+                                                cities: state.cities,
+                                                nationalities:
+                                                    state.nationalities,
+                                                data: state
+                                                    .deceasedInfoDto![index]),
+                                          ),
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.95);
+                                  print(result);
+                                  context
+                                      .read<EkramRequestTransportationBloc>()
+                                      .add(EditDeceasedEvent(
+                                          index: index, data: result));
+                                },
+                              );
+                            },
+                          )),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            EkramPreviousNextButtons()
+          ],
+        );
+      },
+    );
+  }
+}

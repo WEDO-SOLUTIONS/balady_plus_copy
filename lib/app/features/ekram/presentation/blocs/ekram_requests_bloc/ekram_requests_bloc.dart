@@ -1,0 +1,276 @@
+import 'package:balady_new_app/app/core/shared_local_services/helpers.dart';
+import 'package:balady_new_app/app/core/shared_widgets/custom_popups_widgets.dart';
+import 'package:balady_new_app/app/features/ekram/domain/entities/get_requests_params.dart';
+import 'package:balady_new_app/app/features/ekram/domain/use_cases/get_deceased_driver_request_details.dart';
+import 'package:balady_new_app/app/features/ekram/domain/use_cases/get_deceased_transport_request_details.dart';
+import 'package:balady_new_app/app/features/ekram/domain/use_cases/get_locations.dart';
+import 'package:balady_new_app/app/features/ekram/domain/use_cases/get_status.dart';
+import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
+import 'package:balady_new_app/app/features/ekram/presentation/dialogs/filter_dialog.dart';
+import 'package:balady_new_app/etmam_app/core/utils/constants/app_config.dart';
+import 'package:balady_new_app/shared/core/data/entities/lookup_item.dart';
+import 'package:balady_new_app/shared/core/errors/errors_exports.dart';
+import 'package:balady_new_app/shared/core/services/local/use_case.dart';
+import 'package:balady_new_app/shared/core/utils/enums/bloc_status.dart';
+
+import 'package:balady_new_app/shared/core/services/services_exports.dart'
+    show NavigationService;
+import 'package:balady_new_app/shared/features/_shared_feature_/shared/data/entities/file_data_item.dart';
+
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:balady_new_app/app/core/core_exports.dart' show RoutesNames;
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+part 'ekram_requests_event.dart';
+
+part 'ekram_requests_state.dart';
+
+class EkramRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState> {
+  final GetDeceasedTransportRequests _getDeceasedTransportRequests;
+  final GetDeceasedTransportRequestDetails _getDeceasedTransportRequestDetails;
+  final GetDeceasedDriverRequestDetails _getDeceasedDriverRequestDetails;
+  final GetLookUp _getLookUp;
+  final GetStatus _getStatus;
+  final GetLocations _getLocations;
+
+  EkramRequestsBloc(
+      {required GetDeceasedTransportRequests getDeceasedTransportRequests,
+      required GetDeceasedTransportRequestDetails
+          getDeceasedTransportRequestDetails,
+      required GetDeceasedDriverRequestDetails getDeceasedDriverRequestDetails,
+      required bool isDriver,
+      required GetLookUp getLookUp,
+      required GetStatus getStatus,
+      required GetLocations getLocations})
+      : _getDeceasedTransportRequests = getDeceasedTransportRequests,
+        _getDeceasedTransportRequestDetails =
+            getDeceasedTransportRequestDetails,
+        _getDeceasedDriverRequestDetails = getDeceasedDriverRequestDetails,
+        _getLookUp = getLookUp,
+        _getStatus = getStatus,
+        _getLocations = getLocations,
+        super(EkramRequestsState(isDriver: isDriver)) {
+    on<EkramRequestsEvent>((event, emit) {
+      emit(state);
+    });
+    on<GetDeceasedTransportRequestsEvent>(_getDeceasedTransportRequestsHandler);
+
+    on<GetDeceasedTransportRequestDetailsEvent>(
+        _getDeceasedTransportRequestDetailsHandler);
+
+    on<GetMoreDeceasedTransportRequestsEvent>(_loadMoreHandler);
+    on<ShowFilterEvent>(_showFilterHandler);
+    add(GetDeceasedTransportRequestsEvent(isDriver: isDriver));
+  }
+
+  Future<void> _loadMoreHandler(
+      GetMoreDeceasedTransportRequestsEvent e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loadMore));
+
+    final failureOrSuccess = await _getDeceasedTransportRequests(
+        GetRequestsParams(
+            isDriver: e.isDriver, page: state.currentPage + 1, size: 10));
+
+    failureOrSuccess.fold((failure) {
+      String? errorCode = (failure as ServerFailure).errorCode;
+      BlocStatus status = BlocStatus.failure;
+      if (errorCode == "2") {
+        status = BlocStatus.success;
+      }
+
+      emitter(state.copyWith(
+        status: status,
+        errorMessage: status == BlocStatus.failure
+            ? (failure as ServerFailure).errorMessage
+            : "",
+      ));
+    }, (success) {
+      List<TransportRequestItem>? newDeceasedRequestItems =
+          success.data?.result?.items;
+      List<TransportRequestItem>? oldDeceasedRequestItems =
+          state.deceasedRequestItems;
+      if (newDeceasedRequestItems != null)
+        oldDeceasedRequestItems?.addAll(newDeceasedRequestItems);
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+        deceasedRequestItems: oldDeceasedRequestItems,
+        currentPage: state.currentPage + 1,
+        errorMessage: "",
+      ));
+    });
+  }
+
+  Future<void> _getDeceasedTransportRequestsHandler(
+      GetDeceasedTransportRequestsEvent e, Emitter emitter) async {
+    emitter(state.copyWith(
+        status: BlocStatus.loadingShimmer,
+        currentPage: 0,
+        searchBy: e.text,
+        clearFilters: e.clear));
+
+    final failureOrSuccess = await _getDeceasedTransportRequests(e.clear == true
+        ? GetRequestsParams(
+            isDriver: e.isDriver,
+            page: 0,
+            size: 10,
+            text: e.text ?? state.searchBy,
+          )
+        : GetRequestsParams(
+            isDriver: e.isDriver,
+            page: 0,
+            size: 10,
+            text: e.text ?? state.searchBy,
+            isMultiCity: e.isMultiCity ?? state.isMultiCity(),
+            transportLocationStatusId:
+                e.transportLocationStatusId ?? state.locationFilterItem?.id,
+            deceasedTransportRequestStatusId:
+                e.requestStatusId ?? state.requestStatusFilterItem?.id));
+
+    failureOrSuccess.fold((failure) {
+      String? errorCode = (failure as ServerFailure).errorCode;
+      BlocStatus status = BlocStatus.retry;
+      if (errorCode == "2") {
+        status = BlocStatus.success;
+      }
+
+      emitter(state.copyWith(
+        status: status,
+        deceasedRequestItems: status == BlocStatus.success ? [] : null,
+        totalItemCount: 0,
+        errorMessage: "",
+      ));
+    }, (success) {
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+        deceasedRequestItems: success.data?.result?.items,
+        totalItemCount: success.data?.result?.totalItemCount,
+        errorMessage: "",
+      ));
+    });
+  }
+
+  Future<void> _getDeceasedTransportRequestDetailsHandler(
+      GetDeceasedTransportRequestDetailsEvent e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loading));
+
+    var failureOrSuccess;
+    if (e.isDriver) {
+      failureOrSuccess = await _getDeceasedDriverRequestDetails(e.requestId);
+    } else {
+      failureOrSuccess = await _getDeceasedTransportRequestDetails(e.requestId);
+    }
+    await failureOrSuccess.fold((failure) {
+      emitter(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (success) async {
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+        errorMessage: "",
+      ));
+      if (e.isDriver) {
+        final result = await NavigationService.navigatorKey.currentState!
+            .pushNamed(RoutesNames.ekramTransportationDetailsScreen,
+                arguments: success.data?.result);
+        print(result);
+        if (result == true) {
+          add(GetDeceasedTransportRequestsEvent(isDriver: state.isDriver!));
+        }
+      } else {
+        NavigationService.navigatorKey.currentState!.pushNamed(
+            RoutesNames.driverEkramTransportationDetailsScreen,
+            arguments: success.data?.result);
+      }
+    });
+  }
+
+  Future<void> _showFilterHandler(ShowFilterEvent e, Emitter emitter) async {
+    List<LookUpItem> filters = state.transferStatusList ?? [];
+
+    List<LookUpItem> requestStatusListFilters = state.requestStatusList ?? [];
+    List<LookUpItem> locationsListFilters = state.locationsList ?? [];
+
+    if (requestStatusListFilters.isEmpty) {
+      emitter(state.copyWith(
+        status: BlocStatus.loading,
+        errorMessage: "",
+      ));
+      final failureOrSuccess = await _getStatus(0);
+      requestStatusListFilters = failureOrSuccess.fold((failure) {
+        emitter(state.copyWith(
+          status: BlocStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ));
+        return [];
+      }, (success) {
+        emitter(state.copyWith(
+          status: BlocStatus.success,
+          requestStatusList: success.data?.result,
+          errorMessage: "",
+        ));
+        return success.data?.result ?? [];
+      });
+    }
+    /*if (locationsListFilters.isEmpty) {
+      emitter(state.copyWith(
+        status: BlocStatus.loading,
+        errorMessage: "",
+      ));
+      final failureOrSuccess = await _getLocations(0);
+      locationsListFilters = failureOrSuccess.fold((failure) {
+        emitter(state.copyWith(
+          status: BlocStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ));
+        return [];
+      }, (success) {
+        emitter(state.copyWith(
+          status: BlocStatus.success,
+          locationsList: success.data?.result,
+          errorMessage: "",
+        ));
+        return success.data?.result ?? [];
+      });
+    }*/
+
+    await CustomPopUpsWidgets.showBottomSheet(
+      NavigationService.navigatorKey.currentContext!,
+      child: FilterDialog(
+        onClear: () {
+          add(GetDeceasedTransportRequestsEvent(
+              isDriver: state.isDriver!, clear: true));
+        },
+        // cityCurrentSelection: state.cityFilterItem,
+        //  deathCurrentSelection: state.locationFilterItem,
+        requestCurrentSelection: state.requestStatusFilterItem,
+        /* citiesItems: [
+          LookUpItem(id: 0, name: trans("inside_city")),
+          LookUpItem(id: 1, name: trans("outside_city"))
+        ],*/
+        requestStatusItems: requestStatusListFilters,
+        // deathTransferItems:
+        //     state.isDriver == true ? locationsListFilters : null,
+        onFilter: (List<LookUpItem?>? items) {
+          emitter(state.copyWith(
+              requestStatusFilterItem: items?[0],
+              locationFilterItem: items?[1],
+              cityFilterItem: items?[2]));
+          add(GetDeceasedTransportRequestsEvent(
+              isDriver: state.isDriver!,
+              requestStatusId: items?[0]?.id,
+              transportLocationStatusId: items?[1]?.id,
+              isMultiCity: items?[2]?.id != null
+                  ? (items?[2]?.id == 0 ? false : true)
+                  : null));
+        },
+      ),
+    );
+  }
+
+  hideKeyboard() {
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
+}
