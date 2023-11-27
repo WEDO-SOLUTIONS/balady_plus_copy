@@ -265,7 +265,7 @@ class _PostersLicenseStartServiceState
                   "steps": ["لا يوجد غرامات أو جزاءات"],
                 },
               ],
-              "ar": {"title": "خطوات التقديم", "description": ""},
+              "ar": {"title": "معلومات أخرى", "description": ""},
               "en": {"title": "", "description": ""}
             },
           ]
