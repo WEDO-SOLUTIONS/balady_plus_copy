@@ -10,7 +10,7 @@ import 'package:dio/dio.dart';
 
 class DisclosedMonthsViewModel extends BaseViewModel {
   final TobaccoListRepositoryImplementation repository;
-  final String identityNumber;
+  // final String identityNumber;
   final DisclosureSchedule disclosureSchedule;
   final Facility facility;
   double? amount;
@@ -22,7 +22,7 @@ class DisclosedMonthsViewModel extends BaseViewModel {
     required this.facility,
     required this.disclosureSchedule,
     required this.repository,
-    required this.identityNumber,
+    // required this.identityNumber,
   });
 
   Future<void> uploadTobaccoServicesAttachments(FileDataItem file) async {
@@ -30,7 +30,7 @@ class DisclosedMonthsViewModel extends BaseViewModel {
     try {
       isLoading = true;
       notifyListeners();
-      var response = await repository.uploadFile(identityNumber, file);
+      var response = await repository.uploadFile( file);
       response.fold(
         (failure) {
           errorMessage = failure.toString();

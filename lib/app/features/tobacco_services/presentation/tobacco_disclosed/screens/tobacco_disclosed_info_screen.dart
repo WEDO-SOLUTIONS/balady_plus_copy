@@ -73,7 +73,9 @@ class TobaccoDisclosedInfoScreen extends StatelessWidget {
                       ),
                       CardParameter(
                         title: 'id_number'.tr(),
-                        value: provider.disclosureRequest.identityNumber ?? '',
+                        value: CommonProperties.selectedDelegator?.id ??
+                            CommonProperties.userInfo!.idNo ??
+                            '',
                       ),
                     ],
                   ),

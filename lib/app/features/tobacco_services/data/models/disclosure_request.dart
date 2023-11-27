@@ -3,7 +3,7 @@ import 'package:balady_plus/app/features/tobacco_services/data/models/facility.d
 import 'package:balady_plus/app/features/tobacco_services/data/models/tobacco_schedule.dart';
 
 class DisclosureRequest {
-  String identityNumber;
+  // String identityNumber;
   DisclosureSchedule disclosureSchedule;
   Facility facility;
   String? attachmentId;
@@ -13,7 +13,7 @@ class DisclosureRequest {
 
   DisclosureRequest({
     required this.disclosureSchedule,
-    required this.identityNumber,
+    // required this.identityNumber,
     required this.facility,
     this.attachmentId,
     this.disclosureAmount,
@@ -25,7 +25,7 @@ class DisclosureRequest {
     Map<String, dynamic> data =  {
       "disclosureScheduleId": disclosureSchedule.disclosureScheduleId,
       "registrationNumber": facility.registrationNumber,
-      "identityNumber": identityNumber,
+      // "identityNumber": identityNumber,
       "disclosureAmount": disclosureAmount ?? 0.0,
       "attachmentId": attachmentId,
     };
