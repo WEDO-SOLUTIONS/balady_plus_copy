@@ -19,20 +19,22 @@ class PosterAreaCountWidget extends StatelessWidget {
                 ("  " + (count ?? "")),
               ),
           fontSize: 13,
-          maxLines: 3,
+          maxLines: 10,
           fontWeight: AppFontWeight.bold,
           fontColor: const Color(0xff595959),
         ),
         const SizedBox(
           height: 16,
         ),
-        CustomTextWidget(
+        CustomAutoSizeTextWidget(
           "posters_area_total".tr().replaceAll(
                 "{}",
                 ("  " + (area ?? "")),
               ),
-          fontSize: 13,
-          maxLines: 3,
+          maxFontSize: 13,
+          minFontSize: 12,
+          height: 1.4,
+          maxLines: 2,
           fontWeight: AppFontWeight.bold,
           fontColor: const Color(0xff595959),
         )
