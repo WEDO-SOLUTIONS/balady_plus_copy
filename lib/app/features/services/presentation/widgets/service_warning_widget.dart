@@ -26,7 +26,7 @@ class ServiceWarningWidget extends StatelessWidget {
       builder: (context, state) {
         return Container(
           width: double.infinity,
-          height: state.expandedWarning ? 300 : 160,
+          height: state.expandedWarning ? 320 : 160,
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(36),

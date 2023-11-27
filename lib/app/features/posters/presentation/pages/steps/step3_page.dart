@@ -309,7 +309,6 @@ class _CalcualtorWidgetState extends State<CalcualtorWidget> {
                         height: 16,
                       ),
                       Container(
-                        height: 98,
                         padding: const EdgeInsets.all(16),
                         decoration: ShapeDecoration(
                           color: Color(0xFFE8EFF1),

@@ -387,11 +387,30 @@ class Step2SummeryWidget extends StatelessWidget {
           const CustomVerticalSpace(
             height: 16,
           ),
-          PosterAreaCountWidget(
-            area: state.requestDetails?.costCalculationInfo?.postersAreaSum
-                .toString(),
-            count: state.requestDetails?.costCalculationInfo?.postersCount
-                .toString(),
+          FieldData(
+            title: state
+                .requestDetails?.costCalculationInfo?.postersCountDescription,
+            subTitle: state.requestDetails?.costCalculationInfo?.postersCount
+                    .toString() ??
+                "",
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+          FieldData(
+            title: state
+                .requestDetails?.costCalculationInfo?.postersAreaSumDescription,
+            subTitle:
+                "${state.requestDetails?.costCalculationInfo?.postersAreaSum}  ${'poster_cm2'.tr()}",
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+          FieldData(
+            title:
+                state.requestDetails?.costCalculationInfo?.totalCostDescription,
+            subTitle:
+                "${state.requestDetails?.costCalculationInfo?.totalCost}  ${'sar'.tr()}",
           ),
           const CustomVerticalSpace(
             height: 16,

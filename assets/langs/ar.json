@@ -3459,7 +3459,7 @@
 "posters_permit_licesnse_expiry":"تاريخ نهاية الرخصة ",
 "posters_permit_mun_sub":"الأمانة/البلدية",
 "posters_permit_end_date":"تاريخ نهاية التصريح",
-
+"permit_going_date":"تاريخ سريان التصريح", 
 "posters_permit_start_date":"تاريخ بداية التصريح", 
 "posters_permit_duration": "مدة العرض بالأيام", 
 "posters_count":"عدد اللوحات الإعلانية المؤقتة: {}", 
@@ -3485,7 +3485,8 @@
 "poster_cancel_confirm_msg":"عزيزي المستفيد، هل تريد الاستمرار بإلغاء طلب تصريح الملصقات الدعائية رقم {}",
 "poster_cancel_confirm_yes":"موافق", 
 "poster_cancel_confirm_no":"إلغاء", 
-"posters_bill_number":"رقم الفاتورة", 
+"posters_bill_number":"رقم الفاتورة",
+"posters_go_to_deatails":"الانتقال الى تفاصيل الطلب", 
 
   "tobaccoServices": "الافصاح عن التبغ",
 
