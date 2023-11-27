@@ -187,9 +187,9 @@ class ViolationBloc extends Bloc<ViolationEvent, ViolationState> {
   Future<void> _getRegulationClausesDetailsHandler(
       GetRegulationClausesDetails e, Emitter emitter) async {
     emitter(state.copyWith(
-        status: BlocStatus.loading,
-        selectedRegulationClauseItem: e.item,
-        selectedIndex: e.refresh == false ? 0 : e.index));
+      status: BlocStatus.loading,
+      selectedRegulationClauseItem: e.item,
+    ));
 
     var failureOrSuccess =
         await _getRegulationClauseDetails(RegulationClauseDetailsParams(
@@ -199,8 +199,7 @@ class ViolationBloc extends Bloc<ViolationEvent, ViolationState> {
               ? state.selectedEstablishmentSizeItem?.establishmentsizeId
                   .toString()
               : null,
-      noofRepetition:
-          state.selectedIndex != 0 ? state.selectedIndex.toString() : null,
+      noofRepetition: e.index != null ? (e.index! + 1).toString() : null,
       classificationID:
           state.violationClassificationResponse?.classificationId ?? "",
     ));
@@ -214,6 +213,7 @@ class ViolationBloc extends Bloc<ViolationEvent, ViolationState> {
       emitter(state.copyWith(
         status: BlocStatus.success,
         details: success,
+        selectedIndex: e.refresh == false ? 0 : e.index,
         errorMessage: "",
       ));
       if (!e.refresh) {
