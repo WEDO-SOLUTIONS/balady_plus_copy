@@ -85,18 +85,28 @@ class _PostersLicenseStartServiceState
                       ],
                     ),
                   ),
-                  SafeArea(
+                  /*  SafeArea(
                     top: false,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: ElevatedButtonWidget.startService(
                         onPressed: () async {
-                          if (CommonProperties.isLoggedIn) {
-                            // if (CommonProperties.selectedDelegator != null) {
-                            context
-                                .read<PostersLicenseBloc>()
-                                .add(ApplyLicenseEvent());
-                            /* } else {
+                         
+                        },
+                      ),
+                    ),
+                  )*/
+                  SafeArea(
+                    top: false,
+                    child: ServiceWarningWidget(
+                      warning: service.warning ?? "",
+                      onPress: () async {
+                        if (CommonProperties.isLoggedIn) {
+                          // if (CommonProperties.selectedDelegator != null) {
+                          context
+                              .read<PostersLicenseBloc>()
+                              .add(ApplyLicenseEvent());
+                          /* } else {
                               await BottomSheetDialog.showDraggableSheet(
                                 context,
                                 isFullHeight: false,
@@ -106,20 +116,19 @@ class _PostersLicenseStartServiceState
                                 child: NotAuthorizedIndivisualDialog(),
                               );
                             }*/
-                          } else {
-                            showDialog(
-                                context: context,
-                                builder: (ctx) => NeedLoginDialog(
-                                        onSuccessLogin:
-                                            (bool? isSuccess) async {
-                                      if (isSuccess ?? false) {
-                                        /* if (CommonProperties
+                        } else {
+                          showDialog(
+                              context: context,
+                              builder: (ctx) => NeedLoginDialog(
+                                      onSuccessLogin: (bool? isSuccess) async {
+                                    if (isSuccess ?? false) {
+                                      /* if (CommonProperties
                                                 .selectedDelegator !=
                                             null) {*/
-                                        context
-                                            .read<PostersLicenseBloc>()
-                                            .add(ApplyLicenseEvent());
-                                        /* } else {
+                                      context
+                                          .read<PostersLicenseBloc>()
+                                          .add(ApplyLicenseEvent());
+                                      /* } else {
                                           await BottomSheetDialog
                                               .showDraggableSheet(
                                             context,
@@ -132,24 +141,12 @@ class _PostersLicenseStartServiceState
                                                 NotAuthorizedIndivisualDialog(),
                                           );
                                         }*/
-                                      }
-                                    }));
-                          }
-                        },
-                      ),
+                                    }
+                                  }));
+                        }
+                      },
                     ),
                   )
-                  /*SafeArea(
-                          top: false,
-                          child: ServiceWarningWidget(
-                            warning: service.warning ?? "",
-                            onPress: () async {
-                              context
-                                  .read<PostersStartServiceBloc>()
-                                  .add(const ValidateBeforeApplyEvent());
-                            },
-                          ),
-                        )*/
                 ],
               ),
               if (state.status == BlocStatus.loading)
@@ -174,7 +171,8 @@ class _PostersLicenseStartServiceState
             "title": 'تصريح إعلاني مؤقت',
             "description": "",
             "tag": null,
-            "warning": ""
+            "warning":
+                "يمكن إضافة أكثر من لوحة إعلانية بالطلب الواحد.\n قد تختلف رسوم الخدمة من بلدية لبلدية أخرى.\n يتم حساب الرسوم باليوم.\n الخدمة مخصصة للوحات الإعلانية التي يتم عرضها على واجهة المحل أو على الزجاج الخارجي للمحل، أما اللوحات الإعلانية داخل المحل فلا تحتاج لإصدار تصريح."
           },
           "en": {
             "title": 'تصريح إعلاني مؤقت',
@@ -204,8 +202,12 @@ class _PostersLicenseStartServiceState
               "rate": 0,
               "duration": "0",
               "requirements": [
-                "عقد الإيجار أو صك الملكية أو عقد الاستثمار للموقع من البلدية أو الجهات الحكومية الأخرى.",
-                "عقد النظافة (اختياري حسب التعاقد ونوع النشاط)."
+                "تحديد نوع اللوحة الإعلانية (تخفيضات/منتج جديد/خدمة للمحل)",
+                "إدخال اسم اللوحة الإعلانية",
+                "تحديد أبعاد اللوحة الإعلانية (الطول والعرض)",
+                "إرفاق صورة اللوحة الإعلانية",
+                "تحديد المدة المطلوبة بالأيام",
+                "تحديد تاريخ بداية التصريح "
               ],
               "ar": {"title": "المتطلبات", "description": ""},
               "en": {"title": "Requirements", "description": ""}
@@ -217,31 +219,54 @@ class _PostersLicenseStartServiceState
               "duration": "0",
               "flow": [
                 {
-                  "title": "",
+                  "title": "الطريقة الأولى",
                   "steps": [
-                    "تحديد سجل المنشأة واختيار الرخصة",
-                    "دفع الرسوم إذا كان النشاط فوري أو إرسال الطلب للبلدية في حال الأنشطة غير الفوري.",
-                  ]
+                    "تسجيل الدخول لتطبيق بلدي ",
+                    "استعراض قائمة الرخص التجارية",
+                    "تحديد الرخصة التجارية وعرض تفاصيلها",
+                    "اختيار خدمة تصريح إعلاني مؤقت"
+                  ],
+                },
+                {
+                  "title": "الطريقة الثانية",
+                  "steps": [
+                    "تسجيل الدخول لتطبيق بلدي ",
+                    "التوجه للخدمات البلدية",
+                    "التوجه لخدمة التصاريح المتعددة",
+                    "اختيار خدمة تصريح إعلاني مؤقت"
+                  ],
                 },
               ],
               "ar": {"title": "خطوات التقديم", "description": ""},
               "en": {"title": "", "description": ""}
             },
             {
-              "iconName": IconPath.warning2,
-              "type": ServiceCardsTypes.authorInfo,
+              "iconName": IconPath.serviceCardDesc,
+              "type": ServiceCardsTypes.others,
               "rate": 0,
-              "duration": "",
-              "fees": null,
-              "ar": {
-                "title": "الاشتراطات والغرامات",
-                "description": "متطلبات واشتراطات الخدمة",
-                "descriptionLink": "https://new.balady.gov.sa/ar/node/10855",
-                "feesName": "لائحة الجزاءات عن المخالفات البلدية",
-                "feesLink":
-                    "https://balady.gov.sa/sites/default/files/2023-06/%D8%AC%D8%AF%D9%88%D9%84%20%D8%A7%D9%84%D8%AC%D8%B2%D8%A7%D8%A1%D8%A7%D8%AA%20%D8%B9%D9%86%20%D8%A7%D9%84%D9%85%D8%AE%D8%A7%D9%84%D9%81%D8%A7%D8%AA%20%D8%A7%D9%84%D8%A8%D9%84%D8%AF%D9%8A%D8%A9.pdf",
-              },
-              "en": {"title": "Service Description", "description": ""}
+              "duration": "0",
+              "flow": [
+                {
+                  "title": "رسوم الخدمة",
+                  "steps": [
+                    "لكل لوحة إعلانية بالطلب:",
+                    "مساحة اللوحة الإعلانية بالمتر المربع * رسوم المتر المربع لليوم الواحد * عدد الأيام المطلوبة بالتصريح",
+                    "ملحوظة: تختلف الرسوم من بلدية لبلدية أخرى.",
+                  ],
+                },
+                {
+                  "title": "وقت تنفيذ الخدمة",
+                  "steps": [
+                    "خدمة فورية/غير فورية وفقاً للبلدية التابع لها الرخصة التجارية"
+                  ],
+                },
+                {
+                  "title": "الغرامات والجزاءات",
+                  "steps": ["لا يوجد غرامات أو جزاءات"],
+                },
+              ],
+              "ar": {"title": "خطوات التقديم", "description": ""},
+              "en": {"title": "", "description": ""}
             },
           ]
         },

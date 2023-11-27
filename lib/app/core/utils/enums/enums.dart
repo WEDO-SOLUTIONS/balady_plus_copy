@@ -125,7 +125,7 @@ enum CRContractCleanRenewOptions {
 
 enum UserProfileType { Delegator, Agent }
 
-enum ServiceCardsTypes { desc, req, flow, authorInfo }
+enum ServiceCardsTypes { desc, req, flow, authorInfo, others }
 
 enum QRSiteLocationType {
   INSIDE_BUILDING(name: "INSIDE_BUILDING"),

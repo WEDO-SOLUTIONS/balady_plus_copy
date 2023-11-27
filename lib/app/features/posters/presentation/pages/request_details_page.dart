@@ -360,7 +360,7 @@ class Step2SummeryWidget extends StatelessWidget {
           ),
           FieldData(
             title: "posters_permit_start_date".tr(),
-            subTitle: state.requestDetails?.permitStartDate?.toString(),
+            subTitle: state.requestDetails?.permitIssuingDate?.toString(),
           ),
           const CustomVerticalSpace(
             height: 16,
