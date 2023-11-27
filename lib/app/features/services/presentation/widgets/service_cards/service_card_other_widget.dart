@@ -26,57 +26,59 @@ class ServiceCardOtherWidget extends StatelessWidget {
         return const SizedBox();
       }
 
-      return Container(
-        margin: const EdgeInsets.all(16),
-        padding: const EdgeInsets.all(16),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(16)),
-          boxShadow: [
-            BoxShadow(
-              color: AppColor.darkSlateBlue6,
-              offset: Offset(0, -4),
-              blurRadius: 32,
-            )
-          ],
-          color: AppColor.blackModern50Light,
-        ),
+      return SingleChildScrollView(
         child: Column(
           children: [
             ...card.flow!
-                .map((e) => Column(children: [
-                      Row(
-                        children: [
-                          DrawIconBasedTypeWidget(
-                            icon: card.iconName,
-                          ),
-                          const SizedBox(width: 4),
-                          CustomTextWidget(
-                            card.title,
-                            textStyle: AppStyle.cardTitleTextStle,
-                          ),
+                .map((e) => Container(
+                      margin: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
+                      decoration: const BoxDecoration(
+                        color: AppColor.blackModern50Light,
+                        borderRadius: BorderRadius.all(Radius.circular(16)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColor.darkSlateBlue6,
+                            offset: Offset(0, -4),
+                            blurRadius: 32,
+                          )
                         ],
                       ),
-                      const SizedBox(height: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ...e.steps!
-                              .map((e) => Column(
-                                    children: [
-                                      CustomTextWidget(
-                                        e,
-                                        textStyle: AppStyle
-                                            .serviceCardDescriptionTextStyle,
-                                        maxLines: 6,
-                                      ),
-                                      const SizedBox(height: 16)
-                                    ],
-                                  ))
-                              .toList(),
-                        ],
-                      )
-                    ]))
-                .toList()
+                      child: Column(children: [
+                        Row(
+                          children: [
+                            DrawIconBasedTypeWidget(
+                              icon: card.iconName,
+                            ),
+                            const SizedBox(width: 4),
+                            CustomTextWidget(
+                              e.title ?? "",
+                              textStyle: AppStyle.cardTitleTextStle,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ...e.steps!
+                                .map((e) => Column(
+                                      children: [
+                                        CustomTextWidget(
+                                          e,
+                                          textStyle: AppStyle
+                                              .serviceCardDescriptionTextStyle,
+                                          maxLines: 50,
+                                        ),
+                                        const SizedBox(height: 16)
+                                      ],
+                                    ))
+                                .toList(),
+                          ],
+                        ),
+                      ]),
+                    ))
+                .toList(),
           ],
         ),
       );
