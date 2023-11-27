@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/route_names.dart';
@@ -38,7 +39,7 @@ class IndividualRequestWidget extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     CustomTextWidget(
-                      "طلب",
+                      "request".tr(),
                       fontColor: AppColor.blackModern600Light,
                       fontSize: 16,
                       fontWeight: AppFontWeight.bold,
@@ -66,9 +67,10 @@ class IndividualRequestWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TitleSubTitle(
-                    title: "رقم الرخصة", subTitle: item.licenseId.toString()),
+                    title: "license_no".tr(),
+                    subTitle: item.licenseId.toString()),
                 TitleSubTitle(
-                    title: "تاريح الطلب",
+                    title: "request_date".tr(),
                     subTitle: item.creationDate.toString())
               ],
             ),
@@ -80,10 +82,10 @@ class IndividualRequestWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TitleSubTitle(
-                    title: "البلدية",
+                    title: "sub_municipality".tr(),
                     subTitle: item.subMunicipality?.name ?? ""),
                 TitleSubTitle(
-                    title: "رقم الفاتورة", subTitle: item.billNumber ?? "")
+                    title: "invoice_no".tr(), subTitle: item.billNumber ?? "")
               ],
             ),
             const SizedBox(
@@ -93,13 +95,13 @@ class IndividualRequestWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (item.permitStartDate != null)
-                  TitleSubTitle(
-                      title: "تاريخ سريان التصريح",
-                      subTitle: item.permitIssuingDate ?? ""),
+                // if (item.permitStartDate != null)
+                TitleSubTitle(
+                    title: "permit_going_date".tr(),
+                    subTitle: item.permitIssuingDate ?? ""),
                 if (item.permitEndDate != null)
                   TitleSubTitle(
-                      title: "تاريخ نهاية التصريح",
+                      title: "posters_permit_end_date".tr(),
                       subTitle: item.permitEndDate ?? "")
               ],
             ),
@@ -115,7 +117,7 @@ class IndividualRequestWidget extends StatelessWidget {
                         context, RouteName.posterReqeuestDetailsPage,
                         arguments: item.individualRequestId);
                   },
-                  text: "الانتقال الى تفاصيل الطلب"),
+                  text: "posters_go_to_deatails".tr()),
             )
           ],
         ));
