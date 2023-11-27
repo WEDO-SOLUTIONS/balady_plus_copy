@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/services/global/web_service.dart';
+import 'package:balady_plus/app/core/utils/extensions/delay.dart';
 import 'package:balady_plus/app/features/ekram/data/model/add_trip_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/deceased_request_details_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/ekram_attachment_response.dart';
@@ -10,12 +11,12 @@ import 'package:balady_plus/app/features/ekram/domain/entities/get_requests_para
 import 'package:balady_plus/app/features/ekram/domain/entities/update_driver_location_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/update_driver_location.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
-import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
-import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart';
 
 import 'package:dio/dio.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/errors/exceptions.dart';
+import '../../../../core/utils/constants/apis/api_info.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
 import '../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 
@@ -97,7 +98,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }
@@ -132,7 +133,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }
@@ -167,7 +168,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }
@@ -204,7 +205,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }
@@ -239,7 +240,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }
@@ -299,7 +300,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //   //CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }
@@ -337,7 +338,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           // //CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }
@@ -374,7 +375,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //   //CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }
@@ -421,7 +422,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }
@@ -456,7 +457,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }
@@ -494,7 +495,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //  //CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }
@@ -532,7 +533,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }
@@ -560,7 +561,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }
@@ -588,7 +589,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }
@@ -618,7 +619,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }
@@ -650,7 +651,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }
@@ -696,7 +697,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }
@@ -732,7 +733,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }
@@ -767,7 +768,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }
@@ -793,7 +794,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //  CommonFunctions.sendExceptionLog(exception: ex, response: "");
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }

@@ -1,23 +1,19 @@
-import 'package:balady_new_app/app/core/shared_local_services/common.dart';
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
-import 'package:balady_new_app/etmam_app/core/utils/constants/app_config.dart';
-import 'package:balady_new_app/shared/core/data/entities/lookup_item.dart';
-import 'package:balady_new_app/shared/core/data/models/lookup_item_model.dart';
-import 'package:balady_new_app/shared/core/errors/errors_exports.dart';
-import 'package:balady_new_app/shared/core/services/local/use_case.dart';
-import 'package:balady_new_app/shared/core/utils/common_properties.dart';
-import 'package:balady_new_app/shared/core/utils/enums/bloc_status.dart';
-
-import 'package:balady_new_app/shared/core/services/services_exports.dart'
-    show NavigationService;
-import 'package:balady_new_app/shared/core/utils/utils_exports.dart';
-import 'package:balady_new_app/shared/features/_shared_feature_/shared/data/entities/file_data_item.dart';
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:balady_new_app/app/core/core_exports.dart' show RoutesNames;
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../core/errors/failures.dart';
+import '../../../../../core/services/local/navigation_services.dart';
+import '../../../../../core/services/local/use_case.dart';
+import '../../../../../core/utils/common_functions.dart';
+import '../../../../../core/utils/enums/bloc_status.dart';
+import '../../../../_shared_feature_/data/entities/file_data_item.dart';
+import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 
 part 'ekram_request_transportation_event.dart';
 
@@ -50,8 +46,8 @@ class EkramRequestTransportationBloc extends Bloc<
         _getNationalities = getNationalities,
         _applyDeceasedTransport = applyDeceasedTransport,
         super(EkramRequestTransportationState(
-            fullName: CommonProperties.getSSOProfile?.arName ?? "",
-            mobileNumber: CommonProperties.getSSOProfile?.getPhone() ?? "",
+            fullName: CommonProperties.userInfo?.arName ?? "",
+            mobileNumber: CommonProperties.userInfo?.getPhone() ?? "",
             requestType: trans("ekram_request_type"))) {
     on<EkramRequestTransportationEvent>((event, emit) {});
     on<ChangeAgreementEvent>(_changeAgreementHandler);
@@ -165,7 +161,7 @@ class EkramRequestTransportationBloc extends Bloc<
       ));
     }, (success) {
       success.data?.result
-          ?.insert(0, LookUpItemModel(id: -1, name: trans("other_hospital")));
+          ?.insert(0, LookUpItem(id: -1, name: trans("other_hospital")));
 
       emitter(state.copyWith(
         status: BlocStatus.success,
@@ -214,7 +210,7 @@ class EkramRequestTransportationBloc extends Bloc<
     emitter(state.copyWith(
         status: BlocStatus.success, deceasedInfoDto: deceasedInfoDto));
 
-    showSuccess(trans("delete_deceassed_success"));
+    CommonFunctions.showSuccess(trans("delete_deceassed_success"));
   }
 
   Future<void> _addFileHandler(AddFileEvent e, Emitter emitter) async {
@@ -254,7 +250,7 @@ class EkramRequestTransportationBloc extends Bloc<
       ekramRequestsBloc
           ?.add(GetDeceasedTransportRequestsEvent(isDriver: false));
       NavigationService.navigatorKey.currentState!.pushReplacementNamed(
-          RoutesNames.ekramSuccessScreen,
+          RouteName.ekramSuccessScreen,
           arguments: success.data?.responseMessage);
     });
   }
@@ -262,7 +258,7 @@ class EkramRequestTransportationBloc extends Bloc<
   void cancelRequest() {
     hideKeyboard();
     NavigationService.navigatorKey.currentState!
-        .popUntil(ModalRoute.withName(RoutesNames.bottomNavigationRoute));
+        .popUntil(ModalRoute.withName(RouteName.bottomNavigation));
   }
 
   Future<void> _goToNextPageHandler(

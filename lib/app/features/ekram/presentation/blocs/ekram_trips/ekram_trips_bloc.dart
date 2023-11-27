@@ -1,6 +1,7 @@
-import 'package:balady_new_app/shared/core/utils/enums/bloc_status.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+
+import '../../../../../core/utils/enums/bloc_status.dart';
 
 part 'ekram_trips_event.dart';
 part 'ekram_trips_state.dart';

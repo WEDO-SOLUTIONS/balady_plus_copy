@@ -1,27 +1,22 @@
-import 'package:balady_new_app/app/core/shared_local_services/helpers.dart';
-import 'package:balady_new_app/app/core/shared_widgets/custom_popups_widgets.dart';
-import 'package:balady_new_app/app/features/ekram/domain/entities/get_requests_params.dart';
-import 'package:balady_new_app/app/features/ekram/domain/use_cases/get_deceased_driver_request_details.dart';
-import 'package:balady_new_app/app/features/ekram/domain/use_cases/get_deceased_transport_request_details.dart';
-import 'package:balady_new_app/app/features/ekram/domain/use_cases/get_locations.dart';
-import 'package:balady_new_app/app/features/ekram/domain/use_cases/get_status.dart';
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
-import 'package:balady_new_app/app/features/ekram/presentation/dialogs/filter_dialog.dart';
-import 'package:balady_new_app/etmam_app/core/utils/constants/app_config.dart';
-import 'package:balady_new_app/shared/core/data/entities/lookup_item.dart';
-import 'package:balady_new_app/shared/core/errors/errors_exports.dart';
-import 'package:balady_new_app/shared/core/services/local/use_case.dart';
-import 'package:balady_new_app/shared/core/utils/enums/bloc_status.dart';
-
-import 'package:balady_new_app/shared/core/services/services_exports.dart'
-    show NavigationService;
-import 'package:balady_new_app/shared/features/_shared_feature_/shared/data/entities/file_data_item.dart';
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/features/ekram/domain/entities/get_requests_params.dart';
+import 'package:balady_plus/app/features/ekram/domain/use_cases/get_deceased_driver_request_details.dart';
+import 'package:balady_plus/app/features/ekram/domain/use_cases/get_deceased_transport_request_details.dart';
+import 'package:balady_plus/app/features/ekram/domain/use_cases/get_locations.dart';
+import 'package:balady_plus/app/features/ekram/domain/use_cases/get_status.dart';
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/app/features/ekram/presentation/dialogs/filter_dialog.dart';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:balady_new_app/app/core/core_exports.dart' show RoutesNames;
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../core/errors/failures.dart';
+import '../../../../../core/services/local/navigation_services.dart';
+import '../../../../../core/utils/enums/bloc_status.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
+import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 
 part 'ekram_requests_event.dart';
 
@@ -173,7 +168,7 @@ class EkramRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState> {
       ));
       if (e.isDriver) {
         final result = await NavigationService.navigatorKey.currentState!
-            .pushNamed(RoutesNames.ekramTransportationDetailsScreen,
+            .pushNamed(RouteName.ekramTransportationDetailsScreen,
                 arguments: success.data?.result);
         print(result);
         if (result == true) {
@@ -181,7 +176,7 @@ class EkramRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState> {
         }
       } else {
         NavigationService.navigatorKey.currentState!.pushNamed(
-            RoutesNames.driverEkramTransportationDetailsScreen,
+            RouteName.driverEkramTransportationDetailsScreen,
             arguments: success.data?.result);
       }
     });
