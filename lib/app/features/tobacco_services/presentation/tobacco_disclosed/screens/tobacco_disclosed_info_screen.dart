@@ -99,7 +99,7 @@ class TobaccoDisclosedInfoScreen extends StatelessWidget {
                     icon: IconPath.saveIcon,
                     title: 'pledges'.tr(),
                     description:
-                        '${'pledges_submit_disclosure1'.tr()} ${'month${provider.disclosureRequest.disclosureSchedule.month}'.tr()} ${provider.disclosureRequest.disclosureSchedule.year} ${'pledges_submit_disclosure2'.tr()} ${provider.disclosureRequest.disclosureAmount ?? 0} ${'pledges_submit_disclosure3'.tr()} ${(provider.disclosureRequest.disclosureAmount ?? 0 * (provider.disclosureRequest.disclosureSchedule.percentage / 100) )} ${'pledges_submit_disclosure4'.tr()}',
+                        '${'pledges_submit_disclosure1'.tr()} ${'month${provider.disclosureRequest.disclosureSchedule.month}'.tr()} ${'the_years'} ${provider.disclosureRequest.disclosureSchedule.year} ${'pledges_submit_disclosure2'.tr()} ${provider.disclosureRequest.disclosureAmount ?? 0} ${'pledges_submit_disclosure3'.tr()} ${(provider.disclosureRequest.disclosureAmount ?? 0 * (provider.disclosureRequest.disclosureSchedule.percentage / 100) )} ${'pledges_submit_disclosure4'.tr()}',
                     widget: Selector<TobaccoDisclosedViewModel, bool>(
                       selector: (_, provider) => provider.acknowledgePledge,
                       builder: (context, acknowledgePledge, child) {
