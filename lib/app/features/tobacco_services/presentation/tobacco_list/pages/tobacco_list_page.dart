@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/need_login_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/loading_list_widget.dart';
@@ -63,15 +64,19 @@ class _TobaccoListPageState extends State<TobaccoListPage> {
                       ),
                     )
                   : provider.facilities != null
-                      ? ListView.builder(
-                          shrinkWrap: true,
-                          // controller: _scrollController,
-                          itemCount: provider.facilities!.length,
-                          itemBuilder: (context, index) {
-                            return TobaccoListItem(
-                                facility: provider.facilities![index]);
-                          },
-                        )
+                      ? provider.facilities!.isNotEmpty
+                          ? ListView.builder(
+                              shrinkWrap: true,
+                              // controller: _scrollController,
+                              itemCount: provider.facilities!.length,
+                              itemBuilder: (context, index) {
+                                return TobaccoListItem(
+                                    facility: provider.facilities![index]);
+                              },
+                            )
+                          : EmptyListWidget(
+                              title: "no_data_shown".tr(),
+                            )
                       : ReloadWidget(
                           errorMessage: provider.errorMessage,
                           onTab: () {

@@ -12,10 +12,9 @@ class TobaccoListRepositoryImplementation {
 
   TobaccoListRepositoryImplementation({required this.remoteDataSource});
 
-  Future<Either<Failure, List<Facility>>> getUserFacilities(
-      String identityNumber) async {
+  Future<Either<Failure, List<Facility>>> getUserFacilities() async {
     try {
-      final data = await remoteDataSource.getUserFacilities(identityNumber);
+      final data = await remoteDataSource.getUserFacilities();
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -24,11 +23,9 @@ class TobaccoListRepositoryImplementation {
     }
   }
 
-  Future<Either<Failure, TobaccoSchedule>> getUserFacilitiesDetails(
-      String identityNumber, String registrationNumber) async {
+  Future<Either<Failure, TobaccoSchedule>> getUserFacilitiesDetails(String registrationNumber) async {
     try {
       final data = await remoteDataSource.getUserFacilitiesDetails(
-        identityNumber,
         registrationNumber,
       );
       return Right(data);
@@ -39,9 +36,9 @@ class TobaccoListRepositoryImplementation {
     }
   }
 
-  Future<Either<Failure, dynamic>> uploadFile(String identityNumber,FileDataItem file) async {
+  Future<Either<Failure, dynamic>> uploadFile(FileDataItem file) async {
     try {
-      final data = await remoteDataSource.uploadFile(identityNumber,file);
+      final data = await remoteDataSource.uploadFile(file);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
