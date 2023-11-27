@@ -1,10 +1,12 @@
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
-import 'package:balady_new_app/shared/core/data/entities/lookup_item.dart';
-import 'package:balady_new_app/shared/core/errors/errors_exports.dart';
-import 'package:balady_new_app/shared/core/services/services_exports.dart';
-import 'package:balady_new_app/shared/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+
+import '../../../../../core/errors/failures.dart';
+import '../../../../../core/services/local/use_case.dart';
+import '../../../../../core/utils/enums/bloc_status.dart';
+import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 
 part 'ekram_add_deceased_event.dart';
 part 'ekram_add_deceased_state.dart';
