@@ -96,7 +96,7 @@ class IndividualRequestWidget extends StatelessWidget {
                 if (item.permitStartDate != null)
                   TitleSubTitle(
                       title: "تاريخ سريان التصريح",
-                      subTitle: item.permitStartDate ?? ""),
+                      subTitle: item.permitIssuingDate ?? ""),
                 if (item.permitEndDate != null)
                   TitleSubTitle(
                       title: "تاريخ نهاية التصريح",
