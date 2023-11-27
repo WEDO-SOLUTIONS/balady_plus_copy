@@ -13,12 +13,11 @@ import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart' as http;
 
 abstract class TobaccoListRemoteDataSource {
-  Future<List<Facility>> getUserFacilities(String identityNumber);
+  Future<List<Facility>> getUserFacilities();
 
-  Future<TobaccoSchedule> getUserFacilitiesDetails(
-      String identityNumber, String registrationNumber);
+  Future<TobaccoSchedule> getUserFacilitiesDetails(String registrationNumber);
 
-  Future uploadFile(String identityNumber,FileDataItem file);
+  Future uploadFile(FileDataItem file);
 
   Future uploadDisclosure(DisclosureRequest disclosureRequest);
 }
@@ -30,12 +29,11 @@ class TobaccoListRemoteDataSourceImplementation
   TobaccoListRemoteDataSourceImplementation({required this.webService});
 
   @override
-  Future<List<Facility>> getUserFacilities(String identityNumber) async {
+  Future<List<Facility>> getUserFacilities() async {
     var response;
     try {
       response = await webService.dio.get(
         ApiUrl.getUserFacilities,
-        queryParameters: {"identityNumber": identityNumber},
       );
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
@@ -67,7 +65,6 @@ class TobaccoListRemoteDataSourceImplementation
 
   @override
   Future<TobaccoSchedule> getUserFacilitiesDetails(
-    String identityNumber,
     String registrationNumber,
   ) async {
     var response;
@@ -75,7 +72,6 @@ class TobaccoListRemoteDataSourceImplementation
       response = await webService.dio.get(
         ApiUrl.getTobaccoDisclosure,
         queryParameters: {
-          "identityNumber": identityNumber,
           "registrationNumber": registrationNumber,
         },
       );
@@ -107,7 +103,7 @@ class TobaccoListRemoteDataSourceImplementation
   }
 
   @override
-  Future<String> uploadFile(String identityNumber,FileDataItem file) async {
+  Future<String> uploadFile(FileDataItem file) async {
     var response;
     try {
       String contentTyp = lookupMimeType(file.filePath)!;
@@ -128,7 +124,6 @@ class TobaccoListRemoteDataSourceImplementation
             "fileContentType": contentTyp,
           },
         ),
-        queryParameters: {"identityNumber": identityNumber},
       );
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;

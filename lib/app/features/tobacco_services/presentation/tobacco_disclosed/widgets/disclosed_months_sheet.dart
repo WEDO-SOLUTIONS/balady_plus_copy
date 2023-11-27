@@ -265,7 +265,6 @@ class DisclosedMonthsSheet extends StatelessWidget {
                               repository: provider.repository,
                               fileUploaded: provider.fileUploaded,
                               disclosureRequest: DisclosureRequest(
-                                identityNumber: provider.identityNumber,
                                 disclosureSchedule: provider.disclosureSchedule,
                                 facility: provider.facility,
                                 attachmentId: provider.attachmentId,

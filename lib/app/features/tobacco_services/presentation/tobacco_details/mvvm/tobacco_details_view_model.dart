@@ -35,7 +35,6 @@ class TobaccoDetailsViewModel extends BaseViewModel {
       isLoading = true;
       notifyListeners();
       var response = await repository.getUserFacilitiesDetails(
-        identityNumber,
         registrationNumber,
       );
       response.fold(

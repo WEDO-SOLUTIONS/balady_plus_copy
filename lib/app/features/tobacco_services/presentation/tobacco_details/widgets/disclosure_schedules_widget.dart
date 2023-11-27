@@ -101,8 +101,6 @@ class DisclosureSchedulesWidget extends StatelessWidget {
                                                     facility: provider
                                                         .tobaccoSchedule!
                                                         .facilityInfo,
-                                                    identityNumber:
-                                                        provider.identityNumber,
                                                   ),
                                                 ),
                                                 isFullHeight: false,
