@@ -1,6 +1,8 @@
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../../../core/utils/constants/constants.dart';
+
 class EkramDetailsBodyWidget extends StatelessWidget {
   const EkramDetailsBodyWidget({Key? key}) : super(key: key);
 

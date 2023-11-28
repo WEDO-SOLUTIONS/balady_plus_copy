@@ -1,0 +1,141 @@
+part of 'ekram_book_cemetry_bloc.dart';
+
+abstract class EkramBookCemetryEvent extends Equatable {
+  const EkramBookCemetryEvent();
+
+  @override
+  List<Object> get props => [];
+}
+
+class GoToNextPageEvent extends EkramBookCemetryEvent {
+  GoToNextPageEvent();
+}
+
+class GoToPreviousPageEvent extends EkramBookCemetryEvent {
+  GoToPreviousPageEvent();
+}
+
+class SubmitRequestEvent extends EkramBookCemetryEvent {
+  SubmitRequestEvent();
+}
+
+class ChangeAgreementEvent extends EkramBookCemetryEvent {
+  final bool? isagree;
+  ChangeAgreementEvent({this.isagree});
+}
+
+class ChangeRelationShipEvent extends EkramBookCemetryEvent {
+  final String? text;
+  ChangeRelationShipEvent({this.text});
+}
+
+
+class ChangeNationalId extends EkramBookCemetryEvent {
+  final String? text;
+  ChangeNationalId({this.text});
+}
+
+
+class ChangeNationalIdDob extends EkramBookCemetryEvent {
+    final String? gorgianDate;
+  final String? hijriDate;
+  ChangeNationalIdDob({this.gorgianDate, this.hijriDate});
+
+}
+
+class ChangeNationalType extends EkramBookCemetryEvent {
+  final LookUpItem? item;
+  ChangeNationalType({this.item});
+}
+
+class ChangeBurialCityEvent extends EkramBookCemetryEvent {
+  final LookUpItem? item;
+  ChangeBurialCityEvent({this.item});
+}
+class ChangeCemetryTypeEvent extends EkramBookCemetryEvent {
+  final LookUpItem? item;
+  ChangeCemetryTypeEvent({this.item});
+}
+class ChangeCemetrySizeEvent extends EkramBookCemetryEvent {
+  final LookUpItem? item;
+  ChangeCemetrySizeEvent({this.item});
+}
+
+class ChangeCemetryEvent extends EkramBookCemetryEvent {
+  final LookUpItem? item;
+  ChangeCemetryEvent({this.item});
+}
+
+class ChangeBurialDateEvent extends EkramBookCemetryEvent {
+  final String? gorgianDate;
+  final String? hijriDate;
+  ChangeBurialDateEvent({this.gorgianDate, this.hijriDate});
+}
+
+class ChangeBurialTimevent extends EkramBookCemetryEvent {
+  final LookUpItem? item;
+  ChangeBurialTimevent({this.item});
+}
+
+class ChangeReligionEvent extends EkramBookCemetryEvent {
+  final LookUpItem? item;
+  ChangeReligionEvent({this.item});
+}
+
+class ChangeBurialTimeOtherNameEvent extends EkramBookCemetryEvent {
+  ChangeBurialTimeOtherNameEvent();
+}
+class ChangeIsEpidamicEvent extends EkramBookCemetryEvent {
+  final bool? value;
+  ChangeIsEpidamicEvent({this.value});
+}
+
+
+class GetNationalTypes extends EkramBookCemetryEvent {
+  const GetNationalTypes();
+}
+
+
+
+class GetCemetriesEvent extends EkramBookCemetryEvent {
+  const GetCemetriesEvent();
+}
+
+
+class CheckUserInfoEvent extends EkramBookCemetryEvent {
+  const CheckUserInfoEvent();
+}
+
+
+class ChangeHospitalOtherNameEvent extends EkramBookCemetryEvent {
+  final String? text;
+  ChangeHospitalOtherNameEvent({this.text});
+}
+
+class SelectHospitalEvent extends EkramBookCemetryEvent {
+  final LookUpItem? item;
+  SelectHospitalEvent({this.item});
+}
+
+class ApplyDeceasedTransportEvent extends EkramBookCemetryEvent {
+  ApplyDeceasedTransportEvent();
+}
+
+class GetCitiesEvent extends EkramBookCemetryEvent {
+  const GetCitiesEvent();
+}
+
+class GetNationalitiesEvent extends EkramBookCemetryEvent {
+  const GetNationalitiesEvent();
+}
+
+class GetHospitalsEvent extends EkramBookCemetryEvent {
+  final LookUpItem city;
+  const GetHospitalsEvent({required this.city});
+}
+
+
+class AddDeceasedEvent extends EkramBookCemetryEvent {
+  final dynamic data;
+  const AddDeceasedEvent(this.data);
+}

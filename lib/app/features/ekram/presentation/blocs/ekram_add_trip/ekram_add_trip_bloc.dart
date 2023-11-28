@@ -9,6 +9,7 @@ import 'package:balady_plus/app/features/ekram/domain/use_cases/update_driver_lo
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -83,7 +84,6 @@ class EkramAddTripBloc extends Bloc<EkramAddTripEvent, EkramAddTripState> {
         NavigationService.navigatorKey.currentContext!,
         showTitleActions: true,
         minTime: DateTime(2010, 1, 1),
-        theme: DatePickerTheme(),
         maxTime: DateTime(2050, 1, 1), onChanged: (date) {
       print('change $date');
     }, onConfirm: (date) {

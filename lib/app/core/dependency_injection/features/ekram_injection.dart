@@ -1,9 +1,16 @@
 import '../../../features/ekram/domain/use_cases/add_trip.dart';
+import '../../../features/ekram/domain/use_cases/book_cemetry.dart';
+import '../../../features/ekram/domain/use_cases/check_user_info.dart';
 import '../../../features/ekram/domain/use_cases/complete_trip.dart';
 import '../../../features/ekram/domain/use_cases/delete_trip.dart';
 import '../../../features/ekram/domain/use_cases/download_attachment.dart';
+import '../../../features/ekram/domain/use_cases/get_active_cities.dart';
+import '../../../features/ekram/domain/use_cases/get_cemetries.dart';
+import '../../../features/ekram/domain/use_cases/get_cemetry_request_details.dart';
+import '../../../features/ekram/domain/use_cases/get_cemetry_requests.dart';
 import '../../../features/ekram/domain/use_cases/get_deceased_driver_request_details.dart';
 import '../../../features/ekram/domain/use_cases/get_deceased_transport_request_details.dart';
+import '../../../features/ekram/domain/use_cases/get_ekram_lookups.dart';
 import '../../../features/ekram/domain/use_cases/get_launduries.dart';
 import '../../../features/ekram/domain/use_cases/get_locations.dart';
 import '../../../features/ekram/domain/use_cases/get_mosques.dart';
@@ -46,6 +53,15 @@ class EkramInjection {
     sl.registerLazySingleton(() => UpadateDriverLocation(repository: sl()));
     sl.registerLazySingleton(() => GetTripsLocation(repository: sl()));
     sl.registerLazySingleton(() => DownloadAttachment(repository: sl()));
+    sl.registerLazySingleton(() => GetEkramLookUp(repository: sl()));
+    sl.registerLazySingleton(() => CheckUserinfo(repository: sl()));
+    sl.registerLazySingleton(() => GetCemetries(repository: sl()));
+    sl.registerLazySingleton(() => GetActiveCities(repository: sl()));
+    sl.registerLazySingleton(() => BookCemetry(repository: sl()));
+
+    sl.registerLazySingleton(() => GetCemetryRequests(repository: sl()));
+
+    sl.registerLazySingleton(() => GetCemetryRequestDetails(repository: sl()));
 
     //! Entities
 
