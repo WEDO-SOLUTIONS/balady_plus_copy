@@ -1,16 +1,7 @@
-import 'package:balady_plus/app/core/core_exports.dart'
-    show
-        AppColors,
-        BUTTON_ICON_POSITION,
-        Constants,
-        CustomEnhancedExpansionPanelWidget,
-        CustomSvgIconWidget,
-        CustomTextButtonWithIconWidgetWithFlexible,
-        CustomTextWidget,
-        CustomTitleSubtitleCardWidget,
-        FONT_WEIGHT,
-        Helpers;
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+
+import '../../../../../_shared_feature_/presentation/widgets/custom_enhanced_expansion_panel_widget.dart';
 
 class BurialInfoWidget extends StatelessWidget {
   const BurialInfoWidget({Key? key}) : super(key: key);
@@ -19,12 +10,12 @@ class BurialInfoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomEnhancedExpansionPanelWidget(
       underline: false,
-      title: Helpers.translatingWord(
-        "burialInfo",
-      ),
+      title: "burialInfo".tr(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          //MM Ekram
+          /*
           CustomTitleSubtitleCardWidget(
             horizontalPadding: Constants.smallPadding,
             title: Helpers.translatingWord("burialCity"),
@@ -83,7 +74,7 @@ class BurialInfoWidget extends StatelessWidget {
                 ),
               ],
             ),
-          ),
+          ),*/
         ],
       ),
     );
