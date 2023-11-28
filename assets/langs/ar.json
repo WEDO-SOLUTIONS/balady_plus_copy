@@ -3506,7 +3506,7 @@
 
   "disclosure_month": "الافصاح عن شهر",
 
-  "you_must_choose_amount": "يجب ادخل المبلغ",
+  "you_must_choose_amount": "يجب عليك إدخال المبلغ",
 
 
   "required_field_must_number": "حقل اجباري يجب ان يكون رقم",
@@ -3546,6 +3546,9 @@
   "must_add_attachment": "يجب إرفاق الملف",
 
   "select_reason": "حدد السبب",
-  "must_comment": "يجب اضافة تعليق"
+  "must_comment": "يجب اضافة تعليق",
+
+
+  "attached_successfully": "تم ارفق الملف بنجاح"
 
 }
