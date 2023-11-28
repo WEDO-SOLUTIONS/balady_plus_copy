@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
+import '../../../../vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
 import '../../blocs/ekram_book_cemetry/ekram_book_cemetry_bloc.dart';
 import '../../blocs/ekram_requests_bloc/ekram_requests_bloc.dart';
 import '../../widgets/ekram_book_cemetry/cemetry_request_app_bar.dart';
@@ -51,11 +52,19 @@ class _EkramBookCemetryPageState extends State<EkramBookCemetryPage> {
                 context.read<EkramBookCemetryBloc>().hideKeyboard();
               },
               child: Scaffold(
-                appBar: CemetryRequestAppBar(
+                appBar: DetailsAppBarTwo(
                   currentStep: state.currentPageValue + 1,
+                  pageLength:
+                      context.read<EkramBookCemetryBloc>().pagesList.length,
                   backOnPress: () => context
                       .read<EkramBookCemetryBloc>()
                       .add(GoToPreviousPageEvent()),
+                  onTapCloseAction: () {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    bool Function(Route<dynamic>) predicate =
+                        ModalRoute.withName(RouteName.bottomNavigation);
+                    Navigator.of(context).popUntil((predicate));
+                  },
                 ),
                 body: Stack(
                   children: [
