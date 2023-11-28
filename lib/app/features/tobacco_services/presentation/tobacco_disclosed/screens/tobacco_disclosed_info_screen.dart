@@ -52,7 +52,7 @@ class TobaccoDisclosedInfoScreen extends StatelessWidget {
                       CardParameter(
                         title: 'certificate_number'.tr(),
                         value: provider
-                                .disclosureRequest.facility.baladyLicenseNo ??
+                                .disclosureRequest.facility.registrationNumber ??
                             '',
                       ),
                     ],

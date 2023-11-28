@@ -174,7 +174,10 @@ class DisclosedMonthsSheet extends StatelessWidget {
                     );
                     if (file != null) {
                       if ((file.sizeInMB * 1000) <= 10024) {
-                        provider.uploadTobaccoServicesAttachments(file);
+                        await provider.uploadTobaccoServicesAttachments(file);
+                        if(provider.attachmentId != null) {
+                          CommonFunctions.showSuccess("attached_successfully".tr());
+                        }
                       } else {
                         CommonFunctions.showError("file_max_size".tr());
                       }
