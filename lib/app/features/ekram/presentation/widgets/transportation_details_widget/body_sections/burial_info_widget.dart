@@ -1,15 +1,15 @@
-import 'package:balady_new_app/app/core/core_exports.dart'
+import 'package:balady_plus/app/core/core_exports.dart'
     show
-    AppColors,
-    BUTTON_ICON_POSITION,
-    Constants,
-    CustomEnhancedExpansionPanelWidget,
-    CustomSvgIconWidget,
-    CustomTextButtonWithIconWidgetWithFlexible,
-    CustomTextWidget,
-    CustomTitleSubtitleCardWidget,
-    FONT_WEIGHT,
-    Helpers;
+        AppColors,
+        BUTTON_ICON_POSITION,
+        Constants,
+        CustomEnhancedExpansionPanelWidget,
+        CustomSvgIconWidget,
+        CustomTextButtonWithIconWidgetWithFlexible,
+        CustomTextWidget,
+        CustomTitleSubtitleCardWidget,
+        FONT_WEIGHT,
+        Helpers;
 import 'package:flutter/material.dart';
 
 class BurialInfoWidget extends StatelessWidget {
@@ -57,7 +57,7 @@ class BurialInfoWidget extends StatelessWidget {
                     "طريق الملك عبدالله، الخبر.",
                     fontColor: AppColors.black,
                     textAlign: TextAlign.start,
-                    fontWeight: FONT_WEIGHT.medium,
+                    fontWeight: AppFontWeight.medium,
                   ),
                 ),
                 CustomTextButtonWithIconWidgetWithFlexible(
@@ -71,9 +71,9 @@ class BurialInfoWidget extends StatelessWidget {
                   ),
                   textUnderline: true,
                   buttonIconPosition: BUTTON_ICON_POSITION.right,
-                  btnTextColor: AppColors.darkTurquoise,
+                  btnTextColor: AppColor.primary900Light,
                   btnTextSize: 13,
-                  btnTextWeight: FONT_WEIGHT.medium,
+                  btnTextWeight: AppFontWeight.medium,
                   padding: const EdgeInsets.all(Constants.semiMediumPadding),
                 ),
                 CustomTitleSubtitleCardWidget(

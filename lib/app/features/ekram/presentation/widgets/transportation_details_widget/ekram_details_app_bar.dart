@@ -1,9 +1,10 @@
-import 'package:balady_new_app/app/core/core_exports.dart'
-    show AppColors, Constants, CustomSvgIconWidget, CustomTextWidget;
-import 'package:balady_new_app/app/core/shared_local_services/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../../core/utils/constants/app_colors.dart';
+import '../../../../../core/utils/constants/constants.dart';
+import '../../../../../core/utils/enums/app_font_weights.dart';
+import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../ekram_status_widget.dart';
 
 class EkramDetailsAppBar extends StatefulWidget {
@@ -120,7 +121,7 @@ class _EkramCardBigHeaderState extends State<EkramCardBigHeader> {
                 width: MediaQuery.of(context).size.width - 60,
                 child: CustomTextWidget(
                   widget.title,
-                  fontColor: AppColors.black,
+                  fontColor: AppColor.black,
                   fontSize: 20,
                   maxLines: 1,
                   textScaleFactor: 1,
@@ -144,7 +145,7 @@ class _EkramCardBigHeaderState extends State<EkramCardBigHeader> {
                     Constants.verticalSpaceSmall,
                     CustomTextWidget(
                       widget.title,
-                      fontColor: AppColors.black,
+                      fontColor: AppColor.black,
                       fontSize: 22.0,
                       textAlign: TextAlign.start,
                       height: 1.2,
@@ -155,11 +156,11 @@ class _EkramCardBigHeaderState extends State<EkramCardBigHeader> {
                     Constants.verticalSpaceSmall,
                     CustomTextWidget(
                       widget.orderNo,
-                      fontColor: AppColors.black500,
+                      fontColor: AppColor.black500,
                       fontSize: 16.0,
                       textAlign: TextAlign.start,
                       height: 1.3,
-                      fontWeight: FONT_WEIGHT.medium,
+                      fontWeight: AppFontWeight.medium,
                       maxLines: 2,
                       textOverflow: TextOverflow.ellipsis,
                     ),

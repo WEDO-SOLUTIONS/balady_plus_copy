@@ -1,22 +1,18 @@
-import 'package:balady_new_app/etmam_app/core/utils/constants/app_config.dart';
-import 'package:balady_new_app/etmam_app/features/_shared_feature_/shared/presentation/widgets/section_title_widget.dart';
-import 'package:balady_new_app/shared/core/data/entities/lookup_item.dart';
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
+import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
+import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/section_title_widget.dart';
 import 'package:collection/collection.dart';
 
-import 'package:balady_new_app/app/core/core_exports.dart'
-    show
-        AppColors,
-        Constants,
-        CustomElevatedButtonWidget,
-        CustomTextButtonWidget,
-        CustomTextWidget,
-        CustomVerticalSpace,
-        DialogHeader,
-        FONT_WEIGHT,
-        Helpers;
-import 'package:balady_new_app/app/features/license_management/license_management_exports.dart'
-    show HealthLicenseFilterTypeModel;
 import 'package:flutter/material.dart';
+
+import '../../../../core/services/local/helpers.dart';
+import '../../../../core/utils/constants/app_colors.dart';
+import '../../../../core/utils/constants/constants.dart';
+import '../../../_shared_feature_/presentation/dialogs/dialog_header.dart';
+import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 
 class FilterDialog extends StatefulWidget {
   final Function onFilter;
@@ -103,10 +99,10 @@ class _FilterDialogState extends State<FilterDialog> {
               children: [
                 Expanded(
                   flex: 3,
-                  child: CustomElevatedButtonWidget(
+                  child: EnhancedCustomElevatedButtonWidget(
                     btnColor: isBtnDisabled
-                        ? AppColors.black200
-                        : AppColors.darkTurquoise,
+                        ? AppColor.black200
+                        : AppColor.primary900Light,
                     btnPressed: isBtnDisabled
                         ? null
                         : () {
@@ -118,10 +114,10 @@ class _FilterDialogState extends State<FilterDialog> {
                             ]);
                           },
                     btnTextColor:
-                        isBtnDisabled ? AppColors.black400 : AppColors.white,
+                        isBtnDisabled ? AppColor.black400 : AppColor.white,
                     btnText: Helpers.translatingWord("view_orders"),
                     btnTextSize: 16,
-                    btnTextWeight: FONT_WEIGHT.medium,
+                    btnTextWeight: AppFontWeight.medium,
                     btnHeight: 56,
                   ),
                 ),
@@ -131,181 +127,24 @@ class _FilterDialogState extends State<FilterDialog> {
                     alignment: AlignmentDirectional.centerEnd,
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: CustomTextButtonWidget(
-                      btnPressed: () {
+                      onPressed: () {
                         Navigator.of(context).pop();
 
                         widget.onClear();
                       },
-                      btnText: Helpers.translatingWord(
+                      text: Helpers.translatingWord(
                         "erase_all",
                       ),
-                      btnTextColor: AppColors.darkTurquoise,
+                      btnTextColor: AppColor.primary900Light,
                       btnTextSize: 17.0,
-                      btnTextWeight: FONT_WEIGHT.medium,
-                      alignment: AlignmentDirectional.center,
+                      btnTextWeight: AppFontWeight.medium,
+                      btnAlignment: AlignmentDirectional.center,
                     ),
                   ),
                 )
               ],
             ),
           )
-        ],
-      ),
-    );
-
-    return Container(
-      padding: const EdgeInsets.only(right: 20, left: 20, top: 26, bottom: 5),
-      child: Stack(
-        children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: DialogHeader(
-              title: Helpers.translatingWord('lbl_orders_filter'),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 40.0),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  // header
-                  const CustomVerticalSpace(height: 20),
-                  // filter type list
-
-                  if (widget.requestStatusItems?.isNotEmpty ?? false) ...[
-                    SectionTitleWidget(title: trans("ekram_request_status")),
-                    ListView.builder(
-                        itemCount: widget.requestStatusItems?.length ?? 0,
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemBuilder: (ctx, index) {
-                          return Column(
-                            children: [
-                              FilterItemWidget(
-                                currentItem: requestCurrentSelection,
-                                item: widget.requestStatusItems![index],
-                                onChecked: onRequestFilterSelected,
-                              ),
-                              // DrawLineWidget(
-                              //   lineColor: AppColors.warmGrey2
-                              //       .withOpacity(0.09530785112257859),
-                              // )
-                            ],
-                          );
-                        }),
-                  ],
-                  if (widget.deathTransferItems?.isNotEmpty ?? false) ...[
-                    CustomVerticalSpace(height: 32),
-                    SectionTitleWidget(title: trans("ekram_transfer_status")),
-                    Expanded(
-                      flex: 0,
-                      child: ListView.builder(
-                          itemCount: widget.deathTransferItems?.length ?? 0,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (ctx, index) {
-                            return Column(
-                              children: [
-                                FilterItemWidget(
-                                  currentItem: deathCurrentSelection,
-                                  item: widget.deathTransferItems![index],
-                                  onChecked: onLocationFilterSelected,
-                                ),
-                                // DrawLineWidget(
-                                //   lineColor: AppColors.warmGrey2
-                                //       .withOpacity(0.09530785112257859),
-                                // )
-                              ],
-                            );
-                          }),
-                    ),
-                  ],
-                  if (widget.citiesItems?.isNotEmpty ?? false) ...[
-                    CustomVerticalSpace(height: 32),
-                    SectionTitleWidget(title: trans("ekram_city_status")),
-                    Expanded(
-                      flex: 0,
-                      child: ListView.builder(
-                          itemCount: widget.citiesItems?.length ?? 0,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (ctx, index) {
-                            return Column(
-                              children: [
-                                FilterItemWidget(
-                                  currentItem: cityCurrentSelection,
-                                  item: widget.citiesItems![index],
-                                  onChecked: onCityFilterSelected,
-                                ),
-                                // DrawLineWidget(
-                                //   lineColor: AppColors.warmGrey2
-                                //       .withOpacity(0.09530785112257859),
-                                // )
-                              ],
-                            );
-                          }),
-                    ),
-                  ],
-                  const CustomVerticalSpace(height: 24),
-                  // buttons
-                  SafeArea(
-                    top: false,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          flex: 3,
-                          child: CustomElevatedButtonWidget(
-                            btnColor: isBtnDisabled
-                                ? AppColors.black200
-                                : AppColors.darkTurquoise,
-                            btnPressed: isBtnDisabled
-                                ? null
-                                : () {
-                                    Navigator.of(context).pop();
-                                    widget.onFilter([
-                                      requestCurrentSelection,
-                                      deathCurrentSelection,
-                                      cityCurrentSelection
-                                    ]);
-                                  },
-                            btnTextColor: isBtnDisabled
-                                ? AppColors.black400
-                                : AppColors.white,
-                            btnText: Helpers.translatingWord("view_orders"),
-                            btnTextSize: 16,
-                            btnTextWeight: FONT_WEIGHT.medium,
-                            btnHeight: 56,
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Container(
-                            alignment: AlignmentDirectional.centerEnd,
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: CustomTextButtonWidget(
-                              btnPressed: () {
-                                Navigator.of(context).pop();
-
-                                widget.onClear();
-                              },
-                              btnText: Helpers.translatingWord(
-                                "erase_all",
-                              ),
-                              btnTextColor: AppColors.darkTurquoise,
-                              btnTextSize: 17.0,
-                              btnTextWeight: FONT_WEIGHT.medium,
-                              alignment: AlignmentDirectional.center,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -357,9 +196,9 @@ class FilterItemWidget extends StatelessWidget {
             Expanded(
               child: CustomTextWidget(
                 item.name ?? "",
-                fontColor: AppColors.black,
+                fontColor: AppColor.black,
                 fontSize: 17.0,
-                fontWeight: FONT_WEIGHT.medium,
+                fontWeight: AppFontWeight.medium,
                 textAlign: TextAlign.start,
                 textScaleFactor: 1,
               ),

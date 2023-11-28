@@ -1,9 +1,17 @@
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart'
-    show EkramHeaderAndDescWidget, EkramStatusWidget, TransportRequestItem;
+import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_buttons_widgets.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../etmam_app/core/utils/utils_exports.dart';
-import '../../../../core/core_exports.dart';
+import '../../../../../etmam_app/core/utils/utils_exports.dart'
+    hide CommonFunctions, AppFontWeight;
+import '../../../../core/utils/common_functions.dart';
+import '../../../../core/utils/constants/constants.dart';
+import '../../../../core/utils/enums/app_font_weights.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../domain/entities/deceased_transport_requests/transport_request_item.dart';
+import 'ekram_status_widget.dart';
 
 class EkramDriverRequestCardWidget extends StatelessWidget {
   final TransportRequestItem ekramTransportationItem;
@@ -21,7 +29,7 @@ class EkramDriverRequestCardWidget extends StatelessWidget {
       padding: const EdgeInsets.only(top: Constants.mediumPadding),
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
       decoration: new BoxDecoration(
-        color: AppColors.white,
+        color: AppColor.white,
         borderRadius: BorderRadius.circular(4),
         boxShadow: [
           BoxShadow(
@@ -67,7 +75,7 @@ class EkramDriverRequestCardWidget extends StatelessWidget {
           const CustomVerticalSpace(height: 16),
           DrawLineWidget(
             horizontalMargin: Constants.smallPadding,
-            lineColor: AppColors.black200.withOpacity(0.2000000029802322),
+            lineColor: AppColor.black200.withOpacity(0.2000000029802322),
           ),
           const CustomVerticalSpace(height: 20),
           Container(
@@ -121,7 +129,7 @@ class EkramDriverRequestCardWidget extends StatelessWidget {
                     Expanded(
                         child: EkramHeaderAndDescWidget(
                       title: trans('driver_card_applicant_date'),
-                      details: getFormattedDateEkramCard(
+                      details: CommonFunctions.getFormattedDateEkramCard(
                           ekramTransportationItem.requestDate ?? ""),
                     )),
                     CustomHorizontalSpace(width: 12),
@@ -130,7 +138,7 @@ class EkramDriverRequestCardWidget extends StatelessWidget {
                     Expanded(
                         child: EkramHeaderAndDescWidget(
                       title: trans('ekram_assign_Date'),
-                      details: getFormattedDateEkramCard(
+                      details: CommonFunctions.getFormattedDateEkramCard(
                           ekramTransportationItem.driverAssignDate ?? ""),
                     ))
                   ],
@@ -140,7 +148,7 @@ class EkramDriverRequestCardWidget extends StatelessWidget {
           ),
           Spacer(),
           DrawLineWidget(
-            lineColor: AppColors.black200.withOpacity(0.2000000029802322),
+            lineColor: AppColor.black200.withOpacity(0.2000000029802322),
           ),
           CustomGoToDetailsButtonWidget(
               onPressed: () => OnDetailsPress(),
@@ -159,9 +167,9 @@ class EkramDriverRequestCardWidget extends StatelessWidget {
                     iconWidth: 18,
                   ),
                   buttonIconPosition: BUTTON_ICON_POSITION.right,
-                  btnTextColor: AppColors.darkTurquoise,
+                  btnTextColor: AppColor.primary900Light,
                   btnTextSize: 16,
-                  btnTextWeight: FONT_WEIGHT.medium,
+                  btnTextWeight: AppFontWeight.medium,
                   padding: const EdgeInsets.all(Constants.semiMediumPadding),
                 ),
               ),
@@ -185,9 +193,9 @@ class EkramDriverRequestCardWidget extends StatelessWidget {
                     iconWidth: 18,
                   ),
                   buttonIconPosition: BUTTON_ICON_POSITION.right,
-                  btnTextColor: AppColors.darkTurquoise,
+                  btnTextColor: AppColor.primary900Light,
                   btnTextSize: 16,
-                  btnTextWeight: FONT_WEIGHT.medium,
+                  btnTextWeight: AppFontWeight.medium,
                   padding: const EdgeInsets.all(Constants.semiMediumPadding),
                 ),
               ),
@@ -195,6 +203,72 @@ class EkramDriverRequestCardWidget extends StatelessWidget {
           ),*/
         ],
       ),
+    );
+  }
+}
+
+class DetailsInfoWithImgSvg extends StatelessWidget {
+  final String img;
+  final String title;
+  final bool withGreenImg;
+  final bool fromHeader;
+  final Color textColor;
+  final bool fontFamilyNumber;
+  final double iconHeight;
+  final double iconWidth;
+
+  const DetailsInfoWithImgSvg(
+      {Key? key,
+      required this.img,
+      required this.title,
+      this.withGreenImg = false,
+      this.fromHeader = false,
+      this.fontFamilyNumber = true,
+      this.iconHeight = 14,
+      this.iconWidth = 14,
+      this.textColor = AppColor.gray})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        CustomSvgIconWidget(
+          img,
+          iconHeight: iconHeight,
+          iconWidth: iconWidth,
+          iconColor:
+              withGreenImg ? AppColor.greenishYellow500 : AppColor.black400,
+        ),
+        const CustomHorizontalSpace(width: 5),
+        Flexible(
+          child: Container(
+            margin: const EdgeInsets.only(top: 2.2),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: CustomTextWidget(
+                title,
+                fontSize: 13.0,
+                fontWeight:
+                    fromHeader ? AppFontWeight.bold : AppFontWeight.medium,
+                fontColor: (fromHeader && textColor == AppColor.gray)
+                    ? AppColor.black500
+                    : textColor,
+                textScaleFactor: 1,
+                maxLines: 1,
+                textOverflow: TextOverflow.ellipsis,
+                fontFamily: fontFamilyNumber
+                    ? Constants.lucidaGrandFontType
+                    : Constants.appFontType,
+                textAlign: TextAlign.start,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

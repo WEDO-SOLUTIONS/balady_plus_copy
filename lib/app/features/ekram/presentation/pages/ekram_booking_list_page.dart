@@ -1,23 +1,20 @@
-import 'package:balady_new_app/app/core/core_exports.dart'
-    show CustomAppBar, SearchTextFieldWidget;
-import 'package:balady_new_app/app/core/shared_widgets/custom_spaces_widgets.dart'
-    show CustomVerticalSpace;
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart'
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart'
     show EkramBookingCardWidget, getDummyEkramBookingList;
 import 'package:flutter/material.dart';
 
 import '../../../../../etmam_app/core/utils/utils_exports.dart' show trans;
+import '../../../../../etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_app_bar_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/search_text_field_widget.dart';
 
 class EkramBookingListPage extends StatefulWidget {
   const EkramBookingListPage({Key? key}) : super(key: key);
 
   @override
-  State<EkramBookingListPage> createState() =>
-      _EkramBookingListPageState();
+  State<EkramBookingListPage> createState() => _EkramBookingListPageState();
 }
 
-class _EkramBookingListPageState
-    extends State<EkramBookingListPage> {
+class _EkramBookingListPageState extends State<EkramBookingListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,8 +45,7 @@ class _EkramBookingListPageState
                         ekramBookingItem: getDummyEkramBookingList[index],
                       ),
                       CustomVerticalSpace(
-                          height: index ==
-                              (getDummyEkramBookingList.length - 1)
+                          height: index == (getDummyEkramBookingList.length - 1)
                               ? 30
                               : 12)
                     ],

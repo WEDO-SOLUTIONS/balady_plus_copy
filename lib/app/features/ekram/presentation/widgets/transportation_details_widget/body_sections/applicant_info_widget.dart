@@ -1,13 +1,11 @@
-import 'package:balady_new_app/app/core/core_exports.dart'
-    show
-        Constants,
-        CustomEnhancedExpansionPanelWidget,
-        CustomTitleSubtitleCardWidget,
-        Helpers;
-import 'package:balady_new_app/app/features/ekram/presentation/blocs/request_details_bloc/request_details_bloc_bloc.dart';
-import 'package:balady_new_app/shared/core/utils/utils_exports.dart';
+
+import 'package:balady_plus/app/features/ekram/presentation/blocs/request_details_bloc/request_details_bloc_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../../core/services/local/helpers.dart';
+import '../../../../../../core/utils/common_functions.dart';
+import '../../../../../_shared_feature_/presentation/under_testing/custom_enhanced_expansion_panel_widget.dart';
 
 class ApplicantInfoWidget extends StatelessWidget {
   const ApplicantInfoWidget({Key? key}) : super(key: key);
@@ -19,9 +17,8 @@ class ApplicantInfoWidget extends StatelessWidget {
         return CustomEnhancedExpansionPanelWidget(
           underline: false,
           title: Helpers.translatingWord("ApplicantInfo"),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+          children: 
+       [
               CustomTitleSubtitleCardWidget(
                 horizontalPadding: Constants.smallPadding,
                 title: Helpers.translatingWord("ekramFullName"),

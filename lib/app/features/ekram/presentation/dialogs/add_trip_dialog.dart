@@ -1,14 +1,23 @@
-import 'package:balady_new_app/app/core/core_exports.dart';
-import 'package:balady_new_app/app/core/dependency_injection/dependency_injection_exports.dart';
-import 'package:balady_new_app/app/features/customer_voice/customer_voice_exports.dart';
-import 'package:balady_new_app/app/features/ekram/domain/entities/add_trip_dialog_params.dart';
-import 'package:balady_new_app/app/features/ekram/presentation/blocs/ekram_add_trip/ekram_add_trip_bloc.dart';
+import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/fields/read_only_field.dart';
+import 'package:balady_plus/app/features/ekram/domain/entities/add_trip_dialog_params.dart';
+import 'package:balady_plus/app/features/ekram/presentation/blocs/ekram_add_trip/ekram_add_trip_bloc.dart';
 
-import 'package:balady_new_app/etmam_app/core/utils/constants/app_config.dart';
-import 'package:balady_new_app/shared/core/data/entities/lookup_item.dart';
-import 'package:balady_new_app/shared/core/utils/utils_exports.dart';
+import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../core/services/local/helpers.dart';
+import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 
 class AddTripDialog extends StatelessWidget {
   final AddTripDialogParams params;
@@ -28,7 +37,7 @@ class AddTripDialog extends StatelessWidget {
       child: BlocConsumer<EkramAddTripBloc, EkramAddTripState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure) {
-            showError(state.errorMessage ?? "");
+            CommonFunctions.showError(state.errorMessage ?? "");
             context.read<EkramAddTripBloc>().add(ClearErrorMsgEvent());
           }
         },
@@ -49,26 +58,26 @@ class AddTripDialog extends StatelessWidget {
                             trans('register_trip_details'),
                             maxLines: 1,
                             fontSize: 24,
-                            fontColor: AppColors.black,
+                            fontColor: AppColor.black,
                             textAlign: TextAlign.start,
                           )),
                           CustomTextButtonWidget(
-                            btnPressed: () => Navigator.of(context).pop(),
-                            btnText: Helpers.translatingWord(
+                            onPressed: () => Navigator.of(context).pop(),
+                            text: Helpers.translatingWord(
                               "closeButton",
                             ),
-                            btnTextColor: AppColors.grey1000,
+                            btnTextColor: AppColor.grey1000,
                             btnTextSize: 17.0,
-                            btnTextWeight: FONT_WEIGHT.medium,
-                            alignment: AlignmentDirectional.centerEnd,
+                            btnTextWeight: AppFontWeight.medium,
+                            btnAlignment: AlignmentDirectional.centerEnd,
                           ),
                         ],
                       ),
                       Expanded(child: DialogBody()),
-                      IncidentSubmitButton(
-                        isButtonDisabled: !state.isFormValid(),
-                        btnText: Helpers.translatingWord("confirm"),
-                        onPress: () {
+                      ElevatedButtonWidget.custom(
+                        isDisabled: !state.isFormValid(),
+                        text: Helpers.translatingWord("confirm"),
+                        onPressed: () {
                           context
                               .read<EkramAddTripBloc>()
                               .add(const SubmitEvent());
@@ -119,19 +128,19 @@ class _DialogBodyState extends State<DialogBody> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomVerticalSpace(height: 20),
-              CustomReadOnlyTextWidget(
-                label: trans("currentTripStationType"),
-                text: state.getCurrentStationTypeName() ?? "",
+              ReadOnlyField(
+                title: trans("currentTripStationType"),
+                subTitle: state.getCurrentStationTypeName() ?? "",
               ),
               CustomVerticalSpace(height: 10),
-              CustomReadOnlyTextWidget(
-                label: trans("currentTripStationName"),
-                text: state.currentTripStationName ?? "",
+              ReadOnlyField(
+                title: trans("currentTripStationName"),
+                subTitle: state.currentTripStationName ?? "",
               ),
               CustomVerticalSpace(height: 10),
-              CustomReadOnlyTextWidget(
-                label: trans("currentTripStationArrivalTime"),
-                text: state.currentTripStationArrivalTime ?? "",
+              ReadOnlyField(
+                title: trans("currentTripStationArrivalTime"),
+                subTitle: state.currentTripStationArrivalTime ?? "",
               ),
               CustomLookUpLongDialog(
                 items: state.nextStationType ?? [],
@@ -200,20 +209,19 @@ class _DialogBodyState extends State<DialogBody> {
                   hint: Helpers.translatingWord("ekram_mosque_field_name"),
                 ),
               if (state.showNextStationName())
-                CustomTextFieldWidgetWithValue(
+                CustomTextFieldWidget(
                     label: trans("nextTripStationName"),
                     hintText: trans("nextTripStationName"),
                     maxLines: 1,
                     initialValue: state.nextTripStationName,
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.text,
-                    contentHorizontalPadding: 0,
                     onChanged: (String? text) {
                       context
                           .read<EkramAddTripBloc>()
                           .add(ChangeNextTripStationName(text: text));
                     },
-                    validator: (String? value) {}),
+                    onValidate: (String? value) {}),
               CustomVerticalSpace(height: 16),
               GestureDetector(
                 onTap: () {
@@ -221,9 +229,9 @@ class _DialogBodyState extends State<DialogBody> {
                       .read<EkramAddTripBloc>()
                       .add(ChangeArrivalTimeEvent());
                 },
-                child: CustomReadOnlyTextWidget(
-                  label: trans("nextTripStationArrivalTime"),
-                  text: state.nextTripStationArrivalTime ??
+                child: ReadOnlyField(
+                  title: trans("nextTripStationArrivalTime"),
+                  subTitle: state.nextTripStationArrivalTime ??
                       trans("nextTripStationArrivalTime"),
                 ),
               ),

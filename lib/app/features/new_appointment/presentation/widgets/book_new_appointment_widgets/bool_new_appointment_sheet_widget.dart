@@ -71,7 +71,7 @@ class _BookNewAppointmentSheetHeaderWidget extends StatelessWidget {
             ),
             btnTextColor: AppColor.grey1000,
             btnTextSize: 17.0,
-            btnTextWeight: FONT_WEIGHT.medium,
+            btnTextWeight: AppFontWeight.medium,
           ),
           Constants.verticalSpaceSmall,
           // title
@@ -88,7 +88,7 @@ class _BookNewAppointmentSheetHeaderWidget extends StatelessWidget {
           // CustomTextWidget(
           //   Helpers.translatingWord("bookNewAppointmentUnreadableContentWord"),
           //   fontColor: AppColor.black400,
-          //   fontWeight: FONT_WEIGHT.medium,
+          //   fontWeight: AppFontWeight.medium,
           //   textAlign: TextAlign.start,
           //   height: 1.3,
           // ),

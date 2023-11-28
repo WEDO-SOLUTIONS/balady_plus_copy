@@ -1,15 +1,6 @@
-import 'package:balady_new_app/app/core/core_exports.dart'
-    show CustomAppBar, SearchTextFieldWidget, EmptyStateWidget;
-import 'package:balady_new_app/app/core/dependency_injection/dependency_injection_exports.dart';
-import 'package:balady_new_app/app/core/shared_local_services/helpers.dart';
-import 'package:balady_new_app/app/core/shared_widgets/custom_circular_loading_widget.dart';
-import 'package:balady_new_app/app/core/shared_widgets/custom_popups_widgets.dart';
-import 'package:balady_new_app/app/core/shared_widgets/custom_shimmer_list_widget.dart';
-import 'package:balady_new_app/app/core/shared_widgets/custom_spaces_widgets.dart'
-    show CustomVerticalSpace;
-import 'package:balady_new_app/app/core/shared_widgets/reload_widget.dart';
-import 'package:balady_new_app/app/features/appointments/presentation/core/models/lookup_list_model.dart';
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart'
+import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
+
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart'
     show
         EkramTransporationCardWidget,
         EkramRequestsBloc,
@@ -18,12 +9,22 @@ import 'package:balady_new_app/app/features/ekram/ekram_exports.dart'
         GetDeceasedTransportRequestsEvent,
         EkramRequestsState,
         GetDeceasedTransportRequestDetailsEvent;
-import 'package:balady_new_app/etmam_app/core/utils/Debouncer.dart';
-import 'package:balady_new_app/etmam_app/core/utils/utils_exports.dart';
-import 'package:balady_new_app/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_loading_widget.dart';
-import 'package:balady_new_app/shared/core/utils/enums/bloc_status.dart';
+import 'package:balady_plus/etmam_app/core/utils/Debouncer.dart';
+import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
+    hide CommonFunctions;
+import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../../etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_app_bar_widget.dart';
+import '../../../../../core/utils/common_functions.dart';
+import '../../../../../core/utils/enums/bloc_status.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../../_shared_feature_/presentation/widgets/empty_state_widget.dart';
+import '../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
+import '../../../../_shared_feature_/presentation/widgets/search_text_field_widget.dart';
 
 class EkramTransportationListPage extends StatefulWidget {
   const EkramTransportationListPage({Key? key}) : super(key: key);
@@ -42,7 +43,7 @@ class _EkramTransportationListPageState
   void initState() {
     // TODO: implement initState
     super.initState();
-    Helpers.checkLocationSettings(context);
+    CommonFunctions.checkLocationSettings(context);
   }
 
   @override

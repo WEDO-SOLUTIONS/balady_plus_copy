@@ -29,7 +29,7 @@ class BottomLogoWidget extends StatelessWidget {
               opacity: 0.24,
               child: CustomTextWidget(
                 Helpers.translatingWord('test_launch'),
-                fontWeight: FONT_WEIGHT.medium,
+                fontWeight: AppFontWeight.medium,
               ),
             ),*/
             const CustomVerticalSpace(height: 24),

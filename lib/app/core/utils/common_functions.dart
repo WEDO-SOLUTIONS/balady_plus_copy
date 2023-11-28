@@ -297,6 +297,54 @@ class CommonFunctions {
     return difference;
   }
 
+  static String getFormattedTimeEkram(String? timeStr,
+      {Duration? subtractedDuration}) {
+    String formattedTime = "";
+    print(timeStr);
+    try {
+      String biddingEndingTime = timeStr ?? "";
+      DateTime tempTime =
+          DateFormat("yyyy/M/dd hh:mm:ss").parse(biddingEndingTime);
+      String time = DateFormat("h:mm a", isAppAR ? 'ar_SA' : 'en_US')
+          .format(tempTime)
+          .toString();
+      formattedTime = time;
+    } catch (ex) {
+      print(ex);
+    }
+    return replaceArabicNumberWithEnglish(formattedTime);
+  }
+
+  static String getFormattedDateEkram(String? timeStr,
+      {Duration? subtractedDuration}) {
+    String formattedTime = "";
+    try {
+      String biddingEndingTime = timeStr ?? "";
+      DateTime tempTime =
+          DateFormat("yyyy/M/dd H:mm:ss").parse(biddingEndingTime);
+      String time = DateFormat("yyyy/M/dd").format(tempTime).toString();
+      formattedTime = time;
+    } catch (ex) {
+      print(ex);
+    }
+    return replaceArabicNumberWithEnglish(formattedTime);
+  }
+
+  static String getFormattedDateEkramCard(String? timeStr,
+      {Duration? subtractedDuration}) {
+    String formattedTime = "";
+    try {
+      String biddingEndingTime = timeStr ?? "";
+      DateTime tempTime =
+          DateFormat("dd-M-yyyy H:mm:ss").parse(biddingEndingTime);
+      String time = DateFormat("yyyy/M/dd").format(tempTime).toString();
+      formattedTime = time;
+    } catch (ex) {
+      print(ex);
+    }
+    return replaceArabicNumberWithEnglish(formattedTime);
+  }
+
   static String getDistance(LatLng? location, LatLng? currentLocation) {
     String distance = "-";
     if (currentLocation != null && location != null) {

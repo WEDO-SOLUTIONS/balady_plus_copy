@@ -1,9 +1,15 @@
-import 'package:balady_new_app/app/core/core_exports.dart';
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
-import 'package:balady_new_app/shared/core/services/local/navigation_services.dart';
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../etmam_app/core/utils/utils_exports.dart';
+import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/enums/app_font_weights.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../domain/entities/ekram_types.dart';
+import '../blocs/ekram_requests_bloc/ekram_requests_bloc.dart';
 
 class EkramTypeCardWidget extends StatelessWidget {
   final EkramTypes ekramTypes;
@@ -18,7 +24,7 @@ class EkramTypeCardWidget extends StatelessWidget {
       onTap: () {
         if (ekramTypes.type == "transport") {
           NavigationService.navigatorKey.currentState!.pushReplacementNamed(
-              RoutesNames.ekramRequestTransportationScreen,
+              RouteName.ekramRequestTransportationScreen,
               arguments: ekramBloc);
         }
       },
@@ -50,18 +56,18 @@ class EkramTypeCardWidget extends StatelessWidget {
               ),
               CustomVerticalSpace(height: 10),
               CustomTextWidget(
-                trans(ekramTypes.title ?? ""),
+                (ekramTypes.title ?? "").tr(),
                 fontSize: 14,
-                fontWeight: FONT_WEIGHT.bold,
-                fontColor: AppColors.black,
+                fontWeight: AppFontWeight.bold,
+                fontColor: AppColor.black,
                 maxLines: 2,
               ),
               CustomVerticalSpace(height: 12),
               CustomTextWidget(
-                trans(ekramTypes.desc ?? ""),
+                (ekramTypes.desc ?? "").tr(),
                 fontSize: 13,
-                fontWeight: FONT_WEIGHT.medium,
-                fontColor: AppColors.black400,
+                fontWeight: AppFontWeight.medium,
+                fontColor: AppColor.black400,
                 height: 1.4,
                 maxLines: 3,
               ),

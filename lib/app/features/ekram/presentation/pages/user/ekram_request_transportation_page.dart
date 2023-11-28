@@ -1,16 +1,17 @@
-import 'package:balady_new_app/app/core/core_exports.dart';
-import 'package:balady_new_app/app/core/dependency_injection/dependency_injection_exports.dart';
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
-import 'package:balady_new_app/shared/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../core/utils/enums/bloc_status.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../vd/presentation/widgets/details_widgets/details_app_bar.dart';
 
 class EkramRequestTransportationPage extends StatefulWidget {
-  final EkramRequestsBloc ekramRequestsBloc;
-  const EkramRequestTransportationPage(
-      {super.key, required this.ekramRequestsBloc});
+  const EkramRequestTransportationPage({
+    super.key,
+  });
 
   @override
   State<EkramRequestTransportationPage> createState() =>
@@ -21,18 +22,20 @@ class _EkramRequestTransportationPageState
     extends State<EkramRequestTransportationPage> {
   @override
   Widget build(BuildContext context) {
+    EkramRequestsBloc ekramRequestsBloc =
+        ModalRoute.of(context)!.settings.arguments as EkramRequestsBloc;
     return BlocProvider(
       create: (context) => EkramRequestTransportationBloc(
           getCities: sl(),
           getHospitals: sl(),
           getNationalities: sl(),
           applyDeceasedTransport: sl(),
-          ekramRequestsBloc: widget.ekramRequestsBloc),
+          ekramRequestsBloc: ekramRequestsBloc),
       child: BlocConsumer<EkramRequestTransportationBloc,
           EkramRequestTransportationState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure) {
-            showError(state.errorMessage ?? "");
+            CommonFunctions.showError(state.errorMessage ?? "");
           }
         },
         builder: (context, state) {

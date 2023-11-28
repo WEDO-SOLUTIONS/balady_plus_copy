@@ -1,10 +1,11 @@
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
-import 'package:balady_new_app/shared/core/utils/common_functions.dart';
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../core/shared_local_services/helpers.dart';
-import '../../../../../core/shared_widgets/custom_check_box_widget.dart';
+import '../../../../../core/services/local/helpers.dart';
+import '../../../../../core/utils/common_functions.dart';
+import '../../../../_shared_feature_/presentation/widgets/radio_buttons/custom_check_box_widget.dart';
 import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 
 class AgreementSection extends StatelessWidget {
@@ -43,7 +44,8 @@ class AgreementSection extends StatelessWidget {
                           titleSize: 14,
                           checkboxSize: 1,
                           verticalPadding: 5,
-                          title: CommonFunctions?.getAgreeemntText() ?? "")
+                          title: ("agreement_text").tr().replaceAll(
+                              "{}", CommonProperties.userInfo?.arName ?? ""))
                     ],
                   ),
                 ),

@@ -118,7 +118,7 @@ class _CertificateDataHintWidget extends StatelessWidget {
                         .pushNamed(RoutesNames.nearestCentersRote),
                     btnText: Helpers.tran("health_cert_show_centeres"),
                     btnTextSize: 16.0,
-                    btnTextWeight: FONT_WEIGHT.medium,
+                    btnTextWeight: AppFontWeight.medium,
                     btnTextColor: AppColor.primary900Light,
                     haveUnderline: true,
                   ),*/
@@ -382,7 +382,7 @@ class _BillInfoDataWidget extends StatelessWidget {
                         Helpers.translatingWord("show_bill_info"),
                         fontColor: AppColor.baladyDarkGreen2,
                         fontSize: 16.0,
-                        fontWeight: FONT_WEIGHT.medium,
+                        fontWeight: AppFontWeight.medium,
                         textAlign: TextAlign.start,
                         textDecoration: TextDecoration.underline,
                       ),
@@ -413,7 +413,7 @@ class _BillStatusCardWidget extends StatelessWidget {
           CustomTextWidget(
             requestNumber ?? "",
             fontColor: AppColor.kGray115,
-            fontWeight: FONT_WEIGHT.bold,
+            fontWeight: AppFontWeight.bold,
           ),
           LicenseStatusWidget(
             licenseStatus: billStatus ?? LICENSE_MANAGEMENT_STATUS.DRAFT,

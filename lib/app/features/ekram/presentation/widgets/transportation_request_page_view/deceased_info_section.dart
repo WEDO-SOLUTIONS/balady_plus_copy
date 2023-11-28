@@ -1,9 +1,15 @@
-import 'package:balady_new_app/app/core/core_exports.dart';
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
-import 'package:balady_new_app/etmam_app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/services/local/helpers.dart';
+import '../../../../../core/utils/constants/app_colors.dart';
+import '../../../../../core/utils/constants/constants.dart';
+import '../../../../../core/utils/enums/app_font_weights.dart';
+import '../../../../../core/utils/enums/enums.dart';
+import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 
 class DeceasedInfoSection extends StatelessWidget {
@@ -50,13 +56,13 @@ class DeceasedInfoSection extends StatelessWidget {
                             Constants.imgPath + "add_ekram_button@3x.png",
                             height: 14,
                             width: 14,
-                            color: AppColors.darkTurquoise,
+                            color: AppColor.primary900Light,
                           ),
                           mainAxisSize: MainAxisSize.min,
                           buttonIconPosition: BUTTON_ICON_POSITION.right,
-                          btnTextColor: AppColors.darkTurquoise,
+                          btnTextColor: AppColor.primary900Light,
                           btnTextSize: 16,
-                          btnTextWeight: FONT_WEIGHT.medium,
+                          btnTextWeight: AppFontWeight.medium,
                           padding:
                               const EdgeInsets.all(Constants.semiMediumPadding),
                           btnText: Helpers.translatingWord('addDeceased')),
@@ -72,7 +78,7 @@ class DeceasedInfoSection extends StatelessWidget {
                                 onDelete: () async {
                                   bool r = await CustomPopUpsWidgets
                                       .showConfirmAppMessageDialog(
-                                          context, trans("delete_confirm"),
+                                          context, ("delete_confirm").tr(),
                                           primaryBtn: () {
                                     Navigator.of(context).pop(true);
                                     context

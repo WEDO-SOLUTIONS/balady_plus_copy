@@ -1,20 +1,26 @@
-import 'package:balady_new_app/app/core/core_exports.dart';
-import 'package:balady_new_app/app/features/ekram/data/model/trips_details_params.dart';
-import 'package:balady_new_app/app/features/ekram/domain/entities/add_trip_dialog_params.dart';
-import 'package:balady_new_app/app/features/ekram/domain/entities/trip_details.dart';
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
-import 'package:balady_new_app/app/features/ekram/presentation/dialogs/add_trip_dialog.dart';
-import 'package:balady_new_app/app/features/ekram/presentation/widgets/trip_details_dialog_widgets/police_letter.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/ekram/data/model/trips_details_params.dart';
+import 'package:balady_plus/app/features/ekram/domain/entities/add_trip_dialog_params.dart';
+import 'package:balady_plus/app/features/ekram/domain/entities/trip_details.dart';
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/app/features/ekram/presentation/dialogs/add_trip_dialog.dart';
+import 'package:balady_plus/app/features/ekram/presentation/widgets/trip_details_dialog_widgets/police_letter.dart';
 import 'package:collection/collection.dart';
 
-import 'package:balady_new_app/etmam_app/core/utils/constants/app_config.dart';
-import 'package:balady_new_app/shared/core/utils/utils_exports.dart';
+import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../etmam_app/core/dependency_injection/injection_container.dart'
     show sl;
-import '../../../../../shared/core/utils/enums/bloc_status.dart';
+import '../../../../core/services/local/helpers.dart';
+import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/empty_state_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
 class TripDetailsDialog extends StatelessWidget {
   final TripDetailsParmas params;
@@ -36,7 +42,7 @@ class TripDetailsDialog extends StatelessWidget {
       child: BlocConsumer<TripDetailsBloc, TripDetailsState>(
           listener: (context, state) {
         if (state.status == BlocStatus.failure) {
-          showError(state.errorMessage ?? "");
+          CommonFunctions.showError(state.errorMessage ?? "");
         }
       }, builder: (context, state) {
         return Stack(
@@ -53,19 +59,19 @@ class TripDetailsDialog extends StatelessWidget {
                           trans('trip_details'),
                           maxLines: 1,
                           fontSize: 24,
-                          fontColor: AppColors.black,
+                          fontColor: AppColor.black,
                           textAlign: TextAlign.start,
                         )),
-                        CustomTextButtonWidget(
+                        EnhancedCustomElevatedButtonWidget(
                           btnPressed: () =>
                               Navigator.of(context).pop(state.isCompleted),
                           btnText: Helpers.translatingWord(
                             "closeButton",
                           ),
-                          btnTextColor: AppColors.grey1000,
+                          btnTextColor: AppColor.grey1000,
                           btnTextSize: 17.0,
-                          btnTextWeight: FONT_WEIGHT.medium,
-                          alignment: AlignmentDirectional.centerEnd,
+                          btnTextWeight: AppFontWeight.medium,
+                          btnAlignment: AlignmentDirectional.centerEnd,
                         ),
                       ],
                     ),
@@ -104,8 +110,8 @@ class TripDetailsDialog extends StatelessWidget {
                     PoliceLetter(),
                     if (state.isCompleted != true) ...[
                       CustomVerticalSpace(height: 16),
-                      CustomElevatedButtonWidget(
-                        btnTextColor: AppColors.white,
+                      EnhancedCustomElevatedButtonWidget(
+                        btnTextColor: AppColor.white,
                         btnPressed: () async {
                           final result =
                               await CustomPopUpsWidgets.showBottomSheet(context,
@@ -126,11 +132,11 @@ class TripDetailsDialog extends StatelessWidget {
                         btnText:
                             Helpers.translatingWord("register_trip_details"),
                         btnTextSize: 16,
-                        btnTextWeight: FONT_WEIGHT.regular,
+                        btnTextWeight: AppFontWeight.regular,
                         btnHeight: 56,
                       ),
                       CustomVerticalSpace(height: 16),
-                      CustomElevatedButtonWidget(
+                      EnhancedCustomElevatedButtonWidget(
                         btnPressed: () {
                           context
                               .read<TripDetailsBloc>()
@@ -138,10 +144,10 @@ class TripDetailsDialog extends StatelessWidget {
                         },
                         btnText: Helpers.translatingWord("trip_done"),
                         btnTextSize: 16,
-                        btnTextWeight: FONT_WEIGHT.regular,
+                        btnTextWeight: AppFontWeight.regular,
                         btnHeight: 56,
-                        btnTextColor: AppColors.darkTurquoise,
-                        btnBorderColor: AppColors.darkTurquoise,
+                        btnTextColor: AppColor.primary900Light,
+                        btnBorderColor: AppColor.primary900Light,
                         btnColor: Colors.transparent,
                       ),
                     ],

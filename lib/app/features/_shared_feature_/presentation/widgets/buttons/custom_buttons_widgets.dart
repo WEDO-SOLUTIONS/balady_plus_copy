@@ -919,7 +919,7 @@ class CustomElevatedButtonWidget extends StatelessWidget {
       required this.btnText,
       this.buttonIconPosition = BUTTON_ICON_POSITION.right,
       this.btnTextColor = AppColor.white,
-      this.btnTextWeight = FONT_WEIGHT.medium,
+      this.btnTextWeight = AppFontWeight.medium,
       this.btnTextSize = 18.0,
       this.btnTextUnderline = false,
       this.btnTextUnderlineColor,

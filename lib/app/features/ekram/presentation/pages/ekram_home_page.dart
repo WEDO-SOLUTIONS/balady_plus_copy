@@ -1,22 +1,18 @@
-import 'package:balady_new_app/app/core/core_exports.dart'
-    show
-        AppColors,
-        Constants,
-        CustomElevatedButtonWidget,
-        CustomTextWidget,
-        CustomVerticalSpace,
-        FONT_WEIGHT,
-        RoutesNames;
-import 'package:balady_new_app/app/core/dependency_injection/dependency_injection_exports.dart';
-import 'package:balady_new_app/app/core/shared_widgets/custom_buttons_widgets.dart';
+import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
+import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 
-import 'package:balady_new_app/shared/core/services/services_exports.dart';
-import 'package:balady_new_app/shared/core/utils/common_properties.dart';
-import 'package:balady_new_app/shared/core/utils/utils_exports.dart';
-import 'package:balady_new_app/shared/features/authorization/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../etmam_app/core/utils/utils_exports.dart' show trans;
+import '../../../../../etmam_app/core/utils/utils_exports.dart'
+    show AppColor, trans;
+import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/common_functions.dart';
+import '../../../../core/utils/constants/constants.dart';
+import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
 class EkramHomePage extends StatefulWidget {
   const EkramHomePage({Key? key}) : super(key: key);
@@ -43,7 +39,7 @@ class _EkramHomePageState extends State<EkramHomePage> {
             left: 16,
             top: MediaQuery.of(context).padding.top + 10,
             bottom: 30),
-        color: AppColors.white,
+        color: AppColor.white,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -63,13 +59,13 @@ class _EkramHomePageState extends State<EkramHomePage> {
                 ),
                 if (CommonProperties.showEkramDriver == true)
                   CustomTextButtonWidget(
-                    btnPressed: () {
+                    onPressed: () {
                       setState(() {
                         isDriver = !isDriver;
                       });
                     },
-                    btnText: isDriver ? "تحويل إلى مستفيد" : "تحويل لموظف نقل",
-                    btnTextWeight: FONT_WEIGHT.regular,
+                    text: isDriver ? "تحويل إلى مستفيد" : "تحويل لموظف نقل",
+                    btnTextWeight: AppFontWeight.regular,
                   ),
               ],
             ),
@@ -89,15 +85,15 @@ class _EkramHomePageState extends State<EkramHomePage> {
                     CustomTextWidget(
                       trans('ekramService'),
                       fontSize: 22,
-                      fontWeight: FONT_WEIGHT.bold,
-                      fontColor: AppColors.black,
+                      fontWeight: AppFontWeight.bold,
+                      fontColor: AppColor.black,
                     ),
                     CustomVerticalSpace(height: 12),
                     CustomTextWidget(
                       trans('ekramServiceDesc'),
                       fontSize: 16,
-                      fontWeight: FONT_WEIGHT.medium,
-                      fontColor: AppColors.black500,
+                      fontWeight: AppFontWeight.medium,
+                      fontColor: AppColor.black500,
                       height: 1.4,
                     ),
                     CustomVerticalSpace(height: 32),
@@ -111,33 +107,32 @@ class _EkramHomePageState extends State<EkramHomePage> {
             ),
             SafeArea(
               child: CustomElevatedButtonWidget(
-                btnPressed: () {
-                  if (CommonProperties.isUserLogged) {
+                onPressed: () {
+                  if (CommonProperties.isLoggedIn) {
                     if (isDriver) {
                       NavigationService.navigatorKey.currentState!.pushNamed(
-                          RoutesNames.driverEkramTransportationListScreen);
+                          RouteName.driverEkramTransportationListScreen);
                     } else {
                       NavigationService.navigatorKey.currentState!
-                          .pushNamed(RoutesNames.ekramOrdersScreen);
+                          .pushNamed(RouteName.ekramOrdersScreen);
                     }
                   } else {
-                    sl<AuthCubit>().onLogin().then((value) {
+                    sl<EntryPointCubit>().onLogin().then((value) {
                       if (value == true) {
                         if (isDriver) {
                           NavigationService.navigatorKey.currentState!
-                              .pushNamed(RoutesNames
+                              .pushNamed(RouteName
                                   .driverEkramTransportationListScreen);
                         } else {
                           NavigationService.navigatorKey.currentState!
-                              .pushNamed(RoutesNames.ekramOrdersScreen);
+                              .pushNamed(RouteName.ekramOrdersScreen);
                         }
                       }
                     });
                   }
                 },
-                btnText: trans('ekramStartService'),
-                btnTextSize: 16,
-                btnTextWeight: FONT_WEIGHT.regular,
+                text: trans('ekramStartService'),
+                textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                 btnHeight: 56,
               ),
             ),

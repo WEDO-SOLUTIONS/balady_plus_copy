@@ -231,6 +231,26 @@ class RouteName {
   static const tobaccoDetails = '/tobaccoDetails';
   static const tobaccoDisclosed = '/tobaccoDisclosed';
   static const submitDisclosedSuccessfully = '/submitDisclosedSuccessfully';
+
+  // Ekram
+  // Ekram
+  static const ekramOrdersScreen = 'ekramOrdersHomeScreen';
+  static const ekramHomeScreen = 'ekramHomeScreen';
+  static const ekramTransportationListScreen = 'ekramTransportationListScreen';
+  static const driverEkramTransportationListScreen =
+      'driverEkramTransportationListScreen';
+
+  static const ekramBookingListScreen = 'ekramBookingListScreen';
+  static const ekramSelectRequestTypeScreen = 'ekramSelectRequestTypeScreen';
+  static const ekramRequestTransportationScreen =
+      'ekramRequestTransportationScreen';
+  static const ekramTransportationDetailsScreen =
+      'ekramTransportationDetailsScreen';
+  static const driverEkramTransportationDetailsScreen =
+      'driverEkramTransportationDetailsScreen';
+
+  static const ekramSuccessScreen = 'ekramSuccessScreen';
+  static const EkramMapPage = 'EkramMapPage';
 }
 
 class EtmamRoutesNames {
