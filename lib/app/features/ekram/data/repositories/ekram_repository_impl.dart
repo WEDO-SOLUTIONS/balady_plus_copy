@@ -18,7 +18,13 @@ import 'package:dartz/dartz.dart' show Either, Left, Right;
 import 'package:dio/dio.dart';
 
 import '../../../../core/errors/exceptions.dart';
+import '../../domain/entities/book_cemetry_params.dart';
+import '../../domain/entities/cemetry_request_details/cemetry_request_details.dart';
+import '../../domain/entities/cemetry_requests/cemetry_request_response.dart';
+import '../../domain/entities/get_cemetries_params.dart';
+import '../../domain/entities/user_info_request_params.dart';
 import '../model/upload_letter_params.dart';
+import '../model/user_info_response_model.dart';
 
 class EkramRepositoryImpl implements EkramRepository {
   final EkramRemoteDataSource remoteDataSource;
@@ -267,6 +273,90 @@ class EkramRepositoryImpl implements EkramRepository {
     } on ServerException catch (error) {
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getEkramLookUp(
+      int id) async {
+    try {
+      final data = await remoteDataSource.getEkramLookup(id);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<UserInfoResponseModel>>>
+      checkUserinfo(UserInfoRequestParams params) async {
+    try {
+      final data = await remoteDataSource.checkUserinfo(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+      getActiveCities() async {
+    try {
+      final data = await remoteDataSource.getActiveCities();
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getCemetries(
+      GetCemetriesParams params) async {
+    try {
+      final data = await remoteDataSource.getCemetries(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<ApplyDeceasedResponse>>> bookCemetry(
+      BookCemetryParamas params) async {
+    try {
+      final data = await remoteDataSource.bookCemetry(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<CemetryRequestDetails>>>
+      getCemetryRequestDetails(String params) async {
+    try {
+      final data = await remoteDataSource.getCemetryRequestDetails(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<CemetryRequestResponse>>>
+      getCemetryRequests(GetRequestsParams params) async {
+    try {
+      final data = await remoteDataSource.getCemetryRequests(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
     }
   }
 }

@@ -72,16 +72,6 @@ class _EkramSuccessPageState extends State<EkramSuccessPage> {
                 ),
               ),
             ),
-            SafeArea(
-              child: CustomElevatedButtonWidget(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                text: trans('ekramGoToOrders'),
-                textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                btnHeight: 56,
-              ),
-            ),
           ],
         ),
       ),

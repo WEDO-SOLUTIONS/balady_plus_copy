@@ -13,6 +13,17 @@ Map<String, dynamic> servicesConfig = {
       "order": 1,
       "isNew": false,
       "isImportant": false,
+      "action": {"type": "page", "value": RouteName.ekramCemetryRequestScreen},
+      "ar": {"title": "حجز مقبرة", "description": null, "tag": null},
+      "en": {"title": "Holy Quran", "description": null, "tag": null}
+    },
+    {
+      "id": 1,
+      "icon": "holy_quran",
+      "3d_icon": null,
+      "order": 1,
+      "isNew": false,
+      "isImportant": false,
       "action": {"type": "page", "value": RouteName.menuQuranPage},
       "ar": {"title": "holy_quran".tr(), "description": null, "tag": null},
       "en": {"title": "Holy Quran", "description": null, "tag": null}

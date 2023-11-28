@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/features/ekram/presentation/blocs/request_details_bloc/request_details_bloc_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../_shared_feature_/presentation/widgets/custom_enhanced_expansion_panel_widget.dart';
 
@@ -14,7 +15,7 @@ class TransferInfoWidget extends StatelessWidget {
         return CustomEnhancedExpansionPanelWidget(
           expanded: true,
           underline: false,
-          title: Helpers.translatingWord("ekram_order_info"),
+          title: "ekram_order_info".tr(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

@@ -78,6 +78,7 @@ import '../../features/create_compliance/presentation/pages/compliance_details_p
 import '../../features/create_compliance/presentation/pages/map_page/complinace_map_page.dart';
 import '../../features/create_compliance/presentation/pages/non_compliance_screen.dart';
 import '../../features/create_compliance/presentation/pages/submit_compliance_page.dart';
+import '../../features/ekram/presentation/pages/book_cemetry/ekram_book_cemetry_page.dart';
 import '../../features/ekram/presentation/pages/driver/driver_ekram_transpotation_details_page.dart';
 import '../../features/ekram/presentation/pages/driver/driver_transportation_list_page.dart';
 import '../../features/ekram/presentation/pages/ekram_booking_list_page.dart';
@@ -651,6 +652,9 @@ class Routes {
             const DriverEkramTransportationDetailsPage(),
 
         RouteName.EkramMapPage: (context) => const EkramMapPage(),
+
+        RouteName.ekramCemetryRequestScreen: (context) =>
+            const EkramBookCemetryPage(),
       };
 }
 

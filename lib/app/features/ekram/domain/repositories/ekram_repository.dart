@@ -11,7 +11,13 @@ import '../../data/model/add_trip_params.dart';
 import '../../data/model/ekram_attachment_response.dart';
 import '../../data/model/look_up_item_location_model.dart';
 import '../../data/model/upload_letter_params.dart';
+import '../../data/model/user_info_response_model.dart';
 import '../../ekram_exports.dart';
+import '../entities/book_cemetry_params.dart';
+import '../entities/cemetry_request_details/cemetry_request_details.dart';
+import '../entities/cemetry_requests/cemetry_request_response.dart';
+import '../entities/get_cemetries_params.dart';
+import '../entities/user_info_request_params.dart';
 
 abstract class EkramRepository {
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getCities();
@@ -26,6 +32,8 @@ abstract class EkramRepository {
       getMosques(int cityId);
 
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getLookUp(
+      int id);
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getEkramLookUp(
       int id);
 
   Future<Either<Failure, ResponseBodyModel<ApplyDeceasedResponse>>>
@@ -60,4 +68,22 @@ abstract class EkramRepository {
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getStatus();
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getLocations();
   Future<Either<Failure, EkramAttachmentResponse>> downLoadAttachment(int id);
+
+  Future<Either<Failure, ResponseBodyModel<UserInfoResponseModel>>>
+      checkUserinfo(UserInfoRequestParams params);
+
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+      getActiveCities();
+
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getCemetries(
+      GetCemetriesParams params);
+
+  Future<Either<Failure, ResponseBodyModel<ApplyDeceasedResponse>>> bookCemetry(
+      BookCemetryParamas params);
+
+  Future<Either<Failure, ResponseBodyModel<CemetryRequestResponse>>>
+      getCemetryRequests(GetRequestsParams params);
+
+  Future<Either<Failure, ResponseBodyModel<CemetryRequestDetails>>>
+      getCemetryRequestDetails(String params);
 }

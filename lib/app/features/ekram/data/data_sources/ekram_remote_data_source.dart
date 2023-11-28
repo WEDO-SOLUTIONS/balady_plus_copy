@@ -19,6 +19,12 @@ import '../../../../core/errors/exceptions.dart';
 import '../../../../core/utils/constants/apis/api_info.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
 import '../../../new_appointment/presentation/core/models/lookup_list_model.dart';
+import '../../domain/entities/book_cemetry_params.dart';
+import '../../domain/entities/get_cemetries_params.dart';
+import '../../domain/entities/user_info_request_params.dart';
+import '../model/cemetry_request_details/cemetry_request_details_model.dart';
+import '../model/cemetry_requests/cemetry_request_response_model.dart';
+import '../model/user_info_response_model.dart';
 
 abstract class EkramRemoteDataSource {
   Future<ResponseBodyModel<List<LookUpItem>>> getCities();
@@ -61,6 +67,25 @@ abstract class EkramRemoteDataSource {
   Future<ResponseBodyModel<List<LookUpItem>>> getLocations();
 
   Future<EkramAttachmentResponse> downLoadAttachment(int id);
+
+  Future<ResponseBodyModel<List<LookUpItem>>> getEkramLookup(int params);
+
+  Future<ResponseBodyModel<UserInfoResponseModel>> checkUserinfo(
+      UserInfoRequestParams params);
+
+  Future<ResponseBodyModel<List<LookUpItem>>> getActiveCities();
+
+  Future<ResponseBodyModel<List<LookUpItem>>> getCemetries(
+      GetCemetriesParams params);
+
+  Future<ResponseBodyModel<ApplyDeceasedResponseModel>> bookCemetry(
+      BookCemetryParamas params);
+
+  Future<ResponseBodyModel<CemetryRequestResponseModel>> getCemetryRequests(
+      GetRequestsParams params);
+
+  Future<ResponseBodyModel<CemetryRequestDetailsModel>>
+      getCemetryRequestDetails(String params);
 }
 
 class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
@@ -793,6 +818,276 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       else {
         try {
           //  CommonFunctions.sendExceptionLog(exception: ex, response: "");
+        } catch (ex) {}
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<List<LookUpItem>>> getEkramLookup(int params) async {
+    var response;
+
+    try {
+      response = await webService.dio.get(
+        "${ApiUrl.ekramAnotherLookup}",
+        queryParameters: {"type": params},
+      );
+
+      var data = response.data["data"]?["result"];
+
+      List<LookUpItem> parsedResult = data != null
+          ? List<LookUpItem>.from(data.map((x) => LookUpItem.fromJson(x)))
+          : [];
+
+      final decodedResponse = ResponseBodyModel<List<LookUpItem>>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+      if (response.statusCode != 200) {
+        String errorMessage = decodedResponse.data?.responseMessage ??
+            decodedResponse.statusDetails?.message ??
+            ("errors_server_error_1").tr();
+        throw ServerException(errorMessage, statusCode: response.statusCode);
+      }
+      return decodedResponse.toFuture();
+    } on DioError catch (error) {
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode);
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          // CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<UserInfoResponseModel>> checkUserinfo(
+      UserInfoRequestParams params) async {
+    var response;
+
+    try {
+      response = await webService.dio.get(
+        "${ApiUrl.residentInfo}",
+        queryParameters: params.toMap(),
+      );
+
+      var data = response.data["data"]?["result"];
+
+      UserInfoResponseModel? parsedResult =
+          data != null ? UserInfoResponseModel.fromJson(data) : null;
+
+      final decodedResponse = ResponseBodyModel<UserInfoResponseModel>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error) {
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode);
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          // CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<List<LookUpItem>>> getActiveCities() async {
+    var response;
+
+    try {
+      response = await webService.dio.get(
+        ApiUrl.ekramActiveCities,
+      );
+
+      var data = response.data["data"]?["result"];
+
+      List<LookUpItem> parsedResult = data != null
+          ? List<LookUpItem>.from(data.map((x) => LookUpItem.fromJson(x)))
+          : [];
+
+      final decodedResponse = ResponseBodyModel<List<LookUpItem>>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error) {
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode);
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //   CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<List<LookUpItem>>> getCemetries(
+      GetCemetriesParams params) async {
+    var response;
+
+    try {
+      response = await webService.dio.get(
+        ApiUrl.ekramCemetries,
+        queryParameters: params.toMap(),
+      );
+
+      var data = response.data["data"]?["result"];
+
+      List<LookUpItem> parsedResult = data != null
+          ? List<LookUpItem>.from(data.map((x) => LookUpItem.fromJson(x)))
+          : [];
+
+      final decodedResponse = ResponseBodyModel<List<LookUpItem>>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error) {
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode);
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //  CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<ApplyDeceasedResponseModel>> bookCemetry(
+      BookCemetryParamas params) async {
+    var response;
+
+    try {
+      print(params.toMap());
+      response = await webService.dio.post(
+        ApiUrl.bookCemetry,
+        data: params.toMap(),
+      );
+
+      var data = response.data["data"]?["result"];
+
+      ApplyDeceasedResponseModel? parsedResult =
+          data != null ? ApplyDeceasedResponseModel.fromMap(data) : null;
+
+      final decodedResponse =
+          ResponseBodyModel<ApplyDeceasedResponseModel>.fromMap(response.data,
+              parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error) {
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode);
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //  CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<CemetryRequestDetailsModel>>
+      getCemetryRequestDetails(String params) async {
+    var response;
+
+    try {
+      response = await webService.dio.get(
+        "${ApiUrl.bookCemetry}/$params",
+      );
+
+      var data = response.data["data"]?["result"];
+      print(data);
+      CemetryRequestDetailsModel? parsedResult =
+          data != null ? CemetryRequestDetailsModel.fromJson(data) : null;
+
+      final decodedResponse =
+          ResponseBodyModel<CemetryRequestDetailsModel>.fromMap(response.data,
+              parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode);
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //  CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<CemetryRequestResponseModel>> getCemetryRequests(
+      GetRequestsParams params) async {
+    var response;
+
+    try {
+      response = await webService.dio.get(
+        ApiUrl.bookCemetry,
+        queryParameters: {
+          "page": params.page,
+          "size": params.size,
+        },
+      );
+
+      var data = response.data["data"]?["result"];
+
+      CemetryRequestResponseModel? parsedResult =
+          data != null ? CemetryRequestResponseModel.fromMap(data) : null;
+
+      final decodedResponse =
+          ResponseBodyModel<CemetryRequestResponseModel>.fromMap(response.data,
+              parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error) {
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<dynamic>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode, errorCode: errorCode);
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          // CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
         throw ServerException(("errors_server_error_2").tr());
       }
