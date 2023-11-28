@@ -74,7 +74,7 @@ class DisclosedMonthsViewModel extends BaseViewModel {
 
 
   List<ReasonCancel> reasonCancelList = [
-    ReasonCancel(id: 101, text: 'المحل مغلق'),
+    ReasonCancel(id: 101, text: 'المنشاء مغلق'),
     ReasonCancel(id: 102, text: 'لا يــوجد إيــرادات'),
     ReasonCancel(id: 103, text: 'أخــرى'),
   ];
