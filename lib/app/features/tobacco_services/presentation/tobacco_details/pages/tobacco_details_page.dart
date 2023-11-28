@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/need_login_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
 import 'package:balady_plus/app/features/tobacco_services/presentation/tobacco_details/mvvm/tobacco_details_view_model.dart';
@@ -39,15 +40,18 @@ class TobaccoDetailsPage extends StatelessWidget {
                       ),
                     )
                   : provider.tobaccoSchedule != null
-                      ? const SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              DisclosureSchedulesWidget(),
-                              SizedBox(height: 16),
-                              DisclosedListWidget(),
-                            ],
-                          ),
-                        )
+                      ? provider.tobaccoSchedule!.disclosures.isEmpty &&
+                              provider.tobaccoSchedule!.disclosures.isEmpty
+                          ? EmptyListWidget(title: "no_data_shown".tr())
+                          : const SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  DisclosureSchedulesWidget(),
+                                  SizedBox(height: 16),
+                                  DisclosedListWidget(),
+                                ],
+                              ),
+                            )
                       : ReloadWidget(
                           errorMessage: provider.errorMessage,
                           onTab: () {
