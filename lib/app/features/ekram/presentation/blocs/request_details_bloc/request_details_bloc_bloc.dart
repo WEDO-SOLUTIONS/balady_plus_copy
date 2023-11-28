@@ -1,19 +1,4 @@
-import 'package:balady_new_app/app/core/shared_local_services/enums.dart';
-import 'package:balady_new_app/app/core/shared_local_services/routes_names.dart';
-import 'package:balady_new_app/app/core/shared_models/success_screen_args.dart';
-import 'package:balady_new_app/app/core/shared_widgets/custom_popups_widgets.dart';
-import 'package:balady_new_app/app/features/ekram/data/model/trips_details_params.dart';
-import 'package:balady_new_app/app/features/ekram/domain/entities/add_trip_dialog_params.dart';
-import 'package:balady_new_app/app/features/ekram/domain/entities/trip_details.dart';
-import 'package:balady_new_app/app/features/ekram/domain/entities/trip_location_response.dart';
-import 'package:balady_new_app/app/features/ekram/domain/use_cases/get_deceased_driver_request_details.dart';
-import 'package:balady_new_app/app/features/ekram/domain/use_cases/get_trips.dart';
-import 'package:balady_new_app/app/features/ekram/domain/use_cases/get_trips_location.dart';
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
-import 'package:balady_new_app/app/features/ekram/presentation/dialogs/add_trip_dialog.dart';
-import 'package:balady_new_app/shared/core/errors/errors_exports.dart';
-import 'package:balady_new_app/shared/core/services/local/navigation_services.dart';
-import 'package:balady_new_app/shared/core/utils/enums/bloc_status.dart';
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +6,23 @@ import 'package:collection/collection.dart';
 
 import 'package:collection/collection.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../../../../../core/errors/failures.dart';
+import '../../../../../core/services/local/navigation_services.dart';
+import '../../../../../core/utils/enums/bloc_status.dart';
+import '../../../../../core/utils/enums/enums.dart';
+import '../../../../_shared_feature_/data/entities/success_screen_args.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
+import '../../../data/model/trips_details_params.dart';
+import '../../../domain/entities/add_trip_dialog_params.dart';
+import '../../../domain/entities/deceased_request_details/deceased_request_details.dart';
+import '../../../domain/entities/trip_details.dart';
+import '../../../domain/entities/trip_location_response.dart';
+import '../../../domain/use_cases/get_deceased_driver_request_details.dart';
+import '../../../domain/use_cases/get_trips.dart';
+import '../../../domain/use_cases/get_trips_location.dart';
+import '../../dialogs/add_trip_dialog.dart';
+import '../../dialogs/trip_details_dialog.dart';
 
 part 'request_details_bloc_event.dart';
 
@@ -93,7 +95,7 @@ class RequestDetailsBloc
 
       if (result != null) {
         NavigationService.navigatorKey.currentState!.pushNamed(
-            RoutesNames.successRoute,
+            RouteName.successRoute,
             arguments: SuccessScreenArgs(
                 type: PAGE_TYPE.other, thanksMessage: result));
       }
@@ -113,7 +115,7 @@ class RequestDetailsBloc
 
       if (result != null) {
         NavigationService.navigatorKey.currentState!.pushNamed(
-            RoutesNames.successRoute,
+            RouteName.successRoute,
             arguments: SuccessScreenArgs(
                 type: PAGE_TYPE.other, thanksMessage: result));
       }
@@ -147,7 +149,7 @@ class RequestDetailsBloc
         double? lon = double.tryParse(item.lastX ?? "");
         if (lat != null && lon != null)
           NavigationService.navigatorKey.currentState!
-              .pushNamed(RoutesNames.EkramMapPage, arguments: LatLng(lat, lon));
+              .pushNamed(RouteName.EkramMapPage, arguments: LatLng(lat, lon));
       }
     });
   }

@@ -1,5 +1,5 @@
-import 'package:balady_new_app/app/core/core_exports.dart' show Constants;
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/app/core/core_exports.dart' show Constants;
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:flutter/material.dart';
 
 class EkramDetailsBodyWidget extends StatelessWidget {

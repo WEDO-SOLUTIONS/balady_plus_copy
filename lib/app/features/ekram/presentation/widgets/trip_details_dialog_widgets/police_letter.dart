@@ -1,10 +1,18 @@
-import 'package:balady_new_app/app/core/core_exports.dart';
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
-import 'package:balady_new_app/etmam_app/core/utils/constants/app_config.dart';
-import 'package:balady_new_app/shared/core/utils/utils_exports.dart';
-import 'package:balady_new_app/shared/features/_shared_feature_/shared/data/entities/file_data_item.dart';
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../core/services/local/helpers.dart';
+import '../../../../../core/utils/common_functions.dart';
+import '../../../../../core/utils/constants/app_colors.dart';
+import '../../../../../core/utils/constants/constants.dart';
+import '../../../../../core/utils/enums/app_font_weights.dart';
+import '../../../../_shared_feature_/data/entities/file_data_item.dart';
+import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
+import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
 class PoliceLetter extends StatefulWidget {
   const PoliceLetter({super.key});
@@ -33,7 +41,7 @@ class _PoliceLetterState extends State<PoliceLetter> {
                         state.transportAttachResponseDtoList?[index]
                                 .getLetterName() ??
                             "",
-                        fontColor: AppColors.darkTurquoise,
+                        fontColor: AppColor.primary900Light,
                       ),
                       CustomVerticalSpace(height: 8),
                       Row(
@@ -42,7 +50,7 @@ class _PoliceLetterState extends State<PoliceLetter> {
                             "assets/icons/customer_pdf.svg",
                             iconHeight: 20,
                             iconWidth: 20,
-                            iconColor: AppColors.black,
+                            iconColor: AppColor.black,
                           ),
                           CustomHorizontalSpace(width: 8),
                           Flexible(
@@ -62,8 +70,8 @@ class _PoliceLetterState extends State<PoliceLetter> {
                                     "",
                                 fontSize: 16,
                                 textAlign: TextAlign.start,
-                                fontWeight: FONT_WEIGHT.medium,
-                                fontColor: AppColors.black,
+                                fontWeight: AppFontWeight.medium,
+                                fontColor: AppColor.black,
                                 maxLines: 1,
                               ),
                             ),
@@ -75,9 +83,9 @@ class _PoliceLetterState extends State<PoliceLetter> {
                   );
                 }),
             if (state.isCompleted != true) ...[
-              CustomElevatedButtonWidget(
+              EnhancedCustomElevatedButtonWidget(
                 btnPressed: () async {
-                  FileDataItem? file = await CommonFunctions.pickFile();
+                  FileDataItem? file = await CommonFunctions.pickFile(context);
                   if (file != null)
                     context.read<TripDetailsBloc>().add(UploadLetterEvent(
                         file: file, requestId: state.letterID()));
@@ -91,16 +99,16 @@ class _PoliceLetterState extends State<PoliceLetter> {
                   width: 12,
                 ),
                 btnTextSize: 16,
-                btnTextWeight: FONT_WEIGHT.medium,
+                btnTextWeight: AppFontWeight.medium,
                 btnHeight: 56,
-                btnTextColor: AppColors.darkTurquoise,
-                btnBorderColor: AppColors.darkTurquoise,
+                btnTextColor: AppColor.primary900Light,
+                btnBorderColor: AppColor.primary900Light,
                 btnColor: Colors.transparent,
               ),
               CustomVerticalSpace(height: 12),
-              CustomElevatedButtonWidget(
+              EnhancedCustomElevatedButtonWidget(
                 btnPressed: () async {
-                  FileDataItem? file = await CommonFunctions.pickFile();
+                  FileDataItem? file = await CommonFunctions.pickFile(context);
                   if (file != null)
                     context.read<TripDetailsBloc>().add(UploadHdSharieEvent(
                         file: file, requestId: state.hdSharieID()));
@@ -114,10 +122,10 @@ class _PoliceLetterState extends State<PoliceLetter> {
                   width: 12,
                 ),
                 btnTextSize: 16,
-                btnTextWeight: FONT_WEIGHT.medium,
+                btnTextWeight: AppFontWeight.medium,
                 btnHeight: 56,
-                btnTextColor: AppColors.darkTurquoise,
-                btnBorderColor: AppColors.darkTurquoise,
+                btnTextColor: AppColor.primary900Light,
+                btnBorderColor: AppColor.primary900Light,
                 btnColor: Colors.transparent,
               )
             ]

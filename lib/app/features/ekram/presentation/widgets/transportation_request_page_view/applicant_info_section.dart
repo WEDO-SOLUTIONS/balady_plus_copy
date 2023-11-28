@@ -1,9 +1,12 @@
-import 'package:balady_new_app/app/core/core_exports.dart';
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/fields/read_only_field.dart';
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../etmam_app/core/utils/constants/app_config.dart';
+import '../../../../../core/services/local/helpers.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 
 class ApplicantInfoSection extends StatelessWidget {
@@ -92,9 +95,9 @@ class _ApplicantInfoTextFieldsSectionState
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomReadOnlyTextWidget(
-              label: trans("ekramFullName"),
-              text: state.fullName ?? "",
+            ReadOnlyField(
+              title: trans("ekramFullName"),
+              subTitle: state.fullName ?? "",
               /* controller: fullNameTextEditController,
                 focusNode: fullNameFocusNode,
                 maxLines: 1,
@@ -103,9 +106,9 @@ class _ApplicantInfoTextFieldsSectionState
                 validator: (String? value) {}*/
             ),
             CustomVerticalSpace(height: 20),
-            CustomReadOnlyTextWidget(
-              label: trans("ekramMobile"),
-              text: state.mobileNumber ?? "",
+            ReadOnlyField(
+              title: trans("ekramMobile"),
+              subTitle: state.mobileNumber ?? "",
               /*controller: mobileTextEditController,
                 focusNode: mobileFocusNode,
                 maxLines: 1,
@@ -114,9 +117,9 @@ class _ApplicantInfoTextFieldsSectionState
                 validator: (String? value) {}*/
             ),
             CustomVerticalSpace(height: 20),
-            CustomReadOnlyTextWidget(
-              label: trans("ekramApplicantType"),
-              text: state.requestType ?? "",
+            ReadOnlyField(
+              title: trans("ekramApplicantType"),
+              subTitle: state.requestType ?? "",
 
               /*controller: applicantTypeTextEditController,
                 focusNode: applicantTypeFocusNode,
@@ -126,7 +129,7 @@ class _ApplicantInfoTextFieldsSectionState
                 validator: (String? value) {}*/
             ),
             CustomVerticalSpace(height: 20),
-            CustomTextFieldWidgetWithValue(
+            CustomTextFieldWidget(
                 label: trans("ekramRelationShipOptional"),
                 hintText: trans("ekramRelationShipOptional"),
                 // controller: relationShipTextEditController,
@@ -140,7 +143,7 @@ class _ApplicantInfoTextFieldsSectionState
                       .read<EkramRequestTransportationBloc>()
                       .add(ChangeRelationShipEvent(text: text));
                 },
-                validator: (String? value) {}),
+                onValidate: (String? value) {}),
           ],
         );
       },

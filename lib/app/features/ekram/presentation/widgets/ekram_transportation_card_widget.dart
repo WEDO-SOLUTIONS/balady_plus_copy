@@ -1,13 +1,13 @@
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart'
-    show
-        EkramHeaderAndDescWidget,
-        EkramStatusWidget,
-        EkramTransportationItem,
-        TransportRequestItem;
 import 'package:flutter/material.dart';
 
 import '../../../../../etmam_app/core/utils/utils_exports.dart';
-import '../../../../core/core_exports.dart';
+import '../../../../../etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_buttons_widgets.dart';
+import '../../../../core/utils/constants/constants.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
+import '../../domain/entities/deceased_transport_requests/transport_request_item.dart';
+import 'ekram_driver_request_card_widget.dart';
+import 'ekram_status_widget.dart';
 
 class EkramTransporationCardWidget extends StatelessWidget {
   final TransportRequestItem ekramTransportationItem;
@@ -25,7 +25,7 @@ class EkramTransporationCardWidget extends StatelessWidget {
       padding: const EdgeInsets.only(top: Constants.mediumPadding),
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
       decoration: new BoxDecoration(
-        color: AppColors.white,
+        color: AppColor.white,
         borderRadius: BorderRadius.circular(4),
         boxShadow: [
           BoxShadow(
@@ -72,7 +72,7 @@ class EkramTransporationCardWidget extends StatelessWidget {
           const CustomVerticalSpace(height: 16),
           DrawLineWidget(
             horizontalMargin: Constants.smallPadding,
-            lineColor: AppColors.black200.withOpacity(0.2000000029802322),
+            lineColor: AppColor.black200.withOpacity(0.2000000029802322),
           ),
           const CustomVerticalSpace(height: 20),
           Container(
@@ -124,7 +124,7 @@ class EkramTransporationCardWidget extends StatelessWidget {
           ),
           Spacer(),
           DrawLineWidget(
-            lineColor: AppColors.black200.withOpacity(0.2000000029802322),
+            lineColor: AppColor.black200.withOpacity(0.2000000029802322),
           ),
           CustomGoToDetailsButtonWidget(
               onPressed: () => OnDetailsPress(),
@@ -143,9 +143,9 @@ class EkramTransporationCardWidget extends StatelessWidget {
                     iconWidth: 18,
                   ),
                   buttonIconPosition: BUTTON_ICON_POSITION.right,
-                  btnTextColor: AppColors.darkTurquoise,
+                  btnTextColor: AppColor.primary900Light,
                   btnTextSize: 16,
-                  btnTextWeight: FONT_WEIGHT.medium,
+                  btnTextWeight: AppFontWeight.medium,
                   padding: const EdgeInsets.all(Constants.semiMediumPadding),
                 ),
               ),
@@ -169,9 +169,9 @@ class EkramTransporationCardWidget extends StatelessWidget {
                     iconWidth: 18,
                   ),
                   buttonIconPosition: BUTTON_ICON_POSITION.right,
-                  btnTextColor: AppColors.darkTurquoise,
+                  btnTextColor: AppColor.primary900Light,
                   btnTextSize: 16,
-                  btnTextWeight: FONT_WEIGHT.medium,
+                  btnTextWeight: AppFontWeight.medium,
                   padding: const EdgeInsets.all(Constants.semiMediumPadding),
                 ),
               ),

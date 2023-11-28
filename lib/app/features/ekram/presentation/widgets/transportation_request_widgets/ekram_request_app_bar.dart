@@ -1,10 +1,15 @@
-import 'package:balady_new_app/app/core/core_exports.dart';
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class EkramRequestAppBar extends StatelessWidget implements PreferredSizeWidget {
+import '../../../../../core/services/local/helpers.dart';
+import '../../../../../core/utils/constants/app_colors.dart';
+import '../../../../../core/utils/constants/constants.dart';
+import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+
+class EkramRequestAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
   final double currentStep;
   final VoidCallback backOnPress;
 
@@ -40,11 +45,11 @@ class EkramRequestAppBar extends StatelessWidget implements PreferredSizeWidget 
         leadingWidth: 32,
         actions: [
           CustomTextButtonWidget(
-            btnText: Helpers.translatingWord('vd_cancel'),
+            text: Helpers.translatingWord('vd_cancel'),
             btnTextSize: 17,
-            btnTextColor: AppColors.darkTurquoise,
-            alignment: AlignmentDirectional.center,
-            btnPressed: () {
+            btnTextColor: AppColor.primary900Light,
+            btnAlignment: AlignmentDirectional.center,
+            onPressed: () {
               context.read<EkramRequestTransportationBloc>().cancelRequest();
             },
           )
@@ -66,7 +71,7 @@ class EkramRequestAppBar extends StatelessWidget implements PreferredSizeWidget 
               child: LinearProgressIndicator(
                 backgroundColor: Colors.white,
                 valueColor: const AlwaysStoppedAnimation<Color>(
-                  AppColors.baladyDarkGreen2,
+                  AppColor.primary900Light,
                 ),
                 value: currentStep /
                     (context

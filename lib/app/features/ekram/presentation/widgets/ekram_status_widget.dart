@@ -1,7 +1,9 @@
-import 'package:balady_new_app/app/core/core_exports.dart';
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/shared_widgets/custom_text_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
 class EkramStatusWidget extends StatelessWidget {
   final String status;
@@ -14,11 +16,11 @@ class EkramStatusWidget extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 7, vertical: 4),
         decoration: new BoxDecoration(
-            color: AppColors.orange150, borderRadius: BorderRadius.circular(4)),
+            color: AppColor.orange150, borderRadius: BorderRadius.circular(4)),
         child: CustomTextWidget(
           status,
-          fontColor: AppColors.orange800,
-          fontWeight: FONT_WEIGHT.medium,
+          fontColor: AppColor.orange800,
+          fontWeight: AppFontWeight.medium,
           fontSize: 13,
           maxLines: 1,
           textOverflow: TextOverflow.ellipsis,
@@ -44,8 +46,8 @@ class EkramHeaderAndDescWidget extends StatelessWidget {
         CustomTextWidget(
           title,
           fontSize: 13.0,
-          fontWeight: FONT_WEIGHT.medium,
-          fontColor: AppColors.warmGrey,
+          fontWeight: AppFontWeight.medium,
+          fontColor: AppColor.warmGrey,
           maxLines: 1,
           textOverflow: TextOverflow.ellipsis,
           textAlign: TextAlign.start,
@@ -54,8 +56,8 @@ class EkramHeaderAndDescWidget extends StatelessWidget {
         CustomTextWidget(
           details,
           fontSize: 16.0,
-          fontWeight: FONT_WEIGHT.medium,
-          fontColor: AppColors.black,
+          fontWeight: AppFontWeight.medium,
+          fontColor: AppColor.black,
           maxLines: 1,
           textOverflow: TextOverflow.ellipsis,
           textAlign: TextAlign.start,

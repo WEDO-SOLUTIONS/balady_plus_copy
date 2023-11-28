@@ -1,20 +1,25 @@
-import 'package:balady_new_app/app/core/core_exports.dart';
-import 'package:balady_new_app/app/core/dependency_injection/dependency_injection_exports.dart';
-import 'package:balady_new_app/app/features/customer_voice/customer_voice_exports.dart';
-import 'package:balady_new_app/app/features/customer_voice/presentation/dialogs/lookup_with_search_dialog.dart';
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
-import 'package:balady_new_app/app/features/ekram/presentation/blocs/ekram_add_deceased/ekram_add_deceased_bloc.dart';
-import 'package:balady_new_app/app/features/ekram/presentation/widgets/add_deceased/deceased_require_transfer_widget.dart';
-import 'package:balady_new_app/app/features/ekram/presentation/widgets/add_deceased/select_burial_destination_widget.dart';
-import 'package:balady_new_app/app/features/ekram/presentation/widgets/add_deceased/select_gender_widget.dart';
-import 'package:balady_new_app/app/features/ekram/presentation/widgets/add_deceased/select_religion_widget.dart';
-import 'package:balady_new_app/etmam_app/core/utils/constants/app_config.dart';
-import 'package:balady_new_app/shared/core/data/entities/lookup_item.dart';
-import 'package:balady_new_app/shared/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/app/features/ekram/presentation/blocs/ekram_add_deceased/ekram_add_deceased_bloc.dart';
+import 'package:balady_plus/app/features/ekram/presentation/widgets/add_deceased/deceased_require_transfer_widget.dart';
+import 'package:balady_plus/app/features/ekram/presentation/widgets/add_deceased/select_burial_destination_widget.dart';
+import 'package:balady_plus/app/features/ekram/presentation/widgets/add_deceased/select_gender_widget.dart';
+import 'package:balady_plus/app/features/ekram/presentation/widgets/add_deceased/select_religion_widget.dart';
+import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../customer_voice/presentation/core/models/classification.dart';
+import '../../../../core/dependency_injection/injection_container.dart';
+import '../../../../core/utils/enums/bloc_status.dart';
+import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 
 class AddDeceasedDialog extends StatelessWidget {
   final AddDeceasedDialogParams params;
@@ -31,7 +36,7 @@ class AddDeceasedDialog extends StatelessWidget {
       child: BlocConsumer<EkramAddDeceasedBloc, EkramAddDeceasedState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure) {
-            showError(state.errorMessage ?? "");
+            CommonFunctions.showError(state.errorMessage ?? "");
           }
         },
         builder: (context, state) {
@@ -51,26 +56,24 @@ class AddDeceasedDialog extends StatelessWidget {
                             trans('addDeceased'),
                             maxLines: 1,
                             fontSize: 24,
-                            fontColor: AppColors.black,
+                            fontColor: AppColor.black,
                             textAlign: TextAlign.start,
                           )),
                           CustomTextButtonWidget(
-                            btnPressed: () => Navigator.of(context).pop(),
-                            btnText: Helpers.translatingWord(
-                              "closeButton",
-                            ),
-                            btnTextColor: AppColors.grey1000,
+                            onPressed: () => Navigator.of(context).pop(),
+                            text: "closeButton".tr(),
+                            btnTextColor: AppColor.grey1000,
                             btnTextSize: 17.0,
-                            btnTextWeight: FONT_WEIGHT.medium,
-                            alignment: AlignmentDirectional.centerEnd,
+                            btnTextWeight: AppFontWeight.medium,
+                            btnAlignment: AlignmentDirectional.centerEnd,
                           ),
                         ],
                       ),
                       Expanded(child: DialogBody()),
-                      IncidentSubmitButton(
-                        isButtonDisabled: !state.isFormValid(),
-                        btnText: Helpers.translatingWord("confirm"),
-                        onPress: () {
+                      ElevatedButtonWidget.custom(
+                        isDisabled: !state.isFormValid(),
+                        text: ("confirm").tr(),
+                        onPressed: () {
                           Navigator.of(context).pop(state.data);
                         },
                       ),
@@ -78,7 +81,7 @@ class AddDeceasedDialog extends StatelessWidget {
                   ),
                 ),
                 if (state.status == BlocStatus.loading)
-                  CustomCircularLoadingWidget(),
+                  const CustomCircularLoadingWidget(),
               ],
             ),
           );
@@ -131,13 +134,13 @@ class _DialogBodyState extends State<DialogBody> {
                   maxLines: 1,
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.text,
-                  contentHorizontalPadding: 0,
+                  //contentHorizontalPadding: 0,
                   onChanged: (String? text) {
                     context
                         .read<EkramAddDeceasedBloc>()
                         .add(ChangeFullNameEvent(text: text));
                   },
-                  validator: (String? value) {
+                  onValidate: (String? value) {
                     if ((value?.split(" ").length ?? 0) < 3) {
                       return trans("deceasedName3_validation_msg");
                     }
@@ -157,8 +160,8 @@ class _DialogBodyState extends State<DialogBody> {
                       .read<EkramAddDeceasedBloc>()
                       .getNationalitiesHandler();
                 },
-                label: Helpers.translatingWord("ekramNationality"),
-                hint: Helpers.translatingWord("ekramNationality"),
+                label: ("ekramNationality").tr(),
+                hint: ("ekramNationality").tr(),
               ),
               // CustomVerticalSpace(height: 16),
               SelectGenderWidget(),
@@ -181,8 +184,8 @@ class _DialogBodyState extends State<DialogBody> {
                         .read<EkramAddDeceasedBloc>()
                         .getCitiesHandler();
                   },
-                  label: Helpers.translatingWord("burial_city"),
-                  hint: Helpers.translatingWord("burial_city"),
+                  label: ("burial_city").tr(),
+                  hint: ("burial_city").tr(),
                 )
               ],
               CustomVerticalSpace(height: 16),
@@ -202,8 +205,8 @@ class _DialogBodyState extends State<DialogBody> {
                         .read<EkramAddDeceasedBloc>()
                         .getSpecialReasonsLookUp();
                   },
-                  label: Helpers.translatingWord("reasonForSpecialTransfer"),
-                  hint: Helpers.translatingWord("reasonForSpecialTransfer"),
+                  label: ("reasonForSpecialTransfer").tr(),
+                  hint: ("reasonForSpecialTransfer").tr(),
                 )
               ],
               if (state.data.specialTransferReasonId?.id == 30208) ...[
@@ -216,12 +219,11 @@ class _DialogBodyState extends State<DialogBody> {
                     maxLines: 1,
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.text,
-                    contentHorizontalPadding: 0,
                     onChanged: (String? text) {
                       context.read<EkramAddDeceasedBloc>().add(
                           ChangeNeedSpecialTransferReasonEvent(text: text));
                     },
-                    validator: (String? value) {})
+                    onValidate: (String? value) {})
               ],
               CustomVerticalSpace(height: 10),
               CustomVerticalSpace(height: 20),

@@ -1,20 +1,18 @@
-import 'package:balady_new_app/app/core/core_exports.dart'
-    show
-        AppColors,
-        Constants,
-        CustomTextWidget,
-        CustomVerticalSpace,
-        FONT_WEIGHT;
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 
 import 'package:flutter/material.dart';
 
 import '../../../../../etmam_app/core/utils/utils_exports.dart' show trans;
+import '../../../../core/utils/constants/app_colors.dart';
+import '../../../../core/utils/constants/constants.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
 class EkramSelectRequestTypePage extends StatefulWidget {
-  final EkramRequestsBloc ekramRequestsBloc;
-  const EkramSelectRequestTypePage({Key? key, required this.ekramRequestsBloc})
-      : super(key: key);
+  const EkramSelectRequestTypePage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<EkramSelectRequestTypePage> createState() =>
@@ -25,6 +23,9 @@ class _EkramSelectRequestTypePageState
     extends State<EkramSelectRequestTypePage> {
   @override
   Widget build(BuildContext context) {
+    EkramRequestsBloc ekramRequestsBloc =
+        ModalRoute.of(context)!.settings.arguments as EkramRequestsBloc;
+
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,15 +53,15 @@ class _EkramSelectRequestTypePageState
                 CustomTextWidget(
                   trans('ekramNewOrder'),
                   fontSize: 24,
-                  fontWeight: FONT_WEIGHT.bold,
-                  fontColor: AppColors.black,
+                  fontWeight: AppFontWeight.bold,
+                  fontColor: AppColor.black,
                   textAlign: TextAlign.start,
                 ),
                 /*  CustomVerticalSpace(height: 12),
                 CustomTextWidget(
                   trans('ekramNewOrderDesc'),
                   fontSize: 16,
-                  fontWeight: FONT_WEIGHT.medium,
+                  fontWeight: AppFontWeight.medium,
                   fontColor: AppColors.black400,
                   height: 1.4,
                   textAlign: TextAlign.start,
@@ -75,7 +76,7 @@ class _EkramSelectRequestTypePageState
                   itemBuilder: (ctx, index) {
                     return EkramTypeCardWidget(
                       ekramTypes: EkramTypes.getEkramTypes[index],
-                      ekramBloc: widget.ekramRequestsBloc,
+                      ekramBloc: ekramRequestsBloc,
                     );
                   })),
         ],

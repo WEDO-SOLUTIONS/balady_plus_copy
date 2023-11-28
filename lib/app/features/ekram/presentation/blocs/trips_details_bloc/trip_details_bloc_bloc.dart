@@ -1,24 +1,25 @@
-import 'package:balady_new_app/app/core/shared_local_services/common.dart';
-import 'package:balady_new_app/app/core/shared_local_services/helpers.dart';
-import 'package:balady_new_app/app/features/ekram/data/model/trips_details_params.dart';
-import 'package:balady_new_app/app/features/ekram/data/model/upload_letter_params.dart';
-import 'package:balady_new_app/app/features/ekram/domain/entities/trip_details.dart';
-import 'package:balady_new_app/app/features/ekram/domain/use_cases/complete_trip.dart';
-import 'package:balady_new_app/app/features/ekram/domain/use_cases/delete_trip.dart';
-import 'package:balady_new_app/app/features/ekram/domain/use_cases/download_attachment.dart';
-import 'package:balady_new_app/app/features/ekram/domain/use_cases/get_deceased_driver_request_details.dart';
-import 'package:balady_new_app/app/features/ekram/domain/use_cases/get_trips.dart';
-import 'package:balady_new_app/app/features/ekram/domain/use_cases/upload_trip.dart';
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
-import 'package:balady_new_app/shared/core/data/entities/lookup_item.dart';
-import 'package:balady_new_app/shared/core/errors/errors_exports.dart';
-import 'package:balady_new_app/shared/core/utils/enums/bloc_status.dart';
-import 'package:balady_new_app/shared/features/_shared_feature_/shared/data/entities/file_data_item.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:collection/collection.dart';
 import 'package:mime/mime.dart';
 import 'package:collection/collection.dart';
+
+import '../../../../../core/errors/failures.dart';
+import '../../../../../core/services/local/helpers.dart';
+import '../../../../../core/utils/enums/bloc_status.dart';
+import '../../../../_shared_feature_/data/entities/file_data_item.dart';
+import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
+import '../../../data/model/trips_details_params.dart';
+import '../../../data/model/upload_letter_params.dart';
+import '../../../domain/entities/trip_details.dart';
+import '../../../domain/use_cases/complete_trip.dart';
+import '../../../domain/use_cases/delete_trip.dart';
+import '../../../domain/use_cases/download_attachment.dart';
+import '../../../domain/use_cases/get_deceased_driver_request_details.dart';
+import '../../../domain/use_cases/get_trips.dart';
+import '../../../domain/use_cases/upload_trip.dart';
+import '../../../ekram_exports.dart';
 
 part 'trip_details_bloc_event.dart';
 
@@ -159,7 +160,7 @@ class TripDetailsBloc extends Bloc<TripDetailsEvent, TripDetailsState> {
         errorMessage: "",
       ));
 
-      showSuccess(success.data?.responseMessage ?? "");
+      CommonFunctions.showSuccess(success.data?.responseMessage ?? "");
       add(GetTripsDetailsInDialogEvent());
     });
   }
@@ -180,7 +181,7 @@ class TripDetailsBloc extends Bloc<TripDetailsEvent, TripDetailsState> {
       emitter(state.copyWith(
           status: BlocStatus.success, errorMessage: "", isCompleted: true));
 
-      showSuccess(success.data?.responseMessage ?? "");
+      CommonFunctions.showSuccess(success.data?.responseMessage ?? "");
 
       add(GetDriverRequestDetails());
     });
@@ -213,7 +214,7 @@ class TripDetailsBloc extends Bloc<TripDetailsEvent, TripDetailsState> {
         status: BlocStatus.success,
         errorMessage: "",
       ));
-      showSuccess(success.data?.responseMessage ?? "");
+      CommonFunctions.showSuccess(success.data?.responseMessage ?? "");
       add(GetDriverRequestDetails());
     });
   }
@@ -245,7 +246,7 @@ class TripDetailsBloc extends Bloc<TripDetailsEvent, TripDetailsState> {
         status: BlocStatus.success,
         errorMessage: "",
       ));
-      showSuccess(success.data?.responseMessage ?? "");
+      CommonFunctions.showSuccess(success.data?.responseMessage ?? "");
       add(GetDriverRequestDetails());
     });
   }
@@ -267,7 +268,7 @@ class TripDetailsBloc extends Bloc<TripDetailsEvent, TripDetailsState> {
         status: BlocStatus.success,
         errorMessage: "",
       ));
-      Helpers.openFileLocal(success.data, contentType: success.type);
+      Helpers.openFile(success.data, contentType: success.type);
     });
   }
 }

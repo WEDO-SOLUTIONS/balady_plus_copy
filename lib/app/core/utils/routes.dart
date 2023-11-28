@@ -78,6 +78,17 @@ import '../../features/create_compliance/presentation/pages/compliance_details_p
 import '../../features/create_compliance/presentation/pages/map_page/complinace_map_page.dart';
 import '../../features/create_compliance/presentation/pages/non_compliance_screen.dart';
 import '../../features/create_compliance/presentation/pages/submit_compliance_page.dart';
+import '../../features/ekram/presentation/pages/driver/driver_ekram_transpotation_details_page.dart';
+import '../../features/ekram/presentation/pages/driver/driver_transportation_list_page.dart';
+import '../../features/ekram/presentation/pages/ekram_booking_list_page.dart';
+import '../../features/ekram/presentation/pages/ekram_home_page.dart';
+import '../../features/ekram/presentation/pages/ekram_select_type_page.dart';
+import '../../features/ekram/presentation/pages/ekram_success_screen.dart';
+import '../../features/ekram/presentation/pages/user/ekram_map_page.dart';
+import '../../features/ekram/presentation/pages/user/ekram_orders_page.dart';
+import '../../features/ekram/presentation/pages/user/ekram_request_transportation_page.dart';
+import '../../features/ekram/presentation/pages/user/ekram_transportation_list_page.dart';
+import '../../features/ekram/presentation/pages/user/ekram_transpotation_details_page.dart';
 import '../../features/events/presentation/pages/events_main_page.dart';
 import '../../features/events/presentation/pages/single_image_page.dart';
 import '../../features/map_page/presentation/pages/resturant_details_page.dart';
@@ -609,6 +620,37 @@ class Routes {
         RouteName.tobaccoDisclosed: (context) => const TobaccoDisclosedScreen(),
         RouteName.submitDisclosedSuccessfully: (context) =>
             const SubmitDisclosedSuccessfullyScreen(),
+
+        // Ekram
+
+        RouteName.ekramOrdersScreen: (context) => const EkramOrdersPage(),
+
+        RouteName.ekramHomeScreen: (context) => const EkramHomePage(),
+
+        RouteName.ekramTransportationListScreen: (context) =>
+            const EkramTransportationListPage(),
+
+        RouteName.driverEkramTransportationListScreen: (context) =>
+            const DriverEkramTransportationListPage(),
+
+        RouteName.ekramBookingListScreen: (context) =>
+            const EkramBookingListPage(),
+
+        RouteName.ekramSelectRequestTypeScreen: (context) =>
+            const EkramSelectRequestTypePage(),
+
+        RouteName.ekramRequestTransportationScreen: (context) =>
+            const EkramRequestTransportationPage(),
+
+        RouteName.ekramSuccessScreen: (context) => const EkramSuccessPage(),
+
+        RouteName.ekramTransportationDetailsScreen: (context) =>
+            const EkramTransportationDetailsPage(),
+
+        RouteName.driverEkramTransportationDetailsScreen: (context) =>
+            const DriverEkramTransportationDetailsPage(),
+
+        RouteName.EkramMapPage: (context) => const EkramMapPage(),
       };
 }
 

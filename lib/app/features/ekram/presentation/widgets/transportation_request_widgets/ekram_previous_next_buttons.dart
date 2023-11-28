@@ -1,8 +1,14 @@
-import 'package:balady_new_app/app/core/core_exports.dart';
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../core/services/local/helpers.dart';
+import '../../../../../core/utils/constants/app_colors.dart';
+import '../../../../../core/utils/constants/constants.dart';
+import '../../../../../core/utils/enums/app_font_weights.dart';
+import '../../../../../core/utils/enums/enums.dart';
+import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 
 class EkramPreviousNextButtons extends StatelessWidget {
   const EkramPreviousNextButtons({Key? key}) : super(key: key);
@@ -23,15 +29,15 @@ class EkramPreviousNextButtons extends StatelessWidget {
             children: [
               CustomTextButtonWidget(
                   btnTextSize: 16,
-                  btnTextColor: AppColors.darkTurquoise,
-                  btnPressed: () {
+                  btnTextColor: AppColor.primary900Light,
+                  onPressed: () {
                     context
                         .read<EkramRequestTransportationBloc>()
                         .add(GoToPreviousPageEvent());
                   },
-                  btnText: Helpers.translatingWord("vd_previous")),
+                  text: Helpers.translatingWord("vd_previous")),
               !isLastPage
-                  ? CustomElevatedButtonWidget(
+                  ? EnhancedCustomElevatedButtonWidget(
                       btnPressed: isButtonDisabled
                           ? () {}
                           : () {
@@ -41,7 +47,7 @@ class EkramPreviousNextButtons extends StatelessWidget {
                             },
                       btnText: Helpers.translatingWord("vd_next"),
                       btnTextSize: 16,
-                      btnTextWeight: FONT_WEIGHT.bold,
+                      btnTextWeight: AppFontWeight.bold,
                       btnHeight: 56,
                       btnWidth: 105,
                       icon: Image.asset(
@@ -49,25 +55,24 @@ class EkramPreviousNextButtons extends StatelessWidget {
                         height: 16,
                         width: 16,
                         color: isButtonDisabled
-                            ? AppColors.black200
-                            : AppColors.darkTurquoise,
+                            ? AppColor.black200
+                            : AppColor.primary900Light,
                       ),
                       buttonIconPosition: BUTTON_ICON_POSITION.left,
                       btnBorderColor: isButtonDisabled
-                          ? AppColors.black200
-                          : AppColors.darkTurquoise,
+                          ? AppColor.black200
+                          : AppColor.primary900Light,
                       btnColor: Colors.transparent,
                       btnTextColor: isButtonDisabled
-                          ? AppColors.black200
-                          : AppColors.darkTurquoise,
+                          ? AppColor.black200
+                          : AppColor.primary900Light,
                     )
-                  : CustomElevatedButtonWidget(
+                  : EnhancedCustomElevatedButtonWidget(
                       btnColor: isButtonDisabled
-                          ? AppColors.black200
-                          : AppColors.darkTurquoise,
-                      btnTextColor: isButtonDisabled
-                          ? AppColors.black400
-                          : AppColors.white,
+                          ? AppColor.black200
+                          : AppColor.primary900Light,
+                      btnTextColor:
+                          isButtonDisabled ? AppColor.black400 : AppColor.white,
                       btnPressed: isButtonDisabled
                           ? () {}
                           : () {
@@ -77,7 +82,7 @@ class EkramPreviousNextButtons extends StatelessWidget {
                             },
                       btnText: Helpers.translatingWord("ekramSubmitOrder"),
                       btnTextSize: 16,
-                      btnTextWeight: FONT_WEIGHT.bold,
+                      btnTextWeight: AppFontWeight.bold,
                       btnHeight: 56,
                       btnWidth: 142,
                     )

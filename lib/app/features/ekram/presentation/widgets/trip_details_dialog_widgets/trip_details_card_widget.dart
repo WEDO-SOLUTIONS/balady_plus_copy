@@ -1,8 +1,16 @@
-import 'package:balady_new_app/app/core/core_exports.dart';
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
-import 'package:balady_new_app/etmam_app/core/utils/constants/app_config.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../../core/utils/constants/app_colors.dart';
+import '../../../../../core/utils/enums/app_font_weights.dart';
+import '../../../../../core/utils/enums/enums.dart';
+import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
+import '../../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
+import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../domain/entities/trip_details.dart';
 
 class TripDetailsDialogCard extends StatelessWidget {
@@ -35,8 +43,8 @@ class TripDetailsDialogCard extends StatelessWidget {
                 trans('register_trip_details'),
                 maxLines: 1,
                 fontSize: 13,
-                fontColor: AppColors.black400,
-                fontWeight: FONT_WEIGHT.medium,
+                fontColor: AppColor.black400,
+                fontWeight: AppFontWeight.medium,
                 textAlign: TextAlign.start,
                 textOverflow: TextOverflow.ellipsis,
               ),
@@ -51,8 +59,8 @@ class TripDetailsDialogCard extends StatelessWidget {
                 ),
                 btnText: trans('delete'),
                 btnTextSize: 13,
-                btnTextWeight: FONT_WEIGHT.medium,
-                btnTextColor: AppColors.redBrown,
+                btnTextWeight: AppFontWeight.medium,
+                btnTextColor: AppColor.redBrown,
                 buttonIconPosition: BUTTON_ICON_POSITION.right,
               ),
           ],
@@ -90,23 +98,24 @@ class TripDetailsDialogCard extends StatelessWidget {
           children: [
             Expanded(
                 child: TripDetailsDateTime(
-              date: getFormattedDateEkram(
+              date: CommonFunctions.getFormattedDateEkram(
                   tripDetails.currentTripStationArrivalTime ?? ""),
-              time: getFormattedTimeEkram(
+              time: CommonFunctions.getFormattedTimeEkram(
                   tripDetails.currentTripStationArrivalTime ?? ""),
             )),
             Expanded(
                 child: TripDetailsDateTime(
-              date: getFormattedDateEkram(
+              date: CommonFunctions.getFormattedDateEkram(
                   tripDetails.nextTripStationArrivalTime ?? ""),
-              time: getFormattedTimeEkram(
+              time: CommonFunctions.getFormattedTimeEkram(
                   tripDetails.nextTripStationArrivalTime ?? ""),
             )),
           ],
         ),
         CustomVerticalSpace(height: 24),
         TripDetailsCreatedDateWidget(
-          date: getFormattedDateEkram(tripDetails.createDateTime ?? ""),
+          date: CommonFunctions.getFormattedDateEkram(
+              tripDetails.createDateTime ?? ""),
         ),
         CustomVerticalSpace(height: 16),
         DrawLineWidget()

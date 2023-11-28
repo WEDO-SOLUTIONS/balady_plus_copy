@@ -1,8 +1,11 @@
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../../etmam_app/core/utils/constants/app_config.dart';
-import '../../../../../core/core_exports.dart';
+import '../../../../../core/utils/constants/app_colors.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
+import '../../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
 
 class DeceasedCardWidget extends StatelessWidget {
   final DeceasedInfoDto deceasedItem;
@@ -63,7 +66,7 @@ class DeceasedCardWidget extends StatelessWidget {
             ),
             CustomVerticalSpace(height: 20),
             DrawLineWidget(
-              lineColor: AppColors.black200.withOpacity(0.2000000029802322),
+              lineColor: AppColor.black200.withOpacity(0.2000000029802322),
             ),
             CustomVerticalSpace(height: 20),
             Container(

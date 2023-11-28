@@ -1,13 +1,22 @@
-import 'package:balady_new_app/app/core/core_exports.dart';
-
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
-import 'package:balady_new_app/etmam_app/core/utils/constants/app_config.dart';
-import 'package:balady_new_app/shared/core/data/entities/lookup_item.dart';
-import 'package:balady_new_app/shared/core/utils/common_functions.dart';
-import 'package:balady_new_app/shared/features/_shared_feature_/shared/data/entities/file_data_item.dart';
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../core/services/local/helpers.dart';
+import '../../../../../core/utils/common_functions.dart';
+import '../../../../../core/utils/constants/app_colors.dart';
+import '../../../../../core/utils/constants/constants.dart';
+import '../../../../../core/utils/enums/app_font_weights.dart';
+import '../../../../_shared_feature_/data/entities/file_data_item.dart';
+import '../../../../_shared_feature_/presentation/fields/read_only_field.dart';
+import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
+import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
+import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 
 class DeathAndBurialInfoSection extends StatefulWidget {
@@ -77,9 +86,9 @@ class _DeathAndBurialInfoSectionState extends State<DeathAndBurialInfoSection> {
                         label: Helpers.translatingWord("burialCity"),
                         hint: Helpers.translatingWord("burialCity"),
                       ),
-                      CustomReadOnlyTextWidget(
-                          label: trans("transportation_status"),
-                          text: trans("transportation_from_hospital")),
+                      ReadOnlyField(
+                          title: trans("transportation_status"),
+                          subTitle: trans("transportation_from_hospital")),
 
                       /*CustomLookUpLongDialog(
                         items: [],
@@ -104,7 +113,7 @@ class _DeathAndBurialInfoSectionState extends State<DeathAndBurialInfoSection> {
                         hint: Helpers.translatingWord("ekramHospital"),
                       ),
                       if (state.selectedHospital?.id == -1)
-                        CustomTextFieldWidgetWithValue(
+                        CustomTextFieldWidget(
                             label: Helpers.translatingWord("hospital_name"),
                             hintText: Helpers.translatingWord("hospital_name"),
                             initialValue: state.otherHospitalName,
@@ -119,8 +128,8 @@ class _DeathAndBurialInfoSectionState extends State<DeathAndBurialInfoSection> {
                                   .add(
                                       ChangeHospitalOtherNameEvent(text: text));
                             },
-                            validator: (String? value) {}),
-                      CustomTextFieldWidgetWithValue(
+                            onValidate: (String? value) {}),
+                      CustomTextFieldWidget(
                           label: Helpers.translatingWord("deathLocation"),
                           hintText: Helpers.translatingWord("deathLocation"),
                           //  controller: deathLocationTextEditController,
@@ -134,7 +143,7 @@ class _DeathAndBurialInfoSectionState extends State<DeathAndBurialInfoSection> {
                                 .read<EkramRequestTransportationBloc>()
                                 .add(ChangeDeathLocationEvent(text: text));
                           },
-                          validator: (String? value) {}),
+                          onValidate: (String? value) {}),
                       // AttachemntWidget()
                     ],
                   ),
@@ -164,8 +173,8 @@ class AttachemntWidget extends StatelessWidget {
             CustomTextWidget(
               Helpers.translatingWord('policeLetterAttached_optinal'),
               fontSize: 16,
-              fontWeight: FONT_WEIGHT.medium,
-              fontColor: AppColors.baladyDarkGreen2,
+              fontWeight: AppFontWeight.medium,
+              fontColor: AppColor.primary900Light,
             ),
             CustomVerticalSpace(height: 16),
             state.letter != null
@@ -175,14 +184,14 @@ class AttachemntWidget extends StatelessWidget {
                         "assets/icons/customer_pdf.svg",
                         iconHeight: 20,
                         iconWidth: 20,
-                        iconColor: AppColors.black,
+                        iconColor: AppColor.black,
                       ),
                       CustomHorizontalSpace(width: 8),
                       Flexible(
                         child: GestureDetector(
                           onTap: () async {
                             FileDataItem? file =
-                                await CommonFunctions.pickFile();
+                                await CommonFunctions.pickFile(context);
                             if (file != null)
                               context
                                   .read<EkramRequestTransportationBloc>()
@@ -192,17 +201,18 @@ class AttachemntWidget extends StatelessWidget {
                             state.letter?.fileName ?? "",
                             fontSize: 16,
                             textAlign: TextAlign.start,
-                            fontWeight: FONT_WEIGHT.medium,
-                            fontColor: AppColors.black,
+                            fontWeight: AppFontWeight.medium,
+                            fontColor: AppColor.black,
                             maxLines: 1,
                           ),
                         ),
                       )
                     ],
                   )
-                : CustomElevatedButtonWidget(
+                : EnhancedCustomElevatedButtonWidget(
                     btnPressed: () async {
-                      FileDataItem? file = await CommonFunctions.pickFile();
+                      FileDataItem? file =
+                          await CommonFunctions.pickFile(context);
                       if (file != null)
                         context
                             .read<EkramRequestTransportationBloc>()
@@ -215,10 +225,10 @@ class AttachemntWidget extends StatelessWidget {
                       width: 12,
                     ),
                     btnTextSize: 16,
-                    btnTextWeight: FONT_WEIGHT.medium,
+                    btnTextWeight: AppFontWeight.medium,
                     btnHeight: 56,
-                    btnTextColor: AppColors.darkTurquoise,
-                    btnBorderColor: AppColors.darkTurquoise,
+                    btnTextColor: AppColor.primary900Light,
+                    btnBorderColor: AppColor.primary900Light,
                     btnColor: Colors.transparent,
                   ),
           ],

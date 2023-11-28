@@ -1,15 +1,17 @@
-import 'package:balady_new_app/app/core/shared_local_services/constants.dart';
-import 'package:balady_new_app/app/core/shared_local_services/map_utils.dart';
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../../../../core/utils/constants/constants.dart';
+import '../../../../../core/utils/map_utils.dart';
+
 class EkramMapPage extends StatelessWidget {
-  final LatLng location;
-  const EkramMapPage({super.key, required this.location});
+  const EkramMapPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    LatLng location = ModalRoute.of(context)!.settings.arguments as LatLng;
+
     return Scaffold(
         appBar: null,
         body: Stack(

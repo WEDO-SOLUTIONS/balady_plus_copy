@@ -1,13 +1,14 @@
-import 'package:balady_new_app/app/core/shared_local_services/app_colors.dart';
-import 'package:balady_new_app/app/core/shared_local_services/enums.dart';
-import 'package:balady_new_app/app/core/shared_widgets/custom_radio_button_widget.dart';
-import 'package:balady_new_app/app/core/shared_widgets/custom_spaces_widgets.dart';
-import 'package:balady_new_app/app/core/shared_widgets/custom_text_widget.dart';
-import 'package:balady_new_app/app/features/ekram/presentation/blocs/ekram_add_deceased/ekram_add_deceased_bloc.dart';
-import 'package:balady_new_app/etmam_app/core/utils/constants/app_config.dart';
-import 'package:balady_new_app/shared/core/data/entities/lookup_item.dart';
+import 'package:balady_plus/app/features/ekram/presentation/blocs/ekram_add_deceased/ekram_add_deceased_bloc.dart';
+import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../core/utils/constants/app_colors.dart';
+import '../../../../../core/utils/enums/app_font_weights.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../../_shared_feature_/presentation/widgets/radio_buttons/custom_radio_button_widget copy.dart';
+import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 
 class SelectGenderWidget extends StatelessWidget {
   const SelectGenderWidget({super.key});
@@ -21,10 +22,10 @@ class SelectGenderWidget extends StatelessWidget {
           children: [
             CustomTextWidget(
               trans("ekramGender"),
-              fontColor: AppColors.baladyDarkGreen2,
+              fontColor: AppColor.primary900Light,
               fontSize: 13.0,
               textAlign: TextAlign.start,
-              fontWeight: FONT_WEIGHT.bold,
+              fontWeight: AppFontWeight.bold,
             ),
             CustomVerticalSpace(height: 10),
             CustomRadioButtonEnd<LookUpItem>(

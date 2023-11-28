@@ -1,5 +1,11 @@
-import 'package:balady_new_app/app/core/core_exports.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../../core/services/local/helpers.dart';
+import '../../../../../core/utils/constants/app_colors.dart';
+import '../../../../../core/utils/constants/constants.dart';
+import '../../../../../core/utils/enums/app_font_weights.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
 class TripDetailsHeaderAndDesc extends StatelessWidget {
   final String header;
@@ -18,7 +24,7 @@ class TripDetailsHeaderAndDesc extends StatelessWidget {
           header,
           maxLines: 1,
           fontSize: 16,
-          fontColor: AppColors.black,
+          fontColor: AppColor.black,
           textAlign: TextAlign.start,
           textOverflow: TextOverflow.ellipsis,
         ),
@@ -27,8 +33,8 @@ class TripDetailsHeaderAndDesc extends StatelessWidget {
           desc,
           maxLines: 1,
           fontSize: 13,
-          fontColor: AppColors.black400,
-          fontWeight: FONT_WEIGHT.medium,
+          fontColor: AppColor.black400,
+          fontWeight: AppFontWeight.medium,
           textAlign: TextAlign.start,
           textOverflow: TextOverflow.ellipsis,
         ),
@@ -53,7 +59,7 @@ class TripDetailsDateTime extends StatelessWidget {
           date,
           maxLines: 1,
           fontSize: 11,
-          fontColor: AppColors.black400,
+          fontColor: AppColor.black400,
           textAlign: TextAlign.start,
           textOverflow: TextOverflow.ellipsis,
           fontFamily: Constants.lucidaGrandFontType,
@@ -63,7 +69,7 @@ class TripDetailsDateTime extends StatelessWidget {
           time,
           maxLines: 1,
           fontSize: 11,
-          fontColor: AppColors.black400,
+          fontColor: AppColor.black400,
           textAlign: TextAlign.start,
           textOverflow: TextOverflow.ellipsis,
           fontFamily: Constants.lucidaGrandFontType,
@@ -87,9 +93,9 @@ class TripDetailsCreatedDateWidget extends StatelessWidget {
           Helpers.translatingWord('ekram_created_at'),
           maxLines: 1,
           fontSize: 13,
-          fontColor: AppColors.black400,
+          fontColor: AppColor.black400,
           textAlign: TextAlign.start,
-          fontWeight: FONT_WEIGHT.medium,
+          fontWeight: AppFontWeight.medium,
           textOverflow: TextOverflow.ellipsis,
         ),
         CustomHorizontalSpace(width: 8),
@@ -97,7 +103,7 @@ class TripDetailsCreatedDateWidget extends StatelessWidget {
           date,
           maxLines: 1,
           fontSize: 11,
-          fontColor: AppColors.black400,
+          fontColor: AppColor.black400,
           textAlign: TextAlign.start,
           textOverflow: TextOverflow.ellipsis,
           fontFamily: Constants.lucidaGrandFontType,

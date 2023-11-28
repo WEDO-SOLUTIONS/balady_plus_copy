@@ -1,15 +1,15 @@
-import 'package:balady_new_app/app/core/core_exports.dart';
-import 'package:balady_new_app/app/core/dependency_injection/dependency_injection_exports.dart';
-import 'package:balady_new_app/app/features/ekram/ekram_exports.dart';
-import 'package:balady_new_app/app/features/ekram/presentation/blocs/request_details_bloc/request_details_bloc_bloc.dart';
-import 'package:balady_new_app/shared/core/utils/enums/bloc_status.dart';
+import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/app/features/ekram/presentation/blocs/request_details_bloc/request_details_bloc_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../core/services/local/helpers.dart';
+import '../../../../../core/utils/constants/app_colors.dart';
+import '../../../../../core/utils/enums/bloc_status.dart';
+
 class EkramTransportationDetailsPage extends StatefulWidget {
-  final DeceasedRequestDetails params;
-  const EkramTransportationDetailsPage({Key? key, required this.params})
-      : super(key: key);
+  const EkramTransportationDetailsPage({Key? key}) : super(key: key);
 
   @override
   State<EkramTransportationDetailsPage> createState() =>
@@ -20,10 +20,13 @@ class _EkramTransportationDetailsPageState
     extends State<EkramTransportationDetailsPage> {
   @override
   Widget build(BuildContext context) {
+    DeceasedRequestDetails? params =
+        ModalRoute.of(context)!.settings.arguments as DeceasedRequestDetails?;
+
     return BlocProvider(
       create: (context) => RequestDetailsBloc(
           getTrips: sl(),
-          details: widget.params,
+          details: params!,
           getDeceasedDriverRequestDetails: sl(),
           getTripsLocation: sl(),
           isDriver: true),
@@ -40,7 +43,7 @@ class _EkramTransportationDetailsPageState
             return Future<bool>.value(true);
           },
           child: Scaffold(
-            backgroundColor: AppColors.white2,
+            backgroundColor: AppColor.white2,
             body: CustomScrollView(
               physics: const BouncingScrollPhysics(),
               slivers: [
@@ -48,7 +51,7 @@ class _EkramTransportationDetailsPageState
                 EkramDetailsAppBar(
                   title: Helpers.translatingWord("trasferDetailsHeader"),
                   status: state.details.requestStatus ?? "",
-                  orderNo: widget.params.requestId.toString(),
+                  orderNo: params!.requestId.toString(),
                   onExit: () {
                     Navigator.of(context).pop(state.isCompleted);
                   },
