@@ -27,7 +27,7 @@ class _EkramHomePageState extends State<EkramHomePage> {
   @override
   void initState() {
     super.initState();
-    sl<AuthCubit>().getEkramPermissions(allowTracking: true);
+    //MM Ekram  sl<AuthCubit>().getEkramPermissions(allowTracking: true);
   }
 
   @override
@@ -57,16 +57,16 @@ class _EkramHomePageState extends State<EkramHomePage> {
                     color: Colors.black,
                   ),
                 ),
-                if (CommonProperties.showEkramDriver == true)
-                  CustomTextButtonWidget(
-                    onPressed: () {
-                      setState(() {
-                        isDriver = !isDriver;
-                      });
-                    },
-                    text: isDriver ? "تحويل إلى مستفيد" : "تحويل لموظف نقل",
-                    btnTextWeight: AppFontWeight.regular,
-                  ),
+                // if (CommonProperties.showEkramDriver == true) //MM Ekram
+                CustomTextButtonWidget(
+                  onPressed: () {
+                    setState(() {
+                      isDriver = !isDriver;
+                    });
+                  },
+                  text: isDriver ? "تحويل إلى مستفيد" : "تحويل لموظف نقل",
+                  btnTextWeight: AppFontWeight.regular,
+                ),
               ],
             ),
             Expanded(

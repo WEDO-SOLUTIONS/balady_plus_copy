@@ -1,13 +1,8 @@
-import 'package:balady_plus/app/core/core_exports.dart'
-    show
-        Constants,
-        CustomEnhancedExpansionPanelWidget,
-        CustomTitleSubtitleCardWidget,
-        Helpers,
-        getFormattedDateEkramCard;
 import 'package:balady_plus/app/features/ekram/presentation/blocs/request_details_bloc/request_details_bloc_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../_shared_feature_/presentation/widgets/custom_enhanced_expansion_panel_widget.dart';
 
 class TransferInfoWidget extends StatelessWidget {
   const TransferInfoWidget({Key? key}) : super(key: key);
@@ -28,7 +23,7 @@ class TransferInfoWidget extends StatelessWidget {
                 title: Helpers.translatingWord("ekramDate"),
                 subtitle: ' 2021 / 1 / 5',
               ),*/
-              CustomTitleSubtitleCardWidget(
+              /*  CustomTitleSubtitleCardWidget(
                 horizontalPadding: Constants.smallPadding,
                 title: Helpers.translatingWord("ekramOrderDate"),
                 subtitle: getFormattedDateEkramCard(state.details.requestDate),
@@ -62,7 +57,7 @@ class TransferInfoWidget extends StatelessWidget {
                   horizontalPadding: Constants.smallPadding,
                   title: Helpers.translatingWord("order_cancel_purpose"),
                   subtitle: state.details.cancelReason,
-                ),
+                ),*/
 
               /*  CustomTitleSubtitleCardWidget(
                 horizontalPadding: Constants.smallPadding,

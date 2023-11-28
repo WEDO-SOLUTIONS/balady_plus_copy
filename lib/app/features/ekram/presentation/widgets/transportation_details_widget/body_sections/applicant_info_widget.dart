@@ -1,4 +1,3 @@
-
 import 'package:balady_plus/app/features/ekram/presentation/blocs/request_details_bloc/request_details_bloc_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,42 +12,41 @@ class ApplicantInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RequestDetailsBloc, RequestDetailsState>(
-      builder: (context, state) {
-        return CustomEnhancedExpansionPanelWidget(
-          underline: false,
-          title: Helpers.translatingWord("ApplicantInfo"),
-          children: 
-       [
-              CustomTitleSubtitleCardWidget(
-                horizontalPadding: Constants.smallPadding,
-                title: Helpers.translatingWord("ekramFullName"),
-                subtitle: state.details.submitterName,
-              ),
-              CustomTitleSubtitleCardWidget(
-                horizontalPadding: Constants.smallPadding,
-                title: Helpers.translatingWord("ekramApplicantType"),
-                subtitle: state.details.submitterTypeName,
-              ),
-              GestureDetector(
-                onTap: () {
-                  if (state.details.submitterMobileNumber != null)
-                    CommonFunctions.call(state.details.submitterMobileNumber);
-                },
-                child: CustomTitleSubtitleCardWidget(
-                  horizontalPadding: Constants.smallPadding,
-                  title: Helpers.translatingWord("ekramMobile"),
-                  subtitle: state.details.submitterMobileNumber,
-                ),
-              ),
-              CustomTitleSubtitleCardWidget(
-                horizontalPadding: Constants.smallPadding,
-                title: Helpers.translatingWord("ekramRelationShip"),
-                subtitle: state.details.relationship,
-              ),
-            ],
+        builder: (context, state) {
+      return CustomEnhancedExpansionPanelWidget(
+        underline: false,
+        title: Helpers.translatingWord("ApplicantInfo"),
+        children: [
+          //MM Ekram
+          /*
+          CustomTitleSubtitleCardWidget(
+            horizontalPadding: Constants.smallPadding,
+            title: Helpers.translatingWord("ekramFullName"),
+            subtitle: state.details.submitterName,
           ),
-        );
-      },
-    );
+          CustomTitleSubtitleCardWidget(
+            horizontalPadding: Constants.smallPadding,
+            title: Helpers.translatingWord("ekramApplicantType"),
+            subtitle: state.details.submitterTypeName,
+          ),
+          GestureDetector(
+            onTap: () {
+              if (state.details.submitterMobileNumber != null)
+                CommonFunctions.call(state.details.submitterMobileNumber);
+            },
+            child: CustomTitleSubtitleCardWidget(
+              horizontalPadding: Constants.smallPadding,
+              title: Helpers.translatingWord("ekramMobile"),
+              subtitle: state.details.submitterMobileNumber,
+            ),
+          ),
+          CustomTitleSubtitleCardWidget(
+            horizontalPadding: Constants.smallPadding,
+            title: Helpers.translatingWord("ekramRelationShip"),
+            subtitle: state.details.relationship,
+          ),*/
+        ],
+      );
+    });
   }
 }
