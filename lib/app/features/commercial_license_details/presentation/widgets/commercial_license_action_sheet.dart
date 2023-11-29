@@ -14,9 +14,12 @@ import 'package:balady_plus/app/features/commercial_license_details/presentation
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/commercial_license_reason_cancel_sheet.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/loading_list_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
+
+import '../../../posters/presentation/blocs/posters_license_bloc.dart';
 
 class CommercialLicenseActionSheet extends StatelessWidget {
   const CommercialLicenseActionSheet({super.key});
@@ -72,6 +75,14 @@ class CommercialLicenseActionSheet extends StatelessWidget {
                                             RouteName
                                                 .renewCommercialLicenseStartService,
                                             arguments: provider.licenseId);
+                                        break;
+
+                                      case 1042:
+                                        Navigator.of(context).pushNamed(
+                                          RouteName.postersLicenseStartService,
+                                          arguments:
+                                              provider.commercialLicenceDetails,
+                                        );
                                         break;
                                     }
                                   },
