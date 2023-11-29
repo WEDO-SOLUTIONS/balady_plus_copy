@@ -15,6 +15,8 @@ class BaseViewModel extends ChangeNotifier {
   // final webService = locator<WebService>();
   // final apiServie = locator<APIService>();
 
+  String? errorMessage;
+
   showLoading() {
     EasyLoading.show();
     isLoading = true;

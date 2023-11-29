@@ -520,6 +520,9 @@ class WebService {
       String? fileName,
       String? mimeType,
       dynamic body,
+      String? key,
+      int? posterTypeId,
+      int? posterId,
       Map<String, String>? fields}) async {
     var data = body != null ? json.encode(body) : null;
 
@@ -537,6 +540,13 @@ class WebService {
       request.headers['authorization'] = 'Bearer ${CommonProperties.token}';
 
       request.headers['x-channel-id'] = "MOBILE";
+      if (key != null) {
+        request.headers['attachmentKey'] = key;
+      }
+      if (posterTypeId != null) {
+        request.headers['posterTypeId'] = posterTypeId.toString();
+      }
+      if (posterId != null) request.headers['posterId'] = posterId.toString();
 
       if (fields != null) {
         request.headers[ApiHeaders.xFeappId] =

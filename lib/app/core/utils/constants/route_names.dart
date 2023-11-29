@@ -217,6 +217,20 @@ class RouteName {
   static const violationGuideMainPage = '/violationGuideMainPage';
 
   static const violationCreatePage = '/violationCreatePage';
+
+  // Posters
+
+  static const postersStartService = '/postersStartService';
+  static const postersDetailsPage = '/postersDetailsPage';
+  static const postersLicenseStartService = '/postersLicenseStartService';
+  static const submitApplicationSuccessfullyPosters =
+      '/submitApplicationSuccessfullyPosters';
+  static const posterReqeuestDetailsPage = '/posterReqeuestDetailsPage';
+
+  static const tobaccoServicesList = '/tobaccoServicesList';
+  static const tobaccoDetails = '/tobaccoDetails';
+  static const tobaccoDisclosed = '/tobaccoDisclosed';
+  static const submitDisclosedSuccessfully = '/submitDisclosedSuccessfully';
 }
 
 class EtmamRoutesNames {
