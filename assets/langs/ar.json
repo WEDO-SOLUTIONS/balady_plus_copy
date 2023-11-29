@@ -2552,7 +2552,7 @@
   "entityNumber": "رقم المنشأة",
   "crSource": "مصدر السجل التجاري",
   "objectionPeriodExpired": "لا يمكن الاعتراض بسبب انتهاء مدة الاعتراض",
-  "reason": "سبب",
+  "reason": "السبب",
   "objectionDetails": "تفاصيل الاعتراض", 
   "applicableObjection": "المطبق للاعتراض",
   "billNumber": "رقم الفاتورة / المخالفة",
@@ -3549,6 +3549,7 @@
   "must_comment": "يجب اضافة تعليق",
 
 
-  "attached_successfully": "تم ارفق الملف بنجاح"
+  "attached_successfully": "تم ارفاق الملف بنجاح"
+
 
 }
