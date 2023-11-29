@@ -49,8 +49,6 @@ class ObjectionsDetailsBloc
     String? hash = state.details?.requestSubmitterData?.objectedTransactionUrl
         ?.split("/")
         .lastOrNull;
-    print("serviceTypeIdserviceTypeId $serviceTypeId");
-    print("serviceTypeIdserviceTypeId $hash");
 
     if (serviceTypeId == "3" || serviceTypeId == "4" || serviceTypeId == null) {
       add(GetTransactionDetailsEvent(

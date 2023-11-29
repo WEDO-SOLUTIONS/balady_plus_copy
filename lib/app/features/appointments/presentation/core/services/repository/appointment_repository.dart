@@ -42,7 +42,6 @@ class AppointmentRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
       try {
         Helpers.sendLog(
             url: ApiConstants.MyAppointments,
@@ -62,7 +61,7 @@ class AppointmentRepository {
         .getApigeeRequest(ApiConstants.AppointmentDetails, relativePath: query);
     bool state = body['state'];
     dynamic data = body['data'];
-    print(data);
+
     AppointmentDetails? result;
     String error = body['error'] ?? ("errors_server_error_1").tr();
     try {
@@ -73,7 +72,6 @@ class AppointmentRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
       try {
         Helpers.sendLog(
             url: ApiConstants.AppointmentDetails,
@@ -97,13 +95,10 @@ class AppointmentRepository {
     Uint8List? result;
     String error = body['error'] ?? ("errors_server_error_1").tr();
     String? contentType = body['Content-Type'];
-    print(contentType);
-    print(state);
+
     try {
       result = data;
-      print(result);
     } catch (ex) {
-      print(ex);
       try {
         Helpers.sendLog(
             url: ApiConstants.PrintAppointmentDetails,
@@ -135,7 +130,6 @@ class AppointmentRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
       try {
         Helpers.sendLog(
             url: ApiConstants.CancelAppointment,
@@ -157,7 +151,7 @@ class AppointmentRepository {
         relativePath: query);
     bool state = body['state'];
     dynamic data = body['data'];
-    print(data);
+
     ConfirmAppointmentResponse? result;
     String error = body['error'] ?? ("errors_server_error_1").tr();
 
@@ -169,7 +163,6 @@ class AppointmentRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
       try {
         Helpers.sendLog(
             url: ApiConstants.ConfirmAppointment,
@@ -199,7 +192,6 @@ class AppointmentRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
       try {
         Helpers.sendLog(
             url: ApiConstants.AppointmentSave,
@@ -233,7 +225,7 @@ class AppointmentRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
+ 
       try {
         Helpers.sendLog(
             url: ApiConstants.RatingInfo,

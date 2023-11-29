@@ -109,7 +109,8 @@ class InvoicesListItem extends StatelessWidget {
                   RouteName.inappWebview,
                   arguments: (
                     requestNum: 'invoice'.tr(),
-                    url: invoice.redirectUrl
+                    url: invoice.redirectUrl,
+                    isObjections: false
                   ),
                 );
                 return;
