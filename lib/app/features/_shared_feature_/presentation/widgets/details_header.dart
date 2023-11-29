@@ -13,16 +13,19 @@ import '../../../../core/utils/constants/paths/image_paths.dart';
 import 'buttons/custom_buttons_widgets.dart';
 
 class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
+  final String? title;
+  final Widget? titleWidget;
+
   final Function? onPress;
   final Function? onPrint;
   final Function? procedures;
   const DetailsHeader(
       {super.key,
-      required this.title,
+      this.title,
       this.onPrint,
       this.procedures,
-      this.onPress});
+      this.onPress,
+      this.titleWidget});
 
   @override
   Widget build(BuildContext context) {
@@ -51,11 +54,12 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
               color: AppColor.blackModern700Light,
               size: 20,
             ),
-            CustomTextWidget(title,
-                fontSize: 20,
-                fontWeight: AppFontWeight.bold,
-                fontColor: AppColor.blackModern700Light,
-                fontFamily: Constants.appFontType)
+            titleWidget ??
+                CustomTextWidget(title ?? "",
+                    fontSize: 20,
+                    fontWeight: AppFontWeight.bold,
+                    fontColor: AppColor.blackModern700Light,
+                    fontFamily: Constants.appFontType)
           ]),
         ),
       ),

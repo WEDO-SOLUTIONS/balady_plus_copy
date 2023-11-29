@@ -12,6 +12,7 @@ class BottomSheetWithActions extends StatefulWidget {
   final Widget? action;
   final bool? searchable;
   final bool? isList;
+  final Color? backgroundColor;
   final Function? onSearchChanged;
 
   const BottomSheetWithActions(
@@ -21,6 +22,7 @@ class BottomSheetWithActions extends StatefulWidget {
       this.action,
       this.isList = false,
       this.searchable,
+      this.backgroundColor,
       this.onSearchChanged});
 
   @override
@@ -54,7 +56,7 @@ class _BottomSheetWithActionsState extends State<BottomSheetWithActions> {
       child: Container(
         padding: padding,
         // height: context.screenHeight * 0.90,
-        color: AppColor.white,
+        color: widget.backgroundColor ?? AppColor.white,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
