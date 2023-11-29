@@ -107,6 +107,9 @@ class DisclosedMonthsSheet extends StatelessWidget {
                             },
                             disabledColor: Colors.transparent,
                             maxLines: 4,
+                            onValidate: (text) => (text?.isNotEmpty ?? false)
+                                ? null
+                                : "required_field_must_number".tr(),
                           ),
                         ],
                       )
@@ -138,8 +141,7 @@ class DisclosedMonthsSheet extends StatelessWidget {
                       }
                     },
                     disabledColor: Colors.transparent,
-                    onValidate: (text) => (text?.isNotEmpty ?? false) &&
-                            double.tryParse(text!) != null
+                    onValidate: (text) => (text?.isNotEmpty ?? false) && double.tryParse(text!) != null && double.parse(text) > 0
                         ? null
                         : "required_field_must_number".tr(),
                   ),
@@ -258,13 +260,13 @@ class DisclosedMonthsSheet extends StatelessWidget {
               selector: (_, provider) => provider.isLoading,
               child: ElevatedButtonWidget.primaryCustom(
                 onPressed: () async {
-                  if (provider.amount != null || provider.reason) {
+                  if (provider.reason || (provider.amount != null && provider.amount != 0)) {
                     if (!provider.reason || provider.reasonCancel != null) {
                       if (!provider.reason ||
                           provider.removeDisclosureComments != null) {
                         if (provider.attachmentId != null) {
                           Navigator.of(context).pop(
-                             TobaccoDisclosedViewModel(
+                            TobaccoDisclosedViewModel(
                               repository: provider.repository,
                               fileUploaded: provider.fileUploaded,
                               disclosureRequest: DisclosureRequest(
@@ -273,9 +275,9 @@ class DisclosedMonthsSheet extends StatelessWidget {
                                 attachmentId: provider.attachmentId,
                                 disclosureAmount: provider.amount,
                                 removeDisclosureComments:
-                                    provider.removeDisclosureComments,
+                                provider.removeDisclosureComments,
                                 removeDisclosureReasonId:
-                                    provider.reasonCancel?.id,
+                                provider.reasonCancel?.id,
                               ),
                             ),
                           );
