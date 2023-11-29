@@ -34,7 +34,10 @@ abstract class EkramRepository {
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getLookUp(
       int id);
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getEkramLookUp(
-      int id);
+      String id);
+
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+      getNationalityTypes();
 
   Future<Either<Failure, ResponseBodyModel<ApplyDeceasedResponse>>>
       applyDeceasedTransport(ApplyDeceasedParams params);

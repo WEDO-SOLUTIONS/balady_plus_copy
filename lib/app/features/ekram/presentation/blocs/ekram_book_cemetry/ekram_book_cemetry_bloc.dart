@@ -7,6 +7,7 @@ import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../../etmam_app/core/utils/constants/app_config.dart';
+import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/failures.dart';
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/services/local/use_case.dart';
@@ -22,6 +23,7 @@ import '../../../domain/use_cases/check_user_info.dart';
 import '../../../domain/use_cases/get_active_cities.dart';
 import '../../../domain/use_cases/get_cemetries.dart';
 import '../../../domain/use_cases/get_ekram_lookups.dart';
+import '../../../domain/use_cases/get_nationality_types.dart';
 import '../../widgets/ekram_book_cemetry/agreement_section.dart';
 import '../../widgets/ekram_book_cemetry/applicant_info_section.dart';
 import '../../widgets/ekram_book_cemetry/cemetry_burial_info_section.dart';
@@ -39,17 +41,15 @@ class EkramBookCemetryBloc
   late List pagesList = [
     ApplicantInfoSection(),
     CemetryDeceasedInfoSection(),
-    CemetryBurialInfoSection(),
     AgreementSection()
   ];
 
   final GetEkramLookUp _getEkramLookUp;
   final CheckUserinfo _checkUserInfo;
   final GetCemetries _getCemetries;
-
   final GetActiveCities _getCities;
   final BookCemetry _bookCemetry;
-
+  final GetNationalityTypes _getNationalityTypes;
   EkramBookCemetryBloc(
       {required GetEkramLookUp getEkramLookUp,
       required CheckUserinfo checkUserInfo,
@@ -62,7 +62,9 @@ class EkramBookCemetryBloc
         _getCemetries = getCemetries,
         _getCities = getCities,
         _bookCemetry = bookCemetry,
+        _getNationalityTypes = GetNationalityTypes(repository: sl()),
         super(EkramBookCemetryState(
+          isFetus: false,
             fullName: CommonProperties.userInfo?.arName ?? "",
             mobileNumber: CommonProperties.userInfo?.getPhone() ?? "",
             requestType: trans("ekram_request_type"))) {
@@ -82,7 +84,6 @@ class EkramBookCemetryBloc
     on<ChangeBurialTimevent>(_changeBurialTimeventHandler);
     on<ChangeBurialTimeOtherNameEvent>(_changeBurialTimeOtherNameHandler);
     on<ChangeReligionEvent>(_changeReligionHandler);
-
     on<ChangeIsEpidamicEvent>(_changeIsEpidamicHandler);
 
     on<GetCemetriesEvent>(_getCemetriesHandler);
@@ -91,15 +92,14 @@ class EkramBookCemetryBloc
     on<GoToNextPageEvent>(_goToNextPageHandler);
 
     on<ChangeRelationShipEvent>(_changeRelationShipHanlder);
-
+    on<ChangeIsFetus>(_changeIsFetus);
     on<SubmitRequestEvent>(_submitRequestEvent);
-
+    on<ChangeGenderEvent>(_changeGenderHandler);
     getCitiesHandler();
     getNationalTypesHandler();
-    getCemetrySizeItemsHandler();
     getCemetryTypeItemsHandler();
     getBurialTimesItemsHandler();
-    getReligionsHandler();
+    //getReligionsHandler();
   }
 
   Future<void> _changeAgreementHandler(
@@ -125,14 +125,19 @@ class EkramBookCemetryBloc
           .toFormat("yyyy/mm/dd");
     }
     if (e.hijriDate != null) {
+      print("HHHff ${e.hijriDate}");
       List<int> dateSplitted =
-          e.hijriDate!.split("/").map((e) => int.parse(e)).toList();
+          CommonFunctions.replaceArabicNumberWithEnglish(e.hijriDate!)
+              .split("/")
+              .map((e) => int.parse(e))
+              .toList();
       var g_date = HijriCalendar();
       DateTime gorgianDate = g_date.hijriToGregorian(
           dateSplitted[0], dateSplitted[1], dateSplitted[2]);
       gorgian = DateFormat('yyyy/MM/dd').format(gorgianDate);
     }
     print(gorgian);
+    print(hijri);
 
     emitter(state.copyWith(
         deceassedDOBGorgian: CommonFunctions.padHijriDate(gorgian),
@@ -236,8 +241,16 @@ class EkramBookCemetryBloc
 
   Future<void> _changeReligionHandler(
       ChangeReligionEvent e, Emitter emitter) async {
-    emitter(state.copyWith(selectedReligion: e.item));
-    add(GetCemetriesEvent());
+    emitter(state.copyWith(isMuslim: e.value));
+  }
+
+  Future<void> _changeIsFetus(ChangeIsFetus e, Emitter emitter) async {
+    emitter(state.copyWith(isFetus: e.value));
+  }
+
+  Future<void> _changeGenderHandler(
+      ChangeGenderEvent e, Emitter emitter) async {
+    emitter(state.copyWith(gender: e.value));
   }
 
   Future<void> _changeRelationShipHanlder(
@@ -270,7 +283,7 @@ class EkramBookCemetryBloc
   Future<List<LookUpItem>?> getNationalTypesHandler() async {
     emit(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess = await _getEkramLookUp(1002);
+    final failureOrSuccess = await _getNationalityTypes(NoParams());
     return failureOrSuccess.fold((failure) {
       emit(state.copyWith(
         status: BlocStatus.failure,
@@ -287,50 +300,10 @@ class EkramBookCemetryBloc
     });
   }
 
-  Future<List<LookUpItem>?> getReligionsHandler() async {
-    emit(state.copyWith(status: BlocStatus.loading));
-
-    final failureOrSuccess = await _getEkramLookUp(100);
-    return failureOrSuccess.fold((failure) {
-      emit(state.copyWith(
-        status: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-      return null;
-    }, (success) {
-      emit(state.copyWith(
-        status: BlocStatus.success,
-        religions: success.data?.result,
-        errorMessage: "",
-      ));
-      return success.data?.result;
-    });
-  }
-
-  Future<List<LookUpItem>?> getCemetrySizeItemsHandler() async {
-    emit(state.copyWith(status: BlocStatus.loading));
-
-    final failureOrSuccess = await _getEkramLookUp(8000);
-    return failureOrSuccess.fold((failure) {
-      emit(state.copyWith(
-        status: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-      return null;
-    }, (success) {
-      emit(state.copyWith(
-        status: BlocStatus.success,
-        cemetrySizeItems: success.data?.result,
-        errorMessage: "",
-      ));
-      return success.data?.result;
-    });
-  }
-
   Future<List<LookUpItem>?> getCemetryTypeItemsHandler() async {
     emit(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess = await _getEkramLookUp(400);
+    final failureOrSuccess = await _getEkramLookUp("GRAVE_TYPES");
     return failureOrSuccess.fold((failure) {
       emit(state.copyWith(
         status: BlocStatus.failure,
@@ -350,7 +323,7 @@ class EkramBookCemetryBloc
   Future<List<LookUpItem>?> getBurialTimesItemsHandler() async {
     emit(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess = await _getEkramLookUp(30970);
+    final failureOrSuccess = await _getEkramLookUp("PRAYERS");
     return failureOrSuccess.fold((failure) {
       emit(state.copyWith(
         status: BlocStatus.failure,
@@ -399,15 +372,17 @@ class EkramBookCemetryBloc
       emitter(state.copyWith(status: BlocStatus.loading));
 
       final failureOrSuccess = await _getCemetries(GetCemetriesParams(
-          burialCityId: state.selectedCity!.id!,
-          cemeterySizeId: state.selectedCemetrySize!.id!,
-          cemeteryTypeId: state.selectedCemetryType!.id!,
-          burialDate: state.burialDateGorgian!,
-          isPandemicDeath: state.isPandemicDeath!,
-          nationalityId: state.userInfoResponse!.nationalityCode!,
-          religionId: state.showReligion()
+        burialCityId: state.selectedCity!.id!,
+        cemeterySizeId: state.selectedCemetrySize!.id!,
+        cemeteryTypeId: state.selectedCemetryType!.id!,
+        burialDate: state.burialDateGorgian!,
+        isPandemicDeath: state.isPandemicDeath!,
+        nationalityId: state.userInfoResponse!.nationalityCode!,
+        religionId: 0,
+        /*religionId: state.showReligion()
               ? state.selectedReligion!.id!
-              : state.userInfoResponse!.religionCode!));
+              : state.userInfoResponse!.religionCode!*/
+      ));
 
       failureOrSuccess.fold((failure) {
         emitter(state.copyWith(
@@ -444,9 +419,11 @@ class EkramBookCemetryBloc
         deceasedIdentityTypeId: state.selectedNationalType!.id!,
         isPandemicDeath: state.isPandemicDeath!,
         relationship: state.relation,
-        religionId: state.showReligion()
+        religionId: 0
+        /* religionId: state.showReligion()
             ? state.selectedReligion!.id!
-            : state.userInfoResponse!.religionCode!));
+            : state.userInfoResponse!.religionCode!*/
+        ));
 
     failureOrSuccess.fold((failure) {
       emitter(state.copyWith(

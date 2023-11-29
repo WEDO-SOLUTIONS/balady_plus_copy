@@ -252,6 +252,7 @@ class RouteName {
   static const ekramSuccessScreen = 'ekramSuccessScreen';
   static const EkramMapPage = 'EkramMapPage';
   static const ekramCemetryRequestScreen = 'ekramCemetryRequestScreen';
+  static const EkramCemetryDetailsPage = 'EkramCemetryDetailsPage'; 
 }
 
 class EtmamRoutesNames {

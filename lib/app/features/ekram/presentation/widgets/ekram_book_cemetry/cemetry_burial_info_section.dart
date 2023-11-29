@@ -59,69 +59,17 @@ class _CemetryBurialInfoSectionState extends State<CemetryBurialInfoSection> {
                         header:
                             Helpers.translatingWord("cemetry_deceassed_burial"),
                       ),
-                      CustomLookUpLongDialog(
-                        items: state.cities ?? [],
-                        value: state.selectedCity,
-                        onEmptyList: () async {
-                          return context
-                              .read<EkramBookCemetryBloc>()
-                              .getCitiesHandler();
-                        },
-                        onChangeType: (LookUpItem? item) {
-                          print(item?.name);
-                          if (item != null) {
-                            context
-                                .read<EkramBookCemetryBloc>()
-                                .add(ChangeBurialCityEvent(item: item));
-                          }
-                        },
-                        label: Helpers.translatingWord(
-                            "cemetry_deceassed_burial_city"),
-                        hint: Helpers.translatingWord(
-                            "cemetry_deceassed_burial_city"),
-                      ),
-                      CemetryBurialDateHijri(),
-                      CemetryBurialDateGorgian(),
-                      CustomLookUpLongDialog(
-                        items: state.burialTimeItems ?? [],
-                        value: state.selectedTime,
-                        onEmptyList: () async {
-                          return context
-                              .read<EkramBookCemetryBloc>()
-                              .getBurialTimesItemsHandler();
-                        },
-                        onChangeType: (LookUpItem? item) {
-                          if (item != null) {
-                            context
-                                .read<EkramBookCemetryBloc>()
-                                .add(ChangeBurialTimevent(item: item));
-                          }
-                        },
-                        label: Helpers.translatingWord(
-                            "cemetry_deceassed_burial_time"),
-                        hint: Helpers.translatingWord(
-                            "cemetry_deceassed_burial_time"),
-                      ),
-                      if (state.selectedTime?.id == 30976)
-                        CustomHeaderAndDescOnTapWidget(
-                            label: Helpers.translatingWord(
-                                "cemetry_deceassed_burial_time"),
-                            hintText: state.otherTimeName == null
-                                ? Helpers.translatingWord(
-                                    "cemetry_deceassed_burial_time")
-                                : state.otherTimeName ?? "",
-                            onTap: () {
-                              context
-                                  .read<EkramBookCemetryBloc>()
-                                  .add(ChangeBurialTimeOtherNameEvent());
-                            }),
-                      CemetryIsEpidamicWidget()
                     ],
                   ),
                 ),
               ),
             ),
-            CemetryreviousNextButtons()
+            CemetryreviousNextButtons(
+              isBtnDisabled: state.isNextButtonEnabled(),
+              onPressed: () {
+                context.read<EkramBookCemetryBloc>().add(GoToNextPageEvent());
+              },
+            )
           ],
         );
       },

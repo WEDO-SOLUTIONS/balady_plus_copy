@@ -10,13 +10,14 @@ import '../repositories/ekram_repository.dart';
 
 import 'package:dartz/dartz.dart' show Either;
 
-class GetEkramLookUp extends UseCase<ResponseBodyModel<List<LookUpItem>>, int> {
+class GetEkramLookUp
+    extends UseCase<ResponseBodyModel<List<LookUpItem>>, String> {
   final EkramRepository repository;
 
   GetEkramLookUp({required this.repository});
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> call(
-      int params) async {
+      String params) async {
     return await repository.getEkramLookUp(params);
   }
 }

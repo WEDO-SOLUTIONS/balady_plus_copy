@@ -36,7 +36,12 @@ class ApplicantInfoSection extends StatelessWidget {
                 ),
               ),
             ),
-            CemetryreviousNextButtons()
+            CemetryreviousNextButtons(
+              isBtnDisabled: !state.isNextButtonEnabled(),
+              onPressed: () {
+                context.read<EkramBookCemetryBloc>().add(GoToNextPageEvent());
+              },
+            )
           ],
         );
       },

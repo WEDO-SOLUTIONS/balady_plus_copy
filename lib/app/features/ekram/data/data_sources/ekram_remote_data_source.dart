@@ -68,7 +68,7 @@ abstract class EkramRemoteDataSource {
 
   Future<EkramAttachmentResponse> downLoadAttachment(int id);
 
-  Future<ResponseBodyModel<List<LookUpItem>>> getEkramLookup(int params);
+  Future<ResponseBodyModel<List<LookUpItem>>> getEkramLookup(String params);
 
   Future<ResponseBodyModel<UserInfoResponseModel>> checkUserinfo(
       UserInfoRequestParams params);
@@ -86,6 +86,8 @@ abstract class EkramRemoteDataSource {
 
   Future<ResponseBodyModel<CemetryRequestDetailsModel>>
       getCemetryRequestDetails(String params);
+
+  Future<ResponseBodyModel<List<LookUpItem>>> getNationalityTypes();
 }
 
 class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
@@ -825,7 +827,8 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<List<LookUpItem>>> getEkramLookup(int params) async {
+  Future<ResponseBodyModel<List<LookUpItem>>> getEkramLookup(
+      String params) async {
     var response;
 
     try {
@@ -1017,7 +1020,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        "${ApiUrl.bookCemetry}/$params",
+        ApiUrl.bookCemetryDetails.replaceAll("{}", params),
       );
 
       var data = response.data["data"]?["result"];
@@ -1062,9 +1065,10 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       );
 
       var data = response.data["data"]?["result"];
-
+      Map<String, dynamic> x = {};
+      x["items"] = data;
       CemetryRequestResponseModel? parsedResult =
-          data != null ? CemetryRequestResponseModel.fromMap(data) : null;
+          data != null ? CemetryRequestResponseModel.fromMap(x) : null;
 
       final decodedResponse =
           ResponseBodyModel<CemetryRequestResponseModel>.fromMap(response.data,
@@ -1072,6 +1076,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
       return decodedResponse.toFuture();
     } on DioError catch (error) {
+      print(error);
       var errorCode;
       try {
         final decodedResponse = ResponseBodyModel<dynamic>.fromMap(
@@ -1083,11 +1088,47 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode, errorCode: errorCode);
     } catch (ex) {
+      print(ex);
       if (ex is ServerException)
         throw ex;
       else {
         try {
           // CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<List<LookUpItem>>> getNationalityTypes() async {
+    var response;
+
+    try {
+      response = await webService.dio.get(
+        ApiUrl.ekramActiveCities,
+      );
+
+      var data = response.data["data"]?["result"];
+
+      List<LookUpItem> parsedResult = data != null
+          ? List<LookUpItem>.from(data.map((x) => LookUpItem.fromJson(x)))
+          : [];
+
+      final decodedResponse = ResponseBodyModel<List<LookUpItem>>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error) {
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode);
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //   CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
         throw ServerException(("errors_server_error_2").tr());
       }

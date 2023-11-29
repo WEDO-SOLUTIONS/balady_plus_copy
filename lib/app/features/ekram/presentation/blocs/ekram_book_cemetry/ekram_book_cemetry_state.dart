@@ -11,11 +11,12 @@ class EkramBookCemetryState extends Equatable {
   final List<LookUpItem>? cemetrySizeItems;
   final List<LookUpItem>? cemetryTypeItems;
   final List<LookUpItem>? burialTimeItems;
-  final List<LookUpItem>? religions;
 
   final String? burialDateHijri;
   final String? burialDateGorgian;
   final bool? isPandemicDeath;
+  final bool? isFetus;
+  final bool? isMuslim;
 
   final bool? agreement;
   final String? fullName;
@@ -29,13 +30,13 @@ class EkramBookCemetryState extends Equatable {
   final LookUpItem? selectedCemetrySize;
   final LookUpItem? selectedCemetryType;
   final LookUpItem? selectedTime;
-  final LookUpItem? selectedReligion;
   final String? otherTimeName;
 
   final String? deceassedId;
   final String? deceassedDOBGorgian;
   final String? deceassedDOBHijri;
   final UserInfoResponse? userInfoResponse;
+  final int? gender;
 
   //final LookUpItem? selectedHospital;
   // final String? otherHospitalName;
@@ -48,14 +49,13 @@ class EkramBookCemetryState extends Equatable {
       this.selectedNationalType,
       this.nationalTypes,
       this.deceassedId,
+      this.isFetus,
       this.deceassedDOBGorgian,
       this.deceassedDOBHijri,
       this.agreement,
       this.fullName,
       this.mobileNumber,
       this.requestType,
-      this.selectedReligion,
-      this.religions,
       this.relation,
       this.userInfoResponse,
       this.cities,
@@ -71,7 +71,9 @@ class EkramBookCemetryState extends Equatable {
       this.otherTimeName,
       this.selectedCemetrySize,
       this.selectedCemetryType,
-      this.selectedTime});
+      this.selectedTime,
+      this.isMuslim,
+      this.gender});
 
   EkramBookCemetryState copyWith(
       {final BlocStatus? status,
@@ -86,6 +88,7 @@ class EkramBookCemetryState extends Equatable {
       final String? burialDateHijri,
       final String? burialDateGorgian,
       final bool? isPandemicDeath,
+      final bool? isFetus,
       final String? deceassedId,
       final String? deceassedDOB,
       final bool? agreement,
@@ -101,15 +104,16 @@ class EkramBookCemetryState extends Equatable {
       final UserInfoResponse? userInfoResponse,
       final bool? clearUserInfo,
       final bool? clearOtherBurialTime,
-      final LookUpItem? selectedReligion,
-      final List<LookUpItem>? religions,
       final String? deceassedDOBGorgian,
-      final String? deceassedDOBHijri}) {
+      final String? deceassedDOBHijri,
+      final bool? isMuslim,
+      final int? gender}) {
     return EkramBookCemetryState(
         status: status ?? this.status,
         errorMessage: errorMessage ?? this.errorMessage,
         currentPageValue: currentPageValue ?? this.currentPageValue,
         agreement: agreement ?? this.agreement,
+        isFetus: isFetus ?? this.isFetus,
         relation: relation ?? this.relation,
         fullName: fullName,
         mobileNumber: mobileNumber,
@@ -138,8 +142,8 @@ class EkramBookCemetryState extends Equatable {
         burialDateHijri: burialDateHijri ?? this.burialDateHijri,
         burialDateGorgian: burialDateGorgian ?? this.burialDateGorgian,
         isPandemicDeath: isPandemicDeath ?? this.isPandemicDeath,
-        religions: religions ?? this.religions,
-        selectedReligion: selectedReligion ?? this.selectedReligion);
+        isMuslim: isMuslim ?? this.isMuslim,
+        gender: gender ?? this.gender);
   }
 
   @override
@@ -151,7 +155,6 @@ class EkramBookCemetryState extends Equatable {
         deceassedId,
         deceassedDOBGorgian,
         deceassedDOBHijri,
-        selectedReligion,
         userInfoResponse,
         selectedCemetry,
         selectedCity,
@@ -167,7 +170,10 @@ class EkramBookCemetryState extends Equatable {
         selectedTime,
         selectedCemetryType,
         selectedCemetrySize,
-        burialDateGorgian
+        burialDateGorgian,
+        isFetus,
+        isMuslim,
+        gender
       ];
 
   bool isNextButtonEnabled() {
@@ -177,8 +183,10 @@ class EkramBookCemetryState extends Equatable {
       if (relation?.isEmpty ?? true) return false;
       return true;
     } else if (currentPageValue == 1) {
-      if (selectedNationalType != null && userInfoResponse != null) {
-        if (showReligion() && selectedReligion == null) return false;
+      if (selectedNationalType != null &&
+          userInfoResponse != null &&
+          isMuslim != null &&
+          isFetus != null) {
         return true;
       } else {
         return false;
