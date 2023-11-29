@@ -19,10 +19,7 @@ import 'package:balady_plus/app/features/profile_features/rate_us/rate_us.dart';
 import 'package:balady_plus/app/features/quran/presentation/pages/quran_bookmarks.dart';
 import 'package:balady_plus/app/features/quran/quran_exports.dart';
 import 'package:balady_plus/app/features/request_commercial_license_details/presentation/pages/request_commercial_license_details_page.dart';
-import 'package:balady_plus/app/features/tobacco_services/presentation/submit_disclosed_successfully/screens/submit_disclosed_successfully_screen.dart';
-import 'package:balady_plus/app/features/tobacco_services/presentation/tobacco_details/pages/tobacco_details_page.dart';
-import 'package:balady_plus/app/features/tobacco_services/presentation/tobacco_disclosed/screens/tobacco_disclosed_screen.dart';
-import 'package:balady_plus/app/features/tobacco_services/presentation/tobacco_list/pages/tobacco_list_page.dart';
+
 import 'package:balady_plus/app/features/weather/presentation/pages/weather_main_page.dart';
 import 'package:balady_plus/app/features/zmzm_points/zmzm_points_exports.dart';
 import 'package:flutter/material.dart'
@@ -604,11 +601,6 @@ class Routes {
 
         RouteName.posterReqeuestDetailsPage: (context) =>
             const PostersReqeuestDetailsPage(),
-        RouteName.tobaccoServicesList: (context) => const TobaccoListPage(),
-        RouteName.tobaccoDetails: (context) => const TobaccoDetailsPage(),
-        RouteName.tobaccoDisclosed: (context) => const TobaccoDisclosedScreen(),
-        RouteName.submitDisclosedSuccessfully: (context) =>
-            const SubmitDisclosedSuccessfullyScreen(),
       };
 }
 

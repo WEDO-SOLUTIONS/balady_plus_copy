@@ -18,11 +18,14 @@ import '../../../../core/utils/utils_exports.dart'
         RouteName,
         ServiceAction;
 import '../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
+import '../../../_shared_feature_/presentation/dialogs/not_authorized_indivivisual.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetDialog, BottomSheetWithActions, DrawIconBasedTypeWidget;
 import '../../../daem/presentation/dialogs/daem_types_dialog.dart';
 import '../../../new_appointment/presentation/core/services/view_models/new_appointment_view_model.dart';
 import '../../../new_appointment/presentation/dialogs/new_appointment_dialog.dart';
+import '../../../posters/presentation/widgets/license_widgets/bottom_sheet_list.dart';
+import '../../../posters/presentation/widgets/types_dialog/commercial_permits_dialog.dart';
 import '../../../public_services_features/prayer_times/presentation/cubit/prayer_times_cubit.dart';
 import '../../../transaction_inquiry/presentation/dialogs/general_inquiries_types_dialog.dart';
 import '../../../transaction_inquiry/presentation/dialogs/new_request_types_dialog.dart';
@@ -43,6 +46,34 @@ class ServiceIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
+        if (service.id == 101) {
+          if (CommonProperties.selectedDelegator != null) {
+            await BottomSheetDialog.showDraggableSheet(context,
+                isFullHeight: false,
+                height: 300, child: CommercialPermitsDialog(
+              onSelect: (int item) async {
+                if (item == 1042) {
+                  await BottomSheetDialog.showDraggableSheet(context,
+                      isFullHeight: true,
+                      child: PermitsLicenseBottomSheetList(
+                        groupId: item,
+                      ));
+                }
+              },
+            ));
+          } else {
+            await BottomSheetDialog.showDraggableSheet(
+              context,
+              isFullHeight: false,
+              dialogKeyName: DialogName.notAuthorizedIndivisualDialog,
+              currentRouteName: RouteName.postersStartService,
+              child: NotAuthorizedIndivisualDialog(),
+            );
+          }
+
+          return;
+        }
+
         if (service.id == 1 && service.action.type == ServiceAction.cardsPage) {
           await BottomSheetDialog.showDraggableSheet(context,
               dialogKeyName: DialogName.vdTypesDialog,
@@ -166,15 +197,18 @@ class ServiceIcon extends StatelessWidget {
           if (CommonProperties.isLoggedIn) {
             bool isSuccess =
                 await locator<NewAppointmentViewModel>().loadInitialData();
-            if (isSuccess)
-              await BottomSheetDialog.showDraggableSheet(context,
+            if (isSuccess) {
+              NavigationService.navigatorKey.currentState!
+                  .pushNamed(RouteName.NewAppointmentPage, arguments: false);
+              /* await BottomSheetDialog.showDraggableSheet(context,
                   dialogKeyName: DialogName.selectAppointmentTypeDialog,
                   currentRouteName: "ServicesPage",
                   isFullHeight: false,
                   child: BottomSheetWithActions(
                     title: "اختر نوع الموعد".tr(),
                     body: NewAppointmentDialog(),
-                  ));
+                  ));*/
+            }
           } else {
             showDialog(
                 context: context,
@@ -183,7 +217,10 @@ class ServiceIcon extends StatelessWidget {
                       if (isSuccess ?? false) {
                         await locator<NewAppointmentViewModel>()
                             .loadInitialData();
-                        await BottomSheetDialog.showDraggableSheet(context,
+                        NavigationService.navigatorKey.currentState!.pushNamed(
+                            RouteName.NewAppointmentPage,
+                            arguments: false);
+                        /* await BottomSheetDialog.showDraggableSheet(context,
                             dialogKeyName:
                                 DialogName.selectAppointmentTypeDialog,
                             currentRouteName: "ServicesPage",
@@ -191,7 +228,7 @@ class ServiceIcon extends StatelessWidget {
                             child: BottomSheetWithActions(
                               title: "اختر نوع الموعد".tr(),
                               body: NewAppointmentDialog(),
-                            ));
+                            ));*/
                       }
                     }));
           }

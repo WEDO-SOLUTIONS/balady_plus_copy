@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/enums/enums.dart';
 import 'package:balady_plus/app/features/services/presentation/widgets/service_cards/service_card_author_info_widget.dart';
 import 'package:balady_plus/app/features/services/presentation/widgets/service_cards/service_card_desc_widget.dart';
+import 'package:balady_plus/app/features/services/presentation/widgets/service_cards/service_card_other_widget.dart';
 import 'package:balady_plus/app/features/services/presentation/widgets/service_cards/service_card_req_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +13,7 @@ import '../../../_shared_feature_/shared_feature_exports.dart'
     show CustomTextWidget, DrawIconBasedTypeWidget;
 import '../../services_exports.dart'
     show ServiceCardParameter, ServiceCardsCubit, ServiceCardsState;
+import 'service_cards/service_card_conditions_widget.dart';
 import 'service_cards/service_card_flow_widget.dart';
 
 class ServiceCardDescription extends StatelessWidget {
@@ -36,6 +38,11 @@ class ServiceCardDescription extends StatelessWidget {
           return const ServiceCardFlowWidget();
         if (card.type == ServiceCardsTypes.authorInfo)
           return const ServiceCardAuthorInfoWidget();
+
+        if (card.type == ServiceCardsTypes.conditions)
+          return const ServiceCardConditionsWidget();
+        if (card.type == ServiceCardsTypes.others)
+          return const ServiceCardOtherWidget();
 
         return Container();
       },
