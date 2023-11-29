@@ -12,11 +12,15 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/failures.dart';
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
+import '../../../domain/entities/cemetry_requests/cemetry_request_item.dart';
+import '../../../domain/use_cases/get_cemetry_request_details.dart';
+import '../../../domain/use_cases/get_cemetry_requests.dart';
 
 part 'ekram_requests_event.dart';
 
@@ -29,6 +33,8 @@ class EkramRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState> {
   final GetLookUp _getLookUp;
   final GetStatus _getStatus;
   final GetLocations _getLocations;
+  final GetCemetryRequests _getCemetryRequests;
+  final GetCemetryRequestDetails _getCemetryRequestDetails;
 
   EkramRequestsBloc(
       {required GetDeceasedTransportRequests getDeceasedTransportRequests,
@@ -46,6 +52,8 @@ class EkramRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState> {
         _getLookUp = getLookUp,
         _getStatus = getStatus,
         _getLocations = getLocations,
+        _getCemetryRequests = GetCemetryRequests(repository: sl()),
+        _getCemetryRequestDetails = GetCemetryRequestDetails(repository: sl()),
         super(EkramRequestsState(isDriver: isDriver)) {
     on<EkramRequestsEvent>((event, emit) {
       emit(state);
@@ -55,9 +63,15 @@ class EkramRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState> {
     on<GetDeceasedTransportRequestDetailsEvent>(
         _getDeceasedTransportRequestDetailsHandler);
 
+    on<GetCemetryRequestsEvent>(_getCemetryRequestsHandler);
+
+    on<GetCemetryRequestDetailsEvent>(_getCemetryRequestDetailsHandler);
+
     on<GetMoreDeceasedTransportRequestsEvent>(_loadMoreHandler);
+    on<GetMoreCemetryRequestsEvent>(_loadMoreCemetryRequestsHandler);
     on<ShowFilterEvent>(_showFilterHandler);
-    add(GetDeceasedTransportRequestsEvent(isDriver: isDriver));
+    //add(GetDeceasedTransportRequestsEvent(isDriver: isDriver));
+    // add(GetCemetryRequestsEvent());
   }
 
   Future<void> _loadMoreHandler(
@@ -263,6 +277,100 @@ class EkramRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState> {
         },
       ),
     );
+  }
+
+  Future<void> _getCemetryRequestsHandler(
+      GetCemetryRequestsEvent event, Emitter emitter) async {
+    emitter(state.copyWith(
+      cemetryListStatus: BlocStatus.loadingShimmer,
+      currentPage: 0,
+    ));
+
+    final failureOrSuccess = await _getCemetryRequests(
+        GetRequestsParams(page: 0, size: 10, isDriver: false));
+
+    failureOrSuccess.fold((failure) {
+      String? errorCode = (failure as ServerFailure).errorCode;
+      BlocStatus status = BlocStatus.retry;
+      if (errorCode == "2") {
+        status = BlocStatus.success;
+      }
+
+      emitter(state.copyWith(
+        cemetryListStatus: status,
+        cemetryRequestItems: status == BlocStatus.success ? [] : null,
+        // totalItemCount: 0,
+        errorMessage: "",
+      ));
+    }, (success) {
+      emitter(state.copyWith(
+        cemetryListStatus: BlocStatus.success,
+        cemetryRequestItems: success.data?.result?.items,
+        // totalItemCount: success.data?.result?.totalItemCount,
+        errorMessage: "",
+      ));
+    });
+  }
+
+  Future<void> _loadMoreCemetryRequestsHandler(
+      GetMoreCemetryRequestsEvent e, Emitter emitter) async {
+    emitter(state.copyWith(cemetryListStatus: BlocStatus.loadMore));
+
+    final failureOrSuccess = await _getCemetryRequests(GetRequestsParams(
+        isDriver: true, page: state.cemetryCurrentPage + 1, size: 10));
+
+    failureOrSuccess.fold((failure) {
+      String? errorCode = (failure as ServerFailure).errorCode;
+      BlocStatus status = BlocStatus.failure;
+      if (errorCode == "2") {
+        status = BlocStatus.success;
+      }
+
+      emitter(state.copyWith(
+        cemetryListStatus: status,
+        errorMessage: status == BlocStatus.failure
+            ? (failure as ServerFailure).errorMessage
+            : "",
+      ));
+    }, (success) {
+      List<CemetryRequestItem>? newDeceasedRequestItems =
+          success.data?.result?.items;
+      List<CemetryRequestItem>? oldDeceasedRequestItems =
+          state.cemetryRequestItems;
+      if (newDeceasedRequestItems != null)
+        oldDeceasedRequestItems?.addAll(newDeceasedRequestItems);
+      emitter(state.copyWith(
+        cemetryListStatus: BlocStatus.success,
+        cemetryRequestItems: oldDeceasedRequestItems,
+        cemetryCurrentPage: state.cemetryCurrentPage + 1,
+        errorMessage: "",
+      ));
+    });
+  }
+
+  Future<void> _getCemetryRequestDetailsHandler(
+      GetCemetryRequestDetailsEvent e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loading));
+
+    var failureOrSuccess;
+
+    failureOrSuccess = await _getCemetryRequestDetails(e.requestId);
+
+    await failureOrSuccess.fold((failure) {
+      emitter(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (success) async {
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+        errorMessage: "",
+      ));
+
+      NavigationService.navigatorKey.currentState!.pushNamed(
+          RouteName.EkramCemetryDetailsPage,
+          arguments: success.data?.result);
+    });
   }
 
   hideKeyboard() {

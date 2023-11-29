@@ -13,17 +13,6 @@ Map<String, dynamic> servicesConfig = {
       "order": 1,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": RouteName.ekramCemetryRequestScreen},
-      "ar": {"title": "حجز مقبرة", "description": null, "tag": null},
-      "en": {"title": "Holy Quran", "description": null, "tag": null}
-    },
-    {
-      "id": 1,
-      "icon": "holy_quran",
-      "3d_icon": null,
-      "order": 1,
-      "isNew": false,
-      "isImportant": false,
       "action": {"type": "page", "value": RouteName.menuQuranPage},
       "ar": {"title": "holy_quran".tr(), "description": null, "tag": null},
       "en": {"title": "Holy Quran", "description": null, "tag": null}
@@ -108,15 +97,30 @@ Map<String, dynamic> servicesConfig = {
   ],
   "honoring_the_dead_services": [
     {
-      "id": 14,
+      "id": 1,
       "icon": "move_diseased",
       "3d_icon": null,
       "order": 14,
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": "/move-diseased"},
-      "ar": {"title": "نقل وتجهيز الموتي", "description": null, "tag": null},
+      "ar": {
+        "title": "طلبات نقل وتجهيز الموتى",
+        "description": null,
+        "tag": null
+      },
       "en": {"title": "Move Diseased", "description": null, "tag": null}
+    },
+    {
+      "id": 2,
+      "icon": "holy_quran",
+      "3d_icon": null,
+      "order": 1,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": RouteName.ekramBookingListScreen},
+      "ar": {"title": "حجز مقبرة", "description": null, "tag": null},
+      "en": {"title": "Holy Quran", "description": null, "tag": null}
     },
   ],
   "help_services": [

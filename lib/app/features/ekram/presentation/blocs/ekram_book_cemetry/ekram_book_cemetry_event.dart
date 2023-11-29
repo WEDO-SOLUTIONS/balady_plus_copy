@@ -29,18 +29,15 @@ class ChangeRelationShipEvent extends EkramBookCemetryEvent {
   ChangeRelationShipEvent({this.text});
 }
 
-
 class ChangeNationalId extends EkramBookCemetryEvent {
   final String? text;
   ChangeNationalId({this.text});
 }
 
-
 class ChangeNationalIdDob extends EkramBookCemetryEvent {
-    final String? gorgianDate;
+  final String? gorgianDate;
   final String? hijriDate;
   ChangeNationalIdDob({this.gorgianDate, this.hijriDate});
-
 }
 
 class ChangeNationalType extends EkramBookCemetryEvent {
@@ -52,10 +49,12 @@ class ChangeBurialCityEvent extends EkramBookCemetryEvent {
   final LookUpItem? item;
   ChangeBurialCityEvent({this.item});
 }
+
 class ChangeCemetryTypeEvent extends EkramBookCemetryEvent {
   final LookUpItem? item;
   ChangeCemetryTypeEvent({this.item});
 }
+
 class ChangeCemetrySizeEvent extends EkramBookCemetryEvent {
   final LookUpItem? item;
   ChangeCemetrySizeEvent({this.item});
@@ -77,35 +76,31 @@ class ChangeBurialTimevent extends EkramBookCemetryEvent {
   ChangeBurialTimevent({this.item});
 }
 
-class ChangeReligionEvent extends EkramBookCemetryEvent {
-  final LookUpItem? item;
-  ChangeReligionEvent({this.item});
-}
-
 class ChangeBurialTimeOtherNameEvent extends EkramBookCemetryEvent {
   ChangeBurialTimeOtherNameEvent();
 }
+
 class ChangeIsEpidamicEvent extends EkramBookCemetryEvent {
   final bool? value;
   ChangeIsEpidamicEvent({this.value});
 }
 
+class ChangeReligionEvent extends EkramBookCemetryEvent {
+  final bool? value;
+  ChangeReligionEvent({this.value});
+}
 
 class GetNationalTypes extends EkramBookCemetryEvent {
   const GetNationalTypes();
 }
 
-
-
 class GetCemetriesEvent extends EkramBookCemetryEvent {
   const GetCemetriesEvent();
 }
 
-
 class CheckUserInfoEvent extends EkramBookCemetryEvent {
   const CheckUserInfoEvent();
 }
-
 
 class ChangeHospitalOtherNameEvent extends EkramBookCemetryEvent {
   final String? text;
@@ -134,8 +129,17 @@ class GetHospitalsEvent extends EkramBookCemetryEvent {
   const GetHospitalsEvent({required this.city});
 }
 
-
 class AddDeceasedEvent extends EkramBookCemetryEvent {
   final dynamic data;
   const AddDeceasedEvent(this.data);
+}
+
+class ChangeIsFetus extends EkramBookCemetryEvent {
+  final bool? value;
+  ChangeIsFetus({this.value});
+}
+
+class ChangeGenderEvent extends EkramBookCemetryEvent {
+  final int? value;
+  ChangeGenderEvent({this.value});
 }

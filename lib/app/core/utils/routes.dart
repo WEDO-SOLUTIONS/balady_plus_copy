@@ -82,6 +82,7 @@ import '../../features/ekram/presentation/pages/book_cemetry/ekram_book_cemetry_
 import '../../features/ekram/presentation/pages/driver/driver_ekram_transpotation_details_page.dart';
 import '../../features/ekram/presentation/pages/driver/driver_transportation_list_page.dart';
 import '../../features/ekram/presentation/pages/ekram_booking_list_page.dart';
+import '../../features/ekram/presentation/pages/ekram_cemetry_details_page.dart';
 import '../../features/ekram/presentation/pages/ekram_home_page.dart';
 import '../../features/ekram/presentation/pages/ekram_select_type_page.dart';
 import '../../features/ekram/presentation/pages/ekram_success_screen.dart';
@@ -655,6 +656,9 @@ class Routes {
 
         RouteName.ekramCemetryRequestScreen: (context) =>
             const EkramBookCemetryPage(),
+
+        RouteName.EkramCemetryDetailsPage: (context) =>
+            const EkramCemetryDetailsPage(),
       };
 }
 

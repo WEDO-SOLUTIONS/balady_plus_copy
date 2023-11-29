@@ -40,3 +40,18 @@ class GetMoreDeceasedTransportRequestsEvent extends EkramRequestsEvent {
 class ShowFilterEvent extends EkramRequestsEvent {
   ShowFilterEvent();
 }
+
+
+class GetCemetryRequestsEvent extends EkramRequestsEvent {
+  GetCemetryRequestsEvent();
+}
+
+class GetMoreCemetryRequestsEvent extends EkramRequestsEvent {
+  GetMoreCemetryRequestsEvent();
+}
+
+class GetCemetryRequestDetailsEvent extends EkramRequestsEvent {
+  final String requestId;
+
+  GetCemetryRequestDetailsEvent({required this.requestId});
+}

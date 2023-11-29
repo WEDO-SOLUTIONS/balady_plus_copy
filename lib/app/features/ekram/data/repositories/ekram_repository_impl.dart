@@ -278,7 +278,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getEkramLookUp(
-      int id) async {
+      String id) async {
     try {
       final data = await remoteDataSource.getEkramLookup(id);
       return Right(data);
@@ -353,6 +353,18 @@ class EkramRepositoryImpl implements EkramRepository {
       getCemetryRequests(GetRequestsParams params) async {
     try {
       final data = await remoteDataSource.getCemetryRequests(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+      getNationalityTypes() async {
+    try {
+      final data = await remoteDataSource.getNationalityTypes();
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage,

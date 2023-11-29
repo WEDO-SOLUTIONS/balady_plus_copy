@@ -3695,9 +3695,10 @@
   "cemetry_info":"بيانات المقبرة", 
   "cemetry_type":"نوع القبر", 
   "cemetry_size": "حجم القبر", 
-  "cemetry_name":"اسم المقبرة" , 
+  "cemetry_name":"المقبرة" , 
   "cemetry_booking_request":"طلب حجز مقبرة", 
   "apology_reason":"سبب الاعتذار", 
-  "go_to_cemetry":"الذهاب الى خدمة اختيار وحجز مقبرة"
+  "go_to_cemetry":"الذهاب الى خدمة اختيار وحجز مقبرة", 
+  "is_dead_fetus":"هل المتوفى جنين؟"
 
 }

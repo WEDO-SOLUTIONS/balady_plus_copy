@@ -18,9 +18,16 @@ class EkramRequestsState extends Equatable {
 
   final bool? isDriver;
 
+  final BlocStatus cemetryListStatus;
+
+  final int cemetryCurrentPage;
+  final List<CemetryRequestItem>? cemetryRequestItems;
+
   EkramRequestsState(
       {this.status = BlocStatus.initial,
       this.currentPage = 0,
+      this.cemetryListStatus = BlocStatus.initial,
+      this.cemetryCurrentPage = 0,
       this.totalItemCount,
       this.errorMessage,
       this.filterItem,
@@ -32,24 +39,29 @@ class EkramRequestsState extends Equatable {
       this.locationsList,
       this.requestStatusFilterItem,
       this.locationFilterItem,
-      this.cityFilterItem});
+      this.cityFilterItem,
+      this.cemetryRequestItems});
 
-  EkramRequestsState copyWith(
-      {final BlocStatus? status,
-      final String? errorMessage,
-      final int? currentPage,
-      final int? totalItemCount,
-      final List<TransportRequestItem>? deceasedRequestItems,
-      final String? searchBy,
-      final LookUpItem? filterItem,
-      final List<LookUpItem>? transferStatusList,
-      final bool? isDriver,
-      final List<LookUpItem>? requestStatusList,
-      final List<LookUpItem>? locationsList,
-      final LookUpItem? requestStatusFilterItem,
-      final LookUpItem? locationFilterItem,
-      final LookUpItem? cityFilterItem,
-      final bool? clearFilters}) {
+  EkramRequestsState copyWith({
+    final BlocStatus? status,
+    final String? errorMessage,
+    final int? currentPage,
+    final int? totalItemCount,
+    final List<TransportRequestItem>? deceasedRequestItems,
+    final String? searchBy,
+    final LookUpItem? filterItem,
+    final List<LookUpItem>? transferStatusList,
+    final bool? isDriver,
+    final List<LookUpItem>? requestStatusList,
+    final List<LookUpItem>? locationsList,
+    final LookUpItem? requestStatusFilterItem,
+    final LookUpItem? locationFilterItem,
+    final LookUpItem? cityFilterItem,
+    final bool? clearFilters,
+    final BlocStatus? cemetryListStatus,
+    final int? cemetryCurrentPage,
+    final List<CemetryRequestItem>? cemetryRequestItems,
+  }) {
     return EkramRequestsState(
       status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
@@ -70,14 +82,18 @@ class EkramRequestsState extends Equatable {
           : (locationFilterItem ?? this.locationFilterItem),
       cityFilterItem:
           clearFilters == true ? null : (cityFilterItem ?? this.cityFilterItem),
+      cemetryListStatus: cemetryListStatus ?? this.cemetryListStatus,
+      cemetryCurrentPage: cemetryCurrentPage ?? this.cemetryCurrentPage,
+      cemetryRequestItems: cemetryRequestItems ?? this.cemetryRequestItems,
     );
+  }
 
-  
+  bool? isMultiCity() {
+    return cityFilterItem?.id != null
+        ? (cityFilterItem?.id == 0 ? false : true)
+        : null;
   }
-  bool? isMultiCity(){
-   return     cityFilterItem?.id != null
-                  ? (cityFilterItem?.id == 0 ? false : true) : null; 
-  }
+
   @override
   List<Object?> get props => [
         status,
@@ -90,6 +106,8 @@ class EkramRequestsState extends Equatable {
         transferStatusList,
         cityFilterItem,
         locationFilterItem,
-        requestStatusFilterItem
+        requestStatusFilterItem,
+        cemetryListStatus,
+        cemetryCurrentPage
       ];
 }
