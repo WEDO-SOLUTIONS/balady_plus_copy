@@ -616,7 +616,7 @@ class ApiUrl {
 // Ekram
   static const ekramNationalities = 'v1/ekram-mobile-services/nationalities';
 
-  static const ekramCities = 'v1/ekram-mobile-services/cities';
+  static const ekramCities = 'v2/ekram-mobile-services/cities/1';
 
   static const ekramHospitals = 'v1/ekram-mobile-services/hospitals';
 

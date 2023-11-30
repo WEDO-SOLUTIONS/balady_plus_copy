@@ -69,10 +69,10 @@ class ServicesPage extends StatelessWidget {
                           title: "business_license_services".tr(),
                           services: state.businessLicenseServices,
                         ),
-                      // ServicesList(
-                      //   title: "honoring_the_dead_services".tr(),
-                      //   services: state.honoringTheDeadServices,
-                      // ),
+                      ServicesList(
+                        title: "honoring_the_dead_services".tr(),
+                        services: state.honoringTheDeadServices,
+                      ),
                       /*ServicesList(
                         title: "health_certificates_services".tr(),
                         services: state.healthCertificatesServices,

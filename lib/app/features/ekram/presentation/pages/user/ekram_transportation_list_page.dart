@@ -10,21 +10,29 @@ import 'package:balady_plus/app/features/ekram/ekram_exports.dart'
         EkramRequestsState,
         GetDeceasedTransportRequestDetailsEvent;
 import 'package:balady_plus/etmam_app/core/utils/Debouncer.dart';
-import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
-    hide CommonFunctions;
-import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_loading_widget.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_app_bar_widget.dart';
+import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/common_functions.dart';
+import '../../../../../core/utils/constants/app_colors.dart';
+import '../../../../../core/utils/constants/paths/icon_paths.dart';
+import '../../../../../core/utils/constants/route_names.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
+import '../../../../_shared_feature_/presentation/icons/filter_icon.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/empty_state_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/search_text_field_widget.dart';
+import '../../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
+import '../../../../objectable_transactions/presentation/widgets/app_bar_search_bar.dart';
+import '../../../../objections/presentation/objections_bloc/objections_bloc.dart';
 
 class EkramTransportationListPage extends StatefulWidget {
   const EkramTransportationListPage({Key? key}) : super(key: key);
@@ -56,7 +64,8 @@ class _EkramTransportationListPageState
           getLookUp: sl(),
           getLocations: sl(),
           getStatus: sl(),
-          isDriver: false),
+          isDriver: false)
+        ..add(GetDeceasedTransportRequestsEvent(isDriver: false)),
       child: BlocConsumer<EkramRequestsBloc, EkramRequestsState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure) {
@@ -76,39 +85,46 @@ class _EkramTransportationListPageState
         },
         builder: (context, state) {
           return Scaffold(
-            appBar: CustomAppBar(
-              title: trans('requests_transporting_deceased'),
-              withBackImg: true,
-              actionImg: "filter2@3x.png",
-              actionOnPress: () async {
-                context.read<EkramRequestsBloc>().add(ShowFilterEvent());
-              },
+            appBar: DefaultAppBarWidget(
+              title: 'requests_transporting_deceased'.tr(),
+              bottom: AppBarSeachBar(
+                onChanged: (value) {
+                  _debouncer.run(() {
+                    context.read<EkramRequestsBloc>().add(
+                        GetDeceasedTransportRequestsEvent(
+                            isDriver: false, text: value));
+                  });
+                },
+              ),
+              actions: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  child: InkWell(
+                    onTap: () => NavigationService.navigatorKey.currentState!
+                        .pushNamed(RouteName.ekramRequestTransportationScreen,
+                            arguments: context.read<EkramRequestsBloc>()),
+                    child: CircleIcon(
+                      backgroundColor: AppColor.primary50Light,
+                      icon: IconPath.add,
+                      circleSize: 48.0,
+                      iconSize: 30.0,
+                    ),
+                  ),
+                ),
+                FilterIcon(
+                  onTap: () async {
+                    context.read<EkramRequestsBloc>().add(ShowFilterEvent());
+                  },
+                ),
+              ],
             ),
             body: Stack(
               children: [
                 Column(
                   children: [
                     const CustomVerticalSpace(height: 15),
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16),
-                      child: SearchTextFieldWidget(
-                        hintText: trans('search_for_order'),
-                        onTextChanged: (String v) {
-                          _debouncer.run(() {
-                            context.read<EkramRequestsBloc>().add(
-                                GetDeceasedTransportRequestsEvent(
-                                    isDriver: false, text: v));
-                          });
-                        },
-                        onSubmitSearch: (String text) {
-                          context.read<EkramRequestsBloc>().add(
-                              GetDeceasedTransportRequestsEvent(
-                                  isDriver: false, text: text));
-                        },
-                        containerHeight: 52,
-                      ),
-                    ),
-                    const CustomVerticalSpace(height: 15),
+
                     Expanded(
                       child: ListView.builder(
                           itemCount:
@@ -120,7 +136,8 @@ class _EkramTransportationListPageState
                               if (state.status == BlocStatus.loadMore) {
                                 return const SizedBox(
                                   height: 50,
-                                  child: Center(child: CustomLoadingWidget()),
+                                  child: Center(
+                                      child: CustomCircularLoadingWidget()),
                                 );
                               } else {
                                 return Container(height: 50);
@@ -171,10 +188,10 @@ class _EkramTransportationListPageState
                 if (state.status == BlocStatus.success &&
                     (state.deceasedRequestItems?.isEmpty ?? false))
                   EmptyStateWidget(
-                    title: trans("lbl_no_orders"),
+                    title: ("lbl_no_orders").tr(),
                   ),
                 if (state.status == BlocStatus.loading)
-                  CustomCircularLoadingWidget(),
+                  const CustomCircularLoadingWidget(),
               ],
             ),
           );
