@@ -155,13 +155,17 @@ class EkramRequestTransportationBloc extends Bloc<
     final failureOrSuccess = await _getHospitals(e.city.id!);
 
     failureOrSuccess.fold((failure) {
+      print("failure $failure");
+
       emitter(state.copyWith(
         status: BlocStatus.failure,
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) {
+      print("Succ3ess $success");
       success.data?.result
           ?.insert(0, LookUpItem(id: -1, name: trans("other_hospital")));
+      print("Succ3ess 555 ${success?.data?.result?.length}");
 
       emitter(state.copyWith(
         status: BlocStatus.success,
@@ -170,6 +174,8 @@ class EkramRequestTransportationBloc extends Bloc<
         clearHospital: true,
         errorMessage: "",
       ));
+
+      print("Succ3ess 555 ${state.hospitals}");
     });
   }
 

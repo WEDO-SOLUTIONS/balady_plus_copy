@@ -103,7 +103,28 @@ Map<String, dynamic> servicesConfig = {
       "order": 14,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/move-diseased"},
+      "action": {
+        "type": "page",
+        "value": RouteName.driverEkramTransportationListScreen
+      },
+      "ar": {
+        "title": "طلبات نقل وتجهيز الموتى",
+        "description": null,
+        "tag": null
+      },
+      "en": {"title": "Move Diseased", "description": null, "tag": null}
+    },
+    {
+      "id": 1,
+      "icon": "move_diseased",
+      "3d_icon": null,
+      "order": 14,
+      "isNew": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": RouteName.ekramTransportationListScreen
+      },
       "ar": {
         "title": "طلبات نقل وتجهيز الموتى",
         "description": null,

@@ -504,26 +504,42 @@ class _CustomLookUpLongDialog extends State<CustomLookUpLongDialog> {
         hintText: widget.hint!,
         textValue: widget.value?.name,
         showOptional: widget.showOptional,
-        onTap: () async {
-          FocusManager.instance.primaryFocus?.unfocus();
-          if (widget.onEmptyList != null) {
-            List<LookUpItem>? items = await widget.onEmptyList!();
-            if (items != null) {
-              FocusManager.instance.primaryFocus?.unfocus();
-              await CustomPopUpsWidgets.showBottomSheet(
-                NavigationService.navigatorKey.currentContext!,
-                child: LookupTypeWithSearchDialog(
-                  onSelect: (LookUpItem item) => widget.onChangeType(item),
-                  items: items,
-                  selectedItem: widget.value,
-                  title: widget.showHintAsTitle ? widget.hint : widget.label,
-                  searchHint: widget.searchHint,
-                ),
-              );
-            }
-          } else
-            CommonFunctions.showError(
-                widget.errorText ?? ('empty_list_error').tr());
-        });
+        onTap: widget.items.isNotEmpty
+            ? () async {
+                FocusManager.instance.primaryFocus?.unfocus();
+                await CustomPopUpsWidgets.showBottomSheet(
+                  NavigationService.navigatorKey.currentContext!,
+                  child: LookupTypeWithSearchDialog(
+                    onSelect: (LookUpItem item) => widget.onChangeType(item),
+                    items: widget.items,
+                    selectedItem: widget.value,
+                    title: widget.showHintAsTitle ? widget.hint : widget.label,
+                    searchHint: widget.searchHint,
+                  ),
+                );
+              }
+            : () async {
+                FocusManager.instance.primaryFocus?.unfocus();
+                if (widget.onEmptyList != null) {
+                  List<LookUpItem>? items = await widget.onEmptyList!();
+                  if (items != null) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    await CustomPopUpsWidgets.showBottomSheet(
+                      NavigationService.navigatorKey.currentContext!,
+                      child: LookupTypeWithSearchDialog(
+                        onSelect: (LookUpItem item) =>
+                            widget.onChangeType(item),
+                        items: items,
+                        selectedItem: widget.value,
+                        title:
+                            widget.showHintAsTitle ? widget.hint : widget.label,
+                        searchHint: widget.searchHint,
+                      ),
+                    );
+                  }
+                } else
+                  CommonFunctions.showError(
+                      widget.errorText ?? ('empty_list_error').tr());
+              });
   }
 }

@@ -57,7 +57,8 @@ class _DriverEkramTransportationListPageState
           getLookUp: sl(),
           getLocations: sl(),
           getStatus: sl(),
-          isDriver: true),
+          isDriver: true)
+        ..add(GetDeceasedTransportRequestsEvent(isDriver: true)),
       child: BlocConsumer<EkramRequestsBloc, EkramRequestsState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure) {

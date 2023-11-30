@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../etmam_app/core/utils/utils_exports.dart';
-import '../../../../../etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_buttons_widgets.dart';
+import '../../../../core/utils/constants/app_colors.dart';
+import '../../../../core/utils/constants/app_style.dart';
 import '../../../../core/utils/constants/constants.dart';
+import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/draw_icon_based_type_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../../home_page/presentation/widgets/home_tag.dart';
+import '../../../objectable_transactions/presentation/widgets/request_parameter.dart';
 import '../../domain/entities/deceased_transport_requests/transport_request_item.dart';
 import 'ekram_driver_request_card_widget.dart';
 import 'ekram_status_widget.dart';
@@ -20,164 +26,72 @@ class EkramTransporationCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 274,
-      padding: const EdgeInsets.only(top: Constants.mediumPadding),
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-      decoration: new BoxDecoration(
-        color: AppColor.white,
-        borderRadius: BorderRadius.circular(4),
-        boxShadow: [
-          BoxShadow(
-              color: Color(0x19000000),
-              offset: Offset(0, 2),
-              blurRadius: 10,
-              spreadRadius: 0)
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 24),
-            child: Row(
+    return GestureDetector(
+      onTap: () => OnDetailsPress(),
+      child: Container(
+        margin: const EdgeInsets.only(top: 8, bottom: 8, left: 16, right: 16),
+        padding: const EdgeInsets.all(16),
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+          color: AppColor.white,
+        ),
+        child: Column(
+          children: [
+            Row(
               children: [
+                const DrawIconBasedTypeWidget(icon: IconPath.requests),
+                CustomHorizontalSpace(
+                  width: 4,
+                ),
                 Expanded(
-                  child: Row(
-                    children: [
-                      // order no
-                      DetailsInfoWithImgSvg(
-                        img: IconPath.hashtag,
-                        title:
-                            ekramTransportationItem.requestId.toString() ?? "",
-                      ),
-                      CustomHorizontalSpace(width: 12),
-                      // order status
-                      EkramStatusWidget(
-                        status: ekramTransportationItem.requestStatus ?? "",
-                      ),
-                    ],
+                  child: CustomTextWidget(
+                    '#${ekramTransportationItem.requestId.toString()}',
+                    textStyle: AppStyle.requestNumberTextStle,
+                    textAlign: TextAlign.start,
                   ),
                 ),
-                CustomHorizontalSpace(width: 5),
-                // order action icon
-                /* CustomIconButtonWidget(
-                  btnPressed: () {},
-                  svgIcon: "assets/icons/moreAction.svg",
-                )*/
-              ],
-            ),
-          ),
-          const CustomVerticalSpace(height: 16),
-          DrawLineWidget(
-            horizontalMargin: Constants.smallPadding,
-            lineColor: AppColor.black200.withOpacity(0.2000000029802322),
-          ),
-          const CustomVerticalSpace(height: 20),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    // deceasedName
-                    Expanded(
-                        child: EkramHeaderAndDescWidget(
-                      title: trans('decased_name'),
-                      details: ekramTransportationItem.deceasedName ?? "",
-                    )),
-                    CustomHorizontalSpace(width: 12),
-                    // transportationType
-                    Expanded(
-                        child: EkramHeaderAndDescWidget(
-                      title: trans('transportationType'),
-                      details:
-                          ekramTransportationItem.deathTransferStatusDesc ?? "",
-                    ))
-                  ],
-                ),
-                //  Spacer(),
-                const CustomVerticalSpace(height: 20),
-                Row(
-                  children: [
-                    // transportationStatus
-                    Expanded(
-                        child: EkramHeaderAndDescWidget(
-                      title: trans('transportationStatus'),
-                      details: ekramTransportationItem
-                              .deceasedTransportRequestStatus ??
-                          "",
-                    )),
-                    CustomHorizontalSpace(width: 12),
-                    // transportationDestination
-
-                    Expanded(
-                        child: EkramHeaderAndDescWidget(
-                      title: trans('transportationDestination'),
-                      details: ekramTransportationItem.currentStationName ?? "",
-                    ))
-                  ],
+                HomeTag(
+                  title: ekramTransportationItem.requestStatus ?? "",
+                  backgroundColor: AppColor.secondary100Light,
                 ),
               ],
             ),
-          ),
-          Spacer(),
-          DrawLineWidget(
-            lineColor: AppColor.black200.withOpacity(0.2000000029802322),
-          ),
-          CustomGoToDetailsButtonWidget(
-              onPressed: () => OnDetailsPress(),
-              label: trans(
-                  'customerVoiceLatestRequestsSectionGoToDetailsButtonWord')),
-          /*  Row(
-            children: [
-              // tracking button
-              Expanded(
-                child: CustomTextButtonWithIconWidgetWithFlexible(
-                  btnPressed: () {},
-                  btnText: trans('trafficTracking'),
-                  icon: CustomSvgIconWidget(
-                    "assets/icons/tracking.svg",
-                    iconHeight: 18,
-                    iconWidth: 18,
-                  ),
-                  buttonIconPosition: BUTTON_ICON_POSITION.right,
-                  btnTextColor: AppColor.primary900Light,
-                  btnTextSize: 16,
-                  btnTextWeight: AppFontWeight.medium,
-                  padding: const EdgeInsets.all(Constants.semiMediumPadding),
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: GridView(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 3.5,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
                 ),
-              ),
-              DrawLineWidget(
-                lineWidth: 1,
-                lineHeight: 30,
-                lineColor: AppColors.black200.withOpacity(0.2000000029802322),
-              ),
-              // go to details button
-              Expanded(
-                child: CustomTextButtonWithIconWidgetWithFlexible(
-                  btnPressed: () {
-                    NavigationService.navigatorKey.currentState!.pushNamed(
-                        RoutesNames.ekramTransportationDetailsScreen);
-                  },
-                  btnText: trans(
-                      'customerVoiceLatestRequestsSectionGoToDetailsButtonWord'),
-                  icon: CustomSvgIconWidget(
-                    "assets/icons/detailsIcon.svg",
-                    iconHeight: 18,
-                    iconWidth: 18,
+                children: [
+                  RequestParameter(
+                    title: 'decased_name'.tr(),
+                    value: ekramTransportationItem.deceasedName ?? "",
                   ),
-                  buttonIconPosition: BUTTON_ICON_POSITION.right,
-                  btnTextColor: AppColor.primary900Light,
-                  btnTextSize: 16,
-                  btnTextWeight: AppFontWeight.medium,
-                  padding: const EdgeInsets.all(Constants.semiMediumPadding),
-                ),
+                  RequestParameter(
+                    title: 'transportationType'.tr(),
+                    value:
+                        ekramTransportationItem.deathTransferStatusDesc ?? "",
+                  ),
+                  RequestParameter(
+                    title: 'transportationStatus'.tr(),
+                    value: ekramTransportationItem
+                            .deceasedTransportRequestStatus ??
+                        "",
+                  ),
+                  RequestParameter(
+                    title: 'transportationDestination'.tr(),
+                    value: ekramTransportationItem.currentStationName ?? "",
+                  ),
+                ],
               ),
-            ],
-          ),*/
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,38 +35,25 @@ class DeceasedInfoSection extends StatelessWidget {
                       VdHeaderDesc(
                         header: Helpers.translatingWord("deceasedInfo"),
                       ),
-                      CustomTextButtonWithIconWidget(
-                          btnPressed: () async {
-                            final result =
-                                await CustomPopUpsWidgets.showBottomSheet(
-                                    context,
-                                    child: AddDeceasedDialog(
-                                      params: AddDeceasedDialogParams(
-                                          cities: state.cities,
-                                          nationalities: state.nationalities,
-                                          data: DeceasedInfoDto()),
-                                    ),
-                                    height: MediaQuery.of(context).size.height *
-                                        0.95);
-                            print(result);
-                            context
-                                .read<EkramRequestTransportationBloc>()
-                                .add(AddDeceasedEvent(result));
-                          },
-                          icon: Image.asset(
-                            Constants.imgPath + "add_ekram_button@3x.png",
-                            height: 14,
-                            width: 14,
-                            color: AppColor.primary900Light,
-                          ),
-                          mainAxisSize: MainAxisSize.min,
-                          buttonIconPosition: BUTTON_ICON_POSITION.right,
-                          btnTextColor: AppColor.primary900Light,
-                          btnTextSize: 16,
-                          btnTextWeight: AppFontWeight.medium,
-                          padding:
-                              const EdgeInsets.all(Constants.semiMediumPadding),
-                          btnText: Helpers.translatingWord('addDeceased')),
+                      ElevatedButtonWidget.primaryCustomBorder(
+                        onPressed: () async {
+                          final result =
+                              await CustomPopUpsWidgets.showBottomSheet(context,
+                                  child: AddDeceasedDialog(
+                                    params: AddDeceasedDialogParams(
+                                        cities: state.cities,
+                                        nationalities: state.nationalities,
+                                        data: DeceasedInfoDto()),
+                                  ),
+                                  height: MediaQuery.of(context).size.height *
+                                      0.95);
+                          print(result);
+                          context
+                              .read<EkramRequestTransportationBloc>()
+                              .add(AddDeceasedEvent(result));
+                        },
+                        text: "addDeceased".tr(),
+                      ),
                       SizedBox(
                           height: 290,
                           child: ListView.builder(

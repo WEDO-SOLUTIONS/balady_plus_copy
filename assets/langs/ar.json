@@ -3699,6 +3699,7 @@
   "cemetry_booking_request":"طلب حجز مقبرة", 
   "apology_reason":"سبب الاعتذار", 
   "go_to_cemetry":"الذهاب الى خدمة اختيار وحجز مقبرة", 
-  "is_dead_fetus":"هل المتوفى جنين؟"
+  "is_dead_fetus":"هل المتوفى جنين؟", 
+  "ekram_main_data":"البيانات الرئيسية"
 
 }
