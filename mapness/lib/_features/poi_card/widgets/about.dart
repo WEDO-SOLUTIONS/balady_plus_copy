@@ -1,9 +1,10 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/make_address.dart';
 
@@ -36,11 +37,7 @@ class _AboutState extends State<About> {
         children: [
           Text(
             data?.address?.buildingName ?? data?.title ?? '',
-            style: GoogleFonts.inter(
-              color: colorPrimary,
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-            ),
+            style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: colorPrimary),
             overflow: TextOverflow.ellipsis,
             maxLines: 5,
             textAlign: TextAlign.start,
@@ -50,12 +47,7 @@ class _AboutState extends State<About> {
           ),
           Text(
             data!.makeAddress(),
-            style: GoogleFonts.inter(
-              color: colorPrimary,
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              height: 1.3,
-            ),
+            style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: colorPrimary),
             maxLines: 5,
             textAlign: TextAlign.start,
           ),
@@ -72,12 +64,9 @@ class _AboutState extends State<About> {
                 ),
               ),
               child: Text(
-                '${context.l10n.exits}${exits ?? ''}',
-                style: PackageFonts.frutigerArabic(
-                  color: colorPrimary,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                ),
+                '${context.l10n.exits} ${exits ?? ''}',
+                style: Theme.of(context).extension<ThemeTextStyles>()!.accentS
+                    .copyWith(color: colorPrimary),
               ),
             ),
           ]

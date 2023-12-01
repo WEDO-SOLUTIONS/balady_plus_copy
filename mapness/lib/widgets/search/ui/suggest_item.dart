@@ -1,9 +1,10 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
 // import 'package:mapness/widgets/search/lib/build_suggest_title.dart';
 
 class SuggestItem extends StatelessWidget {
@@ -29,47 +30,48 @@ class SuggestItem extends StatelessWidget {
       icon = "search";
     }
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Row(
-          children: [
-            SvgPicture.asset(
-              "assets/icons/svg/ic_suggest_$icon.svg",
-              package: PackageConfig.packageName,
-            ),
-            const SizedBox(
-              width: 12,
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text.rich(
-                      overflow: TextOverflow.ellipsis,
-                      TextSpan(
-                        children: buildSuggestTitle(suggest),
-                      ),
-                    ),
-                    if (address != null && address.isNotEmpty)
-                      Text(
-                        address,
+    return Material(
+      color: Colors.white,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Row(
+            children: [
+              SvgPicture.asset(
+                "assets/icons/svg/ic_suggest_$icon.svg",
+                package: PackageConfig.packageName,
+              ),
+              const SizedBox(
+                width: 12,
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text.rich(
                         overflow: TextOverflow.ellipsis,
-                        style: PackageFonts.frutigerArabic(
-                          fontSize: 16,
-                          height: 1.4,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0x801E2A36),
+                        TextSpan(
+                          children: buildSuggestTitle(context, suggest),
                         ),
                       ),
-                  ],
+                      if (address != null && address.isNotEmpty)
+                        Text(
+                          address,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context)
+                              .extension<ThemeTextStyles>()!
+                              .textM
+                              .copyWith(color: const Color(0x801E2A36)),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -77,7 +79,7 @@ class SuggestItem extends StatelessWidget {
 }
 
 // Temporary solution without highlighting
-List<TextSpan> buildSuggestTitle(suggest) {
+List<TextSpan> buildSuggestTitle(BuildContext context, suggest) {
   final prefixMapping = {
     ", region": "منطقة",
     ", governorate": "محافظة",
@@ -98,12 +100,10 @@ List<TextSpan> buildSuggestTitle(suggest) {
   return [
     TextSpan(
       text: title,
-      style: PackageFonts.frutigerArabic(
-        fontSize: 16,
-        height: 1.4,
-        fontWeight: FontWeight.w500,
-        color: const Color(0x801E2A36),
-      ),
+      style: Theme.of(context)
+          .extension<ThemeTextStyles>()!
+          .textM
+          .copyWith(color: const Color(0x801E2A36)),
     )
   ];
 }

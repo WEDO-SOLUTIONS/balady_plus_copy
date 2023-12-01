@@ -1,5 +1,6 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
 import 'package:mapness/_features/stories/domain/frame/story_text_style.dart';
 
 class FrameActionButton extends StatelessWidget {
@@ -30,12 +31,9 @@ class FrameActionButton extends StatelessWidget {
       onPressed: onPressed,
       child: Text(
         title,
-        style: PackageFonts.frutigerArabic(
-          color: textStyle?.color ?? const Color(0xFF4CA5B4),
-          fontSize: 15,
-          fontWeight: FontWeight.w600,
-          letterSpacing: -0.30,
-        ),
+        style: Theme.of(context).extension<ThemeTextStyles>()!.accentS.copyWith(
+              color: textStyle?.color ?? const Color(0xFF4CA5B4),
+            ),
       ),
     );
   }

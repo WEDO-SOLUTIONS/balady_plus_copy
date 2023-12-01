@@ -1,10 +1,11 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/_features/poi_card/domain/model/opening_hours_model.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/expandable_widget.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
 
 class OpeningHours extends StatefulWidget {
   final OpeningHoursModel? model;
@@ -40,11 +41,7 @@ class _OpeningHoursState extends State<OpeningHours> {
     return openingHours?.map((e) {
       final weekDay = e.weekDay;
 
-      final textStyle = GoogleFonts.inter(
-        fontSize: 16,
-        fontWeight: FontWeight.w400,
-        color: colorPrimary,
-      );
+      final textStyle = Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: colorPrimary);
       return Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -81,11 +78,7 @@ class _OpeningHoursState extends State<OpeningHours> {
     final isWeekend = widget.model?.getTodayOpeningInfo()?.isWeekend ?? false;
     final todayOpeningInfo = widget.model?.getTodayOpeningInfo();
 
-    var fontStyle = PackageFonts.frutigerArabic(
-      fontSize: 16,
-      fontWeight: FontWeight.w400,
-      color: colorPrimary,
-    );
+    var fontStyle = Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: colorPrimary);
     return is24x7 || isOpenSameTime
         ? CardContent(
             child: _buildTitle(),
@@ -112,11 +105,7 @@ class _OpeningHoursState extends State<OpeningHours> {
   }
 
   Widget _buildTitle() {
-    final style = PackageFonts.frutigerArabic(
-      fontSize: 16,
-      fontWeight: FontWeight.w400,
-      color: colorPrimary,
-    );
+    final style = Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: colorPrimary);
 
     final openHours = widget.model?.openingHours?.first;
 

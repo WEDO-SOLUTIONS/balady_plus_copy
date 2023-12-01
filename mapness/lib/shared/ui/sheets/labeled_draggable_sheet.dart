@@ -1,5 +1,6 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
 class LabeledDraggableSheet extends StatelessWidget {
@@ -41,11 +42,12 @@ class LabeledDraggableSheet extends StatelessWidget {
                   child: Text(
                     title,
                     softWrap: true,
-                    style: GoogleFonts.inter(
-                      color: const Color(0xFF1D2A36),
-                      fontSize: 19,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()!
+                        .headingS
+                        .copyWith(
+                          color: const Color(0xFF1D2A36),
+                        ),
                   ),
                 ),
                 const SizedBox(width: 8),

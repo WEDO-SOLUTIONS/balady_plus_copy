@@ -73,7 +73,7 @@ Widget buildIconButton({
             ),
             decoration: boxDecoration(),
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -91,7 +91,7 @@ Widget buildIconButton({
                     const SizedBox(
                       width: 8,
                     ),
-                    desc,
+                    Flexible(child: desc),
                   ]
                 ],
               ),

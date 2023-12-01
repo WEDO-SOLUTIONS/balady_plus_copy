@@ -1,8 +1,9 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/entities/search/models/search_history.dart' as models;
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
 
 class SearchHistoryItem extends StatelessWidget {
   const SearchHistoryItem({
@@ -32,23 +33,13 @@ class SearchHistoryItem extends StatelessWidget {
                 Text(
                   result.title,
                   overflow: TextOverflow.ellipsis,
-                  style: PackageFonts.frutigerArabic(
-                    fontSize: 16,
-                    height: 1.4,
-                    fontWeight: FontWeight.w500,
-                    color: const Color(0xFF1E2A36),
-                  ),
+                  style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0xFF1E2A36)),
                 ),
                 if (result.address.isNotEmpty)
                   Text(
                     result.address,
                     overflow: TextOverflow.ellipsis,
-                    style: PackageFonts.frutigerArabic(
-                      fontSize: 16,
-                      height: 1.4,
-                      fontWeight: FontWeight.w400,
-                      color: const Color(0x801E2A36),
-                    ),
+                    style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0x801E2A36)),
                   ),
               ],
             ),

@@ -6,7 +6,7 @@ extension FormattedDistance on double {
       final kilometers = this / 1000.0;
       return (value: kilometers.toStringAsFixed(1), unit: 'km');
     } else {
-      return (value: '$this', unit: 'm');
+      return (value: ((this / 10).round() * 10).toString(), unit: 'm');
     }
   }
 }

@@ -1,5 +1,6 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 
 class EtaInfoWidget extends StatelessWidget {
   final String? title;
@@ -19,20 +20,12 @@ class EtaInfoWidget extends StatelessWidget {
             Text(
               title ?? '-',
               textAlign: TextAlign.center,
-              style: GoogleFonts.inter(
-                color: const Color(0xFF1D2A36),
-                fontSize: 21,
-                fontWeight: FontWeight.w700,
-              ),
+              style: Theme.of(context).extension<ThemeTextStyles>()!.headingS.copyWith(color: const Color(0xFF1D2A36)),
             ),
             Text(
               subtitle ?? '-',
               textAlign: TextAlign.center,
-              style: GoogleFonts.inter(
-                color: const Color(0x7F1E2A36),
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-              ),
+              style: Theme.of(context).extension<ThemeTextStyles>()!.textXS.copyWith(color: const Color(0x7F1E2A36)),
             ),
           ],
         ),

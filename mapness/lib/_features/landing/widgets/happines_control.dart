@@ -15,7 +15,7 @@ class HappinesControl extends ConsumerWidget {
         // ref
         //     .read(mapControlsProvider.notifier)
         //     .update(MapControlsStateHappinessMap());
-        const HappinessMapRoute().push(context);
+        const HappinessMapRoute(bottomSheetOpened: false).push(context);
       },
       child: SvgPicture.asset(
         "assets/icons/svg/ic_like.svg",

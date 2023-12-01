@@ -1,7 +1,8 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
 
 class SearchField extends StatefulWidget {
   const SearchField({
@@ -72,10 +73,7 @@ class _SearchFieldState extends State<SearchField> {
               ),
             ),
             cursorHeight: 22,
-            style: PackageFonts.frutigerArabic(
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-            ),
+            style: Theme.of(context).extension<ThemeTextStyles>()!.textM,
           ),
         ),
         Align(

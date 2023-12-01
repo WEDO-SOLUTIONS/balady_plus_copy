@@ -1,5 +1,6 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -35,21 +36,11 @@ class LoginCard extends StatelessWidget {
                         const Spacer(),
                         Text(
                           context.l10n.signIn,
-                          style: PackageFonts.frutigerArabic(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 18,
-                            height: 1.5,
-                          ),
+                          style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: Colors.white),
                         ),
                         Text(
                           context.l10n.inNovember,
-                          style: PackageFonts.frutigerArabic(
-                            color: Colors.white.withOpacity(0.8),
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                            height: 1.5,
-                          ),
+                          style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: Colors.white.withOpacity(0.8)),
                         ),
                         const SizedBox(
                           height: 13,
@@ -67,12 +58,7 @@ class LoginCard extends StatelessWidget {
                       child: Text(
                         context.l10n.signIn,
                         textAlign: TextAlign.center,
-                        style: PackageFonts.frutigerArabic(
-                          color: const Color(0xFF4CA5B4),
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          height: 1.4,
-                        ),
+                        style: Theme.of(context).extension<ThemeTextStyles>()!.accentM.copyWith(color: const Color(0xFF4CA5B4)),
                       ),
                     )
                   ],

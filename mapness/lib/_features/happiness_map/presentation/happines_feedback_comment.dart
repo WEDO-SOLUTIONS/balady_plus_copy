@@ -20,7 +20,7 @@ class HappinesFeedbackComment extends ConsumerStatefulWidget {
 class _HappinessFeedbackCommentState
     extends ConsumerState<HappinesFeedbackComment> {
   void onClose() {
-    const HappinessMapRoute().replace(context);
+    const HappinessMapRoute(bottomSheetOpened: true).replace(context);
   }
 
   void onSubmit() {

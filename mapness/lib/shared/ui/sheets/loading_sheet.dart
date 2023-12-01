@@ -1,5 +1,6 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 
 class LoadingSheet extends StatelessWidget {
   final String text;
@@ -21,11 +22,7 @@ class LoadingSheet extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               text,
-              style: GoogleFonts.inter(
-                color: const Color(0xB21E2A36),
-                fontSize: 18,
-                fontWeight: FontWeight.w400,
-              ),
+              style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: const Color(0xB21E2A36)),
             ),
           ],
         ),

@@ -1,5 +1,6 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
 import 'package:mapness/_features/common/image/loading_image/loading_shimmer_image.dart';
 
 class StoryThumbnailWidget extends StatelessWidget {
@@ -84,12 +85,7 @@ class StoryThumbnailWidget extends StatelessWidget {
                       Text(
                         title,
                         // TODO: move to theme
-                        style: PackageFonts.frutigerArabic(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: -0.22,
-                        ),
+                        style: Theme.of(context).extension<ThemeTextStyles>()!.accentS.copyWith(color: Colors.white),
                       ),
                     ],
                   ),

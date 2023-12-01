@@ -5,6 +5,7 @@ import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/_features/poi_card/enums/contacts_info_type.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
@@ -20,9 +21,18 @@ class PoiCardViewModel {
 
   void onError() => Future(
         () => ref
-            .watch(mapControlsProvider.notifier)
+            .read(mapControlsProvider.notifier)
             .update(MapControlsStateIdle()),
       );
+
+  void onEntranceTap(DirectoryObjectMessage? objectMessage) async {
+    final controller = ref.read(dgisControllerProvider);
+    if (objectMessage != null) {
+      final list =
+          objectMessage.entrances.map((e) => e?.id).whereNotNull().toList();
+      await controller?.setHighlighted(list);
+    }
+  }
 
   void share(DirectoryObjectMessage? data) {
     Share.share('balady://poi-map?dgis-object-id=${data?.id?.objectId}');
@@ -50,9 +60,12 @@ class PoiCardViewModel {
   }
 
   FavouriteItem? getIsFavourite(PoiModel data) {
-    final favouritesState = ref.watch(favouriteRepositoryProvider).requireValue;
+    final favouritesState = ref.read(favouriteRepositoryProvider);
+    if (!favouritesState.hasValue) {
+      return null;
+    }
 
-    final isFavourite = favouritesState.items.firstWhereOrNull(
+    final isFavourite = favouritesState.requireValue.items.firstWhereOrNull(
       (element) {
         var objectId = data.directoryObjectMessage?.id?.objectId;
         return element.entity?.id == '$objectId';
@@ -84,7 +97,7 @@ class PoiCardViewModel {
   }
 
   void resetMapControlsState() {
-    ref.watch(mapControlsProvider.notifier).update(
+    ref.read(mapControlsProvider.notifier).update(
           MapControlsStateIdle(),
         );
   }

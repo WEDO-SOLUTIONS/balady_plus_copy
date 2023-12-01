@@ -1,8 +1,10 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/_features/debug_overlay/widgets/debug_server_url.dart';
+import 'package:mapness/_features/debug_overlay/widgets/voice_picker.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/uuid_provider.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
@@ -42,7 +44,6 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
       controller: widget._draggableController,
       builder: (context, scrollController) {
         return Container(
-          padding: const EdgeInsets.all(24),
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(24),
@@ -53,6 +54,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
           child: Directionality(
             textDirection: TextDirection.ltr,
             child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
               physics: const ClampingScrollPhysics(),
               controller: scrollController,
               child: Column(
@@ -65,34 +67,28 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                         children: [
                           Text(
                             "development-menu",
-                            style: GoogleFonts.inter(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 19,
-                              height: 1,
-                            ),
+                            style: Theme.of(context)
+                                .extension<ThemeTextStyles>()
+                                ?.headingS
+                                .copyWith(color: Colors.black),
                           ),
                           RichText(
                             text: TextSpan(
                               children: [
                                 TextSpan(
                                   text: "App version: ",
-                                  style: GoogleFonts.inter(
-                                    color: Colors.black54,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 13,
-                                    height: 1.3,
-                                  ),
+                                  style: Theme.of(context)
+                                      .extension<ThemeTextStyles>()
+                                      ?.textS
+                                      .copyWith(color: Colors.black54),
                                 ),
                                 TextSpan(
                                   text:
                                       "${_packageInfo?.version}(${_packageInfo?.buildNumber})",
-                                  style: GoogleFonts.inter(
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 13,
-                                    height: 1.3,
-                                  ),
+                                  style: Theme.of(context)
+                                      .extension<ThemeTextStyles>()
+                                      ?.accentS
+                                      .copyWith(color: Colors.black87),
                                 )
                               ],
                             ),
@@ -115,84 +111,68 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   ),
                   Text(
                     "Git branch:",
-                    style: GoogleFonts.inter(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14,
-                      height: 1.2,
-                    ),
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.textS
+                        .copyWith(color: Colors.black),
                   ),
                   Text(
                     PackageConfig.gitBranch,
-                    style: GoogleFonts.inter(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18,
-                      height: 1.2,
-                    ),
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.accentL
+                        .copyWith(color: Colors.black),
                   ),
                   const SizedBox(
                     height: 16,
                   ),
                   Text(
                     "Git commit:",
-                    style: GoogleFonts.inter(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14,
-                      height: 1.2,
-                    ),
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.textS
+                        .copyWith(color: Colors.black),
                   ),
                   Text(
                     PackageConfig.gitCommit,
-                    style: GoogleFonts.inter(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18,
-                      height: 1.2,
-                    ),
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.accentL
+                        .copyWith(color: Colors.black),
                   ),
                   const SizedBox(
                     height: 16,
                   ),
                   Text(
                     "Vendor:",
-                    style: GoogleFonts.inter(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14,
-                      height: 1.2,
-                    ),
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.textS
+                        .copyWith(color: Colors.black),
                   ),
                   Text(
                     PackageConfig.vendorConfig,
-                    style: GoogleFonts.inter(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18,
-                      height: 1.2,
-                    ),
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.accentL
+                        .copyWith(color: Colors.black),
                   ),
                   const SizedBox(
                     height: 16,
                   ),
                   Text(
                     "Uuid:",
-                    style: GoogleFonts.inter(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14,
-                      height: 1.2,
-                    ),
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.textS
+                        .copyWith(color: Colors.black),
                   ),
                   Text(
                     ref.watch(uuidProviderProvider),
-                    style: GoogleFonts.inter(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                      height: 1.2,
-                    ),
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.accentS
+                        .copyWith(color: Colors.black),
                   ),
                   const SizedBox(height: 8),
                   LabeledElevatedButton(
@@ -201,6 +181,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                     label: 'randomize uuid',
                   ),
                   const DebugServerUrl(),
+                  const VoicePicker(),
                 ],
               ),
             ),

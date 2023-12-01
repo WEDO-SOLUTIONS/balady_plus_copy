@@ -1,7 +1,6 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
 import 'package:mapness/_features/favourites/widgets/delete_all/delete_all_content.dart';
@@ -11,7 +10,9 @@ import 'package:mapness/_features/favourites/widgets/screen/favourite_item_widge
 import 'package:mapness/_features/favourites/widgets/screen/favourites_toggle.dart';
 import 'package:mapness/_features/favourites/widgets/screen/pinned_place_widget.dart';
 import 'package:mapness/app/routes/favourites.dart';
+import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 
 class Favourites extends ConsumerStatefulWidget {
   const Favourites({Key? key}) : super(key: key);
@@ -22,7 +23,6 @@ class Favourites extends ConsumerStatefulWidget {
 
 class _FavouritesState extends ConsumerState<Favourites> {
   bool isEditing = false;
-  OverlayEntry? _overlay;
 
   void toggleEditing() {
     setState(() {
@@ -39,10 +39,21 @@ class _FavouritesState extends ConsumerState<Favourites> {
     final asyncState = ref.watch(favouriteRepositoryProvider);
 
     if (asyncState.isLoading) {
-      return Center(child: CircularProgressIndicator());
+      return const Material(
+        color: Color(0xffF4F4F5),
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
     }
     if (asyncState.hasError) {
-      return Center(child: Text(asyncState.error.toString()));
+      return ErrorSheet(
+        buttonLabel: 'Reload',
+        onClose: () => context.pop(),
+        onRetry: () {
+          ref.invalidate(favouriteRepositoryProvider);
+        },
+      );
     }
     final state = asyncState.requireValue;
 
@@ -55,31 +66,50 @@ class _FavouritesState extends ConsumerState<Favourites> {
           mainAxisSize: MainAxisSize.max,
           children: [
             Container(
-              color: Color(0x1242909B),
+              color: const Color(0x1242909B),
               child: SafeArea(
                 bottom: false,
                 child: FavouritesHeader(
                   isEditing: isEditing,
                   onEditTap: toggleEditing,
                   onDoneTap: toggleEditing,
-                  onDeleteAllTap: () {
-                    _overlay = OverlayEntry(
-                      builder: (_) => DeleteAllContent(
-                        onConfirm: () {
-                          if (!ref.context.mounted) {
-                            _overlay?.remove();
-                            return;
-                          }
-
-                          ref
-                              .read(favouriteRepositoryProvider.notifier)
-                              .deleteAll();
-                          _overlay?.remove();
-                        },
-                        onCancel: () => _overlay?.remove(),
+                  onDeleteAllTap: () async {
+                    // TODO(someone): rewrite with nav 2.0 when gorouter fix bug
+                    final result = await showDialog(
+                      barrierColor: Colors.transparent,
+                      useSafeArea: false,
+                      context: context,
+                      builder: (contextDialog) => ProviderScope(
+                        parent: ProviderScope.containerOf(context),
+                        child: Theme(
+                          data: Theme.of(context),
+                          child: MediaQuery(
+                            data: MediaQuery.of(context),
+                            child: Directionality(
+                              textDirection: Directionality.of(context),
+                              child: Localizations.override(
+                                context: context,
+                                child: DeleteAllContent(
+                                  onConfirm: () =>
+                                      Navigator.of(contextDialog).pop(true),
+                                  onCancel: () =>
+                                      Navigator.of(contextDialog).pop(false),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     );
-                    Overlay.of(context, rootOverlay: true).insert(_overlay!);
+
+                    if (result == true) {
+                      if (!ref.context.mounted) {
+                        return;
+                      }
+                      ref
+                          .read(favouriteRepositoryProvider.notifier)
+                          .deleteAll();
+                    }
                   },
                 ),
               ),
@@ -89,7 +119,6 @@ class _FavouritesState extends ConsumerState<Favourites> {
             Ink(
               padding: const EdgeInsets.all(16),
               decoration: ShapeDecoration(
-                // color: const Color(0x1142909B),
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8)),
@@ -98,42 +127,46 @@ class _FavouritesState extends ConsumerState<Favourites> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   FavouritesToggle(isEditing: isEditing),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   PinnedPlaceWidget(
                     key: Key(state.home?.id ?? 'home'),
                     title: state.home?.title ?? context.l10n.home,
                     address: state.home?.subtitle ?? context.l10n.addAddress,
                     iconAsset: 'assets/icons/svg/ic_home.svg',
-                    isEditing: isEditing,
+                    isEditing: isEditing && state.home != null,
                     isAdded: state.home != null,
                     onDelete: () => _deleteItem(state.home!),
-                    onTap: state.home != null
-                        ? null
-                        : () => FavouritesSearchRoute(
+                    onTap: state.home == null
+                        ? () => const FavouritesSearchRoute(
                               markerType: FavouriteItemMarkerType.home,
-                            ).push(context),
+                            ).push(context)
+                        : () => PoiMapRoute(
+                              dgisObjectId: int.parse(state.home!.entity!.id),
+                            ).replace(context),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   PinnedPlaceWidget(
                     key: Key(state.work?.id ?? 'work'),
                     title: state.work?.title ?? context.l10n.work,
                     address: state.work?.subtitle ?? context.l10n.addAddress,
                     iconAsset: 'assets/icons/svg/ic_case.svg',
-                    isEditing: isEditing,
+                    isEditing: isEditing && state.work != null,
                     isAdded: state.work != null,
                     onDelete: () => _deleteItem(state.work!),
-                    onTap: state.work != null
-                        ? null
-                        : () => FavouritesSearchRoute(
+                    onTap: state.work == null
+                        ? () => const FavouritesSearchRoute(
                               markerType: FavouriteItemMarkerType.work,
-                            ).push(context),
+                            ).push(context)
+                        : () => PoiMapRoute(
+                              dgisObjectId: int.parse(state.work!.entity!.id),
+                            ).replace(context),
                   ),
                 ],
               ),
             ),
             Expanded(
               child: Container(
-                color: Color(0xffF4F4F5),
+                color: const Color(0xffF4F4F5),
                 child: state.items.isEmpty
                     ? Padding(
                         padding: const EdgeInsets.only(
@@ -142,8 +175,8 @@ class _FavouritesState extends ConsumerState<Favourites> {
                           top: 63,
                         ),
                         child: EmptyResultWidget(
-                          text:
-                              'To save places and vacancies as favorites, open the card and tap the bookmark icon',
+                          text: context.l10n
+                              .toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon,
                         ),
                       )
                     :

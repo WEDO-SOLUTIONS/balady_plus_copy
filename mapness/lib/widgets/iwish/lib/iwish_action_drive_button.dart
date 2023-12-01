@@ -1,6 +1,7 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/shared/config/package_config.dart';
 
 class IwishActionDriveButton extends StatelessWidget {
@@ -36,11 +37,7 @@ class IwishActionDriveButton extends StatelessWidget {
               const SizedBox(width: 5),
               Text(
                 label,
-                style: GoogleFonts.inter(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: Colors.white),
               ),
             ],
           ),

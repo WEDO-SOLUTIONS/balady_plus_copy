@@ -1,7 +1,8 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -20,11 +21,7 @@ class ProfileHeader extends StatelessWidget {
           const Spacer(),
           Text(
             context.l10n.profile,
-            style: GoogleFonts.inter(
-              fontSize: 18,
-              height: 1.4,
-              color: const Color(0xFF1E2A36),
-            ),
+            style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: const Color(0xFF1E2A36)),
           ),
           const Spacer(),
           Material(

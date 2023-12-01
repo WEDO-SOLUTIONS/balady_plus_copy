@@ -1,5 +1,6 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/widgets/screen/delete_icon.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -51,10 +52,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
                     ),
                     child: Text(
                       context.l10n.delete,
-                      style: GoogleFonts.inter(
-                        fontSize: 14,
-                        color: Colors.white,
-                      ),
+                      style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: Colors.white),
                     ),
                   ),
                 ),
@@ -85,19 +83,12 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
                   children: [
                     Text(
                       widget.item.title,
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xff1e2936),
-                      ),
+                      style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0xff1e2936)),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       widget.item.subtitle,
-                      style: GoogleFonts.inter(
-                        fontSize: 14,
-                        color: const Color(0xff346263),
-                      ),
+                      style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: const Color(0xff346263)),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],

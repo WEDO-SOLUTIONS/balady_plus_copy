@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/routes.dart';
-import 'package:mapness/pages/iwish/ui/iwish_carousel.dart';
-import 'package:mapness/pages/iwish/ui/iwish_feedback.dart';
-import 'package:mapness/pages/iwish/ui/iwish_feedback_comment.dart';
-import 'package:mapness/pages/iwish/ui/iwish_place_card.dart';
+import 'package:mapness/pages/iwish/iwish_feedback.dart';
+import 'package:mapness/pages/iwish/iwish_feedback_comment.dart';
+import 'package:mapness/pages/iwish/iwish_page.dart';
+import 'package:mapness/pages/iwish/iwish_place_card.dart';
+import 'package:mapness/shared/routing/transculent_page.dart';
 
 part 'iwish.g.dart';
 
@@ -16,6 +17,7 @@ part 'iwish.g.dart';
     TypedGoRoute<IwishFeedbackCommentRoute>(path: 'comment/:iwishId')
   ],
 )
+// class IwishRoute extends LandingRoute {}
 class IwishRoute extends GoRouteData {
   const IwishRoute();
 
@@ -23,7 +25,7 @@ class IwishRoute extends GoRouteData {
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return _iwishTransition(context: context, child: const IwishCarousel());
+    return _iwishTransition(context: context, child: const IwishPage());
   }
 }
 
@@ -56,7 +58,7 @@ class IwishFeedbackRoute extends GoRouteData {
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     return _iwishTransition(
       context: context,
-      child: IwishFeedback(iwishId: iwishId),
+      child: Material(child: IwishFeedback(iwishId: iwishId)),
     );
   }
 }
@@ -73,22 +75,20 @@ class IwishFeedbackCommentRoute extends GoRouteData {
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     return _iwishTransition(
       context: context,
-      child: IwishFeedbackComment(iwishId: iwishId),
+      child: Material(child: IwishFeedbackComment(iwishId: iwishId)),
     );
   }
 }
 
-CustomTransitionPage<void> _iwishTransition({
+TransculentPage<void> _iwishTransition({
   required BuildContext context,
   required Widget child,
 }) =>
-    CustomTransitionPage(
-      fullscreenDialog: true,
-      opaque: false,
-      transitionsBuilder: (_, __, ___, child) => child,
+    TransculentPage(
       child: MediaQuery(
         data: MediaQuery.of(context),
         child: Material(
+          type: MaterialType.transparency,
           color: Colors.transparent,
           child: Directionality(
             textDirection: TextDirection.rtl,

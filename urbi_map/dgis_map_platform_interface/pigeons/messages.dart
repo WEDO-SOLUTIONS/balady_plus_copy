@@ -1089,6 +1089,16 @@ abstract class MapApi {
   );
 
   @async
+  SearchResultMessage searchByRubrics(
+    List<int> rubrics,
+    List<GeoPointMessage>? spatialRestriction,
+    WeekTimeSearchMessage? weekTime,
+    GeoRectMessage? searchRect,
+    SortingTypeMessage sortingType,
+    int pageSize,
+  );
+
+  @async
   PageMessage fetchPrevPage(PageIdMessage pageId);
 
   @async
@@ -1289,6 +1299,9 @@ abstract class MapApi {
 
   @async
   void setNavigatorVoice(String id);
+
+  @async
+  void toggleHeatmap(String? tileSourceUri, String? layerName,);
 }
 
 @FlutterApi()

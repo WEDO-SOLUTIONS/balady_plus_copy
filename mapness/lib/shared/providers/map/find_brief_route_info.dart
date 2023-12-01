@@ -5,30 +5,27 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'find_brief_route_info.g.dart';
 
 @riverpod
-class FindBriefRouteInfo extends _$FindBriefRouteInfo {
+class _BriefRouteInfo extends _$BriefRouteInfo {
   @override
-  List<void> build() {
-    return [];
-  }
-
-  Future<List<BriefRouteInfoMessage?>> findBriefRouteInfo(
-    DirectoryObjectMessage? data,
-  ) async {
+  List<BriefRouteInfoMessage>? build({
+    required RouteSearchPointMessage finishPoint,
+    RouteSearchPointMessage? startPoint,
+    required RouteSearchOptionsMessage navType,
+  }) {
     final controller = ref.watch(dgisControllerProvider);
-    if (data == null) return [];
-    var markerPosition = data.markerPosition;
-    var option = RouteSearchOptionsMessage.car;
-    var result = await controller?.findBriefRouteInfos(
-      options: option,
-      finishPoint: RouteSearchPointMessage(
-        coordinates: GeoPointMessage(
-          latitude: markerPosition?.latitude ?? .0,
-          longitude: markerPosition?.longitude ?? .0,
-        ),
-        objectId: data.id!,
-      ),
-    );
-    if (result == null) return [];
-    return result;
+    controller
+        ?.findBriefRouteInfos(
+      startPoint: startPoint,
+      options: navType,
+      finishPoint: finishPoint,
+    )
+        .then((value) {
+      // state = value.whereType<BriefRouteInfoMessage>().toList();
+    }).onError((error, stackTrace) => state = null);
+
+    print("flag");
+    return null;
   }
 }
+
+const briefRouteInfoProvider = _briefRouteInfoProvider;

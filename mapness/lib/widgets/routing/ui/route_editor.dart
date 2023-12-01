@@ -1,8 +1,9 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
 
 class RouteEditor extends StatelessWidget {
   const RouteEditor({
@@ -107,12 +108,7 @@ class DestinationRow extends StatelessWidget {
           Expanded(
             child: Text(
               value,
-              style: PackageFonts.frutigerArabic(
-                color: color,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-                height: 1.5,
-              ),
+              style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: color),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),

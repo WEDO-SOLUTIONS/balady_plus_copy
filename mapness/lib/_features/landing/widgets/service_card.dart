@@ -1,5 +1,6 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
 import 'package:mapness/shared/config/package_config.dart';
 
 class ServiceCard extends StatelessWidget {
@@ -45,20 +46,11 @@ class ServiceCard extends StatelessWidget {
                     const Spacer(),
                     Text(
                       title,
-                      style: PackageFonts.frutigerArabic(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        height: 1.5,
-                      ),
+                      style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: Colors.white),
                     ),
                     Text(
                       subtitle,
-                      style: PackageFonts.frutigerArabic(
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 14,
-                        height: 1.5,
-                      ),
+                      style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: Colors.white.withOpacity(0.8)),
                     )
                   ],
                 ),

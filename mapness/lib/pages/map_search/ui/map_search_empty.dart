@@ -1,6 +1,7 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 import '../../../shared/config/package_config.dart';
@@ -29,12 +30,7 @@ class MapSearchEmpty extends StatelessWidget {
               context.l10n.weCouldntFindAnythingTryChangingYourRequest,
               textDirection: TextDirection.ltr,
               textAlign: TextAlign.center,
-              style: GoogleFonts.inter(
-                color: const Color(0xFF1D2A36),
-                fontSize: 18,
-                fontWeight: FontWeight.w400,
-                letterSpacing: 0.18,
-              ),
+              style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: const Color(0xFF1D2A36)),
             ),
           ),
         ],

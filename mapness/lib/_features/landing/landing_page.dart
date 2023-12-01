@@ -10,6 +10,7 @@ import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 
+import '../../features/iwish/providers/iwish_markers.dart';
 import 'controls.dart' as controls;
 import 'dashboard.dart';
 
@@ -32,6 +33,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   @override
   Widget build(BuildContext context) {
     ref.watch(favouriteMarkersProvider);
+
+    ref.watch(iwishMarkersProvider.notifier).showMarkersOnMap(context);
     _streamSubscription?.cancel();
     _streamSubscription = ref
         .watch(dgisControllerProvider)
@@ -40,18 +43,21 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
-      child: Material(
-        type: MaterialType.transparency,
-        child: Stack(
-          children: [
-            const controls.MapControls(),
-            LayoutBuilder(builder: (context, constraints) {
-              return Dashboard(
-                biggestHeight: constraints.biggest.height,
-                biggestWidth: constraints.biggest.width,
-              );
-            }),
-          ],
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Material(
+          type: MaterialType.transparency,
+          child: Stack(
+            children: [
+              const controls.MapControls(),
+              LayoutBuilder(builder: (context, constraints) {
+                return Dashboard(
+                  biggestHeight: constraints.biggest.height,
+                  biggestWidth: constraints.biggest.width,
+                );
+              }),
+            ],
+          ),
         ),
       ),
     );

@@ -69,16 +69,8 @@ class DgisController extends _$DgisController {
       );
     }
 
-    final visibleRectSubscription =
-        controller.visibleRectEvents.listen(_visibleRectListener);
-    final cameraPositionSubscription =
-        controller.cameraPositionEvents.listen(_cameraPositionListener);
-
     ref.onDispose(
-      () {
-        visibleRectSubscription.cancel();
-        cameraPositionSubscription.cancel();
-      },
+      () {},
     );
     await controller.setZoomRestrictions(min: 5.5);
     Future.delayed(
@@ -97,7 +89,7 @@ class DgisController extends _$DgisController {
       );
     });
 
-    controller.installVoice("voice-joy");
+    controller.installVoice("voice-sara");
   }
 
   void _visibleRectListener(VisibleRectEvent event) async {

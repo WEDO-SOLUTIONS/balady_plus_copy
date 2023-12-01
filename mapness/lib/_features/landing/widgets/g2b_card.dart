@@ -1,6 +1,7 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
+
 
 class G2BCard extends StatelessWidget {
   const G2BCard({
@@ -37,24 +38,14 @@ class G2BCard extends StatelessWidget {
                 const Spacer(),
                 Text(
                   title,
-                  style: GoogleFonts.inter(
-                    fontSize: 21,
-                    fontWeight: FontWeight.w600,
-                    height: 1.1,
-                    color: Colors.white,
-                  ),
+                  style: Theme.of(context).extension<ThemeTextStyles>()!.headingS.copyWith(color: Colors.white),
                 ),
                 const SizedBox(
                   height: 4,
                 ),
                 Text(
                   subtitle,
-                  style: PackageFonts.frutigerArabic(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    height: 1.5,
-                    color: Colors.white.withOpacity(0.8),
-                  ),
+                  style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: Colors.white.withOpacity(0.8)),
                 ),
               ],
             ),

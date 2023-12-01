@@ -418,6 +418,25 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   }
 
   @override
+  Future<SearchResultMessage> searchByRubrics(
+    List<int> rubrics, {
+    List<GeoPointMessage>? spatialRestriction,
+    required SortingTypeMessage sortingType,
+    required int pageSize,
+    WeekTimeSearchMessage? weekTime,
+    GeoRectMessage? searchRect,
+  }) {
+    return _api.searchByRubrics(
+      rubrics,
+      spatialRestriction,
+      weekTime,
+      searchRect,
+      sortingType,
+      pageSize,
+    );
+  }
+
+  @override
   Future<PageMessage> fetchPrevPage(PageIdMessage pageId) =>
       _api.fetchPrevPage(pageId);
 
@@ -850,4 +869,8 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   Future<void> setNavigatorVoice(String id) {
     return _api.setNavigatorVoice(id);
   }
+
+  @override
+  Future<void> toggleHeatmap(String? tileSourceUri, String? layerName) =>
+      _api.toggleHeatmap(tileSourceUri, layerName);
 }

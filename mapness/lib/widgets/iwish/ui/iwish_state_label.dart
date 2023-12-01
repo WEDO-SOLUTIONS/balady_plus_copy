@@ -1,5 +1,6 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -25,11 +26,7 @@ class IwishStateLabel extends StatelessWidget {
           IwishState.planned => context.l10n.planned,
           IwishState.completed => context.l10n.completed,
         },
-        style: GoogleFonts.inter(
-          color: Colors.white,
-          fontSize: 14,
-          fontWeight: FontWeight.w400,
-        ),
+        style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: Colors.white),
       ),
     );
   }

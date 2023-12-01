@@ -1,10 +1,11 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/shared/providers/map/highlight.dart';
-import 'package:mapness/shared/providers/map/point_of_interest.dart';
+import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
+import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/widgets/about.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
@@ -15,9 +16,10 @@ import 'package:mapness/_features/poi_card/widgets/header.dart';
 import 'package:mapness/_features/poi_card/widgets/opening_hours.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/poi_card/widgets/trade_license.dart';
-import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
+import 'package:mapness/shared/providers/map/highlight.dart';
+import 'package:mapness/shared/providers/map/point_of_interest.dart';
 
 class GeneralMapCardWidget extends ConsumerStatefulWidget {
   final DgisObjectIdMessage objectId;
@@ -46,13 +48,16 @@ class _GeneralMapCardWidgetState extends ConsumerState<GeneralMapCardWidget> {
     return state.map(
       data: (value) {
         final result = value.value;
+        if (result == null) {
+          return const SizedBox.shrink();
+        }
 
         return LayoutBuilder(builder: (context, constraints) {
           return _Content(
             viewModel: poiCardViewModel,
             biggestHeight: constraints.biggest.height,
             biggestWidth: constraints.biggest.width,
-            data: result,
+            directoryObject: result,
           );
         });
       },
@@ -67,7 +72,7 @@ class _GeneralMapCardWidgetState extends ConsumerState<GeneralMapCardWidget> {
 
 class _Content extends ConsumerStatefulWidget {
   final PoiCardViewModel viewModel;
-  final PoiModel data;
+  final DirectoryObjectMessage directoryObject;
 
   final double biggestHeight;
   final double biggestWidth;
@@ -76,7 +81,7 @@ class _Content extends ConsumerStatefulWidget {
     required this.biggestHeight,
     required this.biggestWidth,
     required this.viewModel,
-    required this.data,
+    required this.directoryObject,
   });
 
   @override
@@ -113,6 +118,18 @@ class _ContentState extends ConsumerState<_Content> {
 
   @override
   Widget build(BuildContext context) {
+    final briefInfo = ref.watch(briefRouteInfoProvider(
+      finishPoint: RouteSearchPointMessage(
+        coordinates: widget.directoryObject.markerPosition!.toGeoPointMessage(),
+        objectId: widget.directoryObject.id!,
+      ),
+      navType: RouteSearchOptionsMessage.car,
+    ));
+    final poi = PoiModel(
+      directoryObjectMessage: widget.directoryObject,
+      briefeRouteInfos: briefInfo,
+    );
+
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
       initialChildSize: _headerExtent(),
@@ -128,8 +145,10 @@ class _ContentState extends ConsumerState<_Content> {
         BuildContext context,
         ScrollController scrollController,
       ) {
-        final data = widget.data.directoryObjectMessage;
+        final data = widget.directoryObject;
+
         return Material(
+          color: Colors.transparent,
           child: Directionality(
             textDirection: TextDirection.rtl,
             child: DecoratedBox(
@@ -158,7 +177,7 @@ class _ContentState extends ConsumerState<_Content> {
                       slivers: [
                         SliverPersistentHeader(
                           delegate: PoiCardHeaderDelegate(
-                            data: widget.data,
+                            data: poi,
                             ontapClose: () =>
                                 _draggableScrollableController.animateTo(
                               0,
@@ -177,17 +196,15 @@ class _ContentState extends ConsumerState<_Content> {
                                 children: [
                                   Favourites(data),
                                   About(data),
-                                  if (data?.openingHours != null)
-                                    OpeningHours(widget
-                                        .data.directoryObjectMessage
-                                        ?.getOpeningHoursModel()),
-                                  if (data?.contactInfos != null)
-                                    ContactsInfo(
-                                      viewModel: widget.viewModel,
-                                      data: data!,
-                                    ),
-                                  if (data?.tradeLicense != null)
-                                    TradeLicense(data?.tradeLicense),
+                                  if (data.openingHours != null)
+                                    OpeningHours(widget.directoryObject
+                                        .getOpeningHoursModel()),
+                                  ContactsInfo(
+                                    viewModel: widget.viewModel,
+                                    data: data,
+                                  ),
+                                  if (data.tradeLicense != null)
+                                    TradeLicense(data.tradeLicense),
                                   const SafeArea(
                                     top: false,
                                     child: SizedBox(height: footerHeight),
@@ -202,7 +219,7 @@ class _ContentState extends ConsumerState<_Content> {
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: PoiCardFooter(
-                        data: widget.data,
+                        data: poi,
                         viewModel: widget.viewModel,
                         onEntranceTap: () {
                           setState(() {
@@ -212,13 +229,13 @@ class _ContentState extends ConsumerState<_Content> {
                               ref.read(highlightProvider.notifier);
 
                           if (showEntrances) {
-                            for (var entrance in widget
-                                .data.directoryObjectMessage!.entrances) {
+                            for (var entrance
+                                in widget.directoryObject.entrances) {
                               highlightController.addHighlight(entrance!.id);
                             }
                           } else {
-                            for (var entrance in widget
-                                .data.directoryObjectMessage!.entrances) {
+                            for (var entrance
+                                in widget.directoryObject.entrances) {
                               highlightController.removeHighlight(entrance!.id);
                             }
                           }
@@ -249,11 +266,10 @@ class _Parking extends StatelessWidget {
         children: [
           Text(
             'موقف سيارات',
-            style: PackageFonts.frutigerArabic(
-              color: colorPrimary,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-            ),
+            style: Theme.of(context)
+                .extension<ThemeTextStyles>()!
+                .accentM
+                .copyWith(color: colorPrimary),
           ),
           const SizedBox(height: 16),
           Row(

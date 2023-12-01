@@ -10,8 +10,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'favourite_repository.g.dart';
 
+final favouriteRepositoryProvider = _favouriteRepositoryProvider;
+
 @riverpod
-class FavouriteRepository extends _$FavouriteRepository {
+class _FavouriteRepository extends _$FavouriteRepository {
   Dio get dio => ref.read(dGisNetworkProvider);
 
   Future<void> delete(FavouriteItem item) async {
@@ -100,15 +102,12 @@ class FavouriteRepository extends _$FavouriteRepository {
     }
   }
 
-  Future<FavouritesState> fetchItems() async {
+  @override
+  Future<FavouritesState> build() async {
+    final dio = ref.watch(dGisNetworkProvider);
     final raw = await dio.get('favourites');
     final response = proto.FavouritesResponse.fromBuffer(raw.data);
 
     return response.toDomain();
-  }
-
-  @override
-  Future<FavouritesState> build() async {
-    return await fetchItems();
   }
 }

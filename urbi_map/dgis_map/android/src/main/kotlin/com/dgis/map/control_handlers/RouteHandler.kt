@@ -4,6 +4,7 @@ import android.content.res.Resources
 import com.dgis.map.FusedLocationSource
 import com.dgis.map.control_handlers.public_transport.PublicTransportHandler
 import com.dgis.map.map_api.Messages
+import com.dgis.map.map_api.Messages.GeoPointMessage
 import com.dgis.map.map_api.Messages.RouteEditorRouteParamsMessage
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Context
@@ -14,7 +15,9 @@ import ru.dgis.sdk.geometry.PointGeometry
 import ru.dgis.sdk.map.Padding
 import ru.dgis.sdk.map.RouteEditorSource
 import ru.dgis.sdk.map.RouteMapObject
+import ru.dgis.sdk.map.Source
 import ru.dgis.sdk.map.calcPosition
+import ru.dgis.sdk.map.createRasterTileDataSource
 import ru.dgis.sdk.positioning.DefaultLocationSource
 import ru.dgis.sdk.routing.*
 import ru.dgis.sdk.map.Map as DgisMap
@@ -258,5 +261,15 @@ class RouteHandler(
     fun findBriefRouteInfos(searchPoints: List<BriefRouteInfoSearchPoints>,
                             routeSearchOptions: RouteSearchOptions): Future<List<BriefRouteInfo?>> {
         return trafficRouter.findBriefRouteInfos(searchPoints,routeSearchOptions)
+    }
+
+    fun getLastLocation(): GeoPointMessage? {
+        return locationSource.lastLocation?.let {
+            GeoPointMessage.Builder().setLatitude(it.latitude).setLongitude(it.longitude).build()
+        }
+    }
+
+    fun createRasterTileDataSource_(context: Context, sublayerName: String, urlTemplate: String): Source {
+        return createRasterTileDataSource(context, sublayerName,urlTemplate)
     }
 }

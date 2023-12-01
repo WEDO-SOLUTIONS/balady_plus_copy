@@ -1,9 +1,10 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'dart:math';
 
 import 'package:expansion_widget/expansion_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 
 import '../../../shared/config/package_config.dart';
 
@@ -70,11 +71,7 @@ class ExpandableCell extends StatelessWidget {
                         padding: const EdgeInsets.only(bottom: 2.0),
                         child: Text(
                           "$count",
-                          style: GoogleFonts.inter(
-                            fontSize: 16,
-                            height: 1.4,
-                            color: const Color(0xFF1E2A36),
-                          ),
+                          style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0xFF1E2A36)),
                         ),
                       ),
                     const Spacer(),
@@ -97,12 +94,7 @@ class ExpandableCell extends StatelessWidget {
                             ),
                             Text(
                               subtitle!,
-                              style: GoogleFonts.inter(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                                color: const Color(0xB21E2A36),
-                                height: 1.4,
-                              ),
+                              style: Theme.of(context).extension<ThemeTextStyles>()!.textXS.copyWith(color: const Color(0xB21E2A36)),
                             ),
                           ]
                         ],

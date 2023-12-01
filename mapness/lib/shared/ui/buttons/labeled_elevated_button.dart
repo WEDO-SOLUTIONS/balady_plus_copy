@@ -1,5 +1,5 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class LabeledElevatedButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -28,12 +28,10 @@ class LabeledElevatedButton extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: GoogleFonts.inter(
-          color: Colors.white,
-          fontSize: 16,
-          height: 22 / 16,
-          fontWeight: FontWeight.w500,
-        ),
+        style: Theme.of(context)
+            .extension<ThemeTextStyles>()
+            ?.textM
+            .copyWith(color: Colors.white),
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/profile/widgets/profile_image_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 // Stateful navigation based on:
@@ -65,90 +66,84 @@ class ScaffoldWithNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     const activeColor = Color(0xFF4CA5B4);
     const inactiveColor = Color(0x801E2A36);
-
-    return Material(
-      type: MaterialType.transparency,
-      child: Column(
-        children: [
-          Expanded(child: body),
-          BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            selectedLabelStyle: const TextStyle(
-              color: Color(0xFF4CA5B4),
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-              height: 1.5,
-              fontFamily: "Frutiger",
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Material(
+        type: MaterialType.transparency,
+        child: Column(
+          children: [
+            Expanded(child: body),
+            BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              selectedLabelStyle: const TextStyle(
+                color: Color(0xFF4CA5B4),
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                height: 1.5,
+                fontFamily: "Frutiger",
+              ),
+              unselectedLabelStyle: const TextStyle(
+                color: Color(0xFF1E2A36),
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                height: 1.5,
+                fontFamily: "Frutiger",
+              ),
+              items: [
+                BottomNavigationBarItem(
+                  icon: const ProfileImageWidget(
+                    dimension: 28,
+                  ),
+                  label: context.l10n.nav_profile,
+                ),
+                BottomNavigationBarItem(
+                  icon: SvgPicture.asset(
+                    "assets/icons/svg/ic_nav_landing.svg",
+                    height: 28,
+                    width: 28,
+                    semanticsLabel: 'MinApps Screen',
+                    package: "mapness",
+                    colorFilter: ColorFilter.mode(
+                      currentIndex == 1 ? activeColor : inactiveColor,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  label: context.l10n.nav_landing,
+                ),
+                BottomNavigationBarItem(
+                  icon: SvgPicture.asset(
+                    "assets/icons/svg/ic_nav_route.svg",
+                    height: 28,
+                    width: 28,
+                    semanticsLabel: 'Routing Screen',
+                    package: "mapness",
+                    colorFilter: ColorFilter.mode(
+                      currentIndex == 2 ? activeColor : inactiveColor,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  label: context.l10n.nav_route,
+                ),
+                BottomNavigationBarItem(
+                  icon: SvgPicture.asset(
+                    "assets/icons/svg/ic_nav_general.svg",
+                    height: 28,
+                    width: 28,
+                    semanticsLabel: 'General Screen',
+                    package: "mapness",
+                    colorFilter: ColorFilter.mode(
+                      currentIndex == 3 ? activeColor : inactiveColor,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  label: context.l10n.nav_general,
+                ),
+              ],
+              currentIndex: currentIndex,
+              onTap: onDestinationSelected,
             ),
-            unselectedLabelStyle: const TextStyle(
-              color: Color(0xFF1E2A36),
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-              height: 1.5,
-              fontFamily: "Frutiger",
-            ),
-            items: [
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  "assets/icons/svg/ic_nav_profile.svg",
-                  height: 28,
-                  width: 28,
-                  semanticsLabel: 'MinApps Screen',
-                  package: "mapness",
-                  colorFilter: ColorFilter.mode(
-                    currentIndex == 0 ? activeColor : inactiveColor,
-                    BlendMode.srcIn,
-                  ),
-                ),
-                label: 'المتجر',
-              ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  "assets/icons/svg/ic_nav_landing.svg",
-                  height: 28,
-                  width: 28,
-                  semanticsLabel: 'MinApps Screen',
-                  package: "mapness",
-                  colorFilter: ColorFilter.mode(
-                    currentIndex == 1 ? activeColor : inactiveColor,
-                    BlendMode.srcIn,
-                  ),
-                ),
-                label: context.l10n.nav_profile,
-              ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  "assets/icons/svg/ic_nav_route.svg",
-                  height: 28,
-                  width: 28,
-                  semanticsLabel: 'Routing Screen',
-                  package: "mapness",
-                  colorFilter: ColorFilter.mode(
-                    currentIndex == 2 ? activeColor : inactiveColor,
-                    BlendMode.srcIn,
-                  ),
-                ),
-                label: context.l10n.nav_route,
-              ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  "assets/icons/svg/ic_nav_general.svg",
-                  height: 28,
-                  width: 28,
-                  semanticsLabel: 'General Screen',
-                  package: "mapness",
-                  colorFilter: ColorFilter.mode(
-                    currentIndex == 3 ? activeColor : inactiveColor,
-                    BlendMode.srcIn,
-                  ),
-                ),
-                label: context.l10n.nav_general,
-              ),
-            ],
-            currentIndex: currentIndex,
-            onTap: onDestinationSelected,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

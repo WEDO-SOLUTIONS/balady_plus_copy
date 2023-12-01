@@ -1,5 +1,6 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
 import 'package:mapness/_features/stories/domain/frame/story_frame_data.dart';
 
 class StoryFrameContent extends StatelessWidget {
@@ -24,33 +25,33 @@ class StoryFrameContent extends StatelessWidget {
               children: [
                 Text(
                   frame.title,
-                  style: PackageFonts.frutigerArabic(
-                    color: frame.titleStyle?.color ?? Colors.white,
-                    fontSize: 28,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: -0.56,
-                  ),
+                  style: Theme.of(context)
+                      .extension<ThemeTextStyles>()!
+                      .headingL
+                      .copyWith(
+                        color: frame.titleStyle?.color ?? Colors.white,
+                      ),
                 ),
                 if (frame.subtitle != null)
                   Text(
                     frame.subtitle!,
-                    style: PackageFonts.frutigerArabic(
-                      color: frame.titleStyle?.color ?? Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: -0.56,
-                    ),
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()!
+                        .headingL
+                        .copyWith(
+                          color: frame.titleStyle?.color ?? Colors.white,
+                        ),
                   ),
                 const SizedBox(height: 21),
                 if (frame.description != null)
                   Text(
                     frame.description!,
-                    style: PackageFonts.frutigerArabic(
-                      color: frame.descriptionStyle?.color ?? Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: -0.32,
-                    ),
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()!
+                        .textM
+                        .copyWith(
+                          color: frame.descriptionStyle?.color ?? Colors.white,
+                        ),
                   ),
               ],
             ),

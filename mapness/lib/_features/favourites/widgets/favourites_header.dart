@@ -1,7 +1,8 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -28,11 +29,7 @@ class FavouritesHeader extends StatelessWidget {
         children: [
           Text(
             context.l10n.favourites,
-            style: GoogleFonts.inter(
-              fontSize: 18,
-              height: 1.4,
-              color: const Color(0xFF1E2A36),
-            ),
+            style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: const Color(0xFF1E2A36)),
           ),
           const SizedBox(
             height: 40,
@@ -44,12 +41,7 @@ class FavouritesHeader extends StatelessWidget {
                       onTap: onDeleteAllTap,
                       child: Text(
                         context.l10n.deleteAll,
-                        style: GoogleFonts.inter(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          height: 1.4,
-                          color: const Color(0xFF1E2A36),
-                        ),
+                        style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: const Color(0xFF1E2A36)),
                       ),
                     )
                   : Material(
@@ -80,12 +72,7 @@ class FavouritesHeader extends StatelessWidget {
                 onTap: isEditing ? onEditTap : onDoneTap,
                 child: Text(
                   isEditing ? context.l10n.done : context.l10n.edit,
-                  style: GoogleFonts.inter(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    height: 1.4,
-                    color: const Color(0xFF1E2A36),
-                  ),
+                  style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: const Color(0xFF1E2A36)),
                 ),
               )
             ],

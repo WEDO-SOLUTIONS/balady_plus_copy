@@ -42,7 +42,7 @@ class TrafficAndParkingControlHandler(
                     mapOf(
                         "event" to Companion.Events.trafficStateChanged.name,
                         "status" to it.status.value,
-                         "score" to it.score
+                        "score" to (it.score ?: 0),
                     )
             )
         }

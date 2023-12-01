@@ -1,7 +1,8 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/_features/common/providers/user_state.dart';
 import 'package:mapness/shared/config/package_config.dart';
 
@@ -58,11 +59,7 @@ class UserStateRow extends ConsumerWidget {
               const Spacer(),
               Text(
                 userState.name,
-                style: GoogleFonts.inter(
-                  fontSize: 16,
-                  height: 1.4,
-                  color: const Color(0xFF1E2A36),
-                ),
+                style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0xFF1E2A36)),
               ),
             ],
           ),

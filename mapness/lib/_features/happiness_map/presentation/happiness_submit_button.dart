@@ -1,6 +1,7 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class HappinessSubmitButton extends ConsumerWidget {
@@ -24,11 +25,7 @@ class HappinessSubmitButton extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
           child: Text(
             context.l10n.sendFeedback,
-            style: GoogleFonts.inter(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
+            style: Theme.of(context).extension<ThemeTextStyles>()!.accentM.copyWith(color: Colors.white),
             textAlign: TextAlign.center,
           ),
         ),

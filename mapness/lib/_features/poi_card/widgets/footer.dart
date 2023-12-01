@@ -1,9 +1,10 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/app/routes/routing.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
 
 class PoiCardFooter extends StatelessWidget {
   final PoiModel data;
@@ -22,8 +23,7 @@ class PoiCardFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     final favData = viewModel.getIsFavourite(data);
 
-    final routeTime = data.getBriefRouteDescription();
-
+    final routeTime = data.getBriefRouteDescription(context.l10n);
     final objectMessage = data.directoryObjectMessage;
     final hasEntrances = objectMessage?.entrances.isNotEmpty == true;
     final hasContacts = objectMessage?.contactInfos.isNotEmpty == true;
@@ -47,14 +47,13 @@ class PoiCardFooter extends StatelessWidget {
             viewModel.removeFromFavourite(favData);
           }
         },
-        desc: (hasEntrances == false && hasContacts == false)
+        desc: (hasContacts == false)
             ? Text(
-                'المفضلة',
-                style: PackageFonts.frutigerArabic(
-                  color: colorPrimary.withOpacity(0.5),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                ),
+                context.l10n.favourites,
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .accentS
+                    .copyWith(color: colorPrimary.withOpacity(0.5)),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 textAlign: TextAlign.start,
@@ -70,11 +69,10 @@ class PoiCardFooter extends StatelessWidget {
           desc: hasRouteTime
               ? Text(
                   routeTime,
-                  style: PackageFonts.frutigerArabic(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: Theme.of(context)
+                      .extension<ThemeTextStyles>()!
+                      .accentS
+                      .copyWith(color: Colors.white),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   textAlign: TextAlign.start,
@@ -99,28 +97,36 @@ class PoiCardFooter extends StatelessWidget {
         ? buildIconButton(
             flex: flex,
             assetName: 'assets/icons/svg/ic_entrance.svg',
-            onTap: onEntranceTap,
+            onTap: () => viewModel.onEntranceTap(objectMessage),
+            desc: (hasContacts == false)
+                ? Text(
+                    context.l10n.exits,
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()!
+                        .accentS
+                        .copyWith(color: colorPrimary.withOpacity(0.5)),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    textAlign: TextAlign.start,
+                  )
+                : const SizedBox.shrink(),
           )
         : const SizedBox.shrink();
 
-    shareItem({int flex = 1}) => buildIconButton(
-          flex: flex,
-          desc: (hasEntrances == false && hasContacts == false)
-              ? Text(
-                  'يشارك',
-                  style: PackageFonts.frutigerArabic(
-                    color: colorPrimary.withOpacity(0.5),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  textAlign: TextAlign.start,
-                )
-              : const SizedBox.shrink(),
-          assetName: 'assets/icons/svg/ic_share.svg',
-          onTap: () => viewModel.share(objectMessage),
-        );
+    // shareItem({int flex = 1}) => buildIconButton(
+    //       flex: flex,
+    //       desc: (hasEntrances == false && hasContacts == false)
+    //           ? Text(
+    //               'يشارك',
+    //               style: Theme.of(context).extension<ThemeTextStyles>()!.accentS.copyWith(color: colorPrimary.withOpacity(0.5)),
+    //               overflow: TextOverflow.ellipsis,
+    //               maxLines: 1,
+    //               textAlign: TextAlign.start,
+    //             )
+    //           : const SizedBox.shrink(),
+    //       assetName: 'assets/icons/svg/ic_share.svg',
+    //       onTap: () => viewModel.share(objectMessage),
+    //     );
 
     phoneItem({int flex = 1}) => hasContacts
         ? buildIconButton(
@@ -133,11 +139,11 @@ class PoiCardFooter extends StatelessWidget {
     final childrenRtl = (hasContacts == false && hasEntrances == false)
         ? [
             favItem(flex: 2),
-            shareItem(flex: 2),
+            // shareItem(flex: 2),
             carItem(flex: 3),
           ]
         : [
-            shareItem(flex: 2),
+            // shareItem(flex: 2),
             if (hasEntrances) entranceItem(flex: 2),
             if (hasContacts) phoneItem(flex: 2),
             favItem(flex: 2),

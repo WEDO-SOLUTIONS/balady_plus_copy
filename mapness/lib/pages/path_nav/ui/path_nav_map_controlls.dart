@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/layers_control.dart';
-import 'package:mapness/_features/landing/widgets/traffic_control.dart';
+import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 
 class PathNavMapControlls extends StatelessWidget {

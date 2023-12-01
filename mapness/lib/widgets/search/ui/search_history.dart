@@ -1,5 +1,6 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/widgets/search/ui/search_history_collapsible.dart';
 import 'package:mapness/widgets/search/ui/search_history_empty.dart';
@@ -51,12 +52,7 @@ class SearchHistory extends StatelessWidget {
                 children: [
                   Text(
                     "Important events",
-                    style: GoogleFonts.inter(
-                      fontSize: 20,
-                      height: 1.4,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF1E2A36),
-                    ),
+                    style: Theme.of(context).extension<ThemeTextStyles>()!.headingS.copyWith(color: const Color(0xFF1E2A36)),
                   ),
                   const SizedBox(
                     height: 4,
@@ -65,12 +61,7 @@ class SearchHistory extends StatelessWidget {
                     textDirection: TextDirection.ltr,
                     child: Text(
                       "20 days ago",
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        height: 1.4,
-                        fontWeight: FontWeight.w400,
-                        color: const Color(0x801E2A36),
-                      ),
+                      style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0x801E2A36)),
                     ),
                   ),
                 ],

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mapness/_features/landing/widgets/favorites.dart';
+import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
 import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/pages/kiblah/ui/kiblah_compass.dart';
 import 'package:mapness/pages/kiblah/ui/kiblah_header.dart';
+import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 
 class KiblahPage extends StatelessWidget {
   const KiblahPage({super.key});
@@ -43,16 +44,20 @@ class KiblahPage extends StatelessWidget {
                 padding: const EdgeInsets.only(
                   bottom: 75 + 16,
                 ),
-                child: Favorites(
-                  background: Colors.white,
-                  promotedTab: "المساجد القريبة منك",
-                  promotedTabIcon: "assets/icons/svg/ic_mosque.svg",
-                  promotedTap: () {
+                child: MapQuickFilters(
+                  customFilters: [
+                    FilterItem(
+                      icon: "assets/icons/svg/ic_mosque.svg",
+                      title: "المساجد القريبة منك",
+                    ),
+                  ],
+                  onCustomTap: (_) {
                     const SearchRoute(
                       initialQuery: "المساجد القريبة منك",
                       withClustering: true,
-                    ).pushReplacement(context);
+                    ).push(context);
                   },
+                  forMap: true,
                 ),
               ),
             ),

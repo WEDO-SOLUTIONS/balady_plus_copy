@@ -1,8 +1,9 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
 import 'package:timelines/timelines.dart';
 
 class RouteTimeline extends StatelessWidget {
@@ -58,13 +59,7 @@ class RouteTimelineRow extends StatelessWidget {
         ),
         child: Text(
           point,
-          style: PackageFonts.frutigerArabic(
-            color:
-                index == 0 ? const Color(0x801E2A36) : const Color(0xFF1E2A36),
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-            height: 1.4,
-          ),
+          style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: index == 0 ? const Color(0x801E2A36) : const Color(0xFF1E2A36)),
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),

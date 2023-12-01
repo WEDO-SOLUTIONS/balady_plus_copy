@@ -1,6 +1,6 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_eta.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
 
 class PathNavContinueTrip extends StatelessWidget {
   final PathNavEta? eta;
@@ -11,15 +11,6 @@ class PathNavContinueTrip extends StatelessWidget {
     required this.onPressed,
     required this.eta,
   });
-
-  Text _eta(String? text) => Text(
-        text ?? '-',
-        style: PackageFonts.frutigerArabic(
-          color: Colors.white.withOpacity(0.800000011920929),
-          fontSize: 12,
-          fontWeight: FontWeight.w400,
-        ),
-      );
 
   @override
   Widget build(BuildContext context) {
@@ -36,16 +27,23 @@ class PathNavContinueTrip extends StatelessWidget {
             children: [
               Text(
                 'Continue trip',
-                style: PackageFonts.frutigerArabic(
-                  color: Colors.white,
-                  fontSize: 21,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .headingS
+                    .copyWith(color: Colors.white),
               ),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _eta(eta?.arrivalTime),
+                  Text(
+                    eta?.arrivalTime ?? '-',
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()!
+                        .textXS
+                        .copyWith(
+                          color: Colors.white.withOpacity(0.800000011920929),
+                        ),
+                  ),
                   const SizedBox(width: 4),
                   Container(
                     width: 2,
@@ -56,7 +54,15 @@ class PathNavContinueTrip extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 4),
-                  _eta(eta?.distanceEta),
+                  Text(
+                    eta?.distanceEta ?? '-',
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()!
+                        .textXS
+                        .copyWith(
+                          color: Colors.white.withOpacity(0.800000011920929),
+                        ),
+                  ),
                 ],
               )
             ],

@@ -77,5 +77,10 @@
 	<false/>
 	<key>NSCalendarsUsageDescription</key>
 	<string>This app needs access to your calendar to provide accurate prayer times for your area.</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

@@ -7,7 +7,13 @@ part 'iwish_address.g.dart';
 class _IwishAddress extends _$IwishAddress {
   @override
   String build(IwishEntity iwish) {
-    return 'mock_address';
+    // final address = ref.watch(searchProvider);
+    final coordinates =
+        '${iwish.location.longitude}, ${iwish.location.latitude}';
+    // ref.watch(searchProvider.notifier).searchByText(coordinates);
+
+    // return address.firstOrNull?.title ?? coordinates;
+    return coordinates;
   }
 }
 

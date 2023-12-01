@@ -1,8 +1,9 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'dart:math';
 import 'package:expansion_widget/expansion_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/shared/config/package_config.dart';
 
 class ExpandableWidget extends StatelessWidget {
@@ -66,12 +67,7 @@ class ExpandableWidget extends StatelessWidget {
                             ),
                             Text(
                               subtitle!,
-                              style: GoogleFonts.inter(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                                color: const Color(0xB21E2A36),
-                                height: 1.4,
-                              ),
+                              style: Theme.of(context).extension<ThemeTextStyles>()!.textXS.copyWith(color: const Color(0xB21E2A36)),
                             ),
                           ]
                         ],

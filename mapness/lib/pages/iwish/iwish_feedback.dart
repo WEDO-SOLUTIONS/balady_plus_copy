@@ -1,7 +1,7 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/entities/iwish/models/iwish_tags.dart';
@@ -11,10 +11,10 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/labeled_draggable_sheet.dart';
-import 'package:mapness/widgets/iwish/ui/iwish_feedback_mood.dart';
-import 'package:mapness/widgets/iwish/ui/iwish_feedback_tags.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 import 'package:mapness/shared/ui/sheets/thanks_sheet.dart';
+import 'package:mapness/widgets/iwish/ui/iwish_feedback_mood.dart';
+import 'package:mapness/widgets/iwish/ui/iwish_feedback_tags.dart';
 
 class IwishFeedback extends ConsumerStatefulWidget {
   final String iwishId;
@@ -103,11 +103,10 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
                     ),
                     child: Text(
                       feedback.comment ?? context.l10n.shareYourFeedback,
-                      style: GoogleFonts.inter(
-                        color: const Color(0xFF1D2A36),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                      ),
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .textM
+                          .copyWith(color: const Color(0xFF1D2A36)),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -115,8 +114,9 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
               ),
               const SizedBox(height: 16),
               LabeledElevatedButton(
-                  onPressed: () => feedbackNotifier.submitFeedback(),
-                  label: context.l10n.sendFeedback),
+                onPressed: () => feedbackNotifier.submitFeedback(),
+                label: context.l10n.sendFeedback,
+              ),
             ],
             const SizedBox(height: 24),
           ],

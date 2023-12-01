@@ -1,5 +1,5 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class IwishTextEditingField extends StatefulWidget {
   final void Function(String) onChanged;
@@ -39,11 +39,10 @@ class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
       minLines: 11,
       maxLines: 11,
       controller: _controller,
-      style: GoogleFonts.inter(
-        color: const Color(0xFF1D2A36),
-        fontSize: 16,
-        fontWeight: FontWeight.w400,
-      ),
+      style: Theme.of(context)
+          .extension<ThemeTextStyles>()!
+          .textM
+          .copyWith(color: const Color(0xFF1D2A36)),
       cursorColor: const Color(0xff4CA5B4),
       decoration: InputDecoration(
         filled: true,

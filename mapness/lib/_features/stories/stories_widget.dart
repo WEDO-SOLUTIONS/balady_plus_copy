@@ -50,16 +50,19 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
 
     _overlayEntry = OverlayEntry(
       builder: (context) => Directionality(
-        textDirection: TextDirection.ltr,
+        textDirection: Directionality.of(context),
         child: ProviderScope(
           parent: ProviderScope.containerOf(context),
-          child: DismissibleTransition(
-            key: _transitionState,
-            onDismiss: () {
-              _overlayEntry?.remove();
-              _overlayEntry = null;
-            },
-            child: storyWidget,
+          child: Theme(
+            data: Theme.of(this.context),
+            child: DismissibleTransition(
+              key: _transitionState,
+              onDismiss: () {
+                _overlayEntry?.remove();
+                _overlayEntry = null;
+              },
+              child: storyWidget,
+            ),
           ),
         ),
       ),

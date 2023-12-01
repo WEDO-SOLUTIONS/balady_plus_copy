@@ -19,21 +19,26 @@ class SearchHistory extends _$SearchHistory {
     final searchHistoryBox =
         await ref.watch(hiveProvider("${_hiveBox}_$scope").future);
 
-    final history =
-        searchHistoryBox.values.map((e) => e as SearchHistoryItem).toList();
+    final history = searchHistoryBox.values
+        .map((e) => e as SearchHistoryItem)
+        .toList()
+        .reversed
+        .toList();
     final ids = history.map((e) => e.objectId!).toSet();
     history.retainWhere((e) => ids.remove(e.objectId!));
     state = history;
   }
 
   Future<void> put(SearchHistoryItem result) async {
-    final searchHistoryBox = await ref.read(hiveProvider(_hiveBox).future);
+    final searchHistoryBox =
+        await ref.read(hiveProvider("${_hiveBox}_$scope").future);
 
     searchHistoryBox.add(result);
   }
 
   Future<void> clear() async {
-    final searchHistoryBox = await ref.read(hiveProvider(_hiveBox).future);
+    final searchHistoryBox =
+        await ref.read(hiveProvider("${_hiveBox}_$scope").future);
 
     searchHistoryBox.clear();
     state = [];

@@ -1,6 +1,7 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/_features/favourites/widgets/screen/delete_icon.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -47,10 +48,10 @@ class PinnedPlaceWidget extends StatelessWidget {
               ),
               child: Text(
                 context.l10n.delete,
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  color: Colors.white,
-                ),
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .textS
+                    .copyWith(color: Colors.white),
               ),
             ),
           ),
@@ -60,7 +61,7 @@ class PinnedPlaceWidget extends StatelessWidget {
       child: Ink(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: isEditing ? const Color(0xfff4f4f5) : const Color(0x1242909B),
+          color: const Color(0xffEDF6F7),
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
@@ -78,26 +79,23 @@ class PinnedPlaceWidget extends StatelessWidget {
                       Text(
                         title,
                         textAlign: TextAlign.right,
-                        style: GoogleFonts.inter(
-                          color: const Color(0xFF1D2A36),
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 0.18,
-                        ),
+                        style: Theme.of(context)
+                            .extension<ThemeTextStyles>()!
+                            .textL
+                            .copyWith(color: const Color(0xFF1D2A36)),
                       ),
                       Text(
                         address,
                         textAlign: TextAlign.right,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.inter(
-                          color: isAdded
-                              ? const Color(0xFF4CA5B4)
-                              : const Color(0xF2285A5B),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 0.14,
-                        ),
+                        style: Theme.of(context)
+                            .extension<ThemeTextStyles>()!
+                            .textS
+                            .copyWith(
+                                color: isAdded
+                                    ? const Color(0xFF4CA5B4)
+                                    : const Color(0xF2285A5B)),
                       ),
                     ],
                   ),
@@ -115,6 +113,10 @@ class PinnedPlaceWidget extends StatelessWidget {
                   child: Center(
                     child: SvgPicture.asset(
                       iconAsset,
+                      colorFilter: const ColorFilter.mode(
+                        Color(0xff4CA5B4),
+                        BlendMode.srcATop,
+                      ),
                       package: PackageConfig.packageName,
                       height: 24,
                       width: 24,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/_features/landing/widgets/favorites.dart';
 import 'package:mapness/entities/routing/route_point.dart';
+import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
 import 'package:mapness/pages/routing/ui/routing_history.dart';
 import 'package:mapness/widgets/routing/ui/search_action.dart';
 
@@ -19,10 +19,11 @@ class RoutingSearchHistory extends StatelessWidget {
       children: [
         Container(
           color: Colors.white,
-          child: const Padding(
-            padding: EdgeInsets.only(bottom: 16),
-            child: Favorites(
-              background: Color(0x0D1E2A36),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: QuickFilters(
+              onFavouritesTap: () {},
+              onFilterTap: (_, __) {},
             ),
           ),
         ),
@@ -62,7 +63,11 @@ class RoutingSearchHistory extends StatelessWidget {
             ],
           ),
         ),
-        const RoutingHistory(),
+        RoutingHistory(
+          updatePoint: (point) {
+            context.pop(point);
+          },
+        ),
       ],
     );
   }

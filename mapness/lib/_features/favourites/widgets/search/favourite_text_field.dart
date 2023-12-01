@@ -1,8 +1,9 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/suggest.dart';
 
@@ -78,11 +79,7 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
                 ),
               ),
               cursorHeight: 22,
-              style: PackageFonts.frutigerArabic(
-                fontSize: 16,
-                // height: 22 / 16,
-                fontWeight: FontWeight.w400,
-              ),
+              style: Theme.of(context).extension<ThemeTextStyles>()!.textM,
             ),
           ),
           Align(

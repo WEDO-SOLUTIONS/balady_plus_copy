@@ -1,6 +1,7 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -44,11 +45,7 @@ class UnautorizedProfile extends StatelessWidget {
                 Text(
                   context.l10n.signInToUnlockTheFullPotentialOfTheBaladyApp,
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.inter(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                    color: const Color(0xFF1E2A36),
-                  ),
+                  style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0xFF1E2A36)),
                 ),
                 const SizedBox(
                   height: 20,
@@ -69,12 +66,7 @@ class UnautorizedProfile extends StatelessWidget {
                       child: Center(
                         child: Text(
                           context.l10n.connectToMomrah,
-                          style: GoogleFonts.inter(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                            height: 1.4,
-                          ),
+                          style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: Colors.white),
                         ),
                       ),
                     ),

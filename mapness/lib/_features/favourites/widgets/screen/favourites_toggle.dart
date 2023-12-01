@@ -1,6 +1,8 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -25,12 +27,10 @@ class FavouritesToggle extends ConsumerWidget {
           Text(
             context.l10n.showFavoritesOnMap,
             textAlign: TextAlign.right,
-            style: GoogleFonts.inter(
-              color: const Color(0xFF001022),
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              letterSpacing: 0.18,
-            ),
+            style: Theme.of(context)
+                .extension<ThemeTextStyles>()!
+                .textL
+                .copyWith(color: const Color(0xFF001022)),
           ),
           const Spacer(),
           CupertinoSwitch(

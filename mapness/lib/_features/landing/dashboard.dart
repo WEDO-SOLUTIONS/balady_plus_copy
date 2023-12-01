@@ -1,8 +1,10 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar, ScrollPosition;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/user_state.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
+import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/landing/widgets/challenge_card.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_header.dart';
 import 'package:mapness/_features/landing/widgets/event_card.dart';
@@ -11,8 +13,9 @@ import 'package:mapness/_features/landing/widgets/login_card.dart';
 import 'package:mapness/_features/landing/widgets/poi_card.dart';
 import 'package:mapness/_features/landing/widgets/prayer_card.dart';
 import 'package:mapness/_features/stories/stories_widget.dart';
+import 'package:mapness/features/iwish/providers/iwish_markers.dart';
 import 'package:mapness/pages/iwish/ui/iwish_dashboard_widget.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
@@ -66,7 +69,18 @@ class _DashboardState extends ConsumerState<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(iwishMarkersProvider.notifier).showMarkersOnMap(context);
     final userState = ref.watch(userStateProvider);
+    ref.listen(searchByRubricsQueryProvider, (previous, next) {
+      print(next);
+      if (next != null) {
+        _draggableScrollableController.animateTo(
+          _headerExtent,
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.linear,
+        );
+      }
+    });
 
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
@@ -119,10 +133,9 @@ class _DashboardState extends ConsumerState<Dashboard> {
                             ),
                             child: Text(
                               context.l10n.placesToVisit,
-                              style: PackageFonts.frutigerArabic(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                              ),
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()!
+                                  .textL,
                             ),
                           ),
                           const SizedBox(
@@ -207,10 +220,9 @@ class _DashboardState extends ConsumerState<Dashboard> {
                             padding: const EdgeInsets.only(right: 16.0),
                             child: Text(
                               context.l10n.events,
-                              style: PackageFonts.frutigerArabic(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                              ),
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()!
+                                  .textL,
                             ),
                           ),
                           const SizedBox(
@@ -256,10 +268,9 @@ class _DashboardState extends ConsumerState<Dashboard> {
                             padding: const EdgeInsets.only(right: 16.0),
                             child: Text(
                               context.l10n.events,
-                              style: PackageFonts.frutigerArabic(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                              ),
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()!
+                                  .textL,
                             ),
                           ),
                           const SizedBox(
@@ -278,10 +289,9 @@ class _DashboardState extends ConsumerState<Dashboard> {
                             padding: const EdgeInsets.only(right: 16.0),
                             child: Text(
                               context.l10n.prayerTime,
-                              style: PackageFonts.frutigerArabic(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                              ),
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()!
+                                  .textL,
                             ),
                           ),
                           const SizedBox(
@@ -300,10 +310,9 @@ class _DashboardState extends ConsumerState<Dashboard> {
                             padding: const EdgeInsets.only(right: 16.0),
                             child: Text(
                               context.l10n.registerForOpportunities,
-                              style: PackageFonts.frutigerArabic(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                              ),
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()!
+                                  .textL,
                             ),
                           ),
                           const SizedBox(
@@ -322,10 +331,9 @@ class _DashboardState extends ConsumerState<Dashboard> {
                             padding: const EdgeInsets.only(right: 16.0),
                             child: Text(
                               context.l10n.loginToAccess,
-                              style: PackageFonts.frutigerArabic(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                              ),
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()!
+                                  .textL,
                             ),
                           ),
                           const SizedBox(
@@ -343,10 +351,9 @@ class _DashboardState extends ConsumerState<Dashboard> {
                               padding: const EdgeInsets.only(right: 16.0),
                               child: Text(
                                 context.l10n.interestingForYou,
-                                style: PackageFonts.frutigerArabic(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                                style: Theme.of(context)
+                                    .extension<ThemeTextStyles>()!
+                                    .textL,
                               ),
                             ),
                             const SizedBox(

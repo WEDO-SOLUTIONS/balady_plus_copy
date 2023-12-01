@@ -1,8 +1,9 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/poi_map.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
 import 'package:mapness/shared/config/package_config.dart';
 
 class PoiCard extends ConsumerWidget {
@@ -46,23 +47,14 @@ class PoiCard extends ConsumerWidget {
                     const Spacer(),
                     Text(
                       title,
-                      style: PackageFonts.frutigerArabic(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        height: 1.4,
-                      ),
+                      style: Theme.of(context).extension<ThemeTextStyles>()!.accentM.copyWith(color: Colors.white),
                     ),
                     const SizedBox(
                       height: 6,
                     ),
                     Text(
                       subtitle,
-                      style: PackageFonts.frutigerArabic(
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 14,
-                        height: 1.5,
-                      ),
+                      style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: Colors.white.withOpacity(0.8)),
                     )
                   ],
                 ),

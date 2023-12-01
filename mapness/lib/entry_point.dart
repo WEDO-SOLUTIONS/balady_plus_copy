@@ -1,3 +1,4 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,9 +39,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _debugOverlay = OverlayEntry(
-        builder: (context) => ProviderScope(
-          parent: ProviderScope.containerOf(context),
-          child: const DebugOverlay(),
+        builder: (context) => Theme(
+          data: Theme.of(context),
+          child: ProviderScope(
+            parent: ProviderScope.containerOf(context),
+            child: const DebugOverlay(),
+          ),
         ),
       );
       Overlay.of(context, rootOverlay: true).insert(_debugOverlay!);
@@ -49,7 +53,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   @override
   Widget build(BuildContext context) {
-    final goRouter = ref.watch(goRouterProvider(widget.navigationRoutes));
+    final goRouter = ref.watch(goRouterProvider);
     final language = ref.watch(appLanguageProvider);
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -78,6 +82,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
               scaffoldBackgroundColor: Colors.transparent,
               dividerColor: Colors.grey[400],
               useMaterial3: false,
+              extensions: <ThemeExtension<dynamic>>[
+                ThemeTextStyles.arabic(isDark: false),
+              ],
             ),
             locale: language.locale,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -93,9 +100,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 Future<void> setupMapness() async {
   await initialiseDGis(
     logOptions: LogOptionsMessage(
-      systemLevel: LogLevelMessage.verbose,
-      customLevel: LogLevelMessage.verbose,
-      customSink: "BaladyDGis",
+      systemLevel: LogLevelMessage.error,
+      customLevel: LogLevelMessage.error,
     ),
   );
   await Hive.initFlutter();

@@ -33,10 +33,10 @@ class IwishDashboardWidget extends StatelessWidget {
       return Row(
         children: [
           if (marker1 != null) IwishDashboardItem(id: marker1.id),
-          if (marker2 != null) ...[
-            const SizedBox(width: 8),
-            IwishDashboardItem(id: marker2.id),
-          ]
+          // if (marker2 != null) ...[
+          //   const SizedBox(width: 8),
+          //   IwishDashboardItem(id: marker2.id),
+          // ]
         ],
       );
     });

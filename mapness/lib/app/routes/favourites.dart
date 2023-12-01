@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/favourites.dart';
 import 'package:mapness/_features/favourites/favourites_search.dart';
+import 'package:mapness/_features/favourites/widgets/delete_all/delete_all_content.dart';
 import 'package:mapness/app/routes/routes.dart';
 
 part 'favourites.g.dart';
@@ -14,6 +15,9 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   routes: <TypedGoRoute<GoRouteData>>[
     TypedGoRoute<FavouritesSearchRoute>(
       path: 'search',
+    ),
+    TypedGoRoute<FavouritesDeleteAllRoute>(
+      path: 'delete_all',
     ),
   ],
 )
@@ -39,6 +43,24 @@ class FavouritesSearchRoute extends GoRouteData {
         (element) => element.name == state.uri.queryParameters['marker-type'],
         orElse: () => FavouriteItemMarkerType.place,
       ));
+}
+
+class FavouritesDeleteAllRoute extends GoRouteData {
+  // static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
+
+  @override
+  Page<bool> buildPage(BuildContext context, GoRouterState state) =>
+      CustomTransitionPage(
+        child: DeleteAllContent(
+          onConfirm: () => context.pop(true),
+          onCancel: () => context.pop(false),
+        ),
+        transitionsBuilder: (BuildContext context, Animation<double> animation,
+                Animation<double> secondaryAnimation, Widget child) =>
+            child,
+      );
+
+  Future<bool?> push(BuildContext context) => context.push<bool>(location);
 }
 
 final $favouritesRoutes = $appRoutes;

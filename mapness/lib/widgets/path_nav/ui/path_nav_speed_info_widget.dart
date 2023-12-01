@@ -1,6 +1,7 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/entities/path_nav/models/path_nav_speed_info.dart';
 import 'package:mapness/widgets/path_nav/lib/navi_direction_icon_extension.dart';
 
@@ -37,11 +38,7 @@ class PathNavSpeedInfoWidget extends StatelessWidget {
                   child: Center(
                     child: Text(
                       '${info.speed}',
-                      style: GoogleFonts.inter(
-                        fontSize: 27,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
+                      style: Theme.of(context).extension<ThemeTextStyles>()!.headingL.copyWith(color: Colors.black),
                     ),
                   ),
                 ),
@@ -67,11 +64,7 @@ class PathNavSpeedInfoWidget extends StatelessWidget {
                   child: Center(
                     child: Text(
                       "${info.speedLimit ?? '--'}",
-                      style: GoogleFonts.inter(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w600,
-                        color: info.speedExceed ? Colors.white : Colors.black,
-                      ),
+                      style: Theme.of(context).extension<ThemeTextStyles>()!.headingM.copyWith(color: info.speedExceed ? Colors.white : Colors.black),
                     ),
                   ),
                 ),

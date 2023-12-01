@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as pb;
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
@@ -20,25 +21,23 @@ class _IwishEntity extends _$IwishEntity {
       tags: feedback.tags.map((e) => pb.IWishFeedbackRequest_Tag(name: e)),
       text: feedback.comment,
     );
-    print(request.toProto3Json());
 
-    final dio = ref.read(dGisNetworkProvider);
-    final raw = await dio.post(
-      '/iwish/$iwishId/feedback',
-      data: request.writeToBuffer(),
-    );
-    print(raw.requestOptions.headers['X-Device-ID']);
-    if (raw.statusCode != 200) {
+    try {
+      final dio = ref.read(dGisNetworkProvider);
+      final raw = await dio.post(
+        '/iwish/$iwishId/feedback',
+        data: request.writeToBuffer(),
+      );
+      final response = pb.IWishItemResponse.fromBuffer(raw.data);
+      state = AsyncData(response.object.toDomain());
+      return true;
+    } on DioException catch (e) {
       if (kDebugMode) {
-        final error = pb.ErrorResponse.fromBuffer(raw.data);
+        final error = pb.ErrorResponse.fromBuffer(e.response?.data);
         print(error.toDebugString());
-        return false;
       }
     }
-
-    final response = pb.IWishItemResponse.fromBuffer(raw.data);
-    state = AsyncData(response.object.toDomain());
-    return true;
+    return false;
   }
 
   @override

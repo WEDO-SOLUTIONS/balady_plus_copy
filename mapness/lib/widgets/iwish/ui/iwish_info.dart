@@ -1,5 +1,6 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_state_label.dart';
@@ -42,22 +43,14 @@ class IwishInfo extends StatelessWidget {
                         child: Text(
                           iwish.title,
                           overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.inter(
-                            color: black,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: Theme.of(context).extension<ThemeTextStyles>()!.headingS.copyWith(color: black),
                         ),
                       ),
                     ],
                   ),
                   Text(
                     iwish.subtitle,
-                    style: GoogleFonts.inter(
-                      color: grey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                    ),
+                    style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: grey),
                   ),
                 ],
               ),
@@ -72,22 +65,14 @@ class IwishInfo extends StatelessWidget {
             Expanded(
               child: Text(
                 address,
-                style: GoogleFonts.inter(
-                  color: black,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                ),
+                style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: black),
               ),
             ),
             const SizedBox(width: 12),
             Text(
               distance,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.inter(
-                color: grey,
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-              ),
+              style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: grey),
             ),
           ],
         ),

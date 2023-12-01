@@ -1,5 +1,6 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class DeleteAllContent extends StatelessWidget {
@@ -14,11 +15,10 @@ class DeleteAllContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = GoogleFonts.inter(
-      color: Colors.white,
-      fontSize: 18,
-      fontWeight: FontWeight.w400,
-    );
+    final textStyle = Theme.of(context)
+        .extension<ThemeTextStyles>()!
+        .textL
+        .copyWith(color: Colors.white);
     const color = Color(0xff4ba5b4);
 
     return Material(

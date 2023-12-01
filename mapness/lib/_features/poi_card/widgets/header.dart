@@ -1,12 +1,13 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_svg/svg.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_object_ext.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
 
-final mockArabickText =
+const mockArabickText =
     'الملك فهد، الرياضالملك فهد، الرياضالملك فهد، الرياض 12261، المملكة العربية السعودية الرياض';
 
 class PoiCardHeaderDelegate extends SliverPersistentHeaderDelegate {
@@ -27,7 +28,7 @@ class PoiCardHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => headerHeight;
+  double get maxExtent => 150;
 
   @override
   double get minExtent => headerHeight;
@@ -68,22 +69,25 @@ class _Header extends StatelessWidget {
           )
         ],
       ),
-      child: Stack(
-        children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: _buildContent(data),
-          ),
-          Align(
-            alignment: Alignment.topLeft,
-            child: _buildcloseButton(),
-          ),
-        ],
-      ),
+
+      child: _buildContent(context, data),
+
+      // child: Stack(
+      //   children: [
+      //     Align(
+      //       alignment: Alignment.centerRight,
+      //       child: _buildContent(context, data),
+      //     ),
+      //     Align(
+      //       alignment: Alignment.topLeft,
+      //       child: _buildcloseButton(),
+      //     ),
+      //   ],
+      // ),
     );
   }
 
-  Widget _buildContent(PoiModel? data) {
+  Widget _buildContent(BuildContext context, PoiModel? data) {
     final address = data?.directoryObjectMessage?.address;
     final subTitle = data?.directoryObjectMessage?.makeAddress() ?? '';
     final title =
@@ -102,10 +106,10 @@ class _Header extends StatelessWidget {
                 const SizedBox(height: 6),
                 _scrollHandle(),
                 const SizedBox(height: 6),
-                _title(title),
-                _titleAddition(titleAddition),
+                _title(context, title),
+                _titleAddition(context, titleAddition),
                 const SizedBox(height: 2),
-                _subTitle(subTitle),
+                _subTitle(context, subTitle),
               ],
             ),
           )
@@ -124,7 +128,7 @@ class _Header extends StatelessWidget {
     ));
   }
 
-  Widget _subTitle(String text) {
+  Widget _subTitle(BuildContext context, String text) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -132,22 +136,25 @@ class _Header extends StatelessWidget {
         Flexible(
           child: Text(
             text,
-            style: PackageFonts.frutigerArabic(
-              color: colorPrimary,
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
+            style: Theme.of(context)
+                .extension<ThemeTextStyles>()!
+                .textS
+                .copyWith(color: colorPrimary),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
             textAlign: TextAlign.right,
           ),
         ),
-        _buildBriefTime(data),
+        _buildBriefTime(context, data),
       ],
     );
   }
 
-  Widget _title(String text) {
+  Widget _title(BuildContext context, String text) {
+    var titleTextStyle = Theme.of(context)
+        .extension<ThemeTextStyles>()!
+        .headingS
+        .copyWith(color: colorPrimary);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -155,51 +162,46 @@ class _Header extends StatelessWidget {
         Flexible(
           child: Text(
             text,
-            style: PackageFonts.frutigerArabic(
-              color: colorPrimary,
-              fontSize: 19,
-              fontWeight: FontWeight.w700,
-            ),
+            style: titleTextStyle,
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
             textAlign: TextAlign.start,
           ),
         ),
-        const SizedBox(
-          width: 56,
-        )
+        _buildcloseButton(),
       ],
     );
   }
 
-  Widget _titleAddition(String text) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Flexible(
-          child: Text(
-            text,
-            style: PackageFonts.frutigerArabic(
-              color: colorPrimary.withOpacity(0.5),
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-            textAlign: TextAlign.start,
-          ),
-        ),
-        const SizedBox(
-          width: 56,
-        )
-      ],
-    );
+  Widget _titleAddition(BuildContext context, String text) {
+    return text.isNotEmpty
+        ? Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: Text(
+                  text,
+                  style: Theme.of(context)
+                      .extension<ThemeTextStyles>()!
+                      .textS
+                      .copyWith(color: colorPrimary.withOpacity(0.5)),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  textAlign: TextAlign.start,
+                ),
+              ),
+              const SizedBox(
+                width: 56,
+              )
+            ],
+          )
+        : const SizedBox.shrink();
   }
 
   Widget _buildcloseButton() {
     return Padding(
-      padding: const EdgeInsets.only(top: 16),
+      padding: const EdgeInsets.only(bottom: 16),
       child: Material(
         borderRadius: borderRadius,
         child: InkWell(
@@ -227,8 +229,8 @@ class _Header extends StatelessWidget {
     );
   }
 
-  Widget _buildBriefTime(PoiModel? data) {
-    final desc = data?.getBriefRouteDescription();
+  Widget _buildBriefTime(BuildContext context, PoiModel? data) {
+    final desc = data?.getBriefRouteDescription(context.l10n);
     return desc != null
         ? Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -246,11 +248,10 @@ class _Header extends StatelessWidget {
               ),
               Text(
                 desc,
-                style: PackageFonts.frutigerArabic(
-                  color: colorPrimary.withOpacity(0.7),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .accentS
+                    .copyWith(color: colorPrimary.withOpacity(0.7)),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 textAlign: TextAlign.right,

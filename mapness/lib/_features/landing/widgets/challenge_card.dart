@@ -1,7 +1,6 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/config/package_config.dart';
-
-import '../../../shared/config/package_fonts.dart';
 
 class ChallengeCard extends StatelessWidget {
   const ChallengeCard({super.key});
@@ -33,12 +32,10 @@ class ChallengeCard extends StatelessWidget {
                       children: [
                         Text(
                           "تحدي بلدي",
-                          style: PackageFonts.frutigerArabic(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 18,
-                            height: 1.5,
-                          ),
+                          style: Theme.of(context)
+                              .extension<ThemeTextStyles>()!
+                              .textL
+                              .copyWith(color: Colors.white),
                         ),
                         const SizedBox(
                           height: 13,
@@ -47,12 +44,10 @@ class ChallengeCard extends StatelessWidget {
                           width: 190,
                           child: Text(
                             "وساهم في تصدي مظاهر التلوث البصري في مدينتك",
-                            style: PackageFonts.frutigerArabic(
-                              color: Colors.white.withOpacity(0.8),
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14,
-                              height: 1.5,
-                            ),
+                            style: Theme.of(context)
+                                .extension<ThemeTextStyles>()!
+                                .textS
+                                .copyWith(color: Colors.white.withOpacity(0.8)),
                           ),
                         ),
                         const SizedBox(
@@ -70,12 +65,10 @@ class ChallengeCard extends StatelessWidget {
                             child: Text(
                               "ابدأ التحدي",
                               textAlign: TextAlign.center,
-                              style: PackageFonts.frutigerArabic(
-                                color: const Color(0xFF4CA5B4),
-                                fontWeight: FontWeight.w700,
-                                fontSize: 16,
-                                height: 1.5,
-                              ),
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()!
+                                  .accentM
+                                  .copyWith(color: const Color(0xFF4CA5B4)),
                             ),
                           ),
                         )

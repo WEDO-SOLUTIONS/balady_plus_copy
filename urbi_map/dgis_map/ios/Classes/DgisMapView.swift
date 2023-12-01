@@ -3,7 +3,7 @@ import Flutter
 import DGis
 
 class DgisMapView: NSObject, FlutterPlatformView, MapApi {
-    
+
     private class Events {
         static let zoomOutEvent = "zoomOutState"
         static let zoomInEvent = "zoomInState"
@@ -34,7 +34,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     private var navigationHandler: NavigationHandler?
     private var searchHandler: SearchHandler?
     private var packagesHandler: PackagesHandler?
-    
+
     private var objectTapHandler: ObjectTapHandler?
     private var visibleRectHandler: VisibleRectHandler?
     
@@ -44,7 +44,9 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     private lazy var positioningService = PlatformPositioningServicesFactory()
     
     private var moveCameraCancellable: DGis.Cancellable?
-    
+    private var rasterTileSource: Source?
+    private var isHeatMapVisible = false
+
     init(
         dgisSdk sdk: Container,
         frame: CGRect,
@@ -139,7 +141,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             sdk: try! sdk.context,
             eventChannel: eventChannel
         )
-        
+
         setupTapHandler()
     }
     
@@ -374,6 +376,27 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
 
         searchHandler.searchByCategories(
             category.toRubrics(),
+            spatialRestriction: spatialRestriction,
+            searchGeoRect: searchRect?.geoRect,
+            weekTimeMessage: weekTime,
+            sortingType: sortingType,
+            pageSize: pageSize.int32Value,
+            completion: completion
+        )
+    }
+    
+    func search(byRubricsRubrics rubrics: [NSNumber], spatialRestriction: [GeoPointMessage]?, weekTime: WeekTimeSearchMessage?, searchRect: GeoRectMessage?, sortingType: SortingTypeMessage, pageSize: NSNumber, completion: @escaping (SearchResultMessage?, FlutterError?) -> Void) {
+        guard let searchHandler = self.searchHandler else {
+            completion(nil, FlutterError(
+                code: "IllegalArgumentException",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+            return
+        }
+
+        searchHandler.searchByCategories(
+            rubrics.map { RubricId(value: $0.uint64Value) },
             spatialRestriction: spatialRestriction,
             searchGeoRect: searchRect?.geoRect,
             weekTimeMessage: weekTime,
@@ -714,7 +737,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     func pointBearing(from: GeoPointMessage, to: GeoPointMessage, completion: @escaping (NSNumber?, FlutterError?) -> Void) {
         completion(NSNumber(value: from.geoPoint.bearing(point: to.geoPoint).value), nil)
     }
-    
+
     func onLocationPremissionGrantedDesiredAccuracy(
         _ desiredAccuracy: DesiredAccuracyMessage,
         completion: @escaping (FlutterError?) -> Void
@@ -948,10 +971,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     func findBriefRouteInfosRouteSearchOptions(_ routeSearchOptions: RouteSearchOptionsMessage, startPoint: RouteSearchPointMessage?, finishPoint: RouteSearchPointMessage, completion: @escaping ([BriefRouteInfoMessage]?, FlutterError?) -> Void) {
 
         let routeSearchOptionsConverted = routeSearchOptions.toRouteSearchOptions()
-        
+
         let startSearchPoint = startPoint?.toRouteSearchPoint()
         let finishSearchPoint  = finishPoint.toRouteSearchPoint()
-        
+
         routeHandler?.findBriefRouteInfosRouteSearchOptions(
             routeSearchOptionsConverted,
             startPoint: startSearchPoint,
@@ -959,24 +982,46 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             completion: completion)
 
     }
-    
+
     func listPackages(completion: @escaping ([PackageMessage]?, FlutterError?) -> Void) {
         packagesHandler?.listPackages(completion: completion)
     }
-    
+
     func installPackageId(_ id: String, completion: @escaping (FlutterError?) -> Void) {
         packagesHandler?.installPackage(id, completion: completion)
     }
-    
+
     func listVoices(completion: @escaping ([PackageMessage]?, FlutterError?) -> Void) {
         packagesHandler?.listVoices(completion: completion)
     }
-    
+
     func installVoiceId(_ id: String, completion: @escaping (FlutterError?) -> Void) {
         packagesHandler?.installVoice(id, completion: completion)
     }
-    
+
     func setNavigatorVoiceId(_ id: String, completion: @escaping (FlutterError?) -> Void) {
         navigationHandler?.setNavigatorVoice(id, completion: completion)
+    }
+
+    func toggleHeatmapTileSourceUri(_ tileSourceUri: String?,
+                                        layerName: String?,
+                                        completion: @escaping (FlutterError?) -> Void) {
+        if !isHeatMapVisible {
+               if let tileSourceUri = tileSourceUri, let layerName = layerName {
+                   rasterTileSource = createRasterTileDataSource(
+                    context: try! sdk.context,
+                    sublayerName: layerName,
+                    urlTemplate: tileSourceUri)
+                   if let rasterTileSource = rasterTileSource {
+                       map?.addSource(source: rasterTileSource)
+                   }
+               }
+           } else {
+               if let rasterTileSource = rasterTileSource {
+                   map?.removeSource(source: rasterTileSource)
+               }
+           }
+        isHeatMapVisible = !isHeatMapVisible
+        completion(nil)
     }
 }

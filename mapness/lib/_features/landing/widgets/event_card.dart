@@ -1,6 +1,7 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
+
 import 'package:mapness/shared/config/package_config.dart';
 
 class EventCard extends StatelessWidget {
@@ -41,23 +42,14 @@ class EventCard extends StatelessWidget {
                     const Spacer(),
                     Text(
                       title,
-                      style: GoogleFonts.inter(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        height: 1.5,
-                      ),
+                      style: Theme.of(context).extension<ThemeTextStyles>()!.accentL.copyWith(color: Colors.white),
                     ),
                     const SizedBox(
                       height: 6,
                     ),
                     Text(
                       subtitle,
-                      style: PackageFonts.frutigerArabic(
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 14,
-                        height: 1.5,
-                      ),
+                      style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: Colors.white.withOpacity(0.8)),
                     )
                   ],
                 ),

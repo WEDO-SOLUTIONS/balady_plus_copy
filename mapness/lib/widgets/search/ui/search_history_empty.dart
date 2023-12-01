@@ -1,7 +1,8 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -31,23 +32,11 @@ class SearchHistoryEmpty extends ConsumerWidget {
             children: [
               TextSpan(
                 text: "Look for useful places, cafes, malls for example: ",
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                  height: 1.4,
-                  letterSpacing: 0.18,
-                  color: const Color(0xFF1E2A36),
-                ),
+                style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: const Color(0xFF1E2A36)),
               ),
               TextSpan(
                 text: context.l10n.mallNearby,
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                  height: 1.4,
-                  letterSpacing: 0.18,
-                  color: const Color(0xFF4CA5B4),
-                ),
+                style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: const Color(0xFF4CA5B4)),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
                     ref

@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 
 ThemeData createLightTheme() {
   return ThemeData(
-    textTheme: ThemeTextStyles.english,
+    textTheme: ThemeTextStyles.english(isDark: false),
     scaffoldBackgroundColor: Palette.black,
     extensions: <ThemeExtension<dynamic>>[
-      ThemeTextStyles.english,
-      ThemeTextStyles.arabic,
+      ThemeTextStyles.english(isDark: false),
+      ThemeTextStyles.arabic(isDark: false),
     ],
     appBarTheme: AppBarTheme(
         color: Colors.white,
         iconTheme: const IconThemeData(color: Colors.amber),
-        titleTextStyle: ThemeTextStyles.arabic.headingXL),
+        titleTextStyle: ThemeTextStyles.arabic(isDark: false).headingXL),
   );
 }

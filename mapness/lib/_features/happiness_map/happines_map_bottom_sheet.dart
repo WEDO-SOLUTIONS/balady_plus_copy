@@ -1,8 +1,9 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/_features/happiness_map/data/happiness_repository.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/_features/happiness_map/presentation/close_happiness_button.dart';
@@ -19,9 +20,11 @@ import 'package:mapness/shared/ui/sheets/thanks_sheet.dart';
 import 'data/happines_manager.dart';
 
 class HappinessBottomSheet extends ConsumerStatefulWidget {
+  final bool isOpenedInitially;
   final void Function(double height) onHeightChange;
 
   const HappinessBottomSheet({
+    required this.isOpenedInitially,
     required this.onHeightChange,
     required this.onClose,
     required this.biggestHeight,
@@ -108,7 +111,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
 
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
-      initialChildSize: childPortion(childHeightCollapsed),
+      initialChildSize: childPortion(childHeightExpanded),
       minChildSize: childPortion(childHeightCollapsed),
       maxChildSize: isCollapsed
           ? childPortion(childHeightCollapsed)
@@ -165,11 +168,12 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                                   Expanded(
                                     child: Text(
                                       context.l10n.shareYourFeelings,
-                                      style: GoogleFonts.inter(
-                                        color: const Color(0xFF1D2A36),
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                      style: Theme.of(context)
+                                          .extension<ThemeTextStyles>()!
+                                          .headingS
+                                          .copyWith(
+                                            color: const Color(0xFF1D2A36),
+                                          ),
                                     ),
                                   ),
                                   CloseHappinessButton(
@@ -220,11 +224,11 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                                         state.comment.isEmpty
                                             ? context.l10n.shareYourFeedback
                                             : state.comment,
-                                        style: GoogleFonts.inter(
-                                          color: const Color(0xFF1D2A36),
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w400,
-                                        ),
+                                        style: Theme.of(context)
+                                            .extension<ThemeTextStyles>()!
+                                            .textM
+                                            .copyWith(
+                                                color: const Color(0xFF1D2A36)),
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),

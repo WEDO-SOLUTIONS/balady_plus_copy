@@ -1,6 +1,7 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 
 class RoutesCarousel extends StatelessWidget {
@@ -63,23 +64,11 @@ class RouteCell extends StatelessWidget {
                   children: [
                     Text(
                       route.duration.formatDuration(),
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w600,
-                        height: 1.4,
-                        color: const Color(0xFF1E2A36),
-                      ),
+                      style: Theme.of(context).extension<ThemeTextStyles>()!.accentM.copyWith(color: const Color(0xFF1E2A36)),
                     ),
                     Text(
                       route.distance.formatDistance(),
-                      style: GoogleFonts.inter(
-                        fontSize: 14,
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w400,
-                        height: 1.4,
-                        color: const Color(0xFF1E2A36),
-                      ),
+                      style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: const Color(0xFF1E2A36)),
                     )
                   ],
                 ),
@@ -100,12 +89,7 @@ class RouteCell extends StatelessWidget {
                             vertical: 10, horizontal: 14),
                         child: Text(
                           "Go",
-                          style: GoogleFonts.inter(
-                              fontSize: 12,
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.w600,
-                              height: 1.4,
-                              color: Colors.white),
+                          style: Theme.of(context).extension<ThemeTextStyles>()!.accentXS.copyWith(color: Colors.white),
                         ),
                       ),
                     ),

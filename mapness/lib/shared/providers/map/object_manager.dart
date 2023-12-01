@@ -6,7 +6,7 @@ import 'dgis_controller.dart';
 part 'object_manager.g.dart';
 
 @riverpod
-class MapObjectManager extends _$MapObjectManager {
+class _MapObjectManager extends _$MapObjectManager {
   @override
   MapObjectManagerMessage? build({
     required String named,
@@ -54,3 +54,5 @@ class MapObjectManager extends _$MapObjectManager {
         );
   }
 }
+
+const mapObjectManagerProvider = _mapObjectManagerProvider;

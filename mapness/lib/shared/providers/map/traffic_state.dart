@@ -4,25 +4,16 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'traffic_state.g.dart';
 
-class Traffic {
-  final TrafficControlStatus status;
-  final int? score;
-
-  Traffic({
-    required this.status,
-    this.score,
-  });
-}
-
 @riverpod
-class TrafficState extends _$TrafficState {
+class _TrafficState extends _$TrafficState {
   @override
-  Traffic build() {
+  TrafficStateEvent build() {
     final dgisController = ref.watch(dgisControllerProvider);
     final trafficSubscription = dgisController
         ?.naviTrafficParkingController.trafficStateEvents
         .listen(_trafficListener);
     dgisController?.naviTrafficParkingController.onAttached();
+
     ref.onDispose(
       () {
         trafficSubscription?.cancel();
@@ -30,13 +21,14 @@ class TrafficState extends _$TrafficState {
       },
     );
 
-    return Traffic(
-      status: TrafficControlStatus.disabled,
+    return const TrafficStateEvent(
+      score: 0,
+      status: TrafficControlStatus.hidden,
     );
   }
 
   void _trafficListener(TrafficStateEvent event) {
-    state = Traffic(status: event.status, score: event.score);
+    state = event;
   }
 
   void onTrafficTap() {
@@ -46,3 +38,5 @@ class TrafficState extends _$TrafficState {
         .onTrafficClicked();
   }
 }
+
+final trafficStateProvider = _trafficStateProvider;

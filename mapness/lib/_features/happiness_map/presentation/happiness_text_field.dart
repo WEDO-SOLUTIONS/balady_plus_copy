@@ -1,6 +1,7 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/_features/happiness_map/data/happines_manager.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -35,12 +36,7 @@ class HappinessTextField extends ConsumerWidget {
             const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         focusedBorder: border,
         isDense: true,
-        hintStyle: GoogleFonts.inter(
-          color: const Color(0x7F1E2A36),
-          fontSize: 16,
-          fontWeight: FontWeight.w400,
-          height: 0.09,
-        ),
+        hintStyle: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0x7F1E2A36)),
       ),
     );
   }

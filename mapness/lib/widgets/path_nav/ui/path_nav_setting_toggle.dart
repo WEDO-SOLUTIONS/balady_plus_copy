@@ -1,6 +1,7 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
 
 class PathNavSettingToggle extends StatelessWidget {
   final String title;
@@ -32,21 +33,13 @@ class PathNavSettingToggle extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: PackageFonts.frutigerArabic(
-                    color: const Color(0xFF1D2A36),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                  ),
+                  style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0xFF1D2A36)),
                 ),
                 if (subtitle != null) ...[
                   const SizedBox(height: 2),
                   Text(
                     subtitle!,
-                    style: PackageFonts.frutigerArabic(
-                      color: const Color(0xff8E949A),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                    ),
+                    style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0xff8E949A)),
                   ),
                 ]
               ],

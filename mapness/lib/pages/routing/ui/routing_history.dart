@@ -1,17 +1,25 @@
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/pages/routing/ui/routing_history_empty.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/search/ui/search_history_collapsible.dart';
 
 const _searchScope = 'RoutingSearch';
 
 class RoutingHistory extends ConsumerWidget {
-  const RoutingHistory({super.key});
+  const RoutingHistory({
+    super.key,
+    required this.updatePoint,
+  });
+
+  final void Function(RoutePoint point) updatePoint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final history = ref.read(searchHistoryProvider(_searchScope));
+    final history = ref.watch(searchHistoryProvider(_searchScope));
 
     return history.isEmpty
         ? const RoutingHistoryEmpty()
@@ -20,7 +28,22 @@ class RoutingHistory extends ConsumerWidget {
             onClear: () {
               ref.read(searchHistoryProvider(_searchScope).notifier).clear();
             },
-            onTap: (item) {},
+            onTap: (item) {
+              ref
+                  .read(dgisControllerProvider)
+                  ?.searchByObjectId(
+                    DgisObjectIdMessage(
+                        objectId: item.objectId ?? 0,
+                        entranceId: item.entranceId ?? 0),
+                  )
+                  .then(
+                (object) {
+                  final point =
+                      RoutePoint(type: RoutePointType.object, object: object);
+                  updatePoint(point);
+                },
+              );
+            },
           );
   }
 }

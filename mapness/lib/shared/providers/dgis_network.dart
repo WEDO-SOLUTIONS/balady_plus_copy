@@ -15,10 +15,15 @@ class _DGisNetwork extends _$DGisNetwork {
   @override
   Dio build() {
     final url = ref.watch(dgisUrlProvider);
+    const timeout = Duration(seconds: 5);
+    final appLanguage = ref.watch(appLanguageProvider);
 
     return Dio(BaseOptions(
       responseType: ResponseType.bytes,
       baseUrl: url,
+      sendTimeout: timeout,
+      receiveTimeout: timeout,
+      connectTimeout: timeout,
       headers: {
         'Content-Type': 'application/protobuf',
         'Accept': 'application/protobuf',
@@ -26,13 +31,10 @@ class _DGisNetwork extends _$DGisNetwork {
         'X-Device-Platform': Platform.isIOS ? "ios" : "android",
         "X-App-Version":
             ref.watch(packageInfoProvider).value?.version ?? "1.0.0",
-        "X-Locale": ref.watch(appLanguageProvider) == Language.arabic
-            ? "ar_SA"
-            : "en_SA",
-        "X-Language":
-            ref.watch(appLanguageProvider) == Language.arabic ? "ar" : "en",
+        "X-Locale": appLanguage == Language.arabic ? "ar_SA" : "en_SA",
+        "X-Language": appLanguage == Language.arabic ? "ar" : "en",
       },
-      validateStatus: (status) => status != null && status < 500,
+      // validateStatus: (status) => status != null && status < 500,
     ))
       ..interceptors.add(
         PrettyDioLogger(

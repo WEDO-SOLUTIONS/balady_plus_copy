@@ -1,8 +1,8 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
-import 'package:flutter/widgets.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+import 'package:flutter/material.dart';
 
-List<TextSpan> buildSuggestTitle(SuggestMessage suggest) {
+List<TextSpan> buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
   List<TextSpan> parts = [];
   final matchedParts =
       suggest.title.matchedParts.whereType<MarkedUpTextSpanMessage>().toList();
@@ -11,12 +11,10 @@ List<TextSpan> buildSuggestTitle(SuggestMessage suggest) {
     return [
       TextSpan(
         text: suggest.title.text,
-        style: PackageFonts.frutigerArabic(
-          fontSize: 16,
-          height: 1.4,
-          fontWeight: FontWeight.w500,
-          color: const Color(0x801E2A36),
-        ),
+        style: Theme.of(context)
+            .extension<ThemeTextStyles>()!
+            .textM
+            .copyWith(color: const Color(0x801E2A36)),
       )
     ];
   }
@@ -33,12 +31,10 @@ List<TextSpan> buildSuggestTitle(SuggestMessage suggest) {
     return [
       TextSpan(
         text: suggest.title.text,
-        style: PackageFonts.frutigerArabic(
-          fontSize: 16,
-          height: 1.4,
-          fontWeight: FontWeight.w500,
-          color: const Color(0x801E2A36),
-        ),
+        style: Theme.of(context)
+            .extension<ThemeTextStyles>()!
+            .textM
+            .copyWith(color: const Color(0x801E2A36)),
       )
     ];
   }
@@ -49,11 +45,10 @@ List<TextSpan> buildSuggestTitle(SuggestMessage suggest) {
         0,
         matchedParts[0].offset,
       ),
-      style: PackageFonts.frutigerArabic(
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-        color: const Color(0x801E2A36),
-      ),
+      style: Theme.of(context)
+          .extension<ThemeTextStyles>()!
+          .textM
+          .copyWith(color: const Color(0x801E2A36)),
     ),
   );
 
@@ -64,11 +59,10 @@ List<TextSpan> buildSuggestTitle(SuggestMessage suggest) {
           matchedParts[i].offset,
           matchedParts[i].offset + matchedParts[i].length,
         ),
-        style: PackageFonts.frutigerArabic(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-          color: const Color(0xFF1E2A36),
-        ),
+        style: Theme.of(context)
+            .extension<ThemeTextStyles>()!
+            .textM
+            .copyWith(color: const Color(0xFF1E2A36)),
       ),
     );
     if (i != matchedParts.length - 1) {
@@ -78,11 +72,10 @@ List<TextSpan> buildSuggestTitle(SuggestMessage suggest) {
             matchedParts[i].offset + matchedParts[i].length,
             matchedParts[i + 1].offset,
           ),
-          style: PackageFonts.frutigerArabic(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: const Color(0x801E2A36),
-          ),
+          style: Theme.of(context)
+              .extension<ThemeTextStyles>()!
+              .textM
+              .copyWith(color: const Color(0x801E2A36)),
         ),
       );
     }
@@ -93,11 +86,10 @@ List<TextSpan> buildSuggestTitle(SuggestMessage suggest) {
         matchedParts[matchedParts.length - 1].offset +
             matchedParts[matchedParts.length - 1].length,
       ),
-      style: PackageFonts.frutigerArabic(
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-        color: const Color(0x801E2A36),
-      ),
+      style: Theme.of(context)
+          .extension<ThemeTextStyles>()!
+          .textM
+          .copyWith(color: const Color(0x801E2A36)),
     ),
   );
 

@@ -18,6 +18,10 @@ class PackagesHandler(
     private val voiceManager: VoiceManager = getVoiceManager(sdkContext)
     private val closeables = mutableListOf<AutoCloseable>()
 
+    init {
+        packageManager.checkForUpdates()
+    }
+
     private enum class Events {
         packageProgressEvent,
         packageInfoChangedEvent

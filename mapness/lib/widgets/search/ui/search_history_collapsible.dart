@@ -1,9 +1,10 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/entities/search/models/search_history.dart' as models;
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -139,12 +140,10 @@ class _MapSearchHistoryCollapsibleState
                   child: Center(
                     child: Text(
                       context.l10n.deleteHistory,
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        height: 1.4,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                      ),
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .textM
+                          .copyWith(color: Colors.white),
                     ),
                   ),
                 ),
@@ -178,12 +177,10 @@ class _ShowMore extends StatelessWidget {
           Text(
             text,
             overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              height: 1.4,
-              fontWeight: FontWeight.w500,
-              color: const Color(0xFF1E2A36),
-            ),
+            style: Theme.of(context)
+                .extension<ThemeTextStyles>()!
+                .textM
+                .copyWith(color: const Color(0xFF1E2A36)),
           ),
         ],
       ),

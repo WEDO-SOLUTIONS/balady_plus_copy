@@ -9,7 +9,7 @@ class Compass extends _$Compass {
   double build() {
     final compassSubscription = FlutterCompass.events?.listen((event) {
       final bearing = event.heading ?? 0;
-      state = bearing;
+      state = bearing % 361;
     });
     ref.onDispose(() {
       compassSubscription?.cancel();

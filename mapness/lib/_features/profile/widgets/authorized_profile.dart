@@ -1,7 +1,6 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:mapness/shared/config/package_config.dart';
+import 'profile_image_widget.dart';
 
 class AuthorizedProfile extends StatelessWidget {
   const AuthorizedProfile({
@@ -15,27 +14,19 @@ class AuthorizedProfile extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SvgPicture.asset(
-            'assets/icons/svg/ic_nav_profile.svg',
-            height: 96,
-            width: 96,
-            package: PackageConfig.packageName,
-            colorFilter: const ColorFilter.mode(
-              Color(0xff898e96),
-              BlendMode.srcIn,
-            ),
+          const ProfileImageWidget(
+            editable: true,
+            dimension: 96,
           ),
           const SizedBox(
             height: 16,
           ),
           Text(
             "Ahmed Abdu Ahmed Avh El Usman",
-            style: GoogleFonts.inter(
-              fontSize: 21,
-              fontWeight: FontWeight.w600,
-              height: 1.1,
-              color: const Color(0xFF1E2A36),
-            ),
+            style: Theme.of(context)
+                .extension<ThemeTextStyles>()!
+                .headingS
+                .copyWith(color: const Color(0xFF1E2A36)),
             textAlign: TextAlign.center,
           ),
         ],

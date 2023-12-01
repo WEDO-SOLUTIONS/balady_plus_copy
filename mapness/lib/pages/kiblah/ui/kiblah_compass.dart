@@ -1,3 +1,4 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -6,7 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_bearing.dart';
 import 'package:mapness/pages/kiblah/ui/radar_widget.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
 import 'package:mapness/shared/providers/compass.dart';
 import 'package:mapness/shared/ui/gradient_stroke.dart';
 
@@ -143,12 +144,10 @@ class KiblahCompass extends StatelessWidget {
                 },
                 child: Text(
                   "شمال",
-                  style: PackageFonts.frutigerArabic(
-                    fontSize: 12,
-                    height: 1.5,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white,
-                  ),
+                  style: Theme.of(context)
+                      .extension<ThemeTextStyles>()!
+                      .textXS
+                      .copyWith(color: Colors.white),
                 ),
               ),
             ),
@@ -168,12 +167,10 @@ class KiblahCompass extends StatelessWidget {
                 },
                 child: Text(
                   "شرق",
-                  style: PackageFonts.frutigerArabic(
-                    fontSize: 12,
-                    height: 1.5,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white,
-                  ),
+                  style: Theme.of(context)
+                      .extension<ThemeTextStyles>()!
+                      .textXS
+                      .copyWith(color: Colors.white),
                 ),
               ),
             ),
@@ -192,12 +189,10 @@ class KiblahCompass extends StatelessWidget {
                 },
                 child: Text(
                   "جنوب",
-                  style: PackageFonts.frutigerArabic(
-                    fontSize: 12,
-                    height: 1.5,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white,
-                  ),
+                  style: Theme.of(context)
+                      .extension<ThemeTextStyles>()!
+                      .textXS
+                      .copyWith(color: Colors.white),
                 ),
               ),
             ),
@@ -217,12 +212,10 @@ class KiblahCompass extends StatelessWidget {
                 },
                 child: Text(
                   "غرب",
-                  style: PackageFonts.frutigerArabic(
-                    fontSize: 12,
-                    height: 1.5,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white,
-                  ),
+                  style: Theme.of(context)
+                      .extension<ThemeTextStyles>()!
+                      .textXS
+                      .copyWith(color: Colors.white),
                 ),
               ),
             ),

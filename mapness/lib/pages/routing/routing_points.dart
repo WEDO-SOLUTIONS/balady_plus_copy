@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/routes/routing.dart';
+import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/pages/routing/ui/routing_header_delegate.dart';
 import 'package:mapness/pages/routing/ui/routing_history.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
@@ -33,6 +35,17 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   late DraggableScrollableController _controller;
 
   double get _minExtent => 136 / widget.biggestHeight;
+
+  List<RoutePoint> points = [
+    RoutePoint(
+      type: RoutePointType.myLocation,
+      object: null,
+    ),
+    RoutePoint(
+      type: RoutePointType.object,
+      object: null,
+    )
+  ];
 
   @override
   void initState() {
@@ -95,12 +108,48 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
               slivers: [
                 SliverPersistentHeader(
                   delegate: RoutingHeaderDelegate(
+                    points: points,
+                    updatePoints: (newPoitns) {
+                      setState(() {
+                        points = newPoitns;
+                      });
+                      if (points.every((element) => element.isNotEmpty)) {
+                        RoutingRoutesRoute(
+                          startLatitude: points[0].latitude,
+                          startLongitude: points[0].longitude,
+                          startLabel: points[0].title ?? "",
+                          finishLatitude: points[1].latitude,
+                          finishLongitude: points[1].longitude,
+                          finishLabel: points[1].title ?? "",
+                        ).go(context);
+                      }
+                    },
                     draggableScrollableController: _controller,
                   ),
                   pinned: true,
                 ),
-                const SliverToBoxAdapter(
-                  child: RoutingHistory(),
+                SliverToBoxAdapter(
+                  child: RoutingHistory(
+                    updatePoint: (point) {
+                      setState(() {
+                        if (points[0].isNotEmpty) {
+                          points[1] = point;
+                        } else {
+                          points[0] = point;
+                        }
+                      });
+                      if (points.every((element) => element.isNotEmpty)) {
+                        RoutingRoutesRoute(
+                          startLatitude: points[0].latitude,
+                          startLongitude: points[0].longitude,
+                          startLabel: points[0].title ?? "",
+                          finishLatitude: points[1].latitude,
+                          finishLongitude: points[1].longitude,
+                          finishLabel: points[1].title ?? "",
+                        ).go(context);
+                      }
+                    },
+                  ),
                 )
               ],
             ),

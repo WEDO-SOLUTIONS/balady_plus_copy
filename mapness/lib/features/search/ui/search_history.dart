@@ -17,7 +17,7 @@ class SearchHistory extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scope = context.read<SearchScope>();
-    final history = ref.read(searchHistoryProvider(scope.value));
+    final history = ref.watch(searchHistoryProvider(scope.value));
 
     return widgets.SearchHistory(
       history: history,

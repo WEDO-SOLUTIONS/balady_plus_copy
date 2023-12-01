@@ -22,6 +22,7 @@ import ru.dgis.sdk.coordinates.GeoRect
 import ru.dgis.sdk.coordinates.bearing
 import ru.dgis.sdk.directory.DirectoryFilter
 import ru.dgis.sdk.directory.ObjectType
+import ru.dgis.sdk.directory.RubricId
 import ru.dgis.sdk.directory.SearchManager
 import ru.dgis.sdk.directory.SearchQueryBuilder
 import ru.dgis.sdk.getLocaleManager
@@ -73,6 +74,8 @@ class DgisMapView(
     }
     private var compassControlHandler: CompassControlHandler? = null
     private var trafficAndParkingControlHandler: TrafficAndParkingControlHandler? = null
+    private var rasterTileSource: Source? = null
+    private var isHeatmapVisible = false
 
     /**
      * Event stream to Flutter
@@ -410,6 +413,20 @@ class DgisMapView(
             sortingType = sortingType,
             pageSize = pageSize.toInt(),
             result = result
+        )
+    }
+
+    override fun searchByRubrics(rubrics: MutableList<Long>, spatialRestriction: MutableList<GeoPointMessage>?, weekTime: WeekTimeSearchMessage?, searchRect: GeoRectMessage?, sortingType: SortingTypeMessage, pageSize: Long, result: Messages.Result<SearchResultMessage>?) {
+        searchHandler?.searchByCategories(
+                categories = rubrics.map { RubricId(it) },
+                spatialRestriction = spatialRestriction?.map {
+                    it.toGeoPoint()
+                },
+                searchGeoRect = searchRect?.toGeoRect(),
+                weekTimeMessage = weekTime,
+                sortingType = sortingType,
+                pageSize = pageSize.toInt(),
+                result = result
         )
     }
 
@@ -800,7 +817,6 @@ class DgisMapView(
                 .build()
         )
     }
-
     override fun findBriefRouteInfos(routeSearchOptions: RouteSearchOptionsMessage,
                                      startPoint: RouteSearchPointMessage?,
                                      finishPoint: RouteSearchPointMessage,
@@ -834,6 +850,31 @@ class DgisMapView(
         }
     }
 
+    override fun toggleHeatmap(
+            tileSourceUri: String?,
+            layerName: String?,
+            result: Messages.Result<Void>?) {
+        if (!isHeatmapVisible) {
+            tileSourceUri?.let {
+                layerName?.let {
+                    rasterTileSource = createRasterTileDataSource(
+                            sdkContext,
+                            layerName,
+                            tileSourceUri
+                    )
+                    rasterTileSource?.let {
+                        map?.addSource(it)
+                    }
+                }
+            }
+        } else {
+            rasterTileSource?.let {
+                map?.removeSource(it)
+            }
+        }
+        isHeatmapVisible = !isHeatmapVisible
+        result?.success(null)
+    }
     override fun listPackages(result: Messages.Result<List<PackageMessage>>?) {
         packagesHandler.listPackages(result)
     }

@@ -8,10 +8,10 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/config/package_config.dart';
 
 class HappinesOverlayContent extends ConsumerStatefulWidget {
-  // final VoidCallback onClose;
+  /// does bottom sheet opened or not initially. Does not affect on bottom sheet state afterwards
+  final bool isBottomSheetOpened;
 
-  // const HappinesOverlayContent({required this.onClose, super.key});
-  const HappinesOverlayContent({super.key});
+  const HappinesOverlayContent({required this.isBottomSheetOpened, super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -69,6 +69,7 @@ class _HapinessOverlayContentState
               ),
             ),
             HappinessBottomSheet(
+              isOpenedInitially: widget.isBottomSheetOpened,
               onHeightChange: (height) {
                 final pixelSize = MediaQuery.of(context).devicePixelRatio;
                 final navbarSize =

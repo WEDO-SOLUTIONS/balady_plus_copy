@@ -20,6 +20,8 @@ class PackagesHandler {
         self.eventChannel = eventChannel
         self.packageManager = getPackageManager(context: sdk)
         self.voiceManager = getVoiceManager(context: sdk)
+        
+        self.packageManager.checkForUpdates()
     }
     
     func mapStatus(_ status: PackageUpdateStatus) -> String {

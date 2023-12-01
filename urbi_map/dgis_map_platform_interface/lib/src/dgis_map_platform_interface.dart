@@ -168,6 +168,15 @@ abstract class DgisMapPlugin extends PlatformInterface {
     GeoRectMessage? searchRect,
   });
 
+  Future<SearchResultMessage> searchByRubrics(
+    List<int> rubrics, {
+    List<GeoPointMessage>? spatialRestriction,
+    required SortingTypeMessage sortingType,
+    required int pageSize,
+    WeekTimeSearchMessage? weekTime,
+    GeoRectMessage? searchRect,
+  });
+
   Future<PageMessage> fetchPrevPage(PageIdMessage pageId);
 
   Future<PageMessage> fetchNextPage(PageIdMessage pageId);
@@ -321,6 +330,8 @@ abstract class DgisMapPlugin extends PlatformInterface {
   Future<void> installPackage(String id);
 
   Future<void> installVoice(String id);
+
+  Future<void> toggleHeatmap(String? tileSourceUri, String? layerName);
 
   Future<void> setNavigatorVoice(String id);
 }

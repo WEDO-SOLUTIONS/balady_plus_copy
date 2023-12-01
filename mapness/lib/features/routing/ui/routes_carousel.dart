@@ -1,3 +1,4 @@
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
@@ -6,10 +7,13 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/routing/ui/routes_carousel.dart' as widgets;
 
 class RoutesCarousel extends StatelessWidget {
+  final RouteSearchOptionsMessage navType;
+
   const RoutesCarousel({
     super.key,
     required this.startNavigation,
     required this.points,
+    required this.navType,
   });
 
   final List<RouteParamsPoint?> points;
@@ -22,22 +26,24 @@ class RoutesCarousel extends StatelessWidget {
         points: points,
         startNavigation: startNavigation,
         biggestWidth: constraints.biggest.width,
+        navType: navType,
       ),
     );
   }
 }
 
 class _RoutesCarousel extends ConsumerStatefulWidget {
+  final RouteSearchOptionsMessage navType;
+  final double biggestWidth;
+  final Function() startNavigation;
+  final List<RouteParamsPoint?> points;
+
   const _RoutesCarousel({
-    super.key,
+    required this.navType,
     required this.points,
     required this.startNavigation,
     required this.biggestWidth,
   });
-
-  final double biggestWidth;
-  final Function() startNavigation;
-  final List<RouteParamsPoint?> points;
 
   @override
   ConsumerState<_RoutesCarousel> createState() => _RoutesCarouselState();
@@ -61,6 +67,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
       routesProvider(
         startPoint: widget.points[0],
         finishPoint: widget.points[1],
+        navType: widget.navType,
       ),
     );
     ref.listen(

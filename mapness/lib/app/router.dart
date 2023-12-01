@@ -1,14 +1,13 @@
-import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:go_router/go_router.dart';
 
 part 'router.g.dart';
 
 @riverpod
 // ignore: unsupported_provider_value
-GoRouter goRouter(GoRouterRef ref, List<Widget> routes) {
+GoRouter goRouter(GoRouterRef ref) {
   final router = GoRouter(
     initialLocation: '/landing',
     navigatorKey: rootNavigatorKey,
@@ -22,7 +21,8 @@ GoRouter goRouter(GoRouterRef ref, List<Widget> routes) {
       Duration.zero,
       () {
         ref.read(currentRouteProvider.notifier).update(
-            router.routerDelegate.currentConfiguration.last.matchedLocation);
+              router.routerDelegate.currentConfiguration.last.matchedLocation,
+            );
       },
     );
   });

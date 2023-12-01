@@ -12,7 +12,7 @@ class NavigatorVoice extends _$NavigatorVoice {
   String build() {
     final sharedPrefs = ref.read(sharedPrefsProvider);
 
-    return sharedPrefs.getString(_prefsKey) ?? "voice-joy";
+    return sharedPrefs.getString(_prefsKey) ?? "voice-sara";
   }
 
   void update(String value) {

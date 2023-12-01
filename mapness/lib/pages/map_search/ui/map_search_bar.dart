@@ -1,14 +1,20 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/search/models/search_scope.dart';
+import 'package:mapness/features/search/models/search_state.dart';
+import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_field.dart';
 import 'package:mapness/shared/ui/buttons/nav_button.dart';
+import 'package:provider/provider.dart';
 
 class MapSearchBar extends ConsumerStatefulWidget {
   const MapSearchBar({
     super.key,
+    required this.requestFocus,
     required this.draggableScrollableController,
   });
 
+  final bool requestFocus;
   final DraggableScrollableController draggableScrollableController;
 
   @override
@@ -28,11 +34,20 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           _focused.value = true;
         }
       });
-    _focusNode.requestFocus();
+    if (widget.requestFocus) {
+      _focusNode.requestFocus();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final scope = context.read<SearchScope>();
+    ref.listen(searchProvider(scope.value), (previous, next) {
+      if (next is SearchStateResults) {
+        _focusNode.unfocus();
+      }
+    });
+
     return Row(
       children: [
         Expanded(

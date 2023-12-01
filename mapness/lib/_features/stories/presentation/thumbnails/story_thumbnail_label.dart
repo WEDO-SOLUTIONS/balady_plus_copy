@@ -1,5 +1,6 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
 
 class StoryThumbnailLabel extends StatelessWidget {
   final String title;
@@ -13,13 +14,7 @@ class StoryThumbnailLabel extends StatelessWidget {
         alignment: Alignment.centerRight,
         child: Text(
           title,
-          style: PackageFonts.frutigerArabic(
-            color: const Color(0xFF141414),
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            height: 0.06,
-            letterSpacing: -0.40,
-          ),
+          style: Theme.of(context).extension<ThemeTextStyles>()!.headingS.copyWith(color: const Color(0xFF141414)),
         ),
       ),
     );

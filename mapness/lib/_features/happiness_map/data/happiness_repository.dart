@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
@@ -21,15 +22,15 @@ class _HappinessRepository extends _$HappinessRepository {
       ),
       // coordinates: state.coordinates,
     );
-    final response = await dio.post(
-      '/happiness',
-      data: data.writeToBuffer(),
-    );
-    if (response.statusCode == 200) {
+    try {
+      final _ = await dio.post(
+        '/happiness',
+        data: data.writeToBuffer(),
+      );
       state = const AsyncData(true);
-    } else {
+    } on DioException {
       state = AsyncError(
-        ErrorResponse.fromBuffer(response.data!),
+        'Dio error',
         StackTrace.current,
       );
     }

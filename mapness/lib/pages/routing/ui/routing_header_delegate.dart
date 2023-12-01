@@ -1,12 +1,14 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/_features/landing/widgets/favorites.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/routing/route_point.dart';
+import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
 import 'package:mapness/widgets/routing/ui/route_editor.dart';
 
 class RoutingHeaderDelegate extends SliverPersistentHeaderDelegate {
   RoutingHeaderDelegate({
+    required this.points,
+    required this.updatePoints,
     required this.draggableScrollableController,
   });
 
@@ -15,9 +17,14 @@ class RoutingHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(context, double shrinkOffset, bool overlapsContent) {
     return RoutingHeader(
+      points: points,
+      updatePoints: updatePoints,
       draggableScrollableController: draggableScrollableController,
     );
   }
+
+  final List<RoutePoint> points;
+  final void Function(List<RoutePoint>) updatePoints;
 
   @override
   double get maxExtent => 196;
@@ -29,29 +36,17 @@ class RoutingHeaderDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;
 }
 
-class RoutingHeader extends StatefulWidget {
+class RoutingHeader extends StatelessWidget {
   const RoutingHeader({
     super.key,
+    required this.points,
+    required this.updatePoints,
     required this.draggableScrollableController,
   });
 
+  final List<RoutePoint> points;
+  final void Function(List<RoutePoint>) updatePoints;
   final DraggableScrollableController draggableScrollableController;
-
-  @override
-  State<RoutingHeader> createState() => _RoutingHeaderState();
-}
-
-class _RoutingHeaderState extends State<RoutingHeader> {
-  List<RoutePoint> points = [
-    RoutePoint(
-      type: RoutePointType.myLocation,
-      object: null,
-    ),
-    RoutePoint(
-      type: RoutePointType.object,
-      object: null,
-    )
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +81,7 @@ class _RoutingHeaderState extends State<RoutingHeader> {
             child: RouteEditor(
               points: points,
               onTap: (index) {
-                widget.draggableScrollableController.animateTo(
+                draggableScrollableController.animateTo(
                   0.5,
                   duration: const Duration(milliseconds: 250),
                   curve: Curves.easeInOut,
@@ -97,37 +92,26 @@ class _RoutingHeaderState extends State<RoutingHeader> {
                       index == 0 && points[index].type == RoutePointType.object,
                 ).push(context).then((value) {
                   if (value != null && value is RoutePoint) {
-                    setState(() {
-                      points[index] = value;
-                    });
-                  }
-                  if (points.every((element) => element.isNotEmpty)) {
-                    RoutingRoutesRoute(
-                      startLatitude: points[0].latitude,
-                      startLongitude: points[0].longitude,
-                      startLabel: points[0].title ?? "",
-                      finishLatitude: points[1].latitude,
-                      finishLongitude: points[1].longitude,
-                      finishLabel: points[1].title ?? "",
-                    ).go(context);
+                    points[index] = value;
+                    updatePoints(points);
                   }
                 });
               },
               onReorder: (oldIndex, newIndex) {
-                setState(() {
-                  if (oldIndex < newIndex) {
-                    newIndex -= 1;
-                  }
-                  points.swap(oldIndex, newIndex);
-                });
+                if (oldIndex < newIndex) {
+                  newIndex -= 1;
+                }
+                points.swap(oldIndex, newIndex);
+                updatePoints(points);
               },
             ),
           ),
           const SizedBox(
             height: 16,
           ),
-          const Favorites(
-            background: Color(0x0D1E2A36),
+          QuickFilters(
+            onFavouritesTap: () {},
+            onFilterTap: (_, __) {},
           ),
           const SizedBox(
             height: 16,

@@ -1,6 +1,7 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
+
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -34,40 +35,20 @@ class PrayerCard extends StatelessWidget {
                       children: [
                         Text(
                           context.l10n.presentTime,
-                          style: PackageFonts.frutigerArabic(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 12,
-                            height: 1.5,
-                          ),
+                          style: Theme.of(context).extension<ThemeTextStyles>()!.accentXS.copyWith(color: Colors.white),
                         ),
                         Text(
                           "05:18 pm",
-                          style: GoogleFonts.inter(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 19,
-                            height: 1.4,
-                          ),
+                          style: Theme.of(context).extension<ThemeTextStyles>()!.headingS.copyWith(color: Colors.white),
                         ),
                         const Spacer(),
                         Text(
                           context.l10n.remainingTimeForPrayer,
-                          style: PackageFonts.frutigerArabic(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 12,
-                            height: 1.5,
-                          ),
+                          style: Theme.of(context).extension<ThemeTextStyles>()!.accentXS.copyWith(color: Colors.white),
                         ),
                         Text(
                           "01:26:04",
-                          style: GoogleFonts.inter(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 24,
-                            height: 1.1,
-                          ),
+                          style: Theme.of(context).extension<ThemeTextStyles>()!.headingM.copyWith(color: Colors.white),
                         ),
                       ],
                     ),

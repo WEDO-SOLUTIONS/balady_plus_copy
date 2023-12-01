@@ -1,5 +1,6 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 
 class PathNavEndTripButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -21,11 +22,7 @@ class PathNavEndTripButton extends StatelessWidget {
             child: Center(
               child: Text(
                 'End trip',
-                style: GoogleFonts.inter(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(context).extension<ThemeTextStyles>()!.accentM.copyWith(color: Colors.white),
               ),
             ),
           ),

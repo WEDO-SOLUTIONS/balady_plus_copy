@@ -105,7 +105,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
             List<ItemMarkerInfoMessage>.empty())) {
           markers.add(
             Marker(
-              id: markerInfo?.objectId?.objectId.toString() ?? context.l10n.invalid,
+              id: markerInfo?.objectId?.objectId.toString() ??
+                  context.l10n.invalid,
               onTap: () {
                 PoiMapRoute(dgisObjectId: markerInfo.objectId!.objectId)
                     .push(context);
@@ -124,7 +125,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
         await searchObjectManager.addMarkers(markers);
 
         _controller.animateTo(
-          0.5,
+          0.7,
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeInOut,
         );
@@ -134,7 +135,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       if (next != null && next.startsWith("/search")) {
         _controller
             .animateTo(
-              0.5,
+              0.7,
               duration: const Duration(milliseconds: 250),
               curve: Curves.easeInOut,
             )
@@ -163,7 +164,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
         minChildSize: 0,
         maxChildSize: 0.9,
         snap: true,
-        snapSizes: const [0, 0.5, 0.9],
+        snapSizes: const [0, 0.7, 0.9],
         builder: (context, scrollController) => Container(
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
@@ -183,6 +184,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
                 slivers: [
                   SliverPersistentHeader(
                     delegate: MapSearchHeaderDelegate(
+                      requestFocus: widget.initialQuery == null,
                       draggableScrollableController: _controller,
                     ),
                     pinned: true,

@@ -1,6 +1,6 @@
 name: mapness
 description: A new Flutter package project.
-version: 2.1.0+5
+version: 2.1.0+6
 publish_to: "none"
 
 environment:
@@ -31,6 +31,10 @@ dependencies:
   # Map urbi SDK
   dgis_map:
     path: ../urbi_map/dgis_map
+
+  balady_uikit:
+    path: ../balady_uikit
+
   google_fonts: ^6.1.0
   collection: ^1.17.1
   flutter_localizations:
@@ -53,11 +57,13 @@ dependencies:
   expansion_widget: ^0.0.3
   uuid: ^3.0.7
   carousel_slider: ^4.2.1
+  rxdart: ^0.27.7
   geolocator: ^10.1.0
   flutter_compass: ^0.8.0
   vibration: ^1.8.3
   timelines: ^0.1.0
   share_plus: ^4.5.3
+  image_picker: ^0.8.6
 
 dev_dependencies:
   flutter_test:
@@ -80,5 +86,6 @@ flutter:
     - assets/
     - assets/icons/svg/
     - assets/icons/svg/social/
+    - assets/icons/svg/quick_filters/
     - assets/images/
     - assets/images_svg/

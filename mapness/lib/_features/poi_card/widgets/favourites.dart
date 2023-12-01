@@ -1,3 +1,4 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class Favourites extends ConsumerWidget {
@@ -78,11 +79,7 @@ class Favourites extends ConsumerWidget {
                         ),
                         Text(
                           context.l10n.favourites,
-                          style: PackageFonts.frutigerArabic(
-                            color: colorPrimary,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                          ),
+                          style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: colorPrimary),
                         ),
                         Spacer(),
                         SvgPicture.asset(

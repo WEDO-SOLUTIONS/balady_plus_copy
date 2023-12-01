@@ -108,7 +108,7 @@ class _TrafficWidget extends StatelessWidget {
             return const SizedBox.shrink();
           }
 
-          final score = snapshot.data!.score ?? 0;
+          final score = snapshot.data!.score;
           final status = snapshot.data!.status;
 
           if (status == TrafficControlStatus.hidden) {

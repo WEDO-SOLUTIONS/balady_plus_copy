@@ -11,12 +11,13 @@ class Routes extends _$Routes {
   List<RouteInfo> build({
     required RouteParamsPoint? startPoint,
     required RouteParamsPoint? finishPoint,
+    required RouteSearchOptionsMessage navType,
   }) {
     final dgisController = ref.watch(dgisControllerProvider);
     final params = RouteEditorRouteParamsMessage(
       startPoint: startPoint?.geoPoint,
       finishPoint: finishPoint?.geoPoint,
-      options: RouteSearchOptionsMessage.car,
+      options: navType,
     );
 
     final routesInfoChangedSubscription =
@@ -26,6 +27,8 @@ class Routes extends _$Routes {
     ref.onDispose(() {
       routesInfoChangedSubscription?.cancel();
     });
+
+    print("rebuild routes?");
 
     dgisController?.setRouteParams(params);
     return [];

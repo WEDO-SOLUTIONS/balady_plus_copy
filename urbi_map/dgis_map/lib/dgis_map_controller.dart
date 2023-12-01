@@ -287,6 +287,25 @@ class DgisMapController {
     );
   }
 
+  /// Runs directory search by rubrics.
+  Future<SearchResultMessage> searchByRubrics(
+    List<int> rubrics, {
+    List<GeoPointMessage>? spatialRestriction,
+    required SortingTypeMessage sortingType,
+    GeoRectMessage? searchRect,
+    bool isOpenNow = false,
+    int pageSize = 20,
+  }) {
+    return _instance.searchByRubrics(
+      rubrics,
+      spatialRestriction: spatialRestriction,
+      sortingType: sortingType,
+      weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
+      pageSize: pageSize,
+      searchRect: searchRect,
+    );
+  }
+
   /// Fetches next page for given page
   Future<PageMessage> fetchPrevPage(PageMessage page) =>
       _instance.fetchPrevPage(page.id);
@@ -510,6 +529,9 @@ class DgisMapController {
       finishPoint,
     );
   }
+
+  Future<void> toggleHeatmap({String? tileSourceUri, String? layerName,})=>
+      _instance.toggleHeatmap(tileSourceUri, layerName,);
 
   Future<List<PackageMessage?>> listPackages() => _instance.listPackages();
 

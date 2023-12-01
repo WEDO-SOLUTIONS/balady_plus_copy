@@ -1,7 +1,8 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/widgets/close_button.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -72,10 +73,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                         children: [
                           Text(
                            context.l10n.layersOnTheMap,
-                            style: PackageFonts.frutigerArabic(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: Theme.of(context).extension<ThemeTextStyles>()!.headingS,
                           ),
                           const Spacer(),
                           CloseButton(
@@ -160,10 +158,7 @@ class FilterRow extends StatelessWidget {
           ),
           Text(
             name,
-            style: PackageFonts.frutigerArabic(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
+            style: Theme.of(context).extension<ThemeTextStyles>()!.textM,
           ),
         ],
       ),

@@ -1,6 +1,7 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_message.dart';
-import 'package:mapness/shared/config/package_fonts.dart';
+
 
 typedef _State = PathNavManeuverState;
 
@@ -36,10 +37,7 @@ class PathNavMessageWidget extends StatelessWidget {
               child: Text(
                 message.comment,
                 textAlign: TextAlign.end,
-                style: PackageFonts.frutigerArabic(
-                  fontSize: 16,
-                  color: Colors.white,
-                ),
+                style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: Colors.white),
               ),
             ),
             const SizedBox(width: 10),

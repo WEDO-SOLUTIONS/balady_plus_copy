@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart' hide SearchBar;
-import 'package:mapness/_features/landing/widgets/favorites.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
+import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
 import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/widgets/search/ui/search_field.dart';
 
@@ -27,7 +29,7 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;
 }
 
-class DashboardHeader extends StatelessWidget {
+class DashboardHeader extends ConsumerWidget {
   const DashboardHeader({
     super.key,
     required this.draggableScrollableController,
@@ -36,7 +38,7 @@ class DashboardHeader extends StatelessWidget {
   final DraggableScrollableController draggableScrollableController;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -67,6 +69,7 @@ class DashboardHeader extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: GestureDetector(
               onTap: () {
+                ref.read(searchByRubricsQueryProvider.notifier).update(null);
                 const SearchRoute().push(context);
                 draggableScrollableController.animateTo(
                   0,
@@ -82,9 +85,7 @@ class DashboardHeader extends StatelessWidget {
           const SizedBox(
             height: 16,
           ),
-          const Favorites(
-            background: Color(0x0D1E2A36),
-          ),
+          const MapQuickFilters(),
           const SizedBox(
             height: 16,
           ),
