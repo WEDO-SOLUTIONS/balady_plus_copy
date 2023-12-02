@@ -420,7 +420,7 @@ Map<String, dynamic> servicesConfig = {
     },*/
   ],
   "municipal_services": [
-    {
+    /* {
       "id": 0,
       "icon": "toppaco_services",
       "3d_icon": null,
@@ -434,7 +434,7 @@ Map<String, dynamic> servicesConfig = {
       },
       "ar": {"title": "tobaccoServices".tr(), "description": null, "tag": null},
       "en": {"title": "Tobacco Services", "description": null, "tag": null}
-    },
+    },*/
     {
       "id": 1,
       "icon": "municipal_commercial",
@@ -537,24 +537,24 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "municipal_ewaa".tr(), "description": null, "tag": null},
       "en": {"title": "Objections", "description": null, "tag": null}
     },
-    // {
-    //   "id": 7,
-    //   "icon": "municpal_toppaco",
-    //   "3d_icon": null,
-    //   "order": 6,
-    //   "isNew": false,
-    //   "isImportant": false,
-    //   "action": {
-    //     "type": "page",
-    //     "value": RemoteConfig.baladyBaseUrl + "/Eservices/Tobacco"
-    //   },
-    //   "ar": {
-    //     "title": "municpal_toppaco".tr(),
-    //     "description": null,
-    //     "tag": null
-    //   },
-    //   "en": {"title": "Objections", "description": null, "tag": null}
-    // },
+    {
+      "id": 7,
+      "icon": "municpal_toppaco",
+      "3d_icon": null,
+      "order": 6,
+      "isNew": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": RemoteConfig.baladyBaseUrl + "/Eservices/Tobacco"
+      },
+      "ar": {
+        "title": "municpal_toppaco".tr(),
+        "description": null,
+        "tag": null
+      },
+      "en": {"title": "Objections", "description": null, "tag": null}
+    },
     {
       "id": 50,
       "icon": "submit_compliance",
