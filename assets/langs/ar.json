@@ -2495,7 +2495,7 @@
   "islamic_services": "الخدمات اليومية",
   "customer_voice_services": "خدمات تهمك",
   "business_license_services": "المتجر البلدي",
-  "honoring_the_dead_services": "خدمات تكريم الموتى",
+  "honoring_the_dead_services": "خدمات اكرام الموتى",
   "health_certificates_services": "خدمات الشهادات الصحية",
   "help_services": "خدمات مساعدة",
   "men": "رجال",
@@ -3700,6 +3700,26 @@
   "apology_reason":"سبب الاعتذار", 
   "go_to_cemetry":"الذهاب الى خدمة اختيار وحجز مقبرة", 
   "is_dead_fetus":"هل المتوفى جنين؟", 
-  "ekram_main_data":"البيانات الرئيسية"
+  "ekram_main_data":"البيانات الرئيسية",
+  "ekram_benf_transport":"طلبات نقل وتجهيز الموتى", 
+  "ekram_empolyee_title":"تسجيل رحلة الدفن", 
+  "ekram_inquiry_burial_grave":"الاستعلام عن المقابر" , 
+  "ekram_inquiry_orgnizations":"الاستعلام عن مقدمي خدمات النقل والتجهيز" , 
+"ekram_inquiry_about_grave":"الاستعلام عن موقع قبر متوفى ", 
+"ekram_print_certificate":" طباعة شهادة الدفن", 
+
+  "ekram_laundry_exists":"وجود مغسلة اموات في المقبرة",
+  "ekram_transportation_name":"اسم الجهة", 
+  "ekram_entity_details":"تفاصيل الجهة", 
+  "ekram_entity_charity_name":"الجهة الخيرية", 
+  "mobile_no_1":"رقم التواصل الأول", 
+  "mobile_no_2":"رقم التواصل الثاني", 
+  "ekram_grave_full_name":"الاسم رباعي", 
+  "ekram_identity_type":"نوع الاثبات", 
+  "ekram_identity_no":"رقم الاثبات", 
+  "full_decassed_name":"اسم المتوفي", 
+  "city_state":"المدينة/ المحافظة", 
+  "another_search":"بحث آخر", 
+  "return_to_services_page":"العودة لصفحة الخدمات"
 
 }
