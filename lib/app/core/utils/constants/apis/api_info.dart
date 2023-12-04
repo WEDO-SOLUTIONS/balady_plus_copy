@@ -614,7 +614,7 @@ class ApiUrl {
       "v1/commercial-promotions-services/allowed-actions/$requestId";
 
 // Ekram
-  static const ekramNationalities = 'v1/ekram-mobile-services/nationalities';
+  static const ekramNationalities = 'v2/ekram-mobile-services/nationalities';
 
   static const ekramCities = 'v2/ekram-mobile-services/cities/1';
 
@@ -630,10 +630,10 @@ class ApiUrl {
       'v1/ekram-mobile-services/ekram-grave-reservation-service/lookups';
 
   static const deceasedTransportRequests =
-      'v1/ekram-mobile-services/deceased-transport/deceased-transport-requests';
+      'v2/ekram-mobile-services/deceased-transport-requests';
 
   static const deceasedTransportRequestDetails =
-      'v1/ekram-mobile-services/deceased-transport/deceased-transport-details';
+      'v2/ekram-mobile-services/deceased-transport-details';
 
   static const ekramDeceasedTransportApply =
       'v1/ekram-mobile-services/deceased-transport/apply';
@@ -675,6 +675,17 @@ class ApiUrl {
   static const bookCemetryDetails =
       'v2/ekram-mobile-services/beneficiary/{}/details';
 
+  static const ekramFindCemetries = 'v2/ekram-mobile-services/find-cemeteries';
+  static const ekramFindGraves =
+      'v2/ekram-mobile-services/find-grave-locations';
+  static const ekramNewCities = 'v2/ekram-mobile-services/city-lists';
+  static String ekramDistricts(int cityId) =>
+      'v2/ekram-mobile-services/districts-of-city/$cityId';
+
+  static String ekramCharity(int cityId) =>
+      'v2/ekram-mobile-services/charity-org/list-of-org/$cityId';
+
+  static String ekramIdentityTypes = 'v2/ekram-mobile-services/identity-types';
   //! POST
 
   //! Delete

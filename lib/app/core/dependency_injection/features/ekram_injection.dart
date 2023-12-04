@@ -20,6 +20,9 @@ import '../../../features/ekram/domain/use_cases/get_trips_location.dart';
 import '../../../features/ekram/domain/use_cases/update_driver_location.dart';
 import '../../../features/ekram/domain/use_cases/upload_trip.dart';
 import '../../../features/ekram/ekram_exports.dart';
+import '../../../features/ekram_inquiry_service/data/data_sources/remote_data_source.dart';
+import '../../../features/ekram_inquiry_service/data/repositories/ekram_repo_impl.dart';
+import '../../../features/ekram_inquiry_service/domain/repositories/ekram_repository.dart';
 import '../dependency_injection_exports.dart' show sl;
 
 class EkramInjection {
@@ -69,11 +72,18 @@ class EkramInjection {
     sl.registerLazySingleton<EkramRepository>(
       () => EkramRepositoryImpl(remoteDataSource: sl()),
     );
+    sl.registerLazySingleton<EkramServicesRepository>(
+      () => EkramServicesRepositoryImpl(remoteDataSource: sl()),
+    );
 
     //! Data Sources
 
     sl.registerLazySingleton<EkramRemoteDataSource>(
       () => EkramRemoteDataSourceImpl(webService: sl()),
+    );
+
+    sl.registerLazySingleton<EkramServicesRemoteDataSource>(
+      () => EkramServicesRemoteDataSourceImpl(webService: sl()),
     );
   }
 }

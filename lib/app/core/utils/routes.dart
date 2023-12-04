@@ -91,6 +91,13 @@ import '../../features/ekram/presentation/pages/user/ekram_orders_page.dart';
 import '../../features/ekram/presentation/pages/user/ekram_request_transportation_page.dart';
 import '../../features/ekram/presentation/pages/user/ekram_transportation_list_page.dart';
 import '../../features/ekram/presentation/pages/user/ekram_transpotation_details_page.dart';
+import '../../features/ekram_inquiry_service/presentation/pages/inquiry_cemetries/inquiry_cemetry_details.dart';
+import '../../features/ekram_inquiry_service/presentation/pages/inquiry_cemetries/inquiry_cemetry_result.dart';
+import '../../features/ekram_inquiry_service/presentation/pages/inquiry_graves/inquiry_grave_details.dart';
+import '../../features/ekram_inquiry_service/presentation/pages/inquiry_graves/inquiry_grave_result.dart';
+import '../../features/ekram_inquiry_service/presentation/pages/inquiry_orgnization/inquiry_orgnization_details.dart';
+import '../../features/ekram_inquiry_service/presentation/pages/inquiry_orgnization/inquiry_orgnization_result.dart';
+import '../../features/ekram_inquiry_service/presentation/pages/inquiry_orgnization/inquiry_orgnization_result_details.dart';
 import '../../features/events/presentation/pages/events_main_page.dart';
 import '../../features/events/presentation/pages/single_image_page.dart';
 import '../../features/map_page/presentation/pages/resturant_details_page.dart';
@@ -659,6 +666,27 @@ class Routes {
 
         RouteName.EkramCemetryDetailsPage: (context) =>
             const EkramCemetryDetailsPage(),
+
+        RouteName.EkramInquiryCemetryDetailsPage: (context) =>
+            const InquiryCemetryDetailsPage(),
+
+        RouteName.EkramInquiryCemetryResultsPage: (context) =>
+            const InquiryCemetryResultsPage(),
+
+        RouteName.EkramInquiryOrgnizationsDetailsPage: (context) =>
+            const InquiryOrgnizaionDetailsPage(),
+
+        RouteName.EkramInquiryOrgnizationsResultsPage: (context) =>
+            const InquiryOrgnizationResultsPage(),
+
+        RouteName.EkramInquiryOrgnizationsResultsDetailsPage: (context) =>
+            const InquiryOrgnizationResultsDetailsPage(),
+
+        RouteName.EkramInquiryGravesDetailsPage: (context) =>
+            const InquiryGraveDetailsPage(),
+
+        RouteName.EkramInquiryGravesResultsPage: (context) =>
+            const InquiryGraveResultsPage(),
       };
 }
 
