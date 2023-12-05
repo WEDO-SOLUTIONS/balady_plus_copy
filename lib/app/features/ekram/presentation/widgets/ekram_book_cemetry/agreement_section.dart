@@ -57,7 +57,7 @@ class AgreementSection extends StatelessWidget {
             CemetryreviousNextButtons(
               isBtnDisabled: !state.isNextButtonEnabled(),
               onPressed: () {
-                context.read<EkramBookCemetryBloc>().add(GoToNextPageEvent());
+                context.read<EkramBookCemetryBloc>().add(SubmitRequestEvent());
               },
             )
           ],
@@ -143,31 +143,59 @@ class DeceasedInfo extends StatelessWidget {
               ),
               if (state.isFetus == false) ...[
                 FieldData(
-                  title: Helpers.translatingWord("deceasedName"),
-                  subTitle: state.userInfoResponse?.fullName,
+                  title: Helpers.translatingWord("cemetry_national_type"),
+                  subTitle: state.selectedNationalType?.name,
                 ),
                 const CustomVerticalSpace(
                   height: 16,
                 ),
                 FieldData(
-                  title: Helpers.translatingWord("ekramGender"),
-                  subTitle: state.userInfoResponse?.genderDescription,
+                  title: Helpers.translatingWord("cemetry_national_id"),
+                  subTitle: state.deceassedId,
                 ),
                 const CustomVerticalSpace(
                   height: 16,
                 ),
                 FieldData(
-                  title: Helpers.translatingWord("ekramNationality"),
-                  subTitle: state.userInfoResponse?.nationalityDescription,
+                  title: Helpers.translatingWord("cemetry_dob_hijri"),
+                  subTitle: state.deceassedDOBHijri,
                 ),
                 const CustomVerticalSpace(
                   height: 16,
                 ),
                 FieldData(
-                  title: Helpers.translatingWord("ekramReligion"),
-                  subTitle: state.userInfoResponse?.religionDescription,
-                )
+                  title: Helpers.translatingWord("cemetry_dob_gorgian"),
+                  subTitle: state.deceassedDOBGorgian,
+                ),
+                const CustomVerticalSpace(
+                  height: 16,
+                ),
               ],
+              FieldData(
+                title: Helpers.translatingWord("ekram_first_name"),
+                subTitle: state.firstName,
+              ),
+              const CustomVerticalSpace(height: 16),
+              FieldData(
+                title: Helpers.translatingWord("ekram_second_name"),
+                subTitle: state.secondName,
+              ),
+              const CustomVerticalSpace(height: 16),
+              FieldData(
+                title: Helpers.translatingWord("ekram_third_name"),
+                subTitle: state.thirdName,
+              ),
+              const CustomVerticalSpace(height: 16),
+              FieldData(
+                title: Helpers.translatingWord("ekram_fourth_name"),
+                subTitle: state.fourthName,
+              ),
+              const CustomVerticalSpace(height: 16),
+              FieldData(
+                title: Helpers.translatingWord("nationality"),
+                subTitle: state.fourthName,
+              ),
+              const CustomVerticalSpace(height: 16),
             ],
           )
         ],
