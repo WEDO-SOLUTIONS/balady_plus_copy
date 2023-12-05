@@ -77,7 +77,7 @@ class OrgnizationDetails extends StatelessWidget {
               height: 16,
             ),
             FieldData(
-              title: "ekram_entity_charity_name",
+              title: "ekram_entity_charity_name".tr(),
               subTitle: item.orgName,
             ),
             const CustomVerticalSpace(

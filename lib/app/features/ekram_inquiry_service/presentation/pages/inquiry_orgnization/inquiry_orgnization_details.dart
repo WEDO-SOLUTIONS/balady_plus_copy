@@ -20,7 +20,7 @@ class InquiryOrgnizaionDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: DefaultAppBarWidget(
-        title: "ekram_inquiry_burial_grave".tr(),
+        title: "ekram_inquiry_orgnizations".tr(),
         x: true,
       ),
       body: BlocProvider(
@@ -61,7 +61,8 @@ class InquiryOrgnizaionDetailsPage extends StatelessWidget {
                         hint: ("city").tr(),
                       ),
                       const CustomVerticalSpace(height: 32),
-                      ElevatedButtonWidget.primaryCustom(
+                      ElevatedButtonWidget.custom(
+                          isDisabled: state.selectedCity == null,
                           onPressed: () {
                             context
                                 .read<EkramInquiryOrgnizationBloc>()

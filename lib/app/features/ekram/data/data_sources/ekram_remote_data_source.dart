@@ -88,6 +88,8 @@ abstract class EkramRemoteDataSource {
       getCemetryRequestDetails(String params);
 
   Future<ResponseBodyModel<List<LookUpItem>>> getNationalityTypes();
+
+  Future<ResponseBodyModel<List<LookUpItem>>> getCountries();
 }
 
 class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
@@ -1057,7 +1059,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        ApiUrl.bookCemetry,
+        ApiUrl.bookCemetryRequests,
         queryParameters: {
           "page": params.page,
           "size": params.size,
@@ -1065,10 +1067,9 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       );
 
       var data = response.data["data"]?["result"];
-      Map<String, dynamic> x = {};
-      x["items"] = data;
+
       CemetryRequestResponseModel? parsedResult =
-          data != null ? CemetryRequestResponseModel.fromMap(x) : null;
+          data != null ? CemetryRequestResponseModel.fromMap(data) : null;
 
       final decodedResponse =
           ResponseBodyModel<CemetryRequestResponseModel>.fromMap(response.data,
@@ -1106,7 +1107,42 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        ApiUrl.ekramActiveCities,
+        ApiUrl.ekramIdentityTypes,
+      );
+
+      var data = response.data["data"]?["result"];
+
+      List<LookUpItem> parsedResult = data != null
+          ? List<LookUpItem>.from(data.map((x) => LookUpItem.fromJson(x)))
+          : [];
+
+      final decodedResponse = ResponseBodyModel<List<LookUpItem>>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error) {
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode);
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //   CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<List<LookUpItem>>> getCountries() async {
+    var response;
+
+    try {
+      response = await webService.dio.get(
+        ApiUrl.ekramCountries,
       );
 
       var data = response.data["data"]?["result"];

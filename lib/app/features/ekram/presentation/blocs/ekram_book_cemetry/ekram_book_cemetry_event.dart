@@ -55,11 +55,6 @@ class ChangeCemetryTypeEvent extends EkramBookCemetryEvent {
   ChangeCemetryTypeEvent({this.item});
 }
 
-class ChangeCemetrySizeEvent extends EkramBookCemetryEvent {
-  final LookUpItem? item;
-  ChangeCemetrySizeEvent({this.item});
-}
-
 class ChangeCemetryEvent extends EkramBookCemetryEvent {
   final LookUpItem? item;
   ChangeCemetryEvent({this.item});
@@ -92,10 +87,6 @@ class ChangeReligionEvent extends EkramBookCemetryEvent {
 
 class GetNationalTypes extends EkramBookCemetryEvent {
   const GetNationalTypes();
-}
-
-class GetCemetriesEvent extends EkramBookCemetryEvent {
-  const GetCemetriesEvent();
 }
 
 class CheckUserInfoEvent extends EkramBookCemetryEvent {
@@ -142,4 +133,34 @@ class ChangeIsFetus extends EkramBookCemetryEvent {
 class ChangeGenderEvent extends EkramBookCemetryEvent {
   final int? value;
   ChangeGenderEvent({this.value});
+}
+
+class ChangeNameEvent extends EkramBookCemetryEvent {
+  final String? firstName;
+  final String? secondName;
+  final String? thirdName;
+  final String? fourthName;
+
+  const ChangeNameEvent(
+      {this.firstName, this.secondName, this.thirdName, this.fourthName});
+}
+
+class GetNationalityEvent extends EkramBookCemetryEvent {
+  final LookUpItem item;
+  const GetNationalityEvent({required this.item});
+}
+
+class ChangeCountryEvent extends EkramBookCemetryEvent {
+  final LookUpItem item;
+  const ChangeCountryEvent({required this.item});
+}
+
+class ChangeDeathCityEvent extends EkramBookCemetryEvent {
+  final LookUpItem item;
+  const ChangeDeathCityEvent({required this.item});
+}
+
+class ChangeOtherCityEvent extends EkramBookCemetryEvent {
+  final String? text;
+  const ChangeOtherCityEvent({required this.text});
 }

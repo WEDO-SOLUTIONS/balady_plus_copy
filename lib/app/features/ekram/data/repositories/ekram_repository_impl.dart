@@ -33,6 +33,19 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+      getCountries() async {
+    try {
+      final data = await remoteDataSource.getCountries();
+
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
       getCities() async {
     try {
       final data = await remoteDataSource.getCities();

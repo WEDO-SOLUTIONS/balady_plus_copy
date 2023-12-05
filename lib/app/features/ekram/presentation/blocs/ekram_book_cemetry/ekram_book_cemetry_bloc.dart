@@ -1,10 +1,14 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/features/ekram/ekram_exports.dart'
+    hide ApplicantInfoSection, AgreementSection;
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart' hide DatePickerTheme;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/intl.dart';
+import 'package:collection/collection.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../etmam_app/core/utils/constants/app_config.dart';
 import '../../../../../core/dependency_injection/injection_container.dart';
@@ -13,8 +17,13 @@ import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/services/local/use_case.dart';
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
+import '../../../../../core/utils/enums/enums.dart';
+import '../../../../../core/utils/nullable.dart';
+import '../../../../_shared_feature_/data/entities/success_screen_args.dart';
+import '../../../../ekram_inquiry_service/domain/use_cases/get_ekram_cities.dart';
 import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 import '../../../domain/entities/book_cemetry_params.dart';
+import '../../../domain/entities/ekram_success_page_params.dart';
 import '../../../domain/entities/get_cemetries_params.dart';
 import '../../../domain/entities/user_info_request_params.dart';
 import '../../../domain/entities/user_info_response.dart';
@@ -22,11 +31,11 @@ import '../../../domain/use_cases/book_cemetry.dart';
 import '../../../domain/use_cases/check_user_info.dart';
 import '../../../domain/use_cases/get_active_cities.dart';
 import '../../../domain/use_cases/get_cemetries.dart';
+import '../../../domain/use_cases/get_countries.dart';
 import '../../../domain/use_cases/get_ekram_lookups.dart';
 import '../../../domain/use_cases/get_nationality_types.dart';
 import '../../widgets/ekram_book_cemetry/agreement_section.dart';
 import '../../widgets/ekram_book_cemetry/applicant_info_section.dart';
-import '../../widgets/ekram_book_cemetry/cemetry_burial_info_section.dart';
 import '../../widgets/ekram_book_cemetry/cemetry_deceased_info_section.dart';
 import '../ekram_requests_bloc/ekram_requests_bloc.dart';
 
@@ -37,6 +46,14 @@ part 'ekram_book_cemetry_state.dart';
 class EkramBookCemetryBloc
     extends Bloc<EkramBookCemetryEvent, EkramBookCemetryState> {
   PageController controller = PageController();
+
+  final nationalIdController = TextEditingController();
+
+  final firstNameController = TextEditingController();
+  final secondNameController = TextEditingController();
+  final thirdNameController = TextEditingController();
+  final fourthNameController = TextEditingController();
+
   EkramRequestsBloc? ekramRequestsBloc;
   late List pagesList = [
     ApplicantInfoSection(),
@@ -48,8 +65,12 @@ class EkramBookCemetryBloc
   final CheckUserinfo _checkUserInfo;
   final GetCemetries _getCemetries;
   final GetActiveCities _getCities;
+  final GetEkramCities _getEkramCities;
   final BookCemetry _bookCemetry;
   final GetNationalityTypes _getNationalityTypes;
+  final GetNationalities _getNationalities;
+  final GetCountreies _getCountreies;
+
   EkramBookCemetryBloc(
       {required GetEkramLookUp getEkramLookUp,
       required CheckUserinfo checkUserInfo,
@@ -63,8 +84,11 @@ class EkramBookCemetryBloc
         _getCities = getCities,
         _bookCemetry = bookCemetry,
         _getNationalityTypes = GetNationalityTypes(repository: sl()),
+        _getNationalities = GetNationalities(repository: sl()),
+        _getCountreies = GetCountreies(repository: sl()),
+        _getEkramCities = GetEkramCities(repository: sl()),
         super(EkramBookCemetryState(
-          isFetus: false,
+            isFetus: false,
             fullName: CommonProperties.userInfo?.arName ?? "",
             mobileNumber: CommonProperties.userInfo?.getPhone() ?? "",
             requestType: trans("ekram_request_type"))) {
@@ -78,15 +102,12 @@ class EkramBookCemetryBloc
 
     on<ChangeBurialCityEvent>(_changeBurialCityEventHandler);
     on<ChangeCemetryTypeEvent>(_changeCemetryTypeEventHandler);
-    on<ChangeCemetrySizeEvent>(_changeCemetrySizeEventHandler);
     on<ChangeCemetryEvent>(_changeCemetryEventHandler);
     on<ChangeBurialDateEvent>(_changeBurialDateEventHandler);
     on<ChangeBurialTimevent>(_changeBurialTimeventHandler);
     on<ChangeBurialTimeOtherNameEvent>(_changeBurialTimeOtherNameHandler);
     on<ChangeReligionEvent>(_changeReligionHandler);
     on<ChangeIsEpidamicEvent>(_changeIsEpidamicHandler);
-
-    on<GetCemetriesEvent>(_getCemetriesHandler);
 
     on<GoToPreviousPageEvent>(_goToPreviousPageHandler);
     on<GoToNextPageEvent>(_goToNextPageHandler);
@@ -95,11 +116,52 @@ class EkramBookCemetryBloc
     on<ChangeIsFetus>(_changeIsFetus);
     on<SubmitRequestEvent>(_submitRequestEvent);
     on<ChangeGenderEvent>(_changeGenderHandler);
+    on<ChangeNameEvent>(_changeNameHandler);
+    on<GetNationalityEvent>(_changeNationalityHandler);
+
+    on<ChangeCountryEvent>(_changeCountryHandler);
+    on<ChangeDeathCityEvent>(_changeDeathCityHandler);
+
+    on<ChangeOtherCityEvent>(_changeOtherCityyHandler);
+
     getCitiesHandler();
     getNationalTypesHandler();
     getCemetryTypeItemsHandler();
     getBurialTimesItemsHandler();
+    getNationalities();
+    getCountries();
+    getDeathCities();
     //getReligionsHandler();
+  }
+
+  Future<void> _changeNameHandler(ChangeNameEvent e, Emitter emitter) async {
+    emitter(state.copyWith(
+        firstName: e.firstName != null ? Nullable(e.firstName) : null,
+        secondName: e.secondName != null ? Nullable(e.secondName) : null,
+        thirdName: e.thirdName != null ? Nullable(e.thirdName) : null,
+        fourthName: e.fourthName != null ? Nullable(e.fourthName) : null,
+        errorMessage: ""));
+  }
+
+  Future<void> _changeNationalityHandler(
+      GetNationalityEvent e, Emitter emitter) async {
+    emitter(state.copyWith(
+        selectedNationality: Nullable(e.item), errorMessage: ""));
+  }
+
+  Future<void> _changeOtherCityyHandler(
+      ChangeOtherCityEvent e, Emitter emitter) async {
+    emitter(state.copyWith(otherDeathCity: e.text, errorMessage: ""));
+  }
+
+  Future<void> _changeCountryHandler(
+      ChangeCountryEvent e, Emitter emitter) async {
+    emitter(state.copyWith(selectedCountry: e.item, errorMessage: ""));
+  }
+
+  Future<void> _changeDeathCityHandler(
+      ChangeDeathCityEvent e, Emitter emitter) async {
+    emitter(state.copyWith(selectedDeathCity: e.item, errorMessage: ""));
   }
 
   Future<void> _changeAgreementHandler(
@@ -110,7 +172,23 @@ class EkramBookCemetryBloc
   Future<void> _changeNationalIdHandler(
       ChangeNationalId e, Emitter emitter) async {
     emitter(state.copyWith(
-        deceassedId: e.text, clearUserInfo: true, errorMessage: ""));
+        deceassedId: Nullable(e.text),
+        clearUserInfo: true,
+        errorMessage: "",
+        firstName: Nullable(null),
+        secondName: Nullable(null),
+        thirdName: Nullable(null),
+        fourthName: Nullable(null),
+        deceassedDOBGorgian: Nullable(null),
+        deceassedDOBHijri: Nullable(null),
+        isMuslim: Nullable(null),
+        gender: Nullable(null),
+        selectedNationality: Nullable(null)));
+
+    firstNameController.text = "";
+    secondNameController.text = "";
+    thirdNameController.text = "";
+    fourthNameController.text = "";
   }
 
   Future<void> _changeNationalIdDobHandler(
@@ -140,44 +218,53 @@ class EkramBookCemetryBloc
     print(hijri);
 
     emitter(state.copyWith(
-        deceassedDOBGorgian: CommonFunctions.padHijriDate(gorgian),
+        deceassedDOBGorgian: Nullable(CommonFunctions.padHijriDate(gorgian)),
         errorMessage: "",
-        deceassedDOBHijri: CommonFunctions.padHijriDate(hijri),
+        deceassedDOBHijri: Nullable(CommonFunctions.padHijriDate(hijri)),
         clearUserInfo: true));
   }
 
   Future<void> _changeNationalTypeHandler(
       ChangeNationalType e, Emitter emitter) async {
     emitter(state.copyWith(
-        selectedNationalType: e.item, clearUserInfo: true, errorMessage: ""));
+      selectedNationalType: e.item,
+      clearUserInfo: true,
+      errorMessage: "",
+      selectedNationality: Nullable(null),
+      firstName: Nullable(null),
+      secondName: Nullable(null),
+      thirdName: Nullable(null),
+      fourthName: Nullable(null),
+      deceassedDOBGorgian: Nullable(null),
+      deceassedDOBHijri: Nullable(null),
+      isMuslim: Nullable(null),
+      gender: Nullable(null),
+    ));
+    firstNameController.text = "";
+    secondNameController.text = "";
+    thirdNameController.text = "";
+    fourthNameController.text = "";
   }
 
   Future<void> _changeBurialCityEventHandler(
       ChangeBurialCityEvent e, Emitter emitter) async {
     emitter(state.copyWith(selectedCity: e.item, errorMessage: ""));
 
-    add(GetCemetriesEvent());
+    //getCemetriesHandler();
   }
 
   Future<void> _changeCemetryTypeEventHandler(
       ChangeCemetryTypeEvent e, Emitter emitter) async {
     emitter(state.copyWith(selectedCemetryType: e.item, errorMessage: ""));
 
-    add(GetCemetriesEvent());
-  }
-
-  Future<void> _changeCemetrySizeEventHandler(
-      ChangeCemetrySizeEvent e, Emitter emitter) async {
-    emitter(state.copyWith(selectedCemetrySize: e.item, errorMessage: ""));
-
-    add(GetCemetriesEvent());
+    //  getCemetriesHandler();
   }
 
   Future<void> _changeIsEpidamicHandler(
       ChangeIsEpidamicEvent e, Emitter emitter) async {
     emitter(state.copyWith(isPandemicDeath: e.value, errorMessage: ""));
 
-    add(GetCemetriesEvent());
+    // getCemetriesHandler();
   }
 
   Future<void> _changeCemetryEventHandler(
@@ -210,7 +297,7 @@ class EkramBookCemetryBloc
         burialDateGorgian: CommonFunctions.padHijriDate(gorgian),
         errorMessage: "",
         burialDateHijri: CommonFunctions.padHijriDate(hijri)));
-    add(GetCemetriesEvent());
+    // getCemetriesHandler();
   }
 
   Future<void> _changeBurialTimeventHandler(
@@ -241,16 +328,32 @@ class EkramBookCemetryBloc
 
   Future<void> _changeReligionHandler(
       ChangeReligionEvent e, Emitter emitter) async {
-    emitter(state.copyWith(isMuslim: e.value));
+    emitter(state.copyWith(isMuslim: Nullable(e.value)));
   }
 
   Future<void> _changeIsFetus(ChangeIsFetus e, Emitter emitter) async {
-    emitter(state.copyWith(isFetus: e.value));
+    emitter(state.copyWith(
+        isFetus: e.value,
+        selectedNationality: Nullable(null),
+        clearUserInfo: true,
+        errorMessage: "",
+        firstName: Nullable(null),
+        secondName: Nullable(null),
+        thirdName: Nullable(null),
+        fourthName: Nullable(null),
+        deceassedDOBGorgian: Nullable(null),
+        deceassedDOBHijri: Nullable(null),
+        isMuslim: Nullable(null),
+        gender: Nullable(null)));
+    firstNameController.text = "";
+    secondNameController.text = "";
+    thirdNameController.text = "";
+    fourthNameController.text = "";
   }
 
   Future<void> _changeGenderHandler(
       ChangeGenderEvent e, Emitter emitter) async {
-    emitter(state.copyWith(gender: e.value));
+    emitter(state.copyWith(gender: Nullable(e.value)));
   }
 
   Future<void> _changeRelationShipHanlder(
@@ -260,6 +363,10 @@ class EkramBookCemetryBloc
 
   Future<void> _checkUserInfoHandler(
       CheckUserInfoEvent e, Emitter emitter) async {
+    if (state.nationalities?.isEmpty ?? true) {
+      getNationalities();
+      return;
+    }
     emitter(state.copyWith(status: BlocStatus.loading));
 
     final failureOrSuccess = await _checkUserInfo(UserInfoRequestParams(
@@ -272,11 +379,35 @@ class EkramBookCemetryBloc
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) {
+      String firstName = success.data?.result?.firstName ?? "";
+      String secondName = success.data?.result?.secondName ?? "";
+      String thirdName = success.data?.result?.thirdName ?? "";
+      String fourthName = success.data?.result?.familyName ?? "";
+      int? gender = success.data?.result?.genderCode;
+      bool? isMuslim = success.data?.result?.genderCode == 1
+          ? true
+          : (success.data?.result?.genderCode != null)
+              ? false
+              : null;
+
+      LookUpItem? nationality = state.nationalities?.firstWhereOrNull(
+          (element) => element.id == success.data?.result?.nationalityCode);
       emitter(state.copyWith(
-        status: BlocStatus.success,
-        userInfoResponse: success.data?.result,
-        errorMessage: "",
-      ));
+          status: BlocStatus.success,
+          userInfoResponse: success.data?.result,
+          errorMessage: "",
+          firstName: Nullable(firstName),
+          secondName: Nullable(secondName),
+          thirdName: Nullable(thirdName),
+          fourthName: Nullable(fourthName),
+          gender: Nullable(gender),
+          selectedNationality: Nullable(nationality),
+          isMuslim: Nullable(isMuslim)));
+
+      firstNameController.text = firstName;
+      secondNameController.text = secondName;
+      thirdNameController.text = thirdName;
+      fourthNameController.text = fourthName;
     });
   }
 
@@ -297,6 +428,66 @@ class EkramBookCemetryBloc
         errorMessage: "",
       ));
       return success.data?.result;
+    });
+  }
+
+  Future<List<LookUpItem>?> getNationalities() async {
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    final failureOrSuccess = await _getNationalities(NoParams());
+    return failureOrSuccess.fold((failure) {
+      emit(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+      return null;
+    }, (success) {
+      emit(state.copyWith(
+        status: BlocStatus.success,
+        nationalities: success.data?.result,
+        errorMessage: "",
+      ));
+      return success.data?.result;
+    });
+  }
+
+  Future<List<LookUpItem>?> getCountries() async {
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    final failureOrSuccess = await _getCountreies(NoParams());
+    return failureOrSuccess.fold((failure) {
+      emit(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+      return null;
+    }, (success) {
+      emit(state.copyWith(
+        status: BlocStatus.success,
+        countries: success.data?.result,
+        errorMessage: "",
+      ));
+      return success.data?.result;
+    });
+  }
+
+  Future<List<LookUpItem>?> getDeathCities() async {
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    final failureOrSuccess = await _getEkramCities(NoParams());
+    return failureOrSuccess.fold((failure) {
+      emit(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+      return null;
+    }, (success) {
+      emit(state.copyWith(
+        status: BlocStatus.success,
+        deathCities: success,
+        errorMessage: "",
+      ));
+      return success;
     });
   }
 
@@ -360,42 +551,45 @@ class EkramBookCemetryBloc
     });
   }
 
-  Future<void> _getCemetriesHandler(
-      GetCemetriesEvent e, Emitter emitter) async {
-    if (state.selectedCemetrySize != null &&
-        state.selectedCemetryType != null &&
+  Future<List<LookUpItem>?> getCemetriesHandler() async {
+    if (state.selectedCemetryType != null &&
         state.selectedCity != null &&
         state.burialDateHijri != null &&
         state.burialDateGorgian != null &&
         state.isPandemicDeath != null &&
-        state.userInfoResponse != null) {
-      emitter(state.copyWith(status: BlocStatus.loading));
+        state.selectedNationality != null &&
+        state.isFetus != null &&
+        state.isMuslim != null &&
+        state.selectedTime != null) {
+      emit(state.copyWith(status: BlocStatus.loading));
 
       final failureOrSuccess = await _getCemetries(GetCemetriesParams(
-        burialCityId: state.selectedCity!.id!,
-        cemeterySizeId: state.selectedCemetrySize!.id!,
-        cemeteryTypeId: state.selectedCemetryType!.id!,
-        burialDate: state.burialDateGorgian!,
-        isPandemicDeath: state.isPandemicDeath!,
-        nationalityId: state.userInfoResponse!.nationalityCode!,
-        religionId: 0,
-        /*religionId: state.showReligion()
-              ? state.selectedReligion!.id!
-              : state.userInfoResponse!.religionCode!*/
-      ));
+          burialCityId: state.selectedCity!.id!,
+          cemeteryTypeId: state.selectedCemetryType!.id!,
+          burialDate: state.burialDateGorgian!,
+          isPandemicDeath: state.isPandemicDeath!,
+          nationalityId: state.selectedNationality!.id!,
+          isFetus: state.isFetus!,
+          isMuslim: state.isMuslim!,
+          birthdate: state.deceassedDOBHijri,
+          burailTimeId: state.selectedTime!.id!));
 
-      failureOrSuccess.fold((failure) {
-        emitter(state.copyWith(
+      return failureOrSuccess.fold((failure) {
+        emit(state.copyWith(
           status: BlocStatus.failure,
           errorMessage: (failure as ServerFailure).errorMessage,
         ));
+        return null;
       }, (success) {
-        emitter(state.copyWith(
+        emit(state.copyWith(
           status: BlocStatus.success,
           cemetries: success.data?.result,
           errorMessage: "",
         ));
+        return success.data?.result;
       });
+    } else {
+      CommonFunctions.showError("FillFields".tr());
     }
   }
 
@@ -407,23 +601,37 @@ class EkramBookCemetryBloc
     emitter(state.copyWith(status: BlocStatus.loading));
 
     final failureOrSuccess = await _bookCemetry(BookCemetryParamas(
-        burialCityId: state.selectedCity!.id!,
-        burialDate: state.burialDateGorgian!,
-        burialTimeId: state.selectedTime!.id!,
-        burialTimeOther: state.otherTimeName ?? "",
-        cemeteryId: state.selectedCemetry!.id!,
-        cemeterySizeId: state.selectedCemetrySize!.id!,
-        cemeteryTypeId: state.selectedCemetryType!.id!,
-        deceasedBirthDate: state.deceassedDOBHijri!,
-        deceasedIdentityNumber: state.deceassedId!,
-        deceasedIdentityTypeId: state.selectedNationalType!.id!,
-        isPandemicDeath: state.isPandemicDeath!,
-        relationship: state.relation,
-        religionId: 0
-        /* religionId: state.showReligion()
-            ? state.selectedReligion!.id!
-            : state.userInfoResponse!.religionCode!*/
-        ));
+      firstName: state.firstName!,
+      secondName: state.secondName,
+      thirdName: state.thirdName,
+      fourthName: state.fourthName,
+      birthDate: state.burialDateGorgian,
+      prayId: state.selectedTime?.id,
+      prayOther:
+          state.selectedTime?.id == 30976 ? state.otherTimeName ?? "" : null,
+      nationalityId: state.selectedNationality?.id,
+      isMuslim: state.isMuslim,
+      gender: state.gender!,
+      burialCityId: state.selectedCity!.id!,
+      burialDate: state.burialDateGorgian!,
+      cemeteryId: state.selectedCemetry!.id!,
+      deceasedBirthDate: state.deceassedDOBHijri,
+      deceasedIdentityNumber:
+          state.isFetus == false ? state.deceassedId! : null,
+      deceasedIdentityTypeId:
+          state.isFetus == false ? state.selectedNationalType!.id! : null,
+      isPandemicDeath: state.isPandemicDeath!,
+      relationship: state.relation,
+      fetus: state.isFetus!,
+      graveTypeId: state.selectedCemetryType!.id!,
+      deathCountryId: state.selectedCountry!.id,
+      deathCityId: state.selectedCountry?.localCountry == true
+          ? state.selectedDeathCity?.id
+          : null,
+      deathCityOther: state.selectedCountry?.localCountry == false
+          ? state.otherDeathCity
+          : null,
+    ));
 
     failureOrSuccess.fold((failure) {
       emitter(state.copyWith(
@@ -436,17 +644,14 @@ class EkramBookCemetryBloc
         errorMessage: "",
       ));
 
-      /*  ekramRequestsBloc
-          ?.add(GetDeceasedTransportRequestsEvent(isDriver: false));
-     
-     */
-      //MM Ekram
-      /*   NavigationService.navigatorKey.currentState!.pushReplacementNamed(
-          RouteName.ekramSuccessScreen,
-          arguments: EkramSuccessPageParams(
-              type: EkramType.cemetry,
-              msg: success.data?.responseMessage,
-              ekramBloc: ekramRequestsBloc));*/
+      ekramRequestsBloc?.add(GetCemetryRequestsEvent());
+
+      NavigationService.navigatorKey.currentState!
+          .pushReplacementNamed(RouteName.successRoute,
+              arguments: SuccessScreenArgs(
+                type: PAGE_TYPE.ekramCemetry,
+                thanksMessage: success.data?.result?.message,
+              ));
     });
   }
 

@@ -16,7 +16,10 @@ class OrgnizationDetailsItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 8, bottom: 8, left: 16, right: 16),
+      margin: const EdgeInsets.only(
+        top: 8,
+        bottom: 8,
+      ),
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(16)),

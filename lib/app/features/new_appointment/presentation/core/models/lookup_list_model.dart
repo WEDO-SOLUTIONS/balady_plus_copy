@@ -64,16 +64,21 @@ class Data {
 }
 
 class LookUpItem {
-  LookUpItem({this.id, this.name, this.isOther});
+  LookUpItem(
+      {this.id, this.name, this.isOther, this.fillInfo, this.localCountry});
 
   int? id;
   String? name;
   bool? isOther;
+  bool? fillInfo;
+  bool? localCountry;
 
   factory LookUpItem.fromJson(Map<String, dynamic> json) => LookUpItem(
       id: json["id"] == null ? null : json["id"],
       name: json["name"] == null ? null : json["name"],
-      isOther: json["isOther"]);
+      fillInfo: json["fillInfo"],
+      isOther: json["isOther"],
+      localCountry: json["localCountry"]);
 
   Map<String, dynamic> toJson() => {
         "id": id == null ? null : id,
