@@ -48,7 +48,8 @@ enum PAGE_TYPE {
   emtethal,
   deleteEmtethal,
   renewCommercial,
-  other
+  other,
+  ekramCemetry
 }
 
 enum RequestsType {
@@ -136,3 +137,5 @@ enum QRSiteLocationType {
 }
 
 enum QRWorkTimes { SHIFTED, OPEN_24HOUR, CLOSED }
+
+enum EkramType { transport, cemetry }

@@ -79,9 +79,11 @@ class _EkramBookingListPageState extends State<EkramBookingListPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   child: InkWell(
-                    onTap: () => NavigationService.navigatorKey.currentState!
-                        .pushNamed(RouteName.ekramCemetryRequestScreen,
-                            arguments: context.read<EkramRequestsBloc>()),
+                    onTap: () {
+                      NavigationService.navigatorKey.currentState!.pushNamed(
+                          RouteName.EkramBookCemetryStartService,
+                          arguments: context.read<EkramRequestsBloc>());
+                    },
                     child: CircleIcon(
                       backgroundColor: AppColor.primary50Light,
                       icon: IconPath.add,

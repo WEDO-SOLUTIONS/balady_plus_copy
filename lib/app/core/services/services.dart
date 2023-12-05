@@ -177,7 +177,7 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "action": {
         "type": "page",
-        "value": RouteName.EkramInquiryGravesDetailsPage
+        "value": RouteName.EkramInquiryOrgnizationsDetailsPage
       },
       "ar": {
         "title": "ekram_inquiry_orgnizations".tr(),

@@ -1,36 +1,34 @@
-class GetCemetriesParams { 
-
-
-  int burialCityId; 
-  String burialDate; 
-  int cemeterySizeId; 
-  int cemeteryTypeId; 
-  bool isPandemicDeath; 
+class GetCemetriesParams {
+  int burialCityId;
+  int burailTimeId;
+  String burialDate;
+  int cemeteryTypeId;
+  bool isFetus;
+  bool isMuslim;
+  bool isPandemicDeath;
   int nationalityId;
-  int religionId; 
+  String? birthdate;
 
+  GetCemetriesParams(
+      {required this.burialCityId,
+      required this.burialDate,
+      required this.burailTimeId,
+      required this.cemeteryTypeId,
+      required this.isPandemicDeath,
+      required this.nationalityId,
+      required this.isMuslim,
+      required this.isFetus,
+      this.birthdate});
 
-  GetCemetriesParams({
-required this.burialCityId, 
-required this.burialDate, 
-required this.cemeterySizeId, 
-required this.cemeteryTypeId,
- required this.isPandemicDeath, 
- required this.nationalityId, 
- required this.religionId
-   }); 
-
-
-    Map<String, dynamic> toMap() => {
-        "burialCityId": burialCityId, 
-        "burialDate":burialDate, 
-        "cemeterySizeId":cemeterySizeId, 
-        "cemeteryTypeId":cemeteryTypeId, 
-        "isPandemicDeath":isPandemicDeath, 
-        "nationalityId":nationalityId, 
-        "religionId":religionId
+  Map<String, dynamic> toMap() => {
+        "burialCityId": burialCityId,
+        "burailTimeId": burailTimeId,
+        "burialDate": burialDate,
+        "cemeteryTypeId": cemeteryTypeId,
+        "isFetus": isFetus,
+        "isMuslim": isMuslim,
+        "isPandemicDeath": isPandemicDeath,
+        "nationalityId": nationalityId,
+        if (birthdate != null) "birthdate": birthdate
       };
-
-
-
 }

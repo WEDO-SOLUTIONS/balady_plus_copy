@@ -89,4 +89,6 @@ abstract class EkramRepository {
 
   Future<Either<Failure, ResponseBodyModel<CemetryRequestDetails>>>
       getCemetryRequestDetails(String params);
+
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getCountries();
 }

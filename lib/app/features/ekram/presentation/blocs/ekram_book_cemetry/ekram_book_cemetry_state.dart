@@ -5,8 +5,15 @@ class EkramBookCemetryState extends Equatable {
   final String? errorMessage;
   final int currentPageValue;
   final List<LookUpItem>? nationalTypes;
+  final List<LookUpItem>? countries;
+  final List<LookUpItem>? deathCities;
+  final LookUpItem? selectedCountry;
+  final LookUpItem? selectedDeathCity;
+  final String? otherDeathCity;
+
   final List<LookUpItem>? cities;
   final List<LookUpItem>? cemetries;
+  final List<LookUpItem>? nationalities;
 
   final List<LookUpItem>? cemetrySizeItems;
   final List<LookUpItem>? cemetryTypeItems;
@@ -26,6 +33,7 @@ class EkramBookCemetryState extends Equatable {
   final LookUpItem? selectedNationalType;
   final LookUpItem? selectedCity;
   final LookUpItem? selectedCemetry;
+  final LookUpItem? selectedNationality;
 
   final LookUpItem? selectedCemetrySize;
   final LookUpItem? selectedCemetryType;
@@ -37,6 +45,10 @@ class EkramBookCemetryState extends Equatable {
   final String? deceassedDOBHijri;
   final UserInfoResponse? userInfoResponse;
   final int? gender;
+  final String? firstName;
+  final String? secondName;
+  final String? thirdName;
+  final String? fourthName;
 
   //final LookUpItem? selectedHospital;
   // final String? otherHospitalName;
@@ -73,41 +85,64 @@ class EkramBookCemetryState extends Equatable {
       this.selectedCemetryType,
       this.selectedTime,
       this.isMuslim,
-      this.gender});
+      this.gender,
+      this.firstName,
+      this.secondName,
+      this.thirdName,
+      this.fourthName,
+      this.nationalities,
+      this.selectedNationality,
+      this.countries,
+      this.deathCities,
+      this.selectedCountry,
+      this.selectedDeathCity,
+      this.otherDeathCity});
 
-  EkramBookCemetryState copyWith(
-      {final BlocStatus? status,
-      final String? errorMessage,
-      final int? currentPageValue,
-      final List<LookUpItem>? nationalTypes,
-      final List<LookUpItem>? cities,
-      final List<LookUpItem>? cemetries,
-      final List<LookUpItem>? cemetrySizeItems,
-      final List<LookUpItem>? cemetryTypeItems,
-      final List<LookUpItem>? burialTimeItems,
-      final String? burialDateHijri,
-      final String? burialDateGorgian,
-      final bool? isPandemicDeath,
-      final bool? isFetus,
-      final String? deceassedId,
-      final String? deceassedDOB,
-      final bool? agreement,
-      final String? requestType,
-      final String? relation,
-      final LookUpItem? selectedNationalType,
-      final LookUpItem? selectedCity,
-      final LookUpItem? selectedCemetry,
-      final LookUpItem? selectedCemetrySize,
-      final LookUpItem? selectedCemetryType,
-      final LookUpItem? selectedTime,
-      final String? otherTimeName,
-      final UserInfoResponse? userInfoResponse,
-      final bool? clearUserInfo,
-      final bool? clearOtherBurialTime,
-      final String? deceassedDOBGorgian,
-      final String? deceassedDOBHijri,
-      final bool? isMuslim,
-      final int? gender}) {
+  EkramBookCemetryState copyWith({
+    final BlocStatus? status,
+    final String? errorMessage,
+    final int? currentPageValue,
+    final List<LookUpItem>? nationalTypes,
+    final List<LookUpItem>? cities,
+    final List<LookUpItem>? cemetries,
+    final List<LookUpItem>? cemetrySizeItems,
+    final List<LookUpItem>? cemetryTypeItems,
+    final List<LookUpItem>? burialTimeItems,
+    final String? burialDateHijri,
+    final String? burialDateGorgian,
+    final bool? isPandemicDeath,
+    final bool? isFetus,
+    final String? deceassedDOB,
+    final bool? agreement,
+    final String? requestType,
+    final String? relation,
+    final LookUpItem? selectedNationalType,
+    final LookUpItem? selectedCity,
+    final LookUpItem? selectedCemetry,
+    final LookUpItem? selectedCemetrySize,
+    final LookUpItem? selectedCemetryType,
+    final LookUpItem? selectedTime,
+    final String? otherTimeName,
+    final bool? clearUserInfo,
+    final bool? clearOtherBurialTime,
+    final Nullable<String?>? deceassedId,
+    final Nullable<String?>? deceassedDOBGorgian,
+    final Nullable<String?>? deceassedDOBHijri,
+    final UserInfoResponse? userInfoResponse,
+    final Nullable<bool?>? isMuslim,
+    final Nullable<int?>? gender,
+    final Nullable<String?>? firstName,
+    final Nullable<String?>? secondName,
+    final Nullable<String?>? thirdName,
+    final Nullable<String?>? fourthName,
+    final List<LookUpItem>? nationalities,
+    final Nullable<LookUpItem?>? selectedNationality,
+    final List<LookUpItem>? countries,
+    final List<LookUpItem>? deathCities,
+    final LookUpItem? selectedCountry,
+    final LookUpItem? selectedDeathCity,
+    final String? otherDeathCity,
+  }) {
     return EkramBookCemetryState(
         status: status ?? this.status,
         errorMessage: errorMessage ?? this.errorMessage,
@@ -118,9 +153,13 @@ class EkramBookCemetryState extends Equatable {
         fullName: fullName,
         mobileNumber: mobileNumber,
         requestType: requestType,
-        deceassedId: deceassedId ?? this.deceassedId,
-        deceassedDOBGorgian: deceassedDOBGorgian ?? this.deceassedDOBGorgian,
-        deceassedDOBHijri: deceassedDOBHijri ?? this.deceassedDOBHijri,
+        deceassedId: deceassedId == null ? this.deceassedId : deceassedId.value,
+        deceassedDOBGorgian: deceassedDOBGorgian == null
+            ? this.deceassedDOBGorgian
+            : deceassedDOBGorgian.value,
+        deceassedDOBHijri: deceassedDOBHijri == null
+            ? this.deceassedDOBHijri
+            : deceassedDOBHijri.value,
         userInfoResponse: clearUserInfo == true
             ? null
             : userInfoResponse ?? this.userInfoResponse,
@@ -142,8 +181,21 @@ class EkramBookCemetryState extends Equatable {
         burialDateHijri: burialDateHijri ?? this.burialDateHijri,
         burialDateGorgian: burialDateGorgian ?? this.burialDateGorgian,
         isPandemicDeath: isPandemicDeath ?? this.isPandemicDeath,
-        isMuslim: isMuslim ?? this.isMuslim,
-        gender: gender ?? this.gender);
+        isMuslim: isMuslim == null ? this.isMuslim : isMuslim.value,
+        gender: gender == null ? this.gender : gender.value,
+        firstName: firstName == null ? this.firstName : firstName.value,
+        secondName: secondName == null ? this.secondName : secondName.value,
+        thirdName: thirdName == null ? this.thirdName : thirdName.value,
+        fourthName: fourthName == null ? this.fourthName : fourthName.value,
+        nationalities: nationalities ?? this.nationalities,
+        selectedNationality: selectedNationality == null
+            ? this.selectedNationality
+            : selectedNationality.value,
+        countries: countries ?? this.countries,
+        deathCities: deathCities ?? this.deathCities,
+        selectedCountry: selectedCountry ?? this.selectedCountry,
+        selectedDeathCity: selectedDeathCity ?? this.selectedDeathCity,
+        otherDeathCity: otherDeathCity ?? this.otherDeathCity);
   }
 
   @override
@@ -173,45 +225,71 @@ class EkramBookCemetryState extends Equatable {
         burialDateGorgian,
         isFetus,
         isMuslim,
-        gender
+        gender,
+        fourthName,
+        thirdName,
+        secondName,
+        firstName,
+        selectedNationality,
+        selectedCountry,
+        selectedDeathCity,
+        otherDeathCity,
       ];
+
+  bool allowFillData() {
+    return selectedNationalType?.fillInfo == true || isFetus == true;
+  }
 
   bool isNextButtonEnabled() {
     print("isNextButtonEnabled");
     print(selectedTime);
     if (currentPageValue == 0) {
-      if (relation?.isEmpty ?? true) return false;
       return true;
     } else if (currentPageValue == 1) {
-      if (selectedNationalType != null &&
-          userInfoResponse != null &&
-          isMuslim != null &&
-          isFetus != null) {
-        return true;
-      } else {
-        return false;
-      }
-    } else if (currentPageValue == 2) {
-      print("KK");
-      if (selectedCity == null ||
+      if (isMuslim == null ||
+          gender == null ||
+          selectedCity == null ||
           burialDateGorgian == null ||
           burialDateHijri == null ||
           selectedTime == null ||
-          isPandemicDeath == null) {
+          isPandemicDeath == null ||
+          selectedCemetry == null ||
+          selectedCemetryType == null ||
+          selectedCountry == null ||
+          selectedNationality == null) {
         return false;
-      } else {
-        if (selectedTime?.id == 30976) {
-          if (otherTimeName?.isEmpty ?? true)
-            return false;
-          else
-            return true;
-        } else
-          return true;
       }
-    } else if (currentPageValue == 3) {
+
+      if (selectedTime?.id == 30976) {
+        if (otherTimeName?.isEmpty ?? true) {
+          return false;
+        }
+      }
+
+      if (selectedCountry?.localCountry == false &&
+          (otherDeathCity?.isEmpty ?? true)) return false;
+
+      if (selectedCountry?.localCountry == true && selectedDeathCity == null) {
+        return false;
+      }
+
+      if (isFetus == true) {
+        if (firstName?.isEmpty ?? true) return false;
+      } else if (isFetus == false) {
+        if ((deceassedId?.isEmpty ?? true) ||
+            selectedNationalType == null ||
+            deceassedDOBGorgian == null ||
+            deceassedDOBHijri == null ||
+            (firstName?.isEmpty ?? true) ||
+            (fourthName?.isEmpty ?? true)) {
+          return false;
+        }
+      }
+
+      return true;
+    } else if (currentPageValue == 2) {
       if (agreement == true &&
-          selectedCemetry != null &&
-          selectedCemetrySize != null &&
+          /* selectedCemetry != null &&*/
           selectedCemetryType != null) return true;
       return false;
     }

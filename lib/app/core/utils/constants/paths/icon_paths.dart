@@ -38,6 +38,7 @@ class IconPath {
   static const arrowBack = '${_svgIconPath}arrow_back_icon$_svg';
   static const star = '${_svgIconPath}Star$_svg';
   static const dangerIcon = '${_svgIconPath}danger_red$_svg';
+  static const msgBoxIcon = '${_svgIconPath}msg_box_icon$_svg';
 
   static const walletNoFees = '${_svgIconPath}wallet_no_fees$_svg';
   static const switchProfileIcon = '${_svgIconPath}profile-2user$_svg';
@@ -393,10 +394,8 @@ class IconPath {
   static const cancelOrder = '${_svgIconPath}closeـsquare$_svg';
   static const editIcon = '${_svgIconPath}edit_icon$_svg';
   static const logoutIcon = '${_svgIconPath}logout$_svg';
-  static const notificationStatusIcon = '${_svgIconPath}notification_status$_svg';
+  static const notificationStatusIcon =
+      '${_svgIconPath}notification_status$_svg';
 
   static const menuIcon = '${_svgIconPath}menu_icon$_svg';
-
-
-
 }

@@ -36,11 +36,11 @@ class InquiryOrgnizationResultsPage extends StatelessWidget {
             EkramOrgnizationCemetryState>(
           listener: (context, state) {},
           builder: (context, state) {
-            return Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ListView.builder(
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Stack(
+                children: [
+                  ListView.builder(
                       shrinkWrap: true,
                       itemCount: state.charityOrgnizations!.length,
                       itemBuilder: (ctx, index) {
@@ -48,37 +48,37 @@ class InquiryOrgnizationResultsPage extends StatelessWidget {
                           item: state.charityOrgnizations![index],
                         );
                       }),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    color: AppColor.scaffoldBackground,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ElevatedButtonWidget.primaryCustomBorder(
-                          onPressed: () {
-                            context
-                                .read<EkramInquiryOrgnizationBloc>()
-                                .add(const ClearEvent());
-                            NavigationService.navigatorKey.currentState!
-                                .pop(context);
-                          },
-                          text: "another_search".tr(),
-                        ),
-                        const CustomVerticalSpace(height: 16),
-                        ElevatedButtonWidget.primaryCustom(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                          },
-                          text: "return_to_services_page".tr(),
-                        )
-                      ],
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      color: AppColor.scaffoldBackground,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ElevatedButtonWidget.primaryCustomBorder(
+                            onPressed: () {
+                              context
+                                  .read<EkramInquiryOrgnizationBloc>()
+                                  .add(const ClearEvent());
+                              NavigationService.navigatorKey.currentState!
+                                  .pop(context);
+                            },
+                            text: "another_search".tr(),
+                          ),
+                          const CustomVerticalSpace(height: 16),
+                          ElevatedButtonWidget.primaryCustom(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            },
+                            text: "return_to_services_page".tr(),
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             );
           },
         ),
