@@ -9,9 +9,13 @@ import '../../../../core/services/global/web_service.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
 import '../../domain/entities/find_cemetry_request.dart';
 import '../../domain/entities/find_grave_request.dart';
+import '../../domain/entities/send_otp_params.dart';
+import '../../domain/entities/verify_otp_params.dart';
 import '../models/find_cemetry_response_model.dart';
 import '../models/find_grave_response_model.dart';
 import '../models/orgnization_charity_list.dart';
+import '../models/send_otp_response.dart';
+import '../models/verify_otp_response.dart';
 
 abstract class EkramServicesRemoteDataSource {
   Future<FindCemetryResponse> findCemetries(
@@ -28,6 +32,10 @@ abstract class EkramServicesRemoteDataSource {
       {required int params});
 
   Future<List<LookUpItem>> getEkramIdentityTypes();
+
+  Future<SendOTPResponseModel> sendOTPForPrint({required SendOTPParams params});
+  Future<VerifyOTPResponseModel> verifyOTPForPrint(
+      {required VerifyOTPParams params});
 }
 
 class EkramServicesRemoteDataSourceImpl extends EkramServicesRemoteDataSource {
@@ -253,5 +261,19 @@ class EkramServicesRemoteDataSourceImpl extends EkramServicesRemoteDataSource {
             response: response);
       }
     }
+  }
+
+  @override
+  Future<SendOTPResponseModel> sendOTPForPrint(
+      {required SendOTPParams params}) {
+    // TODO: implement sendOTPForPrint
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<VerifyOTPResponseModel> verifyOTPForPrint(
+      {required VerifyOTPParams params}) {
+    // TODO: implement verifyOTPForPrint
+    throw UnimplementedError();
   }
 }

@@ -3,15 +3,13 @@ import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/features/ekram_inquiry_service/data/models/find_cemetry_response_model.dart';
 import 'package:balady_plus/app/features/ekram_inquiry_service/data/models/find_grave_response_model.dart';
 import 'package:balady_plus/app/features/ekram_inquiry_service/data/models/orgnization_charity_list.dart';
+import 'package:balady_plus/app/features/ekram_inquiry_service/data/models/send_otp_response.dart';
+import 'package:balady_plus/app/features/ekram_inquiry_service/data/models/verify_otp_response.dart';
 import 'package:balady_plus/app/features/ekram_inquiry_service/domain/entities/find_cemetry_request.dart';
 import 'package:balady_plus/app/features/ekram_inquiry_service/domain/entities/find_grave_request.dart';
+import 'package:balady_plus/app/features/ekram_inquiry_service/domain/entities/send_otp_params.dart';
+import 'package:balady_plus/app/features/ekram_inquiry_service/domain/entities/verify_otp_params.dart';
 
-import 'package:balady_plus/app/features/events/domain/entities/events_category/event_category_response.dart';
-import 'package:balady_plus/app/features/events/domain/entities/events_category/events_category_params.dart';
-import 'package:balady_plus/app/features/events/domain/entities/events_details/event_details_item.dart';
-import 'package:balady_plus/app/features/events/domain/entities/events_details/event_details_params.dart';
-import 'package:balady_plus/app/features/events/domain/entities/search_events/search_events_params.dart';
-import 'package:balady_plus/app/features/events/domain/entities/search_events/search_events_response.dart';
 import 'package:balady_plus/app/features/new_appointment/presentation/core/models/lookup_list_model.dart';
 import 'package:dartz/dartz.dart';
 
@@ -106,6 +104,38 @@ class EkramServicesRepositoryImpl implements EkramServicesRepository {
   Future<Either<Failure, List<LookUpItem>>> getEkramIdentityTypes() async {
     try {
       final data = await remoteDataSource.getEkramIdentityTypes();
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(
+        error.errorMessage,
+        statusCode: error.statusCode,
+      ));
+    }
+  }
+
+  @override
+  Future<Either<Failure, SendOTPResponseModel>> sendOTPForPrint(
+      {required SendOTPParams params}) async {
+    try {
+      final data = await remoteDataSource.sendOTPForPrint(params: params);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(
+        error.errorMessage,
+        statusCode: error.statusCode,
+      ));
+    }
+  }
+
+  @override
+  Future<Either<Failure, VerifyOTPResponseModel>> verifyOTPForPrint(
+      {required VerifyOTPParams params}) async {
+    try {
+      final data = await remoteDataSource.verifyOTPForPrint(params: params);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());

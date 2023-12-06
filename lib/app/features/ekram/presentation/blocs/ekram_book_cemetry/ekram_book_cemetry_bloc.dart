@@ -146,7 +146,10 @@ class EkramBookCemetryBloc
   Future<void> _changeNationalityHandler(
       GetNationalityEvent e, Emitter emitter) async {
     emitter(state.copyWith(
-        selectedNationality: Nullable(e.item), errorMessage: ""));
+        selectedNationality: Nullable(e.item),
+        errorMessage: "",
+        cemetries: [],
+        selectedCemetry: Nullable(null)));
   }
 
   Future<void> _changeOtherCityyHandler(
@@ -248,28 +251,41 @@ class EkramBookCemetryBloc
 
   Future<void> _changeBurialCityEventHandler(
       ChangeBurialCityEvent e, Emitter emitter) async {
-    emitter(state.copyWith(selectedCity: e.item, errorMessage: ""));
+    emitter(state.copyWith(
+        selectedCity: e.item,
+        errorMessage: "",
+        cemetries: [],
+        selectedCemetry: Nullable(null)));
 
     //getCemetriesHandler();
   }
 
   Future<void> _changeCemetryTypeEventHandler(
       ChangeCemetryTypeEvent e, Emitter emitter) async {
-    emitter(state.copyWith(selectedCemetryType: e.item, errorMessage: ""));
+    emitter(state.copyWith(
+        selectedCemetryType: e.item,
+        errorMessage: "",
+        cemetries: [],
+        selectedCemetry: Nullable(null)));
 
     //  getCemetriesHandler();
   }
 
   Future<void> _changeIsEpidamicHandler(
       ChangeIsEpidamicEvent e, Emitter emitter) async {
-    emitter(state.copyWith(isPandemicDeath: e.value, errorMessage: ""));
+    emitter(state.copyWith(
+        isPandemicDeath: e.value,
+        errorMessage: "",
+        cemetries: [],
+        selectedCemetry: Nullable(null)));
 
     // getCemetriesHandler();
   }
 
   Future<void> _changeCemetryEventHandler(
       ChangeCemetryEvent e, Emitter emitter) async {
-    emitter(state.copyWith(selectedCemetry: e.item, errorMessage: ""));
+    emitter(
+        state.copyWith(selectedCemetry: Nullable(e.item), errorMessage: ""));
   }
 
   Future<void> _changeBurialDateEventHandler(
@@ -296,6 +312,8 @@ class EkramBookCemetryBloc
     emitter(state.copyWith(
         burialDateGorgian: CommonFunctions.padHijriDate(gorgian),
         errorMessage: "",
+        cemetries: [],
+        selectedCemetry: Nullable(null),
         burialDateHijri: CommonFunctions.padHijriDate(hijri)));
     // getCemetriesHandler();
   }
@@ -303,7 +321,11 @@ class EkramBookCemetryBloc
   Future<void> _changeBurialTimeventHandler(
       ChangeBurialTimevent e, Emitter emitter) async {
     emitter(state.copyWith(
-        selectedTime: e.item, clearOtherBurialTime: true, errorMessage: ""));
+        selectedTime: e.item,
+        clearOtherBurialTime: true,
+        errorMessage: "",
+        cemetries: [],
+        selectedCemetry: Nullable(null)));
   }
 
   Future<void> _changeBurialTimeOtherNameHandler(
@@ -328,7 +350,10 @@ class EkramBookCemetryBloc
 
   Future<void> _changeReligionHandler(
       ChangeReligionEvent e, Emitter emitter) async {
-    emitter(state.copyWith(isMuslim: Nullable(e.value)));
+    emitter(state.copyWith(
+        isMuslim: Nullable(e.value),
+        cemetries: [],
+        selectedCemetry: Nullable(null)));
   }
 
   Future<void> _changeIsFetus(ChangeIsFetus e, Emitter emitter) async {
@@ -337,6 +362,8 @@ class EkramBookCemetryBloc
         selectedNationality: Nullable(null),
         clearUserInfo: true,
         errorMessage: "",
+        cemetries: [],
+        selectedCemetry: Nullable(null),
         firstName: Nullable(null),
         secondName: Nullable(null),
         thirdName: Nullable(null),
@@ -364,8 +391,7 @@ class EkramBookCemetryBloc
   Future<void> _checkUserInfoHandler(
       CheckUserInfoEvent e, Emitter emitter) async {
     if (state.nationalities?.isEmpty ?? true) {
-      getNationalities();
-      return;
+      await getNationalities();
     }
     emitter(state.copyWith(status: BlocStatus.loading));
 
@@ -395,6 +421,8 @@ class EkramBookCemetryBloc
       emitter(state.copyWith(
           status: BlocStatus.success,
           userInfoResponse: success.data?.result,
+          cemetries: [],
+          selectedCemetry: Nullable(null),
           errorMessage: "",
           firstName: Nullable(firstName),
           secondName: Nullable(secondName),
@@ -668,8 +696,7 @@ class EkramBookCemetryBloc
     emitter(state.copyWith(
       status: BlocStatus.performing,
     ));
-    await controller.animateToPage(nextPage,
-        duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+    controller.jumpToPage(nextPage);
     emitter(
         state.copyWith(status: BlocStatus.success, currentPageValue: nextPage));
 
@@ -686,8 +713,7 @@ class EkramBookCemetryBloc
       emitter(state.copyWith(
         status: BlocStatus.performing,
       ));
-      await controller.animateToPage(prvoiusPage,
-          duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+      controller.jumpToPage(prvoiusPage);
       emitter(state.copyWith(
           status: BlocStatus.success, currentPageValue: prvoiusPage));
     }

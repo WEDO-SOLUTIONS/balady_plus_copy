@@ -99,6 +99,7 @@ import '../../features/ekram_inquiry_service/presentation/pages/inquiry_graves/i
 import '../../features/ekram_inquiry_service/presentation/pages/inquiry_orgnization/inquiry_orgnization_details.dart';
 import '../../features/ekram_inquiry_service/presentation/pages/inquiry_orgnization/inquiry_orgnization_result.dart';
 import '../../features/ekram_inquiry_service/presentation/pages/inquiry_orgnization/inquiry_orgnization_result_details.dart';
+import '../../features/ekram_inquiry_service/presentation/pages/inquiry_print/inquiry_print_details.dart';
 import '../../features/events/presentation/pages/events_main_page.dart';
 import '../../features/events/presentation/pages/single_image_page.dart';
 import '../../features/map_page/presentation/pages/resturant_details_page.dart';
@@ -691,6 +692,9 @@ class Routes {
 
         RouteName.EkramBookCemetryStartService: (context) =>
             const EkramBookCemetryStartService(),
+
+        RouteName.EkramInquiryPrintDetailsPage: (context) =>
+            const InquiryPrintDetailsPage()
       };
 }
 

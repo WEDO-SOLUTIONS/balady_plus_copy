@@ -118,7 +118,7 @@ class EkramBookCemetryState extends Equatable {
     final String? relation,
     final LookUpItem? selectedNationalType,
     final LookUpItem? selectedCity,
-    final LookUpItem? selectedCemetry,
+    final Nullable<LookUpItem?>? selectedCemetry,
     final LookUpItem? selectedCemetrySize,
     final LookUpItem? selectedCemetryType,
     final LookUpItem? selectedTime,
@@ -168,7 +168,9 @@ class EkramBookCemetryState extends Equatable {
         cities: cities ?? this.cities,
         cemetries: cemetries ?? this.cemetries,
         selectedCity: selectedCity ?? this.selectedCity,
-        selectedCemetry: selectedCemetry ?? this.selectedCemetry,
+        selectedCemetry: selectedCemetry == null
+            ? this.selectedCemetry
+            : selectedCemetry.value,
         selectedCemetrySize: selectedCemetrySize ?? this.selectedCemetrySize,
         selectedCemetryType: selectedCemetryType ?? this.selectedCemetryType,
         selectedTime: selectedTime ?? this.selectedTime,

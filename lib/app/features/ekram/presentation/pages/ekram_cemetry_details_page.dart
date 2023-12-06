@@ -99,16 +99,18 @@ class _EkramCemetryDetailsPageState extends State<EkramCemetryDetailsPage> {
               ),
 
               DeceasedInfo(
-                  gender: params.genderName,
-                  name: params.deceasedName,
-                  religion: params.religionName,
-                  nationality: params.nationalityName),
-
-              BurialInfo(
+                gender: params.genderName,
+                name: params.deceasedName,
+                religion: params.religionName,
+                nationality: params.nationalityName,
                 time: params.burialTime,
                 date: params.burialDate,
                 cemetryName: params.cemeteryName,
                 apologyReason: params.apologyReason,
+                deathCityName: params.deathCityName,
+                deathCountryName: params.deathCountryName,
+                id: params.deceasedIdentityNumber,
+                burialCity: params.burialCityName,
               ),
 
               //CemetryInfo(name: params.cemeteryName),
@@ -184,8 +186,34 @@ class DeceasedInfo extends StatelessWidget {
   final String? nationality;
   final String? religion;
 
+  final String? city;
+  final String? date;
+  final String? time;
+  final String? isEpidamic;
+  final String? cemetryName;
+
+  final String? apologyReason;
+  final String? deathCityName;
+
+  final String? deathCountryName;
+  final String? burialCity;
+  final String? id;
   const DeceasedInfo(
-      {Key? key, this.gender, this.nationality, this.name, this.religion})
+      {Key? key,
+      this.gender,
+      this.nationality,
+      this.name,
+      this.religion,
+      this.city,
+      this.date,
+      this.time,
+      this.isEpidamic,
+      this.cemetryName,
+      this.apologyReason,
+      this.deathCountryName,
+      this.deathCityName,
+      this.burialCity,
+      this.id})
       : super(key: key);
 
   @override
@@ -194,149 +222,105 @@ class DeceasedInfo extends StatelessWidget {
       title: Helpers.translatingWord("deceasedInfo"),
       icon: IconPath.vdSummurySPL,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+
+          FieldData(
+            title: Helpers.translatingWord("ekram_deceased_id"),
+            subTitle: id,
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+          FieldData(
+            title: Helpers.translatingWord("deceasedName"),
+            subTitle: name,
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+          FieldData(
+            title: Helpers.translatingWord("ekramGender"),
+            subTitle: gender,
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+          FieldData(
+            title: Helpers.translatingWord("ekramNationality"),
+            subTitle: nationality,
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+          FieldData(
+            title: Helpers.translatingWord("ekramReligion"),
+            subTitle: religion,
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+          FieldData(
+            title: Helpers.translatingWord("burialDate"),
+            subTitle: date,
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+
+//
+          FieldData(
+            title: Helpers.translatingWord("ekram_death_country"),
+            subTitle: deathCountryName,
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+
+          FieldData(
+            title: Helpers.translatingWord("ekram_death_city"),
+            subTitle: deathCityName,
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+
+          FieldData(
+            title: Helpers.translatingWord("burialCity"),
+            subTitle: burialCity,
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+
+//
+
+          FieldData(
+            title: Helpers.translatingWord("cemetry_deceassed_burial_time"),
+            subTitle: time,
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+          FieldData(
+            title: Helpers.translatingWord("cemetry_name"),
+            subTitle: cemetryName,
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+          if (apologyReason != null) ...[
+            FieldData(
+              title: Helpers.translatingWord("apology_reason"),
+              subTitle: apologyReason,
+            ),
             const CustomVerticalSpace(
               height: 16,
-            ),
-            FieldData(
-              title: Helpers.translatingWord("deceasedName"),
-              subTitle: name,
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: Helpers.translatingWord("ekramGender"),
-              subTitle: gender,
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: Helpers.translatingWord("ekramNationality"),
-              subTitle: nationality,
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: Helpers.translatingWord("ekramReligion"),
-              subTitle: religion,
             ),
           ],
-        )
-      ],
-    );
-  }
-}
-
-class BurialInfo extends StatelessWidget {
-  final String? city;
-  final String? date;
-  final String? time;
-  final String? isEpidamic;
-  final String? cemetryName;
-  final String? apologyReason;
-
-  const BurialInfo(
-      {Key? key,
-      this.city,
-      this.date,
-      this.time,
-      this.isEpidamic,
-      this.cemetryName,
-      this.apologyReason})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ExpandableCard(
-      title: Helpers.translatingWord("burialInfo"),
-      icon: IconPath.vdSummuryDesc,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: Helpers.translatingWord("burialDate"),
-              subTitle: date,
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: Helpers.translatingWord("burialTime"),
-              subTitle: time,
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: Helpers.translatingWord("cemetry_name"),
-              subTitle: cemetryName,
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            if (apologyReason != null) ...[
-              FieldData(
-                title: Helpers.translatingWord("apology_reason"),
-                subTitle: apologyReason,
-              ),
-              const CustomVerticalSpace(
-                height: 16,
-              ),
-            ],
-          ],
-        )
-      ],
-    );
-  }
-}
-
-class CemetryInfo extends StatelessWidget {
-  final String? type;
-  final String? size;
-  final String? name;
-
-  const CemetryInfo({Key? key, this.type, this.size, this.name})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomEnhancedExpansionPanelWidget(
-      underline: false,
-      title: Helpers.translatingWord("cemetry_info"),
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ReadOnlyField(
-              title: Helpers.translatingWord("cemetry_type"),
-              subTitle: type,
-            ),
-            /* CustomTitleSubtitleCardWidget(
-                horizontalPadding: Constants.smallPadding,
-                title: Helpers.translatingWord("cemetry_size"),
-                subtitle: size,
-              ),
-            CustomTitleSubtitleCardWidget(
-                horizontalPadding: Constants.smallPadding,
-                title: Helpers.translatingWord("cemetry_name"),
-                subtitle: name,
-              ),*/ /*
-CustomTitleSubtitleCardWidget(
-                horizontalPadding: Constants.smallPadding,
-                title: Helpers.translatingWord("ekramReligion"),
-                subtitle: religion,
-              ), */
-          ],
-        )
+        ])
       ],
     );
   }
