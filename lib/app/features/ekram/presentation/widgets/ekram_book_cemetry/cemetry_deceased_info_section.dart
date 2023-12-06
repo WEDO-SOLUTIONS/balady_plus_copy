@@ -116,15 +116,16 @@ class _CemetryDeceasedInfoSectionState
                       if (state.isFetus == false) ...[
                         CemetryNationalDobHijri(),
                         CemetryNationalDobGorgian(),
-                        ElevatedButtonWidget.verify(
-                            text: (state.userInfoResponse != null)
-                                ? "done_check".tr()
-                                : "verify".tr(),
-                            onPressed: () {
-                              context
-                                  .read<EkramBookCemetryBloc>()
-                                  .add(CheckUserInfoEvent());
-                            }),
+                        if (state.selectedNationalType?.fillInfo == false)
+                          ElevatedButtonWidget.verify(
+                              text: (state.userInfoResponse != null)
+                                  ? "done_check".tr()
+                                  : "verify".tr(),
+                              onPressed: () {
+                                context
+                                    .read<EkramBookCemetryBloc>()
+                                    .add(CheckUserInfoEvent());
+                              }),
                         const CustomVerticalSpace(height: 16),
                       ],
                       ...[

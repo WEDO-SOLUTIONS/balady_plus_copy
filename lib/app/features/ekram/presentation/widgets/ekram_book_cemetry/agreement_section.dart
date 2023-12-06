@@ -36,19 +36,15 @@ class AgreementSection extends StatelessWidget {
                       VdHeaderDesc(
                         header: ("review_request").tr(),
                       ),
-                      ApplicationInfo(),
+                      const ApplicationInfo(),
                       const CustomVerticalSpace(
                         height: 16,
                       ),
-                      DeceasedInfo(),
+                      const DeceasedInfo(),
                       const CustomVerticalSpace(
                         height: 16,
                       ),
-                      BurialInfo(),
-                      const CustomVerticalSpace(
-                        height: 16,
-                      ),
-                      PledgesSummuryWidget()
+                      const PledgesSummuryWidget()
                     ],
                   ),
                 ),
@@ -141,6 +137,9 @@ class DeceasedInfo extends StatelessWidget {
                 title: Helpers.translatingWord("is_dead_fetus"),
                 subTitle: state.isFetus == true ? "yes".tr() : "no".tr(),
               ),
+              const CustomVerticalSpace(
+                height: 16,
+              ),
               if (state.isFetus == false) ...[
                 FieldData(
                   title: Helpers.translatingWord("cemetry_national_type"),
@@ -193,9 +192,77 @@ class DeceasedInfo extends StatelessWidget {
               const CustomVerticalSpace(height: 16),
               FieldData(
                 title: Helpers.translatingWord("nationality"),
-                subTitle: state.fourthName,
+                subTitle: state.selectedNationality?.name,
               ),
               const CustomVerticalSpace(height: 16),
+              FieldData(
+                title: Helpers.translatingWord("ekramReligion"),
+                subTitle: state.isMuslim == false
+                    ? ("non_muslim").tr()
+                    : ("muslim").tr(),
+              ),
+              const CustomVerticalSpace(height: 16),
+              FieldData(
+                title: ("sex").tr(),
+                subTitle: state.gender == 2 ? ("female").tr() : ("male").tr(),
+              ),
+              const CustomVerticalSpace(height: 16),
+              FieldData(
+                title: Helpers.translatingWord("ekram_death_country"),
+                subTitle: state.selectedCountry?.name,
+              ),
+              if (state.selectedCountry?.localCountry == true) ...[
+                const CustomVerticalSpace(height: 16),
+                FieldData(
+                  title: Helpers.translatingWord("ekram_death_city"),
+                  subTitle: state.selectedDeathCity?.name,
+                ),
+              ],
+              if (state.selectedCountry?.localCountry == false) ...[
+                const CustomVerticalSpace(height: 16),
+                FieldData(
+                  title: Helpers.translatingWord("ekram_death_city"),
+                  subTitle: state.otherDeathCity,
+                ),
+              ],
+              const CustomVerticalSpace(height: 16),
+              FieldData(
+                title: Helpers.translatingWord("cemetry_deceassed_burial_city"),
+                subTitle: state.selectedCity?.name,
+              ),
+              const CustomVerticalSpace(height: 16),
+              FieldData(
+                title: Helpers.translatingWord(
+                    "cemetry_deceassed_burial_date_hijri"),
+                subTitle: state.burialDateHijri,
+              ),
+              const CustomVerticalSpace(height: 16),
+              FieldData(
+                title: Helpers.translatingWord(
+                    "cemetry_deceassed_burial_date_gorgian"),
+                subTitle: state.burialDateGorgian,
+              ),
+              const CustomVerticalSpace(height: 16),
+              FieldData(
+                title: Helpers.translatingWord("cemetry_deceassed_burial_time"),
+                subTitle: state.selectedTime?.name,
+              ),
+              const CustomVerticalSpace(height: 16),
+              FieldData(
+                title: Helpers.translatingWord("cemetry_deceassed_epidamic"),
+                subTitle:
+                    state.isPandemicDeath == true ? "yes".tr() : "no".tr(),
+              ),
+              const CustomVerticalSpace(height: 16),
+              FieldData(
+                title: Helpers.translatingWord("cemetry_type"),
+                subTitle: state.selectedCemetryType?.name,
+              ),
+              const CustomVerticalSpace(height: 16),
+              FieldData(
+                title: Helpers.translatingWord("cemetry_name"),
+                subTitle: state.selectedCemetry?.name,
+              ),
             ],
           )
         ],

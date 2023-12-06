@@ -273,6 +273,8 @@ class RouteName {
 
   static const EkramInquiryGravesResultsPage = 'EkramInquiryGravesResultsPage';
   static const EkramBookCemetryStartService = 'EkramBookCemetryStartService';
+
+  static const EkramInquiryPrintDetailsPage = 'EkramInquiryPrintDetailsPage';
 }
 
 class EtmamRoutesNames {
