@@ -231,6 +231,50 @@ class RouteName {
   static const tobaccoDetails = '/tobaccoDetails';
   static const tobaccoDisclosed = '/tobaccoDisclosed';
   static const submitDisclosedSuccessfully = '/submitDisclosedSuccessfully';
+
+  // Ekram
+  // Ekram
+  static const ekramOrdersScreen = 'ekramOrdersHomeScreen';
+  static const ekramHomeScreen = 'ekramHomeScreen';
+  static const ekramTransportationListScreen = 'ekramTransportationListScreen';
+  static const driverEkramTransportationListScreen =
+      'driverEkramTransportationListScreen';
+
+  static const ekramBookingListScreen = 'ekramBookingListScreen';
+  static const ekramSelectRequestTypeScreen = 'ekramSelectRequestTypeScreen';
+  static const ekramRequestTransportationScreen =
+      'ekramRequestTransportationScreen';
+  static const ekramTransportationDetailsScreen =
+      'ekramTransportationDetailsScreen';
+  static const driverEkramTransportationDetailsScreen =
+      'driverEkramTransportationDetailsScreen';
+
+  static const ekramSuccessScreen = 'ekramSuccessScreen';
+  static const EkramMapPage = 'EkramMapPage';
+  static const ekramCemetryRequestScreen = 'ekramCemetryRequestScreen';
+  static const EkramCemetryDetailsPage = 'EkramCemetryDetailsPage';
+
+  static const EkramInquiryCemetryDetailsPage =
+      'EkramInquiryCemetryDetailsPage';
+
+  static const EkramInquiryCemetryResultsPage =
+      'EkramInquiryCemetryResultsPage';
+
+  static const EkramInquiryOrgnizationsDetailsPage =
+      'EkramInquiryOrgnizationsDetailsPage';
+
+  static const EkramInquiryOrgnizationsResultsPage =
+      'EkramInquiryOrgnizationsResultsPage';
+
+  static const EkramInquiryOrgnizationsResultsDetailsPage =
+      'EkramInquiryOrgnizationsResultsDetailsPage';
+
+  static const EkramInquiryGravesDetailsPage = 'EkramInquiryGravesDetailsPage';
+
+  static const EkramInquiryGravesResultsPage = 'EkramInquiryGravesResultsPage';
+  static const EkramBookCemetryStartService = 'EkramBookCemetryStartService';
+
+  static const EkramInquiryPrintDetailsPage = 'EkramInquiryPrintDetailsPage';
 }
 
 class EtmamRoutesNames {

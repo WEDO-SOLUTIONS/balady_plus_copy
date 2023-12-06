@@ -2495,7 +2495,7 @@
   "islamic_services": "الخدمات اليومية",
   "customer_voice_services": "خدمات تهمك",
   "business_license_services": "المتجر البلدي",
-  "honoring_the_dead_services": "خدمات تكريم الموتى",
+  "honoring_the_dead_services": "خدمات اكرام الموتى",
   "health_certificates_services": "خدمات الشهادات الصحية",
   "help_services": "خدمات مساعدة",
   "men": "رجال",
@@ -3485,12 +3485,11 @@
 "poster_cancel_confirm_msg":"عزيزي المستفيد، هل تريد الاستمرار بإلغاء طلب تصريح الملصقات الدعائية رقم {}",
 "poster_cancel_confirm_yes":"موافق", 
 "poster_cancel_confirm_no":"إلغاء", 
-"posters_bill_number":"رقم الفاتورة",
 "posters_go_to_deatails":"الانتقال الى تفاصيل الطلب", 
 
-  "tobaccoServices": "الافصاح عن التبغ",
 
-
+"posters_bill_number":"رقم الفاتورة", 
+"tobaccoServices": "الافصاح عن التبغ",
   "authenticationـnumber": "رقم التوثيق",
   "not_disclosed": "لم يتم الافصاح",
   "disclosed": "تم الافصاح",
@@ -3549,7 +3548,67 @@
   "must_comment": "يجب اضافة تعليق",
 
 
-  "attached_successfully": "تم ارفاق الملف بنجاح"
+  "attached_successfully": "تم ارفاق الملف بنجاح", 
+
+
+  "cemetry_deceassed_info":"بيانات المتوفي", 
+  "cemetry_national_type":"نوع الهوية", 
+  "cemetry_national_id":"رقم الهوية", 
+  "cemetry_dob_gorgian":"تاريخ الميلاد (ميلادي)",
+  "cemetry_dob_hijri":"تاريخ الميلاد (هجري)",
+  "cemetry_dob":"تاريخ الميلاد", 
+  "cemetry_retreive":"استرجاع", 
+  "cemetry_deceassed_name":"اسم المتوفي", 
+  "cemetry_deceassed_gender":"الجنس", 
+  "cemetry_deceassed_nationality":"الجنسية", 
+  "cemetry_deceassed_religion":"الديانة",
+  "cemetry_deceassed_burial":"بيانات الدفن",  
+  "cemetry_deceassed_burial_city":"مدينة الدفن", 
+  "cemetry_deceassed_burial_date_gorgian":"تاريخ الدفن (ميلادي)",
+  "cemetry_deceassed_burial_date_hijri":"تاريخ الدفن (هجري)",
+  "cemetry_deceassed_burial_time":"وقت الدفن",  
+  "cemetry_deceassed_epidamic":"هل الوفاة بسبب وباء", 
+  "cemetry_info":"بيانات المقبرة", 
+  "cemetry_type":"نوع القبر", 
+  "cemetry_size": "حجم القبر", 
+  "cemetry_name":"المقبرة" , 
+  "cemetry_booking_request":"طلب حجز مقبرة", 
+  "is_dead_fetus":"هل المتوفى جنين؟", 
+  "ekram_main_data":"البيانات الرئيسية",
+  "ekram_benf_transport":"طلبات نقل وتجهيز الموتى", 
+  "ekram_empolyee_title":"تسجيل رحلة الدفن", 
+  "ekram_inquiry_burial_grave":"الاستعلام عن المقابر" , 
+  "ekram_inquiry_orgnizations":"الاستعلام عن مقدمي خدمات النقل والتجهيز" , 
+"ekram_inquiry_about_grave":"الاستعلام عن موقع قبر متوفى ", 
+"ekram_print_certificate":" طباعة شهادة الدفن", 
+
+  "ekram_laundry_exists":"وجود مغسلة اموات في المقبرة",
+  "ekram_transportation_name":"اسم الجهة", 
+  "ekram_entity_details":"تفاصيل الجهة", 
+  "ekram_entity_charity_name":"الجهة الخيرية", 
+  "mobile_no_1":"رقم التواصل الأول", 
+  "mobile_no_2":"رقم التواصل الثاني", 
+  "ekram_grave_full_name":"الاسم رباعي", 
+  "ekram_identity_type":"نوع الاثبات", 
+  "ekram_identity_no":"رقم الاثبات", 
+  "full_decassed_name":"اسم المتوفي", 
+  "city_state":"المدينة/ المحافظة", 
+  "another_search":"بحث آخر", 
+  "return_to_services_page":"العودة لصفحة الخدمات", 
+  "ekram_first_name":"الاسم الأول", 
+  "ekram_second_name":"الاسم الثاني", 
+  "ekram_third_name":"الاسم الثالث", 
+  "ekram_fourth_name":"الاسم الرابع", 
+  "ekram_death_country":"دولة الوفاة",
+  "ekram_death_city":"مدينة الوفاة", 
+  "ekram_condolence_msg_title":"رسالة تعزية", 
+  "ekram_condolence_msg":"تشارككم وزارة الشؤون البلدية والقروية والإسكان أحزانكم في وفاة فقيدكم، وتتقدم بخالص التعازي والمواساة لأسرته الكريمة، راجين لكم الصبر والسلوان",
+
+  "ekram_deceased_id":"رقم هوية المتوفى", 
+
+
+  "ekram_print_deceased_data":"بيانات المتوفي", 
+  "ekram_print_reciver_data":"بيانات مستلم الجثمان"
 
 
 }

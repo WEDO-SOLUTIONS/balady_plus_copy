@@ -10,7 +10,6 @@ import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/utils_exports.dart'
     show
-        AppStyle,
         CommonFunctions,
         CommonProperties,
         ContextConversion,

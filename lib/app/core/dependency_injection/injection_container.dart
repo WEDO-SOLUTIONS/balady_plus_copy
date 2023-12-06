@@ -67,6 +67,7 @@ import 'features/calendar_injection.dart';
 import 'features/commercials_posters_injection.dart';
 import 'features/compliance_injection.dart';
 import 'features/dc_injection.dart';
+import 'features/ekram_injection.dart';
 import 'features/events_injection.dart';
 import 'features/objectable_transactions_injection.dart';
 import 'features/objections_injection.dart';
@@ -140,6 +141,8 @@ void initialize() {
   EventsInjection.init();
 
   CalendarInjection.init();
+  //? Ekram
+  EkramInjection.init();
 
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));
