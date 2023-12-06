@@ -96,15 +96,134 @@ Map<String, dynamic> servicesConfig = {
     },
   ],
   "honoring_the_dead_services": [
-    {
-      "id": 14,
-      "icon": "move_diseased",
+    /* {
+      "id": 1,
+      "icon": "ekram_benf_transport",
       "3d_icon": null,
-      "order": 14,
+      "order": 1,
       "isNew": false,
+      "requireLogin": true,
       "isImportant": false,
-      "action": {"type": "page", "value": "/move-diseased"},
-      "ar": {"title": "نقل وتجهيز الموتي", "description": null, "tag": null},
+      "action": {
+        "type": "page",
+        "value": RouteName.ekramTransportationListScreen
+      },
+      "ar": {
+        "title": "ekram_benf_transport".tr(),
+        "description": null,
+        "tag": null
+      },
+      "en": {"title": "Move Diseased", "description": null, "tag": null}
+    },
+    {
+      "id": 2,
+      "icon": "ekram_employee",
+      "3d_icon": null,
+      "order": 1,
+      "isNew": false,
+      "requireLogin": true,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": RouteName.driverEkramTransportationListScreen
+      },
+      "ar": {
+        "title": "ekram_empolyee_title".tr(),
+        "description": null,
+        "tag": null
+      },
+      "en": {"title": "Move Diseased", "description": null, "tag": null}
+    },*/
+    {
+      "id": 3,
+      "icon": "ekram_inq_graves",
+      "3d_icon": null,
+      "order": 1,
+      "isNew": false,
+      "requireLogin": true,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": RouteName.EkramInquiryCemetryDetailsPage
+      },
+      "ar": {
+        "title": "ekram_inquiry_burial_grave".tr(),
+        "description": null,
+        "tag": null
+      },
+      "en": {"title": "Move Diseased", "description": null, "tag": null}
+    },
+    {
+      "id": 4,
+      "icon": "ekram_inq_grave_dead",
+      "3d_icon": null,
+      "order": 1,
+      "isNew": false,
+      "requireLogin": true,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": RouteName.EkramInquiryGravesDetailsPage
+      },
+      "ar": {
+        "title": "ekram_inquiry_about_grave".tr(),
+        "description": null,
+        "tag": null
+      },
+      "en": {"title": "Move Diseased", "description": null, "tag": null}
+    },
+    {
+      "id": 5,
+      "icon": "ekram_orgnization",
+      "3d_icon": null,
+      "order": 1,
+      "isNew": false,
+      "requireLogin": true,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": RouteName.EkramInquiryOrgnizationsDetailsPage
+      },
+      "ar": {
+        "title": "ekram_inquiry_orgnizations".tr(),
+        "description": null,
+        "tag": null
+      },
+      "en": {"title": "Move Diseased", "description": null, "tag": null}
+    },
+    /*{
+      "id": 6,
+      "icon": "ekram_print",
+      "3d_icon": null,
+      "order": 1,
+      "isNew": false,
+      "requireLogin": true,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": RouteName.EkramInquiryPrintDetailsPage
+      },
+      "ar": {
+        "title": "ekram_print_certificate".tr(),
+        "description": null,
+        "tag": null
+      },
+      "en": {"title": "Move Diseased", "description": null, "tag": null}
+    },*/
+    {
+      "id": 7,
+      "icon": "ekram_reserve_cemetry",
+      "3d_icon": null,
+      "order": 1,
+      "isNew": false,
+      "requireLogin": true,
+      "isImportant": false,
+      "action": {"type": "page", "value": RouteName.ekramBookingListScreen},
+      "ar": {
+        "title": "cemetery_booking_request".tr(),
+        "description": null,
+        "tag": null
+      },
       "en": {"title": "Move Diseased", "description": null, "tag": null}
     },
   ],

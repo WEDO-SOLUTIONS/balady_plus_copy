@@ -198,7 +198,7 @@ class _RequestStatusCardState extends State<RequestStatusCard> {
               ? Helpers.translatingWord("show_info")
               : Helpers.translatingWord("hide_info"),
           btnTextSize: 16,
-          btnTextWeight: FONT_WEIGHT.medium,
+          btnTextWeight: AppFontWeight.medium,
           btnTextColor: const Color(0xff757575),
           icon: Image.asset(
             !showInfo

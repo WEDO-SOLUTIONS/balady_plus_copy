@@ -7,6 +7,8 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
 
+import 'helpers.dart';
+
 /// A notification action which triggers a App navigation event
 String navigationActionId = 'id_3';
 
@@ -139,7 +141,7 @@ class NotificationService {
     );
 
     FirebaseMessaging.instance.getToken().then((value) {
-      //Helpers.sendLog(url: "token", data: value);
+      print("TOKEN $value");
     });
     // FirebaseMessaging.instance.subscribeToTopic("all").then((value) {});
     FirebaseMessaging.instance

@@ -1,4 +1,4 @@
-/*import 'package:balady_new_app/app/core/core_exports.dart'
+/*import 'package:balady_plus/app/core/core_exports.dart'
     show
         AppColors,
         Constants,
@@ -11,23 +11,23 @@
         FONT_WEIGHT,
         CustomCheckBoxWidget,
         Helpers;
-import 'package:balady_new_app/app/core/dependency_injection/dependency_injection_exports.dart';
-import 'package:balady_new_app/app/core/shared_local_services/common.dart';
-import 'package:balady_new_app/app/core/shared_local_services/enums.dart';
-import 'package:balady_new_app/app/core/shared_local_services/routes_names.dart';
-import 'package:balady_new_app/app/core/shared_widgets/reload_widget.dart';
-import 'package:balady_new_app/app/features/vd/vd_exports.dart';
+import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
+import 'package:balady_plus/app/core/shared_local_services/common.dart';
+import 'package:balady_plus/app/core/shared_local_services/enums.dart';
+import 'package:balady_plus/app/core/shared_local_services/routes_names.dart';
+import 'package:balady_plus/app/core/shared_widgets/reload_widget.dart';
+import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
 import 'package:balady_plus/etmam_app/features/dynamic_form/domain/entities/bidding_form_params.dart';
 import 'package:balady_plus/etmam_app/features/dynamic_form/presentation/blocs/bidding_type/bidding_type_bloc.dart';
 import 'package:balady_plus/etmam_app/features/dynamic_form/presentation/widgets/bidding_drop_down_component.dart';
 import 'package:balady_plus/etmam_app/features/dynamic_form/presentation/widgets/bidding_type_widget.dart';
-import 'package:balady_new_app/shared/core/services/services_exports.dart';
-import 'package:balady_new_app/shared/features/_shared_feature_/shared/shared_feature_exports.dart'
+import 'package:balady_plus/shared/core/services/services_exports.dart';
+import 'package:balady_plus/shared/features/_shared_feature_/shared/shared_feature_exports.dart'
     show CustomShimmerGridViewWidget;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:balady_new_app/shared/core/utils/enums/bloc_status.dart';
+import 'package:balady_plus/shared/core/utils/enums/bloc_status.dart';
 
 class BiddingTypeDialog extends StatefulWidget {
   BiddingTypeDialog({Key? key}) : super(key: key);
@@ -65,7 +65,7 @@ class _BiddingTypeDialog extends State<BiddingTypeDialog> {
                       ),
                       btnTextColor: AppColors.grey1000,
                       btnTextSize: 17.0,
-                      btnTextWeight: FONT_WEIGHT.medium,
+                      btnTextWeight: AppFontWeight.medium,
                     ),
                     Constants.verticalSpaceMedium,
                     // title
@@ -80,7 +80,7 @@ class _BiddingTypeDialog extends State<BiddingTypeDialog> {
                       Helpers.translatingWord(
                           "customerVoiceSelectReportTypeWord"),
                       fontColor: AppColors.black400,
-                      fontWeight: FONT_WEIGHT.medium,
+                      fontWeight: AppFontWeight.medium,
                     ),*/
                     Constants.verticalSpaceSmall,
                   ],
@@ -222,7 +222,7 @@ class VDCardWidgetInDialog extends StatelessWidget {
                         title,
                         fontSize: 14,
                         fontColor: AppColors.black,
-                        fontWeight: FONT_WEIGHT.bold,
+                        fontWeight: AppFontWeight.bold,
                         maxLines: 2,
                         height: 1.5,
                         textOverflow: TextOverflow.ellipsis,
