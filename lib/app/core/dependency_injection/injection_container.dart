@@ -28,6 +28,7 @@ import 'package:get_it/get_it.dart' show GetIt;
 import 'package:internet_connection_checker/internet_connection_checker.dart'
     show InternetConnectionChecker;
 
+import '../../features/_shared_feature_/balady_features/services/services.dart';
 import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
@@ -192,6 +193,7 @@ void initialize() {
   sl.registerLazySingleton(() => Dio());
 
   sl.registerLazySingleton(() => LayersRepositories(webService: sl()));
+  sl.registerLazySingleton(() => BaladyServices(webService: sl()));
 
   sl.registerLazySingleton<InvestmentRepository>(
     () => InvestmentRepositoryImplementation(
