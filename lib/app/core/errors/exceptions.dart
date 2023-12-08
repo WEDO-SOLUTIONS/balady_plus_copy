@@ -1,19 +1,34 @@
 import 'package:dio/dio.dart' show DioError, RequestOptions, Response;
 
-import '../utils/utils_exports.dart' show APIResponsesConversion, ApiResponse;
+import '../utils/utils_exports.dart' show APIResponsesConversion, ApiResponse, CommonFunctions;
 
 // Global Exceptions
 class ServerException implements Exception {
   final String errorMessage;
   final int? statusCode;
   final String? statusMessage;
-  final dynamic errorCode;
+  final DioError? dioError;
+  final Response? response;
+  final dynamic errorCode; 
+  final Exception? exception;
 
-  const ServerException(this.errorMessage,
-      {this.statusCode, this.statusMessage, this.errorCode});
+  ServerException(this.errorMessage,
+      {this.statusCode,
+      this.statusMessage,
+      this.dioError,
+      this.response,this.errorCode, 
+      this.exception}) {
+    CommonFunctions.sendEvent(
+        dioError: dioError, response: response, ex: exception);
+  }
+}
 
-  @override
-  String toString() => errorMessage;
+class APIException implements Exception {
+  final String? errorMessage;
+
+  APIException({
+    this.errorMessage,
+  }) {}
 }
 
 class CacheException implements Exception {}
@@ -49,7 +64,10 @@ class BadRequestException extends DioError {
 class NoDataFoundException extends DioError {
   NoDataFoundException(
     RequestOptions requestOptions,
-  ) : super(requestOptions: requestOptions);
+    Response? response,
+  ) : super(requestOptions: requestOptions, response: response);
+  @override
+  String toString() => ApiResponse.unAuthorized.getErrorMessage(response);
 }
 
 class UnAuthorizedException extends DioError {

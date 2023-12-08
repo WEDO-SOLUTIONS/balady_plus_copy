@@ -1,13 +1,10 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/stories/data/story_service.dart';
-import 'package:mapness/_features/stories/presentation/frame/dismissible_overlay.dart';
-import 'package:mapness/_features/stories/presentation/stories_fullscreen.dart';
 import 'package:mapness/_features/stories/presentation/story_refresh_button.dart';
 import 'package:mapness/_features/stories/presentation/story_thumbnails.dart';
-import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/_features/stories/stories.dart';
 
 import '../common/providers/network_status.dart';
 
@@ -18,11 +15,7 @@ class StoriesWidget extends ConsumerStatefulWidget {
   ConsumerState<StoriesWidget> createState() => _StoriesWidgetState();
 }
 
-final GlobalKey<DismissibleTransitionState> _transitionState = GlobalKey();
-
 class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
-  OverlayEntry? _overlayEntry;
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -30,7 +23,7 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
   }
 
   void _precacheFirstFrame() {
-    final storiesAsync = ref.watch(storyServiceProvider);
+    final storiesAsync = ref.read(storyServiceProvider);
     storiesAsync.whenData((data) {
       for (final story in data) {
         final firstFrame = story.frames.first;
@@ -40,35 +33,7 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
   }
 
   openStory(BuildContext context, String id) {
-    // TODO(Demezy): rewrite to router
-    final router = GoRouter.of(rootNavigatorKey.currentContext!);
-    final storyWidget = StoriesFullscreen(
-      onClose: () => _transitionState.currentState?.dismiss(),
-      initialStoryId: id,
-      handleDeeplink: (url) => router.push(url),
-    );
-
-    _overlayEntry = OverlayEntry(
-      builder: (context) => Directionality(
-        textDirection: Directionality.of(context),
-        child: ProviderScope(
-          parent: ProviderScope.containerOf(context),
-          child: Theme(
-            data: Theme.of(this.context),
-            child: DismissibleTransition(
-              key: _transitionState,
-              onDismiss: () {
-                _overlayEntry?.remove();
-                _overlayEntry = null;
-              },
-              child: storyWidget,
-            ),
-          ),
-        ),
-      ),
-    );
-
-    Overlay.of(context, rootOverlay: true).insert(_overlayEntry!);
+    Stories.showStoryById(context, id);
   }
 
   @override

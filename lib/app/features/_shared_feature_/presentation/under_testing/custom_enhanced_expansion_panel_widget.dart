@@ -36,6 +36,8 @@ class CustomEnhancedExpansionPanelWidget extends StatelessWidget {
   final bool isExpanded;
   final bool underline;
   final void Function(bool)? onExpansionChanged;
+  final double? leadingWidth;
+  final Color? backgroundColor;
   const CustomEnhancedExpansionPanelWidget({
     super.key,
     this.keepState = true,
@@ -47,6 +49,8 @@ class CustomEnhancedExpansionPanelWidget extends StatelessWidget {
     this.expandedPadding,
     this.isExpanded = false,
     this.underline = true,
+    this.leadingWidth,
+    this.backgroundColor,
     this.onExpansionChanged,
   });
 
@@ -65,10 +69,8 @@ class CustomEnhancedExpansionPanelWidget extends StatelessWidget {
               //       vertical: 8.0,
               //     ),
               decoration: BoxDecoration(
-                color: expansionState
-                    ? AppColor.gray
-                    : Theme.of(context).scaffoldBackgroundColor,
-                border: Border(bottom: border(expansionState)),
+                color: backgroundColor ?? Color(0x7FE6EFEF),
+                borderRadius: BorderRadius.circular(16.0),
               ),
               child: LayoutBuilder(
                 builder: (_, constraints) => SizedBox(
@@ -79,8 +81,8 @@ class CustomEnhancedExpansionPanelWidget extends StatelessWidget {
                     child: ListTileTheme(
                       contentPadding: EdgeInsets.zero,
                       dense: true,
-                      horizontalTitleGap: 10.0,
-                      minLeadingWidth: 25.0,
+                      horizontalTitleGap: 0,
+                      minLeadingWidth: leadingWidth ?? 25.0,
                       minVerticalPadding: 0.0,
                       selectedColor: Colors.transparent,
                       selectedTileColor: Colors.transparent,
@@ -137,9 +139,7 @@ class CustomEnhancedExpansionPanelWidget extends StatelessWidget {
         expandedPadding?.horizontal == null
             ? UIHelper.middlePadding
             : expandedPadding!.horizontal / 2.0,
-        expandedPadding?.vertical == null
-            ? UIHelper.smallPadding
-            : expandedPadding!.vertical / 2.0,
+        expandedPadding?.vertical == null ? 4 : expandedPadding!.vertical / 2.0,
         expandedPadding?.horizontal == null
             ? UIHelper.middlePadding
             : expandedPadding!.horizontal / 2.0,
@@ -176,7 +176,7 @@ class _ExpansionLeadingWidget extends StatelessWidget {
             height: 25.0,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: leadingBGColor,
+              color: AppColor.white,
               borderRadius: BorderRadius.circular(8.0),
             ),
             child: leading is Widget
@@ -208,7 +208,7 @@ class _ExpansionTitleWidget extends StatelessWidget {
     return CustomAutoSizeTextWidget(
       title ?? "",
       textStyle: textStyle,
-      maxLines: 1,
+      maxLines: 10,
       textOverflow: TextOverflow.ellipsis,
       textAlign: TextAlign.start,
       minFontSize: 12.0,
@@ -219,31 +219,30 @@ class _ExpansionTitleWidget extends StatelessWidget {
   // double get titleWidth => leading == null
   //     ? width - (25.0 + 10.0)
   //     : width - (25.0 + 10.0 + 10.0 + 25.0);
-  TextStyle get textStyle => expanded
-      ? AppStyle.mainTextStyle
-      : AppStyle.mainTextThirdStyle.copyWith(
-          fontSize: 18.0,
-          color: AppColor.gray,
-        );
+  TextStyle get textStyle => AppStyle.mainTextThirdStyle.copyWith(
+      fontSize: 15.0,
+      color: AppColor.blackModern600Light,
+      fontWeight: FontWeight.bold);
 }
 
 class _ExpansionPanelArrowWidget extends StatelessWidget {
   final bool expanded;
+  final Color? arrowBg;
 
-  const _ExpansionPanelArrowWidget({required this.expanded});
+  const _ExpansionPanelArrowWidget({required this.expanded, this.arrowBg});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 25.0,
-      height: 25.0,
-      decoration: const BoxDecoration(
-        // color: expanded ? AppColor.mainDark : AppColor.mainTextThird,
+      width: 20,
+      height: 20,
+      decoration: BoxDecoration(
+        color: arrowBg ?? AppColor.primary900Light,
         shape: BoxShape.circle,
       ),
       child: Transform.rotate(
         angle: angle,
-        child: Icon(Icons.arrow_back_ios_new, size: 14.0, color: iconColor),
+        child: Icon(Icons.arrow_back_ios_new, size: 12, color: iconColor),
       ),
     );
   }
@@ -252,5 +251,5 @@ class _ExpansionPanelArrowWidget extends StatelessWidget {
   // so, if expanded we need to rotate it by 90', otherwise rotate by 270'
   double get angle =>
       expanded ? DIRECTION.downward.rotate : DIRECTION.upward.rotate;
-  Color get iconColor => expanded ? AppColor.black : AppColor.gray;
+  Color get iconColor => expanded ? AppColor.white : AppColor.white;
 }

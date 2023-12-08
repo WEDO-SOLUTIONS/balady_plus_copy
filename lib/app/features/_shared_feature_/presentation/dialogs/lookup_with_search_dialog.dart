@@ -94,9 +94,9 @@ class _IncidentTypeWithSearchDialog extends State<LookupWithSearchDialog> {
           // button
           EnhancedCustomElevatedButtonWidget(
             btnColor:
-                isButtonDisabled ? AppColors.black200 : AppColors.darkTurquoise,
+                isButtonDisabled ? AppColor.black200 : AppColor.primary900Light,
             btnTextColor:
-                isButtonDisabled ? AppColors.black400 : AppColors.white,
+                isButtonDisabled ? AppColor.black400 : AppColor.white,
             btnPressed: isButtonDisabled
                 ? null
                 : () {

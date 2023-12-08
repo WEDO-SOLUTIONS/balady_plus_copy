@@ -1,35 +1,96 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/favourites/domain/favourite_item.dart';
+import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
+import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
+import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
+import 'package:mapness/_features/poi_card/widgets/poi_favorite_dialog.dart';
+import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
-import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
-import 'package:mapness/_features/poi_card/widgets/style.dart';
 
-class PoiCardFooter extends StatelessWidget {
-  final PoiModel data;
+class PoiCardFooter extends ConsumerStatefulWidget {
+  final DirectoryObjectMessage data;
   final PoiCardViewModel viewModel;
-
+  final DraggableScrollableController scrollController;
   final void Function() onEntranceTap;
 
   const PoiCardFooter({
     super.key,
+    required this.scrollController,
     required this.data,
     required this.viewModel,
     required this.onEntranceTap,
   });
 
   @override
-  Widget build(BuildContext context) {
-    final favData = viewModel.getIsFavourite(data);
+  ConsumerState<PoiCardFooter> createState() => _PoiCardFooterState();
+}
 
-    final routeTime = data.getBriefRouteDescription(context.l10n);
-    final objectMessage = data.directoryObjectMessage;
+class _PoiCardFooterState extends ConsumerState<PoiCardFooter> {
+  bool isShow = true;
+
+  @override
+  void initState() {
+    var scrollController = widget.scrollController;
+    scrollController.addListener(() {
+      if (scrollController.size < .2) {
+        setState(() {
+          isShow = false;
+        });
+      } else {
+        setState(() {
+          isShow = true;
+        });
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!isShow) return const SizedBox.shrink();
+
+    final briefInfo = ref.watch(briefRouteInfoProvider(
+      finishPoint: RouteSearchPointMessage(
+        coordinates: widget.data.markerPosition!.toGeoPointMessage(),
+        objectId: widget.data.id!,
+      ),
+      navType: RouteSearchOptionsMessage.car,
+    ));
+    final model = PoiModel(
+      directoryObjectMessage: widget.data,
+      briefeRouteInfos: briefInfo,
+    );
+
+    final routeTime = model.getBriefRouteDescription(context.l10n);
+    final objectMessage = model.directoryObjectMessage;
     final hasEntrances = objectMessage?.entrances.isNotEmpty == true;
     final hasContacts = objectMessage?.contactInfos.isNotEmpty == true;
     final hasRouteTime = routeTime != null;
     final carIconFlex = (hasEntrances || hasContacts) && hasRouteTime ? 3 : 2;
-    final isFav = favData != null;
+
+    final isFav = widget.viewModel.isFavourite(model);
+    final favData = widget.viewModel.getFavouriteOrNull(model);
+
+    final favouriteItem = favData ??
+        FavouriteItem(
+          coordinates: Coordinates(
+            latitude: objectMessage?.markerPosition?.latitude ?? 0,
+            longitude: objectMessage?.markerPosition?.longitude ?? 0,
+          ),
+          id: 'overriden',
+          subtitle: objectMessage?.subtitle ?? '',
+          title: objectMessage?.title ?? '',
+          entity: FavouriteItemEntity(
+            sourceType: EntitySourceType.urbi,
+            id: objectMessage?.id?.objectId.toString() ?? 'id',
+          ),
+        );
 
     favItem({int flex = 1}) {
       return buildIconButton(
@@ -37,15 +98,39 @@ class PoiCardFooter extends StatelessWidget {
         assetName: isFav
             ? 'assets/icons/svg/ic_fav_solid.svg'
             : 'assets/icons/svg/ic_fav_poi.svg',
-        onTap: () {
-          if (favData == null) {
-            final directoryObjectMessage = objectMessage;
-            if (directoryObjectMessage != null) {
-              viewModel.addToFavourites(directoryObjectMessage);
-            }
-          } else {
-            viewModel.removeFromFavourite(favData);
-          }
+        onTap: () async {
+          await showDialog(
+            // barrierColor: Colors.transparent,
+            useSafeArea: false,
+            context: context,
+            builder: (contextDialog) => ProviderScope(
+              parent: ProviderScope.containerOf(context),
+              child: Theme(
+                data: Theme.of(context),
+                child: MediaQuery(
+                  data: MediaQuery.of(context),
+                  child: Directionality(
+                    textDirection: Directionality.of(context),
+                    child: Localizations.override(
+                      context: context,
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: PoiFavoriteDialog(favItem: favouriteItem),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+          // if (favData == null) {
+          //   final directoryObjectMessage = objectMessage;
+          //   if (directoryObjectMessage != null) {
+          //     viewModel.addToFavourites(directoryObjectMessage);
+          //   }
+          // } else {
+          //   viewModel.removeFromFavourite(favData);
+          // }
         },
         desc: (hasContacts == false)
             ? Text(
@@ -85,7 +170,7 @@ class PoiCardFooter extends StatelessWidget {
                 finishLabel: objectMessage!.title,
                 finishLatitude: objectMessage.markerPosition!.latitude,
                 finishLongitude: objectMessage.markerPosition!.longitude,
-                startLabel: 'My Location',
+                startLabel: context.l10n.myLocation,
                 startLatitude: null,
                 startLongitude: null,
               ).pushReplacement(context);
@@ -97,7 +182,8 @@ class PoiCardFooter extends StatelessWidget {
         ? buildIconButton(
             flex: flex,
             assetName: 'assets/icons/svg/ic_entrance.svg',
-            onTap: () => viewModel.onEntranceTap(objectMessage),
+            onTap: () => widget.onEntranceTap(),
+            // onTap: () => widget.viewModel.onEntranceTap(objectMessage),
             desc: (hasContacts == false)
                 ? Text(
                     context.l10n.exits,
@@ -132,7 +218,7 @@ class PoiCardFooter extends StatelessWidget {
         ? buildIconButton(
             flex: flex,
             assetName: 'assets/icons/svg/ic_phone_poi.svg',
-            onTap: () => viewModel.callPhone(data: objectMessage),
+            onTap: () => widget.viewModel.callPhone(data: objectMessage),
           )
         : const SizedBox.shrink();
 
@@ -140,7 +226,7 @@ class PoiCardFooter extends StatelessWidget {
         ? [
             favItem(flex: 2),
             // shareItem(flex: 2),
-            carItem(flex: 3),
+            carItem(flex: 2),
           ]
         : [
             // shareItem(flex: 2),

@@ -5,12 +5,16 @@ class LabeledElevatedButton extends StatelessWidget {
   final VoidCallback onPressed;
   final bool enabled;
   final String label;
+  final Color? backgroundColor;
+  final Color? textColor;
 
   const LabeledElevatedButton({
     super.key,
     required this.onPressed,
     required this.label,
     this.enabled = true,
+    this.backgroundColor,
+    this.textColor,
   });
 
   @override
@@ -18,7 +22,7 @@ class LabeledElevatedButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: enabled ? onPressed : null,
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xff4CA5B4),
+        backgroundColor: backgroundColor ?? const Color(0xff4CA5B4),
         disabledBackgroundColor: const Color(0xffDDDFE1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
@@ -31,7 +35,7 @@ class LabeledElevatedButton extends StatelessWidget {
         style: Theme.of(context)
             .extension<ThemeTextStyles>()
             ?.textM
-            .copyWith(color: Colors.white),
+            .copyWith(color: textColor ?? Colors.white),
       ),
     );
   }

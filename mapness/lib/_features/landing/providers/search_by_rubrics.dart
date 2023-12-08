@@ -22,7 +22,7 @@ class SearchByRubrics extends _$SearchByRubrics {
     final filter = ref.watch(searchByRubricsQueryProvider);
     if (filter == null) return null;
 
-    final dgisController = ref.watch(dgisControllerProvider);
+    final dgisController = ref.watch(dgisControllerProvider).value;
     dgisController
         ?.searchByRubrics(
           filter.$1.rubrics,

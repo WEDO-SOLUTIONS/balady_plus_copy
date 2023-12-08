@@ -14,6 +14,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.R
 import ru.dgis.sdk.databinding.DgisDefaultNavigationControlsBinding
+import ru.dgis.sdk.geometry.Geometry
+import ru.dgis.sdk.map.StyleZoomToTiltRelation
+import ru.dgis.sdk.map.createDefaultStyleZoomToTiltRelation
+import ru.dgis.sdk.map.toMapGeometry
 import ru.dgis.sdk.milliseconds
 import ru.dgis.sdk.navigation.Model
 import ru.dgis.sdk.navigation.NavigationControl
@@ -23,7 +27,9 @@ import ru.dgis.sdk.navigation.RouteInfo
 import ru.dgis.sdk.navigation.State
 import ru.dgis.sdk.navigation.TrafficLineControl
 import ru.dgis.sdk.routing.Route
+import ru.dgis.sdk.routing.RoutePoint
 import ru.dgis.sdk.routing.TransportType
+import ru.dgis.sdk.routing.remainingRouteGeometry
 import kotlin.math.max
 
 /**
@@ -401,7 +407,10 @@ class NavigationControls @JvmOverloads constructor(
 
     private fun showRoute() {
         val route = route ?: return
-        binding.dgisNavigatorShowRouteControl.showRoute(route)
+        binding.dgisNavigatorShowRouteControl.showRoute(
+            toMapGeometry(route.geometry),
+            createDefaultStyleZoomToTiltRelation()
+        )
     }
 }
 

@@ -1,11 +1,16 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/features/sso_auth/domain/entity/sso_user_info_model.dart';
+
 import 'profile_image_widget.dart';
 
 class AuthorizedProfile extends StatelessWidget {
   const AuthorizedProfile({
     super.key,
+    required this.userData,
   });
+
+  final SsoUserInfoModel userData;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +27,7 @@ class AuthorizedProfile extends StatelessWidget {
             height: 16,
           ),
           Text(
-            "Ahmed Abdu Ahmed Avh El Usman",
+            userData.getFirstAndLastName(),
             style: Theme.of(context)
                 .extension<ThemeTextStyles>()!
                 .headingS

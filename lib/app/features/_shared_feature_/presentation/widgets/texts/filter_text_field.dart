@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/utils/extensions/number_text_input_formatter.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, IconPath;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
@@ -41,10 +42,10 @@ class FilterTextField extends StatelessWidget {
         borderRadius: 8,
         keyboardType: textInputType ?? TextInputType.number,
         inputFormatters: [
-          /* NumberTextInputFormatter(onError: (bool isValid) {
+          NumberTextInputFormatter(onError: (bool isValid) {
             //  if (!isValid)
             //    CommonFunctions.showError("only_english_numbers".tr());
-          }),*/
+          }),
         ],
         borderColor: AppColor.blackModern300Light,
         fillColor: AppColor.scaffoldBackground,

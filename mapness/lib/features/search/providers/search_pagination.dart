@@ -13,7 +13,7 @@ class SearchPagination extends _$SearchPagination {
     _currentPage = results.firstPage;
     ref.onDispose(() {
       if (_currentPage != null) {
-        ref.read(dgisControllerProvider)?.releasePage(_currentPage!);
+        ref.read(dgisControllerProvider).value?.releasePage(_currentPage!);
       }
     });
 
@@ -25,20 +25,16 @@ class SearchPagination extends _$SearchPagination {
       return false;
     }
 
-    final dgisController = ref.read(dgisControllerProvider);
+    final dgisController = await ref.read(dgisControllerProvider.future);
 
-    PageMessage? page;
+    PageMessage page;
     try {
-      page = await dgisController?.fetchNextPage(_currentPage!);
+      page = await dgisController.fetchNextPage(_currentPage!);
     } catch (e) {
       return false;
     }
 
-    if (page == null) {
-      return false;
-    }
-
-    await dgisController?.releasePage(_currentPage!);
+    await dgisController.releasePage(_currentPage!);
     _currentPage = page;
     state = [
       ...state,

@@ -1,3 +1,7 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
+import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart';
+import 'package:balady_plus/app/features/events/presentation/bloc/events_state.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar, ScrollPosition;
@@ -12,14 +16,17 @@ import 'package:mapness/_features/landing/widgets/g2b_card.dart';
 import 'package:mapness/_features/landing/widgets/login_card.dart';
 import 'package:mapness/_features/landing/widgets/poi_card.dart';
 import 'package:mapness/_features/landing/widgets/prayer_card.dart';
+import 'package:mapness/_features/landing/widgets/service_card.dart';
 import 'package:mapness/_features/stories/stories_widget.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
-import 'package:mapness/pages/iwish/ui/iwish_dashboard_widget.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+
+import 'providers/interesting_places.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({
+    this.isCollapsed = false,
     super.key,
     required this.biggestHeight,
     required this.biggestWidth,
@@ -27,6 +34,7 @@ class Dashboard extends ConsumerStatefulWidget {
 
   final double biggestHeight;
   final double biggestWidth;
+  final bool isCollapsed;
 
   @override
   ConsumerState<Dashboard> createState() => _DashboardState();
@@ -48,17 +56,19 @@ class _DashboardState extends ConsumerState<Dashboard> {
       ..addListener(() {
         Future.delayed(Duration.zero, () {
           if (_draggableScrollableController.size > _headerExtent + 0.001) {
-            ref.watch(mapControlsProvider.notifier).update(
+            ref.read(mapControlsProvider.notifier).update(
                   MapControlsStateDashboard(),
                 );
           } else {
-            ref.watch(mapControlsProvider.notifier).update(
+            ref.read(mapControlsProvider.notifier).update(
                   MapControlsStateIdle(),
                 );
             FocusManager.instance.primaryFocus?.unfocus();
           }
         });
       });
+
+    ref.read(interestingPlacesProvider.notifier).startListen();
   }
 
   @override
@@ -67,12 +77,106 @@ class _DashboardState extends ConsumerState<Dashboard> {
     super.dispose();
   }
 
+  Widget _buildInterestingPlacesCards() {
+    return Consumer(
+      builder: (context, ref, child) {
+        final places = ref.watch(interestingPlacesProvider);
+
+        return Visibility(
+          visible: places.isNotEmpty,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 24,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  right: 16.0,
+                ),
+                child: Text(
+                  context.l10n.placesToVisit,
+                  style: Theme.of(context).extension<ThemeTextStyles>()!.textL,
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              SizedBox(
+                height: 200,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                  ),
+                  itemCount: places.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 8),
+                  itemBuilder: (context, index) {
+                    final place = places[index];
+
+                    return PoiCard(
+                      objectId: DgisObjectIdMessage(
+                        objectId: int.tryParse(place.id) ?? 0,
+                        entranceId: 0,
+                      ),
+                      title: place.titleOrFallback(locale: context.l10n),
+                      subtitle: '',
+                      image: place.preview.image.url,
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildEvents(BuildContext context) {
+    return BlocProvider(
+      create: (context) => EventsBloc()..add(const GetSearchEvent()),
+      child: BlocBuilder<EventsBloc, EventsState>(
+        builder: (context, state) {
+          final events = state.searchItems;
+
+          return SizedBox(
+            height: 200,
+            child: PageView.builder(
+              scrollDirection: Axis.horizontal,
+              controller: _pageController,
+              itemCount: events.length,
+              itemBuilder: (context, index) {
+                final event = events[index];
+                final start = event.startDate;
+                final startTimeString =
+                    start != null ? '${start.hour}:${start.minute}' : '';
+                final startDateString = start != null ? '${start.day}' : '';
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: EventCard(
+                    title: event.eventName ?? 'Some error occured',
+                    subtitle: '$startTimeString أكتوبر $startDateString',
+                    image: event.logoImage ??
+                        "https://mediaim.expedia.com/destination/9/89ee9cad281d840fba77bc3f253475f8.jpg",
+                    imageUrl: event.logoImage ??
+                        "https://mediaim.expedia.com/destination/9/89ee9cad281d840fba77bc3f253475f8.jpg",
+                    id: state.searchItems[index].id ?? "",
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    ref.watch(iwishMarkersProvider.notifier).showMarkersOnMap(context);
     final userState = ref.watch(userStateProvider);
     ref.listen(searchByRubricsQueryProvider, (previous, next) {
-      print(next);
       if (next != null) {
         _draggableScrollableController.animateTo(
           _headerExtent,
@@ -84,7 +188,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
 
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
-      initialChildSize: .75,
+      initialChildSize: widget.isCollapsed ? _headerExtent : .75,
       minChildSize: _headerExtent,
       maxChildSize: .9,
       snap: true,
@@ -103,7 +207,6 @@ class _DashboardState extends ConsumerState<Dashboard> {
             child: CustomScrollView(
               controller: scrollController,
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              // padding: EdgeInsets.zero,
               physics: const ClampingScrollPhysics(),
               slivers: [
                 SliverPersistentHeader(
@@ -124,95 +227,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const StoriesWidget(),
-                          const SizedBox(
-                            height: 24,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              right: 16.0,
-                            ),
-                            child: Text(
-                              context.l10n.placesToVisit,
-                              style: Theme.of(context)
-                                  .extension<ThemeTextStyles>()!
-                                  .textL,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          SizedBox(
-                            height: 200,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              children: [
-                                PoiCard(
-                                  objectId: DgisObjectIdMessage(
-                                    objectId: 70000001079215988,
-                                    entranceId: 0,
-                                  ),
-                                  title: "Boulevard\nRiyadh City",
-                                  subtitle: "23 كم",
-                                  image:
-                                      "assets/images/poi_boulevard_riyadh_city.png",
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                PoiCard(
-                                  objectId: DgisObjectIdMessage(
-                                    objectId: 70030076256609771,
-                                    entranceId: 0,
-                                  ),
-                                  title: "Kingdom\nCenter",
-                                  subtitle: "5 كم",
-                                  image: "assets/images/poi_kingdom_center.png",
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                PoiCard(
-                                  objectId: DgisObjectIdMessage(
-                                    objectId: 70030076201501940,
-                                    entranceId: 0,
-                                  ),
-                                  title: "Faisaliya\nTower",
-                                  subtitle: "5 كم",
-                                  image:
-                                      "assets/images/poi_faisaliya_tower.png",
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                PoiCard(
-                                  objectId: DgisObjectIdMessage(
-                                    objectId: 70000001079216136,
-                                    entranceId: 0,
-                                  ),
-                                  title: "Masmak\nFortress",
-                                  subtitle: "5 كم",
-                                  image:
-                                      "assets/images/poi_masmak_fortress.png",
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                PoiCard(
-                                  objectId: DgisObjectIdMessage(
-                                    objectId: 70030076419526924,
-                                    entranceId: 0,
-                                  ),
-                                  title: "Edge of the\nworld",
-                                  subtitle: "5 كم",
-                                  image:
-                                      "assets/images/poi_edge_of_the_world.png",
-                                ),
-                              ],
-                            ),
-                          ),
+                          _buildInterestingPlacesCards(),
                           const SizedBox(
                             height: 24,
                           ),
@@ -228,39 +243,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                           const SizedBox(
                             height: 16,
                           ),
-                          SizedBox(
-                            height: 200,
-                            child: PageView(
-                              scrollDirection: Axis.horizontal,
-                              controller: _pageController,
-                              children: const [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: EventCard(
-                                    title: "الأحداث",
-                                    subtitle: "25 أكتوبر 21:00",
-                                    image: "assets/images/event_0.png",
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: EventCard(
-                                    title: "سباق الخيل",
-                                    subtitle: "5 أكتوبر 13:00",
-                                    image: "assets/images/event_1.png",
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  child: EventCard(
-                                    title: "معرض الصحة العالمية 2023",
-                                    subtitle: "29-31 أكتوبر",
-                                    image: "assets/images/event_2.png",
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          _buildEvents(context),
                           const SizedBox(
                             height: 24,
                           ),
@@ -339,9 +322,50 @@ class _DashboardState extends ConsumerState<Dashboard> {
                           const SizedBox(
                             height: 16,
                           ),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.0),
-                            child: IwishDashboardWidget(),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: ServiceCard(
+                                    title: context.l10n.iwish,
+                                    image: 'assets/images/iwish.png',
+                                    subtitle: context.l10n.inNovember,
+                                    onTap: () async {
+                                      const curve = Curves.linear;
+                                      const duration =
+                                          Duration(milliseconds: 250 ~/ 3);
+                                      await scrollController.animateTo(
+                                        0,
+                                        duration: duration,
+                                        curve: curve,
+                                      );
+
+                                      await _draggableScrollableController
+                                          .animateTo(
+                                        0,
+                                        duration: duration,
+                                        curve: Curves.linear,
+                                      );
+                                      ref
+                                          .read(iwishMarkersProvider.notifier)
+                                          .focusMarkersOnMap();
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Expanded(
+                                  child: ServiceCard(
+                                    title: context.l10n.snap_and_send,
+                                    image: 'assets/images/snap_and_send.png',
+                                    subtitle: context.l10n.inNovember,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           if (userState == UserState.business) ...[
                             const SizedBox(

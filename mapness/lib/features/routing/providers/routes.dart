@@ -21,16 +21,14 @@ class Routes extends _$Routes {
     );
 
     final routesInfoChangedSubscription =
-        dgisController?.routesInfoChangedEvents.listen((event) {
+        dgisController.value?.routesInfoChangedEvents.listen((event) {
       state = event.routes;
     });
     ref.onDispose(() {
       routesInfoChangedSubscription?.cancel();
     });
 
-    print("rebuild routes?");
-
-    dgisController?.setRouteParams(params);
+    dgisController.value?.setRouteParams(params);
     return [];
   }
 }
@@ -42,7 +40,7 @@ class ActiveRoute extends _$ActiveRoute {
     final dgisController = ref.watch(dgisControllerProvider);
 
     final activeRouteSubscription =
-        dgisController?.activeRouteChangedEvents.listen((event) {
+        dgisController.value?.activeRouteChangedEvents.listen((event) {
       state = event.index;
     });
     ref.onDispose(() {

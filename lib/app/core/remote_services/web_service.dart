@@ -8,9 +8,12 @@ import 'package:http/http.dart' as http;
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../dependency_injection/injection_container.dart';
+import '../services/global/web_service.dart';
 import '../services/local/helpers.dart';
 import '../utils/common_functions.dart';
 import '../utils/constants/remote_config.dart';
+import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
+    as EtmamCommonProperties hide Log;
 
 class WebService {
   static String baseURL = RemoteConfig.apigeeURL;
@@ -26,15 +29,16 @@ class WebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?${Uri(queryParameters: queryParams).query}";
+      queryString = "?" + Uri(queryParameters: queryParams).query;
     }
 
     var requestUrl = baseURL + url + queryString;
-    //print("url: " + requestUrl);
+    print("url: " + requestUrl);
     Map<String, dynamic> result = {};
     try {
       var headers = {
         'Authorization': 'Bearer ${CommonProperties.token}',
+        "x-channel-id": "MOBILE",
       };
 
       if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
@@ -43,7 +47,7 @@ class WebService {
         Uri.parse(requestUrl),
         headers: headers,
       );
-      // print("url response: " + utf8.decode(response.bodyBytes).toString());
+      print("url response: " + utf8.decode(response.bodyBytes).toString());
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent(
@@ -52,11 +56,10 @@ class WebService {
         result.putIfAbsent("state", () => false);
         result.putIfAbsent(
             "data", () => utf8.decode(response.bodyBytes).toString());
-        if (autoLogout) {
+        if (autoLogout)
           result.putIfAbsent("error", () => ('session_ended_error').tr());
-        } else {
+        else
           result.putIfAbsent("error", () => ('errors_server_error_1').tr());
-        }
 
         try {
           Helpers.sendLog(
@@ -81,8 +84,6 @@ class WebService {
         } catch (ex) {}
       }
     } catch (ex) {
-      print(ex);
-      print("HERRRRRRRRR");
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -111,15 +112,16 @@ class WebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?${Uri(queryParameters: queryParams).query}";
+      queryString = "?" + Uri(queryParameters: queryParams).query;
     }
 
     var requestUrl = baseURL + url + queryString;
-    //print("url: " + requestUrl);
+    ////print("url: " + requestUrl);
     Map<String, dynamic> result = {};
     try {
       var headers = {
         'Authorization': 'Bearer ${CommonProperties.token}',
+        "x-channel-id": "MOBILE",
       };
 
       if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
@@ -128,7 +130,7 @@ class WebService {
         Uri.parse(requestUrl),
         headers: headers,
       );
-      // print("url response: " + utf8.decode(response.bodyBytes).toString());
+      print("url response: " + utf8.decode(response.bodyBytes).toString());
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent(
@@ -137,11 +139,10 @@ class WebService {
         result.putIfAbsent("state", () => false);
         result.putIfAbsent(
             "data", () => utf8.decode(response.bodyBytes).toString());
-        if (autoLogout) {
+        if (autoLogout)
           result.putIfAbsent("error", () => ('session_ended_error').tr());
-        } else {
+        else
           result.putIfAbsent("error", () => ('errors_server_error_1').tr());
-        }
 
         try {
           Helpers.sendLog(
@@ -166,8 +167,6 @@ class WebService {
         } catch (ex) {}
       }
     } catch (ex) {
-      print(ex);
-      print("HERRRRRRRRR");
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -192,17 +191,20 @@ class WebService {
       Map<String, String>? extraHeadersParams,
       bool autoLogout = true}) async {
     bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
-
+    print("JJJ");
     String queryString = "";
     if (relativePath != null) {
       queryString = relativePath;
     }
+    print("JJJ ddd");
+
     if (queryParams != null) {
-      queryString = "?${Uri(queryParameters: queryParams).query}";
+      queryString = "?" + Uri(queryParameters: queryParams).query;
     }
+    print("JJJrrr");
 
     var requestUrl = baseURL + url + queryString;
-    //print("url: " + requestUrl);
+    print("url: " + requestUrl);
     Map<String, dynamic> result = {};
     if (isSuccess) {
       try {
@@ -213,7 +215,6 @@ class WebService {
             loginIdentityId: loginIdentityId,
             loginIdentityType: loginIdentityType);
 
-        //  print(verifyingKEY);
         var headers = {
           'Authorization':
               'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}',
@@ -222,16 +223,18 @@ class WebService {
           'Cookie': sl<EntryPointCubit>().state.token?.appCookie ?? "",
           "Content-Type": "application/json",
           "verifyingKEY": verifyingKEY,
-          "SSOToken": CommonProperties.token ?? ""
+          "SSOToken": CommonProperties.token ?? "",
+          "x-channel-id": "MOBILE",
         };
 
+        print(headers);
         if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
 
         var response = await http.get(
           Uri.parse(requestUrl),
           headers: headers,
         );
-        // print("url response: " + utf8.decode(response.bodyBytes).toString());
+        print("url response: " + utf8.decode(response.bodyBytes).toString());
         if (response.statusCode == HttpStatus.ok) {
           result.putIfAbsent("state", () => true);
           result.putIfAbsent(
@@ -240,11 +243,10 @@ class WebService {
           result.putIfAbsent("state", () => false);
           result.putIfAbsent(
               "data", () => utf8.decode(response.bodyBytes).toString());
-          if (autoLogout) {
+          if (autoLogout)
             result.putIfAbsent("error", () => ('session_ended_error').tr());
-          } else {
+          else
             result.putIfAbsent("error", () => ('errors_server_error_1').tr());
-          }
 
           try {
             Helpers.sendLog(
@@ -269,8 +271,6 @@ class WebService {
           } catch (ex) {}
         }
       } catch (ex) {
-        // print(ex);
-        // print("HERRRRRRRRR");
         result.putIfAbsent("state", () => false);
         result.putIfAbsent("error", () => ('errors_server_error_2').tr());
         var connectivityResult = await (Connectivity().checkConnectivity());
@@ -309,17 +309,16 @@ class WebService {
 
     String queryString = "";
     var data = body != null ? json.encode(body) : null;
-    //print(data);
 
     if (relativePath != null) {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?${Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query)}";
+      queryString = "?" +
+          Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query);
     }
     var requestUrl = baseURL + url + queryString;
-    //print(requestUrl);
-
+    print(requestUrl);
     Map<String, dynamic> result = {};
     try {
       String loginIdentityId = CommonProperties.userInfo?.idNo ?? "";
@@ -338,12 +337,14 @@ class WebService {
         'Cookie': sl<EntryPointCubit>().state.token?.appCookie ?? "",
         "Content-Type": "application/json",
         "verifyingKEY": verifyingKEY,
-        "SSOToken": CommonProperties.token ?? ""
+        "SSOToken": CommonProperties.token ?? "",
+        "x-channel-id": "MOBILE",
       };
+
       if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
       var response =
           await http.post(Uri.parse(requestUrl), body: data, headers: headers);
-      //print(utf8.decode(response.bodyBytes).toString());
+      print(utf8.decode(response.bodyBytes).toString());
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent(
@@ -402,7 +403,9 @@ class WebService {
       {String? body, String? loginIdentityId, String? loginIdentityType}) {
     //var encodedURL = Uri.encodeComponent(url);
     String message = "";
-    message = '$url${method}Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}';
+    message = url +
+        method +
+        'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}';
     if (body != null) {
       message += body.replaceAll(RegExp(r'^/\\n/g'), "");
     }
@@ -432,16 +435,16 @@ class WebService {
 
     String queryString = "";
     var data = body != null ? json.encode(body) : null;
-    // print(data);
 
     if (relativePath != null) {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?${Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query)}";
+      queryString = "?" +
+          Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query);
     }
     var requestUrl = baseURL + url + queryString;
-    //print(requestUrl);
+
     Map<String, dynamic> result = {};
     try {
       var request = http.MultipartRequest(
@@ -464,6 +467,7 @@ class WebService {
       request.headers['loginIdentityType'] = loginIdentityType;
       request.headers['verifyingKEY'] = verifyingKEY;
       request.headers['SSOToken'] = CommonProperties.token ?? "";
+      request.headers['x-channel-id'] = "MOBILE";
 
       http.MultipartFile file = http.MultipartFile.fromBytes(
           'file', base64!.toList(),
@@ -511,6 +515,104 @@ class WebService {
     return result;
   }
 
+  Future<Map<String, dynamic>> uploadFileSSO(String url,
+      {Uint8List? base64,
+      String? fileName,
+      String? mimeType,
+      dynamic body,
+      String? key,
+      int? posterTypeId,
+      int? posterId,
+      Map<String, String>? fields}) async {
+    var data = body != null ? json.encode(body) : null;
+
+    var requestUrl = baseURL + url;
+
+    Map<String, dynamic> result = {};
+
+    try {
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(requestUrl),
+      );
+
+      request.headers['fileContentType'] = mimeType ?? "";
+      request.headers['authorization'] = 'Bearer ${CommonProperties.token}';
+
+      request.headers['x-channel-id'] = "MOBILE";
+      if (key != null) {
+        request.headers['attachmentKey'] = key;
+      }
+      if (posterTypeId != null) {
+        request.headers['posterTypeId'] = posterTypeId.toString();
+      }
+      if (posterId != null) request.headers['posterId'] = posterId.toString();
+
+      if (fields != null) {
+        request.headers[ApiHeaders.xFeappId] =
+            EtmamCommonProperties.CommonProperties.appName;
+        request.headers[ApiHeaders.xFeAppVersion] =
+            EtmamCommonProperties.CommonProperties.appVersion ?? "";
+        request.headers[ApiHeaders.xFeDeviceId] =
+            EtmamCommonProperties.CommonProperties.deviceId ?? "";
+        request.headers[ApiHeaders.xFeDeviceOs] =
+            EtmamCommonProperties.CommonProperties.deviceOs ?? "";
+        request.headers[ApiHeaders.xSessionId] =
+            EtmamCommonProperties.CommonProperties.sessionId ?? "";
+        request.headers[ApiHeaders.xCorrelationId] =
+            EtmamCommonProperties.CommonFunctions.generateGUID();
+        if (EtmamCommonProperties.CommonProperties.profileId != null)
+          request.headers[ApiHeaders.xUserProfileId] =
+              EtmamCommonProperties.CommonProperties.profileId!;
+
+        request.headers["Accept-Language"] = "ar";
+      }
+
+      request.fields.addAll(fields ?? {});
+      http.MultipartFile file = http.MultipartFile.fromBytes(
+        'file',
+        base64!.toList(),
+        filename: fileName,
+      );
+
+      request.files.add(file);
+
+      var response = await request.send();
+      final respStr = await response.stream.bytesToString();
+      if (response.statusCode == HttpStatus.ok) {
+        result.putIfAbsent("state", () => true);
+        result.putIfAbsent("data", () => respStr);
+      } else {
+        result.putIfAbsent("state", () => false);
+        result.putIfAbsent("data", () => respStr);
+        result.putIfAbsent("error", () => ('errors_server_error_1').tr());
+
+        try {
+          Helpers.sendLog(
+              url: baseURL + url,
+              data: respStr,
+              body: data,
+              statusCode: response.statusCode);
+        } catch (ex) {}
+      }
+    } catch (ex) {
+      print(ex);
+      result.putIfAbsent("state", () => false);
+      result.putIfAbsent("error", () => ('errors_server_error_2').tr());
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      if (connectivityResult == ConnectivityResult.none) {
+        result["error"] = ('errors_internet_error_1').tr();
+      }
+
+      try {
+        Helpers.sendLog(
+            url: baseURL + url, data: ex.toString(), body: data, statusCode: 0);
+      } catch (ex) {}
+    }
+
+    return result;
+  }
+
   Future<Map<String, dynamic>> getPegaRequest(String url,
       {String? relativePath,
       Map<String, dynamic>? queryParams,
@@ -520,11 +622,11 @@ class WebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?${Uri(queryParameters: queryParams).query}";
+      queryString = "?" + Uri(queryParameters: queryParams).query;
     }
 
     var requestUrl = pegaBaseURL + url + queryString;
-    print(requestUrl);
+
     Map<String, dynamic> result = {};
     try {
       String basicAuthForGuest = "";
@@ -533,16 +635,17 @@ class WebService {
         String username = "CRMBasicAuthUser";
         String password = "rules";
         basicAuthForGuest =
-            'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+            'Basic ' + base64Encode(utf8.encode('$username:$password'));
       }
       var headers = {
         'Content-type': 'application/json',
+        "x-channel-id": "MOBILE",
         if (CommonProperties.isLoggedIn)
           'Authorization': 'Bearer ${sl<EntryPointCubit>().state.token?.token}'
         else
           "Authorization": basicAuthForGuest
       };
-      http.Response response;
+      var response;
       if (duration == null) {
         response = await http.get(
           Uri.parse(requestUrl),
@@ -556,7 +659,6 @@ class WebService {
             )
             .timeout(duration);
       }
-      //print(utf8.decode(response.bodyBytes).toString());
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent(
@@ -591,7 +693,6 @@ class WebService {
         } catch (ex) {}
       }
     } catch (ex) {
-      print(ex);
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -616,15 +717,16 @@ class WebService {
       dynamic body}) async {
     String queryString = "";
     var data = body != null ? json.encode(body) : null;
-    // print(data);
+
     if (relativePath != null) {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?${Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query)}";
+      queryString = "?" +
+          Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query);
     }
     var requestUrl = pegaBaseURL + url + queryString;
-    // print(requestUrl);
+
     Map<String, dynamic> result = {};
     String basicAuthForGuest = "";
 
@@ -632,19 +734,18 @@ class WebService {
       String username = "CRMBasicAuthUser";
       String password = "rules";
       basicAuthForGuest =
-          'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+          'Basic ' + base64Encode(utf8.encode('$username:$password'));
     }
     try {
       var response =
           await http.post(Uri.parse(requestUrl), body: data, headers: {
         'Content-type': 'application/json',
+        "x-channel-id": "MOBILE",
         if (CommonProperties.isLoggedIn)
           'Authorization': 'Bearer ${sl<EntryPointCubit>().state.token?.token}'
         else
           "Authorization": basicAuthForGuest
       });
-      // print(response.statusCode);
-      // print(response.body);
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent("data", () => response.body);
@@ -706,18 +807,22 @@ class WebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?${Uri(queryParameters: queryParams).query}";
+      queryString = "?" + Uri(queryParameters: queryParams).query;
     }
 
     var requestUrl = url + queryString;
-    //print(requestUrl);
+
     Map<String, dynamic> result = {};
     try {
       var response = await http.get(
         Uri.parse(requestUrl),
-        headers: headers ?? {"Content-Type": "application/json"},
+        headers: headers ??
+            {
+              "Content-Type": "application/json",
+              "x-channel-id": "MOBILE",
+            },
       );
-      // print(utf8.decode(response.bodyBytes).toString());
+
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent(
@@ -737,7 +842,6 @@ class WebService {
         } catch (ex) {}
       }
     } catch (ex) {
-      print(ex);
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -769,20 +873,23 @@ class WebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?${Uri(queryParameters: queryParams).query}";
+      queryString = "?" + Uri(queryParameters: queryParams).query;
     }
     var data = body != null ? json.encode(body) : null;
 
     var requestUrl = url + queryString;
-    // print(requestUrl);
     Map<String, dynamic> result = {};
     try {
-      http.Response response;
+      var response;
       if (duration == null) {
         response = await http.post(
           Uri.parse(requestUrl),
           body: data,
-          headers: headers ?? {"Content-Type": "application/json"},
+          headers: headers ??
+              {
+                "Content-Type": "application/json",
+                "x-channel-id": "MOBILE",
+              },
         );
       } else {
         response = await http
@@ -794,7 +901,7 @@ class WebService {
             .timeout(duration);
       }
 
-      // print(response.body);
+      // //print(response.body);
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent("data", () => response.body.toString());
@@ -813,7 +920,6 @@ class WebService {
         } catch (ex) {}
       }
     } catch (ex) {
-      print(ex);
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -842,11 +948,11 @@ class WebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?${Uri(queryParameters: queryParams).query}";
+      queryString = "?" + Uri(queryParameters: queryParams).query;
     }
 
     var requestUrl = baseURL + url + queryString;
-    // print("url: " + requestUrl);
+    //print("url: " + requestUrl);
     Map<String, dynamic> result = {};
     try {
       String loginIdentityId = CommonProperties.userInfo?.idNo ?? "";
@@ -866,10 +972,12 @@ class WebService {
           'Cookie': sl<EntryPointCubit>().state.token?.appCookie ?? "",
           "Content-Type": "application/json",
           "verifyingKEY": verifyingKEY,
-          "SSOToken": CommonProperties.token ?? ""
+          "SSOToken": CommonProperties.token ?? "",
+          "x-channel-id": "MOBILE",
         },
       );
-      // print("response: " + response.headers.toString());
+      //print("response: " + response.headers.toString());
+      //print(response.statusCode);
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent("data", () => response.bodyBytes);
@@ -889,7 +997,7 @@ class WebService {
         } catch (ex) {}
       }
     } catch (ex) {
-      print("exception: $ex");
+      //print("exception: " + ex.toString());
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -919,15 +1027,16 @@ class WebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?${Uri(queryParameters: queryParams).query}";
+      queryString = "?" + Uri(queryParameters: queryParams).query;
     }
 
     var requestUrl = baseURL + url + queryString;
-    // print("url: " + requestUrl);
+    //print("url: " + requestUrl);
     Map<String, dynamic> result = {};
     try {
       var headers = {
         'Authorization': 'Bearer ${CommonProperties.token}',
+        "x-channel-id": "MOBILE",
       };
 
       if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
@@ -936,7 +1045,8 @@ class WebService {
         Uri.parse(requestUrl),
         headers: headers,
       );
-      //  print("response: " + response.body);
+      //print("response: " + response.body);
+      //print(response.statusCode);
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent("data", () => response.bodyBytes);
@@ -956,7 +1066,7 @@ class WebService {
         } catch (ex) {}
       }
     } catch (ex) {
-      print("exception: $ex");
+      //print("exception: " + ex.toString());
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());

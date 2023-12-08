@@ -2,7 +2,6 @@ import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_message.dart';
 
-
 typedef _State = PathNavManeuverState;
 
 class PathNavMessageWidget extends StatelessWidget {
@@ -37,15 +36,18 @@ class PathNavMessageWidget extends StatelessWidget {
               child: Text(
                 message.comment,
                 textAlign: TextAlign.end,
-                style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: Colors.white),
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .textM
+                    .copyWith(color: Colors.white),
               ),
             ),
             const SizedBox(width: 10),
             const Padding(
-              padding: EdgeInsets.only(top: 4),
+              padding: EdgeInsets.only(top: 6, right: 2, left: 2, bottom: 2),
               child: SizedBox(
-                height: 24,
-                width: 24,
+                height: 20,
+                width: 20,
                 child: CircularProgressIndicator(
                   color: Colors.white,
                   strokeWidth: 2,

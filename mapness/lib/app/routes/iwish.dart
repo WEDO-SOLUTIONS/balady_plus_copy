@@ -3,32 +3,12 @@ import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/pages/iwish/iwish_feedback.dart';
 import 'package:mapness/pages/iwish/iwish_feedback_comment.dart';
-import 'package:mapness/pages/iwish/iwish_page.dart';
 import 'package:mapness/pages/iwish/iwish_place_card.dart';
 import 'package:mapness/shared/routing/transculent_page.dart';
 
 part 'iwish.g.dart';
 
-@TypedGoRoute<IwishRoute>(
-  path: '/iwish',
-  routes: <TypedGoRoute<GoRouteData>>[
-    TypedGoRoute<IwishCardRoute>(path: 'card/:iwishId'),
-    TypedGoRoute<IwishFeedbackRoute>(path: 'feedback/:iwishId'),
-    TypedGoRoute<IwishFeedbackCommentRoute>(path: 'comment/:iwishId')
-  ],
-)
-// class IwishRoute extends LandingRoute {}
-class IwishRoute extends GoRouteData {
-  const IwishRoute();
-
-  static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
-
-  @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return _iwishTransition(context: context, child: const IwishPage());
-  }
-}
-
+@TypedGoRoute<IwishCardRoute>(path: '/iwish/:iwishId/card')
 @immutable
 class IwishCardRoute extends GoRouteData {
   final String iwishId;
@@ -46,6 +26,7 @@ class IwishCardRoute extends GoRouteData {
   }
 }
 
+@TypedGoRoute<IwishFeedbackRoute>(path: '/iwish/:iwishId/feedback')
 @immutable
 class IwishFeedbackRoute extends GoRouteData {
   final String iwishId;
@@ -63,6 +44,7 @@ class IwishFeedbackRoute extends GoRouteData {
   }
 }
 
+@TypedGoRoute<IwishFeedbackCommentRoute>(path: '/iwish/:iwishId/comment')
 @immutable
 class IwishFeedbackCommentRoute extends GoRouteData {
   final String iwishId;

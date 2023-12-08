@@ -1,6 +1,8 @@
+import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-
 
 import 'package:mapness/shared/config/package_config.dart';
 
@@ -10,11 +12,15 @@ class EventCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.image,
+    required this.imageUrl,
+    required this.id,
   });
 
   final String title;
   final String subtitle;
   final String image;
+  final String imageUrl;
+  final String id;
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +28,15 @@ class EventCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(8),
       child: Material(
         child: Ink.image(
-          image: AssetImage(
-            image,
-            package: PackageConfig.packageName,
-          ),
+          image: NetworkImage(imageUrl),
           fit: BoxFit.cover,
           child: InkWell(
-            onTap: () {},
+            onTap: () {
+              NavigationService.navigatorKey.currentState!.pushNamed(
+                RouteName.eventsDetailsPage,
+                arguments: id,
+              );
+            },
             child: SizedBox(
               height: 200,
               child: Padding(
@@ -42,14 +50,20 @@ class EventCard extends StatelessWidget {
                     const Spacer(),
                     Text(
                       title,
-                      style: Theme.of(context).extension<ThemeTextStyles>()!.accentL.copyWith(color: Colors.white),
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .accentL
+                          .copyWith(color: Colors.white),
                     ),
                     const SizedBox(
                       height: 6,
                     ),
                     Text(
                       subtitle,
-                      style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: Colors.white.withOpacity(0.8)),
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .textS
+                          .copyWith(color: Colors.white.withOpacity(0.8)),
                     )
                   ],
                 ),

@@ -1,7 +1,11 @@
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/icons/general_icon.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
@@ -9,9 +13,19 @@ import '../../../../core/utils/constants/paths/image_paths.dart';
 import 'buttons/custom_buttons_widgets.dart';
 
 class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
+  final String? title;
+  final Widget? titleWidget;
+
   final Function? onPress;
-  const DetailsHeader({super.key, required this.title, this.onPress});
+  final Function? onPrint;
+  final Function? procedures;
+  const DetailsHeader(
+      {super.key,
+      this.title,
+      this.onPrint,
+      this.procedures,
+      this.onPress,
+      this.titleWidget});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +34,7 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         if (onPress != null)
           CustomTextIconButtonWidget(
-            icon: const Icon(
+            icon: Icon(
               Icons.add,
               size: 30,
               color: AppColor.primary900Light,
@@ -29,22 +43,24 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
             onPressed: () => onPress != null ? onPress!() : null,
           )
       ],
-      leading: Container(
-        margin: const EdgeInsetsDirectional.only(start: 10),
-        child: Row(
-          children: [
-            CustomTextIconButtonWidget(
-              text: title,
-              icon: SvgPicture.asset(IconPath.vdAppBarBack),
-              iconTextTweenSpace: 5,
-              textStyle: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppColor.blackModern700Light,
-                  fontFamily: Constants.appFontType),
-              onPressed: () => Navigator.of(context).pop(),
+      leadingWidth: 0,
+      automaticallyImplyLeading: false,
+      title: Container(
+        child: GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: Row(children: [
+            Icon(
+              Icons.arrow_back_ios,
+              color: AppColor.blackModern700Light,
+              size: 20,
             ),
-          ],
+            titleWidget ??
+                CustomTextWidget(title ?? "",
+                    fontSize: 20,
+                    fontWeight: AppFontWeight.bold,
+                    fontColor: AppColor.blackModern700Light,
+                    fontFamily: Constants.appFontType)
+          ]),
         ),
       ),
       systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
@@ -53,7 +69,7 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
       flexibleSpace: Stack(
         children: [
           Container(
-            padding: const EdgeInsets.only(bottom: 40, left: 16, right: 16),
+            padding: EdgeInsets.only(bottom: 40, left: 16, right: 16),
             decoration: const BoxDecoration(
               color: Colors.white,
               image: DecorationImage(
@@ -63,6 +79,19 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
               boxShadow: Constants.appBarBoxShadow,
             ),
           ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (onPrint != null)
+                  GeneralIcon(onTap: () => onPrint!(), icon: IconPath.printer),
+                if (procedures != null)
+                  GeneralIcon(
+                      onTap: () => procedures!(), icon: IconPath.settings),
+              ],
+            ),
+          )
         ],
       ),
     );
@@ -70,5 +99,5 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   // TODO: implement preferredSize
-  Size get preferredSize => const Size.fromHeight(100);
+  Size get preferredSize => Size.fromHeight(100);
 }

@@ -1,6 +1,6 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PathNavEndTripButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -21,8 +21,11 @@ class PathNavEndTripButton extends StatelessWidget {
             height: 56,
             child: Center(
               child: Text(
-                'End trip',
-                style: Theme.of(context).extension<ThemeTextStyles>()!.accentM.copyWith(color: Colors.white),
+                context.l10n.endTrip,
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .accentM
+                    .copyWith(color: Colors.white),
               ),
             ),
           ),

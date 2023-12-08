@@ -12,9 +12,10 @@ class ServicesRepositoryImplementation implements ServicesRepository {
   });
 
   @override
-  Future<Either<Failure, List<ServiceEntity>>> getPublicServices() async {
+  Future<Either<Failure, List<ServiceEntity>>>
+      getCustomerVoiceServices() async {
     try {
-      final services = await localDataSource.getPublicServices();
+      final services = await localDataSource.getCustomerVoiceServices();
       return Right(services);
     } catch (e) {
       return Left(CacheFailure());
@@ -22,9 +23,9 @@ class ServicesRepositoryImplementation implements ServicesRepository {
   }
 
   @override
-  Future<Either<Failure, List<ServiceEntity>>> getMunicipalServices() async {
+  Future<Either<Failure, List<ServiceEntity>>> getIslamicServices() async {
     try {
-      final services = await localDataSource.getMunicipalServices();
+      final services = await localDataSource.getIslamicServices();
       return Right(services);
     } catch (e) {
       return Left(CacheFailure());
@@ -45,6 +46,59 @@ class ServicesRepositoryImplementation implements ServicesRepository {
   Future<Either<Failure, List<ServiceEntity>>> getImportantServices() async {
     try {
       final services = await localDataSource.getImportantServices();
+      return Right(services);
+    } catch (e) {
+      return Left(CacheFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<ServiceEntity>>>
+      getBusinessLicenseServices() async {
+    try {
+      final services = await localDataSource.getBusinessLicenseServices();
+      return Right(services);
+    } catch (e) {
+      return Left(CacheFailure());
+    }
+  }
+
+  /* @override
+  Future<Either<Failure, List<ServiceEntity>>>
+      getHealthCertificatesServices() async {
+    try {
+     // final services = await localDataSource.getHealthCertificatesServices();
+      return Right(services);
+    } catch (e) {
+      return Left(CacheFailure());
+    }
+  }*/
+
+  @override
+  Future<Either<Failure, List<ServiceEntity>>> getHelpServices() async {
+    try {
+      final services = await localDataSource.getHelpServices();
+      return Right(services);
+    } catch (e) {
+      return Left(CacheFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<ServiceEntity>>>
+      getHonoringTheDeadServices() async {
+    try {
+      final services = await localDataSource.getHonoringTheDeadServices();
+      return Right(services);
+    } catch (e) {
+      return Left(CacheFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<ServiceEntity>>> getMunicipalServices() async {
+    try {
+      final services = await localDataSource.getMunicipalServices();
       return Right(services);
     } catch (e) {
       return Left(CacheFailure());

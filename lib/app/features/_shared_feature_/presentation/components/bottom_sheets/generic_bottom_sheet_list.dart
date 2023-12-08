@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/utils/extensions/int_extension.dart';
+
 import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, IconPath;
+    show AppColor, AppFontWeight, AppStyle, IconPath;
 import '../../../shared_feature_exports.dart'
     show
         BottomSheetWithActions,
@@ -18,6 +20,7 @@ class GenericBottomSheetList<T> extends StatefulWidget {
   final List<T>? selectedValues;
   final void Function(dynamic)? onTap;
   final bool searchable;
+  final String? noDataMsg;
 
   const GenericBottomSheetList({
     super.key,
@@ -26,6 +29,7 @@ class GenericBottomSheetList<T> extends StatefulWidget {
     this.selectedValue,
     this.selectedValues,
     required this.onTap,
+    this.noDataMsg,
     this.searchable = true,
   });
 
@@ -51,6 +55,9 @@ class _GenericBottomSheetListState<T> extends State<GenericBottomSheetList> {
 
   @override
   Widget build(BuildContext context) {
+    bool showNoDataMsg = (widget.items != null &&
+        widget.items.isEmpty &&
+        widget.noDataMsg != null);
     return BottomSheetWithActions(
       title: widget.title,
       isList: true,
@@ -63,60 +70,76 @@ class _GenericBottomSheetListState<T> extends State<GenericBottomSheetList> {
               .toList();
         });
       },
-      body: Flexible(
-        child: CustomScrollView(
-          shrinkWrap: true,
-          slivers: <Widget>[
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final item = items[index];
-                  return InkWell(
-                    onTap: () => selectItem(item),
-                    child: Container(
-                      height: 56,
-                      padding: const EdgeInsetsDirectional.only(start: 12),
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: AppColor.primary50Light50,
-                      ),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width - 125,
-                            child: CustomTextWidget(
-                              item.text,
-                              textStyle: AppStyle.listTitleTextStyle,
-                              maxLines: 2,
+      body: !showNoDataMsg
+          ? Flexible(
+              child: CustomScrollView(
+                shrinkWrap: true,
+                slivers: <Widget>[
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final item = items[index];
+                        return InkWell(
+                          onTap: () => selectItem(item),
+                          child: Container(
+                            height: 56,
+                            padding:
+                                const EdgeInsetsDirectional.only(start: 12),
+                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: AppColor.primary50Light50,
+                            ),
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width - 125,
+                                  child: CustomTextWidget(
+                                    item.text,
+                                    textStyle: AppStyle.listTitleTextStyle,
+                                    maxLines: 2,
+                                  ),
+                                ),
+                                const Spacer(),
+                                if (widget.onTap != null && !multipleSelection)
+                                  Radio(
+                                    value: item,
+                                    groupValue: selectedValue,
+                                    activeColor: AppColor.primary700Light,
+                                    onChanged: (_) => selectItem(item),
+                                  )
+                                else if (widget.onTap != null)
+                                  Checkbox(
+                                    value: selectedValues!.contains(item),
+                                    activeColor: AppColor.primary700Light,
+                                    onChanged: (_) => selectItem(item),
+                                  ),
+                              ],
                             ),
                           ),
-                          const Spacer(),
-                          if (widget.onTap != null && !multipleSelection)
-                            Radio(
-                              value: item,
-                              groupValue: selectedValue,
-                              activeColor: AppColor.primary700Light,
-                              onChanged: (_) => selectItem(item),
-                            )
-                          else if (widget.onTap != null)
-                            Checkbox(
-                              value: selectedValues!.contains(item),
-                              activeColor: AppColor.primary700Light,
-                              onChanged: (_) => selectItem(item),
-                            ),
-                        ],
-                      ),
+                        );
+                      },
+                      childCount: items.length,
                     ),
-                  );
-                },
-                childCount: items.length,
+                  ),
+                ],
               ),
+            )
+          : Column(
+              children: [
+                const SizedBox(
+                  height: 32,
+                ),
+                CustomTextWidget(
+                  widget.noDataMsg ?? "",
+                  fontWeight: AppFontWeight.bold,
+                  fontSize: 16,
+                  fontColor: AppColor.blackModern700Light,
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-      action: widget.onTap == null
+      action: widget.onTap == null || showNoDataMsg
           ? null
           : ElevatedButtonWidget.choose(
               onPressed: () {

@@ -52,7 +52,7 @@ class Alert {
   });
 }
 
-class Current {
+abstract class Current {
   final int? lastUpdatedEpoch;
   final String? lastUpdated;
   final double? tempC;
@@ -102,6 +102,8 @@ class Current {
     this.gustMph,
     this.gustKph,
   });
+
+  bool defineIsDay();
 }
 
 class Condition {
@@ -117,6 +119,15 @@ class Condition {
 
   bool get isNight => icon?.contains("night") ?? false;
 
+  String get iconPath {
+    if (code != null) {
+      return isNight
+          ? "assets/icons/svg/weather/night/${icon!.split("night/").last.replaceAll(".png", ".svg")}"
+          : "assets/icons/svg/weather/day/${icon!.split("day/").last.replaceAll(".png", ".svg")}";
+    }
+    return '';
+  }
+
 }
 
 enum Icon {
@@ -125,7 +136,7 @@ enum Icon {
   CDN_WEATHERAPI_COM_WEATHER_64_X64_DAY_116_PNG
 }
 
-enum Text { EMPTY, TEXT, PURPLE }
+enum TextEnum { EMPTY, TEXT, PURPLE }
 
 class Forecast {
   final List<ForecastDay>? forecastday;
@@ -135,7 +146,7 @@ class Forecast {
   });
 }
 
-class ForecastDay {
+abstract class ForecastDay {
   final String? date;
   final int? dateEpoch;
   final Day? day;
@@ -157,7 +168,7 @@ class Astro {
   final String? moonrise;
   final String? moonset;
   final String? moonPhase;
-  final String? moonIllumination;
+  final int? moonIllumination;
   final int? isMoonUp;
   final int? isSunUp;
 

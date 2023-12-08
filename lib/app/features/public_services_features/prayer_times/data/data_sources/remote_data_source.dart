@@ -2,7 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/dependency_injection/injection_container.dart';
-import '../../../../../core/errors/errors_exports.dart' show ServerException;
+import '../../../../../core/errors/errors_exports.dart'
+    show APIException, ServerException;
 import '../../../../../core/services/services_exports.dart' show WebService;
 import '../../../../../core/utils/utils_exports.dart'
     show ApiHeader, ApiUrl, CommonFunctions, EnvType, Log;
@@ -34,8 +35,9 @@ class PrayerTimesRemoteDataSourceImplementation
   Future<PrayerTimesResponse> getPrayerTimes(
     PrayerTimesParams params,
   ) async {
+    var response;
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.prayerTimes,
         queryParameters: params.toMap(),
       );
@@ -52,13 +54,18 @@ class PrayerTimesRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -67,15 +74,14 @@ class PrayerTimesRemoteDataSourceImplementation
   Future<List<PrayerTimeRangeResponseModel>> getPrayerTimesRange(
     PrayerTimeRangeParams params,
   ) async {
-    throw UnimplementedError();
-    /* try {
+    var response;
+    try {
       String q = "${sl<EnvType>().domain}v1/kacst/prayer-times-range?";
       params.toMap().forEach((key, value) {
         q += "$key=$value&";
       });
       q = q.substring(0, q.length - 1);
-      print("rrr $q");
-      final response = await webService.dio.get(ApiUrl.prayerTimesRange,
+      response = await webService.dio.get(ApiUrl.prayerTimesRange,
           queryParameters: params.toMap(),
           options: Options(headers: {
             ApiHeader.requiresToken.eName: false,
@@ -101,14 +107,19 @@ class PrayerTimesRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
-    }*/
+    }
   }
 }

@@ -2874,6 +2874,406 @@ class IWishFeedbackRequest extends $pb.GeneratedMessage {
   void clearText() => clearField(3);
 }
 
+class InterestingPlace_Preview extends $pb.GeneratedMessage {
+  factory InterestingPlace_Preview({
+    $core.String? title,
+    Image? image,
+  }) {
+    final $result = create();
+    if (title != null) {
+      $result.title = title;
+    }
+    if (image != null) {
+      $result.image = image;
+    }
+    return $result;
+  }
+  InterestingPlace_Preview._() : super();
+  factory InterestingPlace_Preview.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory InterestingPlace_Preview.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'InterestingPlace.Preview', package: const $pb.PackageName(_omitMessageNames ? '' : 'balady.protocol'), createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'title')
+    ..aOM<Image>(2, _omitFieldNames ? '' : 'image', subBuilder: Image.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  InterestingPlace_Preview clone() => InterestingPlace_Preview()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  InterestingPlace_Preview copyWith(void Function(InterestingPlace_Preview) updates) => super.copyWith((message) => updates(message as InterestingPlace_Preview)) as InterestingPlace_Preview;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static InterestingPlace_Preview create() => InterestingPlace_Preview._();
+  InterestingPlace_Preview createEmptyInstance() => create();
+  static $pb.PbList<InterestingPlace_Preview> createRepeated() => $pb.PbList<InterestingPlace_Preview>();
+  @$core.pragma('dart2js:noInline')
+  static InterestingPlace_Preview getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<InterestingPlace_Preview>(create);
+  static InterestingPlace_Preview? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get title => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set title($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasTitle() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearTitle() => clearField(1);
+
+  @$pb.TagNumber(2)
+  Image get image => $_getN(1);
+  @$pb.TagNumber(2)
+  set image(Image v) { setField(2, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasImage() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearImage() => clearField(2);
+  @$pb.TagNumber(2)
+  Image ensureImage() => $_ensure(1);
+}
+
+class InterestingPlace_Location extends $pb.GeneratedMessage {
+  factory InterestingPlace_Location({
+    Point? point,
+  }) {
+    final $result = create();
+    if (point != null) {
+      $result.point = point;
+    }
+    return $result;
+  }
+  InterestingPlace_Location._() : super();
+  factory InterestingPlace_Location.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory InterestingPlace_Location.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'InterestingPlace.Location', package: const $pb.PackageName(_omitMessageNames ? '' : 'balady.protocol'), createEmptyInstance: create)
+    ..aOM<Point>(1, _omitFieldNames ? '' : 'point', subBuilder: Point.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  InterestingPlace_Location clone() => InterestingPlace_Location()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  InterestingPlace_Location copyWith(void Function(InterestingPlace_Location) updates) => super.copyWith((message) => updates(message as InterestingPlace_Location)) as InterestingPlace_Location;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static InterestingPlace_Location create() => InterestingPlace_Location._();
+  InterestingPlace_Location createEmptyInstance() => create();
+  static $pb.PbList<InterestingPlace_Location> createRepeated() => $pb.PbList<InterestingPlace_Location>();
+  @$core.pragma('dart2js:noInline')
+  static InterestingPlace_Location getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<InterestingPlace_Location>(create);
+  static InterestingPlace_Location? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  Point get point => $_getN(0);
+  @$pb.TagNumber(1)
+  set point(Point v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasPoint() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearPoint() => clearField(1);
+  @$pb.TagNumber(1)
+  Point ensurePoint() => $_ensure(0);
+}
+
+class InterestingPlace extends $pb.GeneratedMessage {
+  factory InterestingPlace({
+    $core.String? id,
+    InterestingPlace_Preview? preview,
+    InterestingPlace_Location? location,
+  }) {
+    final $result = create();
+    if (id != null) {
+      $result.id = id;
+    }
+    if (preview != null) {
+      $result.preview = preview;
+    }
+    if (location != null) {
+      $result.location = location;
+    }
+    return $result;
+  }
+  InterestingPlace._() : super();
+  factory InterestingPlace.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory InterestingPlace.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'InterestingPlace', package: const $pb.PackageName(_omitMessageNames ? '' : 'balady.protocol'), createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'id')
+    ..aOM<InterestingPlace_Preview>(2, _omitFieldNames ? '' : 'preview', subBuilder: InterestingPlace_Preview.create)
+    ..aOM<InterestingPlace_Location>(3, _omitFieldNames ? '' : 'location', subBuilder: InterestingPlace_Location.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  InterestingPlace clone() => InterestingPlace()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  InterestingPlace copyWith(void Function(InterestingPlace) updates) => super.copyWith((message) => updates(message as InterestingPlace)) as InterestingPlace;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static InterestingPlace create() => InterestingPlace._();
+  InterestingPlace createEmptyInstance() => create();
+  static $pb.PbList<InterestingPlace> createRepeated() => $pb.PbList<InterestingPlace>();
+  @$core.pragma('dart2js:noInline')
+  static InterestingPlace getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<InterestingPlace>(create);
+  static InterestingPlace? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get id => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set id($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearId() => clearField(1);
+
+  @$pb.TagNumber(2)
+  InterestingPlace_Preview get preview => $_getN(1);
+  @$pb.TagNumber(2)
+  set preview(InterestingPlace_Preview v) { setField(2, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasPreview() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearPreview() => clearField(2);
+  @$pb.TagNumber(2)
+  InterestingPlace_Preview ensurePreview() => $_ensure(1);
+
+  @$pb.TagNumber(3)
+  InterestingPlace_Location get location => $_getN(2);
+  @$pb.TagNumber(3)
+  set location(InterestingPlace_Location v) { setField(3, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasLocation() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearLocation() => clearField(3);
+  @$pb.TagNumber(3)
+  InterestingPlace_Location ensureLocation() => $_ensure(2);
+}
+
+class InterestingPlacesResponse extends $pb.GeneratedMessage {
+  factory InterestingPlacesResponse({
+    $core.Iterable<InterestingPlace>? interestingPlaces,
+  }) {
+    final $result = create();
+    if (interestingPlaces != null) {
+      $result.interestingPlaces.addAll(interestingPlaces);
+    }
+    return $result;
+  }
+  InterestingPlacesResponse._() : super();
+  factory InterestingPlacesResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory InterestingPlacesResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'InterestingPlacesResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'balady.protocol'), createEmptyInstance: create)
+    ..pc<InterestingPlace>(1, _omitFieldNames ? '' : 'interestingPlaces', $pb.PbFieldType.PM, subBuilder: InterestingPlace.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  InterestingPlacesResponse clone() => InterestingPlacesResponse()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  InterestingPlacesResponse copyWith(void Function(InterestingPlacesResponse) updates) => super.copyWith((message) => updates(message as InterestingPlacesResponse)) as InterestingPlacesResponse;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static InterestingPlacesResponse create() => InterestingPlacesResponse._();
+  InterestingPlacesResponse createEmptyInstance() => create();
+  static $pb.PbList<InterestingPlacesResponse> createRepeated() => $pb.PbList<InterestingPlacesResponse>();
+  @$core.pragma('dart2js:noInline')
+  static InterestingPlacesResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<InterestingPlacesResponse>(create);
+  static InterestingPlacesResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<InterestingPlace> get interestingPlaces => $_getList(0);
+}
+
+class Profile_Photo extends $pb.GeneratedMessage {
+  factory Profile_Photo({
+    Image? image,
+  }) {
+    final $result = create();
+    if (image != null) {
+      $result.image = image;
+    }
+    return $result;
+  }
+  Profile_Photo._() : super();
+  factory Profile_Photo.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory Profile_Photo.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'Profile.Photo', package: const $pb.PackageName(_omitMessageNames ? '' : 'balady.protocol'), createEmptyInstance: create)
+    ..aOM<Image>(1, _omitFieldNames ? '' : 'image', subBuilder: Image.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  Profile_Photo clone() => Profile_Photo()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  Profile_Photo copyWith(void Function(Profile_Photo) updates) => super.copyWith((message) => updates(message as Profile_Photo)) as Profile_Photo;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static Profile_Photo create() => Profile_Photo._();
+  Profile_Photo createEmptyInstance() => create();
+  static $pb.PbList<Profile_Photo> createRepeated() => $pb.PbList<Profile_Photo>();
+  @$core.pragma('dart2js:noInline')
+  static Profile_Photo getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Profile_Photo>(create);
+  static Profile_Photo? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  Image get image => $_getN(0);
+  @$pb.TagNumber(1)
+  set image(Image v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasImage() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearImage() => clearField(1);
+  @$pb.TagNumber(1)
+  Image ensureImage() => $_ensure(0);
+}
+
+class Profile extends $pb.GeneratedMessage {
+  factory Profile({
+    Profile_Photo? photo,
+  }) {
+    final $result = create();
+    if (photo != null) {
+      $result.photo = photo;
+    }
+    return $result;
+  }
+  Profile._() : super();
+  factory Profile.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory Profile.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'Profile', package: const $pb.PackageName(_omitMessageNames ? '' : 'balady.protocol'), createEmptyInstance: create)
+    ..aOM<Profile_Photo>(6, _omitFieldNames ? '' : 'photo', subBuilder: Profile_Photo.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  Profile clone() => Profile()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  Profile copyWith(void Function(Profile) updates) => super.copyWith((message) => updates(message as Profile)) as Profile;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static Profile create() => Profile._();
+  Profile createEmptyInstance() => create();
+  static $pb.PbList<Profile> createRepeated() => $pb.PbList<Profile>();
+  @$core.pragma('dart2js:noInline')
+  static Profile getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Profile>(create);
+  static Profile? _defaultInstance;
+
+  @$pb.TagNumber(6)
+  Profile_Photo get photo => $_getN(0);
+  @$pb.TagNumber(6)
+  set photo(Profile_Photo v) { setField(6, v); }
+  @$pb.TagNumber(6)
+  $core.bool hasPhoto() => $_has(0);
+  @$pb.TagNumber(6)
+  void clearPhoto() => clearField(6);
+  @$pb.TagNumber(6)
+  Profile_Photo ensurePhoto() => $_ensure(0);
+}
+
+class ProfileResponse extends $pb.GeneratedMessage {
+  factory ProfileResponse({
+    Profile? profile,
+  }) {
+    final $result = create();
+    if (profile != null) {
+      $result.profile = profile;
+    }
+    return $result;
+  }
+  ProfileResponse._() : super();
+  factory ProfileResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ProfileResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ProfileResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'balady.protocol'), createEmptyInstance: create)
+    ..aOM<Profile>(2, _omitFieldNames ? '' : 'profile', subBuilder: Profile.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  ProfileResponse clone() => ProfileResponse()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  ProfileResponse copyWith(void Function(ProfileResponse) updates) => super.copyWith((message) => updates(message as ProfileResponse)) as ProfileResponse;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static ProfileResponse create() => ProfileResponse._();
+  ProfileResponse createEmptyInstance() => create();
+  static $pb.PbList<ProfileResponse> createRepeated() => $pb.PbList<ProfileResponse>();
+  @$core.pragma('dart2js:noInline')
+  static ProfileResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ProfileResponse>(create);
+  static ProfileResponse? _defaultInstance;
+
+  @$pb.TagNumber(2)
+  Profile get profile => $_getN(0);
+  @$pb.TagNumber(2)
+  set profile(Profile v) { setField(2, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasProfile() => $_has(0);
+  @$pb.TagNumber(2)
+  void clearProfile() => clearField(2);
+  @$pb.TagNumber(2)
+  Profile ensureProfile() => $_ensure(0);
+}
+
 
 const _omitFieldNames = $core.bool.fromEnvironment('protobuf.omit_field_names');
 const _omitMessageNames = $core.bool.fromEnvironment('protobuf.omit_message_names');

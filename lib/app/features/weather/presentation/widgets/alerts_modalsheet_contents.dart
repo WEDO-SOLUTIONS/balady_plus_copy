@@ -6,8 +6,8 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/utils_exports.dart';
+import '../../../../core/utils/weather_date.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
-import '../weather_date.dart';
 
 class AlertsModalSheetContent extends StatelessWidget {
   const AlertsModalSheetContent({
@@ -23,16 +23,36 @@ class AlertsModalSheetContent extends StatelessWidget {
             // height: MediaQuery.of(context).size.height * 0.33,
             child: Container(
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 47, horizontal: 16),
+                padding: const EdgeInsets.only(
+                    top: 24, bottom: 30, right: 16, left: 16),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 53,
+                          height: 5.46,
+                          decoration: ShapeDecoration(
+                            color: Color(0xFFE5E5E5),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    CustomVerticalSpace(
+                      height: 24,
+                    ),
                     Row(
                       children: [
                         SvgPicture.asset(
                           IconPath.danger,
                           color: AppColor.primary900Light,
                         ),
+                        CustomHorizontalSpace(width: 8),
                         CustomTextWidget(
                           'warning'.tr(),
                           fontColor: AppColor.primary900Light,
@@ -43,71 +63,102 @@ class AlertsModalSheetContent extends StatelessWidget {
                     const SizedBox(
                       height: 8,
                     ),
-                    CustomTextWidget(
-                      state.allWeatherInfo?.alerts?.alert?[0].desc ?? '',
-                      fontColor: AppColor.blackModern500Light,
-                      fontWeight: AppFontWeight.bold,
-                      fontSize: 12,
-                      maxLines: 10,
-                      textAlign: TextAlign.start,
-                      height: 2,
-                    ),
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    Row(
-                      children: [
-                        const CustomTextWidget(
-                          "المناطق",
-                          fontColor: AppColor.blackModern700Light,
-                          fontSize: 12,
-                        ),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        CustomTextWidget(
-                          state.allWeatherInfo?.alerts?.alert?[0].areas ?? '',
-                          fontColor: AppColor.primary800Light,
-                          fontSize: 12,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    Row(
-                      children: [
-                        const CustomTextWidget(
-                          "الفترة",
-                          fontColor: AppColor.blackModern700Light,
-                          fontSize: 12,
-                        ),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        CustomTextWidget(
-                          WeatherDateFormatter.getDay(state
-                                  .allWeatherInfo?.alerts?.alert?[0].effective
-                                  .toString() ??
-                              ''),
-                          fontColor: AppColor.primary800Light,
-                          fontSize: 12,
-                        ),
-                        const CustomTextWidget(
-                          ' - ',
-                          fontColor: AppColor.primary800Light,
-                          fontSize: 12,
-                        ),
-                        CustomTextWidget(
-                          WeatherDateFormatter.getDay(state
-                                  .allWeatherInfo?.alerts?.alert?[0].expires
-                                  .toString() ??
-                              ''),
-                          fontColor: AppColor.primary800Light,
-                          fontSize: 12,
-                        ),
-                      ],
-                    ),
+                    ListView.builder(
+                        shrinkWrap: true,
+                        itemCount:
+                            state.allWeatherInfo?.alerts?.alert?.length ?? 0,
+                        itemBuilder: (ctx, index) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              CustomTextWidget(
+                                state.allWeatherInfo?.alerts?.alert?[index]
+                                        .desc ??
+                                    '',
+                                fontColor: AppColor.blackModern500Light,
+                                fontWeight: AppFontWeight.bold,
+                                fontSize: 12,
+                                maxLines: 10,
+                                textAlign: TextAlign.start,
+                                height: 2,
+                              ),
+                              const SizedBox(
+                                height: 12,
+                              ),
+                              if (state.allWeatherInfo?.alerts?.alert?[index]
+                                      .areas?.isNotEmpty ??
+                                  false)
+                                Row(
+                                  children: [
+                                    const CustomTextWidget(
+                                      "المناطق",
+                                      fontColor: AppColor.blackModern700Light,
+                                      fontSize: 12,
+                                    ),
+                                    const SizedBox(
+                                      width: 8,
+                                    ),
+                                    CustomTextWidget(
+                                      state.allWeatherInfo?.alerts
+                                              ?.alert?[index].areas ??
+                                          '',
+                                      fontColor: AppColor.primary800Light,
+                                      fontSize: 12,
+                                    ),
+                                  ],
+                                ),
+                              const SizedBox(
+                                height: 12,
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const CustomTextWidget(
+                                    "الفترة",
+                                    fontColor: AppColor.blackModern700Light,
+                                    fontSize: 12,
+                                  ),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  Flexible(
+                                    child: CustomTextWidget(
+                                      WeatherDateFormatter.getAlertDay(state
+                                              .allWeatherInfo
+                                              ?.alerts
+                                              ?.alert?[index]
+                                              .effective
+                                              .toString() ??
+                                          ''),
+                                      fontColor: AppColor.primary800Light,
+                                      fontSize: 12,
+                                      maxLines: 4,
+                                    ),
+                                  ),
+                                  const CustomTextWidget(
+                                    ' - ',
+                                    fontColor: AppColor.primary800Light,
+                                    fontSize: 12,
+                                  ),
+                                  CustomTextWidget(
+                                    WeatherDateFormatter.getAlertDay(state
+                                            .allWeatherInfo
+                                            ?.alerts
+                                            ?.alert?[index]
+                                            .expires
+                                            .toString() ??
+                                        ''),
+                                    fontColor: AppColor.primary800Light,
+                                    fontSize: 12,
+                                  ),
+                                ],
+                              ),
+                              CustomVerticalSpace(
+                                height: 24,
+                              )
+                            ],
+                          );
+                        })
                   ],
                 ),
               ),

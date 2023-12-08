@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
 import 'package:balady_plus/app/features/map_page/data/enums/map_enums.dart';
@@ -16,6 +17,7 @@ import '../../../../core/utils/constants/route_names.dart';
 import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../home_page/presentation/widgets/home_tag.dart';
 import '../../data/enums/custom_search_category.dart';
+import '../mvvm/search_bottom_view_model.dart';
 
 class SearchMapWidget extends StatelessWidget {
   const SearchMapWidget({
@@ -48,7 +50,10 @@ class SearchMapWidget extends StatelessWidget {
                     icon: "assets/icons/svg/user.svg",
                   )),
               GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    NavigationService.navigatorKey.currentState!
+                        .pushNamed(RouteName.notificationPage);
+                  },
                   child: CircleIcon(
                     icon: "assets/icons/svg/notification_active.svg",
                     iconSize: 40,
@@ -123,7 +128,6 @@ class SearchMapWidget extends StatelessWidget {
                             CustomSearchCategory.events,
                             SearchCategoryMessage.pharmacies,
                             SearchCategoryMessage.dentalCenters,
-                            SearchCategoryMessage.hotels,
                           ].map((e) {
                             SearchCategoryMessage? category;
                             CustomSearchCategory? custom;
@@ -140,9 +144,6 @@ class SearchMapWidget extends StatelessWidget {
                               displayName = e.displayName();
                               category = e;
                             }
-                            print("categoet11 $category");
-                            print(
-                                "categoet ${mapViewModel.selectedCategory.value}");
 
                             final bool isActive = ((mapViewModel
                                             .selectedCategory.value ==
@@ -170,7 +171,7 @@ class SearchMapWidget extends StatelessWidget {
                                     onTap: () {
                                       mapViewModel.selectCategory(
                                           category: category, custom: custom);
-                                      print("Changing ctaegory to: $e");
+                                      searchFocusNode.unfocus();
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.all(4.0),

@@ -17,10 +17,12 @@ class NavigationHandler {
     private let navigationManager: NavigationManager
     private let voiceManager: VoiceManager
     
-    private var prevCameraBehaviour: CameraPosition?
+    private var prevCameraBehaviour: CameraBehaviour?
     
     private var cancelable: Array<Cancellable> = []
     private var moveCameraCancellable: DGis.Cancellable?
+    private let locationSource: MyLocationMapObjectSource
+    private var prevMyLocationMapObjectSource: MyLocationMapObjectSource?
     
     // Models to observe channels and send events to Flutter
     private let speedControlModel: SpeedControlModel
@@ -41,12 +43,10 @@ class NavigationHandler {
         
         self.voiceManager = getVoiceManager(context: context)
         
-        let locationSource = MyLocationMapObjectSource(
+        self.locationSource = MyLocationMapObjectSource(
             context: context,
-            directionBehaviour: .followSatelliteHeading,
-            controller: createSmoothMyLocationController()
+            controller: navigationManager.mapLocationController.myLocationIndicatorController
         )
-        self.map.addSource(source: locationSource)
 
         self.speedControlModel = SpeedControlModel(
             model: self.navigationManager.uiModel,
@@ -112,6 +112,31 @@ class NavigationHandler {
         self.maneuverControlModel.cancel()
     }
     
+    func setupCamera() {
+        self.prevMyLocationMapObjectSource = self.map.sources.first { $0 is MyLocationMapObjectSource } as? MyLocationMapObjectSource
+        if let prevLocationSource = self.prevMyLocationMapObjectSource {
+            self.map.removeSource(source: prevLocationSource)
+        }
+        self.map.addSource(source: self.locationSource)
+        var position = self.map.camera.position
+        self.prevCameraBehaviour = self.map.camera.behaviour.newBehaviour
+        self.map.camera.setBehaviour(
+            behaviour: CameraBehaviour(
+                position: .init(bearing: .on, styleZoom: .on)
+            )
+        )
+    }
+    
+    func resetCamera() {
+        self.map.removeSource(source: self.locationSource)
+        if let prevLocationSource = self.prevMyLocationMapObjectSource {
+            self.map.addSource(source: prevLocationSource)
+        }
+        if let prevCameraBehaviour {
+            self.map.camera.setBehaviour(behaviour: prevCameraBehaviour)
+        }
+    }
+    
     func startNavigation(
         finishPoint: RouteSearchPoint?,
         options: RouteSearchOptions?,
@@ -127,8 +152,8 @@ class NavigationHandler {
             return
         }
         
-        self.prevCameraBehaviour = self.map.camera.position
         do {
+            setupCamera()
             try self.navigationManager.start(
                 routeBuildOptions: RouteBuildOptions(
                     finishPoint: finishPoint,
@@ -168,8 +193,8 @@ class NavigationHandler {
             return
         }
         
-        self.prevCameraBehaviour = self.map.camera.position
         do {
+            setupCamera()
             try self.navigationManager.startSimulation(
                 routeBuildOptions: RouteBuildOptions(
                     finishPoint: finishPoint,
@@ -192,6 +217,7 @@ class NavigationHandler {
     func stopNavigation() {
         print("navigationManager started")
         navigationManager.stop()
+        resetCamera()
         
         guard let prevCameraBehaviour = self.prevCameraBehaviour else {
             print("prevCameraBehaviour failed")
@@ -199,17 +225,17 @@ class NavigationHandler {
         }
         print("prevCameraBehaviour init \(prevCameraBehaviour)")
         self.moveCameraCancellable?.cancel()
-        self.moveCameraCancellable = self.map.camera.move(
-            position: prevCameraBehaviour,
-            time: 0.25,
-            animationType: .default
-        ).sink {_ in
-            print("prevCameraBehaviour after camera moved \(prevCameraBehaviour)")
-            /// TODO: вот здесь мы якобы двигаем камеру, но по сути ничего не происходит и она все равно улетает в universe
-            print("camera moved")
-        } failure: {_ in
-            print("moving failed")
-        }
+//        self.moveCameraCancellable = self.map.camera.move(
+//            position: prevCameraBehaviour,
+//            time: 0.25,
+//            animationType: .default
+//        ).sink {_ in
+//            print("prevCameraBehaviour after camera moved \(prevCameraBehaviour)")
+//            /// TODO: вот здесь мы якобы двигаем камеру, но по сути ничего не происходит и она все равно улетает в universe
+//            print("camera moved")
+//        } failure: {_ in
+//            print("moving failed")
+//        }
     }
 
     func startFreeRoam(completion: @escaping (FlutterError?) -> Void) {

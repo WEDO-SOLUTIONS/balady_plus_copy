@@ -279,3 +279,38 @@ message IWishFeedbackRequest {
   repeated Tag tags = 2;
   optional string text = 3;
 }
+
+// Interesting Places
+
+message InterestingPlace {
+  message Preview {
+    string title = 1;
+    Image image = 2;
+  }
+
+  message Location {
+    Point point = 1;
+  }
+
+  string id = 1;
+  Preview preview = 2;
+  Location location = 3;
+}
+
+message InterestingPlacesResponse {
+  repeated InterestingPlace interesting_places = 1;
+}
+
+message Profile {
+  message Photo {
+	  Image image = 1;
+  }
+
+  reserved 5;
+  optional Photo photo = 6;
+}
+
+message ProfileResponse {
+  reserved 1;
+  Profile profile = 2;
+}

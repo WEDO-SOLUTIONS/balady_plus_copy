@@ -26,9 +26,7 @@ class ProfileImageWidget extends ConsumerWidget {
     }
 
     final bytes = await image.readAsBytes();
-    ref
-        .read(profileImageProvider.notifier)
-        .changeUserProfileImageByBytes(bytes);
+    ref.read(profileImageProvider.notifier).changeUserProfileImageByBytes(bytes);
   }
 
   @override
@@ -63,7 +61,7 @@ class ProfileImageWidget extends ConsumerWidget {
                   base64Decode(data.imageBase64),
                   height: dimension,
                   width: dimension,
-                  fit: BoxFit.fitWidth,
+                  fit: BoxFit.cover,
                   alignment: Alignment.center,
                 ),
               ),

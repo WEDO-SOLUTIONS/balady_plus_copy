@@ -1,5 +1,13 @@
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/etmam_app/core/utils/enums/app_font_weight.dart';
+import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../core/base/base_view_model.dart';
+import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/utils_exports.dart'
     show
         AppStyle,
@@ -9,8 +17,21 @@ import '../../../../core/utils/utils_exports.dart'
         IconPath,
         RouteName,
         ServiceAction;
+import '../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
+import '../../../_shared_feature_/presentation/dialogs/not_authorized_indivivisual.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetDialog, BottomSheetWithActions, DrawIconBasedTypeWidget;
+import '../../../daem/presentation/dialogs/daem_types_dialog.dart';
+import '../../../new_appointment/presentation/core/services/view_models/new_appointment_view_model.dart';
+import '../../../new_appointment/presentation/dialogs/new_appointment_dialog.dart';
+import '../../../posters/presentation/widgets/license_widgets/bottom_sheet_list.dart';
+import '../../../posters/presentation/widgets/types_dialog/commercial_permits_dialog.dart';
+import '../../../public_services_features/prayer_times/presentation/cubit/prayer_times_cubit.dart';
+import '../../../transaction_inquiry/presentation/dialogs/general_inquiries_types_dialog.dart';
+import '../../../transaction_inquiry/presentation/dialogs/new_request_types_dialog.dart';
+import '../../../vd/domain/entities/camera/camera_page_params.dart';
+import '../../../vd/domain/entities/categories/category_item.dart';
+import '../../../vd/presentation/dialogs/vd_all_types_dialog.dart';
 import '../../services_exports.dart';
 
 class ServiceIcon extends StatelessWidget {
@@ -24,18 +45,326 @@ class ServiceIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () async {},
+      onTap: () async {
+        if (service.id == 101) {
+          if (CommonProperties.selectedDelegator != null) {
+            await BottomSheetDialog.showDraggableSheet(context,
+                isFullHeight: false,
+                height: 300, child: CommercialPermitsDialog(
+              onSelect: (int item) async {
+                await BottomSheetDialog.showDraggableSheet(context,
+                    isFullHeight: true,
+                    child: PermitsLicenseBottomSheetList(
+                      groupId: item,
+                    ));
+              },
+            ));
+          } else {
+            await BottomSheetDialog.showDraggableSheet(
+              context,
+              isFullHeight: false,
+              dialogKeyName: DialogName.notAuthorizedIndivisualDialog,
+              currentRouteName: RouteName.postersStartService,
+              child: NotAuthorizedIndivisualDialog(),
+            );
+          }
+
+          return;
+        }
+
+        if (service.id == 1 && service.action.type == ServiceAction.cardsPage) {
+          await BottomSheetDialog.showDraggableSheet(context,
+              dialogKeyName: DialogName.vdTypesDialog,
+              currentRouteName: "ServicesPage",
+              child: BottomSheetWithActions(
+                title: "اختر نوع البلاغ".tr(),
+                body: VDAllTypesDialog(),
+              ));
+        } else if (service.id == 3 &&
+            service.action.type == ServiceAction.dialog) {
+          if (CommonProperties.isLoggedIn) {
+            await BottomSheetDialog.showDraggableSheet(context,
+                dialogKeyName: DialogName.daemDialog,
+                currentRouteName: "ServicesPage",
+                child: BottomSheetWithActions(
+                  title: "daem_select_category".tr(),
+                  body: DaemTypeDialog(),
+                ));
+          } else {
+            showDialog(
+                context: context,
+                builder: (ctx) =>
+                    NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                      if (isSuccess ?? false) {
+                        await BottomSheetDialog.showDraggableSheet(context,
+                            dialogKeyName: DialogName.daemDialog,
+                            currentRouteName: "ServicesPage",
+                            child: BottomSheetWithActions(
+                              title: "daem_select_category".tr(),
+                              body: DaemTypeDialog(),
+                            ));
+                      }
+                    }));
+          }
+        } else if (service.id == 2 &&
+            service.action.type == ServiceAction.dialog) {
+          if (CommonProperties.isLoggedIn) {
+            await BottomSheetDialog.showDraggableSheet(context,
+                dialogKeyName: DialogName.InqueryDialog,
+                currentRouteName: "ServicesPage",
+                child: BottomSheetWithActions(
+                  title: "اختر التصنيف".tr(),
+                  body: GeneralInquiryTypeDialog(),
+                ));
+          } else {
+            showDialog(
+                context: context,
+                builder: (ctx) =>
+                    NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                      if (isSuccess ?? false) {
+                        await BottomSheetDialog.showDraggableSheet(context,
+                            dialogKeyName: DialogName.InqueryDialog,
+                            currentRouteName: "ServicesPage",
+                            child: BottomSheetWithActions(
+                              title: "اختر التصنيف".tr(),
+                              body: GeneralInquiryTypeDialog(),
+                            ));
+                      }
+                    }));
+          }
+        } else if (service.id == 5 &&
+            service.action.type == ServiceAction.dialog) {
+          if (CommonProperties.isLoggedIn) {
+            await BottomSheetDialog.showDraggableSheet(context,
+                dialogKeyName: DialogName.msrDialog,
+                currentRouteName: "ServicesPage",
+                child: BottomSheetWithActions(
+                  title: "اختر التصنيف".tr(),
+                  body: MSRTypeDialog(),
+                ));
+          } else {
+            showDialog(
+                context: context,
+                builder: (ctx) =>
+                    NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                      if (isSuccess ?? false) {
+                        await BottomSheetDialog.showDraggableSheet(context,
+                            dialogKeyName: DialogName.msrDialog,
+                            currentRouteName: "ServicesPage",
+                            child: BottomSheetWithActions(
+                              title: "اختر التصنيف".tr(),
+                              body: MSRTypeDialog(),
+                            ));
+                      }
+                    }));
+          }
+        } else if (service.id == 2 && service.action.value == "/prayerTimes") {
+          context.pushNamedRoute(
+            RouteName.prayerTimes,
+            arguments: context.read<PrayerTimesCubit>(),
+          );
+        } else if (service.id == 13) {
+          if (CommonProperties.isLoggedIn) {
+            NavigationService.navigatorKey.currentState!
+                .pushNamed(RouteName.municipalAdvisor);
+          } else {
+            showDialog(
+                context: context,
+                builder: (ctx) =>
+                    NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                      if (isSuccess ?? false) {
+                        NavigationService.navigatorKey.currentState!
+                            .pushNamed(RouteName.municipalAdvisor);
+                      }
+                    }));
+          }
+        } else if (service.action.value == RouteName.etmamMainPage) {
+          if (CommonProperties.isLoggedIn) {
+            NavigationService.navigatorKey.currentState!
+                .pushNamed(RouteName.etmamMainPage);
+          } else {
+            showDialog(
+                context: context,
+                builder: (ctx) =>
+                    NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                      if (isSuccess ?? false) {
+                        NavigationService.navigatorKey.currentState!
+                            .pushNamed(RouteName.etmamMainPage);
+                      }
+                    }));
+          }
+        } else if (service.id == 4 &&
+            service.action.type == ServiceAction.dialog) {
+          if (CommonProperties.isLoggedIn) {
+            bool isSuccess =
+                await locator<NewAppointmentViewModel>().loadInitialData();
+            if (isSuccess) {
+              NavigationService.navigatorKey.currentState!
+                  .pushNamed(RouteName.NewAppointmentPage, arguments: false);
+              /* await BottomSheetDialog.showDraggableSheet(context,
+                  dialogKeyName: DialogName.selectAppointmentTypeDialog,
+                  currentRouteName: "ServicesPage",
+                  isFullHeight: false,
+                  child: BottomSheetWithActions(
+                    title: "اختر نوع الموعد".tr(),
+                    body: NewAppointmentDialog(),
+                  ));*/
+            }
+          } else {
+            showDialog(
+                context: context,
+                builder: (ctx) =>
+                    NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                      if (isSuccess ?? false) {
+                        await locator<NewAppointmentViewModel>()
+                            .loadInitialData();
+                        NavigationService.navigatorKey.currentState!.pushNamed(
+                            RouteName.NewAppointmentPage,
+                            arguments: false);
+                        /* await BottomSheetDialog.showDraggableSheet(context,
+                            dialogKeyName:
+                                DialogName.selectAppointmentTypeDialog,
+                            currentRouteName: "ServicesPage",
+                            isFullHeight: false,
+                            child: BottomSheetWithActions(
+                              title: "اختر نوع الموعد".tr(),
+                              body: NewAppointmentDialog(),
+                            ));*/
+                      }
+                    }));
+          }
+        } else if (service.action.type == ServiceAction.cardsPage) {
+          if (service.requireLogin != true) {
+            NavigationService.navigatorKey.currentState!.pushNamed(
+              RouteName.serviceCards,
+              arguments: service,
+            );
+          } else {
+            if (CommonProperties.isLoggedIn) {
+              NavigationService.navigatorKey.currentState!.pushNamed(
+                RouteName.serviceCards,
+                arguments: service,
+              );
+            } else {
+              showDialog(
+                  context: context,
+                  builder: (ctx) =>
+                      NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                        if (isSuccess ?? false) {
+                          NavigationService.navigatorKey.currentState!
+                              .pushNamed(
+                            RouteName.serviceCards,
+                            arguments: service,
+                          );
+                        }
+                      }));
+            }
+          }
+        } else if (service.action.type == ServiceAction.pageRoute) {
+          if (service.action.value == RouteName.DCCameraPage) {
+            bool isLocationAvailable =
+                await CommonFunctions.checkLocationSettings(context);
+            bool isCameraAllowed =
+                await CommonFunctions.checkCameraSettings(context);
+            if (isLocationAvailable && isCameraAllowed) {
+              if (CommonProperties.isLoggedIn) {
+                NavigationService.navigatorKey.currentState!.pushNamed(
+                    RouteName.DCCameraPage,
+                    arguments: CameraParamsPage(
+                        selectedCategory: CategoryItem(categoryId: "CG-14"),
+                        isFromHome: false));
+              } else {
+                showDialog(
+                    context: context,
+                    builder: (ctx) => NeedLoginDialog(
+                            onSuccessLogin: (bool? isSuccess) async {
+                          if (isSuccess ?? false) {
+                            NavigationService.navigatorKey.currentState!
+                                .pushNamed(RouteName.DCCameraPage,
+                                    arguments: CameraParamsPage(
+                                        selectedCategory:
+                                            CategoryItem(categoryId: "CG-14"),
+                                        isFromHome: false));
+                          }
+                        }));
+              }
+            }
+          } else if (service.iconName == "municipal_commercial" ||
+              service.iconName == "municpal_construction" ||
+              service.iconName == "municipal_shop" ||
+              service.iconName == "municpal_housing" ||
+              service.iconName == "municipal_ewaa" ||
+              service.iconName == "municpal_toppaco") {
+            if (CommonProperties.isLoggedIn) {
+              CommonFunctions.openBaladyWebView(service.action.value);
+            } else {
+              showDialog(
+                  context: context,
+                  builder: (ctx) =>
+                      NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                        if (isSuccess ?? false) {
+                          CommonFunctions.openBaladyWebView(
+                              service.action.value);
+                        }
+                      }));
+            }
+          } else if (service.iconName == "municipal_health") {
+            if (CommonProperties.isLoggedIn) {
+              NavigationService.navigatorKey.currentState!.pushNamed(
+                service.action.value,
+              );
+            } else {
+              showDialog(
+                  context: context,
+                  builder: (ctx) =>
+                      NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                        if (isSuccess ?? false) {
+                          NavigationService.navigatorKey.currentState!
+                              .pushNamed(
+                            service.action.value,
+                          );
+                        }
+                      }));
+            }
+          } else if (service.iconName == "municpal_all") {
+            CommonFunctions.externalLaunch(service.action.value);
+          } else {
+            if (service.requireLogin != true) {
+              NavigationService.navigatorKey.currentState!.pushNamed(
+                service.action.value,
+              );
+            } else {
+              if (CommonProperties.isLoggedIn) {
+                NavigationService.navigatorKey.currentState!.pushNamed(
+                  service.action.value,
+                );
+              } else {
+                showDialog(
+                    context: context,
+                    builder: (ctx) => NeedLoginDialog(
+                            onSuccessLogin: (bool? isSuccess) async {
+                          if (isSuccess ?? false) {
+                            NavigationService.navigatorKey.currentState!
+                                .pushNamed(
+                              service.action.value,
+                            );
+                          }
+                        }));
+              }
+            }
+          }
+        }
+      },
       child: Column(
         children: [
           Card(
-            elevation: 4,
+            elevation: 0,
             shape: const CircleBorder(),
+            color: AppColor.blackModern100Light.withOpacity(0.6),
             child: LayoutBuilder(
               builder: (context, constraints) {
                 return Container(
-                  height: constraints.maxWidth - 24,
-                  padding: const EdgeInsets.all(8),
-                  width: double.infinity,
+                  padding: const EdgeInsets.all(18),
                   child: Center(
                     child: DrawIconBasedTypeWidget(
                       icon: IconPath.serviceIcon(service.iconName),
@@ -46,12 +375,17 @@ class ServiceIcon extends StatelessWidget {
               },
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            service.title,
-            style: AppStyle.serviceIconTextStyle,
-            textAlign: TextAlign.center,
-          )
+          const SizedBox(height: 8),
+          Flexible(
+            child: CustomTextWidget(
+              service.title,
+              fontSize: 10,
+              maxLines: 3,
+              textAlign: TextAlign.center,
+              fontColor: AppColor.blackModern700Light,
+              fontWeight: AppFontWeight.bold,
+            ),
+          ),
         ],
       ),
     );

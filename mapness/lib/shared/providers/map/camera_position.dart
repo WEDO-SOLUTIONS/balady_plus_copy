@@ -9,8 +9,9 @@ class CameraPosition extends _$CameraPosition {
   @override
   CameraPositionMessage? build() {
     final dgisController = ref.watch(dgisControllerProvider);
-    final cameraPositionSubscription =
-        dgisController?.cameraPositionEvents.listen(_cameraPositionListener);
+    final cameraPositionSubscription = dgisController
+        .value?.cameraPositionEvents
+        .listen(_cameraPositionListener);
     ref.onDispose(
       () {
         cameraPositionSubscription?.cancel();
@@ -21,19 +22,37 @@ class CameraPosition extends _$CameraPosition {
   }
 
   Future<void> animateTo(CameraPositionMessage position) async {
-    final dgisController = ref.watch(dgisControllerProvider);
+    final dgisController = ref.read(dgisControllerProvider);
 
-    await dgisController?.moveCamera(
+    await dgisController.value?.moveCamera(
       position,
-      1,
+      0.3,
+      CameraAnimationTypeMessage.linear,
+    );
+  }
+
+  Future<void> animateToMarkers(
+    List<Marker> markers, {
+    CalcPositionOptionsMessage? options,
+  }) async {
+    final dgisController = ref.read(dgisControllerProvider);
+
+    final position = await dgisController.value!.calcPositionForMarkers(
+      markers.map((e) => e.id).toList(),
+      options ?? CalcPositionOptionsMessage(),
+    );
+
+    await dgisController.value!.moveCamera(
+      position,
+      0.3,
       CameraAnimationTypeMessage.linear,
     );
   }
 
   Future<void> setPadding(CameraSetPaddingMessage padding) async {
-    final dgisController = ref.watch(dgisControllerProvider);
+    final dgisController = ref.read(dgisControllerProvider);
 
-    await dgisController?.setCameraPadding(padding);
+    await dgisController.value!.setCameraPadding(padding);
   }
 
   void _cameraPositionListener(CameraPositionMessage event) {

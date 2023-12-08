@@ -863,6 +863,8 @@ enum SearchCategoryMessage {
   pharmacies,
   dentalCenters,
   hotels,
+  beautyCenters,
+  recreationCenters
 }
 
 class SearchCategoryMessage_ {
@@ -938,13 +940,6 @@ class LevelIdMessage {
 class BearingMessage {
   BearingMessage(this.value);
   final double value;
-}
-
-class BriefRouteInfoSearchPointsMessage {
-  BriefRouteInfoSearchPointsMessage(this.startPoint, this.finishPoint);
-
-  final RouteSearchPointMessage? startPoint;
-  final RouteSearchPointMessage finishPoint;
 }
 
 class BriefRouteInfoMessage {
@@ -1282,7 +1277,7 @@ abstract class MapApi {
   List<BriefRouteInfoMessage?> findBriefRouteInfos(
     RouteSearchOptionsMessage routeSearchOptions,
     RouteSearchPointMessage? startPoint,
-    RouteSearchPointMessage finishPoint,
+    RouteSearchPointMessage? finishPoint,
   );
 
   @async
@@ -1301,7 +1296,7 @@ abstract class MapApi {
   void setNavigatorVoice(String id);
 
   @async
-  void toggleHeatmap(String? tileSourceUri, String? layerName,);
+  bool toggleHeatmap(String? tileSourceUri, String? layerName, bool? enable);
 }
 
 @FlutterApi()

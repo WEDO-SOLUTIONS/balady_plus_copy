@@ -16,7 +16,7 @@ class NavigatorVoice extends _$NavigatorVoice {
   }
 
   void update(String value) {
-    ref.read(dgisControllerProvider)?.setNavigatorVoice(value);
+    ref.read(dgisControllerProvider).value?.setNavigatorVoice(value);
     ref.read(sharedPrefsProvider).setString(_prefsKey, value);
     state = value;
   }

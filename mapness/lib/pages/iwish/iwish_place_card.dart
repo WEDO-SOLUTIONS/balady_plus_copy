@@ -9,8 +9,8 @@ import 'package:mapness/features/iwish/providers/iwish_distance.dart';
 import 'package:mapness/features/iwish/providers/iwish_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
-import 'package:mapness/widgets/iwish/ui/iwish_actions.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
+import 'package:mapness/widgets/iwish/ui/iwish_actions.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_info.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_photos_row.dart';
 
@@ -35,9 +35,9 @@ class IwishPlaceCard extends ConsumerWidget {
         text: context.l10n.loading,
       ),
       data: (entity) {
-        final distance = ref.watch(iwishDistanceProvider(entity));
-        final address = ref.watch(iwishAddressProvider(entity));
-        final driveEta = ref.watch(iwishCarEtaProvider(entity));
+        final distance = ref.read(iwishDistanceProvider(entity));
+        final address = ref.read(iwishAddressProvider(entity));
+        final driveEta = ref.read(iwishCarEtaProvider(entity));
 
         // TODO: replace with actions when will be required
         void callback() {}
@@ -76,8 +76,8 @@ class IwishPlaceCard extends ConsumerWidget {
                         onPressed: () => IwishFeedbackRoute(iwishId: iwishId)
                             .replace(context),
                         label: entity.feedbackSent
-                            ? 'Wishes sent'
-                            : 'Send feedback',
+                            ? context.l10n.wishesSent
+                            : context.l10n.sendFeedback,
                       ),
                       const SizedBox(height: 16),
                       IwishActions(
@@ -87,7 +87,7 @@ class IwishPlaceCard extends ConsumerWidget {
                               finishLabel: entity.title,
                               finishLatitude: entity.location.latitude,
                               finishLongitude: entity.location.longitude,
-                              startLabel: 'My Location',
+                              startLabel: context.l10n.myLocation,
                               startLatitude: null,
                               startLongitude: null,
                             ).pushReplacement(context);

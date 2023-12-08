@@ -1,10 +1,14 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/profile/domain/user_profile_data.dart';
+import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 
 part 'profile_image_provider.g.dart';
 
@@ -14,18 +18,97 @@ class ProfileImage extends _$ProfileImage {
 
   SharedPreferences get _prefs => ref.read(sharedPrefsProvider);
 
-  Future<void> changeUserProfileImageByBytes(Uint8List bytes) async {
-    final imageBase64 = base64Encode(bytes);
-    await _prefs.setString(_imagePrefsKey, imageBase64);
-    ref.invalidateSelf();
-  }
+  Dio get _dio => ref.read(dGisNetworkProvider);
+
+  String? get _imageBase64OnDevice => _prefs.getString(_imagePrefsKey);
+
+  bool _isUpdated = false;
 
   @override
   Future<UserProfileData> build() async {
-    final imageBase64 = _prefs.getString(_imagePrefsKey);
+    if (!_isUpdated) {
+      updateImageFromBackend().then((_) {
+        _isUpdated = true;
+      });
+    }
 
     return UserProfileData(
-      imageBase64: imageBase64 ?? '',
+      imageBase64: _imageBase64OnDevice ?? '',
     );
+  }
+
+  Future<void> updateImageFromBackend() async {
+    final backendImage = await _downloadProfileImageToBytes();
+
+    if (backendImage.isNotEmpty) {
+      await _saveImageBytes(backendImage);
+    }
+    ref.invalidateSelf();
+  }
+
+  Future<void> changeUserProfileImageByBytes(Uint8List bytes) async {
+    await _saveImageBytes(bytes);
+    await _uploadImage(bytes);
+
+    ref.invalidateSelf();
+  }
+
+  /// Сохраняет изображение локально в base64.
+  /// Возвращает строку base64.
+  Future<String> _saveImageBytes(Uint8List bytes) async {
+    final imageBase64 = base64Encode(bytes);
+    await _prefs.setString(_imagePrefsKey, imageBase64);
+    return imageBase64;
+  }
+
+  /// Загружает изображение на бекенд.
+  /// Возвращает ссылку на изображение.
+  Future<String> _uploadImage(Uint8List bytes) async {
+    try {
+      final response = await _dio.post(
+        "/profile/photo",
+        data: bytes,
+      );
+
+      final result = proto.Profile_Photo.fromBuffer(response.data);
+
+      return result.image.url;
+    } catch (error, trace) {
+      _log(error, trace);
+      rethrow;
+    }
+  }
+
+  Future<Uint8List> _downloadProfileImageToBytes({String url = ''}) async {
+    try {
+      if (url.isEmpty) {
+        final profileResponse = await _dio.get('/profile');
+        final profileData = proto.ProfileResponse.fromBuffer(profileResponse.data);
+        url = profileData.profile.photo.image.url;
+      }
+
+      if (url.isEmpty) {
+        return Uint8List(0);
+      }
+
+      final response = await _dio.get(
+        url,
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: false,
+        ),
+      );
+      return response.data;
+    } catch (error, trace) {
+      _log(error, trace);
+      rethrow;
+    }
+  }
+
+  void _log(Object? data, [StackTrace? trace]) {
+    debugPrint(data.toString());
+    if (trace != null) {
+      debugPrintStack(stackTrace: trace);
+    }
   }
 }

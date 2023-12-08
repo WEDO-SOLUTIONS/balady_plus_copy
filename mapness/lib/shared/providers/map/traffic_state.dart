@@ -10,14 +10,14 @@ class _TrafficState extends _$TrafficState {
   TrafficStateEvent build() {
     final dgisController = ref.watch(dgisControllerProvider);
     final trafficSubscription = dgisController
-        ?.naviTrafficParkingController.trafficStateEvents
+        .value?.naviTrafficParkingController.trafficStateEvents
         .listen(_trafficListener);
-    dgisController?.naviTrafficParkingController.onAttached();
+    dgisController.value?.naviTrafficParkingController.onAttached();
 
     ref.onDispose(
       () {
         trafficSubscription?.cancel();
-        dgisController?.naviTrafficParkingController.onDetached();
+        dgisController.value?.naviTrafficParkingController.onDetached();
       },
     );
 
@@ -34,6 +34,7 @@ class _TrafficState extends _$TrafficState {
   void onTrafficTap() {
     ref
         .watch(dgisControllerProvider)
+        .value
         ?.naviTrafficParkingController
         .onTrafficClicked();
   }

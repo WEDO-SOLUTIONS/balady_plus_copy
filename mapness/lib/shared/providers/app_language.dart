@@ -38,7 +38,7 @@ extension LanguageData on Language {
       };
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class AppLanguage extends _$AppLanguage {
   @override
   Language build() {

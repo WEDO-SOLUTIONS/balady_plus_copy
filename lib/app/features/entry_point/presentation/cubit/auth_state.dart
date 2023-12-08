@@ -6,6 +6,9 @@ class EntryPointState extends Equatable {
   final SSOToken? token;
   final ApigeeTokenResponse? apigeeToken;
   final SsoUserInfo? userInfo;
+  final DelegatorEntity? selectedDelegator;
+  final AgentEntity? selectedAgent;
+
   final String? cityId;
   final String? cityName;
   final String? errorMessage;
@@ -23,6 +26,8 @@ class EntryPointState extends Equatable {
       this.cityName,
       this.errorMessage,
       this.userInfo,
+      this.selectedDelegator,
+      this.selectedAgent,
       this.userLocation,
       this.userLocationGIS});
 
@@ -36,6 +41,8 @@ class EntryPointState extends Equatable {
       final String? cityId,
       final String? cityName,
       SsoUserInfo? userInfo,
+      Nullable<DelegatorEntity?>? selectedDelegator,
+      Nullable<AgentEntity?>? selectedAgent,
       GISParams? userLocation,
       GISResponse? userLocationGIS}) {
     return EntryPointState(
@@ -47,15 +54,20 @@ class EntryPointState extends Equatable {
         userInfo: userInfo ?? this.userInfo,
         blocStatus: blocStatus ?? this.blocStatus,
         apigeeToken: apigeeToken ?? this.apigeeToken,
+        selectedDelegator: selectedDelegator == null
+            ? this.selectedDelegator
+            : selectedDelegator.value,
+        selectedAgent:
+            selectedAgent == null ? this.selectedAgent : selectedAgent.value,
         userLocation: userLocation ?? this.userLocation,
         userLocationGIS: userLocationGIS ?? this.userLocationGIS,
         gisStatus: gisStatus ?? this.gisStatus);
   }
 
-  String getSearchText() => userLocationGIS != null &&
-          userLocationGIS!.cityName != null &&
-          userLocationGIS!.cityName!.isNotEmpty
-      ? 'ابحث في ${userLocationGIS!.cityName!} عن...'
+  String getSearchText() => CommonProperties.userLocationGIS != null &&
+          CommonProperties.userLocationGIS!.cityName != null &&
+          CommonProperties.userLocationGIS!.cityName!.isNotEmpty
+      ? 'ابحث في ${CommonProperties.userLocationGIS!.cityName!} عن...'
       : 'ابحث عن...';
 
   @override
@@ -65,6 +77,8 @@ class EntryPointState extends Equatable {
         cityId,
         blocStatus,
         apigeeToken,
+        selectedDelegator,
+        selectedAgent,
         userLocation,
         userLocationGIS,
         gisStatus

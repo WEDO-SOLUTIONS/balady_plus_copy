@@ -14,16 +14,16 @@ class Highlight extends _$Highlight {
 
   Future<void> addHighlight(DgisObjectIdMessage objectId) async {
     state = [...state, objectId];
-    ref.watch(dgisControllerProvider)?.setHighlighted(state);
+    ref.read(dgisControllerProvider).value?.setHighlighted(state);
   }
 
   Future<void> removeHighlight(DgisObjectIdMessage objectId) async {
     state = state.whereNot((element) => element == objectId).toList();
-    ref.watch(dgisControllerProvider)?.setHighlighted(state);
+    ref.read(dgisControllerProvider).value?.setHighlighted(state);
   }
 
   Future<void> removeAll() async {
-    ref.watch(dgisControllerProvider)?.setHighlighted([]);
+    ref.read(dgisControllerProvider).value?.setHighlighted([]);
     state.clear();
   }
 }

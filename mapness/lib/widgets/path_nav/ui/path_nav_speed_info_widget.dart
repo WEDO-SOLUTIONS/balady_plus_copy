@@ -38,7 +38,13 @@ class PathNavSpeedInfoWidget extends StatelessWidget {
                   child: Center(
                     child: Text(
                       '${info.speed}',
-                      style: Theme.of(context).extension<ThemeTextStyles>()!.headingL.copyWith(color: Colors.black),
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .headingL
+                          .copyWith(
+                            color: Colors.black,
+                            height: 1.5,
+                          ),
                     ),
                   ),
                 ),
@@ -64,7 +70,14 @@ class PathNavSpeedInfoWidget extends StatelessWidget {
                   child: Center(
                     child: Text(
                       "${info.speedLimit ?? '--'}",
-                      style: Theme.of(context).extension<ThemeTextStyles>()!.headingM.copyWith(color: info.speedExceed ? Colors.white : Colors.black),
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .headingM
+                          .copyWith(
+                            color:
+                                info.speedExceed ? Colors.white : Colors.black,
+                            height: 1.5,
+                          ),
                     ),
                   ),
                 ),

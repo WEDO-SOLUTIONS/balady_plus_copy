@@ -13,6 +13,7 @@ class LoadingImage extends ConsumerStatefulWidget {
   final Widget loadingWidget;
   final BoxFit? fit;
   final VoidCallback? onImageReady;
+  final bool? isAssetImg;
 
   const LoadingImage({
     Key? key,
@@ -20,6 +21,7 @@ class LoadingImage extends ConsumerStatefulWidget {
     this.onImageReady,
     required this.loadingWidget,
     this.fit,
+    this.isAssetImg = false,
   }) : super(key: key);
 
   @override
@@ -48,16 +50,18 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
   Future<void> loadImage(BuildContext context) async {
     /// await for image to be ready
     bool failed = false;
-    await precacheImage(
-      NetworkImage(widget.imageUrl),
-      context,
-      onError: (_, __) {
-        failed = true;
-        setState(() {
-          state = ImageState.error;
-        });
-      },
-    );
+    if (widget.isAssetImg == false) {
+      await precacheImage(
+        NetworkImage(widget.imageUrl),
+        context,
+        onError: (_, __) {
+          failed = true;
+          setState(() {
+            state = ImageState.error;
+          });
+        },
+      );
+    }
 
     if (context.mounted && !failed) {
       setState(() {
@@ -86,10 +90,12 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
             ),
           ),
         ),
-      ImageState.loaded => Image.network(
-          widget.imageUrl,
-          fit: widget.fit,
-        ),
+      ImageState.loaded => widget.isAssetImg == true
+          ? Image.asset(widget.imageUrl, fit: widget.fit)
+          : Image.network(
+              widget.imageUrl,
+              fit: widget.fit,
+            ),
       ImageState.loading => widget.loadingWidget,
     };
   }

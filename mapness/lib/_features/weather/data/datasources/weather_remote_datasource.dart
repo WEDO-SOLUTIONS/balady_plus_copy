@@ -8,7 +8,11 @@ abstract class WeatherRemoteDataSource {
   factory WeatherRemoteDataSource(WebServiceWeather service) =>
       _WeatherRemoteDataSource(webServiceWeather: service);
 
-  Future<Map<String, dynamic>?>? getAllWeatherInfoForLocation({
+  Future<Map<String, dynamic>?>? getCurrentWeatherData({
+    required WeatherParams params,
+    required CancelToken cancelToken,
+  });
+  Future<Map<String, dynamic>?>? getForecastData({
     required WeatherParams params,
     required CancelToken cancelToken,
   });
@@ -20,7 +24,7 @@ class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
   _WeatherRemoteDataSource({required this.webServiceWeather});
 
   @override
-  Future<Map<String, dynamic>?>? getAllWeatherInfoForLocation(
+  Future<Map<String, dynamic>?>? getCurrentWeatherData(
       {required WeatherParams params, required CancelToken cancelToken}) async {
     String weatherAPI = '/v1/current.json?';
     try {
@@ -30,12 +34,32 @@ class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
         queryParameters: map,
         cancelToken: cancelToken,
       );
-
       return response.data;
     } on DioException catch (e) {
       log("WEATHER API DioException $e");
     } catch (e) {
       log("WEATHER API EXCEPTION $e");
     }
+    return null;
+  }
+
+  @override
+  Future<Map<String, dynamic>?>? getForecastData(
+      {required WeatherParams params, required CancelToken cancelToken}) async {
+    String weatherAPI = '/v1/forecast.json?';
+    try {
+      var map = params.toMap();
+      final response = await webServiceWeather.dio.get(
+        weatherAPI,
+        queryParameters: map,
+        cancelToken: cancelToken,
+      );
+      return response.data;
+    } on DioException catch (e) {
+      log("WEATHER API DioException $e");
+    } catch (e) {
+      log("WEATHER API EXCEPTION $e");
+    }
+    return null;
   }
 }

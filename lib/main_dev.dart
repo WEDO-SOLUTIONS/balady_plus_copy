@@ -1,14 +1,18 @@
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' show runApp;
 import 'package:flutter_bloc/flutter_bloc.dart' show Bloc;
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizedApp;
 import 'package:mapness/entry_point.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
-import './app/core/services/services_exports.dart' show SimpleBlocObserver;
+import './app/core/services/services_exports.dart'
+    show NotificationService, SimpleBlocObserver;
 import './app/core/utils/utils_exports.dart' show EnvType;
 import './app/app.dart';
 import './env.dart';
+import 'app/core/dependency_injection/injection_container.dart';
 
 void main() async {
   await AppEnv.setupEnv(EnvType.dev);
@@ -21,18 +25,18 @@ void main() async {
   await SentryFlutter.init(
     (options) {
       options.dsn =
-          'http://f230d269670f3ea9c5280e22d3ce29ed@84.252.137.67:9000/2';
+          'https://c9e9c70957e4433e99fb6be6fc1cafc8@sentry.42.solutions/24';
+      // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+      // We recommend adjusting this value in production.
       options.tracesSampleRate = 1.0;
-      options.enableTracing = true;
-      options.attachViewHierarchy = true;
+      // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+      // We recommend adjusting this value in production.
       options.attachScreenshot = true;
+      options.enableUserInteractionTracing = true;
+      options.captureFailedRequests = true;
+      options.environment = sl<EnvType>().name;
     },
-    appRunner: () => runApp(
-      const MapnessProviderScope(
-        child: LocalizedApp(
-          child: App(),
-        ),
-      ),
-    ),
+    appRunner: () =>
+        runApp(const MapnessProviderScope(child: LocalizedApp(child: App()))),
   );
 }

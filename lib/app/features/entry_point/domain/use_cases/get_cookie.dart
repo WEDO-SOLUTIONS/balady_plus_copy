@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart' show Either, Right, Left;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:webview_flutter/webview_flutter.dart' as w;
 
 import '../../../../core/errors/errors_exports.dart' show Failure;
 import '../../../../core/services/services_exports.dart' show UseCase, NoParams;
@@ -35,7 +36,7 @@ class GetCookie extends UseCase<String, NoParams> {
 
         try {
           await CookieManager.instance().setCookie(
-              url: WebUri(RemoteConfig.cookieURL),
+              url: Uri.parse(RemoteConfig.cookieURL),
               name: ".AspNetCore.Identity.Application",
               value: value,
               domain: Platform.isIOS
@@ -51,10 +52,42 @@ class GetCookie extends UseCase<String, NoParams> {
         appCookie = ".ASPXFORMSAUTH=$value";
         try {
           await CookieManager.instance().setCookie(
-              url: WebUri(RemoteConfig.cookieURL),
+              url: Uri.parse(RemoteConfig.cookieURL),
               name: ".ASPXFORMSAUTH",
               value: value,
               domain: RemoteConfig.momraDomain,
+              expiresDate: cookieExpiration);
+        } catch (_) {}
+      } else if (element.contains("idsrv.session")) {
+        int valueStartIndex =
+            element.indexOf(".idsrv.session=") + ".idsrv.session=".length;
+        int valueEndIndex = element.indexOf(";");
+        String value = element.substring(valueStartIndex + 1, valueEndIndex);
+        try {
+          await CookieManager.instance().setCookie(
+              url: Uri.parse(RemoteConfig.cookieURL),
+              name: ".idsrv.session",
+              value: value,
+              domain: Platform.isIOS
+                  ? RemoteConfig.ssoMomraDomain
+                  : RemoteConfig.momraDomain,
+              expiresDate: cookieExpiration);
+        } catch (_) {}
+      } else if (element.contains(RemoteConfig.webCookieHeader)) {
+        int valueStartIndex =
+            element.indexOf(".${RemoteConfig.webCookieHeader}=") +
+                ".${RemoteConfig.webCookieHeader}=".length;
+        int valueEndIndex = element.indexOf(";");
+        String value = element.substring(valueStartIndex + 1, valueEndIndex);
+
+        try {
+          await CookieManager.instance().setCookie(
+              url: Uri.parse(RemoteConfig.cookieURL),
+              name: ".${RemoteConfig.webCookieHeader}",
+              value: value,
+              domain: Platform.isIOS
+                  ? RemoteConfig.ssoMomraDomain
+                  : RemoteConfig.momraDomain,
               expiresDate: cookieExpiration);
         } catch (_) {}
       }

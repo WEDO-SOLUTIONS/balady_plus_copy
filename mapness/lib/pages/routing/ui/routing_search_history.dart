@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
 import 'package:mapness/pages/routing/ui/routing_history.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/routing/ui/search_action.dart';
 
 class RoutingSearchHistory extends StatelessWidget {
@@ -22,7 +23,7 @@ class RoutingSearchHistory extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.only(bottom: 16),
             child: QuickFilters(
-              onFavouritesTap: () {},
+              onFavouritesBookmarkTap: () {},
               onFilterTap: (_, __) {},
             ),
           ),
@@ -46,19 +47,19 @@ class RoutingSearchHistory extends StatelessWidget {
                       ),
                     ),
                     borderRadius: BorderRadius.circular(12),
-                    child: const SearchActionRow(
+                    child: SearchActionRow(
                       icon: "assets/icons/svg/ic_actions_loc.svg",
-                      title: "My location",
+                      title: context.l10n.myLocation,
                     ),
                   ),
                 ),
-              const SearchActionRow(
+              SearchActionRow(
                 icon: "assets/icons/svg/ic_actions_map.svg",
-                title: "Specify on the map",
+                title: context.l10n.specifyOnTheMap,
               ),
-              const SearchActionRow(
+              SearchActionRow(
                 icon: "assets/icons/svg/ic_actions_fav.svg",
-                title: "Find in Favorites",
+                title: context.l10n.findInFavorites,
               ),
             ],
           ),

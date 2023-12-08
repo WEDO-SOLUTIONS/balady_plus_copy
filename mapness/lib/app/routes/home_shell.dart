@@ -1,3 +1,5 @@
+import 'package:balady_plus/app/features/services/presentation/pages/services_page.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/landing_page.dart';
@@ -67,11 +69,19 @@ class LandingBranch extends StatefulShellBranchData {
 }
 
 class LandingRoute extends GoRouteData {
-  const LandingRoute();
+  final LangingFocusMaker? focusMaker;
+
+  const LandingRoute({this.focusMaker});
 
   @override
-  Page<void> buildPage(context, state) => const TransculentPage(
-        child: LandingPage(),
+  Page<void> buildPage(context, state) => TransculentPage(
+        child: LandingPage(
+          focusMaker: focusMaker ??
+              LangingFocusMaker.values.firstWhereOrNull(
+                (element) =>
+                    element.name == state.uri.queryParameters['focus-maker'],
+              ),
+        ),
       );
 }
 
@@ -97,7 +107,7 @@ class ServicesRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      const SizedBox.shrink();
+      const ServicesPage();
 }
 
 class ProfilesBranch extends StatefulShellBranchData {

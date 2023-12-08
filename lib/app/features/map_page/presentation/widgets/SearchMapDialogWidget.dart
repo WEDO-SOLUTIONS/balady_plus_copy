@@ -2,6 +2,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/t
 import 'package:balady_plus/app/features/map_page/data/enums/map_enums.dart';
 import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
 import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
+import 'package:balady_plus/app/features/map_page/presentation/mvvm/search_bottom_view_model.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -32,7 +33,6 @@ class SearchMapDialogWidget extends StatelessWidget {
                         SearchCategoryMessage.parks,
                         SearchCategoryMessage.hospitals,
                         SearchCategoryMessage.schools,
-                        SearchCategoryMessage.hotels,
                         CustomSearchCategory.events
                       ].map(
                         (e) {
@@ -72,6 +72,7 @@ class SearchMapDialogWidget extends StatelessWidget {
                                   onTap: () {
                                     mapViewModel.selectCategory(
                                         category: category, custom: custom);
+                                    searchFocusNode.unfocus();
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.all(4.0),

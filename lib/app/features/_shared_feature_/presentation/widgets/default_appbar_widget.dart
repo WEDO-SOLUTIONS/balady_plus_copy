@@ -1,6 +1,8 @@
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/utils/utils_exports.dart' show AppColor, AppStyle;
+import '../../../../core/utils/utils_exports.dart'
+    show AppColor, AppStyle, ImagePath;
 import '../../shared_feature_exports.dart' show CustomTextWidget;
 
 class DefaultAppBarWidget extends StatelessWidget
@@ -8,36 +10,57 @@ class DefaultAppBarWidget extends StatelessWidget
   final String? title;
   final PreferredSizeWidget? bottom;
   final List<Widget>? actions;
+  final bool x;
+  final Widget? flexibleSpace;
+  final VoidCallback? onBack;
+  final bool showBack;
 
-  const DefaultAppBarWidget({
-    super.key,
-    this.title,
-    this.bottom,
-    this.actions,
-  });
+  const DefaultAppBarWidget(
+      {super.key,
+      this.title,
+      this.bottom,
+      this.actions,
+      this.showBack = true,
+      this.x = false,
+      this.onBack,
+      this.flexibleSpace});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: AppColor.scaffoldBackground,
+      backgroundColor: flexibleSpace == null
+          ? Colors.transparent
+          : AppColor.scaffoldBackground,
       elevation: 0,
-      leading: Navigator.canPop(context)
+      shadowColor: AppColor.primary100Light,
+      leadingWidth: showBack == true ? null : 8,
+      leading: Navigator.canPop(context) && showBack
           ? IconButton(
-              icon: const Icon(
-                Icons.arrow_back_ios,
+              icon: Icon(
+                x ? Icons.close : Icons.arrow_back_ios,
                 color: AppColor.blackModern900Light,
+                size: x ? 28 : null,
               ),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: onBack ?? () => Navigator.of(context).pop(),
             )
           : null,
+      titleSpacing: Navigator.canPop(context) ? 0 : 16,
       centerTitle: false,
       title: CustomTextWidget(
         title ?? "",
-        textAlign: TextAlign.center,
-        textStyle: AppStyle.appBarTitleTextStyle,
+        fontSize: 20,
+        maxLines: 1,
+        textOverflow: TextOverflow.ellipsis,
+        fontWeight: AppFontWeight.bold,
+        fontColor: AppColor.blackModern700Light,
       ),
       bottom: bottom,
       actions: actions,
+      flexibleSpace: flexibleSpace ??
+          Image.asset(
+            ImagePath.appbarBg,
+            fit: BoxFit.fill,
+          ),
     );
   }
 

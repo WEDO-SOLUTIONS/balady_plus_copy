@@ -3,6 +3,7 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
+import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'point_of_interest.g.dart';
@@ -21,26 +22,31 @@ class PoiModel {
     if (int != null) {
       final duration = Duration(seconds: int);
       final inMinutes = duration.inMinutes;
-      if(inMinutes<60){
-      return '$inMinutes ${l10n.min}';
-      }else{
+      if (inMinutes < 60) {
+        return '$inMinutes ${l10n.min}';
+      } else {
         var inHours = duration.inHours;
-      return '$inHours ${l10n.hrs}';
+        return '$inHours ${l10n.hrs}';
       }
     }
     return null;
   }
 }
 
+const poiMapLayer = 'point-of-interest';
+const _poiMarkerPrefix = 'poi-marker-';
+
 @riverpod
 Future<DirectoryObjectMessage?> pointOfInterest(
   PointOfInterestRef ref,
   DgisObjectIdMessage objectId,
 ) async {
-  final dgisController = ref.watch(dgisControllerProvider);
   final cameraController = ref.watch(cameraPositionProvider.notifier);
   final highlightController = ref.watch(highlightProvider.notifier);
-  final result = await dgisController?.searchByObjectId(objectId);
+  final dgisController = ref.watch(dgisControllerProvider);
+  final result = await dgisController.value?.searchByObjectId(objectId);
+  final mapObjectManager =
+      ref.watch(mapObjectManagerProvider(named: poiMapLayer).notifier);
 
   print(
     'coordinates: ${result?.markerPosition?.latitude} ${result?.markerPosition?.longitude}',
@@ -59,12 +65,13 @@ Future<DirectoryObjectMessage?> pointOfInterest(
         longitude: result.markerPosition!.longitude,
       ),
       zoom: 17,
-      tilt: 45,
+      tilt: 0,
       bearing: 0,
     ),
   );
-  final markerId = 'pointOfInterest-$objectId';
-  await dgisController?.addMarker(
+  final markerId = '$_poiMarkerPrefix$objectId';
+  await mapObjectManager.removeAllMarkers();
+  await mapObjectManager.addMarker(
     Marker(
       id: markerId,
       options: MarkerOptionsMessage(
@@ -79,7 +86,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     ),
   );
   ref.onDispose(() {
-    dgisController?.removeMarker(markerId);
+    mapObjectManager.removeAllMarkers();
   });
 
   return result;

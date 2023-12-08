@@ -2,7 +2,7 @@
 class WeatherParams {
   double? longitude;
   double? latitude;
-  int? numberOfDays = 7;
+  int numberOfDays;
   String? languageCode;
   String? alert;
   String? key;
@@ -10,7 +10,7 @@ class WeatherParams {
   WeatherParams(
       {this.longitude,
       this.latitude,
-      this.numberOfDays,
+      required this.numberOfDays,
       this.languageCode = "ar",
       this.alert = "yes",
       this.key = '7fb258f132b04a298ae154452233007'});
@@ -34,7 +34,7 @@ class WeatherParams {
   Map<String, dynamic> toMap() {
     return {
       if (latitude != null && longitude != null) "q": "$latitude,$longitude",
-      if (numberOfDays != null) "days": '$numberOfDays',
+      "days": '$numberOfDays',
       if (languageCode != null) "lang": '$languageCode',
       if (alert != null) "alerts": '$alert',
       if (key != null) "key": '$key',

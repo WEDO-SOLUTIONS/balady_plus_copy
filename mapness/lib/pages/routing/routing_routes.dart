@@ -49,7 +49,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
 
   @override
   void deactivate() {
-    ref.read(dgisControllerProvider)?.hideRoutes();
+    ref.read(dgisControllerProvider).value?.hideRoutes();
     super.deactivate();
   }
 

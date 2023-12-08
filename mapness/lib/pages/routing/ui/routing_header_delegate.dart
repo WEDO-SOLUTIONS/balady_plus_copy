@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/routing/ui/route_editor.dart';
 
 class RoutingHeaderDelegate extends SliverPersistentHeaderDelegate {
@@ -87,7 +88,7 @@ class RoutingHeader extends StatelessWidget {
                   curve: Curves.easeInOut,
                 );
                 RoutingSearchRoute(
-                  placeholder: index == 0 ? "From" : "To",
+                  placeholder: index == 0 ? context.l10n.from : context.l10n.to,
                   showMyLocation:
                       index == 0 && points[index].type == RoutePointType.object,
                 ).push(context).then((value) {
@@ -110,7 +111,7 @@ class RoutingHeader extends StatelessWidget {
             height: 16,
           ),
           QuickFilters(
-            onFavouritesTap: () {},
+            onFavouritesBookmarkTap: () {},
             onFilterTap: (_, __) {},
           ),
           const SizedBox(

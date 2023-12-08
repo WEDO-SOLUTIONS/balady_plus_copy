@@ -1,7 +1,11 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_object_ext.dart';
@@ -11,11 +15,11 @@ const mockArabickText =
     'الملك فهد، الرياضالملك فهد، الرياضالملك فهد، الرياض 12261، المملكة العربية السعودية الرياض';
 
 class PoiCardHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final PoiModel? data;
+  final DirectoryObjectMessage data;
   final Function()? ontapClose;
 
   PoiCardHeaderDelegate({
-    this.data,
+    required this.data,
     this.ontapClose,
   });
 
@@ -37,7 +41,7 @@ class PoiCardHeaderDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;
 }
 
-class _Header extends StatelessWidget {
+class _Header extends ConsumerWidget {
   final Function()? onTapClose;
 
   const _Header({
@@ -45,10 +49,23 @@ class _Header extends StatelessWidget {
     required this.onTapClose,
   });
 
-  final PoiModel? data;
+  final DirectoryObjectMessage data;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
+    final briefInfo = ref.watch(briefRouteInfoProvider(
+      finishPoint: RouteSearchPointMessage(
+        coordinates: data.markerPosition!.toGeoPointMessage(),
+        objectId: data.id!,
+      ),
+      navType: RouteSearchOptionsMessage.car,
+    ));
+    final model = PoiModel(
+      directoryObjectMessage: data,
+      briefeRouteInfos: briefInfo,
+    );
+
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.only(left: 16, right: 16),
@@ -70,7 +87,7 @@ class _Header extends StatelessWidget {
         ],
       ),
 
-      child: _buildContent(context, data),
+      child: _buildContent(context, model),
 
       // child: Stack(
       //   children: [
@@ -87,12 +104,12 @@ class _Header extends StatelessWidget {
     );
   }
 
-  Widget _buildContent(BuildContext context, PoiModel? data) {
-    final address = data?.directoryObjectMessage?.address;
-    final subTitle = data?.directoryObjectMessage?.makeAddress() ?? '';
+  Widget _buildContent(BuildContext context, PoiModel data) {
+    final address = data.directoryObjectMessage?.address;
+    final subTitle = data.directoryObjectMessage?.makeAddress() ?? '';
     final title =
-        address?.buildingName ?? data?.directoryObjectMessage?.title ?? '';
-    final titleAddition = data?.directoryObjectMessage?.titleAddition ?? '';
+        address?.buildingName ?? data.directoryObjectMessage?.title ?? '';
+    final titleAddition = data.directoryObjectMessage?.titleAddition ?? '';
 
     return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,7 +126,7 @@ class _Header extends StatelessWidget {
                 _title(context, title),
                 _titleAddition(context, titleAddition),
                 const SizedBox(height: 2),
-                _subTitle(context, subTitle),
+                _subTitle(context, subTitle,data),
               ],
             ),
           )
@@ -128,7 +145,7 @@ class _Header extends StatelessWidget {
     ));
   }
 
-  Widget _subTitle(BuildContext context, String text) {
+  Widget _subTitle(BuildContext context, String text, PoiModel data) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

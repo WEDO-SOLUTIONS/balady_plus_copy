@@ -1,19 +1,32 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:balady_plus/app/core/services/services_exports.dart'
     show NavigationService;
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart' as geoLocator;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show translator, Translation;
+import 'package:open_file_plus/open_file_plus.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'dart:developer' as devtools show log;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../features/_shared_feature_/presentation/dialogs/photo_permission_dialog.dart';
+import '../../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
+import '../../../features/transaction_inquiry/presentation/core/models/gis_location_result.dart';
+import '../../dependency_injection/injection_container.dart';
+import '../../utils/constants/constants.dart';
 
 // use it insead of print() or debugPrint()
 extension Log<T extends Object> on T {
@@ -26,6 +39,8 @@ extension Log<T extends Object> on T {
 
 class Helpers {
   //static String translatingWord(String key) => key.tr();
+
+  static String translatingWord(String key) => key.tr();
 
   static bool isArabic(BuildContext context) =>
       translator.isDirectionRTL(context);
@@ -41,7 +56,8 @@ class Helpers {
 
   static bool isBiometricAvailable = true;
 
-  static void backNavigationToHomeScreen() {
+  static void backNavigationToHomeScreen({int index = 0}) {
+    sl<BottomNavBarCubit>().onChangeBottomNavBar(index);
     NavigationService.navigatorKey.currentState!
         .popUntil(ModalRoute.withName(RouteName.bottomNavigation));
   }
@@ -76,17 +92,7 @@ class Helpers {
 
  
 
-  static void backToHome() {
-    try {
-      NavigationService.navigatorKey.currentState!.popUntil((route) {
-        if (route.settings.name == RoutesNames.bottomNavigationRoute ||
-            route.settings.name == null) {
-          return true;
-        }
-        return false;
-      });
-    } catch (ex) {}
-  }
+
 
   static void goToSpecificTabInBottomNavigation(int index) {
     NavigationService.navigatorKey.currentState!
@@ -100,6 +106,7 @@ class Helpers {
 
 
 */
+
   static Future<LatLng?> getMapLocation() async {
     try {
       //  EasyLoading.show();
@@ -111,7 +118,6 @@ class Helpers {
 
       return LatLng(position.latitude, position.longitude);
     } catch (ex) {
-      print(ex);
       //    EasyLoading.dismiss();
       geoLocator.Position? position;
       try {
@@ -123,25 +129,24 @@ class Helpers {
     return null;
   }
 
-  static Future<LatLng?> getCurrentLocation() async {
+  static Future<LatLng?> getCurrentLocation(
+      {geoLocator.LocationAccuracy? accuracy, Duration? duration}) async {
     try {
       //  EasyLoading.show();
       geoLocator.Position position =
           await geoLocator.Geolocator.getCurrentPosition(
-              desiredAccuracy: geoLocator.LocationAccuracy.high,
-              timeLimit: const Duration(seconds: 13));
+              desiredAccuracy: accuracy ?? geoLocator.LocationAccuracy.high,
+              timeLimit: duration ?? Duration(seconds: 13));
       //    EasyLoading.dismiss();
 
       return LatLng(position.latitude, position.longitude);
     } catch (ex) {
-      print(ex);
       //    EasyLoading.dismiss();
       geoLocator.Position? position;
       try {
         position = await geoLocator.Geolocator.getLastKnownPosition();
-        if (position?.latitude != null && position?.longitude != null) {
+        if (position?.latitude != null && position?.longitude != null)
           return LatLng(position!.latitude, position.longitude);
-        }
       } catch (ex) {}
     }
     return null;
@@ -149,7 +154,7 @@ class Helpers {
 
   static Future<bool> checkPhotosSettings(BuildContext context) async {
     var status = await Permission.photos.request();
-    print(status);
+
     if (status == PermissionStatus.permanentlyDenied) {
       showDialog(
           context: context, builder: (ctx) => const PhotoPermissionDialog());
@@ -284,42 +289,29 @@ class Helpers {
     }
     return newStr.isEmpty ? value : newStr;
   }
-/*
-  static bool checkForExpectedVD(GisLocationResult? gis, CRM_TYPE type) {
+
+  static bool checkForExpectedVD(GisLocationResult? gis) {
     if (gis != null) {
       if (gis.adminMunicipalityId == "003" && gis.municipalityName == "العلا") {
         try {
-          String error = ("ola_incident_error").tr();
-          if (type != CRM_TYPE.inc)
-            error = ("ola_request_error").tr();
-          showError(error);
+          String error = ("ola_request_error").tr();
+
+          CommonFunctions.showError(error);
         } catch (ex) {}
 
         return true;
       } else {
         if (gis.isVDExcepted()) {
-          String error = ("inc_vd_excepted").tr();
-          switch (type) {
-            case CRM_TYPE.inc:
-              error = ("inc_vd_excepted").tr();
-              break;
-            case CRM_TYPE.req:
-              error = ("req_vd_excepted").tr();
-              break;
-            case CRM_TYPE.vis:
-              error = ("vis_vd_excepted").tr();
-              break;
-            default:
-              break;
-          }
-          showError(error);
+          String error = ("req_vd_excepted").tr();
+          CommonFunctions.showError(error);
           return true;
         }
       }
     }
+
     return false;
   }
-*/
+
   /*static void showLock() {
     Timer(const Duration(seconds: 3), () async {
       showLockScreen = true;
@@ -333,41 +325,33 @@ class Helpers {
       dynamic body,
       int? statusCode,
       String? errorMsg}) async {
-    // print("Send Log");
-    /* try {
-      PackageInfo packageInfo = await PackageInfo.fromPlatform();
-      SentryUser? user;
-      String? userID = CommonProperties.getSSOProfile?.idNo;
-      if (userID != null) {
-        String? mobile = CommonProperties.getSSOProfile?.phone;
-        String? email = CommonProperties.getSSOProfile?.mail;
-        String? name = CommonProperties.getSSOProfile?.arName;
-        user = SentryUser(
-            id: userID,
-            extras: {"mobile": mobile, "email": email, "name": name});
-      }
-      SentryMessage msg = SentryMessage(data != null ? data.toString() : "");
-      SentryRequest req = SentryRequest(
+    print("Send Log");
+
+    try {
+      SentryRequest request = SentryRequest(
           url: url,
           queryString: qeuryParms,
           data: body != null ? body.toString() : "",
           other: {"StatusCode": (statusCode ?? 0).toString()});
+      SentryMessage sentryMessage =
+          SentryMessage(data != null ? data.toString() : "");
+
+      SentryUser sentryUser = SentryUser(
+          id: CommonProperties.userInfo?.idNo,
+          name: CommonProperties.userInfo?.arName,
+          email: "");
+
       SentryEvent event = SentryEvent(
-        user: user,
-        message: msg,
-        request: req,
-        release: packageInfo.version,
-        environment: RemoteConfig.env,
-        extra: {"errorMsg": errorMsg},
+        user: sentryUser,
+        request: request,
+        message: sentryMessage,
+        transaction: url,
         tags: {"StatusCode": (statusCode ?? 0).toString()},
+        environment: sl<EnvType>().name,
         exceptions: [SentryException(value: url ?? "", type: url)],
       );
       Sentry.captureEvent(event);
-      //print("sent log");
-    } catch (ex) {
-      print("exx");
-      print(ex);
-    }*/
+    } catch (ex) {}
   }
 
   static String? getDaemValue(String? value) {
@@ -435,12 +419,12 @@ class Helpers {
         Share.shareFiles([filetemp.path]);
       }
     } catch (ex) {
-      print(ex);
+   
     }
   }
 
   static openFileLocal(Uint8List bytes, {String? contentType}) async {
-    print(contentType);
+
     String extension =
         contentType != null ? ("." + contentType.split("/").last) : "";
     try {
@@ -449,11 +433,11 @@ class Helpers {
         File filetemp = File("$dir/" +
             "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
         await filetemp.writeAsBytes(bytes);
-        //print(filetemp.path);
+        
         OpenFile.open(filetemp.path);
       }
     } catch (ex) {
-      print(ex);
+  
       try {
         sendLog(
             url: "OpenLoocalFile", data: ex.toString(), body: ex.toString());
@@ -491,7 +475,7 @@ class Helpers {
             OpenFile.open(filetemp.path);
           }
         } catch (ex) {
-          print(ex);
+    
         }
       }
     } catch (ex) {}
@@ -518,4 +502,33 @@ class Helpers {
     }
     return "";
   }*/
+
+  static openFile(Uint8List bytes, {String? contentType}) async {
+    String extension =
+        contentType != null ? ("." + contentType.split("/").last) : "";
+    try {
+      if (extension.isNotEmpty) {
+        String dir = (await getTemporaryDirectory()).path;
+        File filetemp = File("$dir/" +
+            "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
+        await filetemp.writeAsBytes(bytes);
+        //print(filetemp.path);
+        OpenFile.open(filetemp.path);
+        //  Share.shareFiles([filetemp.path]);
+      }
+    } catch (ex) {}
+  }
+
+  static void backToHome() {
+    try {
+      CommonFunctions.showError("session_ended_error".tr());
+      NavigationService.navigatorKey.currentState!.popUntil((route) {
+        if (route.settings.name == RouteName.bottomNavigation ||
+            route.settings.name == null) {
+          return true;
+        }
+        return false;
+      });
+    } catch (ex) {}
+  }
 }

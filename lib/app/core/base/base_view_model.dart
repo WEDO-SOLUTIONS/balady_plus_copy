@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get_it/get_it.dart';
 
+import '../remote_services/api_service.dart';
+import '../remote_services/web_service.dart';
 import '../services/local/navigation_services.dart';
 
 GetIt locator = GetIt.instance;
@@ -12,6 +14,8 @@ class BaseViewModel extends ChangeNotifier {
   final navigation = NavigationService.navigatorKey;
   // final webService = locator<WebService>();
   // final apiServie = locator<APIService>();
+
+  String? errorMessage;
 
   showLoading() {
     EasyLoading.show();
@@ -57,9 +61,7 @@ class BaseViewModel extends ChangeNotifier {
                 fontSize: 16.0),
             hideCloseButton: true,
             duration: const Duration(seconds: 3));
-      } catch (ex) {
-        // print(ex);
-      }
+      } catch (ex) {}
     }
   }
 

@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
@@ -10,8 +11,10 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
+import '../../../../_shared_feature_/presentation/dialogs/building_requirements_dialog.dart';
 import '../../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../data/model/building_compliance_certificate.dart';
 import '../../../data/model/excavations.dart';
@@ -107,8 +110,8 @@ class ImtethalMapCard extends StatelessWidget {
                         fontSize: 13,
                         height: 40,
                         onPressed: () {
-                          //   Navigator.pushNamed(
-                          //        context, RouteName.createCompliancePage);
+                          NavigationService.navigatorKey.currentState!
+                              .pushNamed(RouteName.createCompliancePage);
                         }),
                   ),
                   CustomHorizontalSpace(width: 4),
@@ -117,12 +120,12 @@ class ImtethalMapCard extends StatelessWidget {
                       height: 40,
                       fontSize: 13,
                       onPressed: () async {
-                        /* await BottomSheetDialog.showDraggableSheet(
+                        await BottomSheetDialog.showDraggableSheet(
                           context,
-                          //dialogKeyName: DialogName.buildingComplianceDialog,
-                          // currentRouteName: "HomePage",
+                          dialogKeyName: DialogName.buildingComplianceDialog,
+                          currentRouteName: "HomePage",
                           child: BuildingRequirementsDialog(),
-                        );*/
+                        );
                       },
                       text: "المتطلبات والإشتراطات".tr(),
                     ),

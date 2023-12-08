@@ -29,7 +29,7 @@ class ZoomState extends _$ZoomState {
   Zoom build() {
     final dgisController = ref.watch(dgisControllerProvider);
     final zoomSubscription =
-        dgisController?.zoomControlEnabledEvents.listen(_zoomListener);
+        dgisController.value?.zoomControlEnabledEvents.listen(_zoomListener);
 
     ref.onDispose(
       () {
@@ -52,10 +52,10 @@ class ZoomState extends _$ZoomState {
   }
 
   void onTapUp(ZoomControlType type) {
-    ref.watch(dgisControllerProvider)?.naviZoomController.onTapUp(type);
+    ref.read(dgisControllerProvider).value?.naviZoomController.onTapUp(type);
   }
 
   void onTapDown(ZoomControlType type) {
-    ref.watch(dgisControllerProvider)?.naviZoomController.onTapDown(type);
+    ref.read(dgisControllerProvider).value?.naviZoomController.onTapDown(type);
   }
 }

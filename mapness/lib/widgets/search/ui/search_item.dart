@@ -1,9 +1,7 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/make_address.dart';
-
 
 class SearchItem extends StatelessWidget {
   const SearchItem({
@@ -51,7 +49,10 @@ class SearchItem extends StatelessWidget {
               Text(
                 result.title,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0xFF1E2A36)),
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .textM
+                    .copyWith(color: const Color(0xFF1E2A36)),
               ),
               Row(
                 children: [
@@ -59,17 +60,20 @@ class SearchItem extends StatelessWidget {
                     subtitle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0xB21E2A36)),
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()!
+                        .textM
+                        .copyWith(color: const Color(0xB21E2A36)),
                   ),
                   const SizedBox(
                     width: 12,
                   ),
                   const Spacer(),
-                  Text(
-                    "1.3 ${context.l10n.km}",
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0xB21E2A36)),
-                  ),
+                  // Text(
+                  //   "1.3 ${context.l10n.km}",
+                  //   overflow: TextOverflow.ellipsis,
+                  //   style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0xB21E2A36)),
+                  // ),
                 ],
               ),
               const SizedBox(
@@ -79,7 +83,10 @@ class SearchItem extends StatelessWidget {
                 result.makeAddress(),
                 maxLines: 5,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0xB21E2A36)),
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .textM
+                    .copyWith(color: const Color(0xB21E2A36)),
               ),
             ],
           ),

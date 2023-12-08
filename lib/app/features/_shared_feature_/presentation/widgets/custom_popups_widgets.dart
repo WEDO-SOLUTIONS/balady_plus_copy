@@ -222,7 +222,7 @@ class CustomPopUpsWidgets {
     final screenStatusBarHeight = MediaQuery.of(context).padding.top + 5;
     return (await showModalBottomSheet(
           context: context,
-          isDismissible: false,
+          isDismissible: true,
           isScrollControlled: true,
           enableDrag: false,
           shape: const RoundedRectangleBorder(

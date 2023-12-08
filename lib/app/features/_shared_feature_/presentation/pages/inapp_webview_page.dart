@@ -1,20 +1,20 @@
 import 'dart:async';
 
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
+import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-// import 'package:webview_flutter/webview_flutter.dart';
-
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter/src/webview_cookie_manager.dart';
+import '../../../../core/dependency_injection/injection_container.dart';
+import '../../../../core/services/local/use_case.dart';
 import '../../../../core/utils/utils_exports.dart' show CommonProperties, Log;
 import '../../shared_feature_exports.dart' show DefaultAppBarWidget;
 
 class InAppWebViewPage extends StatefulWidget {
-  final ({String title, String url}) args;
-
   const InAppWebViewPage({
     super.key,
-    required this.args,
   });
 
   @override
@@ -22,77 +22,132 @@ class InAppWebViewPage extends StatefulWidget {
 }
 
 class _InAppWebViewPageState extends State<InAppWebViewPage> {
-  late StreamController<double?> _progessStream;
-  // late WebViewController controller;
+  ///late StreamController<double?> _progessStream;
+  InAppWebViewController? _controller;
+  bool isLoading = true;
   @override
   void initState() {
     super.initState();
-    // try {
-    //   CookieManager.instance().setCookie(
-    //       url: Uri.parse(RemoteConfig.cookieURL),
-    //       name: ".ASPXFORMSAUTH",
-    //       value: CommonProperties.appCookie.split("=").last,
-    //       domain: RemoteConfig.momraDomain);
-    // } catch (_) {}
-    _progessStream = StreamController<double?>();
+    //CookieManager.instance().deleteAllCookies();
 
-    // controller = WebViewController()
-    //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
-    //   ..setBackgroundColor(const Color(0x00000000))
-    //   ..setNavigationDelegate(
-    //     NavigationDelegate(
-    //       onProgress: (int progress) {
-    //         final percent = progress / 100;
-    //         if (!_progessStream.isClosed) {
-    //           _progessStream.sink.add(
-    //             percent,
-    //           );
-    //         }
-    //       },
-    //       onPageStarted: (String url) {},
-    //       onPageFinished: (String url) {
-    //         controller.runJavaScript(
-    //             "document.getElementsByClassName('site-header-cont')[0].style.display='none';document.getElementsByClassName('footer')[0].style.display='none';document.getElementsByClassName('breadcrumb')[0].style.display='none'");
-    //       },
-    //       onWebResourceError: (WebResourceError error) {},
-    //       onNavigationRequest: (NavigationRequest request) {
-    //         return NavigationDecision.navigate;
-    //       },
-    //     ),
-    //   )
-    //   ..loadRequest(Uri.parse(widget.args.url));
+    //  _progessStream = StreamController<double?>();
   }
 
   @override
   Widget build(BuildContext context) {
+    ({String requestNum, String url, bool? isObjections}) args =
+        ModalRoute.of(context)!.settings.arguments as ({
+      String requestNum,
+      String url,
+      bool? isObjections
+    });
+
     return Scaffold(
       appBar: DefaultAppBarWidget(
         title: "back".tr(),
       ),
-      body: StreamBuilder<double?>(
-        stream: _progessStream.stream,
-        builder: (context, snapshot) {
-          return Stack(
-            children: [
-              // WebViewWidget(
-              //   controller: controller,
-              // ),
-              if (snapshot.data != null && snapshot.data! < 1)
-                Center(
-                  child: CircularProgressIndicator(
-                    value: snapshot.data,
-                  ),
-                ),
-            ],
-          );
-        },
+      body: Stack(
+        children: [
+          InAppWebView(
+            onWebViewCreated: (InAppWebViewController controller) {
+              _controller = controller;
+            },
+            initialUrlRequest: URLRequest(
+              // url: Uri.parse('https://flutter.dev/'),
+              url: Uri.parse(args.url),
+            ),
+            initialOptions: InAppWebViewGroupOptions(
+              android: AndroidInAppWebViewOptions(
+                useHybridComposition: true,
+                // safeBrowsingEnabled: false,
+              ),
+              crossPlatform: InAppWebViewOptions(
+                useShouldOverrideUrlLoading: true,
+              ),
+            ),
+            onLoadStart: (controller, Uri? url) {},
+            onLoadStop: (controller, Uri? url) {
+              /* 
+              if (url?.path.endsWith("/dashboardclient/dashboard") ??
+                  false) {
+                Timer(const Duration(milliseconds: 1300), () async {
+                  _controller.loadUrl(
+                      urlRequest: URLRequest(
+                    url: Uri.parse(widget.args.url),
+                  ));
+                });
+              }*/
+              // setState(() {
+              //   this.url = url!.path;
+              // });
+
+              try {
+                _controller?.evaluateJavascript(
+                    source:
+                        "document.getElementsByClassName('site-header-cont')[0].style.display='none';document.getElementsByClassName('footer')[0].style.display='none';document.getElementsByClassName('breadcrumb')[0].style.display='none'");
+              } catch (ex) {}
+
+              if (args.isObjections == true &&
+                  ((url?.path
+                              .toLowerCase()
+                              .contains("permits/permitsDetails/index") ??
+                          false) ||
+                      (url?.path.contains("dashboardclient/requests/details") ??
+                          false) ||
+                      (url?.path.contains("dashboardclient/licenses/details") ??
+                          false))) {
+                try {
+                  print("HIDEEE");
+                  _controller?.evaluateJavascript(
+                      source:
+                          "document.getElementsByClassName('btn-text-danger')[0].style.display='none'");
+                } catch (ex) {}
+
+                const Duration interval = Duration(seconds: 2);
+                const Duration timeout = Duration(minutes: 2);
+
+                Timer.periodic(interval, (Timer timer) {
+                  try {
+                    print("HIDEEE");
+                    _controller?.evaluateJavascript(
+                        source:
+                            "document.getElementsByClassName('btn-text-danger')[0].style.display='none'");
+                  } catch (ex) {}
+                  if (timer.tick >= timeout.inSeconds) {
+                    timer.cancel();
+                    print('Timer stopped after 2 minutes.');
+                  }
+                });
+              }
+              setState(() {
+                isLoading = false;
+              });
+            },
+            onLoadError: (controller, url, code, message) => print(message),
+            onProgressChanged: (controller, int progress) {
+              final percent = progress / 100;
+            },
+            onConsoleMessage: (controller, ConsoleMessage consoleMessage) {
+              "$consoleMessage".warningLog();
+              "Message coming from Dart side: ${consoleMessage.message}"
+                  .warningLog();
+            },
+          ),
+          if (isLoading)
+            Center(
+              child: CustomLoadingWidget(),
+            ),
+        ],
       ),
     );
   }
 
   @override
   void dispose() {
-    _progessStream.close();
+    // _progessStream.close();
+    _controller?.stopLoading();
+    _controller?.removeAllUserScripts();
+    _controller = null;
     super.dispose();
   }
 }

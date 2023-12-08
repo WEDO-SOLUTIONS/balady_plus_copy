@@ -5,9 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/stories/data/story_service.dart';
 import 'package:mapness/_features/stories/domain/frame/story_frame_action.dart';
 import 'package:mapness/_features/stories/domain/story_data.dart';
+import 'package:mapness/_features/stories/presentation/frame/story_frame_controller.dart';
 import 'package:mapness/_features/stories/presentation/frame/story_frame_widget.dart';
 
 class StoryFramesPlayer extends ConsumerStatefulWidget {
+  final StoryFrameController? controller;
+
   final StoryData story;
 
   final VoidCallback onNextStory;
@@ -16,13 +19,17 @@ class StoryFramesPlayer extends ConsumerStatefulWidget {
 
   final void Function(StoryFrameAction action)? onActionPressed;
 
+  final void Function(String id, int page)? onMarkReed;
+
   const StoryFramesPlayer({
     this.onActionPressed,
     super.key,
+    this.controller,
     required this.story,
     required this.onNextStory,
     required this.onPreviousStory,
     required this.onClose,
+    this.onMarkReed,
   });
 
   @override
@@ -71,6 +78,7 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
     // precache next 2 images
     final frames = widget.story.frames;
     for (var i = currentIndex; i < min(frames.length, 2); i++) {
+      if (frames[i].isAssetImage == true) continue;
       precacheImage(NetworkImage(frames[i].imageUrl), context);
     }
   }
@@ -82,6 +90,7 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
     final currentFrame = frames[currentIndex];
 
     return StoryFrameWidget(
+      controller: widget.controller,
       onActionPressed: widget.onActionPressed,
       key: Key(story.storyId + currentIndex.toString()),
       frame: currentFrame,

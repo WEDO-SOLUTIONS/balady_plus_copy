@@ -14,19 +14,29 @@ class TextWithCheckBtn extends StatefulWidget {
   final double bottomViewInsets;
   final Function verify;
   final Function validate;
-  final TextEditingController controller;
+  final TextEditingController? controller;
+  final String? errorText;
+  final Color? backgroundColor;
+  final int? maxLength;
+  final bool enabled;
+  final TextInputType? textInputType;
 
-  const TextWithCheckBtn(
-      {super.key, required this.title,
+  TextWithCheckBtn(
+      {required this.title,
       this.hint,
-      required this.controller,
+      this.controller,
       this.textHint,
       this.currentValue,
       required this.onTextChanged,
       required this.isValidate,
       this.bottomViewInsets = 0,
       required this.verify,
-      required this.validate});
+      this.errorText,
+      this.backgroundColor,
+      this.maxLength,
+      required this.validate,
+      this.enabled = true,
+      this.textInputType});
   @override
   _TextWithCheckBtnState createState() => _TextWithCheckBtnState();
 }
@@ -38,7 +48,7 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    widget.controller.text = widget.currentValue ?? "";
+    widget.controller?.text = widget.currentValue ?? "";
   }
 
   @override
@@ -49,15 +59,20 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
         CustomTextFieldWidget(
           label: widget.title,
           controller: widget.controller,
+          fillColor: widget.backgroundColor,
           focusNode: _focusNode,
           hintText: widget.hint ?? "",
-          keyboardType: TextInputType.number,
-          maxLength: 10,
+          errorText: widget.errorText,
+          keyboardType: widget.textInputType ??
+              TextInputType.numberWithOptions(signed: false),
+          maxLength: widget.maxLength,
           onValidate: (String? t) => widget.validate(t),
+          enabled: widget.enabled,
           onChanged: (value) => {widget.onTextChanged(value)},
         ),
         Padding(
-          padding: const EdgeInsets.only(bottom: 0.0, left: 8),
+          padding: EdgeInsets.only(
+              bottom: 0.0, left: 8, top: widget.maxLength == null ? 20 : 0),
           child: InkWell(
             onTap: widget.isValidate
                 ? null
@@ -65,7 +80,7 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
                     widget.verify();
                     FocusScope.of(context).unfocus();
                   },
-            child: SizedBox(
+            child: Container(
               width: 100,
               height: 50,
               child: Align(
@@ -85,7 +100,7 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
                     CustomTextWidget(
                       widget.isValidate ? ("done_check").tr() : ("check").tr(),
                       fontColor:
-                          widget.isValidate ? Colors.black : const Color(0xff389492),
+                          widget.isValidate ? Colors.black : Color(0xff389492),
                       fontSize: 14,
                     ),
                   ],

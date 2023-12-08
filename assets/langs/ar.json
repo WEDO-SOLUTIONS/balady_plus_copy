@@ -23,7 +23,9 @@
   "passwordMismatchValidation": "كلمة المرور غير متطابقة.",
   "checkboxRequiredValidation": "خانة الاختيار مطلوبة.",
   "phoneNumberStartsValidation": "رقم الهاتف يجب أن يبدأ بـ 05.",
+  "cr700StartsWith7Validation": "رقم الهوية يجب أن يبدأ ب 700", 
   "phoneNumberLengthValidation": "رقم الهاتف يجب أن لا يقل عن 10 أرقام.",
+  "cr700LengthValidation": "رقم الهوية يجب أن لا يقل عن 10 أرقام.",
   "invalidEndDateValidation": "تاريخ النهاية غير صحيح.",
   "readOnlyFieldValidation": "هذا الحقل للقراءة فقط.",
   "selectFileValidation": "من فضلك قم باختيار الملف.",
@@ -617,6 +619,7 @@
   "vd_full_name": "الاسم بالكامل",
   "vd_mobile_number": "رقم الجوال",
   "vd_request_submit": "تم تقديم الطلب بنجاح",
+  "commercial_request_submit":"تم تقديم الطلب رقم {} بنجاح", 
   "lbl_thank_you": "شكراً لك",
   "lbl_thank_you2": "شكراً لتواصلك معنا",
   "lbl_evaluation_thanks_desc": "تم استلام تقييمك بنجاح",
@@ -1005,8 +1008,8 @@
   "services": "الخدمات",
   "total_cost": "التكلفة الاجمالية",
   "sar": "ريال",
-  "click_more_details": "عرض تفاصيل التكلفة",
-  "cost_details": "تفاصيل التكلفة",
+  "click_more_details": "استعراض تفاصيل العرض والتكلفة",
+  "cost_details": "تفاصيل العرض و التكلفة",
   "show_all": "عرض الكل",
   "most_ordered_services": "الخدمات الأكثر طلباً",
   "top_rated_providers": "المكاتب الاعلى تقييماًً",
@@ -1171,7 +1174,7 @@
 
   "_Bidding_Text": "Bidding",
   "biddng_home_title": "طلب عرض اسعار",
-  "bidding_test_launch":"إطلاق تجريبي", 
+  "bidding_test_launch":"إطلاق تجريبي",
   "bidding_home_desc": "احجز جميع الخدمات التي تحتاجها في باقة واحدة",
   "bidding_home_publish": "انشر الطلب",
   "bidding_fill_filed": "الرجاء تعبئة حقل {}",
@@ -1191,6 +1194,10 @@
   "manadatory": "(الزامي) ",
   "office_delegated": "تم تفويض هذا المكتب",
   "bidding_warning_msg": "عزيزي المستفيد،، سوف يتم ارسال طلب عرض أسعار للخدمة المختارة من قبلكم لمزودي الخدمة ويمكنكم استقبال العروض من قبل مزودي الخدمة والمفاضلة بينها واختيار الأنسب",
+"financialAttachmentId":"العرض المالي", 
+"technicalAttachmentId":"العرض الفني", 
+
+
 
   "_Balady": "Balady Texts",
   "appNameWord": "بلدي",
@@ -1430,7 +1437,7 @@
   "errorNotFoundScreenNameWord": "صفحة",
   "errorNotFoundScreenTitleWord": "هذه الصفحة غير موجودة",
   "errorNotFoundScreenSubTitleWord": "عذراً هذه الصفحة غير موجودة يرجي المحاولة في وقت لاحق",
-  "errorNotFoundScreenSupportAccountWord": "infoCS@balady.gov.sa", 
+  "errorNotFoundScreenSupportAccountWord": "infoCS@balady.gov.sa",
   "errorInternetConnectionWord": "من فضلك افحص شبكة الإنترنت.",
   "fieldReadOnlyWord": "هذا الحقل للقراءة فقط.",
   "popUpCloseBottomSheetButtonWord": "إغلاق",
@@ -1584,6 +1591,28 @@
   "view_health_centers_list": "استعراض قائمة المراكز الصحية",
   "cancel_order": "إلغاء الطلب",
   "health_center": "المركز الصحي",
+
+
+  "health_data":"تاريخ تقديم الطلب", 
+  "health_data_no":"رقم الطلب", 
+  "health_data_status":"حالة الطلب", 
+
+  "health_owner_data":"بيانات المالك الرئيسية",
+  "health_owner_data_field1":"هوية المالك",
+  "health_owner_data_field2":"اسم المالك / المنشأة",
+  "health_submitter_data":"بيانات مقدم الطلب", 
+  "health_submitter_id":"رقم هوية مقدم الطلب", 
+  "health_submitter_name":"إسم مقدم الطلب", 
+  "health_submitter_mobile":"الجوال", 
+  "health_submitter_mail":"البريد الالكتروني", 
+  "health_cert_data":"معلومات الشهادة الصحية", 
+  "health_cert_no":"رقم الشهادة الصحية", 
+"health_cert_date":"تاريخ الاصدار", 
+"health_cert_end":"تاريخ الانتهاء", 
+"health_cert_lice_statue":"حالة الشهادة", 
+
+
+
   "medical_examination_data": "بيانات التثقيف الصحي",
   "check_code": "كود الفحص",
   "check_date": "تاريخ الفحص",
@@ -1626,6 +1655,16 @@
   "license_info": "معلومات الرخصة",
   "license_info_desc": "تم استرجاع كافة معلومات المنشأة بنجاح، يرجى التأكد من صحتها.",
   "license_name": "اسم الرخصة",
+  "license_shop_name": "اسم المحل",
+  "license_health_number": "رقم الرخصة", 
+  "license_health_municipality": "الامانة", 
+  "license_health_subMunicipality": "البلدية",
+  "license_health_entityName": "اسم المنشآة",
+  "license_health_start_date": "تاريخ بداية الرخصة",
+  "license_health_end_date": "تاريخ نهاية الرخصة",
+  "license_health_activityName": "النشاط التفصيلي",
+
+
   "registered_license": "الرخصة المسجلة",
   "registered_license_info": "تتطلب البلدية الربط مع رخصة محل",
   "license_for_facility": "هل يوجد رخصة محل لموقع العمل ؟",
@@ -1680,7 +1719,9 @@
   "lbl_sub_category": "التصنيف الفرعي",
   "order_address": "عنوان الطلب",
   "no_license_issue_error_title": "لا يمكنك التقديم على شهادة صحية",
-  "no_license_issue_error_subtitle": "يجب إصدار رخصة محل حتى تتمكن من إصدار الشهادة",
+  "click_here":"اضغط هنا.", 
+  "no_license_issue_error_subtitle": "عزيزي المستفيد.. لنتمكن من خدمتك يرجى إصدار رخصة تجارية للمحل من خدمة اصدار رخصة تجارية",
+  "no_license_issue_error_subtitle2":" وفي حال كان لديك رخصة تجارية غير ظاهرة يرجى مراجعة الدعم الفني", 
   "isic_activity": "نشاط أيزيك",
   "empty_health_license_orders_desc": "لا يوجد أي طلب مقدم حالياً، تم معالجة كافة الطلبات",
   "empty_health_license_title_old": "لا يوجد رخص حالية",
@@ -1897,6 +1938,8 @@
   "no_in_progress_incidents": "لا توجد بلاغات تحت التنفيذ",
   "no_in_progress_incidents_desc": "لا يوجد أي بلاغ مقدم حالياً، يمكنك تقديم بلاغ جديد",
   "submit_new_incident": "تقديم بلاغ جديد",
+  "submit_incident": "تقديم بلاغ",
+
   "no_appointments": "لم تقم بحجز موعد",
   "no_appointments_desc": "لا يوجد موعد محجوز حالياً، يمكنك حجز موعد جديد",
   "submit_new_appointment": "حجز موعد جديد",
@@ -2510,7 +2553,7 @@
   "crSource": "مصدر السجل التجاري",
   "objectionPeriodExpired": "لا يمكن الاعتراض بسبب انتهاء مدة الاعتراض",
   "reason": "سبب",
-  "objectionDetails": "تفاصيل الاعتراض",
+  "objectionDetails": "تفاصيل الاعتراض", 
   "applicableObjection": "المطبق للاعتراض",
   "billNumber": "رقم الفاتورة / المخالفة",
   "violation": "المخالفة",
@@ -2519,8 +2562,8 @@
   "objectionLastApplyDate": "اخر موعد للاعتراض",
   "violationAmount": "قيمه الغرامة",
   "clear": "مشمس",
-  "buildingRequirements_desc":"يشترط خلو المبنى من المخالفات التالية:",
-  "buildingRequirements": "متطلبات شهادة امتثال المباني",
+  "buildingRequirements_desc":"يشترط لإصدار شهادة امتثال المبنى وفق هذا الدليل، خلوه من المخالفات الآتية:",
+  "buildingRequirements": "اشتراطات شهادة امتثال المباني",
   "buildingDesignElements": "عناصر تصميم المبنى",
   "buildingDesignElements1": "عدم فتح شبابيك في الملاحق العلوية مخالفة لأنظمة البناء أو الاشتراطات التصميمية للفتحات",
   "buildingDesignElements2": "عدم ارتفاع سترة السطح عن 2.1م كحد أعلى وعدم وضع فتحات على السور تسمح للرؤية",
@@ -3066,6 +3109,10 @@
 "approved_violation_text_1":"ممارسة نشاط دون الحصول على ترخيص بلدي",
 "approved_repeated":"اختر تكرار المخالفة",
 "violation_payment_text":"رسوم الغرامة للمرة الاولى ",
+"violation_payment_text_2":"رسوم الغرامة للمرة الثانية ",
+"violation_payment_text_3":"رسوم الغرامة للمرة الثالثة ",
+"violation_payment_text_4":"رسوم الغرامة للمرة الرابعة ",
+
 "500":"500",
 "action":"الإجراء",
 "warning_done":"يتم التنبيه",
@@ -3113,7 +3160,7 @@
 "compliance_usages":"الغرض من الاستخدام", 
 "review_request":"مراجعة الطلب", 
 "complinace_submission":"آلية التقديم", 
-"compliance_ownership_type":"نوع وثيقة مستند التقديم", 
+"compliance_ownership_type":"نوع وثيقة مستند التقديم",
  "compliance_ownership_text":"رقم الوثيقة", 
  "compliance_ownership_date":"تاريخ الوثيقة",
  "compliance_main_usage": "الاستخدام الرئيسي", 
@@ -3144,10 +3191,10 @@
 "events_description2":"تعود نشأة الدرعية التاريخية إلى عام 1446م، بعد مجيء مانع بن ربيعة المريدي من بلدة صغيرة تقع بجوار القطيف، إلى أرض خصبة على ضفاف وادي حنيفة، فاستقر بها مع عائلته، واتسعت مع مرور الوقت نفوذهم ومزارعهم، حتى أصبحوا أمراء تلك المنطقة وما جوارها.",
 "event_button_text":"الانتقال الى التفاصيل",
 "nature":"طبيعة",
-"events_filter_season":"الموسم", 
-"events_filter_category":"الإهتمام", 
-"events_filter_city":"المدينة", 
-"events_filter_audience":"الجمهور المستهدف", 
+"events_filter_season":"الموسم",
+"events_filter_category":"الإهتمام",
+"events_filter_city":"المدينة",
+"events_filter_audience":"الجمهور المستهدف",
 "events_filter_dateFrom":"التاريخ من",
 "events_filter_dateTo":"إلى",
 "events_filter_fess":"الرسوم",
@@ -3216,30 +3263,69 @@
 "delete_compliance_request_title_yes":"نعم، إلغاء الطلب", 
   "city_scape_title":"سيتي سكيب العالمي 23", 
   "city_scape_desc":"تعرف على المعرض العقاري الأضخم في العالم وعش تجربة فريدة من خلال إستعراض موقع الحدث والأجنحة المشاركة والتنقل بمسارات المعرض بشكل فريد عبر خرائط بلدي التفاعلية ", 
-  "city_scape":"ابدأ الآن" , 
-"saudi_calendar":"تقويم المملكة", 
-"saudi_calendar_day":"{} يوم", 
+  "city_scape":"ابدأ الآن" ,
+"saudi_calendar":"تقويم المملكة",
+"saudi_calendar_day":"{} يوم",
   "city_scape":"ابدأ الآن",
 
-"saudi_calendar_type":"نوع المناسبة", 
-"saudi_calendar_remain":"متبقي على {}", 
-"saudi_calendar_add":"إضافة إلى تقويمي", 
-"remaining":"متبقي", 
-"saudi_calendar_no_data":"عفوا، لا يوجد مناسبات تطابق محددات البحث الخاصة بك.", 
+"saudi_calendar_type":"نوع المناسبة",
+"saudi_calendar_remain":"متبقي على {}",
+"saudi_calendar_add":"إضافة إلى تقويمي",
+"remaining":"متبقي",
+"saudi_calendar_no_data":"عفوا، لا يوجد مناسبات تطابق محددات البحث الخاصة بك.",
 
-"saudi_calendar_day_text":"يوم", 
+"saudi_calendar_day_text":"يوم",
 
-"saudi_calendar_intro":"النبذة", 
-"saudi_calendar_type_date":"تاريخ المناسبة", 
+"saudi_calendar_intro":"النبذة",
+"saudi_calendar_type_date":"تاريخ المناسبة",
 "saudi_calendar_type_photos":"الصور",
 
 
-"appointments_cancel_reasons_title":"سبب الإلغاء", 
-"appointments_cancel_reasons_text":"أذكر الأسباب الأخرى", 
+"appointments_cancel_reasons_title":"سبب الإلغاء",
+"appointments_cancel_reasons_text":"أذكر الأسباب الأخرى",
 
 
+"compliance_deed_number_text":"رقم الصك", 
+"compliance_deed_number_date":"تاريخ الصك", 
+"compliance_deed_number_paper":"ورقي", 
+"compliance_deed_number_electronic":"إلكتروني", 
+
+"compliance_eskan_national_id":"رقم الهوية", 
+
+"compliance_electricity_type":"نوع الإيصال", 
+"compliance_electricity_number":"رقم آخر إيصال مصدر",
+"compliance_electricity_number_date":"تاريخ آخر إيصال مصدر", 
+
+"compliance_land_number":"رقم عقد الإسكان",
+"compliance_land_date":"تاريخ عقد الإسكان",
+
+"compliance_estehkam_number":"رقم حجة الاستحكام",
+"compliance_estehkam_date":"تاريخ حجة الاستحكام",
 
 
+"compliance_investment_number":"رقم  عقد الإستثمار",
+"compliance_investment_number_date": "تاريخ عقد الإستثمار", 
+"compliance_show_certificate": "عرض الشهادة", 
+
+
+"IssueCr":"اصدار رخصة تجاية", 
+"cr_consent_conditions_title":"الاقرار", 
+"cr_consent_conditions_desc":"أقر على صحة المعلومات وأنني اطلعت على إتفاقية خصوصية وسياسة الخدمات الالكترونية والاشتراطات الخاصة بالخدمة", 
+"cr_consent_conditions_check":"أقر وأتعهد على جميع ماتم ذكره اعلاه", 
+
+"cr_consent_conditions_agree":"أوافق", 
+"cr_select":"اختيار", 
+"cr_selected_done":"تم الاختيار", 
+"cr_investment_type":"نوع العقد",
+"cr_investment_code":"رمز العقد بالأمانة",
+
+"cr_clean_contract_number":"رقم العقد", 
+"cr_clean_contract_end_date":"تاريخ انتهاء العقد", 
+"cr_clean_contract_municipality":"البلدية", 
+
+"IDENTITY":"الصك صادر بهوية مالك السجل التجاري", 
+"CR":"الصك صادر برقم السجل التجاري", 
+"CR_700":"الصك صادر برقم 700 في السجل التجاري", 
 
 
   "select_cancellation_reason": "حدد سبب الإلغاء",
@@ -3283,7 +3369,7 @@
   "salamaBillNumber": "رقم فاتورة أدوات سلامة",
   "contractType": "نوع ملكية المحل",
   "contractNumber": "رقم صك الملكية",
-  "contractOption": "آلية عقد النظافة",
+  "contractOption": "نوع العقد",
 
   "data_attachments":"بيانات المرفقات",
   "permitType": "نوع التصريح",
@@ -3293,6 +3379,13 @@
 
   "quick_code": "الرمز السريع",
 
+
+
+
+  "profile_switch_account":"تحويل الى الحساب الشخصي", 
+  "profile_switch_entity":"او تحويل إلى حساب أحد منشآت المالك / مفوض لها", 
+  "profile_switch_delegator":"المنشآت", 
+  "profile_switch_agent":"الوكالات", 
 
 
   "cancellation_license": "الغاء الرخصة",
@@ -3306,9 +3399,11 @@
   "attachment_message_typ": "مرفق واحد من نوع",
   "attachment_message_size": "وبحد اقصي",
 
+  "data_not_have_actions": "لا يوجد إجراء متاح",
 
 
   "back_licenses_page": "العودة لصفحة  الرخص",
+  "back_request_page": "العودة لصفحة  الطلبات",
 
 
   "viewـinvoice": "عرض الفاتورة",
@@ -3334,7 +3429,151 @@
   "back_order": "العودة للطلب",
   "scan_qr_code_message": "يمكنك مسح الرمز السريع لعرض البيانات الخدمة",
   "submit_application_successfully_cancel_message" : "تم اصدار الفاتورة الخاصة بخدمة الغاء رخصة تجارية",
-  "ATTACH": "مرفق", 
-  "event_location_with_google": "الوصول للفعالية عبر خرائط قوقل"
+  "event_location_with_google": "الوصول للفعالية عبر خرائط قوقل" ,
+  "ATTACH": "مرفق",
+  "data_not_have_permits": "عفوا لا يوجد تصاريح سارية على الرخصة",
+
+  "boardTypeName": "نوع اللوحة ",
+  "boardArea": "مساحة اللوحة ",
+
+  "responses_request": "الردود على الطلب",
+
+  "notes_": "الملاحظة",
+
+  "return_order_details": "العودة لتفاصيل الطلب",
+ 
+  "time_serveis": "وقت تنفيذ الخدمة",
+
+
+  "application_no_has_been_submitted": "تم تقديم الطلب رقم",
+  "and_issue_invoice_service_amount": "واصدار الفاتورة الخاصة بالخدمة  بمبلغ",
+
+  "application_no_has_been_submitted_two": "سيتم إشعاركم برسالة نصية أخرى تحتوي على تفاصيل الفاتورة وآلية السداد ، مع تحيات وزارة الشؤون البلدية والقروية والإسكان", 
+
+"posters_licenses_list":"قائمة الرخص", 
+"posters_data":"بيانات الملصقات", 
+"posters_permit_start_date":"تاريخ بداية التصريح", 
+"posters_permit_duration": "مدة العرض بالأيام", 
+"posters_count":"عدد الملصقات {}", 
+"posters_area_total":"مجموع مساحات الملصقات {} سم٢", 
+"poster_index":"ملصق {}", 
+"poster_type":"نوع الملصق", 
+"poster_name":"اسم الملصق", 
+"poster_dim":"أبعاد الملصق", 
+"poster_length":"الطول",  
+"poster_width":"العرض", 
+"poster_area":"المساحه",  
+"poster_cm":"سم", 
+"poster_cm2":"سم٢", 
+"posters_add":"اضافة ملصق", 
+"permits_for_licenes":"التصاريح المتاحة لهذه الخدمة", 
+"poster_start_request":"بدء الطلب", 
+"posters_grouped_request_submit":"تم تقديم طلب التصاريح المجمع رقم {} بنجاح", 
+"posters_indivisual_requests":"الطلبات الفرعية", 
+"posters_desc": "يتم احتساب الرسوم عن طريق حاصل ضرب مجموع مساحات جميع الملصقات في مدة العرض في قيمة اليوم بالريال في عدد الرخص المضاف عليها التصريح", 
+"posters_agreement_title":"أتعهد على جميع ماتم ذكره اعلاه", 
+"posters_agreement_desc": "اقر واتعهد بصحة كافة البيانات التي تم رفعها على موقع بلدي واتحمل كامل المسؤولية القانونية والنظامية في حال تبين خلاف ذلك. كما اتعهد بابلاغ وزارة الشؤون البلدية والقروية في حال طرء اي تغيير على البيانات واتحمل كامل المسؤولية في حال تبين خلاف ذلك.", 
+"posters_no_license":"عفوا , لا يوجد رخص يمكن التقديم عليها التصريح المحدد", 
+"poster_cancel_confirm_msg":"عزيزي المستفيد، هل تريد الاستمرار بإلغاء طلب تصريح الملصقات الدعائية رقم {}",
+"poster_cancel_confirm_yes":"موافق", 
+"poster_cancel_confirm_no":"إلغاء", 
+"posters_bill_number":"رقم الفاتورة", 
+
+
+"posters_licenses_list":"قائمة الرخص", 
+"posters_data":"بيانات اللوحات الإعلانية المؤقتة ", 
+"posters_permit_request_id":"رقم الطلب",
+"posters_permit_licesnse_id":"رقم الرخصة",
+"posters_permit_licesnse_status":"حالة الرخصة",
+
+"posters_permit_licesnse_expiry":"تاريخ نهاية الرخصة ",
+"posters_permit_mun_sub":"الأمانة/البلدية",
+"posters_permit_end_date":"تاريخ نهاية التصريح",
+
+"posters_permit_start_date":"تاريخ بداية التصريح", 
+"posters_permit_duration": "مدة العرض بالأيام", 
+"posters_count":"عدد اللوحات الإعلانية المؤقتة {}", 
+"posters_area_total":"مجموع مساحات اللوحات الإعلانية المؤقتة {} سم٢", 
+"poster_index":"لوحة الإعلانية المؤقتة {}", 
+"poster_type":"نوع اللوحة الإعلانية المؤقتة", 
+"poster_name":"اسم اللوحة الإعلانية المؤقتة", 
+"poster_dim":"أبعاد اللوحة الإعلانية المؤقتة", 
+"poster_length":"الطول",  
+"poster_width":"العرض", 
+"poster_area":"المساحه",  
+"poster_cm":"سم", 
+"poster_cm2":"سم٢", 
+"posters_add":"إضافة لوحة إعلانية مؤقتة", 
+"permits_for_licenes":"التصاريح المتاحة لهذه الخدمة", 
+"poster_start_request":"بدء الطلب", 
+"posters_grouped_request_submit":"تم تقديم طلب التصاريح المجمع رقم {} بنجاح", 
+"posters_indivisual_requests":"الطلبات الفرعية", 
+"posters_desc": "عزيزي المستفيد، قد تختلف رسوم إصدار التصريح من بلدية إلى بلدية أخرى، يتم احتساب الرسوم عن طريق حاصل ضرب )مجموع مساحات جميع اللوحات الإعلانية المؤقتة بالطلب * مدة العرض بالأيام * رسوم اليوم بالريال * عدد الرخص المضاف عليها التصريح", 
+"posters_agreement_title":"أتعهد على جميع ماتم ذكره اعلاه", 
+"posters_agreement_desc": "اقر واتعهد بصحة كافة البيانات التي تم رفعها على موقع بلدي واتحمل كامل المسؤولية القانونية والنظامية في حال تبين خلاف ذلك. كما اتعهد بابلاغ وزارة الشؤون البلدية والقروية في حال طرء اي تغيير على البيانات واتحمل كامل المسؤولية في حال تبين خلاف ذلك.", 
+"posters_no_license":"عفوا , لا يوجد رخص يمكن التقديم عليها التصريح المحدد", 
+"poster_cancel_confirm_msg":"عزيزي المستفيد، هل تريد الاستمرار بإلغاء طلب تصريح الملصقات الدعائية رقم {}",
+"poster_cancel_confirm_yes":"موافق", 
+"poster_cancel_confirm_no":"إلغاء", 
+"posters_bill_number":"رقم الفاتورة", 
+
+  "tobaccoServices": "الافصاح عن التبغ",
+
+
+  "authenticationـnumber": "رقم التوثيق",
+  "not_disclosed": "لم يتم الافصاح",
+  "disclosed": "تم الافصاح",
+
+  "monthsـdisclosed": "اشهر لم يتم الافصاح عنها",
+  "monthsـhaveـbeen_disclosed": "اشهر تم افصاحها",
+  "month": "شهر",
+  "dateـcreated": "تاريخ الانشاء",
+
+  "disclosure": "الافصاح",
+
+
+
+  "disclosure_month": "الافصاح عن شهر",
+
+  "you_must_choose_amount": "يجب ادخل المبلغ",
+
+
+  "required_field_must_number": "حقل اجباري يجب ان يكون رقم",
+  "error_please_try_again_later": "حدث خطأ، الرجاء إعادة المحاولة لاحقا",
+
+  "establishment_data": "بيانات المنشأة",
+
+  "additional_data_attachments": "البيانات الاضافية والمرفقات",
+  "applicants_status_data": "بيانات صفة مقدم الطلب",
+
+  "back_invoices": "الرجوع لصفحة الفواتير",
+  "disclosure_completed_successfully": "تم الافصاح بنجاح",
+  "disclosure_completed_successfully_message": "يمكنك متابعة كل ما يتعلق بحالات الافصاح من خلال خدمة الافصاح عن التبغ او صفحة الفواتير المتواجدة في الحساب الشخصي",
+  "pledges_submit_disclosure1": "أتعهد بأن مبلغ إجمالي إيرادات لشهر",
+  "pledges_submit_disclosure2": "هو",
+  "pledges_submit_disclosure3": "ر.س. و مبلغ الرسم المستحق هو",
+  "pledges_submit_disclosure4": "وفي حال خلاف ذلك ستطبق العقوبات المنصوص عليها نظاما",
+  "identityNumber": "",
+  "month1": "يناير",
+  "month2": "فبراير",
+  "month3": "مارس",
+  "month4": "أبريل",
+  "month5": "مايو",
+  "month6": "يونيو",
+  "month7": "يوليو",
+  "month8": "أغسطس",
+  "month9": "سبتمبر",
+  "month10": "أكتوبر",
+  "month11": "نوفمبر",
+  "month12": "ديسمبر",
+  "exit": "خروج",
+  "exit_message": "هل انت متأكد من الخروج",
+
+  "no_revenue_disclose": "لا يوجد لديك ايرادات لتفصح عنها؟",
+
+  "must_add_attachment": "يجب إرفاق الملف",
+
+  "select_reason": "حدد السبب",
+  "must_comment": "يجب اضافة تعليق"
 
 }

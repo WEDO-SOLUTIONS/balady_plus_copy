@@ -18,9 +18,9 @@ class Search extends _$Search {
   }
 
   Future<void> searchByText(String query) async {
-    final dgisController = ref.watch(dgisControllerProvider);
+    final dgisController = ref.read(dgisControllerProvider);
 
-    final result = await dgisController?.search(
+    final result = await dgisController.value?.search(
       query,
       sortingType: SortingTypeMessage.byDistance,
     );
@@ -29,9 +29,9 @@ class Search extends _$Search {
   }
 
   Future<void> searchByQuery(SearchQueryMessage query) async {
-    final dgisController = ref.watch(dgisControllerProvider);
+    final dgisController = ref.read(dgisControllerProvider);
 
-    final result = await dgisController?.searchByQuery(
+    final result = await dgisController.value?.searchByQuery(
       query,
       sortingType: SortingTypeMessage.byDistance,
     );
@@ -40,13 +40,13 @@ class Search extends _$Search {
   }
 
   Future<void> removeMarkers() async {
-    final dgisController = ref.watch(dgisControllerProvider);
+    final dgisController = ref.read(dgisControllerProvider);
 
-    await dgisController?.removeAll();
+    await dgisController.value?.removeAll();
   }
 
   Future<void> _handleResult(SearchResultMessage? result) async {
-    final dgisController = ref.watch(dgisControllerProvider);
+    final dgisController = ref.read(dgisControllerProvider);
 
     List<Marker> markers = [];
     for (final markerInfo
@@ -71,7 +71,7 @@ class Search extends _$Search {
     }
 
     await removeMarkers();
-    await dgisController?.addMarkers(markers);
+    await dgisController.value?.addMarkers(markers);
 
     _currentPage = result?.firstPage;
 
@@ -80,7 +80,7 @@ class Search extends _$Search {
 
     ref.onDispose(() {
       if (_currentPage != null) {
-        dgisController?.releasePage(_currentPage!);
+        dgisController.value?.releasePage(_currentPage!);
       }
     });
   }
@@ -90,11 +90,11 @@ class Search extends _$Search {
       return false;
     }
 
-    final dgisController = ref.watch(dgisControllerProvider);
+    final dgisController = ref.read(dgisControllerProvider);
 
     PageMessage? page;
     try {
-      page = await dgisController?.fetchNextPage(_currentPage!);
+      page = await dgisController.value?.fetchNextPage(_currentPage!);
     } catch (e) {
       return false;
     }
@@ -103,7 +103,7 @@ class Search extends _$Search {
       return false;
     }
 
-    await dgisController?.releasePage(_currentPage!);
+    await dgisController.value?.releasePage(_currentPage!);
     _currentPage = page;
     state = [
       ...state,

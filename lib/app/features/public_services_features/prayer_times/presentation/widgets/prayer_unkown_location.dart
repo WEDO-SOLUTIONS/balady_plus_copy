@@ -70,7 +70,7 @@ class UnKownPrayerLocation extends StatelessWidget {
                         const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
                     clipBehavior: Clip.antiAlias,
                     decoration: ShapeDecoration(
-                      color: Color(0xFF036362),
+                      color: AppColor.primary900Light,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
                     ),

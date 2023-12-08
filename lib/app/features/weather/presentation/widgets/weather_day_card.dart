@@ -9,9 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../core/utils/weather_date.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
-    show CustomTextWidget;
-import '../weather_date.dart';
+    show CustomAutoSizeTextWidget, CustomTextWidget;
 
 class WeatherDayCard extends StatelessWidget {
   const WeatherDayCard({
@@ -44,6 +44,7 @@ class WeatherDayCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
+                  flex: 1,
                   child: CustomTextWidget(
                     WeatherDateFormatter.isToday(
                             forecastDay?.date ?? '2022-01-01')
@@ -57,17 +58,19 @@ class WeatherDayCard extends StatelessWidget {
                   ),
                 ),
                 Expanded(
+                  flex: 2,
                   child: Row(
                     children: [
                       CustomSvgIconWidget(
                         forecastDay?.day?.condition?.iconPath ?? '',
                         iconSize: 26,
                       ),
-                      CustomTextWidget(
+                      CustomAutoSizeTextWidget(
                         forecastDay?.day?.condition?.text ?? '',
                         fontColor: AppColor.blackModern800Light,
                         fontWeight: AppFontWeight.bold,
-                        fontSize: 13,
+                        minFontSize: 10,
+                        maxFontSize: 13,
                         textAlign: TextAlign.start,
                       ),
                     ],

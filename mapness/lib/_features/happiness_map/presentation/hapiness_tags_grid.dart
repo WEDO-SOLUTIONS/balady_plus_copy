@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/happiness_map/data/happiness_tags.dart';
+import 'package:mapness/_features/happiness_map/domain/happiness_tag.dart';
 import 'package:mapness/_features/happiness_map/presentation/happiness_tag_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -28,7 +29,7 @@ class HappinessTagsGrid extends ConsumerWidget {
           (tag) {
             final isSelected = happinessState.tags.contains(tag.code);
             return HappinessTagWidget(
-              title: tag.title,
+              title: tag.titleOrFallback(context.l10n),
               iconAsset: tag.iconAsset,
               onPressed: () => isSelected
                   ? happinessManager.removeTag(tag.code)

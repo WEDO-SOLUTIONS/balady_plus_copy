@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/_features/landing/widgets/happines_control.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
+import 'package:mapness/_features/landing/widgets/happines_control.dart';
 import 'package:mapness/_features/landing/widgets/layers_control.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
+import 'package:mapness/_features/landing/widgets/zoom_control.dart';
+import 'package:mapness/_features/stories/domain/story_types.dart';
+import 'package:mapness/_features/stories/stories.dart';
 import 'package:mapness/app/routes/kiblah.dart';
-
+import 'package:mapness/app/routes/weather.dart';
+import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
-import 'package:mapness/_features/landing/widgets/weather_control.dart';
-import 'package:mapness/_features/landing/widgets/zoom_control.dart';
-import 'package:mapness/shared/routing/current_route_provider.dart';
+
+import '../weather/widgets/weather_control.dart';
 
 class MapControls extends ConsumerWidget {
   const MapControls({
@@ -51,10 +54,22 @@ class MapControls extends ConsumerWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const WeatherControl(),
+                          WeatherControl(
+                              onTap: () => const WeatherRoute().push(context)),
                           const SizedBox(height: 8),
                           const HappinesControl(),
                           const Spacer(),
+                          MapButton(
+                            child: Image.asset(
+                              "assets/images/beta_icon.png",
+                              height: 44,
+                            ),
+                            onTap: () {
+                              Stories.showOnboarding(
+                                  context, StoryTypes.route, 'route');
+                            },
+                          ),
+                          const SizedBox(height: 8),
                           MapButton(
                             child: SvgPicture.asset(
                               "assets/icons/svg/ic_controls_qibla.svg",

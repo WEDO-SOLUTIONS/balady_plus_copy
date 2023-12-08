@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -38,6 +39,97 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
         _getPrayerTimesRange = getPrayerTimesRange,
         super(const PrayerTimesState()) {
     getPrayerTime();
+    getPrayerSettings();
+    getPrayerTimeRange();
+  }
+
+  void setNotifications() {
+    final isNotificationTurnOff = !state.prayerTimeSettings.contains("1");
+    if (isNotificationTurnOff) return NotificationService.cancelAll();
+
+    for (var prayer in state.prayersRange) {
+      state.prayerTimeSettings[0] == "1"
+          ? NotificationService.showScheduledNotification(
+              id: prayer.fajrId,
+              title: "fajrAzan".tr(),
+              scheduledDate: prayer.fajrDateTime)
+          : NotificationService.cancel(prayer.fajrId);
+      state.prayerTimeSettings[1] == "1"
+          ? NotificationService.showScheduledNotification(
+              id: prayer.zuhrId,
+              title: "zuhrAzan".tr(),
+              scheduledDate: prayer.zuhrDateTime)
+          : NotificationService.cancel(prayer.zuhrId);
+      state.prayerTimeSettings[2] == "1"
+          ? NotificationService.showScheduledNotification(
+              id: prayer.asrId,
+              title: "asrAzan".tr(),
+              scheduledDate: prayer.asrDateTime)
+          : NotificationService.cancel(prayer.asrId);
+      state.prayerTimeSettings[3] == "1"
+          ? NotificationService.showScheduledNotification(
+              id: prayer.magribId,
+              title: "magribAzan".tr(),
+              scheduledDate: prayer.magribDateTime)
+          : NotificationService.cancel(prayer.magribId);
+      state.prayerTimeSettings[4] == "1"
+          ? NotificationService.showScheduledNotification(
+              id: prayer.ishaId,
+              title: "ishaAzan".tr(),
+              scheduledDate: prayer.ishaDateTime)
+          : NotificationService.cancel(prayer.ishaId);
+    }
+  }
+
+  void getPrayerSettings() =>
+      emit(state.copyWith(prayerTimeSettings: sharedPrefs.getPrayerSettings()));
+
+  void onChangePrayerSettings(int index) {
+    final newPrayerSettings = List.of(state.prayerTimeSettings);
+    newPrayerSettings.replaceRange(
+        index, index + 1, [newPrayerSettings[index] == "0" ? "1" : "0"]);
+
+    emit(state.copyWith(prayerTimeSettings: newPrayerSettings));
+    sharedPrefs.setPrayerSettings(newPrayerSettings);
+    setNotifications();
+  }
+
+  void prayerSettingsOnOff() {
+    final newPrayerSettings = List.of(state.prayerTimeSettings)
+        .map((e) => state.isNotificationDisable ? "1" : "0")
+        .toList();
+
+    emit(state.copyWith(prayerTimeSettings: newPrayerSettings));
+    sharedPrefs.setPrayerSettings(newPrayerSettings);
+    setNotifications();
+  }
+
+  void getPrayerTimeRange() async {
+    if (CommonProperties.userLocation == null) return;
+    final params = PrayerTimeRangeParams(
+      startDate: DateFormat("dd/MM/yyyy").format(DateTime.now()),
+      endDate: DateFormat("dd/MM/yyyy")
+          .format(DateTime.now().copyWith(day: DateTime.now().day + 5)),
+      dateType: 'GRG',
+      isFormat24Hours: "true",
+      lat: CommonProperties.userLocation != null
+          ? CommonProperties.userLocation!.y.toString()
+          : "21.424236910931974",
+      lng: CommonProperties.userLocation != null
+          ? CommonProperties.userLocation!.x.toString()
+          : "39.82589070176908",
+    );
+
+    final failureOrSuccess = await _getPrayerTimesRange(params);
+
+    failureOrSuccess.fold(
+      (failure) {},
+      (prayersRange) {
+        emit(state.copyWith(prayersRange: prayersRange));
+        setNotifications();
+        // setNotifications();
+      },
+    );
   }
 
   void getPrayerTime() async {
@@ -48,17 +140,54 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
 
     if (dateToCheck != null)
       aDate = DateTime(dateToCheck.year, dateToCheck.month, dateToCheck.day);
-    if (aDate != today || aDate == null || state.prayerTimesResponse == null) {
-      // request permission
-      /* final isEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!isEnabled) {
-      emit(state.copyWith(
-        status: BlocRequestStatus.submissionGetFailure,
-        errorMessage: "locationServiceDisabled".tr(),
-      ));
-      return;
+    //  if (aDate != today || aDate == null || state.prayerTimesResponse == null) {
+
+    CommonFunctions.checkLocationSettings(
+        NavigationService.navigatorKey!.currentContext!);
+    emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
+
+    GISParams? userLocation = CommonProperties.userLocation;
+
+    if (CommonProperties.userLocation == null) {
+      LatLng? locaton = await Helpers.getCurrentLocation(
+        accuracy: LocationAccuracy.low,
+      );
+
+      userLocation = GISParams(
+          x: locaton?.longitude ?? 39.82589070176908,
+          y: locaton?.latitude ?? 21.424236910931974);
+      if (locaton == null)
+        emit(state.copyWith(userLocationUnkown: true));
+      else {
+        emit(state.copyWith(userLocationUnkown: false));
+      }
+    } else {
+      emit(state.copyWith(userLocationUnkown: false));
     }
-    */
+
+    final params = PrayerTimesParams(
+      latitude: userLocation!.lat,
+      longitude: userLocation.lon,
+      date: DateTime.now(),
+    );
+    final failureOrSuccess = await _getPrayerTimes(params);
+
+    await failureOrSuccess.fold(
+      (failure) {
+        emit(state.copyWith(
+          status: BlocRequestStatus.submissionGetFailure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ));
+      },
+      (response) {
+        emit(state.copyWith(
+            status: BlocRequestStatus.submissionGetSuccess,
+            prayerTimes: response,
+            lastUpdatedDate: DateTime.now()));
+      },
+    );
+    /*return;
+
       bool checkLoccationSettings = await CommonFunctions.checkLocationSettings(
           NavigationService.navigatorKey.currentContext!);
 
@@ -73,6 +202,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
       } else {
         emit(state.copyWith(userLocationUnkown: true));
       }
+
       emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
       final gisFailureOrSuccess = await _getGISData(
         GISParams(x: longitude, y: latitude),
@@ -95,7 +225,6 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
       if (gisFailureOrSuccess.isLeft()) return;
 
       emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
-      print("getPrayerTime 55");
       final params = PrayerTimesParams(
         latitude: latitude,
         longitude: longitude,
@@ -111,20 +240,18 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
           ));
         },
         (response) {
-          print("getPrayerTime success $response");
           emit(state.copyWith(
               status: BlocRequestStatus.submissionGetSuccess,
               prayerTimes: response,
               lastUpdatedDate: DateTime.now()));
         },
-      );
-    }
+      );*/
+    // }
 
     updateNextPrayer();
   }
 
   void updateNextPrayer() {
-    print("updateNextPrayer");
     if (state.prayerTimesResponse == null) return;
     final now = DateTime.now();
     if (now.isAfter(state.prayerTimesResponse!.isha.dateTime)) {
@@ -141,9 +268,5 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
       emit(state.copyWith(nextPrayer: state.prayerTimesResponse!.fajr));
     }
     final nextPrayerTimeDiff = state.nextPrayer!.dateTime.difference(now);
-    print("nextPrayerTimeDiff ${state.nextPrayer!.dateTime}");
-    print("nextPrayerTimeDiff ${now}");
-
-    print("nextPrayerTimeDiff $nextPrayerTimeDiff");
   }
 }

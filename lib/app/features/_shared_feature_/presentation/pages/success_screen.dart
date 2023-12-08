@@ -1,22 +1,28 @@
+import 'package:balady_plus/app/core/utils/app_analytics_events.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/services/local/helpers.dart';
+import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
+import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/enums/enums.dart';
 import '../../data/entities/success_screen_args.dart';
+import '../buttons/elevated_button_widgets.dart';
 import '../widgets/buttons/custom_buttons_widgets.dart';
 import '../widgets/custom_spaces_widgets.dart';
 import '../widgets/texts/custom_text_widget.dart';
 
 class SuccessScreen extends StatefulWidget {
-  final SuccessScreenArgs successScreenArgs;
-
-  const SuccessScreen({Key? key, required this.successScreenArgs})
-      : super(key: key);
+  const SuccessScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<SuccessScreen> createState() => _SuccessScreenState();
@@ -27,11 +33,19 @@ class _SuccessScreenState extends State<SuccessScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    //MM Helpers.sendSuccessEvent(widget.successScreenArgs.type);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      SuccessScreenArgs successScreenArgs =
+          ModalRoute.of(context)!.settings.arguments as SuccessScreenArgs;
+      sendSuccessEvent(successScreenArgs.type);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    SuccessScreenArgs successScreenArgs =
+        ModalRoute.of(context)!.settings.arguments as SuccessScreenArgs;
+
     return Scaffold(
         appBar: null,
         body: Container(
@@ -58,15 +72,122 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 ),
               ),
               SuccessBody(
-                successScreenArgs: widget.successScreenArgs,
+                successScreenArgs: successScreenArgs,
               ),
               SuccessButtons(
-                fromHomePage: widget.successScreenArgs.fromHomePage ?? false,
-                pageType: widget.successScreenArgs.type,
+                fromHomePage: successScreenArgs.fromHomePage ?? false,
+                pageType: successScreenArgs.type,
+                isFawry: successScreenArgs.isFawry ?? false,
+                requestId: successScreenArgs.idNumber,
               )
             ],
           ),
         ));
+  }
+
+  void sendSuccessEvent(PAGE_TYPE type) {
+    switch (type) {
+      case PAGE_TYPE.emtethal:
+        CommonFunctions.sendEventToAnalytics(AppEvents.createComplianceSuccess);
+
+        break;
+      case PAGE_TYPE.deleteEmtethal:
+        break;
+      case PAGE_TYPE.appointmentScreen:
+        CommonFunctions.sendEventToAnalytics(AppEvents.makeAppointmentSuccess);
+        break;
+
+      case PAGE_TYPE.cancelAppointment:
+        CommonFunctions.sendEventToAnalytics(
+            AppEvents.cancelAppointmentSuccess);
+
+        break;
+
+      case PAGE_TYPE.confirmAppointment:
+        CommonFunctions.sendEventToAnalytics(
+            AppEvents.confirmAppointmentSuccess);
+
+        break;
+
+      case PAGE_TYPE.daem:
+        CommonFunctions.sendEventToAnalytics(AppEvents.DaemSuccess);
+
+        break;
+
+      case PAGE_TYPE.dc:
+        CommonFunctions.sendEventToAnalytics(
+            AppEvents.damagedCarsReportSuccess);
+
+        break;
+
+      case PAGE_TYPE.vhr:
+        CommonFunctions.sendEventToAnalytics(AppEvents.vhrRequestSuccess);
+
+        break;
+
+      case PAGE_TYPE.deleteRequestScreen:
+        CommonFunctions.sendEventToAnalytics(
+            AppEvents.IssuHealthCertDeleteSuccess);
+
+        break;
+
+      case PAGE_TYPE.facilityIncidentScreen:
+        CommonFunctions.sendEventToAnalytics(AppEvents.snapAndSendSuccess);
+
+        break;
+
+      case PAGE_TYPE.incidentsScreen:
+        CommonFunctions.sendEventToAnalytics(AppEvents.snapAndSendSuccess);
+
+        break;
+
+      case PAGE_TYPE.inquiry:
+        CommonFunctions.sendEventToAnalytics(AppEvents.generalInqSuccess);
+
+        break;
+
+      case PAGE_TYPE.msr:
+        CommonFunctions.sendEventToAnalytics(AppEvents.municipalRequestSuccess);
+
+        break;
+      case PAGE_TYPE.newVD:
+        CommonFunctions.sendEventToAnalytics(AppEvents.snapAndSendSuccess);
+
+        break;
+
+      case PAGE_TYPE.objction:
+        CommonFunctions.sendEventToAnalytics(AppEvents.objectableSuccess);
+
+        break;
+      case PAGE_TYPE.qrDetailsScreen:
+        CommonFunctions.sendEventToAnalytics(AppEvents.snapAndSendSuccess);
+
+        break;
+
+      case PAGE_TYPE.qrDialog:
+        CommonFunctions.sendEventToAnalytics(AppEvents.snapAndSendSuccess);
+
+        break;
+
+      case PAGE_TYPE.ratingScreen:
+        break;
+
+      case PAGE_TYPE.licenseScreen:
+        break;
+
+      case PAGE_TYPE.coObserver:
+        break;
+
+      case PAGE_TYPE.contactUs:
+        break;
+
+      case PAGE_TYPE.visitScreen:
+        break;
+
+      case PAGE_TYPE.renewCommercial:
+      case PAGE_TYPE.other:
+        break;
+    }
   }
 }
 
@@ -110,15 +231,15 @@ class SuccessBody extends StatelessWidget {
                 fontColor: AppColor.black500,
                 height: 1.6,
                 maxLines: 10,
+                textAlign: TextAlign.center,
               ),
               const CustomVerticalSpace(
                 height: 20,
               ),
               //MM
-              /*  if (successScreenArgs?.msg != null &&
+              if (successScreenArgs?.msg != null &&
                   successScreenArgs!.msg!.isNotEmpty)
                 CustomHtmlTextWidget(successScreenArgs!.msg!),
-*/
 
               // const CustomVerticalSpace(
               //   height: 48,
@@ -151,7 +272,11 @@ class SuccessBody extends StatelessWidget {
       case PAGE_TYPE.daem:
       case PAGE_TYPE.newVD:
       case PAGE_TYPE.dc:
+      case PAGE_TYPE.vhr:
       case PAGE_TYPE.objction:
+      case PAGE_TYPE.emtethal:
+      case PAGE_TYPE.deleteEmtethal:
+      case PAGE_TYPE.renewCommercial:
         return "vd_request_submit".tr();
         return ('lbl_thank_you').tr();
       default:
@@ -223,8 +348,16 @@ class SuccessBody extends StatelessWidget {
             .tr()
             .replaceAll("-", successScreenArgs?.idNumber ?? "--");
 
+      case PAGE_TYPE.deleteEmtethal:
+        return ("delete_compliance_request_message")
+            .tr()
+            .replaceAll("_", successScreenArgs?.idNumber ?? "--");
+
       case PAGE_TYPE.newVD:
       case PAGE_TYPE.dc:
+      case PAGE_TYPE.vhr:
+      case PAGE_TYPE.emtethal:
+      case PAGE_TYPE.renewCommercial:
         return successScreenArgs?.thanksMessage ?? "";
 
       case PAGE_TYPE.other:
@@ -239,8 +372,15 @@ class SuccessBody extends StatelessWidget {
 class SuccessButtons extends StatelessWidget {
   final PAGE_TYPE pageType;
   bool fromHomePage;
+  bool isFawry;
+  String? requestId;
 
-  SuccessButtons({Key? key, required this.pageType, this.fromHomePage = false})
+  SuccessButtons(
+      {Key? key,
+      required this.pageType,
+      this.isFawry = false,
+      this.fromHomePage = false,
+      this.requestId})
       : super(key: key);
 
   @override
@@ -251,6 +391,13 @@ class SuccessButtons extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            if (pageType == PAGE_TYPE.emtethal && isFawry == true)
+              ElevatedButtonWidget.primaryCustomBorder(
+                  onPressed: () {
+                    onPressWhiteButton(context, requestId: requestId);
+                  },
+                  text: getWhiteBtnText()),
+            CustomVerticalSpace(height: 16),
             CustomElevatedButtonWidget(
               onPressed: () {
                 onPressGreenButton(context);
@@ -259,20 +406,6 @@ class SuccessButtons extends StatelessWidget {
               text: getGreenBtnText(),
               btnHeight: 56,
             ),
-            /*    CustomVerticalSpace(height: 16),
-            if (pageType != PAGE_TYPE.ratingScreen &&
-                pageType != PAGE_TYPE.contactUs &&
-                pageType != PAGE_TYPE.licenseScreen &&
-                pageType != PAGE_TYPE.other)
-              CustomTextButtonWidget(
-                onPressed: () {
-                  onPressWhiteButton(context);
-                },
-                text: getWhiteBtnText(),
-                btnTextSize: 16,
-              )
-         
-         */
           ],
         ),
       ),
@@ -288,6 +421,7 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.incidentsScreen:
       case PAGE_TYPE.newVD:
       case PAGE_TYPE.dc:
+      case PAGE_TYPE.vhr:
       case PAGE_TYPE.msr:
       case PAGE_TYPE.qrDetailsScreen:
       case PAGE_TYPE.qrDialog:
@@ -297,12 +431,17 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.visitScreen:
       case PAGE_TYPE.daem:
       case PAGE_TYPE.objction:
-        return ('go_to_home').tr();
-      //   return Helpers.translatingWord('go_back_to_customer_voice_page');
       case PAGE_TYPE.licenseScreen:
       case PAGE_TYPE.deleteRequestScreen:
-        //return Helpers.translatingWord('lbl_evaluate_service');
-        return ('go_to_license_management_screen').tr();
+      case PAGE_TYPE.emtethal:
+      case PAGE_TYPE.deleteEmtethal:
+      case PAGE_TYPE.renewCommercial:
+        return ('go_to_home').tr();
+      //   return Helpers.translatingWord('go_back_to_customer_voice_page');
+      // case PAGE_TYPE.licenseScreen:
+      // case PAGE_TYPE.deleteRequestScreen:
+      //return Helpers.translatingWord('lbl_evaluate_service');
+      // return ('go_to_license_management_screen').tr();
       case PAGE_TYPE.coObserver:
         return ('go_to_balady_academy').tr();
 
@@ -322,6 +461,7 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.incidentsScreen:
       case PAGE_TYPE.newVD:
       case PAGE_TYPE.dc:
+      case PAGE_TYPE.vhr:
       case PAGE_TYPE.msr:
       case PAGE_TYPE.qrDetailsScreen:
       case PAGE_TYPE.qrDialog:
@@ -331,22 +471,27 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.visitScreen:
       case PAGE_TYPE.daem:
       case PAGE_TYPE.objction:
+      case PAGE_TYPE.emtethal:
+      case PAGE_TYPE.deleteEmtethal:
+      case PAGE_TYPE.licenseScreen:
+      case PAGE_TYPE.deleteRequestScreen:
+      case PAGE_TYPE.renewCommercial:
         {
           Helpers.backNavigationToHomeScreen();
         }
         break;
 
-      /* {
+        /* {
           Helpers.backNavigationToSpecificScreen2(
               navigationKey: RoutesNames.customerVoiceRoute);
         }*/
-      // break;
-      case PAGE_TYPE.licenseScreen:
+        // break;
+        /* case PAGE_TYPE.licenseScreen:
       case PAGE_TYPE.deleteRequestScreen:
         {
           // "license_screen_evaluation".log();
           Navigator.of(context).pop();
-        }
+        }*/
         break;
 //MM
         /*case PAGE_TYPE.coObserver:
@@ -373,9 +518,10 @@ class SuccessButtons extends StatelessWidget {
 
   String getWhiteBtnText() {
     switch (pageType) {
-      case PAGE_TYPE.incidentsScreen:
+      /* case PAGE_TYPE.incidentsScreen:
       case PAGE_TYPE.newVD:
       case PAGE_TYPE.dc:
+      case PAGE_TYPE.vhr:
       case PAGE_TYPE.msr:
       case PAGE_TYPE.facilityIncidentScreen:
       case PAGE_TYPE.inquiry:
@@ -394,19 +540,32 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.visitScreen:
         return ('go_to_visit_list').tr();
 
-      case PAGE_TYPE.objction:
-        return ('go_to_orders_page').tr();
+      case PAGE_TYPE.objction:*/
+      case PAGE_TYPE.emtethal:
+        return ('compliance_show_certificate').tr();
 
       default:
         return "";
     }
   }
 
-  void onPressWhiteButton(BuildContext context) {
+  void onPressWhiteButton(BuildContext context, {String? requestId}) {
     switch (pageType) {
+      case PAGE_TYPE.emtethal:
+        //Navigation
+        /* Navigator.pushNamed(context, RouteName.complianceDetailsPage,
+            arguments: (requestId, ""));*/
+
+        NavigationService.navigatorKey.currentState!.pushNamed(
+            RouteName.complianceDetailsPage,
+            arguments: (requestId, ""));
+        break;
+
+      /*
       case PAGE_TYPE.incidentsScreen:
       case PAGE_TYPE.newVD:
       case PAGE_TYPE.dc:
+      case PAGE_TYPE.vhr:
       case PAGE_TYPE.msr:
       case PAGE_TYPE.facilityIncidentScreen:
       case PAGE_TYPE.inquiry:
@@ -456,11 +615,13 @@ class SuccessButtons extends StatelessWidget {
         break;
 
       case PAGE_TYPE.objction:
+      case PAGE_TYPE.emtethal:
+      case PAGE_TYPE.deleteEmtethal:
         /*{
           NavigationService.goBack();
         }*/
         break;
-
+*/
       default:
         /*{
           Helpers.backNavigationToSpecificScreen2(
@@ -468,5 +629,60 @@ class SuccessButtons extends StatelessWidget {
         }*/
         break;
     }
+  }
+}
+
+class CustomHtmlTextWidget extends StatelessWidget {
+  final String data;
+
+  CustomHtmlTextWidget(
+    this.data, {
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(2)),
+          border: Border.all(color: const Color(0xff6bb21f), width: 1),
+          color: const Color(0xfffafef6)),
+      padding: const EdgeInsetsDirectional.only(
+        start: 16,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 13.0, bottom: 13),
+            child: SvgPicture.asset(
+                "assets/images/feedbackMessageItemIconPartiallyDetected.svg"),
+          ),
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 3.0),
+              child: Html(
+                data: data,
+                style: {
+                  "body": Style(
+                      fontSize: FontSize(13.0),
+                      fontWeight: FontWeight.w500,
+                      color: AppColor.black400,
+                      lineHeight: const LineHeight(2),
+                      fontFamily: Constants.appFontType),
+                },
+                onLinkTap: (
+                  url,
+                  _,
+                  __,
+                ) {
+                  CommonFunctions.externalLaunch(url!);
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

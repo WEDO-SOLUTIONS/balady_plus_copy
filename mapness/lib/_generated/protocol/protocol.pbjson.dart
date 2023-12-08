@@ -735,3 +735,98 @@ final $typed_data.Uint8List iWishFeedbackRequestDescriptor = $convert.base64Deco
     'CgR0ZXh0GAMgASgJSABSBHRleHSIAQEaGQoDVGFnEhIKBG5hbWUYASABKAlSBG5hbWVCBwoFX3'
     'RleHQ=');
 
+@$core.Deprecated('Use interestingPlaceDescriptor instead')
+const InterestingPlace$json = {
+  '1': 'InterestingPlace',
+  '2': [
+    {'1': 'id', '3': 1, '4': 1, '5': 9, '10': 'id'},
+    {'1': 'preview', '3': 2, '4': 1, '5': 11, '6': '.balady.protocol.InterestingPlace.Preview', '10': 'preview'},
+    {'1': 'location', '3': 3, '4': 1, '5': 11, '6': '.balady.protocol.InterestingPlace.Location', '10': 'location'},
+  ],
+  '3': [InterestingPlace_Preview$json, InterestingPlace_Location$json],
+};
+
+@$core.Deprecated('Use interestingPlaceDescriptor instead')
+const InterestingPlace_Preview$json = {
+  '1': 'Preview',
+  '2': [
+    {'1': 'title', '3': 1, '4': 1, '5': 9, '10': 'title'},
+    {'1': 'image', '3': 2, '4': 1, '5': 11, '6': '.balady.protocol.Image', '10': 'image'},
+  ],
+};
+
+@$core.Deprecated('Use interestingPlaceDescriptor instead')
+const InterestingPlace_Location$json = {
+  '1': 'Location',
+  '2': [
+    {'1': 'point', '3': 1, '4': 1, '5': 11, '6': '.balady.protocol.Point', '10': 'point'},
+  ],
+};
+
+/// Descriptor for `InterestingPlace`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List interestingPlaceDescriptor = $convert.base64Decode(
+    'ChBJbnRlcmVzdGluZ1BsYWNlEg4KAmlkGAEgASgJUgJpZBJDCgdwcmV2aWV3GAIgASgLMikuYm'
+    'FsYWR5LnByb3RvY29sLkludGVyZXN0aW5nUGxhY2UuUHJldmlld1IHcHJldmlldxJGCghsb2Nh'
+    'dGlvbhgDIAEoCzIqLmJhbGFkeS5wcm90b2NvbC5JbnRlcmVzdGluZ1BsYWNlLkxvY2F0aW9uUg'
+    'hsb2NhdGlvbhpNCgdQcmV2aWV3EhQKBXRpdGxlGAEgASgJUgV0aXRsZRIsCgVpbWFnZRgCIAEo'
+    'CzIWLmJhbGFkeS5wcm90b2NvbC5JbWFnZVIFaW1hZ2UaOAoITG9jYXRpb24SLAoFcG9pbnQYAS'
+    'ABKAsyFi5iYWxhZHkucHJvdG9jb2wuUG9pbnRSBXBvaW50');
+
+@$core.Deprecated('Use interestingPlacesResponseDescriptor instead')
+const InterestingPlacesResponse$json = {
+  '1': 'InterestingPlacesResponse',
+  '2': [
+    {'1': 'interesting_places', '3': 1, '4': 3, '5': 11, '6': '.balady.protocol.InterestingPlace', '10': 'interestingPlaces'},
+  ],
+};
+
+/// Descriptor for `InterestingPlacesResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List interestingPlacesResponseDescriptor = $convert.base64Decode(
+    'ChlJbnRlcmVzdGluZ1BsYWNlc1Jlc3BvbnNlElAKEmludGVyZXN0aW5nX3BsYWNlcxgBIAMoCz'
+    'IhLmJhbGFkeS5wcm90b2NvbC5JbnRlcmVzdGluZ1BsYWNlUhFpbnRlcmVzdGluZ1BsYWNlcw==');
+
+@$core.Deprecated('Use profileDescriptor instead')
+const Profile$json = {
+  '1': 'Profile',
+  '2': [
+    {'1': 'photo', '3': 6, '4': 1, '5': 11, '6': '.balady.protocol.Profile.Photo', '9': 0, '10': 'photo', '17': true},
+  ],
+  '3': [Profile_Photo$json],
+  '8': [
+    {'1': '_photo'},
+  ],
+  '9': [
+    {'1': 5, '2': 6},
+  ],
+};
+
+@$core.Deprecated('Use profileDescriptor instead')
+const Profile_Photo$json = {
+  '1': 'Photo',
+  '2': [
+    {'1': 'image', '3': 1, '4': 1, '5': 11, '6': '.balady.protocol.Image', '10': 'image'},
+  ],
+};
+
+/// Descriptor for `Profile`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List profileDescriptor = $convert.base64Decode(
+    'CgdQcm9maWxlEjkKBXBob3RvGAYgASgLMh4uYmFsYWR5LnByb3RvY29sLlByb2ZpbGUuUGhvdG'
+    '9IAFIFcGhvdG+IAQEaNQoFUGhvdG8SLAoFaW1hZ2UYASABKAsyFi5iYWxhZHkucHJvdG9jb2wu'
+    'SW1hZ2VSBWltYWdlQggKBl9waG90b0oECAUQBg==');
+
+@$core.Deprecated('Use profileResponseDescriptor instead')
+const ProfileResponse$json = {
+  '1': 'ProfileResponse',
+  '2': [
+    {'1': 'profile', '3': 2, '4': 1, '5': 11, '6': '.balady.protocol.Profile', '10': 'profile'},
+  ],
+  '9': [
+    {'1': 1, '2': 2},
+  ],
+};
+
+/// Descriptor for `ProfileResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List profileResponseDescriptor = $convert.base64Decode(
+    'Cg9Qcm9maWxlUmVzcG9uc2USMgoHcHJvZmlsZRgCIAEoCzIYLmJhbGFkeS5wcm90b2NvbC5Qcm'
+    '9maWxlUgdwcm9maWxlSgQIARAC');
+

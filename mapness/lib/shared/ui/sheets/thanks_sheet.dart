@@ -1,12 +1,20 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
 class ThanksSheet extends StatelessWidget {
-  const ThanksSheet({super.key});
+  /// action when leave the sheet (default: pop)
+  final VoidCallback? onClose;
+
+  /// button label (localized default: reload)
+  final String? buttonLabel;
+
+  const ThanksSheet({super.key, this.onClose, this.buttonLabel});
 
   @override
   Widget build(BuildContext context) {
@@ -14,12 +22,19 @@ class ThanksSheet extends StatelessWidget {
       color: Colors.white,
       borderRadius: BorderRadius.circular(16),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 40),
+        padding:
+            const EdgeInsets.only(left: 16, right: 16, bottom: 40, top: 16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: AppCloseButton(
+                onPressed: onClose ?? () => context.pop(),
+              ),
+            ),
             SvgPicture.asset(
               'assets/images_svg/illustration_thanks.svg',
               package: PackageConfig.packageName,
@@ -28,7 +43,10 @@ class ThanksSheet extends StatelessWidget {
             Text(
               context.l10n.thanksForYourFeedback,
               textAlign: TextAlign.center,
-              style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: const Color(0xB21E2A36)),
+              style: Theme.of(context)
+                  .extension<ThemeTextStyles>()!
+                  .textL
+                  .copyWith(color: const Color(0xB21E2A36)),
             ),
           ],
         ),

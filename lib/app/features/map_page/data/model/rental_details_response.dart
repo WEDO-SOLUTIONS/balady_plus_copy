@@ -425,12 +425,9 @@ class Details {
       DateTime dateAndTime = DateTime.parse(bidEndDate);
 
       String date = DateFormat.yMMMMd('ar_SA').format(dateAndTime).toString();
-      print(dateAndTime);
 
       formmatedDateAndTime = date;
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
 
     formmatedDateAndTime =
         CommonFunctions.replaceArabicNumberWithEnglish(formmatedDateAndTime);

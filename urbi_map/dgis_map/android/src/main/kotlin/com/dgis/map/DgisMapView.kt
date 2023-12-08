@@ -1,7 +1,6 @@
 package com.dgis.map
 
 import android.content.Context
-import android.location.Location
 import android.util.Size
 import android.view.LayoutInflater
 import com.dgis.map.control_handlers.*
@@ -15,40 +14,33 @@ import io.flutter.plugin.platform.PlatformView
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.File
-import ru.dgis.sdk.NativeException
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
-import ru.dgis.sdk.coordinates.GeoRect
 import ru.dgis.sdk.coordinates.bearing
-import ru.dgis.sdk.directory.DirectoryFilter
-import ru.dgis.sdk.directory.ObjectType
 import ru.dgis.sdk.directory.RubricId
 import ru.dgis.sdk.directory.SearchManager
-import ru.dgis.sdk.directory.SearchQueryBuilder
-import ru.dgis.sdk.getLocaleManager
 import ru.dgis.sdk.map.*
-import ru.dgis.sdk.positioning.DefaultLocationSource
-import ru.dgis.sdk.positioning.LocationChangeListener
-import ru.dgis.sdk.positioning.LocationSource
+import ru.dgis.sdk.platform.Locale
+import ru.dgis.sdk.platform.LocaleManager
+import ru.dgis.sdk.platform.getLocaleManager
 import ru.dgis.sdk.routing.BriefRouteInfoSearchPoints
 import ru.dgis.sdk.routing.RouteSearchPoint
 import java.io.FileNotFoundException
-import kotlin.collections.Map
 import kotlin.math.round
 import kotlin.math.roundToInt
 import com.dgis.map.map_api.Messages.Result as ApiResult
 import ru.dgis.sdk.map.Map as DgisMap
 
 class DgisMapView(
-    private val sdkContext: ru.dgis.sdk.Context,
-    private val binaryMessenger: BinaryMessenger,
-    private val id: Int,
-    private val context: Context,
-    private val locationSource: FusedLocationSource,
+        private val sdkContext: ru.dgis.sdk.Context,
+        private val binaryMessenger: BinaryMessenger,
+        private val id: Int,
+        private val context: Context,
+        private val locationSource: FusedLocationSource,
 ) : PlatformView, MapApi {
 
     private val mapView: MapView =
-        LayoutInflater.from(context).inflate(R.layout.map_view_layout, null) as MapView
+            LayoutInflater.from(context).inflate(R.layout.map_view_layout, null) as MapView
 
     private var map: DgisMap? = null
 
@@ -61,15 +53,15 @@ class DgisMapView(
     private var routeHandler: RouteHandler? = null
     private val navigationHandler by unsafeLazy {
         NavigationHandler(
-            sdkContext = sdkContext,
-            navigationView = mapView.findViewById(R.id.navigationView),
-            eventSink = eventSink,
+                sdkContext = sdkContext,
+                navigationView = mapView.findViewById(R.id.navigationView),
+                eventSink = eventSink,
         )
     }
     private val packagesHandler by unsafeLazy {
         PackagesHandler(
-            sdkContext = sdkContext,
-            eventSink = eventSink,
+                sdkContext = sdkContext,
+                eventSink = eventSink,
         )
     }
     private var compassControlHandler: CompassControlHandler? = null
@@ -145,10 +137,10 @@ class DgisMapView(
 
     override fun loadStyles(asset: String, result: Messages.Result<Void>) {
         val styleAsset =
-            FlutterInjector
-                .instance()
-                .flutterLoader()
-                .getLookupKeyForAsset(asset)
+                FlutterInjector
+                        .instance()
+                        .flutterLoader()
+                        .getLookupKeyForAsset(asset)
 
         val builder = StyleBuilder(sdkContext)
         closables.add(builder.loadStyle(File.fromAsset(sdkContext, styleAsset)).apply {
@@ -163,14 +155,19 @@ class DgisMapView(
     }
 
     override fun overrideLocales(locales: List<String>, result: Messages.Result<Void>?) {
-        getLocaleManager(sdkContext).overrideLocales(locales)
+        getLocaleManager(sdkContext).overrideLocales(
+            locales.map {
+                val parts = it.split("-")
+                Locale(parts[0], parts[1])
+            }
+        )
 
         result?.success(null)
     }
 
     override fun setCameraPosition(
-        cameraPosition: CameraPositionMessage,
-        result: Messages.Result<Void>
+            cameraPosition: CameraPositionMessage,
+            result: Messages.Result<Void>
     ) {
         val map = map ?: kotlin.run {
             result.error(IllegalArgumentException("Map has not been initialized"))
@@ -178,10 +175,10 @@ class DgisMapView(
         }
 
         map.camera.position = map.camera.position.copy(
-            point = cameraPosition.point.toGeoPoint(),
-            zoom = Zoom(cameraPosition.zoom.toFloat()),
-            tilt = Tilt(cameraPosition.tilt.toFloat()),
-            bearing = Bearing(cameraPosition.bearing)
+                point = cameraPosition.point.toGeoPoint(),
+                zoom = Zoom(cameraPosition.zoom.toFloat()),
+                tilt = Tilt(cameraPosition.tilt.toFloat()),
+                bearing = Bearing(cameraPosition.bearing)
         )
         result.success(null)
     }
@@ -196,19 +193,19 @@ class DgisMapView(
         }
 
         map.camera.padding = Padding(
-            left = cameraPadding.leftPadding.toInt(),
-            right = cameraPadding.rightPadding.toInt(),
-            bottom = cameraPadding.bottomPadding.toInt(),
-            top = cameraPadding.topPadding.toInt(),
+                left = cameraPadding.leftPadding.toInt(),
+                right = cameraPadding.rightPadding.toInt(),
+                bottom = cameraPadding.bottomPadding.toInt(),
+                top = cameraPadding.topPadding.toInt(),
         )
         result.success(null)
     }
 
     override fun moveCamera(
-        cameraPosition: CameraPositionMessage,
-        duration: Double,
-        animationType: CameraAnimationTypeMessage,
-        result: Messages.Result<Void>
+            cameraPosition: CameraPositionMessage,
+            duration: Double,
+            animationType: CameraAnimationTypeMessage,
+            result: Messages.Result<Void>
     ) {
         val map = map ?: kotlin.run {
             result.error(IllegalArgumentException("Map has not been initialized"))
@@ -216,10 +213,10 @@ class DgisMapView(
         }
 
         val cameraPosition = CameraPosition(
-            point = cameraPosition.point.toGeoPoint(),
-            zoom = Zoom(cameraPosition.zoom.toFloat()),
-            tilt = Tilt(cameraPosition.tilt.toFloat()),
-            bearing = Bearing(cameraPosition.bearing),
+                point = cameraPosition.point.toGeoPoint(),
+                zoom = Zoom(cameraPosition.zoom.toFloat()),
+                tilt = Tilt(cameraPosition.tilt.toFloat()),
+                bearing = Bearing(cameraPosition.bearing),
         )
         val duration = Duration.ofMilliseconds(round(duration * 1000).toLong())
         val animationType = when (animationType) {
@@ -246,50 +243,50 @@ class DgisMapView(
         }
 
         result?.success(
-            CameraPositionMessage
-                .Builder()
-                .setPoint(map.camera.position.point.toMessage())
-                .setZoom(map.camera.position.zoom.value.toDouble())
-                .setTilt(map.camera.position.tilt.value.toDouble())
-                .setBearing(map.camera.position.bearing.value)
-                .build()
+                CameraPositionMessage
+                        .Builder()
+                        .setPoint(map.camera.position.point.toMessage())
+                        .setZoom(map.camera.position.zoom.value.toDouble())
+                        .setTilt(map.camera.position.tilt.value.toDouble())
+                        .setBearing(map.camera.position.bearing.value)
+                        .build()
         )
     }
 
     override fun calcPositionForMarkers(
-        markers: List<String>,
-        options: CalcPositionOptionsMessage,
-        result: Messages.Result<CameraPositionMessage>?
+            markers: List<String>,
+            options: CalcPositionOptionsMessage,
+            result: Messages.Result<CameraPositionMessage>?
     ) {
         objectTapHandler?.calcPositionForMarkers(markers, options, result)
     }
 
     override fun calcPositionForPolygons(
-        polygons: List<String>,
-        options: CalcPositionOptionsMessage,
-        result: Messages.Result<CameraPositionMessage>?
+            polygons: List<String>,
+            options: CalcPositionOptionsMessage,
+            result: Messages.Result<CameraPositionMessage>?
     ) {
         objectTapHandler?.calcPositionForPolygons(polygons, options, result)
     }
 
     override fun calcPositionForPolylines(
-        polylines: List<String>,
-        options: CalcPositionOptionsMessage,
-        result: Messages.Result<CameraPositionMessage>?
+            polylines: List<String>,
+            options: CalcPositionOptionsMessage,
+            result: Messages.Result<CameraPositionMessage>?
     ) {
         objectTapHandler?.calcPositionForPolylines(polylines, options, result)
     }
 
     override fun searchByObjectId(
-        objectId: DgisObjectIdMessage,
-        result: Messages.Result<DirectoryObjectMessage>?
+            objectId: DgisObjectIdMessage,
+            result: Messages.Result<DirectoryObjectMessage>?
     ) {
         searchHandler?.searchByDirectoryObjectId(
-            DgisObjectId(
-                objectId = objectId.objectId,
-                entranceId = objectId.entranceId
-            ),
-            result,
+                DgisObjectId(
+                        objectId = objectId.objectId,
+                        entranceId = objectId.entranceId
+                ),
+                result,
         )
     }
 
@@ -297,122 +294,122 @@ class DgisMapView(
         val map = map ?: return
 
         val objectTapHandler = ObjectTapHandler(
-            map = map,
-            mapObjectManager =
+                map = map,
+                mapObjectManager =
                 MapObjectManager.withGeneralization(
-                    map = map,
-                    logicalPixel = LogicalPixel(value = 40f),
-                    maxZoom = Zoom(value = 18f)
+                        map = map,
+                        logicalPixel = LogicalPixel(value = 40f),
+                        maxZoom = Zoom(value = 18f)
                 ),
-            panoramasObjectManager =
+                panoramasObjectManager =
                 MapObjectManager.withGeneralization(
-                    map = map,
-                    logicalPixel = LogicalPixel(value = 20f),
-                    maxZoom = Zoom(value = 18f)
+                        map = map,
+                        logicalPixel = LogicalPixel(value = 20f),
+                        maxZoom = Zoom(value = 18f)
                 ),
-            ioObjectManager =
+                ioObjectManager =
                 MapObjectManager.withGeneralization(
-                    map=map,
-                    logicalPixel = LogicalPixel(value = 50f),
-                    maxZoom = Zoom(value = 18f)
+                        map = map,
+                        logicalPixel = LogicalPixel(value = 50f),
+                        maxZoom = Zoom(value = 18f)
                 ),
-            routeHandler = routeHandler,
-            eventSink = eventSink,
-            sdkContext = sdkContext,
-            api = FlutterMapApi(binaryMessenger)
+                routeHandler = routeHandler,
+                eventSink = eventSink,
+                sdkContext = sdkContext,
+                api = FlutterMapApi(binaryMessenger)
         )
         mapView.addObjectTappedCallback(objectTapHandler::objectTapListener)
         this.objectTapHandler = objectTapHandler
     }
 
     override fun getDistanceTo(
-        points: List<DistanceRequestMessage>,
-        result: Messages.Result<List<DistanceResponseMessage>>?
+            points: List<DistanceRequestMessage>,
+            result: Messages.Result<List<DistanceResponseMessage>>?
     ) {
         searchHandler?.getDistanceTo(points, result)
     }
 
     override fun search(
-        queryText: String,
-        categories: SearchCategoriesMessage?,
-        spatialRestriction: List<GeoPointMessage>?,
-        weekTime: WeekTimeSearchMessage?,
-        searchRect: GeoRectMessage?,
-        sortingType: SortingTypeMessage,
-        pageSize: Long,
-        result: Messages.Result<SearchResultMessage>?
+            queryText: String,
+            categories: SearchCategoriesMessage?,
+            spatialRestriction: List<GeoPointMessage>?,
+            weekTime: WeekTimeSearchMessage?,
+            searchRect: GeoRectMessage?,
+            sortingType: SortingTypeMessage,
+            pageSize: Long,
+            result: Messages.Result<SearchResultMessage>?
     ) {
         searchHandler?.search(
-            queryText = queryText,
-            categories = categories?.categories?.flatMap {
-                it.category.toRubrics()
-            },
-            spatialRestriction = spatialRestriction?.map {
-                it.toGeoPoint()
-            },
-            searchGeoRect = searchRect?.toGeoRect(),
-            weekTimeMessage = weekTime,
-            sortingType = sortingType,
-            pageSize = pageSize.toInt(),
-            result = result
-        )
-    }
-
-    override fun searchByQuery(
-        query: SearchQueryMessage,
-        spatialRestriction: List<GeoPointMessage>?,
-        weekTime: WeekTimeSearchMessage?,
-        searchRect: GeoRectMessage?,
-        sortingType: SortingTypeMessage,
-        pageSize: Long,
-        result: Messages.Result<SearchResultMessage>?
-    ) {
-        searchHandler?.searchByQuery(
-            queryId = query,
-            spatialRestriction = spatialRestriction?.map {
-                it.toGeoPoint()
-            },
-            searchGeoRect = searchRect?.toGeoRect(),
-            weekTimeMessage = weekTime,
-            sortingType = sortingType,
-            pageSize = pageSize.toInt(),
-            result = result
-        )
-    }
-
-    override fun searchByCategory(
-        category: SearchCategoryMessage,
-        spatialRestriction: List<GeoPointMessage>?,
-        weekTime: WeekTimeSearchMessage?,
-        searchRect: GeoRectMessage?,
-        sortingType: SortingTypeMessage,
-        pageSize: Long,
-        result: Messages.Result<SearchResultMessage>?
-    ) {
-        if (category == SearchCategoryMessage.PARKS) {
-            searchHandler?.searchByParkCategory(
-                searchGeoRect = searchRect?.toGeoRect(),
+                queryText = queryText,
+                categories = categories?.categories?.flatMap {
+                    it.category.toRubrics()
+                },
                 spatialRestriction = spatialRestriction?.map {
                     it.toGeoPoint()
                 },
+                searchGeoRect = searchRect?.toGeoRect(),
                 weekTimeMessage = weekTime,
                 sortingType = sortingType,
                 pageSize = pageSize.toInt(),
                 result = result
+        )
+    }
+
+    override fun searchByQuery(
+            query: SearchQueryMessage,
+            spatialRestriction: List<GeoPointMessage>?,
+            weekTime: WeekTimeSearchMessage?,
+            searchRect: GeoRectMessage?,
+            sortingType: SortingTypeMessage,
+            pageSize: Long,
+            result: Messages.Result<SearchResultMessage>?
+    ) {
+        searchHandler?.searchByQuery(
+                queryId = query,
+                spatialRestriction = spatialRestriction?.map {
+                    it.toGeoPoint()
+                },
+                searchGeoRect = searchRect?.toGeoRect(),
+                weekTimeMessage = weekTime,
+                sortingType = sortingType,
+                pageSize = pageSize.toInt(),
+                result = result
+        )
+    }
+
+    override fun searchByCategory(
+            category: SearchCategoryMessage,
+            spatialRestriction: List<GeoPointMessage>?,
+            weekTime: WeekTimeSearchMessage?,
+            searchRect: GeoRectMessage?,
+            sortingType: SortingTypeMessage,
+            pageSize: Long,
+            result: Messages.Result<SearchResultMessage>?
+    ) {
+        if (category == SearchCategoryMessage.PARKS) {
+            searchHandler?.searchByParkCategory(
+                    searchGeoRect = searchRect?.toGeoRect(),
+                    spatialRestriction = spatialRestriction?.map {
+                        it.toGeoPoint()
+                    },
+                    weekTimeMessage = weekTime,
+                    sortingType = sortingType,
+                    pageSize = pageSize.toInt(),
+                    result = result
             )
             return
         }
 
         searchHandler?.searchByCategories(
-            categories = category.toRubrics(),
-            spatialRestriction = spatialRestriction?.map {
-                it.toGeoPoint()
-            },
-            searchGeoRect = searchRect?.toGeoRect(),
-            weekTimeMessage = weekTime,
-            sortingType = sortingType,
-            pageSize = pageSize.toInt(),
-            result = result
+                categories = category.toRubrics(),
+                spatialRestriction = spatialRestriction?.map {
+                    it.toGeoPoint()
+                },
+                searchGeoRect = searchRect?.toGeoRect(),
+                weekTimeMessage = weekTime,
+                sortingType = sortingType,
+                pageSize = pageSize.toInt(),
+                result = result
         )
     }
 
@@ -443,26 +440,26 @@ class DgisMapView(
     }
 
     override fun fetchSuggests(
-        queryText: String,
-        allowedResultTypes: List<SuggestedTypeMessage_>?,
-        searchRect: GeoRectMessage?,
-        result: Messages.Result<SuggestResultMessage>?
+            queryText: String,
+            allowedResultTypes: List<SuggestedTypeMessage_>?,
+            searchRect: GeoRectMessage?,
+            result: Messages.Result<SuggestResultMessage>?
     ) {
         searchHandler?.fetchSuggests(
-            queryText = queryText,
-            allowedResultTypes = allowedResultTypes,
-            searchGeoRect = searchRect?.toGeoRect(),
-            result = result
+                queryText = queryText,
+                allowedResultTypes = allowedResultTypes,
+                searchGeoRect = searchRect?.toGeoRect(),
+                result = result
         )
     }
 
     override fun setMarkerOptions(options: MarkerOptionsMessageOld, result: Messages.Result<Void>?) {
         objectTapHandler?.setMarkerOptions(
-            svgAsset = options.svgAsset,
-            size = Size(options.width.roundToInt(), options.height.roundToInt()),
-            iconWidth = options.iconWidth,
-            sdkContext = sdkContext,
-            result = result
+                svgAsset = options.svgAsset,
+                size = Size(options.width.roundToInt(), options.height.roundToInt()),
+                iconWidth = options.iconWidth,
+                sdkContext = sdkContext,
+                result = result
         )
     }
 
@@ -484,8 +481,8 @@ class DgisMapView(
     }
 
     override fun createMapObjectManagerWithClustering(
-        message: ClusteringMapObjectManagerOptionsMessage,
-        result: Messages.Result<MapObjectManagerMessage>?
+            message: ClusteringMapObjectManagerOptionsMessage,
+            result: Messages.Result<MapObjectManagerMessage>?
     ) {
         objectTapHandler?.createClusteringMapObjectManager(message, result)
     }
@@ -495,16 +492,16 @@ class DgisMapView(
     }
 
     override fun removeMapObjectManager(
-        id: MapObjectManagerMessage,
-        result: Messages.Result<Void>?
+            id: MapObjectManagerMessage,
+            result: Messages.Result<Void>?
     ) {
         objectTapHandler?.removeMapObjectManager(id, result)
     }
 
     override fun setMapObjectManagerIsVisible(
-        isVisible: Boolean,
-        manager: MapObjectManagerMessage?,
-        result: Messages.Result<Void>?
+            isVisible: Boolean,
+            manager: MapObjectManagerMessage?,
+            result: Messages.Result<Void>?
     ) {
         objectTapHandler?.setMapObjectManagerIsVisible(isVisible, manager)
         result?.success(null)
@@ -554,8 +551,8 @@ class DgisMapView(
     }
 
     override fun setRouteParams(
-        params: RouteEditorRouteParamsMessage,
-        result: Messages.Result<Void>?
+            params: RouteEditorRouteParamsMessage,
+            result: Messages.Result<Void>?
     ) {
         routeHandler?.setRouteParams(params);
         result?.success(null)
@@ -573,10 +570,10 @@ class DgisMapView(
         }
         routeHandler.setRoutesVisible(false)
         navigationHandler.startNavigation(
-            finishPoint = routeHandler.finishPoint,
-            options = routeHandler.options,
-            route = routeHandler.selectedRoute,
-            result = result
+                finishPoint = routeHandler.finishPoint,
+                options = routeHandler.options,
+                route = routeHandler.selectedRoute,
+                result = result
         )
     }
 
@@ -587,10 +584,10 @@ class DgisMapView(
         }
         routeHandler.setRoutesVisible(false)
         navigationHandler.startSimulation(
-            finishPoint = routeHandler.finishPoint,
-            options = routeHandler.options,
-            route = routeHandler.selectedRoute,
-            result = result
+                finishPoint = routeHandler.finishPoint,
+                options = routeHandler.options,
+                route = routeHandler.selectedRoute,
+                result = result
         )
     }
 
@@ -600,8 +597,8 @@ class DgisMapView(
     }
 
     override fun addPanoramasMarkers(
-        message: AddMarkersWithPhotoMessage,
-        result: Messages.Result<Void>?
+            message: AddMarkersWithPhotoMessage,
+            result: Messages.Result<Void>?
     ) {
         objectTapHandler?.addPanoramasMarkers(message)
         result?.success(null)
@@ -623,23 +620,23 @@ class DgisMapView(
     }
 
     override fun setHighlighted(
-        objectIds: List<DgisObjectIdMessage>,
-        result: Messages.Result<Void>?
+            objectIds: List<DgisObjectIdMessage>,
+            result: Messages.Result<Void>?
     ) {
         objectTapHandler?.setHighlighted(
-            objectIds = objectIds.map {
-                DgisObjectId(
-                    objectId = it.objectId,
-                    entranceId = it.entranceId,
-                )
-            },
-            result = result,
+                objectIds = objectIds.map {
+                    DgisObjectId(
+                            objectId = it.objectId,
+                            entranceId = it.entranceId,
+                    )
+                },
+                result = result,
         )
     }
 
     override fun onLocationPremissionGranted(
-        desiredAccuracy: DesiredAccuracyMessage,
-        result: Messages.Result<Void>?
+            desiredAccuracy: DesiredAccuracyMessage,
+            result: Messages.Result<Void>?
     ) {
         locationSource.onPermissionGranted()
         locationSource.setDesiredAccuracy(desiredAccuracy.toSdkAccuracy())
@@ -647,9 +644,9 @@ class DgisMapView(
     }
 
     override fun overlappedBy(
-        outerRect: GeoRectMessage,
-        innerRect: GeoRectMessage,
-        result: Messages.Result<Long>?
+            outerRect: GeoRectMessage,
+            innerRect: GeoRectMessage,
+            result: Messages.Result<Long>?
     ) {
         val outer = outerRect.toGeoRect()
 
@@ -660,9 +657,9 @@ class DgisMapView(
     }
 
     override fun contains(
-        rect: GeoRectMessage,
-        point: GeoPointMessage,
-        result: Messages.Result<Boolean>?
+            rect: GeoRectMessage,
+            point: GeoPointMessage,
+            result: Messages.Result<Boolean>?
     ) {
         result?.success(rect.toGeoRect().contains(point.toGeoPoint()))
     }
@@ -676,8 +673,8 @@ class DgisMapView(
     }
 
     override fun setPanoramaMarkerAzimuth(
-        message: MarkerAzimuthMessage,
-        result: Messages.Result<Void>?
+            message: MarkerAzimuthMessage,
+            result: Messages.Result<Void>?
     ) {
         objectTapHandler?.setPanoramasAzimuth(message.degree)
         result?.success(null)
@@ -709,8 +706,8 @@ class DgisMapView(
     }
 
     override fun setPanoramasPaddings(
-        message: CameraSetPaddingMessage,
-        result: Messages.Result<Void>?
+            message: CameraSetPaddingMessage,
+            result: Messages.Result<Void>?
     ) {
         map?.let {
             objectTapHandler?.setPanoramasPadding(it, message)
@@ -723,13 +720,11 @@ class DgisMapView(
         result?.success(null)
     }
 
-    override fun showEsriIOLayer(message: Messages.AddLayerPointObjectsMessage, result: Messages.Result<Void>?)
-    {
+    override fun showEsriIOLayer(message: Messages.AddLayerPointObjectsMessage, result: Messages.Result<Void>?) {
         objectTapHandler?.addIoMarkers(message, result)
     }
 
-    override fun removeEsriIOLayer(result: Messages.Result<Void>?)
-    {
+    override fun removeEsriIOLayer(result: Messages.Result<Void>?) {
         objectTapHandler?.removeAllMarkers(null)
         result?.success(null)
     }
@@ -752,14 +747,14 @@ class DgisMapView(
     }
 
     override fun setZoomRestrictions(min: Double?, max: Double?, result: Messages.Result<Void>?) {
-        map?.let {map ->
+        map?.let { map ->
             map.camera.zoomRestrictions = CameraZoomRestrictions(
-                minZoom = min?.let {
-                    Zoom(it.toFloat())
-                } ?: Zoom(0f),
-                maxZoom = max?.let {
-                    Zoom(it.toFloat())
-                } ?: Zoom(20f)
+                    minZoom = min?.let {
+                        Zoom(it.toFloat())
+                    } ?: Zoom(0f),
+                    maxZoom = max?.let {
+                        Zoom(it.toFloat())
+                    } ?: Zoom(20f)
             )
         }
         result?.success(null)
@@ -790,8 +785,9 @@ class DgisMapView(
 
         val mapSource = MyLocationMapObjectSource(
             sdkContext,
-            MyLocationDirectionBehaviour.FOLLOW_SATELLITE_HEADING,
-            createSmoothMyLocationController()
+            MyLocationController(
+                bearingSource = BearingSource.AUTO,
+            )
         )
         map.addSource(mapSource)
 
@@ -804,22 +800,24 @@ class DgisMapView(
             map,
             sdkContext,
             SearchManager.createOnlineManager(sdkContext),
-            locationSource
+            locationSource,
+            DgisMapPlugin.vendorConfig,
         )
         compassControlHandler = CompassControlHandler(map, eventSink)
         trafficAndParkingControlHandler = TrafficAndParkingControlHandler(map, eventSink)
         setupTapHandler()
 
         result.success(
-            InitializeMessage.Builder()
-                .setWasInitialized(true)
-                .setErrorDescription("")
-                .build()
+                InitializeMessage.Builder()
+                        .setWasInitialized(true)
+                        .setErrorDescription("")
+                        .build()
         )
     }
+
     override fun findBriefRouteInfos(routeSearchOptions: RouteSearchOptionsMessage,
                                      startPoint: RouteSearchPointMessage?,
-                                     finishPoint: RouteSearchPointMessage,
+                                     finishPoint: RouteSearchPointMessage?,
                                      result: Messages.Result<MutableList<BriefRouteInfoMessage>>?) {
         val searchOptions = routeSearchOptions.toRouteSearchOptions()
 
@@ -830,7 +828,13 @@ class DgisMapView(
                             objectId = 0,
                             entranceId = 0))
         }
-        val finishSearchPoint = finishPoint.toRouteSearchPoint()
+        val finishSearchPoint = finishPoint?.toRouteSearchPoint()  ?: locationSource.lastLocation.let {
+            return@let RouteSearchPoint(
+                    coordinates = GeoPoint(it?.latitude ?: .0, it?.longitude ?: .0),
+                    objectId = DgisObjectId(
+                            objectId = 0,
+                            entranceId = 0))
+        }
         val briefRouteInfoSearchPoints = listOf(BriefRouteInfoSearchPoints(
                 startPoint = startSearchPoint,
                 finishPoint = finishSearchPoint))
@@ -853,8 +857,12 @@ class DgisMapView(
     override fun toggleHeatmap(
             tileSourceUri: String?,
             layerName: String?,
-            result: Messages.Result<Void>?) {
-        if (!isHeatmapVisible) {
+            enable: Boolean?,
+            result: Messages.Result<Boolean>?) {
+        if (enable == true) {
+            rasterTileSource?.let {
+                map?.removeSource(it)
+            }
             tileSourceUri?.let {
                 layerName?.let {
                     rasterTileSource = createRasterTileDataSource(
@@ -872,9 +880,13 @@ class DgisMapView(
                 map?.removeSource(it)
             }
         }
-        isHeatmapVisible = !isHeatmapVisible
-        result?.success(null)
+        enable?.let {
+            isHeatmapVisible = it
+        }
+
+        result?.success(isHeatmapVisible)
     }
+
     override fun listPackages(result: Messages.Result<List<PackageMessage>>?) {
         packagesHandler.listPackages(result)
     }

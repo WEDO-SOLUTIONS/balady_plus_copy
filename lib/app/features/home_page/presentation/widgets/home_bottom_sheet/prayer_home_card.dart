@@ -190,9 +190,9 @@ class PrayerHomeCard extends StatelessWidget {
                                     ),
                                     child: GestureDetector(
                                       onTap: () {
-                                        /* Provider.of<PrayerTimesCubit>(context,
+                                        Provider.of<PrayerTimesCubit>(context,
                                                 listen: false)
-                                            .prayerSettingsOnOff();*/
+                                            .prayerSettingsOnOff();
                                       },
                                       child: BlocBuilder<PrayerTimesCubit,
                                               PrayerTimesState>(

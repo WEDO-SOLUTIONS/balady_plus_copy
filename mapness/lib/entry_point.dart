@@ -9,6 +9,7 @@ import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/widgets/map/map_page.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
 import 'app/router.dart';
 
@@ -24,8 +25,11 @@ class MapnessProviderScope extends StatelessWidget {
 }
 
 class MapnessEntryPoint extends ConsumerStatefulWidget {
-  final List<Widget> navigationRoutes;
-  const MapnessEntryPoint(this.navigationRoutes, {super.key});
+  final void Function(DgisMapController) mapCreated;
+  const MapnessEntryPoint({
+    required this.mapCreated,
+    super.key,
+  });
 
   @override
   ConsumerState<MapnessEntryPoint> createState() => _MapnessEntryPointState();
@@ -33,6 +37,7 @@ class MapnessEntryPoint extends ConsumerStatefulWidget {
 
 class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   OverlayEntry? _debugOverlay;
+  Mixpanel? mixpanel;
 
   @override
   void initState() {
@@ -49,17 +54,23 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       );
       Overlay.of(context, rootOverlay: true).insert(_debugOverlay!);
     });
+    initMixpanel();
   }
 
   @override
   Widget build(BuildContext context) {
     final goRouter = ref.watch(goRouterProvider);
     final language = ref.watch(appLanguageProvider);
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Stack(
         children: [
-          const MapPage(),
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: const MapPage(),
+          ),
           MaterialApp.router(
             routerConfig: goRouter,
             theme: ThemeData(
@@ -94,6 +105,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         ],
       ),
     );
+  }
+
+  Future<void> initMixpanel() async {
+    mixpanel = await Mixpanel.init("2d045d85e25087812e92c62b84d6fbc3",
+        trackAutomaticEvents: true);
   }
 }
 

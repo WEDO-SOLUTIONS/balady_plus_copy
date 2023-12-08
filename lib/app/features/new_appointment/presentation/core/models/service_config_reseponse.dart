@@ -1,0 +1,169 @@
+// To parse this JSON data, do
+//
+//     final serviceConfigResponse = serviceConfigResponseFromJson(jsonString);
+
+import 'dart:convert';
+
+ServiceConfigResponse serviceConfigResponseFromJson(String str) =>
+    ServiceConfigResponse.fromJson(json.decode(str));
+
+String serviceConfigResponseToJson(ServiceConfigResponse data) =>
+    json.encode(data.toJson());
+
+class ServiceConfigResponse {
+  ServiceConfigResponse({
+    this.statusDetails,
+    this.data,
+  });
+
+  List<StatusDetail>? statusDetails;
+  Data? data;
+
+  factory ServiceConfigResponse.fromJson(Map<String, dynamic> json) =>
+      ServiceConfigResponse(
+        statusDetails: List<StatusDetail>.from(
+            json["statusDetails"].map((x) => StatusDetail.fromJson(x))),
+        data: Data.fromJson(json["data"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "statusDetails":
+            List<dynamic>.from(statusDetails!.map((x) => x.toJson())),
+        "data": data!.toJson(),
+      };
+
+  int? getServiceId() {
+    return data?.result?[0].id;
+  }
+
+  String? getDepartmentName() {
+    return data?.result?[0].departmentName;
+  }
+}
+
+class Data {
+  Data({
+    this.responseCode,
+    this.responseMessage,
+    this.result,
+  });
+
+  String? responseCode;
+  String? responseMessage;
+  List<ServiceConfigItem>? result;
+
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
+        responseCode: json["responseCode"],
+        responseMessage: json["responseMessage"],
+        result: json["result"] != null
+            ? List<ServiceConfigItem>.from(
+                json["result"].map((x) => ServiceConfigItem.fromJson(x)))
+            : null,
+      );
+
+  Map<String, dynamic> toJson() => {
+        "responseCode": responseCode,
+        "responseMessage": responseMessage,
+        "result": List<dynamic>.from(result!.map((x) => x.toJson())),
+      };
+}
+
+class ServiceConfigItem {
+  ServiceConfigItem({
+    this.id,
+    this.name,
+    this.applyMethod,
+    this.mainClassificationId,
+    this.mainClassification,
+    this.subClassification,
+    this.departmentId,
+    this.departmentName,
+    this.allowDepartmentList,
+    this.allowAddTopic,
+    this.visitType,
+  });
+
+  int? id;
+  dynamic name;
+  String? applyMethod;
+  int? mainClassificationId;
+  String? mainClassification;
+  dynamic subClassification;
+  int? departmentId;
+  String? departmentName;
+  bool? allowDepartmentList;
+  bool? allowAddTopic;
+  List<VisitType>? visitType;
+
+  factory ServiceConfigItem.fromJson(Map<String, dynamic> json) =>
+      ServiceConfigItem(
+        id: json["id"],
+        name: json["name"],
+        applyMethod: json["applyMethod"],
+        mainClassificationId: json["mainClassificationId"],
+        mainClassification: json["mainClassification"],
+        subClassification: json["subClassification"],
+        departmentId: json["departmentId"],
+        departmentName: json["departmentName"],
+        allowDepartmentList: json["allowDepartmentList"],
+        allowAddTopic: json["allowAddTopic"],
+        visitType: json["visitType"] != null
+            ? List<VisitType>.from(
+                json["visitType"].map((x) => VisitType.fromJson(x)))
+            : null,
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+        "applyMethod": applyMethod,
+        "mainClassificationId": mainClassificationId,
+        "mainClassification": mainClassification,
+        "subClassification": subClassification,
+        "departmentId": departmentId,
+        "departmentName": departmentName,
+        "allowDepartmentList": allowDepartmentList,
+        "allowAddTopic": allowAddTopic,
+        "visitType": List<dynamic>.from(visitType!.map((x) => x.toJson())),
+      };
+}
+
+class VisitType {
+  VisitType({
+    this.id,
+    this.name,
+  });
+
+  int? id;
+  String? name;
+
+  factory VisitType.fromJson(Map<String, dynamic> json) => VisitType(
+        id: json["id"],
+        name: json["name"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+      };
+}
+
+class StatusDetail {
+  StatusDetail({
+    this.code,
+    this.message,
+  });
+
+  int? code;
+  String? message;
+
+  factory StatusDetail.fromJson(Map<String, dynamic> json) => StatusDetail(
+        code: json["code"],
+        message: json["message"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "code": code,
+        "message": message,
+      };
+}

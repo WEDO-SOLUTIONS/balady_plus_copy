@@ -63,7 +63,7 @@ class ObjectTapHandler {
     
     var source: DgisSource?
 
-    private var markers: Dictionary<String, Marker> = [:]
+    private var markers: Dictionary<String, (Marker, String?)> = [:]
     private var managers: Dictionary<String, MapObjectManager> = [:]
     private var polygons: Dictionary<String, Polygon> = [:]
     private var polylines: Dictionary<String, Polyline> = [:]
@@ -226,8 +226,20 @@ class ObjectTapHandler {
             userData: MarkerId(marker.id),
             animatedAppearance: marker.options.animatedAppearance?.boolValue ?? false
         )
-
-        return Marker(options: options)
+        
+        do {
+            return try Marker(options: options)
+        } catch {
+            completion(
+                FlutterError(
+                    code: "Error creating marker \(error.localizedDescription)",
+                    message: nil,
+                    details: nil
+                )
+            )
+        }
+        
+        return nil
     }
     
     func addMarker(_ marker: MarkerMessage, to manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
@@ -236,7 +248,7 @@ class ObjectTapHandler {
         }
         
         self.objectsQueue.sync {
-            self.markers[marker.id] = markerObject
+            self.markers[marker.id] = (markerObject, manager?.id)
             if let managerId = manager?.id, let manager = self.managers[managerId] {
                 manager.addObject(item: markerObject)
             } else {
@@ -257,7 +269,7 @@ class ObjectTapHandler {
         
         self.objectsQueue.sync {
             markerObjects.forEach { id, object in
-                self.markers[id] = object
+                self.markers[id] = (object, manager?.id)
             }
             if let managerId = manager?.id, let manager = self.managers[managerId] {
                 manager.addObjects(objects: Array(markerObjects.values))
@@ -272,9 +284,9 @@ class ObjectTapHandler {
         self.objectsQueue.sync {
             if let markerObject = self.markers.removeValue(forKey: id) {
                 if let managerId = manager?.id, let manager = self.managers[managerId] {
-                    manager.removeObject(item: markerObject)
+                    manager.removeObject(item: markerObject.0)
                 } else {
-                    self.mapObjectManager.removeObject(item: markerObject)
+                    self.mapObjectManager.removeObject(item: markerObject.0)
                 }
                 completion(nil)
             }
@@ -376,7 +388,7 @@ class ObjectTapHandler {
         }
     }
     
-    private func mapPolygon(_ polygon: PolygonMessage) -> Polygon {
+    private func mapPolygon(_ polygon: PolygonMessage, completion: @escaping (FlutterError?) -> Void) -> Polygon? {
         let options = PolygonOptions(
             contours: polygon.options.contours.map { contour in
                 contour.map {
@@ -398,11 +410,25 @@ class ObjectTapHandler {
             userData: PolygonId(polygon.id)
         )
         
-        return Polygon(options: options)
+        do {
+            return try Polygon(options: options)
+        } catch {
+            completion(
+                FlutterError(
+                    code: "Error creating polygon \(error.localizedDescription)",
+                    message: nil,
+                    details: nil
+                )
+            )
+        }
+        
+        return nil
     }
     
     func addPolygon(_ polygon: PolygonMessage, completion: @escaping (FlutterError?) -> Void) {
-        let polygonObject = mapPolygon(polygon)
+        guard let polygonObject = mapPolygon(polygon, completion: completion) else {
+            return
+        }
         
         self.objectsQueue.sync {
             self.polygons[polygon.id] = polygonObject
@@ -412,10 +438,12 @@ class ObjectTapHandler {
     }
     
     func addPolygons(_ polygons: [PolygonMessage], completion: @escaping (FlutterError?) -> Void) {
-        let polygonObjects = polygons.map {
-            ($0.id, mapPolygon($0))
-        }.reduce(into: [:]) { dict, pair in
-            dict[pair.0] = pair.1
+        var polygonObjects = [String:Polygon]()
+        for polygon in polygons {
+            guard let polygonObject = mapPolygon(polygon, completion: completion) else {
+                return
+            }
+            polygonObjects[polygon.id] = polygonObject
         }
         
         self.objectsQueue.sync {
@@ -436,7 +464,7 @@ class ObjectTapHandler {
         }
     }
     
-    private func mapPolyline(_ polyline: PolylineMessage) -> Polyline {
+    private func mapPolyline(_ polyline: PolylineMessage, completion: @escaping (FlutterError?) -> Void) -> Polyline? {
         let options = PolylineOptions(
             points: polyline.options.points.map {
                 GeoPoint(
@@ -453,11 +481,25 @@ class ObjectTapHandler {
             userData: PolylineId(polyline.id)
         )
         
-        return Polyline(options: options)
+        do {
+            return try Polyline(options: options)
+        } catch {
+            completion(
+                FlutterError(
+                    code: "Error creating polyline \(error.localizedDescription)",
+                    message: nil,
+                    details: nil
+                )
+            )
+        }
+        
+        return nil
     }
     
     func addPolyline(_ polyline: PolylineMessage, completion: @escaping (FlutterError?) -> Void) {
-        let polylineObject = mapPolyline(polyline)
+        guard let polylineObject = mapPolyline(polyline, completion: completion) else {
+            return
+        }
         
         self.objectsQueue.sync {
             self.polylines[polyline.id] = polylineObject
@@ -467,10 +509,12 @@ class ObjectTapHandler {
     }
     
     func addPolylines(_ polylines: [PolylineMessage], completion: @escaping (FlutterError?) -> Void) {
-        let polylineObjects = polylines.map {
-            ($0.id, mapPolyline($0))
-        }.reduce(into: [:]) { dict, pair in
-            dict[pair.0] = pair.1
+        var polylineObjects = [String:Polyline]()
+        for polyline in polylines {
+            guard let polylineObject = mapPolyline(polyline, completion: completion) else {
+                return
+            }
+            polylineObjects[polyline.id] = polylineObject
         }
         
         self.objectsQueue.sync {
@@ -501,16 +545,29 @@ class ObjectTapHandler {
             return
         }
         
-        let markers = message.objects.map{
-            let position = $0.position.geoPointWithElevation
+        var markers = [Marker]()
+        for marker in message.objects {
+            let position = marker.position.geoPointWithElevation
 
-            return Marker(options: MarkerOptions(
-                position: position,
-                icon: markerImage,
-                anchor: Anchor(x: 0.5, y: 1),
-                iconWidth: iconWidth,
-                userData: $0.attributes
-            ))
+            do {
+                let marker = try Marker(options: MarkerOptions(
+                    position: position,
+                    icon: markerImage,
+                    anchor: Anchor(x: 0.5, y: 1),
+                    iconWidth: iconWidth,
+                    userData: marker.attributes
+                ))
+                markers.append(marker)
+            } catch {
+                completion(
+                    FlutterError(
+                        code: "Error creating marker \(error.localizedDescription)",
+                        message: nil,
+                        details: nil
+                    )
+                )
+                return
+            }
         }
         self.objectsQueue.sync {
             self.ioObjectManager.removeAndAddObjects(objectsToRemove: ioLayerMarkers, objectsToAdd: markers)
@@ -523,11 +580,12 @@ class ObjectTapHandler {
     func removeAllMarkers(from manager: MapObjectManagerMessage?) {
         self.objectsQueue.sync {
             if let managerId = manager?.id, let manager = self.managers[managerId] {
-                manager.removeObjects(objects: Array(self.markers.values))
+                manager.removeAll()
+                self.markers = markers.filter { $0.value.1 == managerId }
             } else {
-                self.mapObjectManager.removeObjects(objects: Array(self.markers.values))
+                self.mapObjectManager.removeAll()
+                self.markers.removeAll()
             }
-            self.markers.removeAll()
         }
     }
     
@@ -577,8 +635,9 @@ class ObjectTapHandler {
                     position: it.position.geoPointWithElevation,
                     icon: self.panoramaMarkerImage,
                     userData: photoData)
-                let marker = Marker(options: opts)
-                newObjects.append(marker)
+                if let marker = try? Marker(options: opts) {
+                    newObjects.append(marker)
+                }
             }
             self?.panoramasObjectManager.addObjects(objects: newObjects)
             self?.panoramasMarkers.append(contentsOf: newObjects)
@@ -654,7 +713,7 @@ class ObjectTapHandler {
     
     func calcPosition(markers: [String], options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
         calcPosition(
-            objects: markers.compactMap { self.markers[$0] },
+            objects: markers.compactMap { self.markers[$0]?.0 },
             options: options,
             completion: completion
         )

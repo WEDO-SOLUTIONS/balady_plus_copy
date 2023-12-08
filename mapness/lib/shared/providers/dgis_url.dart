@@ -5,7 +5,7 @@ part 'dgis_url.g.dart';
 @riverpod
 class _DgisUrl extends _$DgisUrl {
   // bool isProduction = kDebugMode;
-  bool isProduction = false;
+  bool isProduction = true;
 
   void setProduction() {
     isProduction = true;

@@ -10,7 +10,7 @@ part 'path_nav_eta.g.dart';
 class _PathNavEta extends _$PathNavEta {
   @override
   PathNavEta? build() {
-    final mapController = ref.read(dgisControllerProvider)!;
+    final mapController = ref.read(dgisControllerProvider).value!;
     final subspcription = mapController.naviDashboardEvents.listen((event) {
       final distance = event.distance.formatDistance();
       state = PathNavEta(

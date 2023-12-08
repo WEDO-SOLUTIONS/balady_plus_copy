@@ -45,9 +45,7 @@ class TrafficControl extends ConsumerWidget {
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()!
                   .accentM
-                  .copyWith(
-                    color: textColor,
-                  ),
+                  .copyWith(color: textColor, height: 1.5),
             ),
           ],
         ),

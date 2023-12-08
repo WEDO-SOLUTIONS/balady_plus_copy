@@ -1,3 +1,4 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -66,7 +67,8 @@ class LocationServiceDialog extends StatelessWidget {
                   EnhancedCustomElevatedButtonWidget(
                     btnPressed: () {
                       Navigator.of(context).pop();
-                      openAppSettings();
+                      AppSettings.openAppSettings(
+                          type: AppSettingsType.location);
                     },
                     btnText: ("settings").tr(),
                     btnTextSize: 16,

@@ -16,11 +16,9 @@ import '../cubit/service_cards_cubit/service_cards_cubit.dart'
 
 class ServiceWarningWidget extends StatelessWidget {
   final String warning;
+  final Function? onPress;
 
-  const ServiceWarningWidget({
-    super.key,
-    required this.warning,
-  });
+  const ServiceWarningWidget({super.key, required this.warning, this.onPress});
 
   @override
   Widget build(BuildContext context) {
@@ -84,15 +82,19 @@ class ServiceWarningWidget extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 16),
-                      CustomAutoSizeTextWidget(
-                        warning,
-                        textStyle: AppStyle.serviceCardDescriptionTextStyle,
-                        maxLines: 4,
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: CustomAutoSizeTextWidget(
+                            warning,
+                            textStyle: AppStyle.serviceCardDescriptionTextStyle,
+                            maxLines: 20,
+                          ),
+                        ),
                       ),
                     ],
-                    const Spacer(),
+                    if (!state.expandedWarning) const Spacer(),
                     ElevatedButtonWidget.startService(
-                      onPressed: () {},
+                      onPressed: () => onPress != null ? onPress!() : () {},
                     ),
                     const SizedBox(height: 16),
                   ],

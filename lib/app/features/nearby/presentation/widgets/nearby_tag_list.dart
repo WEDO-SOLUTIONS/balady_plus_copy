@@ -6,8 +6,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_text_widget.dart';
 import '../../../../core/utils/utils_exports.dart';
-import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../home_page/home_exports.dart';
 
 class NearbyTagList extends StatelessWidget implements PreferredSizeWidget {

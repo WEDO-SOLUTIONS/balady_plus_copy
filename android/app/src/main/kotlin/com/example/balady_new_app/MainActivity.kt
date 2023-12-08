@@ -1,4 +1,4 @@
-package momra.balady.android
+package com.example.balady_new_app
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 

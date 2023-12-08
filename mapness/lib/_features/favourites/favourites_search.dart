@@ -23,13 +23,13 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
-      ref.watch(suggestQueryProvider.notifier).update("");
+      ref.read(suggestQueryProvider.notifier).update("");
     });
   }
 
   @override
   void dispose() {
-    ref.watch(suggestQueryProvider.notifier).update("");
+    ref.read(suggestQueryProvider.notifier).update("");
     super.dispose();
   }
 

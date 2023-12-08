@@ -1,24 +1,45 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocBuilder;
+import 'package:localize_and_translate/localize_and_translate.dart'
+    show Translation;
 
 import '../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, DIRECTION, DirectionConversion, UIHelper;
+    show
+        AppColor,
+        AppFontWeight,
+        AppStyle,
+        ContextConversion,
+        DIRECTION,
+        DirectionConversion,
+        UIHelper;
 import '../../shared_feature_exports.dart'
     show
+        ClickableWidget,
         CustomAutoSizeTextWidget,
+        CustomHorizontalSpace,
         DrawIconBasedTypeWidget,
-        ExpansionPanelInfo,
-        ExpansionPanelListCubit;
+        ExpansionPanelListCubit,
+        ExpansionPanelInfo;
 
 class CustomEnhancedExpansionPanelListWidget extends StatefulWidget {
+  final Color? bgColor;
+  final Color? borderColor;
+  final double borderWidth;
+  final double borderRadius;
+
   final List<ExpansionPanelInfo> children;
   final void Function(int, bool)? expansionCallback;
   const CustomEnhancedExpansionPanelListWidget({
-    super.key,
+    Key? key,
+    this.bgColor,
+    this.borderColor,
+    this.borderWidth = 1,
+    this.borderRadius = 8.0,
+    //
     required this.children,
     this.expansionCallback,
-  });
+  }) : super(key: key);
 
   @override
   State<CustomEnhancedExpansionPanelListWidget> createState() =>
@@ -62,71 +83,33 @@ class _CustomEnhancedExpansionPanelListWidgetState
   @override
   Widget build(BuildContext context) {
     return ExpandableTheme(
-      data: const ExpandableThemeData(
+      data: ExpandableThemeData(
+        bodyAlignment: context.isRTL
+            ? ExpandablePanelBodyAlignment.right
+            : ExpandablePanelBodyAlignment.left,
         hasIcon: false,
         useInkWell: false,
         tapHeaderToExpand: false,
         tapBodyToCollapse: false,
         tapBodyToExpand: false,
       ),
-      child: BlocBuilder<ExpansionPanelListCubit, int>(
-        bloc: _panelCubit,
-        builder: (_, panelIndex) => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: List.generate(
-            _children.length,
-            (index) {
-              final expansionState = _controllers[index].expanded;
-              // panelIndex == index ? _controllers[index].expanded : false;
-              // final expansionState =
-              //     panelIndex == index ? _controllers[index].expanded : false;
-
-              return Container(
-                width: _children[index].expansionWidth ?? double.infinity,
-                // padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                decoration: BoxDecoration(
-                  color: expansionState
-                      ? AppColor.gray
-                      : Theme.of(context).scaffoldBackgroundColor,
-                  border: _children[index].underline
-                      ? Border(
-                          bottom: expansionState
-                              ? contentBottomBorder
-                              : headerBottomBorder,
-                        )
-                      : null,
-                ),
-                child: ExpandablePanel(
-                  controller: _controllers[index],
-                  header: _children[index].header ??
-                      ListTile(
-                        contentPadding:
-                            _children[index].headerPadding ?? headerPadding,
-                        dense: true,
-                        horizontalTitleGap: 10.0,
-                        minLeadingWidth: 25.0,
-                        minVerticalPadding: 0.0,
-                        selectedColor: Colors.transparent,
-                        selectedTileColor: Colors.transparent,
-                        leading: _ExpansionLeadingWidget(
-                          expanded: expansionState,
-                          leading: _children[index].leading,
-                        ),
-                        title: _ExpansionTitleWidget(
-                          expanded: expansionState,
-                          title: _children[index].title,
-                        ),
-                        trailing: _ExpansionPanelArrowWidget(
-                          expanded: expansionState,
-                        ),
-                        onTap: () => onUpdatePanel(index),
-                      ),
-                  collapsed: const SizedBox(),
-                  expanded: Padding(
-                    padding: _children[index].expandedPadding ?? contentPadding,
-                    child: _children[index].body ?? const SizedBox(),
-                  ),
-                ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: List.generate(
+          _children.length,
+          (index) => BlocBuilder<ExpansionPanelListCubit, int>(
+            bloc: _panelCubit,
+            builder: (_, panelIndex) {
+              final expansionState = panelIndex == index;
+              return _PanelCard(
+                controller: _controllers[index],
+                bgColor: widget.bgColor,
+                borderColor: widget.borderColor,
+                borderWidth: widget.borderWidth,
+                borderRadius: widget.borderRadius,
+                panelInfo: _children[index],
+                expansionState: expansionState,
+                onUpdated: () => onUpdatePanel(index),
               );
             },
           ),
@@ -134,28 +117,6 @@ class _CustomEnhancedExpansionPanelListWidgetState
       ),
     );
   }
-
-  EdgeInsets get headerPadding => const EdgeInsets.symmetric(
-        vertical: UIHelper.littlePadding,
-        horizontal: UIHelper.middlePadding + 2.0,
-      );
-
-  BorderSide get headerBottomBorder => BorderSide(
-        width: 1,
-        color: AppColor.gray.withOpacity(0.36),
-      );
-
-  EdgeInsets get contentPadding => const EdgeInsets.fromLTRB(
-        UIHelper.middlePadding + 2.0,
-        0.0,
-        UIHelper.middlePadding + 2.0,
-        UIHelper.smallPadding,
-      );
-
-  BorderSide get contentBottomBorder => const BorderSide(
-        width: 1.5,
-        color: AppColor.gray,
-      );
 
   void onUpdatePanel(int index) {
     for (int i = 0; i < _controllers.length; i++) {
@@ -169,6 +130,7 @@ class _CustomEnhancedExpansionPanelListWidgetState
           _expansionCallback!(i, panelExpanded);
         }
       } else {
+        // to close all others
         controller.expanded = false;
       }
 
@@ -179,13 +141,155 @@ class _CustomEnhancedExpansionPanelListWidgetState
   }
 }
 
+class _PanelCard extends StatelessWidget {
+  final ExpandableController? controller;
+  final Color? bgColor;
+  final Color? borderColor;
+  final double borderWidth;
+  final double borderRadius;
+
+  final ExpansionPanelInfo panelInfo;
+  final bool expansionState;
+  final VoidCallback onUpdated;
+  const _PanelCard({
+    this.controller,
+    required this.bgColor,
+    required this.borderColor,
+    required this.borderWidth,
+    required this.borderRadius,
+    //
+    required this.panelInfo,
+    required this.expansionState,
+    required this.onUpdated,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // UI of whole card
+      width: panelInfo.expansionWidth ?? double.infinity,
+      margin: const EdgeInsets.only(bottom: 16.0),
+      // padding: panelInfo.panelPadding ?? panelPadding,
+      decoration: BoxDecoration(
+        color: _bgColor,
+        borderRadius: BorderRadius.all(Radius.circular(_borderRadius)),
+        border: Border.all(color: _borderColor, width: _borderWidth),
+      ),
+      child: ExpandablePanel(
+        controller: controller,
+        header: ClickableWidget(
+          onPressed: onUpdated,
+          child: panelInfo.header ??
+              Container(
+                // UI of header only
+                padding: panelInfo.headerPadding ?? headerPadding,
+                decoration: BoxDecoration(border: _boxBorder),
+                child: _HeaderWidget(
+                  expansionState: expansionState,
+                  leading: panelInfo.leading,
+                  title: panelInfo.title,
+                  titleMaxLines: panelInfo.titleMaxLines,
+                ),
+              ),
+        ),
+        collapsed: const SizedBox(),
+        expanded: Padding(
+          // UI of body only
+          padding: panelInfo.bodyPadding ?? bodyPadding,
+          child: panelInfo.body ?? const SizedBox(),
+        ),
+      ),
+    );
+  }
+
+  Color get _bgColor => panelInfo.bgColor ?? bgColor ?? AppColor.ghostWhite;
+  Color get _borderColor =>
+      panelInfo.borderColor ?? borderColor ?? AppColor.brightGray;
+  double get _borderWidth => panelInfo.borderWidth ?? borderWidth;
+  double get _borderRadius => panelInfo.borderRadius ?? borderRadius;
+
+  BoxBorder? get _boxBorder => expansionState && panelInfo.underline
+      ? const Border(bottom: BorderSide(color: AppColor.brightGray, width: 1.0))
+      : null;
+
+  EdgeInsetsGeometry get headerPadding => const EdgeInsetsDirectional.only(
+        top: 16.0,
+        bottom: 16.0,
+        start: 16.0,
+        end: 12.0,
+      );
+  EdgeInsets get bodyPadding => const EdgeInsets.fromLTRB(
+        16.0,
+        16.0,
+        16.0,
+        UIHelper.middlePadding,
+      );
+}
+
+class _HeaderWidget extends StatelessWidget {
+  final bool expansionState;
+  final dynamic leading;
+  final String? title;
+  final int titleMaxLines;
+  const _HeaderWidget({
+    required this.expansionState,
+    required this.leading,
+    required this.title,
+    required this.titleMaxLines,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (_, constraints) {
+        final width = constraints.maxWidth;
+        // 25.0 for leading & 25.0 for trailing
+        // 8.0*2 for two spaces
+        final titleWidth =
+            leading != null ? width - (25.0 * 2 + 8 * 2) : width - (25.0 + 8.0);
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                // Leading
+                if (leading != null)
+                  _ExpansionLeadingWidget(
+                    expanded: expansionState,
+                    leading: leading,
+                  ),
+                //* Space
+                if (leading != null) const CustomHorizontalSpace(width: 8.0),
+                // Title
+                SizedBox(
+                  width: titleWidth,
+                  child: _ExpansionTitleWidget(
+                    expanded: expansionState,
+                    title: title,
+                    maxLines: titleMaxLines,
+                  ),
+                ),
+              ],
+            ),
+            //* Space
+            const CustomHorizontalSpace(width: 8.0),
+            // Trailing
+            _ExpansionPanelArrowWidget(expanded: expansionState),
+          ],
+        );
+      },
+    );
+  }
+}
+
 class _ExpansionLeadingWidget extends StatelessWidget {
   final bool expanded;
   final dynamic leading;
   const _ExpansionLeadingWidget({
+    Key? key,
     required this.expanded,
     required this.leading,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -209,60 +313,55 @@ class _ExpansionLeadingWidget extends StatelessWidget {
         : const SizedBox();
   }
 
-  Color get leadingBGColor => expanded ? AppColor.blue : AppColor.white;
-  Color get leadingColor => expanded ? AppColor.black : AppColor.gray;
+  Color get leadingBGColor =>
+      expanded ? AppColor.bleuDeFrance : AppColor.brightGray;
+  Color get leadingColor => expanded ? AppColor.indigo : AppColor.uclaBlue;
 }
 
 class _ExpansionTitleWidget extends StatelessWidget {
   final String? title;
+  final int maxLines;
   final bool expanded;
 
   const _ExpansionTitleWidget({
+    Key? key,
     required this.title,
+    required this.maxLines,
     required this.expanded,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return CustomAutoSizeTextWidget(
-      title ?? "",
+      title ?? "notFound".tr(),
       textStyle: textStyle,
-      maxLines: 1,
+      maxLines: maxLines,
       textOverflow: TextOverflow.ellipsis,
       textAlign: TextAlign.start,
-      minFontSize: 12.0,
-      // height: 1.3,
+      minFontSize: 10.0,
     );
   }
 
-  // double get titleWidth => leading == null
-  //     ? width - (25.0 + 10.0)
-  //     : width - (25.0 + 10.0 + 10.0 + 25.0);
-  TextStyle get textStyle => expanded
-      ? AppStyle.mainTextStyle
-      : AppStyle.mainTextThirdStyle.copyWith(
-          fontSize: 18.0,
-          color: AppColor.gray,
-        );
+  TextStyle get textStyle => AppStyle.s14.copyWith(
+        color: AppColor.indigo,
+        height: 1.4,
+        fontWeight: AppFontWeight.bold.fontWeight,
+      );
 }
 
 class _ExpansionPanelArrowWidget extends StatelessWidget {
   final bool expanded;
-
   const _ExpansionPanelArrowWidget({required this.expanded});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 25.0,
-      height: 25.0,
-      decoration: const BoxDecoration(
-        // color: expanded ? AppColor.mainDark : AppColor.mainTextThird,
-        shape: BoxShape.circle,
-      ),
+      width: 24.0,
+      height: 24.0,
+      alignment: Alignment.center,
       child: Transform.rotate(
         angle: angle,
-        child: Icon(Icons.arrow_back_ios_new, size: 14.0, color: iconColor),
+        child: Icon(Icons.arrow_back_ios_new, size: 18.0, color: iconColor),
       ),
     );
   }
@@ -271,159 +370,5 @@ class _ExpansionPanelArrowWidget extends StatelessWidget {
   // so, if expanded we need to rotate it by 90', otherwise rotate by 270'
   double get angle =>
       expanded ? DIRECTION.downward.rotate : DIRECTION.upward.rotate;
-  Color get iconColor => expanded ? AppColor.black : AppColor.gray;
+  Color get iconColor => AppColor.maastrichtBlue;
 }
-
-
-/* 
-
-BlocProvider<_ExpansionPanelCubit>(
-      create: (_) => _ExpansionPanelCubit(initialState: -1),
-      child: Builder(
-        builder: (context) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(
-              children.length,
-              (index) => BlocBuilder<_ExpansionPanelCubit, int>(
-                builder: (_, panelIndex) {
-                  final expansionState = index == panelIndex;
-                  return Container(
-                    width:
-                        children[index].expansionWidth ?? context.screenWidth,
-                    // padding: expandedPadding ??
-                    //     const EdgeInsets.symmetric(
-                    //       horizontal: UIHelper.semiMediumPadding,
-                    //       vertical: 8.0,
-                    //     ),
-                    decoration: BoxDecoration(
-                      color: expansionState
-                          ? AppColor.mainGrayDark2
-                          : Theme.of(context).scaffoldBackgroundColor,
-                      border: Border(bottom: border(expansionState)),
-                    ),
-                    child: LayoutBuilder(
-                      builder: (_, constraints) => SizedBox(
-                        width: constraints.maxWidth,
-                        child: Theme(
-                          data: ThemeData()
-                              .copyWith(dividerColor: Colors.transparent),
-                          child: ListTileTheme(
-                            contentPadding: EdgeInsets.zero,
-                            dense: true,
-                            horizontalTitleGap: 10.0,
-                            minLeadingWidth: 25.0,
-                            minVerticalPadding: 0.0,
-                            selectedColor: Colors.transparent,
-                            selectedTileColor: Colors.transparent,
-                            child: ExpansionTile(
-                              key: UniqueKey(),
-                              tilePadding: headerPadding,
-                              childrenPadding: contentPadding,
-                              backgroundColor: Colors.transparent,
-                              collapsedBackgroundColor: Colors.transparent,
-                              maintainState: children[index].keepState,
-                              initiallyExpanded: expansionState,
-                              leading: _ExpansionLeadingWidget(
-                                expanded: expansionState,
-                                leading: children[index].leading,
-                              ),
-                              title: _ExpansionTitleWidget(
-                                expanded: expansionState,
-                                title: children[index].title,
-                              ),
-                              trailing: _ExpansionPanelArrowWidget(
-                                expanded: expansionState,
-                              ),
-                              children: [
-                                children[index].body ?? const SizedBox()
-                              ],
-                              expandedCrossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                              onExpansionChanged: (state) {
-                                BlocProvider.of<_ExpansionPanelCubit>(context)
-                                    .onPanelChanged(index);
-                                if (children[index].onExpansionChanged !=
-                                    null) {
-                                  children[index]
-                                      .onExpansionChanged!(expansionState);
-                                }
-                                if (expansionCallback != null) {
-                                  expansionCallback!(index, state);
-                                }
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          );
-        },
-      ),
-    )
-
-
-// return Accordion(
-    //   maxOpenSections: 1,
-    //   disableScrolling: true,
-    //   paddingListHorizontal: 0.0,
-    //   paddingListBottom: 0.0,
-    //   paddingListTop: 0.0,
-    //   children: List.generate(
-    //     children.length,
-    //     (index) => AccordionSection(
-    //       headerBackgroundColorOpened: AppColor.mainGrayDark2,
-    //       headerBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
-    //       headerBorderRadius: 0.0,
-    //       headerPadding: EdgeInsets.zero,
-    //       contentBorderColor: Theme.of(context).scaffoldBackgroundColor,
-    //       contentBackgroundColor: AppColor.mainGrayDark2,
-    //       contentBorderRadius: 0.0,
-    //       contentBorderWidth: 0.0,
-    //       contentHorizontalPadding: 0.0,
-    //       contentVerticalPadding: 0.0,
-    //       paddingBetweenClosedSections: 10.0,
-    //       paddingBetweenOpenSections: 0.0,
-    //       isOpen: children[index].isExpanded,
-    //       leftIcon: Container(
-    //         decoration: const BoxDecoration(
-    //             border: Border(bottom: BorderSide(color: Colors.red))),
-    //         child: _ExpansionLeadingWidget(
-    //           expanded: children[index].isExpanded,
-    //           leading: children[index].leading,
-    //         ),
-    //       ),
-    //       header: Container(
-    //         decoration: const BoxDecoration(
-    //             border: Border(bottom: BorderSide(color: Colors.red))),
-    //         child: _ExpansionTitleWidget(
-    //           expanded: children[index].isExpanded,
-    //           title: children[index].title,
-    //         ),
-    //       ),
-    //       content: Container(
-    //         padding: contentPadding,
-    //         decoration:
-    //             BoxDecoration(border: Border(bottom: contentBottomBorder)),
-    //         child: children[index].body,
-    //       ),
-    //       onOpenSection: () {
-    //         if (expansionCallback != null) expansionCallback!(index, true);
-    //         if (children[index].onExpansionChanged != null) {
-    //           children[index].onExpansionChanged!(true);
-    //         }
-    //       },
-    //       onCloseSection: () {
-    //         if (expansionCallback != null) expansionCallback!(index, false);
-    //         if (children[index].onExpansionChanged != null) {
-    //           children[index].onExpansionChanged!(false);
-    //         }
-    //       },
-    //     ),
-    //   ),
-    // );
-*/

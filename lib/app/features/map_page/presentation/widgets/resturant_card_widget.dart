@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
@@ -17,6 +18,7 @@ import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../vd/domain/entities/camera/camera_page_params.dart';
 import '../../../vd/domain/entities/categories/category_item.dart';
+import '../../../vd/presentation/dialogs/qr_types_dialog.dart';
 import '../../constants/constants.dart';
 import '../../data/model/resturant_model.dart';
 import '../mvvm/map_view_model.dart';
@@ -38,8 +40,8 @@ class ResturantMapCardWidget extends StatelessWidget {
 
     return GestureDetector(
         onTap: () async {
-          //    Navigator.pushNamed(context, RouteName.ResturantDetailsPage,
-          //       arguments: data);
+          NavigationService.navigatorKey.currentState!
+              .pushNamed(RouteName.ResturantDetailsPage, arguments: data);
         },
         child: Container(
           height: 120,

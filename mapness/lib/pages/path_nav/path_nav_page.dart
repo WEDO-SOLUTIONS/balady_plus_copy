@@ -38,10 +38,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
   @override
   void initState() {
     super.initState();
-    ref.read(dgisControllerProvider)?.setNavigatorVoice(
+    ref.read(dgisControllerProvider).value?.setNavigatorVoice(
           ref.read(navigatorVoiceProvider),
         );
-    unawaited(ref.read(dgisControllerProvider)?.startNavigation());
+    unawaited(ref.read(dgisControllerProvider).value?.startNavigation());
   }
 
   @override
@@ -50,7 +50,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
   }
 
   Future<void> _endTrip() async {
-    await ref.read(dgisControllerProvider)?.stopNavigation();
+    await ref.read(dgisControllerProvider).value?.stopNavigation();
 
     if (context.mounted) {
       const RoutingRoute().go(context);

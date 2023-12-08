@@ -26,11 +26,11 @@ class PoiCardViewModel {
       );
 
   void onEntranceTap(DirectoryObjectMessage? objectMessage) async {
-    final controller = ref.read(dgisControllerProvider);
+    final controller = await ref.read(dgisControllerProvider.future);
     if (objectMessage != null) {
       final list =
           objectMessage.entrances.map((e) => e?.id).whereNotNull().toList();
-      await controller?.setHighlighted(list);
+      await controller.setHighlighted(list);
     }
   }
 
@@ -38,7 +38,15 @@ class PoiCardViewModel {
     Share.share('balady://poi-map?dgis-object-id=${data?.id?.objectId}');
   }
 
-  void sendEmail(String value) {}
+  Future<void> sendEmail(String value) async {
+    await launchUrl(
+      Uri(
+        scheme: 'mailto',
+        path: value,
+        queryParameters: {'subject': ''},
+      ),
+    );
+  }
 
   Future<void> launch(String value) async {
     var url = Uri.parse(value);
@@ -59,19 +67,40 @@ class PoiCardViewModel {
     }
   }
 
-  FavouriteItem? getIsFavourite(PoiModel data) {
+  FavouriteItem? getFavouriteOrNull(PoiModel data) {
     final favouritesState = ref.read(favouriteRepositoryProvider);
     if (!favouritesState.hasValue) {
       return null;
     }
+    var objectId = data.directoryObjectMessage?.id?.objectId;
 
-    final isFavourite = favouritesState.requireValue.items.firstWhereOrNull(
+    var requireValue = favouritesState.requireValue;
+
+    final isFavourite = requireValue.items.firstWhereOrNull(
       (element) {
-        var objectId = data.directoryObjectMessage?.id?.objectId;
         return element.entity?.id == '$objectId';
       },
     );
     return isFavourite;
+  }
+
+  bool isFavourite(PoiModel data) {
+    final favouritesState = ref.read(favouriteRepositoryProvider);
+    if (!favouritesState.hasValue) {
+      return false;
+    }
+    var objectId = data.directoryObjectMessage?.id?.objectId;
+
+    var requireValue = favouritesState.requireValue;
+    var isWork = requireValue.work?.id == '$objectId';
+    var isHome = requireValue.home?.id == '$objectId';
+
+    final isFavourite = requireValue.items.firstWhereOrNull(
+      (element) {
+        return element.entity?.id == '$objectId';
+      },
+    );
+    return isFavourite != null || isWork || isHome;
   }
 
   void removeFromFavourite(FavouriteItem data) {

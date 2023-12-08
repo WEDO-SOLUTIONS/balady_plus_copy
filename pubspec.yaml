@@ -15,7 +15,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 3.5.0+1
 
 environment:
   sdk: ">=3.0.1 <4.0.0"
@@ -64,7 +64,8 @@ dependencies:
   # picking images and taking new pictures with the camera.
   image_picker: ^0.8.6
   # Native APP to open files with string result
-  open_file: ^3.2.1
+  open_file_plus:
+    path: packages/open_file_plus-3.4.1
   # for getting commonly used locations on host platform file
   path_provider: ^2.0.11
   # Launching a URL, Open contacts and others.
@@ -73,7 +74,7 @@ dependencies:
   # Automatically resizes text to fit perfectly within its bounds
   auto_size_text: ^3.0.0
   # To deal with svg icons
-  flutter_svg: any
+  flutter_svg: ^2.0.5
   # A Flutter widget that can be expanded or collapsed by the user.
   expandable: ^5.0.1
   # Shimmer effect, useful for loading
@@ -100,20 +101,29 @@ dependencies:
   # Get current device information
   device_info_plus: ^9.0.0
   # API for querying information about an application package
-  package_info_plus: ^4.0.2
+  package_info_plus: ^4.2.0
   # parses Adobe After Effects animations
   lottie: ^2.2.0
   # Generate Unique ID
   uuid: ^3.0.7
   hijri: ^3.0.0
+  # swiper/carousel for flutter, with multiple layouts,
+  flutter_card_swiper: ^6.0.0
+  # QR.Flutter is a Flutter library for simple and fast QR code rendering.
+  qr_flutter: ^4.1.0
+  # A cross platform plugin for displaying and scheduling local notifications
+  flutter_local_notifications: 14.1.2
+  # A flutter plugin for getting the local timezone of the device.
+  flutter_timezone: ^1.0.7
+  youtube_player_flutter:
+    path: packages/youtube_player_flutter-8.1.2
+  launch_review: ^3.0.1
 
   flutter_appauth:
     path: flutter_appauth/flutter_appauth
-  # webview_flutter: ^4.2.2
-  flutter_inappwebview:
-    git:
-      url: https://github.com/Estrelio/flutter_inappwebview.git
-      ref: fix-xcode-17
+  webview_flutter: ^4.2.2
+  flutter_inappwebview: ^5.8.0
+
   version: ^2.0.0
   google_maps_flutter: ^2.3.1
   share_plus: ^4.5.3
@@ -122,7 +132,6 @@ dependencies:
   cached_network_image: ^3.2.2
   mime: ^1.0.4
   jwt_decoder:
-
   photo_view: ^0.14.0
   flutter_rating_bar: ^4.0.0
   tuple: ^2.0.0
@@ -133,11 +142,24 @@ dependencies:
   sms_user_consent:
     git:
       url: https://github.com/ctnataman/sms_user_consent
+  flutter_google_places:
+    git:
+      url: https://github.com/MahmoudBaha/flutter_google_places
   flutter_picker: ^2.1.0
   percent_indicator: ^4.2.3
   flutter_staggered_grid_view: ^0.6.0
   flutter_cached_pdfview: ^0.4.2
+  network_info_plus: ^2.1.4+1
+  dart_ipify: ^1.1.1
+  timelines: ^0.1.0
   pdfx:
+  archive: ^3.3.7
+  bottom_picker: ^2.0.4
+  page_view_dot_indicator: ^2.3.0
+  firebase_core: ^2.24.0
+  firebase_messaging:
+  firebase_analytics:
+  flutter_uxcam: ^2.4.3
   card_swiper: ^3.0.1
   carousel_slider: ^4.2.1
   add_2_calendar: ^2.1.2
@@ -145,12 +167,16 @@ dependencies:
 
   #test_package:
   #   path: packages/test_package
+  app_settings: ^5.0.0
+  dotted_border: ^2.0.0+3
+  sentry_dio: ^7.9.0
+  linkable: ^3.0.0
 
   # Map urbi SKD
   dgis_map:
     path: urbi_map/dgis_map
 
-  # Mapness
+    # Mapness
   mapness:
     path: mapness
 
@@ -159,12 +185,22 @@ dependencies:
   provider: ^6.0.5
   flutter_compass: ^0.8.0
   sentry_flutter: ^7.13.2
-#  provider: ^6.0.5
+  #  provider: ^6.0.5
+
+  flutter_html:
+  curl_logger_dio_interceptor: ^1.0.0
+
+dependency_overrides:
+  geolocator_android: ^4.2.2
+  # flutter compass in pub.dev is not updated
+  #flutter_compass:
+  #  path: flutter_compass
 
 dev_dependencies:
   flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter
+  json_serializable: ^6.7.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -188,7 +224,9 @@ flutter:
     - assets/icons/svg/weather/
     - assets/icons/svg/profile/
     - assets/icons/svg/nearby/
-    - assets/icons/svg/routing/
+    - assets/icons/svg/violations/
+    - assets/icons/svg/events/
+    - assets/icons/svg/self_rating/
     - assets/icons/svg/vd/
     - assets/icons/svg/qr/
     - assets/icons/svg/dc/
@@ -202,11 +240,27 @@ flutter:
     - assets/icons/svg/weather/night/
     - assets/images/
     - assets/langs/
-    # - assets/services/
+    - assets/quran/
     - assets/maps/styles/
     - assets/maps/icons/
     - assets/maps/icons/card_icon/
     - assets/maps/icons/gis_layers_icons/
+    - assets/icons/svg/home_events/
+    - assets/etmam_app/icons/png/
+    - assets/etmam_app/icons/svg/
+    - assets/etmam_app/icons/svg/bottom_navigation_icons/
+    - assets/etmam_app/icons/svg/social_media/
+    - assets/etmam_app/images/
+    - assets/animation/
+    - assets/icons/inq/
+    - assets/icons/msr/
+    - assets/icons/tsr/
+    - assets/images/building/
+    - assets/compliance_pdf/images/
+    - assets/compliance_pdf/text/
+    - assets/athkar/
+
+    # - assets/services/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -231,6 +285,25 @@ flutter:
           weight: 700
         - asset: assets/fonts/Arabic-UI-Text-Medium.otf
           weight: 500
+    - family: HafsSmart
+      fonts:
+        - asset: assets/fonts/HafsSmart_08.ttf
+    - family: uthmanic
+      fonts:
+        - asset: assets/fonts/uthmanic_hafs_v20.ttf
+
+    - family: sura_juza_names
+      fonts:
+        - asset: assets/fonts/sura_juza_names.ttf
+
+    #   - family: Trajan Pro
+    #     fonts:
+    #       - asset: fonts/TrajanPro.ttf
+    #       - asset: fonts/TrajanPro_Bold.ttf
+    #         weight: 700
+    #
+    # For details regarding fonts from package dependencies,
+    # see https://flutter.dev/custom-fonts/#from-packages
     - family: Frutiger
       fonts:
         - asset: fonts/FrutigerLTArabic45Light.ttf

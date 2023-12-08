@@ -7,13 +7,12 @@ import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
-import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 
 const _objectManager = "QuickFilters";
 
-class MapQuickFilters extends ConsumerWidget {
+class MapQuickFilters extends ConsumerStatefulWidget {
   const MapQuickFilters({
     super.key,
     this.customFilters,
@@ -22,8 +21,27 @@ class MapQuickFilters extends ConsumerWidget {
   });
 
   final List<FilterItem>? customFilters;
-  final Function(int)? onCustomTap;
+  final void Function(int)? onCustomTap;
   final bool forMap;
+
+  @override
+  ConsumerState<MapQuickFilters> createState() => _MapQuickFiltersState();
+}
+
+class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
+  late ClusteringMapObjectManager _clustering;
+
+  @override
+  void initState() {
+    super.initState();
+    _clustering = ClusteringMapObjectManager(
+      options: ClusteringMapObjectManagerOptionsMessage(
+        logicalPixel: 40,
+        maxZoom: 16,
+      ),
+      renderCluster: _renderCluster,
+    );
+  }
 
   SimpleClusterOptionsMessage _renderCluster(int objectCount) {
     return SimpleClusterOptionsMessage(
@@ -41,18 +59,12 @@ class MapQuickFilters extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final selectedFilter = ref.watch(searchByRubricsQueryProvider);
     final searchObjectManager = ref.watch(
       mapObjectManagerProvider(
         named: _objectManager,
-        clustering: ClusteringMapObjectManager(
-          options: ClusteringMapObjectManagerOptionsMessage(
-            logicalPixel: 40,
-            maxZoom: 16,
-          ),
-          renderCluster: _renderCluster,
-        ),
+        clustering: _clustering,
       ).notifier,
     );
     ref.listen(searchByRubricsProvider, (previous, next) async {
@@ -84,19 +96,12 @@ class MapQuickFilters extends ConsumerWidget {
 
         await searchObjectManager.addMarkers(markers);
 
-        final dgisController = ref.read(dgisControllerProvider);
-        final cameraPosition = await dgisController?.calcPositionForMarkers(
-          markers.map((e) => e.id).toList(),
-          CalcPositionOptionsMessage(),
-        );
-        if (cameraPosition != null) {
-          ref.read(cameraPositionProvider.notifier).animateTo(cameraPosition);
-        }
+        ref.read(cameraPositionProvider.notifier).animateToMarkers(markers);
       }
     });
 
     return QuickFilters(
-      onFavouritesTap: () {
+      onFavouritesBookmarkTap: () {
         const FavouritesRoute().push(context);
       },
       onFilterTap: (filter, index) {
@@ -109,10 +114,10 @@ class MapQuickFilters extends ConsumerWidget {
         }
       },
       selectedIndex: selectedFilter?.$2,
-      itemBackground: forMap ? Colors.white : const Color(0x0D1E2A36),
-      customFilters: customFilters,
-      onCustomTap: onCustomTap,
-      padding: forMap
+      itemBackground: widget.forMap ? Colors.white : const Color(0x0D1E2A36),
+      customFilters: widget.customFilters,
+      onCustomTap: widget.onCustomTap,
+      padding: widget.forMap
           ? const EdgeInsets.symmetric(
               horizontal: 12,
             )

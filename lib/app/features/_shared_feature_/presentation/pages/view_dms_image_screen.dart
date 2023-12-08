@@ -5,8 +5,7 @@ import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/constants.dart';
 
 class ViewDMSImageScreen extends StatefulWidget {
-  final String url;
-  const ViewDMSImageScreen({Key? key, required this.url}) : super(key: key);
+  const ViewDMSImageScreen({Key? key}) : super(key: key);
 
   @override
   State<ViewDMSImageScreen> createState() => _ViewDMSImageScreenState();
@@ -15,11 +14,12 @@ class ViewDMSImageScreen extends StatefulWidget {
 class _ViewDMSImageScreenState extends State<ViewDMSImageScreen> {
   @override
   Widget build(BuildContext context) {
+    String url = ModalRoute.of(context)!.settings.arguments as String;
     return Stack(
       children: [
         PhotoView(
-          imageProvider: NetworkImage(widget.url, headers: {
-            "verifyingKEY": CommonFunctions.hashRequest(widget.url, "GET")
+          imageProvider: NetworkImage(url, headers: {
+            "verifyingKEY": CommonFunctions.hashRequest(url, "GET")
 
             //  "Authorization":
             //      "Bearer ${locator<AuthService>().accessToken}"
@@ -35,7 +35,7 @@ class _ViewDMSImageScreenState extends State<ViewDMSImageScreen> {
               margin: EdgeInsetsDirectional.only(
                   top: MediaQuery.of(context).padding.top + 5, start: 12),
               child: Image.asset(
-                '${Constants.imgPath}exit@3x.png',
+                Constants.imgPath + 'exit@3x.png',
                 height: 38,
                 width: 38,
               ),

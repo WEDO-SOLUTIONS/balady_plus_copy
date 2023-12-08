@@ -9,7 +9,7 @@ class ChallengeHomeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HomeSection(
+    return  HomeSection(
       title: 'تحدي بلدي',
       topPadding: 12,
       child: Container(
@@ -43,7 +43,7 @@ class ChallengeHomeCard extends StatelessWidget {
                     fontColor: AppColor.blackModern50Light,
                     fontWeight: AppFontWeight.bold,
                     fontSize: 12,
-                    maxLines: 10,
+                    maxLines: null,
                     height: 1.5,
                   ),
                   const SizedBox(height: 12),
@@ -67,5 +67,6 @@ class ChallengeHomeCard extends StatelessWidget {
         ),
       ),
     );
+
   }
 }

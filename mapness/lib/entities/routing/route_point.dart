@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:dgis_map/library.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 
 enum RoutePointType { object, myLocation }
 
@@ -20,8 +21,8 @@ extension RoutePointData on RoutePoint {
         RoutePointType.object => "assets/icons/svg/ic_routing_circle.svg",
       };
 
-  String? get title => switch (type) {
-        RoutePointType.myLocation => "My Location",
+  String? title(AppLocalizations locale) => switch (type) {
+        RoutePointType.myLocation => locale.myLocation,
         RoutePointType.object => object?.title
       };
 

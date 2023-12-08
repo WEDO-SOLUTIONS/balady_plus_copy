@@ -1,6 +1,7 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ChallengeCard extends StatelessWidget {
   const ChallengeCard({super.key});
@@ -31,7 +32,7 @@ class ChallengeCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "تحدي بلدي",
+                          context.l10n.myChallenge,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
                               .textL
@@ -43,7 +44,7 @@ class ChallengeCard extends StatelessWidget {
                         SizedBox(
                           width: 190,
                           child: Text(
-                            "وساهم في تصدي مظاهر التلوث البصري في مدينتك",
+                            context.l10n.shareChallengeWithUs,
                             style: Theme.of(context)
                                 .extension<ThemeTextStyles>()!
                                 .textS
@@ -63,7 +64,7 @@ class ChallengeCard extends StatelessWidget {
                               color: Colors.white,
                             ),
                             child: Text(
-                              "ابدأ التحدي",
+                              context.l10n.start,
                               textAlign: TextAlign.center,
                               style: Theme.of(context)
                                   .extension<ThemeTextStyles>()!

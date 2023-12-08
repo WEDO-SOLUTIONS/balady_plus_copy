@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/notification_service.dart';
 import 'package:balady_plus/app/core/utils/enums/prayers.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/utils/app_analytics_events.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show
         AppColor,
@@ -22,11 +24,8 @@ import '../../prayer_times_exports.dart';
 import '../widgets/prayer_unkown_location.dart';
 
 class PrayerTimesPage extends StatefulWidget {
-  final PrayerTimesCubit cubit;
-
   const PrayerTimesPage({
     super.key,
-    required this.cubit,
   });
 
   @override
@@ -38,14 +37,21 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
   void initState() {
     super.initState();
 
-    //widget.cubit.getPrayerTime();
-    // widget.cubit.getPrayerTimeRange();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      cubit.getPrayerTime();
+      cubit.getPrayerTimeRange();
+    });
+
+    CommonFunctions.sendEventToAnalytics(AppEvents.prayingTimes);
   }
 
+  late PrayerTimesCubit cubit;
   @override
   Widget build(BuildContext context) {
+    cubit = ModalRoute.of(context)!.settings.arguments as PrayerTimesCubit;
+
     return BlocProvider.value(
-      value: widget.cubit,
+      value: cubit,
       child: Scaffold(
         body: Column(
           children: [
@@ -89,11 +95,13 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                                 child: Visibility(
                                   visible: state.status.isSubmissionGetSuccess,
                                   child: GestureDetector(
-                                    onTap: () => {},
+                                    onTap: () => context
+                                        .read<PrayerTimesCubit>()
+                                        .prayerSettingsOnOff(),
                                     // onTap: () => NotificationService
                                     //     .showScheduledNotification(
                                     //     id: 1,
-                                    //     title: "حان الان موعد اذان العصر",
+                                    //     title: "حان الان موعد أذان العصر",
                                     //     // body: "Bahaaasaaa",
                                     //     // payload: "Payload",
                                     //     scheduledDate: DateTime.now()
@@ -145,7 +153,7 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                           }
                           if (state.userLocationUnkown == true) {
                             return UnKownPrayerLocation(
-                              onTap: () => widget.cubit.getPrayerTime(),
+                              onTap: () => cubit.getPrayerTime(),
                             );
                           }
                           if (state.nextPrayer != null)
@@ -169,7 +177,8 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                     if (state.status ==
                         BlocRequestStatus.submissionGetFailure) {
                       return ReloadWidget(onTab: () {
-                        widget.cubit.getPrayerTime();
+                        cubit.getPrayerTime();
+                        cubit.getPrayerTimeRange();
                       });
                     }
                     return Column(
@@ -235,7 +244,9 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                                     ),
                                     const SizedBox(width: 20),
                                     GestureDetector(
-                                      onTap: () => {},
+                                      onTap: () => context
+                                          .read<PrayerTimesCubit>()
+                                          .onChangePrayerSettings(index),
                                       child: CustomSvgIconWidget(
                                         IconPath.notificationIc,
                                         iconColor:

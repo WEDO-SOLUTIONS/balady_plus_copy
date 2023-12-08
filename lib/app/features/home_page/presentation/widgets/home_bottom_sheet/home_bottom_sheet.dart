@@ -24,9 +24,9 @@ import '../../../home_exports.dart'
         ReportHomeCard;
 
 import 'package:provider/provider.dart';
-//import 'calendar_home_item_widget.dart';
+import 'calendar_home_item_widget.dart';
 import 'cityscape_map_card.dart';
-//import 'event_home_card.dart';
+import 'event_home_card.dart';
 import 'general_event_card.dart';
 import 'location_home_card.dart';
 
@@ -46,7 +46,6 @@ class HomeBottomSheet extends StatelessWidget {
       return ValueListenableBuilder<bool>(
           valueListenable: mapViewModel.viewHomeBottomSheet,
           builder: (_, visible, child) {
-            print("initial ${mapViewModel.bottomSheetSizeFraction.value}");
             return visible ? child! : const SizedBox();
           },
           child: DraggableSheetCard(
@@ -77,7 +76,7 @@ class HomeBottomSheet extends StatelessWidget {
                         BaladySmartAdvisorCard(),
 
                         //GeneralEventHomeCard(),
-                        //  EventHomeCard(),
+                        EventHomeCard(),
                         //  CalendarHomeItemWidget(),
 
                         //  ChallengeHomeCard(),

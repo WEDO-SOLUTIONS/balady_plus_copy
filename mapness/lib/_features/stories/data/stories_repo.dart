@@ -1,5 +1,5 @@
-import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart';
+import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'stories_repo.g.dart';
@@ -11,6 +11,7 @@ class StoriesRepo extends _$StoriesRepo {
     final dio = ref.watch(dGisNetworkProvider);
     final rawResponse = await dio.get('stories');
     final storiesResponse = StoriesResponse.fromBuffer(rawResponse.data);
+    print(rawResponse.data);
     return storiesResponse;
   }
 }

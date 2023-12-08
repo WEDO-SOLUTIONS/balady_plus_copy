@@ -1,10 +1,17 @@
+import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/enums/enums.dart';
+import '../../../daem/data/models/daem_item.dart';
+import '../../../daem/presentation/dialogs/str_type_with_search_dialog.dart';
 import '../../data/entities/drop_down_item.dart';
 import '../dialogs/incident_type_with_search_dialog.dart';
 import '../dialogs/multi_selection_with_search_dialog.dart';
@@ -31,6 +38,7 @@ class CustomHeaderAndDescOnTapWidget extends StatefulWidget {
   final MATERIAL_ICON_DIRECTION materialIconDirection;
   final Widget? icon;
   final bool? showOptional;
+  final double? marginBottom;
 
   const CustomHeaderAndDescOnTapWidget(
       {Key? key,
@@ -39,6 +47,7 @@ class CustomHeaderAndDescOnTapWidget extends StatefulWidget {
       this.labelSize = 16.0,
       this.labelTextAlign = TextAlign.start,
       this.hintText = '',
+      this.marginBottom,
       this.filled = false,
       this.fillColor = Colors.transparent,
       this.borderRadius = 8.0,
@@ -141,7 +150,7 @@ class _CustomHeaderAndDescOnTapWidget
                     ),
                   ],
                 ),
-              const CustomVerticalSpace(height: 30.0),
+              CustomVerticalSpace(height: widget.marginBottom ?? 30.0),
             ],
           );
         },
@@ -191,16 +200,20 @@ class CustomTapWidgetForLongDialog extends StatefulWidget {
   String? errorText;
   final bool? showOptional;
   final bool showHintAsTitle;
+  final double? marginBottom;
+  final bool isLoading;
 
   CustomTapWidgetForLongDialog(
       {Key? key,
       required this.onChangeType,
       this.value,
+      this.marginBottom,
       required this.items,
       this.hint,
       required this.label,
       this.searchHint,
       this.errorText,
+      this.isLoading = false,
       this.showOptional = false,
       this.showHintAsTitle = false})
       : super(key: key);
@@ -214,33 +227,39 @@ class _CustomTapWidgetForLongDialog
     extends State<CustomTapWidgetForLongDialog> {
   @override
   Widget build(BuildContext context) {
-    return CustomHeaderAndDescOnTapWidget(
-      label: widget.label,
-      hintText: widget.hint!,
-      textValue: widget.value?.name,
-      showOptional: widget.showOptional,
-      labelColor: AppColor.blackModern700Light,
-      labelSize: 16,
-      onTap: widget.items.isNotEmpty
-          ? () async {
-              FocusManager.instance.primaryFocus?.unfocus();
-              await CustomPopUpsWidgets.showBottomSheet(
-                NavigationService.navigatorKey.currentContext!,
-                child: IncidentTypeWithSearchDialog(
-                  onSelect: (DropDownItem item) => widget.onChangeType(item),
-                  items: widget.items,
-                  selectedItem: widget.value,
-                  title: widget.showHintAsTitle ? widget.hint : widget.label,
-                  searchHint: widget.searchHint,
-                ),
-              );
-            }
-          : () {
-              FocusManager.instance.primaryFocus?.unfocus();
-              CommonFunctions.showError(
-                  widget.errorText ?? ('empty_list_error').tr());
-            },
-    );
+    return !widget.isLoading
+        ? CustomHeaderAndDescOnTapWidget(
+            label: widget.label,
+            hintText: widget.hint ?? ("choose_hint").tr(),
+            textValue: widget.value?.name,
+            showOptional: widget.showOptional,
+            labelColor: AppColor.blackModern700Light,
+            labelSize: 16,
+            marginBottom: widget.marginBottom,
+            onTap: widget.items.isNotEmpty
+                ? () async {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    await CustomPopUpsWidgets.showBottomSheet(
+                      NavigationService.navigatorKey.currentContext!,
+                      child: IncidentTypeWithSearchDialog(
+                        onSelect: (DropDownItem item) =>
+                            widget.onChangeType(item),
+                        items: widget.items,
+                        selectedItem: widget.value,
+                        title:
+                            widget.showHintAsTitle ? widget.hint : widget.label,
+                        searchHint: widget.searchHint ?? ("searchFor").tr(),
+                      ),
+                    );
+                  }
+                : () {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    CommonFunctions.showError(
+                        widget.errorText ?? ('empty_list_error').tr());
+                  },
+          )
+        : const CustomShimmerWidget(
+            childHeight: 48, padding: EdgeInsets.only(bottom: 30));
   }
 }
 
@@ -387,8 +406,6 @@ class _CustomTapWidgetForMultiLongDialog
   }
 }
 
-
-/*
 class TapWidgetForLongDialog extends StatefulWidget {
   DaemItem? value;
   Function(DaemItem? item) onChangeType;
@@ -441,10 +458,9 @@ class _TapWidgetForLongDialog extends State<TapWidgetForLongDialog> {
             }
           : () {
               FocusManager.instance.primaryFocus?.unfocus();
-              showError(widget.errorText ??
-                  Helpers.translatingWord('empty_list_error'));
+              CommonFunctions.showError(
+                  widget.errorText ?? ('empty_list_error').tr());
             },
     );
   }
 }
-*/

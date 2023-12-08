@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show FilteringTextInputFormatter, TextInputFormatter;
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/enums/enums.dart';
 import '../../../../../core/utils/utils_exports.dart'
@@ -65,71 +66,75 @@ class CustomTextFieldWidget extends StatelessWidget {
   final double borderRadius;
   final Color? borderColor;
   final String? errorText;
-
+  final double? spacerSize;
+  final double? bottomMargin;
   final void Function(String)? onChanged;
   final void Function(String)? onSubmitted;
   final void Function()? onTap;
   final void Function(PointerDownEvent)? onTapOutside;
   final String? Function(String?)? onValidate;
+  final bool showOptional;
 
-  const CustomTextFieldWidget({
-    super.key,
-    this.enabled = true,
-    this.label,
-    this.labelStyle,
-    this.isRequired = false,
-    this.controller,
-    this.focusNode,
-    this.autocorrect = false,
-    this.autofillHints,
-    this.autovalidateMode,
-    this.cursorColor,
-    this.cursorHeight,
-    this.cursorWidth = 2.0,
-    this.showCursor,
-    this.initialValue,
-    this.isDigitsOnly = false,
-    this.inputFormatters,
-    this.allowedInputPattern,
-    this.deniedInputPattern,
-    this.keyboardType,
-    this.maxLength,
-    this.maxLines = 1,
-    this.obsecureText = false,
-    this.readOnly = false,
-    this.disabledColor,
-    this.textAlign,
-    this.textInputAction,
-    this.textFieldStyle,
-    this.textFieldWidth,
-    this.textFieldHeight,
-    // this.textFieldHeight = 90.0,
-    this.hintText,
-    this.hintStyle,
-    this.filled = true,
-    this.fillColor,
-    // this.textFieldVerticalPadding = 24.0,
-    this.textFieldVerticalPadding = 20.0,
-    this.startPadding = 16.0,
-    this.endPadding = 6.0,
-    this.prefixIcon,
-    this.prefixSize = 18.0,
-    this.spaceBeforePrefix = 20.0,
-    this.spaceAfterPrefix = 8.0,
-    this.suffixIcon,
-    this.suffixSize = 18.0,
-    this.spaceBeforeSuffix = 6.0,
-    this.spaceAfterSuffix = 16.0,
-    this.borderType,
-    this.borderColor,
-    this.borderRadius = 8.0,
-    this.errorText,
-    this.onChanged,
-    this.onSubmitted,
-    this.onTap,
-    this.onTapOutside,
-    this.onValidate,
-  });
+  const CustomTextFieldWidget(
+      {super.key,
+      this.enabled = true,
+      this.showOptional = false,
+      this.label,
+      this.labelStyle,
+      this.isRequired = false,
+      this.controller,
+      this.focusNode,
+      this.autocorrect = false,
+      this.autofillHints,
+      this.bottomMargin,
+      this.autovalidateMode,
+      this.cursorColor,
+      this.cursorHeight,
+      this.cursorWidth = 2.0,
+      this.showCursor,
+      this.initialValue,
+      this.isDigitsOnly = false,
+      this.inputFormatters,
+      this.allowedInputPattern,
+      this.deniedInputPattern,
+      this.keyboardType,
+      this.maxLength,
+      this.maxLines = 1,
+      this.obsecureText = false,
+      this.readOnly = false,
+      this.disabledColor,
+      this.textAlign,
+      this.textInputAction,
+      this.textFieldStyle,
+      this.textFieldWidth,
+      this.textFieldHeight,
+      // this.textFieldHeight = 90.0,
+      this.hintText,
+      this.hintStyle,
+      this.filled = true,
+      this.fillColor,
+      // this.textFieldVerticalPadding = 24.0,
+      this.textFieldVerticalPadding = 20.0,
+      this.startPadding = 16.0,
+      this.endPadding = 6.0,
+      this.prefixIcon,
+      this.prefixSize = 18.0,
+      this.spaceBeforePrefix = 20.0,
+      this.spaceAfterPrefix = 8.0,
+      this.suffixIcon,
+      this.suffixSize = 18.0,
+      this.spaceBeforeSuffix = 6.0,
+      this.spaceAfterSuffix = 16.0,
+      this.borderType,
+      this.borderColor,
+      this.borderRadius = 8.0,
+      this.errorText,
+      this.onChanged,
+      this.onSubmitted,
+      this.onTap,
+      this.onValidate,
+      this.spacerSize,
+      this.onTapOutside});
 
   @override
   Widget build(BuildContext context) {
@@ -138,10 +143,23 @@ class CustomTextFieldWidget extends StatelessWidget {
       children: [
         // Label
         // if field is required, then show label beside asterisk e.g. *Username
-        WidgetLabel(
-          isRequired: isRequired,
-          label: label,
-          labelStyle: labelStyle,
+        Row(
+          children: [
+            WidgetLabel(
+              isRequired: isRequired,
+              label: label,
+              labelStyle: labelStyle,
+            ),
+            if (showOptional == true)
+              Text(
+                ('optional').tr(),
+                style: const TextStyle(
+                    color: Color(0xffbabbbb),
+                    fontSize: 13.0,
+                    fontFamily: GeneralKey.appFontType,
+                    fontWeight: FontWeight.bold),
+              ),
+          ],
         ),
         // Field
         TextFormField(
@@ -299,10 +317,12 @@ class CustomTextFieldWidget extends StatelessWidget {
           ),
           onTap: onTap,
           onChanged: onChanged,
-          onTapOutside: onTapOutside,
           onFieldSubmitted: onSubmitted,
           validator: onValidate,
+          onTapOutside: onTapOutside,
         ),
+        if (spacerSize != null) CustomVerticalSpace(height: spacerSize!),
+        SizedBox(height: bottomMargin),
       ],
     );
   }
@@ -318,7 +338,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
   final Color labelColor;
   final double labelSize;
   final TextAlign labelTextAlign;
-
+  final bool isDigitsOnly;
   final bool filled;
   final Color fillColor;
   final double borderWidth;
@@ -326,7 +346,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
   final Color borderColor;
   final BORDER_TYPE borderType;
 
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final FocusNode? focusNode;
   final bool autoCorrect;
   final bool readOnly;
@@ -349,7 +369,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
   final double prefixSize;
   final double? suffixSize;
   final int errorMaxLines;
-  final double spacerSize;
+  final double? spacerSize;
   final void Function(String)? onFieldSubmitted;
   final void Function(String)? onChanged;
   final String? Function(String?)? validator;
@@ -365,6 +385,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
       this.labelColor = AppColor.baladyDarkGreen2,
       this.labelSize = 13.0,
       this.labelTextAlign = TextAlign.start,
+      this.isDigitsOnly = false,
       this.filled = false,
       this.textDirection,
       this.fillColor = Colors.transparent,
@@ -372,7 +393,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
       this.borderRadius = 2.0,
       this.borderColor = AppColor.black200,
       this.borderType = BORDER_TYPE.underline,
-      required this.controller,
+      this.controller,
       this.focusNode,
       this.autoCorrect = true,
       this.readOnly = false,
@@ -441,7 +462,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
                   child: TextFormField(
                     controller: controller,
                     textDirection: textDirection,
-                    focusNode: focusNode ?? FocusNode(),
+                    focusNode: focusNode,
                     autocorrect: autoCorrect,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     readOnly: readOnly,
@@ -453,7 +474,11 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
                     obscureText: obsecureText,
                     textAlignVertical: textAlignVertical,
                     textInputAction: textInputAction,
-                    inputFormatters: inputFormatter,
+                    inputFormatters: inputFormatter ??
+                        [
+                          if (isDigitsOnly)
+                            FilteringTextInputFormatter.digitsOnly,
+                        ],
                     style: textFieldStyle ??
                         const TextStyle(
                             fontSize: 16.0,
@@ -468,6 +493,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
                       ),
                       // counter: const SizedBox(),
                       hintText: hintText,
+
                       hintStyle: hintStyle ??
                           const TextStyle(
                               fontSize: 16.0,
@@ -506,7 +532,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
             );
           },
         ),
-        CustomVerticalSpace(height: spacerSize),
+        if (spacerSize != null) CustomVerticalSpace(height: spacerSize!),
       ],
     );
   }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
-//import '../../../../../core/utils/constants/dialog_names.dart';
+import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -59,7 +59,7 @@ class CityScapeMapCard extends StatelessWidget {
                           fontWeight: AppFontWeight.bold,
                           fontSize: 12,
                           textAlign: TextAlign.start,
-                          maxLines: 10,
+                          maxLines: null,
                           height: 1.5,
                         ),
                       ),

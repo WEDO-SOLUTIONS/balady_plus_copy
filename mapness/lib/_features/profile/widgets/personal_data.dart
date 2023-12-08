@@ -1,11 +1,15 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-
-
+import 'package:mapness/features/sso_auth/domain/entity/sso_user_info_model.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PersonalData extends StatelessWidget {
-  const PersonalData({super.key});
+  final SsoUserInfoModel userInfo;
+
+  const PersonalData({
+    super.key,
+    required this.userInfo,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,32 +17,32 @@ class PersonalData extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         PersonalDataRow(
-          title: "Ahmed",
+          title: userInfo.givenName ?? "",
           subtitle: context.l10n.firstName,
         ),
         PersonalDataRow(
-          title: "El Usman",
+          title: userInfo.familyName ?? "",
           subtitle: context.l10n.lastName,
         ),
         PersonalDataRow(
-          title: "Ahmed.Usman@gmail.com",
+          title: userInfo.mail ?? "",
           subtitle: context.l10n.email,
         ),
         PersonalDataRow(
-          title: "05.04.1978",
+          title: userInfo.getFormattedBirthDate(),
           subtitle: context.l10n.dateOfBirth,
         ),
         PersonalDataRow(
-          title: "أحمد عبده أحمد أفه العثمان",
+          title: userInfo.arName ?? "",
           subtitle: context.l10n.arabicFullName,
           isArabic: true,
         ),
         PersonalDataRow(
-          title: "Ahmed Abdu Ahmed Avh El Usman",
+          title: userInfo.getFirstAndLastName(),
           subtitle: context.l10n.englishFullName,
         ),
         PersonalDataRow(
-          title: "Saudi Arabia",
+          title: userInfo.nationality ?? "",
           subtitle: context.l10n.nationality,
         ),
       ],
@@ -68,12 +72,21 @@ class PersonalDataRow extends StatelessWidget {
           Text(
             title,
             style: isArabic
-                ? Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0xFF1E2A36))
-                : Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0xFF1E2A36)),
+                ? Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .textM
+                    .copyWith(color: const Color(0xFF1E2A36))
+                : Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .textM
+                    .copyWith(color: const Color(0xFF1E2A36)),
           ),
           Text(
             subtitle,
-            style: Theme.of(context).extension<ThemeTextStyles>()!.textXS.copyWith(color: const Color(0xB21E2A36)),
+            style: Theme.of(context)
+                .extension<ThemeTextStyles>()!
+                .textXS
+                .copyWith(color: const Color(0xB21E2A36)),
           ),
         ],
       ),

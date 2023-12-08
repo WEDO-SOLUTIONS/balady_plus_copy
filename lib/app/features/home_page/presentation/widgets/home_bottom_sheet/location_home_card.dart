@@ -42,7 +42,7 @@ class LocationHomeCard extends StatelessWidget {
                   fontColor: Color(0x6b111111),
                   fontWeight: AppFontWeight.bold,
                   fontSize: 12,
-                  maxLines: 10,
+                  maxLines: null,
                   height: 1.5,
                 ),
                 const SizedBox(height: 12),

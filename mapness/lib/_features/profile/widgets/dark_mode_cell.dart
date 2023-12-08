@@ -47,8 +47,11 @@ class DarkModeCell extends ConsumerWidget {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 2.0),
                     child: Text(
-                      context.l10n.darkMode,
-                      style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0xFF1E2A36)),
+                      context.l10n.darkMap,
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .textM
+                          .copyWith(color: const Color(0xFF1E2A36)),
                     ),
                   ),
                   const SizedBox(

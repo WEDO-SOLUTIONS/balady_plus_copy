@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/common/providers/route_onboarding.dart';
 import 'package:mapness/_features/profile/widgets/profile_image_widget.dart';
+import 'package:mapness/_features/stories/domain/story_types.dart';
+import 'package:mapness/_features/stories/stories.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 // Stateful navigation based on:
@@ -30,21 +33,43 @@ class _ScaffoldWithNestedNavigationState
     super.initState();
   }
 
+  void _goToPage(int page) {
+    currentTab = page;
+    widget.navigationShell.goBranch(
+      page,
+      // A common pattern when using bottom navigation bars is to support
+      // navigating to the initial location when tapping the item that is
+      // already active. This example demonstrates how to support this behavior,
+      // using the initialLocation parameter of goBranch.
+      initialLocation: page == widget.navigationShell.currentIndex,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScaffoldWithNavigationBar(
       body: widget.navigationShell,
       currentIndex: currentTab,
-      onDestinationSelected: (int selected) {
-        currentTab = selected;
-        widget.navigationShell.goBranch(
-          selected,
-          // A common pattern when using bottom navigation bars is to support
-          // navigating to the initial location when tapping the item that is
-          // already active. This example demonstrates how to support this behavior,
-          // using the initialLocation parameter of goBranch.
-          initialLocation: selected == widget.navigationShell.currentIndex,
-        );
+      onDestinationSelected: (int selected) async {
+        if (selected == 2) {
+          final isShowRoute = await ref.read(routeOnboardingProvider.future);
+          if (isShowRoute) {
+            _goToPage(selected);
+          } else {
+            if (!mounted) return;
+            Stories.showOnboarding(
+              context,
+              StoryTypes.route,
+              'route',
+              onClose: () async {
+                await ref.read(routeOnboardingProvider.notifier).setShown(true);
+                _goToPage(selected);
+              },
+            );
+          }
+          return;
+        }
+        _goToPage(selected);
       },
     );
   }

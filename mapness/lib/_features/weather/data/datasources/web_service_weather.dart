@@ -22,8 +22,10 @@ class WebServiceWeather {
     dio.options.sendTimeout = const Duration(milliseconds: 60000);
     dio.options.headers = {};
     dio.interceptors.add(PrettyDioLogger(
+      responseBody: false,
       requestHeader: true,
-      requestBody: true,
+      requestBody: false,
+      responseHeader: true
     ));
   }
 }

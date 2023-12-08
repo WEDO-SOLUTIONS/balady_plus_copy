@@ -99,6 +99,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
 
           ref
               .read(dgisControllerProvider)
+              .value
               ?.setPublicTransportActiveRoute(index);
         },
         startNavigation: widget.startNavigation,

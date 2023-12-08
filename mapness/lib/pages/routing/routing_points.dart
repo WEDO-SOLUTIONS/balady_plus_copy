@@ -4,6 +4,7 @@ import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/pages/routing/ui/routing_header_delegate.dart';
 import 'package:mapness/pages/routing/ui/routing_history.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 
 class RoutingPointsPage extends StatelessWidget {
@@ -117,10 +118,10 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
                         RoutingRoutesRoute(
                           startLatitude: points[0].latitude,
                           startLongitude: points[0].longitude,
-                          startLabel: points[0].title ?? "",
+                          startLabel: points[0].title(context.l10n) ?? "",
                           finishLatitude: points[1].latitude,
                           finishLongitude: points[1].longitude,
-                          finishLabel: points[1].title ?? "",
+                          finishLabel: points[1].title(context.l10n) ?? "",
                         ).go(context);
                       }
                     },
@@ -142,10 +143,10 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
                         RoutingRoutesRoute(
                           startLatitude: points[0].latitude,
                           startLongitude: points[0].longitude,
-                          startLabel: points[0].title ?? "",
+                          startLabel: points[0].title(context.l10n) ?? "",
                           finishLatitude: points[1].latitude,
                           finishLongitude: points[1].longitude,
-                          finishLabel: points[1].title ?? "",
+                          finishLabel: points[1].title(context.l10n) ?? "",
                         ).go(context);
                       }
                     },

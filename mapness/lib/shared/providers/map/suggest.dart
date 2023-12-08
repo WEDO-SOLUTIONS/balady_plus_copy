@@ -28,9 +28,9 @@ class SuggestResults extends _$SuggestResults {
   }
 
   Future<List<SuggestMessage>> _fetch(String query) async {
-    final dgisController = ref.watch(dgisControllerProvider);
+    final dgisController = ref.read(dgisControllerProvider);
 
-    final result = await dgisController?.fetchSuggest(query);
+    final result = await dgisController.value?.fetchSuggest(query);
     return result?.suggests.whereType<SuggestMessage>().toList() ?? [];
   }
 }

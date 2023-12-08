@@ -1,0 +1,12 @@
+<svg width="48" height="49" viewBox="0 0 48 49" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <circle id="0rekz435ca" cx="24" cy="24" r="24"/>
+    </defs>
+    <g fill="none" fill-rule="evenodd">
+        <use fill="#036362" xlink:href="#0rekz435ca" transform="translate(0 .5)"/>
+        <g stroke="#FFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.333">
+            <path d="M23.294 30.856c-.78 0-1.413-.632-1.413-1.413v-7.062c0-.78.633-1.412 1.413-1.412h9.887c.78 0 1.412.632 1.412 1.412v7.062c0 .78-.632 1.413-1.412 1.413h-1.413v4.237l-4.237-4.237h-4.237z"/>
+            <path d="m19.057 25.206-2.825 2.825v-4.237h-1.413c-.78 0-1.412-.633-1.412-1.413V15.32c0-.78.632-1.412 1.412-1.412h9.887c.78 0 1.413.632 1.413 1.412v2.825"/>
+        </g>
+    </g>
+</svg>

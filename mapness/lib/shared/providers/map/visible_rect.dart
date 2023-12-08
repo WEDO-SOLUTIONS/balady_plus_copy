@@ -10,7 +10,7 @@ class _VisibleRect extends _$VisibleRect {
   VisibleRect? build() {
     final dgisController = ref.watch(dgisControllerProvider);
     final visibleRectSubscription =
-        dgisController?.visibleRectEvents.listen(_visibleRectListener);
+        dgisController.value?.visibleRectEvents.listen(_visibleRectListener);
     ref.onDispose(
       () {
         visibleRectSubscription?.cancel();

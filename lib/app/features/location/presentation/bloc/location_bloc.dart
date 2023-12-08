@@ -51,7 +51,6 @@ class LocationCubit extends Cubit<LocationState> {
             locationPermissionStatus: BlocStatus.locationPermissionSuceess));
       }
     } else {
-      //print("disabled");
       emit(state.copyWith(
           locationServiceStatus: BlocStatus.locationServiceFailed));
     }
@@ -63,11 +62,8 @@ class LocationCubit extends Cubit<LocationState> {
 
     emit(state.copyWith(locationStatus: BlocStatus.loading));
 
-    /* LatLng? location = await Helpers.getCurrentLocation(
+    LatLng? location = await Helpers.getCurrentLocation(
         accuracy: LocationAccuracy.medium, duration: Duration(seconds: 1));
-*/
-
-    LatLng? location = await Helpers.getCurrentLocation();
 
     if (location != null) {
       emit(state.copyWith(
@@ -85,11 +81,10 @@ class LocationCubit extends Cubit<LocationState> {
       final failureOrSuccess = await _getGISData(state.gisParams!);
 
       failureOrSuccess.fold((l) {
-        print("Succccceesss 33 $l");
         emit(state.copyWith(requestsStatus: BlocStatus.failure));
       }, (r) {
-        //  sharedPrefs.setUserGISLoaction(r.toModel);
-        //   sharedPrefs.setUserLocation(state.gisParams);
+        sharedPrefs.setUserGISLoaction(r.toModel);
+        sharedPrefs.setUserLocation(state.gisParams);
         emit(
             state.copyWith(requestsStatus: BlocStatus.success, gisResponse: r));
       });
@@ -97,7 +92,7 @@ class LocationCubit extends Cubit<LocationState> {
   }
 
   Future<bool> getLocationCachedInit() async {
-    /* GISParams? cachedLocation = await sharedPrefs.getUserLocation();
+    GISParams? cachedLocation = await sharedPrefs.getUserLocation();
     GISResponse? cachedGIS = await sharedPrefs.getUserGISData();
 
     await getLocationPermission();
@@ -116,22 +111,15 @@ class LocationCubit extends Cubit<LocationState> {
       return true;
     } else {
       return false;
-    }*/
-    return true;
+    }
   }
 
   Future<void> getLocationInit() async {
-    /*  print("getLocationInit");
     if (state.locationStatus != BlocStatus.loading &&
         state.requestsStatus != BlocStatus.loading) {
       GISParams? cachedLocation = await sharedPrefs.getUserLocation();
       GISResponse? cachedGIS = await sharedPrefs.getUserGISData();
       await getLocationPermission();
-
-      //print("PERMISSIN ${state.locationPermissionStatus}");
-      //print("PERMISSIN ${state.locationServiceStatus}");
-      //print("PERMISSIN ${cachedLocation}");
-      //print("PERMISSIN ${cachedGIS}");
 
       if (cachedLocation != null &&
           cachedGIS != null &&
@@ -148,7 +136,6 @@ class LocationCubit extends Cubit<LocationState> {
 
       await getLocationData();
       await getGISData();
-    }*/
-    return Future.value(true);
+    }
   }
 }

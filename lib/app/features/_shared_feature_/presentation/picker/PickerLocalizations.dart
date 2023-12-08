@@ -13,13 +13,13 @@ abstract class PickerLocalizationsBase {
 
 /// localizations
 class PickerLocalizations extends PickerLocalizationsBase {
-  static final PickerLocalizations _static =  PickerLocalizations(null);
+  static PickerLocalizations _static =  PickerLocalizations(null);
    PickerLocalizations(Locale? locale) : super(locale!);
 
   @override
   dynamic getItem(String key) {
     Map? localData;
-localData = localizedValues[locale.languageCode];
+    if (locale != null)  localData = localizedValues[locale.languageCode];
     if (localData == null) return localizedValues['en']![key]!;
     return localData[key];
   }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-//import '../../../../../core/utils/constants/dialog_names.dart';
+import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
-//import '../../../../vd/presentation/dialogs/vd_all_types_dialog.dart';
-//import '../../../../vd/presentation/dialogs/vd_types_dialog.dart';
+import '../../../../vd/presentation/dialogs/vd_all_types_dialog.dart';
+import '../../../../vd/presentation/dialogs/vd_types_dialog.dart';
 
 class ReportHomeCard extends StatelessWidget {
   const ReportHomeCard({
@@ -16,13 +16,13 @@ class ReportHomeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        /* await BottomSheetDialog.showDraggableSheet(context,
+        await BottomSheetDialog.showDraggableSheet(context,
             dialogKeyName: DialogName.vdTypesDialog,
             currentRouteName: "HomePage",
             child: BottomSheetWithActions(
               title: "اختر نوع البلاغ".tr(),
               body: VDAllTypesDialog(),
-            ));*/
+            ));
       },
       child: Container(
         height: 175,
@@ -71,13 +71,13 @@ class ReportHomeCard extends StatelessWidget {
                     btnWidth: 157,
                     text: "ارفع بلاغ",
                     onPressed: () async {
-                      /*  await BottomSheetDialog.showDraggableSheet(context,
+                      await BottomSheetDialog.showDraggableSheet(context,
                           dialogKeyName: DialogName.vdTypesDialog,
                           currentRouteName: "HomePage",
                           child: BottomSheetWithActions(
                             title: "اختر نوع البلاغ".tr(),
                             body: VDAllTypesDialog(),
-                          ));*/
+                          ));
                     },
                   ),
                 ],

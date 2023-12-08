@@ -4,18 +4,25 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
+import 'package:mapness/_features/lifestyle_layers/layers_sheet.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/features/iwish/providers/iwish_markers.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 
-import '../../features/iwish/providers/iwish_markers.dart';
 import 'controls.dart' as controls;
 import 'dashboard.dart';
 
+enum LangingFocusMaker { iwish }
+
 class LandingPage extends ConsumerStatefulWidget {
-  const LandingPage({Key? key}) : super(key: key);
+  final LangingFocusMaker? focusMaker;
+
+  const LandingPage({this.focusMaker, Key? key}) : super(key: key);
 
   @override
   ConsumerState<LandingPage> createState() => _LandingPageState();
@@ -25,6 +32,18 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   StreamSubscription<TapEvent>? _streamSubscription;
 
   @override
+  void initState() {
+    super.initState();
+    switch (widget.focusMaker) {
+      case LangingFocusMaker.iwish:
+        ref.read(iwishMarkersProvider.notifier).focusMarkersOnMap();
+        break;
+      default:
+        break;
+    }
+  }
+
+  @override
   void deactivate() {
     _streamSubscription?.cancel();
     super.deactivate();
@@ -32,12 +51,17 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(favouriteMarkersProvider);
+    final isLayersVisible = ref.watch(layersControlsProvider);
+    ref.watch(favouriteMarkersProvider.select((value) => null));
+    ref.watch(iwishMarkersProvider.select((value) => null));
+    ref.watch(
+      mapObjectManagerProvider(named: poiMapLayer).select((value) => null),
+    );
 
-    ref.watch(iwishMarkersProvider.notifier).showMarkersOnMap(context);
     _streamSubscription?.cancel();
     _streamSubscription = ref
         .watch(dgisControllerProvider)
+        .value
         ?.objectTapEvents
         .listen(_objectTapListener);
 
@@ -50,12 +74,15 @@ class _LandingPageState extends ConsumerState<LandingPage> {
           child: Stack(
             children: [
               const controls.MapControls(),
-              LayoutBuilder(builder: (context, constraints) {
-                return Dashboard(
-                  biggestHeight: constraints.biggest.height,
-                  biggestWidth: constraints.biggest.width,
-                );
-              }),
+              if (!isLayersVisible.layersVisible)
+                LayoutBuilder(builder: (context, constraints) {
+                  return Dashboard(
+                    isCollapsed: widget.focusMaker != null,
+                    biggestHeight: constraints.biggest.height,
+                    biggestWidth: constraints.biggest.width,
+                  );
+                }),
+              if (isLayersVisible.layersVisible) const LayersSheet()
             ],
           ),
         ),
@@ -69,8 +96,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
         final currentRoute = ref.read(currentRouteProvider);
 
         if (currentRoute == "/poi-map") {
-          context.pop();
-          PoiMapRoute(dgisObjectId: event.dgisObjectId.objectId).push(context);
+          PoiMapRoute(dgisObjectId: event.dgisObjectId.objectId)
+              .pushReplacement(context);
         } else {
           PoiMapRoute(dgisObjectId: event.dgisObjectId.objectId).push(context);
         }

@@ -2,6 +2,7 @@ import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_features/debug_overlay/widgets/debug_navigation_controll.dart';
 
 import 'package:mapness/_features/debug_overlay/widgets/debug_server_url.dart';
 import 'package:mapness/_features/debug_overlay/widgets/voice_picker.dart';
@@ -39,8 +40,9 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
       minChildSize: 0,
-      maxChildSize: 0.5,
+      maxChildSize: 0.9,
       initialChildSize: 0,
+      snapSizes: const [0, 0.9],
       controller: widget._draggableController,
       builder: (context, scrollController) {
         return Container(
@@ -182,6 +184,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   ),
                   const DebugServerUrl(),
                   const VoicePicker(),
+                  const DebugNavigationControll(),
                 ],
               ),
             ),

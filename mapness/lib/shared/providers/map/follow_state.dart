@@ -29,9 +29,9 @@ class FollowState extends _$FollowState {
   Follow build() {
     final dgisController = ref.watch(dgisControllerProvider);
     final typeSubscription =
-        dgisController?.locationFollowEvents.listen(_followTypeListener);
-    final enabledSubscription =
-        dgisController?.locationEnabledEvents.listen(_locationEnabledListener);
+        dgisController.value?.locationFollowEvents.listen(_followTypeListener);
+    final enabledSubscription = dgisController.value?.locationEnabledEvents
+        .listen(_locationEnabledListener);
     ref.onDispose(
       () {
         typeSubscription?.cancel();
@@ -54,6 +54,6 @@ class FollowState extends _$FollowState {
   }
 
   void onFollowTap() {
-    ref.watch(dgisControllerProvider)?.changeFollowState();
+    ref.read(dgisControllerProvider).value?.changeFollowState();
   }
 }

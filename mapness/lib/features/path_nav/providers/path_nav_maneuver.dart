@@ -12,8 +12,9 @@ class _PathNavManeuver extends _$PathNavManeuver {
   PathNavManeuver? build() {
     final mapController = ref.watch(dgisControllerProvider);
 
-    final subscription =
-        mapController?.naviManeuverController.maneuverEvents.listen((event) {
+    final subscription = mapController
+        .value?.naviManeuverController.maneuverEvents
+        .listen((event) {
       if (event is ManeuverEventHidden) state = null;
       state = PathNavManeuver(
         iconPath: event.instruction.iconPath,

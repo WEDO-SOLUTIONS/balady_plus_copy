@@ -7,11 +7,13 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class FavouriteItemWidget extends StatefulWidget {
   final VoidCallback onDelete;
+  final VoidCallback onTap;
   final FavouriteItem item;
   final bool isEditing;
 
   FavouriteItemWidget({
     required this.onDelete,
+    required this.onTap,
     required this.item,
     required this.isEditing,
   }) : super(key: Key(item.id));
@@ -52,7 +54,10 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
                     ),
                     child: Text(
                       context.l10n.delete,
-                      style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: Colors.white),
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .textS
+                          .copyWith(color: Colors.white),
                     ),
                   ),
                 ),
@@ -66,7 +71,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
           color: Colors.white,
         ),
         child: InkWell(
-          onTap: () {},
+          onTap: widget.onTap,
           borderRadius: BorderRadius.circular(8),
           child: Row(
             children: [
@@ -83,12 +88,18 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
                   children: [
                     Text(
                       widget.item.title,
-                      style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0xff1e2936)),
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .textM
+                          .copyWith(color: const Color(0xff1e2936)),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       widget.item.subtitle,
-                      style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: const Color(0xff346263)),
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .textS
+                          .copyWith(color: const Color(0xff346263)),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],

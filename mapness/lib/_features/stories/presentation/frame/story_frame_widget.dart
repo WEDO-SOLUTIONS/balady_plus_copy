@@ -5,12 +5,14 @@ import 'package:mapness/_features/stories/domain/frame/story_frame_data.dart';
 import 'package:mapness/_features/stories/presentation/frame/frame_action_button.dart';
 import 'package:mapness/_features/stories/presentation/frame/frame_progress_indicator.dart';
 import 'package:mapness/_features/stories/presentation/frame/story_frame_content.dart';
+import 'package:mapness/_features/stories/presentation/frame/story_frame_controller.dart';
 
 class StoryFrameWidget extends StatefulWidget {
   final StoryFrameData frame;
   final int frameIndex;
   final int frameLength;
   final int duration;
+  final StoryFrameController? controller;
 
   final VoidCallback onNext;
   final VoidCallback onPrevious;
@@ -28,6 +30,7 @@ class StoryFrameWidget extends StatefulWidget {
     required this.onPrevious,
     super.key,
     this.onActionPressed,
+    this.controller,
   });
 
   @override
@@ -42,11 +45,13 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
 
   DateTime _lastTap = DateTime.now();
 
-  bool isLoading = true;
+  late bool isLoading = _frame.isAssetImage == false;
 
   @override
   void initState() {
     super.initState();
+    widget.controller?.nextPage = _onNext;
+    widget.controller?.prevPage = _onPrevious;
     _controller = AnimationController(
       duration: Duration(seconds: widget.duration),
       vsync: this,
@@ -132,12 +137,13 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
   Widget build(BuildContext context) {
     return Material(
       child: Directionality(
-        textDirection: TextDirection.rtl,
+        textDirection: Directionality.of(context),
         child: Stack(
           children: [
             Container(color: Colors.black),
             Positioned.fill(
               child: LoadingImage(
+                isAssetImg: widget.frame.isAssetImage,
                 onImageReady: imageLoaded,
                 imageUrl: widget.frame.imageUrl,
                 fit: BoxFit.cover,

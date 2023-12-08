@@ -1,21 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../core/utils/utils_exports.dart' show AppStyle, AppColor;
+import '../../../../../core/utils/utils_exports.dart'
+    show AppColor, AppStyle, IconPath;
 import '../../../shared_feature_exports.dart'
-    show BottomSheetWithActions, CustomTextWidget, ElevatedButtonWidget;
+    show
+        BottomSheetWithActions,
+        CustomTextFieldWidget,
+        CustomTextWidget,
+        DrawIconBasedTypeWidget,
+        ElevatedButtonWidget;
 
 class BottomSheetList extends StatefulWidget {
   final String title;
   final List<String> items;
   final String? selectedValue;
-  final Function(String) onTap;
+  final List<String>? selectedValues;
+  final void Function(dynamic)? onTap;
+  final bool searchable;
 
   const BottomSheetList({
     super.key,
     required this.title,
     required this.items,
     this.selectedValue,
+    this.selectedValues,
     required this.onTap,
+    this.searchable = true,
   });
 
   @override
@@ -23,62 +34,111 @@ class BottomSheetList extends StatefulWidget {
 }
 
 class _BottomSheetListState extends State<BottomSheetList> {
+  late bool multipleSelection;
+  late List<String> items;
   String? selectedValue;
+  List<String>? selectedValues;
 
   @override
   void initState() {
     super.initState();
+    items = widget.items;
     selectedValue = widget.selectedValue;
+    selectedValues = widget.selectedValues;
+    multipleSelection = widget.selectedValues != null;
   }
 
   @override
   Widget build(BuildContext context) {
     return BottomSheetWithActions(
       title: widget.title,
-      body: Column(
-        children: [
-          for (var item in widget.items)
-            InkWell(
-              onTap: () => setState(() => selectedValue = item),
-              child: Container(
-                height: 56,
-                padding: const EdgeInsetsDirectional.only(start: 12),
-                margin: const EdgeInsets.only(top: 8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: AppColor.primary50Light50,
-                ),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width - 125,
-                      child: CustomTextWidget(
-                        item,
-                        textStyle: AppStyle.listTitleTextStyle,
-                        maxLines: 2,
+      isList: true,
+      searchable: widget.searchable,
+      onSearchChanged: (String? text) {
+        setState(() {
+          items = widget.items
+              .where((element) => element.toLowerCase().contains(text ?? ""))
+              .toList();
+        });
+      },
+      body: Flexible(
+        child: CustomScrollView(
+          shrinkWrap: true,
+          slivers: <Widget>[
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final item = items[index];
+                  return InkWell(
+                    onTap: () => selectItem(item),
+                    child: Container(
+                      height: 56,
+                      padding: const EdgeInsetsDirectional.only(start: 12),
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: AppColor.primary50Light50,
+                      ),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width - 125,
+                            child: CustomTextWidget(
+                              item,
+                              textStyle: AppStyle.listTitleTextStyle,
+                              maxLines: 2,
+                            ),
+                          ),
+                          const Spacer(),
+                          if (widget.onTap != null && !multipleSelection)
+                            Radio(
+                              value: item,
+                              groupValue: selectedValue,
+                              activeColor: AppColor.primary700Light,
+                              onChanged: (_) => selectItem(item),
+                            )
+                          else if (widget.onTap != null)
+                            Checkbox(
+                              value: selectedValues!.contains(item),
+                              activeColor: AppColor.primary700Light,
+                              onChanged: (_) => selectItem(item),
+                            ),
+                        ],
                       ),
                     ),
-                    const Spacer(),
-                    Radio(
-                      value: item,
-                      groupValue: selectedValue,
-                      activeColor: AppColor.primary700Light,
-                      onChanged: (_) => setState(() => selectedValue = item),
-                    )
-                  ],
-                ),
+                  );
+                },
+                childCount: items.length,
               ),
             ),
-          const SizedBox(height: 50),
-        ],
+          ],
+        ),
       ),
-      action: ElevatedButtonWidget.choose(
-        onPressed: () {
-          if (selectedValue != null) {
-            widget.onTap(selectedValue!);
-          }
-        },
-      ),
+      action: widget.onTap == null
+          ? null
+          : ElevatedButtonWidget.choose(
+              onPressed: () {
+                if (selectedValue != null) {
+                  widget.onTap!(selectedValue!);
+                } else if (selectedValues != null) {
+                  widget.onTap!(selectedValues);
+                }
+              },
+            ),
     );
+  }
+
+  void selectItem(String item) {
+    setState(() {
+      if (multipleSelection) {
+        if (selectedValues!.contains(item)) {
+          selectedValues!.remove(item);
+        } else {
+          selectedValues!.add(item);
+        }
+      } else {
+        selectedValue = item;
+      }
+    });
   }
 }

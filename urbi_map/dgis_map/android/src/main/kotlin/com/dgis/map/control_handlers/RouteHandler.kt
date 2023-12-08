@@ -18,7 +18,6 @@ import ru.dgis.sdk.map.RouteMapObject
 import ru.dgis.sdk.map.Source
 import ru.dgis.sdk.map.calcPosition
 import ru.dgis.sdk.map.createRasterTileDataSource
-import ru.dgis.sdk.positioning.DefaultLocationSource
 import ru.dgis.sdk.routing.*
 import ru.dgis.sdk.map.Map as DgisMap
 
@@ -236,7 +235,7 @@ class RouteHandler(
 
     private fun getPedestrianRouteData(route: Route): Triple<Int, Int, List<Int>> {
         return Triple(
-            first = route.roadSubtypes.entries.filter { it.value == RoadSubtype.STAIRWAY }.size,
+            first = route.roadSubtypes.entries.filter { it.value == RoadSubtype.STAIRWAY_DOWN || it.value == RoadSubtype.STAIRWAY_UP }.size,
             second = route.obstacles.entries.size,
             third = route.altitudes.entries.map { it.value.toInt() }
         )

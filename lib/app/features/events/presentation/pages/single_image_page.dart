@@ -9,6 +9,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/c
 import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_state.dart';
+import 'package:balady_plus/app/features/events/presentation/widgets/event_description_widgets.dart/event_image_swiper.dart';
 import 'package:balady_plus/app/features/events/presentation/widgets/event_description_widgets.dart/event_map_widget.dart';
 import 'package:balady_plus/app/features/events/presentation/widgets/event_description_widgets.dart/events_category_widget.dart';
 import 'package:balady_plus/app/features/events/presentation/widgets/event_description_widgets.dart/events_description_widget.dart';
@@ -38,8 +39,6 @@ class _SingleEventDescriptionPageState
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
 
   String img = "";
@@ -213,12 +212,12 @@ class _SingleEventDescriptionPageState
                           const SizedBox(
                             height: 16,
                           ),
-                          /*ElevatedIconButtonWidget.export(
+                          ElevatedIconButtonWidget.export(
                             onPressed: () {
                               CommonFunctions.externalLaunch(
                                   state.eventDetails.ticketUrl);
                             },
-                          ),*/
+                          ),
                         ],
                       ),
                     ),

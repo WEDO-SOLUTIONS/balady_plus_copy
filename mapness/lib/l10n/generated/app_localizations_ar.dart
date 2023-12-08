@@ -125,6 +125,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get done => 'منتهي';
 
   @override
+  String get droneView => 'الأحداث';
+
+  @override
   String get edit => 'يحرر';
 
   @override
@@ -167,6 +170,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get floor => 'أرضية';
 
   @override
+  String get focusOnTheRoad => 'التركيز على طريقك ';
+
+  @override
   String get from => 'من عند';
 
   @override
@@ -180,6 +186,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get home => 'بيت';
+
+  @override
+  String get horseRacing => 'سباق الخيل';
 
   @override
   String get hospitals => 'المستشفيات';
@@ -210,6 +219,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get investmentOpportunities => 'فرص الاستثمار';
+
+  @override
+  String get iwish => 'أتمنى';
 
   @override
   String get joyParks => 'حدائق الفرح';
@@ -290,6 +302,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get mosques => 'الجوامع';
 
   @override
+  String get myChallenge => 'تحدي بلدي';
+
+  @override
   String get myLocation => 'موقعي';
 
   @override
@@ -306,6 +321,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get nav_route => 'رحلتي';
+
+  @override
+  String get next => 'Next';
 
   @override
   String get open24Hours => 'مفتوحة 24 ساعة';
@@ -356,6 +374,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pm => 'مساء';
 
   @override
+  String get poi_boulevard_riyadh_city => 'بوليفارد مدينة الرياض';
+
+  @override
+  String get poi_edge_of_the_world => 'حافة العالم';
+
+  @override
+  String get poi_faisaliya_tower => ' برج الفيصلية';
+
+  @override
+  String get poi_kingdom_center => 'مركز المملكة';
+
+  @override
+  String get poi_masmak_fortress => 'قصر المصمك';
+
+  @override
   String get prayerTime => ' أوقات الصلاة';
 
   @override
@@ -389,10 +422,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get route => 'طريق';
 
   @override
+  String get route1description => 'بعض المزايا والحيل لميزة التنقل الذكي...';
+
+  @override
+  String get route2description => 'يقترح التنقل الذكي ما يصل إلى ثلاث طرق بالنظر إلى الوضع الحالي لحركة المرور. سيقترح أيضًا بالطرق البديلة عند تقاطع الطرق ';
+
+  @override
+  String get route3description => 'مساعدك الصوتي سيبقيك على اطلاع طوال رحلتك';
+
+  @override
   String get schools => 'المدارس';
 
   @override
-  String get search => 'بحث فى الرياض';
+  String get search => 'يبحث';
 
   @override
   String get seating => 'الجلوس';
@@ -420,6 +462,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settings => 'إعدادات';
+
+  @override
+  String get shareChallengeWithUs => 'شاركنا التحدي\nوساهم في التصدي المظاهر التلوث البصري في مدينتك';
 
   @override
   String get shareFeedback => 'مشاركة التعليقات';
@@ -452,6 +497,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get signInToUnlockTheFullPotentialOfTheBaladyApp => 'قم بتسجيل الدخول لفتح الإمكانات الكاملة لتطبيق بلدي';
 
   @override
+  String get snap_and_send => 'صور وارسل';
+
+  @override
   String get somethingWentWrong => 'هناك خطأ ما';
 
   @override
@@ -473,6 +521,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get stairs => 'سلالم';
 
   @override
+  String get start => 'ابدأ التحدي';
+
+  @override
   String get steps => 'خطوات';
 
   @override
@@ -486,6 +537,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get thanksForYourFeedback => 'شكرا لملاحظاتك';
+
+  @override
+  String get theShortestRoute => 'أقصر طريق';
 
   @override
   String get theTripTook => 'استغرقت الرحلة';
@@ -533,10 +587,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get weekend => 'عطلة نهاية الاسبوع';
 
   @override
+  String get whatCanTheNavigatorDo => 'ماذا يمكن أن يفعل التنقل الذكي ؟';
+
+  @override
   String get wishesSent => 'تم إرسال الرغبات';
 
   @override
   String get work => 'عمل';
+
+  @override
+  String get worldHealthExpo => 'معرض الصحة العالمية 2023';
 
   @override
   String get youArrived => 'وصلت';

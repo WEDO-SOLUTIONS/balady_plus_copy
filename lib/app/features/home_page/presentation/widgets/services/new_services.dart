@@ -1,11 +1,16 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/base/base_view_model.dart';
+import '../../../../../core/services/local/navigation_services.dart';
+import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
+import '../../../../new_appointment/presentation/core/services/view_models/new_appointment_view_model.dart';
+import '../../../../new_appointment/presentation/dialogs/new_appointment_dialog.dart';
 import '../../../../services/services_exports.dart'
     show ServicesCubit, ServicesState;
 import '../../../home_exports.dart' show HomeSection;
@@ -98,8 +103,9 @@ class NewServices extends StatelessWidget {
                               text: "استعرض المخالفات",
                               onPressed: () async {
                                 if (CommonProperties.isLoggedIn) {
-                                  Navigator.pushNamed(context,
-                                      RouteName.objectableTransactions);
+                                  NavigationService.navigatorKey.currentState!
+                                      .pushNamed(
+                                          RouteName.objectableTransactions);
                                 } else {
                                   showDialog(
                                       context: context,
@@ -107,9 +113,9 @@ class NewServices extends StatelessWidget {
                                               onSuccessLogin:
                                                   (bool? isSuccess) async {
                                             if (isSuccess ?? false) {
-                                              Navigator.pushNamed(
-                                                  context,
-                                                  RouteName
+                                              NavigationService
+                                                  .navigatorKey.currentState!
+                                                  .pushNamed(RouteName
                                                       .objectableTransactions);
                                             }
                                           }));
@@ -209,7 +215,57 @@ class NewServices extends StatelessWidget {
                               btnHeight: 40,
                               btnPadding: const EdgeInsets.all(11),
                               text: "احجز موعد",
-                              onPressed: () async {},
+                              onPressed: () async {
+                                if (CommonProperties.isLoggedIn) {
+                                  bool isSuccess =
+                                      await locator<NewAppointmentViewModel>()
+                                          .loadInitialData();
+                                  if (isSuccess) {
+                                    /*  await BottomSheetDialog.showDraggableSheet(
+                                        context,
+                                        dialogKeyName: DialogName
+                                            .selectAppointmentTypeDialog,
+                                        currentRouteName: "HomePage",
+                                        isFullHeight: false,
+                                        child: BottomSheetWithActions(
+                                          title: "اختر نوع الموعد".tr(),
+                                          body: NewAppointmentDialog(),
+                                        ));*/
+                                    NavigationService.navigatorKey.currentState!
+                                        .pushNamed(RouteName.NewAppointmentPage,
+                                            arguments: false);
+                                  }
+                                } else {
+                                  showDialog(
+                                      context: context,
+                                      builder: (ctx) => NeedLoginDialog(
+                                              onSuccessLogin:
+                                                  (bool? isSuccess) async {
+                                            if (isSuccess ?? false) {
+                                              await locator<
+                                                      NewAppointmentViewModel>()
+                                                  .loadInitialData();
+                                              NavigationService
+                                                  .navigatorKey.currentState!
+                                                  .pushNamed(
+                                                      RouteName
+                                                          .NewAppointmentPage,
+                                                      arguments: false);
+                                              /*
+                                              await BottomSheetDialog
+                                                  .showDraggableSheet(context,
+                                                      isFullHeight: false,
+                                                      child:
+                                                          BottomSheetWithActions(
+                                                        title: "اختر نوع الموعد"
+                                                            .tr(),
+                                                        body:
+                                                            NewAppointmentDialog(),
+                                                      ));*/
+                                            }
+                                          }));
+                                }
+                              },
                             ),
                           ],
                         ),

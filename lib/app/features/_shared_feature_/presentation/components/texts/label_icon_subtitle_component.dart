@@ -27,7 +27,7 @@ class LabelIconSubtitleComponent extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-          boxShadow: const [],
+          boxShadow: [],
           borderRadius: BorderRadius.circular(16),
           color: AppColor.white),
       child: Column(
@@ -57,7 +57,7 @@ class LabelIconSubtitleComponent extends StatelessWidget {
                       fontColor: AppColor.blackModern600Light,
                       textAlign: TextAlign.start,
                     ),
-                    const CustomVerticalSpace(height: 8),
+                    CustomVerticalSpace(height: 8),
                     if (subtitle != null)
                       GestureDetector(
                         onTap: () {

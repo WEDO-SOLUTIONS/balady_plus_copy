@@ -172,6 +172,7 @@ class CustomElevatedButtonWidget extends StatelessWidget {
   final AlignmentGeometry? btnAlignment;
   final EdgeInsetsGeometry? btnPadding;
   final EdgeInsetsGeometry? btnMargin;
+  final bool loading;
 
   /// It can be Widget or String
   final Object? text;
@@ -194,6 +195,7 @@ class CustomElevatedButtonWidget extends StatelessWidget {
     required this.text,
     this.textStyle,
     this.onPressed,
+    this.loading = false,
   });
 
   @override
@@ -219,15 +221,21 @@ class CustomElevatedButtonWidget extends StatelessWidget {
             color: btnBorderColor ?? btnColor ?? AppColor.blue,
           ),
         ),
-        child: isTextWidget
-            ? text as Widget
-            : isTextString
-                ? CustomTextWidget(
-                    text as String,
-                    textAlign: TextAlign.center,
-                    textStyle: textStyle ?? AppStyle.elevatedButtonStyle,
-                  )
-                : const SizedBox(),
+        child: loading
+            ? Center(
+                child: CircularProgressIndicator(
+                  color: textStyle?.color,
+                ),
+              )
+            : isTextWidget
+                ? text as Widget
+                : isTextString
+                    ? CustomTextWidget(
+                        text as String,
+                        textAlign: TextAlign.center,
+                        textStyle: textStyle ?? AppStyle.elevatedButtonStyle,
+                      )
+                    : const SizedBox(),
       ),
     );
   }
@@ -901,7 +909,7 @@ class CustomElevatedButtonWidget extends StatelessWidget {
   const CustomElevatedButtonWidget(
       {Key? key,
       required this.btnPressed,
-      this.btnColor = AppColors.darkTurquoise,
+      this.btnColor = AppColor.primary900Light,
       this.btnHeight = 65.0,
       this.btnWidth = double.infinity,
       this.btnRadius = 2,
@@ -910,7 +918,7 @@ class CustomElevatedButtonWidget extends StatelessWidget {
       this.btnAlignment = Alignment.center,
       required this.btnText,
       this.buttonIconPosition = BUTTON_ICON_POSITION.right,
-      this.btnTextColor = AppColors.white,
+      this.btnTextColor = AppColor.white,
       this.btnTextWeight = FONT_WEIGHT.medium,
       this.btnTextSize = 18.0,
       this.btnTextUnderline = false,
@@ -1185,7 +1193,7 @@ class CustomIconButtonWidget extends StatelessWidget {
       this.svgIconColor,
       this.materialIcon,
       this.materialIconDirection = MATERIAL_ICON_DIRECTION.left,
-      this.materialIconColor = AppColors.black,
+      this.materialIconColor = AppColor.black,
       this.materialIconSize = 18.0,
       this.imageColor,
       this.isVisible = true})

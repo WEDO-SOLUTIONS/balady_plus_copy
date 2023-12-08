@@ -1,5 +1,26 @@
 import 'package:mapness/_features/stories/domain/frame/story_frame_action.dart';
 import 'package:mapness/_features/stories/domain/frame/story_text_style.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
+
+extension StoryFrameDataX on StoryFrameData {
+  String titleOrFailback(AppLocalizations locale) {
+    return switch (storyId) {
+      'route1' => locale.whatCanTheNavigatorDo,
+      'route2' => locale.theShortestRoute,
+      'route3' => locale.focusOnTheRoad,
+      _ => title,
+    };
+  }
+
+  String? descriptionOrFailback(AppLocalizations locale) {
+    return switch (storyId) {
+      'route1' => locale.route1description,
+      'route2' => locale.route2description,
+      'route3' => locale.route3description,
+      _ => description,
+    };
+  }
+}
 
 class StoryFrameData {
   final String storyId;
@@ -12,6 +33,7 @@ class StoryFrameData {
   final bool isWatched;
   final StoryFrameAction? action;
   final int duration;
+  final bool? isAssetImage;
 
   const StoryFrameData({
     required this.duration,
@@ -24,6 +46,7 @@ class StoryFrameData {
     this.subtitle,
     this.description,
     this.action,
+    this.isAssetImage = false,
   });
 
   StoryFrameData copyWith({
@@ -37,8 +60,10 @@ class StoryFrameData {
     bool? isWatched,
     StoryFrameAction? action,
     int? duration,
+    bool? isAssetImage,
   }) {
     return StoryFrameData(
+      isAssetImage: isAssetImage ?? this.isAssetImage,
       storyId: storyId ?? this.storyId,
       title: title ?? this.title,
       imageUrl: imageUrl ?? this.imageUrl,

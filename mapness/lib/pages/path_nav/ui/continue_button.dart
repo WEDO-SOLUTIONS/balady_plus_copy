@@ -15,7 +15,7 @@ class ContinueButton extends ConsumerWidget {
       child: PathNavContinueTrip(
         eta: eta,
         onPressed: () {
-          ref.read(dgisControllerProvider)?.startNavigation();
+          ref.read(dgisControllerProvider).value?.startNavigation();
         },
       ),
     );

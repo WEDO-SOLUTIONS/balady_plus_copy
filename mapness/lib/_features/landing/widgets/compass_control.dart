@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/shared/providers/map/bearing_state.dart';
 

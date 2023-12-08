@@ -32,9 +32,10 @@ class Response<T> {
       this.result});
 
   String? getRefResponseMessage() {
-    if (beRequestId != null) {
-      return "${responseMessage ?? "0"}\n${("be_request_error").tr().replaceAll("{}", (beRequestId ?? ""))}";
-    }
+    if (beRequestId != null)
+      return (responseMessage ?? "0") +
+          "\n" +
+          ("be_request_error").tr().replaceAll("{}", (beRequestId ?? ""));
     return responseMessage;
   }
 }

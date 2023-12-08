@@ -35,7 +35,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
   }
 
   Future<void> _precacheStories() async {
-    final storiesAsync = ref.watch(storyServiceProvider);
+    final storiesAsync = ref.read(storyServiceProvider);
 
     storiesAsync.whenData((data) {
       final nearStories = data.skip(initialPage - 1).take(3);

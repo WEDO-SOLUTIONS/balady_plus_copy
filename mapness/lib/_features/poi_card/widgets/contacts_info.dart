@@ -48,6 +48,15 @@ class _ContactsInfoState extends State<ContactsInfo> {
 
   List<Widget> prepareWidgets() {
     return widget.data.getContactsInfoModels().map((contactsModel) {
+      var text = contactsModel.displayText;
+      var displayText = text;
+      if (contactsModel.type == ContactsInfoType.website) {
+        if (text != null) {
+          displayText = RegExp("^(?:https?:\/\/)?(?:ftp:\/\/)?(?:www\.)?([^\/]+)")
+              .stringMatch(text);
+        }
+      }
+
       return GestureDetector(
         onTap: () {
           var value = contactsModel.value;
@@ -84,7 +93,7 @@ class _ContactsInfoState extends State<ContactsInfo> {
                     Directionality(
                       textDirection: TextDirection.ltr,
                       child: buildText(
-                          text: contactsModel.displayText,
+                          text: displayText,
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
                           color: colorPrimary,

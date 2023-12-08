@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/profile/widgets/user_state_picker.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/_features/common/providers/user_state.dart';
 import 'package:mapness/_features/profile/widgets/authorized_profile.dart';
 import 'package:mapness/_features/profile/widgets/dark_mode_cell.dart';
 import 'package:mapness/_features/profile/widgets/expandable_cell.dart';
@@ -13,6 +9,9 @@ import 'package:mapness/_features/profile/widgets/logout_cell.dart';
 import 'package:mapness/_features/profile/widgets/personal_data.dart';
 import 'package:mapness/_features/profile/widgets/profile_header.dart';
 import 'package:mapness/_features/profile/widgets/unathorized_profile.dart';
+import 'package:mapness/features/sso_auth/data/auth_provider.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -34,36 +33,36 @@ class ProfilePage extends StatelessWidget {
               const SizedBox(
                 height: 6,
               ),
-              Consumer(builder: (context, ref, child) {
-                final userState = ref.watch(userStateProvider);
+              Consumer(
+                builder: (context, ref, child) {
+                  final userData = ref.watch(authProvider);
 
-                return userState == UserState.guest
-                    ? const UnautorizedProfile()
-                    : const AuthorizedProfile();
-              }),
-              const SizedBox(
-                height: 16,
-              ),
-              ExpandableCell(
-                title: context.l10n.personalData,
-                count: 7,
-                icon: "assets/icons/svg/ic_profile_data.svg",
-                content: const PersonalData(),
-              ),
-              const SizedBox(
-                height: 16,
+                  return userData == null
+                      ? UnautorizedProfile(
+                          onConnect: ref.read(authProvider.notifier).doAuth,
+                        )
+                      : AuthorizedProfile(
+                          userData: userData,
+                        );
+                },
               ),
               Consumer(
                 builder: (context, ref, child) {
-                  final userState = ref.watch(userStateProvider);
+                  final userData = ref.watch(authProvider);
 
-                  return ExpandableCell(
-                    title: "User State (Debug)",
-                    subtitle: userState.name,
-                    count: 3,
-                    icon: "assets/icons/svg/ic_profile_data.svg",
-                    content: const UserStatePicker(),
-                  );
+                  return userData == null
+                      ? const SizedBox.shrink()
+                      : Padding(
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: ExpandableCell(
+                            title: context.l10n.personalData,
+                            count: 7,
+                            icon: "assets/icons/svg/ic_profile_data.svg",
+                            content: PersonalData(
+                              userInfo: userData,
+                            ),
+                          ),
+                        );
                 },
               ),
               const SizedBox(

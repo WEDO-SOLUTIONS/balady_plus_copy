@@ -13,7 +13,7 @@ class FavouritesToggle extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(favouriteMarkersProvider);
+    final state = ref.watch(favouriteToggleProvider);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: ShapeDecoration(
@@ -38,7 +38,8 @@ class FavouritesToggle extends ConsumerWidget {
             activeColor: const Color(0xFF42909B),
             onChanged: isEditing
                 ? null
-                : (_) => ref.read(favouriteMarkersProvider.notifier).toggle(),
+                : (_) async =>
+                    await ref.read(favouriteToggleProvider.notifier).toggle(),
           ),
         ],
       ),

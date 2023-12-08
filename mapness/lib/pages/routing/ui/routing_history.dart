@@ -31,6 +31,7 @@ class RoutingHistory extends ConsumerWidget {
             onTap: (item) {
               ref
                   .read(dgisControllerProvider)
+                  .value
                   ?.searchByObjectId(
                     DgisObjectIdMessage(
                         objectId: item.objectId ?? 0,

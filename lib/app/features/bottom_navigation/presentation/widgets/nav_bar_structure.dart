@@ -23,9 +23,9 @@ class BottomNavBarStructure extends StatelessWidget {
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColor.blueGreen,
-            AppColor.darkSeaGreen,
-            AppColor.primary900Light
+            AppColor.primary900Light,
+            AppColor.primary900Light,
+            AppColor.primary900Light,
           ],
         ),
       ),

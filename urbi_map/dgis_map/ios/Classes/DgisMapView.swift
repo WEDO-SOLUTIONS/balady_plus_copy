@@ -124,7 +124,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.searchHandler = SearchHandler(
             searchManager: try! SearchManager.createOnlineManager(context: try! sdk.context),
             map: map,
-            sdkContext: self.sdk
+            sdkContext: self.sdk,
+            vendorConfig: SwiftDgisMapPlugin.vendorConfig
         )
         
         self.compassControlHandler = CompassControlHandler(
@@ -204,7 +205,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func overrideLocalesLocales(_ locales: [String], completion: @escaping (FlutterError?) -> Void) {
         let manager = getLocaleManager(context: try! sdk.context)
-        manager.overrideLocales(locales: locales)
+        manager.overrideLocales(locales: locales.map {
+            let parts = $0.components(separatedBy: "-")
+            return Locale(language: parts[0], region: parts[1])
+        })
         
         completion(nil)
     }
@@ -384,7 +388,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             completion: completion
         )
     }
-    
+
     func search(byRubricsRubrics rubrics: [NSNumber], spatialRestriction: [GeoPointMessage]?, weekTime: WeekTimeSearchMessage?, searchRect: GeoRectMessage?, sortingType: SortingTypeMessage, pageSize: NSNumber, completion: @escaping (SearchResultMessage?, FlutterError?) -> Void) {
         guard let searchHandler = self.searchHandler else {
             completion(nil, FlutterError(
@@ -405,7 +409,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             completion: completion
         )
     }
-    
+
     func getDistanceToPoints(
         _ points: [DistanceRequestMessage],
         completion: @escaping ([DistanceResponseMessage]?, FlutterError?) -> Void
@@ -765,7 +769,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         let map = mapFactory.map
         map.addSource(source: MyLocationMapObjectSource(
             context: context,
-            directionBehaviour: .followMagneticHeading
+            controller: MyLocationController(bearingSource: .auto)
         ))
         self.map = map
         
@@ -968,19 +972,19 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
 
-    func findBriefRouteInfosRouteSearchOptions(_ routeSearchOptions: RouteSearchOptionsMessage, startPoint: RouteSearchPointMessage?, finishPoint: RouteSearchPointMessage, completion: @escaping ([BriefRouteInfoMessage]?, FlutterError?) -> Void) {
+    func findBriefRouteInfosRouteSearchOptions(_ routeSearchOptions: RouteSearchOptionsMessage, startPoint: RouteSearchPointMessage?, finishPoint: RouteSearchPointMessage?, completion: @escaping ([BriefRouteInfoMessage]?, FlutterError?) -> Void) {
 
         let routeSearchOptionsConverted = routeSearchOptions.toRouteSearchOptions()
 
         let startSearchPoint = startPoint?.toRouteSearchPoint()
-        let finishSearchPoint  = finishPoint.toRouteSearchPoint()
+        let finishSearchPoint  = finishPoint?.toRouteSearchPoint()
 
         routeHandler?.findBriefRouteInfosRouteSearchOptions(
             routeSearchOptionsConverted,
             startPoint: startSearchPoint,
             finishPoint: finishSearchPoint,
-            completion: completion)
-
+            completion: completion
+        )
     }
 
     func listPackages(completion: @escaping ([PackageMessage]?, FlutterError?) -> Void) {
@@ -1003,25 +1007,34 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         navigationHandler?.setNavigatorVoice(id, completion: completion)
     }
 
-    func toggleHeatmapTileSourceUri(_ tileSourceUri: String?,
-                                        layerName: String?,
-                                        completion: @escaping (FlutterError?) -> Void) {
-        if !isHeatMapVisible {
-               if let tileSourceUri = tileSourceUri, let layerName = layerName {
-                   rasterTileSource = createRasterTileDataSource(
+    func toggleHeatmapTileSourceUri(
+        _ tileSourceUri: String?,
+        layerName: String?,
+        enable: NSNumber?,
+        completion: @escaping (NSNumber?, FlutterError?) -> Void
+    ) {
+        if enable?.boolValue == true {
+            if let rasterTileSource {
+                map?.removeSource(source: rasterTileSource)
+            }
+            if let tileSourceUri = tileSourceUri, let layerName = layerName {
+                rasterTileSource = createRasterTileDataSource(
                     context: try! sdk.context,
                     sublayerName: layerName,
-                    urlTemplate: tileSourceUri)
-                   if let rasterTileSource = rasterTileSource {
-                       map?.addSource(source: rasterTileSource)
-                   }
-               }
-           } else {
-               if let rasterTileSource = rasterTileSource {
-                   map?.removeSource(source: rasterTileSource)
-               }
-           }
-        isHeatMapVisible = !isHeatMapVisible
-        completion(nil)
+                    urlTemplate: tileSourceUri
+                )
+                if let rasterTileSource {
+                    map?.addSource(source: rasterTileSource)
+                }
+            }
+        } else {
+            if let rasterTileSource {
+                map?.removeSource(source: rasterTileSource)
+            }
+        }
+        if let enable = enable?.boolValue {
+            isHeatMapVisible = enable
+        }
+        completion(NSNumber(value: isHeatMapVisible), nil)
     }
 }

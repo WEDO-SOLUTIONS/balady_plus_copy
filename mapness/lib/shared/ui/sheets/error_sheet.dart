@@ -1,6 +1,7 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -8,15 +9,20 @@ import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
 class ErrorSheet extends StatelessWidget {
+  /// action how to recover state
   final VoidCallback onRetry;
-  final VoidCallback onClose;
-  final String buttonLabel;
+
+  /// action when leave the sheet (default: pop)
+  final VoidCallback? onClose;
+
+  /// button label (localized default: reload)
+  final String? buttonLabel;
 
   const ErrorSheet({
     super.key,
     required this.onRetry,
-    required this.buttonLabel,
-    required this.onClose,
+    this.buttonLabel,
+    this.onClose,
   });
 
   @override
@@ -24,7 +30,10 @@ class ErrorSheet extends StatelessWidget {
     Text text(String text) => Text(
           text,
           textAlign: TextAlign.center,
-          style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: const Color(0xB21E2A36)),
+          style: Theme.of(context)
+              .extension<ThemeTextStyles>()!
+              .textL
+              .copyWith(color: const Color(0xB21E2A36)),
         );
 
     return Material(
@@ -39,7 +48,9 @@ class ErrorSheet extends StatelessWidget {
             const SizedBox(height: 8),
             Align(
               alignment: Alignment.centerLeft,
-              child: AppCloseButton(onPressed: onClose),
+              child: AppCloseButton(
+                onPressed: onClose ?? () => context.pop(),
+              ),
             ),
             SvgPicture.asset(
               'assets/images_svg/sad_face.svg',
@@ -50,7 +61,10 @@ class ErrorSheet extends StatelessWidget {
             const SizedBox(height: 4),
             text(context.l10n.pleaseTryAgainLater),
             const SizedBox(height: 24),
-            LabeledElevatedButton(onPressed: onRetry, label: buttonLabel),
+            LabeledElevatedButton(
+              onPressed: onRetry,
+              label: buttonLabel ?? context.l10n.reload,
+            ),
           ],
         ),
       ),

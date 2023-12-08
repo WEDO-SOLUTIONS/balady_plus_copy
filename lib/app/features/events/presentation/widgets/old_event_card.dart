@@ -150,9 +150,9 @@ class Date extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 52,
-      height: 49,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      width: 54,
+      height: 50,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: const Color(0xFFA7C587),

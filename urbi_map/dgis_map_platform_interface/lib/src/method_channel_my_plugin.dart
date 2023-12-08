@@ -472,7 +472,11 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     MapObjectManagerMessage? manager,
   ) {
     if (marker.onTap != null) {
-      _objectTapEventHandler.addMarkerHandler(marker.id, marker.onTap!);
+      _objectTapEventHandler.addMarkerHandler(
+        marker.id,
+        marker.onTap!,
+        manager?.id,
+      );
     }
     return _api.addMarker(
       MarkerMessage(id: marker.id, options: marker.options),
@@ -487,7 +491,11 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   ) {
     for (var marker in markers) {
       if (marker.onTap != null) {
-        _objectTapEventHandler.addMarkerHandler(marker.id, marker.onTap!);
+        _objectTapEventHandler.addMarkerHandler(
+          marker.id,
+          marker.onTap!,
+          manager?.id,
+        );
       }
     }
     return _api.addMarkers(
@@ -511,7 +519,7 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
 
   @override
   Future<void> removeAllMarkers(MapObjectManagerMessage? manager) {
-    _objectTapEventHandler.removeAllMarkerHandlers();
+    _objectTapEventHandler.removeAllMarkerHandlers(manager?.id);
     return _api.removeAllMarkers(manager);
   }
 
@@ -871,6 +879,7 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   }
 
   @override
-  Future<void> toggleHeatmap(String? tileSourceUri, String? layerName) =>
-      _api.toggleHeatmap(tileSourceUri, layerName);
+  Future<bool> toggleHeatmap(String? tileSourceUri, String? layerName,
+      bool enable) =>
+      _api.toggleHeatmap(tileSourceUri, layerName, enable);
 }

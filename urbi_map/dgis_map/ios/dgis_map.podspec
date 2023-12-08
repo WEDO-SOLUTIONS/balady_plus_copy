@@ -16,7 +16,7 @@ A new Flutter plugin project.
   s.source_files = 'Classes/**/*'
   
   s.dependency 'Flutter'
-  s.dependency 'DGisMobileSDK', '7.3.1-full'
+  s.dependency 'DGisMobileSDK', '10.0.0-beta.2-full'
   
   s.platform = :ios, '12.0'
 

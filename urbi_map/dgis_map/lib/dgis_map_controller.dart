@@ -530,8 +530,8 @@ class DgisMapController {
     );
   }
 
-  Future<void> toggleHeatmap({String? tileSourceUri, String? layerName,})=>
-      _instance.toggleHeatmap(tileSourceUri, layerName,);
+  Future<bool> toggleHeatmap({String? tileSourceUri, String? layerName, required bool enable})=>
+      _instance.toggleHeatmap(tileSourceUri, layerName, enable);
 
   Future<List<PackageMessage?>> listPackages() => _instance.listPackages();
 

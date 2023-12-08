@@ -17,6 +17,8 @@ class _DGisNetwork extends _$DGisNetwork {
     final url = ref.watch(dgisUrlProvider);
     const timeout = Duration(seconds: 5);
     final appLanguage = ref.watch(appLanguageProvider);
+    final uuid = ref.watch(uuidProviderProvider);
+    final version = ref.watch(packageInfoProvider).value?.version;
 
     return Dio(BaseOptions(
       responseType: ResponseType.bytes,
@@ -27,10 +29,9 @@ class _DGisNetwork extends _$DGisNetwork {
       headers: {
         'Content-Type': 'application/protobuf',
         'Accept': 'application/protobuf',
-        'X-Device-ID': ref.watch(uuidProviderProvider),
+        'X-Device-ID': uuid,
         'X-Device-Platform': Platform.isIOS ? "ios" : "android",
-        "X-App-Version":
-            ref.watch(packageInfoProvider).value?.version ?? "1.0.0",
+        "X-App-Version": version ?? "1.0.0",
         "X-Locale": appLanguage == Language.arabic ? "ar_SA" : "en_SA",
         "X-Language": appLanguage == Language.arabic ? "ar" : "en",
       },

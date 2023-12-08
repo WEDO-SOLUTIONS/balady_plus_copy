@@ -1,19 +1,24 @@
 //import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
 //   show showUpdateAppPopUpWidget;
 import 'package:balady_plus/app/features/entry_point/domain/use_cases/get_test_data.dart';
+import 'package:balady_plus/app/features/transaction_inquiry/customer_voice_exports.dart';
+import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/services/services_exports.dart';
 import '../../../../core/utils/utils_exports.dart';
-import '../../../vd/vd_exports.dart';
+import '../../../location/presentation/bloc/location_bloc.dart';
+import '../../../profile_features/delegators/delegators_exports.dart';
 import '../../entry_point_exports.dart';
 
 part 'auth_state.dart';
@@ -33,21 +38,23 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   final Logout _logout;
   final GetForceVersion _getForceVersion;
   final GetTestData _getTestData;
+  final GetGISData _getGisData;
 
-  EntryPointCubit({
-    required GetToken getToken,
-    required SaveAuth saveAuth,
-    required CheckAuth checkAuth,
-    required RefreshToken refreshToken,
-    required GetProfile getProfile,
-    required SaveSSOProfile saveSSOProfile,
-    required CheckSSOProfile checkSSOProfile,
-    required GetCookie getCookie,
-    required ClearAuth clearAuth,
-    required Logout logout,
-    required GetAPIgeeToken getAPIgeeToken,
-    required GetForceVersion forceVersion,
-  })  : _getToken = getToken,
+  EntryPointCubit(
+      {required GetToken getToken,
+      required SaveAuth saveAuth,
+      required CheckAuth checkAuth,
+      required RefreshToken refreshToken,
+      required GetProfile getProfile,
+      required SaveSSOProfile saveSSOProfile,
+      required CheckSSOProfile checkSSOProfile,
+      required GetCookie getCookie,
+      required ClearAuth clearAuth,
+      required Logout logout,
+      required GetAPIgeeToken getAPIgeeToken,
+      required GetForceVersion forceVersion,
+      required GetGISData getGisData})
+      : _getToken = getToken,
         _saveAuth = saveAuth,
         _checkAuth = checkAuth,
         _refreshToken = refreshToken,
@@ -60,13 +67,12 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         _logout = logout,
         _getForceVersion = forceVersion,
         _getTestData = GetTestData(repository: sl()),
+        _getGisData = getGisData,
         super(const EntryPointState());
 
   Future<void> onLoadingApp() async {
-    //setTheme();
-    print("onLoadingApp");
-    // print(state.token?.refreshToken);
     emit(state.copyWith(status: AuthStatus.loading));
+    sl<LocationCubit>().getLocationInit();
     final failureOrSuccess = await _checkAuth(NoParams());
     await failureOrSuccess.fold((failure) {
       emit(state.copyWith(
@@ -81,13 +87,20 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           userInfo: profile,
           errorMessage: "",
         ));
+        FlutterUxcam.setUserIdentity(profile.idNo);
+        FlutterUxcam.setUserProperty("name", profile.arName ?? "");
       });
       //MM sl<EtmamEntryPointCubit>().onLoadingApp();
 
       //  if (token.refreshToken != null) await refreshToken(token.refreshToken!);
+      if (sharedPrefs.getFirstDateTime() == null) {
+        sharedPrefs.setFirstDateTime();
+      }
       refreshSSOProfile();
-      getUserLocationData();
     });
+    refreshAPIGeeToken();
+
+    //getUserLocationData();
   }
 
   Future<bool> onLogin({bool isFromEtmam = false}) async {
@@ -128,6 +141,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
             userInfo: user,
             errorMessage: "",
           ));
+          FlutterUxcam.setUserIdentity(user.idNo);
+          FlutterUxcam.setUserProperty("name", user.arName ?? "");
         }
 
         final failureOrSuccessForCookie = await _getCookie(NoParams());
@@ -157,7 +172,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         });
         EasyLoading.dismiss();
         if (isFromEtmam) {
-          //MM    sl<EtmamEntryPointCubit>().onLogin();
+          sl<EtmamEntryPointCubit>().onLogin();
         }
         if (state.status == AuthStatus.notAuthenticated) {
           //MM  locator<CustomerSoundViewModel>().getUserRequests(showLoad: false);
@@ -168,6 +183,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       }
     });
     EasyLoading.dismiss();
+    // getUserLocationData();
     //MM   sl<VDCategoryBloc>().add(RefreshCategoriesEvent());
     //MM return isLoggedIn;
     return CommonProperties.isLoggedIn;
@@ -201,15 +217,12 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<bool> refreshAPIGeeToken() async {
-    // print("refreshAPIGeeToken");
-    // print(state.apigeeToken);
     DateTime? expireTime =
         DateTime.tryParse(state.apigeeToken?.expirationTime ?? "");
 
     if (expireTime == null ||
         (expireTime.difference(DateTime.now()).inHours <= 2)) {
       final failureOrSuccess = await _getAPIgeeToken(NoParams());
-
       return await failureOrSuccess.fold((failure) {
         return false;
       }, (success) async {
@@ -241,29 +254,40 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> clearAuth() async {
-    await _logout(NoParams());
-    _clearAuth(NoParams());
+    //await _logout(NoParams());
+    sl<DelegatorsCubit>().clearDelegators();
+    final failureOrSuccess = await _clearAuth(NoParams());
 
-    sharedPrefs.setSSOToken(null);
-    //MM sharedPrefs.setUserProfile(null);
-    clearSSOInfo();
-    emit(const EntryPointState(
-      status: AuthStatus.notAuthenticated,
-    ));
+    await failureOrSuccess.fold((l) {
+      sharedPrefs.setSSOToken(null);
+      clearSSOInfo();
+      emit(const EntryPointState(
+        status: AuthStatus.notAuthenticated,
+      ));
+    }, (r) {
+      sharedPrefs.setSSOToken(null);
+      //MM sharedPrefs.setUserProfile(null);
+      clearSSOInfo();
+      emit(const EntryPointState(
+        status: AuthStatus.notAuthenticated,
+      ));
+    });
   }
 
   Future<void> autoLogout() async {
     sharedPrefs.setSSOToken(null);
+    sl<DelegatorsCubit>().clearDelegators();
     //MM sharedPrefs.setUserProfile(null);
     sharedPrefs.setSSOUserProfile(null);
     clearSSOInfo();
     emit(const EntryPointState(
       status: AuthStatus.notAuthenticated,
     ));
+
     _logout(NoParams());
     //MM  sl<VDCategoryBloc>().add(RefreshCategoriesEvent());
 
-    //MM  Helpers.backToHome();
+    Helpers.backToHome();
   }
 
   Future<void> refreshSSOProfile() async {
@@ -286,7 +310,6 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     await Future.delayed(const Duration(seconds: 7));
     final failureOrSuccessForProfile = await _getForceVersion(NoParams());
     await failureOrSuccessForProfile.fold((failure) async {}, (success) async {
-      //s print("SUCCCCCCCCESSSSSS ${success}");
       //  if (success)
       //   showUpdateAppPopUpWidget(
       //      NavigationService.navigatorKey.currentContext!);
@@ -304,20 +327,31 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     //MM  locator<VisitMainViewModel>().reset();
     //MM  locator<CustomerSoundViewModel>().reset();
     await CookieManager.instance().deleteAllCookies();
+    sl<DelegatorsCubit>().clearDelegators();
   }
 
   testData() async {
     final failureOrSuccess = await _getTestData(NoParams());
-    failureOrSuccess.fold((l) {
-      //  print(l);
-    }, (r) {
-      // print(r);
-    });
+    failureOrSuccess.fold((l) {}, (r) {});
+  }
+
+  void updateCurrentLocation(GISResponse response, GISParams params) {
+    emit(state.copyWith(userLocationGIS: response, userLocation: params));
+  }
+
+  void selectDelegator(DelegatorEntity? delegator) {
+    emit(state.copyWith(
+        selectedDelegator: Nullable(delegator), selectedAgent: Nullable(null)));
+  }
+
+  void selectAgent(AgentEntity? agent) {
+    emit(state.copyWith(
+        selectedDelegator: Nullable(null), selectedAgent: Nullable(agent)));
   }
 
   Future<(GISParams, GISResponse)?> getUserLocationData() async {
     emit(state.copyWith(gisStatus: BlocStatus.loading));
-    var latlng = await Helpers.getCurrentLocation();
+    var latlng = await Helpers.getMapLocation();
 
     if (latlng == null) {
     } else {

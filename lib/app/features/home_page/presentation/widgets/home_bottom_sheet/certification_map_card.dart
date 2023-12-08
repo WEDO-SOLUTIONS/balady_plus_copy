@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
-//import '../../../../../core/utils/constants/dialog_names.dart';
+import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -44,7 +44,7 @@ class CertificationMapCard extends StatelessWidget {
                       fontSize: 14,
                     ),
                     const SizedBox(height: 6),
-                    Padding(
+                    const Padding(
                       padding: EdgeInsetsDirectional.only(end: 110),
                       child: CustomTextWidget(
                         "تعرف على الطرق المستهدفة لتطبيق شهادة الامتثال من خلال الخريطة",
@@ -52,7 +52,7 @@ class CertificationMapCard extends StatelessWidget {
                         fontWeight: AppFontWeight.bold,
                         fontSize: 12,
                         textAlign: TextAlign.start,
-                        maxLines: 10,
+                        maxLines: null,
                         height: 1.5,
                       ),
                     ),
@@ -72,8 +72,8 @@ class CertificationMapCard extends StatelessWidget {
                             btnPadding: EdgeInsets.all(8),
                             text: "complinace_isue".tr(),
                             onPressed: () async {
-                              //    Navigator.pushNamed(
-                              //       context, RouteName.createCompliancePage);
+                              NavigationService.navigatorKey.currentState!
+                                  .pushNamed(RouteName.createCompliancePage);
                             },
                           ),
                         ),
@@ -92,8 +92,8 @@ class CertificationMapCard extends StatelessWidget {
                             btnHeight: 40,
                             text: "self_rating".tr(),
                             onPressed: () async {
-                              //   Navigator.pushNamed(
-                              //      context, RouteName.selfRatingMainPage);
+                              NavigationService.navigatorKey.currentState!
+                                  .pushNamed(RouteName.selfRatingMainPage);
                             },
                           ),
                         ),
@@ -124,7 +124,8 @@ class CertificationMapCard extends StatelessWidget {
                     const SizedBox(width: 6),
                     GestureDetector(
                       onTap: () {
-                        //   Navigator.pushNamed(context, RouteName.QAPage);
+                        NavigationService.navigatorKey.currentState!
+                            .pushNamed(RouteName.QAPage);
                       },
                       child: CustomTextWidget(
                         "check_faq".tr(),
@@ -143,12 +144,12 @@ class CertificationMapCard extends StatelessWidget {
                     const SizedBox(width: 6),
                     GestureDetector(
                       onTap: () async {
-                        /*   await BottomSheetDialog.showDraggableSheet(
+                        await BottomSheetDialog.showDraggableSheet(
                           context,
                           dialogKeyName: DialogName.buildingComplianceDialog,
                           currentRouteName: "HomePage",
                           child: BuildingRequirementsDialog(),
-                        );*/
+                        );
                       },
                       child: CustomTextWidget(
                         "home_view_condition".tr(),

@@ -8,6 +8,7 @@ import 'package:balady_plus/app/features/events/domain/usecase/get_search_events
 import 'package:balady_plus/app/features/events/domain/usecase/grt_event_details.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_state.dart';
+import 'package:balady_plus/etmam_app/features/search/search_exports.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 

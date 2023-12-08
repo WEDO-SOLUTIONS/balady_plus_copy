@@ -1,46 +1,59 @@
 import 'package:flutter/cupertino.dart' show showCupertinoModalPopup;
 import 'package:flutter/material.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 
 import '../../../../core/utils/utils_exports.dart' show ContextConversion;
 
 class BottomSheetDialog {
-  static Future<T> showDraggableSheet<T>(
-    BuildContext context, {
-    required Widget child,
-    Color? backgroundColor,
-    Color? barrierColor,
-    double borderRadius = 28.0,
-    bool isDismissible = true,
-    bool isFullHeight = true,
-    double? height,
-    bool isScrollControlled = true,
-    bool enableDrag = false,
-  }) async {
+  static Future<T> showDraggableSheet<T>(BuildContext context,
+      {required Widget child,
+      Color? backgroundColor,
+      Color? barrierColor,
+      double borderRadius = 28.0,
+      bool isDismissible = true,
+      bool isFullHeight = true,
+      double? height,
+      bool isScrollControlled = true,
+      bool enableDrag = true,
+      String? currentRouteName,
+      String? dialogKeyName}) async {
     final screenHeight = context.screenHeight;
-    final screenStatusBarHeight = context.topPadding + 10.0;
-    return (await showModalBottomSheet(
+    final screenStatusBarHeight = context.topPadding + 20.0;
+
+    if (dialogKeyName != null) await FlutterUxcam.tagScreenName(dialogKeyName);
+
+    dynamic value = (await showModalBottomSheet(
           context: context,
           isDismissible: isDismissible,
           isScrollControlled: isScrollControlled,
           enableDrag: enableDrag,
-          backgroundColor: backgroundColor,
+          backgroundColor: Colors.transparent,
           barrierColor: barrierColor,
           shape: RoundedRectangleBorder(
             borderRadius:
                 BorderRadius.vertical(top: Radius.circular(borderRadius)),
           ),
-          builder: (context) => ClipRRect(
-            borderRadius:
-                BorderRadius.vertical(top: Radius.circular(borderRadius)),
-            child: SizedBox(
-              // height: height ?? screenHeight * 0.90, // 90% from screenHeight
-              height:
-                  isFullHeight ? screenHeight - screenStatusBarHeight : height,
-              child: child,
+          builder: (context) => Padding(
+            padding: EdgeInsets.only(top: screenStatusBarHeight),
+            child: ClipRRect(
+              borderRadius:
+                  BorderRadius.vertical(top: Radius.circular(borderRadius)),
+              child: SizedBox(
+                // height: height ?? screenHeight * 0.90, // 90% from screenHeight
+                height: isFullHeight
+                    ? screenHeight - screenStatusBarHeight
+                    : height,
+                child: child,
+              ),
             ),
           ),
         )) ??
         false;
+
+    if (currentRouteName != null)
+      await FlutterUxcam.tagScreenName(currentRouteName);
+
+    return value;
   }
 
   static Future<bool> showRequestService(

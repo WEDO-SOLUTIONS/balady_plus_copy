@@ -1,6 +1,7 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_eta.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PathNavContinueTrip extends StatelessWidget {
   final PathNavEta? eta;
@@ -26,7 +27,7 @@ class PathNavContinueTrip extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Continue trip',
+                context.l10n.continueTrip,
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
                     .headingS

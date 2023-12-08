@@ -13,17 +13,16 @@ class _BriefRouteInfo extends _$BriefRouteInfo {
     required RouteSearchOptionsMessage navType,
   }) {
     final controller = ref.watch(dgisControllerProvider);
-    controller
+    controller.value
         ?.findBriefRouteInfos(
       startPoint: startPoint,
       options: navType,
       finishPoint: finishPoint,
     )
         .then((value) {
-      // state = value.whereType<BriefRouteInfoMessage>().toList();
+      state = value.whereType<BriefRouteInfoMessage>().toList();
     }).onError((error, stackTrace) => state = null);
 
-    print("flag");
     return null;
   }
 }

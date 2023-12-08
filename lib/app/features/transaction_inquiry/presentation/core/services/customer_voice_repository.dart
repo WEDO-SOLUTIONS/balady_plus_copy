@@ -1,0 +1,343 @@
+import 'dart:convert';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:dartz/dartz.dart' hide Tuple3;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:tuple/tuple.dart';
+
+import '../../../../../core/base/base_view_model.dart';
+import '../../../../../core/remote_services/api_constants.dart';
+import '../../../../../core/remote_services/web_service.dart';
+import '../../../../../core/services/local/helpers.dart';
+import '../../../../../core/utils/constants/remote_config.dart';
+import '../models/classification.dart';
+import '../models/create_incident_result.dart';
+import '../models/gis_location_result.dart';
+import '../models/upload_file_result.dart';
+
+class CustomerVoiceRepository {
+  final webServices = locator<WebService>();
+
+  Future<GisLocationResult?> getGisLocation(LatLng location) async {
+    String query =
+        "?x=${location.longitude}&y=${location.latitude}&guid=ba2570d8-6778-4048-9916-e234fac1c04b";
+
+    final body = await webServices.getRequest(
+        RemoteConfig.gis + ApiConstants.GisGetLocation,
+        relativePath: query);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+
+    try {
+      GisLocationResult response =
+          GisLocationResult.fromJson(json.decode(data));
+      if (response != null) {
+        return response;
+      } else {
+        CommonFunctions.showError(error);
+      }
+    } catch (ex) {
+      CommonFunctions.showError(error);
+      try {
+        Helpers.sendLog(
+            url: RemoteConfig.gis + ApiConstants.GisGetLocation,
+            data: data,
+            qeuryParms: query,
+            errorMsg: ex.toString());
+      } catch (ex) {}
+      return null;
+    }
+  }
+
+  Future<Tuple3<bool?, String?, SpecializedClassification?>> getSPlList(
+      String municipality,
+      {String? category}) async {
+    Map<String, dynamic> queryParms = {};
+
+    queryParms = {
+      if (CommonProperties.userInfo?.idNo != null &&
+          CommonProperties.userInfo!.idNo!.startsWith("1"))
+        "NationalID": "${CommonProperties.userInfo!.idNo}"
+      else if (CommonProperties.userInfo?.idNo != null)
+        "IqamaID": "${CommonProperties.userInfo!.idNo}",
+      "ID": municipality,
+      "action": "SplClsList",
+      "ChannelType": "Mobile",
+      "Type": category == "REGA" ? "REGA" : "CRM",
+      if (category != null && category.isNotEmpty)
+        "SpecialClassificationType": category
+    };
+
+    String url = ApiUrl.IncidentRetrieveData;
+
+    final body = await webServices.getPegaRequest(url, queryParams: queryParms);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    String? error = body['error'] ?? ("errors_server_error_1").tr();
+    SpecializedClassification? result;
+
+    try {
+      SpecializedClassification response =
+          SpecializedClassification.fromMap(json.decode(data));
+      result = response;
+      if (response.splClassificationList?.isEmpty ?? false) {
+        error = ("no_spl_classification_error").tr();
+      }
+    } catch (ex) {
+      try {
+        String queryString = "?" + Uri(queryParameters: queryParms).query;
+
+        Helpers.sendLog(
+            url: url,
+            data: data,
+            qeuryParms: queryString,
+            errorMsg: ex.toString());
+      } catch (ex) {}
+    }
+    return Tuple3<bool?, String?, SpecializedClassification?>(
+        state, error, result);
+  }
+
+  Future<Tuple3<bool?, String?, SpecializedClassification?>> getMSRSPlList(
+      String municipality,
+      {String? category}) async {
+    Map<String, dynamic> queryParms = {};
+    if (CommonProperties.userInfo?.idNo != null) {
+      queryParms = {
+        if (CommonProperties.userInfo!.idNo!.startsWith("1"))
+          "NationalID": "${CommonProperties.userInfo!.idNo}"
+        else
+          "IqamaID": "${CommonProperties.userInfo!.idNo}",
+        "ID": municipality,
+        "Action": "SplClsList",
+        if (category != null) "Category": category
+      };
+    }
+
+    String url = ApiUrl.MSRRetrieveMSRData;
+
+    final body = await webServices.getPegaRequest(url, queryParams: queryParms);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    String? error = body['error'] ?? ("errors_server_error_1").tr();
+    SpecializedClassification? result;
+    try {
+      SpecializedClassification response =
+          SpecializedClassification.fromMap(json.decode(data));
+      result = response;
+      if (response.splClassificationList?.isEmpty ?? false) {
+        error = ("no_spl_classification_error").tr();
+      }
+    } catch (ex) {
+      try {
+        String queryString = "?" + Uri(queryParameters: queryParms).query;
+
+        Helpers.sendLog(
+            url: url,
+            data: data,
+            qeuryParms: queryString,
+            errorMsg: ex.toString());
+      } catch (ex) {}
+    }
+    return Tuple3<bool?, String?, SpecializedClassification?>(
+        state, error, result);
+  }
+
+  Future<SubMainClassification?> getSPlDetails(String splId,
+      {String? category}) async {
+    Map<String, dynamic> queryParms = {};
+
+    queryParms = {
+      if (CommonProperties.userInfo?.idNo != null &&
+          CommonProperties.userInfo!.idNo!.startsWith("1"))
+        "NationalID": "${CommonProperties.userInfo!.idNo}"
+      else if (CommonProperties.userInfo?.idNo != null)
+        "IqamaID": "${CommonProperties.userInfo!.idNo}",
+      "ID": splId,
+      "action": "MainSublClsList",
+      "Type": category == "REGA" ? "REGA" : "CRM",
+    };
+
+    String url = ApiUrl.IncidentRetrieveData;
+
+    final body = await webServices.getPegaRequest(url, queryParams: queryParms);
+    bool state = body['state'];
+    dynamic data = body['data'];
+
+    try {
+      SubMainClassification response =
+          SubMainClassification.fromMap(json.decode(data));
+
+      return response;
+    } catch (ex) {
+      try {
+        String queryString = "?" + Uri(queryParameters: queryParms).query;
+
+        //MM
+
+        Helpers.sendLog(
+            url: url,
+            data: data,
+            qeuryParms: queryString,
+            errorMsg: ex.toString());
+      } catch (ex) {}
+      return null;
+    }
+  }
+
+  Future<SubMainClassification?> getMSRSPlDetails(String splId) async {
+    Map<String, dynamic> queryParms = {};
+    if (CommonProperties.userInfo?.idNo != null) {
+      queryParms = {
+        if (CommonProperties.userInfo!.idNo!.startsWith("1"))
+          "NationalID": "${CommonProperties.userInfo!.idNo}"
+        else
+          "IqamaID": "${CommonProperties.userInfo!.idNo}",
+        "ID": splId,
+        "Action": "MSRClsData",
+      };
+    }
+
+    String url = ApiUrl.MSRRetrieveMSRData;
+
+    final body = await webServices.getPegaRequest(url, queryParams: queryParms);
+    bool state = body['state'];
+    dynamic data = body['data'];
+
+    try {
+      SubMainClassification response =
+          SubMainClassification.fromMap(json.decode(data));
+      return response;
+    } catch (ex) {
+      try {
+        String queryString = "?" + Uri(queryParameters: queryParms).query;
+
+//MM
+        Helpers.sendLog(
+            url: url,
+            data: data,
+            qeuryParms: queryString,
+            errorMsg: ex.toString());
+      } catch (ex) {}
+      return null;
+    }
+  }
+
+  Future<Tuple3<bool?, String?, UploadFileResult?>> uploadFile(
+      String? caseID,
+      String? fileName,
+      String? fileBase64,
+      String? fileMemo,
+      String? lastMemo,
+      String? pyDescription,
+      String? catrogry) async {
+    String? memo = fileMemo;
+    int extensionIndex = fileName?.lastIndexOf(".") ?? -1;
+    if (extensionIndex != -1) {
+      memo = fileName?.substring(0, extensionIndex) ?? fileMemo;
+    }
+    var body = {};
+    if (CommonProperties.isLoggedIn &&
+        CommonProperties.userInfo?.idNo != null) {
+      if (CommonProperties.userInfo!.idNo!.startsWith("1")) {
+        body = {
+          "CaseID": caseID,
+          "Category": catrogry,
+          "pxAttachName": fileName,
+          "pyMemo": memo,
+          "AttachStream": fileBase64,
+          "NationalID": CommonProperties.userInfo?.idNo,
+          if (pyDescription != null) "pyDescription": pyDescription,
+        };
+      } else {
+        body = {
+          "CaseID": caseID,
+          "Category": catrogry,
+          "pxAttachName": fileName,
+          "pyMemo": memo,
+          "AttachStream": fileBase64,
+          "IqamaID": CommonProperties.userInfo?.idNo,
+          if (pyDescription != null) "pyDescription": pyDescription,
+        };
+      }
+    } else {
+      body = {
+        "CaseID": caseID,
+        "Category": catrogry,
+        "pxAttachName": fileName,
+        "pyMemo": memo,
+        "AttachStream": fileBase64,
+        if (pyDescription != null) "pyDescription": pyDescription,
+      };
+    }
+    String url = ApiUrl.IncidentUploadFile;
+    final res = await webServices.postPegaRequest(url, body: body);
+    bool? state = res['state'];
+    dynamic data = res['data'];
+    String? error = res['error'];
+    UploadFileResult? response;
+    try {
+      response = UploadFileResult.fromJson(json.decode(data));
+      if (response != null &&
+          response.errors != null &&
+          response.errors!.isNotEmpty) state = false;
+    } catch (ex) {
+      try {
+        //MM
+        Helpers.sendLog(
+            url: url,
+            data: data,
+            body: json.encode(body),
+            errorMsg: ex.toString());
+      } catch (ex) {}
+    }
+    return Tuple3<bool?, String?, UploadFileResult?>(state, error, response);
+  }
+
+  Future<Tuple3<bool?, String?, CreateIncidentResult?>> createRequest(
+    var body,
+  ) async {
+    String url = ApiUrl.IncidentCreate;
+
+    final res = await webServices.postPegaRequest(url, body: body);
+    bool? state = res['state'];
+    dynamic data = res['data'];
+    String? error = res['error'];
+    CreateIncidentResult? response;
+    try {
+      response = CreateIncidentResult.fromJson(json.decode(data));
+    } catch (ex) {
+      //MM
+      try {
+        Helpers.sendLog(
+            url: url, data: data, body: body, errorMsg: ex.toString());
+      } catch (ex) {}
+    }
+    return Tuple3<bool?, String?, CreateIncidentResult?>(
+        state, error, response);
+  }
+
+  Future<Tuple3<bool?, String?, CreateIncidentResult?>> createMSRRequest(
+    var body,
+  ) async {
+    String url = ApiUrl.MSRCreate;
+
+    final res = await webServices.postPegaRequest(url, body: body);
+    bool? state = res['state'];
+    dynamic data = res['data'];
+    String? error = res['error'];
+    CreateIncidentResult? response;
+    try {
+      response = CreateIncidentResult.fromJson(json.decode(data));
+    } catch (ex) {
+      try {
+        //MM
+        Helpers.sendLog(
+            url: url, data: data, body: body, errorMsg: ex.toString());
+      } catch (ex) {}
+    }
+    return Tuple3<bool?, String?, CreateIncidentResult?>(
+        state, error, response);
+  }
+}

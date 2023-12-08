@@ -1,8 +1,9 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/map/dgis_packages.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
@@ -74,12 +75,10 @@ class VoiceRow extends ConsumerWidget {
                   PackageUpdateStatusMessage.inProgress)
                 Text(
                   "$progress%",
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: const Color(0xB21E2A36),
-                    height: 1.4,
-                  ),
+                  style: Theme.of(context)
+                      .extension<ThemeTextStyles>()
+                      ?.textXS
+                      .copyWith(color: const Color(0xB21E2A36)),
                 ),
               const Spacer(),
               Column(
@@ -87,22 +86,20 @@ class VoiceRow extends ConsumerWidget {
                 children: [
                   Text(
                     packageInfo.name,
-                    style: GoogleFonts.inter(
-                      fontSize: 16,
-                      height: 1.4,
-                      color: const Color(0xFF1E2A36),
-                    ),
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.textM
+                        .copyWith(color: const Color(0xFF1E2A36)),
                   ),
                   Text(
                     "${packageInfo.installed ? "Installed" : "Not installed"}${packageInfo.hasUpdate ? " · Update available" : ""}",
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: packageInfo.installed
-                          ? const Color(0xFF4CA5B4)
-                          : const Color(0xFFD14733),
-                      height: 1.4,
-                    ),
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.textXS
+                        .copyWith(
+                            color: packageInfo.installed
+                                ? const Color(0xFF4CA5B4)
+                                : const Color(0xFFD14733)),
                   ),
                 ],
               ),

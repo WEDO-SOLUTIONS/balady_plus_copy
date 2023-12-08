@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/retry_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,25 +12,34 @@ import '../../../../_shared_feature_/shared_feature_exports.dart'
 class DropDownWithTitle extends StatelessWidget {
   final String title;
   final String? selectedValue;
+  final double? height;
   final VoidCallback onTap;
   final bool showArrow;
+  final bool isRequired;
   final BlocRequestStatus? status;
+  final BlocStatus? blocStatus;
+
   final VoidCallback? onRetry;
 
   const DropDownWithTitle({
     super.key,
     required this.title,
     this.selectedValue,
+    this.height,
     required this.onTap,
     this.showArrow = true,
+    this.isRequired = false,
     this.status,
+    this.blocStatus,
     this.onRetry,
   });
 
   @override
   Widget build(BuildContext context) {
-    final loading = status == BlocRequestStatus.submissionGetLoading;
-    final retry = status == BlocRequestStatus.submissionGetFailure;
+    final loading = (status == BlocRequestStatus.submissionGetLoading ||
+        blocStatus == BlocStatus.loading);
+    final retry = (status == BlocRequestStatus.submissionGetFailure ||
+        blocStatus == BlocStatus.failure);
 
     return InkWell(
       onTap: () {
@@ -40,10 +50,21 @@ class DropDownWithTitle extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomTextWidget(
-              title,
-              textStyle: AppStyle.dropDownTitleTextStyle,
-            ),
+            if (title.isNotEmpty)
+              Row(
+                children: [
+                  CustomTextWidget(
+                    title,
+                    textStyle: AppStyle.dropDownTitleTextStyle,
+                  ),
+                  isRequired ? CustomTextWidget(
+                    '*'.tr(),
+                    textStyle: AppStyle.dropDownTitleTextStyle.copyWith(
+                      color: Colors.red.shade700,
+                    ),
+                  ) : const SizedBox(),
+                ],
+              ),
             const SizedBox(height: 8),
             if (retry)
               RetryWidget(onRetry: onRetry)
@@ -56,7 +77,7 @@ class DropDownWithTitle extends StatelessWidget {
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                height: 48,
+                height: height ?? 48,
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: AppColor.blackModern300Light,
@@ -66,15 +87,17 @@ class DropDownWithTitle extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    CustomTextWidget(
-                      selectedValue ?? "choose".tr(),
-                      textStyle: AppStyle.dropDownValueTextStyle,
+                    Expanded(
+                      child: CustomTextWidget(
+                        selectedValue ?? "choose".tr(),
+                        textStyle: AppStyle.dropDownValueTextStyle,
+                        maxLines: 2,
+                      ),
                     ),
-                    const Spacer(),
                     if (showArrow)
                       SvgPicture.asset(
                         IconPath.arrowDown,
-                         color: AppColor.blackModern600Light,
+                        color: AppColor.blackModern600Light,
                         colorBlendMode: BlendMode.srcIn,
                       ),
                   ],

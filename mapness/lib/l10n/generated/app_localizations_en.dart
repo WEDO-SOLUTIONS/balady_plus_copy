@@ -125,6 +125,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get done => 'Done';
 
   @override
+  String get droneView => 'Drone view';
+
+  @override
   String get edit => 'Edit';
 
   @override
@@ -167,6 +170,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get floor => 'Floor';
 
   @override
+  String get focusOnTheRoad => 'Focus on the road';
+
+  @override
   String get from => 'From';
 
   @override
@@ -180,6 +186,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get home => 'Home';
+
+  @override
+  String get horseRacing => 'Horse racing';
 
   @override
   String get hospitals => 'Hospitals';
@@ -210,6 +219,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get investmentOpportunities => 'Investment opportunities';
+
+  @override
+  String get iwish => 'iWish';
 
   @override
   String get joyParks => 'JOY Parks';
@@ -290,6 +302,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mosques => 'Mosques';
 
   @override
+  String get myChallenge => 'My challenge';
+
+  @override
   String get myLocation => 'My location';
 
   @override
@@ -306,6 +321,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nav_route => 'Route';
+
+  @override
+  String get next => 'Next';
 
   @override
   String get open24Hours => 'Open 24 hours';
@@ -356,6 +374,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pm => 'pm';
 
   @override
+  String get poi_boulevard_riyadh_city => 'Boulevard\\nRiyadh City';
+
+  @override
+  String get poi_edge_of_the_world => 'Edge of the\\nworld';
+
+  @override
+  String get poi_faisaliya_tower => 'Faisaliya\\nTower';
+
+  @override
+  String get poi_kingdom_center => 'Kingdom\\nCenter';
+
+  @override
+  String get poi_masmak_fortress => 'Masmak\\nFortress';
+
+  @override
   String get prayerTime => 'Prayer time';
 
   @override
@@ -387,6 +420,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get route => 'Route';
+
+  @override
+  String get route1description => 'Main advantages and hidden tricks of the navigator feature – in couple slides ';
+
+  @override
+  String get route2description => 'The navigator suggests up to three routes considering current traffic situation. It will also remind you about alternative routes at crossroads';
+
+  @override
+  String get route3description => 'Voice assistant will keep you informed throughout your trip';
 
   @override
   String get schools => 'Schools';
@@ -422,6 +464,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
+  String get shareChallengeWithUs => 'Share the challenge with us. Contribute to combating visual pollution in your city';
+
+  @override
   String get shareFeedback => 'Share feedback';
 
   @override
@@ -452,6 +497,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signInToUnlockTheFullPotentialOfTheBaladyApp => 'Sign in to unlock the full potential\nof the Balady app';
 
   @override
+  String get snap_and_send => 'Snap & Send';
+
+  @override
   String get somethingWentWrong => 'Something went wrong';
 
   @override
@@ -473,6 +521,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stairs => 'stairs';
 
   @override
+  String get start => 'Start';
+
+  @override
   String get steps => 'Steps';
 
   @override
@@ -486,6 +537,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get thanksForYourFeedback => 'Thanks for your feedback';
+
+  @override
+  String get theShortestRoute => 'The shortest route ';
 
   @override
   String get theTripTook => 'The trip took';
@@ -533,10 +587,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get weekend => 'Weekend';
 
   @override
+  String get whatCanTheNavigatorDo => 'What can \nthe navigator do?';
+
+  @override
   String get wishesSent => 'Wishes sent';
 
   @override
   String get work => 'Work';
+
+  @override
+  String get worldHealthExpo => 'World Health Expo 2023';
 
   @override
   String get youArrived => 'You arrived';

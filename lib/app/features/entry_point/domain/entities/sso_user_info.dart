@@ -1,3 +1,4 @@
+import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 import 'package:hijri/hijri_calendar.dart';
@@ -83,7 +84,7 @@ class SsoUserInfo extends Equatable {
   }
 
   String getFirstAndLastName() {
-    return "${getFirstName()} ${getLastName()}";
+    return getFirstName() + " " + getLastName();
   }
 
   String getIdType() {
@@ -121,7 +122,6 @@ class SsoUserInfo extends Equatable {
   String getHijriBirthDate() {
     String applicantDob = dob ?? "";
     try {
-      //print(applicantDob);
       HijriCalendar hijriCalendar = HijriCalendar();
 
       List<String> date = applicantDob.split("/");
@@ -130,30 +130,29 @@ class SsoUserInfo extends Equatable {
       for (var element in date) {
         dateDivided.add(int.tryParse(element)!);
       }
-      // print(dateDivided);
 
       String hDate = hijriCalendar.gregorianToHijri(
           dateDivided[2], dateDivided[1], dateDivided[0]);
 
       String year = hijriCalendar.hYear.toString();
       String month = hijriCalendar.hMonth.toString().length == 1
-          ? "0${hijriCalendar.hMonth}"
+          ? "0" + hijriCalendar.hMonth.toString()
           : hijriCalendar.hMonth.toString();
       String day = hijriCalendar.hDay.toString().length == 1
-          ? "0${hijriCalendar.hDay}"
+          ? "0" + hijriCalendar.hDay.toString()
           : hijriCalendar.hDay.toString();
 
       if (dateDivided[2] > 1800) {
-        return "$year/$month/$day";
+        return year + "/" + month + "/" + day;
       } else {
         String year = dateDivided[2].toString();
         String month = dateDivided[1].toString().length == 1
-            ? "0${dateDivided[1]}"
+            ? "0" + dateDivided[1].toString()
             : dateDivided[1].toString();
         String day = dateDivided[0].toString().length == 1
-            ? "0${dateDivided[0]}"
+            ? "0" + dateDivided[0].toString()
             : dateDivided[0].toString();
-        return "$year/$month/$day";
+        return year + "/" + month + "/" + day;
       }
     } catch (ex) {
       return applicantDob;
@@ -168,7 +167,7 @@ class SsoUserInfo extends Equatable {
 
   String getPhone() {
     return phone != null
-        ? (!phone!.startsWith("0") ? "0${phone!}" : phone!)
+        ? (!phone!.startsWith("0") ? "0" + phone! : phone!)
         : "";
   }
 

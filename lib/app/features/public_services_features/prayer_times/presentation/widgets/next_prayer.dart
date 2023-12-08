@@ -30,7 +30,7 @@ class _NextPrayerState extends State<NextPrayer> {
     super.initState();
     DateTime prayerTime = widget.time;
     final DateTime now = DateTime.now();
-    if (widget.prayer == Prayers.fajr) {
+    if (widget.prayer == Prayers.fajr && now.isAfter(prayerTime)) {
       prayerTime = prayerTime.add(Duration(days: 1));
     }
     final remainingTime = prayerTime.difference(now);

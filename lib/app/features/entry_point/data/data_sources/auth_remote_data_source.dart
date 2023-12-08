@@ -69,7 +69,6 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       response?.accessToken.actionLog();
       return response!;
     } catch (error) {
-      print(error);
       throw ServerException(
         error.toString(),
       );
@@ -93,13 +92,13 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
           ],
         ),
       );
-      //  print(response?.refreshToken);
+
       return response!;
     } on PlatformException catch (error) {
       if (error.toString().contains("invalid_grant")) {
         sl<EntryPointCubit>().autoLogout();
       }
-      throw const ServerException(
+      throw ServerException(
         "",
       );
     }
@@ -111,7 +110,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
     try {
       response = await webServiceSSo.dio.get(ApiUrl.ssoUserInfo,
           options: Options(headers: {
-            "Authorization": "Bearer ${CommonProperties.token ?? ""}"
+            "Authorization": "Bearer " + (CommonProperties.token ?? "")
           }));
 
       var data = response.data;
@@ -120,17 +119,23 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
 
       return parsedResult.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
-      print(ex);
       if (ex is ServerException) {
         rethrow;
       } else {
         try {
           //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (_) {}
-        throw ServerException(("errors_server_error_2".tr()));
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -156,8 +161,11 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       //        parsedResult: parsedResult);
       return response.data;
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException) {
         rethrow;
@@ -165,7 +173,11 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         try {
           //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (_) {}
-        throw ServerException(("errors_server_error_2").tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -185,18 +197,20 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       );
 
       var data = response.data["data"]?["result"];
-      //  print("GGSSSSSS ${data}");
+
       var parsedResult =
           data != null ? ForceUpdateResponseModel.fromMap(data) : null;
-      //  print("GGSSSSSS ${parsedResult?.versionNumber}");
 
       //final decodedResponse =
       //  ApigeeResponseModel<ForceUpdateResponseModel>.fromMap(response.data,
       //    parsedResult: parsedResult);
       return parsedResult!.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException) {
         rethrow;
@@ -204,7 +218,11 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         try {
           //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -232,25 +250,32 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
     try {
       response = await webServiceSSo.dio.get(ApiUrl.ssoUserCookie,
           options: Options(headers: {
-            "Authorization": "Bearer ${CommonProperties.token ?? ""}"
+            "Authorization": "Bearer " + (CommonProperties.token ?? "")
           }));
       String? cookie;
       if (response.headers['set-cookie']?.toString() != null) {
         cookie = response.headers['set-cookie'].toString();
       }
+
       return cookie;
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
-      print(ex);
       if (ex is ServerException) {
         rethrow;
       } else {
         try {
           //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (_) {}
-        throw ServerException(("errors_server_error_2".tr()));
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -262,7 +287,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       String username = RemoteConfig.apigeeUsername;
       String password = RemoteConfig.apigeePassword;
       String basicAuth =
-          'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+          'Basic ' + base64Encode(utf8.encode('$username:$password'));
 
       response = await webService.dio.post(ApiUrl.apigeeToken,
           options: Options(
@@ -272,12 +297,16 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
             },
           ),
           data: {"grant_type": "client_credentials"});
+
       ApigeeTokenResponseModel apigeeResponse =
           ApigeeTokenResponseModel.fromMap(response.data);
       return apigeeResponse.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException) {
         rethrow;
@@ -285,7 +314,11 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         try {
           //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (_) {}
-        throw ServerException(("errors_server_error_2").tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -302,24 +335,25 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
 
       /*  final result =
           ApigeeResponseModel<List<TestModel>>.fromMap(data).data?.result;
-      print("Ff $result");
+   
       List<TestModel>? d = result != null
           ? List<TestModel>.from(result.map((x) => TestModel.fromMap(x)))
           : null;
 
-      print(d?.length);*/
+ ;*/
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
       List<TestModel>? d = result != null
           ? List<TestModel>.from(result.map((x) => TestModel.fromMap(x)))
           : null;
-      print(d?.length);
+
       return result.toFuture();
     } on DioError catch (error) {
       error.errorLog();
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       ex.errorLog();

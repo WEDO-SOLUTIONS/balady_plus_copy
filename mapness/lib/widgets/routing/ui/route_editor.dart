@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/shared/config/package_config.dart';
-
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class RouteEditor extends StatelessWidget {
   const RouteEditor({
@@ -30,6 +30,7 @@ class RouteEditor extends StatelessWidget {
           ReorderableListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
+            buildDefaultDragHandles: false,
             onReorder: onReorder,
             itemBuilder: (BuildContext context, int index) {
               return Directionality(
@@ -43,8 +44,8 @@ class RouteEditor extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                     child: DestinationRow(
                       color: points[index].titleColor,
-                      value:
-                          points[index].title ?? (index == 0 ? "From" : "To"),
+                      value: points[index].title(context.l10n) ??
+                          (index == 0 ? context.l10n.from : context.l10n.to),
                       icon: points[index].icon,
                       index: index,
                     ),
@@ -108,7 +109,10 @@ class DestinationRow extends StatelessWidget {
           Expanded(
             child: Text(
               value,
-              style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: color),
+              style: Theme.of(context)
+                  .extension<ThemeTextStyles>()!
+                  .textM
+                  .copyWith(color: color),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),

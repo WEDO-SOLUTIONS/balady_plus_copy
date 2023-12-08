@@ -9,18 +9,20 @@ import 'package:image_picker/image_picker.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../data/entities/file_data_item.dart';
 import '../widgets/buttons/custom_buttons_widgets.dart';
+import '../widgets/draw_line_widget.dart';
 
 class UploadFileDialog extends StatelessWidget {
   final Function(FileDataItem file) onConfirm;
   final Function? onCancel;
   final bool imagesOnly;
+  final bool filesOnly;
 
-  const UploadFileDialog({
-    super.key,
-    required this.onConfirm,
-    this.onCancel,
-    this.imagesOnly = false,
-  });
+  const UploadFileDialog(
+      {super.key,
+      required this.onConfirm,
+      this.onCancel,
+      this.imagesOnly = false,
+      this.filesOnly = false});
 
   @override
   Widget build(BuildContext context) {
@@ -42,43 +44,45 @@ class UploadFileDialog extends StatelessWidget {
                 title: Helpers.translatingWord("choose_file"),
                 withDivider: false,
               ),*/
-              CustomTextButtonWidget(
-                text: ("lbl_Camera").tr(),
-                btnTextColor: AppColor.black,
-                btnTextSize: 17,
-                btnTextWeight: AppFontWeight.medium,
-                btnAlignment: Alignment.center,
-                onPressed: () async {
-                  final ImagePicker picker = ImagePicker();
-                  final XFile? image =
-                      await picker.pickImage(source: ImageSource.camera);
+              if (filesOnly == false)
+                CustomTextButtonWidget(
+                  text: ("lbl_Camera").tr(),
+                  btnTextColor: AppColor.black,
+                  btnTextSize: 17,
+                  btnTextWeight: AppFontWeight.medium,
+                  btnAlignment: Alignment.center,
+                  onPressed: () async {
+                    final ImagePicker picker = ImagePicker();
+                    final XFile? image =
+                        await picker.pickImage(source: ImageSource.camera);
 
-                  if (image != null) {
-                    int imageSize = await image.length();
-                    if (imageSize > 25000000) {
-                      CommonFunctions.showError(('file_size_error').tr());
-                    } else {
-                      String path = image.path;
-                      String fileName = path.isNotEmpty
-                          ? path.split('/').last
-                          : ('attachment_name').tr();
-                      final fileBytes = await File(path).readAsBytes();
-                      String base64File = base64Encode(fileBytes);
-                      FileDataItem file = FileDataItem(
-                        fileBase64: base64File,
-                        fileName: fileName,
-                        filePath: path,
-                        // sizeInMB: CommonFunctions.convertBytesToMB(imageSize),
-                      );
-                      onConfirm(file);
+                    if (image != null) {
+                      int imageSize = await image.length();
+                      if (imageSize > 25000000) {
+                        CommonFunctions.showError(('file_size_error').tr());
+                      } else {
+                        String path = image.path;
+                        String fileName = path.isNotEmpty
+                            ? path.split('/').last
+                            : ('attachment_name').tr();
+                        final fileBytes = await File(path).readAsBytes();
+                        String base64File = base64Encode(fileBytes);
+                        FileDataItem file = FileDataItem(
+                            fileBase64: base64File,
+                            fileName: fileName,
+                            filePath: path,
+                            bytes: fileBytes
+                            // sizeInMB: CommonFunctions.convertBytesToMB(imageSize),
+                            );
+                        onConfirm(file);
+                      }
                     }
-                  }
-                },
-              ),
+                  },
+                ),
               // const DrawLineWidget(
               //   verticalMargin: 10,
               //   ),
-              if (Platform.isIOS)
+              if (Platform.isIOS && (filesOnly == false))
                 CustomTextButtonWidget(
                   text: ("images").tr(),
                   btnTextColor: AppColor.black,
@@ -93,6 +97,7 @@ class UploadFileDialog extends StatelessWidget {
               //  const DrawLineWidget(
               //      verticalMargin: 10,
               //   ),
+
               CustomTextButtonWidget(
                 text: ("files").tr(),
                 btnTextColor: AppColor.black,
@@ -100,7 +105,8 @@ class UploadFileDialog extends StatelessWidget {
                 btnTextWeight: AppFontWeight.medium,
                 btnAlignment: Alignment.center,
                 onPressed: () {
-                  openFilePicker(FileType.custom, context);
+                  openFilePicker(FileType.custom, context,
+                      allowedExtensions: filesOnly ? ["pdf"] : null);
                 },
               ),
             ],
@@ -110,12 +116,16 @@ class UploadFileDialog extends StatelessWidget {
     );
   }
 
-  void openFilePicker(FileType fileType, BuildContext c) async {
+  void openFilePicker(FileType fileType, BuildContext c,
+      {List<String>? allowedExtensions}) async {
     var file = await FilePicker.platform.pickFiles(
       type: fileType,
       allowMultiple: false,
-      allowedExtensions:
-          fileType == FileType.custom ? ['jpg', 'pdf', 'jpeg', 'png'] : null,
+      allowedExtensions: allowedExtensions != null
+          ? allowedExtensions
+          : fileType == FileType.custom
+              ? ['jpg', 'pdf', 'jpeg', 'png']
+              : null,
     );
     try {
       if (file != null && file.files.isNotEmpty) {
@@ -134,6 +144,8 @@ class UploadFileDialog extends StatelessWidget {
               fileBase64: base64File,
               fileName: fileName,
               filePath: path,
+              bytes: fileBytes,
+
               //  sizeInMB: CommonFunctions.convertBytesToMB(platformFile.size),
             );
             onConfirm(file);

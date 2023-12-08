@@ -17,26 +17,33 @@ GeoRectMessage saRect = GeoRectMessage(
   southWest: GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
 );
 
+// @Riverpod(keepAlive: true)
 @riverpod
 class DgisController extends _$DgisController {
   CameraPositionMessage? _lastCameraPosition;
 
   CameraPositionMessage? _lastRectPosition;
 
+  late Completer<DgisMapController> _completer;
+
   @override
-  DgisMapController? build() => null;
+  Future<DgisMapController> build() {
+    _completer = Completer();
+
+    return _completer.future;
+  }
 
   Future<void> onMapCreated(DgisMapController controller) async {
     await initialize(controller);
-    state = controller;
+    _completer.complete(controller);
   }
 
   Future<void> initialize(DgisMapController controller) async {
-    PermissionStatus locationPermission = await ref.watch(
+    PermissionStatus locationPermission = await ref.read(
       permissionsProvider(Permission.location).future,
     );
     final locationNotifier =
-        ref.watch(permissionsProvider(Permission.location).notifier);
+        ref.read(permissionsProvider(Permission.location).notifier);
 
     if (!locationPermission.isGranted) {
       locationPermission = await locationNotifier.request();
@@ -69,8 +76,16 @@ class DgisController extends _$DgisController {
       );
     }
 
+    final visibleRectSubscription =
+        controller.visibleRectEvents.listen(_visibleRectListener);
+    final cameraPositionSubscription =
+        controller.cameraPositionEvents.listen(_cameraPositionListener);
+
     ref.onDispose(
-      () {},
+      () {
+        visibleRectSubscription.cancel();
+        cameraPositionSubscription.cancel();
+      },
     );
     await controller.setZoomRestrictions(min: 5.5);
     Future.delayed(
@@ -93,12 +108,10 @@ class DgisController extends _$DgisController {
   }
 
   void _visibleRectListener(VisibleRectEvent event) async {
-    if (state == null) return;
-
-    if ((!await state!
+    if ((!await state.value!
         .containsRect(saRect, event.visibleRect.geoRectMessage()))) {
       if (_lastRectPosition != null) {
-        await state!.setCameraPosition(_lastRectPosition!);
+        await state.value!.setCameraPosition(_lastRectPosition!);
       }
     } else {
       _lastRectPosition = _lastCameraPosition;

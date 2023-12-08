@@ -1,10 +1,10 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class LoadingSheet extends StatelessWidget {
-  final String text;
-  const LoadingSheet({Key? key, required this.text}) : super(key: key);
+  final String? text;
+  const LoadingSheet({Key? key, this.text}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +21,11 @@ class LoadingSheet extends StatelessWidget {
             const CircularProgressIndicator(),
             const SizedBox(height: 16),
             Text(
-              text,
-              style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: const Color(0xB21E2A36)),
+              text ?? context.l10n.loading,
+              style: Theme.of(context)
+                  .extension<ThemeTextStyles>()!
+                  .textL
+                  .copyWith(color: const Color(0xB21E2A36)),
             ),
           ],
         ),

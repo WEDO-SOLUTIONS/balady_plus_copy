@@ -43,10 +43,10 @@ class Search extends _$Search {
       state = SearchStateHistory();
       return;
     }
-    final dgisController = ref.read(dgisControllerProvider);
+    final dgisController = await ref.read(dgisControllerProvider.future);
 
     final searchOperation =
-        CancelableOperation.fromFuture(dgisController!.fetchSuggest(query));
+        CancelableOperation.fromFuture(dgisController.fetchSuggest(query));
     _searchOperation = searchOperation;
     searchOperation.value.then(
       (result) => state = result.suggests.isEmpty
@@ -57,10 +57,10 @@ class Search extends _$Search {
 
   Future<void> searchByText(String query) async {
     _searchOperation?.cancel();
-    final dgisController = ref.read(dgisControllerProvider);
+    final dgisController = await ref.read(dgisControllerProvider.future);
 
     final searchOperation =
-        CancelableOperation.fromFuture(dgisController!.search(
+        CancelableOperation.fromFuture(dgisController.search(
       query,
       sortingType: SortingTypeMessage.byDistance,
       spatialRestriction: saRestrictions,
@@ -75,10 +75,10 @@ class Search extends _$Search {
 
   Future<void> searchByQuery(SearchQueryMessage query) async {
     _searchOperation?.cancel();
-    final dgisController = ref.read(dgisControllerProvider);
+    final dgisController = await ref.read(dgisControllerProvider.future);
 
     final searchOperation =
-        CancelableOperation.fromFuture(dgisController!.searchByQuery(
+        CancelableOperation.fromFuture(dgisController.searchByQuery(
       query,
       sortingType: SortingTypeMessage.byDistance,
       spatialRestriction: saRestrictions,

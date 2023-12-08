@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'permissions.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class Permissions extends _$Permissions {
   @override
   Future<PermissionStatus> build(Permission permission) async {

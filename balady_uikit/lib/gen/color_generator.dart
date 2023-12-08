@@ -17,7 +17,6 @@ class ColorConstantsGenerator implements Builder {
     final content = await buildStep.readAsString(inputId);
 
     final jsonData = json.decode(content);
-    final collections = jsonData['collections'];
 
     var colorPalette = ColorPalette.fromJson(jsonData);
 
@@ -46,35 +45,33 @@ class ColorConstantsGenerator implements Builder {
     buffer.writeln('import "dart:ui";');
     buffer.writeln('class ${_toCamelCase(name)} {');
 
+    final modeName = mode.name;
+    buffer.writeln('  // $modeName');
+    final variables = mode.variables;
+    for (final variable in variables) {
+      var name = makeColorName(modeName, variable);
+      var colorValue = variable.value;
 
-      final modeName = mode.name;
-      buffer.writeln('  // $modeName');
-      final variables = mode.variables;
-      for (final variable in variables) {
-        var name = makeColorName(modeName, variable);
-        var colorValue = variable.value;
-
-        ///если цвета динамические и берут значения из основной палитры
-        if (colorValue
-            case {
-              "collection": String collectionName,
-              "name": String colorName
-            }) {
-
-          var targetCollection = collections
-              .firstWhereOrNull((element) => element.name == collectionName);
-          if (targetCollection != null) {
-            var colorVariable = targetCollection.modes
-                .expand((element) => element.variables)
-                .firstWhereOrNull((element) => element.name == colorName);
-            if (colorVariable != null) {
-              writeColor(colorVariable.value, buffer, name);
-            }
+      ///если цвета динамические и берут значения из основной палитры
+      if (colorValue
+          case {
+            "collection": String collectionName,
+            "name": String colorName
+          }) {
+        var targetCollection = collections
+            .firstWhereOrNull((element) => element.name == collectionName);
+        if (targetCollection != null) {
+          var colorVariable = targetCollection.modes
+              .expand((element) => element.variables)
+              .firstWhereOrNull((element) => element.name == colorName);
+          if (colorVariable != null) {
+            writeColor(colorVariable.value, buffer, name);
           }
-        } else {
-          writeColor(colorValue, buffer, name);
         }
+      } else {
+        writeColor(colorValue, buffer, name);
       }
+    }
 
     buffer.writeln('}');
     return buffer.toString();
@@ -85,7 +82,8 @@ class ColorConstantsGenerator implements Builder {
         .replaceAll('/', '_')
         .replaceAll(' ', '_')
         .replaceAll('-', '_')
-        .replaceAll(RegExp(r'[^a-zA-Z0-9_]'), '').toLowerCase();
+        .replaceAll(RegExp(r'[^a-zA-Z0-9_]'), '')
+        .toLowerCase();
     return name;
   }
 
@@ -112,13 +110,8 @@ class ColorConstantsGenerator implements Builder {
       ColorCollection collection,
       AssetId inputId,
       String collectionName) async {
-
     for (var mode in collection.modes) {
-
-      var path =
-          "lib/gen/${mode.name
-          .toLowerCase()
-          .replaceAll(' ', '_')}.dart";
+      var path = "lib/gen/${mode.name.toLowerCase().replaceAll(' ', '_')}.dart";
       final output = File(path);
       var generateString = generateColorConstants(mode, collections);
       await output.writeAsString(generateString);

@@ -9,7 +9,7 @@ class _PathNavSpeedInfo extends _$PathNavSpeedInfo {
   @override
   PathNavSpeedInfo build() {
     final speedController =
-        ref.watch(dgisControllerProvider)?.naviSpeedController;
+        ref.watch(dgisControllerProvider).value?.naviSpeedController;
     final camerasSub = speedController?.cameraEvents.listen((event) {
       state = state.copyWith(direction: event.direction);
     });

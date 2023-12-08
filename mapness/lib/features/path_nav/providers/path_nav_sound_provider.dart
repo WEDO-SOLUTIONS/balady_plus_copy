@@ -6,7 +6,7 @@ part 'path_nav_sound_provider.g.dart';
 @riverpod
 class _PathNavSoundProvider extends _$PathNavSoundProvider {
   Future<void> toggle() async {
-    final controller = ref.read(dgisControllerProvider)!;
+    final controller = await ref.read(dgisControllerProvider.future);
     await controller.toggleSound();
     state = !state;
   }

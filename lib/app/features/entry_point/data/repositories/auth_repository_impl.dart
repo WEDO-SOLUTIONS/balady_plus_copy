@@ -177,11 +177,10 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
   Future<Either<Failure, SsoUserInfo>> getSSOProfile() async {
     try {
       final data = await remoteDataSource.getSSOProfile();
-      if (data != null) {
+      if (data != null)
         return Right(data);
-      } else {
+      else
         return Left(ServerFailure(""));
-      }
     } on ServerException catch (error) {
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
@@ -213,13 +212,12 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
   Future<Either<Failure, String>> getCookie() async {
     try {
       final data = await remoteDataSource.getCookie();
-      if (data != null) {
+      if (data != null)
         return Right(data);
-      } else {
+      else
         return Left(ServerFailure(
           "",
         ));
-      }
     } on ServerException catch (error) {
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));

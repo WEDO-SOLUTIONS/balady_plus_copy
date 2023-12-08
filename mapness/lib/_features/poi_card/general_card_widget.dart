@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
-import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/widgets/about.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
@@ -17,7 +16,6 @@ import 'package:mapness/_features/poi_card/widgets/opening_hours.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/poi_card/widgets/trade_license.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 
@@ -100,6 +98,7 @@ class _ContentState extends ConsumerState<_Content> {
 
   @override
   void dispose() {
+    _draggableScrollableController.removeListener(scrollListener);
     _draggableScrollableController.dispose();
     super.dispose();
   }
@@ -107,38 +106,38 @@ class _ContentState extends ConsumerState<_Content> {
   @override
   void initState() {
     _draggableScrollableController = DraggableScrollableController();
-    _draggableScrollableController.addListener(() {
-      if (_draggableScrollableController.size <= 0.001) {
-        context.pop();
-        widget.viewModel.resetMapControlsState();
-      }
-    });
+    _draggableScrollableController.addListener(scrollListener);
     super.initState();
+  }
+
+  void scrollListener() {
+    if (_draggableScrollableController.size <= .2) {
+      //   setState(() {
+      //     showFooter = false;
+      //   });
+      // }else{
+      //   setState(() {
+      //     showFooter = true;
+      //   });
+    }
+    // if (_draggableScrollableController.size <= 0.001) {
+    //   context.pop();
+    //   widget.viewModel.resetMapControlsState();
+    // }
   }
 
   @override
   Widget build(BuildContext context) {
-    final briefInfo = ref.watch(briefRouteInfoProvider(
-      finishPoint: RouteSearchPointMessage(
-        coordinates: widget.directoryObject.markerPosition!.toGeoPointMessage(),
-        objectId: widget.directoryObject.id!,
-      ),
-      navType: RouteSearchOptionsMessage.car,
-    ));
-    final poi = PoiModel(
-      directoryObjectMessage: widget.directoryObject,
-      briefeRouteInfos: briefInfo,
-    );
-
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
       initialChildSize: _headerExtent(),
-      minChildSize: .0,
+      minChildSize: .1,
       maxChildSize: .9,
       snap: true,
       snapSizes: [
+        .1,
         _headerExtent(),
-        .5,
+        .7,
         .9,
       ],
       builder: (
@@ -177,13 +176,8 @@ class _ContentState extends ConsumerState<_Content> {
                       slivers: [
                         SliverPersistentHeader(
                           delegate: PoiCardHeaderDelegate(
-                            data: poi,
-                            ontapClose: () =>
-                                _draggableScrollableController.animateTo(
-                              0,
-                              duration: const Duration(milliseconds: 250),
-                              curve: Curves.easeInOut,
-                            ),
+                            data: data,
+                            ontapClose: () => context.pop(),
                           ),
                           pinned: true,
                         ),
@@ -219,9 +213,15 @@ class _ContentState extends ConsumerState<_Content> {
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: PoiCardFooter(
-                        data: poi,
+                        scrollController: _draggableScrollableController,
+                        data: data,
                         viewModel: widget.viewModel,
                         onEntranceTap: () {
+                          _draggableScrollableController.animateTo(
+                            .3,
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeIn,
+                          );
                           setState(() {
                             showEntrances = !showEntrances;
                           });

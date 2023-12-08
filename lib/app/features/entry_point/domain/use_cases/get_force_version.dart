@@ -5,6 +5,7 @@ import '../../../../core/services/services_exports.dart' show UseCase, NoParams;
 import '../../entry_point_exports.dart';
 
 import 'package:version/version.dart';
+import '../../../../core/errors/errors_exports.dart' show Failure;
 
 class GetForceVersion extends UseCase<bool, NoParams> {
   final EntryPointRepository repository;
@@ -16,12 +17,11 @@ class GetForceVersion extends UseCase<bool, NoParams> {
         appId: "etmam_mobile", type: CommonProperties.deviceOs ?? "");
     final successsOrFailure = await repository.getForceVersion(params);
     return successsOrFailure.fold((l) => Right(false), (r) {
-      //   print("SUCCCCCCCCESSSSSS ${r}");
       bool showForce = compareVersion(
           CommonProperties.appVersion, r.versionNumber, r.forceUpdate);
       return Right(showForce);
     });*/
-    return const Right(false);
+    return Right(false);
   }
 
   bool compareVersion(

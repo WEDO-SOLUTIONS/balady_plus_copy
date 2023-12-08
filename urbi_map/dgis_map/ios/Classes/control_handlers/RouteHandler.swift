@@ -173,7 +173,7 @@ class RouteHandler {
     
     private func getPedestrianRouteData(_ route: Route) -> (Int, Int, [Int]) {
         return (
-            route.roadSubtypes.entries.filter({ $0.value == .stairway }).count,
+            route.roadSubtypes.entries.filter({ $0.value == .stairwayUp || $0.value == .stairwayDown }).count,
             route.obstacles.entries.count,
             route.altitudes.entries.map({ Int($0.value) })
         );
@@ -246,18 +246,14 @@ class RouteHandler {
     func findBriefRouteInfosRouteSearchOptions(
         _ routeSearchOptions: RouteSearchOptions,
         startPoint: RouteSearchPoint?,
-        finishPoint: RouteSearchPoint,
+        finishPoint: RouteSearchPoint?,
         completion: @escaping ([BriefRouteInfoMessage]?, FlutterError?)->Void)
     {
-
-
         let startSearchPoint: RouteSearchPoint
+        let finishSearchPoint: RouteSearchPoint
 
-        if let pStartPoint = startPoint {
-            startSearchPoint = RouteSearchPoint(coordinates: GeoPoint(
-                latitude: pStartPoint.coordinates.latitude,
-                longitude: pStartPoint.coordinates.longitude
-            ))
+        if let startPoint {
+            startSearchPoint = startPoint
         } else if let lastLocation = positioningService.locationProvider?.lastLocation?.coordinate {
             startSearchPoint = RouteSearchPoint(coordinates: GeoPoint(
                 latitude: lastLocation.latitude,
@@ -274,8 +270,27 @@ class RouteHandler {
             )
             return // Возвращаем nil или промежуточное значение в случае ошибки получения стартовой точки
         }
+        
+        if let finishPoint {
+            finishSearchPoint = finishPoint
+        } else if let lastLocation = positioningService.locationProvider?.lastLocation?.coordinate {
+            finishSearchPoint = RouteSearchPoint(coordinates: GeoPoint(
+                latitude: lastLocation.latitude,
+                longitude: lastLocation.longitude
+            ))
+        } else {
+            completion(
+                nil,
+                FlutterError(
+                    code: "Failed to get route information",
+                    message: nil,
+                    details: nil
+                )
+            )
+            return // Возвращаем nil или промежуточное значение в случае ошибки получения стартовой точки
+        }
 
-        let briefRouteInfoSearchPoints = BriefRouteInfoSearchPoints(startPoint: startSearchPoint, finishPoint: finishPoint)
+        let briefRouteInfoSearchPoints = BriefRouteInfoSearchPoints(startPoint: startSearchPoint, finishPoint: finishSearchPoint)
         
         self.cancelable.append(trafficRouter.findBriefRouteInfos(
             searchPoints: [briefRouteInfoSearchPoints],

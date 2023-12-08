@@ -13,7 +13,7 @@ class _PathNavMessage extends _$PathNavMessage {
     final mapController = ref.watch(dgisControllerProvider);
 
     final subscription =
-        mapController?.naviMessageController.events.listen((event) {
+        mapController.value?.naviMessageController.events.listen((event) {
       switch (event.state) {
         case NaviMessageEventState.gpsLost:
           state = const PathNavMessage(

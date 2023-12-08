@@ -1,47 +1,41 @@
-// import 'package:flutter/material.dart' show WidgetsFlutterBinding, runApp;
-// import 'package:flutter_bloc/flutter_bloc.dart' show Bloc;
-// import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
-// import 'package:localize_and_translate/localize_and_translate.dart'
-//     show LocalizationDefaultType, LocalizedApp, translator;
-// import './app/core/dependency_injection/dependency_injection_exports.dart' as di
-//     show initialize;
+import 'package:flutter/material.dart' show runApp;
+import 'package:localize_and_translate/localize_and_translate.dart'
+    show LocalizedApp;
+import 'package:mapness/entry_point.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
-// import './app/core/services/services_exports.dart'
-//     show HiveManager, SimpleBlocObserver;
-// import './app/core/utils/utils_exports.dart' show AppConfig, EnvType;
-// import './app/app.dart';
-// import './app/core/dependency_injection/dependency_injection_exports.dart'
-//     show sl;
+import './app/core/utils/utils_exports.dart' show EnvType;
+import './app/app.dart';
+import './env.dart';
+import 'app/core/dependency_injection/injection_container.dart';
 
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-
-//   /// force app to be only portrait
-//   SystemChrome.setPreferredOrientations([
-//     DeviceOrientation.portraitUp,
-//     DeviceOrientation.portraitDown,
-//   ]);
-
-//   // di: dependency injection
-//   di.initialize();
-
-//   //! Please assign environment firstly
-//   sl.registerLazySingleton<EnvType>(() => EnvType.dev);
-
-//   // Initialize hive and open all needed boxes
-//   await HiveManager.initializeHive();
-
-//   await translator.init(
-//     // localeType: LocalizationDefaultType.device, // based on device language
-//     // localeType: LocalizationDefaultType.asDefined, // based on first element at languageList
-//     localeType: LocalizationDefaultType.asDefined,
-//     languagesList: AppConfig.defaultAppLanguage.languages,
-//     assetsDirectory: AppConfig.appLanguagesPath,
-//   );
-
-//   //! comment it in release mode
-//   // to observe all blocs movements
-//   if (sl<EnvType>().isDev) Bloc.observer = SimpleBlocObserver();
-
-//   runApp(LocalizedApp(child: const App()));
-// }
+void main() async {
+  await AppEnv.setupEnv(EnvType.prod);
+  await setupMapness();
+  await SentryFlutter.init(
+    (options) {
+      options.dsn =
+          'https://50b0a8db4073d7769253664cf62c123f@o4506314696163329.ingest.sentry.io/4506351858417664';
+      // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+      // We recommend adjusting this value in production.
+      options.tracesSampleRate = 1.0;
+      // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+      // We recommend adjusting this value in production.
+      options.attachScreenshot = true;
+      options.enableUserInteractionTracing = true;
+      options.captureFailedRequests = true;
+      options.environment = sl<EnvType>().name;
+    },
+    appRunner: () => runApp(
+      SentryScreenshotWidget(
+        child: SentryUserInteractionWidget(
+          child: const MapnessProviderScope(
+            child: LocalizedApp(
+              child: App(),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}

@@ -25,25 +25,6 @@ class AlertsModel extends Alerts {
 
   factory AlertsModel.fromJson(Map<String, dynamic> json) {
     final jsonData = json["alert"] as List<dynamic>;
-    final dummyData = {
-      "headline": "NWS New York City - Upton (Long Island and New York City)",
-      "msgtype": '',
-      "severity": '',
-      "urgency": '',
-      "areas": 'الشرقية',
-      "category": "Extreme temperature value",
-      "certainty": '',
-      "event": "Heat Advisory",
-      "note": '',
-      "effective": "2022-07-21T19:38:00.000Z",
-      "expires": "2022-07-25T00:00:00.000Z",
-      "desc":
-          "الدفاع المدني يهيب بالجميع أخذ الحيطة والحذر والابتعاد عن بطون الأودية ومجاري السيول والالتزام بتعليماته.جعلها الله أمطار خير وبركة. تعاونكم هدفنا وسلامتكم غايتنا. ",
-      "instruction": ""
-    };
-
-    print(jsonData.isEmpty);
-
     return AlertsModel(
       alert: jsonData.isEmpty
           ? []
@@ -178,6 +159,9 @@ class CurrentModel extends Current {
         windMph: json["wind_mph"],
         condition: condition,
       );
+
+  @override
+  bool defineIsDay() => isDay == 1;
 }
 
 class ConditionsModel extends Condition {
@@ -188,15 +172,50 @@ class ConditionsModel extends Condition {
   });
 
   //generate from json
-  factory ConditionsModel.fromMap(Map<String, dynamic> json) => ConditionsModel(
-        code: json["code"],
-        icon: json["icon"],
-        text: json["text"],
-      );
+  static ConditionsModel fromMap(Map<String, dynamic> json) {
+    return ConditionsModel(
+      code: json["code"],
+      icon: json["icon"],
+      text: json["text"],
+    );
+  }
 }
 
 class ForecastModel extends Forecast {
   ForecastModel({super.forecastday});
+
+  static ForecastModel fromJson(Map<String, dynamic> json) {
+    final forecastDayData = json['forecastday'];
+    var decodedForecastDayResponse;
+    if (forecastDayData != null) {
+      decodedForecastDayResponse =
+          forecastDayData.map<ForecastDay>((forecastDay) {
+        final dayData = forecastDay['day'];
+        final astroData = forecastDay['astro'];
+
+        var dayConditionData;
+        var decodedDayConditionResponse;
+        dayConditionData = dayData['condition'];
+        if (dayConditionData != null) {
+          decodedDayConditionResponse =
+              ConditionsModel.fromMap(dayConditionData);
+        }
+
+        if (decodedDayConditionResponse != null) {
+          var astroModel = AstroModel.fromMap(astroData);
+          var dayModel = DayModel.fromMap(dayData, decodedDayConditionResponse);
+          return ForecastDayModel.fromMap(
+            forecastDay,
+            astroModel,
+            dayModel,
+          );
+        } else {
+          return ForecastDayModel();
+        }
+      }).toList();
+    }
+    return ForecastModel(forecastday: decodedForecastDayResponse);
+  }
 }
 
 class ForecastDayModel extends ForecastDay {
@@ -209,15 +228,24 @@ class ForecastDayModel extends ForecastDay {
   });
 
   //generate from json
-  factory ForecastDayModel.fromMap(
-          Map<String, dynamic> json, Astro astro, Day day, List<Hour> hour) =>
-      ForecastDayModel(
-        date: json["date"],
-        dateEpoch: json["date_epoch"],
-        astro: astro,
-        day: day,
-        hour: hour,
-      );
+  static ForecastDayModel fromMap(
+    Map<String, dynamic> json,
+    Astro astro,
+    Day day,
+  ) {
+    final hourData = json['hour'] as List<dynamic>?;
+    var hours = hourData?.map<HourModel>((hour) {
+      return HourModel.fromMap(hour);
+    }).toList();
+
+    return ForecastDayModel(
+      date: json["date"],
+      dateEpoch: json["date_epoch"],
+      astro: astro,
+      day: day,
+      hour: hours,
+    );
+  }
 }
 
 class AstroModel extends Astro {
@@ -233,16 +261,18 @@ class AstroModel extends Astro {
   });
 
   //generate from json
-  factory AstroModel.fromMap(Map<String, dynamic> json) => AstroModel(
-        isMoonUp: json["is_moon_up"],
-        isSunUp: json["is_sun_up"],
-        moonIllumination: json["moon_illumination"],
-        moonPhase: json["moon_phase"],
-        moonrise: json["moonrise"],
-        moonset: json["moonset"],
-        sunrise: json["sunrise"],
-        sunset: json["sunset"],
-      );
+  static AstroModel fromMap(Map<String, dynamic> json) {
+    return AstroModel(
+      isMoonUp: json["is_moon_up"],
+      isSunUp: json["is_sun_up"],
+      moonIllumination: json["moon_illumination"],
+      moonPhase: json["moon_phase"],
+      moonrise: json["moonrise"],
+      moonset: json["moonset"],
+      sunrise: json["sunrise"],
+      sunset: json["sunset"],
+    );
+  }
 }
 
 class DayModel extends Day {
@@ -336,42 +366,46 @@ class HourModel extends Hour {
 
   //generate from json
   factory HourModel.fromMap(
-          Map<String, dynamic> json, ConditionsModel condition) =>
-      HourModel(
-        timeEpoch: json["time_epoch"],
-        time: json["time"],
-        tempC: json["temp_c"],
-        tempF: json["temp_f"],
-        isDay: json["is_day"],
-        windMph: json["wind_mph"],
-        windKph: json["wind_kph"],
-        windDegree: json["wind_degree"],
-        windDir: json["wind_dir"],
-        pressureMb: json["pressure_mb"],
-        pressureIn: json["pressure_in"],
-        precipMm: json["precip_mm"],
-        precipIn: json["precip_in"],
-        humidity: json["humidity"],
-        cloud: json["cloud"],
-        feelslikeC: json["feelslike_c"],
-        feelslikeF: json["feelslike_f"],
-        windchillC: json["windchill_c"],
-        windchillF: json["windchill_f"],
-        heatindexC: json["heatindex_c"],
-        heatindexF: json["heatindex_f"],
-        dewpointC: json["dewpoint_c"],
-        dewpointF: json["dewpoint_f"],
-        willItRain: json["will_it_rain"],
-        chanceOfRain: json["chance_of_rain"],
-        willItSnow: json["will_it_snow"],
-        chanceOfSnow: json["chance_of_snow"],
-        visKm: json["vis_km"],
-        visMiles: json["vis_miles"],
-        gustMph: json["gust_mph"],
-        gustKph: json["gust_kph"],
-        uv: json["uv"],
-        condition: condition,
-      );
+    Map<String, dynamic> json,
+  ) {
+    final hourCondition = ConditionsModel.fromMap(json['condition']);
+
+    return HourModel(
+      timeEpoch: json["time_epoch"],
+      time: json["time"],
+      tempC: json["temp_c"],
+      tempF: json["temp_f"],
+      isDay: json["is_day"],
+      windMph: json["wind_mph"],
+      windKph: json["wind_kph"],
+      windDegree: json["wind_degree"],
+      windDir: json["wind_dir"],
+      pressureMb: json["pressure_mb"],
+      pressureIn: json["pressure_in"],
+      precipMm: json["precip_mm"],
+      precipIn: json["precip_in"],
+      humidity: json["humidity"],
+      cloud: json["cloud"],
+      feelslikeC: json["feelslike_c"],
+      feelslikeF: json["feelslike_f"],
+      windchillC: json["windchill_c"],
+      windchillF: json["windchill_f"],
+      heatindexC: json["heatindex_c"],
+      heatindexF: json["heatindex_f"],
+      dewpointC: json["dewpoint_c"],
+      dewpointF: json["dewpoint_f"],
+      willItRain: json["will_it_rain"],
+      chanceOfRain: json["chance_of_rain"],
+      willItSnow: json["will_it_snow"],
+      chanceOfSnow: json["chance_of_snow"],
+      visKm: json["vis_km"],
+      visMiles: json["vis_miles"],
+      gustMph: json["gust_mph"],
+      gustKph: json["gust_kph"],
+      uv: json["uv"],
+      condition: hourCondition,
+    );
+  }
 }
 
 class LocationModel extends Location {
@@ -386,8 +420,7 @@ class LocationModel extends Location {
     super.localtime,
   });
 
-  //generate from json
-  factory LocationModel.fromMap(Map<String, dynamic> json) => LocationModel(
+  factory LocationModel.fromJson(Map<String, dynamic> json) => LocationModel(
         name: json["name"],
         region: json["region"],
         country: json["country"],
@@ -400,23 +433,43 @@ class LocationModel extends Location {
 }
 
 AllWeatherInfoModel mapper(Map<String, dynamic>? data) {
-  var locationData = data?['location'];
-  var currentData = data?['current'];
+  try {
+    var alertModel;
+    var alertsData = data?['alerts'];
+    if (alertsData != null) {
+      alertModel = AlertsModel.fromJson(alertsData);
+    }
 
-  var decodedCurrentResponse;
+    var locationModel;
+    var locationData = data?['location'];
+    if (locationData != null) {
+      locationModel = LocationModel.fromJson(locationData);
+    }
 
-  final decodedLocationResponse = LocationModel.fromMap(locationData);
-  final currentCondition = currentData['condition'];
+    var forecastModel;
+    var forecastData = data?['forecast'];
+    if (forecastData != null) {
+      forecastModel = ForecastModel.fromJson(forecastData);
+    }
 
-  if (currentCondition != null) {
-    decodedCurrentResponse = CurrentModel.fromMap(
-        currentData, ConditionsModel.fromMap(currentCondition));
+    var conditionModel;
+    var currentData = data?['current'];
+    if (currentData != null) {
+      final currentCondition = currentData['condition'];
+      if (currentCondition != null) {
+        conditionModel = CurrentModel.fromMap(
+            currentData, ConditionsModel.fromMap(currentCondition));
+      }
+    }
+
+    final allWeatherData = AllWeatherInfoModel(
+      alerts: alertModel,
+      location: locationModel,
+      current: conditionModel,
+      forecast: forecastModel,
+    );
+    return allWeatherData;
+  } catch (e) {
+    return AllWeatherInfoModel();
   }
-
-  final allWeatherData = AllWeatherInfoModel(
-    location: decodedLocationResponse,
-    current: decodedCurrentResponse,
-  );
-
-  return allWeatherData;
 }

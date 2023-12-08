@@ -9,7 +9,7 @@ class DgisPackages extends _$DgisPackages {
   @override
   List<PackageMessage> build() {
     final dgisController = ref.watch(dgisControllerProvider);
-    dgisController?.listPackages().then(
+    dgisController.value?.listPackages().then(
           (value) => state = value.whereType<PackageMessage>().toList(),
         );
 
@@ -18,7 +18,7 @@ class DgisPackages extends _$DgisPackages {
 
   Future<void> install(PackageMessage package) async {
     final dgisController = ref.read(dgisControllerProvider);
-    await dgisController?.installPackage(package.id);
+    await dgisController.value?.installPackage(package.id);
   }
 }
 
@@ -27,7 +27,7 @@ class VoicePackages extends _$VoicePackages {
   @override
   List<PackageMessage> build() {
     final dgisController = ref.watch(dgisControllerProvider);
-    dgisController?.listVoices().then(
+    dgisController.value?.listVoices().then(
           (value) => state = value.whereType<PackageMessage>().toList(),
         );
 
@@ -36,7 +36,7 @@ class VoicePackages extends _$VoicePackages {
 
   Future<void> install(PackageMessage package) async {
     final dgisController = ref.read(dgisControllerProvider);
-    await dgisController?.installVoice(package.id);
+    await dgisController.value?.installVoice(package.id);
   }
 }
 
@@ -46,7 +46,7 @@ class PackageProgress extends _$PackageProgress {
   int build(PackageMessage package) {
     final dgisController = ref.watch(dgisControllerProvider);
     final packageSubscription =
-        dgisController?.packageProgressEvents.listen((event) {
+        dgisController.value?.packageProgressEvents.listen((event) {
       if (event.id == package.id) {
         state = event.progress;
       }
@@ -69,7 +69,7 @@ class PackageInfo extends _$PackageInfo {
     final dgisController = ref.watch(dgisControllerProvider);
 
     final packagesInfoChangedSubscription =
-        dgisController?.packagesInfoChangedEvents.listen((event) {
+        dgisController.value?.packagesInfoChangedEvents.listen((event) {
       if (event.id == package.id) {
         state = event.packageInfo;
       }

@@ -1,5 +1,4 @@
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-
 import 'package:flutter/material.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -18,7 +17,7 @@ class HijriCalendarDateWidget extends StatelessWidget {
   final HijriCalendar? minValue;
   final HijriCalendar? maxValue;
 
-  const HijriCalendarDateWidget(
+  HijriCalendarDateWidget(
       {Key? key,
       this.fieldLength,
       required this.fieldName,
@@ -85,7 +84,6 @@ class HijriCalendarDateWidget extends StatelessWidget {
             value: selectedDate(currentDate)),
         selectedTextStyle: const TextStyle(color: AppColor.primary900Light),
         onConfirm: (hijri_picker.Picker picker, List value) {
-          //print((picker.adapter as HijriPicker.DateTimePickerAdapter).value);
           var date =
               (picker.adapter as hijri_picker.DateTimePickerAdapter).value;
 

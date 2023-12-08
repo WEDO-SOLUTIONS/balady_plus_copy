@@ -6,7 +6,6 @@ import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/expandable_widget.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 
-
 class OpeningHours extends StatefulWidget {
   final OpeningHoursModel? model;
 
@@ -75,8 +74,8 @@ class _OpeningHoursState extends State<OpeningHours> {
 
   @override
   Widget build(BuildContext context) {
-    final isWeekend = widget.model?.getTodayOpeningInfo()?.isWeekend ?? false;
     final todayOpeningInfo = widget.model?.getTodayOpeningInfo();
+    final isWeekend = todayOpeningInfo?.isWeekend ?? false;
 
     var fontStyle = Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: colorPrimary);
     return is24x7 || isOpenSameTime
@@ -87,10 +86,12 @@ class _OpeningHoursState extends State<OpeningHours> {
             title: Row(
               children: [
                 Text("Today", style: fontStyle),
-                Text(' ', style: fontStyle),
-                Text(todayOpeningInfo!.openHour!, style: fontStyle),
-                Text(' - ', style: fontStyle),
-                Text(todayOpeningInfo.closeHour!, style: fontStyle),
+                if (todayOpeningInfo != null) ...[
+                  Text(' ', style: fontStyle),
+                  Text(todayOpeningInfo.openHour ?? '', style: fontStyle),
+                  Text(' - ', style: fontStyle),
+                  Text(todayOpeningInfo.closeHour ?? '', style: fontStyle),
+                ],
               ],
             ),
             icon: timeIcon(isWeekend ? colorIconError : colorIconPositive),

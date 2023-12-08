@@ -1,11 +1,13 @@
 import 'dart:math';
 
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:balady_plus/app/features/events/domain/entities/search_events/search_events_item.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -15,11 +17,11 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
-import '../../../events/domain/entities/search_events/search_events_item.dart';
-import '../../../events/presentation/widgets/old_event_card.dart';
+import '../../../calendar/presentation/widgets/calendar_image_widget.dart';
 import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../vd/domain/entities/camera/camera_page_params.dart';
 import '../../../vd/domain/entities/categories/category_item.dart';
+import '../../../vd/presentation/dialogs/qr_types_dialog.dart';
 import '../../constants/constants.dart';
 import '../../data/model/resturant_model.dart';
 import '../mvvm/map_view_model.dart';
@@ -41,8 +43,8 @@ class EventMapCardWidget extends StatelessWidget {
 
     return GestureDetector(
         onTap: () async {
-          //  Navigator.pushNamed(context, RouteName.eventsDetailsPage,
-          //     arguments: data.id);
+          NavigationService.navigatorKey.currentState!
+              .pushNamed(RouteName.eventsDetailsPage, arguments: data.id);
         },
         child: Container(
           height: 150,

@@ -3,7 +3,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
-//import '../../../../vd/presentation/dialogs/vd_types_dialog.dart';
+import '../../../../vd/presentation/dialogs/vd_types_dialog.dart';
 
 class DeformityHomeCard extends StatelessWidget {
   const DeformityHomeCard({
@@ -44,7 +44,7 @@ class DeformityHomeCard extends StatelessWidget {
                   fontColor: AppColor.blackModern800Light,
                   fontWeight: AppFontWeight.bold,
                   fontSize: 12,
-                  maxLines: 10,
+                  maxLines: null,
                   height: 1.5,
                 ),
                 const SizedBox(height: 12),
@@ -58,7 +58,8 @@ class DeformityHomeCard extends StatelessWidget {
                   btnHeight: 40,
                   btnWidth: 157,
                   text: "تعرف على انواع التشوه",
-                  onPressed: () => {},
+                  onPressed: () =>
+                      context.pushNamedRoute(RouteName.visualDistortionPage),
                 ),
               ],
             ),

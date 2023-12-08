@@ -17,7 +17,7 @@ class SearchHistory extends _$SearchHistory {
 
   Future<void> _load() async {
     final searchHistoryBox =
-        await ref.watch(hiveProvider("${_hiveBox}_$scope").future);
+        await ref.read(hiveProvider("${_hiveBox}_$scope").future);
 
     final history = searchHistoryBox.values
         .map((e) => e as SearchHistoryItem)

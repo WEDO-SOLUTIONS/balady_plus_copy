@@ -1,7 +1,7 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-
 import 'package:mapness/_features/stories/domain/frame/story_frame_data.dart';
+import 'package:mapness/_features/stories/presentation/story_localizations.dart';
 
 class StoryFrameContent extends StatelessWidget {
   final StoryFrameData frame;
@@ -24,7 +24,7 @@ class StoryFrameContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  frame.title,
+                  frame.titleOrFailback(StoryLocalizations.of(context)!.locale),
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
                       .headingL
@@ -45,7 +45,9 @@ class StoryFrameContent extends StatelessWidget {
                 const SizedBox(height: 21),
                 if (frame.description != null)
                   Text(
-                    frame.description!,
+                    frame.descriptionOrFailback(
+                            StoryLocalizations.of(context)!.locale) ??
+                        '',
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
                         .textM

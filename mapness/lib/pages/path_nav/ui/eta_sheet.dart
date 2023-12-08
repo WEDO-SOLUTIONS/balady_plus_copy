@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_sound_provider.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_bottom_sheet.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_end_trip_button.dart';
@@ -97,14 +98,14 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
         body: Column(
           children: [
             PathNavSettingToggle(
-              title: 'Dark Map',
+              title: context.l10n.darkMap,
               state: ref.watch(darkModeProvider),
               onChanged: (_) => ref.read(darkModeProvider.notifier).toggle(),
             ),
             const SizedBox(height: 12),
             PathNavSettingToggle(
-              title: 'Sound settings',
-              subtitle: 'Maneuvers enabled',
+              title: context.l10n.soundSettings,
+              subtitle: context.l10n.maneuvers,
               state: sound,
               onChanged: (_) =>
                   ref.read(pathNavSoundProviderProvider.notifier).toggle(),

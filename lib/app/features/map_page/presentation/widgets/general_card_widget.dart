@@ -9,6 +9,9 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/utils/constants/dialog_names.dart';
+import '../../../facility_qr/facility_qr_exports.dart';
+
 import '../../../../core/base/base_view_model.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_style.dart';
@@ -18,6 +21,8 @@ import '../../../../core/utils/enums/enums.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../vd/domain/entities/camera/camera_page_params.dart';
+import '../../../vd/presentation/dialogs/qr_types_dialog.dart';
+
 import '../mvvm/map_view_model.dart';
 import '../mvvm/point_view_model.dart';
 import 'package:collection/collection.dart';
@@ -76,7 +81,78 @@ class GeneralMapCardWidget extends StatelessWidget {
             mapViewModel.selectedCategory.value ==
                 SearchCategoryMessage.gasStations) {
           String? qr = pointViewModel.dataPoint.value?.externalIds?.join(" ");
-          if (qr != null) {}
+          if (qr != null) {
+            final FacilityQRDetailsViewModel viewModel =
+                locator<FacilityQRDetailsViewModel>();
+
+            bool isLicenseFound = false;
+
+            isLicenseFound = await viewModel.getFacilityData(qr);
+            if (isLicenseFound) {
+              showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (ctx) => FacilityDialog(
+                        address: viewModel.getCityAndStreet(),
+                        facilityImg: viewModel.getCoverPhotoUrl(),
+                        rate: viewModel.getFacilityAvrageRating(),
+                        facilityName: viewModel.getFacilityName(),
+                        reviewers: viewModel.getFacilityTotalRatingCount(),
+                        onDetailsScreen: () {
+                          /* NavigationService.navigatorKey.currentState!.pushNamed(
+                        RoutesNames.facilityScreenRoute,
+                        arguments: viewModel.facilityRespoonse);*/
+                        },
+                        onRatingScreen: () {
+                          /*NavigationService.navigatorKey.currentState!.pushNamed(
+                        RoutesNames.facilityRatingRoute,
+                        arguments: viewModel.facilityRespoonse);*/
+                        },
+                        onIncidentScreen: () async {
+                          bool isLocationAvailable =
+                              await CommonFunctions.checkLocationSettings(
+                                  context);
+                          bool isCameraAllowed =
+                              await CommonFunctions.checkCameraSettings(
+                                  context);
+                          if (isLocationAvailable && isCameraAllowed) {
+                            double? lat = viewModel
+                                .facilityRespoonse
+                                ?.data
+                                ?.result
+                                ?.comLicenseInfo
+                                ?.locationInfo
+                                ?.latitude;
+                            double? long = viewModel
+                                .facilityRespoonse
+                                ?.data
+                                ?.result
+                                ?.comLicenseInfo
+                                ?.locationInfo
+                                ?.longitude;
+
+                            if (lat != null && long != null) {
+                              await BottomSheetDialog.showDraggableSheet(
+                                  context,
+                                  dialogKeyName: DialogName.vdTypesDialog,
+                                  currentRouteName: "HomePage",
+                                  child: BottomSheetWithActions(
+                                    title: "اختر نوع البلاغ".tr(),
+                                    body: QrTypesDialog(
+                                      cmeraParamsPage: CameraParamsPage(
+                                          lat: lat,
+                                          lon: long,
+                                          qrCodeFlow: true,
+                                          pageType: PAGE_TYPE.qrDialog,
+                                          isFromHome: false),
+                                    ),
+                                  ));
+                            }
+                          }
+                        },
+                      ));
+            }
+          }
         }
         // }
       },
@@ -86,7 +162,6 @@ class GeneralMapCardWidget extends StatelessWidget {
             return ValueListenableBuilder<DirectoryObjectMessage?>(
                 valueListenable: pointViewModel.dataPoint,
                 builder: (_, dataPoint, __) {
-                  print("is loading $isLoading");
                   return (isLoading ?? false)
                       ? const ShimmerEffectWidget(
                           height: 120,
@@ -340,21 +415,29 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                       .toList() ??
                                                   [],
                                         ),*/
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        CustomTextWidget(
-                                          dataPoint?.contactInfos
-                                                  .phoneNumber() ??
-                                              "",
-                                          fontColor:
-                                              AppColor.blackModern800Light,
-                                          fontSize: 16,
-                                          textOverflow: TextOverflow.ellipsis,
-                                          fontWeight: AppFontWeight.bold,
-                                          maxLines: 2,
-                                          textAlign: TextAlign.start,
-                                        ),
+
+                                        if ((dataPoint?.contactInfos
+                                                    .phoneNumber() !=
+                                                null) &&
+                                            (dataPoint!.contactInfos
+                                                .phoneNumber()!
+                                                .isNotEmpty)) ...[
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          CustomTextWidget(
+                                            dataPoint?.contactInfos
+                                                    .phoneNumber() ??
+                                                "",
+                                            fontColor:
+                                                AppColor.blackModern800Light,
+                                            fontSize: 16,
+                                            textOverflow: TextOverflow.ellipsis,
+                                            fontWeight: AppFontWeight.bold,
+                                            maxLines: 2,
+                                            textAlign: TextAlign.start,
+                                          ),
+                                        ]
                                       ],
                                     ),
                                   ),

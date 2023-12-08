@@ -4,10 +4,14 @@ enum BlocStatus {
   closeLoading,
   failure,
   success,
-  loadMore,
   requestChanged,
   performing,
   retry,
+  loaded,
+  download,
+  success1,
+  loadMore,
+  loadingShimmer,
   locationPermissionSuceess,
   locationPermissionFailed,
   locationServiceSuceess,
@@ -44,6 +48,7 @@ enum BlocRequestStatus {
   submissionDeleteCanceled,
   submissionDeleteFailure,
   submissionDeleteSuccess,
+  failure
   ;
 
   bool get isSubmissionInitial => this == BlocRequestStatus.initial;

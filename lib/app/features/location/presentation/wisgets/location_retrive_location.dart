@@ -1,4 +1,4 @@
-//import 'package:app_settings/app_settings.dart';
+import 'package:app_settings/app_settings.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ class LocationRetriveLocation extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const CustomSvgIconWidget(
-                  "", //  IconPath.location,
+                  IconPath.location,
                   iconSize: 82,
                 ),
                 CustomVerticalSpace(height: 32),
@@ -52,10 +52,10 @@ class LocationRetriveLocation extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: EnhancedCustomElevatedButtonWidget(
               btnPressed: () {
-                /*   if (permission)
+                if (permission)
                   Geolocator.openAppSettings();
                 else
-                  AppSettings.openAppSettings(type: AppSettingsType.location);*/
+                  AppSettings.openAppSettings(type: AppSettingsType.location);
               },
               btnText: ("settings").tr(),
               btnTextSize: 18,

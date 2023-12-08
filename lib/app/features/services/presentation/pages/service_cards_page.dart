@@ -11,16 +11,21 @@ import '../../services_exports.dart'
         ServiceEntity,
         ServiceWarningWidget;
 
-class ServiceCardsPage extends StatelessWidget {
-  final ServiceEntity service;
-
+class ServiceCardsPage extends StatefulWidget {
   const ServiceCardsPage({
     super.key,
-    required this.service,
   });
 
   @override
+  State<ServiceCardsPage> createState() => _ServiceCardsPageState();
+}
+
+class _ServiceCardsPageState extends State<ServiceCardsPage> {
+  @override
   Widget build(BuildContext context) {
+    ServiceEntity service =
+        ModalRoute.of(context)!.settings.arguments as ServiceEntity;
+
     return BlocProvider(
       create: (context) => ServiceCardsCubit(service),
       child: Scaffold(
@@ -33,11 +38,13 @@ class ServiceCardsPage extends StatelessWidget {
         body: Column(
           children: [
             const Expanded(
-              child: Column(
-                children: [
-                  SizedBox(height: 16),
-                  ServiceCardDescription(),
-                ],
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(height: 16),
+                    ServiceCardDescription(),
+                  ],
+                ),
               ),
             ),
             if (service.warning != null)

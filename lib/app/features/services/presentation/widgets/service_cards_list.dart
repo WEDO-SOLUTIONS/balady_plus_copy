@@ -32,7 +32,7 @@ class ServiceCardsList extends StatelessWidget implements PreferredSizeWidget {
                       context.read<ServiceCardsCubit>().selectCard(card),
                   child: HomeTag(
                     title: card.title,
-                    icon: IconPath.requests, //card.iconName,
+                    icon: card.iconName,
                     color: AppColor.primary900Light,
                     selected: state.selectedCard == card,
                   ),

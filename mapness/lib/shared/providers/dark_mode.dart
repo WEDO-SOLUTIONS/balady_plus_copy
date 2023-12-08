@@ -5,7 +5,7 @@ part 'dark_mode.g.dart';
 
 const _prefsKey = "settings.darkMode";
 
-@riverpod
+@Riverpod(keepAlive: true)
 class DarkMode extends _$DarkMode {
   @override
   bool build() {

@@ -129,7 +129,7 @@ class _FavouritesState extends ConsumerState<Favourites> {
                   FavouritesToggle(isEditing: isEditing),
                   const SizedBox(height: 8),
                   PinnedPlaceWidget(
-                    key: Key(state.home?.id ?? 'home'),
+                    key: Key('home${state.home?.id}'),
                     title: state.home?.title ?? context.l10n.home,
                     address: state.home?.subtitle ?? context.l10n.addAddress,
                     iconAsset: 'assets/icons/svg/ic_home.svg',
@@ -146,7 +146,7 @@ class _FavouritesState extends ConsumerState<Favourites> {
                   ),
                   const SizedBox(height: 8),
                   PinnedPlaceWidget(
-                    key: Key(state.work?.id ?? 'work'),
+                    key: Key('work${state.work?.id}'),
                     title: state.work?.title ?? context.l10n.work,
                     address: state.work?.subtitle ?? context.l10n.addAddress,
                     iconAsset: 'assets/icons/svg/ic_case.svg',
@@ -196,6 +196,9 @@ class _FavouritesState extends ConsumerState<Favourites> {
                           /// item
                           return FavouriteItemWidget(
                             onDelete: () => _deleteItem(item),
+                            onTap: () => PoiMapRoute(
+                              dgisObjectId: int.parse(item.entity!.id),
+                            ).replace(context),
                             isEditing: isEditing,
                             item: item,
                           );

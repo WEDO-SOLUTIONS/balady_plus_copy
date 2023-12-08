@@ -16,8 +16,8 @@ class KaabaBearing extends _$KaabaBearing {
     ref.listen(
       locationProvider,
       (previous, next) async {
-        if (next != null && dgisController != null) {
-          state = await dgisController.pointBearing(next, kaabaLocation);
+        if (next != null) {
+          state = await dgisController.value!.pointBearing(next, kaabaLocation);
         }
       },
     );
