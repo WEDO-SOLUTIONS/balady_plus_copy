@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../core/utils/constants/dialog_names.dart';
-import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
+import '../../../../../core/utils/constants/dialog_names.dart';
+import '../shared/circle_icon.dart';
 
 class ComplainceMapCard extends StatelessWidget {
   final String? amana;
@@ -57,7 +57,7 @@ class ComplainceMapCard extends StatelessWidget {
                 fontWeight: AppFontWeight.bold,
                 maxLines: 1,
               ),
-              CustomVerticalSpace(height: 8),
+              const CustomVerticalSpace(height: 8),
               CustomTextWidget(
                 streetName ?? "",
                 fontColor: AppColor.blackModern500Light,
@@ -66,7 +66,7 @@ class ComplainceMapCard extends StatelessWidget {
                 height: 1.3,
                 maxLines: 2,
               ),
-              CustomVerticalSpace(height: 8),
+              const CustomVerticalSpace(height: 8),
               CustomTextWidget(
                 amana ?? "",
                 fontColor: AppColor.blackModern500Light,
@@ -75,7 +75,7 @@ class ComplainceMapCard extends StatelessWidget {
                 height: 1.3,
                 maxLines: 3,
               ),
-              CustomVerticalSpace(height: 10),
+              const CustomVerticalSpace(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -110,7 +110,7 @@ class ComplainceMapCard extends StatelessWidget {
                               context, RouteName.createCompliancePage);
                         }),
                   ),
-                  CustomHorizontalSpace(width: 4),
+                  const CustomHorizontalSpace(width: 4),
                   Expanded(
                     child: ElevatedButtonWidget.primaryCustomBorder(
                       height: 40,

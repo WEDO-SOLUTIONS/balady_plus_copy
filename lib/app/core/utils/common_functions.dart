@@ -38,6 +38,7 @@ import '../../features/entry_point/domain/use_cases/get_cookie.dart';
 import '../../features/profile_features/delegators/domain/entities/user_profile_entity.dart';
 import '../../features/vd/domain/entities/gis/gis_params.dart';
 import '../../features/vd/domain/entities/gis/gis_response.dart';
+import '../../features/vd/presentation/dialogs/vd_all_types_dialog.dart';
 import './utils_exports.dart'
     show
         AppColor,
@@ -73,6 +74,7 @@ import '../services/services_exports.dart'
         NavigationService,
         NoParams,
         WebService;
+import 'constants/dialog_names.dart';
 import 'enums/enums.dart';
 
 FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
@@ -1101,6 +1103,17 @@ class CommonFunctions {
     File file = new File('$dir/$fileName.$extension');
     await file.writeAsBytes(r.data);
     return file;
+  }
+
+  static void openSnapAndSend() async {
+    await BottomSheetDialog.showDraggableSheet(
+        NavigationService.navigatorKey.currentContext!,
+        dialogKeyName: DialogName.vdTypesDialog,
+        currentRouteName: "HomePage",
+        child: BottomSheetWithActions(
+          title: "choose_incident_type".tr(),
+          body: VDAllTypesDialog(),
+        ));
   }
 }
 

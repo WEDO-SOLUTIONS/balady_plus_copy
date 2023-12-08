@@ -6,11 +6,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/dependency_injection/injection_container.dart';
-import '../../../../core/utils/common_functions.dart';
-import '../../../../core/utils/constants/app_style.dart';
-import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
-import '../services/services.dart';
+import '../../../../../core/dependency_injection/injection_container.dart';
+import '../../../../../core/utils/common_functions.dart';
+import '../../../../../core/utils/constants/app_style.dart';
+import '../../services/services.dart';
+import '../shared/circle_icon.dart';
 
 class OpprtunityMapCard extends StatelessWidget {
   final String type;
