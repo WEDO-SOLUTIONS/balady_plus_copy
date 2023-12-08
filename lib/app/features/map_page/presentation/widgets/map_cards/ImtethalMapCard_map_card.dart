@@ -27,8 +27,6 @@ class ImtethalMapCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MapViewModel mapViewModel = context.watch<MapViewModel?>()!;
-
     return Container(
       height: 180,
       width: MediaQuery.of(context).size.width - 30,

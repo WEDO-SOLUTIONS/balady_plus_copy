@@ -192,8 +192,8 @@ class RequestDetailsBloc
 
   Future<void> _getTripsDetailsHandler(
       GetTripsDetailsEvent e, Emitter emitter) async {
-    var context = NavigationService.navigatorKey.currentContext;
-    final result = await CustomPopUpsWidgets.showBottomSheet(context!,
+    var context = NavigationService.navigatorKey.currentContext!;
+    final result = await CustomPopUpsWidgets.showBottomSheet(context,
         child: TripDetailsDialog(
             params: TripDetailsParmas(
                 requestId: e.requestId,

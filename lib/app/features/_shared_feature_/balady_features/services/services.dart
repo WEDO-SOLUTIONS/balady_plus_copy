@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/global/web_service.dart';
@@ -77,4 +78,10 @@ class BaladyServices {
     }
     return investmentDetailsResponse;
   }
+
+  /*static String getSearchText() => CommonProperties.userLocationGIS != null &&
+          CommonProperties.userLocationGIS!.cityName != null &&
+          CommonProperties.userLocationGIS!.cityName!.isNotEmpty
+      ? "search_map_text".tr().replaceAll("}", replace)
+      : 'ابحث عن...';*/
 }

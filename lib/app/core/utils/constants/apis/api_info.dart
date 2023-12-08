@@ -618,7 +618,7 @@ class ApiUrl {
 
   static const ekramCities = 'v2/ekram-mobile-services/cities-cemetries';
 
-  static const ekramHospitals = 'v1/ekram-mobile-services/hospitals';
+  static const ekramHospitals = 'v2/ekram-mobile-services/citiy-hospitals';
 
   static const ekramMosques = 'v1/ekram-mobile-services/mosques';
 
@@ -638,23 +638,20 @@ class ApiUrl {
   static const ekramDeceasedTransportApply =
       'v1/ekram-mobile-services/deceased-transport/apply';
 
-  static const ekramGetTrips = 'v1/ekram-mobile-services/trip-step/trips';
+  static const ekramGetTrips = 'v2/ekram-mobile-services/trips';
 
-  static const applyTrip = 'v1/ekram-mobile-services/trip-step/apply';
+  static const applyTrip = 'v2/ekram-mobile-services/apply-trip-steps';
 
-  static const deleteTrip =
-      'v1/ekram-mobile-services/trip-step/delete-trip-step';
+  static const deleteTrip = 'v2/ekram-mobile-services/delete-trips';
 
   static const completeTrip =
-      'v1/ekram-mobile-services/deceased-transport/complete';
+      'v2/ekram-mobile-services/complete-deceased-transports';
 
   static const uploadLetter = 'v1/ekram-mobile-services/attachments/upload';
 
-  static const updateLocation =
-      'v1/ekram-mobile-services/trip-step/add-trip-location';
+  static const updateLocation = 'v2/ekram-mobile-services/add-trip-locations';
 
-  static const tripLocations =
-      'v1/ekram-mobile-services/trip-step/trip-locations';
+  static const tripLocations = 'v2/ekram-mobile-services/trip-locations';
 
   static const ekramRequestStatus = 'v1/ekram-mobile-services/status-list';
 

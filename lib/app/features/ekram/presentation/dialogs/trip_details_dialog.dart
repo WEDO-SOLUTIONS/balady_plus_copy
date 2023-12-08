@@ -54,14 +54,13 @@ class TripDetailsDialog extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Expanded(
-                            child: CustomTextWidget(
+                        /* CustomTextWidget(
                           trans('trip_details'),
                           maxLines: 1,
                           fontSize: 24,
                           fontColor: AppColor.black,
                           textAlign: TextAlign.start,
-                        )),
+                        ),
                         EnhancedCustomElevatedButtonWidget(
                           btnPressed: () =>
                               Navigator.of(context).pop(state.isCompleted),
@@ -72,40 +71,38 @@ class TripDetailsDialog extends StatelessWidget {
                           btnTextSize: 17.0,
                           btnTextWeight: AppFontWeight.medium,
                           btnAlignment: AlignmentDirectional.centerEnd,
-                        ),
+                        ),*/
                       ],
                     ),
                     if (state.tripDetails?.isNotEmpty ?? false) ...[
-                      Expanded(
-                        child: ListView.builder(
-                            padding: EdgeInsets.zero,
-                            itemCount: state.tripDetails?.length,
-                            itemBuilder: (ctx, index) {
-                              return TripDetailsDialogCard(
-                                tripDetails: state.tripDetails![index],
-                                showDelete: params.requestStatusId != 6 &&
-                                    params.requestStatusId != 5,
-                                currentStationType: state.getStationTypeName(
-                                    state.tripDetails![index]
-                                            .currentTripStationTypeId ??
-                                        0),
-                                nextStationType: state.getStationTypeName(state
-                                        .tripDetails![index]
-                                        .nextTripStationTypeId ??
-                                    0),
-                                onPressDelete: () {
-                                  context.read<TripDetailsBloc>().add(
-                                      DeleteTripEvent(
-                                          id: state.tripDetails![index]
-                                              .tripStepsInfoRecordId!));
-                                },
-                              );
-                            }),
-                      ),
+                      ListView.builder(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          itemCount: state.tripDetails?.length,
+                          itemBuilder: (ctx, index) {
+                            return TripDetailsDialogCard(
+                              tripDetails: state.tripDetails![index],
+                              showDelete: params.requestStatusId != 6 &&
+                                  params.requestStatusId != 5,
+                              currentStationType: state.getStationTypeName(state
+                                      .tripDetails![index]
+                                      .currentTripStationTypeId ??
+                                  0),
+                              nextStationType: state.getStationTypeName(state
+                                      .tripDetails![index]
+                                      .nextTripStationTypeId ??
+                                  0),
+                              onPressDelete: () {
+                                context.read<TripDetailsBloc>().add(
+                                    DeleteTripEvent(
+                                        id: state.tripDetails![index]
+                                            .tripStepsInfoRecordId!));
+                              },
+                            );
+                          }),
                     ],
                     if (state.tripDetails != null && state.tripDetails!.isEmpty)
-                      Expanded(
-                          child: EmptyStateWidget(title: trans("no_trips"))),
+                      EmptyStateWidget(title: trans("no_trips")),
                     CustomVerticalSpace(height: 16),
                     PoliceLetter(),
                     if (state.isCompleted != true) ...[
@@ -152,7 +149,7 @@ class TripDetailsDialog extends StatelessWidget {
                       ),
                     ],
                     if (state.status == BlocStatus.retry)
-                      Expanded(child: ReloadWidget(
+                      ReloadWidget(
                         onTab: () {
                           if (state.stationTypes == null) {
                             context
@@ -163,7 +160,7 @@ class TripDetailsDialog extends StatelessWidget {
                                 .read<TripDetailsBloc>()
                                 .add(GetTripsDetailsInDialogEvent());
                         },
-                      )),
+                      ),
                   ]),
             ),
             if (state.status == BlocStatus.loading)

@@ -81,10 +81,10 @@ class _DriverEkramTransportationListPageState
             appBar: CustomAppBar(
               title: trans('requests_transporting_deceased'),
               withBackImg: true,
-              // actionImg: "filter2@3x.png",
-              /* actionOnPress: () async {
+              actionImg: "filter2@3x.png",
+              actionOnPress: () async {
                 context.read<EkramRequestsBloc>().add(ShowFilterEvent());
-              },*/
+              },
             ),
             body: Stack(
               children: [

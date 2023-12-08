@@ -299,9 +299,10 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       );
 
       var data = response.data["data"]?["result"];
-
+      Map<String, dynamic> x = {};
+      x["items"] = data;
       TransportRequestResponseModel? parsedResult =
-          data != null ? TransportRequestResponseModel.fromMap(data) : null;
+          data != null ? TransportRequestResponseModel.fromMap(x) : null;
 
       final decodedResponse =
           ResponseBodyModel<TransportRequestResponseModel>.fromMap(
