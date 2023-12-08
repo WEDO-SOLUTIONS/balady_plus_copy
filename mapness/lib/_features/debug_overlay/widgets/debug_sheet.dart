@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/debug_overlay/widgets/debug_navigation_controll.dart';
-
 import 'package:mapness/_features/debug_overlay/widgets/debug_server_url.dart';
+import 'package:mapness/_features/debug_overlay/widgets/sso_credential_view.dart';
 import 'package:mapness/_features/debug_overlay/widgets/voice_picker.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/uuid_provider.dart';
@@ -183,6 +183,8 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                     label: 'randomize uuid',
                   ),
                   const DebugServerUrl(),
+                  const SizedBox(height: 12),
+                  const SsoCredentialView(),
                   const VoicePicker(),
                   const DebugNavigationControll(),
                 ],

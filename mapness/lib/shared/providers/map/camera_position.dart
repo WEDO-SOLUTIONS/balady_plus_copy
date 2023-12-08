@@ -1,4 +1,5 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -43,6 +44,24 @@ class CameraPosition extends _$CameraPosition {
     );
 
     await dgisController.value!.moveCamera(
+      position,
+      0.3,
+      CameraAnimationTypeMessage.linear,
+    );
+  }
+
+  Future<void> animateToPolygons(
+    List<Polygon> polygons, {
+    CalcPositionOptionsMessage? options,
+  }) async {
+    final dgisController = ref.watch(dgisControllerProvider).value;
+
+    final position = await dgisController!.calcPositionForPolygons(
+      polygons.map((e) => e.id).toList(),
+      options ?? CalcPositionOptionsMessage(),
+    );
+
+    await dgisController.moveCamera(
       position,
       0.3,
       CameraAnimationTypeMessage.linear,

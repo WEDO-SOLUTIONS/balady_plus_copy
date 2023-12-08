@@ -8,7 +8,11 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import '../../../shared/config/package_config.dart';
 
 class LogoutCell extends ConsumerWidget {
-  const LogoutCell({super.key});
+  final VoidCallback? onTap;
+  const LogoutCell({
+    super.key,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,6 +24,7 @@ class LogoutCell extends ConsumerWidget {
         borderRadius: BorderRadius.circular(8),
         color: Colors.white,
         child: InkWell(
+          onTap: onTap,
           borderRadius: BorderRadius.circular(8),
           child: Padding(
             padding: const EdgeInsets.only(
@@ -35,7 +40,10 @@ class LogoutCell extends ConsumerWidget {
                   padding: const EdgeInsets.only(bottom: 2.0),
                   child: Text(
                     context.l10n.logOut,
-                    style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0xFF1E2A36)),
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()!
+                        .textM
+                        .copyWith(color: const Color(0xFF1E2A36)),
                   ),
                 ),
                 const SizedBox(

@@ -5,6 +5,7 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 
 enum RoutePointType { object, myLocation }
 
+// TODO(@alexstrnik): refactor with sealed classes
 class RoutePoint {
   final RoutePointType type;
   final DirectoryObjectMessage? object;

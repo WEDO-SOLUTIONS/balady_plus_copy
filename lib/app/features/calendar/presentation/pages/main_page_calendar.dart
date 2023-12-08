@@ -159,25 +159,22 @@ class _CalendarBodyState extends State<CalendarBody> {
               }
               return Column(
                 children: [
-                  /* SectionDate(
+                  SectionDate(
                     month: state.searchItems[index].getStartDay(),
-                    year: state.searchItems[index].startDate?.year
-                            .toString() ??
+                    year: state.searchItems[index].startDate?.year.toString() ??
                         "",
-                  ),*/
-
-                  /* CalendarItemWidget(
+                  ),
+                  CalendarItemWidget(
                     item: state.searchItems[index],
                     onPress: () {
                       Navigator.of(context).pushNamed(
                           RouteName.calendarDetailsPage,
                           arguments: state.searchItems[index]);
                     },
-                  ),*/
-
-                  OldCalendarCard(
-                    item: state.searchItems[index],
-                  )
+                  ),
+                  // OldCalendarCard(
+                  //   item: state.searchItems[index],
+                  // )
                 ],
               );
             },

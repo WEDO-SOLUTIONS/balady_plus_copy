@@ -1,7 +1,8 @@
+import 'package:balady_plus/app/features/home_page/presentation/widgets/home_bottom_sheet/event_home_card.dart';
+import 'package:balady_plus/app/core/utils/routes.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
-import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart';
-import 'package:balady_plus/app/features/events/presentation/bloc/events_state.dart';
+import 'package:balady_plus/app/features/home_page/presentation/widgets/home_bottom_sheet/calendar_home_item_widget.dart';
+import 'package:balady_plus/app/features/home_page/home_exports.dart' as team42;
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar, ScrollPosition;
@@ -11,15 +12,12 @@ import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/landing/widgets/challenge_card.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_header.dart';
-import 'package:mapness/_features/landing/widgets/event_card.dart';
 import 'package:mapness/_features/landing/widgets/g2b_card.dart';
 import 'package:mapness/_features/landing/widgets/login_card.dart';
 import 'package:mapness/_features/landing/widgets/poi_card.dart';
-import 'package:mapness/_features/landing/widgets/prayer_card.dart';
 import 'package:mapness/_features/landing/widgets/service_card.dart';
 import 'package:mapness/_features/stories/stories_widget.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 import 'providers/interesting_places.dart';
@@ -42,16 +40,12 @@ class Dashboard extends ConsumerStatefulWidget {
 
 class _DashboardState extends ConsumerState<Dashboard> {
   late final DraggableScrollableController _draggableScrollableController;
-  late final PageController _pageController;
 
   double get _headerExtent => 75 / widget.biggestHeight;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(
-      viewportFraction: (widget.biggestWidth - 32) / widget.biggestWidth,
-    );
     _draggableScrollableController = DraggableScrollableController()
       ..addListener(() {
         Future.delayed(Duration.zero, () {
@@ -133,44 +127,91 @@ class _DashboardState extends ConsumerState<Dashboard> {
     );
   }
 
-  Widget _buildEvents(BuildContext context) {
-    return BlocProvider(
-      create: (context) => EventsBloc()..add(const GetSearchEvent()),
-      child: BlocBuilder<EventsBloc, EventsState>(
-        builder: (context, state) {
-          final events = state.searchItems;
+  Widget _buildEvents() {
+    return const EventHomeCard();
+  }
 
-          return SizedBox(
-            height: 200,
-            child: PageView.builder(
-              scrollDirection: Axis.horizontal,
-              controller: _pageController,
-              itemCount: events.length,
-              itemBuilder: (context, index) {
-                final event = events[index];
-                final start = event.startDate;
-                final startTimeString =
-                    start != null ? '${start.hour}:${start.minute}' : '';
-                final startDateString = start != null ? '${start.day}' : '';
+  Widget _buildJobServicesCards() {
+    void navigateToCompliance() {
+      final builder = Routes.routes()[RouteName.createCompliancePage]!;
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: EventCard(
-                    title: event.eventName ?? 'Some error occured',
-                    subtitle: '$startTimeString أكتوبر $startDateString',
-                    image: event.logoImage ??
-                        "https://mediaim.expedia.com/destination/9/89ee9cad281d840fba77bc3f253475f8.jpg",
-                    imageUrl: event.logoImage ??
-                        "https://mediaim.expedia.com/destination/9/89ee9cad281d840fba77bc3f253475f8.jpg",
-                    id: state.searchItems[index].id ?? "",
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) {
+            return Stack(
+              children: [
+                const Positioned.fill(
+                  child: ColoredBox(
+                    color: AppColor.white3,
                   ),
-                );
-              },
-            ),
-          );
-        },
+                ),
+                builder(context)
+              ],
+            );
+          },
+        ),
+      );
+    }
+
+    return Builder(
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            children: [
+              G2BCard(
+                color: const Color(0xff306D6C),
+                title: "Appeals",
+                subtitle: "في نوفمبر",
+                onTap: () {
+                  // TODO(@42): Navigate to Appeals screen
+                },
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: G2BCard(
+                      color: const Color(0xFF4CA5B4),
+                      title: "Book Appointment",
+                      subtitle: "في نوفمبر",
+                      onTap: () {
+                        // TODO(@42): Navigate to Book Appointment screen
+                      },
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  Expanded(
+                    child: G2BCard(
+                      color: const Color(0xff90BA58),
+                      title: "Compliance Certificate",
+                      subtitle: "في نوفمبر",
+                      onTap: navigateToCompliance,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildCalendar() {
+    return const CalendarHomeItemWidget(
+      padding: EdgeInsets.symmetric(
+        horizontal: 16,
       ),
     );
+  }
+
+  Widget _buildPrayer() {
+    return const team42.PrayerHomeCard();
   }
 
   @override
@@ -231,54 +272,10 @@ class _DashboardState extends ConsumerState<Dashboard> {
                           const SizedBox(
                             height: 24,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 16.0),
-                            child: Text(
-                              context.l10n.events,
-                              style: Theme.of(context)
-                                  .extension<ThemeTextStyles>()!
-                                  .textL,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          _buildEvents(context),
+                          _buildEvents(),
+                          _buildPrayer(),
                           const SizedBox(
                             height: 24,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 16.0),
-                            child: Text(
-                              context.l10n.events,
-                              style: Theme.of(context)
-                                  .extension<ThemeTextStyles>()!
-                                  .textL,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 16,
-                            ),
-                            child: PrayerCard(),
-                          ),
-                          const SizedBox(
-                            height: 24,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 16.0),
-                            child: Text(
-                              context.l10n.prayerTime,
-                              style: Theme.of(context)
-                                  .extension<ThemeTextStyles>()!
-                                  .textL,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 16,
                           ),
                           const Padding(
                             padding: EdgeInsets.symmetric(
@@ -367,6 +364,10 @@ class _DashboardState extends ConsumerState<Dashboard> {
                               ],
                             ),
                           ),
+                          const SizedBox(
+                            height: 24,
+                          ),
+                          _buildCalendar(),
                           if (userState == UserState.business) ...[
                             const SizedBox(
                               height: 24,
@@ -384,52 +385,12 @@ class _DashboardState extends ConsumerState<Dashboard> {
                               height: 16,
                             ),
                             // Card for 42
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: G2BCard(
-                                color: const Color(0xFFE3393D),
-                                title: "Appeals",
-                                subtitle: "في نوفمبر",
-                                onTap: () {
-                                  // TODO(@42): Navigate to Appeals screen
-                                },
-                              ),
-                            ),
+                            _buildJobServicesCards(),
+                            // ],
                             const SizedBox(
                               height: 16,
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: G2BCard(
-                                color: const Color(0xFF4CA5B4),
-                                title: "Book Appointment",
-                                subtitle: "في نوفمبر",
-                                onTap: () {
-                                  // TODO(@42): Navigate to Book Appointment screen
-                                },
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 16,
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: G2BCard(
-                                color: const Color(0xFF1BA136),
-                                title: "Compliance Certificate",
-                                subtitle: "في نوفمبر",
-                                onTap: () {
-                                  // TODO(@42): Navigate to Compliance Certificate screen
-                                },
-                              ),
                             ),
                           ],
-                          const SizedBox(
-                            height: 16,
-                          ),
                         ],
                       ),
                     ),

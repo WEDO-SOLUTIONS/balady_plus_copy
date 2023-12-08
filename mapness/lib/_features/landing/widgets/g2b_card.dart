@@ -1,8 +1,6 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 
-
-
 class G2BCard extends StatelessWidget {
   const G2BCard({
     super.key,
@@ -38,14 +36,20 @@ class G2BCard extends StatelessWidget {
                 const Spacer(),
                 Text(
                   title,
-                  style: Theme.of(context).extension<ThemeTextStyles>()!.headingS.copyWith(color: Colors.white),
+                  style: Theme.of(context)
+                      .extension<ThemeTextStyles>()!
+                      .accentM
+                      .copyWith(color: Colors.white),
                 ),
                 const SizedBox(
                   height: 4,
                 ),
                 Text(
                   subtitle,
-                  style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: Colors.white.withOpacity(0.8)),
+                  style: Theme.of(context)
+                      .extension<ThemeTextStyles>()!
+                      .textS
+                      .copyWith(color: Colors.white.withOpacity(0.8)),
                 ),
               ],
             ),

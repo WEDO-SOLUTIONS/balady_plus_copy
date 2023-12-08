@@ -11,14 +11,12 @@ class EventCard extends StatelessWidget {
     super.key,
     required this.title,
     required this.subtitle,
-    required this.image,
     required this.imageUrl,
     required this.id,
   });
 
   final String title;
   final String subtitle;
-  final String image;
   final String imageUrl;
   final String id;
 
@@ -50,10 +48,7 @@ class EventCard extends StatelessWidget {
                     const Spacer(),
                     Text(
                       title,
-                      style: Theme.of(context)
-                          .extension<ThemeTextStyles>()!
-                          .accentL
-                          .copyWith(color: Colors.white),
+                      style: Theme.of(context).extension<ThemeTextStyles>()!.accentL.copyWith(color: Colors.white),
                     ),
                     const SizedBox(
                       height: 6,

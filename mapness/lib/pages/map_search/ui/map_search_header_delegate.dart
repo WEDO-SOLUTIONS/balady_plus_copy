@@ -5,17 +5,17 @@ import 'package:mapness/pages/map_search/ui/map_search_bar.dart';
 class MapSearchHeaderDelegate extends SliverPersistentHeaderDelegate {
   MapSearchHeaderDelegate({
     required this.requestFocus,
-    required this.draggableScrollableController,
+    required this.onClose,
   });
 
   final bool requestFocus;
-  final DraggableScrollableController draggableScrollableController;
+  final VoidCallback onClose;
 
   @override
   Widget build(context, double shrinkOffset, bool overlapsContent) {
     return DashboardHeader(
       requestFocus: requestFocus,
-      draggableScrollableController: draggableScrollableController,
+      onClose: onClose,
     );
   }
 
@@ -33,11 +33,11 @@ class DashboardHeader extends ConsumerWidget {
   const DashboardHeader({
     super.key,
     required this.requestFocus,
-    required this.draggableScrollableController,
+    required this.onClose,
   });
 
   final bool requestFocus;
-  final DraggableScrollableController draggableScrollableController;
+  final VoidCallback onClose;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -71,7 +71,7 @@ class DashboardHeader extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: MapSearchBar(
               requestFocus: requestFocus,
-              draggableScrollableController: draggableScrollableController,
+              onClose: onClose,
             ),
           ),
           const SizedBox(

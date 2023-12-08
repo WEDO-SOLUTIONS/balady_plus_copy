@@ -453,6 +453,24 @@ abstract class AppLocalizations {
   /// **'اذهب'**
   String get go;
 
+  /// No description provided for @goodAfternoon.
+  ///
+  /// In ar, this message translates to:
+  /// **'Good afternoon'**
+  String get goodAfternoon;
+
+  /// No description provided for @goodEvening.
+  ///
+  /// In ar, this message translates to:
+  /// **'Good evening'**
+  String get goodEvening;
+
+  /// No description provided for @goodMorning.
+  ///
+  /// In ar, this message translates to:
+  /// **'Good morning'**
+  String get goodMorning;
+
   /// No description provided for @home.
   ///
   /// In ar, this message translates to:

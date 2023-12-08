@@ -15,7 +15,7 @@ import 'package:mapness/shared/routing/current_route_provider.dart';
 const searchScope = 'MapSearch';
 const searchManagerName = "mapSearchManager";
 
-class MapSearchSheet extends ConsumerStatefulWidget {
+class MapSearchSheet extends StatelessWidget {
   const MapSearchSheet({
     super.key,
     required this.withClustering,
@@ -26,13 +26,54 @@ class MapSearchSheet extends ConsumerStatefulWidget {
   final bool withClustering;
 
   @override
-  ConsumerState<MapSearchSheet> createState() => _MapSearchSheetState();
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) => _MapSearchSheet(
+        initialQuery: initialQuery,
+        withClustering: withClustering,
+        biggestHeight: constraints.biggest.height,
+      ),
+    );
+  }
 }
 
-class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
+class _MapSearchSheet extends ConsumerStatefulWidget {
+  const _MapSearchSheet({
+    super.key,
+    required this.withClustering,
+    required this.biggestHeight,
+    this.initialQuery,
+  });
+
+  final String? initialQuery;
+  final bool withClustering;
+  final double biggestHeight;
+
+  @override
+  ConsumerState<_MapSearchSheet> createState() => _MapSearchSheetState();
+}
+
+class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
   late DraggableScrollableController _controller;
 
+  double get _headerExtent => 88 / widget.biggestHeight;
+
   bool visible = true;
+
+  bool closing = false;
+
+  void close() {
+    setState(() {
+      closing = true;
+    });
+    Future.delayed(const Duration(milliseconds: 50), () {
+      _controller.animateTo(
+        0,
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
 
   @override
   void initState() {
@@ -155,16 +196,19 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
         );
       }
     });
+    final closable = ref.watch(searchProvider(searchScope)
+            .select((value) => value is! SearchStateResults)) ||
+        closing;
 
     return Directionality(
       textDirection: TextDirection.rtl,
       child: DraggableScrollableSheet(
         controller: _controller,
-        initialChildSize: 0,
-        minChildSize: 0,
+        initialChildSize: closable ? 0 : _headerExtent,
+        minChildSize: closable ? 0 : _headerExtent,
         maxChildSize: 0.9,
         snap: true,
-        snapSizes: const [0, 0.7, 0.9],
+        snapSizes: [closable ? 0 : _headerExtent, 0.7, 0.9],
         builder: (context, scrollController) => Container(
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
@@ -185,7 +229,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
                   SliverPersistentHeader(
                     delegate: MapSearchHeaderDelegate(
                       requestFocus: widget.initialQuery == null,
-                      draggableScrollableController: _controller,
+                      onClose: close,
                     ),
                     pinned: true,
                   ),

@@ -11,11 +11,11 @@ class MapSearchBar extends ConsumerStatefulWidget {
   const MapSearchBar({
     super.key,
     required this.requestFocus,
-    required this.draggableScrollableController,
+    required this.onClose,
   });
 
   final bool requestFocus;
-  final DraggableScrollableController draggableScrollableController;
+  final VoidCallback onClose;
 
   @override
   ConsumerState<MapSearchBar> createState() => _MapSearchBarState();
@@ -63,13 +63,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
                     start: 12,
                   ),
                   child: NavButton(
-                    onTap: () {
-                      widget.draggableScrollableController.animateTo(
-                        0,
-                        duration: const Duration(milliseconds: 250),
-                        curve: Curves.easeInOut,
-                      );
-                    },
+                    onTap: widget.onClose,
                     icon: "assets/icons/svg/ic_search_close.svg",
                   ),
                 )

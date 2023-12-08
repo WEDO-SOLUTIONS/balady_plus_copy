@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
+import 'package:mapness/_features/landing/widgets/dashboard_profile.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
 import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/widgets/search/ui/search_field.dart';
@@ -20,10 +21,10 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 132;
+  double get maxExtent => 155;
 
   @override
-  double get minExtent => 132;
+  double get minExtent => 155;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;
@@ -61,6 +62,13 @@ class DashboardHeader extends ConsumerWidget {
                 borderRadius: BorderRadius.all(Radius.circular(24)),
               ),
             ),
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          const Align(
+            alignment: Alignment.centerRight,
+            child: DashboardProfile(),
           ),
           const SizedBox(
             height: 8,

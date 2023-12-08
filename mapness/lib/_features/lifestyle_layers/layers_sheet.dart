@@ -3,10 +3,11 @@ import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
-
 import 'package:mapness/_features/landing/providers/map_controls.dart';
+import 'package:mapness/_features/lifestyle_layers/map_cards/white_land_map_card.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
 class LayersSheet extends ConsumerStatefulWidget {
   const LayersSheet({super.key});
@@ -23,10 +24,10 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
     _draggableScrollableController = DraggableScrollableController();
     _draggableScrollableController.addListener(() {
       if (_draggableScrollableController.size < .1) {
-        ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
-        ref
-            .watch(layersControlsProvider.notifier)
-            .update(visible: false, selectedType: null);
+        // ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
+        // ref
+        //     .watch(layersControlsProvider.notifier)
+        //     .update(visible: false, selectedType: null);
       }
     });
 
@@ -49,123 +50,118 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
   Widget build(BuildContext context) {
     var watch = ref.watch(layersControlsProvider.notifier);
     var state = ref.watch(layersControlsProvider);
+    var selectedPoint = state.whiteLands;
 
-    return DraggableScrollableSheet(
-      controller: _draggableScrollableController,
-      initialChildSize: .6,
-      minChildSize: 0,
-      maxChildSize: .6,
-      snapSizes: const [0, .6],
-      snap: true,
-      builder: (BuildContext context, ScrollController scrollController) {
-        return Directionality(
-          textDirection: TextDirection.rtl,
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(16.0),
-                topLeft: Radius.circular(16.0),
-              ),
-            ),
-            child: CustomScrollView(
-              controller: scrollController,
-              primary: false,
-              physics: const ClampingScrollPhysics(),
-              slivers: [
-                SliverToBoxAdapter(
-                  child: Column(children: [
-                    Container(
-                      height: 4,
-                      width: 40,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFDDE4EE),
-                        borderRadius: BorderRadius.all(Radius.circular(24)),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          context.l10n.layersOnTheMap,
-                          style: Theme.of(context)
-                              .extension<ThemeTextStyles>()!
-                              .headingS,
+    return Stack(
+      children: [
+        DraggableScrollableSheet(
+          controller: _draggableScrollableController,
+          initialChildSize: .6,
+          minChildSize: .15,
+          maxChildSize: .6,
+          snapSizes: const [.3, .6],
+          snap: true,
+          builder: (BuildContext context, ScrollController scrollController) {
+            return Directionality(
+              textDirection: TextDirection.rtl,
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(16.0),
+                    topLeft: Radius.circular(16.0),
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    CustomScrollView(
+                      controller: scrollController,
+                      primary: false,
+                      physics: const ClampingScrollPhysics(),
+                      slivers: [
+                        SliverToBoxAdapter(
+                          child: Column(children: [
+                            Container(
+                              height: 4,
+                              width: 40,
+                              decoration: const BoxDecoration(
+                                color: Color(0xFFDDE4EE),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(24)),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  context.l10n.layersOnTheMap,
+                                  style: Theme.of(context)
+                                      .extension<ThemeTextStyles>()!
+                                      .headingS,
+                                ),
+                                const Spacer(),
+                                CustomCloseButton(
+                                  onClose: () {
+                                    ref
+                                        .watch(mapControlsProvider.notifier)
+                                        .update(MapControlsStateIdle());
+                                    watch.update(
+                                        visible: false, selectedType: null);
+                                  },
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                          ]),
                         ),
-                        const Spacer(),
-                        _buildcloseButton(
-                          () {
-                            ref
-                                .watch(mapControlsProvider.notifier)
-                                .update(MapControlsStateIdle());
-                            watch.update(visible: false, selectedType: null);
+                        SliverList.separated(
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(height: 16),
+                          itemCount: LayerType.values.length,
+                          itemBuilder: (_, int index) {
+                            var value = LayerType.values[index];
+
+                            return FilterRow(
+                              value: value,
+                              onTap: () {
+                                watch.handleTap(ref, value);
+                              },
+                              isSelected: state.selectedType == value,
+                            );
                           },
-                        )
+                        ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                  ]),
+                    if (state.isLoading)
+                      const Center(child: CircularProgressIndicator()),
+                  ],
                 ),
-                SliverList.separated(
-                  separatorBuilder: (_, __) => const SizedBox(height: 16),
-                  itemCount: LayerType.values.length,
-                  itemBuilder: (_, int index) {
-                    var value = LayerType.values[index];
-                    return FilterRow(
-                      value: value,
-                      onTap: () {
-                        value.onTap(ref);
-                        watch.setSelected(value);
-                      },
-                      isSelected: state.selectedType == value,
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildcloseButton(Function() onTap) {
-    const borderRadius = BorderRadius.all(
-      Radius.circular(8),
-    );
-    const colorPrimary = Color(0xff1E2A36);
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Material(
-        borderRadius: borderRadius,
-        child: InkWell(
-          borderRadius: borderRadius,
-          onTap: onTap,
-          child: Container(
-            height: 40,
-            width: 40,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(
-                Radius.circular(8),
               ),
-              color: colorPrimary.withAlpha(10),
-            ),
-            padding: const EdgeInsets.all(8.0),
-            child: SvgPicture.asset(
-              "assets/icons/svg/ic_search_close.svg",
-              semanticsLabel: 'MinApps Screen',
-              package: "mapness",
-              color: colorPrimary.withOpacity(0.7),
+            );
+          },
+        ),
+        // TODO(vefimov): ROUTING
+        if (selectedPoint != null)
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: WhiteLandMapCard(
+              municipality: selectedPoint.MUNNAME,
+              subMunicipality: selectedPoint.STREETNAME,
+              parcelNo: selectedPoint.PARCELCODE,
+              stageNo: selectedPoint.PHASE,
+              onClose: () {
+                watch.update(
+                  whiteLands: null,
+                );
+              },
             ),
           ),
-        ),
-      ),
+      ],
     );
   }
 }
@@ -204,7 +200,7 @@ class FilterRow extends StatelessWidget {
                 package: "mapness",
                 color: isSelected
                     ? const Color(0xff4CA5B4)
-                    : const Color(0xff1E2A36).withOpacity(0.5),
+                    : const Color.fromRGBO(30, 42, 54, 0.5),
               ),
               const SizedBox(
                 width: 14,

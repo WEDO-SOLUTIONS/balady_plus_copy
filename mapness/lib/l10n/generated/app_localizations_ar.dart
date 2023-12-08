@@ -185,6 +185,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get go => 'اذهب';
 
   @override
+  String get goodAfternoon => 'Good afternoon';
+
+  @override
+  String get goodEvening => 'Good evening';
+
+  @override
+  String get goodMorning => 'Good morning';
+
+  @override
   String get home => 'بيت';
 
   @override

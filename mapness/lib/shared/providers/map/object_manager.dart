@@ -12,17 +12,11 @@ class MapObjectManager extends _$MapObjectManager {
     required String named,
     ClusteringMapObjectManager? clustering,
   }) async {
-    print("[$named] build");
-
     final dgisController = await ref.watch(dgisControllerProvider.future);
-
-    print("[$named] init");
 
     final manager = clustering != null
         ? await dgisController.createMapObjectManagerWithClustering(clustering)
         : await dgisController.createMapObjectManager();
-
-    print("[$named] created manager with ${manager.id}");
 
     ref.onDispose(() async {
       await dgisController.removeAllMarkers(fromManager: manager);
@@ -36,8 +30,14 @@ class MapObjectManager extends _$MapObjectManager {
     await ref.read(dgisControllerProvider).value?.removeAllMarkers(
           fromManager: await future,
         );
+  }
 
-    print("[$named] remove all markers from ${(await future).id}");
+  Future<void> addPolyLines(List<Polyline> polylines) async {
+    await ref.read(dgisControllerProvider).value?.addPolylines(polylines);
+  }
+
+  Future<void> addPolygons(List<Polygon> polygons) async {
+    await ref.read(dgisControllerProvider).value?.addPolygons(polygons);
   }
 
   Future<void> addMarkers(List<Marker> markers) async {
@@ -45,8 +45,6 @@ class MapObjectManager extends _$MapObjectManager {
           markers,
           toManager: await future,
         );
-
-    print("[$named] add $markers to ${(await future).id}");
   }
 
   Future<void> addMarker(Marker marker) async {
@@ -54,7 +52,5 @@ class MapObjectManager extends _$MapObjectManager {
           marker,
           toManager: await future,
         );
-
-    print("[$named] add $marker to ${(await future).id}");
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/routes.dart' hide $appRoutes;
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/pages/routing/routing_favourites.dart';
 import 'package:mapness/pages/routing/routing_routes.dart';
 import 'package:mapness/pages/routing/routing_search.dart';
 import 'package:mapness/shared/routing/transculent_page.dart';
@@ -29,6 +30,20 @@ class RoutingSearchRoute extends GoRouteData {
         placeholder: placeholder,
         showMyLocation: showMyLocation,
       ),
+    );
+  }
+}
+
+@TypedGoRoute<RoutingFavouritesRoute>(
+  path: '/routingFavourites',
+)
+class RoutingFavouritesRoute extends GoRouteData {
+  static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    return const TransculentPage(
+      child: RoutingFavouritesPage(),
     );
   }
 }

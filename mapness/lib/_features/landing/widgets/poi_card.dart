@@ -26,9 +26,8 @@ class PoiCard extends ConsumerWidget {
       borderRadius: BorderRadius.circular(8),
       child: Material(
         child: Ink.image(
-          image: AssetImage(
+          image: NetworkImage(
             image,
-            package: PackageConfig.packageName,
           ),
           fit: BoxFit.cover,
           child: InkWell(
@@ -47,14 +46,20 @@ class PoiCard extends ConsumerWidget {
                     const Spacer(),
                     Text(
                       title,
-                      style: Theme.of(context).extension<ThemeTextStyles>()!.accentM.copyWith(color: Colors.white),
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .accentM
+                          .copyWith(color: Colors.white),
                     ),
                     const SizedBox(
                       height: 6,
                     ),
                     Text(
                       subtitle,
-                      style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: Colors.white.withOpacity(0.8)),
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .textS
+                          .copyWith(color: Colors.white.withOpacity(0.8)),
                     )
                   ],
                 ),

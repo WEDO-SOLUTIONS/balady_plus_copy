@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/routing/route_point.dart';
-import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
+import 'package:mapness/pages/routing/ui/routing_favourites.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/routing/ui/route_editor.dart';
 
@@ -110,9 +110,32 @@ class RoutingHeader extends StatelessWidget {
           const SizedBox(
             height: 16,
           ),
-          QuickFilters(
-            onFavouritesBookmarkTap: () {},
-            onFilterTap: (_, __) {},
+          RoutingFavourites(
+            onFavouritesBookmarkTap: () {
+              RoutingFavouritesRoute().push(context);
+            },
+            onFavouriteTap: (point) async {
+              final index = points.indexWhere((element) => !element.isNotEmpty);
+              if (index == 0) {
+                RoutingRoutesRoute(
+                  startLabel: point.title,
+                  startLatitude: point.coordinates.latitude,
+                  startLongitude: point.coordinates.longitude,
+                  finishLatitude: points[1].latitude,
+                  finishLongitude: points[1].longitude,
+                  finishLabel: points[1].title(context.l10n) ?? "",
+                ).go(context);
+              } else {
+                RoutingRoutesRoute(
+                  startLatitude: points[0].latitude,
+                  startLongitude: points[0].longitude,
+                  startLabel: points[0].title(context.l10n) ?? "",
+                  finishLabel: point.title,
+                  finishLatitude: point.coordinates.latitude,
+                  finishLongitude: point.coordinates.longitude,
+                ).go(context);
+              }
+            },
           ),
           const SizedBox(
             height: 16,

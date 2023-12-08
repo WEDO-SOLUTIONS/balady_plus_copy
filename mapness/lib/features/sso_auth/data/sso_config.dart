@@ -3,5 +3,6 @@ class SsoConfig {
   static const ssoUserInfo = '/userinfo';
   static const ssoClient = 'balady_mobile_app';
   static const ssoRedirectUrl = 'com.momra.balady://callback';
+  static const ssoLogoutUrl = 'com.momra.balady://callback';
   static const ssoSecret = 'secret';
 }

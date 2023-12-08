@@ -36,33 +36,40 @@ class ProfilePage extends StatelessWidget {
               Consumer(
                 builder: (context, ref, child) {
                   final userData = ref.watch(authProvider);
-
-                  return userData == null
-                      ? UnautorizedProfile(
-                          onConnect: ref.read(authProvider.notifier).doAuth,
-                        )
-                      : AuthorizedProfile(
-                          userData: userData,
-                        );
+                  final userUnauthorized = UnautorizedProfile(
+                    onConnect: ref.read(authProvider.notifier).doAuth,
+                  );
+                  return userData.maybeWhen(
+                    orElse: () => userUnauthorized,
+                    data: (userData) => userData == null
+                        ? userUnauthorized
+                        : AuthorizedProfile(
+                            userData: userData,
+                          ),
+                  );
                 },
               ),
               Consumer(
                 builder: (context, ref, child) {
                   final userData = ref.watch(authProvider);
 
-                  return userData == null
-                      ? const SizedBox.shrink()
-                      : Padding(
-                          padding: const EdgeInsets.only(top: 16.0),
-                          child: ExpandableCell(
-                            title: context.l10n.personalData,
-                            count: 7,
-                            icon: "assets/icons/svg/ic_profile_data.svg",
-                            content: PersonalData(
-                              userInfo: userData,
-                            ),
+                  return userData.maybeWhen(
+                    orElse: () => const SizedBox.shrink(),
+                    data: (userData) {
+                      if (userData == null) return const SizedBox.shrink();
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: ExpandableCell(
+                          title: context.l10n.personalData,
+                          count: 7,
+                          icon: "assets/icons/svg/ic_profile_data.svg",
+                          content: PersonalData(
+                            userInfo: userData,
                           ),
-                        );
+                        ),
+                      );
+                    },
+                  );
                 },
               ),
               const SizedBox(
@@ -99,7 +106,11 @@ class ProfilePage extends StatelessWidget {
               const SizedBox(
                 height: 16,
               ),
-              const LogoutCell(),
+              Consumer(
+                builder: (context, ref, child) => LogoutCell(
+                  onTap: ref.read(authProvider.notifier).logOut,
+                ),
+              ),
             ],
           ),
         ),
