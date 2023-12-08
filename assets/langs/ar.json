@@ -3608,7 +3608,16 @@
 
 
   "ekram_print_deceased_data":"بيانات المتوفي", 
-  "ekram_print_reciver_data":"بيانات مستلم الجثمان"
+  "ekram_print_reciver_data":"بيانات مستلم الجثمان", 
+  "stage_no":"المرحلة: {}", 
+  "target_no":"المستهدف: {}", 
+  "issue_complaince_certificate":"إصدار شهادة الامتثال", 
+  "requirements_conditions":"المتطلبات والإشتراطات", 
+  "activity_type": "نوع النشاط: {}", 
+  "parcel_no":"القطعة: {}", 
+  "search_map_city_text":"ابحث في {} عن...", 
+  "search_map_text":"ابحث عن..."
+
 
 
 }

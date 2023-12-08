@@ -16,25 +16,25 @@ class OpprtunityMapCard extends StatelessWidget {
   final String type;
   final String? documentValue;
   final String? dailyCost;
-  final String description;
-  final String area;
+  final String? description;
+  final String? area;
   final bool isSeasonal;
-  final String subMunicipality;
+  final String? subMunicipality;
   final String? bidEndDate;
   final String? location;
   final bool isFree;
-  final String mainActivcity;
-  final String? id; //selectedPoint!.ID!
-  final String? opprtunityNumber; //selectedPoint!.OPPORTUNITYNUMBER!
+  final String? mainActivcity;
+  final String? id;
+  final String? opprtunityNumber;
 
   final Function onClose;
 
   OpprtunityMapCard(
-      {required this.description,
-      required this.area,
+      {this.description,
+      this.area,
       required this.type,
-      required this.subMunicipality,
-      required this.mainActivcity,
+      this.subMunicipality,
+      this.mainActivcity,
       this.documentValue,
       this.dailyCost,
       this.isSeasonal = false,
@@ -107,7 +107,7 @@ class OpprtunityMapCard extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                description,
+                                description ?? "",
                                 style: AppStyle.cardTitleTextStle.copyWith(
                                     fontSize: 13,
                                     color: AppColor.black,
@@ -135,7 +135,7 @@ class OpprtunityMapCard extends StatelessWidget {
                           ],
                         ),
                         Text(
-                          subMunicipality,
+                          subMunicipality ?? "",
                           style: AppStyle.cardTitleTextStle
                               .copyWith(fontSize: 13, color: AppColor.black),
                           maxLines: 2,
@@ -144,7 +144,9 @@ class OpprtunityMapCard extends StatelessWidget {
                         RentOrInvestWidget(type: type),
                         CustomVerticalSpace(height: 4),
                         Text(
-                          "نوع النشاط: ${mainActivcity}",
+                          "activity_type"
+                              .tr()
+                              .replaceAll("{}", mainActivcity ?? ""),
                           style: AppStyle.cardTitleTextStle
                               .copyWith(fontSize: 13, color: AppColor.black),
                           maxLines: 2,
@@ -169,7 +171,7 @@ class OpprtunityMapCard extends StatelessWidget {
                                     width: 6,
                                   ),
                                   Text(
-                                    area + " م٢ ",
+                                    area != null ? (area! + " م٢ ") : "",
                                     overflow: TextOverflow.ellipsis,
                                     style: AppStyle.cardTitleTextStle.copyWith(
                                         color: AppColor.kGray115, fontSize: 12),
