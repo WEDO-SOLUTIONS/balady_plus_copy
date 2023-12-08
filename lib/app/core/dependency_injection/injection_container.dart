@@ -34,6 +34,9 @@ import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, DropDownItem, FileInfo;
 import '../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
+import '../../features/events/presentation/bloc/events_bloc.dart';
+import '../../features/events/presentation/bloc/events_event.dart' as events;
+
 import '../../features/force_update/presentation/core/force_update_view_model.dart';
 import '../../features/location/presentation/bloc/location_bloc.dart';
 import '../../features/map_page/data/repositories/layers_repositories.dart';
@@ -186,6 +189,7 @@ void initialize() {
   sl.registerLazySingleton(() => const PackageDetails());
   sl.registerLazySingleton(() => LocationCubit());
   sl.registerLazySingleton(() => CalendarBloc()..add(GetSearchEvent()));
+  sl.registerLazySingleton(() => EventsBloc()..add(events.GetSearchEvent()));
 
   //! External
   sl.registerLazySingleton(() => const FlutterSecureStorage());
