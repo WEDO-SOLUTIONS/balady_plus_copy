@@ -96,7 +96,7 @@ Map<String, dynamic> servicesConfig = {
     },
   ],
   "honoring_the_dead_services": [
-    /* {
+    {
       "id": 1,
       "icon": "ekram_benf_transport",
       "3d_icon": null,
@@ -133,7 +133,7 @@ Map<String, dynamic> servicesConfig = {
         "tag": null
       },
       "en": {"title": "Move Diseased", "description": null, "tag": null}
-    },*/
+    },
     {
       "id": 3,
       "icon": "ekram_inq_graves",
@@ -191,7 +191,7 @@ Map<String, dynamic> servicesConfig = {
       },
       "en": {"title": "Move Diseased", "description": null, "tag": null}
     },
-    /*{
+    {
       "id": 6,
       "icon": "ekram_print",
       "3d_icon": null,
@@ -209,7 +209,7 @@ Map<String, dynamic> servicesConfig = {
         "tag": null
       },
       "en": {"title": "Move Diseased", "description": null, "tag": null}
-    },*/
+    },
     {
       "id": 7,
       "icon": "ekram_reserve_cemetry",

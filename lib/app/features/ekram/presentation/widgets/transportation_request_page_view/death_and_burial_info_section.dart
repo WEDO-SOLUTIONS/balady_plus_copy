@@ -65,10 +65,23 @@ class _DeathAndBurialInfoSectionState extends State<DeathAndBurialInfoSection> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       VdHeaderDesc(
-                        header: Helpers.translatingWord("deathInfo"),
+                        header: Helpers.translatingWord("ekram_step4_title"),
                       ),
-
-                      // AttachemntWidget()
+                      CustomTextFieldWidget(
+                          label: Helpers.translatingWord("deathLocation"),
+                          hintText: Helpers.translatingWord("deathLocation"),
+                          //  controller: deathLocationTextEditController,
+                          //  focusNode: deathLocationShipFocusNode,
+                          initialValue: state.deathLocation,
+                          maxLines: 1,
+                          textInputAction: TextInputAction.done,
+                          keyboardType: TextInputType.text,
+                          onChanged: (String? text) {
+                            context
+                                .read<EkramRequestTransportationBloc>()
+                                .add(ChangeDeathLocationEvent(text: text));
+                          },
+                          onValidate: (String? value) {}),
                     ],
                   ),
                 ),

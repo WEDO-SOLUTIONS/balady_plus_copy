@@ -76,13 +76,11 @@ export 'presentation/widgets/transportation_details_widget/driver_card_widget.da
 export 'presentation/widgets/transportation_details_widget/deceased_grey_card_widget.dart';
 
 /// presentation -> widgets -> transportation details widgets -> body sections
-export 'presentation/widgets/transportation_details_widget/body_sections/ekram_details_body.dart';
 export 'presentation/widgets/transportation_details_widget/body_sections/transfer_info_widget.dart';
 export 'presentation/widgets/transportation_details_widget/body_sections/deceased_info_widget.dart';
 export 'presentation/widgets/transportation_details_widget/body_sections/driver_info_widget.dart';
 export 'presentation/widgets/transportation_details_widget/body_sections/burial_info_widget.dart';
 export 'presentation/widgets/transportation_details_widget/body_sections/applicant_info_widget.dart';
-
 
 /// presentation -> widgets -> trip details dialog widgets
 export 'presentation/widgets/trip_details_dialog_widgets/trip_details_card_widget.dart';

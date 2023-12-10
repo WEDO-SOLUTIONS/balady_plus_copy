@@ -613,7 +613,33 @@ class ApiUrl {
   static String posterRequestAlllowedAction(int? requestId) =>
       "v1/commercial-promotions-services/allowed-actions/$requestId";
 
+  //! 24 Hour Permit
+  static String permit24AlllowedAction(int? requestId) =>
+      "v1/supperapp-commercial-twentyfour-services/twenty-four-allowed-actions/$requestId";
+
+  static String permits24Alerts =
+      "v1/supperapp-commercial-twentyfour-services/alerts/ENDORSEMENT";
+  static String permit24ValidateBeforeApply(int? requestId) =>
+      "v1/supperapp-commercial-twentyfour-services/valid-before-apply/$requestId";
+
+  static String permit24Submit(int requestId) =>
+      "v1/supperapp-commercial-twentyfour-services/submits/$requestId";
+
+  static String permit24RequestDetails(int requestId) =>
+      "v1/supperapp-commercial-twentyfour-services/permit-details/$requestId";
+
+  static String permit24Calclaute(int requestId) =>
+      "v1/supperapp-commercial-twentyfour-services/licences-costs/$requestId";
+  static String deletePermit24Request(int requestId) =>
+      "v1/supperapp-commercial-twentyfour-services/requests/$requestId";
+
 // Ekram
+
+  static const deathCities = 'v2/ekram-mobile-services/cities/1';
+  static const burialCities = 'v2/ekram-mobile-services/cities/2';
+  static const ekramOrgnizations =
+      'v2/ekram-mobile-services/organizations-info';
+
   static const ekramNationalities = 'v2/ekram-mobile-services/nationalities';
 
   static const ekramCities = 'v2/ekram-mobile-services/cities-cemetries';
@@ -626,8 +652,7 @@ class ApiUrl {
 
   static const ekramLookup = 'v1/ekram-mobile-services/lookups';
 
-  static const ekramAnotherLookup =
-      'v1/ekram-mobile-services/ekram-grave-reservation-service/lookups';
+  static const ekramAnotherLookup = 'v2/ekram-mobile-services/lookups';
 
   static const deceasedTransportRequests =
       'v2/ekram-mobile-services/deceased-transport-requests';
@@ -636,7 +661,7 @@ class ApiUrl {
       'v2/ekram-mobile-services/deceased-transport-details';
 
   static const ekramDeceasedTransportApply =
-      'v1/ekram-mobile-services/deceased-transport/apply';
+      'v2/ekram-mobile-services/deceased-transport/add-request';
 
   static const ekramGetTrips = 'v2/ekram-mobile-services/trips';
 
@@ -687,6 +712,8 @@ class ApiUrl {
 
   static String ekramCountries = "v2/ekram-mobile-services/countries";
 
+  static String graveActiveRequestDetails(String id, int idType) =>
+      'v2/ekram-mobile-services/request-details/$id/$idType';
   //! POST
 
   //! Delete

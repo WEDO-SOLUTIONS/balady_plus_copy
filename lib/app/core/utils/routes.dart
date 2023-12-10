@@ -80,7 +80,7 @@ import '../../features/create_compliance/presentation/pages/non_compliance_scree
 import '../../features/create_compliance/presentation/pages/submit_compliance_page.dart';
 import '../../features/ekram/presentation/pages/book_cemetry/ekram_book_cemetry_page.dart';
 import '../../features/ekram/presentation/pages/book_cemetry/ekram_book_cemetry_start_service.dart';
-import '../../features/ekram/presentation/pages/driver/driver_ekram_transpotation_details_page.dart';
+import '../../features/ekram/presentation/pages/user/user_ekram_transpotation_details_page.dart';
 import '../../features/ekram/presentation/pages/driver/driver_transportation_list_page.dart';
 import '../../features/ekram/presentation/pages/ekram_booking_list_page.dart';
 import '../../features/ekram/presentation/pages/ekram_cemetry_details_page.dart';
@@ -103,6 +103,9 @@ import '../../features/ekram_inquiry_service/presentation/pages/inquiry_print/in
 import '../../features/events/presentation/pages/events_main_page.dart';
 import '../../features/events/presentation/pages/single_image_page.dart';
 import '../../features/map_page/presentation/pages/resturant_details_page.dart';
+import '../../features/pemrit_24_hour/presentation/pages/permits_details_page.dart';
+import '../../features/pemrit_24_hour/presentation/pages/posters_start_service_license_screen.dart';
+import '../../features/pemrit_24_hour/presentation/pages/submit_application_successfully_posters.dart';
 import '../../features/posters/presentation/pages/posters_details_page.dart';
 import '../../features/posters/presentation/pages/posters_start_service_license_screen.dart';
 import '../../features/posters/presentation/pages/posters_start_service_screen.dart';
@@ -632,6 +635,13 @@ class Routes {
         RouteName.submitDisclosedSuccessfully: (context) =>
             const SubmitDisclosedSuccessfullyScreen(),
 
+// Permits 24
+        RouteName.permitsLicenseStartService: (context) =>
+            const PermitsLicenseStartService(),
+        RouteName.permitsDetailsPage: (context) => const Permits24DetailsPage(),
+        RouteName.submitApplicationSuccessfullyPermits: (context) =>
+            const SubmitApplicationSuccessfullyPermits(),
+
         // Ekram
 
         RouteName.ekramOrdersScreen: (context) => const EkramOrdersPage(),
@@ -659,7 +669,7 @@ class Routes {
             const EkramTransportationDetailsPage(),
 
         RouteName.driverEkramTransportationDetailsScreen: (context) =>
-            const DriverEkramTransportationDetailsPage(),
+            const UsersEkramTransportationDetailsPage(),
 
         RouteName.EkramMapPage: (context) => const EkramMapPage(),
 

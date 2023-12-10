@@ -73,11 +73,19 @@ class EkramTransporationCardWidget extends StatelessWidget {
                     value: ekramTransportationItem.deceasedName ?? "",
                   ),
                   RequestParameter(
-                    title: 'transportationType'.tr(),
+                    title: 'ekram_death_city'.tr(),
+                    value: ekramTransportationItem.deathCityName ?? "",
+                  ),
+                  RequestParameter(
+                    title: 'burial_city'.tr(),
+                    value: ekramTransportationItem.burialCityName ?? "",
+                  ),
+                  RequestParameter(
+                    title: 'ekram_transport_status'.tr(),
                     value:
                         ekramTransportationItem.deathTransferStatusDesc ?? "",
                   ),
-                  RequestParameter(
+                  /* RequestParameter(
                     title: 'transportationStatus'.tr(),
                     value: ekramTransportationItem
                             .deceasedTransportRequestStatus ??
@@ -86,7 +94,7 @@ class EkramTransporationCardWidget extends StatelessWidget {
                   RequestParameter(
                     title: 'transportationDestination'.tr(),
                     value: ekramTransportationItem.currentStationName ?? "",
-                  ),
+                  ),*/
                 ],
               ),
             ),

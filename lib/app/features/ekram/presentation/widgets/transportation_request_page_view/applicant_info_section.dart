@@ -100,41 +100,16 @@ class _ApplicantInfoTextFieldsSectionState
             ReadOnlyField(
               title: trans("ekramFullName"),
               subTitle: state.fullName ?? "",
-              /* controller: fullNameTextEditController,
-                focusNode: fullNameFocusNode,
-                maxLines: 1,
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.text,
-                validator: (String? value) {}*/
             ),
             const CustomVerticalSpace(height: 20),
             ReadOnlyField(
               title: trans("ekramMobile"),
               subTitle: state.mobileNumber ?? "",
-              /*controller: mobileTextEditController,
-                focusNode: mobileFocusNode,
-                maxLines: 1,
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.phone,
-                validator: (String? value) {}*/
             ),
-            /* ReadOnlyField( 
-              title: trans("ekramApplicantType"),
-              subTitle: state.requestType ?? "",
-
-              /*controller: applicantTypeTextEditController,
-                focusNode: applicantTypeFocusNode,
-                maxLines: 1,
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.text,
-                validator: (String? value) {}*/
-            ),*/
             const CustomVerticalSpace(height: 20),
             CustomTextFieldWidget(
                 label: trans("ekramRelationShipOptional"),
                 hintText: trans("ekramRelationShipOptional"),
-                // controller: relationShipTextEditController,
-                //  focusNode: relationShipFocusNode,
                 initialValue: state.relation,
                 maxLines: 1,
                 textInputAction: TextInputAction.done,
@@ -197,21 +172,6 @@ class _ApplicantInfoTextFieldsSectionState
                         .add(ChangeHospitalOtherNameEvent(text: text));
                   },
                   onValidate: (String? value) {}),
-            /*CustomTextFieldWidget(
-                label: Helpers.translatingWord("deathLocation"),
-                hintText: Helpers.translatingWord("deathLocation"),
-                //  controller: deathLocationTextEditController,
-                //  focusNode: deathLocationShipFocusNode,
-                initialValue: state.deathLocation,
-                maxLines: 1,
-                textInputAction: TextInputAction.done,
-                keyboardType: TextInputType.text,
-                onChanged: (String? text) {
-                  context
-                      .read<EkramRequestTransportationBloc>()
-                      .add(ChangeDeathLocationEvent(text: text));
-                },
-                onValidate: (String? value) {}),*/
           ],
         );
       },

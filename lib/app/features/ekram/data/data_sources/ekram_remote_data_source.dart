@@ -19,15 +19,20 @@ import '../../../../core/errors/exceptions.dart';
 import '../../../../core/utils/constants/apis/api_info.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
 import '../../../new_appointment/presentation/core/models/lookup_list_model.dart';
+import '../../domain/entities/active_grave_request_params.dart';
 import '../../domain/entities/book_cemetry_params.dart';
+import '../../domain/entities/deceased_transport_requests/get_orgnizations_params.dart';
 import '../../domain/entities/get_cemetries_params.dart';
 import '../../domain/entities/user_info_request_params.dart';
+import '../model/apply_deceased/grave_active_request_details.dart';
 import '../model/cemetry_request_details/cemetry_request_details_model.dart';
 import '../model/cemetry_requests/cemetry_request_response_model.dart';
 import '../model/user_info_response_model.dart';
 
 abstract class EkramRemoteDataSource {
   Future<ResponseBodyModel<List<LookUpItem>>> getCities();
+
+  Future<ResponseBodyModel<List<LookUpItem>>> getDeathCities();
 
   Future<ResponseBodyModel<List<LookUpItem>>> getHospitals(int params);
   Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getMosques(
@@ -90,6 +95,13 @@ abstract class EkramRemoteDataSource {
   Future<ResponseBodyModel<List<LookUpItem>>> getNationalityTypes();
 
   Future<ResponseBodyModel<List<LookUpItem>>> getCountries();
+
+  Future<ResponseBodyModel<List<LookUpItem>>> getBurialCities();
+  Future<ResponseBodyModel<List<LookUpItem>>> getEkramOrgnizations(
+      GetOrgnizationsParams params);
+
+  Future<ResponseBodyModel<GraveActiveRequestDetails>>
+      getActiveGraveRequestDetails(ActiveGraveRequestParams params);
 }
 
 class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
@@ -836,8 +848,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        "${ApiUrl.ekramAnotherLookup}",
-        queryParameters: {"type": params},
+        "${ApiUrl.ekramAnotherLookup}/$params",
       );
 
       var data = response.data["data"]?["result"];
@@ -1155,6 +1166,142 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       final decodedResponse = ResponseBodyModel<List<LookUpItem>>.fromMap(
           response.data,
           parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error) {
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode);
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //   CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<List<LookUpItem>>> getDeathCities() async {
+    var response;
+
+    try {
+      response = await webService.dio.get(
+        ApiUrl.deathCities,
+      );
+
+      var data = response.data["data"]?["result"];
+
+      List<LookUpItem> parsedResult = data != null
+          ? List<LookUpItem>.from(data.map((x) => LookUpItem.fromJson(x)))
+          : [];
+
+      final decodedResponse = ResponseBodyModel<List<LookUpItem>>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error) {
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode);
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //   CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<List<LookUpItem>>> getBurialCities() async {
+    var response;
+
+    try {
+      response = await webService.dio.get(
+        ApiUrl.burialCities,
+      );
+
+      var data = response.data["data"]?["result"];
+
+      List<LookUpItem> parsedResult = data != null
+          ? List<LookUpItem>.from(data.map((x) => LookUpItem.fromJson(x)))
+          : [];
+
+      final decodedResponse = ResponseBodyModel<List<LookUpItem>>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error) {
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode);
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //   CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<List<LookUpItem>>> getEkramOrgnizations(
+      GetOrgnizationsParams params) async {
+    var response;
+
+    try {
+      response = await webService.dio
+          .post(ApiUrl.ekramOrgnizations, data: params.toMap());
+
+      var data = response.data["data"]?["result"];
+
+      List<LookUpItem> parsedResult = data != null
+          ? List<LookUpItem>.from(data.map((x) => LookUpItem.fromJson(x)))
+          : [];
+
+      final decodedResponse = ResponseBodyModel<List<LookUpItem>>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error) {
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode);
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //   CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<GraveActiveRequestDetails>>
+      getActiveGraveRequestDetails(ActiveGraveRequestParams params) async {
+    var response;
+
+    try {
+      response = await webService.dio
+          .get(ApiUrl.graveActiveRequestDetails(params.idNo, params.idType));
+
+      var data = response.data["data"]?["result"];
+
+      final decodedResponse =
+          ResponseBodyModel<GraveActiveRequestDetails>.fromMap(response.data,
+              parsedResult: GraveActiveRequestDetails.fromJson(data));
 
       return decodedResponse.toFuture();
     } on DioError catch (error) {

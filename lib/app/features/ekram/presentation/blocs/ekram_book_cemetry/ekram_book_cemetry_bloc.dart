@@ -410,9 +410,9 @@ class EkramBookCemetryBloc
       String thirdName = success.data?.result?.thirdName ?? "";
       String fourthName = success.data?.result?.familyName ?? "";
       int? gender = success.data?.result?.genderCode;
-      bool? isMuslim = success.data?.result?.genderCode == 1
+      bool? isMuslim = success.data?.result?.religionCode == 1
           ? true
-          : (success.data?.result?.genderCode != null)
+          : (success.data?.result?.religionCode != null)
               ? false
               : null;
 

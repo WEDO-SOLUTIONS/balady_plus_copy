@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../vd/presentation/widgets/details_widgets/details_app_bar.dart';
+import '../../../../vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
 
 class EkramRequestTransportationPage extends StatefulWidget {
   const EkramRequestTransportationPage({
@@ -52,11 +53,21 @@ class _EkramRequestTransportationPageState
                 context.read<EkramRequestTransportationBloc>().hideKeyboard();
               },
               child: Scaffold(
-                appBar: EkramRequestAppBar(
+                appBar: DetailsAppBarTwo(
                   currentStep: state.currentPageValue + 1,
+                  pageLength: context
+                      .read<EkramRequestTransportationBloc>()
+                      .pagesList
+                      .length,
                   backOnPress: () => context
                       .read<EkramRequestTransportationBloc>()
                       .add(GoToPreviousPageEvent()),
+                  onTapCloseAction: () {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    bool Function(Route<dynamic>) predicate =
+                        ModalRoute.withName(RouteName.bottomNavigation);
+                    Navigator.of(context).popUntil((predicate));
+                  },
                 ),
                 body: Stack(
                   children: [

@@ -3616,7 +3616,12 @@
   "activity_type": "نوع النشاط: {}", 
   "parcel_no":"القطعة: {}", 
   "search_map_city_text":"ابحث في {} عن...", 
-  "search_map_text":"ابحث عن..."
+  "search_map_text":"ابحث عن...", 
+  "ekram_orgnization_name":"اسم جهة النقل", 
+  "ekram_permit_no":"رقم تصريح الدفن", 
+  "ekram_transport_status":"حالة نقل الموتى", 
+  "ekram_dead_deads_info":"بيانات المتوفى/المتوفين", 
+  "permit_24_feesNote":"عزيزي المستفيد، قد تختلف رسوم إصدار التصريح من بلدية إلى بلدية أخرى، يتم احتساب الرسوم عن طريق مجموع رسوم التصاريح التي تحتاج رسوم"
 
 
 

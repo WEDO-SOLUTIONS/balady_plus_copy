@@ -1,9 +1,12 @@
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/ekram/presentation/blocs/request_details_bloc/request_details_bloc_bloc.dart';
+import 'package:balady_plus/app/features/objectable_transactions/presentation/widgets/summery_widgets/field_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../core/services/local/helpers.dart';
 import '../../../../../../core/utils/common_functions.dart';
+import '../../../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../../_shared_feature_/presentation/under_testing/custom_enhanced_expansion_panel_widget.dart';
 
 class ApplicantInfoWidget extends StatelessWidget {
@@ -13,38 +16,45 @@ class ApplicantInfoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<RequestDetailsBloc, RequestDetailsState>(
         builder: (context, state) {
-      return CustomEnhancedExpansionPanelWidget(
-        underline: false,
+      return ExpandableCard(
         title: Helpers.translatingWord("ApplicantInfo"),
+        icon: IconPath.vdSummuryDesc,
         children: [
           //MM Ekram
-          /*
-          CustomTitleSubtitleCardWidget(
-            horizontalPadding: Constants.smallPadding,
+
+          FieldData(
             title: Helpers.translatingWord("ekramFullName"),
-            subtitle: state.details.submitterName,
+            subTitle: state.details.submitterName,
           ),
-          CustomTitleSubtitleCardWidget(
-            horizontalPadding: Constants.smallPadding,
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+          FieldData(
             title: Helpers.translatingWord("ekramApplicantType"),
-            subtitle: state.details.submitterTypeName,
+            subTitle: state.details.submitterTypeName,
           ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+
           GestureDetector(
             onTap: () {
-              if (state.details.submitterMobileNumber != null)
-                CommonFunctions.call(state.details.submitterMobileNumber);
+              //if (state.details.submitterMobileNumber != null)
+              //  CommonFunctions.call(state.details.submitterMobileNumber);
             },
-            child: CustomTitleSubtitleCardWidget(
-              horizontalPadding: Constants.smallPadding,
+            child: FieldData(
               title: Helpers.translatingWord("ekramMobile"),
-              subtitle: state.details.submitterMobileNumber,
+              subTitle: state.details.submitterMobileNumber,
             ),
           ),
-          CustomTitleSubtitleCardWidget(
-            horizontalPadding: Constants.smallPadding,
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+
+          FieldData(
             title: Helpers.translatingWord("ekramRelationShip"),
-            subtitle: state.details.relationship,
-          ),*/
+            subTitle: state.details.relationship,
+          ),
         ],
       );
     });
