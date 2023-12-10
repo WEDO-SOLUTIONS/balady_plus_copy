@@ -12,8 +12,8 @@ class LookUpItemLocationModel extends LookUpItemLocation {
   factory LookUpItemLocationModel.fromJson(Map<String, dynamic> json) =>
       LookUpItemLocationModel(
         id: json["id"],
-        name: json["laundryName"] ?? json["mosqueName"],
-        laundryName: json["laundryName"],
+        name: json["ghuslPlacesName"] ?? json["mosqueName"],
+        laundryName: json["ghuslPlacesName"],
         mosqueName: json["mosqueName"],
         x: json["x"],
         y: json["y"],

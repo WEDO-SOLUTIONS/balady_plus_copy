@@ -52,6 +52,7 @@ enum GISMapLayers {
         "ID",
         "SITEAREA",
         "DAILYLEASECOST",
+        "SUBMUNICIPALITY_ID",
         "DOCUMENTVALUE",
         "TYPE",
         "BIDENDDATE",

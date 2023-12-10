@@ -53,9 +53,10 @@ class TripDetailsDialogCard extends StatelessWidget {
               CustomTextButtonWithIconWidget(
                 btnPressed: () => onPressDelete(),
                 icon: CustomSvgIconWidget(
-                  "assets/icons/delete_ekram.svg",
+                  "assets/icons/svg/ekram_delete.svg",
                   iconWidth: 12,
                   iconHeight: 12,
+                  iconColor: AppColor.redBrown,
                 ),
                 btnText: trans('delete'),
                 btnTextSize: 13,

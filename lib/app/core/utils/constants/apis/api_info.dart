@@ -650,7 +650,7 @@ class ApiUrl {
 
   static const ekramLaundries = 'v1/ekram-mobile-services/laundries';
 
-  static const ekramLookup = 'v1/ekram-mobile-services/lookups';
+  //static const ekramLookup = 'v1/ekram-mobile-services/lookups';
 
   static const ekramAnotherLookup = 'v2/ekram-mobile-services/lookups';
 

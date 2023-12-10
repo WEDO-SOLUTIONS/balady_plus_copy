@@ -134,13 +134,16 @@ class OpprtunityMapCard extends StatelessWidget {
                             ),
                           ],
                         ),
+                        /* SizedBox(
+                          width: 4,
+                        ),
                         Text(
                           subMunicipality ?? "",
                           style: AppStyle.cardTitleTextStle
                               .copyWith(fontSize: 13, color: AppColor.black),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                        ),
+                        ),*/
                         RentOrInvestWidget(type: type),
                         CustomVerticalSpace(height: 4),
                         Text(

@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
 import 'package:flutter/material.dart';
@@ -83,50 +84,28 @@ class _PoliceLetterState extends State<PoliceLetter> {
                   );
                 }),
             if (state.isCompleted != true) ...[
-              EnhancedCustomElevatedButtonWidget(
-                btnPressed: () async {
+              ElevatedButtonWidget.primaryCustomBorder(
+                onPressed: () async {
                   FileDataItem? file = await CommonFunctions.pickFile(context);
                   if (file != null)
                     context.read<TripDetailsBloc>().add(UploadLetterEvent(
                         file: file, requestId: state.letterID()));
                 },
-                btnText: !state.isLetterExists()
+                text: !state.isLetterExists()
                     ? Helpers.translatingWord("policeLetterAttache")
                     : Helpers.translatingWord("policeLetterUpate"),
-                icon: Image.asset(
-                  Constants.imgPath + "addButton@3x.png",
-                  height: 12,
-                  width: 12,
-                ),
-                btnTextSize: 16,
-                btnTextWeight: AppFontWeight.medium,
-                btnHeight: 56,
-                btnTextColor: AppColor.primary900Light,
-                btnBorderColor: AppColor.primary900Light,
-                btnColor: Colors.transparent,
               ),
               CustomVerticalSpace(height: 12),
-              EnhancedCustomElevatedButtonWidget(
-                btnPressed: () async {
+              ElevatedButtonWidget.primaryCustomBorder(
+                onPressed: () async {
                   FileDataItem? file = await CommonFunctions.pickFile(context);
                   if (file != null)
                     context.read<TripDetailsBloc>().add(UploadHdSharieEvent(
                         file: file, requestId: state.hdSharieID()));
                 },
-                btnText: !state.isHdSharieExists()
+                text: !state.isHdSharieExists()
                     ? Helpers.translatingWord("hdSharieLetterAttache")
                     : Helpers.translatingWord("hdSharieLetterUpate"),
-                icon: Image.asset(
-                  Constants.imgPath + "addButton@3x.png",
-                  height: 12,
-                  width: 12,
-                ),
-                btnTextSize: 16,
-                btnTextWeight: AppFontWeight.medium,
-                btnHeight: 56,
-                btnTextColor: AppColor.primary900Light,
-                btnBorderColor: AppColor.primary900Light,
-                btnColor: Colors.transparent,
               )
             ]
           ],
