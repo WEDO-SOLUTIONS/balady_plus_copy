@@ -51,7 +51,7 @@ export 'presentation/pages/user/ekram_transportation_list_page.dart';
 export 'presentation/pages/ekram_booking_list_page.dart';
 export 'presentation/pages/user/ekram_request_transportation_page.dart';
 export 'presentation/pages/ekram_success_screen.dart';
-export 'presentation/pages/user/ekram_transpotation_details_page.dart';
+export 'presentation/pages/driver/ekram_transpotation_details_page.dart';
 
 /// presentation -> widgets
 export 'presentation/widgets/ekram_booking_card_widget.dart';

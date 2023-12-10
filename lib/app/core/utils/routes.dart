@@ -91,7 +91,7 @@ import '../../features/ekram/presentation/pages/user/ekram_map_page.dart';
 import '../../features/ekram/presentation/pages/user/ekram_orders_page.dart';
 import '../../features/ekram/presentation/pages/user/ekram_request_transportation_page.dart';
 import '../../features/ekram/presentation/pages/user/ekram_transportation_list_page.dart';
-import '../../features/ekram/presentation/pages/user/ekram_transpotation_details_page.dart';
+import '../../features/ekram/presentation/pages/driver/ekram_transpotation_details_page.dart';
 import '../../features/ekram_inquiry_service/presentation/pages/inquiry_cemetries/inquiry_cemetry_details.dart';
 import '../../features/ekram_inquiry_service/presentation/pages/inquiry_cemetries/inquiry_cemetry_result.dart';
 import '../../features/ekram_inquiry_service/presentation/pages/inquiry_graves/inquiry_grave_details.dart';

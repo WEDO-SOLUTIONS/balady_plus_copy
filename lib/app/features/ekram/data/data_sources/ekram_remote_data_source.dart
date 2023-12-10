@@ -257,7 +257,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        "${ApiUrl.ekramLookup}/$params",
+        "${ApiUrl.ekramAnotherLookup}/$params",
       );
 
       var data = response.data["data"]?["result"];
