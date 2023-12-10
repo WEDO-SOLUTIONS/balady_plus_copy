@@ -2,6 +2,7 @@ import 'package:balady_plus/app/features/ekram/presentation/blocs/ekram_add_dece
 import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/enums/app_font_weights.dart';
@@ -21,40 +22,47 @@ class SelectGenderWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomTextWidget(
-              trans("ekramGender"),
-              fontColor: AppColor.primary900Light,
-              fontSize: 13.0,
+              ("sex").tr(),
+              fontColor: AppColor.blackModern700Light,
+              fontSize: 17.0,
               textAlign: TextAlign.start,
               fontWeight: AppFontWeight.bold,
             ),
-            CustomVerticalSpace(height: 10),
-            CustomRadioButtonEnd<LookUpItem>(
-              title: trans("male"),
-              value: LookUpItem(id: 1, name: trans("male")),
-              currentSelected: state.data.genderId,
-              onChange: (LookUpItem item) {
-                context
-                    .read<EkramAddDeceasedBloc>()
-                    .add(ChangeGenderEvent(item: item));
-              },
-              endRadio: false,
-              unSelectedBackgroundColor: Colors.transparent,
-              textSize: 16,
-            ),
-            CustomVerticalSpace(height: 10),
-            CustomRadioButtonEnd<LookUpItem>(
-              title: trans("female"),
-              value: LookUpItem(id: 2, name: trans("female")),
-              currentSelected: state.data.genderId,
-              onChange: (LookUpItem item) {
-                context
-                    .read<EkramAddDeceasedBloc>()
-                    .add(ChangeGenderEvent(item: item));
-              },
-              endRadio: false,
-              unSelectedBackgroundColor: Colors.transparent,
-              textSize: 16,
-            ),
+            Row(
+              children: [
+                Expanded(
+                  child: CustomRadioButtonEnd<int>(
+                    title: ("male").tr(),
+                    value: 1,
+                    currentSelected: state.data?.gender,
+                    onChange: (int item) {
+                      context
+                          .read<EkramAddDeceasedBloc>()
+                          .add(ChangeGenderEvent(item: item));
+                    },
+                    endRadio: false,
+                    unSelectedBackgroundColor: Colors.transparent,
+                    textSize: 16,
+                  ),
+                ),
+                CustomVerticalSpace(height: 10),
+                Expanded(
+                  child: CustomRadioButtonEnd<int>(
+                    title: ("female").tr(),
+                    value: 2,
+                    currentSelected: state.data?.gender,
+                    onChange: (int item) {
+                      context
+                          .read<EkramAddDeceasedBloc>()
+                          .add(ChangeGenderEvent(item: item));
+                    },
+                    endRadio: false,
+                    unSelectedBackgroundColor: Colors.transparent,
+                    textSize: 16,
+                  ),
+                ),
+              ],
+            )
           ],
         );
       },

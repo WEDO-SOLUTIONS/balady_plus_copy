@@ -57,7 +57,7 @@ class _EkramTransportationDetailsPageState
                   },
                 ),
                 // body
-                const EkramDetailsBodyWidget(),
+                // const EkramDetailsBodyWidget(),
               ],
             ),
           ),

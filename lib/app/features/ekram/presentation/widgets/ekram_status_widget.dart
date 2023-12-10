@@ -45,9 +45,9 @@ class EkramHeaderAndDescWidget extends StatelessWidget {
       children: [
         CustomTextWidget(
           title,
-          fontSize: 13.0,
+          fontSize: 12.0,
           fontWeight: AppFontWeight.medium,
-          fontColor: AppColor.warmGrey,
+          fontColor: AppColor.primary700Light,
           maxLines: 1,
           textOverflow: TextOverflow.ellipsis,
           textAlign: TextAlign.start,
@@ -55,9 +55,9 @@ class EkramHeaderAndDescWidget extends StatelessWidget {
         const CustomVerticalSpace(height: 6),
         CustomTextWidget(
           details,
-          fontSize: 16.0,
+          fontSize: 14.0,
           fontWeight: AppFontWeight.medium,
-          fontColor: AppColor.black,
+          fontColor: AppColor.blackModern600Light,
           maxLines: 1,
           textOverflow: TextOverflow.ellipsis,
           textAlign: TextAlign.start,

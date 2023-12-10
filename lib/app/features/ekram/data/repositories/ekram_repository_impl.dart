@@ -3,11 +3,14 @@ import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports
 import 'package:balady_plus/app/features/ekram/data/data_sources/ekram_remote_data_source.dart';
 import 'package:balady_plus/app/features/ekram/data/model/add_trip_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/apply_deceased/apply_deceased_params.dart';
+import 'package:balady_plus/app/features/ekram/data/model/apply_deceased/grave_active_request_details.dart';
 import 'package:balady_plus/app/features/ekram/data/model/deceased_transport_requests/transport_request_response_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/ekram_attachment_response.dart';
 import 'package:balady_plus/app/features/ekram/data/model/look_up_item_location_model.dart';
+import 'package:balady_plus/app/features/ekram/domain/entities/active_grave_request_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/apply_deceased_response.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/deceased_request_details/deceased_request_details.dart';
+import 'package:balady_plus/app/features/ekram/domain/entities/deceased_transport_requests/get_orgnizations_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/get_requests_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/trip_details.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/trip_location_response.dart';
@@ -378,6 +381,54 @@ class EkramRepositoryImpl implements EkramRepository {
       getNationalityTypes() async {
     try {
       final data = await remoteDataSource.getNationalityTypes();
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+      getDeathCities() async {
+    try {
+      final data = await remoteDataSource.getDeathCities();
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+      getBurialCities() async {
+    try {
+      final data = await remoteDataSource.getBurialCities();
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+      getEkramOrgnizations(GetOrgnizationsParams params) async {
+    try {
+      final data = await remoteDataSource.getEkramOrgnizations(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<GraveActiveRequestDetails>>>
+      getActiveGraveRequestDetails(ActiveGraveRequestParams params) async {
+    try {
+      final data = await remoteDataSource.getActiveGraveRequestDetails(params);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage,

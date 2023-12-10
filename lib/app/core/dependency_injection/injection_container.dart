@@ -68,6 +68,7 @@ import '../services/services_exports.dart'
         WebService;
 import '../utils/enums/bottom_nav_bar.dart';
 import 'features/calendar_injection.dart';
+import 'features/commercials_permits24_injection.dart';
 import 'features/commercials_posters_injection.dart';
 import 'features/compliance_injection.dart';
 import 'features/dc_injection.dart';
@@ -125,6 +126,8 @@ void initialize() {
   //? Posters Guide
   CommercialsPostersInjection.init();
 
+  CommercialsPermits24Injection.init();
+
 //? Objections
   ObjectionsInjection.init();
 //? Objectable Transactions
@@ -145,6 +148,7 @@ void initialize() {
   EventsInjection.init();
 
   CalendarInjection.init();
+
   //? Ekram
   EkramInjection.init();
 

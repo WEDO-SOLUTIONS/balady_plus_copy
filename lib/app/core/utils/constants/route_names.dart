@@ -232,6 +232,12 @@ class RouteName {
   static const tobaccoDisclosed = '/tobaccoDisclosed';
   static const submitDisclosedSuccessfully = '/submitDisclosedSuccessfully';
 
+// Permits 24
+  static const permitsLicenseStartService = '/permitsLicenseStartService';
+  static const permitsDetailsPage = '/permitsDetailsPage';
+  static const submitApplicationSuccessfullyPermits =
+      '/submitApplicationSuccessfullyPermits';
+
   // Ekram
   // Ekram
   static const ekramOrdersScreen = 'ekramOrdersHomeScreen';

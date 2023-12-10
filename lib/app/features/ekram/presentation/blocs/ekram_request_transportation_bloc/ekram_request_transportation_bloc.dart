@@ -7,6 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/failures.dart';
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/services/local/use_case.dart';
@@ -14,6 +15,7 @@ import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/data/entities/file_data_item.dart';
 import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
+import '../../../domain/use_cases/get_death_cities.dart';
 
 part 'ekram_request_transportation_event.dart';
 
@@ -34,6 +36,7 @@ class EkramRequestTransportationBloc extends Bloc<
   final GetHospitals _getHospitals;
   final GetNationalities _getNationalities;
   final ApplyDeceasedTransport _applyDeceasedTransport;
+  final GetDeathCities _deathCities;
 
   EkramRequestTransportationBloc(
       {required GetCities getCities,
@@ -45,6 +48,7 @@ class EkramRequestTransportationBloc extends Bloc<
         _getHospitals = getHospitals,
         _getNationalities = getNationalities,
         _applyDeceasedTransport = applyDeceasedTransport,
+        _deathCities = GetDeathCities(repository: sl()),
         super(EkramRequestTransportationState(
             fullName: CommonProperties.userInfo?.arName ?? "",
             mobileNumber: CommonProperties.userInfo?.getPhone() ?? "",
@@ -110,7 +114,7 @@ class EkramRequestTransportationBloc extends Bloc<
   Future<List<LookUpItem>?> getCitiesHandler() async {
     emit(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess = await _getCities(NoParams());
+    final failureOrSuccess = await _deathCities(NoParams());
     return failureOrSuccess.fold((failure) {
       emit(state.copyWith(
         status: BlocStatus.failure,

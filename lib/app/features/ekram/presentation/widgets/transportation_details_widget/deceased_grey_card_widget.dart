@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -35,7 +36,7 @@ class DeceasedGreyCardWidget extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width - 60,
       decoration: new BoxDecoration(
-          color: Color(0xfff1f1f1), borderRadius: BorderRadius.circular(4)),
+          color: Color(0xffF3F7F7), borderRadius: BorderRadius.circular(16)),
       // padding: EdgeInsets.all(24),
       padding: EdgeInsets.only(bottom: 12, left: 24, top: 24, right: 24),
       margin: EdgeInsets.only(bottom: 8, left: 16),
@@ -55,7 +56,9 @@ class DeceasedGreyCardWidget extends StatelessWidget {
               Expanded(
                   child: EkramHeaderAndDescWidget(
                 title: ('ekramGender').tr(),
-                details: item.gender ?? "",
+                details: (item.gender == "FEMALE")
+                    ? "female".tr()
+                    : (item.gender == "MALE" ? "male".tr() : item.gender ?? ""),
               ))
             ],
           ),
@@ -188,22 +191,11 @@ class DeceasedGreyCardWidget extends StatelessWidget {
             lineColor: AppColor.black400.withOpacity(0.2000000029802322),
           ),
           if (!isDriver)
-            CustomTextButtonWithIconWidgetWithFlexible(
-              mainAxisAlignment: MainAxisAlignment.start,
-              btnPressed: () {
+            ElevatedButtonWidget.primaryCustom(
+              onPressed: () {
                 showLocation();
               },
-              btnText: ('navigateOnMap').tr(),
-              icon: CustomSvgIconWidget(
-                "assets/icons/tracking.svg",
-                iconHeight: 16,
-                iconWidth: 16,
-              ),
-              buttonIconPosition: BUTTON_ICON_POSITION.right,
-              btnTextColor: AppColor.primary900Light,
-              btnTextSize: 13,
-              btnTextWeight: AppFontWeight.medium,
-              //  padding: EdgeInsets.all(Constants.semiMediumPadding),
+              text: ('navigateOnMap').tr(),
             ),
           if (isDriver)
             Row(

@@ -8,19 +8,27 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
 import '../../data/model/add_trip_params.dart';
+import '../../data/model/apply_deceased/grave_active_request_details.dart';
 import '../../data/model/ekram_attachment_response.dart';
 import '../../data/model/look_up_item_location_model.dart';
 import '../../data/model/upload_letter_params.dart';
 import '../../data/model/user_info_response_model.dart';
 import '../../ekram_exports.dart';
+import '../entities/active_grave_request_params.dart';
 import '../entities/book_cemetry_params.dart';
 import '../entities/cemetry_request_details/cemetry_request_details.dart';
 import '../entities/cemetry_requests/cemetry_request_response.dart';
+import '../entities/deceased_transport_requests/get_orgnizations_params.dart';
 import '../entities/get_cemetries_params.dart';
 import '../entities/user_info_request_params.dart';
 
 abstract class EkramRepository {
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getCities();
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getDeathCities();
+
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+      getBurialCities();
+
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
       getNationalities();
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getHospitals(
@@ -91,4 +99,10 @@ abstract class EkramRepository {
       getCemetryRequestDetails(String params);
 
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getCountries();
+
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+      getEkramOrgnizations(GetOrgnizationsParams params);
+
+  Future<Either<Failure, ResponseBodyModel<GraveActiveRequestDetails>>>
+      getActiveGraveRequestDetails(ActiveGraveRequestParams params);
 }

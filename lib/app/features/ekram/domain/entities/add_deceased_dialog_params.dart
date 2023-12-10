@@ -4,9 +4,9 @@ import 'package:balady_plus/app/features/new_appointment/presentation/core/model
 class AddDeceasedDialogParams {
   final List<LookUpItem>? nationalities;
   final List<LookUpItem>? cities;
-
   final DeceasedInfoDto data;
+  final LookUpItem? deathCity;
 
   AddDeceasedDialogParams(
-      {this.cities, required this.data, this.nationalities});
+      {this.cities, required this.data, this.nationalities, this.deathCity});
 }

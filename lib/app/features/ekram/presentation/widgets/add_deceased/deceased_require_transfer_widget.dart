@@ -30,7 +30,7 @@ class DeceasedRequiredTransferWidget extends StatelessWidget {
             CustomRadioButtonEnd<bool>(
               title: trans("yes"),
               value: true,
-              currentSelected: state.data.specialTransferNeeded == true,
+              currentSelected: state.data?.specialTransferNeeded == true,
               onChange: (bool item) {
                 context
                     .read<EkramAddDeceasedBloc>()
@@ -44,7 +44,7 @@ class DeceasedRequiredTransferWidget extends StatelessWidget {
             CustomRadioButtonEnd<bool>(
               title: trans("no"),
               value: true,
-              currentSelected: state.data.specialTransferNeeded == false,
+              currentSelected: state.data?.specialTransferNeeded == false,
               onChange: (bool item) {
                 context
                     .read<EkramAddDeceasedBloc>()

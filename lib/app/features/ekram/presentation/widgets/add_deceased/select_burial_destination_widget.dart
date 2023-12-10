@@ -30,7 +30,7 @@ class SelectBurialDestinationWidget extends StatelessWidget {
             CustomRadioButtonEnd<bool>(
               title: trans("burial_in_death_city"),
               value: true,
-              currentSelected: state.data.multipleCityRequest == false,
+              currentSelected: state.data?.multipleCityRequest == false,
               onChange: (bool item) {
                 context
                     .read<EkramAddDeceasedBloc>()
@@ -44,7 +44,7 @@ class SelectBurialDestinationWidget extends StatelessWidget {
             CustomRadioButtonEnd<bool>(
               title: trans("burial_in_other_city"),
               value: true,
-              currentSelected: state.data.multipleCityRequest == true,
+              currentSelected: state.data?.multipleCityRequest == true,
               onChange: (bool item) {
                 context
                     .read<EkramAddDeceasedBloc>()

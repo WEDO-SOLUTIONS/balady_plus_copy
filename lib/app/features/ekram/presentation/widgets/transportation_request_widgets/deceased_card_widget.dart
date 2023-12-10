@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../etmam_app/core/utils/constants/app_config.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
@@ -11,23 +12,24 @@ class DeceasedCardWidget extends StatelessWidget {
   final DeceasedInfoDto deceasedItem;
   final Function onDelete;
   final Function onEdit;
+  final bool showDelete;
 
   const DeceasedCardWidget(
       {Key? key,
       required this.deceasedItem,
       required this.onDelete,
-      required this.onEdit})
+      required this.onEdit,
+      this.showDelete = true})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: 318,
-        height: 290,
-        margin: EdgeInsets.symmetric(horizontal: 4, vertical: 5),
+        height: 340,
+        margin: EdgeInsets.symmetric(horizontal: 4, vertical: 16),
         decoration: new BoxDecoration(
           color: Color(0xffffffff),
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
                 color: Color(0x19000000),
@@ -42,33 +44,29 @@ class DeceasedCardWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                IconButton(
+                /* IconButton(
                   iconSize: 18,
                   splashRadius: 1,
                   onPressed: () => onEdit(),
                   icon: CustomSvgIconWidget(
-                    "assets/icons/ekram_edit.svg",
+                    "assets/icons/svg/ekram_edit.svg",
                     iconHeight: 18,
                     iconWidth: 18,
                   ),
-                ),
-                IconButton(
-                  iconSize: 18,
-                  splashRadius: 1,
-                  onPressed: () => onDelete(),
-                  icon: CustomSvgIconWidget(
-                    "assets/icons/ekram_delete.svg",
-                    iconHeight: 18,
-                    iconWidth: 18,
+                ),*/
+                if (showDelete)
+                  IconButton(
+                    iconSize: 18,
+                    splashRadius: 1,
+                    onPressed: () => onDelete(),
+                    icon: CustomSvgIconWidget(
+                      "assets/icons/svg/ekram_delete.svg",
+                      iconHeight: 18,
+                      iconWidth: 18,
+                    ),
                   ),
-                ),
               ],
             ),
-            CustomVerticalSpace(height: 20),
-            DrawLineWidget(
-              lineColor: AppColor.black200.withOpacity(0.2000000029802322),
-            ),
-            CustomVerticalSpace(height: 20),
             Container(
               padding: EdgeInsetsDirectional.only(start: 24, end: 11),
               child: Column(
@@ -77,14 +75,18 @@ class DeceasedCardWidget extends StatelessWidget {
                     children: [
                       Expanded(
                           child: EkramHeaderAndDescWidget(
-                        title: trans('deceasedName3'),
-                        details: deceasedItem.name ?? "",
+                        title: trans('name'),
+                        details: deceasedItem.firstName ?? "",
                       )),
                       CustomHorizontalSpace(width: 12),
                       Expanded(
                           child: EkramHeaderAndDescWidget(
-                        title: trans('ekramGender'),
-                        details: deceasedItem.genderId?.name ?? "",
+                        title: trans('ekramReligion'),
+                        details: deceasedItem.isMuslim == false
+                            ? "non_muslim".tr()
+                            : deceasedItem.isMuslim == true
+                                ? "muslim".tr()
+                                : "",
                       ))
                     ],
                   ),
@@ -99,8 +101,28 @@ class DeceasedCardWidget extends StatelessWidget {
                       CustomHorizontalSpace(width: 12),
                       Expanded(
                           child: EkramHeaderAndDescWidget(
-                        title: trans('ekramReligion'),
-                        details: deceasedItem.getReligion() ?? "",
+                        title: trans('ekramGender'),
+                        details: deceasedItem.gender == 1
+                            ? "male".tr()
+                            : "female".tr(),
+                      ))
+                    ],
+                  ),
+                  const CustomVerticalSpace(height: 24),
+                  Row(
+                    children: [
+                      Expanded(
+                          child: EkramHeaderAndDescWidget(
+                        title: trans('burialDestination'),
+                        details: deceasedItem.multipleCityRequest == false
+                            ? "burial_in_death_city".tr()
+                            : "burial_in_other_city".tr(),
+                      )),
+                      CustomHorizontalSpace(width: 12),
+                      Expanded(
+                          child: EkramHeaderAndDescWidget(
+                        title: trans('burialCity'),
+                        details: deceasedItem.burialCityId?.name ?? "",
                       ))
                     ],
                   ),
@@ -132,6 +154,17 @@ class DeceasedCardWidget extends StatelessWidget {
                         ))
                     ],
                   ),
+                  CustomVerticalSpace(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                          child: EkramHeaderAndDescWidget(
+                              title: trans('cemetry_name'),
+                              details:
+                                  deceasedItem.selectedCemetry?.name ?? "")),
+                    ],
+                  ),
+                  const CustomVerticalSpace(height: 24),
                 ],
               ),
             ),

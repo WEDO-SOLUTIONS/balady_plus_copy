@@ -30,7 +30,7 @@ class SelectReligionWidget extends StatelessWidget {
             CustomRadioButtonEnd<bool>(
               title: trans("muslim"),
               value: true,
-              currentSelected: state.data.muslimReligion == true,
+              currentSelected: state.data?.isMuslim == true,
               onChange: (bool item) {
                 print(item);
                 context
@@ -45,8 +45,8 @@ class SelectReligionWidget extends StatelessWidget {
             CustomRadioButtonEnd<bool>(
               title: trans("non_muslim"),
               value: true,
-              currentSelected: state.data.muslimReligion != null &&
-                  state.data.muslimReligion == false,
+              currentSelected:
+                  state.data?.isMuslim != null && state.data?.isMuslim == false,
               onChange: (bool item) {
                 context
                     .read<EkramAddDeceasedBloc>()

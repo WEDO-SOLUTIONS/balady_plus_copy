@@ -33,7 +33,8 @@ class DeceasedInfoSection extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       VdHeaderDesc(
-                        header: Helpers.translatingWord("deceasedInfo"),
+                        header:
+                            Helpers.translatingWord("ekram_dead_deads_info"),
                       ),
                       ElevatedButtonWidget.primaryCustomBorder(
                         onPressed: () async {
@@ -41,6 +42,7 @@ class DeceasedInfoSection extends StatelessWidget {
                               await CustomPopUpsWidgets.showBottomSheet(context,
                                   child: AddDeceasedDialog(
                                     params: AddDeceasedDialogParams(
+                                        deathCity: state.selectedCity,
                                         cities: state.cities,
                                         nationalities: state.nationalities,
                                         data: DeceasedInfoDto()),
@@ -55,50 +57,49 @@ class DeceasedInfoSection extends StatelessWidget {
                         text: "addDeceased".tr(),
                       ),
                       SizedBox(
-                          height: 290,
                           child: ListView.builder(
-                            itemCount: state.deceasedInfoDto?.length ?? 0,
-                            scrollDirection: Axis.horizontal,
-                            shrinkWrap: true,
-                            itemBuilder: (ctx, index) {
-                              return DeceasedCardWidget(
-                                deceasedItem: state.deceasedInfoDto![index],
-                                onDelete: () async {
-                                  bool r = await CustomPopUpsWidgets
-                                      .showConfirmAppMessageDialog(
-                                          context, ("delete_confirm").tr(),
-                                          primaryBtn: () {
-                                    Navigator.of(context).pop(true);
-                                    context
-                                        .read<EkramRequestTransportationBloc>()
-                                        .add(DeleteDeceasedEvent(index: index));
-                                  });
-                                },
-                                onEdit: () async {
-                                  final result =
-                                      await CustomPopUpsWidgets.showBottomSheet(
-                                          context,
-                                          child: AddDeceasedDialog(
-                                            params: AddDeceasedDialogParams(
-                                                cities: state.cities,
-                                                nationalities:
-                                                    state.nationalities,
-                                                data: state
-                                                    .deceasedInfoDto![index]),
-                                          ),
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.95);
-                                  print(result);
-                                  context
-                                      .read<EkramRequestTransportationBloc>()
-                                      .add(EditDeceasedEvent(
-                                          index: index, data: result));
-                                },
-                              );
+                        itemCount: state.deceasedInfoDto?.length ?? 0,
+                        physics: const NeverScrollableScrollPhysics(),
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemBuilder: (ctx, index) {
+                          return DeceasedCardWidget(
+                            deceasedItem: state.deceasedInfoDto![index],
+                            onDelete: () async {
+                              bool r = await CustomPopUpsWidgets
+                                  .showConfirmAppMessageDialog(
+                                      context, ("delete_confirm").tr(),
+                                      primaryBtn: () {
+                                Navigator.of(context).pop(true);
+                                context
+                                    .read<EkramRequestTransportationBloc>()
+                                    .add(DeleteDeceasedEvent(index: index));
+                              });
                             },
-                          )),
+                            onEdit: () async {
+                              final result =
+                                  await CustomPopUpsWidgets.showBottomSheet(
+                                      context,
+                                      child: AddDeceasedDialog(
+                                        params: AddDeceasedDialogParams(
+                                            deathCity: state.selectedCity,
+                                            cities: state.cities,
+                                            nationalities: state.nationalities,
+                                            data:
+                                                state.deceasedInfoDto![index]),
+                                      ),
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.95);
+                              print(result);
+                              context
+                                  .read<EkramRequestTransportationBloc>()
+                                  .add(EditDeceasedEvent(
+                                      index: index, data: result));
+                            },
+                          );
+                        },
+                      )),
                     ],
                   ),
                 ),

@@ -97,19 +97,22 @@ class EkramRequestTransportationState extends Equatable {
       ];
 
   bool isNextButtonEnabled() {
+    if (currentPageValue == 0) {
+      if (selectedCity == null || selectedHospital == null) return false;
+
+      if (selectedHospital?.id == -1 && (otherHospitalName?.isEmpty ?? true)) {
+        return false;
+      }
+    }
+
     if (currentPageValue == 1) {
       if ((deceasedInfoDto?.length ?? 0) > 0)
         return true;
       else
         return false;
     } else if (currentPageValue == 2) {
-      if (selectedCity != null && selectedHospital != null) {
-        if (selectedHospital?.id == -1 &&
-            (otherHospitalName?.isEmpty ?? false)) {
-          return false;
-        } else {
-          return true;
-        }
+      if (deathLocation?.isNotEmpty ?? false) {
+        return true;
       } else {
         return false;
       }
