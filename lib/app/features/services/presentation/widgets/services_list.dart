@@ -21,14 +21,14 @@ class ServicesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.only(left: 16,right: 16,top: 16,bottom: 24),
+      margin: const EdgeInsets.symmetric(vertical: 16),
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 24),
       width: double.infinity,
       decoration: const BoxDecoration(
-        color: Color(0xFFFFFFFF),
-        borderRadius: BorderRadius.all(
-          Radius.circular(16),
-        ),
+        color: Color(0xffF5F7FA),
+        // borderRadius: BorderRadius.all(
+        //   Radius.circular(16),
+        // ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,20 +40,29 @@ class ServicesList extends StatelessWidget {
             fontColor: AppColor.blackModern800Light,
           ),
           const SizedBox(height: 16),
-          GridView.count(
-            shrinkWrap: true,
-            crossAxisCount: crossAxisCount,
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 4,
-            childAspectRatio: 0.8,
-            physics: const NeverScrollableScrollPhysics(),
-            children: List.generate(
-              services.length,
-              (index) => ServiceIcon(
-                service: services[index],
+          Container(
+            height: 100,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: services
+                    .map((e) => ServiceIcon(
+                          service: e,
+                        ))
+                    .toList(),
               ),
             ),
           ),
+          /* ListView.builder(
+            itemCount: services.length,
+            itemBuilder: (context, index) {
+              return ServiceIcon(
+                service: services[index],
+              );
+            },
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+          ),*/
           const SizedBox(height: 24),
         ],
       ),

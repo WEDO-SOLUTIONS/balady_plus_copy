@@ -357,6 +357,7 @@ class ServiceIcon extends StatelessWidget {
         }
       },
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Card(
             elevation: 0,
