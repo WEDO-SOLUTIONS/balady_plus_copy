@@ -65,7 +65,7 @@ class InquiryPrintDetailsPage extends StatelessWidget {
                           ),
                           CustomTextFieldWidget(
                             label: "ekram_identity_no".tr(),
-                               isDigitsOnly: true,
+                            isDigitsOnly: true,
                             keyboardType: TextInputType.number,
                             onChanged: (String? val) {
                               context.read<EkramInquiryPrintBloc>().add(
@@ -96,7 +96,7 @@ class InquiryPrintDetailsPage extends StatelessWidget {
                           ),
                           CustomTextFieldWidget(
                             label: "ekram_identity_no".tr(),
-                            isDigitsOnly: true, 
+                            isDigitsOnly: true,
                             keyboardType: TextInputType.number,
                             onChanged: (String? val) {
                               context.read<EkramInquiryPrintBloc>().add(
@@ -108,9 +108,12 @@ class InquiryPrintDetailsPage extends StatelessWidget {
                           ElevatedButtonWidget.custom(
                               isDisabled: !state.isFormValid(),
                               onPressed: () {
+                                /*   context
+                                    .read<EkramInquiryPrintBloc>()
+                                    .add(const PrintSendOTPEvent());*/
                                 context
                                     .read<EkramInquiryPrintBloc>()
-                                    .add(const PrintSendOTPEvent());
+                                    .add(const VerifySendOTPEvent());
                               },
                               text: "ekram_print_certificate".tr())
                         ]),

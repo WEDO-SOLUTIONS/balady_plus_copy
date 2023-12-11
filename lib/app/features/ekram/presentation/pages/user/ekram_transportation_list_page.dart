@@ -28,6 +28,7 @@ import '../../../../_shared_feature_/presentation/widgets/custom_shimmer_list_wi
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/empty_state_widget.dart';
+import '../../../../_shared_feature_/presentation/widgets/need_login_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/search_text_field_widget.dart';
 import '../../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
@@ -187,7 +188,7 @@ class _EkramTransportationListPageState
                   ),
                 if (state.status == BlocStatus.success &&
                     (state.deceasedRequestItems?.isEmpty ?? false))
-                  EmptyStateWidget(
+                  EmptyListWidget(
                     title: ("lbl_no_orders").tr(),
                   ),
                 if (state.status == BlocStatus.loading)

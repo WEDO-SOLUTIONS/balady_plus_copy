@@ -23,8 +23,8 @@ import '../../data/models/allowed_actions_response.dart';
 import '../../data/models/permit_request_details_model.dart';
 import '../blocs/permit_24_bloc.dart';
 
-class PostersReqeuestDetailsPage extends StatelessWidget {
-  const PostersReqeuestDetailsPage({super.key});
+class PermitsReqeuestDetailsPage extends StatelessWidget {
+  const PermitsReqeuestDetailsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +141,7 @@ class PostersReqeuestDetailsPage extends StatelessWidget {
                                     CustomHorizontalSpace(width: 8),
                                     CustomTextWidget(
                                       state.requestDetails?.requestInfo
-                                              ?.requestIssueDate ??
+                                              ?.requestCreationDate ??
                                           "",
                                       fontColor: AppColor.blackModern500Light,
                                       fontSize: 12,
@@ -288,7 +288,7 @@ class PostersReqeuestDetailsPage extends StatelessWidget {
             children: [
               const CustomVerticalSpace(height: 32),
               NotesWidget(notes: [
-                "poster_cancel_confirm_msg"
+                "permit_cancel_confirm_msg"
                     .tr()
                     .replaceAll("{}", requestId.toString())
               ])
@@ -305,107 +305,13 @@ class Step2SummeryWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<Permit24LicenseBloc, Permit24LicenseState>(
       builder: (context, state) {
-        /* List<Widget> posters = [
-          const CustomVerticalSpace(
-            height: 16,
-          ),
-          if (state.requestDetails?.licenseId != null) ...[
-            FieldData(
-              title: "posters_permit_licesnse_id".tr(),
-              subTitle: state.requestDetails?.licenseId.toString(),
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            if (state.requestDetails?.licenseStatus != null)
-              FieldData(
-                title: "posters_permit_licesnse_status".tr(),
-                subTitle: state.requestDetails?.licenseStatus?.name,
-              ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: "posters_permit_licesnse_expiry".tr(),
-              subTitle: state.requestDetails?.licenseExpirationDate?.toString(),
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-          ],
-          if (state.requestDetails?.municipality != null &&
-              state.requestDetails?.subMunicipality != null)
-            FieldData(
-              title: "posters_permit_mun_sub".tr(),
-              subTitle:
-                  "${state.requestDetails?.municipality?.name.toString()}, ${state.requestDetails?.subMunicipality?.name.toString()}",
-            ),
-          const CustomVerticalSpace(
-            height: 16,
-          ),
-          FieldData(
-            title: "posters_permit_start_date".tr(),
-            subTitle: state.requestDetails?.permitIssuingDate?.toString(),
-          ),
-          const CustomVerticalSpace(
-            height: 16,
-          ),
-          FieldData(
-            title: "posters_permit_end_date".tr(),
-            subTitle: state.requestDetails?.permitEndDate?.toString(),
-          ),
-          const CustomVerticalSpace(
-            height: 16,
-          ),
-          FieldData(
-            title: "posters_permit_duration".tr(),
-            subTitle: state.requestDetails?.permitDuration?.toString(),
-          ),
-          const CustomVerticalSpace(
-            height: 16,
-          ),
-          if (state.requestDetails?.billNumber?.isNotEmpty ?? false)
-            FieldData(
-              title: "posters_bill_number".tr(),
-              subTitle: state.requestDetails?.billNumber,
-            ),
-          const CustomVerticalSpace(
-            height: 16,
-          ),
-          FieldData(
-            title: state
-                .requestDetails?.costCalculationInfo?.postersCountDescription,
-            subTitle: state.requestDetails?.costCalculationInfo?.postersCount
-                    .toString() ??
-                "",
-          ),
-          const CustomVerticalSpace(
-            height: 16,
-          ),
-          FieldData(
-            title: state
-                .requestDetails?.costCalculationInfo?.postersAreaSumDescription,
-            subTitle:
-                "${state.requestDetails?.costCalculationInfo?.postersAreaSum}  ${'poster_cm2'.tr()}",
-          ),
-          const CustomVerticalSpace(
-            height: 16,
-          ),
-          FieldData(
-            title:
-                state.requestDetails?.costCalculationInfo?.totalCostDescription,
-            subTitle:
-                "${state.requestDetails?.costCalculationInfo?.totalCost}  ${'sar'.tr()}",
-          ),
-          const CustomVerticalSpace(
-            height: 16,
-          ),
-        ];
-*/
         return ExpandableCard(
-          title: ("posters_data").tr(),
+          title: "permit_24_data".tr(),
           icon: IconPath.vdSummurySPL,
           children: [
+            const CustomVerticalSpace(
+              height: 16,
+            ),
             FieldData(
               title: "license_no".tr(),
               subTitle:
@@ -436,13 +342,35 @@ class Step2SummeryWidget extends StatelessWidget {
             const CustomVerticalSpace(
               height: 16,
             ),
-            FieldData(
-              title: "posters_permit_end_date".tr(),
-              subTitle: state.requestDetails?.licenseInfo?.permitEndDate,
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
+            if (state.requestDetails?.licenseInfo?.permitNumber != null) ...[
+              FieldData(
+                title: "permit_24_permit_no".tr(),
+                subTitle: state.requestDetails?.licenseInfo?.permitNumber
+                        .toString() ??
+                    "",
+              ),
+              const CustomVerticalSpace(
+                height: 16,
+              ),
+            ],
+            /* if (state.requestDetails?.licenseInfo?.permitIssueDate != null) ...[
+              FieldData(
+                title: "posters_permit_start_date".tr(),
+                subTitle: state.requestDetails?.licenseInfo?.permitIssueDate,
+              ),
+              const CustomVerticalSpace(
+                height: 16,
+              ),
+            ],*/
+            if (state.requestDetails?.licenseInfo?.permitEndDate != null) ...[
+              FieldData(
+                title: "posters_permit_end_date".tr(),
+                subTitle: state.requestDetails?.licenseInfo?.permitEndDate,
+              ),
+              const CustomVerticalSpace(
+                height: 16,
+              ),
+            ]
           ],
         );
       },

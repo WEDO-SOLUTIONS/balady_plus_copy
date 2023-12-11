@@ -306,7 +306,7 @@ class CommonFunctions {
     try {
       String biddingEndingTime = timeStr ?? "";
       DateTime tempTime =
-          DateFormat("yyyy/M/dd hh:mm:ss").parse(biddingEndingTime);
+          DateFormat("yyyy/M/dd hh:mm").parse(biddingEndingTime);
       String time = DateFormat("h:mm a", isAppAR ? 'ar_SA' : 'en_US')
           .format(tempTime)
           .toString();
@@ -322,8 +322,7 @@ class CommonFunctions {
     String formattedTime = "";
     try {
       String biddingEndingTime = timeStr ?? "";
-      DateTime tempTime =
-          DateFormat("yyyy/M/dd H:mm:ss").parse(biddingEndingTime);
+      DateTime tempTime = DateFormat("yyyy/M/dd H:mm").parse(biddingEndingTime);
       String time = DateFormat("yyyy/M/dd").format(tempTime).toString();
       formattedTime = time;
     } catch (ex) {
@@ -1126,6 +1125,7 @@ class CommonProperties {
   static String? deviceOs;
   static String? sessionId;
   static String? fcmToken;
+  static bool showEkramDriver = false;
 
   static Uuid uuidInstance = Uuid();
 

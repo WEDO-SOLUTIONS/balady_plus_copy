@@ -17,6 +17,7 @@ import '../../../domain/use_cases/complete_trip.dart';
 import '../../../domain/use_cases/delete_trip.dart';
 import '../../../domain/use_cases/download_attachment.dart';
 import '../../../domain/use_cases/get_deceased_driver_request_details.dart';
+import '../../../domain/use_cases/get_ekram_lookups.dart';
 import '../../../domain/use_cases/get_trips.dart';
 import '../../../domain/use_cases/upload_trip.dart';
 import '../../../ekram_exports.dart';
@@ -29,7 +30,7 @@ class TripDetailsBloc extends Bloc<TripDetailsEvent, TripDetailsState> {
   final GetTrips _getTrips;
   final DeleteTrip _deleteTrip;
   final CompleteTrip _completeTrip;
-  final GetLookUp _getLookUp;
+  final GetEkramLookUp _getLookUp;
   final UploadLetter _uploadLetter;
   final DownloadAttachment _downloadAttachment;
   final GetDeceasedDriverRequestDetails _getDeceasedDriverRequestDetails;
@@ -37,7 +38,7 @@ class TripDetailsBloc extends Bloc<TripDetailsEvent, TripDetailsState> {
   TripDetailsBloc(
       {required DeleteTrip deleteTrip,
       required CompleteTrip completeTrip,
-      required GetLookUp getLookUp,
+      required GetEkramLookUp getLookUp,
       required GetTrips getTrips,
       required TripDetailsParmas params,
       required UploadLetter uploadLetter,
@@ -100,7 +101,7 @@ class TripDetailsBloc extends Bloc<TripDetailsEvent, TripDetailsState> {
   Future<List<LookUpItem>?> getStationTypeLookUp() async {
     emit(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess = await _getLookUp(30500);
+    final failureOrSuccess = await _getLookUp("TRANSPORT_STATIONS");
     return failureOrSuccess.fold((failure) {
       emit(state.copyWith(
         status: BlocStatus.retry,

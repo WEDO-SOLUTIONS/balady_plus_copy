@@ -636,8 +636,10 @@ class LocationInfo {
   final String? regionName;
   final dynamic vehiclePathDesc;
   final String? krokiUrl;
+  final StatusDto? status;
 
   LocationInfo({
+    this.status,
     this.subMunicipalityGisCode,
     this.districtCode,
     this.streetCode,
@@ -658,24 +660,25 @@ class LocationInfo {
   });
 
   factory LocationInfo.fromJson(Map<String, dynamic> json) => LocationInfo(
-        subMunicipalityGisCode: json["subMunicipalityGisCode"],
-        districtCode: json["districtCode"],
-        streetCode: json["streetCode"],
-        latitude: json["latitude"],
-        longitude: json["longitude"],
-        mapNo: json["mapNo"],
-        landNo: json["landNo"],
-        streetName: json["streetName"],
-        districtName: json["districtName"],
-        subMunicipalityName: json["subMunicipalityName"],
-        municipalityId: json["municipalityId"],
-        municipalityName: json["municipalityName"],
-        subMunicipalityId: json["subMunicipalityId"],
-        regionId: json["regionId"],
-        regionName: json["regionName"],
-        vehiclePathDesc: json["vehiclePathDesc"],
-        krokiUrl: json["krokiUrl"],
-      );
+      subMunicipalityGisCode: json["subMunicipalityGisCode"],
+      districtCode: json["districtCode"],
+      streetCode: json["streetCode"],
+      latitude: json["latitude"],
+      longitude: json["longitude"],
+      mapNo: json["mapNo"],
+      landNo: json["landNo"],
+      streetName: json["streetName"],
+      districtName: json["districtName"],
+      subMunicipalityName: json["subMunicipalityName"],
+      municipalityId: json["municipalityId"],
+      municipalityName: json["municipalityName"],
+      subMunicipalityId: json["subMunicipalityId"],
+      regionId: json["regionId"],
+      regionName: json["regionName"],
+      vehiclePathDesc: json["vehiclePathDesc"],
+      krokiUrl: json["krokiUrl"],
+      status:
+          json["status"] != null ? StatusDto.fromJson(json["status"]) : null);
 
   Map<String, dynamic> toJson() => {
         "subMunicipalityGisCode": subMunicipalityGisCode,
@@ -994,6 +997,19 @@ class ContractInfoResponseDto {
         "contractOptionsResponseDto": contractOptionsResponseDto?.toJson(),
         "investmentContractNumber": investmentContractNumber,
       };
+}
+
+class StatusDto {
+  int? id;
+  String? name;
+
+  StatusDto({
+    this.id,
+    this.name,
+  });
+
+  factory StatusDto.fromJson(Map<String, dynamic> json) =>
+      StatusDto(id: json["id"], name: json['name']);
 }
 
 class ContractOptionsResponseDto {

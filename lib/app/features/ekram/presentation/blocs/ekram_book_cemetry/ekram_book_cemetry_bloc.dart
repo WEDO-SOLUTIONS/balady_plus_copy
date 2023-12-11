@@ -633,7 +633,7 @@ class EkramBookCemetryBloc
       secondName: state.secondName,
       thirdName: state.thirdName,
       fourthName: state.fourthName,
-      birthDate: state.burialDateGorgian,
+      birthDate: state.deceassedDOBHijri,
       prayId: state.selectedTime?.id,
       prayOther:
           state.selectedTime?.id == 30976 ? state.otherTimeName ?? "" : null,

@@ -1,9 +1,11 @@
+import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/section_title_widget.dart';
 import 'package:collection/collection.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/utils/constants/app_colors.dart';
@@ -205,8 +207,8 @@ class FilterItemWidget extends StatelessWidget {
             ),
             Visibility(
               visible: item == currentItem,
-              child: Image.asset(
-                Constants.imgPath + "checkMark@3x.png",
+              child: SvgPicture.asset(
+                IconPath.checked,
                 height: 12,
                 width: 17,
               ),

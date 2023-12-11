@@ -11,6 +11,7 @@ import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.
 import '../../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../../../vd/presentation/widgets/summery_widgets/field_data.dart';
 import '../../../domain/entities/trip_details.dart';
 
 class TripDetailsDialogCard extends StatelessWidget {
@@ -70,27 +71,18 @@ class TripDetailsDialogCard extends StatelessWidget {
         Row(
           children: [
             Expanded(
-                child: Row(
-              children: [
-                Expanded(
-                  child: TripDetailsHeaderAndDesc(
-                    header: tripDetails.currentTripStationName ?? "",
-                    desc: currentStationType ?? "",
-                  ),
-                ),
-                Expanded(
-                  child: CustomSvgIconWidget(
-                    "assets/icons/ekram_car.svg",
-                    iconWidth: 32,
-                    iconHeight: 16,
-                  ),
-                ),
-              ],
-            )),
+              child: FieldData(
+                title: tripDetails.currentTripStationName ?? "",
+                subTitle: currentStationType ?? "",
+              ),
+            ),
+            const SizedBox(
+              width: 8,
+            ),
             Expanded(
-                child: TripDetailsHeaderAndDesc(
-              header: tripDetails.nextTripStationName ?? "",
-              desc: nextStationType ?? "",
+                child: FieldData(
+              title: tripDetails.nextTripStationName ?? "",
+              subTitle: nextStationType ?? "",
             )),
           ],
         ),
@@ -119,7 +111,9 @@ class TripDetailsDialogCard extends StatelessWidget {
               tripDetails.createDateTime ?? ""),
         ),
         CustomVerticalSpace(height: 16),
-        DrawLineWidget()
+        DrawLineWidget(
+          lineColor: AppColor.kGray230,
+        )
       ],
     );
   }

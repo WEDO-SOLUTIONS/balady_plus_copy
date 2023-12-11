@@ -295,8 +295,6 @@ class DeceasedInfo extends StatelessWidget {
             height: 16,
           ),
 
-//
-
           FieldData(
             title: Helpers.translatingWord("cemetry_deceassed_burial_time"),
             subTitle: time,

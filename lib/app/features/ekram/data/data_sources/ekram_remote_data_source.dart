@@ -511,7 +511,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        "${ApiUrl.ekramLaundries}/$params",
+        ApiUrl.ekramLaundries.replaceAll("{}", params.toString()),
       );
 
       var data = response.data["data"]?["result"];
@@ -549,7 +549,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        "${ApiUrl.ekramMosques}/$params",
+        ApiUrl.ekramMosques.replaceAll("{}", params.toString()),
       );
 
       var data = response.data["data"]?["result"];
@@ -869,7 +869,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -905,7 +905,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -940,7 +940,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -977,7 +977,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -1014,7 +1014,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -1050,7 +1050,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
     } on DioError catch (error) {
       print(error);
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       print(ex);
       if (ex is ServerException)
@@ -1099,7 +1099,9 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       } catch (ex) {}
 
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, errorCode: errorCode);
+          statusCode: error.response?.statusCode,
+          errorCode: errorCode,
+          dioError: error);
     } catch (ex) {
       print(ex);
       if (ex is ServerException)
@@ -1135,7 +1137,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -1170,7 +1172,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -1205,7 +1207,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -1240,7 +1242,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -1275,7 +1277,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -1306,7 +1308,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       if (ex is ServerException)
         throw ex;

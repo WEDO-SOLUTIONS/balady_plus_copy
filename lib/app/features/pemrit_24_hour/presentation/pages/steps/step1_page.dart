@@ -145,6 +145,19 @@ class Step2SummeryWidget extends StatelessWidget {
             ),
             const CustomVerticalSpace(
               height: 16,
+            ),
+            FieldData(
+                title: "permit_need_baladiyah".tr(),
+                subTitle:
+                    state.doesNotNeedsCredentials() ? "no".tr() : "yes".tr()),
+            const CustomVerticalSpace(
+              height: 16,
+            ),
+            FieldData(
+                title: "permit_needs_fees".tr(),
+                subTitle: state.needsFees() == true ? "yes".tr() : "no".tr()),
+            const CustomVerticalSpace(
+              height: 16,
             )
           ],
         );

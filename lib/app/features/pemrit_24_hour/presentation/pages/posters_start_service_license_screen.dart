@@ -36,7 +36,7 @@ class _PermitsLicenseStartServiceState
 
   @override
   Widget build(BuildContext context) {
-    ServiceEntity service = postersModel();
+    ServiceEntity service = permits24Model();
     CommercialLicenceDetails? commercialLicenceDetails =
         ModalRoute.of(context)!.settings.arguments as CommercialLicenceDetails;
 

@@ -3,6 +3,7 @@ import 'package:balady_plus/app/features/ekram/domain/entities/add_trip_dialog_p
 import 'package:balady_plus/app/features/ekram/domain/entities/lookup_item_location.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/update_driver_location_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/add_trip.dart';
+import 'package:balady_plus/app/features/ekram/domain/use_cases/get_ekram_lookups.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_launduries.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_mosques.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/update_driver_location.dart';
@@ -25,7 +26,7 @@ part 'ekram_add_trip_event.dart';
 part 'ekram_add_trip_state.dart';
 
 class EkramAddTripBloc extends Bloc<EkramAddTripEvent, EkramAddTripState> {
-  final GetLookUp _getLookUp;
+  final GetEkramLookUp _getLookUp;
   final GetHospitals _getHospitals;
   final GetMosques _getMosquess;
   final GetLaundries _getLaundries;
@@ -33,7 +34,7 @@ class EkramAddTripBloc extends Bloc<EkramAddTripEvent, EkramAddTripState> {
   final AddTrip _addTrip;
   final UpadateDriverLocation _upadateDriverLocation;
   EkramAddTripBloc(
-      {required GetLookUp getLookUp,
+      {required GetEkramLookUp getLookUp,
       required AddTrip addTrip,
       required GetMosques getMosquess,
       required GetLaundries getLaundries,
@@ -185,7 +186,7 @@ class EkramAddTripBloc extends Bloc<EkramAddTripEvent, EkramAddTripState> {
   Future<List<LookUpItem>?> getNextStationTypeLookUp() async {
     emit(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess = await _getLookUp(30500);
+    final failureOrSuccess = await _getLookUp("TRANSPORT_STATIONS");
     return failureOrSuccess.fold((failure) {
       emit(state.copyWith(
         status: BlocStatus.retry,

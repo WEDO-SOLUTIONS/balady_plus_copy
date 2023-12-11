@@ -235,6 +235,8 @@ class RouteName {
 // Permits 24
   static const permitsLicenseStartService = '/permitsLicenseStartService';
   static const permitsDetailsPage = '/permitsDetailsPage';
+  static const permitsRequestDetailsPage = '/permitsRequestDetailsPage';
+
   static const submitApplicationSuccessfullyPermits =
       '/submitApplicationSuccessfullyPermits';
 

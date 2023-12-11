@@ -5,6 +5,8 @@ import 'package:flutter_appauth/flutter_appauth.dart';
 import '../../../../core/errors/errors_exports.dart'
     show Failure, ServerException, ServerFailure, AuthNotFoundedFailure;
 import '../../entry_point_exports.dart';
+import '../models/get_permission_params_model.dart';
+import '../models/permission_response_model.dart';
 
 class EntryPointRepositoryImpl implements EntryPointRepository {
   final EntryPointRemoteDataSource remoteDataSource;
@@ -242,6 +244,18 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
       return Right(data);
     } catch (error) {
       return Left(ServerFailure(""));
+    }
+  }
+
+  @override
+  Future<Either<Failure, PermissionResponseModel>> getEkramRules(
+      GetPermissionParamsModel params) async {
+    try {
+      final data = await remoteDataSource.getEkramRules(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 }

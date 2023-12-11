@@ -13,7 +13,9 @@ import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/services/local/use_case.dart';
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
+import '../../../../../core/utils/enums/enums.dart';
 import '../../../../_shared_feature_/data/entities/file_data_item.dart';
+import '../../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 import '../../../domain/use_cases/get_death_cities.dart';
 
@@ -260,8 +262,10 @@ class EkramRequestTransportationBloc extends Bloc<
       ekramRequestsBloc
           ?.add(GetDeceasedTransportRequestsEvent(isDriver: false));
       NavigationService.navigatorKey.currentState!.pushReplacementNamed(
-          RouteName.ekramSuccessScreen,
-          arguments: success.data?.responseMessage);
+          RouteName.successRoute,
+          arguments: SuccessScreenArgs(
+              type: PAGE_TYPE.ekramCemetry,
+              thanksMessage: success.data?.responseMessage));
     });
   }
 

@@ -1,5 +1,3 @@
-
-
 class CommercialLicenceDetails {
   int requestId;
   double mainActivityArea;
@@ -60,146 +58,204 @@ class CommercialLicenceDetails {
   LocationInfo locationInfo;
   SubmitterInfo submitterInfo;
   ShopInfo shopInfo;
+  final List<LicensePermit>? licensePermits;
+
   // List<BillsInfo> billsInfo;
   // bool selectLicYears;
   // bool showTillActive;
   // dynamic observationProviderType;
   // List<Activity> activities;
 
-  CommercialLicenceDetails({
-    required this.requestId,
-    required this.mainActivityArea,
-    required this.creationDate,
-    required this.entityType,
-    required this.currentTabId,
-    required this.statusId,
-    required this.statusName,
-    required this.typeId,
-    required this.typeName,
-    required this.licensePeriod,
-    required this.originalLicensePeriod,
-    required this.sadadPeriod,
-    required this.entryMode,
-    required this.cleanOptions,
-    required this.groceryActivity,
-    required this.municipalityApproval,
-    required this.notes,
-    required this.employeeNotes,
-    // required this.clientNotes,
-    required this.licenseInfo,
-    // required this.salamaInfo,
-    // required this.objectionNotesInfo,
-    // required this.warningMessages,
-    // required this.warningInfo,
-    // required this.latestRequestId,
-    // required this.isRejectedStatus,
-    // required this.isSalamaStatus,
-    // required this.isCanceledByObservationStatus,
-    // required this.renewMode,
-    // required this.investmentSite,
-    // required this.billUrl,
-    // required this.fawryWithSalama,
-    // required this.requestPathType,
-    // required this.engineeringOffice,
-    // required this.shopReviews,
-    // required this.transactionsList,
-    // required this.issuingMunicipalityId,
-    // required this.issuingMunicipalityName,
-    // required this.requestApprovals,
-    // required this.facilityChangeMsg,
-    // required this.period,
-    // required this.endorsementText,
-    // required this.refuseShopReviewsList,
-    // required this.etmamOrderInfo,
-    // required this.licenceHoldInfoStatusResponseDto,
-    // required this.boardContractSetting,
-    // required this.selectedBoardContractOption,
-    // required this.boardContractNumber,
-    // required this.modificationReason,
-    // required this.warnings,
-    // required this.requestSource,
-    // required this.rejectionInfo,
-    // required this.craft,
-    // required this.craftMessage,
-    // required this.contactInfo,
-    required this.activityInfo,
-    required this.locationInfo,
-    required this.submitterInfo,
-    required this.shopInfo,
-    // required this.billsInfo,
-    // required this.selectLicYears,
-    // required this.showTillActive,
-    // required this.observationProviderType,
-    // required this.activities,
+  CommercialLicenceDetails(
+      {required this.requestId,
+      required this.mainActivityArea,
+      required this.creationDate,
+      required this.entityType,
+      required this.currentTabId,
+      required this.statusId,
+      required this.statusName,
+      required this.typeId,
+      required this.typeName,
+      required this.licensePeriod,
+      required this.originalLicensePeriod,
+      required this.sadadPeriod,
+      required this.entryMode,
+      required this.cleanOptions,
+      required this.groceryActivity,
+      required this.municipalityApproval,
+      required this.notes,
+      required this.employeeNotes,
+      // required this.clientNotes,
+      required this.licenseInfo,
+      // required this.salamaInfo,
+      // required this.objectionNotesInfo,
+      // required this.warningMessages,
+      // required this.warningInfo,
+      // required this.latestRequestId,
+      // required this.isRejectedStatus,
+      // required this.isSalamaStatus,
+      // required this.isCanceledByObservationStatus,
+      // required this.renewMode,
+      // required this.investmentSite,
+      // required this.billUrl,
+      // required this.fawryWithSalama,
+      // required this.requestPathType,
+      // required this.engineeringOffice,
+      // required this.shopReviews,
+      // required this.transactionsList,
+      // required this.issuingMunicipalityId,
+      // required this.issuingMunicipalityName,
+      // required this.requestApprovals,
+      // required this.facilityChangeMsg,
+      // required this.period,
+      // required this.endorsementText,
+      // required this.refuseShopReviewsList,
+      // required this.etmamOrderInfo,
+      // required this.licenceHoldInfoStatusResponseDto,
+      // required this.boardContractSetting,
+      // required this.selectedBoardContractOption,
+      // required this.boardContractNumber,
+      // required this.modificationReason,
+      // required this.warnings,
+      // required this.requestSource,
+      // required this.rejectionInfo,
+      // required this.craft,
+      // required this.craftMessage,
+      // required this.contactInfo,
+      required this.activityInfo,
+      required this.locationInfo,
+      required this.submitterInfo,
+      required this.shopInfo,
+      this.licensePermits
+      // required this.billsInfo,
+      // required this.selectLicYears,
+      // required this.showTillActive,
+      // required this.observationProviderType,
+      // required this.activities,
+      });
+
+  factory CommercialLicenceDetails.fromJson(Map<String, dynamic> json) =>
+      CommercialLicenceDetails(
+        requestId: json["requestId"],
+        mainActivityArea: json["mainActivityArea"],
+        creationDate: json["creationDate"],
+        entityType: json["entityType"],
+        currentTabId: json["currentTabId"],
+        statusId: json["statusId"],
+        statusName: json["statusName"],
+        typeId: json["typeId"],
+        typeName: json["typeName"],
+        licensePeriod: json["licensePeriod"],
+        originalLicensePeriod: json["originalLicensePeriod"],
+        sadadPeriod: json["sadadPeriod"],
+        entryMode: json["entryMode"],
+        cleanOptions: json["cleanOptions"],
+        groceryActivity: json["groceryActivity"],
+        municipalityApproval: json["municipalityApproval"],
+        notes: json["notes"],
+        employeeNotes: json["employeeNotes"],
+        // clientNotes: json["clientNotes"],
+        licenseInfo: LicenseInfo.fromJson(json["licenseInfo"]),
+        // salamaInfo: SalamaInfo.fromJson(json["salamaInfo"]),
+        // objectionNotesInfo: json["objectionNotesInfo"],
+        // warningMessages: json["warningMessages"],
+        // warningInfo: json["warningInfo"],
+        // latestRequestId: json["latestRequestId"],
+        // isRejectedStatus: json["isRejectedStatus"],
+        // isSalamaStatus: json["isSalamaStatus"],
+        // isCanceledByObservationStatus: json["isCanceledByObservationStatus"],
+        // renewMode: json["renewMode"],
+        // investmentSite: json["investmentSite"],
+        // billUrl: json["billUrl"],
+        // fawryWithSalama: json["fawryWithSalama"],
+        // requestPathType: json["requestPathType"],
+        // engineeringOffice: json["engineeringOffice"],
+        // shopReviews: List<dynamic>.from(json["shopReviews"].map((x) => x)),
+        // transactionsList: json["transactionsList"],
+        // issuingMunicipalityId: json["issuingMunicipalityId"],
+        // issuingMunicipalityName: json["issuingMunicipalityName"],
+        // requestApprovals: json["requestApprovals"],
+        // facilityChangeMsg: json["facilityChangeMsg"],
+        // period: json["period"],
+        // endorsementText: json["endorsementText"],
+        // refuseShopReviewsList: json["refuseShopReviewsList"],
+        // etmamOrderInfo: json["etmamOrderInfo"],
+        // licenceHoldInfoStatusResponseDto: LicenceHoldInfoStatusResponseDto.fromJson(json["licenceHoldInfoStatusResponseDto"]),
+        // boardContractSetting: json["boardContractSetting"],
+        // selectedBoardContractOption: json["selectedBoardContractOption"],
+        // boardContractNumber: json["boardContractNumber"],
+        // modificationReason: json["modificationReason"],
+        // warnings: Warnings.fromJson(json["warnings"]),
+        // requestSource: json["requestSource"],
+        // rejectionInfo: json["rejectionInfo"],
+        // craft: json["craft"],
+        // craftMessage: json["craftMessage"],
+        // contactInfo: json["contactInfo"],
+        activityInfo: ActivityInfo.fromJson(json["activityInfo"]),
+        locationInfo: LocationInfo.fromJson(json["locationInfo"]),
+        submitterInfo: SubmitterInfo.fromJson(json["submitterInfo"]),
+        shopInfo: ShopInfo.fromJson(json["shopInfo"]),
+        licensePermits: json["licensePermits"] == null
+            ? []
+            : List<LicensePermit>.from(
+                json["licensePermits"]!.map((x) => LicensePermit.fromJson(x))),
+
+        // billsInfo: List<BillsInfo>.from(json["billsInfo"].map((x) => BillsInfo.fromJson(x))),
+        // selectLicYears: json["selectLicYears"],
+        // showTillActive: json["showTillActive"],
+        // observationProviderType: json["observationProviderType"],
+        // activities: List<Activity>.from(json["activities"].map((x) => Activity.fromJson(x))),
+      );
+}
+
+class LicensePermit {
+  final int? id;
+  final String? name;
+  final BaladyWorkFlow? baladyWorkFlow;
+  final bool? withFees;
+
+  LicensePermit({
+    this.id,
+    this.name,
+    this.baladyWorkFlow,
+    this.withFees,
   });
 
-  factory CommercialLicenceDetails.fromJson(Map<String, dynamic> json) => CommercialLicenceDetails(
-    requestId: json["requestId"],
-    mainActivityArea: json["mainActivityArea"],
-    creationDate: json["creationDate"],
-    entityType: json["entityType"],
-    currentTabId: json["currentTabId"],
-    statusId: json["statusId"],
-    statusName: json["statusName"],
-    typeId: json["typeId"],
-    typeName: json["typeName"],
-    licensePeriod: json["licensePeriod"],
-    originalLicensePeriod: json["originalLicensePeriod"],
-    sadadPeriod: json["sadadPeriod"],
-    entryMode: json["entryMode"],
-    cleanOptions: json["cleanOptions"],
-    groceryActivity: json["groceryActivity"],
-    municipalityApproval: json["municipalityApproval"],
-    notes: json["notes"],
-    employeeNotes: json["employeeNotes"],
-    // clientNotes: json["clientNotes"],
-    licenseInfo: LicenseInfo.fromJson(json["licenseInfo"]),
-    // salamaInfo: SalamaInfo.fromJson(json["salamaInfo"]),
-    // objectionNotesInfo: json["objectionNotesInfo"],
-    // warningMessages: json["warningMessages"],
-    // warningInfo: json["warningInfo"],
-    // latestRequestId: json["latestRequestId"],
-    // isRejectedStatus: json["isRejectedStatus"],
-    // isSalamaStatus: json["isSalamaStatus"],
-    // isCanceledByObservationStatus: json["isCanceledByObservationStatus"],
-    // renewMode: json["renewMode"],
-    // investmentSite: json["investmentSite"],
-    // billUrl: json["billUrl"],
-    // fawryWithSalama: json["fawryWithSalama"],
-    // requestPathType: json["requestPathType"],
-    // engineeringOffice: json["engineeringOffice"],
-    // shopReviews: List<dynamic>.from(json["shopReviews"].map((x) => x)),
-    // transactionsList: json["transactionsList"],
-    // issuingMunicipalityId: json["issuingMunicipalityId"],
-    // issuingMunicipalityName: json["issuingMunicipalityName"],
-    // requestApprovals: json["requestApprovals"],
-    // facilityChangeMsg: json["facilityChangeMsg"],
-    // period: json["period"],
-    // endorsementText: json["endorsementText"],
-    // refuseShopReviewsList: json["refuseShopReviewsList"],
-    // etmamOrderInfo: json["etmamOrderInfo"],
-    // licenceHoldInfoStatusResponseDto: LicenceHoldInfoStatusResponseDto.fromJson(json["licenceHoldInfoStatusResponseDto"]),
-    // boardContractSetting: json["boardContractSetting"],
-    // selectedBoardContractOption: json["selectedBoardContractOption"],
-    // boardContractNumber: json["boardContractNumber"],
-    // modificationReason: json["modificationReason"],
-    // warnings: Warnings.fromJson(json["warnings"]),
-    // requestSource: json["requestSource"],
-    // rejectionInfo: json["rejectionInfo"],
-    // craft: json["craft"],
-    // craftMessage: json["craftMessage"],
-    // contactInfo: json["contactInfo"],
-    activityInfo: ActivityInfo.fromJson(json["activityInfo"]),
-    locationInfo: LocationInfo.fromJson(json["locationInfo"]),
-    submitterInfo: SubmitterInfo.fromJson(json["submitterInfo"]),
-    shopInfo: ShopInfo.fromJson(json["shopInfo"]),
-    // billsInfo: List<BillsInfo>.from(json["billsInfo"].map((x) => BillsInfo.fromJson(x))),
-    // selectLicYears: json["selectLicYears"],
-    // showTillActive: json["showTillActive"],
-    // observationProviderType: json["observationProviderType"],
-    // activities: List<Activity>.from(json["activities"].map((x) => Activity.fromJson(x))),
-  );
+  factory LicensePermit.fromJson(Map<String, dynamic> json) => LicensePermit(
+        id: json["id"],
+        name: json["name"],
+        baladyWorkFlow: json["baladyWorkFlow"] == null
+            ? null
+            : BaladyWorkFlow.fromJson(json["baladyWorkFlow"]),
+        withFees: json["withFees"],
+      );
 
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+        "baladyWorkFlow": baladyWorkFlow?.toJson(),
+        "withFees": withFees,
+      };
+}
+
+class BaladyWorkFlow {
+  final String? id;
+  final String? name;
+
+  BaladyWorkFlow({
+    this.id,
+    this.name,
+  });
+
+  factory BaladyWorkFlow.fromJson(Map<String, dynamic> json) => BaladyWorkFlow(
+        id: json["id"],
+        name: json["name"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+      };
 }
 
 class Activity {
@@ -220,14 +276,13 @@ class Activity {
   });
 
   factory Activity.fromJson(Map<String, dynamic> json) => Activity(
-    isicCode: json["isicCode"],
-    isicName: json["isicName"],
-    existInBalady: json["existInBalady"],
-    atmActivity: json["atmActivity"],
-    valid: json["valid"],
-    message: json["message"],
-  );
-
+        isicCode: json["isicCode"],
+        isicName: json["isicName"],
+        existInBalady: json["existInBalady"],
+        atmActivity: json["atmActivity"],
+        valid: json["valid"],
+        message: json["message"],
+      );
 }
 
 class ActivityInfo {
@@ -256,18 +311,17 @@ class ActivityInfo {
   });
 
   factory ActivityInfo.fromJson(Map<String, dynamic> json) => ActivityInfo(
-    mainActivity: MainActivity.fromJson(json["mainActivity"]),
-    additionalActivities: json["additionalActivities"],
-    // foreignInvistor: json["foreignInvistor"],
-    // workerTypeId: json["workerTypeId"],
-    // workerTypeName: json["workerTypeName"],
-    // activityChangeReason: json["activityChangeReason"],
-    // showAtmFeesOption: json["showAtmFeesOption"],
-    // atmFeesPaid: json["atmFeesPaid"],
-    // atmActivity: json["atmActivity"],
-    // inHomogenusActivities: json["inHomogenusActivities"],
-  );
-
+        mainActivity: MainActivity.fromJson(json["mainActivity"]),
+        additionalActivities: json["additionalActivities"],
+        // foreignInvistor: json["foreignInvistor"],
+        // workerTypeId: json["workerTypeId"],
+        // workerTypeName: json["workerTypeName"],
+        // activityChangeReason: json["activityChangeReason"],
+        // showAtmFeesOption: json["showAtmFeesOption"],
+        // atmFeesPaid: json["atmFeesPaid"],
+        // atmActivity: json["atmActivity"],
+        // inHomogenusActivities: json["inHomogenusActivities"],
+      );
 }
 
 class MainActivity {
@@ -310,25 +364,24 @@ class MainActivity {
   });
 
   factory MainActivity.fromJson(Map<String, dynamic> json) => MainActivity(
-    detailedActivityId: json["detailedActivityId"],
-    area: json["area"],
-    // unitCount: json["unitCount"],
-    // accommodationTypeId: json["accommodationTypeId"],
-    // accommodationTypeName: json["accommodationTypeName"],
-    detailedActivityName: json["detailedActivityName"],
-    // isicActivityId: json["isicActivityId"],
-    // mainActivityId: json["mainActivityId"],
-    isicActivityName: json["isicActivityName"],
-    // minYears: json["minYears"],
-    // maxYears: json["maxYears"],
-    // removed: json["removed"],
-    // activitySettingDto: ActivitySettingDto.fromJson(json["activitySettingDto"]),
-    // minArea: json["minArea"],
-    // maxArea: json["maxArea"],
-    // facilityId: json["facilityId"],
-    // facilityName: json["facilityName"],
-  );
-
+        detailedActivityId: json["detailedActivityId"],
+        area: json["area"],
+        // unitCount: json["unitCount"],
+        // accommodationTypeId: json["accommodationTypeId"],
+        // accommodationTypeName: json["accommodationTypeName"],
+        detailedActivityName: json["detailedActivityName"],
+        // isicActivityId: json["isicActivityId"],
+        // mainActivityId: json["mainActivityId"],
+        isicActivityName: json["isicActivityName"],
+        // minYears: json["minYears"],
+        // maxYears: json["maxYears"],
+        // removed: json["removed"],
+        // activitySettingDto: ActivitySettingDto.fromJson(json["activitySettingDto"]),
+        // minArea: json["minArea"],
+        // maxArea: json["maxArea"],
+        // facilityId: json["facilityId"],
+        // facilityName: json["facilityName"],
+      );
 }
 
 class ActivitySettingDto {
@@ -348,15 +401,15 @@ class ActivitySettingDto {
     required this.requestFlow,
   });
 
-  factory ActivitySettingDto.fromJson(Map<String, dynamic> json) => ActivitySettingDto(
-    entityType: json["entityType"],
-    vehicleType: json["vehicleType"],
-    pathType: json["pathType"],
-    foodActivity: json["foodActivity"],
-    ownershipType: json["ownershipType"],
-    requestFlow: json["requestFlow"],
-  );
-
+  factory ActivitySettingDto.fromJson(Map<String, dynamic> json) =>
+      ActivitySettingDto(
+        entityType: json["entityType"],
+        vehicleType: json["vehicleType"],
+        pathType: json["pathType"],
+        foodActivity: json["foodActivity"],
+        ownershipType: json["ownershipType"],
+        requestFlow: json["requestFlow"],
+      );
 }
 
 // class BillsInfo {
@@ -465,22 +518,21 @@ class LicenseInfo {
   });
 
   factory LicenseInfo.fromJson(Map<String, dynamic> json) => LicenseInfo(
-    licenseEndDate: json["licenseEndDate"],
-    licenseSadadEndDate: json["licenseSadadEndDate"],
-    licensePeriod: json["licensePeriod"],
-    sadadPeriod: json["sadadPeriod"],
-    licenseId: json["licenseId"],
-    statusId: json["statusId"],
-    expireInDays: json["expireInDays"],
-    oldLicenseNo: json["oldLicenseNo"],
-    issueDate: json["issueDate"],
-    expired: json["expired"],
-    printUrl: json["printUrl"],
-    qrCodeUrl: json["qrCodeUrl"],
-    qrRequestId: json["qrRequestId"],
-    statusDesc: json["statusDesc"],
-  );
-
+        licenseEndDate: json["licenseEndDate"],
+        licenseSadadEndDate: json["licenseSadadEndDate"],
+        licensePeriod: json["licensePeriod"],
+        sadadPeriod: json["sadadPeriod"],
+        licenseId: json["licenseId"],
+        statusId: json["statusId"],
+        expireInDays: json["expireInDays"],
+        oldLicenseNo: json["oldLicenseNo"],
+        issueDate: json["issueDate"],
+        expired: json["expired"],
+        printUrl: json["printUrl"],
+        qrCodeUrl: json["qrCodeUrl"],
+        qrRequestId: json["qrRequestId"],
+        statusDesc: json["statusDesc"],
+      );
 }
 
 class LocationInfo {
@@ -523,25 +575,24 @@ class LocationInfo {
   });
 
   factory LocationInfo.fromJson(Map<String, dynamic> json) => LocationInfo(
-    subMunicipalityGisCode: json["subMunicipalityGisCode"],
-    districtCode: json["districtCode"],
-    streetCode: json["streetCode"],
-    latitude: json["latitude"],
-    longitude: json["longitude"],
-    mapNo: json["mapNo"],
-    landNo: json["landNo"],
-    streetName: json["streetName"],
-    districtName: json["districtName"],
-    subMunicipalityName: json["subMunicipalityName"],
-    municipalityId: json["municipalityId"],
-    municipalityName: json["municipalityName"],
-    subMunicipalityId: json["subMunicipalityId"],
-    regionId: json["regionId"],
-    regionName: json["regionName"],
-    vehiclePathDesc: json["vehiclePathDesc"],
-    krokiUrl: json["krokiUrl"],
-  );
-
+        subMunicipalityGisCode: json["subMunicipalityGisCode"],
+        districtCode: json["districtCode"],
+        streetCode: json["streetCode"],
+        latitude: json["latitude"],
+        longitude: json["longitude"],
+        mapNo: json["mapNo"],
+        landNo: json["landNo"],
+        streetName: json["streetName"],
+        districtName: json["districtName"],
+        subMunicipalityName: json["subMunicipalityName"],
+        municipalityId: json["municipalityId"],
+        municipalityName: json["municipalityName"],
+        subMunicipalityId: json["subMunicipalityId"],
+        regionId: json["regionId"],
+        regionName: json["regionName"],
+        vehiclePathDesc: json["vehiclePathDesc"],
+        krokiUrl: json["krokiUrl"],
+      );
 }
 
 class SalamaInfo {
@@ -558,12 +609,11 @@ class SalamaInfo {
   });
 
   factory SalamaInfo.fromJson(Map<String, dynamic> json) => SalamaInfo(
-    salamaIssueDate: json["salamaIssueDate"],
-    salamaIssueNo: json["salamaIssueNo"],
-    salamaApprovedCenterId: json["salamaApprovedCenterId"],
-    salamaApprovedCenterName: json["salamaApprovedCenterName"],
-  );
-
+        salamaIssueDate: json["salamaIssueDate"],
+        salamaIssueNo: json["salamaIssueNo"],
+        salamaApprovedCenterId: json["salamaApprovedCenterId"],
+        salamaApprovedCenterName: json["salamaApprovedCenterName"],
+      );
 }
 
 class ShopInfo {
@@ -642,43 +692,42 @@ class ShopInfo {
   });
 
   factory ShopInfo.fromJson(Map<String, dynamic> json) => ShopInfo(
-    shopName: json["shopName"],
-    shopUnitNumber: json["shopUnitNumber"],
-    holesCount: json["holesCount"],
-    existInMall: json["existInMall"],
-    floorNumber: json["floorNumber"],
-    floorCount: json["floorCount"],
-    // hasElevator: json["hasElevator"],
-    // isCitizenPledgedToClean: json["isCitizenPledgedToClean"],
-    // cleanContractEndDate: json["cleanContractEndDate"],
-    // buildingLicenseDate: json["buildingLicenseDate"],
-    // buildingLicenseNo: json["buildingLicenseNo"],
-    // buildingOwnerIdno: json["buildingOwnerIdno"],
-    // buildingOwnerName: json["buildingOwnerName"],
-    landNumber: json["landNumber"],
-    planNumber: json["planNumber"],
-    // salamaBillNumber: json["salamaBillNumber"],
-    // boardsInfo: List<BoardsInfo>.from(json["boardsInfo"].map((x) => BoardsInfo.fromJson(x))),
-    // contractInfoResponseDto: ContractInfoResponseDto.fromJson(json["contractInfoResponseDto"]),
-    // showShopOwnership: json["showShopOwnership"],
-    // slamaBillOptions: json["slamaBillOptions"],
-    cameraBillOptions: json["cameraBillOptions"],
-    endorsementText: json["endorsementText"],
-    // slamaReportOptions: json["slamaReportOptions"],
-    // slamaReportNumber: json["slamaReportNumber"],
-    // cleanContractInfo: json["cleanContractInfo"],
-    // cleanContractOptions: CleanContractOptions.fromJson(json["cleanContractOptions"]),
-    // showActivityCancellationDate: json["showActivityCancellationDate"],
-    // activityCancellationDate: json["activityCancellationDate"],
-    // mallDto: json["mallDto"],
-    blockNumber: json["blockNumber"],
-    // cancelReasonDto: json["cancelReasonDto"],
-    // brand: json["brand"],
-    // salamaPermitNumber: json["salamaPermitNumber"],
-    // licenseBrand: json["licenseBrand"],
-    noOfCameras: json["noOfCameras"],
-  );
-
+        shopName: json["shopName"],
+        shopUnitNumber: json["shopUnitNumber"],
+        holesCount: json["holesCount"],
+        existInMall: json["existInMall"],
+        floorNumber: json["floorNumber"],
+        floorCount: json["floorCount"],
+        // hasElevator: json["hasElevator"],
+        // isCitizenPledgedToClean: json["isCitizenPledgedToClean"],
+        // cleanContractEndDate: json["cleanContractEndDate"],
+        // buildingLicenseDate: json["buildingLicenseDate"],
+        // buildingLicenseNo: json["buildingLicenseNo"],
+        // buildingOwnerIdno: json["buildingOwnerIdno"],
+        // buildingOwnerName: json["buildingOwnerName"],
+        landNumber: json["landNumber"],
+        planNumber: json["planNumber"],
+        // salamaBillNumber: json["salamaBillNumber"],
+        // boardsInfo: List<BoardsInfo>.from(json["boardsInfo"].map((x) => BoardsInfo.fromJson(x))),
+        // contractInfoResponseDto: ContractInfoResponseDto.fromJson(json["contractInfoResponseDto"]),
+        // showShopOwnership: json["showShopOwnership"],
+        // slamaBillOptions: json["slamaBillOptions"],
+        cameraBillOptions: json["cameraBillOptions"],
+        endorsementText: json["endorsementText"],
+        // slamaReportOptions: json["slamaReportOptions"],
+        // slamaReportNumber: json["slamaReportNumber"],
+        // cleanContractInfo: json["cleanContractInfo"],
+        // cleanContractOptions: CleanContractOptions.fromJson(json["cleanContractOptions"]),
+        // showActivityCancellationDate: json["showActivityCancellationDate"],
+        // activityCancellationDate: json["activityCancellationDate"],
+        // mallDto: json["mallDto"],
+        blockNumber: json["blockNumber"],
+        // cancelReasonDto: json["cancelReasonDto"],
+        // brand: json["brand"],
+        // salamaPermitNumber: json["salamaPermitNumber"],
+        // licenseBrand: json["licenseBrand"],
+        noOfCameras: json["noOfCameras"],
+      );
 }
 
 class BoardsInfo {
@@ -693,11 +742,10 @@ class BoardsInfo {
   });
 
   factory BoardsInfo.fromJson(Map<String, dynamic> json) => BoardsInfo(
-    typeId: json["typeId"],
-    typeName: json["typeName"],
-    area: json["area"],
-  );
-
+        typeId: json["typeId"],
+        typeName: json["typeName"],
+        area: json["area"],
+      );
 }
 
 class CleanContractOptions {
@@ -709,11 +757,11 @@ class CleanContractOptions {
     required this.contractOption,
   });
 
-  factory CleanContractOptions.fromJson(Map<String, dynamic> json) => CleanContractOptions(
-    cleanOption: json["cleanOption"],
-    contractOption: json["contractOption"],
-  );
-
+  factory CleanContractOptions.fromJson(Map<String, dynamic> json) =>
+      CleanContractOptions(
+        cleanOption: json["cleanOption"],
+        contractOption: json["contractOption"],
+      );
 }
 
 class ContractInfoResponseDto {
@@ -737,17 +785,18 @@ class ContractInfoResponseDto {
     required this.investmentContractNumber,
   });
 
-  factory ContractInfoResponseDto.fromJson(Map<String, dynamic> json) => ContractInfoResponseDto(
-    contractType: json["contractType"],
-    contractOption: json["contractOption"],
-    tenancyContractInfo: json["tenancyContractInfo"],
-    deedInfoResponse: json["deedInfoResponse"],
-    contractDate: json["contractDate"],
-    contractNumber: json["contractNumber"],
-    contractOptionsResponseDto: ContractOptionsResponseDto.fromJson(json["contractOptionsResponseDto"]),
-    investmentContractNumber: json["investmentContractNumber"],
-  );
-
+  factory ContractInfoResponseDto.fromJson(Map<String, dynamic> json) =>
+      ContractInfoResponseDto(
+        contractType: json["contractType"],
+        contractOption: json["contractOption"],
+        tenancyContractInfo: json["tenancyContractInfo"],
+        deedInfoResponse: json["deedInfoResponse"],
+        contractDate: json["contractDate"],
+        contractNumber: json["contractNumber"],
+        contractOptionsResponseDto: ContractOptionsResponseDto.fromJson(
+            json["contractOptionsResponseDto"]),
+        investmentContractNumber: json["investmentContractNumber"],
+      );
 }
 
 class ContractOptionsResponseDto {
@@ -761,12 +810,12 @@ class ContractOptionsResponseDto {
     required this.investOptions,
   });
 
-  factory ContractOptionsResponseDto.fromJson(Map<String, dynamic> json) => ContractOptionsResponseDto(
-    ejarOptions: List<String>.from(json["ejarOptions"].map((x) => x)),
-    deedOptions: List<String>.from(json["deedOptions"].map((x) => x)),
-    investOptions: List<String>.from(json["investOptions"].map((x) => x)),
-  );
-
+  factory ContractOptionsResponseDto.fromJson(Map<String, dynamic> json) =>
+      ContractOptionsResponseDto(
+        ejarOptions: List<String>.from(json["ejarOptions"].map((x) => x)),
+        deedOptions: List<String>.from(json["deedOptions"].map((x) => x)),
+        investOptions: List<String>.from(json["investOptions"].map((x) => x)),
+      );
 }
 
 class SubmitterInfo {
@@ -805,31 +854,28 @@ class SubmitterInfo {
   });
 
   factory SubmitterInfo.fromJson(Map<String, dynamic> json) => SubmitterInfo(
-    entityType: json["entityType"],
-    submitterType: json["submitterType"],
-    crNumber: json["crNumber"],
-    crType: json["crType"],
-    submitterIdNumber: json["submitterIdNumber"],
-    submitterBirthDate: json["submitterBirthDate"],
-    mobile: json["mobile"],
-    gender: json["gender"],
-    submitterName: json["submitterName"],
-    entityName: json["entityName"],
-    crIssueDate: json["crIssueDate"],
-    crSource: json["crSource"],
-    genderDesc: json["genderDesc"],
-    submitterIdType: json["submitterIdType"],
-    crEntityType: json["crEntityType"],
-  );
-
+        entityType: json["entityType"],
+        submitterType: json["submitterType"],
+        crNumber: json["crNumber"],
+        crType: json["crType"],
+        submitterIdNumber: json["submitterIdNumber"],
+        submitterBirthDate: json["submitterBirthDate"],
+        mobile: json["mobile"],
+        gender: json["gender"],
+        submitterName: json["submitterName"],
+        entityName: json["entityName"],
+        crIssueDate: json["crIssueDate"],
+        crSource: json["crSource"],
+        genderDesc: json["genderDesc"],
+        submitterIdType: json["submitterIdType"],
+        crEntityType: json["crEntityType"],
+      );
 }
 
 class Warnings {
   Warnings();
 
-  factory Warnings.fromJson(Map<String, dynamic> json) => Warnings(
-  );
+  factory Warnings.fromJson(Map<String, dynamic> json) => Warnings();
 
-  Map<String, dynamic> toJson() => {
-  };
+  Map<String, dynamic> toJson() => {};
 }
