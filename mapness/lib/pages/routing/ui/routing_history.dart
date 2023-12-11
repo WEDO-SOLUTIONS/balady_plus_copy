@@ -39,8 +39,7 @@ class RoutingHistory extends ConsumerWidget {
                   )
                   .then(
                 (object) {
-                  final point =
-                      RoutePoint(type: RoutePointType.object, object: object);
+                  final point = RoutePointDirectoryObject(object);
                   updatePoint(point);
                 },
               );

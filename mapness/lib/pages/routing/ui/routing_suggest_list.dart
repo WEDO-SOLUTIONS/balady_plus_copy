@@ -29,9 +29,7 @@ class RoutingSuggestList extends ConsumerWidget {
         return SuggestItem(
           suggest: suggests[index],
           onObjectTap: (object) {
-            context.pop(
-              RoutePoint(type: RoutePointType.object, object: object),
-            );
+            context.pop(RoutePointDirectoryObject(object));
           },
         );
       },
