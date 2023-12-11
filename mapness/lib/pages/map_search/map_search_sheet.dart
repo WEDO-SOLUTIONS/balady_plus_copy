@@ -62,6 +62,8 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
 
   bool closing = false;
 
+  late ClusteringMapObjectManager _clustering;
+
   void close() {
     setState(() {
       closing = true;
@@ -84,6 +86,13 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
         context.pop();
       }
     });
+    _clustering = ClusteringMapObjectManager(
+      options: ClusteringMapObjectManagerOptionsMessage(
+        logicalPixel: 40,
+        maxZoom: 16,
+      ),
+      renderCluster: _renderCluster,
+    );
     Future.delayed(Duration.zero, () {
       _controller.animateTo(
         0.9,
@@ -127,14 +136,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
     final searchObjectManager = ref.watch(
       mapObjectManagerProvider(
         named: searchManagerName,
-        clustering: widget.withClustering
-            ? ClusteringMapObjectManager(
-                options: ClusteringMapObjectManagerOptionsMessage(
-                  logicalPixel: 40,
-                  maxZoom: 16,
-                ),
-                renderCluster: _renderCluster)
-            : null,
+        clustering: _clustering,
       ).notifier,
     );
     ref.listen(searchProvider(searchScope), (previous, next) async {

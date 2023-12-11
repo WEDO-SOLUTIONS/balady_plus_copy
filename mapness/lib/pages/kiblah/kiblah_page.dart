@@ -48,7 +48,7 @@ class KiblahPage extends StatelessWidget {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(8),
                   onTap: () {
-                    const LandingRoute().pushReplacement(context);
+                    const LandingRoute().go(context);
                     const SearchRoute(
                       initialQuery: "المساجد القريبة منك",
                       withClustering: true,
