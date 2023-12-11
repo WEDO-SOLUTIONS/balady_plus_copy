@@ -17,6 +17,7 @@ import 'package:mapness/_features/poi_card/widgets/opening_hours.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/poi_card/widgets/trade_license.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:shimmer/shimmer.dart';
@@ -253,10 +254,25 @@ class _ContentState extends ConsumerState<_Content> {
     });
 
     final highlightController = ref.read(highlightProvider.notifier);
+    final cameraController = ref.read(cameraPositionProvider.notifier);
+    final cameraPosition = ref.read(cameraPositionProvider);
 
     if (showEntrances) {
       for (var entrance in data.entrances) {
         highlightController.addHighlight(entrance!.id);
+      }
+      final firstEntrancePoint =
+          data.entrances.first?.geometry?.entrancePoints.first;
+      if (firstEntrancePoint != null) {
+
+        cameraController.animateTo(
+          CameraPositionMessage(
+            point: firstEntrancePoint,
+            zoom: 18,
+            tilt: cameraPosition?.tilt ?? 0,
+            bearing: cameraPosition?.tilt ?? 0,
+          ),
+        );
       }
     } else {
       for (var entrance in data.entrances) {
