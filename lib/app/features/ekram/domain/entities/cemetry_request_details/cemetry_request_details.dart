@@ -8,9 +8,9 @@ class CemetryRequestDetails {
       this.requestDate,
       this.burialDate,
       this.burialDateHijri,
-      this.burialTimeId,
-      this.burialTimeName,
-      this.burialTimeOther,
+      this.prayId,
+      this.prayName,
+      this.prayOther,
       this.deceasedBirthdate,
       this.deceasedBirthdateHijri,
       this.deceasedName,
@@ -40,9 +40,9 @@ class CemetryRequestDetails {
   String? requestDate;
   String? burialDate;
   String? burialDateHijri;
-  int? burialTimeId;
-  String? burialTimeName;
-  String? burialTimeOther;
+  int? prayId;
+  String? prayName;
+  String? prayOther;
   String? deceasedBirthdate;
   String? deceasedBirthdateHijri;
   String? deceasedName;
@@ -65,8 +65,7 @@ class CemetryRequestDetails {
   String? deathCountryName;
   int? deathCountryId;
 
-  String? get burialTime =>
-      burialTimeId == 30976 ? burialTimeOther : burialTimeName;
+  String? get burialTime => prayId == 30976 ? prayOther : prayName;
 
   @override
   List<Object?> get props => [];

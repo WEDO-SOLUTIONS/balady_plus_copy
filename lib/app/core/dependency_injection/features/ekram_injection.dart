@@ -23,6 +23,7 @@ import '../../../features/ekram/ekram_exports.dart';
 import '../../../features/ekram_inquiry_service/data/data_sources/remote_data_source.dart';
 import '../../../features/ekram_inquiry_service/data/repositories/ekram_repo_impl.dart';
 import '../../../features/ekram_inquiry_service/domain/repositories/ekram_repository.dart';
+import '../../services/local/location_service.dart';
 import '../dependency_injection_exports.dart' show sl;
 
 class EkramInjection {
@@ -30,6 +31,7 @@ class EkramInjection {
     // sl.registerLazySingleton(
     //    () => EkramRequestsBloc(getDeceasedTransportRequests: sl()));
 
+    sl.registerLazySingleton(() => EkramLocationService());
     //! Use Case
     sl.registerLazySingleton(() => GetCities(repository: sl()));
     sl.registerLazySingleton(() => GetNationalities(repository: sl()));

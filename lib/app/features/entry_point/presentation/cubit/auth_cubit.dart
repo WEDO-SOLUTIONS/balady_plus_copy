@@ -15,10 +15,13 @@ import '../../../../../etmam_app/features/etmam_entry_point/presentation/cubit/e
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/services/local/helpers.dart';
+import '../../../../core/services/local/location_service.dart';
 import '../../../../core/services/services_exports.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../location/presentation/bloc/location_bloc.dart';
 import '../../../profile_features/delegators/delegators_exports.dart';
+import '../../data/models/get_permission_params_model.dart';
+import '../../domain/use_cases/get_ekram_permission.dart';
 import '../../entry_point_exports.dart';
 
 part 'auth_state.dart';
@@ -39,6 +42,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   final GetForceVersion _getForceVersion;
   final GetTestData _getTestData;
   final GetGISData _getGisData;
+  final GetEkramPermission _getEkramPermission;
 
   EntryPointCubit(
       {required GetToken getToken,
@@ -67,6 +71,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         _logout = logout,
         _getForceVersion = forceVersion,
         _getTestData = GetTestData(repository: sl()),
+        _getEkramPermission = GetEkramPermission(repository: sl()),
         _getGisData = getGisData,
         super(const EntryPointState());
 
@@ -97,6 +102,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         sharedPrefs.setFirstDateTime();
       }
       refreshSSOProfile();
+      getEkramPermissions();
     });
     refreshAPIGeeToken();
 
@@ -180,6 +186,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
           return false;
         }
+        getEkramPermissions();
       }
     });
     EasyLoading.dismiss();
@@ -369,6 +376,39 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
         return (state.userLocation, state.userLocationGIS);
       });
+    }
+  }
+
+  Future<void> getEkramPermissions({bool allowTracking = false}) async {
+    try {
+      if (state.userInfo?.sub == null || state.userInfo?.tnm == null) return;
+      final failureOrSuccessForProfile =
+          await _getEkramPermission(GetPermissionParamsModel(claims: [
+        Claim(type: "sub", value: state.userInfo!.sub!),
+        Claim(type: "tenant", value: state.userInfo!.tnm!)
+      ]));
+      await failureOrSuccessForProfile.fold((failure) async {
+        print("permission failure$failure");
+      }, (success) async {
+        print("permission success$success");
+        if ((success.permissions?.contains("تسجيل رحلة نقل وتجهيز الموتى") ??
+                false) &&
+            (success.permissions?.contains("تسجيل رحلة نقل وتجهيز الموتى") ??
+                false)) {
+          CommonProperties.showEkramDriver = true;
+          sharedPrefs.setIsEkramDriver(true);
+        } else {
+          CommonProperties.showEkramDriver = false;
+        }
+      });
+    } catch (ex) {}
+    CommonProperties.showEkramDriver =
+        sharedPrefs.isEkramDriver() ?? CommonProperties.showEkramDriver;
+    if (allowTracking) {
+      if (CommonProperties.showEkramDriver) {
+        //  sl<EkramLocationService>().startTracking = true;
+        //  sl<EkramLocationService>().startTimer();
+      }
     }
   }
 }

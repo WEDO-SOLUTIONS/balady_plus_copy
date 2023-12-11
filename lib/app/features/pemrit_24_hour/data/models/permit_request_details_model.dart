@@ -36,7 +36,7 @@ class Permit24RequestDetailsModel {
             ? []
             : List<TransactionsList>.from(json["transactionsList"]!
                 .map((x) => TransactionsList.fromJson(x))),
-        calculatedCostInfo: json["calculatedCostInfo"],
+        //   calculatedCostInfo: json["calculatedCostInfo"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -63,21 +63,22 @@ class LicenseInfo {
   String? isicActivityName;
   int? permitNumber;
   String? permitEndDate;
+  String? permitIssueDate;
   List<dynamic>? additionalActivities;
 
-  LicenseInfo({
-    this.licenseNumber,
-    this.licenseEndDate,
-    this.ownerIdentityNumber,
-    this.ownerName,
-    this.detailedActivityId,
-    this.detailedActivityName,
-    this.isicActivityId,
-    this.isicActivityName,
-    this.permitNumber,
-    this.permitEndDate,
-    this.additionalActivities,
-  });
+  LicenseInfo(
+      {this.licenseNumber,
+      this.licenseEndDate,
+      this.ownerIdentityNumber,
+      this.ownerName,
+      this.detailedActivityId,
+      this.detailedActivityName,
+      this.isicActivityId,
+      this.isicActivityName,
+      this.permitNumber,
+      this.permitEndDate,
+      this.additionalActivities,
+      this.permitIssueDate});
 
   factory LicenseInfo.fromJson(Map<String, dynamic> json) => LicenseInfo(
         licenseNumber: json["licenseNumber"],
@@ -90,6 +91,7 @@ class LicenseInfo {
         isicActivityName: json["isicActivityName"],
         permitNumber: json["permitNumber"],
         permitEndDate: json["permitEndDate"],
+        permitIssueDate: json["permitIssueDate"],
         additionalActivities: json["additionalActivities"] == null
             ? []
             : List<dynamic>.from(json["additionalActivities"]!.map((x) => x)),
@@ -147,26 +149,26 @@ class RequestInfo {
   String? requestStatusDesc;
   BillInfo? billInfo;
   int? requestId;
+  String? requestCreationDate;
 
-  RequestInfo({
-    this.requestIssueDate,
-    this.billNumber,
-    this.requestStatusCode,
-    this.requestStatusDesc,
-    this.billInfo,
-    this.requestId,
-  });
+  RequestInfo(
+      {this.requestIssueDate,
+      this.billNumber,
+      this.requestStatusCode,
+      this.requestStatusDesc,
+      this.billInfo,
+      this.requestId,
+      this.requestCreationDate});
 
   factory RequestInfo.fromJson(Map<String, dynamic> json) => RequestInfo(
-        requestIssueDate: json["requestIssueDate"],
-        billNumber: json["billNumber"],
-        requestStatusCode: json["requestStatusCode"],
-        requestStatusDesc: json["requestStatusDesc"],
-        billInfo: json["billInfo"] == null
-            ? null
-            : BillInfo.fromJson(json["billInfo"]),
-        requestId: json["requestId"],
-      );
+      requestIssueDate: json["requestIssueDate"],
+      billNumber: json["billNumber"],
+      requestStatusCode: json["requestStatusCode"],
+      requestStatusDesc: json["requestStatusDesc"],
+      billInfo:
+          json["billInfo"] == null ? null : BillInfo.fromJson(json["billInfo"]),
+      requestId: json["requestId"],
+      requestCreationDate: json["requestCreationDate"]);
 
   Map<String, dynamic> toJson() => {
         "requestIssueDate": requestIssueDate,
@@ -182,7 +184,7 @@ class BillInfo {
   String? billNumber;
   String? issueDate;
   String? expiryDate;
-  int? billAmount;
+  double? billAmount;
   int? billerNumber;
   dynamic warningMessage;
 
@@ -199,7 +201,7 @@ class BillInfo {
         billNumber: json["billNumber"],
         issueDate: json["issueDate"],
         expiryDate: json["expiryDate"],
-        billAmount: json["billAmount"],
+        billAmount: json["billAmount"]?.toDouble(),
         billerNumber: json["billerNumber"],
         warningMessage: json["warningMessage"],
       );

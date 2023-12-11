@@ -5,10 +5,15 @@ import 'package:flutter/material.dart';
 class ReadOnlyField extends StatelessWidget {
   final String title;
   final String? subTitle;
+  final Color? subTitleColor;
   final bool showSpace;
 
   const ReadOnlyField(
-      {super.key, this.subTitle, required this.title, this.showSpace = true});
+      {super.key,
+      this.subTitle,
+      required this.title,
+      this.subTitleColor,
+      this.showSpace = true});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +37,7 @@ class ReadOnlyField extends StatelessWidget {
                 borderRadius: BorderRadius.circular(6)),
             child: CustomTextWidget(
               subTitle ?? "",
-              fontColor: AppColor.blackModern700Light,
+              fontColor: subTitleColor ?? AppColor.blackModern700Light,
               fontSize: 14,
               maxLines: 20,
               textAlign: TextAlign.start,

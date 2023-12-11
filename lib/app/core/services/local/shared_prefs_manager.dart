@@ -378,6 +378,18 @@ class SharedPrefs {
 
     return dataS;
   }
+
+  setIsEkramDriver(bool? isEkramDriver) async {
+    if (isEkramDriver != null) {
+      await _sharedPreferences?.setBool('isEkramDriver', isEkramDriver);
+    } else {
+      _sharedPreferences?.remove("isEkramDriver");
+    }
+  }
+
+  bool? isEkramDriver() {
+    return _sharedPreferences?.getBool('isEkramDriver');
+  }
 }
 
 final sharedPrefs = SharedPrefs();

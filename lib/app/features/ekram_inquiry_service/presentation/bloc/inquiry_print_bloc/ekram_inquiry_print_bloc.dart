@@ -52,16 +52,24 @@ class EkramInquiryPrintBloc
       status: BlocStatus.loading,
     ));
 
-    final failureOrSuccess = await _verifyOTPForPrint(VerifyOTPParams());
+    final failureOrSuccess = await _verifyOTPForPrint(VerifyOTPParams(
+        bodyRecipientIdNo: state.nationalIdForReceiver ?? "",
+        bodyRecipientIdType: state.selectedNationalIdTypeForReceiver?.id ?? 0,
+        deceasedIdentityId: state.nationalIdForDecassed ?? "",
+        deceasedIdentityType:
+            state.selectedNationalIdTypeForDecassed?.id ?? 0));
 
     failureOrSuccess.fold((l) {
+      print("LLL $l");
       emitter(state.copyWith(
           status: BlocStatus.failure,
           errorMsg: (l as ServerFailure).errorMessage));
     }, (r) {
       emitter(state.copyWith(status: BlocStatus.success, errorMsg: ""));
+      // NavigationService.navigatorKey.currentState?.pop(true);*/
 
-      NavigationService.navigatorKey.currentState?.pop(true);
+      CommonFunctions.showApigeeFile(
+          r.printUrl ?? "", DateTime.now().millisecond.toString());
 
       /*CommonFunctions.showApigeeFile(
           "https://apiservicesstg.balady.gov.sa/v2/ekram-mobile-services/reports/licenses/E09055EB-228C-466E-97B9-57A3EAA66D8E",

@@ -111,6 +111,24 @@ class ServicesCubit extends Cubit<ServicesState> {
     ));
   }
 
+  void checkEkramServices() async {
+    print("checkEkramServices");
+    emit(state.copyWith(status: BlocStatus.closeLoading));
+
+    final honoringTheDeadServicesList =
+        await honoringTheDeadServices(NoParams());
+    emit(state.copyWith(
+      status: BlocStatus.success,
+      honoringTheDeadServices:
+          honoringTheDeadServicesList.getOrElse(() => []).where((service) {
+        if (CommonProperties.showEkramDriver) return true;
+        if (CommonProperties.showEkramDriver != true && service.id == 2)
+          return false;
+        return true;
+      }).toList(),
+    ));
+  }
+
   void toggleSearchField() {
     emit(state.copyWith(showSearchField: !state.showSearchField));
   }

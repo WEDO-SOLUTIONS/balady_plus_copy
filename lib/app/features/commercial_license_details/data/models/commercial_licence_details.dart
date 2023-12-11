@@ -63,6 +63,7 @@ class CommercialLicenceDetails {
   LocationInfo? locationInfo;
   SubmitterInfo? submitterInfo;
   ShopInfo? shopInfo;
+  final List<LicenseAllowedPermitsInfo>? licenseAllowedPermitsInfo;
 
   // List<BillsInfo> billsInfo;
   // bool selectLicYears;
@@ -72,6 +73,7 @@ class CommercialLicenceDetails {
 
   CommercialLicenceDetails({
     required this.requestId,
+    this.licenseAllowedPermitsInfo,
     required this.mainActivityArea,
     required this.creationDate,
     // required this.entityType,
@@ -212,6 +214,12 @@ class CommercialLicenceDetails {
         shopInfo: json["shopInfo"] != null
             ? ShopInfo.fromJson(json["shopInfo"])
             : null,
+
+        licenseAllowedPermitsInfo: json["licenseAllowedPermitsInfo"] == null
+            ? []
+            : List<LicenseAllowedPermitsInfo>.from(
+                json["licenseAllowedPermitsInfo"]!
+                    .map((x) => LicenseAllowedPermitsInfo.fromJson(x))),
         // billsInfo: List<BillsInfo>.from(json["billsInfo"].map((x) => BillsInfo.fromJson(x))),
         // selectLicYears: json["selectLicYears"],
         // showTillActive: json["showTillActive"],
@@ -246,6 +254,57 @@ class CommercialLicenceDetails {
 //     message: json["message"],
 //   );
 // }
+
+class LicenseAllowedPermitsInfo {
+  final int? id;
+  final String? name;
+  final BaladyWorkFlow? baladyWorkFlow;
+  final bool? withFees;
+
+  LicenseAllowedPermitsInfo({
+    this.id,
+    this.name,
+    this.baladyWorkFlow,
+    this.withFees,
+  });
+
+  factory LicenseAllowedPermitsInfo.fromJson(Map<String, dynamic> json) =>
+      LicenseAllowedPermitsInfo(
+        id: json["id"],
+        name: json["name"],
+        baladyWorkFlow: json["baladyWorkFlow"] == null
+            ? null
+            : BaladyWorkFlow.fromJson(json["baladyWorkFlow"]),
+        withFees: json["withFees"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+        "baladyWorkFlow": baladyWorkFlow?.toJson(),
+        "withFees": withFees,
+      };
+}
+
+class BaladyWorkFlow {
+  final String? id;
+  final String? name;
+
+  BaladyWorkFlow({
+    this.id,
+    this.name,
+  });
+
+  factory BaladyWorkFlow.fromJson(Map<String, dynamic> json) => BaladyWorkFlow(
+        id: json["id"],
+        name: json["name"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+      };
+}
 
 class ActivityInfo {
   MainActivity? mainActivity;

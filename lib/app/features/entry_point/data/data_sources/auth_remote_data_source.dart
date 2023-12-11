@@ -16,6 +16,8 @@ import '../../../../core/services/services_exports.dart';
 import '../../../../core/utils/constants/remote_config.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
 import '../../entry_point_exports.dart';
+import '../models/get_permission_params_model.dart';
+import '../models/permission_response_model.dart';
 
 abstract class EntryPointRemoteDataSource {
   Future<AuthorizationTokenResponse> authorize();
@@ -30,6 +32,8 @@ abstract class EntryPointRemoteDataSource {
       {required ForceUpdateParams params});
 
   Future<dynamic> getDataTest();
+  Future<PermissionResponseModel> getEkramRules(
+      {required GetPermissionParamsModel params});
 }
 
 class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
@@ -361,6 +365,38 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         rethrow;
       } else {
         throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
+
+  @override
+  Future<PermissionResponseModel> getEkramRules(
+      {required GetPermissionParamsModel params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(
+        ApiUrl.ekramRules,
+        data: params.toMap(),
+      );
+      print(response.data["data"]);
+      var data = response.data["data"]?["result"];
+      var parsedResult =
+          data != null ? PermissionResponseModel.fromMap(data) : null;
+
+      return parsedResult!.toFuture();
+    } on DioError catch (error) {
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode, dioError: error);
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //  CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }

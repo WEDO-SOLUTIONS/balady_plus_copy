@@ -233,6 +233,7 @@ class _DialogBodyState extends State<DialogBody> {
                   title: trans("nextTripStationArrivalTime"),
                   subTitle: state.nextTripStationArrivalTime ??
                       trans("nextTripStationArrivalTime"),
+                  subTitleColor: AppColor.blackModern400Light,
                 ),
               ),
               CustomVerticalSpace(height: 16),

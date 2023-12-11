@@ -5,20 +5,20 @@ import 'package:hijri/hijri_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class SsoUserInfo extends Equatable {
-  const SsoUserInfo({
-    this.name,
-    this.phone,
-    this.mail,
-    this.arName,
-    this.idNo,
-    this.nid,
-    this.idType,
-    this.sex,
-    this.dob,
-    this.sname,
-    this.sub,
-    this.nationality,
-  });
+  const SsoUserInfo(
+      {this.name,
+      this.phone,
+      this.mail,
+      this.arName,
+      this.idNo,
+      this.nid,
+      this.idType,
+      this.sex,
+      this.dob,
+      this.sname,
+      this.sub,
+      this.nationality,
+      this.tnm});
 
   final String? name;
   final String? phone;
@@ -32,6 +32,7 @@ class SsoUserInfo extends Equatable {
   final String? sname;
   final String? sub;
   final String? nationality;
+  final String? tnm;
 
   String getFormattedBirthDate({bool withDash = false}) {
     if (dob != null) {

@@ -10,8 +10,20 @@ import '../../../home_page/home_exports.dart' show CircleIcon;
 import '../../services_exports.dart'
     show SearchServicesTextField, ServicesCubit, ServicesList, ServicesState;
 
-class ServicesPage extends StatelessWidget {
+class ServicesPage extends StatefulWidget {
   const ServicesPage({super.key});
+
+  @override
+  State<ServicesPage> createState() => _ServicesPageState();
+}
+
+class _ServicesPageState extends State<ServicesPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context.read<ServicesCubit>().checkEkramServices();
+  }
 
   @override
   Widget build(BuildContext context) {

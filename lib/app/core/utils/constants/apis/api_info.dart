@@ -634,7 +634,8 @@ class ApiUrl {
       "v1/supperapp-commercial-twentyfour-services/requests/$requestId";
 
 // Ekram
-
+  static const ekramRules =
+      '/v1/iam-services/user-configuration/أنطمة بلدي/نظام إكرام الموتى';
   static const deathCities = 'v2/ekram-mobile-services/cities/1';
   static const burialCities = 'v2/ekram-mobile-services/cities/2';
   static const ekramOrgnizations =
@@ -646,9 +647,11 @@ class ApiUrl {
 
   static const ekramHospitals = 'v2/ekram-mobile-services/citiy-hospitals';
 
-  static const ekramMosques = 'v1/ekram-mobile-services/mosques';
+  static const ekramMosques =
+      'v2/ekram-mobile-services/mosques-ghusl-places/{}/MOSQUE';
 
-  static const ekramLaundries = 'v1/ekram-mobile-services/laundries';
+  static const ekramLaundries =
+      'v2/ekram-mobile-services/mosques-ghusl-places/{}/GHUSL_PLACE';
 
   //static const ekramLookup = 'v1/ekram-mobile-services/lookups';
 
@@ -672,15 +675,16 @@ class ApiUrl {
   static const completeTrip =
       'v2/ekram-mobile-services/complete-deceased-transports';
 
-  static const uploadLetter = 'v1/ekram-mobile-services/attachments/upload';
+  static const uploadLetter =
+      'v2/ekram-mobile-services/deceased-transport/update-attachments';
 
   static const updateLocation = 'v2/ekram-mobile-services/add-trip-locations';
 
   static const tripLocations = 'v2/ekram-mobile-services/trip-locations';
 
-  static const ekramRequestStatus = 'v1/ekram-mobile-services/status-list';
+  static const ekramRequestStatus = 'v2/ekram-mobile-services/transport-status';
 
-  static const ekramLocations = 'v1/ekram-mobile-services/locations';
+  static const ekramLocations = 'v2/ekram-mobile-services/transport-locations';
 
   static const ekramAttachments =
       'v1/ekram-mobile-services/download-attachments';
@@ -714,6 +718,9 @@ class ApiUrl {
 
   static String graveActiveRequestDetails(String id, int idType) =>
       'v2/ekram-mobile-services/request-details/$id/$idType';
+
+  static String ekramPrintCertificate =
+      "v2/ekram-mobile-services/burial-licenses/verify-before-prints";
   //! POST
 
   //! Delete

@@ -17,7 +17,8 @@ class SsoUserInfoModel extends SsoUserInfo {
       super.dob,
       super.sname,
       super.sub,
-      super.nationality});
+      super.nationality,
+      super.tnm});
 
   factory SsoUserInfoModel.fromJson(Map<String, dynamic> json) =>
       SsoUserInfoModel(
@@ -32,7 +33,8 @@ class SsoUserInfoModel extends SsoUserInfo {
           dob: json["dob"],
           sname: json["sname"],
           sub: json["sub"],
-          nationality: json["nationality"]);
+          nationality: json["nationality"],
+          tnm: json["tnm"]);
 
   Map<String, dynamic> toJson() => {
         "name": name,
@@ -46,23 +48,24 @@ class SsoUserInfoModel extends SsoUserInfo {
         "dob": dob,
         "sname": sname,
         "sub": sub,
-        "nationality": nationality
+        "nationality": nationality,
+        "tnm": tnm
       };
 }
 
 extension SSOUserInfoModelFromEntity on SsoUserInfo {
   SsoUserInfoModel get toModel => SsoUserInfoModel(
-        arName: arName,
-        dob: dob,
-        idNo: idNo,
-        idType: idType,
-        mail: mail,
-        name: name,
-        nid: nid,
-        phone: phone,
-        sex: sex,
-        sname: sname,
-        sub: sub,
-        nationality: nationality,
-      );
+      arName: arName,
+      dob: dob,
+      idNo: idNo,
+      idType: idType,
+      mail: mail,
+      name: name,
+      nid: nid,
+      phone: phone,
+      sex: sex,
+      sname: sname,
+      sub: sub,
+      nationality: nationality,
+      tnm: tnm);
 }

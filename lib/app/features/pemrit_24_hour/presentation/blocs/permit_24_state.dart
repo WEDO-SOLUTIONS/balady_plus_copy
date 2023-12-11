@@ -103,4 +103,20 @@ class Permit24LicenseState extends Equatable {
       return false;
     }
   }
+
+  bool needsFees() {
+    LicenseAllowedPermitsInfo? info = commercialLicenceDetails
+        ?.licenseAllowedPermitsInfo
+        ?.firstWhereOrNull((element) => element.id == 1028);
+
+    return info?.withFees == true;
+  }
+
+  bool doesNotNeedsCredentials() {
+    LicenseAllowedPermitsInfo? info = commercialLicenceDetails
+        ?.licenseAllowedPermitsInfo
+        ?.firstWhereOrNull((element) => element.id == 1028);
+
+    return info?.baladyWorkFlow?.id == "IMMEDIATE";
+  }
 }

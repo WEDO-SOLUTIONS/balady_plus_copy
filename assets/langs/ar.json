@@ -3456,7 +3456,7 @@
 "posters_permit_licesnse_id":"رقم الرخصة",
 "posters_permit_licesnse_status":"حالة الرخصة",
 
-"posters_permit_licesnse_expiry":"تاريخ نهاية الرخصة ",
+"posters_permit_licesnse_expiry":"تاريخ نهاية الرخصة ", 
 "posters_permit_mun_sub":"الأمانة/البلدية",
 "posters_permit_end_date":"تاريخ نهاية التصريح",
 "permit_going_date":"تاريخ سريان التصريح", 
@@ -3606,6 +3606,7 @@
 
   "ekram_deceased_id":"رقم هوية المتوفى", 
 
+  "ekram_step4_title":"بيانات الموقع والمرفقات", 
 
   "ekram_print_deceased_data":"بيانات المتوفي", 
   "ekram_print_reciver_data":"بيانات مستلم الجثمان", 
@@ -3621,8 +3622,12 @@
   "ekram_permit_no":"رقم تصريح الدفن", 
   "ekram_transport_status":"حالة نقل الموتى", 
   "ekram_dead_deads_info":"بيانات المتوفى/المتوفين", 
-  "permit_24_feesNote":"عزيزي المستفيد، قد تختلف رسوم إصدار التصريح من بلدية إلى بلدية أخرى، يتم احتساب الرسوم عن طريق مجموع رسوم التصاريح التي تحتاج رسوم"
-
-
+  "permit_24_feesNote":"عزيزي المستفيد، قد تختلف رسوم إصدار التصريح من بلدية إلى بلدية أخرى، يتم احتساب الرسوم عن طريق مجموع رسوم التصاريح التي تحتاج رسوم", 
+  "permit_24_service_name":"فتح محل ٢٤ ساعة", 
+  "permit_24_data":"بيانات التصريح", 
+  "permit_24_permit_no":"رقم التصريح", 
+  "permit_need_baladiyah":"هل يحتاج اعتماد بلدية",  
+  "permit_needs_fees":"هل يوجد رسوم اصدار" , 
+  "permit_cancel_confirm_msg":"عزيزي المستفيد، هل تريد الاستمرار بإلغاء طلب تصريح فتح محل ٢٤ ساعة رقم {}"
 
 }

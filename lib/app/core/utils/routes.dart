@@ -105,6 +105,7 @@ import '../../features/events/presentation/pages/single_image_page.dart';
 import '../../features/map_page/presentation/pages/resturant_details_page.dart';
 import '../../features/pemrit_24_hour/presentation/pages/permits_details_page.dart';
 import '../../features/pemrit_24_hour/presentation/pages/posters_start_service_license_screen.dart';
+import '../../features/pemrit_24_hour/presentation/pages/request_details_page.dart';
 import '../../features/pemrit_24_hour/presentation/pages/submit_application_successfully_posters.dart';
 import '../../features/posters/presentation/pages/posters_details_page.dart';
 import '../../features/posters/presentation/pages/posters_start_service_license_screen.dart';
@@ -639,6 +640,10 @@ class Routes {
         RouteName.permitsLicenseStartService: (context) =>
             const PermitsLicenseStartService(),
         RouteName.permitsDetailsPage: (context) => const Permits24DetailsPage(),
+
+        RouteName.permitsRequestDetailsPage: (context) =>
+            const PermitsReqeuestDetailsPage(),
+
         RouteName.submitApplicationSuccessfullyPermits: (context) =>
             const SubmitApplicationSuccessfullyPermits(),
 
