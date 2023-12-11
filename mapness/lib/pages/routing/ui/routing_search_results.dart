@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/entities/routing/route_point.dart';
+import 'package:mapness/entities/search/models/search_history.dart';
+import 'package:mapness/features/search/models/search_scope.dart';
+import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_results.dart';
 import 'package:mapness/widgets/search/ui/search_item.dart';
+import 'package:provider/provider.dart';
 
 class RoutingSearchResults extends ConsumerWidget {
   const RoutingSearchResults({
@@ -18,6 +22,8 @@ class RoutingSearchResults extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final scope = context.read<SearchScope>();
+
     return SearchResults(
       results: results,
       scrollController: scrollController,
@@ -32,6 +38,9 @@ class RoutingSearchResults extends ConsumerWidget {
       itemBuilder: (context, item) => SearchItem(
         result: item,
         onTap: () {
+          ref.read(searchHistoryProvider(scope.value).notifier).put(
+                SearchHistoryItem.fromDirectoryObject(item),
+              );
           context.pop(
             RoutePoint(type: RoutePointType.object, object: item),
           );
