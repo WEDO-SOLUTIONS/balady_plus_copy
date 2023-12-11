@@ -17,10 +17,22 @@ class PoiMapRoute extends GoRouteData {
 
   const PoiMapRoute({required this.dgisObjectId});
 
+  static open(BuildContext context, int dgisObjectId) {
+    final poiMapRoute = PoiMapRoute(dgisObjectId: dgisObjectId);
+    final router = GoRouter.of(context);
+    final matches = router.routerDelegate.currentConfiguration.matches;
+    if (matches.last.matchedLocation == '/poi-map') {
+      poiMapRoute.pushReplacement(context);
+    } else {
+      poiMapRoute.push(context);
+    }
+  }
+
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     return TransculentPage(
       child: GeneralMapCardWidget(
+        key: const Key("POI CARD WIDGET"),
         DgisObjectIdMessage(
           objectId: dgisObjectId,
           entranceId: 0,

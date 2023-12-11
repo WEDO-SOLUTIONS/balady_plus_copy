@@ -118,7 +118,11 @@ class NavigationHandler {
             self.map.removeSource(source: prevLocationSource)
         }
         self.map.addSource(source: self.locationSource)
+                
         var position = self.map.camera.position
+        position.zoom = styleZToProjectionZ(styleZ: 17.5, latitude: position.point.latitude)
+        try? self.map.camera.setPosition(position: position)
+        
         self.prevCameraBehaviour = self.map.camera.behaviour.newBehaviour
         self.map.camera.setBehaviour(
             behaviour: CameraBehaviour(
@@ -218,24 +222,6 @@ class NavigationHandler {
         print("navigationManager started")
         navigationManager.stop()
         resetCamera()
-        
-        guard let prevCameraBehaviour = self.prevCameraBehaviour else {
-            print("prevCameraBehaviour failed")
-            return
-        }
-        print("prevCameraBehaviour init \(prevCameraBehaviour)")
-        self.moveCameraCancellable?.cancel()
-//        self.moveCameraCancellable = self.map.camera.move(
-//            position: prevCameraBehaviour,
-//            time: 0.25,
-//            animationType: .default
-//        ).sink {_ in
-//            print("prevCameraBehaviour after camera moved \(prevCameraBehaviour)")
-//            /// TODO: вот здесь мы якобы двигаем камеру, но по сути ничего не происходит и она все равно улетает в universe
-//            print("camera moved")
-//        } failure: {_ in
-//            print("moving failed")
-//        }
     }
 
     func startFreeRoam(completion: @escaping (FlutterError?) -> Void) {

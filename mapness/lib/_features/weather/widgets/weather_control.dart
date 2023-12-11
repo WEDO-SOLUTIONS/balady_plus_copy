@@ -18,7 +18,11 @@ class WeatherControl extends ConsumerWidget {
     final weatherData = ref.watch(currentWeatherProvider);
 
     return buildContent(
-        context: context, data: weatherData, onTap: () => onTap?.call());
+        context: context,
+        data: weatherData,
+        onTap: () {
+          onTap?.call();
+        });
   }
 
   MapButton buildContent({

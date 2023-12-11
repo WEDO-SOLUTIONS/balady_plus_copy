@@ -190,6 +190,7 @@ dependencies:
   flutter_html:
   curl_logger_dio_interceptor: ^1.0.0
   mixpanel_flutter: ^2.2.0
+  rate_my_app: ^2.0.0
 
 dependency_overrides:
   geolocator_android: ^4.2.2

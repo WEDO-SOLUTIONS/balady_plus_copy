@@ -979,6 +979,25 @@ enum BriefExtraRouteInfoMessage {
   scooter,
 }
 
+enum WeatherMapType {
+  temperature,
+  precipitation,
+}
+
+class WeatherMapMessage {
+  WeatherMapMessage({
+    this.type,
+    required this.layerName,
+    required this.rasterTileUri,
+    required this.enabled,
+  });
+  final WeatherMapType? type;
+  final String? layerName;
+  final String? rasterTileUri;
+  final bool enabled;
+
+}
+
 @ConfigurePigeon(
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
@@ -1296,7 +1315,7 @@ abstract class MapApi {
   void setNavigatorVoice(String id);
 
   @async
-  bool toggleHeatmap(String? tileSourceUri, String? layerName, bool? enable);
+  bool toggleHeatmap(WeatherMapMessage message);
 }
 
 @FlutterApi()

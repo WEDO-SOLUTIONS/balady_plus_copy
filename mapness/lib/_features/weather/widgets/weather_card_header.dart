@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import 'package:mapness/_features/weather/data/models/weather_model.dart';
 import 'package:mapness/_features/weather/provider/forecast_weather_provider.dart';
+import 'package:mapness/_features/weather/wiidget_ref_extension.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -67,36 +68,40 @@ class DashboardHeader extends ConsumerWidget {
         ),
       );
     }
-    return GestureDetector(
-      child: Data(
-        allWeatherInfo: allWeatherInfo,
-        locale: locale,
-        onTap: () {
-          var size = draggableScrollableController.size;
-          draggableScrollableController.animateTo(
-            size < 1 ? 1 : .1,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeIn,
-          );
-        },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: GestureDetector(
+        child: Data(
+          allWeatherInfo: allWeatherInfo,
+          locale: locale,
+          onTap: () {
+            var size = draggableScrollableController.size;
+            draggableScrollableController.animateTo(
+              size < 1 ? 1 : .1,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeIn,
+            );
+          },
+        ),
       ),
     );
   }
 }
 
-class Data extends StatelessWidget {
+class Data extends ConsumerWidget {
   final AllWeatherInfoModel? allWeatherInfo;
   final Locale locale;
   final Function()? onTap;
 
-  const Data(
-      {required this.onTap,
-      super.key,
-      required this.allWeatherInfo,
-      required this.locale});
+  const Data({
+    required this.onTap,
+    super.key,
+    required this.allWeatherInfo,
+    required this.locale,
+  });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // "4:35pm, 20 November, Mon",
     final dateTime = (DateFormat('h:mm a, d MMMM, E', locale.languageCode)
         .format(DateTime.now()));
@@ -143,7 +148,10 @@ class Data extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   ///close
-                  _closeButton(onTap: () => context.pop()),
+                  _closeButton(onTap: ()async {
+                   await ref.switchOffWeatherLayers();
+                    context.pop();
+                  }),
 
                   ///settings
                   ///cityname

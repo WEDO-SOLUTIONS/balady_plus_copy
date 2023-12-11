@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 
-import 'package:mapness/shared/config/package_config.dart';
-
 class PoiCard extends ConsumerWidget {
   const PoiCard({
     super.key,
@@ -32,7 +30,7 @@ class PoiCard extends ConsumerWidget {
           fit: BoxFit.cover,
           child: InkWell(
             onTap: () {
-              PoiMapRoute(dgisObjectId: objectId.objectId).push(context);
+              PoiMapRoute.open(context, objectId.objectId);
             },
             child: SizedBox(
               width: 163,

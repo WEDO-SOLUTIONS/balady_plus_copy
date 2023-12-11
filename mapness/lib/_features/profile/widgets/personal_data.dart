@@ -13,39 +13,89 @@ class PersonalData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        PersonalDataRow(
-          title: userInfo.givenName ?? "",
-          subtitle: context.l10n.firstName,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFFF5F7FA),
+          borderRadius: BorderRadius.circular(12),
         ),
-        PersonalDataRow(
-          title: userInfo.familyName ?? "",
-          subtitle: context.l10n.lastName,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            PersonalDataRow(
+              title: userInfo.givenName ?? "",
+              subtitle: context.l10n.firstName,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: Divider(
+                height: 1,
+                color: const Color(0xFF1E2A36).withOpacity(0.2),
+              ),
+            ),
+            PersonalDataRow(
+              title: userInfo.familyName ?? "",
+              subtitle: context.l10n.lastName,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: Divider(
+                height: 1,
+                color: const Color(0xFF1E2A36).withOpacity(0.2),
+              ),
+            ),
+            PersonalDataRow(
+              title: userInfo.mail ?? "",
+              subtitle: context.l10n.email,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: Divider(
+                height: 1,
+                color: const Color(0xFF1E2A36).withOpacity(0.2),
+              ),
+            ),
+            PersonalDataRow(
+              title: userInfo.getFormattedBirthDate(),
+              subtitle: context.l10n.dateOfBirth,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: Divider(
+                height: 1,
+                color: const Color(0xFF1E2A36).withOpacity(0.2),
+              ),
+            ),
+            PersonalDataRow(
+              title: userInfo.arName ?? "",
+              subtitle: context.l10n.arabicFullName,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: Divider(
+                height: 1,
+                color: const Color(0xFF1E2A36).withOpacity(0.2),
+              ),
+            ),
+            PersonalDataRow(
+              title: userInfo.getFirstAndLastName(),
+              subtitle: context.l10n.englishFullName,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: Divider(
+                height: 1,
+                color: const Color(0xFF1E2A36).withOpacity(0.2),
+              ),
+            ),
+            PersonalDataRow(
+              title: userInfo.nationality ?? "",
+              subtitle: context.l10n.nationality,
+            ),
+          ],
         ),
-        PersonalDataRow(
-          title: userInfo.mail ?? "",
-          subtitle: context.l10n.email,
-        ),
-        PersonalDataRow(
-          title: userInfo.getFormattedBirthDate(),
-          subtitle: context.l10n.dateOfBirth,
-        ),
-        PersonalDataRow(
-          title: userInfo.arName ?? "",
-          subtitle: context.l10n.arabicFullName,
-          isArabic: true,
-        ),
-        PersonalDataRow(
-          title: userInfo.getFirstAndLastName(),
-          subtitle: context.l10n.englishFullName,
-        ),
-        PersonalDataRow(
-          title: userInfo.nationality ?? "",
-          subtitle: context.l10n.nationality,
-        ),
-      ],
+      ),
     );
   }
 }
@@ -55,12 +105,10 @@ class PersonalDataRow extends StatelessWidget {
     super.key,
     required this.title,
     required this.subtitle,
-    this.isArabic = false,
   });
 
   final String title;
   final String subtitle;
-  final bool isArabic;
 
   @override
   Widget build(BuildContext context) {
@@ -69,24 +117,17 @@ class PersonalDataRow extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Text(
-            title,
-            style: isArabic
-                ? Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .textM
-                    .copyWith(color: const Color(0xFF1E2A36))
-                : Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .textM
-                    .copyWith(color: const Color(0xFF1E2A36)),
-          ),
+          Text(title,
+              style: Theme.of(context)
+                  .extension<ThemeTextStyles>()!
+                  .textM
+                  .copyWith(color: const Color(0xFF1E2A36))),
           Text(
             subtitle,
             style: Theme.of(context)
                 .extension<ThemeTextStyles>()!
-                .textXS
-                .copyWith(color: const Color(0xB21E2A36)),
+                .textS
+                .copyWith(color: const Color(0x5C1E2A36)),
           ),
         ],
       ),

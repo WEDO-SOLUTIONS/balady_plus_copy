@@ -879,7 +879,6 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   }
 
   @override
-  Future<bool> toggleHeatmap(String? tileSourceUri, String? layerName,
-      bool enable) =>
-      _api.toggleHeatmap(tileSourceUri, layerName, enable);
+  Future<bool> toggleHeatmap(WeatherMapMessage message) =>
+      _api.toggleHeatmap(message);
 }

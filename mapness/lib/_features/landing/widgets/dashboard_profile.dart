@@ -29,7 +29,10 @@ class DashboardProfile extends ConsumerWidget {
             if (userInfo == null) return const SizedBox.shrink();
             return Text(
               '${_greeting(context)}, ${userInfo.givenName ?? ''}',
-              style: Theme.of(context).extension<ThemeTextStyles>()!.textXS,
+              style: Theme.of(context)
+                  .extension<ThemeTextStyles>()!
+                  .accentL
+                  .apply(color: const Color(0xff4CA5B4)),
               textAlign: TextAlign.end,
             );
           }),

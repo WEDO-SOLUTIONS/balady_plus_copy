@@ -8,7 +8,19 @@ import com.dgis.map.control_handlers.navigation_controls.SpeedControlModel
 import com.dgis.map.map_api.Messages
 import com.dgis.map.map_api.Messages.Result
 import io.flutter.plugin.common.EventChannel
+import ru.dgis.sdk.coordinates.Bearing
+import ru.dgis.sdk.map.CameraBehaviour
+import ru.dgis.sdk.map.CameraPosition
+import ru.dgis.sdk.map.FollowBearing
+import ru.dgis.sdk.map.FollowPosition
+import ru.dgis.sdk.map.FollowStyleZoom
+import ru.dgis.sdk.map.Map
+import ru.dgis.sdk.map.MyLocationController
+import ru.dgis.sdk.map.MyLocationMapObjectSource
+import ru.dgis.sdk.map.StyleZoom
+import ru.dgis.sdk.map.styleZToProjectionZ
 import ru.dgis.sdk.navigation.*
+import ru.dgis.sdk.positioning.LocationSource
 import ru.dgis.sdk.routing.RouteSearchOptions
 import ru.dgis.sdk.routing.RouteSearchPoint
 import ru.dgis.sdk.routing.TrafficRoute
@@ -18,6 +30,7 @@ class NavigationHandler(
     sdkContext: SdkContext,
     private val navigationView: NavigationView,
     private val eventSink: EventChannel.EventSink,
+    private val map: Map,
 ) : AutoCloseable {
     private val navigationManager = NavigationManager(sdkContext)
     private val voicesManager = getVoiceManager(sdkContext)
@@ -25,6 +38,11 @@ class NavigationHandler(
 
     private val stateClosable: AutoCloseable
     private val routeInfoCloseable: AutoCloseable
+
+    private val locationSource: MyLocationMapObjectSource
+    private var prevLocationSource: MyLocationMapObjectSource? = null
+
+    private var prevCameraBehaviour: CameraBehaviour? = null
 
     // Models to observe channels and send events to Flutter
     private val speedControlModel = SpeedControlModel(
@@ -57,6 +75,41 @@ class NavigationHandler(
 
         stateClosable = navigationManager.uiModel.stateChannel.connect(::stateChannelListener)
         routeInfoCloseable = navigationManager.uiModel.routeChannel.connect(::routeInfoListener)
+
+        locationSource = MyLocationMapObjectSource(
+            context = sdkContext,
+            controller = navigationManager.mapLocationController.myLocationIndicatorController
+        )
+    }
+
+    fun setupCamera() {
+        this.prevLocationSource = this.map.sources.first { it is MyLocationMapObjectSource } as? MyLocationMapObjectSource
+        if (this.prevLocationSource != null) {
+            map.removeSource(this.prevLocationSource!!)
+        }
+        map.addSource(locationSource)
+
+        val position = map.camera.position.copy(
+            zoom = styleZToProjectionZ(styleZ = StyleZoom(17.5f), latitude = map.camera.position.point.latitude)
+        )
+        map.camera.position = position
+
+        prevCameraBehaviour = map.camera.behaviour.newBehaviour
+        map.camera.setBehaviour(
+            behaviour = CameraBehaviour(
+                position = FollowPosition(bearing = FollowBearing.ON, styleZoom = FollowStyleZoom.ON)
+            )
+        )
+    }
+
+    fun resetCamera() {
+        map.removeSource(this.locationSource)
+        if (this.prevLocationSource != null) {
+            map.addSource(this.prevLocationSource!!)
+        }
+        if (this.prevCameraBehaviour != null) {
+            map.camera.setBehaviour(this.prevCameraBehaviour!!)
+        }
     }
 
     override fun close() {
@@ -89,6 +142,7 @@ class NavigationHandler(
             return
         }
 
+        setupCamera()
         navigationManager.start(
             routeBuildOptions = RouteBuildOptions(
                 finishPoint = finishPoint,
@@ -112,6 +166,7 @@ class NavigationHandler(
             return
         }
 
+        setupCamera()
         navigationManager.startSimulation(
             routeBuildOptions = RouteBuildOptions(
                 finishPoint = finishPoint,
@@ -126,6 +181,7 @@ class NavigationHandler(
 
     fun stopNavigation() {
         navigationManager.stop()
+        resetCamera()
         navigationView.visibility = View.INVISIBLE
     }
 

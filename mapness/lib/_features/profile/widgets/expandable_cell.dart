@@ -5,7 +5,6 @@ import 'package:expansion_widget/expansion_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-
 import '../../../shared/config/package_config.dart';
 
 class ExpandableCell extends StatelessWidget {
@@ -32,7 +31,7 @@ class ExpandableCell extends StatelessWidget {
         titleBuilder:
             (animationValue, easeInValue, isExpanded, toggleFunction) {
           return Material(
-            color: Colors.white,
+            color: Color(0xFFF5F7FA),
             borderRadius: BorderRadius.only(
               topLeft: const Radius.circular(8),
               topRight: const Radius.circular(8),
@@ -71,7 +70,10 @@ class ExpandableCell extends StatelessWidget {
                         padding: const EdgeInsets.only(bottom: 2.0),
                         child: Text(
                           "$count",
-                          style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0xFF1E2A36)),
+                          style: Theme.of(context)
+                              .extension<ThemeTextStyles>()!
+                              .textM
+                              .copyWith(color: const Color(0xFF1E2A36)),
                         ),
                       ),
                     const Spacer(),
@@ -94,7 +96,10 @@ class ExpandableCell extends StatelessWidget {
                             ),
                             Text(
                               subtitle!,
-                              style: Theme.of(context).extension<ThemeTextStyles>()!.textXS.copyWith(color: const Color(0xB21E2A36)),
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()!
+                                  .textXS
+                                  .copyWith(color: const Color(0xB21E2A36)),
                             ),
                           ]
                         ],

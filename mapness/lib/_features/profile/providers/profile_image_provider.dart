@@ -47,10 +47,16 @@ class ProfileImage extends _$ProfileImage {
   }
 
   Future<void> changeUserProfileImageByBytes(Uint8List bytes) async {
-    await _saveImageBytes(bytes);
-    await _uploadImage(bytes);
+    try {
+      ref.invalidateSelf();
 
-    ref.invalidateSelf();
+      await _uploadImage(bytes);
+      await _saveImageBytes(bytes);
+
+      ref.invalidateSelf();
+    } catch (error, trace) {
+      _log(error, trace);
+    }
   }
 
   /// Сохраняет изображение локально в base64.
@@ -83,7 +89,8 @@ class ProfileImage extends _$ProfileImage {
     try {
       if (url.isEmpty) {
         final profileResponse = await _dio.get('/profile');
-        final profileData = proto.ProfileResponse.fromBuffer(profileResponse.data);
+        final profileData =
+            proto.ProfileResponse.fromBuffer(profileResponse.data);
         url = profileData.profile.photo.image.url;
       }
 

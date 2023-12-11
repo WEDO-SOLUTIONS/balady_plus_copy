@@ -51,11 +51,13 @@ class DgisMapView(
     private var visibleRectHandler: VisibleRectHandler? = null
     private var searchHandler: SearchHandler? = null
     private var routeHandler: RouteHandler? = null
+    private var weatherHandler: WeatherHandler? = null
     private val navigationHandler by unsafeLazy {
         NavigationHandler(
-                sdkContext = sdkContext,
-                navigationView = mapView.findViewById(R.id.navigationView),
-                eventSink = eventSink,
+            sdkContext = sdkContext,
+            navigationView = mapView.findViewById(R.id.navigationView),
+            eventSink = eventSink,
+            map = map!!,
         )
     }
     private val packagesHandler by unsafeLazy {
@@ -66,8 +68,6 @@ class DgisMapView(
     }
     private var compassControlHandler: CompassControlHandler? = null
     private var trafficAndParkingControlHandler: TrafficAndParkingControlHandler? = null
-    private var rasterTileSource: Source? = null
-    private var isHeatmapVisible = false
 
     /**
      * Event stream to Flutter
@@ -806,7 +806,7 @@ class DgisMapView(
         compassControlHandler = CompassControlHandler(map, eventSink)
         trafficAndParkingControlHandler = TrafficAndParkingControlHandler(map, eventSink)
         setupTapHandler()
-
+        weatherHandler = WeatherHandler(sdkContext,map)
         result.success(
                 InitializeMessage.Builder()
                         .setWasInitialized(true)
@@ -854,37 +854,8 @@ class DgisMapView(
         }
     }
 
-    override fun toggleHeatmap(
-            tileSourceUri: String?,
-            layerName: String?,
-            enable: Boolean?,
-            result: Messages.Result<Boolean>?) {
-        if (enable == true) {
-            rasterTileSource?.let {
-                map?.removeSource(it)
-            }
-            tileSourceUri?.let {
-                layerName?.let {
-                    rasterTileSource = createRasterTileDataSource(
-                            sdkContext,
-                            layerName,
-                            tileSourceUri
-                    )
-                    rasterTileSource?.let {
-                        map?.addSource(it)
-                    }
-                }
-            }
-        } else {
-            rasterTileSource?.let {
-                map?.removeSource(it)
-            }
-        }
-        enable?.let {
-            isHeatmapVisible = it
-        }
-
-        result?.success(isHeatmapVisible)
+    override fun toggleHeatmap(message: WeatherMapMessage, result: Messages.Result<Boolean>?) {
+        weatherHandler?.toggleHeatmap(message,result)
     }
 
     override fun listPackages(result: Messages.Result<List<PackageMessage>>?) {

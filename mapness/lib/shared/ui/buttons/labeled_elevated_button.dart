@@ -7,6 +7,7 @@ class LabeledElevatedButton extends StatelessWidget {
   final String label;
   final Color? backgroundColor;
   final Color? textColor;
+  final EdgeInsets? padding;
 
   const LabeledElevatedButton({
     super.key,
@@ -15,6 +16,7 @@ class LabeledElevatedButton extends StatelessWidget {
     this.enabled = true,
     this.backgroundColor,
     this.textColor,
+    this.padding,
   });
 
   @override
@@ -28,7 +30,7 @@ class LabeledElevatedButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
         ),
         elevation: 0,
-        padding: const EdgeInsets.all(10),
+        padding: padding ?? const EdgeInsets.all(10),
       ),
       child: Text(
         label,

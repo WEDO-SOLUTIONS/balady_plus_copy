@@ -22,7 +22,7 @@ class DarkModeCell extends ConsumerWidget {
       ),
       child: Material(
         borderRadius: BorderRadius.circular(8),
-        color: Colors.white,
+        color: Color(0xFFF5F7FA),
         child: InkWell(
           onTap: () {
             ref.read(darkModeProvider.notifier).toggle();

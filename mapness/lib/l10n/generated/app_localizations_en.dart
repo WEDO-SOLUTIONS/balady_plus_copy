@@ -20,10 +20,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get arabicFullName => 'Arabic full name';
 
   @override
-  String get areYouSureYouWantToDeleteAllFavorites => 'Are you sure you want to delete all favorites?';
+  String get areYouSureYouWantToDeleteAllFavorites =>
+      'Are you sure you want to delete all favorites?';
 
   @override
-  String get areYouSureYouWantToLogOutOfYourAccount => 'Are you sure you want to log out of your account?';
+  String get areYouSureYouWantToLogOutOfYourAccount =>
+      'Are you sure you want to log out of your account?';
 
   @override
   String get arrival => 'arrival';
@@ -42,6 +44,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get business => 'Business';
+
+  @override
+  String get call => 'اتصال';
 
   @override
   String get calories => 'Calories';
@@ -63,6 +68,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get comfort => 'Comfort';
+
+  @override
+  String get commercialLicenseNumber => ' رقم الرخصة التجارية';
 
   @override
   String get compilanceBuildings => 'Compilance buildings';
@@ -87,6 +95,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get continueTrip => 'Continue trip';
+
+  @override
+  String get contributedToImproving => 'ساهم في تحسين المشهد الحضري';
+
+  @override
+  String get coordinates => 'الإحداثيات';
 
   @override
   String get daily => 'Daily';
@@ -134,6 +148,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get email => 'Email';
 
   @override
+  String get employmentType => 'Employment Type';
+
+  @override
   String get endTrip => 'End trip';
 
   @override
@@ -162,6 +179,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get findInFavorites => 'Find in Favorites';
+
+  @override
+  String get findJob => 'Find Job';
 
   @override
   String get firstName => 'First name';
@@ -233,6 +253,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get iwish => 'iWish';
 
   @override
+  String get jobDescription => 'وصف الوظيفة';
+
+  @override
+  String get jobDetails => 'تفاصيل الوظيفة';
+
+  @override
+  String get jobVacancy => 'Job Vacancy';
+
+  @override
+  String get jobs => 'وظائف';
+
+  @override
+  String get jobsAraundYou => 'Jobs around you';
+
+  @override
   String get joyParks => 'JOY Parks';
 
   @override
@@ -263,7 +298,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginToAccess => 'Login to access';
 
   @override
-  String get lookForUsefulPlacesCafesMallsForExampleMallNearby => 'Look for useful places, cafes, malls for example: Mall nearby';
+  String get lookForUsefulPlacesCafesMallsForExampleMallNearby =>
+      'Look for useful places, cafes, malls for example: Mall nearby';
 
   @override
   String get mallNearby => 'Mall nearby';
@@ -362,7 +398,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pharmacies => 'Pharmacies';
 
   @override
+  String get photoAndVideo => 'صور وارسل';
+
+  @override
   String get photos => 'Photos';
+
+  @override
+  String get placesToShop => 'أماكن للتسوق';
 
   @override
   String get placesToVisit => 'Places to visit';
@@ -374,7 +416,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get playground => 'Playground';
 
   @override
-  String get pleaseRestartApplicationForTheNewSettingsToTakeEffect => 'Please restart application for the new settings to take effect.';
+  String get pleaseRestartApplicationForTheNewSettingsToTakeEffect =>
+      'Please restart application for the new settings to take effect.';
 
   @override
   String get pleaseTryAgainLater => 'Please try again later';
@@ -407,6 +450,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile => 'Profile';
 
   @override
+  String get published => 'Published';
+
+  @override
   String get ready => 'Ready';
 
   @override
@@ -431,13 +477,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get route => 'Route';
 
   @override
-  String get route1description => 'Main advantages and hidden tricks of the navigator feature – in couple slides ';
+  String get route1description =>
+      'Main advantages and hidden tricks of the navigator feature – in couple slides ';
 
   @override
-  String get route2description => 'The navigator suggests up to three routes considering current traffic situation. It will also remind you about alternative routes at crossroads';
+  String get route2description =>
+      'The navigator suggests up to three routes considering current traffic situation. It will also remind you about alternative routes at crossroads';
 
   @override
-  String get route3description => 'Voice assistant will keep you informed throughout your trip';
+  String get route3description =>
+      'Voice assistant will keep you informed throughout your trip';
+
+  @override
+  String get sahm => 'ساهم';
 
   @override
   String get schools => 'Schools';
@@ -452,7 +504,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sec => 'sec';
 
   @override
-  String get selectYourStartingAndDestinationPointsAndWeWillShowYouConvenientRoutes => 'Select your starting and destination points, and we will show you convenient routes';
+  String get selectYourStartingAndDestinationPointsAndWeWillShowYouConvenientRoutes =>
+      'Select your starting and destination points, and we will show you convenient routes';
 
   @override
   String get sendAWish => 'Send a wish';
@@ -473,7 +526,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
-  String get shareChallengeWithUs => 'Share the challenge with us. Contribute to combating visual pollution in your city';
+  String get share => 'Share';
+
+  @override
+  String get shareChallengeWithUs =>
+      'Share the challenge with us. Contribute to combating visual pollution in your city';
 
   @override
   String get shareFeedback => 'Share feedback';
@@ -503,7 +560,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signIn => 'Sign-in';
 
   @override
-  String get signInToUnlockTheFullPotentialOfTheBaladyApp => 'Sign in to unlock the full potential\nof the Balady app';
+  String get signInToUnlockTheFullPotentialOfTheBaladyApp =>
+      'Sign in to unlock the full potential\nof the Balady app';
+
+  @override
+  String get skills => 'Skills';
 
   @override
   String get snap_and_send => 'Snap & Send';
@@ -512,7 +573,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get somethingWentWrong => 'Something went wrong';
 
   @override
-  String get somethingWentWrongPleaseTryAgainLater => 'Something went wrong Please try again later';
+  String get somethingWentWrongPleaseTryAgainLater =>
+      'Something went wrong Please try again later';
 
   @override
   String get sorryRouteNotFound => 'Sorry, route not found';
@@ -560,7 +622,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get to => 'To';
 
   @override
-  String get toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon => 'To save places as favorites, open the card and tap the bookmark icon';
+  String get toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon =>
+      'To save places as favorites, open the card and tap the bookmark icon';
 
   @override
   String get today => 'Today';
@@ -578,19 +641,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unknown => 'Unknown';
 
   @override
+  String get vacancies => 'vacancies';
+
+  @override
   String get viewingARoute => 'Viewing a Route';
 
   @override
   String get visualAesthetic => 'Visual aesthetic';
 
   @override
-  String get voteWhatDoYouWantToHaveInThePark => 'Vote what do you want to have in the park?';
+  String get voteWhatDoYouWantToHaveInThePark =>
+      'Vote what do you want to have in the park?';
 
   @override
   String get watchMore => 'Watch more';
 
   @override
-  String get weCouldntFindAnythingTryChangingYourRequest => 'We couldn\'t find anything. Try changing your request';
+  String get weCouldntFindAnythingTryChangingYourRequest =>
+      'We couldn\'t find anything. Try changing your request';
 
   @override
   String get weekend => 'Weekend';
@@ -605,7 +673,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get work => 'Work';
 
   @override
+  String get workHours => 'Work hours';
+
+  @override
   String get worldHealthExpo => 'World Health Expo 2023';
+
+  @override
+  String get yesterday => 'Yesterday';
 
   @override
   String get youArrived => 'You arrived';

@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
@@ -26,7 +27,9 @@ class ProfileImageWidget extends ConsumerWidget {
     }
 
     final bytes = await image.readAsBytes();
-    ref.read(profileImageProvider.notifier).changeUserProfileImageByBytes(bytes);
+    ref
+        .read(profileImageProvider.notifier)
+        .changeUserProfileImageByBytes(bytes);
   }
 
   @override
@@ -75,7 +78,28 @@ class ProfileImageWidget extends ConsumerWidget {
           },
         );
 
-        return imageWidget;
+        return Stack(
+          children: [
+            imageWidget,
+            if (editable) ...[
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: FloatingActionButton(
+                  mini: true,
+                  backgroundColor: AppColor.white,
+                  onPressed: () => _onEdit(ref),
+                  elevation: 0,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  child: const Icon(
+                    Icons.edit,
+                    color: Color(0xFF1E928F),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        );
       }),
     );
   }

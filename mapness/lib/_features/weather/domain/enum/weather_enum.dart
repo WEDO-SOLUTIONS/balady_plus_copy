@@ -1,4 +1,7 @@
-enum WeatherMapType { temperature, precipitation }
+import 'package:dgis_map/library.dart';
+import 'package:intl/intl.dart';
+
+// enum WeatherMapType { temperature, precipitation }
 
 extension WeatherMapTypeExt on WeatherMapType {
 
@@ -6,6 +9,10 @@ extension WeatherMapTypeExt on WeatherMapType {
   String measureUnit() => switch (this) {
         WeatherMapType.precipitation => 'mm',
         WeatherMapType.temperature => '℃',
+      };
+  String layerName() => switch (this) {
+        WeatherMapType.precipitation => 'heatmap',
+        WeatherMapType.temperature => 'heatmap',
       };
   List<String> measures() => switch (this) {
         WeatherMapType.precipitation => [
@@ -49,6 +56,7 @@ extension WeatherMapTypeExt on WeatherMapType {
       };
 
   String get parameters => switch (this) {
+    ///{code}~{level}~{time-resolution}~{aggregation}~{type}~{type-parameter}
         WeatherMapType.temperature => "11~"
             "2 m above gnd~"
             "hourly~"
@@ -80,7 +88,9 @@ extension WeatherMapTypeExt on WeatherMapType {
             "hourly~"
             "none~"
             "contourSteps~"
-            "0.1~rgba(153,230,249,1.0)~"
+            // "0.0~rgba(153,230,249,1.0)~"
+            "0.1~rgba(31,153,196,1.0)~"
+            "0.2~rgba(51,241,150,1.0)~"
             "0.5~rgba(51,241,150,1.0)~"
             "1.0~rgba(52,211,109,1.0)~"
             "1.5~rgba(148,217,89,1.0)~"
@@ -94,4 +104,25 @@ extension WeatherMapTypeExt on WeatherMapType {
             "25.0~rgba(245,70,205,1.0)~"
             "30.0~rgba(170,53,77,1.0)~",
       };
+
+
+
+  String tileSourceUri() => switch (this) {
+    WeatherMapType.precipitation => _tileSourceUri(this),
+    WeatherMapType.temperature => _tileSourceUri(this),
+  };
+
+  String _tileSourceUri(WeatherMapType type) {
+    final format = DateFormat('yyyy-MM-dd\'T\'HH:mm').format(DateTime.now());
+    // const apiKey = 'be72f76237db';
+    const apiKey = '74daf4716240';
+
+    return "https://maps-api.meteoblue.com/v1/map/raster/NEMSAUTO/"
+        "$format/"
+        "${type.parameters}/"
+        "{z}/{x}/{y}?"
+        "temperatureUnit=C"
+        "&apikey=$apiKey";
+  }
+
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/widgets/about.dart';
@@ -18,8 +19,9 @@ import 'package:mapness/_features/poi_card/widgets/trade_license.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
+import 'package:shimmer/shimmer.dart';
 
-class GeneralMapCardWidget extends ConsumerStatefulWidget {
+class GeneralMapCardWidget extends ConsumerWidget {
   final DgisObjectIdMessage objectId;
 
   const GeneralMapCardWidget(
@@ -28,58 +30,38 @@ class GeneralMapCardWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<GeneralMapCardWidget> createState() =>
-      _GeneralMapCardWidgetState();
-}
-
-class _GeneralMapCardWidgetState extends ConsumerState<GeneralMapCardWidget> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(
       pointOfInterestProvider(
-        widget.objectId,
+        objectId,
       ),
     );
 
-    final poiCardViewModel = PoiCardViewModel(ref: ref);
-
-    return state.map(
-      data: (value) {
-        final result = value.value;
-        if (result == null) {
-          return const SizedBox.shrink();
-        }
-
-        return LayoutBuilder(builder: (context, constraints) {
-          return _Content(
-            viewModel: poiCardViewModel,
-            biggestHeight: constraints.biggest.height,
-            biggestWidth: constraints.biggest.width,
-            directoryObject: result,
-          );
-        });
-      },
-      error: (_) {
-        poiCardViewModel.onError();
-        return const SizedBox.shrink();
-      },
-      loading: (_) => const SizedBox.shrink(),
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      return _Content(
+        objectId: objectId,
+        biggestHeight: constraints.biggest.height,
+        biggestWidth: constraints.biggest.width,
+        state: state,
+        // directoryObject: result,
+      );
+    });
   }
 }
 
 class _Content extends ConsumerStatefulWidget {
-  final PoiCardViewModel viewModel;
-  final DirectoryObjectMessage directoryObject;
+  final DgisObjectIdMessage objectId;
 
   final double biggestHeight;
   final double biggestWidth;
 
+  final AsyncValue<DirectoryObjectMessage?> state;
+
   const _Content({
     required this.biggestHeight,
     required this.biggestWidth,
-    required this.viewModel,
-    required this.directoryObject,
+    required this.objectId,
+    required this.state,
   });
 
   @override
@@ -110,146 +92,177 @@ class _ContentState extends ConsumerState<_Content> {
     super.initState();
   }
 
-  void scrollListener() {
-    if (_draggableScrollableController.size <= .2) {
-      //   setState(() {
-      //     showFooter = false;
-      //   });
-      // }else{
-      //   setState(() {
-      //     showFooter = true;
-      //   });
-    }
-    // if (_draggableScrollableController.size <= 0.001) {
-    //   context.pop();
-    //   widget.viewModel.resetMapControlsState();
-    // }
-  }
+  void scrollListener() {}
 
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-      controller: _draggableScrollableController,
-      initialChildSize: _headerExtent(),
-      minChildSize: .1,
-      maxChildSize: .9,
-      snap: true,
-      snapSizes: [
-        .1,
-        _headerExtent(),
-        .7,
-        .9,
-      ],
-      builder: (
-        BuildContext context,
-        ScrollController scrollController,
-      ) {
-        final data = widget.directoryObject;
+        controller: _draggableScrollableController,
+        initialChildSize: _headerExtent(),
+        minChildSize: .1,
+        maxChildSize: .9,
+        snap: true,
+        snapSizes: [.1, _headerExtent(), .7, .9],
+        builder: (
+          BuildContext context,
+          ScrollController scrollController,
+        ) {
+          final viewModel = PoiCardViewModel(ref: ref);
 
-        return Material(
-          color: Colors.transparent,
-          child: Directionality(
-            textDirection: TextDirection.rtl,
-            child: DecoratedBox(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(16.0),
-                  topLeft: Radius.circular(16.0),
-                ),
-              ),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: colorPrimary.withOpacity(0.05),
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(16.0),
-                    topLeft: Radius.circular(16.0),
+          return widget.state.map(data: (value) {
+            ///do not remove, using for data mocking
+            final data = value.value?.id?.objectId == 70030076560519845
+                ? getMockPoiCardData()
+                : value.value;
+
+            return Material(
+              color: Colors.transparent,
+              child: Directionality(
+                textDirection: TextDirection.rtl,
+                child: DecoratedBox(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(16.0),
+                      topLeft: Radius.circular(16.0),
+                    ),
                   ),
-                ),
-                child: Stack(
-                  children: [
-                    CustomScrollView(
-                      controller: scrollController,
-                      keyboardDismissBehavior:
-                          ScrollViewKeyboardDismissBehavior.onDrag,
-                      physics: const ClampingScrollPhysics(),
-                      slivers: [
-                        SliverPersistentHeader(
-                          delegate: PoiCardHeaderDelegate(
-                            data: data,
-                            ontapClose: () => context.pop(),
-                          ),
-                          pinned: true,
-                        ),
-                        SliverList.list(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Favourites(data),
-                                  About(data),
-                                  if (data.openingHours != null)
-                                    OpeningHours(widget.directoryObject
-                                        .getOpeningHoursModel()),
-                                  ContactsInfo(
-                                    viewModel: widget.viewModel,
-                                    data: data,
-                                  ),
-                                  if (data.tradeLicense != null)
-                                    TradeLicense(data.tradeLicense),
-                                  const SafeArea(
-                                    top: false,
-                                    child: SizedBox(height: footerHeight),
-                                  ),
-                                ],
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: colorPrimary.withOpacity(0.05),
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(16.0),
+                        topLeft: Radius.circular(16.0),
+                      ),
+                    ),
+                    child: Stack(
+                      children: [
+                        CustomScrollView(
+                          controller: scrollController,
+                          keyboardDismissBehavior:
+                              ScrollViewKeyboardDismissBehavior.onDrag,
+                          physics: const ClampingScrollPhysics(),
+                          slivers: [
+                            SliverPersistentHeader(
+                              delegate: PoiCardHeaderDelegate(
+                                data: data!,
+                                ontapClose: () {
+                                  // const LandingRoute().go(context);
+                                  context.pop();
+                                },
                               ),
+                              pinned: true,
+                            ),
+                            SliverList.list(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Favourites(data),
+                                      About(
+                                        data,
+                                        onEntranceTap: () {
+                                          showEntrance(data);
+                                        },
+                                      ),
+                                      if (data.openingHours != null)
+                                        OpeningHours(
+                                            data.getOpeningHoursModel()),
+                                      ContactsInfo(
+                                        viewModel: viewModel,
+                                        data: data,
+                                      ),
+                                      if (data.tradeLicense != null)
+                                        TradeLicense(data.tradeLicense),
+                                      const SafeArea(
+                                        top: false,
+                                        child: SizedBox(height: footerHeight),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: PoiCardFooter(
+                            scrollController: _draggableScrollableController,
+                            data: data,
+                            viewModel: viewModel,
+                            onEntranceTap: () {
+                              showEntrance(data);
+                            },
+                          ),
+                        ),
                       ],
                     ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: PoiCardFooter(
-                        scrollController: _draggableScrollableController,
-                        data: data,
-                        viewModel: widget.viewModel,
-                        onEntranceTap: () {
-                          _draggableScrollableController.animateTo(
-                            .3,
-                            duration: Duration(milliseconds: 300),
-                            curve: Curves.easeIn,
-                          );
-                          setState(() {
-                            showEntrances = !showEntrances;
-                          });
-                          final highlightController =
-                              ref.read(highlightProvider.notifier);
-
-                          if (showEntrances) {
-                            for (var entrance
-                                in widget.directoryObject.entrances) {
-                              highlightController.addHighlight(entrance!.id);
-                            }
-                          } else {
-                            for (var entrance
-                                in widget.directoryObject.entrances) {
-                              highlightController.removeHighlight(entrance!.id);
-                            }
-                          }
-                        },
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
-        );
-      },
+            );
+          }, error: (_) {
+            Future(
+              () => ref
+                  .read(mapControlsProvider.notifier)
+                  .update(MapControlsStateIdle()),
+            );
+            return Shimmer.fromColors(
+              baseColor: Colors.grey[200]!,
+              highlightColor: Colors.grey[100]!,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(16),
+                    topLeft: Radius.circular(16),
+                  ),
+                ),
+              ),
+            );
+          }, loading: (_) {
+            return Shimmer.fromColors(
+              baseColor: Colors.grey[200]!,
+              highlightColor: Colors.grey[100]!,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(16),
+                    topLeft: Radius.circular(16),
+                  ),
+                ),
+              ),
+            );
+          });
+        });
+  }
+
+  void showEntrance(DirectoryObjectMessage data) {
+    _draggableScrollableController.animateTo(
+      .3,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeIn,
     );
+    setState(() {
+      showEntrances = !showEntrances;
+    });
+
+    final highlightController = ref.read(highlightProvider.notifier);
+
+    if (showEntrances) {
+      for (var entrance in data.entrances) {
+        highlightController.addHighlight(entrance!.id);
+      }
+    } else {
+      for (var entrance in data.entrances) {
+        highlightController.removeHighlight(entrance!.id);
+      }
+    }
   }
 }
 

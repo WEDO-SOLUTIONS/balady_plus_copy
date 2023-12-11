@@ -36,15 +36,18 @@ class PathNavSpeedInfoWidget extends StatelessWidget {
                   ),
                   // elevation: 2.0,
                   child: Center(
-                    child: Text(
-                      '${info.speed}',
-                      style: Theme.of(context)
-                          .extension<ThemeTextStyles>()!
-                          .headingL
-                          .copyWith(
-                            color: Colors.black,
-                            height: 1.5,
-                          ),
+                    child: Baseline(
+                      baselineType: TextBaseline.alphabetic,
+                      baseline: 32,
+                      child: Text(
+                        '${info.speed}',
+                        style: Theme.of(context)
+                            .extension<ThemeTextStyles>()!
+                            .headingL
+                            .copyWith(
+                              color: Colors.black,
+                            ),
+                      ),
                     ),
                   ),
                 ),
@@ -68,16 +71,20 @@ class PathNavSpeedInfoWidget extends StatelessWidget {
                     color: info.speedExceed ? red : Colors.white,
                   ),
                   child: Center(
-                    child: Text(
-                      "${info.speedLimit ?? '--'}",
-                      style: Theme.of(context)
-                          .extension<ThemeTextStyles>()!
-                          .headingM
-                          .copyWith(
-                            color:
-                                info.speedExceed ? Colors.white : Colors.black,
-                            height: 1.5,
-                          ),
+                    child: Baseline(
+                      baselineType: TextBaseline.alphabetic,
+                      baseline: 28,
+                      child: Text(
+                        "${info.speedLimit ?? '--'}",
+                        style: Theme.of(context)
+                            .extension<ThemeTextStyles>()!
+                            .headingM
+                            .copyWith(
+                              color: info.speedExceed
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
+                      ),
                     ),
                   ),
                 ),

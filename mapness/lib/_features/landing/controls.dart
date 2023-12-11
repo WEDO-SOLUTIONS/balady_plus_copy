@@ -5,6 +5,7 @@ import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/happines_control.dart';
+import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/layers_control.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
@@ -58,6 +59,8 @@ class MapControls extends ConsumerWidget {
                               onTap: () => const WeatherRoute().push(context)),
                           const SizedBox(height: 8),
                           const HappinesControl(),
+                          const Spacer(),
+                          const IndoorControl(),
                           const Spacer(),
                           MapButton(
                             child: Image.asset(

@@ -16,7 +16,7 @@ class OpeningHours extends StatefulWidget {
 }
 
 class _OpeningHoursState extends State<OpeningHours> {
-  List<Widget>? openingHoursWidgets;
+  List<OpenHours>? openingHours;
 
   bool is24x7 = false;
   bool isOpenSameTime = false;
@@ -28,15 +28,14 @@ class _OpeningHoursState extends State<OpeningHours> {
     } else if (widget.model?.isDailySameOpenHours == true) {
       isOpenSameTime = true;
     } else {
-      final displayOpenHours = widget.model?.openingHours;
-      openingHoursWidgets = convertWeekTimeInterval(displayOpenHours);
+      openingHours = widget.model?.openingHours;
       // title = widget.model?.todayOpeningInfo ?? '';
     }
 
     super.initState();
   }
 
-  List<Widget>? convertWeekTimeInterval(List<OpenHours>? openingHours) {
+  List<Widget>? convertWeekTimeInterval(BuildContext context, List<OpenHours>? openingHours) {
     return openingHours?.map((e) {
       final weekDay = e.weekDay;
 
@@ -78,6 +77,8 @@ class _OpeningHoursState extends State<OpeningHours> {
     final isWeekend = todayOpeningInfo?.isWeekend ?? false;
 
     var fontStyle = Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: colorPrimary);
+    var widgets = convertWeekTimeInterval(context,openingHours);
+
     return is24x7 || isOpenSameTime
         ? CardContent(
             child: _buildTitle(),
@@ -98,9 +99,9 @@ class _OpeningHoursState extends State<OpeningHours> {
             content: ListView.separated(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemBuilder: (ctx, i) => openingHoursWidgets?[i],
+              itemBuilder: (ctx, i) => widgets?[i],
               separatorBuilder: (ctx, index) => const Divider(),
-              itemCount: openingHoursWidgets?.length ?? 0,
+              itemCount: openingHours?.length ?? 0,
             ),
           );
   }

@@ -11,7 +11,9 @@ import 'package:mapness/shared/lib/make_address.dart';
 class About extends StatefulWidget {
   final DirectoryObjectMessage? data;
 
-  const About(this.data, {super.key});
+  final Function() onEntranceTap;
+
+  const About(this.data, {super.key, required this.onEntranceTap});
 
   @override
   State<About> createState() => _AboutState();
@@ -37,7 +39,10 @@ class _AboutState extends State<About> {
         children: [
           Text(
             data?.address?.buildingName ?? data?.title ?? '',
-            style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: colorPrimary),
+            style: Theme.of(context)
+                .extension<ThemeTextStyles>()!
+                .textM
+                .copyWith(color: colorPrimary),
             overflow: TextOverflow.ellipsis,
             maxLines: 5,
             textAlign: TextAlign.start,
@@ -47,7 +52,10 @@ class _AboutState extends State<About> {
           ),
           Text(
             data!.makeAddress(),
-            style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: colorPrimary),
+            style: Theme.of(context)
+                .extension<ThemeTextStyles>()!
+                .textS
+                .copyWith(color: colorPrimary),
             maxLines: 5,
             textAlign: TextAlign.start,
           ),
@@ -55,18 +63,22 @@ class _AboutState extends State<About> {
             const SizedBox(
               height: 8,
             ),
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: colorPrimary.withAlpha(10),
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(8),
+            Material(
+              color: colorPrimary.withAlpha(10),
+              borderRadius: borderRadius,
+              child: InkWell(
+                onTap: widget.onEntranceTap,
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: boxDecoration(),
+                  child: Text(
+                    '${context.l10n.exits} ${exits ?? ''}',
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()!
+                        .accentS
+                        .copyWith(color: colorPrimary),
+                  ),
                 ),
-              ),
-              child: Text(
-                '${context.l10n.exits} ${exits ?? ''}',
-                style: Theme.of(context).extension<ThemeTextStyles>()!.accentS
-                    .copyWith(color: colorPrimary),
               ),
             ),
           ]

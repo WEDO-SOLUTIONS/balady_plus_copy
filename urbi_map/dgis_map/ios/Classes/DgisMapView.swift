@@ -34,6 +34,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     private var navigationHandler: NavigationHandler?
     private var searchHandler: SearchHandler?
     private var packagesHandler: PackagesHandler?
+    private var weatherHandler: WeatherHandler?
 
     private var objectTapHandler: ObjectTapHandler?
     private var visibleRectHandler: VisibleRectHandler?
@@ -44,8 +45,6 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     private lazy var positioningService = PlatformPositioningServicesFactory()
     
     private var moveCameraCancellable: DGis.Cancellable?
-    private var rasterTileSource: Source?
-    private var isHeatMapVisible = false
 
     init(
         dgisSdk sdk: Container,
@@ -141,6 +140,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.packagesHandler = PackagesHandler(
             sdk: try! sdk.context,
             eventChannel: eventChannel
+        )
+        
+        self.weatherHandler = WeatherHandler(
+            sdkContext: self.sdk,
+            map: map
         )
 
         setupTapHandler()
@@ -1007,34 +1011,9 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         navigationHandler?.setNavigatorVoice(id, completion: completion)
     }
 
-    func toggleHeatmapTileSourceUri(
-        _ tileSourceUri: String?,
-        layerName: String?,
-        enable: NSNumber?,
-        completion: @escaping (NSNumber?, FlutterError?) -> Void
-    ) {
-        if enable?.boolValue == true {
-            if let rasterTileSource {
-                map?.removeSource(source: rasterTileSource)
-            }
-            if let tileSourceUri = tileSourceUri, let layerName = layerName {
-                rasterTileSource = createRasterTileDataSource(
-                    context: try! sdk.context,
-                    sublayerName: layerName,
-                    urlTemplate: tileSourceUri
-                )
-                if let rasterTileSource {
-                    map?.addSource(source: rasterTileSource)
-                }
-            }
-        } else {
-            if let rasterTileSource {
-                map?.removeSource(source: rasterTileSource)
-            }
-        }
-        if let enable = enable?.boolValue {
-            isHeatMapVisible = enable
-        }
-        completion(NSNumber(value: isHeatMapVisible), nil)
+    func toggleHeatmapMessage(
+        _ message: WeatherMapMessage,
+        completion: @escaping (NSNumber?, FlutterError?) -> Void) {
+        weatherHandler?.toggleHeatmap(message,completion: completion)
     }
 }

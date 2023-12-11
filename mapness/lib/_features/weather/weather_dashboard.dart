@@ -81,7 +81,7 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
         return Directionality(
           textDirection: TextDirection.rtl,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            // padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: const BoxDecoration(
               color: Colors.white,
               // color: Color(0xffF4F4F5),
@@ -105,13 +105,17 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
                   pinned: true,
                 ),
                 SliverList.separated(
+
                   itemCount: weatherData?.forecast?.forecastday?.length ?? 0,
                   itemBuilder: (BuildContext context, int index) =>
-                      WeatherDayCard(
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: WeatherDayCard(
                     forecastDay: weatherData?.forecast?.forecastday?[index],
                     isExpanded: false,
                     onExpansionChanged: (b) {},
                   ),
+                      ),
                   separatorBuilder: (BuildContext context, int index) =>
                       const SizedBox(
                     height: 12,

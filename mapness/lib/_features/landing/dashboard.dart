@@ -1,8 +1,6 @@
-import 'package:balady_plus/app/features/home_page/presentation/widgets/home_bottom_sheet/event_home_card.dart';
-import 'package:balady_plus/app/core/utils/routes.dart';
-import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/home_page/presentation/widgets/home_bottom_sheet/calendar_home_item_widget.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart' as team42;
+import 'package:balady_plus/app/features/home_page/presentation/widgets/home_bottom_sheet/calendar_home_item_widget.dart';
+import 'package:balady_plus/app/features/home_page/presentation/widgets/home_bottom_sheet/event_home_card.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar, ScrollPosition;
@@ -10,14 +8,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/user_state.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
-import 'package:mapness/_features/landing/widgets/challenge_card.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_header.dart';
-import 'package:mapness/_features/landing/widgets/g2b_card.dart';
-import 'package:mapness/_features/landing/widgets/login_card.dart';
+import 'package:mapness/_features/landing/widgets/jobs_around_card.dart';
+import 'package:mapness/_features/landing/widgets/dashboard_profile.dart';
 import 'package:mapness/_features/landing/widgets/poi_card.dart';
-import 'package:mapness/_features/landing/widgets/service_card.dart';
+import 'package:mapness/_features/landing/widgets/snap_and_send_card.dart';
 import 'package:mapness/_features/stories/stories_widget.dart';
-import 'package:mapness/features/iwish/providers/iwish_markers.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 import 'providers/interesting_places.dart';
@@ -127,79 +123,67 @@ class _DashboardState extends ConsumerState<Dashboard> {
     );
   }
 
-  Widget _buildEvents() {
-    return const EventHomeCard();
-  }
+  Widget _buildShoppingMallsCards() {
+    return Consumer(
+      builder: (context, ref, child) {
+        final places = ref.watch(interestingPlacesProvider);
 
-  Widget _buildJobServicesCards() {
-    void navigateToCompliance() {
-      final builder = Routes.routes()[RouteName.createCompliancePage]!;
-
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) {
-            return Stack(
-              children: [
-                const Positioned.fill(
-                  child: ColoredBox(
-                    color: AppColor.white3,
-                  ),
-                ),
-                builder(context)
-              ],
-            );
-          },
-        ),
-      );
-    }
-
-    return Builder(
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        return Visibility(
+          visible: places.isNotEmpty,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              G2BCard(
-                color: const Color(0xff306D6C),
-                title: "Appeals",
-                subtitle: "في نوفمبر",
-                onTap: () {
-                  // TODO(@42): Navigate to Appeals screen
-                },
+              const SizedBox(
+                height: 24,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  right: 16.0,
+                ),
+                child: Text(
+                  context.l10n.placesToShop,
+                  style: Theme.of(context).extension<ThemeTextStyles>()!.textL,
+                ),
               ),
               const SizedBox(
-                height: 8,
+                height: 16,
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: G2BCard(
-                      color: const Color(0xFF4CA5B4),
-                      title: "Book Appointment",
-                      subtitle: "في نوفمبر",
-                      onTap: () {
-                        // TODO(@42): Navigate to Book Appointment screen
-                      },
-                    ),
+              SizedBox(
+                height: 200,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
                   ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  Expanded(
-                    child: G2BCard(
-                      color: const Color(0xff90BA58),
-                      title: "Compliance Certificate",
-                      subtitle: "في نوفمبر",
-                      onTap: navigateToCompliance,
-                    ),
-                  ),
-                ],
+                  itemCount: places.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 8),
+                  itemBuilder: (context, index) {
+                    final place = places[index];
+
+                    return PoiCard(
+                      objectId: DgisObjectIdMessage(
+                        objectId: int.tryParse(place.id) ?? 0,
+                        entranceId: 0,
+                      ),
+                      title: place.titleOrFallback(locale: context.l10n),
+                      subtitle: '',
+                      image: place.preview.image.url,
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(
+                height: 24,
               ),
             ],
           ),
         );
       },
     );
+  }
+
+  Widget _buildEvents() {
+    return const EventHomeCard();
   }
 
   Widget _buildCalendar() {
@@ -217,6 +201,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
   @override
   Widget build(BuildContext context) {
     final userState = ref.watch(userStateProvider);
+
     ref.listen(searchByRubricsQueryProvider, (previous, next) {
       if (next != null) {
         _draggableScrollableController.animateTo(
@@ -267,130 +252,26 @@ class _DashboardState extends ConsumerState<Dashboard> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          const DashboardProfile(),
+                          const SizedBox(
+                            height: 8,
+                          ),
                           const StoriesWidget(),
                           _buildInterestingPlacesCards(),
                           const SizedBox(
                             height: 24,
                           ),
+                          const SnapAndSendCard(),
+                          _buildShoppingMallsCards(),
                           _buildEvents(),
-                          _buildPrayer(),
-                          const SizedBox(
-                            height: 24,
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 16,
-                            ),
-                            child: ChallengeCard(),
-                          ),
-                          const SizedBox(
-                            height: 24,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 16.0),
-                            child: Text(
-                              context.l10n.registerForOpportunities,
-                              style: Theme.of(context)
-                                  .extension<ThemeTextStyles>()!
-                                  .textL,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 16,
-                            ),
-                            child: LoginCard(),
-                          ),
-                          const SizedBox(
-                            height: 24,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 16.0),
-                            child: Text(
-                              context.l10n.loginToAccess,
-                              style: Theme.of(context)
-                                  .extension<ThemeTextStyles>()!
-                                  .textL,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: ServiceCard(
-                                    title: context.l10n.iwish,
-                                    image: 'assets/images/iwish.png',
-                                    subtitle: context.l10n.inNovember,
-                                    onTap: () async {
-                                      const curve = Curves.linear;
-                                      const duration =
-                                          Duration(milliseconds: 250 ~/ 3);
-                                      await scrollController.animateTo(
-                                        0,
-                                        duration: duration,
-                                        curve: curve,
-                                      );
-
-                                      await _draggableScrollableController
-                                          .animateTo(
-                                        0,
-                                        duration: duration,
-                                        curve: Curves.linear,
-                                      );
-                                      ref
-                                          .read(iwishMarkersProvider.notifier)
-                                          .focusMarkersOnMap();
-                                    },
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                Expanded(
-                                  child: ServiceCard(
-                                    title: context.l10n.snap_and_send,
-                                    image: 'assets/images/snap_and_send.png',
-                                    subtitle: context.l10n.inNovember,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 24,
-                          ),
-                          _buildCalendar(),
-                          if (userState == UserState.business) ...[
+                          if (userState != UserState.guest) ...[
                             const SizedBox(
                               height: 24,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 16.0),
-                              child: Text(
-                                context.l10n.interestingForYou,
-                                style: Theme.of(context)
-                                    .extension<ThemeTextStyles>()!
-                                    .textL,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 16,
-                            ),
-                            // Card for 42
-                            _buildJobServicesCards(),
-                            // ],
-                            const SizedBox(
-                              height: 16,
-                            ),
+                            const JobsAroundCard(),
                           ],
+                          _buildPrayer(),
+                          _buildCalendar(),
                         ],
                       ),
                     ),

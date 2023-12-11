@@ -79,8 +79,8 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
               id: markerInfo?.objectId?.objectId.toString() ??
                   context.l10n.invalid,
               onTap: () {
-                PoiMapRoute(dgisObjectId: markerInfo.objectId!.objectId)
-                    .push(context);
+                PoiMapRoute.open(context, markerInfo.objectId!.objectId);
+
               },
               options: MarkerOptionsMessage(
                 position: markerInfo!.geoPoint,

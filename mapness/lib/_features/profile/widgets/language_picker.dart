@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-
 import '../../../shared/config/package_config.dart';
 import '../../../shared/providers/app_language.dart';
 
@@ -14,8 +13,14 @@ class LanguagePicker extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Column(
       children: [
-        LanguageRow(language: Language.arabic),
-        LanguageRow(language: Language.english),
+        LanguageRow(
+          language: Language.arabic,
+          border: false,
+        ),
+        LanguageRow(
+          language: Language.english,
+          border: true,
+        ),
       ],
     );
   }
@@ -25,19 +30,25 @@ class LanguageRow extends ConsumerWidget {
   const LanguageRow({
     super.key,
     required this.language,
+    required this.border,
   });
 
   final Language language;
+  final bool border;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentLanguage = ref.watch(appLanguageProvider);
 
     return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(8),
+      color: const Color(0xFFF5F7FA),
+      borderRadius: BorderRadius.only(
+          bottomLeft: border ? Radius.circular(12) : Radius.circular(0),
+          bottomRight: (border ? Radius.circular(12) : Radius.circular(0))),
       child: InkWell(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.only(
+            bottomLeft: border ? Radius.circular(12) : Radius.circular(0),
+            bottomRight: (border ? Radius.circular(12) : Radius.circular(0))),
         onTap: () {
           ref.read(appLanguageProvider.notifier).update(language);
         },
@@ -59,7 +70,10 @@ class LanguageRow extends ConsumerWidget {
               const Spacer(),
               Text(
                 language.title,
-                style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0xFF1E2A36)),
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .textM
+                    .copyWith(color: const Color(0xFF1E2A36)),
               ),
               const SizedBox(
                 width: 12,

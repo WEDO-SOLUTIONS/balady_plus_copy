@@ -1,5 +1,4 @@
 import 'package:dgis_map/library.dart';
-import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

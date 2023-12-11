@@ -331,8 +331,7 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<void> installVoice(String id);
 
-  Future<bool> toggleHeatmap(String? tileSourceUri, String? layerName,
-      bool enable);
+  Future<bool> toggleHeatmap(WeatherMapMessage message);
 
   Future<void> setNavigatorVoice(String id);
 }

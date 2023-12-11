@@ -105,6 +105,7 @@ class DgisController extends _$DgisController {
     });
 
     controller.installVoice("voice-sara");
+    controller.installVoice("voice-jennifer");
   }
 
   void _visibleRectListener(VisibleRectEvent event) async {

@@ -8,52 +8,57 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aboutApp => 'حول التطبيق';
 
   @override
-  String get addAddress => 'اضف عنوان';
+  String get addAddress => 'إضافة عنوان';
 
   @override
   String get additionalServices => 'خدمات إضافية';
 
   @override
-  String get am => 'صباحا';
+  String get am => 'صباحًا';
 
   @override
-  String get arabicFullName => 'الاسم العربي كاملا';
+  String get arabicFullName => 'الاسم الكامل باللغة العربية';
 
   @override
-  String get areYouSureYouWantToDeleteAllFavorites => 'هل أنت متأكد أنك تريد حذف كافة المفضلة؟';
+  String get areYouSureYouWantToDeleteAllFavorites =>
+      'هل أنت متأكد أنك تريد حذف كافة المفضلة؟';
 
   @override
-  String get areYouSureYouWantToLogOutOfYourAccount => 'هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟';
+  String get areYouSureYouWantToLogOutOfYourAccount =>
+      'هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟';
 
   @override
-  String get arrival => 'وصول';
+  String get arrival => 'الوصول';
 
   @override
   String get best => 'أفضل';
 
   @override
-  String get bicycleParking => 'مكان مخصص لركن الدرجات';
+  String get bicycleParking => 'موقف الدراجات الهوائية';
 
   @override
   String get branches => 'الفروع';
 
   @override
-  String get buildings => 'البنايات';
+  String get buildings => 'المباني';
 
   @override
   String get business => 'عمل';
 
   @override
-  String get calories => 'سعرات حراريه';
+  String get call => 'اتصال';
 
   @override
-  String get cancel => 'يلغي';
+  String get calories => 'السعرات الحرارية';
+
+  @override
+  String get cancel => 'إلغاء';
 
   @override
   String get challenge => 'تحدي';
 
   @override
-  String get clean => 'ينظف';
+  String get clean => 'تنظيف';
 
   @override
   String get closedUntill => 'مغلق حتى';
@@ -65,7 +70,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get comfort => 'راحة';
 
   @override
-  String get compilanceBuildings => 'مباني التوافق';
+  String get commercialLicenseNumber => ' رقم الرخصة التجارية';
+
+  @override
+  String get compilanceBuildings => 'مباني الامتثال';
 
   @override
   String get complete => 'مكتمل';
@@ -77,10 +85,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get completed => 'مكتمل';
 
   @override
-  String get connectToMomrah => 'تواصل مع ممراه';
+  String get connectToMomrah => 'تواصل مع مومراه';
 
   @override
-  String get connectionLost => 'انقطع الاتصال';
+  String get connectionLost => 'فقد الاتصال';
 
   @override
   String get continueRide => 'متابعة الرحلة';
@@ -89,19 +97,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get continueTrip => 'متابعة الرحلة';
 
   @override
+  String get contributedToImproving => 'ساهم في تحسين المشهد الحضري';
+
+  @override
+  String get coordinates => 'الإحداثيات';
+
+  @override
   String get daily => 'يوميًا';
 
   @override
-  String get darkMap => 'خريطة الظلام';
+  String get darkMap => 'خريطة داكنة';
 
   @override
-  String get darkMode => 'الوضع المظلم';
+  String get darkMode => 'الوضع الداكن';
 
   @override
   String get dateOfBirth => 'تاريخ الميلاد';
 
   @override
-  String get daysAgo => 'منذ أيام';
+  String get daysAgo => 'منذ %d يوم';
 
   @override
   String get delete => 'حذف';
@@ -122,31 +136,34 @@ class AppLocalizationsAr extends AppLocalizations {
   String get didNotMatchAnyResults => 'لم يتطابق مع أية نتائج.';
 
   @override
-  String get done => 'منتهي';
+  String get done => 'تم';
 
   @override
-  String get droneView => 'الأحداث';
+  String get droneView => 'عرض طائرة بدون طيار';
 
   @override
-  String get edit => 'يحرر';
+  String get edit => 'تعديل';
 
   @override
-  String get email => 'الايميل';
+  String get email => 'البريد الإلكتروني';
 
   @override
-  String get endTrip => 'نهاية الرحلة';
+  String get employmentType => 'Employment Type';
+
+  @override
+  String get endTrip => 'إنهاء الرحلة';
 
   @override
   String get englishFullName => 'الاسم الكامل باللغة الانجليزية';
 
   @override
-  String get events => '\'الفعاليا';
+  String get events => 'الفعاليات';
 
   @override
   String get exits => 'مخارج';
 
   @override
-  String get explore => 'يستكشف';
+  String get explore => 'استكشف';
 
   @override
   String get favorites => 'المفضلة';
@@ -155,7 +172,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get favourites => 'المفضلة';
 
   @override
-  String get fencingVacantLands => 'تسييج الأراضي الشاغرة';
+  String get fencingVacantLands => 'تسوير الأراضي الشاغرة';
 
   @override
   String get findAJob => 'العثور على وظيفة';
@@ -164,16 +181,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get findInFavorites => 'البحث في المفضلة';
 
   @override
+  String get findJob => 'العثور على وظيفة';
+
+  @override
   String get firstName => 'الاسم الاول';
 
   @override
-  String get floor => 'أرضية';
+  String get floor => 'الطابق';
 
   @override
-  String get focusOnTheRoad => 'التركيز على طريقك ';
+  String get focusOnTheRoad => 'ركِّز في الطريق';
 
   @override
-  String get from => 'من عند';
+  String get from => 'من';
 
   @override
   String get gasStations => 'محطات الوقود';
@@ -182,19 +202,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get gates => 'بوابات';
 
   @override
-  String get go => 'اذهب';
+  String get go => 'ذهاب';
 
   @override
-  String get goodAfternoon => 'Good afternoon';
+  String get goodAfternoon => 'مساء الخير';
 
   @override
-  String get goodEvening => 'Good evening';
+  String get goodEvening => 'مساء الخير';
 
   @override
-  String get goodMorning => 'Good morning';
+  String get goodMorning => 'صباح الخير';
 
   @override
-  String get home => 'بيت';
+  String get home => 'المنزل';
 
   @override
   String get horseRacing => 'سباق الخيل';
@@ -212,7 +232,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get inNovember => 'في نوفمبر';
 
   @override
-  String get includingTrafficJams => 'بما في ذلك الاختناقات المرورية';
+  String get includingTrafficJams => 'بما في ذلك زحمة السير';
 
   @override
   String get infantRoom => 'غرفة الرضع';
@@ -233,40 +253,56 @@ class AppLocalizationsAr extends AppLocalizations {
   String get iwish => 'أتمنى';
 
   @override
-  String get joyParks => 'حدائق الفرح';
+  String get jobDescription => 'وصف الوظيفة';
+
+  @override
+  String get jobDetails => 'تفاصيل الوظيفة';
+
+  @override
+  String get jobVacancy => 'وظيفة شاغرة';
+
+  @override
+  String get jobs => 'وظائف';
+
+  @override
+  String get jobsAraundYou => 'وظائف حولك';
+
+  @override
+  String get joyParks => 'حدائق بهجة';
 
   @override
   String get km => 'كم';
 
   @override
-  String get language => 'لغة';
+  String get language => 'اللغة';
 
   @override
-  String get languageTitle => 'عربي';
+  String get languageTitle => 'الإنجليزية';
 
   @override
   String get lastName => 'اسم العائلة';
 
   @override
-  String get layersOnTheMap => 'طبقات على الخريطة';
+  String get layersOnTheMap => 'الطبقات على الخريطة';
 
   @override
   String get lightning => 'برق';
 
   @override
-  String get loading => 'تحميل...';
+  String get loading => 'جارٍ التحميل…';
 
   @override
-  String get logOut => 'تسجيل خروج';
+  String get logOut => 'تسجيل الخروج';
 
   @override
   String get loginToAccess => 'تسجيل الدخول للوصول الى';
 
   @override
-  String get lookForUsefulPlacesCafesMallsForExampleMallNearby => 'ابحث عن الأماكن والمقاهي ومراكز التسوق المفيدة على سبيل المثال: مول قريب';
+  String get lookForUsefulPlacesCafesMallsForExampleMallNearby =>
+      'ابحث عن الأماكن والمقاهي ومراكز التسوق المفيدة على سبيل المثال: مول قريب';
 
   @override
-  String get mallNearby => 'مول قريب';
+  String get mallNearby => 'مركز تجاري قريب';
 
   @override
   String get maneuvers => 'مناورات';
@@ -275,25 +311,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get maneuversAreOff => 'المناورات متوقفة';
 
   @override
-  String get maneuversIncluded => 'وشملت المناورات';
+  String get maneuversIncluded => 'المناورات شاملة';
 
   @override
-  String get mapLayerCar => 'ازدحام المرور';
+  String get mapLayerCar => 'سيارة';
 
   @override
   String get mapLayerMetro => 'مترو';
 
   @override
-  String get mapLayerMonorail => 'أجهزة الصراف الآلي';
+  String get mapLayerMonorail => 'السكة المفردة';
 
   @override
-  String get mapLayerParking => 'موقف سيارات';
+  String get mapLayerParking => 'موقف';
 
   @override
-  String get mapLayerTransport => 'النقل';
+  String get mapLayerTransport => 'المواصلات';
 
   @override
-  String get menu => 'قائمة الطعام';
+  String get menu => 'قائمة';
 
   @override
   String get meter => 'م';
@@ -305,67 +341,73 @@ class AppLocalizationsAr extends AppLocalizations {
   String get min => 'دقيقة';
 
   @override
-  String get minutes => 'الدقائق';
+  String get minutes => 'دقائق';
 
   @override
-  String get mosques => 'الجوامع';
+  String get mosques => 'المساجد';
 
   @override
-  String get myChallenge => 'تحدي بلدي';
+  String get myChallenge => 'التحدي الخاص بي';
 
   @override
   String get myLocation => 'موقعي';
 
   @override
-  String get nationality => 'جنسية';
+  String get nationality => 'الجنسية';
 
   @override
-  String get nav_general => 'إستكشف';
+  String get nav_general => 'استكشف';
 
   @override
-  String get nav_landing => 'الخدمات';
+  String get nav_landing => 'المقصودة';
 
   @override
-  String get nav_profile => 'المتجر';
+  String get nav_profile => 'الملف الشخصي';
 
   @override
-  String get nav_route => 'رحلتي';
+  String get nav_route => 'طريق';
 
   @override
   String get next => 'Next';
 
   @override
-  String get open24Hours => 'مفتوحة 24 ساعة';
+  String get open24Hours => 'مفتوح على مدار 24 ساعة';
 
   @override
-  String get openIn => 'فتح في';
+  String get openIn => 'يفتح في ';
 
   @override
-  String get openUntil => 'مفتوحة حتى';
+  String get openUntil => 'مفتوح حتى';
 
   @override
   String get openUntill => 'مفتوح حتى';
 
   @override
-  String get parking => 'موقف سيارات';
+  String get parking => 'موقف';
 
   @override
-  String get parkingSpaces => 'مساحات وقوف السيارات';
+  String get parkingSpaces => 'أماكن وقوف السيارات';
 
   @override
   String get parks => 'الحدائق';
 
   @override
-  String get personalData => 'بيانات شخصية';
+  String get personalData => 'البيانات الشخصية';
 
   @override
   String get pharmacies => 'الصيدليات';
 
   @override
+  String get photoAndVideo => 'صور وارسل';
+
+  @override
   String get photos => 'الصور';
 
   @override
-  String get placesToVisit => 'اماكن للزيارة';
+  String get placesToShop => 'أماكن للتسوق';
+
+  @override
+  String get placesToVisit => 'أماكن للزيارة';
 
   @override
   String get planned => 'مخطط';
@@ -374,7 +416,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get playground => 'ملعب';
 
   @override
-  String get pleaseRestartApplicationForTheNewSettingsToTakeEffect => 'يرجى إعادة تشغيل التطبيق لتصبح الإعدادات الجديدة سارية المفعول.';
+  String get pleaseRestartApplicationForTheNewSettingsToTakeEffect =>
+      'يرجى إعادة تشغيل التطبيق حتى تصبح الإعدادات الجديدة سارية المفعول.';
 
   @override
   String get pleaseTryAgainLater => 'الرجاء معاودة المحاولة في وقت لاحق';
@@ -398,19 +441,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get poi_masmak_fortress => 'قصر المصمك';
 
   @override
-  String get prayerTime => ' أوقات الصلاة';
+  String get prayerTime => 'وقت الصلاة';
 
   @override
   String get presentTime => 'الوقت الحالي';
 
   @override
-  String get profile => 'حساب تعريفي';
+  String get profile => 'الملف الشخصي';
+
+  @override
+  String get published => 'Published';
 
   @override
   String get ready => 'مستعد';
 
   @override
-  String get refresh => 'ينعش';
+  String get refresh => 'إعادة تحميل';
 
   @override
   String get registerForOpportunities => 'سجل للحصول على الفرص';
@@ -419,13 +465,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reload => 'إعادة تحميل';
 
   @override
-  String get remainingTimeForPrayer => 'الوقت المتبقي الى الصلاة';
+  String get remainingTimeForPrayer => 'الوقت المتبقي للصلاة';
 
   @override
-  String get restArea => 'منطقة استراحة';
+  String get restArea => 'منطقة الراحة';
 
   @override
-  String get restroom => 'غرفة الاستراحة';
+  String get restroom => 'دورة مياة';
 
   @override
   String get route => 'طريق';
@@ -434,16 +480,20 @@ class AppLocalizationsAr extends AppLocalizations {
   String get route1description => 'بعض المزايا والحيل لميزة التنقل الذكي...';
 
   @override
-  String get route2description => 'يقترح التنقل الذكي ما يصل إلى ثلاث طرق بالنظر إلى الوضع الحالي لحركة المرور. سيقترح أيضًا بالطرق البديلة عند تقاطع الطرق ';
+  String get route2description =>
+      'يقترح التنقل الذكي ما يصل إلى ثلاث طرق بالنظر إلى الوضع الحالي لحركة المرور. سيقترح أيضًا بالطرق البديلة عند تقاطع الطرق ';
 
   @override
   String get route3description => 'مساعدك الصوتي سيبقيك على اطلاع طوال رحلتك';
 
   @override
+  String get sahm => 'ساهم';
+
+  @override
   String get schools => 'المدارس';
 
   @override
-  String get search => 'يبحث';
+  String get search => 'بحث';
 
   @override
   String get seating => 'الجلوس';
@@ -452,7 +502,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sec => 'ثانية';
 
   @override
-  String get selectYourStartingAndDestinationPointsAndWeWillShowYouConvenientRoutes => 'حدد نقاط البداية والوجهة، وسنعرض لك الطرق المناسبة لك';
+  String
+      get selectYourStartingAndDestinationPointsAndWeWillShowYouConvenientRoutes =>
+          'حدد نقاط البداية والوجهة الخاصة بك ، وسنعرض لك طرقًا ملائمة';
 
   @override
   String get sendAWish => 'أرسل أمنية';
@@ -464,22 +516,26 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sendYourWishes => 'أرسل رغباتك';
 
   @override
-  String get sending => 'إرسال...';
+  String get sending => 'جارِ الإرسال...';
 
   @override
-  String get services => 'خدمات';
+  String get services => 'الخدمات';
 
   @override
-  String get settings => 'إعدادات';
+  String get settings => 'الإعدادات';
 
   @override
-  String get shareChallengeWithUs => 'شاركنا التحدي\nوساهم في التصدي المظاهر التلوث البصري في مدينتك';
+  String get share => 'Share';
 
   @override
-  String get shareFeedback => 'مشاركة التعليقات';
+  String get shareChallengeWithUs =>
+      'شاركنا التحدي. ساهم في مكافحة التلوث البصري في مدينتك';
 
   @override
-  String get shareYourFeedback => 'شارك بملاحظاتك';
+  String get shareFeedback => 'مشاركة الملاحظات';
+
+  @override
+  String get shareYourFeedback => 'شارك ملاحظاتك';
 
   @override
   String get shareYourFeelings => 'شارك مشاعرك';
@@ -494,25 +550,30 @@ class AppLocalizationsAr extends AppLocalizations {
   String get showFavoritesOnMap => 'عرض المفضلة على الخريطة';
 
   @override
-  String get showLess => 'عرض أقل';
+  String get showLess => 'إظهار أقل';
 
   @override
-  String get showMore => 'Show more';
+  String get showMore => 'إظهار المزيد';
 
   @override
   String get signIn => 'تسجيل الدخول';
 
   @override
-  String get signInToUnlockTheFullPotentialOfTheBaladyApp => 'قم بتسجيل الدخول لفتح الإمكانات الكاملة لتطبيق بلدي';
+  String get signInToUnlockTheFullPotentialOfTheBaladyApp =>
+      'قم بتسجيل الدخول لفتح الإمكانيات الكاملة لتطبيق بلدي';
 
   @override
-  String get snap_and_send => 'صور وارسل';
+  String get skills => 'Skills';
 
   @override
-  String get somethingWentWrong => 'هناك خطأ ما';
+  String get snap_and_send => 'التقط وأرسل';
 
   @override
-  String get somethingWentWrongPleaseTryAgainLater => 'هناك شئ خاطئ، يرجى المحاولة فى وقت لاحق';
+  String get somethingWentWrong => 'حدث خطأ';
+
+  @override
+  String get somethingWentWrongPleaseTryAgainLater =>
+      'حدث خطأ ما يرجى المحاولة مرة أخرى لاحقًا';
 
   @override
   String get sorryRouteNotFound => 'عذرا، لم يتم العثور على الطريق';
@@ -530,7 +591,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get stairs => 'سلالم';
 
   @override
-  String get start => 'ابدأ التحدي';
+  String get start => 'بدء';
 
   @override
   String get steps => 'خطوات';
@@ -539,28 +600,29 @@ class AppLocalizationsAr extends AppLocalizations {
   String get streets => 'الشوارع';
 
   @override
-  String get tellUsWhatYouWant => 'أخبرنا ما تريد...';
+  String get tellUsWhatYouWant => 'أخبرنا ماذا تريد...';
 
   @override
-  String get temporarilyNotWorking => 'مؤقتا لا يعمل';
+  String get temporarilyNotWorking => 'لا يعمل مؤقتًا';
 
   @override
-  String get thanksForYourFeedback => 'شكرا لملاحظاتك';
+  String get thanksForYourFeedback => 'شكرًا لملاحظاتك';
 
   @override
-  String get theShortestRoute => 'أقصر طريق';
+  String get theShortestRoute => 'أقصر طريق ';
 
   @override
   String get theTripTook => 'استغرقت الرحلة';
 
   @override
-  String get tinId => 'معرف القصدير';
+  String get tinId => 'رقم هوية دافع الضرائب';
 
   @override
   String get to => 'إلى';
 
   @override
-  String get toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon => 'لحفظ الأماكن كمفضلة، افتح البطاقة وانقر على أيقونة الإشارة المرجعية';
+  String get toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon =>
+      'لحفظ الأماكن كمفضلة، افتح البطاقة وانقر على أيقونة الإشارة المرجعية';
 
   @override
   String get today => 'اليوم';
@@ -578,19 +640,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String get unknown => 'غير معروف';
 
   @override
+  String get vacancies => 'vacancies';
+
+  @override
   String get viewingARoute => 'عرض الطريق';
 
   @override
   String get visualAesthetic => 'الجمالية البصرية';
 
   @override
-  String get voteWhatDoYouWantToHaveInThePark => 'تصويت ماذا تريد أن يكون في الحديقة؟';
+  String get voteWhatDoYouWantToHaveInThePark =>
+      'تصويت ماذا تريد أن يكون في الحديقة؟';
 
   @override
   String get watchMore => 'شاهد المزيد';
 
   @override
-  String get weCouldntFindAnythingTryChangingYourRequest => 'لم نتمكن من العثور على أي شيء. حاول تغيير طلبك';
+  String get weCouldntFindAnythingTryChangingYourRequest =>
+      'لم نتمكن من العثور على أي شيء. حاول تغيير طلبك';
 
   @override
   String get weekend => 'عطلة نهاية الاسبوع';
@@ -605,7 +672,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get work => 'عمل';
 
   @override
+  String get workHours => 'Work hours';
+
+  @override
   String get worldHealthExpo => 'معرض الصحة العالمية 2023';
+
+  @override
+  String get yesterday => 'Yesterday';
 
   @override
   String get youArrived => 'وصلت';

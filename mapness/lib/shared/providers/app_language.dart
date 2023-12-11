@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
+import 'package:mapness/shared/providers/navigator_voice.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_language.g.dart';
@@ -36,6 +37,11 @@ extension LanguageData on Language {
         Language.english => const Locale('en'),
         Language.arabic => const Locale('ar'),
       };
+
+  String get navigatorVoice => switch (this) {
+        Language.english => "voice-jennifer",
+        Language.arabic => "voice-sara",
+      };
 }
 
 @Riverpod(keepAlive: true)
@@ -49,6 +55,7 @@ class AppLanguage extends _$AppLanguage {
 
   void update(Language value) {
     ref.read(sharedPrefsProvider).setString(_prefsKey, value.name);
+    ref.read(navigatorVoiceProvider.notifier).update(value.navigatorVoice);
     state = value;
   }
 }
