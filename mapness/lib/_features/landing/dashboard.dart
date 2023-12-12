@@ -3,7 +3,6 @@ import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar, ScrollPosition;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/common/providers/user_state.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_header.dart';
@@ -192,8 +191,6 @@ class _DashboardState extends ConsumerState<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    final userState = ref.watch(userStateProvider);
-
     ref.listen(searchByRubricsQueryProvider, (previous, next) {
       if (next != null) {
         _draggableScrollableController.animateTo(
@@ -252,7 +249,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                           children: [
                             const DashboardProfile(),
                             const SizedBox(
-                              height: 8,
+                              height: 20,
                             ),
                             const StoriesWidget(),
                             _buildInterestingPlacesCards(),
