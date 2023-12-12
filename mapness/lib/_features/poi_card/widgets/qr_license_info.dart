@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/poi_card/domain/model/qr_trade_license.dart';
@@ -39,7 +38,7 @@ class QrLicenseInfo extends StatelessWidget {
                       width: 12,
                     ),
                     Text(
-                      "deliveryAvailable",
+                      context.l10n.deliveryAvailable,
                       style:
                           context.textStyle.textM.copyWith(color: colorPrimary),
                     ),
@@ -73,11 +72,11 @@ class QrLicenseInfo extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "accessibility",
+                          context.l10n.accessibility,
                           style: context.textStyle.textM,
                         ),
                         Text(
-                          "motorVisual",
+                          context.l10n.motorVisual,
                           style: context.textStyle.textS.copyWith(
                               color: colorPrimary.withOpacity(
                             0.5,
