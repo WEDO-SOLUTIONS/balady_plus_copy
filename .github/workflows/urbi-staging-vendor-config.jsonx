@@ -1,5 +1,5 @@
 [{
-    "name": "Mobile SDK for Balady App 2GIS Momrah Pre-Prod overrides",
+    "name": "Mobile SDK for Balady App Urbi Momrah Pre-Prod overrides",
     "comment": "",
     "overrides": {
         "dgis/native-sdk/keys/user_web_api_key_for_on_premise": "dfdd94df-49f9-45df-84ec-e8870ebdb9a0",
@@ -9,6 +9,6 @@
         "Modules/directory/webapi_url": "https://momrah-catalog-api.public-poc.urbi.ae",
         "dgis/native-sdk/directory/webapi_url": "https://momrah-catalog-api.public-poc.urbi.ae",
         "dgis/native-sdk/routing/car_routing_server_url": "https://momrah-navi-front.public-poc.urbi.ae",
-        "Modules/twins/webapi_url": "https://momrah-twins-api.public-poc.urbi.ae/v1/search/dgis"
+	    "Modules/twins/webapi_url": "https://momrah-twins-api.public-poc.urbi.ae/v1/search/dgis"
     }
 }]
