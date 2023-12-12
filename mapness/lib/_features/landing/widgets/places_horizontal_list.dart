@@ -41,7 +41,7 @@ class PlacesHorizontalList extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            height: 16,
+            height: 12,
           ),
           SizedBox(
             height: 200,
@@ -66,9 +66,6 @@ class PlacesHorizontalList extends StatelessWidget {
                 );
               },
             ),
-          ),
-          const SizedBox(
-            height: 24,
           ),
         ],
       ),

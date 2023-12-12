@@ -39,7 +39,7 @@ class QrLicenseInfo extends StatelessWidget {
                       width: 12,
                     ),
                     Text(
-                      context.l10n.deliveryAvailable,
+                      "deliveryAvailable",
                       style:
                           context.textStyle.textM.copyWith(color: colorPrimary),
                     ),
@@ -73,11 +73,11 @@ class QrLicenseInfo extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          context.l10n.accessibility,
+                          "accessibility",
                           style: context.textStyle.textM,
                         ),
                         Text(
-                          context.l10n.motorVisual,
+                          "motorVisual",
                           style: context.textStyle.textS.copyWith(
                               color: colorPrimary.withOpacity(
                             0.5,

@@ -24,9 +24,26 @@ class DashboardProfile extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: userData.maybeWhen(
-          orElse: () => const SizedBox.shrink(),
+          orElse: () => Text(
+                _greeting(context),
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .accentL
+                    .apply(color: const Color(0xff4CA5B4)),
+                textAlign: TextAlign.end,
+              ),
           data: (userInfo) {
-            if (userInfo == null) return const SizedBox.shrink();
+            if (userInfo == null) {
+              return Text(
+                _greeting(context),
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .accentL
+                    .apply(color: const Color(0xff4CA5B4)),
+                textAlign: TextAlign.end,
+              );
+            }
+
             return Text(
               '${_greeting(context)}, ${userInfo.givenName ?? ''}',
               style: Theme.of(context)

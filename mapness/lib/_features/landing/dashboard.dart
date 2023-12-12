@@ -166,6 +166,9 @@ class _DashboardState extends ConsumerState<Dashboard> {
                             ),
                             const SnapAndSendCard(),
                             _buildShoppingMallsCards(),
+                            const SizedBox(
+                              height: 20,
+                            ),
                             const EventsHomeCard(),
                             const SizedBox(
                               height: 20,
