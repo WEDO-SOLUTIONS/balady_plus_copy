@@ -77,7 +77,7 @@ class Legend extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final weatherMapState = ref.watch(weatherMapControllerProvider);
+    final weatherMapState = ref.watch(weatherMapControllerProvider());
 
     var measures = weatherMapState.type.measures();
     var measureUnit = weatherMapState.type.measureUnit();

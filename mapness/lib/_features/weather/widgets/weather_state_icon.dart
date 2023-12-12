@@ -14,7 +14,7 @@ class WeatherStateIcon extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final weatherMapState = ref.watch(weatherMapControllerProvider);
+    final weatherMapState = ref.watch(weatherMapControllerProvider());
     final type = weatherMapState.type;
 
     final iconRes = switch (type) {

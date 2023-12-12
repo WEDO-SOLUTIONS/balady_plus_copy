@@ -4,9 +4,9 @@ import 'package:mapness/_features/weather/provider/weather_map_controller.dart';
 
 extension WidgetRefWeatherExt on WidgetRef {
   void toggleWeatherMap({WeatherMapType? type, required bool enable}) =>
-      read(weatherMapControllerProvider.notifier)
+      read(weatherMapControllerProvider().notifier)
           .toggleWeatherMap(enable: enable, type: type);
 
   Future<void> switchOffWeatherLayers() =>
-      read(weatherMapControllerProvider.notifier).switchOffWeatherLayers();
+      read(weatherMapControllerProvider().notifier).switchOffWeatherLayers();
 }
