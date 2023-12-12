@@ -57,7 +57,7 @@ class PermitsTobaccoRemoteDataSourceImpl
           .post(ApiUrl.permitTobaccoSubmit(params.licenseNumber), data: {
         "insideHotel": params.insideHotel,
         if (params.hotelLicenseNumber != null)
-          "hotelLicenseNumber": params.hotelLicenseNumber
+          "hotelLicenseNumber": params.hotelLicenseNumber,
       });
 
       final data = response.data;

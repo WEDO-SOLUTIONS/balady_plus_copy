@@ -64,12 +64,7 @@ class _PermitStep1PageState extends State<PermitStep1Page> {
               child: Container(
                 color: AppColor.white,
                 child: PostersPreviousNextButtons(
-                  isBtnDisabled: !(state.agreement ?? false),
-                  onPressed: () {
-                    context
-                        .read<PermitTobaccoLicenseBloc>()
-                        .add(const SubmitPermitEvent());
-                  },
+                  isBtnDisabled: state.isStep2Valid(),
                 ),
               ),
             ),
@@ -146,6 +141,15 @@ class Step2SummeryWidget extends StatelessWidget {
             const CustomVerticalSpace(
               height: 16,
             ),
+            FieldData(
+                title: "permit_needs_fees".tr(),
+                subTitle: state.needsFees() == true ? "yes".tr() : "no".tr()),
+            const CustomVerticalSpace(
+              height: 16,
+            ),
+            const CustomVerticalSpace(
+              height: 16,
+            ),
             const CustomVerticalSpace(
               height: 16,
             ),
@@ -189,8 +193,8 @@ class Step2SummeryWidget extends StatelessWidget {
               ),
               FieldData(
                   title: "hotel_class".tr(),
-                  subTitle: state
-                      .permitTobaccoValidateHotelLicenseResponse?.hotelClass
+                  subTitle: state.permitTobaccoValidateHotelLicenseResponse
+                      ?.hotelClass?.name
                       .toString()),
             ]
           ],

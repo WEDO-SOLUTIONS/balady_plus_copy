@@ -291,7 +291,7 @@ class PermitsTobaccoReqeuestDetailsPage extends StatelessWidget {
             children: [
               const CustomVerticalSpace(height: 32),
               NotesWidget(notes: [
-                "permit_cancel_confirm_msg"
+                "permit_tobacco_cancel_confirm_msg"
                     .tr()
                     .replaceAll("{}", requestId.toString())
               ])

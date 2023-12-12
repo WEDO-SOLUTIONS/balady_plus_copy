@@ -73,6 +73,7 @@ class _DeathAndBurialInfoSectionState extends State<DeathAndBurialInfoSection> {
                           //  controller: deathLocationTextEditController,
                           //  focusNode: deathLocationShipFocusNode,
                           initialValue: state.deathLocation,
+                          showOptional: true,
                           maxLines: 1,
                           textInputAction: TextInputAction.done,
                           keyboardType: TextInputType.text,

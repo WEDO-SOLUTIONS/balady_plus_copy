@@ -96,7 +96,7 @@ class DeceasedInfoResponseDtoListModel extends DeceasedInfoResponseDtoList {
     super.burialCityId,
     super.burialCityName,
     super.name,
-    super.isMuslimReligion,
+    super.isMuslim,
     super.nationalityId,
     super.nationality,
     super.genderId,
@@ -144,8 +144,7 @@ class DeceasedInfoResponseDtoListModel extends DeceasedInfoResponseDtoList {
         burialCityId: json["burialCityId"],
         burialCityName: json["burialCityName"],
         name: json["name"] == null ? null : json["name"],
-        isMuslimReligion:
-            json["isMuslimReligion"] == null ? null : json["isMuslimReligion"],
+        isMuslim: json["isMuslim"] == null ? null : json["isMuslim"],
         nationalityId:
             json["nationalityId"] == null ? null : json["nationalityId"],
         nationality: json["nationality"] == null ? null : json["nationality"],

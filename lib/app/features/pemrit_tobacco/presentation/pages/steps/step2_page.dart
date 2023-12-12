@@ -30,6 +30,7 @@ class _PermitStep2PageState extends State<PermitStep2Page> {
   @override
   void initState() {
     super.initState();
+    context.read<PermitTobaccoLicenseBloc>().add(CalculatePermitCostEvent());
   }
 
   bool isAgreement = false;
@@ -55,8 +56,7 @@ class _PermitStep2PageState extends State<PermitStep2Page> {
                     const CustomVerticalSpace(height: 16),
                     UndertakingWidget(
                       text: "posters_agreement_title".tr(),
-                      desc:
-                          "${state.ALERT_SERVICE_USAGE_GUIDANCE()} ${"<br><br>"}  ${"posters_agreement_desc".tr()}",
+                      desc: "posters_agreement_desc".tr(),
                       onChange: (value) {
                         context
                             .read<PermitTobaccoLicenseBloc>()
@@ -270,7 +270,7 @@ class _CalcualtorWidgetState extends State<CalcualtorWidget> {
                           ),
                         ),
                         child: CustomTextWidget(
-                          "permit_24_feesNote".tr(),
+                          state.ALERT() ?? "",
                           fontColor: Color(0xFF52525B),
                           fontSize: 12,
                           height: 1.4,

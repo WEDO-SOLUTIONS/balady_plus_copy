@@ -46,7 +46,7 @@ class EkramAddDeceasedState extends Equatable {
         data.selectedCemetry == null ||
         data.selectedCemetryType == null ||
         data.nationalityId == null ||
-        (data.permitNo?.isEmpty ?? true) ||
+        //  (data.permitNo?.isEmpty ?? true) ||
         (data.selectedOrgnization == null) ||
         data.specialTransferNeeded == null) {
       return false;
@@ -140,5 +140,17 @@ class EkramAddDeceasedState extends Equatable {
 
   bool allowFillData() {
     return data?.selectedNationalType?.fillInfo == true;
+  }
+
+  bool isFormDisabled() {
+    return data.graveDetails != null;
+  }
+
+  bool isCemetryDisabled() {
+    return data.graveDetails?.burialInfo?.getHijriDate() != null;
+  }
+
+  bool isBurialDatesDisabled() {
+    return data.graveDetails?.burialInfo?.getHijriDate() != null;
   }
 }

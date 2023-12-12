@@ -76,7 +76,7 @@ class AddTripDialog extends StatelessWidget {
                       Expanded(child: DialogBody()),
                       ElevatedButtonWidget.custom(
                         isDisabled: !state.isFormValid(),
-                        text: Helpers.translatingWord("confirm"),
+                        text: Helpers.translatingWord("add"),
                         onPressed: () {
                           context
                               .read<EkramAddTripBloc>()
