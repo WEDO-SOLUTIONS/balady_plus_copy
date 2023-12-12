@@ -102,5 +102,6 @@ flutter:
     - assets/icons/svg/weather/night/
     - assets/icons/svg/weather/day/
     - assets/icons/svg/layers/
+    - assets/icons/svg/poi_card/
     - assets/images/
     - assets/images_svg/

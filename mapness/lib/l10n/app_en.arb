@@ -214,5 +214,8 @@
   "worldHealthExpo": "World Health Expo 2023",
   "youArrived": "You arrived",
   "youReHere": "You're here!",
-  "youSearch": "You search"
+  "youSearch": "You search",
+  "deliveryAvailable": "Delivery available",
+  "accessibility": "Accessibility",
+  "motorVisual": "Motor, visual"
 }

@@ -20,12 +20,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get arabicFullName => 'الاسم الكامل باللغة العربية';
 
   @override
-  String get areYouSureYouWantToDeleteAllFavorites =>
-      'هل أنت متأكد أنك تريد حذف كافة المفضلة؟';
+  String get areYouSureYouWantToDeleteAllFavorites => 'هل أنت متأكد أنك تريد حذف كافة المفضلة؟';
 
   @override
-  String get areYouSureYouWantToLogOutOfYourAccount =>
-      'هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟';
+  String get areYouSureYouWantToLogOutOfYourAccount => 'هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟';
 
   @override
   String get arrival => 'الوصول';
@@ -298,8 +296,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loginToAccess => 'تسجيل الدخول للوصول الى';
 
   @override
-  String get lookForUsefulPlacesCafesMallsForExampleMallNearby =>
-      'ابحث عن الأماكن والمقاهي ومراكز التسوق المفيدة على سبيل المثال: مول قريب';
+  String get lookForUsefulPlacesCafesMallsForExampleMallNearby => 'ابحث عن الأماكن والمقاهي ومراكز التسوق المفيدة على سبيل المثال: مول قريب';
 
   @override
   String get mallNearby => 'مركز تجاري قريب';
@@ -416,8 +413,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get playground => 'ملعب';
 
   @override
-  String get pleaseRestartApplicationForTheNewSettingsToTakeEffect =>
-      'يرجى إعادة تشغيل التطبيق حتى تصبح الإعدادات الجديدة سارية المفعول.';
+  String get pleaseRestartApplicationForTheNewSettingsToTakeEffect => 'يرجى إعادة تشغيل التطبيق حتى تصبح الإعدادات الجديدة سارية المفعول.';
 
   @override
   String get pleaseTryAgainLater => 'الرجاء معاودة المحاولة في وقت لاحق';
@@ -480,8 +476,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get route1description => 'بعض المزايا والحيل لميزة التنقل الذكي...';
 
   @override
-  String get route2description =>
-      'يقترح التنقل الذكي ما يصل إلى ثلاث طرق بالنظر إلى الوضع الحالي لحركة المرور. سيقترح أيضًا بالطرق البديلة عند تقاطع الطرق ';
+  String get route2description => 'يقترح التنقل الذكي ما يصل إلى ثلاث طرق بالنظر إلى الوضع الحالي لحركة المرور. سيقترح أيضًا بالطرق البديلة عند تقاطع الطرق ';
 
   @override
   String get route3description => 'مساعدك الصوتي سيبقيك على اطلاع طوال رحلتك';
@@ -502,9 +497,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sec => 'ثانية';
 
   @override
-  String
-      get selectYourStartingAndDestinationPointsAndWeWillShowYouConvenientRoutes =>
-          'حدد نقاط البداية والوجهة الخاصة بك ، وسنعرض لك طرقًا ملائمة';
+  String get selectYourStartingAndDestinationPointsAndWeWillShowYouConvenientRoutes => 'حدد نقاط البداية والوجهة الخاصة بك ، وسنعرض لك طرقًا ملائمة';
 
   @override
   String get sendAWish => 'أرسل أمنية';
@@ -528,8 +521,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get share => 'Share';
 
   @override
-  String get shareChallengeWithUs =>
-      'شاركنا التحدي. ساهم في مكافحة التلوث البصري في مدينتك';
+  String get shareChallengeWithUs => 'شاركنا التحدي. ساهم في مكافحة التلوث البصري في مدينتك';
 
   @override
   String get shareFeedback => 'مشاركة الملاحظات';
@@ -559,8 +551,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get signIn => 'تسجيل الدخول';
 
   @override
-  String get signInToUnlockTheFullPotentialOfTheBaladyApp =>
-      'قم بتسجيل الدخول لفتح الإمكانيات الكاملة لتطبيق بلدي';
+  String get signInToUnlockTheFullPotentialOfTheBaladyApp => 'قم بتسجيل الدخول لفتح الإمكانيات الكاملة لتطبيق بلدي';
 
   @override
   String get skills => 'Skills';
@@ -572,8 +563,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get somethingWentWrong => 'حدث خطأ';
 
   @override
-  String get somethingWentWrongPleaseTryAgainLater =>
-      'حدث خطأ ما يرجى المحاولة مرة أخرى لاحقًا';
+  String get somethingWentWrongPleaseTryAgainLater => 'حدث خطأ ما يرجى المحاولة مرة أخرى لاحقًا';
 
   @override
   String get sorryRouteNotFound => 'عذرا، لم يتم العثور على الطريق';
@@ -621,8 +611,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get to => 'إلى';
 
   @override
-  String get toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon =>
-      'لحفظ الأماكن كمفضلة، افتح البطاقة وانقر على أيقونة الإشارة المرجعية';
+  String get toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon => 'لحفظ الأماكن كمفضلة، افتح البطاقة وانقر على أيقونة الإشارة المرجعية';
 
   @override
   String get today => 'اليوم';
@@ -649,15 +638,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get visualAesthetic => 'الجمالية البصرية';
 
   @override
-  String get voteWhatDoYouWantToHaveInThePark =>
-      'تصويت ماذا تريد أن يكون في الحديقة؟';
+  String get voteWhatDoYouWantToHaveInThePark => 'تصويت ماذا تريد أن يكون في الحديقة؟';
 
   @override
   String get watchMore => 'شاهد المزيد';
 
   @override
-  String get weCouldntFindAnythingTryChangingYourRequest =>
-      'لم نتمكن من العثور على أي شيء. حاول تغيير طلبك';
+  String get weCouldntFindAnythingTryChangingYourRequest => 'لم نتمكن من العثور على أي شيء. حاول تغيير طلبك';
 
   @override
   String get weekend => 'عطلة نهاية الاسبوع';
@@ -688,4 +675,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get youSearch => 'انت تبحث';
+
+  @override
+  String get deliveryAvailable => 'التسليم متاح';
+
+  @override
+  String get accessibility => 'إمكانية الوصول';
+
+  @override
+  String get motorVisual => 'الموتور، بصري';
 }
