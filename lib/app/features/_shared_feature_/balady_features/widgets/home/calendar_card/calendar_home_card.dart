@@ -1,4 +1,5 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/balady_features/widgets/home/calendar_card/calendar_home_item_card.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
@@ -56,8 +57,9 @@ class CalendarHomeCard extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(
-                            context, RouteName.calendarMainPage);
+                        NavigationService.navigatorKey.currentState!.pushNamed(
+                          RouteName.calendarMainPage,
+                        );
                       },
                       child: CustomTextWidget(
                         "show_all".tr(),

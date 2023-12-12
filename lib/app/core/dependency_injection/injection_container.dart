@@ -2,7 +2,11 @@ import 'package:balady_plus/app/core/dependency_injection/features/old_injection
 import 'package:balady_plus/app/core/dependency_injection/features/dc_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/profile/crm_requests_injection.dart';
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_bloc.dart';
-import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart';
+import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart'
+    as calendar;
+import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
+import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart'
+    as events;
 import 'package:balady_plus/app/features/unknow/data/data_sources/remote_data_source.dart';
 import 'package:balady_plus/app/features/weather/weather_exports.dart'
     show
@@ -181,7 +185,12 @@ void initialize() {
   sl.registerLazySingleton(() => const DeviceDetails());
   sl.registerLazySingleton(() => const PackageDetails());
   sl.registerLazySingleton(() => LocationCubit());
-  sl.registerLazySingleton(() => CalendarBloc()..add(GetSearchEvent()));
+  sl.registerLazySingleton(
+    () => CalendarBloc()..add(const calendar.GetSearchEvent()),
+  );
+  sl.registerLazySingleton(
+    () => EventsBloc()..add(const events.GetSearchEvent()),
+  );
 
   //! External
   sl.registerLazySingleton(() => const FlutterSecureStorage());

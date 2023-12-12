@@ -1,4 +1,5 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +57,8 @@ class EventsHomeCard extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, RouteName.eventsMainPage);
+                        NavigationService.navigatorKey.currentState!
+                            .pushNamed(RouteName.eventsMainPage);
                       },
                       child: CustomTextWidget(
                         "show_all".tr(),
@@ -68,21 +70,27 @@ class EventsHomeCard extends StatelessWidget {
                 ),
               ),
               Container(
-                  height: 240,
-                  child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      itemCount: ((state.searchItems.length) > 4)
-                          ? 4
-                          : state.searchItems.length,
-                      padding: EdgeInsets.symmetric(vertical: 8),
-                      itemBuilder: (context, index) {
-                        return Container(
-                            child: EventItemCard(
-                                width: MediaQuery.of(context).size.width - 60,
-                                padding: EdgeInsets.only(top: 16, right: 16),
-                                item: state.searchItems[index]));
-                      })),
+                height: 240,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: ((state.searchItems.length) > 4)
+                      ? 4
+                      : state.searchItems.length,
+                  padding: EdgeInsets.only(
+                    top: 8,
+                    bottom: 8,
+                    left: 16,
+                  ),
+                  itemBuilder: (context, index) {
+                    return Container(
+                        child: EventItemCard(
+                            width: MediaQuery.of(context).size.width - 60,
+                            padding: EdgeInsets.only(top: 16, right: 16),
+                            item: state.searchItems[index]));
+                  },
+                ),
+              ),
               SizedBox(
                 height: 8,
               ),

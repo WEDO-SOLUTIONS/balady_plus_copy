@@ -1,6 +1,4 @@
-import 'package:balady_plus/app/features/home_page/home_exports.dart' as team42;
-import 'package:balady_plus/app/features/home_page/presentation/widgets/home_bottom_sheet/calendar_home_item_widget.dart';
-import 'package:balady_plus/app/features/home_page/presentation/widgets/home_bottom_sheet/event_home_card.dart';
+import 'package:balady_plus/app/features/_shared_feature_/balady_features/balady_exports.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar, ScrollPosition;
@@ -182,22 +180,6 @@ class _DashboardState extends ConsumerState<Dashboard> {
     );
   }
 
-  Widget _buildEvents() {
-    return const EventHomeCard();
-  }
-
-  Widget _buildCalendar() {
-    return const CalendarHomeItemWidget(
-      padding: EdgeInsets.symmetric(
-        horizontal: 16,
-      ),
-    );
-  }
-
-  Widget _buildPrayer() {
-    return const team42.PrayerHomeCard();
-  }
-
   @override
   Widget build(BuildContext context) {
     final userState = ref.watch(userStateProvider);
@@ -263,15 +245,15 @@ class _DashboardState extends ConsumerState<Dashboard> {
                           ),
                           const SnapAndSendCard(),
                           _buildShoppingMallsCards(),
-                          _buildEvents(),
+                          const EventsHomeCard(),
                           if (userState != UserState.guest) ...[
                             const SizedBox(
                               height: 24,
                             ),
                             const JobsAroundCard(),
                           ],
-                          _buildPrayer(),
-                          _buildCalendar(),
+                          const PrayerHomeCard(),
+                          const CalendarHomeCard(),
                         ],
                       ),
                     ),

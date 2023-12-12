@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -303,7 +304,9 @@ class PrayerHomeCard extends StatelessWidget {
                                         btnPadding: const EdgeInsets.all(11),
                                         text: 'prayer_timings'.tr(),
                                         onPressed: () {
-                                          context.pushNamedRoute(
+                                          NavigationService
+                                              .navigatorKey.currentState!
+                                              .pushNamed(
                                             RouteName.prayerTimes,
                                             arguments: context
                                                 .read<PrayerTimesCubit>(),
