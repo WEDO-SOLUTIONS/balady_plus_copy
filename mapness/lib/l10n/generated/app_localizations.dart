@@ -1442,6 +1442,24 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'انت تبحث'**
   String get youSearch;
+
+  /// No description provided for @deliveryAvailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'التسليم متاح'**
+  String get deliveryAvailable;
+
+  /// No description provided for @accessibility.
+  ///
+  /// In ar, this message translates to:
+  /// **'إمكانية الوصول'**
+  String get accessibility;
+
+  /// No description provided for @motorVisual.
+  ///
+  /// In ar, this message translates to:
+  /// **'الموتور، بصري'**
+  String get motorVisual;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -678,4 +678,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get youSearch => 'انت تبحث';
+
+  @override
+  String get deliveryAvailable => 'التسليم متاح';
+
+  @override
+  String get accessibility => 'إمكانية الوصول';
+
+  @override
+  String get motorVisual => 'الموتور، بصري';
 }
