@@ -3628,6 +3628,12 @@
   "permit_24_permit_no":"رقم التصريح", 
   "permit_need_baladiyah":"هل يحتاج اعتماد بلدية",  
   "permit_needs_fees":"هل يوجد رسوم اصدار" , 
-  "permit_cancel_confirm_msg":"عزيزي المستفيد، هل تريد الاستمرار بإلغاء طلب تصريح فتح محل ٢٤ ساعة رقم {}"
+  "permit_cancel_confirm_msg":"عزيزي المستفيد، هل تريد الاستمرار بإلغاء طلب تصريح فتح محل ٢٤ ساعة رقم {}", 
+  "permit_tobacco_no_hotel_license_msg":"عفوا يرجي تحديد رقم رخصة الفندق التي يقع فيها رخصة المحل {}", 
+  "permit_tobacco_license_details":"بيانات الرخصة", 
+  "licence_inside_hotel":"هل الموقع يقع داخل فندق ؟", 
+  "hotel_license_number":"رقم الرخصة التجارية للفندق", 
 
+  "hotel_name":"اسم الفندق",
+  "hotel_class":"فئة الفندق"
 }

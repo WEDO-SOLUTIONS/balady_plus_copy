@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/dependency_injection/features/commercials_tobacco_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/old_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/dc_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/profile/crm_requests_injection.dart';
@@ -127,7 +128,7 @@ void initialize() {
   CommercialsPostersInjection.init();
 
   CommercialsPermits24Injection.init();
-
+  CommercialsTobaccoInjection.init();
 //? Objections
   ObjectionsInjection.init();
 //? Objectable Transactions

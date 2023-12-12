@@ -633,6 +633,30 @@ class ApiUrl {
   static String deletePermit24Request(int requestId) =>
       "v1/supperapp-commercial-twentyfour-services/requests/$requestId";
 
+//! Tobacco Permit
+
+  static String permitTobaccoAlllowedAction(int? requestId) =>
+      "v1/supperapp-commercial-tobbaco-permission-services/tobbaco-allowed-actions/$requestId";
+
+  static String permitsTobaccoAlerts =
+      "v1/supperapp-commercial-tobbaco-permission-services/alerts/ALERTS";
+  static String permitTobaccoValidateBeforeApply(int? licenseId) =>
+      "v1/supperapp-commercial-tobbaco-permission-services/valid-before-apply/$licenseId";
+
+  static String permitTobaccoSubmit(int licenseId) =>
+      "v1/supperapp-commercial-tobbaco-permission-services/submits/$licenseId";
+
+  static String permitTobaccoRequestDetails(int requestId) =>
+      "v1/supperapp-commercial-tobbaco-permission-services/permit-details/$requestId";
+
+  static String permitTobaccoCalclaute(int licenseId) =>
+      "v1/supperapp-commercial-tobbaco-permission-services/licences-costs/$licenseId";
+  static String deletePermitTobaccoRequest(int requestId) =>
+      "v1/supperapp-commercial-tobbaco-permission-services/requests/$requestId";
+
+  static String PermitTobaccoValidateHotelLicense(int license, int hotel) =>
+      "v1/supperapp-commercial-tobbaco-permission-services/validate-hotel-license/$license/$hotel";
+
 // Ekram
   static const ekramRules =
       '/v1/iam-services/user-configuration/أنطمة بلدي/نظام إكرام الموتى';

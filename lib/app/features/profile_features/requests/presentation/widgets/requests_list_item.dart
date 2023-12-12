@@ -171,6 +171,10 @@ class RequestsListItem extends StatelessWidget {
                 Navigator.pushNamed(
                     context, RouteName.permitsRequestDetailsPage,
                     arguments: request.requestNumber);
+              } else if (request.requestTypeId == 1026) {
+                Navigator.pushNamed(
+                    context, RouteName.permitsTobaccoRequestDetailsPage,
+                    arguments: request.requestNumber);
               } else {
                 if (request.redirectUrl == null) {
                   if (request.requestTypeId == 50001) {
