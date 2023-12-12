@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import '../../../../../../core/utils/utils_exports.dart'
     show AppColor, AppFontWeight, Prayers;
@@ -71,17 +72,23 @@ class _NextPrayerState extends State<NextPrayerHome> {
         final seconds = (time.inSeconds % 60).toString().padLeft(2, '0');
 
         return hours != "00"
-            ? CustomTextWidget(
-                "$seconds : $minutes : $hours",
-                fontColor: AppColor.white,
-                fontWeight: AppFontWeight.semiBold,
-                fontSize: 26,
+            ? Text(
+                "$hours:$minutes:$seconds",
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .headingL
+                    .copyWith(
+                      color: Colors.white,
+                    ),
               )
-            : CustomTextWidget(
-                "$seconds : $minutes",
-                fontColor: AppColor.white,
-                fontWeight: AppFontWeight.semiBold,
-                fontSize: 26,
+            : Text(
+                "$minutes:$seconds",
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .headingL
+                    .copyWith(
+                      color: Colors.white,
+                    ),
               );
       },
     );
