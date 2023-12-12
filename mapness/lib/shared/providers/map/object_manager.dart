@@ -53,4 +53,11 @@ class MapObjectManager extends _$MapObjectManager {
           toManager: await future,
         );
   }
+
+  Future<void>removeAllPolyLines()async {
+    await ref.read(dgisControllerProvider).value?.removeAllPolylines();
+  }
+  Future<void>removeAllPolygons()async {
+    await ref.read(dgisControllerProvider).value?.removeAllPolygons();
+  }
 }
