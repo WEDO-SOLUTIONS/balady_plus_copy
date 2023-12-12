@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:rate_my_app/rate_my_app.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class MomraWebsitePage extends StatefulWidget {

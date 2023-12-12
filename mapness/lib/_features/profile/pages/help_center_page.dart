@@ -1,18 +1,12 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/profile/widgets/contact_info.dart';
-import 'package:mapness/_features/profile/widgets/dark_mode_cell.dart';
 import 'package:mapness/_features/profile/widgets/expandable_cell.dart';
 import 'package:mapness/app/routes/profile.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/providers/app_language.dart';
-
-import '../widgets/language_picker.dart';
 
 class HelpCenterPage extends StatelessWidget {
   const HelpCenterPage({super.key});
@@ -145,18 +139,11 @@ class HelpCenterPage extends StatelessWidget {
               const SizedBox(
                 height: 16,
               ),
-              Consumer(
-                builder: (context, ref, child) {
-                  final language = ref.watch(appLanguageProvider);
-
-                  // ignore: prefer_const_constructors
-                  return ExpandableCell(
-                    title: "Contact information",
-                    count: 3,
-                    icon: "assets/images_svg/help_contact.svg",
-                    content: const ContactInfo(),
-                  );
-                },
+              const ExpandableCell(
+                title: "Contact information",
+                count: 3,
+                icon: "assets/images_svg/help_contact.svg",
+                content: ContactInfo(),
               ),
               const SizedBox(
                 height: 8,

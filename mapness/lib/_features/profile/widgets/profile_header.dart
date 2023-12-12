@@ -8,11 +8,18 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_features.dart';
 
-class ProfileHeader extends ConsumerWidget {
+class ProfileHeader extends ConsumerStatefulWidget {
   const ProfileHeader({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProfileHeader> createState() => _ProfileHeaderState();
+}
+
+class _ProfileHeaderState extends ConsumerState<ProfileHeader> {
+  int tapsToGo = 10;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
@@ -21,12 +28,22 @@ class ProfileHeader extends ConsumerWidget {
             width: 40,
           ),
           const Spacer(),
-          Text(
-            context.l10n.profile,
-            style: Theme.of(context)
-                .extension<ThemeTextStyles>()!
-                .textL
-                .copyWith(color: const Color(0xFF1E2A36)),
+          InkWell(
+            onTap: () {
+              setState(() {
+                tapsToGo -= 1;
+              });
+              if (tapsToGo == 0) {
+                ref.read(appFeaturesProvider.notifier).enableNavi();
+              }
+            },
+            child: Text(
+              context.l10n.profile,
+              style: Theme.of(context)
+                  .extension<ThemeTextStyles>()!
+                  .textL
+                  .copyWith(color: const Color(0xFF1E2A36)),
+            ),
           ),
           const Spacer(),
           SizedBox(

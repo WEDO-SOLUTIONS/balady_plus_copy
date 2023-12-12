@@ -8,20 +8,12 @@ import 'package:mapness/_features/profile/widgets/personal_data.dart';
 import 'package:mapness/_features/profile/widgets/profile_image_widget.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/providers/app_features.dart';
 
-class ProfileInfoPage extends ConsumerStatefulWidget {
+class ProfileInfoPage extends ConsumerWidget {
   const ProfileInfoPage({super.key});
 
   @override
-  ConsumerState<ProfileInfoPage> createState() => _ProfileInfoPageState();
-}
-
-class _ProfileInfoPageState extends ConsumerState<ProfileInfoPage> {
-  int tapsToGo = 10;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final userData = ref.watch(authProvider).requireValue!;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -107,25 +99,15 @@ class _ProfileInfoPageState extends ConsumerState<ProfileInfoPage> {
                     const SizedBox(
                       height: 8,
                     ),
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          tapsToGo -= 1;
-                        });
-                        if (tapsToGo == 0) {
-                          ref.read(appFeaturesProvider.notifier).enableNavi();
-                        }
-                      },
-                      child: Text(
-                        userData.idNo ?? "",
-                        style: Theme.of(context)
-                            .extension<ThemeTextStyles>()!
-                            .textS
-                            .copyWith(
-                              color: const Color(0xA31E2A36),
-                            ),
-                        textAlign: TextAlign.center,
-                      ),
+                    Text(
+                      userData.idNo ?? "",
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .textS
+                          .copyWith(
+                            color: const Color(0xA31E2A36),
+                          ),
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),

@@ -1,10 +1,5 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
-import '../../../shared/config/package_config.dart';
-import '../../../shared/providers/app_language.dart';
 
 class ContactInfo extends StatelessWidget {
   const ContactInfo({super.key});
@@ -59,7 +54,7 @@ class ContactInfo extends StatelessWidget {
   }
 }
 
-class ContactRow extends ConsumerWidget {
+class ContactRow extends StatelessWidget {
   const ContactRow({
     super.key,
     required this.contact,
@@ -72,9 +67,7 @@ class ContactRow extends ConsumerWidget {
   final bool border;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final currentLanguage = ref.watch(appLanguageProvider);
-
+  Widget build(BuildContext context) {
     return Material(
       color: const Color(0xFFF5F7FA),
       borderRadius: BorderRadius.only(
