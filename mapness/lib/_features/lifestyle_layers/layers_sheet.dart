@@ -83,8 +83,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                           width: 40,
                           decoration: const BoxDecoration(
                             color: Color(0xFFDDE4EE),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(24)),
+                            borderRadius: BorderRadius.all(Radius.circular(24)),
                           ),
                         ),
                         const SizedBox(
@@ -101,12 +100,11 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                             const Spacer(),
                             CustomCloseButton(
                               onClose: () async {
-                                var watch = ref
-                                    .watch(layersControlsProvider.notifier);
-                                await watch.removeAll();
-                                watch.setSelected(null);
-                                watch.update(visible: false);
-                                ref.watch(mapControlsProvider.notifier)
+                                ref
+                                    .watch(layersControlsProvider.notifier)
+                                    .update(visible: false);
+                                ref
+                                    .watch(mapControlsProvider.notifier)
                                     .update(MapControlsStateIdle());
                               },
                             )
@@ -118,8 +116,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                       ]),
                     ),
                     SliverList.separated(
-                      separatorBuilder: (_, __) =>
-                          const SizedBox(height: 16),
+                      separatorBuilder: (_, __) => const SizedBox(height: 16),
                       itemCount: LayerType.values.length,
                       itemBuilder: (_, int index) {
                         var value = LayerType.values[index];
