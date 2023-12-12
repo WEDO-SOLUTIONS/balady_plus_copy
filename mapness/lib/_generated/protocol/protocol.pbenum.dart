@@ -87,6 +87,23 @@ class EntitySourceType extends $pb.ProtobufEnum {
   const EntitySourceType._($core.int v, $core.String n) : super(v, n);
 }
 
+class InterestingPlaceTag extends $pb.ProtobufEnum {
+  static const InterestingPlaceTag INTERESTING_PLACE_CATEGORY_UNKNOWN = InterestingPlaceTag._(0, _omitEnumNames ? '' : 'INTERESTING_PLACE_CATEGORY_UNKNOWN');
+  static const InterestingPlaceTag INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL = InterestingPlaceTag._(1, _omitEnumNames ? '' : 'INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL');
+  static const InterestingPlaceTag INTERESTING_PLACE_CATEGORY_FLOORS = InterestingPlaceTag._(2, _omitEnumNames ? '' : 'INTERESTING_PLACE_CATEGORY_FLOORS');
+
+  static const $core.List<InterestingPlaceTag> values = <InterestingPlaceTag> [
+    INTERESTING_PLACE_CATEGORY_UNKNOWN,
+    INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL,
+    INTERESTING_PLACE_CATEGORY_FLOORS,
+  ];
+
+  static final $core.Map<$core.int, InterestingPlaceTag> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static InterestingPlaceTag? valueOf($core.int value) => _byValue[value];
+
+  const InterestingPlaceTag._($core.int v, $core.String n) : super(v, n);
+}
+
 class IWishState extends $pb.ProtobufEnum {
   static const IWishState IWISH_STATE_UNKNOWN = IWishState._(0, _omitEnumNames ? '' : 'IWISH_STATE_UNKNOWN');
   static const IWishState IWISH_STATE_PLANNED = IWishState._(1, _omitEnumNames ? '' : 'IWISH_STATE_PLANNED');

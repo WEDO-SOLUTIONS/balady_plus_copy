@@ -78,6 +78,22 @@ final $typed_data.Uint8List entitySourceTypeDescriptor = $convert.base64Decode(
     'ChBFbnRpdHlTb3VyY2VUeXBlEhkKFUVOVElUWV9TT1VSQ0VfVU5LTk9XThAAEhYKEkVOVElUWV'
     '9TT1VSQ0VfVVJCSRAB');
 
+@$core.Deprecated('Use interestingPlaceTagDescriptor instead')
+const InterestingPlaceTag$json = {
+  '1': 'InterestingPlaceTag',
+  '2': [
+    {'1': 'INTERESTING_PLACE_CATEGORY_UNKNOWN', '2': 0},
+    {'1': 'INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL', '2': 1},
+    {'1': 'INTERESTING_PLACE_CATEGORY_FLOORS', '2': 2},
+  ],
+};
+
+/// Descriptor for `InterestingPlaceTag`. Decode as a `google.protobuf.EnumDescriptorProto`.
+final $typed_data.Uint8List interestingPlaceTagDescriptor = $convert.base64Decode(
+    'ChNJbnRlcmVzdGluZ1BsYWNlVGFnEiYKIklOVEVSRVNUSU5HX1BMQUNFX0NBVEVHT1JZX1VOS0'
+    '5PV04QABIuCipJTlRFUkVTVElOR19QTEFDRV9DQVRFR09SWV9JTU1FUlNJVkVfTU9ERUwQARIl'
+    'CiFJTlRFUkVTVElOR19QTEFDRV9DQVRFR09SWV9GTE9PUlMQAg==');
+
 @$core.Deprecated('Use iWishStateDescriptor instead')
 const IWishState$json = {
   '1': 'IWishState',
@@ -742,8 +758,13 @@ const InterestingPlace$json = {
     {'1': 'id', '3': 1, '4': 1, '5': 9, '10': 'id'},
     {'1': 'preview', '3': 2, '4': 1, '5': 11, '6': '.balady.protocol.InterestingPlace.Preview', '10': 'preview'},
     {'1': 'location', '3': 3, '4': 1, '5': 11, '6': '.balady.protocol.InterestingPlace.Location', '10': 'location'},
+    {'1': 'entity', '3': 4, '4': 1, '5': 11, '6': '.balady.protocol.InterestingPlace.Entity', '9': 0, '10': 'entity', '17': true},
+    {'1': 'tags', '3': 5, '4': 3, '5': 14, '6': '.balady.protocol.InterestingPlaceTag', '10': 'tags'},
   ],
-  '3': [InterestingPlace_Preview$json, InterestingPlace_Location$json],
+  '3': [InterestingPlace_Preview$json, InterestingPlace_Location$json, InterestingPlace_Entity$json],
+  '8': [
+    {'1': '_entity'},
+  ],
 };
 
 @$core.Deprecated('Use interestingPlaceDescriptor instead')
@@ -763,14 +784,27 @@ const InterestingPlace_Location$json = {
   ],
 };
 
+@$core.Deprecated('Use interestingPlaceDescriptor instead')
+const InterestingPlace_Entity$json = {
+  '1': 'Entity',
+  '2': [
+    {'1': 'source_type', '3': 1, '4': 1, '5': 14, '6': '.balady.protocol.EntitySourceType', '10': 'sourceType'},
+    {'1': 'id', '3': 2, '4': 1, '5': 9, '10': 'id'},
+  ],
+};
+
 /// Descriptor for `InterestingPlace`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List interestingPlaceDescriptor = $convert.base64Decode(
     'ChBJbnRlcmVzdGluZ1BsYWNlEg4KAmlkGAEgASgJUgJpZBJDCgdwcmV2aWV3GAIgASgLMikuYm'
     'FsYWR5LnByb3RvY29sLkludGVyZXN0aW5nUGxhY2UuUHJldmlld1IHcHJldmlldxJGCghsb2Nh'
     'dGlvbhgDIAEoCzIqLmJhbGFkeS5wcm90b2NvbC5JbnRlcmVzdGluZ1BsYWNlLkxvY2F0aW9uUg'
-    'hsb2NhdGlvbhpNCgdQcmV2aWV3EhQKBXRpdGxlGAEgASgJUgV0aXRsZRIsCgVpbWFnZRgCIAEo'
-    'CzIWLmJhbGFkeS5wcm90b2NvbC5JbWFnZVIFaW1hZ2UaOAoITG9jYXRpb24SLAoFcG9pbnQYAS'
-    'ABKAsyFi5iYWxhZHkucHJvdG9jb2wuUG9pbnRSBXBvaW50');
+    'hsb2NhdGlvbhJFCgZlbnRpdHkYBCABKAsyKC5iYWxhZHkucHJvdG9jb2wuSW50ZXJlc3RpbmdQ'
+    'bGFjZS5FbnRpdHlIAFIGZW50aXR5iAEBEjgKBHRhZ3MYBSADKA4yJC5iYWxhZHkucHJvdG9jb2'
+    'wuSW50ZXJlc3RpbmdQbGFjZVRhZ1IEdGFncxpNCgdQcmV2aWV3EhQKBXRpdGxlGAEgASgJUgV0'
+    'aXRsZRIsCgVpbWFnZRgCIAEoCzIWLmJhbGFkeS5wcm90b2NvbC5JbWFnZVIFaW1hZ2UaOAoITG'
+    '9jYXRpb24SLAoFcG9pbnQYASABKAsyFi5iYWxhZHkucHJvdG9jb2wuUG9pbnRSBXBvaW50GlwK'
+    'BkVudGl0eRJCCgtzb3VyY2VfdHlwZRgBIAEoDjIhLmJhbGFkeS5wcm90b2NvbC5FbnRpdHlTb3'
+    'VyY2VUeXBlUgpzb3VyY2VUeXBlEg4KAmlkGAIgASgJUgJpZEIJCgdfZW50aXR5');
 
 @$core.Deprecated('Use interestingPlacesResponseDescriptor instead')
 const InterestingPlacesResponse$json = {

@@ -1,6 +1,4 @@
 import 'package:balady_plus/app/features/_shared_feature_/balady_features/balady_exports.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
-import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar, ScrollPosition;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
@@ -8,12 +6,13 @@ import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_header.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_profile.dart';
 import 'package:mapness/_features/landing/widgets/jobs_around_card.dart';
-import 'package:mapness/_features/landing/widgets/poi_card.dart';
 import 'package:mapness/_features/landing/widgets/snap_and_send_card.dart';
 import 'package:mapness/_features/stories/stories_widget.dart';
+import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 import 'providers/interesting_places.dart';
+import 'widgets/places_horizontal_list.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({
@@ -67,59 +66,16 @@ class _DashboardState extends ConsumerState<Dashboard> {
   Widget _buildInterestingPlacesCards() {
     return Consumer(
       builder: (context, ref, child) {
-        final places = ref.watch(interestingPlacesProvider);
+        final places = ref.watch(interestingPlacesProvider).where((e) {
+          return e.tags.contains(
+            proto
+                .InterestingPlaceTag.INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL,
+          );
+        }).toList();
 
-        return Visibility(
-          visible: places.isNotEmpty,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  right: 16.0,
-                ),
-                child: Text(
-                  context.l10n.placesToVisit,
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .accentL
-                      .copyWith(
-                        color: const Color(0xFF1E2A36),
-                      ),
-                ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              SizedBox(
-                height: 200,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                  ),
-                  itemCount: places.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 8),
-                  itemBuilder: (context, index) {
-                    final place = places[index];
-
-                    return PoiCard(
-                      objectId: DgisObjectIdMessage(
-                        objectId: int.tryParse(place.id) ?? 0,
-                        entranceId: 0,
-                      ),
-                      title: place.titleOrFallback(locale: context.l10n),
-                      subtitle: '',
-                      image: place.preview.image.url,
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
+        return PlacesHorizontalList(
+          title: context.l10n.placesToVisit,
+          places: places,
         );
       },
     );
@@ -128,62 +84,15 @@ class _DashboardState extends ConsumerState<Dashboard> {
   Widget _buildShoppingMallsCards() {
     return Consumer(
       builder: (context, ref, child) {
-        final places = ref.watch(interestingPlacesProvider);
+        final places = ref.watch(interestingPlacesProvider).where((e) {
+          return e.tags.contains(
+            proto.InterestingPlaceTag.INTERESTING_PLACE_CATEGORY_FLOORS,
+          );
+        }).toList();
 
-        return Visibility(
-          visible: places.isNotEmpty,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  right: 16.0,
-                ),
-                child: Text(
-                  context.l10n.placesToShop,
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .accentL
-                      .copyWith(
-                        color: const Color(0xFF1E2A36),
-                      ),
-                ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              SizedBox(
-                height: 200,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                  ),
-                  itemCount: places.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 8),
-                  itemBuilder: (context, index) {
-                    final place = places[index];
-
-                    return PoiCard(
-                      objectId: DgisObjectIdMessage(
-                        objectId: int.tryParse(place.id) ?? 0,
-                        entranceId: 0,
-                      ),
-                      title: place.titleOrFallback(locale: context.l10n),
-                      subtitle: '',
-                      image: place.preview.image.url,
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-            ],
-          ),
+        return PlacesHorizontalList(
+          title: context.l10n.placesToShop,
+          places: places,
         );
       },
     );
