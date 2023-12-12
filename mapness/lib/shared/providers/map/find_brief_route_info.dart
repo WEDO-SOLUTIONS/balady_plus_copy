@@ -8,7 +8,7 @@ part 'find_brief_route_info.g.dart';
 class _BriefRouteInfo extends _$BriefRouteInfo {
   @override
   List<BriefRouteInfoMessage>? build({
-    required RouteSearchPointMessage finishPoint,
+    required RouteSearchPointMessage? finishPoint,
     RouteSearchPointMessage? startPoint,
     required RouteSearchOptionsMessage navType,
   }) {

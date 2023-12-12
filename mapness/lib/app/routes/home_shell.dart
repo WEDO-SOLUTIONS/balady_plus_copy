@@ -122,4 +122,42 @@ class ProfilesRoute extends GoRouteData {
       const ProfilePage();
 }
 
-final $homeRoutes = $appRoutes;
+RouteBase homeShellRoute({required bool naviEnabled}) =>
+    StatefulShellRouteData.$route(
+      factory: $HomeShellRouteExtension._fromState,
+      branches: [
+        StatefulShellBranchData.$branch(
+          routes: [
+            GoRouteData.$route(
+              path: '/profile',
+              factory: $ProfilesRouteExtension._fromState,
+            ),
+          ],
+        ),
+        StatefulShellBranchData.$branch(
+          routes: [
+            GoRouteData.$route(
+              path: '/services',
+              factory: $ServicesRouteExtension._fromState,
+            ),
+          ],
+        ),
+        if (naviEnabled)
+          StatefulShellBranchData.$branch(
+            routes: [
+              GoRouteData.$route(
+                path: '/routing',
+                factory: $RoutingRouteExtension._fromState,
+              ),
+            ],
+          ),
+        StatefulShellBranchData.$branch(
+          routes: [
+            GoRouteData.$route(
+              path: '/landing',
+              factory: $LandingRouteExtension._fromState,
+            ),
+          ],
+        ),
+      ],
+    );

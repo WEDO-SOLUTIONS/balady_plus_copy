@@ -9,8 +9,6 @@ import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/layers_control.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
-import 'package:mapness/_features/stories/domain/story_types.dart';
-import 'package:mapness/_features/stories/stories.dart';
 import 'package:mapness/app/routes/kiblah.dart';
 import 'package:mapness/app/routes/weather.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
@@ -62,17 +60,17 @@ class MapControls extends ConsumerWidget {
                           const Spacer(),
                           const IndoorControl(),
                           const Spacer(),
-                          MapButton(
-                            child: Image.asset(
-                              "assets/images/beta_icon.png",
-                              height: 44,
-                            ),
-                            onTap: () {
-                              Stories.showOnboarding(
-                                  context, StoryTypes.route, 'route');
-                            },
-                          ),
-                          const SizedBox(height: 8),
+                          // MapButton(
+                          //   child: Image.asset(
+                          //     "assets/images/beta_icon.png",
+                          //     height: 44,
+                          //   ),
+                          //   onTap: () {
+                          //     Stories.showOnboarding(
+                          //         context, StoryTypes.route, 'route');
+                          //   },
+                          // ),
+                          // const SizedBox(height: 8),
                           MapButton(
                             child: SvgPicture.asset(
                               "assets/icons/svg/ic_controls_qibla.svg",

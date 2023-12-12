@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/routes.dart';
-import 'package:mapness/features/jobs/models/job_model.dart';
 import 'package:mapness/features/jobs/ui/job_detail_overlay.dart';
 import 'package:mapness/features/jobs/ui/job_overlay_content.dart';
 import 'package:mapness/shared/routing/transculent_page.dart';
