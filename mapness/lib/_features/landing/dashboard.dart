@@ -7,8 +7,8 @@ import 'package:mapness/_features/common/providers/user_state.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_header.dart';
-import 'package:mapness/_features/landing/widgets/jobs_around_card.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_profile.dart';
+import 'package:mapness/_features/landing/widgets/jobs_around_card.dart';
 import 'package:mapness/_features/landing/widgets/poi_card.dart';
 import 'package:mapness/_features/landing/widgets/snap_and_send_card.dart';
 import 'package:mapness/_features/stories/stories_widget.dart';
@@ -262,12 +262,10 @@ class _DashboardState extends ConsumerState<Dashboard> {
                             const SnapAndSendCard(),
                             _buildShoppingMallsCards(),
                             const EventsHomeCard(),
-                            if (userState != UserState.guest) ...[
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              const JobsAroundCard(),
-                            ],
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            const JobsAroundCard(),
                             const SizedBox(
                               height: 20,
                             ),

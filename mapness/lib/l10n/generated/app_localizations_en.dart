@@ -446,7 +446,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile => 'Profile';
 
   @override
-  String get published => 'Published';
+  String get published => 'تم النشر';
 
   @override
   String get ready => 'Ready';
@@ -549,6 +549,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signIn => 'Sign-in';
+
+  @override
+  String get signInToUnlock => 'قم بتسجيل الدخول لتصفح الإمكانات الكاملة لتطبيق بلدي';
 
   @override
   String get signInToUnlockTheFullPotentialOfTheBaladyApp => 'Sign in to unlock the full potential\nof the Balady app';
@@ -665,7 +668,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get worldHealthExpo => 'World Health Expo 2023';
 
   @override
-  String get yesterday => 'Yesterday';
+  String get yesterday => 'أمس';
 
   @override
   String get youArrived => 'You arrived';

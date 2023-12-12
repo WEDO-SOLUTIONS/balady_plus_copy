@@ -210,7 +210,7 @@ abstract class AppLocalizations {
   /// No description provided for @closesIn.
   ///
   /// In ar, this message translates to:
-  /// **'يغلق في'**
+  /// **'يغلق في '**
   String get closesIn;
 
   /// No description provided for @comfort.
@@ -378,7 +378,7 @@ abstract class AppLocalizations {
   /// No description provided for @employmentType.
   ///
   /// In ar, this message translates to:
-  /// **'Employment Type'**
+  /// **'نوع الوظيفة'**
   String get employmentType;
 
   /// No description provided for @endTrip.
@@ -798,13 +798,13 @@ abstract class AppLocalizations {
   /// No description provided for @nav_landing.
   ///
   /// In ar, this message translates to:
-  /// **'المقصودة'**
+  /// **'الخدمات'**
   String get nav_landing;
 
   /// No description provided for @nav_profile.
   ///
   /// In ar, this message translates to:
-  /// **'الملف الشخصي'**
+  /// **'الحساب'**
   String get nav_profile;
 
   /// No description provided for @nav_route.
@@ -816,7 +816,7 @@ abstract class AppLocalizations {
   /// No description provided for @next.
   ///
   /// In ar, this message translates to:
-  /// **'Next'**
+  /// **'التالي'**
   String get next;
 
   /// No description provided for @open24Hours.
@@ -978,7 +978,7 @@ abstract class AppLocalizations {
   /// No description provided for @published.
   ///
   /// In ar, this message translates to:
-  /// **'Published'**
+  /// **'تم النشر'**
   String get published;
 
   /// No description provided for @ready.
@@ -1038,13 +1038,13 @@ abstract class AppLocalizations {
   /// No description provided for @route2description.
   ///
   /// In ar, this message translates to:
-  /// **'يقترح التنقل الذكي ما يصل إلى ثلاث طرق بالنظر إلى الوضع الحالي لحركة المرور. سيقترح أيضًا بالطرق البديلة عند تقاطع الطرق '**
+  /// **'يقترح التنقل الذكي ما يصل إلى ثلاثة طرق بالنظر إلى حالة المرور الحالية. سيذكرك أيضا بالطرق البديلة عند مفترق الطرق'**
   String get route2description;
 
   /// No description provided for @route3description.
   ///
   /// In ar, this message translates to:
-  /// **'مساعدك الصوتي سيبقيك على اطلاع طوال رحلتك'**
+  /// **'سيبقيك المساعد الصوتي على اطلاع طوال رحلتك'**
   String get route3description;
 
   /// No description provided for @sahm.
@@ -1122,7 +1122,7 @@ abstract class AppLocalizations {
   /// No description provided for @share.
   ///
   /// In ar, this message translates to:
-  /// **'Share'**
+  /// **'مشاركة'**
   String get share;
 
   /// No description provided for @shareChallengeWithUs.
@@ -1185,6 +1185,12 @@ abstract class AppLocalizations {
   /// **'تسجيل الدخول'**
   String get signIn;
 
+  /// No description provided for @signInToUnlock.
+  ///
+  /// In ar, this message translates to:
+  /// **'قم بتسجيل الدخول لتصفح الإمكانات الكاملة لتطبيق بلدي'**
+  String get signInToUnlock;
+
   /// No description provided for @signInToUnlockTheFullPotentialOfTheBaladyApp.
   ///
   /// In ar, this message translates to:
@@ -1194,7 +1200,7 @@ abstract class AppLocalizations {
   /// No description provided for @skills.
   ///
   /// In ar, this message translates to:
-  /// **'Skills'**
+  /// **'المهارات'**
   String get skills;
 
   /// No description provided for @snap_and_send.
@@ -1326,7 +1332,7 @@ abstract class AppLocalizations {
   /// No description provided for @tryAgain.
   ///
   /// In ar, this message translates to:
-  /// **'حاول مجددا'**
+  /// **'حاول مرة أخرى'**
   String get tryAgain;
 
   /// No description provided for @twentyFourSeven.
@@ -1344,7 +1350,7 @@ abstract class AppLocalizations {
   /// No description provided for @vacancies.
   ///
   /// In ar, this message translates to:
-  /// **'vacancies'**
+  /// **'الشواغر'**
   String get vacancies;
 
   /// No description provided for @viewingARoute.
@@ -1362,25 +1368,25 @@ abstract class AppLocalizations {
   /// No description provided for @voteWhatDoYouWantToHaveInThePark.
   ///
   /// In ar, this message translates to:
-  /// **'تصويت ماذا تريد أن يكون في الحديقة؟'**
+  /// **'صوّت على ماذا تريد أن يكون في الحديقة؟'**
   String get voteWhatDoYouWantToHaveInThePark;
 
   /// No description provided for @watchMore.
   ///
   /// In ar, this message translates to:
-  /// **'شاهد المزيد'**
+  /// **'مشاهدة المزيد'**
   String get watchMore;
 
   /// No description provided for @weCouldntFindAnythingTryChangingYourRequest.
   ///
   /// In ar, this message translates to:
-  /// **'لم نتمكن من العثور على أي شيء. حاول تغيير طلبك'**
+  /// **'لم نتمكن من العثور على شيء. حاول تغيير طلبك'**
   String get weCouldntFindAnythingTryChangingYourRequest;
 
   /// No description provided for @weekend.
   ///
   /// In ar, this message translates to:
-  /// **'عطلة نهاية الاسبوع'**
+  /// **'نهاية الأسبوع'**
   String get weekend;
 
   /// No description provided for @whatCanTheNavigatorDo.
@@ -1392,7 +1398,7 @@ abstract class AppLocalizations {
   /// No description provided for @wishesSent.
   ///
   /// In ar, this message translates to:
-  /// **'تم إرسال الرغبات'**
+  /// **'تم إرسال الأمنيات'**
   String get wishesSent;
 
   /// No description provided for @work.
@@ -1404,7 +1410,7 @@ abstract class AppLocalizations {
   /// No description provided for @workHours.
   ///
   /// In ar, this message translates to:
-  /// **'Work hours'**
+  /// **'ساعات العمل'**
   String get workHours;
 
   /// No description provided for @worldHealthExpo.
@@ -1416,13 +1422,13 @@ abstract class AppLocalizations {
   /// No description provided for @yesterday.
   ///
   /// In ar, this message translates to:
-  /// **'Yesterday'**
+  /// **'أمس'**
   String get yesterday;
 
   /// No description provided for @youArrived.
   ///
   /// In ar, this message translates to:
-  /// **'وصلت'**
+  /// **'لقد وصلت'**
   String get youArrived;
 
   /// No description provided for @youReHere.

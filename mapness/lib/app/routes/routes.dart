@@ -9,6 +9,7 @@ import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/app/routes/profile.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/app/routes/search.dart';
+import 'package:mapness/app/routes/signin.dart';
 import 'package:mapness/app/routes/weather.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -24,5 +25,6 @@ final $appRoutes = [
   ...$routingRoutes,
   ...$weatherRoutes,
   ...$jobsMapRoutes,
-  ...$profileRoutes
+  ...$profileRoutes,
+  ...$SignInRoutes,
 ];

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:mapness/features/sso_auth/data/token_provider.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dgis_url.dart';
 import 'package:mapness/shared/providers/package_info.dart';
@@ -19,6 +20,7 @@ class _DGisNetwork extends _$DGisNetwork {
     final appLanguage = ref.watch(appLanguageProvider);
     final uuid = ref.watch(uuidProviderProvider);
     final version = ref.watch(packageInfoProvider).value?.version;
+    final token = ref.watch(tokenProvider).value?.token;
 
     return Dio(BaseOptions(
       responseType: ResponseType.bytes,
@@ -34,7 +36,7 @@ class _DGisNetwork extends _$DGisNetwork {
         "X-App-Version": version ?? "1.0.0",
         "X-Locale": appLanguage == Language.arabic ? "ar_SA" : "en_SA",
         "X-Language": appLanguage == Language.arabic ? "ar" : "en",
-      },
+      }..addAll(token != null ? {'Authorization': 'Bearer $token'} : {}),
       // validateStatus: (status) => status != null && status < 500,
     ))
       ..interceptors.add(
