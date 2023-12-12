@@ -107,6 +107,10 @@ import '../../features/pemrit_24_hour/presentation/pages/permits_details_page.da
 import '../../features/pemrit_24_hour/presentation/pages/posters_start_service_license_screen.dart';
 import '../../features/pemrit_24_hour/presentation/pages/request_details_page.dart';
 import '../../features/pemrit_24_hour/presentation/pages/submit_application_successfully_posters.dart';
+import '../../features/pemrit_tobacco/presentation/pages/permits_details_page.dart';
+import '../../features/pemrit_tobacco/presentation/pages/posters_start_service_license_screen.dart';
+import '../../features/pemrit_tobacco/presentation/pages/request_details_page.dart';
+import '../../features/pemrit_tobacco/presentation/pages/submit_application_successfully_tobacco.dart';
 import '../../features/posters/presentation/pages/posters_details_page.dart';
 import '../../features/posters/presentation/pages/posters_start_service_license_screen.dart';
 import '../../features/posters/presentation/pages/posters_start_service_screen.dart';
@@ -646,6 +650,19 @@ class Routes {
 
         RouteName.submitApplicationSuccessfullyPermits: (context) =>
             const SubmitApplicationSuccessfullyPermits(),
+
+// Tobacco Permits
+
+        RouteName.permitsTobaccoLicenseStartService: (context) =>
+            const PermitsTobaccoLicenseStartService(),
+        RouteName.permitsTobaccoDetailsPage: (context) =>
+            const PermitsTobaccoDetailsPage(),
+
+        RouteName.permitsTobaccoRequestDetailsPage: (context) =>
+            const PermitsTobaccoReqeuestDetailsPage(),
+
+        RouteName.submitApplicationSuccessfullyTobaccoPermits: (context) =>
+            const SubmitApplicationSuccessfullyTobacco(),
 
         // Ekram
 

@@ -92,6 +92,15 @@ class CommercialLicenseActionSheet extends StatelessWidget {
                                               provider.commercialLicenceDetails,
                                         );
                                         break;
+
+                                      case 1026:
+                                        Navigator.of(context).pushNamed(
+                                          RouteName
+                                              .permitsTobaccoLicenseStartService,
+                                          arguments:
+                                              provider.commercialLicenceDetails,
+                                        );
+                                        break;
                                     }
                                   },
                                   child: Padding(
