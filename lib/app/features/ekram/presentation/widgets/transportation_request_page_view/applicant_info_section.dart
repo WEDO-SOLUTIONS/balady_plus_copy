@@ -98,12 +98,12 @@ class _ApplicantInfoTextFieldsSectionState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ReadOnlyField(
-              title: trans("ekramFullName"),
+              title: trans("submitterName"),
               subTitle: state.fullName ?? "",
             ),
             const CustomVerticalSpace(height: 20),
             ReadOnlyField(
-              title: trans("ekramMobile"),
+              title: trans("driver_card_applicant_mobile"),
               subTitle: state.mobileNumber ?? "",
             ),
             const CustomVerticalSpace(height: 20),
@@ -140,7 +140,7 @@ class _ApplicantInfoTextFieldsSectionState
               hint: Helpers.translatingWord("burialCity"),
             ),
             ReadOnlyField(
-                title: trans("transportation_status"),
+                title: trans("deceasedTransportationStatus"),
                 subTitle: trans("transportation_from_hospital")),
             CustomLookUpLongDialog(
               items: state.hospitals ?? [],

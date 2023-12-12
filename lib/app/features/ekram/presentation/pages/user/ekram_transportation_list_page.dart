@@ -103,7 +103,8 @@ class _EkramTransportationListPageState
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   child: InkWell(
                     onTap: () => NavigationService.navigatorKey.currentState!
-                        .pushNamed(RouteName.ekramRequestTransportationScreen,
+                        .pushNamed(
+                            RouteName.EkramRequestTransportationStartService,
                             arguments: context.read<EkramRequestsBloc>()),
                     child: CircleIcon(
                       backgroundColor: AppColor.primary50Light,

@@ -79,8 +79,8 @@ class InquiryCemetryDetailsPage extends StatelessWidget {
                       const CustomVerticalSpace(height: 16),
                       const DeadReligionWidget(),
                       const CustomVerticalSpace(height: 16),
-                      const LaundryExistsWidget(),
-                      const CustomVerticalSpace(height: 32),
+                      //  const LaundryExistsWidget(),
+                      //  const CustomVerticalSpace(height: 32),
                       ElevatedButtonWidget.custom(
                           isDisabled: state.selectedCity == null,
                           onPressed: () {

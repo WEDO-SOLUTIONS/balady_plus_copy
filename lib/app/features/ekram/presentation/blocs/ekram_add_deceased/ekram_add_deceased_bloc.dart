@@ -496,6 +496,15 @@ class EkramAddDeceasedBloc
             idType: state.data.selectedNationalType?.id ?? 0));
 
     await failOrSuccess.fold((l) async {
+      if (state.data.selectedNationalType?.fillInfo == true) {
+        CommonFunctions.showSuccess("ekram_retrive_data_success_msg".tr());
+        emitter(state.copyWith(
+          status: BlocStatus.success,
+          errorMessage: "",
+        ));
+        return;
+      }
+
       emitter(state.copyWith(status: BlocStatus.loading));
 
       final failureOrSuccess = await _checkUserInfo(UserInfoRequestParams(
@@ -566,10 +575,10 @@ class EkramAddDeceasedBloc
                 id: r.data?.result?.burialInfo?.cemeteryInfo?.cemeteryId,
                 name: r.data?.result?.burialInfo?.cemeteryInfo?.cemeteryName,
               )),
-              /* selectedCemetryType: LookUpItem(
+              selectedCemetryType: LookUpItem(
                 id: r.data?.result?.burialInfo?.graveTypeId,
                 name: r.data?.result?.burialInfo?.graveTypeName,
-              ),*/
+              ),
               selectedNationalType: nationalType,
               isPandemicDeath: r.data?.result?.burialInfo?.isPandemicDeath,
               burialCityId: LookUpItem(
@@ -594,13 +603,26 @@ class EkramAddDeceasedBloc
 
       add(ChangeNationalIdDob(
           hijriDate: r.data?.result?.deceasedInfo?.birthDate));
+
       add(ChangeBurialDateEvent(
-        hijriDate: r.data?.result?.burialInfo?.burialDateHijri,
+        hijriDate: r.data?.result?.burialInfo?.getHijriDate(),
       ));
+      /* if (r.data?.result?.burialInfo?.getHijriDate() != null) {
+        emitter(state.copyWith(
+            data: state.data.copyWith(
+                selectedCemetry: Nullable(LookUpItem(
+          id: r.data?.result?.burialInfo?.cemeteryId,
+          name: r.data?.result?.burialInfo?.cemeteryInfo?.cemeteryName,
+        )))));
+      }*/
+
       firstNameController.text = firstName;
       secondNameController.text = secondName;
       thirdNameController.text = thirdName;
       fourthNameController.text = fourthName;
+      CommonFunctions.showSuccess("ekram_retrive_grave_data_success_msg"
+          .tr()
+          .replaceAll("{}", r.data?.result?.deceasedInfo?.fullName ?? ""));
     });
   }
 

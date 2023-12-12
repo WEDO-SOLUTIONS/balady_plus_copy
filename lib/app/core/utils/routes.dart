@@ -80,6 +80,7 @@ import '../../features/create_compliance/presentation/pages/non_compliance_scree
 import '../../features/create_compliance/presentation/pages/submit_compliance_page.dart';
 import '../../features/ekram/presentation/pages/book_cemetry/ekram_book_cemetry_page.dart';
 import '../../features/ekram/presentation/pages/book_cemetry/ekram_book_cemetry_start_service.dart';
+import '../../features/ekram/presentation/pages/user/ekram_ekramRequest_transportation_start_service.dart';
 import '../../features/ekram/presentation/pages/user/user_ekram_transpotation_details_page.dart';
 import '../../features/ekram/presentation/pages/driver/driver_transportation_list_page.dart';
 import '../../features/ekram/presentation/pages/ekram_booking_list_page.dart';
@@ -107,6 +108,10 @@ import '../../features/pemrit_24_hour/presentation/pages/permits_details_page.da
 import '../../features/pemrit_24_hour/presentation/pages/posters_start_service_license_screen.dart';
 import '../../features/pemrit_24_hour/presentation/pages/request_details_page.dart';
 import '../../features/pemrit_24_hour/presentation/pages/submit_application_successfully_posters.dart';
+import '../../features/pemrit_tobacco/presentation/pages/permits_details_page.dart';
+import '../../features/pemrit_tobacco/presentation/pages/posters_start_service_license_screen.dart';
+import '../../features/pemrit_tobacco/presentation/pages/request_details_page.dart';
+import '../../features/pemrit_tobacco/presentation/pages/submit_application_successfully_tobacco.dart';
 import '../../features/posters/presentation/pages/posters_details_page.dart';
 import '../../features/posters/presentation/pages/posters_start_service_license_screen.dart';
 import '../../features/posters/presentation/pages/posters_start_service_screen.dart';
@@ -647,6 +652,19 @@ class Routes {
         RouteName.submitApplicationSuccessfullyPermits: (context) =>
             const SubmitApplicationSuccessfullyPermits(),
 
+// Tobacco Permits
+
+        RouteName.permitsTobaccoLicenseStartService: (context) =>
+            const PermitsTobaccoLicenseStartService(),
+        RouteName.permitsTobaccoDetailsPage: (context) =>
+            const PermitsTobaccoDetailsPage(),
+
+        RouteName.permitsTobaccoRequestDetailsPage: (context) =>
+            const PermitsTobaccoReqeuestDetailsPage(),
+
+        RouteName.submitApplicationSuccessfullyTobaccoPermits: (context) =>
+            const SubmitApplicationSuccessfullyTobacco(),
+
         // Ekram
 
         RouteName.ekramOrdersScreen: (context) => const EkramOrdersPage(),
@@ -709,7 +727,10 @@ class Routes {
             const EkramBookCemetryStartService(),
 
         RouteName.EkramInquiryPrintDetailsPage: (context) =>
-            const InquiryPrintDetailsPage()
+            const InquiryPrintDetailsPage(),
+
+        RouteName.EkramRequestTransportationStartService: (context) =>
+            const EkramRequestTransportationStartService(),
       };
 }
 

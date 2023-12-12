@@ -111,11 +111,12 @@ class EkramRequestTransportationState extends Equatable {
       else
         return false;
     } else if (currentPageValue == 2) {
-      if (deathLocation?.isNotEmpty ?? false) {
+      /*  if (deathLocation?.isNotEmpty ?? false) {
         return true;
       } else {
         return false;
-      }
+      }*/
+      return true;
     } else if (currentPageValue == 3) {
       if (agreement == null || agreement == false) return false;
     }

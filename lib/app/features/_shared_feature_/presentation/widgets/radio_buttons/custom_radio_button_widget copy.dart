@@ -217,7 +217,7 @@ class CustomRadioButtonEnd<T> extends StatelessWidget {
                 ? AppColor.duckEggBlue
                 : unSelectedBackgroundColor,*/
 
-          color: AppColor.primary50Light40,
+          color: Color(0x80E6EFEF),
           /* border: Border.all(
               width: 1,
               color: currentSelected == value

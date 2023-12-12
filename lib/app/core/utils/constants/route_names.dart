@@ -240,6 +240,16 @@ class RouteName {
   static const submitApplicationSuccessfullyPermits =
       '/submitApplicationSuccessfullyPermits';
 
+// Permit Tobacco
+
+  static const permitsTobaccoLicenseStartService =
+      '/permitsTobaccoLicenseStartService';
+  static const permitsTobaccoDetailsPage = '/permitsTobaccoDetailsPage';
+  static const permitsTobaccoRequestDetailsPage =
+      '/permitsTobaccoRequestDetailsPage';
+  static const submitApplicationSuccessfullyTobaccoPermits =
+      '/submitApplicationSuccessfullyTobaccoPermits';
+
   // Ekram
   // Ekram
   static const ekramOrdersScreen = 'ekramOrdersHomeScreen';
@@ -283,6 +293,8 @@ class RouteName {
   static const EkramBookCemetryStartService = 'EkramBookCemetryStartService';
 
   static const EkramInquiryPrintDetailsPage = 'EkramInquiryPrintDetailsPage';
+  static const EkramRequestTransportationStartService =
+      'EkramRequestTransportationStartService';
 }
 
 class EtmamRoutesNames {
