@@ -1,16 +1,10 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:add_2_calendar/add_2_calendar.dart';
-import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
-import 'package:flutter_svg/svg.dart';
-
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:flutter/material.dart';
-
-import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svgProvider;
+import 'package:mapness/shared/config/package_config.dart';
 
 import '../../../../../calendar/domain/entities/search_calendar/search_calendar_item.dart';
-import '../../shared/background_widget.dart';
 
 class CalendarHomeItemCard extends StatelessWidget {
   final SearchCalendarItem item;
@@ -22,99 +16,74 @@ class CalendarHomeItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: padding ?? EdgeInsets.only(top: 16, left: 16, right: 16),
-      height: 220,
+      margin: padding ?? const EdgeInsets.only(top: 16, left: 16, right: 16),
+      height: 200,
       width: width ?? MediaQuery.of(context).size.width - 32,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(17),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x14000000),
-            blurRadius: 4,
-            offset: Offset(0, 4),
-            spreadRadius: 0,
-          )
-        ],
-        image: calendarImage(item.logoURL, ImagePath.calendarBackground),
+      padding: const EdgeInsets.only(
+        left: 16,
+        right: 24,
+        top: 12,
+        bottom: 16,
       ),
-      child: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(17),
-                color: Colors.white.withOpacity(0.8),
-                boxShadow: [
-                  BoxShadow(
-                    color: Color(0x14000000),
-                    blurRadius: 4,
-                    offset: Offset(0, 4),
-                    spreadRadius: 0,
-                  )
-                ]),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        image: const DecorationImage(
+          image: AssetImage(
+            "assets/images/calendar_card.png",
+            package: PackageConfig.packageName,
           ),
-          Container(
-            padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SaudiDay(
-                      name: item.getStartDayName(),
-                      size: 14,
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SaudiDay(
+                name: item.getStartDayName(),
+              ),
+              Row(
+                children: [
+                  SaudiDay(
+                    name:
+                        item.startDate?.month.toString().padLeft(2, "0") ?? "",
+                  ),
+                  const SaudiDay(
+                    name: '/',
+                  ),
+                  SaudiDay(
+                    name: item.startDate?.day.toString().padLeft(2, "0") ?? "",
+                  ),
+                ],
+              ),
+              Text(
+                (item.name ?? ""),
+                maxLines: 2,
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()
+                    ?.textS
+                    .copyWith(
+                      color: Colors.white,
+                      height: 1.5,
                     ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      children: [
-                        SaudiDay(
-                          name: item.startDate?.month
-                                  .toString()
-                                  .padLeft(2, "0") ??
-                              "",
-                          size: 20,
-                        ),
-                        SaudiDay(
-                          name: '  / ',
-                          size: 20,
-                        ),
-                        SaudiDay(
-                          name:
-                              item.startDate?.day.toString().padLeft(2, "0") ??
-                                  "",
-                          size: 28,
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    SaudiDay(
-                      name: (item.name ?? ""),
-                      height: 1.1,
-                      size: 20,
-                    ),
-                  ],
+              ),
+            ],
+          ),
+          SaudiContainer(
+            btnText: "saudi_calendar_add".tr(),
+            remainingText: "remaining".tr(),
+            timer: item.remainingDays(),
+            addToCalendar: () {
+              Add2Calendar.addEvent2Cal(
+                buildEvent(
+                  title: item.name ?? "",
+                  startDate: item.startDate!,
+                  endDate: item.endDate!,
                 ),
-                SaudiContainer(
-                  btnText: "saudi_calendar_add".tr(),
-                  remainingText: "remaining".tr(),
-                  timer: item.remainingDays(),
-                  addToCalendar: () {
-                    Add2Calendar.addEvent2Cal(
-                      buildEvent(
-                        title: item.name ?? "",
-                        startDate: item.startDate!,
-                        endDate: item.endDate!,
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
+              );
+            },
           ),
         ],
       ),
@@ -124,20 +93,20 @@ class CalendarHomeItemCard extends StatelessWidget {
 
 class SaudiDay extends StatelessWidget {
   final String name;
-  final double size;
-  final double? height;
-  const SaudiDay(
-      {super.key, required this.name, required this.size, this.height});
+  const SaudiDay({
+    super.key,
+    required this.name,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return CustomTextWidget(
+    return Text(
       name,
-      fontColor: const Color(0xFF145E75),
-      fontSize: size,
       maxLines: 2,
-      height: height,
-      fontWeight: AppFontWeight.bold,
+      style: Theme.of(context).extension<ThemeTextStyles>()?.accentL.copyWith(
+            color: Colors.white,
+            height: 1.5,
+          ),
     );
   }
 }
@@ -156,63 +125,65 @@ class SaudiContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      //width: MediaQuery.of(context).size.width,
-      height: 71,
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        color: Color(0x8cffffff),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Flexible(
-                child: CustomTextWidget(
-                  remainingText,
-                  fontColor: Color(0xFF145E75),
-                  height: 1.4,
-                  fontSize: 11,
-                  maxLines: 4,
-                  fontWeight: AppFontWeight.bold,
-                ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Flexible(
+              child: Text(
+                remainingText,
+                maxLines: 4,
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()
+                    ?.accentL
+                    .copyWith(
+                      color: Colors.white,
+                      height: 1.5,
+                    ),
               ),
-              SizedBox(
-                height: 8,
+            ),
+            Text(
+              timer,
+              style: Theme.of(context)
+                  .extension<ThemeTextStyles>()
+                  ?.textS
+                  .copyWith(
+                    color: Colors.white,
+                    height: 1.5,
+                  ),
+            ),
+          ],
+        ),
+        Material(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(8),
+            onTap: () => addToCalendar(),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 14,
               ),
-              CustomTextWidget(
-                timer,
-                fontColor: Color(0xFF145E75),
-                fontSize: 24,
-                fontWeight: AppFontWeight.bold,
-              ),
-            ],
-          ),
-          Container(
-            height: 40,
-            child: ElevatedButton(
-              onPressed: () => addToCalendar(),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColor.primary900Light,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: CustomTextWidget(
+              child: Text(
                 btnText,
                 textAlign: TextAlign.center,
-                fontColor: Colors.white,
-                fontSize: 11.80,
-                fontWeight: AppFontWeight.bold,
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()
+                    ?.accentM
+                    .copyWith(
+                      color: const Color(0xFF4CA5B4),
+                      height: 1.5,
+                    ),
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

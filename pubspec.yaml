@@ -176,7 +176,9 @@ dependencies:
   dgis_map:
     path: urbi_map/dgis_map
 
-    # Mapness
+  # Mapness
+  balady_uikit:
+    path: balady_uikit
   mapness:
     path: mapness
 

@@ -76,7 +76,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(
-                height: 24,
+                height: 20,
               ),
               Padding(
                 padding: const EdgeInsets.only(
@@ -84,7 +84,12 @@ class _DashboardState extends ConsumerState<Dashboard> {
                 ),
                 child: Text(
                   context.l10n.placesToVisit,
-                  style: Theme.of(context).extension<ThemeTextStyles>()!.textL,
+                  style: Theme.of(context)
+                      .extension<ThemeTextStyles>()!
+                      .accentL
+                      .copyWith(
+                        color: const Color(0xFF1E2A36),
+                      ),
                 ),
               ),
               const SizedBox(
@@ -132,7 +137,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(
-                height: 24,
+                height: 20,
               ),
               Padding(
                 padding: const EdgeInsets.only(
@@ -140,7 +145,12 @@ class _DashboardState extends ConsumerState<Dashboard> {
                 ),
                 child: Text(
                   context.l10n.placesToShop,
-                  style: Theme.of(context).extension<ThemeTextStyles>()!.textL,
+                  style: Theme.of(context)
+                      .extension<ThemeTextStyles>()!
+                      .accentL
+                      .copyWith(
+                        color: const Color(0xFF1E2A36),
+                      ),
                 ),
               ),
               const SizedBox(
@@ -204,62 +214,78 @@ class _DashboardState extends ConsumerState<Dashboard> {
       builder: (BuildContext context, ScrollController scrollController) {
         return Directionality(
           textDirection: TextDirection.rtl,
-          child: Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(16.0),
-                topLeft: Radius.circular(16.0),
-              ),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(16.0),
+              topLeft: Radius.circular(16.0),
             ),
-            child: CustomScrollView(
-              controller: scrollController,
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              physics: const ClampingScrollPhysics(),
-              slivers: [
-                SliverPersistentHeader(
-                  delegate: DashboardHeaderDelegate(
-                    draggableScrollableController:
-                        _draggableScrollableController,
-                  ),
-                  pinned: true,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(16.0),
+                  topLeft: Radius.circular(16.0),
                 ),
-                SliverList.list(
-                  children: [
-                    Container(
-                      color: const Color(0xFFF1F4F8),
-                      padding: const EdgeInsets.only(
-                        top: 16.0,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const DashboardProfile(),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          const StoriesWidget(),
-                          _buildInterestingPlacesCards(),
-                          const SizedBox(
-                            height: 24,
-                          ),
-                          const SnapAndSendCard(),
-                          _buildShoppingMallsCards(),
-                          const EventsHomeCard(),
-                          if (userState != UserState.guest) ...[
-                            const SizedBox(
-                              height: 24,
-                            ),
-                            const JobsAroundCard(),
-                          ],
-                          const PrayerHomeCard(),
-                          const CalendarHomeCard(),
-                        ],
-                      ),
+              ),
+              child: CustomScrollView(
+                controller: scrollController,
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                physics: const ClampingScrollPhysics(),
+                slivers: [
+                  SliverPersistentHeader(
+                    delegate: DashboardHeaderDelegate(
+                      draggableScrollableController:
+                          _draggableScrollableController,
                     ),
-                  ],
-                ),
-              ],
+                    pinned: true,
+                  ),
+                  SliverList.list(
+                    children: [
+                      Container(
+                        color: const Color(0xFFF1F4F8),
+                        padding: const EdgeInsets.only(
+                          top: 16.0,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const DashboardProfile(),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            const StoriesWidget(),
+                            _buildInterestingPlacesCards(),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            const SnapAndSendCard(),
+                            _buildShoppingMallsCards(),
+                            const EventsHomeCard(),
+                            if (userState != UserState.guest) ...[
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const JobsAroundCard(),
+                            ],
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            const PrayerHomeCard(),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            const CalendarHomeCard(),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );

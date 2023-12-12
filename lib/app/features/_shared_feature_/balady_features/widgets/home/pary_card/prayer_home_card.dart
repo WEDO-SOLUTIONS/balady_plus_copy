@@ -1,9 +1,11 @@
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:mapness/shared/config/package_config.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../core/utils/utils_exports.dart';
@@ -24,37 +26,49 @@ class PrayerHomeCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-                padding: const EdgeInsetsDirectional.only(
-                    top: 32, start: 16, end: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomTextWidget(
-                      "prayerTimes".tr(),
-                      textStyle: AppStyle.sectionTitleStyle,
-                    ),
-                  ],
-                )),
+              padding: const EdgeInsetsDirectional.only(
+                start: 16,
+                end: 16,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "prayerTimes".tr(),
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.accentL
+                        .copyWith(
+                          color: const Color(0xFF1E2A36),
+                        ),
+                  ),
+                ],
+              ),
+            ),
             state.nextPrayer != null &&
                     state.status != BlocRequestStatus.submissionGetLoading
                 ? Container(
-                    height: 234,
+                    height: 200,
                     margin: const EdgeInsets.only(left: 16, right: 16, top: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(16)),
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
                       image: DecorationImage(
+                        // image: AssetImage(
+                        //     state.nextPrayer!.prayer == Prayers.fajr
+                        //         ? ImagePath.fajrBg
+                        //         : state.nextPrayer!.prayer == Prayers.dhuhr
+                        //             ? ImagePath.zuhrBg
+                        //             : state.nextPrayer!.prayer == Prayers.asr
+                        //                 ? ImagePath.asrBg
+                        //                 : state.nextPrayer!.prayer ==
+                        //                         Prayers.maghrib
+                        //                     ? ImagePath.maghrbBg
+                        //                     : ImagePath.ishabBg),
                         image: AssetImage(
-                            state.nextPrayer!.prayer == Prayers.fajr
-                                ? ImagePath.fajrBg
-                                : state.nextPrayer!.prayer == Prayers.dhuhr
-                                    ? ImagePath.zuhrBg
-                                    : state.nextPrayer!.prayer == Prayers.asr
-                                        ? ImagePath.asrBg
-                                        : state.nextPrayer!.prayer ==
-                                                Prayers.maghrib
-                                            ? ImagePath.maghrbBg
-                                            : ImagePath.ishabBg),
-                        fit: BoxFit.fitHeight,
+                          "assets/images/prayer_time.png",
+                          package: PackageConfig.packageName,
+                        ),
+                        fit: BoxFit.cover,
                       ),
                     ),
                     child: BlocBuilder<PrayerTimesCubit, PrayerTimesState>(

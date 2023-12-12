@@ -1,15 +1,14 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../../../core/utils/constants/paths/image_paths.dart';
 import '../../../../../../core/utils/constants/route_names.dart';
-import '../../../../../../core/utils/enums/app_font_weights.dart';
 import '../../../../../events/domain/entities/search_events/search_events_item.dart';
 import '../../../../presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../presentation/widgets/custom_svg_icon_widget.dart';
-import '../../../../presentation/widgets/texts/custom_text_widget.dart';
 
 class EventItemCard extends StatelessWidget {
   final SearchEventsItem item;
@@ -22,16 +21,18 @@ class EventItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, RouteName.eventsDetailsPage,
-            arguments: item.id);
+        NavigationService.navigatorKey.currentState!.pushNamed(
+          RouteName.eventsDetailsPage,
+          arguments: item.id,
+        );
       },
       child: Container(
         height: 187,
-        margin: padding ?? EdgeInsets.only(top: 16, left: 16, right: 16),
+        margin: padding ?? const EdgeInsets.only(top: 16, left: 16, right: 16),
         width: width ?? MediaQuery.of(context).size.width - 32,
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(8),
           ),
           alignment: Alignment.bottomRight,
           child: Stack(
@@ -41,76 +42,71 @@ class EventItemCard extends StatelessWidget {
                 child: CustomNetworkImageWidget(
                   item.logoImage ?? "",
                   imageWidth: MediaQuery.of(context).size.width,
-                  imageHeight: 187,
+                  imageHeight: 200,
                   placeHolderWidget:
                       SvgPicture.asset(ImagePath.calendarBackground),
                 ),
               ),
               Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                    //   color: Color(0x3303435633),
-                    gradient: LinearGradient(
-                        begin: FractionalOffset.topCenter,
-                        end: FractionalOffset.bottomCenter,
-                        colors: [Color(0x0000394A), Color(0xFF155F75)])),
+                  borderRadius: BorderRadius.circular(14),
+                  gradient: LinearGradient(
+                    begin: FractionalOffset.topCenter,
+                    end: FractionalOffset.bottomCenter,
+                    colors: [
+                      const Color(0x00000000),
+                      const Color(0xFF000000).withOpacity(0.8),
+                    ],
+                  ),
+                ),
               ),
               Align(
                 alignment: Alignment.bottomRight,
                 child: Container(
-                  padding: EdgeInsets.only(right: 8, bottom: 16),
-                  child: Row(
+                  padding: const EdgeInsets.only(right: 24, bottom: 20),
+                  child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Flexible(
+                        child: Text(
+                          item.eventName ?? "",
+                          textAlign: TextAlign.right,
+                          maxLines: 2,
+                          style: Theme.of(context)
+                              .extension<ThemeTextStyles>()
+                              ?.accentL
+                              .copyWith(color: Colors.white, height: 1.5),
+                        ),
+                      ),
                       Date(
                         day: item.getStartDay(),
                         month: item.getStartMonth(),
                       ),
-                      CustomHorizontalSpace(width: 10),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Flexible(
-                              child: CustomTextWidget(item.eventName ?? "",
-                                  textAlign: TextAlign.right,
-                                  maxLines: 2,
-                                  textStyle: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                  )),
+                      const CustomVerticalSpace(height: 6),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          IconName(
+                            icon: IconPath.locationHomeEvents,
+                            name: item.city ?? "",
+                            color: const Color(0xFFE7E7E8),
+                          ),
+                          const CustomHorizontalSpace(width: 8),
+                          IconName(
+                            icon: IconPath.planetRingedHomeEvents,
+                            name: item.category ?? "",
+                            color: Colors.white,
+                          ),
+                          const CustomHorizontalSpace(width: 8),
+                          if (item.feesType != null &&
+                              item.feesType!.isNotEmpty)
+                            IconName(
+                              icon: IconPath.tagHomeEvents,
+                              name: item.feesType!,
+                              color: Colors.white,
                             ),
-                            CustomVerticalSpace(height: 6),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                IconName(
-                                  icon: IconPath.locationHomeEvents,
-                                  name: item.city ?? "",
-                                  color: Color(0xFFE7E7E8),
-                                ),
-                                CustomHorizontalSpace(width: 8),
-                                IconName(
-                                  icon: IconPath.planetRingedHomeEvents,
-                                  name: item.category ?? "",
-                                  color: Colors.white,
-                                ),
-                                CustomHorizontalSpace(width: 8),
-                                if (item.feesType != null &&
-                                    item.feesType!.isNotEmpty)
-                                  IconName(
-                                    icon: IconPath.tagHomeEvents,
-                                    name: item.feesType!,
-                                    color: Colors.white,
-                                  ),
-                              ],
-                            )
-                          ],
-                        ),
+                        ],
                       ),
                     ],
                   ),
@@ -138,15 +134,16 @@ class IconName extends StatelessWidget {
         SvgPicture.asset(
           icon,
           width: 12,
+          color: const Color(0xCCFFFFFF),
         ),
         const SizedBox(
           width: 4,
         ),
-        CustomTextWidget(
+        Text(
           name,
-          fontColor: color,
-          fontSize: 12,
-          fontWeight: AppFontWeight.medium,
+          style: Theme.of(context).extension<ThemeTextStyles>()?.textS.copyWith(
+                color: const Color(0xCCFFFFFF),
+              ),
         ),
       ],
     );
@@ -160,35 +157,11 @@ class Date extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 54,
-      height: 50,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        color: const Color(0xFFA7C587),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CustomTextWidget(
-            day,
-            fontSize: 16,
-            fontColor: AppColor.white,
-            fontWeight: AppFontWeight.bold,
+    return Text(
+      "$day $month",
+      style: Theme.of(context).extension<ThemeTextStyles>()?.textS.copyWith(
+            color: const Color(0xCCFFFFFF),
           ),
-          CustomVerticalSpace(
-            height: 2,
-          ),
-          CustomTextWidget(
-            month,
-            fontSize: 12,
-            fontColor: AppColor.white,
-            fontWeight: AppFontWeight.medium,
-          )
-        ],
-      ),
     );
   }
 }
