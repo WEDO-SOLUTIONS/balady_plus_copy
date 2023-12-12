@@ -1,10 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter_appauth/flutter_appauth.dart';
-import 'package:mapness/features/sso_auth/data/sso_config.dart';
 import 'package:mapness/features/sso_auth/domain/entity/sso_token_info.dart';
 import 'package:mapness/features/sso_auth/domain/mappers/auth_token_response.dart';
+import 'package:mapness/shared/providers/dgis_envirement.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'dart:convert';
 
 part 'token_provider.g.dart';
 
@@ -12,21 +13,20 @@ part 'token_provider.g.dart';
 class Token extends _$Token {
   final FlutterAppAuth _appAuth = FlutterAppAuth();
 
-  final AuthorizationServiceConfiguration _serviceConfiguration =
-      const AuthorizationServiceConfiguration(
-    authorizationEndpoint: '${SsoConfig.ssoUrl}/authorize',
-    tokenEndpoint: '${SsoConfig.ssoUrl}/token',
-    endSessionEndpoint: "${SsoConfig.ssoUrl}/endsession",
-  );
-
   Future<void> authorization() async {
+    final ssoConfig = ref.read(dgisEnvirementProvider).sso;
+
     AuthorizationTokenResponse? response =
         await _appAuth.authorizeAndExchangeCode(
       AuthorizationTokenRequest(
-        SsoConfig.ssoClient,
-        SsoConfig.ssoRedirectUrl,
-        serviceConfiguration: _serviceConfiguration,
-        clientSecret: SsoConfig.ssoSecret,
+        ssoConfig.ssoClient,
+        ssoConfig.ssoRedirectUrl,
+        serviceConfiguration: AuthorizationServiceConfiguration(
+          authorizationEndpoint: '${ssoConfig.ssoUrl}/authorize',
+          tokenEndpoint: '${ssoConfig.ssoUrl}/token',
+          endSessionEndpoint: '${ssoConfig.ssoUrl}/endsession',
+        ),
+        clientSecret: ssoConfig.ssoSecret,
         scopes: [
           'openid',
           'profile',
@@ -40,13 +40,19 @@ class Token extends _$Token {
   }
 
   Future<void> refreshToken(String refreshToken) async {
+    final ssoConfig = ref.read(dgisEnvirementProvider).sso;
+
     TokenResponse? response = await _appAuth.token(
       TokenRequest(
-        SsoConfig.ssoClient,
-        SsoConfig.ssoRedirectUrl,
-        serviceConfiguration: _serviceConfiguration,
+        ssoConfig.ssoClient,
+        ssoConfig.ssoRedirectUrl,
+        serviceConfiguration: AuthorizationServiceConfiguration(
+          authorizationEndpoint: '${ssoConfig.ssoUrl}/authorize',
+          tokenEndpoint: '${ssoConfig.ssoUrl}/token',
+          endSessionEndpoint: '${ssoConfig.ssoUrl}/endsession',
+        ),
         refreshToken: refreshToken,
-        clientSecret: SsoConfig.ssoSecret,
+        clientSecret: ssoConfig.ssoSecret,
         scopes: [
           'openid',
           'profile',

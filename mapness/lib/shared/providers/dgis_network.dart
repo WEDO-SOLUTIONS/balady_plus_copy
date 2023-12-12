@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:mapness/features/sso_auth/data/token_provider.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/providers/stage.dart';
+import 'package:mapness/shared/providers/dgis_envirement.dart';
 import 'package:mapness/shared/providers/package_info.dart';
 import 'package:mapness/shared/providers/uuid_provider.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -15,7 +15,7 @@ part 'dgis_network.g.dart';
 class _DGisNetwork extends _$DGisNetwork {
   @override
   Dio build() {
-    final stage = ref.watch(stageProvider);
+    final url = ref.watch(dgisEnvirementProvider).url;
     const timeout = Duration(seconds: 5);
     final appLanguage = ref.watch(appLanguageProvider);
     final uuid = ref.watch(uuidProviderProvider);
@@ -24,7 +24,7 @@ class _DGisNetwork extends _$DGisNetwork {
 
     return Dio(BaseOptions(
       responseType: ResponseType.bytes,
-      baseUrl: stage.publicApi,
+      baseUrl: url,
       sendTimeout: timeout,
       receiveTimeout: timeout,
       connectTimeout: timeout,

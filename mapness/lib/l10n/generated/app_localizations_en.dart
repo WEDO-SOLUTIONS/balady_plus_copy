@@ -678,13 +678,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get youSearch => 'You search';
-
-  @override
-  String get deliveryAvailable => 'Delivery available';
-
-  @override
-  String get accessibility => 'Accessibility';
-
-  @override
-  String get motorVisual => 'Motor, visual';
 }
