@@ -78,148 +78,159 @@ class PrayerHomeCard extends StatelessWidget {
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 24),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Column(
+                                  Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      if (state.nextPrayer != null)
-                                        Text(
-                                          "متبقي على أذان ${state.nextPrayer!.prayer.label.tr()}",
-                                          style: Theme.of(context)
-                                              .extension<ThemeTextStyles>()!
-                                              .accentXS
-                                              .copyWith(
-                                                color: Colors.white,
-                                              ),
-                                        ),
-                                      state.nextPrayer != null
-                                          ? NextPrayerHome(
-                                              prayer: state.nextPrayer!.prayer,
-                                              time: state.nextPrayer!.dateTime,
-                                            )
-                                          : const ShimmerEffectWidget(
-                                              width: 160,
-                                              height: 40,
-                                              borderRadius: 4,
-                                            ),
-                                      const SizedBox(height: 6),
-                                      state.nextPrayer != null
-                                          ? Text(
-                                              "صلاة ${state.nextPrayer!.prayer.label.tr()}",
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          if (state.nextPrayer != null)
+                                            Text(
+                                              "متبقي على أذان ${state.nextPrayer!.prayer.label.tr()}",
                                               style: Theme.of(context)
                                                   .extension<ThemeTextStyles>()!
                                                   .accentXS
                                                   .copyWith(
                                                     color: Colors.white,
                                                   ),
-                                            )
-                                          : const ShimmerEffectWidget(
-                                              width: 80,
-                                              height: 20,
-                                              borderRadius: 4,
                                             ),
-                                      state.nextPrayer != null
-                                          ? Row(
-                                              children: [
-                                                Text(
-                                                  state.nextPrayer!.dateTime
-                                                              .hour >
-                                                          12
-                                                      ? "PM"
-                                                      : "AM",
-                                                  style: Theme.of(context)
-                                                      .extension<
-                                                          ThemeTextStyles>()!
-                                                      .accentM
-                                                      .copyWith(
-                                                        color: Colors.white,
-                                                      ),
+                                          state.nextPrayer != null
+                                              ? NextPrayerHome(
+                                                  prayer:
+                                                      state.nextPrayer!.prayer,
+                                                  time: state
+                                                      .nextPrayer!.dateTime,
+                                                )
+                                              : const ShimmerEffectWidget(
+                                                  width: 160,
+                                                  height: 40,
+                                                  borderRadius: 4,
                                                 ),
-                                                const SizedBox(width: 4),
-                                                Text(
-                                                  DateFormat("hh:mm").format(
-                                                      state.nextPrayer!
-                                                          .dateTime),
-                                                  style: Theme.of(context)
-                                                      .extension<
-                                                          ThemeTextStyles>()!
-                                                      .accentM
-                                                      .copyWith(
-                                                        color: Colors.white,
-                                                      ),
-                                                ),
-                                              ],
-                                            )
-                                          : const ShimmerEffectWidget(
-                                              width: 80,
-                                              height: 40,
-                                              borderRadius: 4,
-                                            ),
-                                      const SizedBox(height: 16),
-                                      Material(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: InkWell(
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        width: 16,
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: state.nextPrayer!.prayer ==
+                                                  Prayers.isha
+                                              ? const Color(0x1A4CA5B4)
+                                              : const Color(0x4D1E2A36),
+                                        ),
+                                        child: GestureDetector(
                                           onTap: () {
-                                            NavigationService
-                                                .navigatorKey.currentState!
-                                                .pushNamed(
-                                              RouteName.prayerTimes,
-                                              arguments: context
-                                                  .read<PrayerTimesCubit>(),
-                                            );
+                                            Provider.of<PrayerTimesCubit>(
+                                                    context,
+                                                    listen: false)
+                                                .prayerSettingsOnOff();
                                           },
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 12,
-                                              vertical: 6,
-                                            ),
-                                            child: Text(
-                                              'prayer_timings'.tr(),
-                                              style: Theme.of(context)
-                                                  .extension<ThemeTextStyles>()!
-                                                  .accentM
-                                                  .copyWith(
-                                                    color:
-                                                        const Color(0xFF4CA5B4),
-                                                  ),
-                                            ),
+                                          child: BlocBuilder<PrayerTimesCubit,
+                                              PrayerTimesState>(
+                                            builder: (context, state) {
+                                              bool isNotificationDisabled =
+                                                  state.isNotificationDisable;
+                                              return SvgPicture.asset(
+                                                "assets/icons/svg/ic_notification.svg",
+                                                package:
+                                                    PackageConfig.packageName,
+                                                color: isNotificationDisabled
+                                                    ? const Color(0x99FFFFFF)
+                                                    : Colors.white,
+                                                width: 24,
+                                                height: 24,
+                                              );
+                                            },
                                           ),
                                         ),
                                       ),
                                     ],
                                   ),
-                                  Container(
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Color(0x4D1E2A36),
-                                    ),
-                                    child: GestureDetector(
+                                  const SizedBox(height: 6),
+                                  state.nextPrayer != null
+                                      ? Text(
+                                          "صلاة ${state.nextPrayer!.prayer.label.tr()}",
+                                          style: Theme.of(context)
+                                              .extension<ThemeTextStyles>()!
+                                              .accentXS
+                                              .copyWith(
+                                                color: Colors.white,
+                                              ),
+                                        )
+                                      : const ShimmerEffectWidget(
+                                          width: 80,
+                                          height: 20,
+                                          borderRadius: 4,
+                                        ),
+                                  state.nextPrayer != null
+                                      ? Row(
+                                          children: [
+                                            Text(
+                                              state.nextPrayer!.dateTime.hour >
+                                                      12
+                                                  ? "PM"
+                                                  : "AM",
+                                              style: Theme.of(context)
+                                                  .extension<ThemeTextStyles>()!
+                                                  .accentM
+                                                  .copyWith(
+                                                    color: Colors.white,
+                                                  ),
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              DateFormat("hh:mm").format(
+                                                  state.nextPrayer!.dateTime),
+                                              style: Theme.of(context)
+                                                  .extension<ThemeTextStyles>()!
+                                                  .accentM
+                                                  .copyWith(
+                                                    color: Colors.white,
+                                                  ),
+                                            ),
+                                          ],
+                                        )
+                                      : const ShimmerEffectWidget(
+                                          width: 80,
+                                          height: 40,
+                                          borderRadius: 4,
+                                        ),
+                                  const SizedBox(height: 16),
+                                  Material(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: InkWell(
                                       onTap: () {
-                                        Provider.of<PrayerTimesCubit>(context,
-                                                listen: false)
-                                            .prayerSettingsOnOff();
-                                      },
-                                      child: BlocBuilder<PrayerTimesCubit,
-                                              PrayerTimesState>(
-                                          builder: (context, state) {
-                                        bool isNotificationDisabled =
-                                            state.isNotificationDisable;
-                                        return SvgPicture.asset(
-                                          "assets/icons/svg/ic_notification.svg",
-                                          package: PackageConfig.packageName,
-                                          color: isNotificationDisabled
-                                              ? const Color(0x99FFFFFF)
-                                              : Colors.white,
-                                          width: 24,
-                                          height: 24,
+                                        NavigationService
+                                            .navigatorKey.currentState!
+                                            .pushNamed(
+                                          RouteName.prayerTimes,
+                                          arguments:
+                                              context.read<PrayerTimesCubit>(),
                                         );
-                                      }),
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 6,
+                                        ),
+                                        child: Text(
+                                          'prayer_timings'.tr(),
+                                          style: Theme.of(context)
+                                              .extension<ThemeTextStyles>()!
+                                              .accentM
+                                              .copyWith(
+                                                color: const Color(0xFF4CA5B4),
+                                              ),
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ],
