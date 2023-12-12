@@ -1,3 +1,6 @@
+import 'package:hijri/hijri_calendar.dart';
+import 'package:intl/intl.dart';
+
 class GraveActiveRequestDetails {
   final int? requestId;
   final String? requestKey;
@@ -257,6 +260,35 @@ class BurialInfo {
         "baqieBurialPermitStatus": baqieBurialPermitStatus,
         "baqieBurialPermitApprovalDate": baqieBurialPermitApprovalDate,
       };
+
+  String? getHijriDate() {
+    List<int> dateSplitted =
+        burialDate!.split("/").map((e) => int.parse(e)).toList();
+    var g_date = HijriCalendar();
+    DateTime gorgianDate = g_date.hijriToGregorian(
+        dateSplitted[0], dateSplitted[1], dateSplitted[2]);
+    String gorgian = DateFormat('yyyy/MM/dd').format(gorgianDate);
+
+    if (isToday(gorgianDate) || isTomorrow(gorgianDate)) {
+      return gorgian;
+    }
+
+    return null;
+  }
+
+  bool isToday(DateTime date) {
+    DateTime today = DateTime.now();
+    return date.year == today.year &&
+        date.month == today.month &&
+        date.day == today.day;
+  }
+
+  bool isTomorrow(DateTime date) {
+    DateTime tomorrow = DateTime.now().add(Duration(days: 1));
+    return date.year == tomorrow.year &&
+        date.month == tomorrow.month &&
+        date.day == tomorrow.day;
+  }
 }
 
 class CemeteryInfo {

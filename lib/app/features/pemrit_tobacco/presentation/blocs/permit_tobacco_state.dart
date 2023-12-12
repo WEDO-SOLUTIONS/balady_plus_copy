@@ -113,11 +113,10 @@ class PermitTobaccoLicenseState extends Equatable {
                 : permitTobaccoValidateHotelLicenseResponse.value);
   }
 
-  String? ALERT_SERVICE_USAGE_GUIDANCE() => alerts
-      ?.firstWhereOrNull(
-          (element) => element.id == "TWENTY_FOUR_PERMIT_ENDORSEMENT")
-      ?.name
-      ?.replaceAll("{0}", CommonProperties.userInfo?.arName ?? "");
+  String? ALERT() => alerts
+      ?.firstWhereOrNull((element) =>
+          element.id == "PERMIT_FEES_DIFFER_ACCORDING_TO_MUNICIPALITY")
+      ?.name;
 
   bool isStep2Valid() {
     if (true) {

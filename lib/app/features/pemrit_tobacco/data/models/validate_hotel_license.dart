@@ -1,6 +1,7 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 class PermitTobaccoValidateHotelLicense {
   final int? licenseNumber;
-  final int? hotelClass;
+  final HotelClass? hotelClass;
   final String? hotelName;
 
   PermitTobaccoValidateHotelLicense({
@@ -13,7 +14,9 @@ class PermitTobaccoValidateHotelLicense {
           Map<String, dynamic> json) =>
       PermitTobaccoValidateHotelLicense(
         licenseNumber: json["licenseNumber"],
-        hotelClass: json["hotelClass"],
+        hotelClass: json["hotelClass"] != null
+            ? HotelClass.fromJson(json["hotelClass"])
+            : null,
         hotelName: json["hotelName"],
       );
 
@@ -22,4 +25,19 @@ class PermitTobaccoValidateHotelLicense {
         "hotelClass": hotelClass,
         "hotelName": hotelName,
       };
+}
+
+class HotelClass {
+  int? id;
+
+  String? name;
+  HotelClass({
+    this.id,
+    this.name,
+  });
+
+  factory HotelClass.fromJson(Map<String, dynamic> json) => HotelClass(
+        id: json["id"],
+        name: json["name"],
+      );
 }

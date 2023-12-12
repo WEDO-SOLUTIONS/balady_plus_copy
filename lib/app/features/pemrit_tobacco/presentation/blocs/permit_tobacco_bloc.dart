@@ -201,10 +201,10 @@ class PermitTobaccoLicenseBloc
 
   Future<void> _validatePermitHandler(
       ValidatePermitEvent e, Emitter emitter) async {
-    NavigationService.navigatorKey.currentState!
-        .pushNamed(RouteName.permitsTobaccoDetailsPage, arguments: this);
+    //  NavigationService.navigatorKey.currentState!
+    //   .pushNamed(RouteName.permitsTobaccoDetailsPage, arguments: this);
 
-    return;
+    // return;
     emitter(state.copyWith(status: BlocStatus.loading));
     final failOrSuccess = await _validateBeforeApply(state.licenseId!);
 

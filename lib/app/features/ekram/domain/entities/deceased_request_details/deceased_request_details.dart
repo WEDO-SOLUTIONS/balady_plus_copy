@@ -125,7 +125,7 @@ class DeceasedInfoResponseDtoList {
       this.burialCityId,
       this.burialCityName,
       this.name,
-      this.isMuslimReligion,
+      this.isMuslim,
       this.nationalityId,
       this.nationality,
       this.genderId,
@@ -159,7 +159,7 @@ class DeceasedInfoResponseDtoList {
   int? burialCityId;
   String? burialCityName;
   String? name;
-  bool? isMuslimReligion;
+  bool? isMuslim;
   int? nationalityId;
   String? nationality;
   int? genderId;
@@ -195,18 +195,16 @@ class DeceasedInfoResponseDtoList {
       specialTransferOtherReason: json["specialTransferOtherReason"] == null
           ? null
           : json["specialTransferOtherReason"],
-      deceasedTransportRequestStatusId:
-          json["deceasedTransportRequestStatusId"] == null
-              ? null
-              : json["deceasedTransportRequestStatusId"],
+      deceasedTransportRequestStatusId: json["deceasedTransportRequestStatusId"] == null
+          ? null
+          : json["deceasedTransportRequestStatusId"],
       deceasedTransportRequestStatus: json["deceasedTransportRequestStatus"] == null
           ? null
           : json["deceasedTransportRequestStatus"],
       burialCityId: json["burialCityId"],
       burialCityName: json["burialCityName"],
       name: json["name"] == null ? null : json["name"],
-      isMuslimReligion:
-          json["isMuslimReligion"] == null ? null : json["isMuslimReligion"],
+      isMuslim: json["isMuslim"] == null ? null : json["isMuslim"],
       nationalityId:
           json["nationalityId"] == null ? null : json["nationalityId"],
       nationality: json["nationality"] == null ? null : json["nationality"],
@@ -235,7 +233,9 @@ class DeceasedInfoResponseDtoList {
       transferOrganizationName: json["transferOrganizationName"] == null
           ? null
           : json["transferOrganizationName"],
-      transferOrganizationAssignDateTime: json["transferOrganizationAssignDateTime"] == null ? null : json["transferOrganizationAssignDateTime"],
+      transferOrganizationAssignDateTime: json["transferOrganizationAssignDateTime"] == null
+          ? null
+          : json["transferOrganizationAssignDateTime"],
       driverAssignDateTime: json["driverAssignDateTime"] == null ? null : json["driverAssignDateTime"],
       anonymous: json["anonymous"] == null ? null : json["anonymous"],
       transferOrganizationId: json["transferOrganizationId"] == null ? null : json["transferOrganizationId"],

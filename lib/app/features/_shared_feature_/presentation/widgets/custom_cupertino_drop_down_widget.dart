@@ -477,6 +477,7 @@ class CustomLookUpLongDialog extends StatefulWidget {
   final bool? showOptional;
   final bool showHintAsTitle;
   final Function? onEmptyList;
+  final bool isDisbaled;
 
   CustomLookUpLongDialog(
       {Key? key,
@@ -489,6 +490,7 @@ class CustomLookUpLongDialog extends StatefulWidget {
       this.errorText,
       this.showOptional = false,
       this.showHintAsTitle = true,
+      this.isDisbaled = false,
       this.onEmptyList})
       : super(key: key);
 
@@ -504,32 +506,16 @@ class _CustomLookUpLongDialog extends State<CustomLookUpLongDialog> {
         hintText: widget.hint!,
         textValue: widget.value?.name,
         showOptional: widget.showOptional,
-        onTap: widget.items.isNotEmpty
-            ? () async {
-                FocusManager.instance.primaryFocus?.unfocus();
-                await CustomPopUpsWidgets.showBottomSheet(
-                  NavigationService.navigatorKey.currentContext!,
-                  child: LookupTypeWithSearchDialog(
-                    onSelect: (LookUpItem item) => widget.onChangeType(item),
-                    items: widget.items,
-                    selectedItem: widget.value,
-                    title: widget.showHintAsTitle ? widget.hint : widget.label,
-                    searchHint: widget.searchHint,
-                  ),
-                );
-              }
-            : () async {
-                FocusManager.instance.primaryFocus?.unfocus();
-                if (widget.onEmptyList != null) {
-                  List<LookUpItem>? items = await widget.onEmptyList!();
-                  if (items != null) {
+        onTap: widget.isDisbaled == false
+            ? widget.items.isNotEmpty
+                ? () async {
                     FocusManager.instance.primaryFocus?.unfocus();
                     await CustomPopUpsWidgets.showBottomSheet(
                       NavigationService.navigatorKey.currentContext!,
                       child: LookupTypeWithSearchDialog(
                         onSelect: (LookUpItem item) =>
                             widget.onChangeType(item),
-                        items: items,
+                        items: widget.items,
                         selectedItem: widget.value,
                         title:
                             widget.showHintAsTitle ? widget.hint : widget.label,
@@ -537,9 +523,30 @@ class _CustomLookUpLongDialog extends State<CustomLookUpLongDialog> {
                       ),
                     );
                   }
-                } else
-                  CommonFunctions.showError(
-                      widget.errorText ?? ('empty_list_error').tr());
-              });
+                : () async {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    if (widget.onEmptyList != null) {
+                      List<LookUpItem>? items = await widget.onEmptyList!();
+                      if (items != null) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        await CustomPopUpsWidgets.showBottomSheet(
+                          NavigationService.navigatorKey.currentContext!,
+                          child: LookupTypeWithSearchDialog(
+                            onSelect: (LookUpItem item) =>
+                                widget.onChangeType(item),
+                            items: items,
+                            selectedItem: widget.value,
+                            title: widget.showHintAsTitle
+                                ? widget.hint
+                                : widget.label,
+                            searchHint: widget.searchHint,
+                          ),
+                        );
+                      }
+                    } else
+                      CommonFunctions.showError(
+                          widget.errorText ?? ('empty_list_error').tr());
+                  }
+            : () {});
   }
 }

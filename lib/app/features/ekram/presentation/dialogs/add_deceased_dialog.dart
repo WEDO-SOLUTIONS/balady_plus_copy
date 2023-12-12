@@ -379,6 +379,7 @@ class _DialogBodyState extends State<DialogBody> {
                         .read<EkramAddDeceasedBloc>()
                         .add(ChangePermitNumberEvent(text: text));
                   },
+                  showOptional: true,
                   onValidate: (String? value) {}),
               CustomVerticalSpace(height: 16),
               DeceasedRequiredTransferWidget(),

@@ -74,7 +74,7 @@ class DeceasedGreyCardWidget extends StatelessWidget {
               Expanded(
                   child: EkramHeaderAndDescWidget(
                 title: ('ekramReligion').tr(),
-                details: !(item.isMuslimReligion ?? false)
+                details: !(item.isMuslim ?? false)
                     ? ("non_muslim").tr()
                     : ("muslim").tr(),
               ))
