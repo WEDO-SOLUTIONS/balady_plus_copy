@@ -22,25 +22,25 @@ class InterestingPlaces extends _$InterestingPlaces {
 
   @override
   List<InterestingPlace> build() {
-    return _places.toList();
-  }
-
-  void startListen() async {
     ref.onDispose(() {
       _visibleRectSub?.cancel();
       _visibleRectSub = null;
     });
 
-    final map = await ref.read(dgisControllerProvider.future);
-    _visibleRectSub?.cancel();
-    _visibleRectSub = map.visibleRectEvents
-        .debounceTime(const Duration(seconds: 7))
-        .listen((event) {
-      _update(event.visibleRect);
-    });
+    if (_visibleRectSub == null) {
+      startListen();
+    }
 
-    final currentVisible = await map.visibleRectEvents.last;
-    _update(currentVisible.visibleRect);
+    return _places.toList();
+  }
+
+  void startListen() async {
+    final map = ref.read(dgisControllerProvider.notifier);
+    _visibleRectSub = map.visibleRectEvents.listen(_mapVisibleRectUpdate);
+  }
+
+  void _mapVisibleRectUpdate(VisibleRectEvent event) async {
+    _update(event.visibleRect);
   }
 
   Future<void> _update(VisibleRect rect) async {

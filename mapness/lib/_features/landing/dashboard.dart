@@ -53,7 +53,6 @@ class _DashboardState extends ConsumerState<Dashboard> {
           }
         });
       });
-    ref.read(interestingPlacesProvider.notifier).startListen();
   }
 
   @override
