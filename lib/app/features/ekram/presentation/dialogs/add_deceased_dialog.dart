@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:balady_plus/app/features/ekram/presentation/blocs/ekram_add_deceased/ekram_add_deceased_bloc.dart';
 import 'package:balady_plus/app/features/ekram/presentation/widgets/add_deceased/deceased_require_transfer_widget.dart';
@@ -263,7 +264,7 @@ class _DialogBodyState extends State<DialogBody> {
               if (state.data.multipleCityRequest == true) ...[
                 CustomVerticalSpace(height: 16),
                 CustomLookUpLongDialog(
-                  items: state.cities ?? [],
+                  items: state.burialCities() ?? [],
                   value: state.data.burialCityId,
                   onEmptyList: () async {
                     return context
@@ -282,9 +283,9 @@ class _DialogBodyState extends State<DialogBody> {
                   hint: "cemetry_deceassed_burial_city".tr(),
                 ),
               ],
-              CustomVerticalSpace(height: 16),
-              CemetryBurialDateHijri(),
-              CemetryBurialDateGorgian(),
+              const CustomVerticalSpace(height: 16),
+              const CemetryBurialDateHijri(),
+              const CemetryBurialDateGorgian(),
               CustomLookUpLongDialog(
                 items: state.burialTimeItems ?? [],
                 value: state.data.selectedTime,
@@ -350,7 +351,8 @@ class _DialogBodyState extends State<DialogBody> {
                 label: ("cemetry_name").tr(),
                 hint: ("cemetry_name").tr(),
               ),
-              CustomVerticalSpace(height: 16),
+              NotesWidget(notes: ["ekram_cemetry_note".tr()]),
+
               CustomLookUpLongDialog(
                 items: state.orgnizations ?? [],
                 value: state.data.selectedOrgnization,
@@ -367,6 +369,8 @@ class _DialogBodyState extends State<DialogBody> {
                 label: ("ekram_orgnization_name").tr(),
                 hint: ("ekram_orgnization_name").tr(),
               ),
+
+              NotesWidget(notes: ["ekram_org_note".tr()]),
               CustomTextFieldWidget(
                   label: "ekram_permit_no".tr(),
                   hintText: "ekram_permit_no".tr(),

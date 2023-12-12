@@ -3593,7 +3593,7 @@
   "ekram_identity_no":"رقم الاثبات", 
   "full_decassed_name":"اسم المتوفي", 
   "city_state":"المدينة/ المحافظة", 
-  "another_search":"بحث آخر", 
+  "another_search":"بحث آخر",  
   "return_to_services_page":"العودة لصفحة الخدمات", 
   "ekram_first_name":"الاسم الأول", 
   "ekram_second_name":"الاسم الثاني", 
@@ -3603,7 +3603,11 @@
   "ekram_death_city":"مدينة الوفاة", 
   "ekram_condolence_msg_title":"رسالة تعزية", 
   "ekram_condolence_msg":"تشارككم وزارة الشؤون البلدية والقروية والإسكان أحزانكم في وفاة فقيدكم، وتتقدم بخالص التعازي والمواساة لأسرته الكريمة، راجين لكم الصبر والسلوان",
-
+  "ekram_org_note":"تعرض جهات النقل بناء على المقبرة التي تم اختيارها والسعة اليومية للجهة", 
+  "ekram_cemetry_note":"تعرض المقابر بناء على السعة اليومية للمقبرة", 
+   "ekram_retrive_data_success_msg":"يمكنكم إكمال بيانات الطلب", 
+  
+   "ekram_retrive_grave_data_success_msg": "يوجد حجز مقبرة سابق خاص بالمتوفى {} ويمكنكم استكمال إدخال طلب النقل والتجهيز لنفس المتوفى", 
   "ekram_deceased_id":"رقم هوية المتوفى", 
 
   "ekram_step4_title":"بيانات الموقع والمرفقات", 

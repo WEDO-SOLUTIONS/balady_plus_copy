@@ -496,6 +496,15 @@ class EkramAddDeceasedBloc
             idType: state.data.selectedNationalType?.id ?? 0));
 
     await failOrSuccess.fold((l) async {
+      if (state.data.selectedNationalType?.fillInfo == true) {
+        CommonFunctions.showSuccess("ekram_retrive_data_success_msg".tr());
+        emitter(state.copyWith(
+          status: BlocStatus.success,
+          errorMessage: "",
+        ));
+        return;
+      }
+
       emitter(state.copyWith(status: BlocStatus.loading));
 
       final failureOrSuccess = await _checkUserInfo(UserInfoRequestParams(
@@ -601,6 +610,9 @@ class EkramAddDeceasedBloc
       secondNameController.text = secondName;
       thirdNameController.text = thirdName;
       fourthNameController.text = fourthName;
+      CommonFunctions.showSuccess("ekram_retrive_grave_data_success_msg"
+          .tr()
+          .replaceAll("{}", r.data?.result?.deceasedInfo?.fullName ?? ""));
     });
   }
 
