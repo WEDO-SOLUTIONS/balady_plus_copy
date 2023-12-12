@@ -12,6 +12,7 @@ import 'package:mapness/_features/lifestyle_layers/domain/white_lands.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as pb;
 
 import 'package:mapness/app/router.dart';
+import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/app/routes/layer_details.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/entities/iwish/models/iwish_marker.dart';
@@ -425,7 +426,11 @@ class LayersControls extends _$LayersControls {
                   ),
                 ),
               ),
-              onTap: () {},
+              onTap: () {
+                ref
+                    .read(goRouterProvider)
+                    .push(IwishCardRoute(iwishId: stateMarker.id).location);
+              },
             ),
           )
           .toList(),
