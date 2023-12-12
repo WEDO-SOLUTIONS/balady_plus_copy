@@ -282,8 +282,7 @@ class EkramRequestTransportationBloc extends Bloc<
     emitter(state.copyWith(
       status: BlocStatus.performing,
     ));
-    await controller.animateToPage(nextPage,
-        duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+    controller.jumpToPage(nextPage);
     emitter(
         state.copyWith(status: BlocStatus.success, currentPageValue: nextPage));
 
@@ -300,8 +299,7 @@ class EkramRequestTransportationBloc extends Bloc<
       emitter(state.copyWith(
         status: BlocStatus.performing,
       ));
-      await controller.animateToPage(prvoiusPage,
-          duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+      controller.jumpToPage(prvoiusPage);
       emitter(state.copyWith(
           status: BlocStatus.success, currentPageValue: prvoiusPage));
     }

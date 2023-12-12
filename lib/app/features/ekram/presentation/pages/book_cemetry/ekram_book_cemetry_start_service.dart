@@ -86,7 +86,6 @@ class EkramBookCemetryStartService extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: ElevatedButtonWidget.startService(
                     onPressed: () async {
-
                       NavigationService.navigatorKey.currentState!.pushNamed(
                           RouteName.ekramCemetryRequestScreen,
                           arguments: ekramRequestsBloc);

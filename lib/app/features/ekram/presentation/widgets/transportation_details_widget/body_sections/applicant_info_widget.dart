@@ -23,7 +23,7 @@ class ApplicantInfoWidget extends StatelessWidget {
           //MM Ekram
 
           FieldData(
-            title: Helpers.translatingWord("ekramFullName"),
+            title: Helpers.translatingWord("submitterName"),
             subTitle: state.details.submitterName,
           ),
           const CustomVerticalSpace(
@@ -43,7 +43,7 @@ class ApplicantInfoWidget extends StatelessWidget {
               //  CommonFunctions.call(state.details.submitterMobileNumber);
             },
             child: FieldData(
-              title: Helpers.translatingWord("ekramMobile"),
+              title: Helpers.translatingWord("driver_card_applicant_mobile"),
               subTitle: state.details.submitterMobileNumber,
             ),
           ),

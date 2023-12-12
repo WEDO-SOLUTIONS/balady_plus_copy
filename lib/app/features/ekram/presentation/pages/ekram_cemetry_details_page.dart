@@ -105,12 +105,15 @@ class _EkramCemetryDetailsPageState extends State<EkramCemetryDetailsPage> {
                 nationality: params.nationalityName,
                 time: params.burialTime,
                 date: params.burialDate,
+                hijriDate: params.burialDateHijri,
                 cemetryName: params.cemeteryName,
                 apologyReason: params.apologyReason,
                 deathCityName: params.deathCityName,
                 deathCountryName: params.deathCountryName,
                 id: params.deceasedIdentityNumber,
                 burialCity: params.burialCityName,
+                dobHijri: params.deceasedBirthdateHijri,
+                dobGorgian: params.deceasedBirthdate,
               ),
 
               //CemetryInfo(name: params.cemeteryName),
@@ -188,6 +191,8 @@ class DeceasedInfo extends StatelessWidget {
 
   final String? city;
   final String? date;
+  final String? hijriDate;
+
   final String? time;
   final String? isEpidamic;
   final String? cemetryName;
@@ -197,6 +202,9 @@ class DeceasedInfo extends StatelessWidget {
 
   final String? deathCountryName;
   final String? burialCity;
+  final String? dobHijri;
+  final String? dobGorgian;
+
   final String? id;
   const DeceasedInfo(
       {Key? key,
@@ -206,6 +214,7 @@ class DeceasedInfo extends StatelessWidget {
       this.religion,
       this.city,
       this.date,
+      this.hijriDate,
       this.time,
       this.isEpidamic,
       this.cemetryName,
@@ -213,6 +222,8 @@ class DeceasedInfo extends StatelessWidget {
       this.deathCountryName,
       this.deathCityName,
       this.burialCity,
+      this.dobHijri,
+      this.dobGorgian,
       this.id})
       : super(key: key);
 
@@ -242,6 +253,20 @@ class DeceasedInfo extends StatelessWidget {
             height: 16,
           ),
           FieldData(
+            title: Helpers.translatingWord("cemetry_dob_hijri"),
+            subTitle: dobHijri,
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+          FieldData(
+            title: Helpers.translatingWord("cemetry_dob_gorgian"),
+            subTitle: dobGorgian,
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+          FieldData(
             title: Helpers.translatingWord("ekramGender"),
             subTitle: gender,
           ),
@@ -263,7 +288,17 @@ class DeceasedInfo extends StatelessWidget {
             height: 16,
           ),
           FieldData(
-            title: Helpers.translatingWord("burialDate"),
+            title:
+                Helpers.translatingWord("cemetry_deceassed_burial_date_hijri"),
+            subTitle: hijriDate,
+          ),
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+
+          FieldData(
+            title: Helpers.translatingWord(
+                "cemetry_deceassed_burial_date_gorgian"),
             subTitle: date,
           ),
           const CustomVerticalSpace(

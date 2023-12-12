@@ -129,6 +129,15 @@ class EkramAddDeceasedState extends Equatable {
         deathCity: deathCity ?? this.deathCity);
   }
 
+  List<LookUpItem>? burialCities() {
+    if (data.multipleCityRequest == true) {
+      return cities
+          ?.where((element) => element.id != data.deathCity?.id)
+          .toList();
+    }
+    return cities;
+  }
+
   bool allowFillData() {
     return data?.selectedNationalType?.fillInfo == true;
   }
