@@ -9,8 +9,6 @@ import 'package:mapness/features/jobs/ui/widgets/job_header.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 
-import '../providers/jobs_statistic_provider.dart';
-
 const colorPrimary = Color(0xff1E2A36);
 
 class JobMapBottomSheet extends ConsumerStatefulWidget {
@@ -89,7 +87,7 @@ class _JobMapBottomSheetState extends ConsumerState<JobMapBottomSheet> {
       mapObjectManagerProvider(named: "jobs").notifier,
     );
     final jobsList = ref.watch(jobListResponseProvider(page: 1, size: 10));
-    final jobsStatistic = ref.watch(jobStatisticResponseProvider);
+
     ref.listen(
       jobListResponseProvider(page: 1, size: 10),
       (previous, next) async {
@@ -137,9 +135,9 @@ class _JobMapBottomSheetState extends ConsumerState<JobMapBottomSheet> {
       controller: _draggableScrollableController,
       initialChildSize: _headerExtent,
       minChildSize: .1,
-      maxChildSize: 1,
+      maxChildSize: .9,
       snap: true,
-      snapSizes: [.1, _headerExtent, 1],
+      snapSizes: [.1, _headerExtent, .9],
       builder: (BuildContext context, ScrollController scrollController) {
         _scrollController = scrollController;
         scrollController.addListener(() {
