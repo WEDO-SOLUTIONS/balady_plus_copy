@@ -2,10 +2,9 @@ import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/jobs_map.dart';
-import 'package:mapness/app/routes/signin.dart';
 import 'package:mapness/features/jobs/providers/jobs_statistic_provider.dart';
-import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
 class JobsAroundCard extends ConsumerWidget {
@@ -86,18 +85,9 @@ class JobsAroundCard extends ConsumerWidget {
     );
   }
 
-  Future<bool> _isAuth(WidgetRef ref) async {
-    final sso = await ref.read(authProvider.future);
-    return sso != null;
-  }
-
   Future<void> _openJobs(BuildContext context, WidgetRef ref) async {
-    if (!await _isAuth(ref)) {
-      await const SignInRoute().push(context);
-    }
-
-    if (await _isAuth(ref)) {
+    CommonFunctions.authOrOpen(ref, context, callback: () {
       const JobsMapRoute().push(context);
-    }
+    });
   }
 }

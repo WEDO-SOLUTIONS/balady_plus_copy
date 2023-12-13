@@ -6,6 +6,7 @@ import 'package:mapness/_features/favourites/providers/favourite_repository.dart
 import 'package:mapness/_features/poi_card/widgets/poi_favorite_dialog_button.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
@@ -88,11 +89,7 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
                     iconAsset: 'assets/icons/svg/ic_bookmark.svg',
                     title: context.l10n.favourites,
                     showBorder: false,
-                    onTap: () => _awaitPop(
-                      isFavourite
-                          ? favNotifier.delete(widget.favItem)
-                          : favNotifier.addItem(widget.favItem),
-                    ),
+                    onTap: () => _onFavTap(isFavourite),
                   ),
                 ],
               ),
@@ -108,5 +105,14 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
         ),
       ),
     );
+  }
+
+  Future<void> _onFavTap(bool isFavourite) async {
+    CommonFunctions.authOrOpen(ref, context, callback: () {
+      final favNotifier = ref.read(favouriteRepositoryProvider.notifier);
+      _awaitPop(isFavourite
+          ? favNotifier.delete(widget.favItem)
+          : favNotifier.addItem(widget.favItem));
+    });
   }
 }

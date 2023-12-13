@@ -9,8 +9,11 @@ import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_favorite_dialog.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/app/routes/routing.dart';
+import 'package:mapness/app/routes/signin.dart';
 import 'package:mapness/features/routing/ui/brief_route_widgets.dart';
+import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 
 class PoiCardFooter extends ConsumerStatefulWidget {
@@ -104,30 +107,7 @@ class _PoiCardFooterState extends ConsumerState<PoiCardFooter> {
             ? 'assets/icons/svg/ic_fav_solid.svg'
             : 'assets/icons/svg/ic_fav_poi.svg',
         onTap: () async {
-          await showDialog(
-            // barrierColor: Colors.transparent,
-            useSafeArea: false,
-            context: context,
-            builder: (contextDialog) => ProviderScope(
-              parent: ProviderScope.containerOf(context),
-              child: Theme(
-                data: Theme.of(context),
-                child: MediaQuery(
-                  data: MediaQuery.of(context),
-                  child: Directionality(
-                    textDirection: Directionality.of(context),
-                    child: Localizations.override(
-                      context: context,
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: PoiFavoriteDialog(favItem: favouriteItem),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          );
+          await _onFavTap(favouriteItem);
           // if (favData == null) {
           //   final directoryObjectMessage = objectMessage;
           //   if (directoryObjectMessage != null) {
@@ -248,5 +228,34 @@ class _PoiCardFooterState extends ConsumerState<PoiCardFooter> {
         ),
       ),
     );
+  }
+
+  Future<void> _onFavTap(FavouriteItem favouriteItem) async {
+    CommonFunctions.authOrOpen(ref, context, callback: () {
+      showDialog(
+        // barrierColor: Colors.transparent,
+        useSafeArea: false,
+        context: context,
+        builder: (contextDialog) => ProviderScope(
+          parent: ProviderScope.containerOf(context),
+          child: Theme(
+            data: Theme.of(context),
+            child: MediaQuery(
+              data: MediaQuery.of(context),
+              child: Directionality(
+                textDirection: Directionality.of(context),
+                child: Localizations.override(
+                  context: context,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: PoiFavoriteDialog(favItem: favouriteItem),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    });
   }
 }

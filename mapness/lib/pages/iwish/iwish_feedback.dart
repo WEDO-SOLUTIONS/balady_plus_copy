@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/iwish.dart';
-import 'package:mapness/app/routes/signin.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/entities/iwish/models/iwish_tags.dart';
 import 'package:mapness/features/iwish/providers/iwish_entity.dart';
 import 'package:mapness/features/iwish/providers/iwish_feedback.dart';
-import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/labeled_draggable_sheet.dart';
@@ -117,12 +116,9 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
               const SizedBox(height: 16),
               LabeledElevatedButton(
                 onPressed: () async {
-                  if (!await _isAuth(ref)) {
-                    await const SignInRoute().push(context);
-                  }
-                  if (await _isAuth(ref)) {
+                  CommonFunctions.authOrOpen(ref, context, callback: () {
                     feedbackNotifier.submitFeedback();
-                  }
+                  });
                 },
                 label: context.l10n.sendFeedback,
               ),
@@ -132,10 +128,5 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
         ),
       ),
     );
-  }
-
-  Future<bool> _isAuth(WidgetRef ref) async {
-    final sso = await ref.read(authProvider.future);
-    return sso != null;
   }
 }
