@@ -22,8 +22,12 @@ class SearchRoute extends GoRouteData {
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
+    var extra = state.extra as Map<String,dynamic>;
+    var rubrics = extra['rubrics'] as  List<int>?;
+
     return TransculentPage(
       child: MapSearchSheet(
+        rubrics: rubrics,
         initialQuery: initialQuery,
         withClustering: withClustering,
       ),
