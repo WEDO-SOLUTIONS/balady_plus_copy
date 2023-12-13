@@ -93,29 +93,30 @@ class DashboardHeader extends ConsumerWidget {
                 ),
                 Expanded(
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            data?.name ?? '',
-                            style: Theme.of(context)
-                                .extension<ThemeTextStyles>()!
-                                .accentL,
-                          ),
-                          Text(
-                            data?.description ?? '',
-                            maxLines: 2,
-                            style: Theme.of(context)
-                                .extension<ThemeTextStyles>()!
-                                .textS
-                                .apply(
-                                    color: const Color(0xff1E2A36)
-                                        .withOpacity(.5)),
-                          ),
-                        ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              data?.name ?? '',
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()!
+                                  .accentL,
+                            ),
+                            Text(
+                              data?.description ?? '',
+                              maxLines: 2,
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()!
+                                  .textS
+                                  .apply(
+                                      color: const Color(0xff1E2A36)
+                                          .withOpacity(.5)),
+                            ),
+                          ],
+                        ),
                       ),
                       _closeButton(onTap: () => context.pop()),
                     ],
