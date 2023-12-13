@@ -694,9 +694,10 @@ class CommonFunctions {
       var status = await Permission.location.request();
 
       if (status == PermissionStatus.permanentlyDenied) {
-        showDialog(
-            context: context,
-            builder: (ctx) => const LocationPermissionDialog());
+        // showDialog(
+        //   context: context,
+        //   builder: (ctx) => const LocationPermissionDialog(),
+        // );
         return false;
       } else if (status != PermissionStatus.granted) {
         Permission.location.request();
@@ -705,8 +706,10 @@ class CommonFunctions {
         return true;
       }
     } else {
-      showDialog(
-          context: context, builder: (ctx) => const LocationServiceDialog());
+      // showDialog(
+      //   context: context,
+      //   builder: (ctx) => const LocationServiceDialog(),
+      // );
 
       return false;
     }
