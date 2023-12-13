@@ -337,7 +337,7 @@ class CommonFunctions {
     try {
       String biddingEndingTime = timeStr ?? "";
       DateTime tempTime =
-          DateFormat("dd-M-yyyy H:mm:ss").parse(biddingEndingTime);
+          DateFormat("yyyy/m/dd H:mm:ss").parse(biddingEndingTime);
       String time = DateFormat("yyyy/M/dd").format(tempTime).toString();
       formattedTime = time;
     } catch (ex) {

@@ -262,15 +262,17 @@ class BurialInfo {
       };
 
   String? getHijriDate() {
-    List<int> dateSplitted =
-        burialDate!.split("/").map((e) => int.parse(e)).toList();
-    var g_date = HijriCalendar();
-    DateTime gorgianDate = g_date.hijriToGregorian(
-        dateSplitted[0], dateSplitted[1], dateSplitted[2]);
-    String gorgian = DateFormat('yyyy/MM/dd').format(gorgianDate);
+    // Replace "/" with "-" to make it a valid format for DateTime.parse
+    String dateString = burialDate?.replaceAll('/', '-') ?? "";
 
-    if (isToday(gorgianDate) || isTomorrow(gorgianDate)) {
-      return gorgian;
+    // Parse the string into a DateTime object
+    DateTime? gorgianDate = DateTime.tryParse(dateString);
+
+    print("gorgianDate $gorgianDate");
+    if (gorgianDate != null) {
+      if (isToday(gorgianDate) || isTomorrow(gorgianDate)) {
+        return burialDate;
+      }
     }
 
     return null;

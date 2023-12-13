@@ -582,17 +582,18 @@ class EkramAddDeceasedBloc
               selectedNationalType: nationalType,
               isPandemicDeath: r.data?.result?.burialInfo?.isPandemicDeath,
               burialCityId: LookUpItem(
-                id: r.data?.result?.burialInfo?.burialCityId ??
-                    r.data?.result?.burialInfo?.deathCityId,
-                name: r.data?.result?.burialInfo?.burialCityName ??
-                    r.data?.result?.burialInfo?.deathCityName,
-              ),
+                  id: r.data?.result?.burialInfo?.cemeteryInfo?.municipality
+                      ?.cityId,
+                  name: r.data?.result?.burialInfo?.cemeteryInfo?.municipality
+                      ?.cityName),
               selectedTime: LookUpItem(
                 id: r.data?.result?.burialInfo?.prayId,
                 name: r.data?.result?.burialInfo?.prayName,
               ),
-              multipleCityRequest: true,
-              otherBurialCity: r.data?.result?.burialInfo?.prayOther,
+              multipleCityRequest: !(r.data?.result?.burialInfo?.cemeteryInfo
+                      ?.municipality?.cityId ==
+                  r.data?.result?.burialInfo?.deathCityId),
+              otherBurialCity: r.data?.result?.burialInfo?.deathCityOther,
               firstName: Nullable(firstName),
               secondName: Nullable(secondName),
               thirdName: Nullable(thirdName),
@@ -605,16 +606,17 @@ class EkramAddDeceasedBloc
           hijriDate: r.data?.result?.deceasedInfo?.birthDate));
 
       add(ChangeBurialDateEvent(
-        hijriDate: r.data?.result?.burialInfo?.getHijriDate(),
+        gorgianDate: r.data?.result?.burialInfo?.getHijriDate(),
       ));
-      /* if (r.data?.result?.burialInfo?.getHijriDate() != null) {
+
+      if (r.data?.result?.burialInfo?.getHijriDate() != null) {
         emitter(state.copyWith(
             data: state.data.copyWith(
                 selectedCemetry: Nullable(LookUpItem(
           id: r.data?.result?.burialInfo?.cemeteryId,
           name: r.data?.result?.burialInfo?.cemeteryInfo?.cemeteryName,
         )))));
-      }*/
+      }
 
       firstNameController.text = firstName;
       secondNameController.text = secondName;

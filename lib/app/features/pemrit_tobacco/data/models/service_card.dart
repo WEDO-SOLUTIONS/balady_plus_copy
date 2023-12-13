@@ -268,7 +268,7 @@ ServiceModel permitsTobaccoModel() => ServiceModel.fromJson(
         "isImportant": false,
         "action": {"type": "cards", "value": ""},
         "ar": {
-          "title": "permit_24_service_name".tr(),
+          "title": "permit_tobacco_name".tr(),
           "description": "",
           "tag": null,
           "warning":

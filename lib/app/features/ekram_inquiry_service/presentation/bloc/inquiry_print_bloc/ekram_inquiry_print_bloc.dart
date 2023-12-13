@@ -8,6 +8,7 @@ import 'package:sms_user_consent/sms_user_consent.dart';
 
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/failures.dart';
+import '../../../../../core/utils/constants/remote_config.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../ekram/domain/use_cases/get_nationalities.dart';
 import '../../../../ekram/domain/use_cases/get_nationality_types.dart';
@@ -53,11 +54,7 @@ class EkramInquiryPrintBloc
     ));
 
     final failureOrSuccess = await _verifyOTPForPrint(VerifyOTPParams(
-        bodyRecipientIdNo: state.nationalIdForReceiver ?? "",
-        bodyRecipientIdType: state.selectedNationalIdTypeForReceiver?.id ?? 0,
-        deceasedIdentityId: state.nationalIdForDecassed ?? "",
-        deceasedIdentityType:
-            state.selectedNationalIdTypeForDecassed?.id ?? 0));
+        guid: state.sendOtpResponse?.certificateCode ?? "", otp: e.otp ?? ""));
 
     failureOrSuccess.fold((l) {
       print("LLL $l");
@@ -66,10 +63,11 @@ class EkramInquiryPrintBloc
           errorMsg: (l as ServerFailure).errorMessage));
     }, (r) {
       emitter(state.copyWith(status: BlocStatus.success, errorMsg: ""));
-      // NavigationService.navigatorKey.currentState?.pop(true);*/
+      NavigationService.navigatorKey.currentState?.pop(true);
 
       CommonFunctions.showApigeeFile(
-          r.printUrl ?? "", DateTime.now().millisecond.toString());
+          "${RemoteConfig.apigeeURL}/v2/ekram-mobile-services/reports/licenses/${state.sendOtpResponse?.certificateCode}",
+          DateTime.now().millisecond.toString());
 
       /*CommonFunctions.showApigeeFile(
           "https://apiservicesstg.balady.gov.sa/v2/ekram-mobile-services/reports/licenses/E09055EB-228C-466E-97B9-57A3EAA66D8E",
@@ -82,7 +80,12 @@ class EkramInquiryPrintBloc
       status: BlocStatus.loading,
     ));
 
-    final failureOrSuccess = await _sendOTPForPrint(SendOTPParams());
+    final failureOrSuccess = await _sendOTPForPrint(SendOTPParams(
+        bodyRecipientIdNo: state.nationalIdForReceiver ?? "",
+        bodyRecipientIdType: state.selectedNationalIdTypeForReceiver?.id ?? 0,
+        deceasedIdentityId: state.nationalIdForDecassed ?? "",
+        deceasedIdentityType:
+            state.selectedNationalIdTypeForDecassed?.id ?? 0));
 
     failureOrSuccess.fold((l) {
       emitter(state.copyWith(

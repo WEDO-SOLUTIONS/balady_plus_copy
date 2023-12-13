@@ -113,6 +113,16 @@ class Step2SummeryWidget extends StatelessWidget {
               height: 16,
             ),
             FieldData(
+              title: "license_end_date".tr(),
+              subTitle: state
+                      .commercialLicenceDetails?.licenseInfo?.licenseEndDate
+                      .toString() ??
+                  "",
+            ),
+            const CustomVerticalSpace(
+              height: 16,
+            ),
+            FieldData(
               title: "municipality".tr(),
               subTitle: state
                       .commercialLicenceDetails?.locationInfo?.municipalityName
@@ -129,7 +139,7 @@ class Step2SummeryWidget extends StatelessWidget {
                       .toString() ??
                   "",
             ),
-            const CustomVerticalSpace(
+            /*const CustomVerticalSpace(
               height: 16,
             ),
             FieldData(
@@ -138,7 +148,7 @@ class Step2SummeryWidget extends StatelessWidget {
                       .commercialLicenceDetails?.licenseInfo?.licenseEndDate
                       .toString() ??
                   "",
-            ),
+            ),*/
             const CustomVerticalSpace(
               height: 16,
             ),
