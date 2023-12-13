@@ -77,9 +77,10 @@ class _IwishMarkers extends _$IwishMarkers {
                 ),
               ),
               onTap: () {
-                ref
-                    .read(goRouterProvider)
-                    .push(IwishCardRoute(iwishId: stateMarker.id).location);
+                IwishCardRoute.open(
+                  ref.read(goRouterProvider),
+                  stateMarker,
+                );
               },
             ),
           )
