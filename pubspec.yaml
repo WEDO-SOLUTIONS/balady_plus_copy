@@ -301,7 +301,21 @@ flutter:
     - family: sura_juza_names
       fonts:
         - asset: assets/fonts/sura_juza_names.ttf
-        
+
+
+    - family: FrutigerLTArabic
+      fonts:
+
+        - asset: assets/fonts/FrutigerLTArabic45Light.ttf
+          weight: 400
+        - asset: assets/fonts/FrutigerLTArabic55Roman.ttf
+        - asset: assets/fonts/FrutigerLTArabic65Bold.ttf
+          weight: 700
+        - asset: assets/fonts/frutigerltarabic75black.ttf
+          weight: 500
+
+
+
 
   #   - family: Trajan Pro
   #     fonts:

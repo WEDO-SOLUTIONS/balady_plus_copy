@@ -46,11 +46,12 @@ class _SearchServicesTextFieldState extends State<SearchServicesTextField> {
     return BlocBuilder<ServicesCubit, ServicesState>(
       builder: (context, state) {
         return Container(
-          height: 60,
+          height: 67,
           margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           child: CustomTextFieldWidget(
             controller: _textEditingController,
             hintText: 'search'.tr(),
+            textFieldVerticalPadding: 16,
             fillColor: Color(0xffF5F7FA),
             prefixIcon: const DrawIconBasedTypeWidget(
               icon: Icons.search,

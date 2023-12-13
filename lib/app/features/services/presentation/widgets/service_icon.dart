@@ -376,6 +376,7 @@ class ServiceIcon extends StatelessWidget {
                 child: DrawIconBasedTypeWidget(
                   icon: IconPath.serviceIcon(service.iconName),
                   iconSize: 28,
+                  iconColor: Color(0xff1E928F),
                 ),
               ),
               const SizedBox(

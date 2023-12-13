@@ -63,7 +63,7 @@ class GeneralEventHomeCard extends StatelessWidget {
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 14,
-                            fontFamily: 'ArabicUIText',
+                            fontFamily: 'FrutigerLTArabic',
                             fontWeight: FontWeight.w700,
                           )),
                       IconName(

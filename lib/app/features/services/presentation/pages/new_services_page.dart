@@ -1,17 +1,31 @@
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
+import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/utils_exports.dart'
-    show AppColor, AppFontWeight, IconPath, RouteName;
+    show
+        AppColor,
+        AppFontWeight,
+        BlocRequestStatus,
+        CommonProperties,
+        IconPath,
+        RouteName;
 import '../../../_shared_feature_/shared_feature_exports.dart'
-    show CustomTextWidget, DefaultAppBarWidget, TabPageContainer;
+    show
+        BottomSheetDialog,
+        CustomTextWidget,
+        DefaultAppBarWidget,
+        TabPageContainer;
 import '../../../home_page/home_exports.dart' show CircleIcon;
 import '../../../profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import '../../../profile_features/dashboard/presentation/widgets/dashboard_list_shimmer.dart';
 import '../../../profile_features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
+import '../../../profile_features/delegators/presentation/widgets/delegator_list.dart';
 import '../../services_exports.dart'
     show SearchServicesTextField, ServicesCubit, ServicesList, ServicesState;
 import '../widgets/dashboard_card.dart';
@@ -41,14 +55,33 @@ class _NewServicesPageState extends State<NewServicesPage> {
           listener: (context, dashboardState) {},
           builder: (context, dashboardState) {
             return BlocBuilder<ServicesCubit, ServicesState>(
-              buildWhen: (previous, current) =>
-                  previous.showSearchField != current.showSearchField,
               builder: (context, state) {
                 return Scaffold(
                   backgroundColor: AppColor.white,
                   appBar: EnhancedAppBar(
                     title: "services".tr(),
-                    actions: [],
+                    actions: [
+                      IconButton(
+                          onPressed: () async {
+                            context.read<DelegatorsCubit>().getDelegators();
+                            context.read<DelegatorsCubit>().getAgents();
+                            await BottomSheetDialog.showDraggableSheet(
+                              context,
+                              dialogKeyName: DialogName.delegatorsDialog,
+                              currentRouteName: "ServicesPage",
+                              child: DelegatorList(
+                                delegatorsCubit:
+                                    context.read<DelegatorsCubit>(),
+                              ),
+                            );
+
+                            context
+                                .read<DashboardBloc>()
+                                .add(DashboardEventInitial());
+                          },
+                          icon:
+                              SvgPicture.asset("assets/icons/svg/refresh.svg"))
+                    ],
                   ),
                   body: BlocBuilder<ServicesCubit, ServicesState>(
                     builder: (context, state) {
@@ -56,37 +89,39 @@ class _NewServicesPageState extends State<NewServicesPage> {
                         child: Column(
                           children: [
                             const SearchServicesTextField(),
-                            HeaderWithAll(
-                              text: "dashboard".tr(),
-                              margin: const EdgeInsets.all(16),
-                              onPressAll: () {
-                                NavigationService.navigatorKey.currentState!
-                                    .pushNamed(RouteName.DashbordDataPage,
-                                        arguments:
-                                            context.read<DelegatorsCubit>());
-                              },
-                            ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            Container(
-                              height: 58,
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemCount: dashboardState.cards.length,
-                                itemBuilder: (context, index) {
-                                  return DashboardCard(
-                                    card: dashboardState.cards[index],
-                                    totalCount: dashboardState
-                                            .cardsStates[
-                                                dashboardState.cards[index]]
-                                            ?.totalCount ??
-                                        0,
-                                  );
+                            if (CommonProperties.isLoggedIn) ...[
+                              HeaderWithAll(
+                                text: "dashboard".tr(),
+                                margin: const EdgeInsets.all(16),
+                                onPressAll: () {
+                                  NavigationService.navigatorKey.currentState!
+                                      .pushNamed(RouteName.DashbordDataPage,
+                                          arguments:
+                                              context.read<DelegatorsCubit>());
                                 },
                               ),
-                            ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              Container(
+                                height: 58,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: dashboardState.cards.length,
+                                  itemBuilder: (context, index) {
+                                    return DashboardCard(
+                                      card: dashboardState.cards[index],
+                                      totalCount: dashboardState
+                                              .cardsStates[
+                                                  dashboardState.cards[index]]
+                                              ?.totalCount ??
+                                          0,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
                             const SizedBox(
                               height: 16,
                             ),

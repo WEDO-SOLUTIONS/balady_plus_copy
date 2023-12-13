@@ -45,6 +45,25 @@ class ProfileCard extends StatelessWidget {
     String? agentType =
         (agent?.agencyTypeName ?? delegator?.roleName) ?? "أفراد";
 
+    Color? agentBgColor = Color(0xffEAF3EF);
+    Color? agentTextColor = Color(0xff2A8663);
+
+    if (agent != null) {
+      agentBgColor = Color(0xffE5E8FF);
+      agentTextColor = Color(0xff433785);
+    }
+
+    if (delegator != null) {
+      if (delegator?.roleId == "20") {
+        agentBgColor = Color(0xffE5E8FF);
+        agentTextColor = Color(0xff433785);
+      }
+      if (delegator?.roleId == "30") {
+        agentBgColor = Color(0xffFAECCA);
+        agentTextColor = Color(0xffC07720);
+      }
+    }
+
     if (!isListItem && delegator == null && agent == null && userInfo != null) {
       // type = "individual_account".tr();
       type = userInfo?.idNo ?? "";
@@ -101,15 +120,14 @@ class ProfileCard extends StatelessWidget {
                 ? Border.all(color: Color(0xff1191AC))
                 : null),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircleIcon(
               showShadow: false,
               icon: IconPath.profileIcon,
               backgroundColor: Color(0x33B1B1B1),
-              iconColor: (selected && !isListItem)
-                  ? Color(0xff2A8663)
-                  : Color(0xff2E4272),
+              iconColor: agentTextColor,
               // backgroundColor: AppColor.primary50Light,
             ),
             const SizedBox(width: 16),
@@ -157,22 +175,19 @@ class ProfileCard extends StatelessWidget {
                 padding:
                     EdgeInsets.only(left: 18, right: 18, bottom: 6, top: 6),
                 decoration: BoxDecoration(
-                    color: const Color(0xffEAF3EF),
+                    color: agentBgColor,
                     borderRadius: BorderRadius.circular(6)),
                 alignment: Alignment.center,
-                child: Flexible(
-                  child: CustomTextWidget(
-                    agentType,
-                    maxLines: 4,
-                    fontSize: 12,
-                    fontWeight: AppFontWeight.medium,
-                    fontColor: selected && !isListItem
-                        ? Color(0xff2A8663)
-                        : Color(0xff2A8663),
-                  ),
+                child: CustomTextWidget(
+                  agentType,
+                  maxLines: 4,
+                  fontSize: 12,
+                  fontWeight: AppFontWeight.medium,
+                  fontColor: agentTextColor,
                 ),
               ),
             ),
+
             /*
             if (!isListItem && (userInfo != null || delegator != null))
               SvgPicture.asset(

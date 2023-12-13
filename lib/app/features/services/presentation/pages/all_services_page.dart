@@ -26,9 +26,7 @@ import '../../services_exports.dart'
         ServicesCubit,
         ServicesList,
         ServicesState;
-import '../widgets/dashboard_card.dart';
 import '../widgets/enhanced_app_bar.dart';
-import '../widgets/header_with_all.dart';
 
 class AllServicesPage extends StatefulWidget {
   const AllServicesPage({super.key});
@@ -44,6 +42,8 @@ class _AllServicesPageState extends State<AllServicesPage> {
     super.initState();
   }
 
+  List<ServiceEntity> searchedServices = [];
+  String query = "";
   @override
   Widget build(BuildContext context) {
     List<ServiceEntity> services = (ModalRoute.of(context)!.settings.arguments
@@ -54,6 +54,9 @@ class _AllServicesPageState extends State<AllServicesPage> {
       String
     ))
         .$2;
+    if (searchedServices.isEmpty && query.isEmpty) {
+      searchedServices.addAll(services);
+    }
 
     return Scaffold(
       backgroundColor: AppColor.white,
@@ -65,8 +68,8 @@ class _AllServicesPageState extends State<AllServicesPage> {
         child: Column(
           children: [
             Container(
-              height: 60,
-              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              height: 67,
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: CustomTextFieldWidget(
                 hintText: 'search'.tr(),
                 fillColor: Color(0xffF5F7FA),
@@ -76,9 +79,18 @@ class _AllServicesPageState extends State<AllServicesPage> {
                   iconColor: Color(0x5C1E2A36),
                 ),
                 borderRadius: 8,
+                textFieldVerticalPadding: 16,
+                onChanged: (String t) {
+                  query = t;
+                  searchedServices = services
+                      .where((element) => element.title.contains(t))
+                      .toList();
+
+                  setState(() {});
+                },
                 textFieldStyle: TextStyle(
                     color: Color(0x5C1E2A36),
-                    fontSize: 14,
+                    fontSize: 12,
                     fontWeight: FontWeight.w400),
                 borderColor: Colors.transparent,
                 /* suffixIcon: _textEditingController.text.isNotEmpty
@@ -100,7 +112,7 @@ class _AllServicesPageState extends State<AllServicesPage> {
             ),
             GridView.builder(
               shrinkWrap: true,
-              itemCount: services.length,
+              itemCount: searchedServices.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
                 mainAxisSpacing: 5.0,
@@ -108,7 +120,7 @@ class _AllServicesPageState extends State<AllServicesPage> {
               ),
               itemBuilder: (_, index) {
                 return ServiceIcon(
-                  service: services[index],
+                  service: searchedServices[index],
                   width: 72,
                   height: 112,
                   backgroundColor: Color(0xffF5F7FA),
