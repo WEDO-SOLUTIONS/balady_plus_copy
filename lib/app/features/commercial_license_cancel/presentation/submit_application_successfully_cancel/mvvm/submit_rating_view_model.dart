@@ -13,11 +13,12 @@ class SubmitRatingViewModel extends BaseViewModel {
   final WebService webService;
   final SubmitResponse submitResponse;
   int? responseRating;
+  final bool showDetails;
 
-  SubmitRatingViewModel({
-    required this.webService,
-    required this.submitResponse,
-  });
+  SubmitRatingViewModel(
+      {required this.webService,
+      required this.submitResponse,
+      this.showDetails = true});
 
   Future<int?> addCommercialLicenseCancelSubmitRating(
       int value, String remarks) async {
@@ -40,7 +41,7 @@ class SubmitRatingViewModel extends BaseViewModel {
       responseRating = result;
     } on Exception catch (exception) {
       CommonFunctions.sendEvent(
-        dioError: exception is DioException ? exception :  null,
+        dioError: exception is DioException ? exception : null,
         response: response,
         ex: exception,
       );

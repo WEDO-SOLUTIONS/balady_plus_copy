@@ -9,8 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/utils/common_functions.dart';
+import '../../../commercial_license_cancel/data/models/submit_response.dart';
+import '../../../commercial_license_cancel/presentation/submit_application_successfully_cancel/mvvm/submit_rating_view_model.dart';
 import '../../data/models/permit_submit_response_model.dart';
 
 class SubmitApplicationSuccessfullyTobacco extends StatefulWidget {
@@ -78,28 +81,30 @@ class _SubmitApplicationSuccessfullyTobaccoState
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),
-                    /* CustomTextButtonWidget(
-                      text: 'service_evaluation'.tr(),
-                      onPressed: () {
-                        Navigator.of(context).popAndPushNamed(
-                          RouteName.submitRatingCancelScreen,
-                          arguments: SubmitRatingViewModel(
-                            webService: sl(),
-                            submitResponse: SubmitResponse(
-                              requestId: submitResponse.requestId!,
-                              payUrl: submitResponse.payUrl,
-                              crNumber: CommonProperties
-                                      .selectedDelegator?.crNumber ??
-                                  "",
-                              crType:
-                                  CommonProperties.selectedDelegator?.crType ??
-                                      "",
+                    if (submitResponse.requestId != null)
+                      CustomTextButtonWidget(
+                        text: 'service_evaluation'.tr(),
+                        onPressed: () {
+                          Navigator.of(context).popAndPushNamed(
+                            RouteName.submitRatingCancelScreen,
+                            arguments: SubmitRatingViewModel(
+                              showDetails: false,
+                              webService: sl(),
+                              submitResponse: SubmitResponse(
+                                requestId: submitResponse.requestId!,
+                                payUrl: submitResponse.payUrl,
+                                crNumber: CommonProperties
+                                        .selectedDelegator?.crNumber ??
+                                    "",
+                                crType: CommonProperties
+                                        .selectedDelegator?.crType ??
+                                    "",
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      haveUnderline: true,
-                    ),*/
+                          );
+                        },
+                        haveUnderline: true,
+                      ),
                   ],
                 ),
               ),

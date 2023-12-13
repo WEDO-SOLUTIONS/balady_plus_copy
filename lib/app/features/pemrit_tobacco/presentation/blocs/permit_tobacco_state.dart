@@ -17,7 +17,7 @@ class PermitTobaccoLicenseState extends Equatable {
   final CalculateCostPermitTobaccoResponse? calculateCost24PermitResponse;
   final PermitTobaccoRequestDetailsModel? requestDetails;
   final CommercialLicenceDetails? commercialLicenceDetails;
-  final int? hotelLicenseNumber;
+  final String? hotelLicenseNumber;
   final bool? isInsideHotel;
   final PermitTobaccoValidateHotelLicense?
       permitTobaccoValidateHotelLicenseResponse;
@@ -83,7 +83,7 @@ class PermitTobaccoLicenseState extends Equatable {
       CalculateCostPermitTobaccoResponse? calculateCost24PermitResponse,
       PermitTobaccoRequestDetailsModel? requestDetails,
       CommercialLicenceDetails? commercialLicenceDetails,
-      int? hotelLicenseNumber,
+      String? hotelLicenseNumber,
       bool? isInsideHotel,
       Nullable<PermitTobaccoValidateHotelLicense?>?
           permitTobaccoValidateHotelLicenseResponse}) {
@@ -118,10 +118,16 @@ class PermitTobaccoLicenseState extends Equatable {
           element.id == "PERMIT_FEES_DIFFER_ACCORDING_TO_MUNICIPALITY")
       ?.name;
 
-  bool isStep2Valid() {
-    if (true) {
+  bool isStep1Valid() {
+    if (isInsideHotel == null) {
       return false;
     }
+
+    if ((isInsideHotel == true && (hotelLicenseNumber?.isEmpty ?? true)) ||
+        (isInsideHotel == true &&
+            permitTobaccoValidateHotelLicenseResponse == null)) return false;
+
+    return true;
   }
 
   bool needsFees() {

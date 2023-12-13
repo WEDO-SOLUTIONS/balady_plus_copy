@@ -62,14 +62,15 @@ class PermitsTobaccoReqeuestDetailsPage extends StatelessWidget {
                     const SizedBox(
                       width: 16,
                     ),
-                    CustomTextWidget(
-                      "#${state.requestDetails?.requestInfo?.requestId}",
-                      fontSize: 14,
-                      maxLines: 1,
-                      textOverflow: TextOverflow.ellipsis,
-                      fontWeight: AppFontWeight.medium,
-                      fontColor: AppColor.blackModern700Light,
-                    ),
+                    if (state.requestDetails?.requestInfo?.requestId != null)
+                      CustomTextWidget(
+                        "#${state.requestDetails?.requestInfo?.requestId}",
+                        fontSize: 14,
+                        maxLines: 1,
+                        textOverflow: TextOverflow.ellipsis,
+                        fontWeight: AppFontWeight.medium,
+                        fontColor: AppColor.blackModern700Light,
+                      ),
                   ],
                 ),
                 procedures: () async {

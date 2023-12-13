@@ -65,32 +65,33 @@ class SuccessfullySubmitRatingSheet extends StatelessWidget {
             textStyle: AppStyle.complianceSubtitle.copyWith(),
           ),
           const SizedBox(height: 16),
-          ElevatedButtonWidget.primaryCustom(
-            text: 'return_order_details'.tr(),
-            onPressed: () {
-              // go to home Page
-              // bool Function(Route<dynamic>) predicate =
-              // ModalRoute.withName(RouteName.bottomNavigation);
-              // NavigationService.navigatorKey.currentState!.popUntil((predicate));
-              // Helpers.backNavigationToHomeScreen();
-              Navigator.of(context).pop();
-              Navigator.pushReplacementNamed(
-                context,
-                RouteName.requestCommercialLicenseDetails,
-                arguments: RequestCommercialLicenseDetailsCubit(
-                    GetRequestCommercialLicenseDetails(
-                      repository:
-                          RequestCommercialLicenseDetailsRepositoryImplementation(
-                        remoteDataSource:
-                            RequestCommercialLicenseDetailsRemoteDataSourceImplementation(
-                          webService: sl(),
+          if (provider.showDetails == true)
+            ElevatedButtonWidget.primaryCustom(
+              text: 'return_order_details'.tr(),
+              onPressed: () {
+                // go to home Page
+                // bool Function(Route<dynamic>) predicate =
+                // ModalRoute.withName(RouteName.bottomNavigation);
+                // NavigationService.navigatorKey.currentState!.popUntil((predicate));
+                // Helpers.backNavigationToHomeScreen();
+                Navigator.of(context).pop();
+                Navigator.pushReplacementNamed(
+                  context,
+                  RouteName.requestCommercialLicenseDetails,
+                  arguments: RequestCommercialLicenseDetailsCubit(
+                      GetRequestCommercialLicenseDetails(
+                        repository:
+                            RequestCommercialLicenseDetailsRepositoryImplementation(
+                          remoteDataSource:
+                              RequestCommercialLicenseDetailsRemoteDataSourceImplementation(
+                            webService: sl(),
+                          ),
                         ),
                       ),
-                    ),
-                    provider.submitResponse.requestId),
-              );
-            },
-          ),
+                      provider.submitResponse.requestId),
+                );
+              },
+            ),
           const SizedBox(height: 22),
         ],
       ),

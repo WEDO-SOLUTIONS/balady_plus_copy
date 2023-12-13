@@ -265,9 +265,32 @@ class EkramServicesRemoteDataSourceImpl extends EkramServicesRemoteDataSource {
 
   @override
   Future<SendOTPResponseModel> sendOTPForPrint(
-      {required SendOTPParams params}) {
-    // TODO: implement sendOTPForPrint
-    throw UnimplementedError();
+      {required SendOTPParams params}) async {
+    var response;
+
+    try {
+      response = await webService.dio
+          .post(ApiUrl.ekramPrintCertificate, data: params.toMap());
+      var data = response.data["data"]?["result"];
+
+      return SendOTPResponseModel.fromJson(data);
+    } on DioError catch (error) {
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
   }
 
   @override
@@ -277,7 +300,7 @@ class EkramServicesRemoteDataSourceImpl extends EkramServicesRemoteDataSource {
 
     try {
       response = await webService.dio
-          .post(ApiUrl.ekramPrintCertificate, data: params.toMap());
+          .get(ApiUrl.validatePrintCertificate(params.guid, params.otp));
       var data = response.data["data"]?["result"];
 
       return VerifyOTPResponseModel.fromJson(data);
