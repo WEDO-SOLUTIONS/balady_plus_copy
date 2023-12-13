@@ -1,3 +1,7 @@
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/routes/signin.dart';
+import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CommonFunctions {
@@ -23,5 +27,24 @@ class CommonFunctions {
     if (mail != null && mail.isNotEmpty) {
       await CommonFunctions.launch("mailto://$mail");
     }
+  }
+
+  static void authOrOpen(WidgetRef ref, BuildContext context,
+      {VoidCallback? callback}) async {
+    bool isAuth = await _isAuth(ref);
+    if (!isAuth) {
+      // ignore: use_build_context_synchronously
+      await const SignInRoute().push(context);
+      isAuth = await _isAuth(ref);
+    }
+
+    if (isAuth) {
+      callback?.call();
+    }
+  }
+
+  static Future<bool> _isAuth(WidgetRef ref) async {
+    final sso = await ref.read(authProvider.future);
+    return sso != null;
   }
 }

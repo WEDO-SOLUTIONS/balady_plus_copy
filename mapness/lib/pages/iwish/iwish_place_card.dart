@@ -4,13 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/app/routes/routing.dart';
-import 'package:mapness/app/routes/signin.dart';
 import 'package:mapness/features/iwish/providers/iwish_address.dart';
 import 'package:mapness/features/iwish/providers/iwish_distance.dart';
 import 'package:mapness/features/iwish/providers/iwish_entity.dart';
-import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/features/routing/ui/brief_route_widgets.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_info.dart';
@@ -75,13 +74,11 @@ class IwishPlaceCard extends ConsumerWidget {
                       LabeledElevatedButton(
                         enabled: !entity.feedbackSent,
                         onPressed: () async {
-                          if (!await _isAuth(ref)) {
-                            await const SignInRoute().push(context);
-                          }
-                          if (await _isAuth(ref)) {
+                          CommonFunctions.authOrOpen(ref, context,
+                              callback: () {
                             IwishFeedbackRoute(iwishId: iwishId)
                                 .replace(context);
-                          }
+                          });
                         },
                         label: entity.feedbackSent
                             ? context.l10n.wishesSent
@@ -128,10 +125,5 @@ class IwishPlaceCard extends ConsumerWidget {
         );
       },
     );
-  }
-
-  Future<bool> _isAuth(WidgetRef ref) async {
-    final sso = await ref.read(authProvider.future);
-    return sso != null;
   }
 }
