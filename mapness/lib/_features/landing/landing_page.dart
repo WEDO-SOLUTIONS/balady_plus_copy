@@ -53,9 +53,9 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   Widget build(BuildContext context) {
     final isLayersVisible = ref.watch(layersControlsProvider);
     ref.watch(favouriteMarkersProvider.select((value) => null));
-    ref.watch(iwishMarkersProvider.select((value) => null));
+    // ref.watch(iwishMarkersProvider.select((value) => null));
     ref.watch(
-      mapObjectManagerProvider(named: poiMapLayer).select((value) => null),
+      mapObjectManagerProvider(named: poiMapLayer),
     );
 
     _streamSubscription?.cancel();
@@ -74,14 +74,14 @@ class _LandingPageState extends ConsumerState<LandingPage> {
           child: Stack(
             children: [
               const controls.MapControls(),
-              if (!isLayersVisible.layersVisible)
-                LayoutBuilder(builder: (context, constraints) {
-                  return Dashboard(
-                    isCollapsed: widget.focusMaker != null,
-                    biggestHeight: constraints.biggest.height,
-                    biggestWidth: constraints.biggest.width,
-                  );
-                }),
+              LayoutBuilder(builder: (context, constraints) {
+                return Dashboard(
+                  isCollapsed: isLayersVisible.layersVisible ||
+                      widget.focusMaker != null,
+                  biggestHeight: constraints.biggest.height,
+                  biggestWidth: constraints.biggest.width,
+                );
+              }),
               if (isLayersVisible.layersVisible) const LayersSheet()
             ],
           ),

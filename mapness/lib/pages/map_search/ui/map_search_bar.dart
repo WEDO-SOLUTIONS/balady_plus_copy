@@ -23,17 +23,11 @@ class MapSearchBar extends ConsumerStatefulWidget {
 
 class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   late FocusNode _focusNode;
-  final ValueNotifier<bool> _focused = ValueNotifier(false);
 
   @override
   void initState() {
     super.initState();
-    _focusNode = FocusNode()
-      ..addListener(() {
-        if (_focusNode.hasFocus) {
-          _focused.value = true;
-        }
-      });
+    _focusNode = FocusNode();
     if (widget.requestFocus) {
       _focusNode.requestFocus();
     }
@@ -55,20 +49,15 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             focusNode: _focusNode,
           ),
         ),
-        ValueListenableBuilder(
-          valueListenable: _focused,
-          builder: (context, value, child) => value
-              ? Padding(
-                  padding: const EdgeInsetsDirectional.only(
-                    start: 12,
-                  ),
-                  child: NavButton(
-                    onTap: widget.onClose,
-                    icon: "assets/icons/svg/ic_search_close.svg",
-                  ),
-                )
-              : const SizedBox.shrink(),
-        )
+        Padding(
+          padding: const EdgeInsetsDirectional.only(
+            start: 12,
+          ),
+          child: NavButton(
+            onTap: widget.onClose,
+            icon: "assets/icons/svg/ic_search_close.svg",
+          ),
+        ),
       ],
     );
   }

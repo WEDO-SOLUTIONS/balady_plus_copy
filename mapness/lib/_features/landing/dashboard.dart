@@ -1,22 +1,18 @@
-import 'package:balady_plus/app/features/home_page/home_exports.dart' as team42;
-import 'package:balady_plus/app/features/home_page/presentation/widgets/home_bottom_sheet/calendar_home_item_widget.dart';
-import 'package:balady_plus/app/features/home_page/presentation/widgets/home_bottom_sheet/event_home_card.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
-import 'package:dgis_map/library.dart';
+import 'package:balady_plus/app/features/_shared_feature_/balady_features/balady_exports.dart';
 import 'package:flutter/material.dart' hide SearchBar, ScrollPosition;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/common/providers/user_state.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_header.dart';
-import 'package:mapness/_features/landing/widgets/jobs_around_card.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_profile.dart';
-import 'package:mapness/_features/landing/widgets/poi_card.dart';
+import 'package:mapness/_features/landing/widgets/jobs_around_card.dart';
 import 'package:mapness/_features/landing/widgets/snap_and_send_card.dart';
 import 'package:mapness/_features/stories/stories_widget.dart';
+import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 import 'providers/interesting_places.dart';
+import 'widgets/places_horizontal_list.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({
@@ -57,8 +53,6 @@ class _DashboardState extends ConsumerState<Dashboard> {
           }
         });
       });
-
-    ref.read(interestingPlacesProvider.notifier).startListen();
   }
 
   @override
@@ -70,54 +64,16 @@ class _DashboardState extends ConsumerState<Dashboard> {
   Widget _buildInterestingPlacesCards() {
     return Consumer(
       builder: (context, ref, child) {
-        final places = ref.watch(interestingPlacesProvider);
+        final places = ref.watch(interestingPlacesProvider).where((e) {
+          return e.tags.contains(
+            proto
+                .InterestingPlaceTag.INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL,
+          );
+        }).toList();
 
-        return Visibility(
-          visible: places.isNotEmpty,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 24,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  right: 16.0,
-                ),
-                child: Text(
-                  context.l10n.placesToVisit,
-                  style: Theme.of(context).extension<ThemeTextStyles>()!.textL,
-                ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              SizedBox(
-                height: 200,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                  ),
-                  itemCount: places.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 8),
-                  itemBuilder: (context, index) {
-                    final place = places[index];
-
-                    return PoiCard(
-                      objectId: DgisObjectIdMessage(
-                        objectId: int.tryParse(place.id) ?? 0,
-                        entranceId: 0,
-                      ),
-                      title: place.titleOrFallback(locale: context.l10n),
-                      subtitle: '',
-                      image: place.preview.image.url,
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
+        return PlacesHorizontalList(
+          title: context.l10n.placesToVisit,
+          places: places,
         );
       },
     );
@@ -126,82 +82,22 @@ class _DashboardState extends ConsumerState<Dashboard> {
   Widget _buildShoppingMallsCards() {
     return Consumer(
       builder: (context, ref, child) {
-        final places = ref.watch(interestingPlacesProvider);
+        final places = ref.watch(interestingPlacesProvider).where((e) {
+          return e.tags.contains(
+            proto.InterestingPlaceTag.INTERESTING_PLACE_CATEGORY_FLOORS,
+          );
+        }).toList();
 
-        return Visibility(
-          visible: places.isNotEmpty,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 24,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  right: 16.0,
-                ),
-                child: Text(
-                  context.l10n.placesToShop,
-                  style: Theme.of(context).extension<ThemeTextStyles>()!.textL,
-                ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              SizedBox(
-                height: 200,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                  ),
-                  itemCount: places.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 8),
-                  itemBuilder: (context, index) {
-                    final place = places[index];
-
-                    return PoiCard(
-                      objectId: DgisObjectIdMessage(
-                        objectId: int.tryParse(place.id) ?? 0,
-                        entranceId: 0,
-                      ),
-                      title: place.titleOrFallback(locale: context.l10n),
-                      subtitle: '',
-                      image: place.preview.image.url,
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-            ],
-          ),
+        return PlacesHorizontalList(
+          title: context.l10n.placesToShop,
+          places: places,
         );
       },
     );
   }
 
-  Widget _buildEvents() {
-    return const EventHomeCard();
-  }
-
-  Widget _buildCalendar() {
-    return const CalendarHomeItemWidget(
-      padding: EdgeInsets.symmetric(
-        horizontal: 16,
-      ),
-    );
-  }
-
-  Widget _buildPrayer() {
-    return const team42.PrayerHomeCard();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final userState = ref.watch(userStateProvider);
-
     ref.listen(searchByRubricsQueryProvider, (previous, next) {
       if (next != null) {
         _draggableScrollableController.animateTo(
@@ -222,62 +118,79 @@ class _DashboardState extends ConsumerState<Dashboard> {
       builder: (BuildContext context, ScrollController scrollController) {
         return Directionality(
           textDirection: TextDirection.rtl,
-          child: Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(16.0),
-                topLeft: Radius.circular(16.0),
-              ),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(16.0),
+              topLeft: Radius.circular(16.0),
             ),
-            child: CustomScrollView(
-              controller: scrollController,
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              physics: const ClampingScrollPhysics(),
-              slivers: [
-                SliverPersistentHeader(
-                  delegate: DashboardHeaderDelegate(
-                    draggableScrollableController:
-                        _draggableScrollableController,
-                  ),
-                  pinned: true,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(16.0),
+                  topLeft: Radius.circular(16.0),
                 ),
-                SliverList.list(
-                  children: [
-                    Container(
-                      color: const Color(0xFFF1F4F8),
-                      padding: const EdgeInsets.only(
-                        top: 16.0,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const DashboardProfile(),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          const StoriesWidget(),
-                          _buildInterestingPlacesCards(),
-                          const SizedBox(
-                            height: 24,
-                          ),
-                          const SnapAndSendCard(),
-                          _buildShoppingMallsCards(),
-                          _buildEvents(),
-                          if (userState != UserState.guest) ...[
+              ),
+              child: CustomScrollView(
+                controller: scrollController,
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                physics: const ClampingScrollPhysics(),
+                slivers: [
+                  SliverPersistentHeader(
+                    delegate: DashboardHeaderDelegate(
+                      draggableScrollableController:
+                          _draggableScrollableController,
+                    ),
+                    pinned: true,
+                  ),
+                  SliverList.list(
+                    children: [
+                      Container(
+                        color: const Color(0xFFF1F4F8),
+                        padding: const EdgeInsets.only(
+                          top: 16.0,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const DashboardProfile(),
                             const SizedBox(
-                              height: 24,
+                              height: 20,
+                            ),
+                            const StoriesWidget(),
+                            _buildInterestingPlacesCards(),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            const SnapAndSendCard(),
+                            _buildShoppingMallsCards(),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            const EventsHomeCard(),
+                            const SizedBox(
+                              height: 20,
                             ),
                             const JobsAroundCard(),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            const PrayerHomeCard(),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            const CalendarHomeCard(),
+                            const SizedBox(
+                              height: 20,
+                            ),
                           ],
-                          _buildPrayer(),
-                          _buildCalendar(),
-                        ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );

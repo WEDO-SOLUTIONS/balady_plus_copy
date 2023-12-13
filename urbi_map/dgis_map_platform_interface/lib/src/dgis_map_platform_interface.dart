@@ -320,7 +320,7 @@ abstract class DgisMapPlugin extends PlatformInterface {
   Future<List<BriefRouteInfoMessage?>> findBriefRouteInfos(
     RouteSearchOptionsMessage routeSearchOptions,
     RouteSearchPointMessage? startPoint,
-    RouteSearchPointMessage finishPoint,
+    RouteSearchPointMessage? finishPoint,
   );
 
   Future<List<PackageMessage?>> listPackages();

@@ -4,12 +4,10 @@ import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
+import 'package:mapness/features/routing/ui/brief_route_widgets.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_object_ext.dart';
-import 'package:mapness/shared/config/package_config.dart';
 
 const mockArabickText =
     'الملك فهد، الرياضالملك فهد، الرياضالملك فهد، الرياض 12261، المملكة العربية السعودية الرياض';
@@ -52,19 +50,10 @@ class _Header extends ConsumerWidget {
   final DirectoryObjectMessage data;
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
-    final briefInfo = ref.watch(briefRouteInfoProvider(
-      finishPoint: RouteSearchPointMessage(
-        coordinates: data.markerPosition!.toGeoPointMessage(),
-        objectId: data.id!,
-      ),
-      navType: RouteSearchOptionsMessage.car,
-    ));
+  Widget build(BuildContext context, WidgetRef ref) {
     final model = PoiModel(
       directoryObjectMessage: data,
-      briefeRouteInfos: briefInfo,
     );
-
 
     return Container(
       width: double.infinity,
@@ -126,7 +115,7 @@ class _Header extends ConsumerWidget {
                 _title(context, title),
                 _titleAddition(context, titleAddition),
                 const SizedBox(height: 2),
-                _subTitle(context, subTitle,data),
+                _subTitle(context, subTitle, data),
               ],
             ),
           )
@@ -162,7 +151,13 @@ class _Header extends ConsumerWidget {
             textAlign: TextAlign.right,
           ),
         ),
-        _buildBriefTime(context, data),
+        BriefRouteInfo(
+          routeType: RouteSearchOptionsMessage.car,
+          finishPoint: RouteSearchPointMessage(
+            coordinates: this.data.markerPosition!.toGeoPointMessage(),
+            objectId: this.data.id!,
+          ),
+        ),
       ],
     );
   }
@@ -244,37 +239,5 @@ class _Header extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  Widget _buildBriefTime(BuildContext context, PoiModel? data) {
-    final desc = data?.getBriefRouteDescription(context.l10n);
-    return desc != null
-        ? Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
-                'assets/icons/svg/ic_car_poi.svg',
-                height: 16,
-                width: 16,
-                color: colorPrimary.withOpacity(0.5),
-                package: PackageConfig.packageName,
-                matchTextDirection: true,
-              ),
-              const SizedBox(
-                width: 4,
-              ),
-              Text(
-                desc,
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .accentS
-                    .copyWith(color: colorPrimary.withOpacity(0.7)),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                textAlign: TextAlign.right,
-              )
-            ],
-          )
-        : const SizedBox.shrink();
   }
 }

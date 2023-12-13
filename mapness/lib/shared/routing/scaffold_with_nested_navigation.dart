@@ -8,6 +8,7 @@ import 'package:mapness/_features/profile/widgets/profile_image_widget.dart';
 import 'package:mapness/_features/stories/domain/story_types.dart';
 import 'package:mapness/_features/stories/stories.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/app_features.dart';
 
 // Stateful navigation based on:
 // https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/stateful_shell_route.dart
@@ -51,7 +52,7 @@ class _ScaffoldWithNestedNavigationState
       body: widget.navigationShell,
       currentIndex: currentTab,
       onDestinationSelected: (int selected) async {
-        if (selected == 2) {
+        if (selected == 2 && ref.read(appFeaturesProvider).naviEnabled) {
           final isShowRoute = await ref.read(routeOnboardingProvider.future);
           if (isShowRoute) {
             _goToPage(selected);
@@ -75,7 +76,7 @@ class _ScaffoldWithNestedNavigationState
   }
 }
 
-class ScaffoldWithNavigationBar extends StatelessWidget {
+class ScaffoldWithNavigationBar extends ConsumerWidget {
   const ScaffoldWithNavigationBar({
     super.key,
     required this.body,
@@ -88,9 +89,14 @@ class ScaffoldWithNavigationBar extends StatelessWidget {
   final ValueChanged<int> onDestinationSelected;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appFeatures = ref.watch(appFeaturesProvider);
+
     const activeColor = Color(0xFF4CA5B4);
     const inactiveColor = Color(0x801E2A36);
+
+    final landingIndex = appFeatures.naviEnabled ? 3 : 2;
+
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Material(
@@ -135,20 +141,21 @@ class ScaffoldWithNavigationBar extends StatelessWidget {
                   ),
                   label: context.l10n.nav_landing,
                 ),
-                BottomNavigationBarItem(
-                  icon: SvgPicture.asset(
-                    "assets/icons/svg/ic_nav_route.svg",
-                    height: 28,
-                    width: 28,
-                    semanticsLabel: 'Routing Screen',
-                    package: "mapness",
-                    colorFilter: ColorFilter.mode(
-                      currentIndex == 2 ? activeColor : inactiveColor,
-                      BlendMode.srcIn,
+                if (appFeatures.naviEnabled)
+                  BottomNavigationBarItem(
+                    icon: SvgPicture.asset(
+                      "assets/icons/svg/ic_nav_route.svg",
+                      height: 28,
+                      width: 28,
+                      semanticsLabel: 'Routing Screen',
+                      package: "mapness",
+                      colorFilter: ColorFilter.mode(
+                        currentIndex == 2 ? activeColor : inactiveColor,
+                        BlendMode.srcIn,
+                      ),
                     ),
+                    label: context.l10n.nav_route,
                   ),
-                  label: context.l10n.nav_route,
-                ),
                 BottomNavigationBarItem(
                   icon: SvgPicture.asset(
                     "assets/icons/svg/ic_nav_general.svg",
@@ -157,7 +164,9 @@ class ScaffoldWithNavigationBar extends StatelessWidget {
                     semanticsLabel: 'General Screen',
                     package: "mapness",
                     colorFilter: ColorFilter.mode(
-                      currentIndex == 3 ? activeColor : inactiveColor,
+                      currentIndex == landingIndex
+                          ? activeColor
+                          : inactiveColor,
                       BlendMode.srcIn,
                     ),
                   ),

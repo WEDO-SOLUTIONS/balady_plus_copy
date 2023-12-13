@@ -17,7 +17,11 @@ class Search extends _$Search {
     return [];
   }
 
-  Future<void> searchByText(String query) async {
+  Future<void> searchByText(
+    String query, {
+    MarkerIconMessage? icon,
+    Function(DgisObjectIdMessage?)? onTap,
+  }) async {
     final dgisController = ref.read(dgisControllerProvider);
 
     final result = await dgisController.value?.search(
@@ -25,7 +29,7 @@ class Search extends _$Search {
       sortingType: SortingTypeMessage.byDistance,
     );
 
-    await _handleResult(result);
+    await _handleResult(result, icon: icon, onTap: onTap);
   }
 
   Future<void> searchByQuery(SearchQueryMessage query) async {
@@ -45,7 +49,11 @@ class Search extends _$Search {
     await dgisController.value?.removeAll();
   }
 
-  Future<void> _handleResult(SearchResultMessage? result) async {
+  Future<void> _handleResult(
+    SearchResultMessage? result, {
+    MarkerIconMessage? icon,
+    Function(DgisObjectIdMessage?)? onTap,
+  }) async {
     final dgisController = ref.read(dgisControllerProvider);
 
     List<Marker> markers = [];
@@ -55,16 +63,18 @@ class Search extends _$Search {
         Marker(
           id: markerInfo?.objectId?.objectId.toString() ?? "invalid",
           onTap: () {
+            onTap?.call(markerInfo.objectId);
             // ref
             //     .read(mapControlsProvider.notifier)
             //     .update(MapControlsStatePoI(markerInfo.objectId!));
           },
           options: MarkerOptionsMessage(
             position: markerInfo!.geoPoint,
-            icon: MarkerIconMessage(
-              path: "packages/mapness/assets/icons/svg/ic_marker.svg",
-              width: 24,
-            ),
+            icon: icon ??
+                MarkerIconMessage(
+                  path: "packages/mapness/assets/icons/svg/ic_marker.svg",
+                  width: 24,
+                ),
           ),
         ),
       );

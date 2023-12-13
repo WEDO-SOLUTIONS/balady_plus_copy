@@ -844,7 +844,7 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   Future<List<BriefRouteInfoMessage?>> findBriefRouteInfos(
     RouteSearchOptionsMessage routeSearchOptions,
     RouteSearchPointMessage? startPoint,
-    RouteSearchPointMessage finishPoint,
+    RouteSearchPointMessage? finishPoint,
   ) {
     return _api.findBriefRouteInfos(
       routeSearchOptions,

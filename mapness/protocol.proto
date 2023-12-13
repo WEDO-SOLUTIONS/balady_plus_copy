@@ -54,6 +54,12 @@ enum EntitySourceType {
   ENTITY_SOURCE_URBI = 1;
 }
 
+enum InterestingPlaceTag {
+  INTERESTING_PLACE_CATEGORY_UNKNOWN = 0;
+  INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL = 1;
+  INTERESTING_PLACE_CATEGORY_FLOORS = 2;
+}
+
 enum IWishState {
   IWISH_STATE_UNKNOWN = 0;
   IWISH_STATE_PLANNED = 1;
@@ -292,9 +298,16 @@ message InterestingPlace {
     Point point = 1;
   }
 
+  message Entity {
+    EntitySourceType source_type = 1;
+    string id = 2;
+  }
+
   string id = 1;
   Preview preview = 2;
   Location location = 3;
+  optional Entity entity = 4;
+  repeated InterestingPlaceTag tags = 5;
 }
 
 message InterestingPlacesResponse {

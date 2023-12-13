@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -9,8 +10,7 @@ class SnapAndSendCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-          const EdgeInsets.symmetric(horizontal: 16.0).copyWith(bottom: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -19,7 +19,9 @@ class SnapAndSendCard extends StatelessWidget {
             style: Theme.of(context)
                 .extension<ThemeTextStyles>()!
                 .accentL
-                .apply(color: const Color(0xff1E2A36)),
+                .copyWith(
+                  color: const Color(0xFF1E2A36),
+                ),
           ),
           const SizedBox(
             height: 12,
@@ -46,7 +48,9 @@ class SnapAndSendCard extends StatelessWidget {
                 right: 21,
                 child: LabeledElevatedButton(
                   label: context.l10n.sahm,
-                  onPressed: () {},
+                  onPressed: () {
+                    CommonFunctions.openSnapAndSend();
+                  },
                 ),
               ),
             ],

@@ -2992,11 +2992,77 @@ class InterestingPlace_Location extends $pb.GeneratedMessage {
   Point ensurePoint() => $_ensure(0);
 }
 
+class InterestingPlace_Entity extends $pb.GeneratedMessage {
+  factory InterestingPlace_Entity({
+    EntitySourceType? sourceType,
+    $core.String? id,
+  }) {
+    final $result = create();
+    if (sourceType != null) {
+      $result.sourceType = sourceType;
+    }
+    if (id != null) {
+      $result.id = id;
+    }
+    return $result;
+  }
+  InterestingPlace_Entity._() : super();
+  factory InterestingPlace_Entity.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory InterestingPlace_Entity.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'InterestingPlace.Entity', package: const $pb.PackageName(_omitMessageNames ? '' : 'balady.protocol'), createEmptyInstance: create)
+    ..e<EntitySourceType>(1, _omitFieldNames ? '' : 'sourceType', $pb.PbFieldType.OE, defaultOrMaker: EntitySourceType.ENTITY_SOURCE_UNKNOWN, valueOf: EntitySourceType.valueOf, enumValues: EntitySourceType.values)
+    ..aOS(2, _omitFieldNames ? '' : 'id')
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  InterestingPlace_Entity clone() => InterestingPlace_Entity()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  InterestingPlace_Entity copyWith(void Function(InterestingPlace_Entity) updates) => super.copyWith((message) => updates(message as InterestingPlace_Entity)) as InterestingPlace_Entity;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static InterestingPlace_Entity create() => InterestingPlace_Entity._();
+  InterestingPlace_Entity createEmptyInstance() => create();
+  static $pb.PbList<InterestingPlace_Entity> createRepeated() => $pb.PbList<InterestingPlace_Entity>();
+  @$core.pragma('dart2js:noInline')
+  static InterestingPlace_Entity getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<InterestingPlace_Entity>(create);
+  static InterestingPlace_Entity? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  EntitySourceType get sourceType => $_getN(0);
+  @$pb.TagNumber(1)
+  set sourceType(EntitySourceType v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasSourceType() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSourceType() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get id => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set id($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasId() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearId() => clearField(2);
+}
+
 class InterestingPlace extends $pb.GeneratedMessage {
   factory InterestingPlace({
     $core.String? id,
     InterestingPlace_Preview? preview,
     InterestingPlace_Location? location,
+    InterestingPlace_Entity? entity,
+    $core.Iterable<InterestingPlaceTag>? tags,
   }) {
     final $result = create();
     if (id != null) {
@@ -3008,6 +3074,12 @@ class InterestingPlace extends $pb.GeneratedMessage {
     if (location != null) {
       $result.location = location;
     }
+    if (entity != null) {
+      $result.entity = entity;
+    }
+    if (tags != null) {
+      $result.tags.addAll(tags);
+    }
     return $result;
   }
   InterestingPlace._() : super();
@@ -3018,6 +3090,8 @@ class InterestingPlace extends $pb.GeneratedMessage {
     ..aOS(1, _omitFieldNames ? '' : 'id')
     ..aOM<InterestingPlace_Preview>(2, _omitFieldNames ? '' : 'preview', subBuilder: InterestingPlace_Preview.create)
     ..aOM<InterestingPlace_Location>(3, _omitFieldNames ? '' : 'location', subBuilder: InterestingPlace_Location.create)
+    ..aOM<InterestingPlace_Entity>(4, _omitFieldNames ? '' : 'entity', subBuilder: InterestingPlace_Entity.create)
+    ..pc<InterestingPlaceTag>(5, _omitFieldNames ? '' : 'tags', $pb.PbFieldType.KE, valueOf: InterestingPlaceTag.valueOf, enumValues: InterestingPlaceTag.values, defaultEnumValue: InterestingPlaceTag.INTERESTING_PLACE_CATEGORY_UNKNOWN)
     ..hasRequiredFields = false
   ;
 
@@ -3072,6 +3146,20 @@ class InterestingPlace extends $pb.GeneratedMessage {
   void clearLocation() => clearField(3);
   @$pb.TagNumber(3)
   InterestingPlace_Location ensureLocation() => $_ensure(2);
+
+  @$pb.TagNumber(4)
+  InterestingPlace_Entity get entity => $_getN(3);
+  @$pb.TagNumber(4)
+  set entity(InterestingPlace_Entity v) { setField(4, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasEntity() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearEntity() => clearField(4);
+  @$pb.TagNumber(4)
+  InterestingPlace_Entity ensureEntity() => $_ensure(3);
+
+  @$pb.TagNumber(5)
+  $core.List<InterestingPlaceTag> get tags => $_getList(4);
 }
 
 class InterestingPlacesResponse extends $pb.GeneratedMessage {

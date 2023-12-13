@@ -6,6 +6,7 @@ import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/_features/common/providers/permissions.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:rxdart/rxdart.dart';
 
 part 'dgis_controller.g.dart';
 
@@ -26,9 +27,18 @@ class DgisController extends _$DgisController {
 
   late Completer<DgisMapController> _completer;
 
+  late final StreamController<VisibleRectEvent> _visibleRectStream =
+      StreamController.broadcast();
+  Stream<VisibleRectEvent> get visibleRectEvents => _visibleRectStream.stream
+      .debounceTime(const Duration(milliseconds: 5000));
+
   @override
   Future<DgisMapController> build() {
     _completer = Completer();
+
+    ref.onDispose(() {
+      _visibleRectStream.close();
+    });
 
     return _completer.future;
   }
@@ -116,6 +126,10 @@ class DgisController extends _$DgisController {
       }
     } else {
       _lastRectPosition = _lastCameraPosition;
+    }
+
+    if (!_visibleRectStream.isClosed) {
+      _visibleRectStream.sink.add(event);
     }
   }
 

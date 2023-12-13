@@ -90,7 +90,7 @@ class RoutingHeader extends StatelessWidget {
                 RoutingSearchRoute(
                   placeholder: index == 0 ? context.l10n.from : context.l10n.to,
                   showMyLocation:
-                      index == 0 && points[index].type == RoutePointType.object,
+                      index == 0 && points[index] is! RoutePointMyLocation,
                 ).push(context).then((value) {
                   if (value != null && value is RoutePoint) {
                     points[index] = value;
@@ -111,30 +111,10 @@ class RoutingHeader extends StatelessWidget {
             height: 16,
           ),
           RoutingFavourites(
-            onFavouritesBookmarkTap: () {
-              RoutingFavouritesRoute().push(context);
-            },
             onFavouriteTap: (point) async {
               final index = points.indexWhere((element) => !element.isNotEmpty);
-              if (index == 0) {
-                RoutingRoutesRoute(
-                  startLabel: point.title,
-                  startLatitude: point.coordinates.latitude,
-                  startLongitude: point.coordinates.longitude,
-                  finishLatitude: points[1].latitude,
-                  finishLongitude: points[1].longitude,
-                  finishLabel: points[1].title(context.l10n) ?? "",
-                ).go(context);
-              } else {
-                RoutingRoutesRoute(
-                  startLatitude: points[0].latitude,
-                  startLongitude: points[0].longitude,
-                  startLabel: points[0].title(context.l10n) ?? "",
-                  finishLabel: point.title,
-                  finishLatitude: point.coordinates.latitude,
-                  finishLongitude: point.coordinates.longitude,
-                ).go(context);
-              }
+              points[index] = RoutePointFavouriteItem(point);
+              updatePoints(points);
             },
           ),
           const SizedBox(

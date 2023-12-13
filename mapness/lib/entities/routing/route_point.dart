@@ -1,43 +1,97 @@
 import 'dart:ui';
 
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 enum RoutePointType { object, myLocation }
 
-// TODO(@alexstrnik): refactor with sealed classes
-class RoutePoint {
-  final RoutePointType type;
-  final DirectoryObjectMessage? object;
+sealed class RoutePoint {
+  String get icon;
 
-  RoutePoint({
-    required this.type,
-    required this.object,
-  });
+  String? title(AppLocalizations locale);
+
+  Color get titleColor;
+
+  bool get isNotEmpty;
+
+  double? get latitude;
+
+  double? get longitude;
 }
 
-extension RoutePointData on RoutePoint {
-  String get icon => switch (type) {
-        RoutePointType.myLocation => "assets/icons/svg/ic_routing_location.svg",
-        RoutePointType.object => "assets/icons/svg/ic_routing_circle.svg",
-      };
+class RoutePointMyLocation extends RoutePoint {
+  @override
+  String get icon => "assets/icons/svg/ic_routing_location.svg";
 
-  String? title(AppLocalizations locale) => switch (type) {
-        RoutePointType.myLocation => locale.myLocation,
-        RoutePointType.object => object?.title
-      };
+  @override
+  bool get isNotEmpty => true;
 
-  Color get titleColor => switch (type) {
-        RoutePointType.myLocation => const Color(0xFF1E2A36),
-        RoutePointType.object =>
-          object == null ? const Color(0x801E2A36) : const Color(0xFF1E2A36),
-      };
+  @override
+  double? get latitude => null;
 
-  bool get isNotEmpty => switch (type) {
-        RoutePointType.myLocation => true,
-        RoutePointType.object => object != null,
-      };
+  @override
+  double? get longitude => null;
 
+  @override
+  String? title(AppLocalizations locale) {
+    return locale.myLocation;
+  }
+
+  @override
+  Color get titleColor => const Color(0xFF1E2A36);
+}
+
+class RoutePointDirectoryObject extends RoutePoint {
+  final DirectoryObjectMessage? object;
+
+  RoutePointDirectoryObject(this.object);
+
+  @override
+  String get icon => "assets/icons/svg/ic_routing_circle.svg";
+
+  @override
+  bool get isNotEmpty => object != null;
+
+  @override
   double? get latitude => object?.markerPosition?.latitude;
+
+  @override
   double? get longitude => object?.markerPosition?.longitude;
+
+  @override
+  String? title(AppLocalizations locale) {
+    return object?.title;
+  }
+
+  @override
+  Color get titleColor =>
+      object == null ? const Color(0x801E2A36) : const Color(0xFF1E2A36);
+}
+
+class RoutePointFavouriteItem extends RoutePoint {
+  final FavouriteItem? item;
+
+  RoutePointFavouriteItem(this.item);
+
+  @override
+  String get icon => "assets/icons/svg/ic_routing_circle.svg";
+
+  @override
+  bool get isNotEmpty => item != null;
+
+  @override
+  double? get latitude => item?.coordinates.latitude;
+
+  @override
+  double? get longitude => item?.coordinates.longitude;
+
+  @override
+  String? title(AppLocalizations locale) {
+    return item?.title;
+  }
+
+  @override
+  Color get titleColor =>
+      item == null ? const Color(0x801E2A36) : const Color(0xFF1E2A36);
 }

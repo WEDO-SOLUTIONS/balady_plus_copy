@@ -1,5 +1,4 @@
 import 'package:dgis_map/library.dart';
-import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
@@ -10,27 +9,10 @@ part 'point_of_interest.g.dart';
 
 class PoiModel {
   final DirectoryObjectMessage? directoryObjectMessage;
-  final List<BriefRouteInfoMessage?>? briefeRouteInfos;
 
   PoiModel({
     required this.directoryObjectMessage,
-    this.briefeRouteInfos,
   });
-
-  String? getBriefRouteDescription(AppLocalizations l10n) {
-    final int = briefeRouteInfos?.first?.duration.toInt();
-    if (int != null) {
-      final duration = Duration(seconds: int);
-      final inMinutes = duration.inMinutes;
-      if (inMinutes < 60) {
-        return '$inMinutes ${l10n.min}';
-      } else {
-        var inHours = duration.inHours;
-        return '$inHours ${l10n.hrs}';
-      }
-    }
-    return null;
-  }
 }
 
 const poiMapLayer = 'point-of-interest';

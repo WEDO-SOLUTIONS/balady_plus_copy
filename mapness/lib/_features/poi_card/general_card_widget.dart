@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
+import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/about.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/contacts_info.dart';
@@ -14,11 +15,12 @@ import 'package:mapness/_features/poi_card/widgets/favourites.dart';
 import 'package:mapness/_features/poi_card/widgets/footer.dart';
 import 'package:mapness/_features/poi_card/widgets/header.dart';
 import 'package:mapness/_features/poi_card/widgets/opening_hours.dart';
+import 'package:mapness/_features/poi_card/widgets/qr_license_info.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/poi_card/widgets/trade_license.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
-import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:shimmer/shimmer.dart';
 
 class GeneralMapCardWidget extends ConsumerWidget {
@@ -31,11 +33,8 @@ class GeneralMapCardWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(
-      pointOfInterestProvider(
-        objectId,
-      ),
-    );
+    final state = ref.watch(poiCardProviderProvider(objectId));
+    // ref.read(poiCardProviderProvider.notifier).getDgisObject(objectId);
 
     return LayoutBuilder(builder: (context, constraints) {
       return _Content(
@@ -55,7 +54,7 @@ class _Content extends ConsumerStatefulWidget {
   final double biggestHeight;
   final double biggestWidth;
 
-  final AsyncValue<DirectoryObjectMessage?> state;
+  final AsyncValue<PoiCardState?> state;
 
   const _Content({
     required this.biggestHeight,
@@ -111,9 +110,14 @@ class _ContentState extends ConsumerState<_Content> {
 
           return widget.state.map(data: (value) {
             ///do not remove, using for data mocking
-            final data = value.value?.id?.objectId == 70030076560519845
+            final poiCardState = value.value;
+            final data = poiCardState?.gisObjectIdMessage?.id?.objectId ==
+                    70030076560519845
                 ? getMockPoiCardData()
-                : value.value;
+                : poiCardState?.gisObjectIdMessage;
+
+            final qrTradeLicense = poiCardState?.qrTradeLicense;
+            final tradeLicense = poiCardState?.tradeLicense;
 
             return Material(
               color: Colors.transparent,
@@ -164,9 +168,7 @@ class _ContentState extends ConsumerState<_Content> {
                                       Favourites(data),
                                       About(
                                         data,
-                                        onEntranceTap: () {
-                                          showEntrance(data);
-                                        },
+                                        onEntranceTap: () => showEntrance(data),
                                       ),
                                       if (data.openingHours != null)
                                         OpeningHours(
@@ -175,8 +177,10 @@ class _ContentState extends ConsumerState<_Content> {
                                         viewModel: viewModel,
                                         data: data,
                                       ),
-                                      if (data.tradeLicense != null)
-                                        TradeLicense(data.tradeLicense),
+                                      if (qrTradeLicense != null)
+                                        QrLicenseInfo(qrTradeLicense),
+                                      if (tradeLicense != null)
+                                        TradeLicense(tradeLicense),
                                       const SafeArea(
                                         top: false,
                                         child: SizedBox(height: footerHeight),
@@ -253,10 +257,24 @@ class _ContentState extends ConsumerState<_Content> {
     });
 
     final highlightController = ref.read(highlightProvider.notifier);
+    final cameraController = ref.read(cameraPositionProvider.notifier);
+    final cameraPosition = ref.read(cameraPositionProvider);
 
     if (showEntrances) {
       for (var entrance in data.entrances) {
         highlightController.addHighlight(entrance!.id);
+      }
+      final firstEntrancePoint =
+          data.entrances.first?.geometry?.entrancePoints.first;
+      if (firstEntrancePoint != null) {
+        cameraController.animateTo(
+          CameraPositionMessage(
+            point: firstEntrancePoint,
+            zoom: 18,
+            tilt: cameraPosition?.tilt ?? 0,
+            bearing: cameraPosition?.tilt ?? 0,
+          ),
+        );
       }
     } else {
       for (var entrance in data.entrances) {

@@ -8,6 +8,7 @@ import 'package:mapness/entities/iwish/models/iwish_tags.dart';
 import 'package:mapness/features/iwish/providers/iwish_entity.dart';
 import 'package:mapness/features/iwish/providers/iwish_feedback.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/labeled_draggable_sheet.dart';
@@ -114,7 +115,11 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
               ),
               const SizedBox(height: 16),
               LabeledElevatedButton(
-                onPressed: () => feedbackNotifier.submitFeedback(),
+                onPressed: () async {
+                  CommonFunctions.authOrOpen(ref, context, callback: () {
+                    feedbackNotifier.submitFeedback();
+                  });
+                },
                 label: context.l10n.sendFeedback,
               ),
             ],

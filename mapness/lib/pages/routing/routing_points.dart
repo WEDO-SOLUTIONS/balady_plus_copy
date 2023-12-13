@@ -38,14 +38,8 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   double get _minExtent => 136 / widget.biggestHeight;
 
   List<RoutePoint> points = [
-    RoutePoint(
-      type: RoutePointType.myLocation,
-      object: null,
-    ),
-    RoutePoint(
-      type: RoutePointType.object,
-      object: null,
-    )
+    RoutePointMyLocation(),
+    RoutePointDirectoryObject(null),
   ];
 
   @override

@@ -521,7 +521,7 @@ class DgisMapController {
   Future<List<BriefRouteInfoMessage?>> findBriefRouteInfos({
     required RouteSearchOptionsMessage options,
     RouteSearchPointMessage? startPoint,
-    required RouteSearchPointMessage finishPoint,
+    RouteSearchPointMessage? finishPoint,
   }) {
     return _instance.findBriefRouteInfos(
       options,

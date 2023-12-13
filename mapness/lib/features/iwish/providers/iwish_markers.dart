@@ -89,6 +89,12 @@ class _IwishMarkers extends _$IwishMarkers {
     return markers;
   }
 
+  Future<void> removeMarkers() async {
+    final mapObjectManager =
+        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
+    await mapObjectManager.removeAllMarkers();
+  }
+
   Future<void> focusMarkersOnMap() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     if (!state.hasValue) return;

@@ -1,0 +1,167 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
+import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../../../../core/utils/constants/paths/icon_paths.dart';
+import '../../../../../../core/utils/constants/paths/image_paths.dart';
+import '../../../../../../core/utils/constants/route_names.dart';
+import '../../../../../events/domain/entities/search_events/search_events_item.dart';
+import '../../../../presentation/widgets/custom_spaces_widgets.dart';
+import '../../../../presentation/widgets/custom_svg_icon_widget.dart';
+
+class EventItemCard extends StatelessWidget {
+  final SearchEventsItem item;
+  final double? width;
+  final EdgeInsets? padding;
+  const EventItemCard(
+      {super.key, required this.item, this.width, this.padding});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        NavigationService.navigatorKey.currentState!.pushNamed(
+          RouteName.eventsDetailsPage,
+          arguments: item.id,
+        );
+      },
+      child: Container(
+        height: 187,
+        margin: padding ?? const EdgeInsets.only(top: 16, left: 16, right: 16),
+        width: width ?? MediaQuery.of(context).size.width - 32,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          alignment: Alignment.bottomRight,
+          child: Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(14),
+                child: CustomNetworkImageWidget(
+                  item.logoImage ?? "",
+                  imageWidth: MediaQuery.of(context).size.width,
+                  imageHeight: 200,
+                  placeHolderWidget:
+                      SvgPicture.asset(ImagePath.calendarBackground),
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  gradient: LinearGradient(
+                    begin: FractionalOffset.topCenter,
+                    end: FractionalOffset.bottomCenter,
+                    colors: [
+                      const Color(0x00000000),
+                      const Color(0xFF000000).withOpacity(0.8),
+                    ],
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Container(
+                  padding: const EdgeInsets.only(right: 24, bottom: 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          item.eventName ?? "",
+                          textAlign: TextAlign.right,
+                          maxLines: 2,
+                          style: Theme.of(context)
+                              .extension<ThemeTextStyles>()
+                              ?.accentL
+                              .copyWith(color: Colors.white, height: 1.5),
+                        ),
+                      ),
+                      Date(
+                        day: item.getStartDay(),
+                        month: item.getStartMonth(),
+                      ),
+                      const CustomVerticalSpace(height: 6),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          IconName(
+                            icon: IconPath.locationHomeEvents,
+                            name: item.city ?? "",
+                            color: const Color(0xFFE7E7E8),
+                          ),
+                          const CustomHorizontalSpace(width: 8),
+                          IconName(
+                            icon: IconPath.planetRingedHomeEvents,
+                            name: item.category ?? "",
+                            color: Colors.white,
+                          ),
+                          const CustomHorizontalSpace(width: 8),
+                          if (item.feesType != null &&
+                              item.feesType!.isNotEmpty)
+                            IconName(
+                              icon: IconPath.tagHomeEvents,
+                              name: item.feesType!,
+                              color: Colors.white,
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class IconName extends StatelessWidget {
+  final String name;
+  final String icon;
+  final Color color;
+  const IconName(
+      {super.key, required this.name, required this.icon, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SvgPicture.asset(
+          icon,
+          width: 12,
+          color: const Color(0xCCFFFFFF),
+        ),
+        const SizedBox(
+          width: 4,
+        ),
+        Text(
+          name,
+          style: Theme.of(context).extension<ThemeTextStyles>()?.textS.copyWith(
+                color: const Color(0xCCFFFFFF),
+              ),
+        ),
+      ],
+    );
+  }
+}
+
+class Date extends StatelessWidget {
+  final String day;
+  final String month;
+  const Date({super.key, required this.day, required this.month});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      "$day $month",
+      style: Theme.of(context).extension<ThemeTextStyles>()?.textS.copyWith(
+            color: const Color(0xCCFFFFFF),
+          ),
+    );
+  }
+}
