@@ -398,4 +398,10 @@ class IconPath {
       '${_svgIconPath}notification_status$_svg';
 
   static const menuIcon = '${_svgIconPath}menu_icon$_svg';
+
+  //  ! New Services Page
+
+  static const servicesPageSearch = '${_svgIconPath}services/search$_svg';
+    static const servicesPageArrow = '${_svgIconPath}services/arrow$_svg';
+
 }

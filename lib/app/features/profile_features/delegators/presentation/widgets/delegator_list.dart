@@ -12,7 +12,7 @@ import '../../../../_shared_feature_/shared_feature_exports.dart'
         CustomTextWidget,
         CustomVerticalSpace,
         ShimmerEffectWidget;
-import '../../../../profile/profile_exports.dart' show ProfileCard;
+import '../../../../services/presentation/pages/dashboard_page/presentation/widgets/profile_card.dart';
 import '../../delegators_exports.dart' show DelegatorsCubit, DelegatorsState;
 import 'no_accounts_widget.dart';
 
@@ -165,9 +165,9 @@ class ProfileHeader extends StatelessWidget {
         ),
         CustomVerticalSpace(height: 16),
         Container(
-          height: 50,
+          height: 60,
           decoration: ShapeDecoration(
-            color: Color(0xFFF4F4F5),
+            color: Color(0xFFFBFBFB),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -206,10 +206,10 @@ class TabWidget extends StatelessWidget {
               context.read<DelegatorsCubit>().changeTab(index);
             },
             child: Container(
-              margin: EdgeInsets.all(4),
+              margin: EdgeInsets.all(8),
               decoration: ShapeDecoration(
                 color:
-                    state.tab == index ? Color(0xFF145E75) : Colors.transparent,
+                    state.tab == index ? Color(0xFFECECEC) : Color(0xffFFFFFF),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8)),
                 shadows: [
@@ -225,7 +225,7 @@ class TabWidget extends StatelessWidget {
               child: CustomTextWidget(
                 name,
                 fontColor:
-                    state.tab == index ? AppColor.white : Color(0xFF71717A),
+                    state.tab == index ? Color(0xff18181B) : Color(0xFF737373),
                 fontSize: 14,
                 fontWeight: AppFontWeight.bold,
               ),

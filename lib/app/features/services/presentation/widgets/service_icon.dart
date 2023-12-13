@@ -35,169 +35,175 @@ import '../../services_exports.dart';
 
 class ServiceIcon extends StatelessWidget {
   final ServiceEntity service;
-
-  const ServiceIcon({
-    super.key,
-    required this.service,
-  });
+  final double? width;
+  final double? height;
+  final Color? backgroundColor;
+  const ServiceIcon(
+      {super.key,
+      required this.service,
+      this.width,
+      this.height,
+      this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () async {
-        if (service.id == 101) {
-          if (CommonProperties.selectedDelegator != null) {
-            await BottomSheetDialog.showDraggableSheet(context,
-                isFullHeight: false,
-                height: 300, child: CommercialPermitsDialog(
-              onSelect: (int item) async {
-                await BottomSheetDialog.showDraggableSheet(context,
-                    isFullHeight: true,
-                    child: PermitsLicenseBottomSheetList(
-                      groupId: item,
-                    ));
-              },
-            ));
-          } else {
-            await BottomSheetDialog.showDraggableSheet(
-              context,
-              isFullHeight: false,
-              dialogKeyName: DialogName.notAuthorizedIndivisualDialog,
-              currentRouteName: RouteName.postersStartService,
-              child: NotAuthorizedIndivisualDialog(),
-            );
-          }
-
-          return;
-        }
-
-        if (service.id == 1 && service.action.type == ServiceAction.cardsPage) {
-          await BottomSheetDialog.showDraggableSheet(context,
-              dialogKeyName: DialogName.vdTypesDialog,
-              currentRouteName: "ServicesPage",
-              child: BottomSheetWithActions(
-                title: "اختر نوع البلاغ".tr(),
-                body: VDAllTypesDialog(),
+        onTap: () async {
+          if (service.id == 101) {
+            if (CommonProperties.selectedDelegator != null) {
+              await BottomSheetDialog.showDraggableSheet(context,
+                  isFullHeight: false,
+                  height: 300, child: CommercialPermitsDialog(
+                onSelect: (int item) async {
+                  await BottomSheetDialog.showDraggableSheet(context,
+                      isFullHeight: true,
+                      child: PermitsLicenseBottomSheetList(
+                        groupId: item,
+                      ));
+                },
               ));
-        } else if (service.id == 3 &&
-            service.action.type == ServiceAction.dialog) {
-          if (CommonProperties.isLoggedIn) {
+            } else {
+              await BottomSheetDialog.showDraggableSheet(
+                context,
+                isFullHeight: false,
+                dialogKeyName: DialogName.notAuthorizedIndivisualDialog,
+                currentRouteName: RouteName.postersStartService,
+                child: NotAuthorizedIndivisualDialog(),
+              );
+            }
+
+            return;
+          }
+
+          if (service.id == 1 &&
+              service.action.type == ServiceAction.cardsPage) {
             await BottomSheetDialog.showDraggableSheet(context,
-                dialogKeyName: DialogName.daemDialog,
+                dialogKeyName: DialogName.vdTypesDialog,
                 currentRouteName: "ServicesPage",
                 child: BottomSheetWithActions(
-                  title: "daem_select_category".tr(),
-                  body: DaemTypeDialog(),
+                  title: "اختر نوع البلاغ".tr(),
+                  body: VDAllTypesDialog(),
                 ));
-          } else {
-            showDialog(
-                context: context,
-                builder: (ctx) =>
-                    NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
-                      if (isSuccess ?? false) {
-                        await BottomSheetDialog.showDraggableSheet(context,
-                            dialogKeyName: DialogName.daemDialog,
-                            currentRouteName: "ServicesPage",
-                            child: BottomSheetWithActions(
-                              title: "daem_select_category".tr(),
-                              body: DaemTypeDialog(),
-                            ));
-                      }
-                    }));
-          }
-        } else if (service.id == 2 &&
-            service.action.type == ServiceAction.dialog) {
-          if (CommonProperties.isLoggedIn) {
-            await BottomSheetDialog.showDraggableSheet(context,
-                dialogKeyName: DialogName.InqueryDialog,
-                currentRouteName: "ServicesPage",
-                child: BottomSheetWithActions(
-                  title: "اختر التصنيف".tr(),
-                  body: GeneralInquiryTypeDialog(),
-                ));
-          } else {
-            showDialog(
-                context: context,
-                builder: (ctx) =>
-                    NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
-                      if (isSuccess ?? false) {
-                        await BottomSheetDialog.showDraggableSheet(context,
-                            dialogKeyName: DialogName.InqueryDialog,
-                            currentRouteName: "ServicesPage",
-                            child: BottomSheetWithActions(
-                              title: "اختر التصنيف".tr(),
-                              body: GeneralInquiryTypeDialog(),
-                            ));
-                      }
-                    }));
-          }
-        } else if (service.id == 5 &&
-            service.action.type == ServiceAction.dialog) {
-          if (CommonProperties.isLoggedIn) {
-            await BottomSheetDialog.showDraggableSheet(context,
-                dialogKeyName: DialogName.msrDialog,
-                currentRouteName: "ServicesPage",
-                child: BottomSheetWithActions(
-                  title: "اختر التصنيف".tr(),
-                  body: MSRTypeDialog(),
-                ));
-          } else {
-            showDialog(
-                context: context,
-                builder: (ctx) =>
-                    NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
-                      if (isSuccess ?? false) {
-                        await BottomSheetDialog.showDraggableSheet(context,
-                            dialogKeyName: DialogName.msrDialog,
-                            currentRouteName: "ServicesPage",
-                            child: BottomSheetWithActions(
-                              title: "اختر التصنيف".tr(),
-                              body: MSRTypeDialog(),
-                            ));
-                      }
-                    }));
-          }
-        } else if (service.id == 2 && service.action.value == "/prayerTimes") {
-          context.pushNamedRoute(
-            RouteName.prayerTimes,
-            arguments: context.read<PrayerTimesCubit>(),
-          );
-        } else if (service.id == 13) {
-          if (CommonProperties.isLoggedIn) {
-            Navigator.pushNamed(context, RouteName.municipalAdvisor);
-          } else {
-            showDialog(
-                context: context,
-                builder: (ctx) =>
-                    NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
-                      if (isSuccess ?? false) {
-                        Navigator.pushNamed(
-                            context, RouteName.municipalAdvisor);
-                      }
-                    }));
-          }
-        } else if (service.action.value == RouteName.etmamMainPage) {
-          if (CommonProperties.isLoggedIn) {
-            Navigator.pushNamed(context, RouteName.etmamMainPage);
-          } else {
-            showDialog(
-                context: context,
-                builder: (ctx) =>
-                    NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
-                      if (isSuccess ?? false) {
-                        Navigator.pushNamed(context, RouteName.etmamMainPage);
-                      }
-                    }));
-          }
-        } else if (service.id == 4 &&
-            service.action.type == ServiceAction.dialog) {
-          if (CommonProperties.isLoggedIn) {
-            bool isSuccess =
-                await locator<NewAppointmentViewModel>().loadInitialData();
-            if (isSuccess) {
-              NavigationService.navigatorKey.currentState!
-                  .pushNamed(RouteName.NewAppointmentPage, arguments: false);
-              /* await BottomSheetDialog.showDraggableSheet(context,
+          } else if (service.id == 3 &&
+              service.action.type == ServiceAction.dialog) {
+            if (CommonProperties.isLoggedIn) {
+              await BottomSheetDialog.showDraggableSheet(context,
+                  dialogKeyName: DialogName.daemDialog,
+                  currentRouteName: "ServicesPage",
+                  child: BottomSheetWithActions(
+                    title: "daem_select_category".tr(),
+                    body: DaemTypeDialog(),
+                  ));
+            } else {
+              showDialog(
+                  context: context,
+                  builder: (ctx) =>
+                      NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                        if (isSuccess ?? false) {
+                          await BottomSheetDialog.showDraggableSheet(context,
+                              dialogKeyName: DialogName.daemDialog,
+                              currentRouteName: "ServicesPage",
+                              child: BottomSheetWithActions(
+                                title: "daem_select_category".tr(),
+                                body: DaemTypeDialog(),
+                              ));
+                        }
+                      }));
+            }
+          } else if (service.id == 2 &&
+              service.action.type == ServiceAction.dialog) {
+            if (CommonProperties.isLoggedIn) {
+              await BottomSheetDialog.showDraggableSheet(context,
+                  dialogKeyName: DialogName.InqueryDialog,
+                  currentRouteName: "ServicesPage",
+                  child: BottomSheetWithActions(
+                    title: "اختر التصنيف".tr(),
+                    body: GeneralInquiryTypeDialog(),
+                  ));
+            } else {
+              showDialog(
+                  context: context,
+                  builder: (ctx) =>
+                      NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                        if (isSuccess ?? false) {
+                          await BottomSheetDialog.showDraggableSheet(context,
+                              dialogKeyName: DialogName.InqueryDialog,
+                              currentRouteName: "ServicesPage",
+                              child: BottomSheetWithActions(
+                                title: "اختر التصنيف".tr(),
+                                body: GeneralInquiryTypeDialog(),
+                              ));
+                        }
+                      }));
+            }
+          } else if (service.id == 5 &&
+              service.action.type == ServiceAction.dialog) {
+            if (CommonProperties.isLoggedIn) {
+              await BottomSheetDialog.showDraggableSheet(context,
+                  dialogKeyName: DialogName.msrDialog,
+                  currentRouteName: "ServicesPage",
+                  child: BottomSheetWithActions(
+                    title: "اختر التصنيف".tr(),
+                    body: MSRTypeDialog(),
+                  ));
+            } else {
+              showDialog(
+                  context: context,
+                  builder: (ctx) =>
+                      NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                        if (isSuccess ?? false) {
+                          await BottomSheetDialog.showDraggableSheet(context,
+                              dialogKeyName: DialogName.msrDialog,
+                              currentRouteName: "ServicesPage",
+                              child: BottomSheetWithActions(
+                                title: "اختر التصنيف".tr(),
+                                body: MSRTypeDialog(),
+                              ));
+                        }
+                      }));
+            }
+          } else if (service.id == 2 &&
+              service.action.value == "/prayerTimes") {
+            context.pushNamedRoute(
+              RouteName.prayerTimes,
+              arguments: context.read<PrayerTimesCubit>(),
+            );
+          } else if (service.id == 13) {
+            if (CommonProperties.isLoggedIn) {
+              Navigator.pushNamed(context, RouteName.municipalAdvisor);
+            } else {
+              showDialog(
+                  context: context,
+                  builder: (ctx) =>
+                      NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                        if (isSuccess ?? false) {
+                          Navigator.pushNamed(
+                              context, RouteName.municipalAdvisor);
+                        }
+                      }));
+            }
+          } else if (service.action.value == RouteName.etmamMainPage) {
+            if (CommonProperties.isLoggedIn) {
+              Navigator.pushNamed(context, RouteName.etmamMainPage);
+            } else {
+              showDialog(
+                  context: context,
+                  builder: (ctx) =>
+                      NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                        if (isSuccess ?? false) {
+                          Navigator.pushNamed(context, RouteName.etmamMainPage);
+                        }
+                      }));
+            }
+          } else if (service.id == 4 &&
+              service.action.type == ServiceAction.dialog) {
+            if (CommonProperties.isLoggedIn) {
+              bool isSuccess =
+                  await locator<NewAppointmentViewModel>().loadInitialData();
+              if (isSuccess) {
+                NavigationService.navigatorKey.currentState!
+                    .pushNamed(RouteName.NewAppointmentPage, arguments: false);
+                /* await BottomSheetDialog.showDraggableSheet(context,
                   dialogKeyName: DialogName.selectAppointmentTypeDialog,
                   currentRouteName: "ServicesPage",
                   isFullHeight: false,
@@ -205,19 +211,19 @@ class ServiceIcon extends StatelessWidget {
                     title: "اختر نوع الموعد".tr(),
                     body: NewAppointmentDialog(),
                   ));*/
-            }
-          } else {
-            showDialog(
-                context: context,
-                builder: (ctx) =>
-                    NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
-                      if (isSuccess ?? false) {
-                        await locator<NewAppointmentViewModel>()
-                            .loadInitialData();
-                        NavigationService.navigatorKey.currentState!.pushNamed(
-                            RouteName.NewAppointmentPage,
-                            arguments: false);
-                        /* await BottomSheetDialog.showDraggableSheet(context,
+              }
+            } else {
+              showDialog(
+                  context: context,
+                  builder: (ctx) =>
+                      NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                        if (isSuccess ?? false) {
+                          await locator<NewAppointmentViewModel>()
+                              .loadInitialData();
+                          NavigationService.navigatorKey.currentState!
+                              .pushNamed(RouteName.NewAppointmentPage,
+                                  arguments: false);
+                          /* await BottomSheetDialog.showDraggableSheet(context,
                             dialogKeyName:
                                 DialogName.selectAppointmentTypeDialog,
                             currentRouteName: "ServicesPage",
@@ -226,114 +232,87 @@ class ServiceIcon extends StatelessWidget {
                               title: "اختر نوع الموعد".tr(),
                               body: NewAppointmentDialog(),
                             ));*/
-                      }
-                    }));
-          }
-        } else if (service.action.type == ServiceAction.cardsPage) {
-          if (service.requireLogin != true) {
-            Navigator.pushNamed(
-              context,
-              RouteName.serviceCards,
-              arguments: service,
-            );
-          } else {
-            if (CommonProperties.isLoggedIn) {
+                        }
+                      }));
+            }
+          } else if (service.action.type == ServiceAction.cardsPage) {
+            if (service.requireLogin != true) {
               Navigator.pushNamed(
                 context,
                 RouteName.serviceCards,
                 arguments: service,
               );
             } else {
-              showDialog(
-                  context: context,
-                  builder: (ctx) =>
-                      NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
-                        if (isSuccess ?? false) {
-                          Navigator.pushNamed(
-                            context,
-                            RouteName.serviceCards,
-                            arguments: service,
-                          );
-                        }
-                      }));
-            }
-          }
-        } else if (service.action.type == ServiceAction.pageRoute) {
-          if (service.action.value == RouteName.DCCameraPage) {
-            bool isLocationAvailable =
-                await CommonFunctions.checkLocationSettings(context);
-            bool isCameraAllowed =
-                await CommonFunctions.checkCameraSettings(context);
-            if (isLocationAvailable && isCameraAllowed) {
               if (CommonProperties.isLoggedIn) {
-                NavigationService.navigatorKey.currentState!.pushNamed(
-                    RouteName.DCCameraPage,
-                    arguments: CameraParamsPage(
-                        selectedCategory: CategoryItem(categoryId: "CG-14"),
-                        isFromHome: false));
+                Navigator.pushNamed(
+                  context,
+                  RouteName.serviceCards,
+                  arguments: service,
+                );
               } else {
                 showDialog(
                     context: context,
                     builder: (ctx) => NeedLoginDialog(
                             onSuccessLogin: (bool? isSuccess) async {
                           if (isSuccess ?? false) {
-                            NavigationService.navigatorKey.currentState!
-                                .pushNamed(RouteName.DCCameraPage,
-                                    arguments: CameraParamsPage(
-                                        selectedCategory:
-                                            CategoryItem(categoryId: "CG-14"),
-                                        isFromHome: false));
+                            Navigator.pushNamed(
+                              context,
+                              RouteName.serviceCards,
+                              arguments: service,
+                            );
                           }
                         }));
               }
             }
-          } else if (service.iconName == "municipal_commercial" ||
-              service.iconName == "municpal_construction" ||
-              service.iconName == "municipal_shop" ||
-              service.iconName == "municpal_housing" ||
-              service.iconName == "municipal_ewaa" ||
-              service.iconName == "municpal_toppaco") {
-            if (CommonProperties.isLoggedIn) {
-              CommonFunctions.openBaladyWebView(service.action.value);
-            } else {
-              showDialog(
-                  context: context,
-                  builder: (ctx) =>
-                      NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
-                        if (isSuccess ?? false) {
-                          CommonFunctions.openBaladyWebView(
-                              service.action.value);
-                        }
-                      }));
-            }
-          } else if (service.iconName == "municipal_health") {
-            if (CommonProperties.isLoggedIn) {
-              Navigator.pushNamed(
-                context,
-                service.action.value,
-              );
-            } else {
-              showDialog(
-                  context: context,
-                  builder: (ctx) =>
-                      NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
-                        if (isSuccess ?? false) {
-                          Navigator.pushNamed(
-                            context,
-                            service.action.value,
-                          );
-                        }
-                      }));
-            }
-          } else if (service.iconName == "municpal_all") {
-            CommonFunctions.externalLaunch(service.action.value);
-          } else {
-            if (service.requireLogin != true) {
-              Navigator.pushNamed(
-                context,
-                service.action.value,
-              );
-            } else {
+          } else if (service.action.type == ServiceAction.pageRoute) {
+            if (service.action.value == RouteName.DCCameraPage) {
+              bool isLocationAvailable =
+                  await CommonFunctions.checkLocationSettings(context);
+              bool isCameraAllowed =
+                  await CommonFunctions.checkCameraSettings(context);
+              if (isLocationAvailable && isCameraAllowed) {
+                if (CommonProperties.isLoggedIn) {
+                  NavigationService.navigatorKey.currentState!.pushNamed(
+                      RouteName.DCCameraPage,
+                      arguments: CameraParamsPage(
+                          selectedCategory: CategoryItem(categoryId: "CG-14"),
+                          isFromHome: false));
+                } else {
+                  showDialog(
+                      context: context,
+                      builder: (ctx) => NeedLoginDialog(
+                              onSuccessLogin: (bool? isSuccess) async {
+                            if (isSuccess ?? false) {
+                              NavigationService.navigatorKey.currentState!
+                                  .pushNamed(RouteName.DCCameraPage,
+                                      arguments: CameraParamsPage(
+                                          selectedCategory:
+                                              CategoryItem(categoryId: "CG-14"),
+                                          isFromHome: false));
+                            }
+                          }));
+                }
+              }
+            } else if (service.iconName == "municipal_commercial" ||
+                service.iconName == "municpal_construction" ||
+                service.iconName == "municipal_shop" ||
+                service.iconName == "municpal_housing" ||
+                service.iconName == "municipal_ewaa" ||
+                service.iconName == "municpal_toppaco") {
+              if (CommonProperties.isLoggedIn) {
+                CommonFunctions.openBaladyWebView(service.action.value);
+              } else {
+                showDialog(
+                    context: context,
+                    builder: (ctx) => NeedLoginDialog(
+                            onSuccessLogin: (bool? isSuccess) async {
+                          if (isSuccess ?? false) {
+                            CommonFunctions.openBaladyWebView(
+                                service.action.value);
+                          }
+                        }));
+              }
+            } else if (service.iconName == "municipal_health") {
               if (CommonProperties.isLoggedIn) {
                 Navigator.pushNamed(
                   context,
@@ -352,11 +331,71 @@ class ServiceIcon extends StatelessWidget {
                           }
                         }));
               }
+            } else if (service.iconName == "municpal_all") {
+              CommonFunctions.externalLaunch(service.action.value);
+            } else {
+              if (service.requireLogin != true) {
+                Navigator.pushNamed(
+                  context,
+                  service.action.value,
+                );
+              } else {
+                if (CommonProperties.isLoggedIn) {
+                  Navigator.pushNamed(
+                    context,
+                    service.action.value,
+                  );
+                } else {
+                  showDialog(
+                      context: context,
+                      builder: (ctx) => NeedLoginDialog(
+                              onSuccessLogin: (bool? isSuccess) async {
+                            if (isSuccess ?? false) {
+                              Navigator.pushNamed(
+                                context,
+                                service.action.value,
+                              );
+                            }
+                          }));
+                }
+              }
             }
           }
-        }
-      },
-      child: Column(
+        },
+        child: Container(
+          width: width ?? 68,
+          height: height ?? 85,
+          margin: const EdgeInsetsDirectional.only(end: 8),
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                    color: backgroundColor ?? AppColor.white,
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                child: DrawIconBasedTypeWidget(
+                  icon: IconPath.serviceIcon(service.iconName),
+                  iconSize: 28,
+                ),
+              ),
+              const SizedBox(
+                height: 6,
+              ),
+              Flexible(
+                child: CustomTextWidget(
+                  service.title,
+                  fontSize: 10,
+                  maxLines: 3,
+                  textAlign: TextAlign.center,
+                  fontColor: AppColor.blackModern700Light,
+                  fontWeight: AppFontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        )
+
+        /* Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Card(
@@ -389,7 +428,7 @@ class ServiceIcon extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
+      ),*/
+        );
   }
 }

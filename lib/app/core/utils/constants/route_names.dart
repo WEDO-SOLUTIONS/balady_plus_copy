@@ -295,6 +295,11 @@ class RouteName {
   static const EkramInquiryPrintDetailsPage = 'EkramInquiryPrintDetailsPage';
   static const EkramRequestTransportationStartService =
       'EkramRequestTransportationStartService';
+
+  //! Dashboard Page
+  static const DashbordDataPage = 'DashbordDataPage';
+
+  static const SpecificServicePage = 'SpecificServicePage';
 }
 
 class EtmamRoutesNames {
