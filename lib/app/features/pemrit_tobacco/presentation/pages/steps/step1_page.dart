@@ -64,7 +64,7 @@ class _PermitStep1PageState extends State<PermitStep1Page> {
               child: Container(
                 color: AppColor.white,
                 child: PostersPreviousNextButtons(
-                  isBtnDisabled: state.isStep2Valid(),
+                  isBtnDisabled: !state.isStep1Valid(),
                 ),
               ),
             ),
@@ -105,6 +105,16 @@ class Step2SummeryWidget extends StatelessWidget {
               height: 16,
             ),
             FieldData(
+              title: "license_end_date".tr(),
+              subTitle: state
+                      .commercialLicenceDetails?.licenseInfo?.licenseEndDate
+                      .toString() ??
+                  "",
+            ),
+            const CustomVerticalSpace(
+              height: 16,
+            ),
+            FieldData(
               title: "municipality".tr(),
               subTitle: state
                       .commercialLicenceDetails?.locationInfo?.municipalityName
@@ -124,7 +134,7 @@ class Step2SummeryWidget extends StatelessWidget {
             const CustomVerticalSpace(
               height: 16,
             ),
-            FieldData(
+            /* FieldData(
               title: "license_health_end_date".tr(),
               subTitle: state
                       .commercialLicenceDetails?.licenseInfo?.licenseEndDate
@@ -133,7 +143,7 @@ class Step2SummeryWidget extends StatelessWidget {
             ),
             const CustomVerticalSpace(
               height: 16,
-            ),
+            ),*/
             FieldData(
                 title: "permit_need_baladiyah".tr(),
                 subTitle:

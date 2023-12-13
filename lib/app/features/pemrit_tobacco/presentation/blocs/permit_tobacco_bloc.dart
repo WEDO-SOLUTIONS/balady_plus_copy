@@ -87,7 +87,7 @@ class PermitTobaccoLicenseBloc
   Future<void> _changeHotelLicenseNumberHandler(
       ChangeHotelLicenseNumber e, Emitter emitter) async {
     emitter(state.copyWith(
-        hotelLicenseNumber: int.tryParse(e.value ?? ""),
+        hotelLicenseNumber: e.value ?? "",
         error: "",
         permitTobaccoValidateHotelLicenseResponse: Nullable(null)));
   }
@@ -113,7 +113,7 @@ class PermitTobaccoLicenseBloc
     final failOrSuccess =
         await _validateTobaccoHotel(ValidateHotelLicenseRequest(
       licenseNumber: state.licenseId!,
-      hotelLicense: state.hotelLicenseNumber!,
+      hotelLicense: int.tryParse(state.hotelLicenseNumber!)!,
     ));
 
     failOrSuccess.fold((l) {
@@ -139,7 +139,9 @@ class PermitTobaccoLicenseBloc
     final failOrSuccess = await _calculatePermit24HourCost(
         PermitTobaccoCalculateRequest(
             licenseNumber: state.licenseId!,
-            hotelLicenseNumber: state.hotelLicenseNumber,
+            hotelLicenseNumber: state.hotelLicenseNumber != null
+                ? int.tryParse(state.hotelLicenseNumber ?? "")
+                : null,
             insideHotel: state.isInsideHotel!));
 
     failOrSuccess.fold((l) {
@@ -227,8 +229,9 @@ class PermitTobaccoLicenseBloc
     final failOrSuccess = await _submitPermit24(SubmitTobaccoRequest(
         licenseNumber: state.licenseId!,
         insideHotel: state.isInsideHotel ?? false,
-        hotelLicenseNumber:
-            state.isInsideHotel == true ? state.hotelLicenseNumber : null));
+        hotelLicenseNumber: state.isInsideHotel == true
+            ? int.tryParse(state.hotelLicenseNumber ?? "")
+            : null));
 
     failOrSuccess.fold((l) {
       print(l);

@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
+import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_event.dart';
 import 'package:balady_plus/app/features/violation_guide/presentation/pages/map/widgets/map_widgets/cr_header_desc_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -113,7 +114,7 @@ class InquiryPrintDetailsPage extends StatelessWidget {
                                     .add(const PrintSendOTPEvent());*/
                                 context
                                     .read<EkramInquiryPrintBloc>()
-                                    .add(const VerifySendOTPEvent());
+                                    .add(const PrintSendOTPEvent());
                               },
                               text: "ekram_print_certificate".tr())
                         ]),

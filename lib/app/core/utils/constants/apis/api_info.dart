@@ -745,6 +745,10 @@ class ApiUrl {
 
   static String ekramPrintCertificate =
       "v2/ekram-mobile-services/burial-licenses/verify-before-prints";
+
+  static String validatePrintCertificate(String guid, String code) =>
+      "v2/ekram-mobile-services/print-licenses/$guid/$code";
+
   //! POST
 
   //! Delete
