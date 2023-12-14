@@ -1,5 +1,6 @@
 {
   "aboutApp": "حول التطبيق",
+  "accessibility": "إمكانية الوصول",
   "addAddress": "إضافة عنوان",
   "additionalServices": "خدمات إضافية",
   "am": "صباحًا",
@@ -42,6 +43,7 @@
   "delete": "حذف",
   "deleteAll": "حذف الكل",
   "deleteHistory": "حذف السجلّ",
+  "deliveryAvailable": "التسليم متاح",
   "dentalCenters": "مراكز طب الأسنان",
   "describeInMoreDetails": "وصف بمزيد من التفاصيل",
   "didNotMatchAnyResults": "لم يتطابق مع أية نتائج.",
@@ -117,6 +119,7 @@
   "min": "دقيقة",
   "minutes": "دقائق",
   "mosques": "المساجد",
+  "motorVisual": "الموتور، بصري",
   "myChallenge": "التحدي الخاص بي",
   "myLocation": "موقعي",
   "nationality": "الجنسية",
@@ -230,8 +233,5 @@
   "yesterday": "أمس",
   "youArrived": "لقد وصلت",
   "youReHere": "أنت هنا!",
-  "youSearch": "انت تبحث",
-  "deliveryAvailable": "التسليم متاح",
-  "accessibility": "إمكانية الوصول",
-  "motorVisual": "الموتور، بصري"
+  "youSearch": "انت تبحث"
 }

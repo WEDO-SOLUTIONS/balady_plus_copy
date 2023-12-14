@@ -8,6 +8,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutApp => 'About App';
 
   @override
+  String get accessibility => 'Accessibility';
+
+  @override
   String get addAddress => 'Add address';
 
   @override
@@ -132,6 +135,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteHistory => 'Delete history';
+
+  @override
+  String get deliveryAvailable => 'Delivery available';
 
   @override
   String get dentalCenters => 'Dental centers';
@@ -357,6 +363,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mosques => 'Mosques';
+
+  @override
+  String get motorVisual => 'Motor, visual';
 
   @override
   String get myChallenge => 'My challenge';
@@ -699,13 +708,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get youSearch => 'You search';
-
-  @override
-  String get deliveryAvailable => 'Delivery available';
-
-  @override
-  String get accessibility => 'Accessibility';
-
-  @override
-  String get motorVisual => 'Motor, visual';
 }

@@ -8,6 +8,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aboutApp => 'حول التطبيق';
 
   @override
+  String get accessibility => 'إمكانية الوصول';
+
+  @override
   String get addAddress => 'إضافة عنوان';
 
   @override
@@ -132,6 +135,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get deleteHistory => 'حذف السجلّ';
+
+  @override
+  String get deliveryAvailable => 'التسليم متاح';
 
   @override
   String get dentalCenters => 'مراكز طب الأسنان';
@@ -357,6 +363,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get mosques => 'المساجد';
+
+  @override
+  String get motorVisual => 'الموتور، بصري';
 
   @override
   String get myChallenge => 'التحدي الخاص بي';
@@ -699,13 +708,4 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get youSearch => 'انت تبحث';
-
-  @override
-  String get deliveryAvailable => 'التسليم متاح';
-
-  @override
-  String get accessibility => 'إمكانية الوصول';
-
-  @override
-  String get motorVisual => 'الموتور، بصري';
 }

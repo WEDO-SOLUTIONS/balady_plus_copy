@@ -99,6 +99,12 @@ abstract class AppLocalizations {
   /// **'حول التطبيق'**
   String get aboutApp;
 
+  /// No description provided for @accessibility.
+  ///
+  /// In ar, this message translates to:
+  /// **'إمكانية الوصول'**
+  String get accessibility;
+
   /// No description provided for @addAddress.
   ///
   /// In ar, this message translates to:
@@ -350,6 +356,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'حذف السجلّ'**
   String get deleteHistory;
+
+  /// No description provided for @deliveryAvailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'التسليم متاح'**
+  String get deliveryAvailable;
 
   /// No description provided for @dentalCenters.
   ///
@@ -800,6 +812,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'المساجد'**
   String get mosques;
+
+  /// No description provided for @motorVisual.
+  ///
+  /// In ar, this message translates to:
+  /// **'الموتور، بصري'**
+  String get motorVisual;
 
   /// No description provided for @myChallenge.
   ///
@@ -1484,24 +1502,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'انت تبحث'**
   String get youSearch;
-
-  /// No description provided for @deliveryAvailable.
-  ///
-  /// In ar, this message translates to:
-  /// **'التسليم متاح'**
-  String get deliveryAvailable;
-
-  /// No description provided for @accessibility.
-  ///
-  /// In ar, this message translates to:
-  /// **'إمكانية الوصول'**
-  String get accessibility;
-
-  /// No description provided for @motorVisual.
-  ///
-  /// In ar, this message translates to:
-  /// **'الموتور، بصري'**
-  String get motorVisual;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
