@@ -1,81 +1,55 @@
 import 'dart:async';
 
-import 'package:dgis_map/library.dart';
+import 'package:dio/dio.dart';
 import 'package:geobase/geobase.dart' as gb;
+import 'package:mapness/_features/common/providers/map_viewport_changes.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
-import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'interesting_places.g.dart';
 
 @riverpod
 class InterestingPlaces extends _$InterestingPlaces {
+  Dio get _dio => ref.read(dGisNetworkProvider);
 
   final _places = <InterestingPlace>[];
-  StreamSubscription? _visibleRectSub;
 
   @override
   List<InterestingPlace> build() {
-    ref.onDispose(() {
-      _visibleRectSub?.cancel();
-      _visibleRectSub = null;
-    });
-
-    if (_visibleRectSub == null) {
-      startListen();
-    }
+    ref.listen(
+      mapViewportChangesProvider,
+      (_, next) async {
+        await _update(next);
+      },
+    );
 
     return _places.toList();
   }
 
-  void startListen() async {
-    final map = ref.read(dgisControllerProvider.notifier);
-    _visibleRectSub = map.visibleRectEvents.listen(_mapVisibleRectUpdate);
+  Future<void> _update(gb.Polygon polygon) async {
+    final newPlaces = await _fetch(polygon);
+    _places
+      ..clear()
+      ..addAll(newPlaces);
+
+    ref.invalidateSelf();
   }
 
-  void _mapVisibleRectUpdate(VisibleRectEvent event) async {
-    _update(event.visibleRect);
-  }
-
-  Future<void> _update(VisibleRect rect) async {
-    final dio = await ref.read(dGisNetworkProvider.future);
-    final box = gb.Box.create(
-      minX: rect.southWestLon,
-      minY: rect.southWestLat,
-      maxX: rect.northEastLon,
-      maxY: rect.northEastLat,
-    );
-
-    final corners = box.corners2D.toList();
-    final List<gb.Position> positions = [...corners, corners[0]]
-        .map((e) => gb.Position.create(x: e.x, y: e.y))
-        .toList();
-
-    final polygon = gb.Polygon.from(
-      [positions],
-      bounds: box,
-    );
-
+  Future<List<InterestingPlace>> _fetch(gb.Polygon polygon) async {
     final wkt = polygon.toText(format: gb.WKT.geometry);
 
     // TODO(nogipx): remove stubs
     try {
-      final response = await dio.get('/interesting-places?bound=$wkt');
+      final response = await _dio.get('/interesting-places?bound=$wkt');
       final places = proto.InterestingPlacesResponse.fromBuffer(response.data)
           .interestingPlaces;
-      _places
-        ..clear()
-        ..addAll(places);
+      return places;
     } catch (error) {
-      _places
-        ..clear()
-        ..addAll(_placesStub);
+      return _placesStub;
     }
-
-    ref.invalidateSelf();
   }
 }
 
