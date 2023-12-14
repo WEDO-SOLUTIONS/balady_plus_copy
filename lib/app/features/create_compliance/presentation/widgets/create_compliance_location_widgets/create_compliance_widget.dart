@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
@@ -72,7 +73,8 @@ class _CreateComplianceLocationWidgetState
           ),
           ElevatedButtonWidget.next(onPressed: () {
             if (selected == 1) {
-              Navigator.pushNamed(context, RouteName.submitCompliancePage);
+              NavigationService.navigatorKey.currentState!
+                  .pushNamed(RouteName.submitCompliancePage);
             } else if (selected == 0) {
               CommonFunctions.externalLaunch(
                   "https://eservices.alriyadh.gov.sa/Pages/ServicesRedirect.aspx?ServiceCode=2&MainServiceCode=67");

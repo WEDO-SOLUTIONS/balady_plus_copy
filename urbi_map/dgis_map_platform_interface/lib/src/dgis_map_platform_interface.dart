@@ -52,7 +52,9 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents;
 
-  Stream<RouteChangedEvent> get routeChangedEvents;
+  Stream<ActiveRouteChangedEvent> get activeRouteChangedEvents;
+
+  Stream<RoutesInfoChangedEvent> get routesInfoChangedEvents;
 
   Stream<NavigationEvent> get navigationEvents;
 
@@ -78,6 +80,10 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Stream<RouteOptionsEvent> get routeOptionsEvent;
 
+  Stream<PackageProgressEvent> get packageProgressEvents;
+
+  Stream<PackageInfoChangedEvent> get packageInfoChangedEvents;
+
   Future<InitializeMessage> initialize(int viewId);
 
   bool get isInitialized;
@@ -95,6 +101,8 @@ abstract class DgisMapPlugin extends PlatformInterface {
   Future<void> overrideLocales(List<String> locales);
 
   Future<void> setCameraPosition(CameraPositionMessage cameraPosition);
+
+  Future<void> setCameraPadding(CameraSetPaddingMessage cameraPadding);
 
   Future<void> moveCamera(
     CameraPositionMessage cameraPosition,
@@ -160,6 +168,15 @@ abstract class DgisMapPlugin extends PlatformInterface {
     GeoRectMessage? searchRect,
   });
 
+  Future<SearchResultMessage> searchByRubrics(
+    List<int> rubrics, {
+    List<GeoPointMessage>? spatialRestriction,
+    required SortingTypeMessage sortingType,
+    required int pageSize,
+    WeekTimeSearchMessage? weekTime,
+    GeoRectMessage? searchRect,
+  });
+
   Future<PageMessage> fetchPrevPage(PageIdMessage pageId);
 
   Future<PageMessage> fetchNextPage(PageIdMessage pageId);
@@ -191,6 +208,8 @@ abstract class DgisMapPlugin extends PlatformInterface {
   Future<MapObjectManagerMessage> createMapObjectManagerWithClustering(
     ClusteringMapObjectManager manager,
   );
+
+  Future<MapObjectManagerMessage> createMapObjectManager();
 
   Future<void> removeMapObjectManager(MapObjectManagerMessage manager);
 
@@ -236,6 +255,16 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<void> removePanoramasMarkers();
 
+  Future<void> setRouteParams(RouteEditorRouteParamsMessage params);
+
+  Future<void> hideRoutes();
+
+  Future<void> startNavigation();
+
+  Future<void> startNavigationSimulation();
+
+  Future<void> stopNavigation();
+
   Future<int> overlappedBy(
     GeoRectMessage outerRect,
     GeoRectMessage innerRect,
@@ -251,6 +280,11 @@ abstract class DgisMapPlugin extends PlatformInterface {
     GeoRectMessage inner,
   );
 
+  Future<double> pointBearing(
+    GeoPointMessage from,
+    GeoPointMessage to,
+  );
+
   Future<void> setPanoramasPaddings(CameraSetPaddingMessage message);
 
   Future<void> moveCameraToSelectedPanorama();
@@ -260,6 +294,14 @@ abstract class DgisMapPlugin extends PlatformInterface {
   Future<void> showEsriIOLayer(AddLayerPointObjectsMessage message);
 
   Future<void> removeEsriIOLayer();
+
+  Future<void> onCompassClicked();
+
+  Future<void> startFreeRoam();
+
+  Future<void> stopFreeRoam();
+
+  Future<void> toggleSound();
 
   Future<void> onTrafficAndParkingAttached();
 
@@ -272,4 +314,24 @@ abstract class DgisMapPlugin extends PlatformInterface {
   Future<void> setAppearance(MapAppearanceMessage appearance);
 
   Future<void> setZoomRestrictions(double? min, double? max);
+
+  Future<void> setPublicTransportActiveRoute(int routeIndex);
+
+  Future<List<BriefRouteInfoMessage?>> findBriefRouteInfos(
+    RouteSearchOptionsMessage routeSearchOptions,
+    RouteSearchPointMessage? startPoint,
+    RouteSearchPointMessage? finishPoint,
+  );
+
+  Future<List<PackageMessage?>> listPackages();
+
+  Future<List<PackageMessage?>> listVoices();
+
+  Future<void> installPackage(String id);
+
+  Future<void> installVoice(String id);
+
+  Future<bool> toggleHeatmap(WeatherMapMessage message);
+
+  Future<void> setNavigatorVoice(String id);
 }

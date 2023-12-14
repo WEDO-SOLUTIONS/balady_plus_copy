@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -14,14 +15,16 @@ class BaladySmartAdvisorCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (CommonProperties.isLoggedIn) {
-          Navigator.pushNamed(context, RouteName.municipalAdvisor);
+          NavigationService.navigatorKey.currentState!
+              .pushNamed(RouteName.municipalAdvisor);
         } else {
           showDialog(
               context: context,
               builder: (ctx) =>
                   NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
                     if (isSuccess ?? false) {
-                      Navigator.pushNamed(context, RouteName.municipalAdvisor);
+                      NavigationService.navigatorKey.currentState!
+                          .pushNamed(RouteName.municipalAdvisor);
                     }
                   }));
         }
@@ -75,8 +78,8 @@ class BaladySmartAdvisorCard extends StatelessWidget {
                         text: 'askAdvisor'.tr(),
                         onPressed: () async {
                           if (CommonProperties.isLoggedIn) {
-                            Navigator.pushNamed(
-                                context, RouteName.municipalAdvisor);
+                            NavigationService.navigatorKey.currentState!
+                                .pushNamed(RouteName.municipalAdvisor);
                           } else {
                             showDialog(
                                 context: context,
@@ -84,8 +87,10 @@ class BaladySmartAdvisorCard extends StatelessWidget {
                                         onSuccessLogin:
                                             (bool? isSuccess) async {
                                       if (isSuccess ?? false) {
-                                        Navigator.pushNamed(context,
-                                            RouteName.municipalAdvisor);
+                                        NavigationService
+                                            .navigatorKey.currentState!
+                                            .pushNamed(
+                                                RouteName.municipalAdvisor);
                                       }
                                     }));
                           }

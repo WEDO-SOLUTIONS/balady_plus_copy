@@ -313,7 +313,6 @@ class RequestsRemoteDataSourceImplementation
     try {
       response = await crmWebService.dio
           .get(ApiUrl.crmRequestsList, queryParameters: params.toMap());
-
       final data = response.data;
       data.toString().successLog();
 
@@ -322,6 +321,17 @@ class RequestsRemoteDataSourceImplementation
       return result;
     } on DioError catch (error) {
       "DioError $error".errorLog();
+
+      try {
+        final result = CRMRequestModel.fromJson(error.response?.data);
+        if (result.totalRecordCount == "0")
+          throw NoDataFoundException(error.requestOptions, response);
+      } catch (ex) {
+        if (ex is NoDataFoundException) {
+          rethrow;
+        }
+      }
+
       if (error is NoDataFoundException) {
         rethrow;
       }

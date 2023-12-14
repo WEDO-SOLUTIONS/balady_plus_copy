@@ -72,8 +72,8 @@ class CertificationMapCard extends StatelessWidget {
                             btnPadding: EdgeInsets.all(8),
                             text: "complinace_isue".tr(),
                             onPressed: () async {
-                              Navigator.pushNamed(
-                                  context, RouteName.createCompliancePage);
+                              NavigationService.navigatorKey.currentState!
+                                  .pushNamed(RouteName.createCompliancePage);
                             },
                           ),
                         ),
@@ -92,8 +92,8 @@ class CertificationMapCard extends StatelessWidget {
                             btnHeight: 40,
                             text: "self_rating".tr(),
                             onPressed: () async {
-                              Navigator.pushNamed(
-                                  context, RouteName.selfRatingMainPage);
+                              NavigationService.navigatorKey.currentState!
+                                  .pushNamed(RouteName.selfRatingMainPage);
                             },
                           ),
                         ),
@@ -124,7 +124,8 @@ class CertificationMapCard extends StatelessWidget {
                     const SizedBox(width: 6),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, RouteName.QAPage);
+                        NavigationService.navigatorKey.currentState!
+                            .pushNamed(RouteName.QAPage);
                       },
                       child: CustomTextWidget(
                         "check_faq".tr(),

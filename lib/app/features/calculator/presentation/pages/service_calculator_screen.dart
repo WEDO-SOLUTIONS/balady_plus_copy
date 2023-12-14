@@ -1768,7 +1768,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
         ]),
         changeToFirst: true,
         confirmTextStyle: const TextStyle(
-            fontFamily: 'FrutigerLTArabic',
+            fontFamily: 'Frutiger',
             fontSize: 15,
             fontWeight: FontWeight.w700,
             fontStyle: FontStyle.normal,

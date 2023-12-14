@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:balady_plus/etmam_app/core/dependency_injection/injection_container.dart'
@@ -114,7 +115,7 @@ class CommonFunctions {
           url: exception.toString(),
           statusCode: response?.statusCode,
           headers: response?.requestOptions.headers,
-          enviroment: "Exceptions-Staging");
+          enviroment: sl<EnvType>().name);
     } catch (ex) {
       //print(ex);
     }

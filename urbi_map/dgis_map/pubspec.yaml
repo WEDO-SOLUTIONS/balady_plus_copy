@@ -27,7 +27,7 @@ dependencies:
     path: ../dgis_map_platform_interface
   json_annotation: ^4.8.0
   dio: ^5.0.0
-  flutter_svg: ^2.0.5
+  flutter_svg: any
   fl_chart: ^0.62.0
 
 dev_dependencies:

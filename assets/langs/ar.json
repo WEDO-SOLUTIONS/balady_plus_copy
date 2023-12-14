@@ -3647,6 +3647,8 @@
   "wrong_input_data":"القيمة المدخلة غير صحيحة", 
   "permit_tobacco_cancel_confirm_msg":"عزيزي المستفيد، هل تريد الاستمرار بإلغاء طلب تصريح تقديم منتجات التبغ رقم {}", 
   "permit_tobacco_name":"تصريح تقديم منتجات التبغ", 
-  "birthDate_required":"يجب إدخال تاريخ الميلاد"
+  "birthDate_required":"يجب إدخال تاريخ الميلاد", 
+  "events":"الفعاليات"
+
 
 }

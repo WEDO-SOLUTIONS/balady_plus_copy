@@ -1,5 +1,5 @@
-class RouteChangedEvent {
-  const RouteChangedEvent(
+class RouteInfo {
+  RouteInfo(
     this.distance,
     this.duration,
     this.stairwayCount,
@@ -7,11 +7,29 @@ class RouteChangedEvent {
     this.altitudes,
   );
 
-  static const name = "onRouteChanged";
-
   final double distance;
   final int duration;
   final int stairwayCount;
   final int gateCount;
   final List<int> altitudes;
+}
+
+class ActiveRouteChangedEvent {
+  const ActiveRouteChangedEvent(
+    this.index,
+  );
+
+  static const name = "onActiveRouteChanged";
+
+  final int index;
+}
+
+class RoutesInfoChangedEvent {
+  const RoutesInfoChangedEvent(
+    this.routes,
+  );
+
+  static const name = "onRoutesInfoChanged";
+
+  final List<RouteInfo> routes;
 }

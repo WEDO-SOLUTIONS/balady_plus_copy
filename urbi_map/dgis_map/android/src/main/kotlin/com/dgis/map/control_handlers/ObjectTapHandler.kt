@@ -13,17 +13,12 @@ import com.dgis.map.map_api.Messages.*
 import com.dgis.map.user_data.PhotoData
 import io.flutter.FlutterInjector
 import io.flutter.plugin.common.EventChannel.EventSink
-import kotlinx.coroutines.awaitAll
 import ru.dgis.sdk.Context
-import ru.dgis.sdk.DGis
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.LevelId
 import ru.dgis.sdk.ScreenSize
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
-import ru.dgis.sdk.coordinates.Latitude
-import ru.dgis.sdk.coordinates.Longitude
-import ru.dgis.sdk.geometry.Elevation
 import ru.dgis.sdk.geometry.GeoPointWithElevation
 import ru.dgis.sdk.map.*
 import java.io.FileNotFoundException
@@ -36,6 +31,7 @@ class ObjectTapHandler(
     private val mapObjectManager: MapObjectManager,
     private val panoramasObjectManager: MapObjectManager,
     private val ioObjectManager: MapObjectManager,
+    private val routeHandler: RouteHandler?,
     private val sdkContext: Context,
     private val eventSink: EventSink,
     private val api: FlutterMapApi,
@@ -62,7 +58,7 @@ class ObjectTapHandler(
     private data class PolygonId(val id: String);
     private data class PolylineId(val id: String);
 
-    private val markers = mutableMapOf<String, Marker>();
+    private var markers = mutableMapOf<String, Pair<Marker, String?>>();
     private val polygons = mutableMapOf<String, Polygon>();
     private val polylines = mutableMapOf<String, Polyline>();
     private val clusters = mutableMapOf<String, SimpleClusterObject>();
@@ -119,6 +115,9 @@ class ObjectTapHandler(
             is DgisMapObject -> {
                 onDgisMapObjectTap(tappedObject, roi)
                 return
+            }
+            is RouteMapObject -> {
+                routeHandler?.onRouteTap(tappedObject)
             }
             is SimpleClusterObject -> {
                 val userData = tappedObject.userData
@@ -198,7 +197,7 @@ class ObjectTapHandler(
                 LogicalPixel(it.width.toFloat())
             } ?: LogicalPixel(0f),
             userData = MarkerId(marker.id),
-            animatedAppearance = false,
+            animatedAppearance = marker.options.animatedAppearance ?: false,
         )
 
         return Marker(options)
@@ -208,7 +207,7 @@ class ObjectTapHandler(
         val markerObject = mapMarker(marker, result) ?: return
 
         mapObjectsExecutorService.submit {
-            markers[marker.id] = markerObject
+            markers[marker.id] = Pair(markerObject, manager?.id)
             if (manager != null && managers[manager.id] != null) {
                 managers[manager.id]!!.addObject(markerObject)
             } else {
@@ -219,18 +218,18 @@ class ObjectTapHandler(
     }
 
     fun addMarkers(markers: List<MarkerMessage>, manager: MapObjectManagerMessage?, result: Result<Void>?) {
-        val markerObjects = mutableMapOf<String, Marker>()
+        val markerObjects = mutableMapOf<String, Pair<Marker, String?>>()
         for (marker in markers) {
             val markerObject = mapMarker(marker, result) ?: return
-            markerObjects[marker.id] = markerObject
+            markerObjects[marker.id] = Pair(markerObject, manager?.id)
         }
 
         mapObjectsExecutorService.submit {
             this.markers.putAll(markerObjects)
             if (manager != null && managers[manager.id] != null) {
-                managers[manager.id]!!.addObjects(markerObjects.values.toList())
+                managers[manager.id]!!.addObjects(markerObjects.values.map { it.first }.toList())
             } else {
-                mapObjectManager.addObjects(markerObjects.values.toList())
+                mapObjectManager.addObjects(markerObjects.values.map { it.first }.toList())
             }
             result?.success(null)
         }
@@ -240,9 +239,9 @@ class ObjectTapHandler(
         mapObjectsExecutorService.submit {
             markers.remove(id)?.also {
                 if (manager != null && managers[manager.id] != null) {
-                    managers[manager.id]!!.removeObject(it)
+                    managers[manager.id]!!.removeObject(it.first)
                 } else {
-                    mapObjectManager.removeObject(it)
+                    mapObjectManager.removeObject(it.first)
                 }
             }
             result?.success(null)
@@ -266,6 +265,20 @@ class ObjectTapHandler(
                 manager = managerMessage
             ),
         )
+
+        mapObjectsExecutorService.submit {
+            this.managers[managerId] = manager
+            result?.success(managerMessage)
+        }
+    }
+
+    fun createMapObjectManager(result: Result<MapObjectManagerMessage>?) {
+        val managerId = UUID.randomUUID().toString()
+        val managerMessage = MapObjectManagerMessage.Builder()
+                .setId(managerId)
+                .build()
+
+        val manager = MapObjectManager(map = this.map)
 
         mapObjectsExecutorService.submit {
             this.managers[managerId] = manager
@@ -463,11 +476,12 @@ class ObjectTapHandler(
     fun removeAllMarkers(manager: MapObjectManagerMessage?) {
         mapObjectsExecutorService.submit {
             if (manager != null && managers[manager.id] != null) {
-                managers[manager.id]!!.removeObjects(markers.values.toList())
+                managers[manager.id]!!.removeAll()
+                markers = markers.filter { it.value.second == manager.id }.toMutableMap()
             } else {
-                mapObjectManager.removeObjects(markers.values.toList())
+                mapObjectManager.removeAll()
+                markers.clear()
             }
-            markers.clear()
         }
     }
 
@@ -597,7 +611,7 @@ class ObjectTapHandler(
         result: Result<CameraPositionMessage>?
     ) {
         calcPositionForObjects(
-            objects =  markers.mapNotNull { this.markers[it] },
+            objects =  markers.mapNotNull { this.markers[it]?.first },
             options = options,
             result = result
         )

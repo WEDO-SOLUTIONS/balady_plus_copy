@@ -1,7 +1,7 @@
-import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' show runApp;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizedApp;
+import 'package:mapness/entry_point.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import './app/core/utils/utils_exports.dart' show EnvType;
@@ -11,17 +11,11 @@ import 'app/core/dependency_injection/injection_container.dart';
 
 void main() async {
   await AppEnv.setupEnv(EnvType.prod);
-  await initialiseDGis(
-    logOptions: LogOptionsMessage(
-      systemLevel: LogLevelMessage.off,
-      customLevel: LogLevelMessage.off,
-      customSink: "BaladyDGis",
-    ),
-  );
+  await setupMapness();
   await SentryFlutter.init(
     (options) {
       options.dsn =
-          'https://c9e9c70957e4433e99fb6be6fc1cafc8@sentry.42.solutions/24';
+          'https://50b0a8db4073d7769253664cf62c123f@o4506314696163329.ingest.sentry.io/4506351858417664';
       // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
       // We recommend adjusting this value in production.
       options.tracesSampleRate = 1.0;
@@ -32,10 +26,16 @@ void main() async {
       options.captureFailedRequests = true;
       options.environment = sl<EnvType>().name;
     },
-    appRunner: () => runApp(SentryScreenshotWidget(
+    appRunner: () => runApp(
+      SentryScreenshotWidget(
         child: SentryUserInteractionWidget(
-            child: LocalizedApp(child: const App())))),
+          child: const MapnessProviderScope(
+            child: LocalizedApp(
+              child: App(),
+            ),
+          ),
+        ),
+      ),
+    ),
   );
-
-  ;
 }

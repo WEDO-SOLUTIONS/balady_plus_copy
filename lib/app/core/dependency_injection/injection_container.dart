@@ -1,9 +1,12 @@
-import 'package:balady_plus/app/core/dependency_injection/features/commercials_tobacco_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/old_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/dc_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/profile/crm_requests_injection.dart';
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_bloc.dart';
-import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart';
+import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart'
+    as calendar;
+import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
+import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart'
+    as events;
 import 'package:balady_plus/app/features/unknow/data/data_sources/remote_data_source.dart';
 import 'package:balady_plus/app/features/weather/weather_exports.dart'
     show
@@ -28,16 +31,14 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart'
 import 'package:get_it/get_it.dart' show GetIt;
 import 'package:internet_connection_checker/internet_connection_checker.dart'
     show InternetConnectionChecker;
-
+import 'package:balady_plus/app/core/dependency_injection/features/commercials_tobacco_injection.dart';
 import '../../features/_shared_feature_/balady_features/services/services.dart';
+
 import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, DropDownItem, FileInfo;
 import '../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
-import '../../features/events/presentation/bloc/events_bloc.dart';
-import '../../features/events/presentation/bloc/events_event.dart' as events;
-
 import '../../features/force_update/presentation/core/force_update_view_model.dart';
 import '../../features/location/presentation/bloc/location_bloc.dart';
 import '../../features/map_page/data/repositories/layers_repositories.dart';
@@ -126,9 +127,9 @@ void initialize() {
 
   //? Posters Guide
   CommercialsPostersInjection.init();
-
   CommercialsPermits24Injection.init();
   CommercialsTobaccoInjection.init();
+
 //? Objections
   ObjectionsInjection.init();
 //? Objectable Transactions
@@ -149,7 +150,6 @@ void initialize() {
   EventsInjection.init();
 
   CalendarInjection.init();
-
   //? Ekram
   EkramInjection.init();
 
@@ -193,8 +193,12 @@ void initialize() {
   sl.registerLazySingleton(() => const DeviceDetails());
   sl.registerLazySingleton(() => const PackageDetails());
   sl.registerLazySingleton(() => LocationCubit());
-  sl.registerLazySingleton(() => CalendarBloc()..add(GetSearchEvent()));
-  sl.registerLazySingleton(() => EventsBloc()..add(events.GetSearchEvent()));
+  sl.registerLazySingleton(
+    () => CalendarBloc()..add(const calendar.GetSearchEvent()),
+  );
+  sl.registerLazySingleton(
+    () => EventsBloc()..add(const events.GetSearchEvent()),
+  );
 
   //! External
   sl.registerLazySingleton(() => const FlutterSecureStorage());

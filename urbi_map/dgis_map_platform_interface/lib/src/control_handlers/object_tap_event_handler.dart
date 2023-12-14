@@ -6,6 +6,13 @@ typedef void OnObjectTap();
 typedef SimpleClusterOptionsMessage ClusterRenderer(int objectCount);
 typedef Future<void> OnClusterTap(SimpleClusterObject clusterObject);
 
+class TapIdPair {
+  TapIdPair(this.tap, this.id);
+
+  final OnObjectTap tap;
+  final String? id;
+}
+
 class ObjectTapEventHandler {
   ObjectTapEventHandler();
 
@@ -13,14 +20,14 @@ class ObjectTapEventHandler {
 
   final _objectTapController = StreamController<TapEvent>.broadcast();
 
-  final Map<String, OnObjectTap> markerHandlers = {};
+  final Map<String, TapIdPair> markerHandlers = {};
   final Map<String, OnObjectTap> polygonHandlers = {};
   final Map<String, OnObjectTap> polylineHandlers = {};
   final Map<String, ClusterRenderer> clusterRenderers = {};
   final Map<String, OnClusterTap> clusterHandlers = {};
 
-  void addMarkerHandler(String id, OnObjectTap onTap) {
-    markerHandlers[id] = onTap;
+  void addMarkerHandler(String id, OnObjectTap onTap, String? managerId) {
+    markerHandlers[id] = TapIdPair(onTap, managerId);
   }
 
   void removeMarkerHandler(String id) {
@@ -83,12 +90,12 @@ class ObjectTapEventHandler {
     await clusterHandlers[id]?.call(clusterObject);
   }
 
-  void removeAllMarkerHandlers() {
-    markerHandlers.clear();
+  void removeAllMarkerHandlers(String? managerId) {
+    markerHandlers.removeWhere((key, value) => value.id == managerId);
   }
 
   void markerTapEvent(Map<dynamic, dynamic> map) {
-    markerHandlers[map["id"]]?.call();
+    markerHandlers[map["id"]]?.tap.call();
   }
 
   void addPolygonHandler(String id, OnObjectTap onTap) {

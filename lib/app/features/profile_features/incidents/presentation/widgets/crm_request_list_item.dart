@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:balady_plus/app/features/profile_features/requests/domain/entities/crm_request_item.dart';
 import 'package:flutter/material.dart';
@@ -91,32 +92,32 @@ class CRMRequestsListItem extends StatelessWidget {
                   details: request, type: request.getRequestType());
               switch (request.getRequestType()) {
                 case RequestsType.INC:
-                  Navigator.pushNamed(context, RouteName.IncidentDetails,
-                      arguments: params);
+                  NavigationService.navigatorKey.currentState!
+                      .pushNamed(RouteName.IncidentDetails, arguments: params);
                   break;
                 case RequestsType.DC:
-                  Navigator.pushNamed(context, RouteName.DCDetails,
-                      arguments: params);
+                  NavigationService.navigatorKey.currentState!
+                      .pushNamed(RouteName.DCDetails, arguments: params);
                   break;
                 case RequestsType.VHR:
-                  Navigator.pushNamed(context, RouteName.VHRDetails,
-                      arguments: params);
+                  NavigationService.navigatorKey.currentState!
+                      .pushNamed(RouteName.VHRDetails, arguments: params);
                   break;
                 case RequestsType.INQ:
-                  Navigator.pushNamed(context, RouteName.InqDetails,
-                      arguments: params);
+                  NavigationService.navigatorKey.currentState!
+                      .pushNamed(RouteName.InqDetails, arguments: params);
                   break;
                 case RequestsType.REQ:
-                  Navigator.pushNamed(context, RouteName.ReqDetails,
-                      arguments: params);
+                  NavigationService.navigatorKey.currentState!
+                      .pushNamed(RouteName.ReqDetails, arguments: params);
                   break;
                 case RequestsType.TSR:
-                  Navigator.pushNamed(context, RouteName.DaemDetails,
-                      arguments: params);
+                  NavigationService.navigatorKey.currentState!
+                      .pushNamed(RouteName.DaemDetails, arguments: params);
                   break;
                 case RequestsType.MUN:
-                  Navigator.pushNamed(context, RouteName.DCDetails,
-                      arguments: params);
+                  NavigationService.navigatorKey.currentState!
+                      .pushNamed(RouteName.DCDetails, arguments: params);
                   break;
               }
             },

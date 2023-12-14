@@ -447,6 +447,33 @@ class MarkerOptionsMessageOld {
   final double iconWidth;
 }
 
+enum RouteSearchOptionsMessage {
+  car,
+  publicTransport,
+  bicycle,
+  pedestrian,
+  scooter,
+  truck,
+  taxi
+}
+
+class RouteEditorRouteParamsMessage {
+  RouteEditorRouteParamsMessage(
+    this.startPoint,
+    this.finishPoint,
+    // TODO: not yet supported
+    // this.intermediatePoints,
+    this.options,
+  );
+
+  final GeoPointMessage? startPoint;
+  final GeoPointMessage? finishPoint;
+
+  // TODO: not yet supported
+  // final List<RouteSearchPointMessage> intermediatePoints;
+  final RouteSearchOptionsMessage options;
+}
+
 enum DesiredAccuracyMessage { low, medium, high }
 
 class MarkerWithPhotoMessage {
@@ -583,6 +610,7 @@ class MarkerOptionsMessage {
     this.anchor,
     required this.text,
     this.textStyle,
+    this.animatedAppearance,
   });
 
   final GeoPointWithElevationMessage position;
@@ -590,6 +618,7 @@ class MarkerOptionsMessage {
   final MarkerAnchorMessage? anchor;
   final String? text;
   final MarkerTextStyleMessage? textStyle;
+  final bool? animatedAppearance;
 }
 
 class MarkerMessage {
@@ -833,6 +862,9 @@ enum SearchCategoryMessage {
   schools,
   pharmacies,
   dentalCenters,
+  hotels,
+  beautyCenters,
+  recreationCenters
 }
 
 class SearchCategoryMessage_ {
@@ -889,6 +921,81 @@ class LogOptionsMessage {
   final LogLevelMessage systemLevel;
   final LogLevelMessage customLevel;
   final String? customSink;
+}
+
+class RouteSearchPointMessage {
+  RouteSearchPointMessage(
+      this.coordinates, this.course, this.objectId, this.levelId);
+  final GeoPointMessage coordinates;
+  final BearingMessage? course;
+  final DgisObjectIdMessage objectId;
+  final LevelIdMessage? levelId;
+}
+
+class LevelIdMessage {
+  LevelIdMessage(this.value);
+  final int value;
+}
+
+class BearingMessage {
+  BearingMessage(this.value);
+  final double value;
+}
+
+class BriefRouteInfoMessage {
+  BriefRouteInfoMessage(this.duration, this.extraInfo);
+
+  final double duration;
+  final BriefExtraRouteInfoMessage extraInfo;
+}
+
+class PackageMessage {
+  PackageMessage(this.id, this.info);
+
+  final String id;
+  final PackageInfoMessage info;
+}
+
+class PackageInfoMessage {
+  PackageInfoMessage(this.name, this.installed, this.incomplete,
+      this.preinstalled, this.compatible, this.hasUpdate, this.updateStatus);
+
+  final String name;
+  final bool installed;
+  final bool incomplete;
+  final bool preinstalled;
+  final bool compatible;
+  final bool hasUpdate;
+  final PackageUpdateStatusMessage updateStatus;
+}
+
+enum PackageUpdateStatusMessage { notAvailable, inProgress, paused }
+
+enum BriefExtraRouteInfoMessage {
+  bicycle,
+  car,
+  pedestrian,
+  publicTransport,
+  scooter,
+}
+
+enum WeatherMapType {
+  temperature,
+  precipitation,
+}
+
+class WeatherMapMessage {
+  WeatherMapMessage({
+    this.type,
+    required this.layerName,
+    required this.rasterTileUri,
+    required this.enabled,
+  });
+  final WeatherMapType? type;
+  final String? layerName;
+  final String? rasterTileUri;
+  final bool enabled;
+
 }
 
 @ConfigurePigeon(
@@ -996,6 +1103,16 @@ abstract class MapApi {
   );
 
   @async
+  SearchResultMessage searchByRubrics(
+    List<int> rubrics,
+    List<GeoPointMessage>? spatialRestriction,
+    WeekTimeSearchMessage? weekTime,
+    GeoRectMessage? searchRect,
+    SortingTypeMessage sortingType,
+    int pageSize,
+  );
+
+  @async
   PageMessage fetchPrevPage(PageIdMessage pageId);
 
   @async
@@ -1033,6 +1150,9 @@ abstract class MapApi {
   MapObjectManagerMessage createMapObjectManagerWithClustering(
     ClusteringMapObjectManagerOptionsMessage message,
   );
+
+  @async
+  MapObjectManagerMessage createMapObjectManager();
 
   @async
   void removeMapObjectManager(MapObjectManagerMessage id);
@@ -1116,7 +1236,34 @@ abstract class MapApi {
   bool containsRect(GeoRectMessage outer, GeoRectMessage inner);
 
   @async
+  double pointBearing(GeoPointMessage from, GeoPointMessage to);
+
+  @async
+  void setRouteParams(RouteEditorRouteParamsMessage params);
+
+  @async
+  void hideRoutes();
+
+  @async
+  void startNavigation();
+
+  @async
+  void startNavigationSimulation();
+
+  @async
+  void stopNavigation();
+
+  @async
   void setPanoramaMarkerAzimuth(MarkerAzimuthMessage message);
+
+  @async
+  void onCompassClicked();
+
+  @async
+  void setPublicTransportActiveRoute(int routeIndex);
+
+  @async
+  void toggleSound();
 
   @async
   void onTrafficAndParkingAttached();
@@ -1135,6 +1282,40 @@ abstract class MapApi {
 
   @async
   void setZoomRestrictions(double? min, double? max);
+
+  @async
+  void startFreeRoam();
+
+  @async
+  void stopFreeRoam();
+
+  @async
+  void setCameraPadding(CameraSetPaddingMessage cameraPadding);
+
+  @async
+  List<BriefRouteInfoMessage?> findBriefRouteInfos(
+    RouteSearchOptionsMessage routeSearchOptions,
+    RouteSearchPointMessage? startPoint,
+    RouteSearchPointMessage? finishPoint,
+  );
+
+  @async
+  List<PackageMessage?> listPackages();
+
+  @async
+  List<PackageMessage?> listVoices();
+
+  @async
+  void installPackage(String id);
+
+  @async
+  void installVoice(String id);
+
+  @async
+  void setNavigatorVoice(String id);
+
+  @async
+  bool toggleHeatmap(WeatherMapMessage message);
 }
 
 @FlutterApi()

@@ -2,6 +2,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' show runApp;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizedApp;
+import 'package:mapness/entry_point.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import './app/core/utils/utils_exports.dart' show EnvType;
@@ -11,13 +12,9 @@ import 'app/core/dependency_injection/injection_container.dart';
 
 void main() async {
   await AppEnv.setupEnv(EnvType.stg);
-  await initialiseDGis(
-    logOptions: LogOptionsMessage(
-      systemLevel: LogLevelMessage.off,
-      customLevel: LogLevelMessage.off,
-      customSink: "BaladyDGis",
-    ),
-  );
+
+  await setupMapness();
+
   await SentryFlutter.init(
     (options) {
       options.dsn =
@@ -32,6 +29,7 @@ void main() async {
       options.captureFailedRequests = true;
       options.environment = sl<EnvType>().name;
     },
-    appRunner: () => runApp(LocalizedApp(child: const App())),
+    appRunner: () =>
+        runApp(const MapnessProviderScope(child: LocalizedApp(child: App()))),
   );
 }

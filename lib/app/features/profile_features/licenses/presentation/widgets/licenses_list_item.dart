@@ -117,8 +117,7 @@ class LicensesListItem extends StatelessWidget {
                         isPrintable: false));
               }
             } else if (license.requestMainTypeId == "1003") {
-              Navigator.pushNamed(
-                context,
+              NavigationService.navigatorKey.currentState!.pushNamed(
                 RouteName.commercialLicenseDetails,
                 arguments: CommercialLicenseDetailsCubit(
                   GetCommercialLicenseDetails(

@@ -1,0 +1,690 @@
+import 'app_localizations.dart';
+
+/// The translations for Arabic (`ar`).
+class AppLocalizationsAr extends AppLocalizations {
+  AppLocalizationsAr([String locale = 'ar']) : super(locale);
+
+  @override
+  String get aboutApp => 'حول التطبيق';
+
+  @override
+  String get addAddress => 'إضافة عنوان';
+
+  @override
+  String get additionalServices => 'خدمات إضافية';
+
+  @override
+  String get am => 'صباحًا';
+
+  @override
+  String get arabicFullName => 'الاسم الكامل باللغة العربية';
+
+  @override
+  String get areYouSureYouWantToDeleteAllFavorites => 'هل أنت متأكد أنك تريد حذف كافة المفضلة؟';
+
+  @override
+  String get areYouSureYouWantToLogOutOfYourAccount => 'هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟';
+
+  @override
+  String get arrival => 'الوصول';
+
+  @override
+  String get best => 'أفضل';
+
+  @override
+  String get bicycleParking => 'موقف الدراجات الهوائية';
+
+  @override
+  String get branches => 'الفروع';
+
+  @override
+  String get buildings => 'المباني';
+
+  @override
+  String get business => 'عمل';
+
+  @override
+  String get call => 'اتصال';
+
+  @override
+  String get calories => 'السعرات الحرارية';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get challenge => 'تحدي';
+
+  @override
+  String get clean => 'تنظيف';
+
+  @override
+  String get closedUntill => 'مغلق حتى';
+
+  @override
+  String get closesIn => 'يغلق في ';
+
+  @override
+  String get comfort => 'راحة';
+
+  @override
+  String get commercialLicenseNumber => ' رقم الرخصة التجارية';
+
+  @override
+  String get compilanceBuildings => 'مباني الامتثال';
+
+  @override
+  String get complete => 'مكتمل';
+
+  @override
+  String get completeTheTrip => 'أكمل الرحلة';
+
+  @override
+  String get completed => 'مكتمل';
+
+  @override
+  String get connectToMomrah => 'تواصل مع مومراه';
+
+  @override
+  String get connectionLost => 'فقد الاتصال';
+
+  @override
+  String get continueRide => 'متابعة الرحلة';
+
+  @override
+  String get continueTrip => 'متابعة الرحلة';
+
+  @override
+  String get contributedToImproving => 'ساهم في تحسين المشهد الحضري';
+
+  @override
+  String get coordinates => 'الإحداثيات';
+
+  @override
+  String get daily => 'يوميًا';
+
+  @override
+  String get darkMap => 'خريطة داكنة';
+
+  @override
+  String get darkMode => 'الوضع الداكن';
+
+  @override
+  String get dateOfBirth => 'تاريخ الميلاد';
+
+  @override
+  String get daysAgo => 'منذ %d يوم';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get deleteAll => 'حذف الكل';
+
+  @override
+  String get deleteHistory => 'حذف السجلّ';
+
+  @override
+  String get dentalCenters => 'مراكز طب الأسنان';
+
+  @override
+  String get describeInMoreDetails => 'وصف بمزيد من التفاصيل';
+
+  @override
+  String get didNotMatchAnyResults => 'لم يتطابق مع أية نتائج.';
+
+  @override
+  String get done => 'تم';
+
+  @override
+  String get droneView => 'عرض طائرة بدون طيار';
+
+  @override
+  String get edit => 'تعديل';
+
+  @override
+  String get email => 'البريد الإلكتروني';
+
+  @override
+  String get employmentType => 'نوع الوظيفة';
+
+  @override
+  String get endTrip => 'إنهاء الرحلة';
+
+  @override
+  String get englishFullName => 'الاسم الكامل باللغة الانجليزية';
+
+  @override
+  String get events => 'الفعاليات';
+
+  @override
+  String get exits => 'مخارج';
+
+  @override
+  String get explore => 'استكشف';
+
+  @override
+  String get favorites => 'المفضلة';
+
+  @override
+  String get favourites => 'المفضلة';
+
+  @override
+  String get fencingVacantLands => 'تسوير الأراضي الشاغرة';
+
+  @override
+  String get findAJob => 'العثور على وظيفة';
+
+  @override
+  String get findInFavorites => 'البحث في المفضلة';
+
+  @override
+  String get findJob => 'العثور على وظيفة';
+
+  @override
+  String get firstName => 'الاسم الاول';
+
+  @override
+  String get floor => 'الطابق';
+
+  @override
+  String get focusOnTheRoad => 'ركِّز في الطريق';
+
+  @override
+  String get from => 'من';
+
+  @override
+  String get gasStations => 'محطات الوقود';
+
+  @override
+  String get gates => 'بوابات';
+
+  @override
+  String get go => 'ذهاب';
+
+  @override
+  String get goodAfternoon => 'مساء الخير';
+
+  @override
+  String get goodEvening => 'مساء الخير';
+
+  @override
+  String get goodMorning => 'صباح الخير';
+
+  @override
+  String get home => 'المنزل';
+
+  @override
+  String get horseRacing => 'سباق الخيل';
+
+  @override
+  String get hospitals => 'المستشفيات';
+
+  @override
+  String get hrs => 'ساعة';
+
+  @override
+  String get importantEvents => 'أحداث مهمة';
+
+  @override
+  String get inNovember => 'في نوفمبر';
+
+  @override
+  String get includingTrafficJams => 'بما في ذلك زحمة السير';
+
+  @override
+  String get infantRoom => 'غرفة الرضع';
+
+  @override
+  String get info => 'معلومات';
+
+  @override
+  String get interestingForYou => 'مثيرة للاهتمام بالنسبة لك';
+
+  @override
+  String get invalid => 'غير صالح';
+
+  @override
+  String get investmentOpportunities => 'فرص الاستثمار';
+
+  @override
+  String get iwish => 'أتمنى';
+
+  @override
+  String get jobDescription => 'وصف الوظيفة';
+
+  @override
+  String get jobDetails => 'تفاصيل الوظيفة';
+
+  @override
+  String get jobVacancy => 'وظيفة شاغرة';
+
+  @override
+  String get jobs => 'وظائف';
+
+  @override
+  String get jobsAraundYou => 'وظائف حولك';
+
+  @override
+  String get joyParks => 'حدائق بهجة';
+
+  @override
+  String get km => 'كم';
+
+  @override
+  String get language => 'اللغة';
+
+  @override
+  String get languageTitle => 'الإنجليزية';
+
+  @override
+  String get lastName => 'اسم العائلة';
+
+  @override
+  String get layersOnTheMap => 'الطبقات على الخريطة';
+
+  @override
+  String get lightning => 'برق';
+
+  @override
+  String get loading => 'جارٍ التحميل…';
+
+  @override
+  String get logOut => 'تسجيل الخروج';
+
+  @override
+  String get loginToAccess => 'تسجيل الدخول للوصول الى';
+
+  @override
+  String get lookForUsefulPlacesCafesMallsForExampleMallNearby => 'ابحث عن الأماكن والمقاهي ومراكز التسوق المفيدة على سبيل المثال: مول قريب';
+
+  @override
+  String get mallNearby => 'مركز تجاري قريب';
+
+  @override
+  String get maneuvers => 'مناورات';
+
+  @override
+  String get maneuversAreOff => 'المناورات متوقفة';
+
+  @override
+  String get maneuversIncluded => 'المناورات شاملة';
+
+  @override
+  String get mapLayerCar => 'سيارة';
+
+  @override
+  String get mapLayerMetro => 'مترو';
+
+  @override
+  String get mapLayerMonorail => 'السكة المفردة';
+
+  @override
+  String get mapLayerParking => 'موقف';
+
+  @override
+  String get mapLayerTransport => 'المواصلات';
+
+  @override
+  String get menu => 'قائمة';
+
+  @override
+  String get meter => 'م';
+
+  @override
+  String get meters => 'متر';
+
+  @override
+  String get min => 'دقيقة';
+
+  @override
+  String get minutes => 'دقائق';
+
+  @override
+  String get mosques => 'المساجد';
+
+  @override
+  String get myChallenge => 'التحدي الخاص بي';
+
+  @override
+  String get myLocation => 'موقعي';
+
+  @override
+  String get nationality => 'الجنسية';
+
+  @override
+  String get nav_general => 'استكشف';
+
+  @override
+  String get nav_landing => 'الخدمات';
+
+  @override
+  String get nav_profile => 'الحساب';
+
+  @override
+  String get nav_route => 'طريق';
+
+  @override
+  String get next => 'التالي';
+
+  @override
+  String get open24Hours => 'مفتوح على مدار 24 ساعة';
+
+  @override
+  String get openIn => 'يفتح في ';
+
+  @override
+  String get openUntil => 'مفتوح حتى';
+
+  @override
+  String get openUntill => 'مفتوح حتى';
+
+  @override
+  String get parking => 'موقف';
+
+  @override
+  String get parkingSpaces => 'أماكن وقوف السيارات';
+
+  @override
+  String get parks => 'الحدائق';
+
+  @override
+  String get personalData => 'البيانات الشخصية';
+
+  @override
+  String get pharmacies => 'الصيدليات';
+
+  @override
+  String get photoAndVideo => 'صور وارسل';
+
+  @override
+  String get photos => 'الصور';
+
+  @override
+  String get placesToShop => 'أماكن للتسوق';
+
+  @override
+  String get placesToVisit => 'أماكن للزيارة';
+
+  @override
+  String get planned => 'مخطط';
+
+  @override
+  String get playground => 'ملعب';
+
+  @override
+  String get pleaseRestartApplicationForTheNewSettingsToTakeEffect => 'يرجى إعادة تشغيل التطبيق حتى تصبح الإعدادات الجديدة سارية المفعول.';
+
+  @override
+  String get pleaseTryAgainLater => 'الرجاء معاودة المحاولة في وقت لاحق';
+
+  @override
+  String get pm => 'مساء';
+
+  @override
+  String get poi_boulevard_riyadh_city => 'بوليفارد مدينة الرياض';
+
+  @override
+  String get poi_edge_of_the_world => 'حافة العالم';
+
+  @override
+  String get poi_faisaliya_tower => ' برج الفيصلية';
+
+  @override
+  String get poi_kingdom_center => 'مركز المملكة';
+
+  @override
+  String get poi_masmak_fortress => 'قصر المصمك';
+
+  @override
+  String get prayerTime => 'وقت الصلاة';
+
+  @override
+  String get presentTime => 'الوقت الحالي';
+
+  @override
+  String get profile => 'الملف الشخصي';
+
+  @override
+  String get published => 'تم النشر';
+
+  @override
+  String get ready => 'مستعد';
+
+  @override
+  String get refresh => 'إعادة تحميل';
+
+  @override
+  String get registerForOpportunities => 'سجل للحصول على الفرص';
+
+  @override
+  String get reload => 'إعادة تحميل';
+
+  @override
+  String get remainingTimeForPrayer => 'الوقت المتبقي للصلاة';
+
+  @override
+  String get restArea => 'منطقة الراحة';
+
+  @override
+  String get restroom => 'دورة مياة';
+
+  @override
+  String get route => 'طريق';
+
+  @override
+  String get route1description => 'بعض المزايا والحيل لميزة التنقل الذكي...';
+
+  @override
+  String get route2description => 'يقترح التنقل الذكي ما يصل إلى ثلاثة طرق بالنظر إلى حالة المرور الحالية. سيذكرك أيضا بالطرق البديلة عند مفترق الطرق';
+
+  @override
+  String get route3description => 'سيبقيك المساعد الصوتي على اطلاع طوال رحلتك';
+
+  @override
+  String get sahm => 'ساهم';
+
+  @override
+  String get schools => 'المدارس';
+
+  @override
+  String get search => 'بحث';
+
+  @override
+  String get seating => 'الجلوس';
+
+  @override
+  String get sec => 'ثانية';
+
+  @override
+  String get selectYourStartingAndDestinationPointsAndWeWillShowYouConvenientRoutes => 'حدد نقاط البداية والوجهة الخاصة بك ، وسنعرض لك طرقًا ملائمة';
+
+  @override
+  String get sendAWish => 'أرسل أمنية';
+
+  @override
+  String get sendFeedback => 'ارسل رأيك';
+
+  @override
+  String get sendYourWishes => 'أرسل رغباتك';
+
+  @override
+  String get sending => 'جارِ الإرسال...';
+
+  @override
+  String get services => 'الخدمات';
+
+  @override
+  String get settings => 'الإعدادات';
+
+  @override
+  String get share => 'مشاركة';
+
+  @override
+  String get shareChallengeWithUs => 'شاركنا التحدي. ساهم في مكافحة التلوث البصري في مدينتك';
+
+  @override
+  String get shareFeedback => 'مشاركة الملاحظات';
+
+  @override
+  String get shareYourFeedback => 'شارك ملاحظاتك';
+
+  @override
+  String get shareYourFeelings => 'شارك مشاعرك';
+
+  @override
+  String get shareYourFeelingsAboutPark => 'شارك مشاعرك حول الحديقة';
+
+  @override
+  String get shortest => 'الأقصر';
+
+  @override
+  String get showFavoritesOnMap => 'عرض المفضلة على الخريطة';
+
+  @override
+  String get showLess => 'إظهار أقل';
+
+  @override
+  String get showMore => 'إظهار المزيد';
+
+  @override
+  String get signIn => 'تسجيل الدخول';
+
+  @override
+  String get signInToUnlock => 'قم بتسجيل الدخول لتصفح الإمكانات الكاملة لتطبيق بلدي';
+
+  @override
+  String get signInToUnlockTheFullPotentialOfTheBaladyApp => 'قم بتسجيل الدخول لفتح الإمكانيات الكاملة لتطبيق بلدي';
+
+  @override
+  String get skills => 'المهارات';
+
+  @override
+  String get snap_and_send => 'التقط وأرسل';
+
+  @override
+  String get somethingWentWrong => 'حدث خطأ';
+
+  @override
+  String get somethingWentWrongPleaseTryAgainLater => 'حدث خطأ ما يرجى المحاولة مرة أخرى لاحقًا';
+
+  @override
+  String get sorryRouteNotFound => 'عذرا، لم يتم العثور على الطريق';
+
+  @override
+  String get soundSettings => 'إعدادات الصوت';
+
+  @override
+  String get specifyOnTheMap => 'حدد على الخريطة';
+
+  @override
+  String get sportsGround => 'الملاعب الرياضية';
+
+  @override
+  String get stairs => 'سلالم';
+
+  @override
+  String get start => 'بدء';
+
+  @override
+  String get steps => 'خطوات';
+
+  @override
+  String get streets => 'الشوارع';
+
+  @override
+  String get tellUsWhatYouWant => 'أخبرنا ماذا تريد...';
+
+  @override
+  String get temporarilyNotWorking => 'لا يعمل مؤقتًا';
+
+  @override
+  String get thanksForYourFeedback => 'شكرًا لملاحظاتك';
+
+  @override
+  String get theShortestRoute => 'أقصر طريق ';
+
+  @override
+  String get theTripTook => 'استغرقت الرحلة';
+
+  @override
+  String get tinId => 'رقم هوية دافع الضرائب';
+
+  @override
+  String get to => 'إلى';
+
+  @override
+  String get toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon => 'لحفظ الأماكن كمفضلة، افتح البطاقة وانقر على أيقونة الإشارة المرجعية';
+
+  @override
+  String get today => 'اليوم';
+
+  @override
+  String get todayIsADayOff => 'اليوم هو يوم عطلة';
+
+  @override
+  String get tryAgain => 'حاول مرة أخرى';
+
+  @override
+  String get twentyFourSeven => '24/7';
+
+  @override
+  String get unknown => 'غير معروف';
+
+  @override
+  String get vacancies => 'الشواغر';
+
+  @override
+  String get viewingARoute => 'عرض الطريق';
+
+  @override
+  String get visualAesthetic => 'الجمالية البصرية';
+
+  @override
+  String get voteWhatDoYouWantToHaveInThePark => 'صوّت على ماذا تريد أن يكون في الحديقة؟';
+
+  @override
+  String get watchMore => 'مشاهدة المزيد';
+
+  @override
+  String get weCouldntFindAnythingTryChangingYourRequest => 'لم نتمكن من العثور على شيء. حاول تغيير طلبك';
+
+  @override
+  String get weekend => 'نهاية الأسبوع';
+
+  @override
+  String get whatCanTheNavigatorDo => 'ماذا يمكن أن يفعل التنقل الذكي ؟';
+
+  @override
+  String get wishesSent => 'تم إرسال الأمنيات';
+
+  @override
+  String get work => 'عمل';
+
+  @override
+  String get workHours => 'ساعات العمل';
+
+  @override
+  String get worldHealthExpo => 'معرض الصحة العالمية 2023';
+
+  @override
+  String get yesterday => 'أمس';
+
+  @override
+  String get youArrived => 'لقد وصلت';
+
+  @override
+  String get youReHere => 'أنت هنا!';
+
+  @override
+  String get youSearch => 'انت تبحث';
+
+  @override
+  String get deliveryAvailable => 'التسليم متاح';
+
+  @override
+  String get accessibility => 'إمكانية الوصول';
+
+  @override
+  String get motorVisual => 'الموتور، بصري';
+}

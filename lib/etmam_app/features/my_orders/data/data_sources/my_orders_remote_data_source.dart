@@ -92,7 +92,9 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
       } catch (ex) {}
 
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, errorCode: errorCode);
+          statusCode: error.response?.statusCode,
+          errorCode: errorCode,
+          dioError: error);
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -139,7 +141,7 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -175,7 +177,7 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -212,7 +214,7 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -252,7 +254,7 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -302,7 +304,9 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
       } catch (ex) {}
 
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, errorCode: errorCode);
+          statusCode: error.response?.statusCode,
+          errorCode: errorCode,
+          dioError: error);
     } catch (ex) {
       print(ex);
       if (ex is ServerException)
@@ -342,7 +346,7 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       if (ex is ServerException)
         throw ex;

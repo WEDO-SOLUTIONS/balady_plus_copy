@@ -1,0 +1,79 @@
+import 'package:dgis_map/library.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'camera_position.g.dart';
+
+@riverpod
+class CameraPosition extends _$CameraPosition {
+  @override
+  CameraPositionMessage? build() {
+    final dgisController = ref.watch(dgisControllerProvider);
+    final cameraPositionSubscription = dgisController
+        .value?.cameraPositionEvents
+        .listen(_cameraPositionListener);
+    ref.onDispose(
+      () {
+        cameraPositionSubscription?.cancel();
+      },
+    );
+
+    return null;
+  }
+
+  Future<void> animateTo(CameraPositionMessage position) async {
+    final dgisController = ref.read(dgisControllerProvider);
+
+    await dgisController.value?.moveCamera(
+      position,
+      0.3,
+      CameraAnimationTypeMessage.linear,
+    );
+  }
+
+  Future<void> animateToMarkers(
+    List<Marker> markers, {
+    CalcPositionOptionsMessage? options,
+  }) async {
+    final dgisController = ref.read(dgisControllerProvider);
+
+    final position = await dgisController.value!.calcPositionForMarkers(
+      markers.map((e) => e.id).toList(),
+      options ?? CalcPositionOptionsMessage(),
+    );
+
+    await dgisController.value!.moveCamera(
+      position,
+      0.3,
+      CameraAnimationTypeMessage.linear,
+    );
+  }
+
+  Future<void> animateToPolygons(
+    List<Polygon> polygons, {
+    CalcPositionOptionsMessage? options,
+  }) async {
+    final dgisController = ref.watch(dgisControllerProvider).value;
+
+    final position = await dgisController!.calcPositionForPolygons(
+      polygons.map((e) => e.id).toList(),
+      options ?? CalcPositionOptionsMessage(),
+    );
+
+    await dgisController.moveCamera(
+      position,
+      0.3,
+      CameraAnimationTypeMessage.linear,
+    );
+  }
+
+  Future<void> setPadding(CameraSetPaddingMessage padding) async {
+    final dgisController = ref.read(dgisControllerProvider);
+
+    await dgisController.value!.setCameraPadding(padding);
+  }
+
+  void _cameraPositionListener(CameraPositionMessage event) {
+    state = event;
+  }
+}

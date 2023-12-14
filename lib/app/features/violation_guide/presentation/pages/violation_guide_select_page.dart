@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
@@ -37,7 +38,8 @@ class ViolationGuideSelectPage extends StatelessWidget {
                 color2: AppColor.lightOrange100,
                 logo: IconPath.magicStar,
                 onPressed: () {
-                  Navigator.pushNamed(context, RouteName.violationCreatePage);
+                  NavigationService.navigatorKey.currentState!
+                      .pushNamed(RouteName.violationCreatePage);
                 },
               ),
               /* const SizedBox(

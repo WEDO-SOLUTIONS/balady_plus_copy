@@ -16,6 +16,9 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.schools => "المدارس",
       SearchCategoryMessage.pharmacies => "صيدليات",
       SearchCategoryMessage.dentalCenters => "مراكز الأسنان",
+      SearchCategoryMessage.hotels => "الفنادق والشقق المفروشه",
+      SearchCategoryMessage.beautyCenters => "مراكز التزيين",
+      SearchCategoryMessage.recreationCenters => "الأنشطة الترفيهية",
     };
   }
 
@@ -35,6 +38,12 @@ extension SearchCategoryData on SearchCategoryMessage {
         "assets/maps/icons/school_category_icon.svg",
       SearchCategoryMessage.pharmacies => "assets/maps/icons/pahrmacy_poi.svg",
       SearchCategoryMessage.dentalCenters => "assets/maps/icons/dental_poi.svg",
+      SearchCategoryMessage.hotels =>
+        "assets/maps/icons/school_category_icon.svg",
+      SearchCategoryMessage.beautyCenters =>
+        "assets/maps/icons/school_category_icon.svg",
+      SearchCategoryMessage.recreationCenters =>
+        "assets/maps/icons/school_category_icon.svg",
     };
   }
 
@@ -53,6 +62,10 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.schools => "assets/maps/icons/school_pin.svg",
       SearchCategoryMessage.pharmacies => "assets/maps/icons/pharmacy_pin.svg",
       SearchCategoryMessage.dentalCenters => "assets/maps/icons/dental_pin.svg",
+      SearchCategoryMessage.hotels => "assets/maps/icons/school_pin.svg",
+      SearchCategoryMessage.beautyCenters => "assets/maps/icons/school_pin.svg",
+      SearchCategoryMessage.recreationCenters =>
+        "assets/maps/icons/school_pin.svg",
     };
   }
 
@@ -73,6 +86,11 @@ extension SearchCategoryData on SearchCategoryMessage {
         "assets/maps/icons/card_icon/pharmacy.png",
       SearchCategoryMessage.dentalCenters =>
         "assets/maps/icons/card_icon/dental.png",
+      SearchCategoryMessage.hotels => "assets/maps/icons/card_icon/school.png",
+      SearchCategoryMessage.beautyCenters =>
+        "assets/maps/icons/card_icon/school.png",
+      SearchCategoryMessage.recreationCenters =>
+        "assets/maps/icons/card_icon/school.png",
     };
   }
 
@@ -87,6 +105,9 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.schools => Color(0xff976403),
       SearchCategoryMessage.dentalCenters => Color(0xff036197),
       SearchCategoryMessage.pharmacies => Color(0xff5F9703),
+      SearchCategoryMessage.hotels => Colors.yellow,
+      SearchCategoryMessage.beautyCenters => Colors.amber,
+      SearchCategoryMessage.recreationCenters => Colors.amber,
     };
   }
 }

@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
@@ -27,6 +28,8 @@ class ImtethalMapCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    MapViewModel mapViewModel = context.watch<MapViewModel?>()!;
+
     return Container(
       height: 180,
       width: MediaQuery.of(context).size.width - 30,
@@ -107,8 +110,8 @@ class ImtethalMapCard extends StatelessWidget {
                         fontSize: 13,
                         height: 40,
                         onPressed: () {
-                          Navigator.pushNamed(
-                              context, RouteName.createCompliancePage);
+                          NavigationService.navigatorKey.currentState!
+                              .pushNamed(RouteName.createCompliancePage);
                         }),
                   ),
                   CustomHorizontalSpace(width: 4),

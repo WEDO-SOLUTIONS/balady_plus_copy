@@ -36,7 +36,7 @@ class CancelCertificateFooterWidget extends StatelessWidget {
                 'issueCertificateStartServiceButtonWord',
               ),
               btnTextColor: AppColor.white,
-              btnTextWeight: AppFontWeight.medium,
+              btnTextWeight: FONT_WEIGHT.medium,
             ),
             // CustomVerticalSpace(height: MediaQuery.of(context).padding.bottom),
           ],

@@ -7,7 +7,7 @@
         CustomVerticalSpace,
         DrawLineWidget,
         CustomEnhancedExpansionPanelWidget;
-import 'package:balady_plus/app/features/license_management/license_management_exports.dart';
+import 'package:balady_new_app/app/features/license_management/license_management_exports.dart';
 import 'package:flutter/material.dart';
 
 class BillDetailsWidget extends StatelessWidget {

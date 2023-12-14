@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart' show Bloc;
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizedApp;
+import 'package:mapness/entry_point.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import './app/core/services/services_exports.dart'
@@ -18,13 +19,8 @@ void main() async {
 
   // to observe all blocs movements
   Bloc.observer = SimpleBlocObserver();
-  await initialiseDGis(
-    logOptions: LogOptionsMessage(
-      systemLevel: LogLevelMessage.verbose,
-      customLevel: LogLevelMessage.verbose,
-      customSink: "BaladyDGis",
-    ),
-  );
+
+  await setupMapness();
 
   await SentryFlutter.init(
     (options) {
@@ -40,6 +36,7 @@ void main() async {
       options.captureFailedRequests = true;
       options.environment = sl<EnvType>().name;
     },
-    appRunner: () => runApp(LocalizedApp(child: const App())),
+    appRunner: () =>
+        runApp(const MapnessProviderScope(child: LocalizedApp(child: App()))),
   );
 }

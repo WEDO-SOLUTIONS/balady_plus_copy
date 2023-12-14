@@ -1,6 +1,6 @@
 class GeneralKey {
 //
-  static const String appFontType = 'FrutigerLTArabic';
+  static const String appFontType = 'Frutiger';
   // Default padding
   static const double semiSmallPadding = 8.0;
   static const double smallPadding = 12.0;

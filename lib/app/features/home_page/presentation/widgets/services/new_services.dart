@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -102,8 +103,9 @@ class NewServices extends StatelessWidget {
                               text: "استعرض المخالفات",
                               onPressed: () async {
                                 if (CommonProperties.isLoggedIn) {
-                                  Navigator.pushNamed(context,
-                                      RouteName.objectableTransactions);
+                                  NavigationService.navigatorKey.currentState!
+                                      .pushNamed(
+                                          RouteName.objectableTransactions);
                                 } else {
                                   showDialog(
                                       context: context,
@@ -111,9 +113,9 @@ class NewServices extends StatelessWidget {
                                               onSuccessLogin:
                                                   (bool? isSuccess) async {
                                             if (isSuccess ?? false) {
-                                              Navigator.pushNamed(
-                                                  context,
-                                                  RouteName
+                                              NavigationService
+                                                  .navigatorKey.currentState!
+                                                  .pushNamed(RouteName
                                                       .objectableTransactions);
                                             }
                                           }));

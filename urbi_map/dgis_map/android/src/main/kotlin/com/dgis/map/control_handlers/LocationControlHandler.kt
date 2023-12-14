@@ -3,14 +3,13 @@ package com.dgis.map.control_handlers
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.map.Map
 import ru.dgis.sdk.map.MyLocationControlModel
-import ru.dgis.sdk.map.TransitionType
 
 class LocationControlHandler(
     map: Map,
     eventSink: EventChannel.EventSink,
 ) : AutoCloseable {
 
-    private val model = MyLocationControlModel(map, TransitionType.SMOOTH)
+    private val model = MyLocationControlModel(map)
     private val closables = mutableListOf<AutoCloseable>()
 
     init {

@@ -21,6 +21,10 @@ class DgisMapController {
   Stream<ZoomControlEnabledEvent> get zoomControlEnabledEvents =>
       _instance.zoomControlEnabledEvents;
 
+  // Compass bearing
+  Stream<CompassBearingEvent> get compassBearingEvents =>
+      _instance.compassBearingEvents;
+
   /// Location control availability
   Stream<LocationEnabledEvent> get locationEnabledEvents =>
       _instance.locationEnabledEvents;
@@ -40,6 +44,17 @@ class DgisMapController {
   /// (e.g. [markerWithPhotoTapEvents])
   Stream<TapEvent> get objectTapEvents => _instance.objectTapEvents;
 
+  /// User taps route when there are several of them available.
+  Stream<ActiveRouteChangedEvent> get activeRouteChangedEvents =>
+      _instance.activeRouteChangedEvents;
+
+  /// Available routes update.
+  Stream<RoutesInfoChangedEvent> get routesInfoChangedEvents =>
+      _instance.routesInfoChangedEvents;
+
+  /// Events during navigation.
+  Stream<NavigationEvent> get navigationEvents => _instance.navigationEvents;
+
   /// Events of visible rect changes.
   Stream<VisibleRectEvent> get visibleRectEvents => _instance.visibleRectEvents;
 
@@ -54,10 +69,63 @@ class DgisMapController {
   Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents =>
       _instance.markerWithPhotoTapEvents;
 
+  Stream<PublicTransportRoutesChangedEvent>
+      get publicTransportRoutesChangedEvents =>
+          _instance.publicTransportRoutesChangedEvents;
+
+  Stream<PublicTransportActiveRouteChanged>
+      get publicTransportActiveRouteChangedEvents =>
+          _instance.publicTransportActiveRouteChangedEvents;
+
+  Stream<PackageProgressEvent> get packageProgressEvents =>
+      _instance.packageProgressEvents;
+
+  Stream<PackageInfoChangedEvent> get packagesInfoChangedEvents =>
+      _instance.packageInfoChangedEvents;
+
+  late NaviSpeedController naviSpeedController = NaviSpeedController(
+    _instance.naviSpeedEvents.asBroadcastStream(),
+  );
+
+  late NaviMessageController naviMessageController = NaviMessageController(
+    _instance.naviMessageEvents.asBroadcastStream(),
+  );
+
+  late NaviManeuverController naviManeuverController = NaviManeuverController(
+    _instance.naviManeuverEvents.asBroadcastStream(),
+  );
+
+  late NaviCompassController naviCompassController = NaviCompassController(
+    _instance.compassBearingEvents.asBroadcastStream(),
+    _instance.onCompassClicked,
+  );
+
   late NaviZoomController naviZoomController = NaviZoomController(
     _instance.zoomControlEnabledEvents.asBroadcastStream(),
     _instance.onZoomAction,
   )..init();
+
+  late NaviTrafficParkingController naviTrafficParkingController =
+      NaviTrafficParkingController(
+    parkingStateEvents: _instance.parkingStateEvents.asBroadcastStream(),
+    trafficStateEvents: _instance.trafficStateEvents.asBroadcastStream(),
+    onAttached: _instance.onTrafficAndParkingAttached,
+    onDetached: _instance.onTrafficAndParkingDetached,
+    onTrafficClicked: _instance.onTrafficClicked,
+    onParkingClicked: _instance.onParkingClicked,
+  );
+
+  late NaviFreeRoamController freeRoamController = NaviFreeRoamController(
+    _instance.navigationEvents,
+    start: _instance.startFreeRoam,
+    stop: _instance.stopFreeRoam,
+  );
+
+  Stream<NaviDashboardEvent> get naviDashboardEvents =>
+      _instance.naviDashboardEvents;
+
+  Stream<RouteOptionsEvent> get routeOptionEvents =>
+      _instance.routeOptionsEvent;
 
   /// Must be called **once** when controller becomes avalilable to initialize plugin.
   Future<InitializeMessage> initialize() async => _instance.initialize(_viewId);
@@ -84,6 +152,10 @@ class DgisMapController {
   /// Changes map camera position immediately without animation.
   Future<void> setCameraPosition(CameraPositionMessage cameraPosition) =>
       _instance.setCameraPosition(cameraPosition);
+
+  /// Changes map camera padding immediately without animation.
+  Future<void> setCameraPadding(CameraSetPaddingMessage cameraPadding) =>
+      _instance.setCameraPadding(cameraPadding);
 
   /// Smoothly changes camera positions
   Future<void> moveCamera(CameraPositionMessage cameraPosition, double duration,
@@ -215,6 +287,25 @@ class DgisMapController {
     );
   }
 
+  /// Runs directory search by rubrics.
+  Future<SearchResultMessage> searchByRubrics(
+    List<int> rubrics, {
+    List<GeoPointMessage>? spatialRestriction,
+    required SortingTypeMessage sortingType,
+    GeoRectMessage? searchRect,
+    bool isOpenNow = false,
+    int pageSize = 20,
+  }) {
+    return _instance.searchByRubrics(
+      rubrics,
+      spatialRestriction: spatialRestriction,
+      sortingType: sortingType,
+      weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
+      pageSize: pageSize,
+      searchRect: searchRect,
+    );
+  }
+
   /// Fetches next page for given page
   Future<PageMessage> fetchPrevPage(PageMessage page) =>
       _instance.fetchPrevPage(page.id);
@@ -248,6 +339,10 @@ class DgisMapController {
   Future<MapObjectManagerMessage> createMapObjectManagerWithClustering(
           ClusteringMapObjectManager manager) =>
       _instance.createMapObjectManagerWithClustering(manager);
+
+  /// Creates [MapObjectManagerMessage] without clustering.
+  Future<MapObjectManagerMessage> createMapObjectManager() =>
+      _instance.createMapObjectManager();
 
   /// Removes [MapObjectManagerMessage].
   Future<void> removeMapObjectManager(MapObjectManagerMessage manager) =>
@@ -356,6 +451,33 @@ class DgisMapController {
     return _instance.containsRect(outer, inner);
   }
 
+  /// Checks if [outer] rect contains [inner]
+  Future<double> pointBearing(
+    GeoPointMessage from,
+    GeoPointMessage to,
+  ) async {
+    return _instance.pointBearing(from, to);
+  }
+
+  Future<void> setRouteParams(RouteEditorRouteParamsMessage params) async {
+    return _instance.setRouteParams(params);
+  }
+
+  Future<void> hideRoutes() async {
+    return _instance.hideRoutes();
+  }
+
+  Future<void> startNavigation() => _instance.startNavigation();
+
+  /// Starts navigation sinulation.
+  Future<void> startNavigationSimulation() =>
+      _instance.startNavigationSimulation();
+
+  /// Stops navigation. To hide navigation overlay call [hideNativeNavigationOverlay].
+  Future<void> stopNavigation() => _instance.stopNavigation();
+
+  Future<void> toggleSound() => _instance.toggleSound();
+
   /// Used to setup platform. Should be called when permision was granted.
   /// Does not request permission by itself.
   Future<void> onLocationPremissionGranted({
@@ -391,6 +513,35 @@ class DgisMapController {
 
   /// Does not apply filters immediately. Resets inner state.
   void resetCurrentEvergisFiltersState() => _evergisFilters.clear();
+
+  Future<void> setPublicTransportActiveRoute(int routeIndex) {
+    return _instance.setPublicTransportActiveRoute(routeIndex);
+  }
+
+  Future<List<BriefRouteInfoMessage?>> findBriefRouteInfos({
+    required RouteSearchOptionsMessage options,
+    RouteSearchPointMessage? startPoint,
+    RouteSearchPointMessage? finishPoint,
+  }) {
+    return _instance.findBriefRouteInfos(
+      options,
+      startPoint,
+      finishPoint,
+    );
+  }
+
+  Future<bool> toggleHeatmap({required WeatherMapMessage message})=>
+      _instance.toggleHeatmap(message);
+
+  Future<List<PackageMessage?>> listPackages() => _instance.listPackages();
+
+  Future<List<PackageMessage?>> listVoices() => _instance.listVoices();
+
+  Future<void> installPackage(String id) => _instance.installPackage(id);
+
+  Future<void> installVoice(String id) => _instance.installVoice(id);
+
+  Future<void> setNavigatorVoice(String id) => _instance.setNavigatorVoice(id);
 }
 
 extension WeekTimeFactory on WeekTimeSearchMessage {

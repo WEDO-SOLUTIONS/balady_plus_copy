@@ -45,6 +45,8 @@ class LifecycleEventHandler extends WidgetsBindingObserver {
           await resumeCallBack!();
         }
         break;
+      default:
+        break;
     }
     '''
     =============================================================

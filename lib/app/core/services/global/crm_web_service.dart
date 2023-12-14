@@ -134,7 +134,7 @@ class AppInterceptors extends Interceptor {
       case DioErrorType.badResponse:
         switch (err.response?.statusCode) {
           case 400:
-            if (err.response?.data['data']['responseCode'] == '2') {
+            if (err.response?.data['data']?['responseCode'] == '2') {
               throw NoDataFoundException(err.requestOptions, err.response);
             }
             throw BadRequestException(err.requestOptions, err.response);

@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -30,7 +30,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
-  
+
   async: ^2.11.0
   # Localization app to support multiple languages
   localize_and_translate:
@@ -95,13 +95,13 @@ dependencies:
   # A universal barcode and QR code scanner
   mobile_scanner: ^2.1.0
   # Location
-  geolocator: ^9.0.2
+  geolocator: ^10.1.0
   # Permissions
-  permission_handler: ^8.3.0
+  permission_handler: ^11.0.1
   # Get current device information
   device_info_plus: ^9.0.0
   # API for querying information about an application package
-  package_info_plus:
+  package_info_plus: ^4.2.0
   # parses Adobe After Effects animations
   lottie: ^2.2.0
   # Generate Unique ID
@@ -137,7 +137,7 @@ dependencies:
   flutter_rating_bar: ^4.0.0
   tuple: ^2.0.0
   flutter_easyloading: ^3.0.3
-  connectivity_plus: ^2.2.0
+  connectivity_plus: ^5.0.1
   qr_code_scanner: ^1.0.1
   scan: ^1.6.0
   sms_user_consent:
@@ -145,24 +145,20 @@ dependencies:
       url: https://github.com/ctnataman/sms_user_consent
   flutter_google_places:
     git:
-      url: https://github.com/fluttercommunity/flutter_google_places
-      #ref: v0.3.2
-      ref: e104fa94452ec236dfb27cf5ea54fb72f280bc08
+      url: https://github.com/MahmoudBaha/flutter_google_places
   flutter_picker: ^2.1.0
   percent_indicator: ^4.2.3
-  flutter_staggered_grid_view: ^0.7.0
+  flutter_staggered_grid_view: ^0.6.0
   flutter_cached_pdfview: ^0.4.2
-  provider: ^6.0.2 
   network_info_plus: ^2.1.4+1
   dart_ipify: ^1.1.1
   timelines: ^0.1.0
-  pdfx: 
-  sentry_flutter: ^7.9.0
+  pdfx:
   archive: ^3.3.7
   bottom_picker: ^2.0.4
   page_view_dot_indicator: ^2.3.0
-  firebase_core: 
-  firebase_messaging: 
+  firebase_core: ^2.24.0
+  firebase_messaging:
   firebase_analytics:
   flutter_uxcam: ^2.4.3
   card_swiper: ^3.0.1
@@ -170,55 +166,60 @@ dependencies:
   add_2_calendar: ^2.1.2
   flutter_svg_provider:
   flutter_datetime_picker:
-  
 
-
-  
   #test_package:
- #   path: packages/test_package
+  #   path: packages/test_package
   app_settings: ^5.0.0
   dotted_border: ^2.0.0+3
   sentry_dio: ^7.9.0
   linkable: ^3.0.0
 
-
-
-# Map urbi SKD
+  # Map urbi SKD
   dgis_map:
     path: urbi_map/dgis_map
-#  provider: ^6.0.5
 
+  # Mapness
+  balady_uikit:
+    path: balady_uikit
+  mapness:
+    path: mapness
+
+  google_fonts: ^6.0.0
+  wakelock_plus: ^1.1.3
+  provider: ^6.0.5
+  flutter_compass: ^0.8.0
+  sentry_flutter: ^7.13.2
+  #  provider: ^6.0.5
 
   flutter_html:
   curl_logger_dio_interceptor: ^1.0.0
-  
-
-
+  mixpanel_flutter: ^2.2.0
+  rate_my_app: ^2.0.0
 
 dependency_overrides:
   geolocator_android: ^4.2.2
   # flutter compass in pub.dev is not updated
   #flutter_compass:
   #  path: flutter_compass
-  
+
 dev_dependencies:
   flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter
   json_serializable: ^6.7.1
-  
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
+  shaders:
+    - shaders/radar.frag
   assets:
     - assets/
     - assets/icons/svg/
@@ -302,26 +303,21 @@ flutter:
       fonts:
         - asset: assets/fonts/sura_juza_names.ttf
 
-
-    - family: FrutigerLTArabic
+    #   - family: Trajan Pro
+    #     fonts:
+    #       - asset: fonts/TrajanPro.ttf
+    #       - asset: fonts/TrajanPro_Bold.ttf
+    #         weight: 700
+    #
+    # For details regarding fonts from package dependencies,
+    # see https://flutter.dev/custom-fonts/#from-packages
+    - family: Frutiger
       fonts:
-
-        - asset: assets/fonts/FrutigerLTArabic45Light.ttf
+        - asset: fonts/FrutigerLTArabic45Light.ttf
+          weight: 300
+        - asset: fonts/FrutigerLTArabic55Roman.ttf
           weight: 400
-        - asset: assets/fonts/FrutigerLTArabic55Roman.ttf
-        - asset: assets/fonts/FrutigerLTArabic65Bold.ttf
+        - asset: fonts/FrutigerLTArabic65Bold.ttf
           weight: 700
-        - asset: assets/fonts/frutigerltarabic75black.ttf
-          weight: 500
-
-
-
-
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
+        - asset: fonts/frutigerltarabic75black.ttf
+          weight: 900

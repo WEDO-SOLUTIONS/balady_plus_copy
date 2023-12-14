@@ -170,28 +170,31 @@ class ServiceIcon extends StatelessWidget {
             );
           } else if (service.id == 13) {
             if (CommonProperties.isLoggedIn) {
-              Navigator.pushNamed(context, RouteName.municipalAdvisor);
+              NavigationService.navigatorKey.currentState
+                  ?.pushNamed(RouteName.municipalAdvisor);
             } else {
               showDialog(
                   context: context,
                   builder: (ctx) =>
                       NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
                         if (isSuccess ?? false) {
-                          Navigator.pushNamed(
-                              context, RouteName.municipalAdvisor);
+                          NavigationService.navigatorKey.currentState!
+                              .pushNamed(RouteName.municipalAdvisor);
                         }
                       }));
             }
           } else if (service.action.value == RouteName.etmamMainPage) {
             if (CommonProperties.isLoggedIn) {
-              Navigator.pushNamed(context, RouteName.etmamMainPage);
+              NavigationService.navigatorKey.currentState
+                  ?.pushNamed(RouteName.etmamMainPage);
             } else {
               showDialog(
                   context: context,
                   builder: (ctx) =>
                       NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
                         if (isSuccess ?? false) {
-                          Navigator.pushNamed(context, RouteName.etmamMainPage);
+                          NavigationService.navigatorKey.currentState
+                              ?.pushNamed(RouteName.etmamMainPage);
                         }
                       }));
             }
@@ -237,15 +240,13 @@ class ServiceIcon extends StatelessWidget {
             }
           } else if (service.action.type == ServiceAction.cardsPage) {
             if (service.requireLogin != true) {
-              Navigator.pushNamed(
-                context,
+              NavigationService.navigatorKey.currentState?.pushNamed(
                 RouteName.serviceCards,
                 arguments: service,
               );
             } else {
               if (CommonProperties.isLoggedIn) {
-                Navigator.pushNamed(
-                  context,
+                NavigationService.navigatorKey.currentState?.pushNamed(
                   RouteName.serviceCards,
                   arguments: service,
                 );
@@ -255,8 +256,8 @@ class ServiceIcon extends StatelessWidget {
                     builder: (ctx) => NeedLoginDialog(
                             onSuccessLogin: (bool? isSuccess) async {
                           if (isSuccess ?? false) {
-                            Navigator.pushNamed(
-                              context,
+                            NavigationService.navigatorKey.currentState
+                                ?.pushNamed(
                               RouteName.serviceCards,
                               arguments: service,
                             );
@@ -314,8 +315,7 @@ class ServiceIcon extends StatelessWidget {
               }
             } else if (service.iconName == "municipal_health") {
               if (CommonProperties.isLoggedIn) {
-                Navigator.pushNamed(
-                  context,
+                NavigationService.navigatorKey.currentState?.pushNamed(
                   service.action.value,
                 );
               } else {
@@ -324,8 +324,8 @@ class ServiceIcon extends StatelessWidget {
                     builder: (ctx) => NeedLoginDialog(
                             onSuccessLogin: (bool? isSuccess) async {
                           if (isSuccess ?? false) {
-                            Navigator.pushNamed(
-                              context,
+                            NavigationService.navigatorKey.currentState
+                                ?.pushNamed(
                               service.action.value,
                             );
                           }
@@ -335,14 +335,12 @@ class ServiceIcon extends StatelessWidget {
               CommonFunctions.externalLaunch(service.action.value);
             } else {
               if (service.requireLogin != true) {
-                Navigator.pushNamed(
-                  context,
+                NavigationService.navigatorKey.currentState?.pushNamed(
                   service.action.value,
                 );
               } else {
                 if (CommonProperties.isLoggedIn) {
-                  Navigator.pushNamed(
-                    context,
+                  NavigationService.navigatorKey.currentState?.pushNamed(
                     service.action.value,
                   );
                 } else {
@@ -351,8 +349,8 @@ class ServiceIcon extends StatelessWidget {
                       builder: (ctx) => NeedLoginDialog(
                               onSuccessLogin: (bool? isSuccess) async {
                             if (isSuccess ?? false) {
-                              Navigator.pushNamed(
-                                context,
+                              NavigationService.navigatorKey.currentState
+                                  ?.pushNamed(
                                 service.action.value,
                               );
                             }

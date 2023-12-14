@@ -1,0 +1,42 @@
+name: balady_uikit
+description: A new Flutter package project.
+version: 0.0.1
+
+environment:
+  sdk: ">=3.0.3 <4.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  google_fonts: ^6.1.0
+  json_annotation: ^4.8.1
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  build_runner: ^2.1.4
+  build: ^2.1.4
+  source_gen: ^1.0.4
+  json_serializable: ^6.3.1
+
+
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+  fonts:
+    - family: Frutiger LT Arabic
+      fonts:
+        - asset: assets/fonts/FrutigerLTArabic45Light.ttf
+          weight: 300
+        - asset: assets/fonts/FrutigerLTArabic55Roman.ttf
+          weight: 400
+        - asset: assets/fonts/FrutigerLTArabic65Bold.ttf
+          weight: 700
+        - asset: assets/fonts/frutigerltarabic75black.ttf
+          weight: 900

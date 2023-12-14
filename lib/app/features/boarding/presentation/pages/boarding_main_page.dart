@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
@@ -11,8 +12,9 @@ class BoardingMainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Future.delayed(const Duration(seconds: 2), () {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BoardingPage()));
+      //Navigator
+      NavigationService.navigatorKey.currentState!.pushReplacement(
+          MaterialPageRoute(builder: (context) => BoardingPage()));
     });
     return Scaffold(
       backgroundColor: AppColor.splashGreen,

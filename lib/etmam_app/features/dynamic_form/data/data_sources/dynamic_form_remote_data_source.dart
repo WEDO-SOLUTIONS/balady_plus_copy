@@ -117,13 +117,19 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
         String errorMessage = decodedResponse.data?.responseMessage ??
             decodedResponse.statusDetails?.message ??
             trans("errors_server_error_1");
-        throw ServerException(errorMessage, statusCode: response.statusCode);
+        throw ServerException(
+          errorMessage,
+          statusCode: response.statusCode,
+        );
       }
 
       return decodedResponse.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        dioError: error,
+        statusCode: error.response?.statusCode,
+      );
     } catch (ex) {
       print(ex);
       if (ex is ServerException)
@@ -170,8 +176,11 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       print(error);
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -217,8 +226,11 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
 
       return decodedResponse.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -261,8 +273,11 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
 
       return decodedResponse.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -319,8 +334,11 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
 
         return decodedResponse.toFuture();
       }
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -363,8 +381,11 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
 
       return decodedResponse.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       print(ex);
       if (ex is ServerException)
@@ -419,8 +440,12 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
         errorCode = decodedResponse.data?.responseCode;
       } catch (ex) {}
 
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, errorCode: errorCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        errorCode: errorCode,
+        dioError: error,
+      );
     } catch (ex) {
       print(ex);
       if (ex is ServerException)
@@ -459,8 +484,11 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
 
       return decodedResponse.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       print(ex);
       if (ex is ServerException)
@@ -499,8 +527,11 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
 
       return decodedResponse.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       print(ex);
       if (ex is ServerException)
@@ -540,7 +571,7 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       print(ex);
       if (ex is ServerException)
@@ -581,7 +612,7 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       print(ex);
       if (ex is ServerException)
@@ -627,7 +658,7 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       print(ex);
       if (ex is ServerException)
@@ -672,7 +703,7 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -731,7 +762,7 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
       print(error);
       print(error);
       throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+          statusCode: error.response?.statusCode, dioError: error);
     } catch (ex) {
       print(ex);
       if (ex is ServerException)

@@ -27,8 +27,6 @@ struct Twin: Decodable {
     }
 }
 
-let twinsApiUrl = "https://apiservices.balady.gov.sa/v1/urbi-services/twins-api/v1/search/dgis"
-
 class SearchHandler: NSObject {
     private let map: Map
     private let sdkContext: Container
@@ -44,15 +42,19 @@ class SearchHandler: NSObject {
     private var queries: [String:SearchQuery] = [:]
     
     private let jsonDecoder = JSONDecoder()
+    
+    private let vendorConfig: VendorConfig?
 
     init(
         searchManager: SearchManager,
         map: Map,
-        sdkContext: Container
+        sdkContext: Container,
+        vendorConfig: VendorConfig?
     ) {
         self.searchManager = searchManager
         self.map = map
         self.sdkContext = sdkContext
+        self.vendorConfig = vendorConfig
     }
 
     func cancel() {
@@ -71,6 +73,17 @@ class SearchHandler: NSObject {
                     message: "Object with id \(objectId.objectId) not found",
                     details: nil
                 ))
+                return
+            }
+            
+            guard let twinsApiUrl = self.vendorConfig?.overrides[CustomOverrides.twinsApi.rawValue] else {
+                completion(
+                    response.toMessage(
+                        externalIds: nil
+                    ),
+                    nil
+                )
+                
                 return
             }
             

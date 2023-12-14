@@ -1,8 +1,12 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:mapness/shared/config/package_config.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../core/utils/utils_exports.dart';
@@ -23,298 +27,215 @@ class PrayerHomeCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-                padding: const EdgeInsetsDirectional.only(
-                    top: 32, start: 16, end: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomTextWidget(
-                      "prayerTimes".tr(),
-                      textStyle: AppStyle.sectionTitleStyle,
-                    ),
-                  ],
-                )),
+              padding: const EdgeInsetsDirectional.only(
+                start: 16,
+                end: 16,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "prayerTimes".tr(),
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.accentL
+                        .copyWith(
+                          color: const Color(0xFF1E2A36),
+                        ),
+                  ),
+                ],
+              ),
+            ),
             state.nextPrayer != null &&
                     state.status != BlocRequestStatus.submissionGetLoading
                 ? Container(
-                    height: 234,
+                    height: 200,
                     margin: const EdgeInsets.only(left: 16, right: 16, top: 12),
                     decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(16)),
+                      borderRadius: const BorderRadius.all(Radius.circular(8)),
                       image: DecorationImage(
                         image: AssetImage(
-                            state.nextPrayer!.prayer == Prayers.fajr
-                                ? ImagePath.fajrBg
-                                : state.nextPrayer!.prayer == Prayers.dhuhr
-                                    ? ImagePath.zuhrBg
-                                    : state.nextPrayer!.prayer == Prayers.asr
-                                        ? ImagePath.asrBg
-                                        : state.nextPrayer!.prayer ==
-                                                Prayers.maghrib
-                                            ? ImagePath.maghrbBg
-                                            : ImagePath.ishabBg),
-                        fit: BoxFit.fitHeight,
+                          state.nextPrayer!.prayer == Prayers.fajr
+                              ? "assets/images/sunrise_pray.png"
+                              : state.nextPrayer!.prayer == Prayers.dhuhr
+                                  ? "assets/images/day_pray.png"
+                                  : state.nextPrayer!.prayer == Prayers.asr
+                                      ? "assets/images/day_pray.png"
+                                      : state.nextPrayer!.prayer ==
+                                              Prayers.maghrib
+                                          ? "assets/images/sunset_pray.png"
+                                          : "assets/images/night_pray.png",
+                          package: PackageConfig.packageName,
+                        ),
+                        fit: BoxFit.cover,
                       ),
                     ),
                     child: BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
                       builder: (context, state) {
                         return Column(
                           children: [
-                            const SizedBox(height: 18),
+                            const SizedBox(height: 20),
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 24),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Column(
+                                  Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      state.nextPrayer != null
-                                          ? CustomTextWidget(
-                                              "صلاة ${state.nextPrayer!.prayer.label.tr()}",
-                                              fontColor: state
-                                                          .nextPrayer!.prayer ==
-                                                      Prayers.fajr
-                                                  ? AppColor.primary900Light
-                                                  : state.nextPrayer!.prayer ==
-                                                          Prayers.dhuhr
-                                                      ? AppColor
-                                                          .secondary900Light
-                                                      : state.nextPrayer!
-                                                                  .prayer ==
-                                                              Prayers.asr
-                                                          ? AppColor
-                                                              .secondary900Light
-                                                          : state.nextPrayer!
-                                                                      .prayer ==
-                                                                  Prayers
-                                                                      .maghrib
-                                                              ? AppColor.brown2
-                                                              : AppColor.white
-                                                                  .withOpacity(
-                                                                      0.4),
-                                              fontWeight: AppFontWeight.bold,
-                                              fontSize: 13,
-                                            )
-                                          : const ShimmerEffectWidget(
-                                              width: 80,
-                                              height: 20,
-                                              borderRadius: 4,
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          if (state.nextPrayer != null)
+                                            Text(
+                                              "متبقي على أذان ${state.nextPrayer!.prayer.label.tr()}",
+                                              style: Theme.of(context)
+                                                  .extension<ThemeTextStyles>()!
+                                                  .accentXS
+                                                  .copyWith(
+                                                    color: Colors.white,
+                                                  ),
                                             ),
-                                      const SizedBox(height: 8),
-                                      state.nextPrayer != null
-                                          ? Row(
-                                              children: [
-                                                CustomTextWidget(
-                                                  state.nextPrayer!.dateTime
-                                                              .hour >
-                                                          12
-                                                      ? "PM"
-                                                      : "AM",
-                                                  fontColor: state.nextPrayer!
-                                                              .prayer ==
-                                                          Prayers.fajr
-                                                      ? AppColor.white
-                                                      : state.nextPrayer!
-                                                                  .prayer ==
-                                                              Prayers.dhuhr
-                                                          ? AppColor
-                                                              .primary900Light
-                                                          : state.nextPrayer!
-                                                                      .prayer ==
-                                                                  Prayers.asr
-                                                              ? AppColor
-                                                                  .primary900Light
-                                                              : state.nextPrayer!
-                                                                          .prayer ==
-                                                                      Prayers
-                                                                          .maghrib
-                                                                  ? AppColor
-                                                                      .brown2
-                                                                  : AppColor
-                                                                      .white,
-                                                  fontWeight:
-                                                      AppFontWeight.semiBold,
-                                                  fontSize: 14,
+                                          state.nextPrayer != null
+                                              ? NextPrayerHome(
+                                                  prayer:
+                                                      state.nextPrayer!.prayer,
+                                                  time: state
+                                                      .nextPrayer!.dateTime,
+                                                )
+                                              : const ShimmerEffectWidget(
+                                                  width: 160,
+                                                  height: 40,
+                                                  borderRadius: 4,
                                                 ),
-                                                const SizedBox(width: 4),
-                                                CustomTextWidget(
-                                                  DateFormat("hh:mm").format(
-                                                      state.nextPrayer!
-                                                          .dateTime),
-                                                  fontColor: state.nextPrayer!
-                                                              .prayer ==
-                                                          Prayers.fajr
-                                                      ? AppColor.white
-                                                      : state.nextPrayer!
-                                                                  .prayer ==
-                                                              Prayers.dhuhr
-                                                          ? AppColor
-                                                              .primary900Light
-                                                          : state.nextPrayer!
-                                                                      .prayer ==
-                                                                  Prayers.asr
-                                                              ? AppColor
-                                                                  .primary900Light
-                                                              : state.nextPrayer!
-                                                                          .prayer ==
-                                                                      Prayers
-                                                                          .maghrib
-                                                                  ? AppColor
-                                                                      .brown2
-                                                                  : AppColor
-                                                                      .white,
-                                                  fontWeight:
-                                                      AppFontWeight.bold,
-                                                  fontSize: 28,
-                                                ),
-                                              ],
-                                            )
-                                          : const ShimmerEffectWidget(
-                                              width: 80,
-                                              height: 40,
-                                              borderRadius: 4,
-                                            ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        width: 16,
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: state.nextPrayer!.prayer ==
+                                                  Prayers.isha
+                                              ? const Color(0x1A4CA5B4)
+                                              : const Color(0x4D1E2A36),
+                                        ),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Provider.of<PrayerTimesCubit>(
+                                                    context,
+                                                    listen: false)
+                                                .prayerSettingsOnOff();
+                                          },
+                                          child: BlocBuilder<PrayerTimesCubit,
+                                              PrayerTimesState>(
+                                            builder: (context, state) {
+                                              bool isNotificationDisabled =
+                                                  state.isNotificationDisable;
+                                              return SvgPicture.asset(
+                                                "assets/icons/svg/ic_notification.svg",
+                                                package:
+                                                    PackageConfig.packageName,
+                                                color: isNotificationDisabled
+                                                    ? const Color(0x99FFFFFF)
+                                                    : Colors.white,
+                                                width: 24,
+                                                height: 24,
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   ),
-                                  Container(
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: state.nextPrayer!.prayer ==
-                                              Prayers.fajr
-                                          ? AppColor.white.withOpacity(0.1)
-                                          : state.nextPrayer!.prayer ==
-                                                  Prayers.dhuhr
-                                              ? AppColor.white9
-                                                  .withOpacity(0.65)
-                                              : state.nextPrayer!.prayer ==
-                                                      Prayers.asr
-                                                  ? AppColor.white9
-                                                      .withOpacity(0.65)
-                                                  : state.nextPrayer!.prayer ==
-                                                          Prayers.maghrib
-                                                      ? AppColor.brownLight
-                                                      : AppColor.white
-                                                          .withOpacity(0.1),
-                                    ),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        Provider.of<PrayerTimesCubit>(context,
-                                                listen: false)
-                                            .prayerSettingsOnOff();
-                                      },
-                                      child: BlocBuilder<PrayerTimesCubit,
-                                              PrayerTimesState>(
-                                          builder: (context, state) {
-                                        bool isNotificationDisabled =
-                                            state.isNotificationDisable;
-                                        return CustomSvgIconWidget(
-                                          isNotificationDisabled
-                                              ? IconPath.notificationIc2
-                                              : IconPath.notificationFilled,
-                                          iconColor: state.nextPrayer!.prayer ==
-                                                  Prayers.fajr
-                                              ? AppColor.white
-                                              : state.nextPrayer!.prayer ==
-                                                      Prayers.dhuhr
-                                                  ? AppColor.primary900Light
-                                                  : state.nextPrayer!.prayer ==
-                                                          Prayers.asr
-                                                      ? AppColor.primary900Light
-                                                      : state.nextPrayer!
-                                                                  .prayer ==
-                                                              Prayers.maghrib
-                                                          ? AppColor
-                                                              .primary900Light
-                                                          : AppColor.white,
-                                          iconSize: 24,
-                                        );
-                                      }),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const Spacer(),
-                            Container(
-                              margin: const EdgeInsets.all(14),
-                              padding: const EdgeInsets.all(14),
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(12)),
-                                color: state.isAM
-                                    ? AppColor.white.withOpacity(0.2)
-                                    : AppColor.primary900Light.withOpacity(0.2),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        if (state.nextPrayer != null)
-                                          CustomTextWidget(
-                                            "متبقي على أذان ${state.nextPrayer!.prayer.label.tr()}",
-                                            fontColor: AppColor.white,
-                                            fontWeight: AppFontWeight.bold,
-                                            maxLines: 2,
-                                            height: 1.3,
-                                            fontSize: 13,
-                                          ),
-                                        const SizedBox(height: 8),
-                                        state.nextPrayer != null
-                                            ? NextPrayerHome(
-                                                prayer:
-                                                    state.nextPrayer!.prayer,
-                                                time:
-                                                    state.nextPrayer!.dateTime,
-                                              )
-                                            : const ShimmerEffectWidget(
-                                                width: 160,
-                                                height: 40,
-                                                borderRadius: 4,
+                                  const SizedBox(height: 6),
+                                  state.nextPrayer != null
+                                      ? Text(
+                                          "صلاة ${state.nextPrayer!.prayer.label.tr()}",
+                                          style: Theme.of(context)
+                                              .extension<ThemeTextStyles>()!
+                                              .accentXS
+                                              .copyWith(
+                                                color: Colors.white,
                                               ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsetsDirectional.only(
-                                          start: 20),
-                                      child: CustomElevatedButtonWidget(
-                                        btnColor: state.isAM
-                                            ? AppColor.primary900Light
-                                            : AppColor.secondary900Light,
-                                        textStyle: AppStyle.elevatedButtonStyle
-                                            .copyWith(
-                                          color: AppColor.white,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 12,
+                                        )
+                                      : const ShimmerEffectWidget(
+                                          width: 80,
+                                          height: 20,
+                                          borderRadius: 4,
                                         ),
-                                        btnHeight: 40,
-                                        btnPadding: const EdgeInsets.all(11),
-                                        text: 'prayer_timings'.tr(),
-                                        onPressed: () {
-                                          context.pushNamedRoute(
-                                            RouteName.prayerTimes,
-                                            arguments: context
-                                                .read<PrayerTimesCubit>(),
-                                          );
-                                        },
+                                  state.nextPrayer != null
+                                      ? Row(
+                                          children: [
+                                            Text(
+                                              state.nextPrayer!.dateTime.hour >
+                                                      12
+                                                  ? "PM"
+                                                  : "AM",
+                                              style: Theme.of(context)
+                                                  .extension<ThemeTextStyles>()!
+                                                  .accentM
+                                                  .copyWith(
+                                                    color: Colors.white,
+                                                  ),
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              DateFormat("hh:mm").format(
+                                                  state.nextPrayer!.dateTime),
+                                              style: Theme.of(context)
+                                                  .extension<ThemeTextStyles>()!
+                                                  .accentM
+                                                  .copyWith(
+                                                    color: Colors.white,
+                                                  ),
+                                            ),
+                                          ],
+                                        )
+                                      : const ShimmerEffectWidget(
+                                          width: 80,
+                                          height: 40,
+                                          borderRadius: 4,
+                                        ),
+                                  const SizedBox(height: 16),
+                                  Material(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: InkWell(
+                                      onTap: () {
+                                        NavigationService
+                                            .navigatorKey.currentState!
+                                            .pushNamed(
+                                          RouteName.prayerTimes,
+                                          arguments:
+                                              context.read<PrayerTimesCubit>(),
+                                        );
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 6,
+                                        ),
+                                        child: Text(
+                                          'prayer_timings'.tr(),
+                                          style: Theme.of(context)
+                                              .extension<ThemeTextStyles>()!
+                                              .accentM
+                                              .copyWith(
+                                                color: const Color(0xFF4CA5B4),
+                                              ),
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
-                            )
+                            ),
                           ],
                         );
                       },

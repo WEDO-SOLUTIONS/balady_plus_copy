@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
@@ -86,7 +87,8 @@ class _EventsSectionWidgetState extends State<EventsSectionWidget> {
 
               return GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, RouteName.eventsDetailsPage,
+                  NavigationService.navigatorKey.currentState!.pushNamed(
+                      RouteName.eventsDetailsPage,
                       arguments: state.searchItems[index].id);
                 },
                 child: OldEventHomeCard(

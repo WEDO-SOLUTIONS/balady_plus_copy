@@ -53,8 +53,8 @@ class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
                             selectedValue: state.gisResponse?.getFullAddress(),
                             title: "الموقع",
                             onTap: () async {
-                              Navigator.push(
-                                context,
+                              //Navigator
+                              NavigationService.navigatorKey.currentState!.push(
                                 MaterialPageRoute(builder: (ctx) {
                                   return BlocProvider.value(
                                       value: context.read<MapBloc>(),

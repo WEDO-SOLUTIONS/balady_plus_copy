@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/features/athkar/data/models/athkar_entites_params.dart';
 import 'package:flutter/material.dart';
@@ -23,8 +24,14 @@ class AthkarCard extends StatelessWidget {
     return InkWell(
       onTap: () async {
         List<AthkarEntity> athkarEntities = await athkarCategory.athkarEntities;
-        print(athkarEntities);
-        Navigator.pushNamed(context, RouteName.athkarEntitesPage,
+
+        //Navigation
+        /* Navigator.pushNamed(context, RouteName.athkarEntitesPage,
+            arguments:
+                AthkarEntitiesParams(athkarCategory.name, athkarEntities));;*/
+
+        NavigationService.navigatorKey.currentState!.pushNamed(
+            RouteName.athkarEntitesPage,
             arguments:
                 AthkarEntitiesParams(athkarCategory.name, athkarEntities));
       },

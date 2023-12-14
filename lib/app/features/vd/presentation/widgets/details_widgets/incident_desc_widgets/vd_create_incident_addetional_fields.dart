@@ -184,7 +184,7 @@ class _RadioButtonAddetionalFieldState
               fontColor: AppColor.baladyDarkGreen2,
               fontSize: 13.0,
               textAlign: TextAlign.start,
-              fontWeight: AppFontWeight.bold,
+              fontWeight: FONT_WEIGHT.bold,
             ),
             if (!widget.isMandatory) CustomHorizontalSpace(width: 8),
             if (!widget.isMandatory)

@@ -1,0 +1,72 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+class AppCloseButton extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  const AppCloseButton({super.key, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: Ink(
+        decoration: BoxDecoration(
+          color: const Color(0xfff2f7f8),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(8),
+          onTap: onPressed,
+          child: const Padding(
+            padding: EdgeInsets.all(8),
+            child: Icon(
+              Icons.close,
+              color: Color(0xff889097),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CustomCloseButton extends StatelessWidget {
+  const CustomCloseButton({super.key,this.onClose});
+
+  final Function()? onClose;
+  final colorPrimary = const Color(0xff1E2A36);
+  final borderRadius = const BorderRadius.all(
+    Radius.circular(8),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Material(
+        borderRadius: borderRadius,
+        child: InkWell(
+          borderRadius: borderRadius,
+          onTap: onClose,
+          child: Container(
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(
+                Radius.circular(8),
+              ),
+              color: colorPrimary.withAlpha(10),
+            ),
+            padding: const EdgeInsets.all(8.0),
+            child: SvgPicture.asset(
+              "assets/icons/svg/ic_search_close.svg",
+              semanticsLabel: 'MinApps Screen',
+              package: "mapness",
+              color: colorPrimary.withOpacity(0.7),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

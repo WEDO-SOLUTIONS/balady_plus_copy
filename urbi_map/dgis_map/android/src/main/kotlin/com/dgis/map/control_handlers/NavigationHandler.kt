@@ -1,0 +1,238 @@
+package com.dgis.map.control_handlers
+
+import android.view.View
+import com.dgis.map.control_handlers.navigation_controls.DashboardControlModel
+import com.dgis.map.control_handlers.navigation_controls.MessageControlModel
+import com.dgis.map.control_handlers.navigation_controls.ManeuverControlModel
+import com.dgis.map.control_handlers.navigation_controls.SpeedControlModel
+import com.dgis.map.map_api.Messages
+import com.dgis.map.map_api.Messages.Result
+import io.flutter.plugin.common.EventChannel
+import ru.dgis.sdk.coordinates.Bearing
+import ru.dgis.sdk.map.CameraBehaviour
+import ru.dgis.sdk.map.CameraPosition
+import ru.dgis.sdk.map.FollowBearing
+import ru.dgis.sdk.map.FollowPosition
+import ru.dgis.sdk.map.FollowStyleZoom
+import ru.dgis.sdk.map.Map
+import ru.dgis.sdk.map.MyLocationController
+import ru.dgis.sdk.map.MyLocationMapObjectSource
+import ru.dgis.sdk.map.StyleZoom
+import ru.dgis.sdk.map.styleZToProjectionZ
+import ru.dgis.sdk.navigation.*
+import ru.dgis.sdk.positioning.LocationSource
+import ru.dgis.sdk.routing.RouteSearchOptions
+import ru.dgis.sdk.routing.RouteSearchPoint
+import ru.dgis.sdk.routing.TrafficRoute
+import ru.dgis.sdk.Context as SdkContext
+
+class NavigationHandler(
+    sdkContext: SdkContext,
+    private val navigationView: NavigationView,
+    private val eventSink: EventChannel.EventSink,
+    private val map: Map,
+) : AutoCloseable {
+    private val navigationManager = NavigationManager(sdkContext)
+    private val voicesManager = getVoiceManager(sdkContext)
+    private lateinit var dashboardControlModel: DashboardControlModel
+
+    private val stateClosable: AutoCloseable
+    private val routeInfoCloseable: AutoCloseable
+
+    private val locationSource: MyLocationMapObjectSource
+    private var prevLocationSource: MyLocationMapObjectSource? = null
+
+    private var prevCameraBehaviour: CameraBehaviour? = null
+
+    // Models to observe channels and send events to Flutter
+    private val speedControlModel = SpeedControlModel(
+        model = navigationManager.uiModel,
+        eventSink = eventSink
+    )
+
+    private val messageControlModel = MessageControlModel(
+        model = navigationManager.uiModel,
+        eventSink = eventSink
+    )
+
+    private val maneuverControlModel = ManeuverControlModel(
+        model = navigationManager.uiModel,
+        eventSink = eventSink,
+    )
+
+    init {
+        navigationView.visibility = View.INVISIBLE
+        navigationView.navigationManager = navigationManager
+
+        navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
+        navigationManager.alternativeRoutesProviderSettings.betterRouteEnabled = false
+
+        dashboardControlModel = DashboardControlModel(
+            navigationManager.uiModel,
+            eventSink,
+            navigationManager,
+        )
+
+        stateClosable = navigationManager.uiModel.stateChannel.connect(::stateChannelListener)
+        routeInfoCloseable = navigationManager.uiModel.routeChannel.connect(::routeInfoListener)
+
+        locationSource = MyLocationMapObjectSource(
+            context = sdkContext,
+            controller = navigationManager.mapLocationController.myLocationIndicatorController
+        )
+    }
+
+    fun setupCamera() {
+        this.prevLocationSource = this.map.sources.first { it is MyLocationMapObjectSource } as? MyLocationMapObjectSource
+        if (this.prevLocationSource != null) {
+            map.removeSource(this.prevLocationSource!!)
+        }
+        map.addSource(locationSource)
+
+        val position = map.camera.position.copy(
+            zoom = styleZToProjectionZ(styleZ = StyleZoom(17.5f), latitude = map.camera.position.point.latitude)
+        )
+        map.camera.position = position
+
+        prevCameraBehaviour = map.camera.behaviour.newBehaviour
+        map.camera.setBehaviour(
+            behaviour = CameraBehaviour(
+                position = FollowPosition(bearing = FollowBearing.ON, styleZoom = FollowStyleZoom.ON)
+            )
+        )
+    }
+
+    fun resetCamera() {
+        map.removeSource(this.locationSource)
+        if (this.prevLocationSource != null) {
+            map.addSource(this.prevLocationSource!!)
+        }
+        if (this.prevCameraBehaviour != null) {
+            map.camera.setBehaviour(this.prevCameraBehaviour!!)
+        }
+    }
+
+    override fun close() {
+        dashboardControlModel.close()
+        messageControlModel.close()
+        speedControlModel.close()
+        stateClosable.close()
+        routeInfoCloseable.close()
+        speedControlModel.close()
+        maneuverControlModel.close()
+    }
+
+    fun toggleSounds() {
+        dashboardControlModel.toggleSounds()
+    }
+
+    fun setNavigatorVoice(id: String, result: Messages.Result<Void>?) {
+        navigationManager.voiceSelector.voice = voicesManager.voices.firstOrNull { it.id == id }?.navigationVoice
+        result?.success(null)
+    }
+
+    fun startNavigation(
+        finishPoint: RouteSearchPoint?,
+        options: RouteSearchOptions?,
+        route: TrafficRoute?,
+        result: Result<Void>?,
+    ) {
+        if (finishPoint == null || options == null || route == null) {
+            result?.error(Exception("Not enough data to start navigation. Check RouteHandler documentation"))
+            return
+        }
+
+        setupCamera()
+        navigationManager.start(
+            routeBuildOptions = RouteBuildOptions(
+                finishPoint = finishPoint,
+                routeSearchOptions = options,
+            ),
+            trafficRoute = route
+        )
+        navigationView.visibility = View.VISIBLE
+
+        result?.success(null)
+    }
+
+    fun startSimulation(
+        finishPoint: RouteSearchPoint?,
+        options: RouteSearchOptions?,
+        route: TrafficRoute?,
+        result: Result<Void>?,
+    ) {
+        if (finishPoint == null || options == null || route == null) {
+            result?.error(Exception("Not enough data to start navigation. Check RouteHandler documentation"))
+            return
+        }
+
+        setupCamera()
+        navigationManager.startSimulation(
+            routeBuildOptions = RouteBuildOptions(
+                finishPoint = finishPoint,
+                routeSearchOptions = options,
+            ),
+            trafficRoute = route
+        )
+        navigationView.visibility = View.VISIBLE
+
+        result?.success(null)
+    }
+
+    fun stopNavigation() {
+        navigationManager.stop()
+        resetCamera()
+        navigationView.visibility = View.INVISIBLE
+    }
+
+    fun startFreeRoam() {
+        navigationManager.start()
+    }
+
+    fun stopFreeRoam() {
+        navigationManager.stop()
+    }
+
+    private fun stateChannelListener(state: State) {
+        when (state) {
+            State.DISABLED -> eventSink.success(
+                mapOf(
+                    "event" to Event.navigationEvent.name,
+                    "state" to Event.stateDisabled
+                )
+            )
+
+            State.FINISHED -> eventSink.success(
+                mapOf(
+                    "event" to Event.navigationEvent.name,
+                    "state" to Event.stateFinished
+                )
+            )
+
+            else -> {}
+        }
+    }
+
+    private fun routeInfoListener(routeInfo: RouteInfo) {
+        eventSink.success(
+            mapOf(
+                "event" to Event.routeOptionsEvent.name,
+                "hasOptions" to (routeInfo.routeBuildOptions != null)
+            )
+        )
+
+    }
+}
+
+private enum class Event {
+    // event name
+    navigationEvent,
+    routeOptionsEvent;
+
+    // event values
+    companion object {
+
+        val stateDisabled = "disabled";
+        val stateFinished = "finished";
+    }
+}

@@ -879,7 +879,7 @@ class MapViewModel extends BaseViewModel {
 
     hideLoading1();
 
-    Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
+    NavigationService.navigatorKey.currentState!.pushNamed(
         RouteName.DiggingMapDetailsPage,
         arguments: pointList?.first);
   }
@@ -893,9 +893,8 @@ class MapViewModel extends BaseViewModel {
 
     hideLoading1();
     if (data != null)
-      Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
-          RouteName.investmentPage,
-          arguments: data);
+      NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.investmentPage, arguments: data);
 
     return data;
   }
@@ -909,9 +908,8 @@ class MapViewModel extends BaseViewModel {
 
     hideLoading1();
     if (data != null)
-      Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
-          RouteName.tempRentalPage,
-          arguments: data);
+      NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.tempRentalPage, arguments: data);
 
     return data;
   }

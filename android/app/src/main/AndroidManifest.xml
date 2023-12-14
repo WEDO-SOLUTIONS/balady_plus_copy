@@ -36,14 +36,15 @@
     </queries>
 
     <queries>
-  <intent>
-    <action android:name="android.intent.action.INSERT" />
-    <data android:mimeType="vnd.android.cursor.item/event" />
-  </intent>
-</queries>
+    <intent>
+        <action android:name="android.intent.action.INSERT" />
+        <data android:mimeType="vnd.android.cursor.item/event" />
+    </intent>
+    </queries>
 
 
 
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -80,7 +81,9 @@
 
    <application 
         android:label="بلدي"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:extractNativeLibs="true"
+        >
 
        <meta-data android:name="com.google.android.geo.API_KEY"
            android:value="AIzaSyDdgRBhfpKDzNrxcO8HURQ-A3Bh-DN8Dp8"/>

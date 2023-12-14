@@ -207,14 +207,12 @@ class AttachmentListWidget extends StatelessWidget {
 
           if (fileName.toLowerCase().contains(".pdf")) {
             Uint8List bytes = fileDownloaded.readAsBytesSync();
-
-            Navigator.push(
-                NavigationService.navigatorKey.currentContext!,
-                MaterialPageRoute(
-                    builder: (context) => PDFViewer(
-                          file: bytes,
-                          title: fileName,
-                        )));
+//Navigator
+            NavigationService.navigatorKey.currentState!.push(MaterialPageRoute(
+                builder: (context) => PDFViewer(
+                      file: bytes,
+                      title: fileName,
+                    )));
           } else {
             OpenFile.open(fileDownloaded.path);
           }

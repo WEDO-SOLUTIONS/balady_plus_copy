@@ -2,7 +2,9 @@ package com.dgis.map.control_handlers
 
 import android.content.res.Resources.NotFoundException
 import android.util.Log
+import com.dgis.map.CustomOverrides
 import com.dgis.map.FusedLocationSource
+import com.dgis.map.VendorConfig
 import com.dgis.map.extensions.*
 import com.dgis.map.map_api.Messages.*
 import org.json.JSONObject
@@ -25,9 +27,8 @@ class SearchHandler(
     private val sdkContext: Context,
     private val searchManager: SearchManager,
     private val locationSource: FusedLocationSource,
+    private val vendorConfig: VendorConfig?,
 ) : AutoCloseable {
-    val twinsApiUrl = "https://apiservices.balady.gov.sa/v1/urbi-services/twins-api/v1/search/dgis"
-
     private var objectSearchFuture: AutoCloseable? = null
     private var searchFuture: AutoCloseable? = null
     private var itemMarkerInfosFuture: AutoCloseable? = null
@@ -54,10 +55,15 @@ class SearchHandler(
                     return@onResult
                 }
 
+                if (vendorConfig == null || vendorConfig.overrides[CustomOverrides.TWINS_API.key] == null) {
+                    result?.success(response.toMessage(null))
+                    return@onResult
+                }
+
                 thread {
                     try {
                         val url = URL(
-                            "${this@SearchHandler.twinsApiUrl}?dgis_id=${objectId.objectId}&partner_code=momrah&key=28ed92f1-de4b-4060-b159-2dc19e9b8bf5"
+                            "${vendorConfig.overrides[CustomOverrides.TWINS_API.key]}?dgis_id=${objectId.objectId}&partner_code=momrah&key=28ed92f1-de4b-4060-b159-2dc19e9b8bf5"
                         )
                         val twinsResponse = JSONTokener(url.readText()).nextValue() as JSONObject
                         val code = twinsResponse.getJSONObject("meta").getInt("code")
@@ -230,7 +236,7 @@ class SearchHandler(
     fun fetchNextPage(pageId: PageIdMessage, result: Result<PageMessage>?) {
         if (this.pages[pageId.id] == null) {
             result?.error(IllegalArgumentException("Page with given id not exists"))
-            return
+//            return txtCilor = while. naturalOrder<>()
         }
 
         searchFuture = this.pages[pageId.id]!!.fetchNextPage().apply {

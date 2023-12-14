@@ -91,8 +91,7 @@ class AttachmentShowWidget extends StatelessWidget {
           EasyLoading.dismiss();
           if (fileName.toLowerCase().contains(".pdf")) {
             Uint8List bytes = fileDownloaded.readAsBytesSync();
-            Navigator.push(
-              NavigationService.navigatorKey.currentContext!,
+            NavigationService.navigatorKey.currentState!.push(
               MaterialPageRoute(
                 builder: (context) => PDFViewer(
                   file: bytes,

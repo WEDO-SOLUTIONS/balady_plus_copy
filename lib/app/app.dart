@@ -60,9 +60,9 @@ class App extends StatelessWidget {
               primaryColor: AppColor.blue,
               scaffoldBackgroundColor: AppColor.scaffoldBackground,
               fontFamily: AppConfig.appFontType,
+              useMaterial3: false,
               appBarTheme: const AppBarTheme(backgroundColor: AppColor.blue),
             ),
-
             builder: EasyLoading.init(builder: BotToastInit()),
             navigatorObservers: [
               BotToastNavigatorObserver(),

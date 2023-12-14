@@ -1,0 +1,46 @@
+import "dart:ui";
+class Base {
+  // Base
+  static const black_100 = Color(0xFF1E2A36);
+  static const grey_10 = Color(0xFFF5F7FA);
+  static const grey_100 = Color(0xFF22272E);
+  static const grey_110 = Color(0xFF1C2128);
+  static const grey_120 = Color(0xFF171D23);
+  static const grey_130 = Color(0xFF0B1218);
+  static const black_translucent_12 = Color(0x1E2A361F);
+  static const black_translucent_24 = Color(0x1E2A363D);
+  static const black_translucent_36 = Color(0x1E2A365C);
+  static const black_translucent_64 = Color(0x1E2A36A3);
+  static const grey_saturated_light_translucent_12 = Color(0x566B831F);
+  static const grey_saturated_light_translucent_24 = Color(0x566B833D);
+  static const grey_saturated_light_translucent_36 = Color(0x566B835C);
+  static const red_60 = Color(0xFFFE7772);
+  static const red_70 = Color(0xFFFF5555);
+  static const red_80 = Color(0xFFE0373D);
+  static const red_translucent_12 = Color(0xE0373D1F);
+  static const white_100 = Color(0xFFFFFFFF);
+  static const white_translucent_12 = Color(0xFFFFFF1F);
+  static const white_translucent_24 = Color(0xFFFFFF3D);
+  static const white_translucent_36 = Color(0xFFFFFF5C);
+  static const white_translucent_64 = Color(0xFFFFFFA3);
+  static const green_60 = Color(0xFF59C36A);
+  static const green_70 = Color(0xFF3EAE54);
+  static const green_80 = Color(0xFF359748);
+  static const green_translucent_12 = Color(0x6FA72A1F);
+  static const tiffany_60 = Color(0xFF25BFBB);
+  static const tiffany_70 = Color(0xFF1CA9A6);
+  static const tiffany_80 = Color(0xFF1E928F);
+  static const tiffany_100 = Color(0xFF046F6D);
+  static const tiffany_translucent_12 = Color(0x1E928F1F);
+  static const tiffany_translucent_12_2 = Color(0x1E928FA3);
+  static const yellow_35 = Color(0xFFFEC257);
+  static const yellow_40 = Color(0xFFFFB814);
+  static const yellow_60 = Color(0xFFD89B05);
+  static const yellow_70 = Color(0xFFBE890E);
+  static const yellow_80 = Color(0xFFA5760F);
+  static const yellow_translucent_12 = Color(0xBE890E1F);
+  static const grey_saturated_dark_transparent_12 = Color(0x8495A81F);
+  static const grey_saturated_dark_transparent_24 = Color(0x8495A83D);
+  static const grey_saturated_dark_transparent_36 = Color(0x8495A85C);
+  static const grey_saturated_dark_transparent_64 = Color(0x8495A8A3);
+}

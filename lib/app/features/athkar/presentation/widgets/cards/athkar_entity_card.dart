@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/features/athkar/athkar_exports.dart'
     show AthkarEntity, AthkarEntityContentParams;
 import 'package:flutter/material.dart';
@@ -34,14 +35,16 @@ class _AthkarEntityCardState extends State<AthkarEntityCard> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () =>
-          Navigator.pushNamed(context, RouteName.athkarEntityContentPage,
+      //Navigator
+      onTap: () => NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.athkarEntityContentPage,
               arguments: AthkarEntityContentParams(
                 widget.athkarEntity.name,
                 widget.athkarEntity,
                 widget.pageNumber,
                 widget.athkarEntitiesList,
               )),
+
       child: Container(
         margin: const EdgeInsets.only(bottom: 12.0),
         decoration: const BoxDecoration(

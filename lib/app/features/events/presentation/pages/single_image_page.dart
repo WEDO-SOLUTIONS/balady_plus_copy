@@ -39,8 +39,6 @@ class _SingleEventDescriptionPageState
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
 
   String img = "";

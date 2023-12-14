@@ -20,7 +20,7 @@ class ReportHomeCard extends StatelessWidget {
             dialogKeyName: DialogName.vdTypesDialog,
             currentRouteName: "HomePage",
             child: BottomSheetWithActions(
-              title: "choose_incident_type".tr(),
+              title: "اختر نوع البلاغ".tr(),
               body: VDAllTypesDialog(),
             ));
       },

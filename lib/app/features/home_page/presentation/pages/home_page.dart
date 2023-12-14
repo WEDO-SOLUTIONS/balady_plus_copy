@@ -2,7 +2,6 @@ import 'package:balady_plus/app/features/map_page/presentation/mvvm/layers_gis_v
 import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
@@ -13,7 +12,9 @@ import '../../home_exports.dart' show HomeBottomSheet, HomeMap;
 final GlobalKey<NavigatorState> mapKey = new GlobalKey<NavigatorState>();
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, required this.hideControls});
+
+  final bool hideControls;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -55,8 +56,10 @@ class _HomePageState extends State<HomePage> /*with WidgetsBindingObserver*/ {
       body: TabPageContainer(
         child: Stack(
           children: [
-            HomeMap(),
-            HomeBottomSheet(),
+            HomeMap(
+              hideControls: widget.hideControls,
+            ),
+            if (!widget.hideControls) const HomeBottomSheet(),
           ],
         ),
       ),

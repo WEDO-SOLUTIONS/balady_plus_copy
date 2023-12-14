@@ -1,0 +1,198 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_features/debug_overlay/widgets/debug_navigation_controll.dart';
+import 'package:mapness/_features/debug_overlay/widgets/debug_server_url.dart';
+import 'package:mapness/_features/debug_overlay/widgets/sso_credential_view.dart';
+import 'package:mapness/_features/debug_overlay/widgets/voice_picker.dart';
+import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/providers/uuid_provider.dart';
+import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+
+class DebugSheet extends ConsumerStatefulWidget {
+  const DebugSheet({
+    super.key,
+    required DraggableScrollableController draggableController,
+  }) : _draggableController = draggableController;
+
+  final DraggableScrollableController _draggableController;
+
+  @override
+  ConsumerState<DebugSheet> createState() => _DebugSheetState();
+}
+
+class _DebugSheetState extends ConsumerState<DebugSheet> {
+  @override
+  void initState() {
+    super.initState();
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+      setState(() {
+        _packageInfo = packageInfo;
+      });
+    });
+  }
+
+  PackageInfo? _packageInfo;
+
+  @override
+  Widget build(BuildContext context) {
+    return DraggableScrollableSheet(
+      minChildSize: 0,
+      maxChildSize: 0.9,
+      initialChildSize: 0,
+      snapSizes: const [0, 0.9],
+      controller: widget._draggableController,
+      builder: (context, scrollController) {
+        return Container(
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24),
+              topRight: Radius.circular(24),
+            ),
+            color: Colors.white,
+          ),
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              physics: const ClampingScrollPhysics(),
+              controller: scrollController,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "development-menu",
+                            style: Theme.of(context)
+                                .extension<ThemeTextStyles>()
+                                ?.headingS
+                                .copyWith(color: Colors.black),
+                          ),
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "App version: ",
+                                  style: Theme.of(context)
+                                      .extension<ThemeTextStyles>()
+                                      ?.textS
+                                      .copyWith(color: Colors.black54),
+                                ),
+                                TextSpan(
+                                  text:
+                                      "${_packageInfo?.version}(${_packageInfo?.buildNumber})",
+                                  style: Theme.of(context)
+                                      .extension<ThemeTextStyles>()
+                                      ?.accentS
+                                      .copyWith(color: Colors.black87),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      SvgPicture.asset(
+                        'assets/icons/svg/ic_bug.svg',
+                        height: 30,
+                        package: PackageConfig.packageName,
+                      ),
+                    ],
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Divider(
+                      color: Colors.black54,
+                    ),
+                  ),
+                  Text(
+                    "Git branch:",
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.textS
+                        .copyWith(color: Colors.black),
+                  ),
+                  Text(
+                    PackageConfig.gitBranch,
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.accentL
+                        .copyWith(color: Colors.black),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Text(
+                    "Git commit:",
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.textS
+                        .copyWith(color: Colors.black),
+                  ),
+                  Text(
+                    PackageConfig.gitCommit,
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.accentL
+                        .copyWith(color: Colors.black),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Text(
+                    "Vendor:",
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.textS
+                        .copyWith(color: Colors.black),
+                  ),
+                  Text(
+                    PackageConfig.vendorConfig,
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.accentL
+                        .copyWith(color: Colors.black),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Text(
+                    "Uuid:",
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.textS
+                        .copyWith(color: Colors.black),
+                  ),
+                  Text(
+                    ref.watch(uuidProviderProvider),
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.accentS
+                        .copyWith(color: Colors.black),
+                  ),
+                  const SizedBox(height: 8),
+                  LabeledElevatedButton(
+                    onPressed: () =>
+                        ref.read(uuidProviderProvider.notifier).randomize(),
+                    label: 'randomize uuid',
+                  ),
+                  const DebugServerUrl(),
+                  const SizedBox(height: 12),
+                  const SsoCredentialView(),
+                  const VoicePicker(),
+                  const DebugNavigationControll(),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

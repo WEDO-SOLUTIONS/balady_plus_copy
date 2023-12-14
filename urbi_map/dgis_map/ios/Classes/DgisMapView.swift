@@ -3,6 +3,7 @@ import Flutter
 import DGis
 
 class DgisMapView: NSObject, FlutterPlatformView, MapApi {
+
     private class Events {
         static let zoomOutEvent = "zoomOutState"
         static let zoomInEvent = "zoomInState"
@@ -29,8 +30,12 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     private var zoomControlHandler: ZoomControlHandler?
     private var locationControlHandler: LocationControlHandler?
     private var indoorControlHandler: IndoorControlHandler?
+    private var routeHandler: RouteHandler?
+    private var navigationHandler: NavigationHandler?
     private var searchHandler: SearchHandler?
-    
+    private var packagesHandler: PackagesHandler?
+    private var weatherHandler: WeatherHandler?
+
     private var objectTapHandler: ObjectTapHandler?
     private var visibleRectHandler: VisibleRectHandler?
     
@@ -40,7 +45,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     private lazy var positioningService = PlatformPositioningServicesFactory()
     
     private var moveCameraCancellable: DGis.Cancellable?
-    
+
     init(
         dgisSdk sdk: Container,
         frame: CGRect,
@@ -50,6 +55,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     ) {
         self._view = UIView(frame: frame)
         self.sdk = sdk
+        let context = try! sdk.context
         self.registrar = registrar
         super.init()
         
@@ -68,8 +74,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.locationControlHandler?.cancel()
         self.indoorControlHandler?.cancel()
         self.visibleRectHandler?.cancel()
+        self.routeHandler?.cancel()
+        self.navigationHandler?.cancel()
         self.compassControlHandler?.cancel()
         self.trafficAndParkingControlHandler?.cancel()
+        self.packagesHandler?.cancel()
     }
     
     // MARK: - Controls initialize
@@ -96,10 +105,26 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             eventChannel: eventChannel
         )
         
+        self.routeHandler = RouteHandler(
+            map: map,
+            sdk: self.sdk,
+            eventChannel: eventChannel,
+            positioningService: self.positioningService
+        )
+        
+        self.navigationHandler = NavigationHandler(
+            map: map,
+            mapView: mapView,
+            sdk: self.sdk,
+            eventChannel: eventChannel,
+            view: self._view
+        )
+        
         self.searchHandler = SearchHandler(
             searchManager: try! SearchManager.createOnlineManager(context: try! sdk.context),
             map: map,
-            sdkContext: self.sdk
+            sdkContext: self.sdk,
+            vendorConfig: SwiftDgisMapPlugin.vendorConfig
         )
         
         self.compassControlHandler = CompassControlHandler(
@@ -112,6 +137,16 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             eventChannel: eventChannel
         )
         
+        self.packagesHandler = PackagesHandler(
+            sdk: try! sdk.context,
+            eventChannel: eventChannel
+        )
+        
+        self.weatherHandler = WeatherHandler(
+            sdkContext: self.sdk,
+            map: map
+        )
+
         setupTapHandler()
     }
     
@@ -174,8 +209,29 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func overrideLocalesLocales(_ locales: [String], completion: @escaping (FlutterError?) -> Void) {
         let manager = getLocaleManager(context: try! sdk.context)
-        manager.overrideLocales(locales: locales)
+        manager.overrideLocales(locales: locales.map {
+            let parts = $0.components(separatedBy: "-")
+            return Locale(language: parts[0], region: parts[1])
+        })
         
+        completion(nil)
+    }
+    
+    func setCameraPaddingCameraPadding(_ cameraPadding: CameraSetPaddingMessage, completion: @escaping (FlutterError?) -> Void) {
+        guard let map = self.map else {
+            completion(FlutterError(
+                code: "IllegalArgumentException",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+            return
+        }
+        map.camera.padding = Padding(
+            left: cameraPadding.leftPadding.uint32Value,
+            top: cameraPadding.topPadding.uint32Value,
+            right: cameraPadding.rightPadding.uint32Value,
+            bottom: cameraPadding.bottomPadding.uint32Value
+        )
         completion(nil)
     }
     
@@ -206,8 +262,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             ))
             return
         }
-        completion(nil)
-        
+        completion(nil)   
     }
     
     func moveCameraCameraPosition(_ cameraPosition: CameraPositionMessage, duration: NSNumber, animationType: CameraAnimationTypeMessage, completion: @escaping (FlutterError?) -> Void) {
@@ -337,7 +392,28 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             completion: completion
         )
     }
-    
+
+    func search(byRubricsRubrics rubrics: [NSNumber], spatialRestriction: [GeoPointMessage]?, weekTime: WeekTimeSearchMessage?, searchRect: GeoRectMessage?, sortingType: SortingTypeMessage, pageSize: NSNumber, completion: @escaping (SearchResultMessage?, FlutterError?) -> Void) {
+        guard let searchHandler = self.searchHandler else {
+            completion(nil, FlutterError(
+                code: "IllegalArgumentException",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+            return
+        }
+
+        searchHandler.searchByCategories(
+            rubrics.map { RubricId(value: $0.uint64Value) },
+            spatialRestriction: spatialRestriction,
+            searchGeoRect: searchRect?.geoRect,
+            weekTimeMessage: weekTime,
+            sortingType: sortingType,
+            pageSize: pageSize.int32Value,
+            completion: completion
+        )
+    }
+
     func getDistanceToPoints(
         _ points: [DistanceRequestMessage],
         completion: @escaping ([DistanceResponseMessage]?, FlutterError?) -> Void
@@ -526,6 +602,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.objectTapHandler?.createClusteringMapObjectManager(message, completion: completion)
     }
     
+    func createMapObjectManager(completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
+        self.objectTapHandler?.createMapObjectManager(completion: completion)
+    }
+    
     func removeMapObjectManagerId(_ id: MapObjectManagerMessage, completion: @escaping (FlutterError?) -> Void) {
         self.objectTapHandler?.removeMapObjectManager(id, completion: completion)
     }
@@ -662,6 +742,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(NSNumber(value: outer.geoRect.contains(rect2: inner.geoRect)), nil)
     }
     
+    func pointBearing(from: GeoPointMessage, to: GeoPointMessage, completion: @escaping (NSNumber?, FlutterError?) -> Void) {
+        completion(NSNumber(value: from.geoPoint.bearing(point: to.geoPoint).value), nil)
+    }
+
     func onLocationPremissionGrantedDesiredAccuracy(
         _ desiredAccuracy: DesiredAccuracyMessage,
         completion: @escaping (FlutterError?) -> Void
@@ -689,7 +773,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         let map = mapFactory.map
         map.addSource(source: MyLocationMapObjectSource(
             context: context,
-            directionBehaviour: .followMagneticHeading
+            controller: MyLocationController(bearingSource: .auto)
         ))
         self.map = map
         
@@ -737,6 +821,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
                     maxZoom: Zoom(value: 18)
                 ),
             imageFactory: try! self.sdk.makeImageFactory(),
+            routeHandler: self.routeHandler,
             eventChannel: eventChannel,
             registrar: self.registrar
         )
@@ -746,7 +831,83 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         self.objectTapHandler = objectTapHandler
     }
-
+    
+    func setRouteParamsParams(_ params: RouteEditorRouteParamsMessage, completion: @escaping (FlutterError?) -> Void) {
+        self.routeHandler?.setRouteParams(params)
+        completion(nil);
+    }
+    
+    func hideRoutes(completion: @escaping (FlutterError?) -> Void) {
+        self.routeHandler?.setRoutesVisible(false)
+    }
+    
+    func startNavigation(completion: @escaping (FlutterError?) -> Void) {
+        guard let routeHandler = self.routeHandler else {
+            completion(FlutterError(
+                code: "NavigationError",
+                message: "RouteHandler not initialized",
+                details: nil
+            ))
+            return
+        }
+        
+        self.routeHandler?.setRoutesVisible(false)
+        self.navigationHandler?.startNavigation(
+            finishPoint: routeHandler.finishPoint,
+            options: routeHandler.options,
+            route: routeHandler.selectedRoute,
+            completion: completion
+        )
+    }
+    
+    func startNavigationSimulation(completion: @escaping (FlutterError?) -> Void) {
+        guard let routeHandler = self.routeHandler else {
+            completion(FlutterError(
+                code: "NavigationError",
+                message: "RouteHandler not initialized",
+                details: nil
+            ))
+            return
+        }
+        
+        self.routeHandler?.setRoutesVisible(false)
+        self.navigationHandler?.startSimulation(
+            finishPoint: routeHandler.finishPoint,
+            options: routeHandler.options,
+            route: routeHandler.selectedRoute,
+            completion: completion
+        )
+    }
+    
+    func stopNavigation(completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.stopNavigation()
+        completion(nil)
+    }
+    
+    func onCompassClicked(completion: @escaping (FlutterError?) -> Void) {
+        self.compassControlHandler?.onClicked()
+        completion(nil)
+    }
+    
+    func startFreeRoam(completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.startFreeRoam(completion: completion)
+    }
+    
+    func stopFreeRoam(completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.stopFreeRoam()
+        completion(nil)
+    }
+    
+    func toggleSound(completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.toggleSounds()
+        completion(nil)
+    }
+    
+    func setPublicTransportActiveRouteRouteIndex(_ routeIndex: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        routeHandler?.setActiveRouteIndex(routeIndex.uint64Value)
+        completion(nil)
+    }
+    
     func onTrafficAndParkingAttached(completion: @escaping (FlutterError?) -> Void) {
         self.trafficAndParkingControlHandler?.onAttachToMap()
         completion(nil)
@@ -813,5 +974,46 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
         
         completion(nil)
+    }
+
+    func findBriefRouteInfosRouteSearchOptions(_ routeSearchOptions: RouteSearchOptionsMessage, startPoint: RouteSearchPointMessage?, finishPoint: RouteSearchPointMessage?, completion: @escaping ([BriefRouteInfoMessage]?, FlutterError?) -> Void) {
+
+        let routeSearchOptionsConverted = routeSearchOptions.toRouteSearchOptions()
+
+        let startSearchPoint = startPoint?.toRouteSearchPoint()
+        let finishSearchPoint  = finishPoint?.toRouteSearchPoint()
+
+        routeHandler?.findBriefRouteInfosRouteSearchOptions(
+            routeSearchOptionsConverted,
+            startPoint: startSearchPoint,
+            finishPoint: finishSearchPoint,
+            completion: completion
+        )
+    }
+
+    func listPackages(completion: @escaping ([PackageMessage]?, FlutterError?) -> Void) {
+        packagesHandler?.listPackages(completion: completion)
+    }
+
+    func installPackageId(_ id: String, completion: @escaping (FlutterError?) -> Void) {
+        packagesHandler?.installPackage(id, completion: completion)
+    }
+
+    func listVoices(completion: @escaping ([PackageMessage]?, FlutterError?) -> Void) {
+        packagesHandler?.listVoices(completion: completion)
+    }
+
+    func installVoiceId(_ id: String, completion: @escaping (FlutterError?) -> Void) {
+        packagesHandler?.installVoice(id, completion: completion)
+    }
+
+    func setNavigatorVoiceId(_ id: String, completion: @escaping (FlutterError?) -> Void) {
+        navigationHandler?.setNavigatorVoice(id, completion: completion)
+    }
+
+    func toggleHeatmapMessage(
+        _ message: WeatherMapMessage,
+        completion: @escaping (NSNumber?, FlutterError?) -> Void) {
+        weatherHandler?.toggleHeatmap(message,completion: completion)
     }
 }

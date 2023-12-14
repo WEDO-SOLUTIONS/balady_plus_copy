@@ -7,7 +7,7 @@
         Helpers,
         LICENSE_MANAGEMENT_STATUS,
         Log;
-import 'package:balady_plus/app/features/license_management/license_management_exports.dart'
+import 'package:balady_new_app/app/features/license_management/license_management_exports.dart'
     show DeleteOrderConfirmationDialog, HealthRequestDetailsViewModel;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -45,7 +45,7 @@ class _OrderFooterSectionWidgetState extends State<OrderFooterSectionWidget> {
                 // as Scaffold background
                 btnBorderWidth: 2.0,
                 btnText: Helpers.translatingWord("send_request"),
-                btnTextWeight: AppFontWeight.medium,
+                btnTextWeight: FONT_WEIGHT.medium,
                 btnTextColor: AppColor.darkTurquoise,
                 btnBorderColor: AppColor.darkTurquoise,
                 btnColor: AppColor.white2,
@@ -76,7 +76,7 @@ class _OrderFooterSectionWidgetState extends State<OrderFooterSectionWidget> {
               btnBorderWidth: 2.0,
               btnText: _getButtonTextBasedStatus(),
               btnTextColor: AppColor.redBrown,
-              btnTextWeight: AppFontWeight.medium,
+              btnTextWeight: FONT_WEIGHT.medium,
             ),
         ],
       ),

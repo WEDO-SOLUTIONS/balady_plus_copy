@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
 import 'package:balady_plus/app/features/map_page/data/enums/map_enums.dart';
@@ -50,7 +51,8 @@ class SearchMapWidget extends StatelessWidget {
                   )),
               GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, RouteName.notificationPage);
+                    NavigationService.navigatorKey.currentState!
+                        .pushNamed(RouteName.notificationPage);
                   },
                   child: CircleIcon(
                     icon: "assets/icons/svg/notification_active.svg",

@@ -1,6 +1,6 @@
 /*import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
     show AppColors, Helpers, ServiceCardHeaderWidget, locator, AppEvents;
-import 'package:balady_plus/app/features/license_management/license_management_exports.dart'
+import 'package:balady_new_app/app/features/license_management/license_management_exports.dart'
     show
         IssueCertificateBodyWidget,
         IssueCertificateFooterWidget,

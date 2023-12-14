@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -12,7 +13,8 @@ class ReadHomeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, RouteName.menuQuranPage);
+        NavigationService.navigatorKey.currentState!
+            .pushNamed(RouteName.menuQuranPage);
       },
       child: HomeSection(
         title: 'read_and_repeat'.tr(),

@@ -119,7 +119,7 @@ class _RenewLicenseButtonsWidget extends StatelessWidget {
           btnBorderWidth: 2.0,
           btnText: Helpers.translatingWord('startRenewLicenseStepsButtonWord'),
           btnTextColor: AppColor.white,
-          btnTextWeight: AppFontWeight.medium,
+          btnTextWeight: FONT_WEIGHT.medium,
         ),
         Constants.verticalSpaceSmall,
         CustomTextButtonWidget(

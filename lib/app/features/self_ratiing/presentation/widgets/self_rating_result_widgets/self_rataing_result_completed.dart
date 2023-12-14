@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/self_ratiing/presentation/widgets/self_rating_result_widgets/self_rating_result_section.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +55,8 @@ class SelfRatingResultCompleted extends StatelessWidget {
           ElevatedButtonWidget.primaryCustom(
               text: "complinace_isue".tr(),
               onPressed: () {
-                Navigator.pushNamed(context, RouteName.createCompliancePage);
+                NavigationService.navigatorKey.currentState!
+                    .pushNamed(RouteName.createCompliancePage);
               })
         ]),
       ),

@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_buttons_widgets.dart';
@@ -67,8 +68,8 @@ class ServiceCardDescWidget extends StatelessWidget {
                 (card.fees ?? 1) == -1
                     ? CustomUnderlineTextdButtonWidget(
                         onPressed: () {
-                          Navigator.pushNamed(
-                              context, RouteName.calculatorMapRoute);
+                          NavigationService.navigatorKey.currentState!
+                              .pushNamed(RouteName.calculatorMapRoute);
                         },
                         text: card.feesName!,
                       )

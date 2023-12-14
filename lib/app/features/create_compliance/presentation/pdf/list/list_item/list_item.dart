@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:flutter/material.dart';
 
 class ListItem extends StatelessWidget {
@@ -15,8 +16,7 @@ class ListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
+        NavigationService.navigatorKey.currentState!.push(
           MaterialPageRoute(builder: (context) => page),
         );
       },
@@ -38,7 +38,7 @@ class ListItem extends StatelessWidget {
                   style: const TextStyle(
                     color: Color(0xFF3F3F46),
                     fontSize: 15,
-                    fontFamily: 'FrutigerLTArabic',
+                    fontFamily: 'Frutiger',
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -47,7 +47,7 @@ class ListItem extends StatelessWidget {
                   style: const TextStyle(
                     color: Color(0xFF3F3F46),
                     fontSize: 15,
-                    fontFamily: 'FrutigerLTArabic',
+                    fontFamily: 'Frutiger',
                     fontWeight: FontWeight.w700,
                   ),
                 )

@@ -13,12 +13,12 @@ class CameraStateEventHandler {
       case 'busy':
         return CameraState.busy;
       case 'fly':
-        return  CameraState.fly;
+        return CameraState.fly;
       case 'follow':
         return CameraState.follow;
-      default: 
+      default:
         return CameraState.free;
-    };
+    }
   }
 
   void cameraStateEvent(Map<dynamic, dynamic> map) {

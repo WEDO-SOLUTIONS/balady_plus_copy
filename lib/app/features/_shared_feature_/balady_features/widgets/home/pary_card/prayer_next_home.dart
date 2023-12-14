@@ -1,9 +1,8 @@
 import 'dart:async';
 
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import '../../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppFontWeight, Prayers;
-import '../../../../presentation/widgets/texts/custom_text_widget.dart';
+import '../../../../../../core/utils/utils_exports.dart' show Prayers;
 
 class NextPrayerHome extends StatefulWidget {
   final Prayers prayer;
@@ -29,7 +28,7 @@ class _NextPrayerState extends State<NextPrayerHome> {
     DateTime prayerTime = widget.time;
     final DateTime now = DateTime.now();
     if (widget.prayer == Prayers.fajr && now.isAfter(prayerTime)) {
-      prayerTime = prayerTime.add(Duration(days: 1));
+      prayerTime = prayerTime.add(const Duration(days: 1));
     }
     final remainingTime = prayerTime.difference(now);
 
@@ -71,17 +70,23 @@ class _NextPrayerState extends State<NextPrayerHome> {
         final seconds = (time.inSeconds % 60).toString().padLeft(2, '0');
 
         return hours != "00"
-            ? CustomTextWidget(
-                "$seconds : $minutes : $hours",
-                fontColor: AppColor.white,
-                fontWeight: AppFontWeight.semiBold,
-                fontSize: 26,
+            ? Text(
+                "$hours:$minutes:$seconds",
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .headingL
+                    .copyWith(
+                      color: Colors.white,
+                    ),
               )
-            : CustomTextWidget(
-                "$seconds : $minutes",
-                fontColor: AppColor.white,
-                fontWeight: AppFontWeight.semiBold,
-                fontSize: 26,
+            : Text(
+                "$minutes:$seconds",
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .headingL
+                    .copyWith(
+                      color: Colors.white,
+                    ),
               );
       },
     );

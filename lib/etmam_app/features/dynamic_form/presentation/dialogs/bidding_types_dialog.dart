@@ -66,7 +66,7 @@ class _BiddingTypeDialog extends State<BiddingTypeDialog> {
                         Helpers.translatingWord(
                             "customerVoiceSelectReportTypeWord"),
                         fontColor: AppColors.black400,
-                        fontWeight: AppFontWeight.medium,
+                        fontWeight: FONT_WEIGHT.medium,
                       ),*/
                       Constants.verticalSpaceSmall,
                     ],

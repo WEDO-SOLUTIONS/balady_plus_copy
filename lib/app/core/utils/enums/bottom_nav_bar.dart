@@ -9,4 +9,12 @@ enum BottomNavBar {
   const BottomNavBar({required this.icon, required this.label});
   final Object icon;
   final String label;
+
+  static const List<BottomNavBar> arrangedValues = [
+    BottomNavBar.home,
+    // BottomNavBar.navigaton,
+    // BottomNavBar.nearby,
+    BottomNavBar.services,
+    BottomNavBar.profile,
+  ];
 }

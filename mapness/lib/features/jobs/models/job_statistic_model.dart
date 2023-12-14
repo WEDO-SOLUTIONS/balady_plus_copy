@@ -1,0 +1,30 @@
+import 'package:flutter/foundation.dart';
+
+@immutable
+class JobStatisticModel {
+  final int? jobsCount;
+  final int? providersCount;
+
+  const JobStatisticModel({
+    this.jobsCount,
+    this.providersCount,
+  });
+
+  factory JobStatisticModel.fromJson(Map<String, dynamic> json) =>
+      JobStatisticModel(
+        jobsCount: json['jobsCount'] as int?,
+        providersCount: json['providersCount'] as int?,
+      );
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is JobStatisticModel &&
+        other.jobsCount == jobsCount &&
+        other.providersCount == providersCount;
+  }
+
+  @override
+  int get hashCode => jobsCount.hashCode ^ providersCount.hashCode;
+}

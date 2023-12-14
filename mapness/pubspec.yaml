@@ -1,0 +1,107 @@
+name: mapness
+description: A new Flutter package project.
+
+version: 2.1.0+7.4
+publish_to: "none"
+
+environment:
+  sdk: ">=3.0.3 <4.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  cupertino_icons: ^1.0.6
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.4.1
+  go_router: 11.1.1
+  shared_preferences: ^2.2.2
+  # the annotation package containing @riverpod
+  riverpod_annotation: 2.1.6
+  async: ^2.11.0
+
+  ##! Internet
+  # Http client for Dart, which supports Interceptors
+  dio: ^5.0.0
+  pretty_dio_logger: ^1.3.1
+  flutter_appauth:
+    path: ../flutter_appauth/flutter_appauth
+
+  ##! Local Storage
+  # Lightweight fast key-value database
+  hive_flutter: ^1.1.0
+  flutter_svg: ^2.0.7
+
+  # Map urbi SDK
+  dgis_map:
+    path: ../urbi_map/dgis_map
+
+  balady_uikit:
+    path: ../balady_uikit
+
+  balady_plus:
+    path: ..
+
+  google_fonts: ^6.1.0
+  collection: ^1.17.1
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.18.0
+  wakelock_plus: ^1.1.3
+  provider: ^6.0.5 # todo: refactor
+  url_launcher: ^6.1.14
+  shimmer: ^3.0.0
+  cube_transition_plus: #  ^2.0.1 # version from pub has bug, use it when PR will be merged
+    git:
+      url: https://github.com/Demezy/cube_transition_plus
+  protobuf: ^3.1.0
+  permission_handler: ^11.0.1
+  package_info_plus: ^4.2.0
+  hive_generator: ^2.0.1
+  connectivity_plus: ^5.0.1
+  hive: ^2.2.3
+  path_provider: ^2.1.1
+  expansion_widget: ^0.0.3
+  uuid: ^3.0.7
+  carousel_slider: ^4.2.1
+  rxdart: ^0.27.7
+  geolocator: ^10.1.0
+  flutter_compass: ^0.8.0
+  vibration: ^1.8.3
+  timelines: ^0.1.0
+  share_plus: ^4.5.3
+  image_picker: ^0.8.6
+  geobase: ^1.0.0
+  crypto: ^3.0.3
+  mixpanel_flutter: ^2.2.0
+  rate_my_app: ^2.0.0
+  webview_flutter: ^4.4.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mocktail: ^1.0.0
+  random_string: ^2.3.1
+  flutter_lints: ^2.0.3
+  # a tool for running code generators
+  build_runner: 2.4.6
+  # the code generator
+  riverpod_generator: 2.3.3
+  # riverpod_lint makes it easier to work with Riverpod
+  riverpod_lint: 2.1.1
+  # import custom_lint too as riverpod_lint depends on it
+  custom_lint: 0.5.3
+  go_router_builder: ^2.3.4
+
+flutter:
+  assets:
+    - assets/
+    - assets/icons/svg/
+    - assets/icons/svg/social/
+    - assets/icons/svg/quick_filters/
+    - assets/icons/svg/weather/
+    - assets/icons/svg/weather/night/
+    - assets/icons/svg/weather/day/
+    - assets/icons/svg/layers/
+    - assets/icons/svg/poi_card/
+    - assets/images/
+    - assets/images_svg/

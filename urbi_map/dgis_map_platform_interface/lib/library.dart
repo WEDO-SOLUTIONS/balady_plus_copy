@@ -20,7 +20,8 @@ export 'src/events/visible_rect_events.dart' show VisibleRectEvent, VisibleRect;
 
 export 'src/events/marker_tap_event.dart' show MarkerWithPhotoTapEvent;
 
-export 'src/events/route_changed_events.dart' show RouteChangedEvent;
+export 'src/events/route_changed_events.dart'
+    show ActiveRouteChangedEvent, RoutesInfoChangedEvent, RouteInfo;
 
 export 'src/events/models/lat_lng.dart' show LatLng;
 
@@ -46,5 +47,7 @@ export 'src/events/traffic_state_event.dart'
 export 'src/events/navi_message_events.dart';
 
 export 'src/events/camera_state_events.dart';
+
+export 'src/events/package_events.dart';
 
 export 'src/models.dart';

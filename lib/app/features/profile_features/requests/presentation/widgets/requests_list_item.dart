@@ -134,8 +134,8 @@ class RequestsListItem extends StatelessWidget {
                   CommonFunctions.showError((l as ServerFailure).errorMessage);
                 }, (r) {
                   if (r.submitterThrough == "BENEFICARY") {
-                    Navigator.pushNamed(
-                        context, RouteName.complianceDetailsPage, arguments: (
+                    NavigationService.navigatorKey.currentState!
+                        .pushNamed(RouteName.complianceDetailsPage, arguments: (
                       request.requestNumber.toString(),
                       request.redirectUrl
                     ));
@@ -148,8 +148,7 @@ class RequestsListItem extends StatelessWidget {
                   request.requestTypeId == 1005 ||
                   request.requestTypeId == 1004) {
                 //|| request.requestMainTypeId == '1003'
-                Navigator.pushNamed(
-                  context,
+                NavigationService.navigatorKey.currentState!.pushNamed(
                   RouteName.requestCommercialLicenseDetails,
                   arguments: RequestCommercialLicenseDetailsCubit(
                       GetRequestCommercialLicenseDetails(
@@ -164,18 +163,18 @@ class RequestsListItem extends StatelessWidget {
                 );
               } else if (request.requestTypeId == 1042 ||
                   request.requestTypeId == 1043) {
-                Navigator.pushNamed(
-                    context, RouteName.posterReqeuestDetailsPage,
+                NavigationService.navigatorKey.currentState!.pushNamed(
+                     RouteName.posterReqeuestDetailsPage,
                     arguments: request.requestNumber);
               } else if (request.requestTypeId == 1028) {
-                Navigator.pushNamed(
-                    context, RouteName.permitsRequestDetailsPage,
+                NavigationService.navigatorKey.currentState!.pushNamed(
+                  RouteName.permitsRequestDetailsPage,
                     arguments: request.requestNumber);
               } else if (request.requestTypeId == 1026) {
-                Navigator.pushNamed(
-                    context, RouteName.permitsTobaccoRequestDetailsPage,
+                NavigationService.navigatorKey.currentState!.pushNamed(
+                   RouteName.permitsTobaccoRequestDetailsPage,
                     arguments: request.requestNumber);
-              } else {
+              }else {
                 if (request.redirectUrl == null) {
                   if (request.requestTypeId == 50001) {
                     EasyLoading.show();
@@ -187,6 +186,8 @@ class RequestsListItem extends StatelessWidget {
                     await failureOrSuccess.fold((failure) {
                       EasyLoading.dismiss();
                     }, (success) async {
+                      success.serviceTypeId = request.serviceTypeId;
+
                       EasyLoading.dismiss();
                       NavigationService.navigatorKey.currentState!.pushNamed(
                           RouteName.objectionsDetailsPage,

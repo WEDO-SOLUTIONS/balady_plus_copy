@@ -2,25 +2,54 @@ import 'dart:async';
 
 import 'package:dgis_map_platform_interface/src/events/route_changed_events.dart';
 
-class RouteChangedEventHandler {
-  RouteChangedEventHandler();
+class RoutesEventHandler {
+  RoutesEventHandler();
 
-  Stream<RouteChangedEvent> get routeChangedEvents => _routeChangedController.stream;
+  Stream<ActiveRouteChangedEvent> get activeRouteChangedEvents =>
+      _activeRouteChangedController.stream;
 
-  final _routeChangedController = StreamController<RouteChangedEvent>.broadcast();
+  Stream<RoutesInfoChangedEvent> get routesInfoChangedEvents =>
+      _routesInfoChangedController.stream;
 
-  void routeChangedEvent(Map<dynamic, dynamic> map) {
+  final _activeRouteChangedController =
+      StreamController<ActiveRouteChangedEvent>.broadcast();
+
+  final _routesInfoChangedController =
+      StreamController<RoutesInfoChangedEvent>.broadcast();
+
+  RouteInfo mapRouteInfo(Map<dynamic, dynamic> map) {
     final altitudes = map["altitudes"] as List<Object?>;
-    _routeChangedController.sink.add(RouteChangedEvent(
+    return RouteInfo(
       map["distance"],
       map["duration"],
       map["stairwayCount"],
       map["gateCount"],
       altitudes.whereType<int>().cast<int>().toList(),
-    ));
+    );
+  }
+
+  void activeRouteChangedEvent(Map map) {
+    _activeRouteChangedController.add(
+      ActiveRouteChangedEvent(
+        map["index"],
+      ),
+    );
+  }
+
+  void routesInfoChangedEvent(Map map) {
+    final routes = (map["routes"] as List<dynamic>)
+        .map(
+          (e) => mapRouteInfo(e as Map),
+        )
+        .toList();
+
+    _routesInfoChangedController.add(
+      RoutesInfoChangedEvent(routes),
+    );
   }
 
   Future<void> dispose() async {
-    await _routeChangedController.close();
+    await _routesInfoChangedController.close();
+    await _activeRouteChangedController.close();
   }
 }

@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>perm</key>
-	<string></string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -45,8 +43,17 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAllowsArbitraryLoadsInWebContent</key>
+	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>Play Videos</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>To Allow to Add Events to the calendar</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Used to take photos for Reports</string>
 	<key>NSFaceIDUsageDescription</key>
@@ -63,8 +70,6 @@
 	<string>By Acceing the mic, the app can register the sound for Reports</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Photo Library is used to choose photos for Reports</string>
-	<key>NSCalendarsUsageDescription</key>
-<string>To Allow to Add Events to the calendar</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -79,11 +84,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	
-<key>io.flutter.embedded_views_preview</key>
-<true/>
-<key>NSAllowsArbitraryLoadsInWebContent</key>
-<true/>
-
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
+	<key>perm</key>
+	<string></string>
 </dict>
 </plist>

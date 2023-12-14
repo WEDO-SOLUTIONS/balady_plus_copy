@@ -1,4 +1,5 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
@@ -19,7 +20,10 @@ import '../../../../calendar/presentation/widgets/calendar_image_widget.dart';
 class CalendarHomeItemWidget extends StatelessWidget {
   const CalendarHomeItemWidget({
     super.key,
+    this.padding,
   });
+
+  final EdgeInsets? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +35,7 @@ class CalendarHomeItemWidget extends StatelessWidget {
           if (item == null) return Container();
           return Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
               Padding(
@@ -45,8 +49,8 @@ class CalendarHomeItemWidget extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(
-                            context, RouteName.calendarMainPage);
+                        NavigationService.navigatorKey.currentState!
+                            .pushNamed(RouteName.calendarMainPage);
                       },
                       child: CustomTextWidget(
                         "show_all".tr(),
@@ -57,14 +61,16 @@ class CalendarHomeItemWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
-              Container(
-                height: 190,
-                child: ListView.builder(
+              SizedBox(
+                height: 200,
+                child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
+                  padding: padding,
+                  separatorBuilder: (_, __) => const SizedBox(width: 16),
                   itemCount: state.searchItems.length ?? 0,
                   itemBuilder: (context, index) => GestureDetector(
                     onTap: () {
@@ -74,9 +80,11 @@ class CalendarHomeItemWidget extends StatelessWidget {
                     },
                     child: Container(
                       height: 180,
-                      width: MediaQuery.of(context).size.width,
+                      width: MediaQuery.of(context).size.width - 60,
                       margin: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
+                        // horizontal: 16,
+                        vertical: 8,
+                      ),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: Colors.white,

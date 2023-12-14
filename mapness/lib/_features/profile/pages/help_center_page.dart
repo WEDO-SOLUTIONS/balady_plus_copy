@@ -1,0 +1,174 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/profile/widgets/contact_info.dart';
+import 'package:mapness/_features/profile/widgets/expandable_cell.dart';
+import 'package:mapness/app/routes/profile.dart';
+import 'package:mapness/shared/config/package_config.dart';
+
+class HelpCenterPage extends StatelessWidget {
+  const HelpCenterPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Material(
+          color: Colors.white,
+          child: ListView(
+            children: [
+              const SizedBox(
+                width: 12,
+              ),
+              SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    children: [
+                      const SizedBox(
+                        width: 40,
+                      ),
+                      const Spacer(),
+                      Text(
+                        "Help Center",
+                        style: Theme.of(context)
+                            .extension<ThemeTextStyles>()!
+                            .accentM
+                            .copyWith(color: const Color(0xFF1E2A36)),
+                      ),
+                      const Spacer(),
+                      SizedBox(
+                        height: 40,
+                        width: 40,
+                        child: Material(
+                          borderRadius: BorderRadius.circular(8),
+                          color: const Color(0xFFF5F7FA),
+                          child: InkWell(
+                            onTap: () {
+                              context.pop();
+                            },
+                            borderRadius: BorderRadius.circular(8),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: SvgPicture.asset(
+                                'assets/icons/svg/ic_chevron_right.svg',
+                                height: 24,
+                                width: 24,
+                                package: PackageConfig.packageName,
+                                colorFilter: const ColorFilter.mode(
+                                  Color(0xFF1E2A36),
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: SizedBox(
+                  height: 52,
+                  child: Material(
+                    borderRadius: BorderRadius.circular(12),
+                    color: const Color(0xFFF5F7FA),
+                    child: InkWell(
+                      onTap: () {
+                        MomraWebsitePageRoute().push(context);
+                      },
+                      borderRadius: BorderRadius.circular(12),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        child: Row(
+                          children: [
+                            const SizedBox(
+                              width: 16.0,
+                            ),
+                            SvgPicture.asset(
+                              'assets/icons/svg/ic_chevron_left.svg',
+                              height: 24,
+                              width: 24,
+                              package: PackageConfig.packageName,
+                              colorFilter: const ColorFilter.mode(
+                                Color(0xFF1E2A36),
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                            const Spacer(),
+                            Text(
+                              "Balady website",
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()!
+                                  .textM
+                                  .copyWith(color: const Color(0xFF1E2A36)),
+                            ),
+                            const SizedBox(
+                              width: 12.0,
+                            ),
+                            SvgPicture.asset(
+                              'assets/images_svg/help_website.svg',
+                              height: 24,
+                              width: 24,
+                              package: PackageConfig.packageName,
+                              colorFilter: const ColorFilter.mode(
+                                Color(0xFF1E928F),
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 16.0,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              const ExpandableCell(
+                title: "Contact information",
+                count: 3,
+                icon: "assets/images_svg/help_contact.svg",
+                content: ContactInfo(),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  children: [
+                    const Spacer(),
+                    Text(
+                      "We are happy to connect you with Balady team, through\nthe following communication channels",
+                      textDirection: TextDirection.rtl,
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .textXS
+                          .copyWith(
+                              color: const Color(0xFF1E2A36).withOpacity(0.36)),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
