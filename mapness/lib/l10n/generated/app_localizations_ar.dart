@@ -8,6 +8,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aboutApp => 'حول التطبيق';
 
   @override
+  String get accessibility => 'إمكانية الوصول';
+
+  @override
   String get addAddress => 'إضافة عنوان';
 
   @override
@@ -27,6 +30,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get arrival => 'الوصول';
+
+  @override
+  String get beaches => 'الشواطئ';
+
+  @override
+  String get beautyCenters => 'مراكز التجميل';
 
   @override
   String get best => 'أفضل';
@@ -51,6 +60,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cancel => 'إلغاء';
+
+  @override
+  String get carServices => 'خدمات السيارات';
 
   @override
   String get challenge => 'تحدي';
@@ -123,6 +135,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get deleteHistory => 'حذف السجلّ';
+
+  @override
+  String get deliveryAvailable => 'التسليم متاح';
 
   @override
   String get dentalCenters => 'مراكز طب الأسنان';
@@ -219,6 +234,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get hospitals => 'المستشفيات';
+
+  @override
+  String get hotels => 'الفنادق';
 
   @override
   String get hrs => 'ساعة';
@@ -326,6 +344,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get mapLayerTransport => 'المواصلات';
 
   @override
+  String get markets => 'الأسواق';
+
+  @override
   String get menu => 'قائمة';
 
   @override
@@ -342,6 +363,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get mosques => 'المساجد';
+
+  @override
+  String get motorVisual => 'الموتور، بصري';
 
   @override
   String get myChallenge => 'التحدي الخاص بي';
@@ -450,6 +474,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get ready => 'مستعد';
+
+  @override
+  String get recreationalCenters => 'مراكز الترفيه';
 
   @override
   String get refresh => 'إعادة تحميل';
@@ -578,6 +605,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get specifyOnTheMap => 'حدد على الخريطة';
 
   @override
+  String get sportClubs => 'النوادي والصالونات الرياضية';
+
+  @override
   String get sportsGround => 'الملاعب الرياضية';
 
   @override
@@ -608,7 +638,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get theTripTook => 'استغرقت الرحلة';
 
   @override
-  String get tinId => 'رقم هوية دافع الضرائب';
+  String get tinId => 'رقم الرخصة التجارية';
 
   @override
   String get to => 'إلى';
@@ -678,13 +708,4 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get youSearch => 'انت تبحث';
-
-  @override
-  String get deliveryAvailable => 'التسليم متاح';
-
-  @override
-  String get accessibility => 'إمكانية الوصول';
-
-  @override
-  String get motorVisual => 'الموتور، بصري';
 }
