@@ -714,6 +714,13 @@ class ApiUrl {
 
   static String graveActiveRequestDetails(String id, int idType) =>
       'v2/ekram-mobile-services/request-details/$id/$idType';
+
+
+
+
+  static String joodEskanGenerateDonation = "v1/joodeskan-services/generate-donation-url";
+
+
   //! POST
 
   //! Delete
