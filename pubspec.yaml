@@ -169,8 +169,9 @@ dependencies:
   carousel_slider: ^4.2.1
   add_2_calendar: ^2.1.2
   flutter_svg_provider:
-  flutter_datetime_picker:
-  
+#  flutter_datetime_picker:
+  flutter_datetime_picker_plus: ^2.1.0
+
 
 
   
@@ -222,6 +223,7 @@ flutter:
   assets:
     - assets/
     - assets/icons/svg/
+    - assets/icons/svg/jod/
     - assets/icons/svg/map/
     - assets/icons/svg/prayers/
     - assets/icons/svg/athkar/
