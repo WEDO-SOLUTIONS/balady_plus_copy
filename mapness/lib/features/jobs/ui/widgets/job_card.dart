@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/app/routes/jobs_map.dart';
 import 'package:mapness/features/jobs/models/job_model.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 
 class JobCard extends ConsumerWidget {
@@ -68,13 +67,7 @@ class JobCard extends ConsumerWidget {
                         BlendMode.srcIn),
                   ),
                   const SizedBox(width: 4),
-                  Text(
-                    '25 ${context.l10n.min}',
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .accentS
-                        .apply(color: const Color(0xff1E2A36).withOpacity(.5)),
-                  ),
+
                   // if (jobModel.location?.latitude != null &&
                   //     jobModel.location?.longitude != null)
                   //   BriefRouteInfo(
