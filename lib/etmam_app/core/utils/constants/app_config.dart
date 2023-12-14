@@ -9,7 +9,7 @@ class AppConfig {
   static const String appLanguagesPath = 'assets/langs/';
   static const String appFontPath = 'assets/fonts/';
 
-  static const String arabicUIFontType = 'ArabicUIText';
+  static const String arabicUIFontType = 'FrutigerLTArabic';
   //static const String cairoFontType = 'Cairo';
   static const String somarSans = 'SomarSans';
   static const String appFontType = arabicUIFontType;

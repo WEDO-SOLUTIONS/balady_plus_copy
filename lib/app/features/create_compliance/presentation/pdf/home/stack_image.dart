@@ -32,7 +32,7 @@ class StackImage extends StatelessWidget {
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 24,
-                    fontFamily: 'ArabicUIText',
+                    fontFamily: 'FrutigerLTArabic',
                     fontWeight: FontWeight.w600,
                   ),
                 ),

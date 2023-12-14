@@ -150,7 +150,7 @@ dependencies:
       ref: e104fa94452ec236dfb27cf5ea54fb72f280bc08
   flutter_picker: ^2.1.0
   percent_indicator: ^4.2.3
-  flutter_staggered_grid_view: ^0.6.0
+  flutter_staggered_grid_view: ^0.7.0
   flutter_cached_pdfview: ^0.4.2
   provider: ^6.0.2 
   network_info_plus: ^2.1.4+1
@@ -264,6 +264,7 @@ flutter:
     - assets/compliance_pdf/images/
     - assets/compliance_pdf/text/
     - assets/athkar/
+    - assets/icons/services/
 
     # - assets/services/
 
@@ -300,7 +301,21 @@ flutter:
     - family: sura_juza_names
       fonts:
         - asset: assets/fonts/sura_juza_names.ttf
-        
+
+
+    - family: FrutigerLTArabic
+      fonts:
+
+        - asset: assets/fonts/FrutigerLTArabic45Light.ttf
+          weight: 400
+        - asset: assets/fonts/FrutigerLTArabic55Roman.ttf
+        - asset: assets/fonts/FrutigerLTArabic65Bold.ttf
+          weight: 700
+        - asset: assets/fonts/frutigerltarabic75black.ttf
+          weight: 500
+
+
+
 
   #   - family: Trajan Pro
   #     fonts:

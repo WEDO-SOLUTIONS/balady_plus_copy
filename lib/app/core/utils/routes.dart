@@ -120,6 +120,8 @@ import '../../features/posters/presentation/pages/submit_application_successfull
 import '../../features/qa/presentation/pages/qa_page.dart';
 import '../../features/self_ratiing/presentation/pages/self_rating_main_page.dart';
 import '../../features/self_ratiing/presentation/pages/self_rating_result_page.dart';
+import '../../features/services/presentation/pages/all_services_page.dart';
+import '../../features/services/presentation/pages/dashboard_page/presentation/pages/profile_page.dart';
 import '../../features/unknow/pages/investment_page.dart';
 import '../../features/unknow/pages/temp_rental_page.dart';
 import '../../features/_shared_feature_/presentation/pages/view_dms_image_screen.dart';
@@ -731,6 +733,10 @@ class Routes {
 
         RouteName.EkramRequestTransportationStartService: (context) =>
             const EkramRequestTransportationStartService(),
+
+        RouteName.DashbordDataPage: (context) => const DashbordDataPage(),
+
+        RouteName.SpecificServicePage: (context) => const AllServicesPage()
       };
 }
 

@@ -17,6 +17,7 @@ import '../../../profile_features/delegators/delegators_exports.dart'
     show DelegatorsCubit;
 import '../../../public_services_features/prayer_times/prayer_times_exports.dart'
     show PrayerTimesCubit;
+import '../../../services/presentation/pages/new_services_page.dart';
 import '../../../services/services_exports.dart'
     show ServicesCubit, ServicesPage;
 import '../../../weather/presentation/bloc/weather_bloc.dart';
@@ -94,7 +95,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
               // Services-Page
               //  NearbyPage(),
               // Activities-Page
-              ServicesPage(),
+              NewServicesPage(),
               // Profile-Page
               ProfilePage(),
             ],

@@ -38,7 +38,7 @@ class RequirementsItem extends StatelessWidget {
                       style: const TextStyle(
                         color: Color(0xFF52525B),
                         fontSize: 14,
-                        fontFamily: 'ArabicUIText',
+                        fontFamily: 'FrutigerLTArabic',
                         fontWeight: FontWeight.w700,
                       ),
                     ),

@@ -27,7 +27,7 @@ class ContainerRequir extends StatelessWidget {
                   style: TextStyle(
                     color: Color(0xFF52525B),
                     fontSize: 14,
-                    fontFamily: 'ArabicUIText',
+                    fontFamily: 'FrutigerLTArabic',
                     fontWeight: FontWeight.w700,
                   ),
                 ),

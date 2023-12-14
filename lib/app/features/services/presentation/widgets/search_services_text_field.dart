@@ -46,17 +46,25 @@ class _SearchServicesTextFieldState extends State<SearchServicesTextField> {
     return BlocBuilder<ServicesCubit, ServicesState>(
       builder: (context, state) {
         return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          height: 67,
+          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           child: CustomTextFieldWidget(
             controller: _textEditingController,
             hintText: 'search'.tr(),
+            textFieldVerticalPadding: 16,
+            fillColor: Color(0xffF5F7FA),
             prefixIcon: const DrawIconBasedTypeWidget(
-              icon: IconPath.search,
-              iconColor: AppColor.primary700Light,
+              icon: Icons.search,
+              iconSize: 24,
+              iconColor: Color(0x5C1E2A36),
             ),
-            borderRadius: 16,
-            borderColor: AppColor.primary900Light16,
-            suffixIcon: /* _textEditingController.text.isNotEmpty  ,*/ true
+            borderRadius: 8,
+            textFieldStyle: TextStyle(
+                color: Color(0x5C1E2A36),
+                fontSize: 14,
+                fontWeight: FontWeight.w400),
+            borderColor: Colors.transparent,
+            /* suffixIcon: _textEditingController.text.isNotEmpty
                 ? InkWell(
                     onTap: () {
                       _textEditingController.text = '';
@@ -64,10 +72,10 @@ class _SearchServicesTextFieldState extends State<SearchServicesTextField> {
                     },
                     child: const DrawIconBasedTypeWidget(
                       icon: Icons.close,
-                      iconColor: AppColor.primary700Light,
+                      iconColor: AppColor.blackModern600Light,
                     ),
                   )
-                : null,
+                : null,*/
           ),
         );
       },

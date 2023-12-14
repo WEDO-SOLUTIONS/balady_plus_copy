@@ -5,20 +5,22 @@ import '../../../../_shared_feature_/shared_feature_exports.dart'
     show DrawIconBasedTypeWidget;
 
 class CircleIcon extends StatelessWidget {
-  const CircleIcon({
-    Key? key,
-    required this.icon,
-    this.circleSize = 48,
-    this.backgroundColor,
-    this.iconColor,
-    this.iconSize = 18,
-  }) : super(key: key);
+  const CircleIcon(
+      {Key? key,
+      required this.icon,
+      this.circleSize = 48,
+      this.backgroundColor,
+      this.iconColor,
+      this.iconSize = 18,
+      this.showShadow = true})
+      : super(key: key);
 
   final Object icon;
   final double circleSize;
   final Color? backgroundColor;
   final Color? iconColor;
   final double iconSize;
+  final bool showShadow;
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +30,15 @@ class CircleIcon extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: backgroundColor ?? AppColor.blackModern50Light,
-        boxShadow: [
-          BoxShadow(
-            color: AppColor.blackModern900Light.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: showShadow == true
+            ? [
+                BoxShadow(
+                  color: AppColor.blackModern900Light.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ]
+            : [],
       ),
       child: Center(
         child: DrawIconBasedTypeWidget(
