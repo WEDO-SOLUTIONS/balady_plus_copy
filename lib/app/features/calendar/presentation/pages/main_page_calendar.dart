@@ -159,7 +159,7 @@ class _CalendarBodyState extends State<CalendarBody> {
               }
               return Column(
                 children: [
-                  SectionDate(
+                  /* SectionDate(
                     month: state.searchItems[index].getStartDay(),
                     year: state.searchItems[index].startDate?.year.toString() ??
                         "",
@@ -171,10 +171,10 @@ class _CalendarBodyState extends State<CalendarBody> {
                           RouteName.calendarDetailsPage,
                           arguments: state.searchItems[index]);
                     },
-                  ),
-                  // OldCalendarCard(
-                  //   item: state.searchItems[index],
-                  // )
+                  ),*/
+                  OldCalendarCard(
+                    item: state.searchItems[index],
+                  )
                 ],
               );
             },
