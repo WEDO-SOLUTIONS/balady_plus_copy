@@ -2,7 +2,6 @@ import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/app/routes/jobs_map.dart';
 import 'package:mapness/features/jobs/models/job_model.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
@@ -54,40 +53,6 @@ class JobCard extends ConsumerWidget {
                       .extension<ThemeTextStyles>()!
                       .textS
                       .apply(color: const Color(0xff1E2A36))),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  SvgPicture.asset(
-                    'assets/icons/svg/ic_car.svg',
-                    width: 24,
-                    height: 24,
-                    package: 'mapness',
-                    colorFilter: ColorFilter.mode(
-                        const Color(0xff1E2A36).withOpacity(.5),
-                        BlendMode.srcIn),
-                  ),
-                  const SizedBox(width: 4),
-
-                  // if (jobModel.location?.latitude != null &&
-                  //     jobModel.location?.longitude != null)
-                  //   BriefRouteInfo(
-                  //     finishPoint: RouteSearchPointMessage(
-                  //       coordinates: GeoPointMessage(
-                  //           latitude:
-                  //               double.tryParse(jobModel.location!.latitude!) ??
-                  //                   0,
-                  //           longitude:
-                  //               double.tryParse(jobModel.location!.latitude!) ??
-                  //                   0),
-                  //       objectId: DgisObjectIdMessage(
-                  //         objectId: 0,
-                  //         entranceId: 0,
-                  //       ),
-                  //     ),
-                  //     routeType: RouteSearchOptionsMessage.car,
-                  //   ),
-                ],
-              )
             ],
           ),
         ),
