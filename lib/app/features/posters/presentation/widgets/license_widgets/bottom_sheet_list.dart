@@ -30,26 +30,33 @@ class _PermitsLicenseBottomSheetListState
     return BlocProvider(
       create: (context) => PostersLicenseBloc(groupId: widget.groupId)
         ..add(const GetLicensePermitsEvents()),
-      child: BlocBuilder<PostersLicenseBloc, PostersLicenseState>(
-        builder: (context, state) {
-          return BottomSheetWithActions(
-            title: "posters_licenses_list".tr(),
-            isList: true,
-            searchable: false,
-            backgroundColor: AppColor.scaffoldBackground,
-            onSearchChanged: (String? text) {
-              /*setState(() {
-                items = (state.permitsLiceses ?? [])
-                    .where((element) => element.licenseId
-                        .toString()
-                        .toLowerCase()
-                        .contains(text ?? ""))
-                    .toList();
-              });*/
-            },
-            body: PermitLicensesListWidget(),
-          );
+      child: BlocListener<PostersLicenseBloc, PostersLicenseState>(
+        listener: (context, state) {
+          if (state.status == BlocStatus.failure) {
+            CommonFunctions.showError(state.error ?? "");
+          }
         },
+        child: BlocBuilder<PostersLicenseBloc, PostersLicenseState>(
+          builder: (context, state) {
+            return BottomSheetWithActions(
+              title: "posters_licenses_list".tr(),
+              isList: true,
+              searchable: false,
+              backgroundColor: AppColor.scaffoldBackground,
+              onSearchChanged: (String? text) {
+                /*setState(() {
+                      items = (state.permitsLiceses ?? [])
+                          .where((element) => element.licenseId
+                              .toString()
+                              .toLowerCase()
+                              .contains(text ?? ""))
+                          .toList();
+                    });*/
+              },
+              body: PermitLicensesListWidget(),
+            );
+          },
+        ),
       ),
     );
   }

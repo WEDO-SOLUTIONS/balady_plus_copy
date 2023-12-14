@@ -205,7 +205,7 @@ class PermitsReqeuestDetailsPage extends StatelessWidget {
                                                         CustomTextWidget(
                                                           requestNotesInfo
                                                                   ?.date ??
-                                                              "",
+                                                              "", 
                                                           fontSize: 12,
                                                           fontColor: AppColor
                                                               .blackModern500Light,

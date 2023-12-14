@@ -65,7 +65,7 @@ class LicenseInfo {
   String? permitEndDate;
   String? permitIssueDate;
   List<dynamic>? additionalActivities;
-
+  Status? status;
   LicenseInfo(
       {this.licenseNumber,
       this.licenseEndDate,
@@ -78,7 +78,8 @@ class LicenseInfo {
       this.permitNumber,
       this.permitEndDate,
       this.additionalActivities,
-      this.permitIssueDate});
+      this.permitIssueDate,
+      this.status});
 
   factory LicenseInfo.fromJson(Map<String, dynamic> json) => LicenseInfo(
         licenseNumber: json["licenseNumber"],
@@ -92,6 +93,7 @@ class LicenseInfo {
         permitNumber: json["permitNumber"],
         permitEndDate: json["permitEndDate"],
         permitIssueDate: json["permitIssueDate"],
+        status: json["status"] != null ? Status.fromMap(json["status"]) : null,
         additionalActivities: json["additionalActivities"] == null
             ? []
             : List<dynamic>.from(json["additionalActivities"]!.map((x) => x)),
@@ -112,6 +114,22 @@ class LicenseInfo {
             ? []
             : List<dynamic>.from(additionalActivities!.map((x) => x)),
       };
+}
+
+class Status {
+  int? id;
+  String? name;
+  Status({
+    this.id,
+    this.name,
+  });
+
+  factory Status.fromMap(Map<String, dynamic> map) {
+    return Status(
+      id: map['id'] != null ? map['id'] as int : null,
+      name: map['name'] != null ? map['name'] as String : null,
+    );
+  }
 }
 
 class LocationInfo {
