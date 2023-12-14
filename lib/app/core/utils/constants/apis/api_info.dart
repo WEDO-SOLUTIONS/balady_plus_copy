@@ -752,6 +752,11 @@ class ApiUrl {
   static String baquieApproval = 
       "v2/ekram-mobile-services/deaths/baqie-approvals";
 
+
+
+  static String joodEskanGenerateDonation = "v1/joodeskan-services/generate-donation-url";
+
+
   //! POST
 
   //! Delete

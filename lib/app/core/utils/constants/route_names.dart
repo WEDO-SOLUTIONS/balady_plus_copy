@@ -295,6 +295,8 @@ class RouteName {
   static const EkramInquiryPrintDetailsPage = 'EkramInquiryPrintDetailsPage';
   static const EkramRequestTransportationStartService =
       'EkramRequestTransportationStartService';
+
+  static const jodDonationPage = 'JodDonationPage';
 }
 
 class EtmamRoutesNames {

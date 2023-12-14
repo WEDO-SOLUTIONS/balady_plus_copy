@@ -1,0 +1,72 @@
+import 'dart:async';
+
+import 'package:balady_plus/app/core/base/base_view_model.dart';
+import 'package:balady_plus/app/core/services/global/web_service.dart';
+import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
+import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
+
+class JodDonationViewModel extends BaseViewModel {
+  final WebService repository;
+  double? amount;
+  TextEditingController textController = TextEditingController();
+  JodDonationViewModel(this.repository) ;
+
+
+
+  Future getJoodEskanServicesGenerateDonationUrl () async {
+    isLoading = true;
+    notifyListeners();
+    Response? response;
+    try {
+      Map<String,dynamic> queryParameters = {
+        "amount": amount?.toInt(),
+        "locale": "ar",
+        // "mobile": "0553655552",
+        "agentId": 1,
+      };
+      if(CommonProperties.userInfo != null) {
+        queryParameters['mobile'] = CommonProperties.userInfo!.phone!;
+      }
+      response = await repository.dio.get(
+        ApiUrl.joodEskanGenerateDonation,
+        queryParameters: queryParameters,
+      );
+      final data = response.data;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+      isLoading = false;
+      notifyListeners();
+      return result['url'];
+    }  on Exception catch (exception) {
+      CommonFunctions.sendEvent(
+        dioError: exception is DioException ? exception : null,
+        response: response,
+        ex: exception,
+      );
+      showError(exception.toString());
+    } catch (exception) {
+      CommonFunctions.sendEvent(
+        dioError: null,
+        response: response,
+        ex: Exception(exception.toString()),
+      );
+      showError(exception.toString());
+    }
+    isLoading = false;
+    notifyListeners();
+  }
+
+  void setAmount(double amount) {
+    this.amount = amount;
+    textController.text = "$amount";
+    notifyListeners();
+  }
+
+  void setAmountNotInsertTextFiled(double amount) {
+    this.amount = amount;
+    notifyListeners();
+  }
+}
