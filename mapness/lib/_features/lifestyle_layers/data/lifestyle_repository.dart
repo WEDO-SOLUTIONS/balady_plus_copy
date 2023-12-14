@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_datasource.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_service.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/building_compliance_certificate.dart';
@@ -53,7 +54,7 @@ class LifestyleRepository extends _$LifestyleRepository {
     var landsFencedFromJson2 = whiteLandsFromJson(response ?? []);
     return landsFencedFromJson2;
     }catch(e){
-      debugPrint(e);
+      debugPrint('$e');
       return null;
     }
   }
