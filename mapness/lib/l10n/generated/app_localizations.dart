@@ -141,6 +141,18 @@ abstract class AppLocalizations {
   /// **'الوصول'**
   String get arrival;
 
+  /// No description provided for @beaches.
+  ///
+  /// In ar, this message translates to:
+  /// **'الشواطئ'**
+  String get beaches;
+
+  /// No description provided for @beautyCenters.
+  ///
+  /// In ar, this message translates to:
+  /// **'مراكز التجميل'**
+  String get beautyCenters;
+
   /// No description provided for @best.
   ///
   /// In ar, this message translates to:
@@ -188,6 +200,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'إلغاء'**
   String get cancel;
+
+  /// No description provided for @carServices.
+  ///
+  /// In ar, this message translates to:
+  /// **'خدمات السيارات'**
+  String get carServices;
 
   /// No description provided for @challenge.
   ///
@@ -525,6 +543,12 @@ abstract class AppLocalizations {
   /// **'المستشفيات'**
   String get hospitals;
 
+  /// No description provided for @hotels.
+  ///
+  /// In ar, this message translates to:
+  /// **'الفنادق'**
+  String get hotels;
+
   /// No description provided for @hrs.
   ///
   /// In ar, this message translates to:
@@ -734,6 +758,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'المواصلات'**
   String get mapLayerTransport;
+
+  /// No description provided for @markets.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأسواق'**
+  String get markets;
 
   /// No description provided for @menu.
   ///
@@ -987,6 +1017,12 @@ abstract class AppLocalizations {
   /// **'مستعد'**
   String get ready;
 
+  /// No description provided for @recreationalCenters.
+  ///
+  /// In ar, this message translates to:
+  /// **'مراكز الترفيه'**
+  String get recreationalCenters;
+
   /// No description provided for @refresh.
   ///
   /// In ar, this message translates to:
@@ -1239,6 +1275,12 @@ abstract class AppLocalizations {
   /// **'حدد على الخريطة'**
   String get specifyOnTheMap;
 
+  /// No description provided for @sportClubs.
+  ///
+  /// In ar, this message translates to:
+  /// **'النوادي والصالونات الرياضية'**
+  String get sportClubs;
+
   /// No description provided for @sportsGround.
   ///
   /// In ar, this message translates to:
@@ -1302,7 +1344,7 @@ abstract class AppLocalizations {
   /// No description provided for @tinId.
   ///
   /// In ar, this message translates to:
-  /// **'رقم هوية دافع الضرائب'**
+  /// **'رقم الرخصة التجارية'**
   String get tinId;
 
   /// No description provided for @to.

@@ -29,6 +29,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get arrival => 'الوصول';
 
   @override
+  String get beaches => 'الشواطئ';
+
+  @override
+  String get beautyCenters => 'مراكز التجميل';
+
+  @override
   String get best => 'أفضل';
 
   @override
@@ -51,6 +57,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cancel => 'إلغاء';
+
+  @override
+  String get carServices => 'خدمات السيارات';
 
   @override
   String get challenge => 'تحدي';
@@ -221,6 +230,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get hospitals => 'المستشفيات';
 
   @override
+  String get hotels => 'الفنادق';
+
+  @override
   String get hrs => 'ساعة';
 
   @override
@@ -324,6 +336,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get mapLayerTransport => 'المواصلات';
+
+  @override
+  String get markets => 'الأسواق';
 
   @override
   String get menu => 'قائمة';
@@ -452,6 +467,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ready => 'مستعد';
 
   @override
+  String get recreationalCenters => 'مراكز الترفيه';
+
+  @override
   String get refresh => 'إعادة تحميل';
 
   @override
@@ -578,6 +596,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get specifyOnTheMap => 'حدد على الخريطة';
 
   @override
+  String get sportClubs => 'النوادي والصالونات الرياضية';
+
+  @override
   String get sportsGround => 'الملاعب الرياضية';
 
   @override
@@ -608,7 +629,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get theTripTook => 'استغرقت الرحلة';
 
   @override
-  String get tinId => 'رقم هوية دافع الضرائب';
+  String get tinId => 'رقم الرخصة التجارية';
 
   @override
   String get to => 'إلى';

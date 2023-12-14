@@ -29,6 +29,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get arrival => 'arrival';
 
   @override
+  String get beaches => 'Beaches';
+
+  @override
+  String get beautyCenters => 'Beauty centers';
+
+  @override
   String get best => 'Best';
 
   @override
@@ -51,6 +57,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cancel => 'Cancel';
+
+  @override
+  String get carServices => 'Car services';
 
   @override
   String get challenge => 'Challenge';
@@ -95,7 +104,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get continueTrip => 'Continue trip';
 
   @override
-  String get contributedToImproving => 'ساهم في تحسين المشهد الحضري';
+  String get contributedToImproving => 'Contributed to improving the urban landscape';
 
   @override
   String get coordinates => 'Coordinates';
@@ -221,6 +230,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hospitals => 'Hospitals';
 
   @override
+  String get hotels => 'Hotels';
+
+  @override
   String get hrs => 'hrs';
 
   @override
@@ -251,16 +263,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get iwish => 'iWish';
 
   @override
-  String get jobDescription => 'وصف الوظيفة';
+  String get jobDescription => 'Job Description';
 
   @override
-  String get jobDetails => 'تفاصيل الوظيفة';
+  String get jobDetails => 'Job Details';
 
   @override
   String get jobVacancy => 'Job Vacancy';
 
   @override
-  String get jobs => 'وظائف';
+  String get jobs => 'Jobs';
 
   @override
   String get jobsAraundYou => 'Jobs around you';
@@ -326,6 +338,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapLayerTransport => 'Transport';
 
   @override
+  String get markets => 'Markets';
+
+  @override
   String get menu => 'Menu';
 
   @override
@@ -356,7 +371,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nav_general => 'Explore';
 
   @override
-  String get nav_landing => 'Landing';
+  String get nav_landing => 'Services';
 
   @override
   String get nav_profile => 'Profile';
@@ -395,13 +410,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pharmacies => 'Pharmacies';
 
   @override
-  String get photoAndVideo => 'صور وارسل';
+  String get photoAndVideo => 'Photo and video';
 
   @override
   String get photos => 'Photos';
 
   @override
-  String get placesToShop => 'أماكن للتسوق';
+  String get placesToShop => 'Places to shop';
 
   @override
   String get placesToVisit => 'Places to visit';
@@ -446,10 +461,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile => 'Profile';
 
   @override
-  String get published => 'تم النشر';
+  String get published => 'Published';
 
   @override
   String get ready => 'Ready';
+
+  @override
+  String get recreationalCenters => 'Recreation centers';
 
   @override
   String get refresh => 'refresh';
@@ -482,7 +500,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get route3description => 'Voice assistant will keep you informed throughout your trip';
 
   @override
-  String get sahm => 'ساهم';
+  String get sahm => 'Sahm';
 
   @override
   String get schools => 'Schools';
@@ -551,7 +569,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signIn => 'Sign-in';
 
   @override
-  String get signInToUnlock => 'قم بتسجيل الدخول لتصفح الإمكانات الكاملة لتطبيق بلدي';
+  String get signInToUnlock => 'Sign in to unlock the full potential  of the Balady app';
 
   @override
   String get signInToUnlockTheFullPotentialOfTheBaladyApp => 'Sign in to unlock the full potential\nof the Balady app';
@@ -576,6 +594,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get specifyOnTheMap => 'Specify on the map';
+
+  @override
+  String get sportClubs => 'Sport clubs & Salons';
 
   @override
   String get sportsGround => 'Sports ground';
@@ -668,7 +689,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get worldHealthExpo => 'World Health Expo 2023';
 
   @override
-  String get yesterday => 'أمس';
+  String get yesterday => 'Yesterday';
 
   @override
   String get youArrived => 'You arrived';
