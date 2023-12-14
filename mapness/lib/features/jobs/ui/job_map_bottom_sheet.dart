@@ -111,8 +111,8 @@ class _JobMapBottomSheetState extends ConsumerState<JobMapBottomSheet> {
               },
               options: MarkerOptionsMessage(
                 position: GeoPointWithElevationMessage(
-                  latitude: double.parse(record.location!.latitude!),
-                  longitude: double.parse(record.location!.longitude!),
+                  longitude: double.parse(record.location!.latitude!),
+                  latitude: double.parse(record.location!.longitude!),
                   elevation: 0,
                 ),
                 icon: MarkerIconMessage(
