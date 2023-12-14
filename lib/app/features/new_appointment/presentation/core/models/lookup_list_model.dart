@@ -65,13 +65,19 @@ class Data {
 
 class LookUpItem {
   LookUpItem(
-      {this.id, this.name, this.isOther, this.fillInfo, this.localCountry});
+      {this.id,
+      this.name,
+      this.isOther,
+      this.fillInfo,
+      this.localCountry,
+      this.isDisblaed});
 
   int? id;
   String? name;
   bool? isOther;
   bool? fillInfo;
   bool? localCountry;
+  bool? isDisblaed;
 
   factory LookUpItem.fromJson(Map<String, dynamic> json) => LookUpItem(
       id: json["id"] == null ? null : json["id"],

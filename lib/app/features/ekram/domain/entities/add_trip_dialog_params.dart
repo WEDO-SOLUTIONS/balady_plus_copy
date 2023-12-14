@@ -1,3 +1,5 @@
+import 'deceased_request_details/deceased_request_details.dart';
+
 class AddTripDialogParams {
   final int? deathInfoId;
   final String? currentTripStationArrivalTime;
@@ -7,6 +9,9 @@ class AddTripDialogParams {
   final String? currentTripStationName;
   final int? currentTripStationTypeId;
   final int? deathCityId;
+  final int? cemetryId;
+  final String? cemetryName;
+  final List<Trip>? trips;
 
   AddTripDialogParams(
       {this.deathInfoId,
@@ -16,5 +21,8 @@ class AddTripDialogParams {
       this.currentTripStationLocationY,
       this.currentTripStationName,
       this.currentTripStationTypeId,
-      this.deathCityId});
+      this.deathCityId,
+      this.cemetryId,
+      this.cemetryName,
+      this.trips});
 }

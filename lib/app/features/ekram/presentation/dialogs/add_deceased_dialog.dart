@@ -22,6 +22,7 @@ import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dar
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../new_appointment/presentation/core/models/lookup_list_model.dart';
+import '../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 import '../widgets/add_deceased/cemetry_burial_date_gorgian.dart';
 import '../widgets/add_deceased/cemetry_burial_date_hijri.dart';
 import '../widgets/add_deceased/cemetry_is_epidamic_widget.dart';
@@ -79,6 +80,8 @@ class AddDeceasedDialog extends StatelessWidget {
                         text: ("confirm").tr(),
                         onPressed: () {
                           Navigator.of(context).pop(state.data);
+                          CommonFunctions.showSuccess(
+                              "add_deceassed_success".tr());
                         },
                       ),
                     ],
@@ -130,9 +133,11 @@ class _DialogBodyState extends State<DialogBody> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomVerticalSpace(height: 20),
+              VdHeaderDesc(header: "ekram_dead_deads_info".tr()),
               CustomLookUpLongDialog(
                 items: state.nationalTypes ?? [],
                 value: state.data.selectedNationalType,
+                isDisbaled: state.isFormDisabled(),
                 onEmptyList: () async {
                   return context
                       .read<EkramAddDeceasedBloc>()
@@ -156,15 +161,27 @@ class _DialogBodyState extends State<DialogBody> {
                   // controller: otherHospitalTextEditController,
                   //  focusNode: otherHospitalShipFocusNode,
                   maxLines: 1,
-                  enabled: state.data.graveDetails == null,
+                  isDigitsOnly: context
+                      .read<EkramAddDeceasedBloc>()
+                      .numberOnlyInNationalId(),
+                  enabled: !state.isFormDisabled(),
+                  maxLength: 10,
                   textInputAction: TextInputAction.done,
-                  keyboardType: TextInputType.number,
+                  keyboardType: context
+                          .read<EkramAddDeceasedBloc>()
+                          .numberOnlyInNationalId()
+                      ? TextInputType.number
+                      : TextInputType.text,
                   onChanged: (String? text) {
                     context
                         .read<EkramAddDeceasedBloc>()
                         .add(ChangeNationalId(text: text));
                   },
-                  onValidate: (String? value) {}),
+                  onValidate: (String? value) {
+                    return context
+                        .read<EkramAddDeceasedBloc>()
+                        .validateNationalId(value);
+                  }),
               CustomVerticalSpace(
                 height: 16,
               ),
@@ -176,6 +193,18 @@ class _DialogBodyState extends State<DialogBody> {
                       ? "done_check".tr()
                       : "verify".tr(),
                   onPressed: () {
+                    if (state.data.deceassedDOBGorgian?.isEmpty ?? true) {
+                      CommonFunctions.showError("birthDate_required".tr());
+                      return;
+                    }
+
+                    if (context
+                            .read<EkramAddDeceasedBloc>()
+                            .validateNationalId(state.data.deceassedId ?? "") !=
+                        null) {
+                      CommonFunctions.showError("wrong_input_data".tr());
+                      return;
+                    }
                     context
                         .read<EkramAddDeceasedBloc>()
                         .add(CheckUserInfoEvent());
@@ -186,8 +215,7 @@ class _DialogBodyState extends State<DialogBody> {
                   hintText: "ekram_first_name".tr(),
                   controller:
                       context.read<EkramAddDeceasedBloc>().firstNameController,
-                  enabled:
-                      state.allowFillData() && state.data.graveDetails == null,
+                  enabled: state.allowFillData() && !state.isFormDisabled(),
                   onChanged: (String? text) {
                     context
                         .read<EkramAddDeceasedBloc>()
@@ -200,8 +228,7 @@ class _DialogBodyState extends State<DialogBody> {
                   hintText: "ekram_second_name".tr(),
                   controller:
                       context.read<EkramAddDeceasedBloc>().secondNameController,
-                  enabled:
-                      state.allowFillData() && state.data.graveDetails == null,
+                  enabled: state.allowFillData() && !state.isFormDisabled(),
                   onChanged: (String? text) {
                     context
                         .read<EkramAddDeceasedBloc>()
@@ -214,8 +241,7 @@ class _DialogBodyState extends State<DialogBody> {
                   hintText: "ekram_third_name".tr(),
                   controller:
                       context.read<EkramAddDeceasedBloc>().thirdNameController,
-                  enabled:
-                      state.allowFillData() && state.data.graveDetails == null,
+                  enabled: state.allowFillData() && !state.isFormDisabled(),
                   onChanged: (String? text) {
                     context
                         .read<EkramAddDeceasedBloc>()
@@ -226,8 +252,7 @@ class _DialogBodyState extends State<DialogBody> {
               CustomTextFieldWidget(
                   label: "ekram_fourth_name".tr(),
                   hintText: "ekram_fourth_name".tr(),
-                  enabled:
-                      state.allowFillData() && state.data.graveDetails == null,
+                  enabled: state.allowFillData() && !state.isFormDisabled(),
                   controller:
                       context.read<EkramAddDeceasedBloc>().fourthNameController,
                   onChanged: (String? text) {
@@ -240,6 +265,7 @@ class _DialogBodyState extends State<DialogBody> {
               CustomLookUpLongDialog(
                 items: state.nationalities ?? [],
                 value: state.data.nationalityId,
+                isDisbaled: state.isFormDisabled(),
                 onEmptyList: () async {
                   return context
                       .read<EkramAddDeceasedBloc>()
@@ -257,15 +283,23 @@ class _DialogBodyState extends State<DialogBody> {
               ),
               const CustomVerticalSpace(height: 16),
               SelectReligionWidget(),
+              const CustomVerticalSpace(height: 16),
+
               SelectGenderWidget(),
-              CustomVerticalSpace(height: 16),
+              CustomVerticalSpace(height: 20),
+              VdHeaderDesc(
+                header: "burialInfo".tr(),
+              ),
               CemetryIsEpidamicWidget(),
+              CustomVerticalSpace(height: 16),
+
               SelectBurialDestinationWidget(),
               if (state.data.multipleCityRequest == true) ...[
                 CustomVerticalSpace(height: 16),
                 CustomLookUpLongDialog(
                   items: state.burialCities() ?? [],
                   value: state.data.burialCityId,
+                  isDisbaled: state.isFormDisabled(),
                   onEmptyList: () async {
                     return context
                         .read<EkramAddDeceasedBloc>()
@@ -289,6 +323,7 @@ class _DialogBodyState extends State<DialogBody> {
               CustomLookUpLongDialog(
                 items: state.burialTimeItems ?? [],
                 value: state.data.selectedTime,
+                isDisbaled: state.isFormDisabled(),
                 onEmptyList: () async {
                   return context
                       .read<EkramAddDeceasedBloc>()
@@ -311,13 +346,15 @@ class _DialogBodyState extends State<DialogBody> {
                         ? "cemetry_deceassed_burial_time".tr()
                         : state.data.otherTimeName ?? "",
                     onTap: () {
-                      context
-                          .read<EkramAddDeceasedBloc>()
-                          .add(ChangeBurialTimeOtherNameEvent());
+                      if (!state.isFormDisabled())
+                        context
+                            .read<EkramAddDeceasedBloc>()
+                            .add(ChangeBurialTimeOtherNameEvent());
                     }),
               CustomLookUpLongDialog(
                 items: state.cemetryTypeItems ?? [],
                 value: state.data.selectedCemetryType,
+                isDisbaled: state.isFormDisabled(),
                 onEmptyList: () async {
                   return context
                       .read<EkramAddDeceasedBloc>()
@@ -336,6 +373,7 @@ class _DialogBodyState extends State<DialogBody> {
               CustomLookUpLongDialog(
                 items: state.cemetries ?? [],
                 value: state.data.selectedCemetry,
+                isDisbaled: state.isCemetryDisabled(),
                 onEmptyList: () async {
                   return context
                       .read<EkramAddDeceasedBloc>()
@@ -352,6 +390,19 @@ class _DialogBodyState extends State<DialogBody> {
                 hint: ("cemetry_name").tr(),
               ),
               NotesWidget(notes: ["ekram_cemetry_note".tr()]),
+
+              if (state.data.baqieApproval != null) ...[
+                ReadOnlyField(
+                  title: "ekram_baquie_approval_status".tr(),
+                  subTitle: state.data.baqieApproval?.getStatusAr(),
+                ),
+                const CustomVerticalSpace(height: 16),
+                ReadOnlyField(
+                  title: "ekram_baquie_approval_date".tr(),
+                  subTitle: state.data.baqieApproval?.getDate(),
+                ),
+                const CustomVerticalSpace(height: 16),
+              ],
 
               CustomLookUpLongDialog(
                 items: state.orgnizations ?? [],
@@ -382,6 +433,10 @@ class _DialogBodyState extends State<DialogBody> {
                   showOptional: true,
                   onValidate: (String? value) {}),
               CustomVerticalSpace(height: 16),
+
+              VdHeaderDesc(
+                header: "transferInfo".tr(),
+              ),
               DeceasedRequiredTransferWidget(),
               if (state.data.specialTransferNeeded == true) ...[
                 CustomVerticalSpace(height: 16),

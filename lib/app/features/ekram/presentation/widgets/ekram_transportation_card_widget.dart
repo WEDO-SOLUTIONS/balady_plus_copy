@@ -5,6 +5,7 @@ import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/app_style.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
+import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/draw_icon_based_type_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
@@ -98,6 +99,10 @@ class EkramTransporationCardWidget extends StatelessWidget {
                 ],
               ),
             ),
+            ElevatedButtonWidget.primaryCustom(
+                height: 40,
+                onPressed: () => OnDetailsPress(),
+                text: "details".tr())
           ],
         ),
       ),

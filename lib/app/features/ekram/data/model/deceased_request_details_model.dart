@@ -86,40 +86,41 @@ class DeceasedRequestDetailsModel extends DeceasedRequestDetails {
 }
 
 class DeceasedInfoResponseDtoListModel extends DeceasedInfoResponseDtoList {
-  DeceasedInfoResponseDtoListModel({
-    super.deathInfoId,
-    super.specialTransferReasonId,
-    super.specialTransferReasonName,
-    super.specialTransferOtherReason,
-    super.deceasedTransportRequestStatusId,
-    super.deceasedTransportRequestStatus,
-    super.burialCityId,
-    super.burialCityName,
-    super.name,
-    super.isMuslim,
-    super.nationalityId,
-    super.nationality,
-    super.genderId,
-    super.gender,
-    super.carId,
-    super.transferDriverName,
-    super.transferDriverNumber,
-    super.carModel,
-    super.carBrand,
-    super.carManufacturingYear,
-    super.carDashboardDetailsEn,
-    super.carDashboardDetailsAr,
-    super.driverMobileNumber,
-    super.transferOrganizationName,
-    super.transferOrganizationAssignDateTime,
-    super.driverAssignDateTime,
-    super.anonymous,
-    super.transferOrganizationId,
-    super.transferOrganizationX,
-    super.transferOrganizationY,
-    super.multipleCityRequest,
-    super.specialTransferNeeded,
-  });
+  DeceasedInfoResponseDtoListModel(
+      {super.deathInfoId,
+      super.specialTransferReasonId,
+      super.specialTransferReasonName,
+      super.specialTransferOtherReason,
+      super.deceasedTransportRequestStatusId,
+      super.deceasedTransportRequestStatus,
+      super.burialCityId,
+      super.burialCityName,
+      super.name,
+      super.isMuslim,
+      super.nationalityId,
+      super.nationality,
+      super.genderId,
+      super.gender,
+      super.carId,
+      super.transferDriverName,
+      super.transferDriverNumber,
+      super.carModel,
+      super.carBrand,
+      super.carManufacturingYear,
+      super.carDashboardDetailsEn,
+      super.carDashboardDetailsAr,
+      super.driverMobileNumber,
+      super.transferOrganizationName,
+      super.transferOrganizationAssignDateTime,
+      super.driverAssignDateTime,
+      super.anonymous,
+      super.transferOrganizationId,
+      super.transferOrganizationX,
+      super.transferOrganizationY,
+      super.multipleCityRequest,
+      super.specialTransferNeeded,
+      super.trips,
+      super.deathCityId});
 
   factory DeceasedInfoResponseDtoListModel.fromMap(Map<String, dynamic> json) =>
       DeceasedInfoResponseDtoListModel(
@@ -195,6 +196,9 @@ class DeceasedInfoResponseDtoListModel extends DeceasedInfoResponseDtoList {
         specialTransferNeeded: json["specialTransferNeeded"] == null
             ? null
             : json["specialTransferNeeded"],
+        trips: json["trips"] != null
+            ? List<Trip>.from(json["trips"].map((x) => Trip.fromMap(x)))
+            : null,
       );
 }
 

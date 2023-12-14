@@ -186,6 +186,7 @@ class CustomRadioButtonEnd<T> extends StatelessWidget {
   final Color unSelectedBackgroundColor;
   final String? subTitle;
   final double? height;
+  final bool? isDisabled;
 
   CustomRadioButtonEnd(
       {Key? key,
@@ -197,13 +198,14 @@ class CustomRadioButtonEnd<T> extends StatelessWidget {
       this.endRadio = true,
       this.textSize = 14,
       this.unSelectedBackgroundColor = AppColor.white,
-      this.subTitle})
+      this.subTitle,
+      this.isDisabled})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onChange(value),
+      onTap: () => (isDisabled != true) ? onChange(value) : () {},
       child: Container(
         height: height ?? 72,
         width: double.infinity,
@@ -234,7 +236,7 @@ class CustomRadioButtonEnd<T> extends StatelessWidget {
                   groupValue: currentSelected,
                   activeColor: AppColor.primary900Light,
                   onChanged: (v) {
-                    onChange(v);
+                    if (isDisabled != true) onChange(v);
                   },
                 ),
               Expanded(
@@ -246,7 +248,9 @@ class CustomRadioButtonEnd<T> extends StatelessWidget {
                       title,
                       fontSize: textSize,
                       fontWeight: AppFontWeight.medium,
-                      fontColor: AppColor.black,
+                      fontColor: isDisabled == true
+                          ? AppColor.warmGrey2
+                          : AppColor.black,
                       maxLines: 4,
                       textAlign: TextAlign.start,
                     ),
@@ -270,7 +274,7 @@ class CustomRadioButtonEnd<T> extends StatelessWidget {
                   groupValue: currentSelected,
                   activeColor: AppColor.primary900Light,
                   onChanged: (v) {
-                    onChange(v);
+                    if (isDisabled != true) onChange(v);
                   },
                 ),
             ],

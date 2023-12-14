@@ -186,11 +186,29 @@ class DeceasedGreyCardWidget extends StatelessWidget {
               ))
             ],
           ),
+          const CustomVerticalSpace(height: 16),
+          Row(
+            children: [
+              if (item.baqieBurialPermitStatus != null)
+                Expanded(
+                    child: EkramHeaderAndDescWidget(
+                  title: ('ekram_baquie_approval_status').tr(),
+                  details: item.baqieBurialPermitStatus.toString() ?? "",
+                )),
+              CustomHorizontalSpace(width: 12),
+              if (item.baqieBurialPermitApprovalDate != null)
+                Expanded(
+                    child: EkramHeaderAndDescWidget(
+                  title: ('ekram_baquie_approval_date').tr(),
+                  details: item.baqieBurialPermitApprovalDate.toString() ?? "",
+                ))
+            ],
+          ),
           const CustomVerticalSpace(height: 20),
           DrawLineWidget(
             lineColor: AppColor.black400.withOpacity(0.2000000029802322),
           ),
-          if (!isDriver)
+          if (!isDriver && item.trips != null && item.trips!.isNotEmpty)
             ElevatedButtonWidget.primaryCustom(
               onPressed: () {
                 showLocation();

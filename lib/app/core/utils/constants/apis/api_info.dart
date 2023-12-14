@@ -749,6 +749,9 @@ class ApiUrl {
   static String validatePrintCertificate(String guid, String code) =>
       "v2/ekram-mobile-services/print-licenses/$guid/$code";
 
+  static String baquieApproval = 
+      "v2/ekram-mobile-services/deaths/baqie-approvals";
+
   //! POST
 
   //! Delete

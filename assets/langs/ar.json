@@ -3576,7 +3576,7 @@
   "is_dead_fetus":"هل المتوفى جنين؟", 
   "ekram_main_data":"البيانات الرئيسية",
   "ekram_benf_transport":"طلبات نقل وتجهيز الموتى", 
-  "ekram_empolyee_title":"تسجيل رحلة الدفن", 
+  "ekram_empolyee_title":"تسجيل رحلة نقل وتجهيز الموتى", 
   "ekram_inquiry_burial_grave":"الاستعلام عن المقابر" , 
   "ekram_inquiry_orgnizations":"الاستعلام عن مقدمي خدمات النقل والتجهيز" , 
 "ekram_inquiry_about_grave":"الاستعلام عن موقع قبر متوفى ", 
@@ -3606,11 +3606,15 @@
   "ekram_org_note":"تعرض جهات النقل بناء على المقبرة التي تم اختيارها والسعة اليومية للجهة", 
   "ekram_cemetry_note":"تعرض المقابر بناء على السعة اليومية للمقبرة", 
    "ekram_retrive_data_success_msg":"يمكنكم إكمال بيانات الطلب", 
-  
+   
    "ekram_retrive_grave_data_success_msg": "يوجد حجز مقبرة سابق خاص بالمتوفى {} ويمكنكم استكمال إدخال طلب النقل والتجهيز لنفس المتوفى", 
   "ekram_deceased_id":"رقم هوية المتوفى", 
+"ekram_baquie_approval_status":"حالة موافقة إمارة المدينة المنورة", 
+"ekram_baquie_approval_date":"تاريخ موافقة إمارة المدينة المنورة", 
+
 
   "ekram_step4_title":"بيانات الموقع والمرفقات", 
+  "add_deceassed_success": "تم إضافة بيانات المتوفي بنجاح",
 
   "ekram_print_deceased_data":"بيانات المتوفي", 
   "ekram_print_reciver_data":"بيانات مستلم الجثمان", 
@@ -3640,7 +3644,9 @@
 
   "hotel_name":"اسم الفندق",
   "hotel_class":"فئة الفندق", 
+  "wrong_input_data":"القيمة المدخلة غير صحيحة", 
   "permit_tobacco_cancel_confirm_msg":"عزيزي المستفيد، هل تريد الاستمرار بإلغاء طلب تصريح تقديم منتجات التبغ رقم {}", 
-  "permit_tobacco_name":"تصريح تقديم منتجات التبغ"
+  "permit_tobacco_name":"تصريح تقديم منتجات التبغ", 
+  "birthDate_required":"يجب إدخال تاريخ الميلاد"
 
 }

@@ -1,3 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -148,7 +151,12 @@ class DeceasedInfoResponseDtoList {
       this.transferOrganizationY,
       this.multipleCityRequest,
       this.specialTransferNeeded,
-      this.deathCityId});
+      this.deathCityId,
+      this.baqieBurialPermitApprovalDate,
+      this.baqieBurialPermitStatus,
+      this.cemeteryId,
+      this.cemeteryName,
+      this.trips});
 
   int? deathInfoId;
   int? specialTransferReasonId;
@@ -183,8 +191,17 @@ class DeceasedInfoResponseDtoList {
   bool? multipleCityRequest;
   bool? specialTransferNeeded;
   int? deathCityId;
+  String? baqieBurialPermitStatus;
+  String? baqieBurialPermitApprovalDate;
+  int? cemeteryId;
+  String? cemeteryName;
+  List<Trip>? trips;
 
   factory DeceasedInfoResponseDtoList.fromMap(Map<String, dynamic> json, int? deathCityId) => DeceasedInfoResponseDtoList(
+      cemeteryName: json["cemeteryName"],
+      cemeteryId: json["cemeteryId"],
+      baqieBurialPermitApprovalDate: json["baqieBurialPermitApprovalDate"],
+      baqieBurialPermitStatus: json["baqieBurialPermitStatus"],
       deathInfoId: json["deathInfoId"] == null ? null : json["deathInfoId"],
       specialTransferReasonId: json["specialTransferReasonId"] == null
           ? null
@@ -243,6 +260,7 @@ class DeceasedInfoResponseDtoList {
       transferOrganizationY: json["transferOrganizationY"] == null ? null : json["transferOrganizationY"],
       multipleCityRequest: json["multipleCityRequest"] == null ? null : json["multipleCityRequest"],
       specialTransferNeeded: json["specialTransferNeeded"] == null ? null : json["specialTransferNeeded"],
+      trips: json["trips"] != null ? List<Trip>.from(json["trips"].map((x) => Trip.fromMap(x))) : null,
       deathCityId: deathCityId);
 
   String getSpecialTransferReason() {
@@ -288,4 +306,24 @@ class TransportAttachResponseDto extends Equatable {
 
   @override
   List<Object?> get props => [];
+}
+
+class Trip {
+  int? nextTripStationTypeId;
+  String? nextTripStationTypeName;
+  Trip({
+    this.nextTripStationTypeId,
+    this.nextTripStationTypeName,
+  });
+
+  factory Trip.fromMap(Map<String, dynamic> map) {
+    return Trip(
+      nextTripStationTypeId: map['nextTripStationTypeId'] != null
+          ? map['nextTripStationTypeId'] as int
+          : null,
+      nextTripStationTypeName: map['nextTripStationTypeName'] != null
+          ? map['nextTripStationTypeName'] as String
+          : null,
+    );
+  }
 }

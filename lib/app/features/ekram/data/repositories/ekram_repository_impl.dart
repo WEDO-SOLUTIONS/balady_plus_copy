@@ -4,6 +4,7 @@ import 'package:balady_plus/app/features/ekram/data/data_sources/ekram_remote_da
 import 'package:balady_plus/app/features/ekram/data/model/add_trip_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/apply_deceased/apply_deceased_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/apply_deceased/grave_active_request_details.dart';
+import 'package:balady_plus/app/features/ekram/data/model/baqie_approval_response.dart';
 import 'package:balady_plus/app/features/ekram/data/model/deceased_transport_requests/transport_request_response_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/ekram_attachment_response.dart';
 import 'package:balady_plus/app/features/ekram/data/model/look_up_item_location_model.dart';
@@ -433,6 +434,18 @@ class EkramRepositoryImpl implements EkramRepository {
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage,
           statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, BaqieApprovalResponse>> baqieApproval(
+      ActiveGraveRequestParams params) async {
+    try {
+      final data = await remoteDataSource.baqieApproval(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 }

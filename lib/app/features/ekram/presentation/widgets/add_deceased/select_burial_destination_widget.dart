@@ -21,8 +21,8 @@ class SelectBurialDestinationWidget extends StatelessWidget {
           children: [
             CustomTextWidget(
               trans("burialDestination"),
-              fontColor: AppColor.primary900Light,
-              fontSize: 13.0,
+              fontColor: AppColor.blackModern700Light,
+              fontSize: 16.0,
               textAlign: TextAlign.start,
               fontWeight: AppFontWeight.bold,
             ),

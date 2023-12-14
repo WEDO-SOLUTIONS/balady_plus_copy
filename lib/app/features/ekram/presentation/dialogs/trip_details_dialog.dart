@@ -181,20 +181,22 @@ class TripDetailsDialog extends StatelessWidget {
       TripDetails? lastTrip, DeceasedInfoResponseDtoList info) {
     if (lastTrip == null) {
       return AddTripDialogParams(
-        deathCityId: info.deathCityId,
-        deathInfoId: info.deathInfoId,
-        currentTripStationArrivalTime:
-            info.driverAssignDateTime?.replaceAll("-", "/"),
-        currentTripStationId: info.transferOrganizationId,
-        currentTripStationLocationX: double.tryParse(
-          info.transferOrganizationX ?? "",
-        ),
-        currentTripStationLocationY: double.tryParse(
-          info.transferOrganizationY ?? "",
-        ),
-        currentTripStationName: info.transferOrganizationName,
-        currentTripStationTypeId: 30502,
-      );
+          deathCityId: info.deathCityId,
+          deathInfoId: info.deathInfoId,
+          currentTripStationArrivalTime:
+              info.driverAssignDateTime?.replaceAll("-", "/"),
+          currentTripStationId: info.transferOrganizationId,
+          currentTripStationLocationX: double.tryParse(
+            info.transferOrganizationX ?? "",
+          ),
+          currentTripStationLocationY: double.tryParse(
+            info.transferOrganizationY ?? "",
+          ),
+          currentTripStationName: info.transferOrganizationName,
+          currentTripStationTypeId: 30502,
+          cemetryId: info.cemeteryId,
+          cemetryName: info.cemeteryName,
+          trips: info.trips);
     } else {
       return AddTripDialogParams(
           deathCityId: info.deathCityId,
@@ -209,7 +211,10 @@ class TripDetailsDialog extends StatelessWidget {
             lastTrip.nextTripStationLocationY ?? "",
           ),
           currentTripStationName: lastTrip.nextTripStationName,
-          currentTripStationTypeId: lastTrip.nextTripStationTypeId);
+          currentTripStationTypeId: lastTrip.nextTripStationTypeId,
+          cemetryId: info.cemeteryId,
+          cemetryName: info.cemeteryName,
+          trips: info.trips);
     }
   }
 }

@@ -143,3 +143,8 @@ class SelectOrgnizationEvent extends EkramAddDeceasedEvent {
   final LookUpItem? item;
   SelectOrgnizationEvent({this.item});
 }
+
+
+class GetBaquieApprovalEvent extends EkramAddDeceasedEvent {
+  GetBaquieApprovalEvent();
+}

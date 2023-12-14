@@ -116,7 +116,9 @@ class EkramAddTripState extends Equatable {
             nextTripStationLocationX ?? this.nextTripStationLocationX,
         nextTripStationLocationY:
             nextTripStationLocationY ?? this.nextTripStationLocationY,
-        nextTripStationName: nextTripStationName ?? this.nextTripStationName,
+        nextTripStationName: clearNextStation
+            ? null
+            : nextTripStationName ?? this.nextTripStationName,
         nextTripStationTypeId:
             nextTripStationTypeId ?? this.nextTripStationTypeId,
         requestProcessId: requestProcessId ?? this.requestProcessId,
@@ -179,6 +181,13 @@ class EkramAddTripState extends Equatable {
 
   bool showLaundryList() {
     if (nextTripStationTypeId?.id == 30504) {
+      return true;
+    }
+    return false;
+  }
+
+  bool isCemetry() {
+    if (nextTripStationTypeId?.id == 30508) {
       return true;
     }
     return false;

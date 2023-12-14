@@ -122,7 +122,9 @@ class DeceasedCardWidget extends StatelessWidget {
                       Expanded(
                           child: EkramHeaderAndDescWidget(
                         title: trans('burialCity'),
-                        details: deceasedItem.burialCityId?.name ?? "",
+                        details: deceasedItem.multipleCityRequest == false
+                            ? deceasedItem.deathCity?.name ?? ""
+                            : deceasedItem.burialCityId?.name ?? "",
                       ))
                     ],
                   ),

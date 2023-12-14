@@ -26,7 +26,7 @@ class DeceasedInfoWidget extends StatelessWidget {
                 children: [
                   CustomVerticalSpace(height: 16),
                   SizedBox(
-                    height: 520,
+                    height: 560,
                     child: ListView.builder(
                       padding: EdgeInsets.zero,
                       itemCount:

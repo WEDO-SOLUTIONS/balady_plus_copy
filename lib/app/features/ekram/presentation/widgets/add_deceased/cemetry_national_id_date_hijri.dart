@@ -15,6 +15,7 @@ class CemetryNationalDobHijri extends StatelessWidget {
         builder: (context, state) {
       return HijriCalendarDateWidget(
         currentVlaue: state.data?.deceassedDOBHijri,
+        isDisabled: state.isFormDisabled(),
         fieldName: Helpers.translatingWord("cemetry_dob_hijri"),
         isMandatory: true,
         onChanged: (String? date) {

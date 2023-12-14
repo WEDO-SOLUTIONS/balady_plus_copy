@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/extensions/delay.dart';
 import 'package:balady_plus/app/features/ekram/data/model/add_trip_params.dart';
+import 'package:balady_plus/app/features/ekram/data/model/baqie_approval_response.dart';
 import 'package:balady_plus/app/features/ekram/data/model/deceased_request_details_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/ekram_attachment_response.dart';
 import 'package:balady_plus/app/features/ekram/data/model/look_up_item_location_model.dart';
@@ -102,6 +103,8 @@ abstract class EkramRemoteDataSource {
 
   Future<ResponseBodyModel<GraveActiveRequestDetails>>
       getActiveGraveRequestDetails(ActiveGraveRequestParams params);
+
+  Future<BaqieApprovalResponse> baqieApproval(ActiveGraveRequestParams params);
 }
 
 class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
@@ -1306,6 +1309,37 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
               parsedResult: GraveActiveRequestDetails.fromJson(data));
 
       return decodedResponse.toFuture();
+    } on DioError catch (error) {
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode, dioError: error);
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //   CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<BaqieApprovalResponse> baqieApproval(
+      ActiveGraveRequestParams params) async {
+    var response;
+
+    try {
+      response = await webService.dio.get(ApiUrl.baquieApproval,
+          queryParameters: {"id": params.idNo, "id_type": params.idType});
+
+      var data = response.data["data"]?["result"];
+
+      final decodedResponse = ResponseBodyModel<BaqieApprovalResponse>.fromMap(
+          response.data,
+          parsedResult: BaqieApprovalResponse.fromJson(data));
+
+      return decodedResponse.data!.result!;
     } on DioError catch (error) {
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode, dioError: error);

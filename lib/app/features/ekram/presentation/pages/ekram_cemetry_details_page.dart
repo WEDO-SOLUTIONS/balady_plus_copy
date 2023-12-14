@@ -157,14 +157,14 @@ class ApplicationInfo extends StatelessWidget {
               height: 16,
             ),
             FieldData(
-              title: Helpers.translatingWord("ekramFullName"),
+              title: Helpers.translatingWord("driver_card_applicant_name"),
               subTitle: name,
             ),
             const CustomVerticalSpace(
               height: 16,
             ),
             FieldData(
-              title: Helpers.translatingWord("ekramMobile"),
+              title: Helpers.translatingWord("driver_card_applicant_mobile"),
               subTitle: mobile,
             ),
             const CustomVerticalSpace(

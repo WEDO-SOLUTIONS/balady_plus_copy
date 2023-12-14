@@ -33,6 +33,8 @@ class EkramAddTripBloc extends Bloc<EkramAddTripEvent, EkramAddTripState> {
 
   final AddTrip _addTrip;
   final UpadateDriverLocation _upadateDriverLocation;
+  TextEditingController nextTripStationNameController = TextEditingController();
+
   EkramAddTripBloc(
       {required GetEkramLookUp getLookUp,
       required AddTrip addTrip,
@@ -77,6 +79,11 @@ class EkramAddTripBloc extends Bloc<EkramAddTripEvent, EkramAddTripState> {
       ChangeNextTripStationType e, Emitter emitter) async {
     emitter(
         state.copyWith(nextTripStationTypeId: e.item, clearNextStation: true));
+
+    nextTripStationNameController.text = "";
+    if (state.isCemetry()) {
+      nextTripStationNameController.text = state.data.cemetryName ?? "";
+    }
   }
 
   Future<void> _changeaArrivalTimeEvent(
@@ -161,6 +168,12 @@ class EkramAddTripBloc extends Bloc<EkramAddTripEvent, EkramAddTripState> {
       params.nextTripStationId = state.nextHospitalStation?.id;
     }
 
+    if (state.isCemetry()) {
+      // MM Check
+      params.nextTripStationName = state.data.cemetryName;
+      params.nextTripStationId = state.data.cemetryId;
+    }
+
     params.nextTripStationLocationX = double.tryParse(locationInfo?.x ?? "");
     params.nextTripStationLocationY = double.tryParse(locationInfo?.y ?? "");
 
@@ -194,12 +207,23 @@ class EkramAddTripBloc extends Bloc<EkramAddTripEvent, EkramAddTripState> {
       ));
       return null;
     }, (success) {
+      List<int> trips = state.data.trips
+              ?.map((e) => e.nextTripStationTypeId)
+              .whereNotNull()
+              .toList() ??
+          [];
+      List<LookUpItem>? result = success.data?.result;
+
+      result = result?.map((e) {
+        e.isDisblaed = trips.contains(e.id);
+        return e;
+      }).toList();
       emit(state.copyWith(
         status: BlocStatus.success,
-        nextStationType: success.data?.result,
+        nextStationType: result,
         errorMessage: "",
       ));
-      return success.data?.result;
+      return result;
     });
   }
 
