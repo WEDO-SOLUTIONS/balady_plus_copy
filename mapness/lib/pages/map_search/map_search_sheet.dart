@@ -129,7 +129,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
             uiIcon: "assets/icons/svg/quick_filters/ic_quick_mosques.svg",
             mapIcon: "assets/icons/svg/ic_marker.svg",
           ),
-          0
+          1
         ));
       }
     });
