@@ -361,8 +361,9 @@ class LayersControls extends _$LayersControls {
 
   void showWhiteLands(WhiteLands e) {
     update(whiteLands: e);
-    ref.read(goRouterProvider).push(LayerDetailsRoute().location,
-        extra: {"data": e});
+    ref
+        .read(goRouterProvider)
+        .push(LayerDetailsRoute().location, extra: {"data": e});
 
     print(">>>>showLandFencedInfo>>>>>>> ${e.description}");
   }
@@ -427,9 +428,7 @@ class LayersControls extends _$LayersControls {
                 ),
               ),
               onTap: () {
-                ref
-                    .read(goRouterProvider)
-                    .push(IwishCardRoute(iwishId: stateMarker.id).location);
+                IwishCardRoute.open(ref.read(goRouterProvider), stateMarker);
               },
             ),
           )

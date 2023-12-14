@@ -3,6 +3,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/features/jobs/models/job_model.dart';
 import 'package:mapness/features/jobs/providers/job_detail_provider.dart';
 import 'package:mapness/features/routing/ui/brief_route_widgets.dart';
@@ -87,10 +88,24 @@ class _JobDetailState extends ConsumerState<JobDetail> {
             onPressed: () => CommonFunctions.call(model.mobile ?? ''),
           ),
           const SizedBox(width: 12),
-          BriefRouteButton(
-            routeType: RouteSearchOptionsMessage.car,
-            onTap: () {},
-          ),
+          if (ref.read(appFeaturesProvider).naviEnabled)
+            BriefRouteButton(
+              routeType: RouteSearchOptionsMessage.car,
+              onTap: () {
+                if (model.location?.latitude == null ||
+                    model.location?.longitude == null) {
+                  return;
+                }
+                RoutingRoutesRoute(
+                  finishLabel: model.name ?? '',
+                  finishLatitude: double.parse(model.location!.latitude!),
+                  finishLongitude: double.parse(model.location!.latitude!),
+                  startLabel: context.l10n.myLocation,
+                  startLatitude: null,
+                  startLongitude: null,
+                ).push(context);
+              },
+            ),
           if (ref.read(appFeaturesProvider).naviEnabled)
             const SizedBox(width: 12),
           _buildButton(

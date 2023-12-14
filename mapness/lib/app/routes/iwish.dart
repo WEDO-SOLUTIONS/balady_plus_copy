@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/entities/iwish/models/iwish_marker.dart';
 import 'package:mapness/pages/iwish/iwish_feedback.dart';
 import 'package:mapness/pages/iwish/iwish_feedback_comment.dart';
 import 'package:mapness/pages/iwish/iwish_place_card.dart';
@@ -16,6 +17,16 @@ class IwishCardRoute extends GoRouteData {
   const IwishCardRoute({required this.iwishId});
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
+
+  static open(GoRouter router, IwishMarker marker) {
+    final route = IwishCardRoute(iwishId: marker.id);
+    final matches = router.routerDelegate.currentConfiguration.matches;
+    if (matches.last.matchedLocation.contains('/iwish')) {
+      router.pushReplacement(route.location);
+    } else {
+      router.push(route.location);
+    }
+  }
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
