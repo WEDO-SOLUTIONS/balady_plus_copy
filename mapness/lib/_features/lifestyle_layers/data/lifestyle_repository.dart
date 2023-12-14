@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_datasource.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_service.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/building_compliance_certificate.dart';
@@ -34,7 +35,6 @@ class LifestyleRepository extends _$LifestyleRepository {
 
     var markerList = esriMarkers as List<dynamic>;
     for (var element in markerList) {
-      await Future<void>.delayed(Duration.zero);
       list.add(EsriPointFeature.fromJson(element, '${params.layer.layerId}'));
     }
 
@@ -54,7 +54,8 @@ class LifestyleRepository extends _$LifestyleRepository {
     var landsFencedFromJson2 = whiteLandsFromJson(response ?? []);
     return landsFencedFromJson2;
     }catch(e){
-      print(e);
+      debugPrint('$e');
+      return null;
     }
   }
 
