@@ -13,7 +13,7 @@ part 'interesting_places.g.dart';
 
 @riverpod
 class InterestingPlaces extends _$InterestingPlaces {
-  Dio get _dio => ref.read(dGisNetworkProvider);
+  Future<Dio> get _dio => ref.read(dGisNetworkProvider.future);
 
   final _places = <InterestingPlace>[];
 
@@ -43,7 +43,7 @@ class InterestingPlaces extends _$InterestingPlaces {
 
     // TODO(nogipx): remove stubs
     try {
-      final response = await _dio.get('/interesting-places?bound=$wkt');
+      final response = await (await _dio).get('/interesting-places?bound=$wkt');
       final places = proto.InterestingPlacesResponse.fromBuffer(response.data)
           .interestingPlaces;
       return places;
