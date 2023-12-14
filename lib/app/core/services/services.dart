@@ -94,6 +94,21 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "تقويم المملكة", "description": null, "tag": null},
       "en": {"title": "Zamzam Points", "description": null, "tag": null}
     },
+    {
+      "id": 6,
+      "icon": "Jood",
+      "3d_icon": null,
+      "order": 0,
+      "isNew": false,
+      "isImportant": false,
+      "requireLogin": false,
+      "action": {
+        "type": "page",
+        "value": RouteName.jodDonationPage,
+      },
+      "ar": {"title": "jod".tr(), "description": null, "tag": null},
+      "en": {"title": "jod", "description": null, "tag": null}
+    },
   ],
   "honoring_the_dead_services": [
     {
