@@ -119,12 +119,8 @@ class _ContentState extends ConsumerState<_Content> {
               final viewModel = PoiCardViewModel(ref: ref);
 
               return widget.state.map(data: (value) {
-                ///do not remove, using for data mocking
                 final poiCardState = value.value;
-                final data = poiCardState?.gisObjectIdMessage?.id?.objectId ==
-                        70030076560519845
-                    ? getMockPoiCardData()
-                    : poiCardState?.gisObjectIdMessage;
+                final data =  poiCardState?.gisObjectIdMessage;
 
                 final qrTradeLicense = poiCardState?.qrTradeLicense;
                 final tradeLicense = poiCardState?.tradeLicense;
