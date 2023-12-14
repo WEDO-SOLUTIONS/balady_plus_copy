@@ -34,7 +34,6 @@ class LifestyleRepository extends _$LifestyleRepository {
 
     var markerList = esriMarkers as List<dynamic>;
     for (var element in markerList) {
-      await Future<void>.delayed(Duration.zero);
       list.add(EsriPointFeature.fromJson(element, '${params.layer.layerId}'));
     }
 
@@ -54,7 +53,8 @@ class LifestyleRepository extends _$LifestyleRepository {
     var landsFencedFromJson2 = whiteLandsFromJson(response ?? []);
     return landsFencedFromJson2;
     }catch(e){
-      print(e);
+      debugPrint(e);
+      return null;
     }
   }
 
