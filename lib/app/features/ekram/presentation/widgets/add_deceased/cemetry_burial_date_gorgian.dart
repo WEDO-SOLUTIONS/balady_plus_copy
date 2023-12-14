@@ -19,6 +19,7 @@ class CemetryBurialDateGorgian extends StatelessWidget {
         minValue: today,
         maxValue: tomrrow,
         currentVlaue: state.data?.burialDateGorgian,
+        isDisabled: state.isBurialDatesDisabled(),
         fieldName:
             Helpers.translatingWord("cemetry_deceassed_burial_date_gorgian"),
         isMandatory: true,

@@ -21,6 +21,7 @@ class CemetryBurialDateHijri extends StatelessWidget {
         minValue: HijriCalendar.fromDate(today),
         maxValue: HijriCalendar.fromDate(tomrrow),
         currentVlaue: state.data?.burialDateHijri,
+        isDisabled: state.isBurialDatesDisabled(),
         fieldName:
             Helpers.translatingWord("cemetry_deceassed_burial_date_hijri"),
         isMandatory: true,

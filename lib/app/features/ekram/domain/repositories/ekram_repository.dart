@@ -9,6 +9,7 @@ import '../../../../core/errors/failures.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
 import '../../data/model/add_trip_params.dart';
 import '../../data/model/apply_deceased/grave_active_request_details.dart';
+import '../../data/model/baqie_approval_response.dart';
 import '../../data/model/ekram_attachment_response.dart';
 import '../../data/model/look_up_item_location_model.dart';
 import '../../data/model/upload_letter_params.dart';
@@ -105,4 +106,7 @@ abstract class EkramRepository {
 
   Future<Either<Failure, ResponseBodyModel<GraveActiveRequestDetails>>>
       getActiveGraveRequestDetails(ActiveGraveRequestParams params);
+
+  Future<Either<Failure, BaqieApprovalResponse>> baqieApproval(
+      ActiveGraveRequestParams params);
 }

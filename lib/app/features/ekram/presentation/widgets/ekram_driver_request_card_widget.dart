@@ -8,6 +8,7 @@ import '../../../../core/utils/constants/app_style.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
+import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/draw_icon_based_type_widget.dart';
@@ -79,6 +80,11 @@ class EkramDriverRequestCardWidget extends StatelessWidget {
                     title: 'burialCity'.tr(),
                     value: ekramTransportationItem.deathCityName ?? "",
                   ),
+                  if (ekramTransportationItem.multipleCityRequest == true)
+                    RequestParameter(
+                      title: 'burial_city'.tr(),
+                      value: ekramTransportationItem.burialCityName ?? "",
+                    ),
                   RequestParameter(
                     title: 'transportationStatus'.tr(),
                     value:
@@ -98,7 +104,10 @@ class EkramDriverRequestCardWidget extends StatelessWidget {
                     value: CommonFunctions.getFormattedDateEkramCard(
                         ekramTransportationItem.driverAssignDate ?? ""),
                   ),
-
+                  RequestParameter(
+                    title: 'transportationDestination'.tr(),
+                    value: ekramTransportationItem.currentStationName ?? "",
+                  )
                   /* RequestParameter(
                     title: 'transportationStatus'.tr(),
                     value: ekramTransportationItem
@@ -112,6 +121,10 @@ class EkramDriverRequestCardWidget extends StatelessWidget {
                 ],
               ),
             ),
+            ElevatedButtonWidget.primaryCustom(
+                height: 40,
+                onPressed: () => OnDetailsPress(),
+                text: "details".tr())
           ],
         ),
       ),

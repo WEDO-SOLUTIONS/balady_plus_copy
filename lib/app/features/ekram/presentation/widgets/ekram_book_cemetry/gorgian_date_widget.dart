@@ -15,17 +15,19 @@ class GorgianCalendarDateWidget extends StatelessWidget {
   final Function(String?) onChanged;
   final DateTime? minValue;
   final DateTime? maxValue;
+  final bool isDisabled;
 
-  GorgianCalendarDateWidget({
-    Key? key,
-    this.fieldLength,
-    required this.fieldName,
-    required this.isMandatory,
-    this.currentVlaue,
-    this.minValue,
-    this.maxValue,
-    required this.onChanged,
-  }) : super(key: key);
+  GorgianCalendarDateWidget(
+      {Key? key,
+      this.fieldLength,
+      required this.fieldName,
+      required this.isMandatory,
+      this.currentVlaue,
+      this.minValue,
+      this.maxValue,
+      required this.onChanged,
+      this.isDisabled = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,7 @@ class GorgianCalendarDateWidget extends StatelessWidget {
           showOptional: !isMandatory,
           textValue: currentVlaue,
           onTap: () async {
-            showPickerDate(currentVlaue, context);
+            if (!isDisabled) showPickerDate(currentVlaue, context);
           },
         ),
       ],

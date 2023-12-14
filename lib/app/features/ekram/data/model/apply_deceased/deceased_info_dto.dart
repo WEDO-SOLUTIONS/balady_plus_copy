@@ -6,6 +6,7 @@ import 'package:balady_plus/app/features/new_appointment/presentation/core/model
 
 import '../../../../../core/utils/nullable.dart';
 import '../../../domain/entities/user_info_response.dart';
+import '../baqie_approval_response.dart';
 import 'grave_active_request_details.dart';
 
 class DeceasedInfoDto extends Equatable {
@@ -42,6 +43,7 @@ class DeceasedInfoDto extends Equatable {
   final String? fourthName;
   final LookUpItem? selectedOrgnization;
   final String? permitNo;
+  final BaqieApprovalResponse? baqieApproval;
   DeceasedInfoDto({
     this.graveDetails,
     this.burialCityId,
@@ -71,41 +73,44 @@ class DeceasedInfoDto extends Equatable {
     this.thirdName,
     this.fourthName,
     this.selectedOrgnization,
+    this.baqieApproval,
     this.permitNo,
   });
 
-  DeceasedInfoDto copyWith({
-    Nullable<GraveActiveRequestDetails?>? graveDetails,
-    LookUpItem? deathCity,
-    LookUpItem? burialCityId,
-    bool? multipleCityRequest,
-    Nullable<LookUpItem?>? nationalityId,
-    bool? specialTransferNeeded,
-    Nullable<String?>? specialTransferOtherReason,
-    Nullable<LookUpItem?>? specialTransferReasonId,
-    Nullable<String?>? otherBurialCity,
-    String? burialDateHijri,
-    String? burialDateGorgian,
-    bool? isPandemicDeath,
-    Nullable<bool?>? isMuslim,
-    LookUpItem? selectedNationalType,
-    Nullable<LookUpItem?>? selectedCemetry,
-    LookUpItem? selectedCemetryType,
-    LookUpItem? selectedTime,
-    Nullable<String?>? otherTimeName,
-    Nullable<String?>? deceassedId,
-    Nullable<String?>? deceassedDOBGorgian,
-    Nullable<String?>? deceassedDOBHijri,
-    Nullable<UserInfoResponse?>? userInfoResponse,
-    Nullable<int?>? gender,
-    Nullable<String?>? firstName,
-    Nullable<String?>? secondName,
-    Nullable<String?>? thirdName,
-    Nullable<String?>? fourthName,
-    LookUpItem? selectedOrgnization,
-    String? permitNo,
-  }) {
+  DeceasedInfoDto copyWith(
+      {Nullable<GraveActiveRequestDetails?>? graveDetails,
+      LookUpItem? deathCity,
+      LookUpItem? burialCityId,
+      bool? multipleCityRequest,
+      Nullable<LookUpItem?>? nationalityId,
+      bool? specialTransferNeeded,
+      Nullable<String?>? specialTransferOtherReason,
+      Nullable<LookUpItem?>? specialTransferReasonId,
+      Nullable<String?>? otherBurialCity,
+      String? burialDateHijri,
+      String? burialDateGorgian,
+      bool? isPandemicDeath,
+      Nullable<bool?>? isMuslim,
+      LookUpItem? selectedNationalType,
+      Nullable<LookUpItem?>? selectedCemetry,
+      LookUpItem? selectedCemetryType,
+      LookUpItem? selectedTime,
+      Nullable<String?>? otherTimeName,
+      Nullable<String?>? deceassedId,
+      Nullable<String?>? deceassedDOBGorgian,
+      Nullable<String?>? deceassedDOBHijri,
+      Nullable<UserInfoResponse?>? userInfoResponse,
+      Nullable<int?>? gender,
+      Nullable<String?>? firstName,
+      Nullable<String?>? secondName,
+      Nullable<String?>? thirdName,
+      Nullable<String?>? fourthName,
+      LookUpItem? selectedOrgnization,
+      String? permitNo,
+      Nullable<BaqieApprovalResponse?>? baqieApproval}) {
     return DeceasedInfoDto(
+      baqieApproval:
+          baqieApproval == null ? this.baqieApproval : baqieApproval.value,
       deathCity: deathCity ?? this.deathCity,
       graveDetails:
           graveDetails == null ? this.graveDetails : graveDetails.value,
@@ -202,6 +207,7 @@ class DeceasedInfoDto extends Equatable {
       selectedCemetryType,
       selectedTime,
       otherTimeName,
+      baqieApproval,
       deceassedId,
       deceassedDOBGorgian,
       deceassedDOBHijri,

@@ -21,6 +21,7 @@ class HijriCalendarDateWidget extends StatelessWidget {
   final Function(String?) onChanged;
   final HijriCalendar? minValue;
   final HijriCalendar? maxValue;
+  final bool isDisabled;
 
   HijriCalendarDateWidget(
       {Key? key,
@@ -30,6 +31,7 @@ class HijriCalendarDateWidget extends StatelessWidget {
       this.currentVlaue,
       required this.onChanged,
       this.minValue,
+      this.isDisabled = false,
       this.maxValue})
       : super(key: key);
 
@@ -43,7 +45,7 @@ class HijriCalendarDateWidget extends StatelessWidget {
           textValue: currentVlaue,
           showOptional: !isMandatory,
           onTap: () async {
-            showPickerDate(currentVlaue, context);
+            if (!isDisabled) showPickerDate(currentVlaue, context);
           },
         ),
       ],

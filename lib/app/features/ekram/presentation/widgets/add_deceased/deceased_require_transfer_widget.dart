@@ -21,8 +21,8 @@ class DeceasedRequiredTransferWidget extends StatelessWidget {
           children: [
             CustomTextWidget(
               trans("is_deaceased_requrie_special_transfer"),
-              fontColor: AppColor.baladyDarkGreen2,
-              fontSize: 13.0,
+              fontColor: AppColor.blackModern700Light,
+              fontSize: 16.0,
               textAlign: TextAlign.start,
               fontWeight: AppFontWeight.bold,
             ),

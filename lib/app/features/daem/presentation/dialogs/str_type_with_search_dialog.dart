@@ -222,6 +222,8 @@ class _LookupTypeWithSearchDialog extends State<LookupTypeWithSearchDialog> {
                     // value: items[index].id,
                     title: items[index].name ?? "",
                     value: items[index],
+                    isDisabled: items[index].isDisblaed,
+
                     currentSelected: currentSelected,
                     onChange: onItemChanged,
                   );

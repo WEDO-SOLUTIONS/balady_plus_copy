@@ -120,6 +120,12 @@ class _DialogBodyState extends State<DialogBody> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<EkramAddTripBloc, EkramAddTripState>(
       builder: (context, state) {
@@ -213,7 +219,10 @@ class _DialogBodyState extends State<DialogBody> {
                     label: trans("nextTripStationName"),
                     hintText: trans("nextTripStationName"),
                     maxLines: 1,
-                    initialValue: state.nextTripStationName,
+                    controller: context
+                        .read<EkramAddTripBloc>()
+                        .nextTripStationNameController,
+                    enabled: !state.isCemetry(),
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.text,
                     onChanged: (String? text) {

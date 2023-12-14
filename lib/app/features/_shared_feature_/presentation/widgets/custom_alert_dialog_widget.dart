@@ -110,7 +110,7 @@ class CustomAlertDialogWidget extends StatelessWidget {
                 if (titleMessageType != MessageType.none)
                   UIHelper.horizontalSmallSpace,
                 CustomTextWidget(
-                  titleMessageType.message,
+                  titleMessageType.message.tr(),
                   textStyle: AppStyle.mainTextStyle.copyWith(
                     color: titleTextColor,
                     fontSize: titleTextSize,

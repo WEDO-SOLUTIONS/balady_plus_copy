@@ -20,6 +20,7 @@ import '../../../domain/entities/active_grave_request_params.dart';
 import '../../../domain/entities/deceased_transport_requests/get_orgnizations_params.dart';
 import '../../../domain/entities/get_cemetries_params.dart';
 import '../../../domain/entities/user_info_request_params.dart';
+import '../../../domain/use_cases/baquie_approval.dart';
 import '../../../domain/use_cases/check_user_info.dart';
 import '../../../domain/use_cases/get_active_grave_request_details.dart';
 import '../../../domain/use_cases/get_burial_cities.dart';
@@ -35,7 +36,7 @@ class EkramAddDeceasedBloc
     extends Bloc<EkramAddDeceasedEvent, EkramAddDeceasedState> {
   final GetBurialCities _getCities;
   final GetNationalities _getNationalities;
-
+  final BaquieApproval _baquieApproval;
   final GetEkramLookUp _getEkramLookUp;
   final CheckUserinfo _checkUserInfo;
   final GetCemetries _getCemetries;
@@ -61,6 +62,7 @@ class EkramAddDeceasedBloc
             GetActiveGraveRequestDetails(repository: sl()),
         _getNationalityTypes = GetNationalityTypes(repository: sl()),
         _getEkramOrgnizations = GetEkramOrgnizations(repository: sl()),
+        _baquieApproval = BaquieApproval(repository: sl()),
         super(EkramAddDeceasedState(
             deathCity: params.deathCity,
             cities: params.cities,
@@ -97,11 +99,30 @@ class EkramAddDeceasedBloc
     on<ChangePermitNumberEvent>(_changePermitNoHandler);
 
     on<SelectOrgnizationEvent>(_changeOrgnizationHandler);
-
+    on<GetBaquieApprovalEvent>(_getBaquieApprovalHandler);
     getCitiesHandler();
     getNationalTypesHandler();
     getCemetryTypeItemsHandler();
     getBurialTimesItemsHandler();
+  }
+
+  Future<void> _getBaquieApprovalHandler(
+      GetBaquieApprovalEvent e, Emitter emitter) async {
+    emitter(state.copyWith(errorMessage: "", status: BlocStatus.loading));
+
+    final failOrSuccess = await _baquieApproval(ActiveGraveRequestParams(
+        idNo: state.data.deceassedId ?? "",
+        idType: state.data.selectedNationalType?.id ?? 0));
+
+    failOrSuccess.fold((l) {
+      emitter(state.copyWith(errorMessage: "", status: BlocStatus.failure));
+    }, (r) {
+      emitter(state.copyWith(
+        errorMessage: "",
+        status: BlocStatus.success,
+        data: state.data.copyWith(baqieApproval: Nullable(r)),
+      ));
+    });
   }
 
   Future<void> _changeOrgnizationHandler(
@@ -131,18 +152,22 @@ class EkramAddDeceasedBloc
 
   Future<void> _changeGenderHanlder(
       ChangeGenderEvent e, Emitter emitter) async {
-    emitter(state.copyWith(
-      errorMessage: "",
-      data: state.data.copyWith(gender: Nullable(e.item)),
-    ));
+    if (!state.isFormDisabled()) {
+      emitter(state.copyWith(
+        errorMessage: "",
+        data: state.data.copyWith(gender: Nullable(e.item)),
+      ));
+    }
   }
 
   Future<void> _changeReligionHanlder(
       ChangeReligionEvent e, Emitter emitter) async {
-    emitter(state.copyWith(
-      errorMessage: "",
-      data: state.data.copyWith(isMuslim: Nullable(e.item)),
-    ));
+    if (!state.isFormDisabled()) {
+      emitter(state.copyWith(
+        errorMessage: "",
+        data: state.data.copyWith(isMuslim: Nullable(e.item)),
+      ));
+    }
   }
 
   Future<void> _changeNationalityHanlder(
@@ -155,9 +180,11 @@ class EkramAddDeceasedBloc
 
   Future<void> _changeBurialDestinationHanlder(
       ChangeBurialDestinationEvent e, Emitter emitter) async {
-    emitter(state.copyWith(
-        errorMessage: "",
-        data: state.data.copyWith(multipleCityRequest: !e.sameCity!)));
+    if (!state.isFormDisabled()) {
+      emitter(state.copyWith(
+          errorMessage: "",
+          data: state.data.copyWith(multipleCityRequest: !e.sameCity!)));
+    }
   }
 
   Future<void> _changeBurialDestinationCityHanlder(
@@ -305,6 +332,7 @@ class EkramAddDeceasedBloc
             userInfoResponse: Nullable(null),
             firstName: Nullable(null),
             secondName: Nullable(null),
+            baqieApproval: Nullable(null),
             thirdName: Nullable(null),
             fourthName: Nullable(null),
             deceassedDOBGorgian: Nullable(null),
@@ -382,8 +410,10 @@ class EkramAddDeceasedBloc
     emitter(state.copyWith(
         errorMessage: "",
         cemetries: [],
-        data: state.data
-            .copyWith(burialCityId: e.item, selectedCemetry: Nullable(null))));
+        data: state.data.copyWith(
+            burialCityId: e.item,
+            selectedCemetry: Nullable(null),
+            baqieApproval: Nullable(null))));
 
     //getCemetriesHandler();
   }
@@ -394,18 +424,24 @@ class EkramAddDeceasedBloc
         errorMessage: "",
         cemetries: [],
         data: state.data.copyWith(
-            selectedCemetryType: e.item, selectedCemetry: Nullable(null))));
+            selectedCemetryType: e.item,
+            selectedCemetry: Nullable(null),
+            baqieApproval: Nullable(null))));
 
     //  getCemetriesHandler();
   }
 
   Future<void> _changeIsEpidamicHandler(
       ChangeIsEpidamicEvent e, Emitter emitter) async {
-    emitter(state.copyWith(
-        errorMessage: "",
-        cemetries: [],
-        data: state.data.copyWith(
-            isPandemicDeath: e.value, selectedCemetry: Nullable(null))));
+    if (!state.isFormDisabled()) {
+      emitter(state.copyWith(
+          errorMessage: "",
+          cemetries: [],
+          data: state.data.copyWith(
+              isPandemicDeath: e.value,
+              selectedCemetry: Nullable(null),
+              baqieApproval: Nullable(null))));
+    }
 
     // getCemetriesHandler();
   }
@@ -415,6 +451,10 @@ class EkramAddDeceasedBloc
     emitter(state.copyWith(
         errorMessage: "",
         data: state.data.copyWith(selectedCemetry: Nullable(e.item))));
+
+    if (e.item?.id == 249) {
+      add(GetBaquieApprovalEvent());
+    }
   }
 
   Future<void> _changeBurialDateEventHandler(
@@ -444,6 +484,7 @@ class EkramAddDeceasedBloc
         data: state.data.copyWith(
             burialDateGorgian: CommonFunctions.padHijriDate(gorgian),
             selectedCemetry: Nullable(null),
+            baqieApproval: Nullable(null),
             burialDateHijri: CommonFunctions.padHijriDate(hijri))));
     // getCemetriesHandler();
   }
@@ -453,8 +494,10 @@ class EkramAddDeceasedBloc
     emitter(state.copyWith(
         errorMessage: "",
         cemetries: [],
-        data: state.data
-            .copyWith(selectedTime: e.item, selectedCemetry: Nullable(null))));
+        data: state.data.copyWith(
+            selectedTime: e.item,
+            selectedCemetry: Nullable(null),
+            baqieApproval: Nullable(null))));
   }
 
   Future<void> _changeBurialTimeOtherNameHandler(
@@ -537,6 +580,7 @@ class EkramAddDeceasedBloc
             data: state.data.copyWith(
                 userInfoResponse: Nullable(success.data?.result),
                 selectedCemetry: Nullable(null),
+                baqieApproval: Nullable(null),
                 firstName: Nullable(firstName),
                 secondName: Nullable(secondName),
                 thirdName: Nullable(thirdName),
@@ -550,7 +594,7 @@ class EkramAddDeceasedBloc
         thirdNameController.text = thirdName;
         fourthNameController.text = fourthName;
       });
-    }, (r) {
+    }, (r) async {
       String firstName = r.data?.result?.deceasedInfo?.firstName ?? "";
       String secondName = r.data?.result?.deceasedInfo?.secondName ?? "";
       String thirdName = r.data?.result?.deceasedInfo?.thirdName ?? "";
@@ -570,37 +614,34 @@ class EkramAddDeceasedBloc
           cemetries: [],
           errorMessage: "",
           data: state.data.copyWith(
-              graveDetails: Nullable(r.data?.result),
-              selectedCemetry: Nullable(LookUpItem(
-                id: r.data?.result?.burialInfo?.cemeteryInfo?.cemeteryId,
-                name: r.data?.result?.burialInfo?.cemeteryInfo?.cemeteryName,
-              )),
-              selectedCemetryType: LookUpItem(
-                id: r.data?.result?.burialInfo?.graveTypeId,
-                name: r.data?.result?.burialInfo?.graveTypeName,
-              ),
-              selectedNationalType: nationalType,
-              isPandemicDeath: r.data?.result?.burialInfo?.isPandemicDeath,
-              burialCityId: LookUpItem(
-                  id: r.data?.result?.burialInfo?.cemeteryInfo?.municipality
-                      ?.cityId,
-                  name: r.data?.result?.burialInfo?.cemeteryInfo?.municipality
-                      ?.cityName),
-              selectedTime: LookUpItem(
-                id: r.data?.result?.burialInfo?.prayId,
-                name: r.data?.result?.burialInfo?.prayName,
-              ),
-              multipleCityRequest: !(r.data?.result?.burialInfo?.cemeteryInfo
-                      ?.municipality?.cityId ==
-                  r.data?.result?.burialInfo?.deathCityId),
-              otherBurialCity: r.data?.result?.burialInfo?.deathCityOther,
-              firstName: Nullable(firstName),
-              secondName: Nullable(secondName),
-              thirdName: Nullable(thirdName),
-              fourthName: Nullable(fourthName),
-              gender: Nullable(gender),
-              nationalityId: Nullable(nationality),
-              isMuslim: Nullable(isMuslim))));
+            graveDetails: Nullable(r.data?.result),
+            selectedCemetryType: LookUpItem(
+              id: r.data?.result?.burialInfo?.graveTypeId,
+              name: r.data?.result?.burialInfo?.graveTypeName,
+            ),
+            selectedNationalType: nationalType,
+            isPandemicDeath: r.data?.result?.burialInfo?.isPandemicDeath,
+            burialCityId: LookUpItem(
+                id: r.data?.result?.burialInfo?.cemeteryInfo?.municipality
+                    ?.cityId,
+                name: r.data?.result?.burialInfo?.cemeteryInfo?.municipality
+                    ?.cityName),
+            selectedTime: LookUpItem(
+              id: r.data?.result?.burialInfo?.prayId,
+              name: r.data?.result?.burialInfo?.prayName,
+            ),
+            multipleCityRequest: !(r.data?.result?.burialInfo?.cemeteryInfo
+                    ?.municipality?.cityId ==
+                r.data?.result?.burialInfo?.deathCityId),
+            otherBurialCity: r.data?.result?.burialInfo?.deathCityOther,
+            firstName: Nullable(firstName),
+            secondName: Nullable(secondName),
+            thirdName: Nullable(thirdName),
+            fourthName: Nullable(fourthName),
+            gender: Nullable(gender),
+            nationalityId: Nullable(nationality),
+            isMuslim: Nullable(isMuslim),
+          )));
 
       add(ChangeNationalIdDob(
           hijriDate: r.data?.result?.deceasedInfo?.birthDate));
@@ -609,13 +650,15 @@ class EkramAddDeceasedBloc
         gorgianDate: r.data?.result?.burialInfo?.getHijriDate(),
       ));
 
+      await Future.delayed(Duration(seconds: 1));
       if (r.data?.result?.burialInfo?.getHijriDate() != null) {
         emitter(state.copyWith(
+            status: BlocStatus.success,
             data: state.data.copyWith(
                 selectedCemetry: Nullable(LookUpItem(
-          id: r.data?.result?.burialInfo?.cemeteryId,
-          name: r.data?.result?.burialInfo?.cemeteryInfo?.cemeteryName,
-        )))));
+              id: r.data?.result?.burialInfo?.cemeteryInfo?.cemeteryId,
+              name: r.data?.result?.burialInfo?.cemeteryInfo?.cemeteryName,
+            )))));
       }
 
       firstNameController.text = firstName;
@@ -737,5 +780,35 @@ class EkramAddDeceasedBloc
     } else {
       CommonFunctions.showError("FillFields".tr());
     }
+  }
+
+  bool numberOnlyInNationalId() {
+    return [1, 3, 9, 10].contains(state.data.selectedCemetryType?.id);
+  }
+
+  String? validateNationalId(String? input) {
+    if (state.data.selectedNationalType?.id == 1) {
+      if (!(input?.startsWith("1") ?? false) || (input?.length ?? 0) < 10) {
+        return "wrong_input_data".tr();
+      } else {
+        return null;
+      }
+    } else if (state.data.selectedNationalType?.id == 3) {
+      if (!(input?.startsWith("2") ?? false) || (input?.length ?? 0) < 10) {
+        return "wrong_input_data".tr();
+      } else {
+        return null;
+      }
+    } else if (state.data.selectedNationalType?.id == 9 ||
+        state.data.selectedNationalType?.id == 10) {
+      if ((input?.startsWith("2") ?? false) ||
+          (input?.startsWith("1") ?? false) ||
+          (input?.length ?? 0) < 10) {
+        return "wrong_input_data".tr();
+      } else {
+        return null;
+      }
+    }
+    return null;
   }
 }

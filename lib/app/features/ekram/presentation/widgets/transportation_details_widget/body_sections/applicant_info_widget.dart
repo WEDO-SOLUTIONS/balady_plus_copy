@@ -17,7 +17,7 @@ class ApplicantInfoWidget extends StatelessWidget {
     return BlocBuilder<RequestDetailsBloc, RequestDetailsState>(
         builder: (context, state) {
       return ExpandableCard(
-        title: Helpers.translatingWord("ApplicantInfo"),
+        title: Helpers.translatingWord("ekram_order_info"),
         icon: IconPath.vdSummuryDesc,
         children: [
           //MM Ekram
@@ -54,6 +54,24 @@ class ApplicantInfoWidget extends StatelessWidget {
           FieldData(
             title: Helpers.translatingWord("ekramRelationShip"),
             subTitle: state.details.relationship,
+          ),
+
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+
+          FieldData(
+            title: Helpers.translatingWord("burialCity"),
+            subTitle: state.details.deathCityName,
+          ),
+
+          const CustomVerticalSpace(
+            height: 16,
+          ),
+
+          FieldData(
+            title: Helpers.translatingWord("transportationStatus"),
+            subTitle: state.details.deathTransferStatusDesc,
           ),
         ],
       );

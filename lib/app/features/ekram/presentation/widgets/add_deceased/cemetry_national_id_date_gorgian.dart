@@ -15,6 +15,7 @@ class CemetryNationalDobGorgian extends StatelessWidget {
       return GorgianCalendarDateWidget(
         currentVlaue: state.data?.deceassedDOBGorgian,
         fieldName: Helpers.translatingWord("cemetry_dob_gorgian"),
+        isDisabled: state.isFormDisabled(),
         isMandatory: true,
         onChanged: (String? date) {
           context
