@@ -17,9 +17,6 @@ class JobListResponse extends _$JobListResponse {
 
   Future<JobListModel?> _load() async {
     try {
-      if (_isLoading) {
-        return _allJobs;
-      }
       _isLoading = true;
       final dio = ref.watch(dgisHmacNetwrokProvider);
 
@@ -54,6 +51,7 @@ class JobListResponse extends _$JobListResponse {
 
   Future<void> loadNextPage() async {
     if (_page != null && _size != null && _canLoadMore) {
+      if (_isLoading) return;
       _page = _page! + 1;
       await _load();
       ref.invalidateSelf();
