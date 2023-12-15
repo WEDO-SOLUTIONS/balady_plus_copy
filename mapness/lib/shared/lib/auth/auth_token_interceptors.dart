@@ -1,0 +1,56 @@
+import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/router.dart';
+import 'package:mapness/features/sso_auth/data/token_provider.dart';
+
+class AuthTokenInterceptor {
+  static QueuedInterceptorsWrapper tokenInterceptor(
+          AutoDisposeNotifierProviderRef ref, BaseOptions baseOptions) =>
+      QueuedInterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final token = await ref.read(tokenProvider.future);
+          final headers = options.headers;
+          if (token.isNotEmpty) {
+            headers['Authorization'] = 'Bearer $token';
+          }
+          handler.next(options.copyWith(headers: headers));
+        },
+        onError: (error, handler) async {
+          if (error.response?.statusCode == 401) {
+            try {
+              await ref.read(tokenProvider.notifier).refreshToken();
+              // Create dummy dio to rehandle data
+              final dummyDio = Dio(baseOptions);
+              final options = error.response!.requestOptions;
+
+              // Add new refresh token to headers
+              final token = await ref.read(tokenProvider.future);
+              if (token.isEmpty) handler.reject(error);
+
+              final headers = options.headers;
+              headers['Authorization'] = 'Bearer $token';
+              final response = await dummyDio.request(
+                options.path,
+                data: options.data,
+                queryParameters: options.queryParameters,
+                options: Options(
+                  method: options.method,
+                  headers: headers,
+                ),
+              );
+              handler.resolve(response);
+            } catch (e) {
+              if (e is DioException && e.response?.statusCode == 401) {
+                // Redirect to login
+                ref.read(goRouterProvider).push('/signin');
+              } else if (e is DioException) {
+                handler.reject(e);
+              } else {
+                handler.reject(error);
+              }
+            }
+          }
+          handler.next(error);
+        },
+      );
+}
