@@ -14,7 +14,7 @@ part 'dgis_network.g.dart';
 @riverpod
 class _DGisNetwork extends _$DGisNetwork {
   @override
-  Dio build() {
+  Dio build(String url) {
     final url = ref.watch(dgisEnvirementProvider).url;
     const timeout = Duration(seconds: 5);
     final appLanguage = ref.watch(appLanguageProvider);

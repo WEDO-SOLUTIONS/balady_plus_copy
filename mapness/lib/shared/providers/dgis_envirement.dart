@@ -1,6 +1,8 @@
 import 'package:mapness/shared/config/envirement_config.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import 'hive.dart';
+
 part 'dgis_envirement.g.dart';
 
 @riverpod
@@ -29,7 +31,11 @@ class DgisEnvirement extends _$DgisEnvirement {
   }
 
   @override
-  EnvirementConfig build() {
+  Future<EnvirementConfig> build() async {
+    final box = await ref.watch(hiveProvider('envType').future);
+    final envType = box.get('envType');
+
+
     return switch (_env) {
       DgisEnv.preProd => EnvirementConfig.preProd(),
       DgisEnv.dev => EnvirementConfig.dev(),

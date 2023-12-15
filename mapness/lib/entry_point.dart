@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,9 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/config/envirement_config.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/dgis_envirement.dart';
 import 'package:mapness/widgets/map/map_page.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
@@ -26,6 +29,7 @@ class MapnessProviderScope extends StatelessWidget {
 
 class MapnessEntryPoint extends ConsumerStatefulWidget {
   final void Function(DgisMapController) mapCreated;
+
   const MapnessEntryPoint({
     required this.mapCreated,
     super.key,
@@ -113,7 +117,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 }
 
-Future<void> setupMapness() async {
+Future<void> setupMapness(EnvType envType) async {
   await initialiseDGis(
     logOptions: LogOptionsMessage(
       systemLevel: LogLevelMessage.error,
@@ -124,4 +128,20 @@ Future<void> setupMapness() async {
   Hive.registerAdapter(
     SearchHistoryItemAdapter(),
   );
+
+  final box = await Hive.openBox("envType");
+
+  final env = switch (envType) {
+    EnvType.dev => "dev",
+    // EnvirementConfig.dev();
+    EnvType.stg => "stg",
+    // EnvirementConfig.momrahStaging();
+    EnvType.pre => "pre",
+    // EnvirementConfig.preProd();
+    EnvType.prod => "prod",
+    // EnvirementConfig.momrahProd();
+    EnvType.urbiPre => "urbiPre",
+    // EnvirementConfig.urbiPreProd();
+  };
+  await box.put("envType", env);
 }
