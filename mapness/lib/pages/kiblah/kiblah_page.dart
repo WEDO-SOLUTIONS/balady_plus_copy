@@ -53,7 +53,7 @@ class KiblahPage extends ConsumerWidget {
                     const LandingRoute().go(context);
                     ref.read(goRouterProvider).push(
                         const SearchRoute(
-                          initialQuery: "المساجد القريبة منك",
+                          // initialQuery: "المساجد القريبة منك",
                           withClustering: true,
                         ).location,
                         extra: {
