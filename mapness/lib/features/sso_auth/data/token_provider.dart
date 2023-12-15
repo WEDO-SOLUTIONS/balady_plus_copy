@@ -8,11 +8,13 @@ part 'token_provider.g.dart';
 @riverpod
 class Token extends _$Token {
   Future<void> refreshToken() async {
-    final refreshToken = sl<EntryPointCubit>().state.token?.refreshToken;
-    if (refreshToken != null) {
-      await sl<EntryPointCubit>().refreshToken(refreshToken);
-      ref.invalidateSelf();
-    }
+    try {
+      final refreshToken = sl<EntryPointCubit>().state.token?.refreshToken;
+      if (refreshToken != null) {
+        await sl<EntryPointCubit>().refreshToken(refreshToken);
+        ref.invalidateSelf();
+      }
+    } catch (_) {}
   }
 
   @override

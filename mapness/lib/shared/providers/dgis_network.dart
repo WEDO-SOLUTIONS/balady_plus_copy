@@ -57,23 +57,23 @@ class _DGisNetwork extends _$DGisNetwork {
             },
             onError: (error, handler) async {
               if (error.response?.statusCode == 401) {
-                await ref.read(tokenProvider.notifier).refreshToken();
-                // Create dummy dio to rehandle data
-                final dummyDio = Dio(BaseOptions(
-                  responseType: ResponseType.bytes,
-                  baseUrl: url,
-                  sendTimeout: timeout,
-                  receiveTimeout: timeout,
-                  connectTimeout: timeout,
-                ));
-                final options = error.response!.requestOptions;
-
-                // Add new refresh token to headers
-                final token = ref.read(tokenProvider).value;
-                if (token == null) handler.reject(error);
-
-                options.headers['Authorization'] = 'Bearer $token';
                 try {
+                  await ref.read(tokenProvider.notifier).refreshToken();
+                  // Create dummy dio to rehandle data
+                  final dummyDio = Dio(BaseOptions(
+                    responseType: ResponseType.bytes,
+                    baseUrl: url,
+                    sendTimeout: timeout,
+                    receiveTimeout: timeout,
+                    connectTimeout: timeout,
+                  ));
+                  final options = error.response!.requestOptions;
+
+                  // Add new refresh token to headers
+                  final token = await ref.read(tokenProvider.future);
+                  if (token.isEmpty) handler.reject(error);
+
+                  options.headers['Authorization'] = 'Bearer $token';
                   final response = await dummyDio.request(
                     options.path,
                     data: options.data,
