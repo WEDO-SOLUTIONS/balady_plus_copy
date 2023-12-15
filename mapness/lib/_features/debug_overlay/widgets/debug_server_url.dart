@@ -30,13 +30,6 @@ class DebugServerUrl extends ConsumerWidget {
                 ?.accentS
                 .copyWith(color: Colors.black),
           ),
-          Text(
-            'SSO Url: ${env.sso.ssoUrl}\nSSO Client: ${env.sso.ssoClient}\nSSO Secret: ${env.sso.ssoSecret}',
-            style: Theme.of(context)
-                .extension<ThemeTextStyles>()
-                ?.accentS
-                .copyWith(color: Colors.black),
-          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
