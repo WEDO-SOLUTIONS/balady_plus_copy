@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:dio/dio.dart';
+import 'package:mapness/features/sso_auth/data/token_provider.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/integration_urls.dart';
 import 'package:mapness/shared/providers/package_info.dart';
@@ -42,11 +43,66 @@ class DgisHmacNetwrok extends _$DgisHmacNetwrok {
         "X-Language": appLanguage == Language.arabic ? "ar" : "en",
       },
     ))
-      ..interceptors.add(
+      ..interceptors.addAll([
         PrettyDioLogger(
           /// Since protobufs are just binary files what a purpose to print it
           responseBody: false,
         ),
-      );
+        // TODO: Move it to separate file
+        QueuedInterceptorsWrapper(
+          onRequest: (options, handler) async {
+            final token = await ref.read(tokenProvider.future);
+            if (token.isNotEmpty) {
+              final headers = options.headers;
+
+              headers['Authorization'] = 'Bearer $token';
+              options.headers = headers;
+            }
+            handler.next(options);
+          },
+          onError: (error, handler) async {
+            if (error.response?.statusCode == 401) {
+              await ref.read(tokenProvider.notifier).refreshToken();
+              // Create dummy dio to rehandle data
+              final dummyDio = Dio(BaseOptions(
+                responseType: ResponseType.bytes,
+                baseUrl: url,
+                sendTimeout: timeout,
+                receiveTimeout: timeout,
+                connectTimeout: timeout,
+              ));
+              final options = error.response!.requestOptions;
+
+              // Add new refresh token to headers
+              final token = ref.read(tokenProvider).value;
+              if (token == null) handler.reject(error);
+
+              options.headers['Authorization'] = 'Bearer $token';
+              try {
+                final response = await dummyDio.request(
+                  options.path,
+                  data: options.data,
+                  queryParameters: options.queryParameters,
+                  options: Options(
+                    method: options.method,
+                    headers: options.headers,
+                  ),
+                );
+                handler.resolve(response);
+              } catch (e) {
+                if (e is DioException && e.response?.statusCode == 401) {
+                  // TODO: Make logout and go to main page
+                  handler.reject(error);
+                } else if (e is DioException) {
+                  handler.reject(e);
+                } else {
+                  handler.reject(error);
+                }
+              }
+            }
+            handler.next(error);
+          },
+        ),
+      ]);
   }
 }

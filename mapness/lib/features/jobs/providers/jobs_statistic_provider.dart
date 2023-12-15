@@ -13,8 +13,6 @@ class JobStatisticResponse extends _$JobStatisticResponse {
 
     final response = await dio.get('/jobs/statistics');
 
-    String a = response.data.toString();
-
     final jobResponse = JobBaseResponse<JobStatisticModel>.fromJson(
         response.data, JobStatisticModel.fromJson);
 
