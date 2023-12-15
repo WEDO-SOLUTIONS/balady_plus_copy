@@ -110,6 +110,7 @@ class LayersControls extends _$LayersControls {
 
   Future<void> showMarkers(WidgetRef ref, LayerType layerType) async {
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
+    final env = await ref.read(dgisEnvironmentProvider.future);
 
     var layersControls = ref.watch(layersControlsProvider.notifier);
     layersControls.update(
@@ -128,6 +129,8 @@ class LayersControls extends _$LayersControls {
       southWestLatitude: visibleRect.southWestLat,
       northEastLongitude: visibleRect.northEastLon,
       northEastLatitude: visibleRect.northEastLat,
+      proxy: env.proxy,
+      domain: env.url,
     );
 
     final response = await controller
@@ -188,6 +191,7 @@ class LayersControls extends _$LayersControls {
 
   Future<void> getLandFences(WidgetRef ref, LayerType layerType) async {
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
+    final env = await ref.read(dgisEnvironmentProvider.future);
     var layersControls = ref.watch(layersControlsProvider.notifier);
     final mapManager = ref.watch(
       mapObjectManagerProvider(
@@ -211,8 +215,11 @@ class LayersControls extends _$LayersControls {
       southWestLatitude: visibleRect.southWestLat,
       northEastLongitude: visibleRect.northEastLon,
       northEastLatitude: visibleRect.northEastLat,
+      proxy: env.proxy,
+      domain: env.url,
     );
-    final response = await controller.getWhiteLands(mapRequestParams)
+    final response = await controller
+        .getWhiteLands(mapRequestParams)
         .timeout(const Duration(minutes: 1), onTimeout: () {
       layersControls.update(
         isLoading: false,
@@ -257,6 +264,7 @@ class LayersControls extends _$LayersControls {
 
     final mapObjectManager =
         ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
+    final env = await ref.read(dgisEnvironmentProvider.future);
 
     var layer = GISMapLayers.BSAimtithalBuildingsCertificateL;
     var mapRequestParams = MapRequestParams(
@@ -265,15 +273,17 @@ class LayersControls extends _$LayersControls {
       southWestLatitude: visibleRect.southWestLat,
       northEastLongitude: visibleRect.northEastLon,
       northEastLatitude: visibleRect.northEastLat,
+      proxy: env.proxy,
+      domain: env.url,
     );
-    final response =
-        await controller.buildingComplianceCertificate(mapRequestParams)
-            .timeout(const Duration(minutes: 1), onTimeout: () {
-          layersControls.update(
-            isLoading: false,
-          );
-          return null;
-        });
+    final response = await controller
+        .buildingComplianceCertificate(mapRequestParams)
+        .timeout(const Duration(minutes: 1), onTimeout: () {
+      layersControls.update(
+        isLoading: false,
+      );
+      return null;
+    });
 
     var polylines = addPolylineWithPoint(response, layer.layerId);
     layersControls.update(isLoading: false);
@@ -394,9 +404,7 @@ class LayersControls extends _$LayersControls {
   Future<void> showJoyParks() async {
     final mapObjectManager =
         ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
-    final env = await ref.read(dgisEnvironmentProvider.future);
-    final url = env.url;
-    final dio = ref.read(dGisNetworkProvider(url));
+    final dio = await ref.read(dGisNetworkProvider.future);
     final raw = await dio.get('iwish');
     final response = pb.IWishMarkersResponse.fromBuffer(raw.data);
 

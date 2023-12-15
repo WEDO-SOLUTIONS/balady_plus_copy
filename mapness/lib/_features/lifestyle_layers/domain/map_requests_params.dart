@@ -9,6 +9,8 @@ class MapRequestParams {
   double southWestLatitude;
   double northEastLongitude;
   double northEastLatitude;
+  String proxy;
+  String domain;
 
   MapRequestParams(
       {required this.layer,
@@ -16,6 +18,8 @@ class MapRequestParams {
       required this.southWestLatitude,
       required this.northEastLongitude,
       required this.northEastLatitude,
+      required this.proxy,
+      required this.domain,
       this.objectId});
 
   Map<String, dynamic> toMap({bool pointsDetails = false}) {

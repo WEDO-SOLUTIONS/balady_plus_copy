@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/profile/domain/user_profile_data.dart';
-import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -69,10 +68,7 @@ class ProfileImage extends _$ProfileImage {
   /// Загружает изображение на бекенд.
   /// Возвращает ссылку на изображение.
   Future<String> _uploadImage(Uint8List bytes) async {
-    final env = await ref.read(dgisEnvironmentProvider.future);
-    final url = env.url;
-    final dio = ref.read(dGisNetworkProvider(url));
-
+    final dio = await ref.read(dGisNetworkProvider.future);
     try {
       final response = await dio.post(
         "/profile/photo",
@@ -89,12 +85,10 @@ class ProfileImage extends _$ProfileImage {
   }
 
   Future<Uint8List> _downloadProfileImageToBytes({String url = ''}) async {
-    final env = await ref.read(dgisEnvironmentProvider.future);
-    final _url = env.url;
-    final _dio = ref.read(dGisNetworkProvider(_url));
+    final dio = await ref.read(dGisNetworkProvider.future);
     try {
       if (url.isEmpty) {
-        final profileResponse = await _dio.get('/profile');
+        final profileResponse = await dio.get('/profile');
         final profileData =
             proto.ProfileResponse.fromBuffer(profileResponse.data);
         url = profileData.profile.photo.image.url;
@@ -104,7 +98,7 @@ class ProfileImage extends _$ProfileImage {
         return Uint8List(0);
       }
 
-      final response = await _dio.get(
+      final response = await dio.get(
         url,
         options: Options(
           responseType: ResponseType.bytes,

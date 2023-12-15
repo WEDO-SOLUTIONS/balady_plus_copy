@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart';
-import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -11,9 +10,7 @@ part 'happiness_repository.g.dart';
 class _HappinessRepository extends _$HappinessRepository {
   // returns should close or not
   Future<void> submitFeedback(HappinessState feedback) async {
-    final env = await ref.read(dgisEnvironmentProvider.future);
-    final url = env.url;
-    final dio = ref.read(dGisNetworkProvider(url));
+    final dio = await ref.read(dGisNetworkProvider.future);
     state = const AsyncLoading();
     final data = HappinessRequest(
       isPositive: feedback.feedback == HappinessFeedback.like,

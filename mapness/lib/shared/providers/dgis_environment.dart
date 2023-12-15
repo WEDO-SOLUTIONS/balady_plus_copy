@@ -7,7 +7,6 @@ part 'dgis_environment.g.dart';
 
 @riverpod
 class DgisEnvironment extends _$DgisEnvironment {
-  // Default value is Pre prod
   DgisEnv? _env;
 
   void setEnv(DgisEnv env) {
@@ -22,14 +21,13 @@ class DgisEnvironment extends _$DgisEnvironment {
 
     final env = _env ??
         switch (envType) {
-          "dev" => DgisEnv.dev,
+          "dev" => DgisEnv.urbiDev,
           "stg" => DgisEnv.momrahStaging,
-          "pre" => DgisEnv.preProd,
+          "pre" => DgisEnv.urbiPreprod,
           "prod" => DgisEnv.momrahProd,
           "urbiPre" => DgisEnv.urbiPreprod,
-          _ => DgisEnv.preProd,
+          _ => DgisEnv.urbiPreprod,
         };
-
     return env.getConfig();
   }
 }

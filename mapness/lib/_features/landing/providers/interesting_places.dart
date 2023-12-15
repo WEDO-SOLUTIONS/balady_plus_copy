@@ -5,7 +5,6 @@ import 'package:geobase/geobase.dart' as gb;
 import 'package:mapness/_generated/protocol/protocol.pb.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/l10n/generated/app_localizations.dart';
-import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -42,9 +41,7 @@ class InterestingPlaces extends _$InterestingPlaces {
   }
 
   Future<void> _update(VisibleRect rect) async {
-    final env = await ref.read(dgisEnvironmentProvider.future);
-    final url = env.url;
-    final dio = ref.read(dGisNetworkProvider(url));
+    final dio = await ref.read(dGisNetworkProvider.future);
     final box = gb.Box.create(
       minX: rect.southWestLon,
       minY: rect.southWestLat,

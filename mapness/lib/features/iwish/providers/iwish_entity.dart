@@ -5,7 +5,6 @@ import 'package:mapness/_generated/protocol/protocol.pb.dart' as pb;
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/entities/iwish/models/iwish_feedback_entity.dart';
 import 'package:mapness/features/iwish/lib/iwish_object_mapper.dart';
-import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -21,10 +20,7 @@ class _IwishEntity extends _$IwishEntity {
   }
 
   Future<bool> submitFeedback(IwishFeedbackEntity feedback) async {
-    final env = await ref.read(dgisEnvironmentProvider.future);
-    final url = env.url;
-    final dio = ref.watch(dGisNetworkProvider(url));
-
+    final dio = await ref.read(dGisNetworkProvider.future);
     final request = pb.IWishFeedbackRequest(
       rating: feedback.mood?.index ?? -1 + 1,
       tags: feedback.tags.map((e) => pb.IWishFeedbackRequest_Tag(name: e)),
@@ -50,9 +46,7 @@ class _IwishEntity extends _$IwishEntity {
 
   @override
   Future<IwishEntity> build(String iwishId) async {
-    final env = await ref.read(dgisEnvironmentProvider.future);
-    final url = env.url;
-    final dio = ref.read(dGisNetworkProvider(url));
+    final dio = await ref.read(dGisNetworkProvider.future);
 
     final raw = await dio.get('iwish/$iwishId');
 

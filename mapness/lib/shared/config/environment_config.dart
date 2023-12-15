@@ -1,12 +1,11 @@
 import 'package:mapness/features/sso_auth/data/sso_config.dart';
 
-enum DgisEnv { dev, preProd, momrahStaging, momrahProd, urbiPreprod }
+enum DgisEnv { urbiDev, momrahStaging, momrahProd, urbiPreprod }
 
 extension DgisEnvExt on DgisEnv {
   EnvironmentConfig getConfig() {
     return switch (this) {
-      DgisEnv.preProd => EnvironmentConfig.preProd(),
-      DgisEnv.dev => EnvironmentConfig.dev(),
+      DgisEnv.urbiDev => EnvironmentConfig.urbiDev(),
       DgisEnv.momrahProd => EnvironmentConfig.momrahProd(),
       DgisEnv.momrahStaging => EnvironmentConfig.momrahStaging(),
       DgisEnv.urbiPreprod => EnvironmentConfig.urbiPreProd(),
@@ -29,20 +28,12 @@ class EnvironmentConfig {
     required this.sso,
   });
 
-  factory EnvironmentConfig.dev() => EnvironmentConfig(
+  factory EnvironmentConfig.urbiDev() => EnvironmentConfig(
         proxy: 'https://sa1.ops.2gis.dev',
         url: 'https://momrah-balady-dev.public-poc.urbi.ae/api/1.0/',
         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
         weatherApi: 'https://api.weatherapi.com',
         sso: SsoAuthConfig.dev(),
-      );
-
-  factory EnvironmentConfig.preProd() => EnvironmentConfig(
-        proxy: 'https://sa1.ops.2gis.dev',
-        url: 'https://momrah-balady.public-poc.urbi.ae/api/1.0/',
-        meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
-        weatherApi: 'https://api.weatherapi.com',
-        sso: SsoAuthConfig.preProd(),
       );
 
   factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
@@ -63,7 +54,6 @@ class EnvironmentConfig {
 
   factory EnvironmentConfig.urbiPreProd() => EnvironmentConfig(
         proxy: 'https://sa1.ops.2gis.dev',
-        // url: 'https://apiservicesstg.balady.gov.sa/v1/urbi-services/',
         url: 'https://momrah-balady.public-poc.urbi.ae/api/1.0/',
         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
         weatherApi: 'https://api.weatherapi.com',

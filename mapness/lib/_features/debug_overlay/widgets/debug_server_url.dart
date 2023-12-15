@@ -43,14 +43,14 @@ class DebugServerUrl extends ConsumerWidget {
               LabeledElevatedButton(
                 onPressed: () => ref
                     .read(dgisEnvironmentProvider.notifier)
-                    .setEnv(DgisEnv.dev),
+                    .setEnv(DgisEnv.urbiDev),
                 label: 'Urbi Dev',
               ),
               const SizedBox(width: 8),
               LabeledElevatedButton(
                 onPressed: () => ref
                     .read(dgisEnvironmentProvider.notifier)
-                    .setEnv(DgisEnv.preProd),
+                    .setEnv(DgisEnv.urbiPreprod),
                 label: 'Urbi Pre-Prod',
               ),
               const SizedBox(width: 8),
