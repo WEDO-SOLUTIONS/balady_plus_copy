@@ -20,7 +20,6 @@ class _DGisNetwork extends _$DGisNetwork {
     final appLanguage = ref.watch(appLanguageProvider);
     final uuid = ref.watch(uuidProviderProvider);
     final version = ref.watch(packageInfoProvider).value?.version;
-    final token = ref.watch(tokenProvider).value?.token;
 
     return Dio(BaseOptions(
       responseType: ResponseType.bytes,
@@ -36,14 +35,70 @@ class _DGisNetwork extends _$DGisNetwork {
         "X-App-Version": version ?? "1.0.0",
         "X-Locale": appLanguage == Language.arabic ? "ar_SA" : "en_SA",
         "X-Language": appLanguage == Language.arabic ? "ar" : "en",
-      }..addAll(token != null ? {'Authorization': 'Bearer $token'} : {}),
+      },
       // validateStatus: (status) => status != null && status < 500,
     ))
-      ..interceptors.add(
-        PrettyDioLogger(
-          /// Since protobufs are just binary files what a purpose to print it
-          responseBody: false,
-        ),
+      ..interceptors.addAll(
+        [
+          PrettyDioLogger(
+            /// Since protobufs are just binary files what a purpose to print it
+            responseBody: false,
+          ),
+          QueuedInterceptorsWrapper(
+            onRequest: (options, handler) async {
+              final token = await ref.read(tokenProvider.future);
+              if (token.isNotEmpty) {
+                final headers = options.headers;
+
+                headers['Authorization'] = 'Bearer $token';
+                options.headers = headers;
+              }
+              handler.next(options);
+            },
+            onError: (error, handler) async {
+              if (error.response?.statusCode == 401) {
+                await ref.read(tokenProvider.notifier).refreshToken();
+                // Create dummy dio to rehandle data
+                final dummyDio = Dio(BaseOptions(
+                  responseType: ResponseType.bytes,
+                  baseUrl: url,
+                  sendTimeout: timeout,
+                  receiveTimeout: timeout,
+                  connectTimeout: timeout,
+                ));
+                final options = error.response!.requestOptions;
+
+                // Add new refresh token to headers
+                final token = ref.read(tokenProvider).value;
+                if (token == null) handler.reject(error);
+
+                options.headers['Authorization'] = 'Bearer $token';
+                try {
+                  final response = await dummyDio.request(
+                    options.path,
+                    data: options.data,
+                    queryParameters: options.queryParameters,
+                    options: Options(
+                      method: options.method,
+                      headers: options.headers,
+                    ),
+                  );
+                  handler.resolve(response);
+                } catch (e) {
+                  if (e is DioException && e.response?.statusCode == 401) {
+                    // TODO: Make logout and go to main page
+                    handler.reject(error);
+                  } else if (e is DioException) {
+                    handler.reject(e);
+                  } else {
+                    handler.reject(error);
+                  }
+                }
+              }
+              handler.next(error);
+            },
+          ),
+        ],
       );
   }
 }

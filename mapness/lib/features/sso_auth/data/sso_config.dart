@@ -1,12 +1,4 @@
-// class SsoConfig {
-//   static const ssoUrl = 'https://sa1.ops.2gis.dev/connect';
-//   static const ssoUserInfo = '/userinfo';
-//   static const ssoClient = 'balady_mobile_app';
-//   static const ssoRedirectUrl = 'com.momra.balady://callback';
-//   static const ssoLogoutUrl = 'com.momra.balady://callback';
-//   static const ssoSecret = 'secret';
-// }
-
+// TODO: move to env variables
 class SsoAuthConfig {
   final String ssoUrl;
   final String ssoUserInfo;

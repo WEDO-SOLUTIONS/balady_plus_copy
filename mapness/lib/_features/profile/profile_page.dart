@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:mapness/_features/profile/widgets/profile_image_widget.dart';
-import 'package:mapness/features/sso_auth/domain/entity/sso_user_info_model.dart';
+import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/profile/widgets/profile_header.dart';
+import 'package:mapness/_features/profile/widgets/profile_image_widget.dart';
 import 'package:mapness/_features/profile/widgets/unathorized_profile.dart';
 import 'package:mapness/app/routes/profile.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
@@ -435,7 +435,7 @@ class ProfilePage extends StatelessWidget {
 class AuthorizedRow extends StatelessWidget {
   const AuthorizedRow({super.key, required this.userData});
 
-  final SsoUserInfoModel userData;
+  final SsoUserInfo userData;
 
   @override
   Widget build(BuildContext context) {

@@ -8,6 +8,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutApp => 'About App';
 
   @override
+  String get accessibility => 'Accessibility';
+
+  @override
   String get addAddress => 'Add address';
 
   @override
@@ -27,6 +30,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get arrival => 'arrival';
+
+  @override
+  String get beaches => 'الشواطئ';
+
+  @override
+  String get beautyCenters => 'مراكز التجميل';
 
   @override
   String get best => 'Best';
@@ -51,6 +60,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cancel => 'Cancel';
+
+  @override
+  String get carServices => 'خدمات السيارات';
 
   @override
   String get challenge => 'Challenge';
@@ -123,6 +135,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteHistory => 'Delete history';
+
+  @override
+  String get deliveryAvailable => 'Delivery available';
 
   @override
   String get dentalCenters => 'Dental centers';
@@ -219,6 +234,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hospitals => 'Hospitals';
+
+  @override
+  String get hotels => 'الفنادق';
 
   @override
   String get hrs => 'hrs';
@@ -326,6 +344,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapLayerTransport => 'Transport';
 
   @override
+  String get markets => 'الأسواق';
+
+  @override
   String get menu => 'Menu';
 
   @override
@@ -342,6 +363,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mosques => 'Mosques';
+
+  @override
+  String get motorVisual => 'Motor, visual';
 
   @override
   String get myChallenge => 'My challenge';
@@ -450,6 +474,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ready => 'Ready';
+
+  @override
+  String get recreationalCenters => 'مراكز الترفيه';
 
   @override
   String get refresh => 'refresh';
@@ -578,6 +605,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get specifyOnTheMap => 'Specify on the map';
 
   @override
+  String get sportClubs => 'النوادي والصالونات الرياضية';
+
+  @override
   String get sportsGround => 'Sports ground';
 
   @override
@@ -678,13 +708,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get youSearch => 'You search';
-
-  @override
-  String get deliveryAvailable => 'Delivery available';
-
-  @override
-  String get accessibility => 'Accessibility';
-
-  @override
-  String get motorVisual => 'Motor, visual';
 }
