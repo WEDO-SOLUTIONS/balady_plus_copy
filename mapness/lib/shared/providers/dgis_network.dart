@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:mapness/shared/lib/auth/auth_token_interceptors.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/providers/dgis_envirement.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/package_info.dart';
 import 'package:mapness/shared/providers/uuid_provider.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -14,8 +14,9 @@ part 'dgis_network.g.dart';
 @riverpod
 class _DGisNetwork extends _$DGisNetwork {
   @override
-  Dio build() {
-    final url = ref.watch(dgisEnvirementProvider).url;
+  Future<Dio> build()async {
+    final env = await ref.read(dgisEnvironmentProvider.future);
+    final url = env.url;
     const timeout = Duration(seconds: 5);
     final appLanguage = ref.watch(appLanguageProvider);
     final uuid = ref.watch(uuidProviderProvider);

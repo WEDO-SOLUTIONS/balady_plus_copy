@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
-import 'package:dio/dio.dart';
 import 'package:geobase/geobase.dart' as gb;
 import 'package:mapness/_generated/protocol/protocol.pb.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
@@ -9,13 +8,11 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:rxdart/rxdart.dart';
 
 part 'interesting_places.g.dart';
 
 @riverpod
 class InterestingPlaces extends _$InterestingPlaces {
-  Dio get _dio => ref.read(dGisNetworkProvider);
 
   final _places = <InterestingPlace>[];
   StreamSubscription? _visibleRectSub;
@@ -44,6 +41,7 @@ class InterestingPlaces extends _$InterestingPlaces {
   }
 
   Future<void> _update(VisibleRect rect) async {
+    final dio = await ref.read(dGisNetworkProvider.future);
     final box = gb.Box.create(
       minX: rect.southWestLon,
       minY: rect.southWestLat,
@@ -65,7 +63,7 @@ class InterestingPlaces extends _$InterestingPlaces {
 
     // TODO(nogipx): remove stubs
     try {
-      final response = await _dio.get('/interesting-places?bound=$wkt');
+      final response = await dio.get('/interesting-places?bound=$wkt');
       final places = proto.InterestingPlacesResponse.fromBuffer(response.data)
           .interestingPlaces;
       _places

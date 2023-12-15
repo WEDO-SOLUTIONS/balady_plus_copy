@@ -1,40 +1,6 @@
 import 'dart:convert' show base64Decode, base64Encode, utf8;
 
 import 'package:crypto/crypto.dart';
-
-// String hashRequest(
-//   String url,
-//   String method, {
-//   String? body,
-//   bool authorization = false,
-//   String? corelationId,
-// }) {
-// //var encodedURL = Uri.encodeComponent(url);
-//
-//   String message = "";
-//   message = url + method;
-//
-//   if (corelationId != null) message += corelationId;
-//   if (authorization) message += 'Bearer ${CommonProperties.token}';
-//
-//   if (body != null) {
-//     message += body.replaceAll(RegExp(r'^/\\n/g'), "");
-//   }
-// /*message.errorLog();
-//     ;
-//     body.errorLog();*/
-//
-//   message.trim();
-//   print("RemoteConfig.hmCode ${RemoteConfig.hmCode}");
-//   var key = utf8.encode(RemoteConfig.hmCode);
-//   var bytes = utf8.encode(message);
-//
-//   var hmacSha256 = Hmac(sha256, key);
-//   var digest = hmacSha256.convert(bytes);
-//   String base64 = base64Encode(digest.bytes);
-//   return base64;
-// }
-
 String hashRequest_(
   String url,
   String method, {

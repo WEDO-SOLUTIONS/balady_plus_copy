@@ -1,5 +1,5 @@
 [{
-    "name": "Mobile SDK for Balady App 2GIS Momrah Pre-Prod overrides",
+    "name": "Mobile SDK for Balady App URBI Pre-Prod overrides",
     "comment": "",
     "overrides": {
         "dgis/native-sdk/keys/user_web_api_key_for_on_premise": "dfdd94df-49f9-45df-84ec-e8870ebdb9a0",

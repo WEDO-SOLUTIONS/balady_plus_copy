@@ -18,7 +18,7 @@ class JobListResponse extends _$JobListResponse {
   Future<JobListModel?> _load() async {
     try {
       _isLoading = true;
-      final dio = ref.watch(dgisHmacNetwrokProvider);
+      final dio = await ref.read(dgisHmacNetwrokProvider.future);
 
       final response = await dio.get('/published/jobs', queryParameters: {
         'page-no': _page,

@@ -15,7 +15,7 @@ part 'dgis_hmac_netwrok.g.dart';
 @riverpod
 class DgisHmacNetwrok extends _$DgisHmacNetwrok {
   @override
-  Dio build() {
+  Future<Dio> build() async {
     final url = ref.watch(integrationUrlsProvider);
     const timeout = Duration(seconds: 5);
     final appLanguage = ref.watch(appLanguageProvider);

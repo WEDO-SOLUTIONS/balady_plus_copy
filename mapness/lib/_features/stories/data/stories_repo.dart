@@ -8,7 +8,7 @@ part 'stories_repo.g.dart';
 class StoriesRepo extends _$StoriesRepo {
   @override
   Future<StoriesResponse> build() async {
-    final dio = ref.watch(dGisNetworkProvider);
+    final dio = await ref.read(dGisNetworkProvider.future);
     final rawResponse = await dio.get('stories');
     final storiesResponse = StoriesResponse.fromBuffer(rawResponse.data);
     print(rawResponse.data);

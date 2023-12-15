@@ -50,7 +50,6 @@ class LifestyleRepository extends _$LifestyleRepository {
   Future<List<WhiteLands>?> getWhiteLands(MapRequestParams params) async {
     var response = await dataSource.getEsriPoints(params);
     try{
-    // var landsFencedFromJson2 = landsFencedFromJson(response ?? []);
     var landsFencedFromJson2 = whiteLandsFromJson(response ?? []);
     return landsFencedFromJson2;
     }catch(e){

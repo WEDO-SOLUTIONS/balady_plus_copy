@@ -6,7 +6,7 @@ import 'package:mapness/features/sso_auth/data/token_provider.dart';
 
 class AuthTokenInterceptor {
   static QueuedInterceptorsWrapper tokenInterceptor(
-          AutoDisposeNotifierProviderRef ref, BaseOptions baseOptions) =>
+          AutoDisposeAsyncNotifierProviderRef ref, BaseOptions baseOptions) =>
       QueuedInterceptorsWrapper(
         onRequest: (options, handler) async {
           final token = await ref.read(tokenProvider.future);

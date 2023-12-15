@@ -16,7 +16,6 @@ abstract class LifestyleDataSource {
   factory LifestyleDataSource(LifestyleLayersService service) =>
       _LifestyleDataSource(service: service);
 
-
   Future<List<dynamic>?> getEsriPoints(MapRequestParams params);
 
   Future<List<PointLayersData>?> getPointsInLayers(
@@ -33,29 +32,14 @@ class _LifestyleDataSource implements LifestyleDataSource {
     var points;
     try {
       final params = requestParams.toMap();
-      // final params = {
-      //   "where": "1=1",
-      //   "geometry":
-      //       "${searchRect.southWestLon},${searchRect.southWestLat},${searchRect.northEastLon},${searchRect.northEastLat}",
-      //   "f": "json",
-      //   "outFields": "OBJECTID",
-      //   "geometryType": "esriGeometryEnvelope",
-      //   // "geometryType": "esriGeometryPath",
-      //   // "distance": 100,
-      //   // "supportsQueryWithDistance": true,
-      //   // "units": "esriSRUnit_Kilometer",
-      //   // "spatialRel": "esriSpatialRelIntersects",
-      //   "resultRecordCount": 100,
-      // };
 
-      const proxy = 'https://sa1.ops.2gis.dev';
       const domain = 'https://apiservicesstg.balady.gov.sa';
+      final proxy = requestParams.proxy;
       const gisLayers = 'v1/gis-urbi-services/layers';
 
-      var layerId = requestParams.layer.layerId;
-
+      final layerId = requestParams.layer.layerId;
       var hashedUrl = "$domain/$gisLayers/$layerId/query?";
-      const mainUrl = "$proxy/$gisLayers";
+      final mainUrl = "$proxy/$gisLayers";
 
       params.forEach((key, value) => hashedUrl += "$key=$value&");
       hashedUrl = hashedUrl.substring(0, hashedUrl.length - 1);
@@ -86,12 +70,11 @@ class _LifestyleDataSource implements LifestyleDataSource {
       {required MapRequestParams params}) async {
     var points;
     try {
-      const proxy = 'https://sa1.ops.2gis.dev';
+      final proxy = params.proxy;
       const domain = 'https://apiservicesstg.balady.gov.sa';
       const gisLayers = 'v1/gis-urbi-services/layers';
-
       var hashedUrl = "$domain/$gisLayers/${params.layer.layerId}/query?";
-      const mainUrl = "$proxy/$gisLayers";
+      final mainUrl = "$proxy/$gisLayers";
 
       params.toMap().forEach((key, value) => hashedUrl += "$key=$value&");
       hashedUrl = hashedUrl.substring(0, hashedUrl.length - 1);
@@ -141,7 +124,7 @@ class _LifestyleDataSource implements LifestyleDataSource {
             points.data['data']['result']['features'],
           );
       }
-    } on DioError catch (error) {
+    } on DioException catch (error) {
       debugPrint(error.message);
       return null;
     } catch (ex) {

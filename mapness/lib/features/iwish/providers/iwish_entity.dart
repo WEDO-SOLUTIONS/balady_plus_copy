@@ -20,6 +20,7 @@ class _IwishEntity extends _$IwishEntity {
   }
 
   Future<bool> submitFeedback(IwishFeedbackEntity feedback) async {
+    final dio = await ref.read(dGisNetworkProvider.future);
     final request = pb.IWishFeedbackRequest(
       rating: feedback.mood?.index ?? -1 + 1,
       tags: feedback.tags.map((e) => pb.IWishFeedbackRequest_Tag(name: e)),
@@ -27,7 +28,6 @@ class _IwishEntity extends _$IwishEntity {
     );
 
     try {
-      final dio = ref.read(dGisNetworkProvider);
       final raw = await dio.post(
         '/iwish/$iwishId/feedback',
         data: request.writeToBuffer(),
@@ -46,7 +46,8 @@ class _IwishEntity extends _$IwishEntity {
 
   @override
   Future<IwishEntity> build(String iwishId) async {
-    final dio = ref.watch(dGisNetworkProvider);
+    final dio = await ref.read(dGisNetworkProvider.future);
+
     final raw = await dio.get('iwish/$iwishId');
 
     final response = pb.IWishItemResponse.fromBuffer(raw.data).object;
