@@ -113,20 +113,20 @@ jobs:
 
       - name: 🤖🔨 Build Android app
         run: |
-          flutter build apk --target lib/main_dev.dart --dart-define=GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)" --dart-define=GIT_COMMIT="$(git --no-pager show -s --format='%s')" --dart-define=VENDOR_CONFIG=prod
-          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-production.apk
-          mv ./.github/workflows/staging-vendor-config.jsonx android/app/src/main/assets/vendor-config.jsonx
-          flutter build apk --target lib/main_dev.dart --dart-define=GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)" --dart-define=GIT_COMMIT="$(git --no-pager show -s --format='%s')" --dart-define=VENDOR_CONFIG=staging
-      - name: 🤖🔨 Upload Production apk
+          flutter build apk --target lib/main_urbi_pre.dart --dart-define=GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)" --dart-define=GIT_COMMIT="$(git --no-pager show -s --format='%s')" --dart-define=VENDOR_CONFIG=urbi-pre-prod
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-urbi-pre-prod.apk
+#          mv ./.github/workflows/staging-vendor-config.jsonx android/app/src/main/assets/vendor-config.jsonx
+          flutter build apk --target lib/main_prod.dart --dart-define=GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)" --dart-define=GIT_COMMIT="$(git --no-pager show -s --format='%s')" --dart-define=VENDOR_CONFIG=momrah-prod
+      - name: 🤖🔨 Upload Urbi Pre Prod apk
         uses: actions/upload-artifact@v3
         with:
-          name: app-production.apk
-          path: build/app/outputs/flutter-apk/app-production.apk
-      - name: 🤖🔨 Upload Staging apk
+          name: app-urbi-pre-prod.apk
+          path: build/app/outputs/flutter-apk/app-urbi-pre-prod.apk
+      - name: 🤖🔨 Upload Momrah Prod apk
         uses: actions/upload-artifact@v3
         with:
-          name: app-staging.apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: app-momrah-prod.apk
+          path: build/app/outputs/flutter-apk/app-momrah-prod.apk
 
   # notify:
   #   name: Notify

@@ -12,6 +12,7 @@ import 'app/core/dependency_injection/injection_container.dart';
 
 void main() async {
   await AppEnv.setupEnv(EnvType.urbiPre);
+  // await AppEnv.setupEnv(EnvType.pre);
   await setupMapness(EnvType.urbiPre);
 
   await SentryFlutter.init(

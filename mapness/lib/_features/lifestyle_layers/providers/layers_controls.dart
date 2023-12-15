@@ -16,6 +16,7 @@ import 'package:mapness/app/routes/layer_details.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/entities/iwish/models/iwish_marker.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -393,7 +394,9 @@ class LayersControls extends _$LayersControls {
   Future<void> showJoyParks() async {
     final mapObjectManager =
         ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
-    final dio = ref.watch(dGisNetworkProvider);
+    final env = await ref.read(dgisEnvironmentProvider.future);
+    final url = env.url;
+    final dio = ref.read(dGisNetworkProvider(url));
     final raw = await dio.get('iwish');
     final response = pb.IWishMarkersResponse.fromBuffer(raw.data);
 

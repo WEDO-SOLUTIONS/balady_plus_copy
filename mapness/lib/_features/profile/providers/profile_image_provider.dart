@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/profile/domain/user_profile_data.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,8 +18,6 @@ class ProfileImage extends _$ProfileImage {
   static const _imagePrefsKey = 'user_profile_image_base64';
 
   SharedPreferences get _prefs => ref.read(sharedPrefsProvider);
-
-  Dio get _dio => ref.read(dGisNetworkProvider);
 
   String? get _imageBase64OnDevice => _prefs.getString(_imagePrefsKey);
 
@@ -70,8 +69,12 @@ class ProfileImage extends _$ProfileImage {
   /// Загружает изображение на бекенд.
   /// Возвращает ссылку на изображение.
   Future<String> _uploadImage(Uint8List bytes) async {
+    final env = await ref.read(dgisEnvironmentProvider.future);
+    final url = env.url;
+    final dio = ref.read(dGisNetworkProvider(url));
+
     try {
-      final response = await _dio.post(
+      final response = await dio.post(
         "/profile/photo",
         data: bytes,
       );
@@ -86,6 +89,9 @@ class ProfileImage extends _$ProfileImage {
   }
 
   Future<Uint8List> _downloadProfileImageToBytes({String url = ''}) async {
+    final env = await ref.read(dgisEnvironmentProvider.future);
+    final _url = env.url;
+    final _dio = ref.read(dGisNetworkProvider(_url));
     try {
       if (url.isEmpty) {
         final profileResponse = await _dio.get('/profile');

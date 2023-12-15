@@ -5,6 +5,7 @@ import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/entities/iwish/models/iwish_marker.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -24,9 +25,12 @@ class _IwishMarkers extends _$IwishMarkers {
 
   @override
   Future<List<IwishMarker>> build() async {
+    final env = await ref.watch(dgisEnvironmentProvider.future);
+    final url = env.url;
+    final dio = ref.watch(dGisNetworkProvider(url));
+
     final mapObjectManager =
         ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
-    final dio = ref.watch(dGisNetworkProvider);
     final raw = await dio.get('iwish');
     final response = pb.IWishMarkersResponse.fromBuffer(raw.data);
 
