@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/router.dart';
+import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/features/sso_auth/data/token_provider.dart';
 
 class AuthTokenInterceptor {
@@ -41,7 +42,8 @@ class AuthTokenInterceptor {
               handler.resolve(response);
             } catch (e) {
               if (e is DioException && e.response?.statusCode == 401) {
-                // Redirect to login
+                //LogOut and Redirect to login
+                await ref.read(authProvider.notifier).logOut();
                 ref.read(goRouterProvider).push('/signin');
               } else if (e is DioException) {
                 handler.reject(e);
