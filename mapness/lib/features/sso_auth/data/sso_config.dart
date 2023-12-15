@@ -33,8 +33,17 @@ class SsoAuthConfig {
         ssoSecret: 'secret',
       );
 
-  factory SsoAuthConfig.preProd() => SsoAuthConfig(
+  factory SsoAuthConfig.urbiPreProd() => SsoAuthConfig(
         ssoUrl: 'https://sa1.ops.2gis.dev/connect',
+        ssoUserInfo: '/userinfo',
+        ssoClient: 'balady_mobile_app',
+        ssoRedirectUrl: 'com.momra.balady://callback',
+        ssoLogoutUrl: 'com.momra.balady://callback',
+        ssoSecret: 'secret',
+      );
+
+  factory SsoAuthConfig.preProd() => SsoAuthConfig(
+        ssoUrl: 'https://ssoappstg.momra.gov.sa/connect',
         ssoUserInfo: '/userinfo',
         ssoClient: 'balady_mobile_app',
         ssoRedirectUrl: 'com.momra.balady://callback',

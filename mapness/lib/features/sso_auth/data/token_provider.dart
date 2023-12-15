@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:mapness/features/sso_auth/domain/entity/sso_token_info.dart';
 import 'package:mapness/features/sso_auth/domain/mappers/auth_token_response.dart';
-import 'package:mapness/shared/providers/dgis_envirement.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -14,7 +14,8 @@ class Token extends _$Token {
   final FlutterAppAuth _appAuth = FlutterAppAuth();
 
   Future<void> authorization() async {
-    final ssoConfig = ref.read(dgisEnvirementProvider).sso;
+    final env = await ref.read(dgisEnvironmentProvider.future);
+    final ssoConfig = env.sso;
 
     AuthorizationTokenResponse? response =
         await _appAuth.authorizeAndExchangeCode(
@@ -40,7 +41,8 @@ class Token extends _$Token {
   }
 
   Future<void> refreshToken(String refreshToken) async {
-    final ssoConfig = ref.read(dgisEnvirementProvider).sso;
+    final env = await ref.read(dgisEnvironmentProvider.future);
+    final ssoConfig = env.sso;
 
     TokenResponse? response = await _appAuth.token(
       TokenRequest(

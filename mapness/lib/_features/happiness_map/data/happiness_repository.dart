@@ -10,7 +10,7 @@ part 'happiness_repository.g.dart';
 class _HappinessRepository extends _$HappinessRepository {
   // returns should close or not
   Future<void> submitFeedback(HappinessState feedback) async {
-    final dio = ref.read(dGisNetworkProvider);
+    final dio = await ref.read(dGisNetworkProvider.future);
     state = const AsyncLoading();
     final data = HappinessRequest(
       isPositive: feedback.feedback == HappinessFeedback.like,

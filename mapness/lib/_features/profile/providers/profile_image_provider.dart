@@ -18,8 +18,6 @@ class ProfileImage extends _$ProfileImage {
 
   SharedPreferences get _prefs => ref.read(sharedPrefsProvider);
 
-  Dio get _dio => ref.read(dGisNetworkProvider);
-
   String? get _imageBase64OnDevice => _prefs.getString(_imagePrefsKey);
 
   bool _isUpdated = false;
@@ -70,8 +68,9 @@ class ProfileImage extends _$ProfileImage {
   /// Загружает изображение на бекенд.
   /// Возвращает ссылку на изображение.
   Future<String> _uploadImage(Uint8List bytes) async {
+    final dio = await ref.read(dGisNetworkProvider.future);
     try {
-      final response = await _dio.post(
+      final response = await dio.post(
         "/profile/photo",
         data: bytes,
       );
@@ -86,9 +85,10 @@ class ProfileImage extends _$ProfileImage {
   }
 
   Future<Uint8List> _downloadProfileImageToBytes({String url = ''}) async {
+    final dio = await ref.read(dGisNetworkProvider.future);
     try {
       if (url.isEmpty) {
-        final profileResponse = await _dio.get('/profile');
+        final profileResponse = await dio.get('/profile');
         final profileData =
             proto.ProfileResponse.fromBuffer(profileResponse.data);
         url = profileData.profile.photo.image.url;
@@ -98,7 +98,7 @@ class ProfileImage extends _$ProfileImage {
         return Uint8List(0);
       }
 
-      final response = await _dio.get(
+      final response = await dio.get(
         url,
         options: Options(
           responseType: ResponseType.bytes,

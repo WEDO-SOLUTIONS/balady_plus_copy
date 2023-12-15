@@ -6,7 +6,7 @@ import 'package:mapness/_features/common/providers/user_state.dart';
 import 'package:mapness/features/sso_auth/data/token_provider.dart';
 import 'package:mapness/features/sso_auth/domain/entity/sso_token_info.dart';
 import 'package:mapness/features/sso_auth/domain/entity/sso_user_info_model.dart';
-import 'package:mapness/shared/providers/dgis_envirement.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -19,7 +19,8 @@ class Auth extends _$Auth {
   Box<dynamic>? _profileBox;
 
   Future<SsoUserInfoModel?> getSsoProfile(SsoTokenInfo response) async {
-    final ssoConfig = ref.read(dgisEnvirementProvider).sso;
+    final env = await ref.read(dgisEnvironmentProvider.future);
+    final ssoConfig = env.sso ;
     final dio = Dio();
     final ssoUserInfo = '${ssoConfig.ssoUrl}${ssoConfig.ssoUserInfo}';
     final responseData = await dio.get(ssoUserInfo,

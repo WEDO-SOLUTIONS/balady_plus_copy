@@ -13,7 +13,7 @@ import 'app/core/dependency_injection/injection_container.dart';
 void main() async {
   await AppEnv.setupEnv(EnvType.stg);
 
-  await setupMapness();
+  await setupMapness(EnvType.stg);
 
   await SentryFlutter.init(
     (options) {
