@@ -98,7 +98,7 @@ class _RemoteConfig {
     urbiPreVal: "ak3JXde3KdBB1xbM",
   );
   static final ssoUrl = _initValues<String>(
-    devVal: "https://ssoappdev.momra.gov.sa",
+    devVal: "https://sa1.ops.2gis.dev",
     stgVal: "https://ssoappdev.momra.gov.sa",
     preVal: "https://ssoappstg.momra.gov.sa",
     prodVal: "https://ssoapp.balady.gov.sa",

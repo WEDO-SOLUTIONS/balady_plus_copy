@@ -9,11 +9,9 @@ part 'jobs_statistic_provider.g.dart';
 class JobStatisticResponse extends _$JobStatisticResponse {
   @override
   Future<JobStatisticModel?> build() async {
-    final dio = ref.watch(dgisHmacNetwrokProvider);
+    final dio = await ref.read(dgisHmacNetwrokProvider.future);
 
     final response = await dio.get('/jobs/statistics');
-
-    String a = response.data.toString();
 
     final jobResponse = JobBaseResponse<JobStatisticModel>.fromJson(
         response.data, JobStatisticModel.fromJson);

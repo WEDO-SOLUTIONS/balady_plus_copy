@@ -8,6 +8,7 @@ import 'package:mapness/_features/profile/widgets/personal_data.dart';
 import 'package:mapness/_features/profile/widgets/profile_image_widget.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ProfileInfoPage extends ConsumerWidget {
   const ProfileInfoPage({super.key});
@@ -113,6 +114,45 @@ class ProfileInfoPage extends ConsumerWidget {
                 ),
               ),
               PersonalData(userInfo: userData),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Directionality(
+                  textDirection: Directionality.of(context),
+                  child: InkWell(
+                    onTap: () async {
+                      await ref.read(authProvider.notifier).logOut();
+
+                      context.pop();
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xff566B83).withOpacity(.12),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(context.l10n.logOut,
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()!
+                                  .textS
+                                  .copyWith(
+                                    color: const Color(0xffE0373D),
+                                  )),
+                          SvgPicture.asset(
+                            "assets/icons/svg/ic_profile_logout.svg",
+                            height: 24,
+                            width: 24,
+                            package: PackageConfig.packageName,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
