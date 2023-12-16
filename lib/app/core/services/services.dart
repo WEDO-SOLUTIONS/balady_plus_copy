@@ -14,8 +14,8 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.menuQuranPage},
-      "ar": {"title": "holy_quran".tr(), "description": null, "tag": null},
-      "en": {"title": "Holy Quran", "description": null, "tag": null}
+      "ar": {"title": "holy_quran", "description": null, "tag": null},
+      "en": {"title": "holy_quran", "description": null, "tag": null}
     },
     {
       "id": 2,
@@ -25,8 +25,8 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": "/prayerTimes"},
-      "ar": {"title": "أوقات الصلاة", "description": null},
-      "en": {"title": "Prayer Times", "description": null}
+      "ar": {"title": "prayerTimes", "description": null},
+      "en": {"title": "prayerTimes", "description": null}
     },
     {
       "id": 5,
@@ -36,8 +36,8 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.qiblahCompass},
-      "ar": {"title": "بوصلة القبلة", "description": null, "tag": null},
-      "en": {"title": "Zamzam Points", "description": null, "tag": null}
+      "ar": {"title": "qiblahCompass", "description": null, "tag": null},
+      "en": {"title": "qiblahCompass", "description": null, "tag": null}
     },
     {
       "id": 3,
@@ -47,8 +47,8 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.mainAthkarPage},
-      "ar": {"title": "الأذكار", "description": null, "tag": null},
-      "en": {"title": "Azkar", "description": null, "tag": null}
+      "ar": {"title": "azkar", "description": null, "tag": null},
+      "en": {"title": "azkar", "description": null, "tag": null}
     },
     {
       "id": 4,
@@ -58,8 +58,8 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.ZmZmPointsPage},
-      "ar": {"title": "نقاط توزيع ماء زمزم", "description": null, "tag": null},
-      "en": {"title": "Zamzam Points", "description": null, "tag": null}
+      "ar": {"title": "zamzam_points", "description": null, "tag": null},
+      "en": {"title": "zamzam_points", "description": null, "tag": null}
     },
     {
       "id": 5,
@@ -69,7 +69,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.weatherMainPage},
-      "ar": {"title": "الطقس", "description": null, "tag": null},
+      "ar": {"title": "weather", "description": null, "tag": null},
       "en": {"title": "weather", "description": null, "tag": null}
     },
     {
@@ -80,8 +80,8 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.eventsMainPage},
-      "ar": {"title": "الفعاليات", "description": null, "tag": null},
-      "en": {"title": "Zamzam Points", "description": null, "tag": null}
+      "ar": {"title": "events", "description": null, "tag": null},
+      "en": {"title": "events", "description": null, "tag": null}
     },
     {
       "id": 5,
@@ -91,8 +91,8 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.calendarMainPage},
-      "ar": {"title": "تقويم المملكة", "description": null, "tag": null},
-      "en": {"title": "Zamzam Points", "description": null, "tag": null}
+      "ar": {"title": "saudi_calendar", "description": null, "tag": null},
+      "en": {"title": "saudi_calendar", "description": null, "tag": null}
     },
   ],
   "honoring_the_dead_services": [
@@ -108,12 +108,8 @@ Map<String, dynamic> servicesConfig = {
         "type": "page",
         "value": RouteName.ekramTransportationListScreen
       },
-      "ar": {
-        "title": "ekram_benf_transport".tr(),
-        "description": null,
-        "tag": null
-      },
-      "en": {"title": "Move Diseased", "description": null, "tag": null}
+      "ar": {"title": "ekram_benf_transport", "description": null, "tag": null},
+      "en": {"title": "ekram_benf_transport", "description": null, "tag": null}
     },
     {
       "id": 2,
@@ -127,12 +123,8 @@ Map<String, dynamic> servicesConfig = {
         "type": "page",
         "value": RouteName.driverEkramTransportationListScreen
       },
-      "ar": {
-        "title": "ekram_empolyee_title".tr(),
-        "description": null,
-        "tag": null
-      },
-      "en": {"title": "Move Diseased", "description": null, "tag": null}
+      "ar": {"title": "ekram_empolyee_title", "description": null, "tag": null},
+      "en": {"title": "ekram_empolyee_title", "description": null, "tag": null}
     },
     {
       "id": 3,
@@ -147,11 +139,15 @@ Map<String, dynamic> servicesConfig = {
         "value": RouteName.EkramInquiryCemetryDetailsPage
       },
       "ar": {
-        "title": "ekram_inquiry_burial_grave".tr(),
+        "title": "ekram_inquiry_burial_grave",
         "description": null,
         "tag": null
       },
-      "en": {"title": "Move Diseased", "description": null, "tag": null}
+      "en": {
+        "title": "ekram_inquiry_burial_grave",
+        "description": null,
+        "tag": null
+      }
     },
     {
       "id": 4,
@@ -166,11 +162,15 @@ Map<String, dynamic> servicesConfig = {
         "value": RouteName.EkramInquiryGravesDetailsPage
       },
       "ar": {
-        "title": "ekram_inquiry_about_grave".tr(),
+        "title": "ekram_inquiry_about_grave",
         "description": null,
         "tag": null
       },
-      "en": {"title": "Move Diseased", "description": null, "tag": null}
+      "en": {
+        "title": "ekram_inquiry_about_grave",
+        "description": null,
+        "tag": null
+      }
     },
     {
       "id": 5,
@@ -185,11 +185,15 @@ Map<String, dynamic> servicesConfig = {
         "value": RouteName.EkramInquiryOrgnizationsDetailsPage
       },
       "ar": {
-        "title": "ekram_inquiry_orgnizations".tr(),
+        "title": "ekram_inquiry_orgnizations",
         "description": null,
         "tag": null
       },
-      "en": {"title": "Move Diseased", "description": null, "tag": null}
+      "en": {
+        "title": "ekram_inquiry_orgnizations",
+        "description": null,
+        "tag": null
+      }
     },
     {
       "id": 6,
@@ -204,11 +208,15 @@ Map<String, dynamic> servicesConfig = {
         "value": RouteName.EkramInquiryPrintDetailsPage
       },
       "ar": {
-        "title": "ekram_print_certificate".tr(),
+        "title": "ekram_print_certificate",
         "description": null,
         "tag": null
       },
-      "en": {"title": "Move Diseased", "description": null, "tag": null}
+      "en": {
+        "title": "ekram_print_certificate",
+        "description": null,
+        "tag": null
+      }
     },
     {
       "id": 7,
@@ -220,11 +228,15 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.ekramBookingListScreen},
       "ar": {
-        "title": "cemetery_booking_request".tr(),
+        "title": "cemetery_booking_request",
         "description": null,
         "tag": null
       },
-      "en": {"title": "Move Diseased", "description": null, "tag": null}
+      "en": {
+        "title": "cemetery_booking_request",
+        "description": null,
+        "tag": null
+      }
     },
   ],
   "help_services": [
@@ -237,12 +249,8 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "requireLogin": true,
       "action": {"type": "page", "value": RouteName.municipalAdvisor},
-      "ar": {
-        "title": "municipal_advisor".tr(),
-        "description": null,
-        "tag": null
-      },
-      "en": {"title": "Municipal Advisor", "description": null, "tag": null}
+      "ar": {"title": "municipal_advisor", "description": null, "tag": null},
+      "en": {"title": "municipal_advisor", "description": null, "tag": null}
     },
     // {
     //   "id": 5,
@@ -263,8 +271,8 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.calculatorMapRoute},
-      "ar": {"title": "حاسبة الرسوم", "description": null, "tag": null},
-      "en": {"title": "Fee Calculator", "description": null, "tag": null}
+      "ar": {"title": "fee_calculator", "description": null, "tag": null},
+      "en": {"title": "fee_calculator", "description": null, "tag": null}
     },
     {
       "id": 10,
@@ -275,12 +283,12 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.qrScreenRoute},
       "ar": {
-        "title": "رأيك يفرق",
+        "title": "homeAppsYourOpinionWord",
         "description": "يمكنك الآن حجز موعد عبر التطبيق !",
         "tag": null
       },
       "en": {
-        "title": "Your Opnion Matter",
+        "title": "homeAppsYourOpinionWord",
         "description": "You can now book an appointment through the app!",
         "tag": null
       }
@@ -309,12 +317,12 @@ Map<String, dynamic> servicesConfig = {
         "value": RouteName.newTransactionInquiryScreen
       },
       "ar": {
-        "title": "استعلام عن معاملة",
+        "title": "transaction_inquery",
         "description": "يمكنك الآن حجز موعد عبر التطبيق !",
         "tag": null
       },
       "en": {
-        "title": "Transaction Inquery",
+        "title": "transaction_inquery",
         "description": "You can now book an appointment through the app!",
         "tag": null
       }
@@ -329,7 +337,7 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": true,
       "requireLogin": true,
       "action": {"type": "dialog", "value": "/supporter"},
-      "ar": {"title": "داعم", "description": null, "tag": null},
+      "ar": {"title": "supporter", "description": null, "tag": null},
       "en": {"title": "Supporter", "description": null, "tag": null}
     },
   ],
@@ -354,8 +362,8 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.etmamMainPage},
-      "ar": {"title": "balady_works".tr(), "description": null, "tag": null},
-      "en": {"title": "Municipal Advisor", "description": null, "tag": null}
+      "ar": {"title": "balady_works", "description": null, "tag": null},
+      "en": {"title": "balady_works", "description": null, "tag": null}
     },
   ],
   "customer_voice_services": [
@@ -368,8 +376,8 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "requireLogin": true,
       "action": {"type": "dialog", "value": RouteName.newMSRMapPage},
-      "ar": {"title": "طلب خدمة بلدية", "description": null, "tag": null},
-      "en": {"title": "Request Service", "description": null, "tag": null}
+      "ar": {"title": "request_service", "description": null, "tag": null},
+      "en": {"title": "request_service", "description": null, "tag": null}
     },
     /*  {
       "id": 15,
@@ -395,8 +403,8 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "requireLogin": true,
       "action": {"type": "dialog", "value": ""},
-      "ar": {"title": "حجز موعد الكتروني", "description": null, "tag": null},
-      "en": {"title": "Schedule Date", "description": null, "tag": null}
+      "ar": {"title": "schedule_date", "description": null, "tag": null},
+      "en": {"title": "schedule_date", "description": null, "tag": null}
     },
     {
       "id": 16,
@@ -407,13 +415,8 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "requireLogin": true,
       "action": {"type": "page", "value": "/DCVeichlePage"},
-      "ar": {
-        "title": "استعادة مركبة مسحوبة",
-        "description":
-            "اطلع على جميع المعاملات القابلة للاعتراض وإرسل اعتراضك مباشرة",
-        "tag": "سجّل اعتراضك"
-      },
-      "en": {"title": "Damaged Cars", "description": null, "tag": null}
+      "ar": {"title": "dc_retreive_car", "description": "", "tag": ""},
+      "en": {"title": "dc_retreive_car", "description": null, "tag": null}
     },
     {
       "id": 6,
@@ -423,8 +426,8 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": "/objectableTransactionsPage"},
-      "ar": {"title": "تقديم اعتراض", "description": null, "tag": null},
-      "en": {"title": "Objections", "description": null, "tag": null}
+      "ar": {"title": "submit_objections", "description": null, "tag": null},
+      "en": {"title": "submit_objections", "description": null, "tag": null}
     },
     {
       "id": 1,
@@ -433,55 +436,21 @@ Map<String, dynamic> servicesConfig = {
       "order": 1,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "cards", "value": ""},
+      "action": {"type": "dialog", "value": ""},
       "ar": {
-        "title": "صور وارسل",
+        "title": "sendImage",
         "description":
             "حسّن المشهد الحضري في مدينتك، وبلّغ عن مظاهر التشوه البصري",
         "tag": null,
-        "warning":
-            ". يرجى الالتزام بتجديد الرخصة قبل انتهائها أو إلغائها في حالة عدم الرغبة في تجديدها وذلك لتجنب رسوم غرامة المشترطة على التأخير في التجديد.\n. يمكن تجديد الرخصة قبل 90 يوم من تاريخ انتهائها."
+        "warning": ""
       },
       "en": {
-        "title": "Send Image",
+        "title": "sendImage",
         "description":
             "Improve the civil scene of your city and report visual pollution",
         "tag": null,
-        "warning":
-            ". Please renew the license before it expires or cancel it if you do not want to renew it in order to avoid the required delay penalty fees.\n. The license can be renewed 90 days before its expiry date."
+        "warning": ""
       },
-      "cards": [
-        {
-          "iconName": "service_description",
-          "rate": 5.4,
-          "duration": "5",
-          "ar": {
-            "title": "وصف الخدمه",
-            "description":
-                "من خلال هذه الخدمة يمكنك البدء بممارسة العمل التجاري من خلال إصدار رخصة نشاط تجاري  بالإضافة إلى تصريح السلامة الصادر من المديرية العامة للدفاع المدني لجميع الأنشطة التجارية المعتمدة لدى وزارة الشؤون البلدية والقروية والإسكان."
-          },
-          "en": {
-            "title": "Service Description",
-            "description":
-                "Through this service, you can start practicing business by issuing a commercial activity license in addition to the safety permit issued by the General Directorate of Civil Defense for all commercial activities approved by the Ministry of Municipal and Rural Affairs and Housing."
-          }
-        },
-        {
-          "iconName": "requirements",
-          "rate": 5.4,
-          "duration": "5",
-          "ar": {
-            "title": "المتطلبات",
-            "description":
-                "من خلال هذه الخدمة يمكنك البدء بممارسة العمل التجاري من خلال إصدار رخصة نشاط تجاري  بالإضافة إلى تصريح السلامة الصادر من المديرية العامة للدفاع المدني لجميع الأنشطة التجارية المعتمدة لدى وزارة الشؤون البلدية والقروية والإسكان."
-          },
-          "en": {
-            "title": "Requirements",
-            "description":
-                "Through this service, you can start practicing business by issuing a commercial activity license in addition to the safety permit issued by the General Directorate of Civil Defense for all commercial activities approved by the Ministry of Municipal and Rural Affairs and Housing."
-          }
-        },
-      ]
     },
     {
       "id": 9,
@@ -492,8 +461,8 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "requireLogin": true,
       "action": {"type": "page", "value": RouteName.DCCameraPage},
-      "ar": {"title": "بلاغ عن سيارة تالفة", "description": null, "tag": null},
-      "en": {"title": "Damaged Cars", "description": null, "tag": null}
+      "ar": {"title": "ruined_car_request", "description": null, "tag": null},
+      "en": {"title": "ruined_car_request", "description": null, "tag": null}
     },
     {
       "id": 2,
@@ -505,12 +474,12 @@ Map<String, dynamic> servicesConfig = {
       "requireLogin": true,
       "action": {"type": "dialog", "value": "/general-inquiries"},
       "ar": {
-        "title": "الإستفسارات العامة",
+        "title": "general_requests",
         "description": "ارسل استفسارك عن كل خدمه",
         "tag": "الخدمات"
       },
       "en": {
-        "title": "General Inquiries",
+        "title": "general_requests",
         "description": "Send your inquiry about any service",
         "tag": "Services"
       }
@@ -523,20 +492,17 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.violationGuideMainPage},
-      "ar": {"title": "دليل المخالفات", "description": null, "tag": null},
-      "en": {"title": "Zamzam Points", "description": null, "tag": null}
+      "ar": {
+        "title": "violation_select_guide_title_page",
+        "description": null,
+        "tag": null
+      },
+      "en": {
+        "title": "violation_select_guide_title_page",
+        "description": null,
+        "tag": null
+      }
     },
-    /* {
-      "id": 11,
-      "icon": "violation-guide",
-      "3d_icon": null,
-      "order": 5,
-      "isNew": false,
-      "isImportant": false,
-      "action": {"type": "page", "value": RouteName.violationGuideMainPage},
-      "ar": {"title": "دليل المخالفات", "description": null, "tag": null},
-      "en": {"title": "Zamzam Points", "description": null, "tag": null}
-    },*/
   ],
   "municipal_services": [
     {
@@ -551,8 +517,8 @@ Map<String, dynamic> servicesConfig = {
         "type": "page",
         "value": RouteName.tobaccoServicesList,
       },
-      "ar": {"title": "tobaccoServices".tr(), "description": null, "tag": null},
-      "en": {"title": "Tobacco Services", "description": null, "tag": null}
+      "ar": {"title": "tobaccoServices", "description": null, "tag": null},
+      "en": {"title": "tobaccoServices", "description": null, "tag": null}
     },
     {
       "id": 1,
@@ -566,12 +532,8 @@ Map<String, dynamic> servicesConfig = {
         "type": "page",
         "value": "${RemoteConfig.webSiteUrl}/ar/products/10920"
       },
-      "ar": {
-        "title": "municipal_commercial".tr(),
-        "description": null,
-        "tag": null
-      },
-      "en": {"title": "Request Service", "description": null, "tag": null}
+      "ar": {"title": "municipal_commercial", "description": null, "tag": null},
+      "en": {"title": "municipal_commercial", "description": null, "tag": null}
     },
     {
       "id": 2,
@@ -585,15 +547,11 @@ Map<String, dynamic> servicesConfig = {
         "value": "${RemoteConfig.webSiteUrl}/ar/products/10470"
       },
       "ar": {
-        "title": "municpal_construction".tr(),
+        "title": "municpal_construction",
         "description": null,
         "tag": null
       },
-      "en": {
-        "title": "Issue Health Certificate",
-        "description": null,
-        "tag": null
-      }
+      "en": {"title": "municpal_construction", "description": null, "tag": null}
     },
     {
       "id": 3,
@@ -604,12 +562,8 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "requireLogin": true,
       "action": {"type": "page", "value": RouteName.newHealthCertificatePage},
-      "ar": {
-        "title": "municipal_health".tr(),
-        "description": null,
-        "tag": null
-      },
-      "en": {"title": "Schedule Date", "description": null, "tag": null}
+      "ar": {"title": "municipal_health", "description": null, "tag": null},
+      "en": {"title": "municipal_health", "description": null, "tag": null}
     },
     {
       "id": 4,
@@ -623,8 +577,8 @@ Map<String, dynamic> servicesConfig = {
         "type": "page",
         "value": "${RemoteConfig.webSiteUrl}/ar/products/10574"
       },
-      "ar": {"title": "municipal_shop".tr(), "description": null, "tag": null},
-      "en": {"title": "Schedule Date", "description": null, "tag": null}
+      "ar": {"title": "municipal_shop", "description": null, "tag": null},
+      "en": {"title": "municipal_shop", "description": null, "tag": null}
     },
     {
       "id": 5,
@@ -638,12 +592,8 @@ Map<String, dynamic> servicesConfig = {
         "type": "page",
         "value": "${RemoteConfig.webSiteUrl}/ar/products/10543"
       },
-      "ar": {
-        "title": "municpal_housing".tr(),
-        "description": null,
-        "tag": null
-      },
-      "en": {"title": "Damaged Cars", "description": null, "tag": null}
+      "ar": {"title": "municpal_housing", "description": null, "tag": null},
+      "en": {"title": "municpal_housing", "description": null, "tag": null}
     },
     {
       "id": 6,
@@ -653,8 +603,8 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": "https://fees.balady.gov.sa/ewaa"},
-      "ar": {"title": "municipal_ewaa".tr(), "description": null, "tag": null},
-      "en": {"title": "Objections", "description": null, "tag": null}
+      "ar": {"title": "municipal_ewaa", "description": null, "tag": null},
+      "en": {"title": "municipal_ewaa", "description": null, "tag": null}
     },
     // {
     //   "id": 7,
@@ -682,8 +632,16 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.createCompliancePage},
-      "ar": {"title": "شهادة الإمتثال", "description": null, "tag": null},
-      "en": {"title": "Zamzam Points", "description": null, "tag": null}
+      "ar": {
+        "title": "compliance_certificate",
+        "description": null,
+        "tag": null
+      },
+      "en": {
+        "title": "compliance_certificate",
+        "description": null,
+        "tag": null
+      }
     },
     {
       "id": 51,
@@ -693,8 +651,8 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.selfRatingMainPage},
-      "ar": {"title": "قيم مبناك", "description": null, "tag": null},
-      "en": {"title": "Zamzam Points", "description": null, "tag": null}
+      "ar": {"title": "review-building", "description": null, "tag": null},
+      "en": {"title": "review-building", "description": null, "tag": null}
     },
     {
       "id": 9,
@@ -707,8 +665,16 @@ Map<String, dynamic> servicesConfig = {
         "type": "page",
         "value": RouteName.commercialLicenseServicePage
       },
-      "ar": {"title": "اصدار رخصة تجارية", "description": null, "tag": null},
-      "en": {"title": "Zamzam Points", "description": null, "tag": null}
+      "ar": {
+        "title": "issue_commerical_license",
+        "description": null,
+        "tag": null
+      },
+      "en": {
+        "title": "issue_commerical_license",
+        "description": null,
+        "tag": null
+      }
     },
     {
       "id": 101,
@@ -718,8 +684,8 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": ""},
-      "ar": {"title": "التصاريح المتعددة", "description": null, "tag": null},
-      "en": {"title": "Zamzam Points", "description": null, "tag": null}
+      "ar": {"title": "multiple_permits", "description": null, "tag": null},
+      "en": {"title": "multiple_permits", "description": null, "tag": null}
     },
     {
       "id": 8,
@@ -730,12 +696,12 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "action": {"type": "page", "value": "${RemoteConfig.webSiteUrl}/ar"},
       "ar": {
-        "title": "municpal_all".tr(),
+        "title": "municpal_all",
         "description": "",
         "tag": null,
       },
       "en": {
-        "title": "Send Image",
+        "title": "municpal_all",
         "description":
             "Improve the civil scene of your city and report visual pollution",
         "tag": null,

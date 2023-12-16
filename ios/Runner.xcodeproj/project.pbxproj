@@ -18,6 +18,7 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		98349E8F2B2F48D500DBFDF6 /* momrah-staging-vendor-config.jsonx in Resources */ = {isa = PBXBuildFile; fileRef = 98349E8E2B2F48D400DBFDF6 /* momrah-staging-vendor-config.jsonx */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -57,6 +58,7 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		98349E8E2B2F48D400DBFDF6 /* momrah-staging-vendor-config.jsonx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "momrah-staging-vendor-config.jsonx"; sourceTree = "<group>"; };
 		A330C5A31B13592E25A47A03 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9B2F811CDAC419938020B75 /* Pods-Runner.debug-pre.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug-pre.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug-pre.xcconfig"; sourceTree = "<group>"; };
 		B8886A5A6E6115BC713B7E8C /* Pods-Runner.profile-prod.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile-prod.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile-prod.xcconfig"; sourceTree = "<group>"; };
@@ -112,6 +114,7 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
+				98349E8E2B2F48D400DBFDF6 /* momrah-staging-vendor-config.jsonx */,
 				1CCFB78C2B2C9664002D7F67 /* momrah-prod-vendor-config.jsonx */,
 				1CCFB78A2B2C8794002D7F67 /* urbi-pre-prod-vendor-config.jsonx */,
 				44C538782A6AC53C003D7D2B /* dgissdk.key */,
@@ -224,6 +227,7 @@
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				1CCFB78D2B2C9664002D7F67 /* momrah-prod-vendor-config.jsonx in Resources */,
+				98349E8F2B2F48D500DBFDF6 /* momrah-staging-vendor-config.jsonx in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				1CCFB78B2B2C8794002D7F67 /* urbi-pre-prod-vendor-config.jsonx in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,

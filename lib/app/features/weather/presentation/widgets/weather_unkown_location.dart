@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class UnKownWeatherLocation extends StatelessWidget {
   final Function onTap;
@@ -37,7 +38,7 @@ class UnKownWeatherLocation extends StatelessWidget {
                       SizedBox(
                         width: 219,
                         child: CustomTextWidget(
-                          'حدد موقعك حتى يتم عرض الطقس في مدينتك ',
+                          "weatherCurrentLocation".tr(),
                           textAlign: TextAlign.right,
                           fontColor: Color(0xFFE6EFEF),
                           fontWeight: AppFontWeight.semiBold,

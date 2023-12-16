@@ -42,7 +42,7 @@ class _VeichlesListPageState extends State<VeichlesListPage> {
         builder: (context, state) {
           return Scaffold(
             appBar: DetailsHeader(
-              title: "عرض المركبات",
+              title: "retrieve_btn_text".tr(),
             ),
             body: Stack(
               children: [
