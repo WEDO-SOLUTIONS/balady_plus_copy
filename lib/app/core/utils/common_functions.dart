@@ -34,6 +34,7 @@ import 'package:uuid/uuid.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
 import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
 import '../../features/_shared_feature_/presentation/pages/pdf_view.dart';
+import '../../features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../features/entry_point/domain/use_cases/get_cookie.dart';
 import '../../features/profile_features/delegators/domain/entities/user_profile_entity.dart';
 import '../../features/vd/domain/entities/gis/gis_params.dart';
@@ -721,18 +722,23 @@ class CommonFunctions {
 
   static showError(String error) {
     if (error.isNotEmpty) {
-      try {
-        BotToast.showSimpleNotification(
-            title: error,
-            backgroundColor: const Color.fromARGB(255, 204, 51, 51),
-            titleStyle: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontStyle: FontStyle.normal,
-                fontSize: 16.0),
-            hideCloseButton: true,
-            duration: const Duration(seconds: 3));
-      } catch (ex) {}
+      if (error.contains("https")) {
+        CustomPopUpsWidgets.showHTMLErrorMessageDialog(
+            NavigationService.navigatorKey.currentContext!, error);
+      } else {
+        try {
+          BotToast.showSimpleNotification(
+              title: error,
+              backgroundColor: const Color.fromARGB(255, 204, 51, 51),
+              titleStyle: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                  fontStyle: FontStyle.normal,
+                  fontSize: 16.0),
+              hideCloseButton: true,
+              duration: const Duration(seconds: 3));
+        } catch (ex) {}
+      }
     }
   }
 

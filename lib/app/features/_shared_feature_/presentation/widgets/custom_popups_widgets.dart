@@ -212,6 +212,34 @@ class CustomPopUpsWidgets {
       )) ??
       false;
 
+  static Future<bool> showHTMLErrorMessageDialog(
+    BuildContext context,
+    String errorText,
+  ) async =>
+      (await showGeneralDialog<bool>(
+        barrierColor: Colors.black.withOpacity(0.6),
+        transitionBuilder: (_, a1, a2, widget) {
+          return Transform.scale(
+            scale: a1.value,
+            child: Opacity(
+              opacity: a1.value,
+              child: CustomHTMLAlertDialogWidget(
+                titleMessageType: MessageType.error,
+                contentText: errorText,
+              ),
+            ),
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 100),
+        barrierDismissible: true,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {
+          return const SizedBox();
+        },
+      )) ??
+      false;
+
   static Future<dynamic> showBottomSheet(
     BuildContext context, {
     required Widget child,
