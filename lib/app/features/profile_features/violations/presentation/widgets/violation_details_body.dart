@@ -86,12 +86,13 @@ class _ViolationDetailBodyState extends State<ViolationDetailBody> {
                           border: Border.all(
                               color: const Color(0xffc74b00), width: 1),
                           borderRadius: BorderRadius.circular(4)),
-                      child: const Row(
+                      child: Row(
                         children: [
-                          CustomSvgIconWidget(IconPath.informationCircleIcon),
-                          CustomHorizontalSpace(width: 12),
+                          const CustomSvgIconWidget(
+                              IconPath.informationCircleIcon),
+                          const CustomHorizontalSpace(width: 12),
                           CustomTextWidget(
-                            "لا يمكن الاعتراض بسبب انتهاء مدة الاعتراض",
+                            "objectionPeriodExpired".tr(),
                             fontColor: AppColor.orange800,
                             fontWeight: AppFontWeight.medium,
                             fontSize: 13,

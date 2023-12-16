@@ -59,6 +59,7 @@ import '../../features/_shared_feature_/shared_feature_exports.dart'
         BottomSheetDialog,
         BottomSheetWithActions,
         BridgeParams,
+        BuildingRequirementsDialog,
         FileInfo;
 import '../../features/entry_point/domain/entities/sso_user_info.dart'
     show SsoUserInfo;
@@ -533,6 +534,12 @@ class CommonFunctions {
   static bool hasArabicOrEnglishCharacters(String str) {
     RegExp r = RegExp(r"[\u0621-\u064Aa-zA-Z\s]");
     return r.allMatches(str).length == str.length;
+  }
+
+  static void changeLanguage({required String lang}) async {
+    await translator.setNewLanguage(
+        NavigationService.navigatorKey.currentContext!,
+        newLanguage: lang);
   }
 
   static String replaceArabicNumberWithEnglish(String value) {
@@ -1107,6 +1114,10 @@ class CommonFunctions {
     return file;
   }
 
+  static void logout() {
+    sl<EntryPointCubit>().autoLogout();
+  }
+
   static void openSnapAndSend() async {
     await BottomSheetDialog.showDraggableSheet(
         NavigationService.navigatorKey.currentContext!,
@@ -1116,6 +1127,34 @@ class CommonFunctions {
           title: "choose_incident_type".tr(),
           body: VDAllTypesDialog(),
         ));
+  }
+
+  static void openCreateCompliance() {
+    //أصدر الشهادة
+    NavigationService.navigatorKey.currentState!
+        .pushNamed(RouteName.createCompliancePage);
+  }
+
+  static void openRatingBuilding() {
+    //قيم مبناك
+    NavigationService.navigatorKey.currentState!
+        .pushNamed(RouteName.selfRatingMainPage);
+  }
+
+  static void openComplianceFaq() {
+//اطلع على الاسئلة الشائعة
+    NavigationService.navigatorKey.currentState!.pushNamed(RouteName.QAPage);
+  }
+
+  static void openComplianceTerms() async {
+// استعرض الاشتراطات
+
+    await BottomSheetDialog.showDraggableSheet(
+      NavigationService.navigatorKey.currentContext!,
+      dialogKeyName: DialogName.buildingComplianceDialog,
+      currentRouteName: "HomePage",
+      child: BuildingRequirementsDialog(),
+    );
   }
 }
 

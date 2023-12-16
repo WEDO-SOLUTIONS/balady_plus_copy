@@ -382,7 +382,7 @@ class ServiceIcon extends StatelessWidget {
               ),
               Flexible(
                 child: CustomTextWidget(
-                  service.title,
+                  service.title.tr(),
                   fontSize: 10,
                   maxLines: 3,
                   textAlign: TextAlign.center,

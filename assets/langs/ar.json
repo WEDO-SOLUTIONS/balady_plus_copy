@@ -3648,7 +3648,12 @@
   "permit_tobacco_cancel_confirm_msg":"عزيزي المستفيد، هل تريد الاستمرار بإلغاء طلب تصريح تقديم منتجات التبغ رقم {}", 
   "permit_tobacco_name":"تصريح تقديم منتجات التبغ", 
   "birthDate_required":"يجب إدخال تاريخ الميلاد", 
-  "events":"الفعاليات"
+  "events":"الفعاليات",
+  "weather":"الطقس",
+  "submit_objections":"تقديم اعتراض", 
+  "compliance_certificate":"شهادة الإمتثال", 
+  "issue_commerical_license":"اصدار رخصة تجارية", 
+  "multiple_permits":"التصاريح المتعددة"
 
-
+ 
 }
