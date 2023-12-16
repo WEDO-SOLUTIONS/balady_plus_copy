@@ -3,6 +3,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/c
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/details_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
@@ -23,10 +24,9 @@ class CheckVeichlesPage extends StatefulWidget {
 }
 
 class _CheckVeichlesPageState extends State<CheckVeichlesPage> {
-
   @override
   Widget build(BuildContext context) {
-   String type = ModalRoute.of(context)!.settings.arguments as String;
+    String type = ModalRoute.of(context)!.settings.arguments as String;
 
     return BlocProvider(
       create: (context) => RetrieveVehiclesBloc(type: type, items: []),
@@ -70,7 +70,7 @@ class _CheckVeichlesPageState extends State<CheckVeichlesPage> {
                           btnTextColor: !state.isFormValid()
                               ? AppColor.black400
                               : AppColor.white,
-                          btnText: "عرض المركبات",
+                          btnText: "retrieve_btn_text".tr(),
                           btnRadius: 8,
                           horizontalMargin: 16,
                           btnPressed: state.isFormValid()
