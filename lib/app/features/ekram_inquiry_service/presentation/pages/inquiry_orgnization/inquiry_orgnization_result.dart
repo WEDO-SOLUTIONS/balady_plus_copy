@@ -13,7 +13,7 @@ import '../../../../_shared_feature_/presentation/widgets/custom_circular_loadin
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import '../../bloc/inquiry_cemetry_bloc/ekram_inquiry_cemetry_bloc.dart';
-import '../../bloc/inquiry_orgnizations_bloc/ekram_inquiry_Orgnization_state.dart';
+import '../../bloc/inquiry_orgnizations_bloc/ekram_inquiry_orgnization_state.dart';
 import '../../bloc/inquiry_orgnizations_bloc/ekram_inquiry_orgnization_bloc.dart';
 import '../../bloc/inquiry_orgnizations_bloc/ekram_inquiry_orgnization_event.dart';
 import '../../widgets/inquiry_cemetry/cemetry_details_item_widget.dart';
