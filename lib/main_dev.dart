@@ -20,7 +20,7 @@ void main() async {
   // to observe all blocs movements
   Bloc.observer = SimpleBlocObserver();
 
-  await setupMapness();
+  await setupMapness(EnvType.dev);
 
   await SentryFlutter.init(
     (options) {

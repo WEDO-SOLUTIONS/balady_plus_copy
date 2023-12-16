@@ -12,6 +12,7 @@ import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/app/routes/signin.dart';
 import 'package:mapness/app/routes/weather.dart';
+import 'package:mapness/shared/ui/sheets/location_required_sheet.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -28,5 +29,6 @@ final $appRoutes = [
   ...$jobsMapRoutes,
   ...$profileRoutes,
   ...$layerDetailsRoutes,
-  ...$SignInRoutes
+  ...$SignInRoutes,
+  ...$locationErrorBoundaryRoute,
 ];

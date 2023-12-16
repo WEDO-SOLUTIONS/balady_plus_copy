@@ -995,8 +995,13 @@ class WeatherMapMessage {
   final String? layerName;
   final String? rasterTileUri;
   final bool enabled;
-
 }
+
+enum VendorConfigMessage {
+  urbiPreProd,
+  momrahProd,
+}
+
 
 @ConfigurePigeon(
   PigeonOptions(
@@ -1329,5 +1334,7 @@ abstract class FlutterMapApi {
 @HostApi()
 abstract class PluginApi {
   @async
-  void initialize(LogOptionsMessage? message);
+  void initialize(
+      LogOptionsMessage? message,
+      VendorConfigMessage? configMessage);
 }

@@ -24,9 +24,10 @@ class _IwishMarkers extends _$IwishMarkers {
 
   @override
   Future<List<IwishMarker>> build() async {
+    final dio = await ref.read(dGisNetworkProvider.future);
+
     final mapObjectManager =
         ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
-    final dio = ref.watch(dGisNetworkProvider);
     final raw = await dio.get('iwish');
     final response = pb.IWishMarkersResponse.fromBuffer(raw.data);
 
@@ -77,9 +78,10 @@ class _IwishMarkers extends _$IwishMarkers {
                 ),
               ),
               onTap: () {
-                ref
-                    .read(goRouterProvider)
-                    .push(IwishCardRoute(iwishId: stateMarker.id).location);
+                IwishCardRoute.open(
+                  ref.read(goRouterProvider),
+                  stateMarker,
+                );
               },
             ),
           )

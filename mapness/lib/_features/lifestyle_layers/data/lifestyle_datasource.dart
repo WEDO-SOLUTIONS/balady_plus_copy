@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mapness/_features/lifestyle_layers/data/common_function.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_service.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/building_compliance_certificate.dart';
@@ -15,17 +16,7 @@ abstract class LifestyleDataSource {
   factory LifestyleDataSource(LifestyleLayersService service) =>
       _LifestyleDataSource(service: service);
 
-  // Future<List<EsriPointFeature>?> getEsriMarkers(
-  //     String layerId, VisibleRect searchRect);
-  //
-  // Future<List<LandsFenced>?> getLandFences(
-  //   String esriLayerId,
-  //   VisibleRect vr,
-  // );
-
-  Future<List<dynamic>?> getEsriPoints(
-      MapRequestParams params
-  );
+  Future<List<dynamic>?> getEsriPoints(MapRequestParams params);
 
   Future<List<PointLayersData>?> getPointsInLayers(
       {required MapRequestParams params});
@@ -37,34 +28,18 @@ class _LifestyleDataSource implements LifestyleDataSource {
   _LifestyleDataSource({required this.service});
 
   @override
-  Future<List<dynamic>?> getEsriPoints(
-      MapRequestParams requestParams) async {
+  Future<List<dynamic>?> getEsriPoints(MapRequestParams requestParams) async {
     var points;
     try {
       final params = requestParams.toMap();
-      // final params = {
-      //   "where": "1=1",
-      //   "geometry":
-      //       "${searchRect.southWestLon},${searchRect.southWestLat},${searchRect.northEastLon},${searchRect.northEastLat}",
-      //   "f": "json",
-      //   "outFields": "OBJECTID",
-      //   "geometryType": "esriGeometryEnvelope",
-      //   // "geometryType": "esriGeometryPath",
-      //   // "distance": 100,
-      //   // "supportsQueryWithDistance": true,
-      //   // "units": "esriSRUnit_Kilometer",
-      //   // "spatialRel": "esriSpatialRelIntersects",
-      //   "resultRecordCount": 100,
-      // };
 
-      const proxy = 'https://sa1.ops.2gis.dev';
       const domain = 'https://apiservicesstg.balady.gov.sa';
+      final proxy = requestParams.proxy;
       const gisLayers = 'v1/gis-urbi-services/layers';
 
-      var layerId = requestParams.layer.layerId;
-
+      final layerId = requestParams.layer.layerId;
       var hashedUrl = "$domain/$gisLayers/$layerId/query?";
-      const mainUrl = "$proxy/$gisLayers";
+      final mainUrl = "$proxy/$gisLayers";
 
       params.forEach((key, value) => hashedUrl += "$key=$value&");
       hashedUrl = hashedUrl.substring(0, hashedUrl.length - 1);
@@ -82,11 +57,12 @@ class _LifestyleDataSource implements LifestyleDataSource {
 
       return points.data['data']['result']['features'];
     } on DioException catch (error) {
-      "[getEsriMarkers] DioError $error";
+      print("[getEsriMarkers] DioError $error");
+      return null;
     } catch (error) {
       print("[getEsriMarkers] $error");
+      return null;
     }
-    return null;
   }
 
   @override
@@ -94,19 +70,16 @@ class _LifestyleDataSource implements LifestyleDataSource {
       {required MapRequestParams params}) async {
     var points;
     try {
-      const proxy = 'https://sa1.ops.2gis.dev';
+      final proxy = params.proxy;
       const domain = 'https://apiservicesstg.balady.gov.sa';
       const gisLayers = 'v1/gis-urbi-services/layers';
-
       var hashedUrl = "$domain/$gisLayers/${params.layer.layerId}/query?";
-      const mainUrl = "$proxy/$gisLayers";
+      final mainUrl = "$proxy/$gisLayers";
 
       params.toMap().forEach((key, value) => hashedUrl += "$key=$value&");
       hashedUrl = hashedUrl.substring(0, hashedUrl.length - 1);
 
       final verifyingKey = hashRequest_(hashedUrl, "GET");
-
-
 
       hashedUrl = "$mainUrl/${params.layer.layerId}/query?";
       params.toMap().forEach((key, value) => hashedUrl += "$key=$value&");
@@ -116,7 +89,6 @@ class _LifestyleDataSource implements LifestyleDataSource {
         hashedUrl,
         options: Options(headers: {'verifyingKEY': verifyingKey}),
       );
-
 
       switch (params.layer.layerId) {
         case 1: //     المطاعم
@@ -152,21 +124,11 @@ class _LifestyleDataSource implements LifestyleDataSource {
             points.data['data']['result']['features'],
           );
       }
-    } on DioError catch (error) {
-      // "DioError $error".errorLog();
-      try {
-        // CommonFunctions.sendEvent(dioError: error, response: null, ex: null);
-      } catch (ex) {}
+    } on DioException catch (error) {
+      debugPrint(error.message);
+      return null;
     } catch (ex) {
-      // try {
-      //   CommonFunctions.sendEvent(
-      //     response: points,
-      //     ex: APIException(
-      //       errorMessage: ex.toString(),
-      //     ),
-      //   );
-      // } catch (ex) {}
-      try {} catch (ex) {}
+      return null;
     }
     return null;
   }

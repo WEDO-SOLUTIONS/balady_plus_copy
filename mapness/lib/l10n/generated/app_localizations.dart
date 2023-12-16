@@ -99,6 +99,12 @@ abstract class AppLocalizations {
   /// **'حول التطبيق'**
   String get aboutApp;
 
+  /// No description provided for @accessibility.
+  ///
+  /// In ar, this message translates to:
+  /// **'إمكانية الوصول'**
+  String get accessibility;
+
   /// No description provided for @addAddress.
   ///
   /// In ar, this message translates to:
@@ -140,6 +146,18 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'الوصول'**
   String get arrival;
+
+  /// No description provided for @beaches.
+  ///
+  /// In ar, this message translates to:
+  /// **'الشواطئ'**
+  String get beaches;
+
+  /// No description provided for @beautyCenters.
+  ///
+  /// In ar, this message translates to:
+  /// **'مراكز التجميل'**
+  String get beautyCenters;
 
   /// No description provided for @best.
   ///
@@ -188,6 +206,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'إلغاء'**
   String get cancel;
+
+  /// No description provided for @carServices.
+  ///
+  /// In ar, this message translates to:
+  /// **'خدمات السيارات'**
+  String get carServices;
 
   /// No description provided for @challenge.
   ///
@@ -332,6 +356,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'حذف السجلّ'**
   String get deleteHistory;
+
+  /// No description provided for @deliveryAvailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'التسليم متاح'**
+  String get deliveryAvailable;
 
   /// No description provided for @dentalCenters.
   ///
@@ -524,6 +554,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'المستشفيات'**
   String get hospitals;
+
+  /// No description provided for @hotels.
+  ///
+  /// In ar, this message translates to:
+  /// **'الفنادق'**
+  String get hotels;
 
   /// No description provided for @hrs.
   ///
@@ -735,6 +771,12 @@ abstract class AppLocalizations {
   /// **'المواصلات'**
   String get mapLayerTransport;
 
+  /// No description provided for @markets.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأسواق'**
+  String get markets;
+
   /// No description provided for @menu.
   ///
   /// In ar, this message translates to:
@@ -770,6 +812,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'المساجد'**
   String get mosques;
+
+  /// No description provided for @motorVisual.
+  ///
+  /// In ar, this message translates to:
+  /// **'الموتور، بصري'**
+  String get motorVisual;
 
   /// No description provided for @myChallenge.
   ///
@@ -986,6 +1034,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'مستعد'**
   String get ready;
+
+  /// No description provided for @recreationalCenters.
+  ///
+  /// In ar, this message translates to:
+  /// **'مراكز الترفيه'**
+  String get recreationalCenters;
 
   /// No description provided for @refresh.
   ///
@@ -1239,6 +1293,12 @@ abstract class AppLocalizations {
   /// **'حدد على الخريطة'**
   String get specifyOnTheMap;
 
+  /// No description provided for @sportClubs.
+  ///
+  /// In ar, this message translates to:
+  /// **'النوادي والصالونات الرياضية'**
+  String get sportClubs;
+
   /// No description provided for @sportsGround.
   ///
   /// In ar, this message translates to:
@@ -1302,7 +1362,7 @@ abstract class AppLocalizations {
   /// No description provided for @tinId.
   ///
   /// In ar, this message translates to:
-  /// **'رقم هوية دافع الضرائب'**
+  /// **'رقم الرخصة التجارية'**
   String get tinId;
 
   /// No description provided for @to.
@@ -1442,24 +1502,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'انت تبحث'**
   String get youSearch;
-
-  /// No description provided for @deliveryAvailable.
-  ///
-  /// In ar, this message translates to:
-  /// **'التسليم متاح'**
-  String get deliveryAvailable;
-
-  /// No description provided for @accessibility.
-  ///
-  /// In ar, this message translates to:
-  /// **'إمكانية الوصول'**
-  String get accessibility;
-
-  /// No description provided for @motorVisual.
-  ///
-  /// In ar, this message translates to:
-  /// **'الموتور، بصري'**
-  String get motorVisual;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

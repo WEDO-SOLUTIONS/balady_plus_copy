@@ -1,16 +1,12 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
-import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/features/jobs/models/job_model.dart';
 import 'package:mapness/features/jobs/providers/job_detail_provider.dart';
-import 'package:mapness/features/routing/ui/brief_route_widgets.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
-import 'package:mapness/shared/providers/app_features.dart';
-import 'package:share_plus/share_plus.dart';
 
 class JobDetail extends ConsumerStatefulWidget {
   final String jobId;
@@ -86,22 +82,34 @@ class _JobDetailState extends ConsumerState<JobDetail> {
             textColor: Colors.white,
             onPressed: () => CommonFunctions.call(model.mobile ?? ''),
           ),
-          const SizedBox(width: 12),
-          BriefRouteButton(
-            routeType: RouteSearchOptionsMessage.car,
-            onTap: () {},
-          ),
-          if (ref.read(appFeaturesProvider).naviEnabled)
-            const SizedBox(width: 12),
-          _buildButton(
-            context.l10n.share,
-            'assets/icons/svg/ic_share.svg',
-            backgroundColor: const Color(0xff1E2A36).withOpacity(0.05),
-            textColor: const Color(0xff1E2A36).withOpacity(.5),
-            onPressed: () => Share.share(
-              'https://www.google.com/maps/dir/?api=1&destination=${model.location?.latitude},${model.location?.longitude}',
-            ),
-          ),
+          // const SizedBox(width: 12),
+          // if (ref.read(appFeaturesProvider).naviEnabled)
+          //   BriefRouteButton(
+          //     routeType: RouteSearchOptionsMessage.car,
+          //     onTap: () {
+          //       if (model.location?.latitude == null ||
+          //           model.location?.longitude == null) {
+          //         return;
+          //       }
+          //       RoutingRoutesRoute(
+          //         finishLabel: model.name ?? '',
+          //         finishLatitude: double.parse(model.location!.latitude!),
+          //         finishLongitude: double.parse(model.location!.latitude!),
+          //         startLabel: context.l10n.myLocation,
+          //         startLatitude: null,
+          //         startLongitude: null,
+          //       ).push(context);
+          //     },
+          //   ),
+          // if (ref.read(appFeaturesProvider).naviEnabled)
+          //   const SizedBox(width: 12),
+          // _buildButton(
+          //   context.l10n.share,
+          //   'assets/icons/svg/ic_share.svg',
+          //   backgroundColor: const Color(0xff1E2A36).withOpacity(0.05),
+          //   textColor: const Color(0xff1E2A36).withOpacity(.5),
+          //   onPressed: () {},
+          // ),
         ],
       ),
     );

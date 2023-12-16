@@ -92,7 +92,7 @@ fun SearchCategoryMessage.toRubrics(): List<RubricId> {
         SearchCategoryMessage.MOUSQUES -> listOf(13374)
         SearchCategoryMessage.GAS_STATIONS -> listOf(18547)
         SearchCategoryMessage.CAFE -> listOf(159, 162)
-        SearchCategoryMessage.RESTAURANTS -> listOf(161)
+        SearchCategoryMessage.RESTAURANTS -> listOf(161,165,161,9786,162,469,58871)
         SearchCategoryMessage.PARKS -> listOf(168)
         SearchCategoryMessage.HOSPITALS -> listOf(201)
         SearchCategoryMessage.SCHOOLS -> listOf(245)
