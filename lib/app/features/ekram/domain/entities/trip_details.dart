@@ -67,6 +67,16 @@ class TripDetails extends Equatable {
         "completed": completed,
       };
 
+  (double lat, double lon)? getNextTripLocation() {
+    if ((double.tryParse(nextTripStationLocationX ?? "") != null &&
+        double.tryParse(nextTripStationLocationY ?? "") != null)) {
+      return (
+        double.parse(nextTripStationLocationY ?? ""),
+        double.parse(nextTripStationLocationX ?? "")
+      );
+    }
+  }
+
   @override
   List<Object?> get props => [
         recordId,

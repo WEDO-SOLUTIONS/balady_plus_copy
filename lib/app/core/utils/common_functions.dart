@@ -377,6 +377,7 @@ class CommonFunctions {
     final Uri googleUrl = Uri.parse(
       'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude',
     );
+    print(googleUrl);
     if (await canLaunchUrl(googleUrl)) {
       await launchUrl(googleUrl);
     } else {

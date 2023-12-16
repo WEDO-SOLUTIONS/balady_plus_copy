@@ -7,11 +7,11 @@ import '../../data/models/allowed_actions_response.dart';
 import '../../data/models/permits_alerts_response.dart';
 import '../repositores/repository.dart';
 
-class GetPermitsAlerts extends UseCase<PermitAlertsResponse, NoParams> {
+class GetPermitsAlerts extends UseCase<PermitAlertsResponse, String> {
   final Permits24Repository repository;
   GetPermitsAlerts({required this.repository});
   @override
-  Future<Either<Failure, PermitAlertsResponse>> call(NoParams params) async {
-    return await repository.getPermitsAlerts();
+  Future<Either<Failure, PermitAlertsResponse>> call(String params) async {
+    return await repository.getPermitsAlerts(params);
   }
 }

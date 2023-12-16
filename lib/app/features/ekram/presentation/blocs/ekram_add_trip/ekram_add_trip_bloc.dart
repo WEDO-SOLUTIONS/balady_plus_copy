@@ -216,8 +216,12 @@ class EkramAddTripBloc extends Bloc<EkramAddTripEvent, EkramAddTripState> {
 
       result = result?.map((e) {
         e.isDisblaed = trips.contains(e.id);
+        if (e.id == 30502) {
+          e.isDisblaed = true;
+        }
         return e;
       }).toList();
+
       emit(state.copyWith(
         status: BlocStatus.success,
         nextStationType: result,

@@ -617,8 +617,8 @@ class ApiUrl {
   static String permit24AlllowedAction(int? requestId) =>
       "v1/supperapp-commercial-twentyfour-services/twenty-four-allowed-actions/$requestId";
 
-  static String permits24Alerts =
-      "v1/supperapp-commercial-twentyfour-services/alerts/ENDORSEMENT";
+  static String permits24Alerts(String type) =>
+      "v1/supperapp-commercial-twentyfour-services/alerts/$type";
   static String permit24ValidateBeforeApply(int? requestId) =>
       "v1/supperapp-commercial-twentyfour-services/valid-before-apply/$requestId";
 
@@ -749,13 +749,11 @@ class ApiUrl {
   static String validatePrintCertificate(String guid, String code) =>
       "v2/ekram-mobile-services/print-licenses/$guid/$code";
 
-  static String baquieApproval = 
+  static String baquieApproval =
       "v2/ekram-mobile-services/deaths/baqie-approvals";
 
-
-
-  static String joodEskanGenerateDonation = "v1/joodeskan-services/generate-donation-url";
-
+  static String joodEskanGenerateDonation =
+      "v1/joodeskan-services/generate-donation-url";
 
   //! POST
 

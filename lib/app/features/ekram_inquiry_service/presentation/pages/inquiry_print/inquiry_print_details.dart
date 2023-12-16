@@ -43,8 +43,7 @@ class InquiryPrintDetailsPage extends StatelessWidget {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          VdHeaderDesc(
-                              header: "ekram_print_deceased_data".tr()),
+                          VdHeaderDesc(header: "ekram_decesssed_info".tr()),
                           CustomLookUpLongDialog(
                             items: state.nationalIdTypes ?? [],
                             value: state.selectedNationalIdTypeForDecassed,
@@ -61,11 +60,11 @@ class InquiryPrintDetailsPage extends StatelessWidget {
                                             item));
                               }
                             },
-                            label: ("ekram_identity_type").tr(),
-                            hint: ("ekram_identity_type").tr(),
+                            label: ("ekram_decesssed_identity_type").tr(),
+                            hint: ("ekram_decesssed_identity_type").tr(),
                           ),
                           CustomTextFieldWidget(
-                            label: "ekram_identity_no".tr(),
+                            label: "ekram_decesssed_identity".tr(),
                             isDigitsOnly: true,
                             keyboardType: TextInputType.number,
                             onChanged: (String? val) {
@@ -75,7 +74,7 @@ class InquiryPrintDetailsPage extends StatelessWidget {
                             },
                           ),
                           const CustomVerticalSpace(height: 32),
-                          VdHeaderDesc(header: "ekram_print_reciver_data".tr()),
+                          VdHeaderDesc(header: "ekram_reciever_info".tr()),
                           CustomLookUpLongDialog(
                             items: state.nationalIdTypes ?? [],
                             value: state.selectedNationalIdTypeForReceiver,
@@ -92,11 +91,11 @@ class InquiryPrintDetailsPage extends StatelessWidget {
                                             item));
                               }
                             },
-                            label: ("ekram_identity_type").tr(),
-                            hint: ("ekram_identity_type").tr(),
+                            label: ("ekram_reciever_identity_type").tr(),
+                            hint: ("ekram_reciever_identity_type").tr(),
                           ),
                           CustomTextFieldWidget(
-                            label: "ekram_identity_no".tr(),
+                            label: "ekram_reciever_identity".tr(),
                             isDigitsOnly: true,
                             keyboardType: TextInputType.number,
                             onChanged: (String? val) {

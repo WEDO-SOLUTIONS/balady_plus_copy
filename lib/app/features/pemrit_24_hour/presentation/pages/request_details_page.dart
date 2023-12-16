@@ -60,14 +60,15 @@ class PermitsReqeuestDetailsPage extends StatelessWidget {
                     const SizedBox(
                       width: 16,
                     ),
-                    CustomTextWidget(
-                      "#${state.requestDetails?.requestInfo?.requestId}",
-                      fontSize: 14,
-                      maxLines: 1,
-                      textOverflow: TextOverflow.ellipsis,
-                      fontWeight: AppFontWeight.medium,
-                      fontColor: AppColor.blackModern700Light,
-                    ),
+                    if (state.requestDetails?.requestInfo?.requestId != null)
+                      CustomTextWidget(
+                        "#${state.requestDetails?.requestInfo?.requestId}",
+                        fontSize: 14,
+                        maxLines: 1,
+                        textOverflow: TextOverflow.ellipsis,
+                        fontWeight: AppFontWeight.medium,
+                        fontColor: AppColor.blackModern700Light,
+                      ),
                   ],
                 ),
                 procedures: () async {
@@ -317,6 +318,24 @@ class Step2SummeryWidget extends StatelessWidget {
               subTitle:
                   state.requestDetails?.licenseInfo?.licenseNumber.toString() ??
                       "",
+            ),
+            const CustomVerticalSpace(
+              height: 16,
+            ),
+            FieldData(
+              title: "license_status".tr(),
+              subTitle:
+                  state.requestDetails?.licenseInfo?.status?.name.toString() ??
+                      "",
+            ),
+            const CustomVerticalSpace(
+              height: 16,
+            ),
+            FieldData(
+              title: "posters_permit_licesnse_expiry".tr(),
+              subTitle: state.requestDetails?.licenseInfo?.licenseEndDate
+                      .toString() ??
+                  "",
             ),
             const CustomVerticalSpace(
               height: 16,

@@ -19,7 +19,7 @@ import '../models/permits_alerts_response.dart';
 abstract class Permits24RemoteDataSource {
   Future<Permit24AllowedAction> getPermitAllowedActions({required int params});
 
-  Future<PermitAlertsResponse> getPermitsAlerts();
+  Future<PermitAlertsResponse> getPermitsAlerts(String type);
   Future<bool> validateBeforeApply({required int params});
 
   Future<PermitSubmitResponseModel> submit({required int params});
@@ -107,11 +107,11 @@ class Permits24RemoteDataSourceImpl implements Permits24RemoteDataSource {
   }
 
   @override
-  Future<PermitAlertsResponse> getPermitsAlerts() async {
+  Future<PermitAlertsResponse> getPermitsAlerts(String type) async {
     var response;
     try {
       response = await webService.dio.get(
-        ApiUrl.permits24Alerts,
+        ApiUrl.permits24Alerts(type),
       );
 
       final data = response.data;
