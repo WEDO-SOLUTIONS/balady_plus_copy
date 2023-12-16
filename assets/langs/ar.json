@@ -3626,5 +3626,18 @@
   "donation_automatically_neediest": "يذهب تبرعك تلقائيا للحالات الاشد احتياجا",
   "donating_joud_housing": "شارك بالتبرع مع جود للاسكان",
   "enter_cost": "او ادخل المبلغ اخر",
-  "required_field_must_number_jod": "الحد الأدنى للإدخال مبلغ التبرع هو 1 ريال و الحد الأقصى للتبرع مليون ريال"
+  "required_field_must_number_jod": "الحد الأدنى للإدخال مبلغ التبرع هو 1 ريال و الحد الأقصى للتبرع مليون ريال", 
+
+  "ekram_city_name":"اسم المدينة/المحافظة", 
+  "ekram_orgnization_charity_name":"اسم الجهة الخيرية",
+  "ekram_orgnization_location":"موقع الجهة الخيرية", 
+  "ekram_orgnization_email":"البريد الالكتروني",
+
+  "ekram_decesssed_info":"معلومات المتوفي", 
+  "ekram_decesssed_identity_type":"نوع هوية المتوفي", 
+  "ekram_decesssed_identity":"رقم هوية المتوفي", 
+ 
+  "ekram_reciever_info":"معلومات مستلم الجثمان", 
+  "ekram_reciever_identity":"رقم هوية مستلم الجثمان",
+  "ekram_reciever_identity_type":"نوع هوية مستلم الجثمان"
 }
