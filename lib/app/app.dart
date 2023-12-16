@@ -14,7 +14,13 @@ import '../etmam_app/features/my_orders/presentation/pages/orders_page.dart';
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
 import './core/services/services_exports.dart' show NavigationService;
 import './core/utils/utils_exports.dart'
-    show AppColor, AppConfig, AppRouter, EtmamRoutesNames, RouteName;
+    show
+        AppColor,
+        AppConfig,
+        AppRouter,
+        CommonFunctions,
+        EtmamRoutesNames,
+        RouteName;
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
 import 'core/utils/routes.dart';
 import 'features/appointments/presentation/pages/appointments_list_screen.dart';

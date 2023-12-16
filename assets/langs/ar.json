@@ -3649,11 +3649,23 @@
   "permit_tobacco_name":"تصريح تقديم منتجات التبغ", 
   "birthDate_required":"يجب إدخال تاريخ الميلاد", 
   "events":"الفعاليات",
-  "weather":"الطقس",
+  "weather":"الطقس", 
   "submit_objections":"تقديم اعتراض", 
   "compliance_certificate":"شهادة الإمتثال", 
   "issue_commerical_license":"اصدار رخصة تجارية", 
-  "multiple_permits":"التصاريح المتعددة"
+  "multiple_permits":"التصاريح المتعددة",
+  "ekram_city_name":"اسم المدينة/المحافظة", 
+  "ekram_orgnization_charity_name":"اسم الجهة الخيرية",
+  "ekram_orgnization_location":"موقع الجهة الخيرية", 
+  "ekram_orgnization_email":"البريد الالكتروني",
+
+  "ekram_decesssed_info":"معلومات المتوفي", 
+  "ekram_decesssed_identity_type":"نوع هوية المتوفي", 
+  "ekram_decesssed_identity":"رقم هوية المتوفي", 
+ 
+  "ekram_reciever_info":"معلومات مستلم الجثمان", 
+  "ekram_reciever_identity":"رقم هوية مستلم الجثمان",
+  "ekram_reciever_identity_type":"نوع هوية مستلم الجثمان"
 
  
 }

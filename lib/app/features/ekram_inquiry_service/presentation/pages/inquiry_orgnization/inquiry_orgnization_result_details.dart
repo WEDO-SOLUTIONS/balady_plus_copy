@@ -42,9 +42,9 @@ class InquiryOrgnizationResultsDetailsPage extends StatelessWidget {
             const CustomVerticalSpace(
               height: 16,
             ),
-            ContactInfo(
+            /* ContactInfo(
               item: item,
-            )
+            )*/
           ],
         )),
       ),
@@ -70,14 +70,14 @@ class OrgnizationDetails extends StatelessWidget {
               height: 16,
             ),
             FieldData(
-              title: "city".tr(),
+              title: "ekram_city_name".tr(),
               subTitle: item.cityName,
             ),
             const CustomVerticalSpace(
               height: 16,
             ),
             FieldData(
-              title: "ekram_entity_charity_name".tr(),
+              title: "ekram_orgnization_charity_name".tr(),
               subTitle: item.orgName,
             ),
             const CustomVerticalSpace(
@@ -90,7 +90,7 @@ class OrgnizationDetails extends StatelessWidget {
             const CustomVerticalSpace(
               height: 16,
             ),
-            FieldData(
+            /* FieldData(
               title: "municipality".tr(),
               subTitle: item.municipalityName,
             ),
@@ -103,7 +103,7 @@ class OrgnizationDetails extends StatelessWidget {
             ),
             const CustomVerticalSpace(
               height: 16,
-            ),
+            ),*/
             FieldData(
               title: "street".tr(),
               subTitle: item.streetName,
@@ -127,7 +127,7 @@ class OrgnizationDetails extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CustomTextWidget(
-                    ("location").tr(),
+                    ("ekram_orgnization_location").tr(),
                     fontSize: 17,
                     fontWeight: AppFontWeight.medium,
                     fontColor: AppColor.black,
@@ -136,6 +136,24 @@ class OrgnizationDetails extends StatelessWidget {
                   CustomSvgIconWidget(IconPath.qrOpenLinkIcon)
                 ],
               ),
+            ),
+            FieldData(
+              title: "mobile_no_1".tr(),
+              subTitle: item.mobileNo1,
+            ),
+            const CustomVerticalSpace(
+              height: 16,
+            ),
+            FieldData(
+              title: "mobile_no_2".tr(),
+              subTitle: item.mobileNo2,
+            ),
+            const CustomVerticalSpace(
+              height: 16,
+            ),
+            FieldData(
+              title: "email".tr(),
+              subTitle: item.email,
             ),
           ],
         )
@@ -160,24 +178,6 @@ class ContactInfo extends StatelessWidget {
           children: [
             const CustomVerticalSpace(
               height: 16,
-            ),
-            FieldData(
-              title: "mobile_no_1".tr(),
-              subTitle: item.mobileNo1,
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: "mobile_no_2".tr(),
-              subTitle: item.mobileNo2,
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: "email".tr(),
-              subTitle: item.email,
             ),
           ],
         )

@@ -362,8 +362,9 @@ class ServiceIcon extends StatelessWidget {
         },
         child: Container(
           width: width ?? 68,
-          height: height ?? 85,
-          margin: const EdgeInsetsDirectional.only(end: 8),
+          margin: const EdgeInsetsDirectional.only(
+            end: 8,
+          ),
           child: Column(
             children: [
               Container(

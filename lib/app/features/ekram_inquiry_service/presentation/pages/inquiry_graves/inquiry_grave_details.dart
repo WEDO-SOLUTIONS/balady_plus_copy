@@ -42,7 +42,7 @@ class InquiryGraveDetailsPage extends StatelessWidget {
                   child: SingleChildScrollView(
                     child: Column(children: [
                       CustomTextFieldWidget(
-                        label: "ekram_grave_full_name".tr(),
+                        label: "name".tr(),
                         onChanged: (String? val) {
                           context
                               .read<EkramInquiryGraveBloc>()

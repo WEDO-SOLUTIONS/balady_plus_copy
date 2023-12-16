@@ -37,7 +37,7 @@ class GraveDetailsItemWidget extends StatelessWidget {
               ),
               children: [
                 RequestParameter(
-                  title: 'full_decassed_name'.tr(),
+                  title: 'ekram_grave_full_name'.tr(),
                   value: item.deceasedName ?? "",
                 ),
                 RequestParameter(
@@ -45,7 +45,7 @@ class GraveDetailsItemWidget extends StatelessWidget {
                   value: item.burialDate ?? "",
                 ),
                 RequestParameter(
-                  title: 'city_state'.tr(),
+                  title: 'burial_city'.tr(),
                   value: item.cityName ?? "",
                 ),
                 RequestParameter(
