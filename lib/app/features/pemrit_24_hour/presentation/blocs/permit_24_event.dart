@@ -20,6 +20,10 @@ class GetPermitAlertsEvent extends Permit24LicenseEvent {
   const GetPermitAlertsEvent();
 }
 
+class GetPermitEndorsmentsEvent extends Permit24LicenseEvent {
+  const GetPermitEndorsmentsEvent();
+}
+
 class DeletePermitRequestEvent extends Permit24LicenseEvent {
   const DeletePermitRequestEvent();
 }

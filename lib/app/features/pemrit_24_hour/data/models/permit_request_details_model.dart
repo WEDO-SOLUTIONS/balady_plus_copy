@@ -32,10 +32,10 @@ class Permit24RequestDetailsModel {
             ? null
             : LicenseInfo.fromJson(json["licenseInfo"]),
         rejectionInfo: json["rejectionInfo"],
-        transactionsList: json["transactionsList"] == null
+        /* transactionsList: json["transactionsList"] == null
             ? []
             : List<TransactionsList>.from(json["transactionsList"]!
-                .map((x) => TransactionsList.fromJson(x))),
+                .map((x) => TransactionsList.fromJson(x))),*/
         //   calculatedCostInfo: json["calculatedCostInfo"],
       );
 
@@ -117,7 +117,7 @@ class LicenseInfo {
 }
 
 class Status {
-  int? id;
+  String? id;
   String? name;
   Status({
     this.id,
@@ -126,7 +126,7 @@ class Status {
 
   factory Status.fromMap(Map<String, dynamic> map) {
     return Status(
-      id: map['id'] != null ? map['id'] as int : null,
+      id: map['id'] != null ? map['id'] as String : null,
       name: map['name'] != null ? map['name'] as String : null,
     );
   }
