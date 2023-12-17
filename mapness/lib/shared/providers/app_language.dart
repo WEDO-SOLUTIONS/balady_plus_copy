@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -42,6 +43,11 @@ extension LanguageData on Language {
         Language.english => "voice-jennifer",
         Language.arabic => "voice-sara",
       };
+
+  String get baladyCompat => switch (this) {
+        Language.english => "en",
+        Language.arabic => "ar",
+      };
 }
 
 @Riverpod(keepAlive: true)
@@ -50,12 +56,16 @@ class AppLanguage extends _$AppLanguage {
   Language build() {
     final sharedPrefs = ref.read(sharedPrefsProvider);
 
-    return Language.fromString(sharedPrefs.getString(_prefsKey));
+    final language = Language.fromString(sharedPrefs.getString(_prefsKey));
+    CommonFunctions.changeLanguage(lang: language.baladyCompat);
+
+    return language;
   }
 
   void update(Language value) {
     ref.read(sharedPrefsProvider).setString(_prefsKey, value.name);
     ref.read(navigatorVoiceProvider.notifier).update(value.navigatorVoice);
+    CommonFunctions.changeLanguage(lang: value.baladyCompat);
     state = value;
   }
 }
