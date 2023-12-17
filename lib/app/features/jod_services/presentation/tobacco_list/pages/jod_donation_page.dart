@@ -161,7 +161,7 @@ class _JodDonationPageState extends State<JodDonationPage> {
                       String? url = await provider
                           .getJoodEskanServicesGenerateDonationUrl();
                       if (url != null) {
-                        navigator.popAndPushNamed(
+                        navigator.pushNamed(
                           RouteName.inappWebview,
                           arguments: (
                             requestNum: "jod".tr(),
