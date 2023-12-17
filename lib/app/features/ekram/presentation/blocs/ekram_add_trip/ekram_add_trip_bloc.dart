@@ -179,18 +179,18 @@ class EkramAddTripBloc extends Bloc<EkramAddTripEvent, EkramAddTripState> {
 
     final failureOrSuccess = await _addTrip(params);
 
-    failureOrSuccess.fold((failure) {
+    await failureOrSuccess.fold((failure) {
       emitter(state.copyWith(
         status: BlocStatus.failure,
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) async {
+      await _updateDriverLocatioHandler();
       emitter(state.copyWith(
         status: BlocStatus.success,
         errorMessage: "",
       ));
 
-      await _updateDriverLocatioHandler();
       NavigationService.navigatorKey.currentState
           ?.pop(success.data?.responseMessage);
     });
