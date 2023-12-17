@@ -3639,5 +3639,6 @@
  
   "ekram_reciever_info":"معلومات مستلم الجثمان", 
   "ekram_reciever_identity":"رقم هوية مستلم الجثمان",
-  "ekram_reciever_identity_type":"نوع هوية مستلم الجثمان"
+  "ekram_reciever_identity_type":"نوع هوية مستلم الجثمان", 
+  "ekram_next_step_location":"موقع المحطة التالية"
 }
