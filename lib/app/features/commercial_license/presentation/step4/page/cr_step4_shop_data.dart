@@ -7,13 +7,11 @@ import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../core/utils/enums/enums.dart';
 import '../../../../_shared_feature_/presentation/widgets/check_boxes/text_field_with_check_btn.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
-import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/radio_buttons/vertical_radio_group_component.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../vd/presentation/widgets/details_widgets/incident_desc_widgets/vd_create_incident_addetional_fields.dart';
 import '../../../commercial_license_exports.dart';
 import '../../../data/models/board_contract_response.dart';
-import '../../step3/bloc/map_bloc.dart';
 import '../widgets/board_contract_card.dart';
 import '../widgets/clean_contract_card.dart';
 import '../widgets/malls_dropDown.dart';
@@ -82,10 +80,10 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                     .salamaReportFawery();
                               },
                             ),
-                          const CRHeaderDesc(header: "بيانات المحل واللوحات"),
+                          CRHeaderDesc(header: "step4Title".tr()),
                           const SizedBox(height: 16),
                           YesNoRadioGroupWidget(
-                            groupName: 'هل يوجد لديك علامة تجارية ؟',
+                            groupName: "step4GroupName".tr(),
                             currentValue: state.brand,
                             onChanged: (value) {
                               context
@@ -94,8 +92,8 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             },
                           ),
                           CustomTextFieldWidget(
-                            label: "اسم المحل",
-                            hintText: "ادخل اسم المحل",
+                            label: "step6label1".tr(),
+                            hintText: "step6hint1".tr(),
                             bottomMargin: 24,
                             initialValue: state.shopName,
                             onChanged: (value) {
@@ -105,8 +103,8 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             },
                           ),
                           CustomTextFieldWidget(
-                            label: "رقم المحل",
-                            hintText: "ادخل رقم المحل",
+                            label: "step6label2".tr(),
+                            hintText: "step6hint2".tr(),
                             isDigitsOnly: true,
                             initialValue: state.shopUnitNumber,
                             keyboardType: TextInputType.number,
@@ -118,8 +116,8 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             },
                           ),
                           CustomTextFieldWidget(
-                            label: "رقم العقار",
-                            hintText: "ادخل رقم العقار",
+                            label: "step6label3".tr(),
+                            hintText: "step6hint3".tr(),
                             isDigitsOnly: true,
                             keyboardType: TextInputType.number,
                             bottomMargin: 24,
@@ -132,8 +130,8 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             },
                           ),
                           CustomTextFieldWidget(
-                            label: "عدد الفتحات",
-                            hintText: "ادخل عدد الفتحات",
+                            label: "step4label4".tr(),
+                            hintText: "step4hint4".tr(),
                             isDigitsOnly: true,
                             keyboardType: TextInputType.number,
                             bottomMargin: 24,
@@ -145,8 +143,8 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             },
                           ),
                           CustomTextFieldWidget(
-                            label: "عدد الادوار في المحل",
-                            hintText: "ادخل عدد الادوار في المحل",
+                            label: "step4label5".tr(),
+                            hintText: "step4hint5".tr(),
                             isDigitsOnly: true,
                             keyboardType: TextInputType.number,
                             bottomMargin: 24,
@@ -158,8 +156,8 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             },
                           ),
                           CustomTextFieldWidget(
-                            label: "عدد الكاميرات في المحل",
-                            hintText: "ادخل عدد الكاميرات في المحل",
+                            label: "step4label6".tr(),
+                            hintText: "step4hint6".tr(),
                             isDigitsOnly: true,
                             keyboardType: TextInputType.number,
                             initialValue: state.noOfCameras,
@@ -175,7 +173,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               .cameraEndorsmentText
                               .isNotEmpty)
                             UndertakingWidget(
-                              text: "أتعهد على جميع ماتم ذكره اعلاه",
+                              text: "cr_pleadge_title".tr(),
                               desc: context
                                   .read<CrStep4ShopDataCubit>()
                                   .cameraEndorsmentText,
@@ -187,7 +185,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               initialValue: state.endorsmentAgreement ?? false,
                             ),
                           YesNoRadioGroupWidget(
-                            groupName: 'هل يوجد مصعد في المحل ؟',
+                            groupName: "step4groupName1".tr(),
                             currentValue: state.hasElevator,
                             onChanged: (value) {
                               context
@@ -196,7 +194,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             },
                           ),
                           YesNoRadioGroupWidget(
-                            groupName: 'هل يقع المحل في مركز تجاري ؟',
+                            groupName: "step4groupName2".tr(),
                             currentValue: state.existInMall,
                             onChanged: (value) {
                               context
@@ -207,8 +205,8 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           if (state.existInMall == true) ...[
                             MallsDropDown(),
                             CustomTextFieldWidget(
-                              label: "الطابق",
-                              hintText: "ادخل الطابق",
+                              label: "step4label8".tr(),
+                              hintText: "step4hint8".tr(),
                               isDigitsOnly: true,
                               keyboardType: TextInputType.number,
                               bottomMargin: 24,
@@ -221,7 +219,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             ),
                           ],
                           YesNoRadioGroupWidget(
-                            groupName: 'هل انت متعاقد مع احدى شركات النظافة ؟',
+                            groupName: "step4groupName3".tr(),
                             currentValue: state.isCitizenPledgedToClean,
                             onChanged: (value) {
                               if (value != null) {
@@ -236,7 +234,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               // !state.cleanOptionCLEANCONTRACT() &&
                               !state.cleanOptionBALADIASADAD())
                             HijriCalendarAddetionalField(
-                              fieldName: 'تاريخ انتهاء عقد النظافة',
+                              fieldName: "cr_end_clean_contract".tr(),
                               isMandatory: true,
                               currentVlaue: state.cleanContractEndDate,
                               onChanged: (value) {
@@ -275,7 +273,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                   ?.showSalamaPermit ==
                               true) ...[
                             YesNoRadioGroupWidget(
-                              groupName: 'هل لديك تصريح سلامة ؟',
+                              groupName: "step4groupName4".tr(),
                               currentValue: state.salamaPermitExist,
                               onChanged: (value) {
                                 context
@@ -287,8 +285,8 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             if (state.isFawryReport == true &&
                                 state.salamaPermitExist == false)
                               TextWithCheckBtn(
-                                title: "رقم التقرير الفني",
-                                hint: "رقم التقرير الفني",
+                                title: "slamaReportNumber".tr(),
+                                hint: "slamaReportNumber".tr(),
                                 textInputType: TextInputType.text,
                                 validate: (String? t) {},
                                 isValidate:
@@ -309,10 +307,8 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             if (state.isFawryBill == true &&
                                 state.salamaPermitExist == false)
                               TextWithCheckBtn(
-                                title:
-                                    "شهادة تركيب أدوات الوقاية والحماية من الحريق",
-                                hint:
-                                    "شهادة تركيب أدوات الوقاية والحماية من الحريق",
+                                title: "bill_number_name".tr(),
+                                hint: "bill_number_name".tr(),
                                 validate: (String? t) {},
                                 isValidate: state.isSalamaBillVerified ?? false,
                                 currentValue: state.slamaBillNumber,
@@ -330,8 +326,8 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               ),
                             if (state.salamaPermitExist == true)
                               TextWithCheckBtn(
-                                title: "رقم تصريح سلامة",
-                                hint: "رقم تصريح سلامة",
+                                title: "salamaIssueNo".tr(),
+                                hint: "salamaIssueNo".tr(),
                                 textInputType: TextInputType.text,
                                 validate: (String? t) {},
                                 isValidate:
@@ -362,15 +358,15 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               ],
                             ),
                           HorizontalRadioGroup<CRSubmitterType>(
-                            groupName: 'نوع مقدم الطلب',
+                            groupName: "ekramApplicantType".tr(),
                             currentItem: state.crSubmitterType,
                             items: [
                               RadioItem<CRSubmitterType>(
                                   radioValue: CRSubmitterType.owner,
-                                  radioText: "مالك"),
+                                  radioText: "owner_card".tr()),
                               RadioItem<CRSubmitterType>(
                                   radioValue: CRSubmitterType.rental,
-                                  radioText: "مستأجر"),
+                                  radioText: "renter".tr()),
                             ],
                             onChanged: (value) {
                               context
@@ -380,11 +376,11 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           ),
                           if (state.crSubmitterType == CRSubmitterType.owner)
                             HorizontalRadioGroup(
-                              groupName: 'نوع العقد',
+                              groupName: "contractOption".tr(),
                               currentItem: state.crContractType,
                               items: [
                                 RadioItem<CRContractType>(
-                                    radioText: "عقد تملك المبنى (صك)",
+                                    radioText: "ratio1".tr(),
                                     radioValue: CRContractType.deed),
                               ],
                               onChanged: (value) {
@@ -396,16 +392,16 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           if (state.crContractType == CRContractType.deed &&
                               state.crSubmitterType == CRSubmitterType.owner)
                             HorizontalRadioGroup<CRContractOption>(
-                              groupName: 'طريقة ادخال العقد',
+                              groupName: "enter_contract_method".tr(),
                               currentItem: state.crContractOption,
                               items: [
                                 if (state.showAttachDeed())
                                   RadioItem<CRContractOption>(
-                                      radioText: "ارفاق ملف",
+                                      radioText: "cr_attach_file".tr(),
                                       radioValue: CRContractOption.attach),
                                 if (state.showServicehDeed())
                                   RadioItem<CRContractOption>(
-                                      radioText: "رقم عقد الصك الالكتروني",
+                                      radioText: "deed_electrnoic_no".tr(),
                                       radioValue: CRContractOption.service),
                               ],
                               onChanged: (value) {
@@ -419,8 +415,8 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               state.crContractOption ==
                                   CRContractOption.attach) ...[
                             CustomTextFieldWidget(
-                              label: "رقم عقد التملك (الصك)",
-                              hintText: "رقم عقد التملك (الصك)",
+                              label: "deed_owner_no".tr(),
+                              hintText: "deed_owner_no".tr(),
                               isDigitsOnly: true,
                               keyboardType: TextInputType.number,
                               bottomMargin: 24,
@@ -432,7 +428,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               },
                             ),
                             HijriCalendarAddetionalField(
-                              fieldName: 'تاريخ عقد التملك',
+                              fieldName: "contractDate".tr(),
                               isMandatory: true,
                               currentVlaue: state.contractDate,
                               onChanged: (value) {
@@ -460,8 +456,8 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               },
                             ),
                             TextWithCheckBtn(
-                              title: "رقم عقد التملك (الصك)",
-                              hint: "رقم عقد التملك (الصك)",
+                              title: "deed_owner_no".tr(),
+                              hint: "deed_owner_no".tr(),
                               validate: (String? t) {},
                               controller: _deedServiceController,
                               isValidate: state.deedVerified ?? false,
@@ -480,14 +476,14 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           ],
                           if (state.crSubmitterType == CRSubmitterType.rental)
                             HorizontalRadioGroup(
-                              groupName: 'نوع العقد',
+                              groupName: "contractOption".tr(),
                               currentItem: state.crContractType,
                               items: [
                                 RadioItem<CRContractType>(
-                                    radioText: "عقد الإيجار",
+                                    radioText: "cr_rent_contrat".tr(),
                                     radioValue: CRContractType.ejar),
                                 RadioItem<CRContractType>(
-                                    radioText: "عقد استثمار",
+                                    radioText: "cr_invest_contract".tr(),
                                     radioValue: CRContractType.invest),
                               ],
                               onChanged: (value) {
@@ -499,23 +495,20 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           if (state.crContractType == CRContractType.ejar &&
                               state.crSubmitterType ==
                                   CRSubmitterType.rental) ...[
-                            const NotesWidget(
-                              notes: [
-                                'عزيزي المستفيد .. يمكنكم اضافة عقد ايجار الكتروني أو ارفاق عقد ايجار'
-                              ],
+                            NotesWidget(
+                              notes: ["ejar_note".tr()],
                             ),
                             HorizontalRadioGroup<CRContractOption>(
-                              groupName: 'طريقة ادخال العقد',
+                              groupName: "enter_contract_method".tr(),
                               currentItem: state.crContractOption,
                               items: [
                                 if (state.showAttachEjar())
                                   RadioItem<CRContractOption>(
-                                      radioText: "إرفاق عقد الإيجار",
+                                      radioText: "attach_ejar".tr(),
                                       radioValue: CRContractOption.attach),
                                 if (state.showServiceEjar())
                                   RadioItem<CRContractOption>(
-                                      radioText:
-                                          "استخدام رقم عقد الإيجار الالكتروني",
+                                      radioText: "use_electronic_ejar".tr(),
                                       radioValue: CRContractOption.service),
                               ],
                               onChanged: (value) {
@@ -530,8 +523,8 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               state.crContractOption ==
                                   CRContractOption.attach) ...[
                             CustomTextFieldWidget(
-                              label: "رقم عقد الايجار",
-                              hintText: "رقم عقد الايجار",
+                              label: "ejar_no".tr(),
+                              hintText: "ejar_no".tr(),
                               isDigitsOnly: true,
                               keyboardType: TextInputType.number,
                               bottomMargin: 24,
@@ -543,7 +536,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               },
                             ),
                             HijriCalendarAddetionalField(
-                              fieldName: "تاريخ انتهاء عقد الايجار",
+                              fieldName: "ejar_end_date".tr(),
                               isMandatory: true,
                               currentVlaue: state.contractDate,
                               onChanged: (value) {
@@ -559,8 +552,8 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                   CRContractOption.service &&
                               state.showServiceEjar()) ...[
                             CustomTextFieldWidget(
-                              label: "رقم العقد",
-                              hintText: "رقم العقد",
+                              label: "cr_clean_contract_number".tr(),
+                              hintText: "cr_clean_contract_number".tr(),
                               isDigitsOnly: true,
                               keyboardType: TextInputType.number,
                               bottomMargin: 24,
@@ -574,8 +567,8 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               },
                             ),
                             CustomTextFieldWidget(
-                              label: "رقم النسخة",
-                              hintText: "رقم النسخة",
+                              label: "version_no".tr(),
+                              hintText: "version_no".tr(),
                               isDigitsOnly: true,
                               keyboardType: TextInputType.number,
                               bottomMargin: 24,
@@ -587,8 +580,8 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               },
                             ),
                             CustomTextFieldWidget(
-                              label: "رقم هوية ممثل المستأجر",
-                              hintText: "رقم هوية ممثل المستأجر",
+                              label: "ejar_identity_rep".tr(),
+                              hintText: "ejar_identity_rep".tr(),
                               isDigitsOnly: true,
                               keyboardType: TextInputType.number,
                               bottomMargin: 24,
@@ -615,17 +608,17 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           if (state.crContractType == CRContractType.invest &&
                               state.crSubmitterType == CRSubmitterType.rental)
                             HorizontalRadioGroup<CRContractOption>(
-                              groupName: 'طريقة ادخال العقد',
+                              groupName: "enter_contract_method".tr(),
                               currentItem: state.crContractOption,
                               items: [
                                 if (state.showAttachInvest())
                                   RadioItem<CRContractOption>(
-                                      radioText: "إرفاق عقد الاستثمار",
+                                      radioText: "attach_invest_contract".tr(),
                                       radioValue: CRContractOption.attach),
                                 if (state.showServiceInvest())
                                   RadioItem<CRContractOption>(
                                       radioText:
-                                          "استخدام رقم عقد الاستثمار الالكتروني",
+                                          "user_attach_invest_contract".tr(),
                                       radioValue: CRContractOption.service),
                               ],
                               onChanged: (value) {
@@ -638,9 +631,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               state.crSubmitterType == CRSubmitterType.rental &&
                               state.crContractOption ==
                                   CRContractOption.attach) ...[
-                            NotesWidget(notes: [
-                              "سيتم توجيه طلب الاصدار الي البلدية لاعتماد الطلب"
-                            ]),
+                            NotesWidget(notes: ["cr_contrct_type".tr()]),
                           ],
                           if (state.crContractType == CRContractType.invest &&
                               state.crSubmitterType == CRSubmitterType.rental &&
@@ -672,18 +663,19 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             ),
                           ],
                           HorizontalRadioGroup<String>(
-                            groupName: 'اللوحات',
+                            groupName: 'municipalAdvisorBoards'.tr(),
                             currentItem: state.boardContractSetting,
                             items: [
                               if (state.boardContractsOPTINAL() ||
                                   state.boardContractsContract())
                                 RadioItem<String>(
-                                    radioText: "إضافة عقد لوحتي",
+                                    radioText: "cr_add_board_contract".tr(),
                                     radioValue: "CONTRACT"),
                               if (state.boardContractsOPTINAL() ||
                                   state.boardContractsMANUAL())
                                 RadioItem<String>(
-                                    radioText: "إضافة بيانات اللوحات",
+                                    radioText:
+                                        "cr_add_board_data_contract".tr(),
                                     radioValue: "MANUAL"),
                             ],
                             onChanged: (value) {

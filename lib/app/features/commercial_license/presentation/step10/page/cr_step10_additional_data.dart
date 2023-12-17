@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
@@ -35,19 +36,19 @@ class _CRStep10AdditionalDataState extends State<CRStep10AdditionalData> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CRHeaderDesc(
-                          header: "بيانات اضافية للمنشأة",
+                        CRHeaderDesc(
+                          header: "extra_facility_data".tr(),
                           desc: "",
                         ),
-                        const CustomTextWidget(
-                          "اختر كل ما ينطبق على المنشأة",
+                        CustomTextWidget(
+                          "chooseDesc".tr(),
                           fontWeight: AppFontWeight.bold,
                           fontSize: 16,
                           fontColor: AppColor.blackModern700Light,
                         ),
                         const SizedBox(height: 16),
                         CheckBoxWithTitle(
-                          title: "يوجد مكان خارجي قابل للاستثمار",
+                          title: "step10check1".tr(),
                           onChanged: (value) {
                             context
                                 .read<CRStep10AddetionalDataCubit>()
@@ -57,7 +58,7 @@ class _CRStep10AdditionalDataState extends State<CRStep10AdditionalData> {
                         ),
                         const SizedBox(height: 12),
                         CheckBoxWithTitle(
-                          title: "يخدم الموقع الوصول لذوي الاحتياجات الخاصة",
+                          title: "step10check2".tr(),
                           onChanged: (value) {
                             context
                                 .read<CRStep10AddetionalDataCubit>()
@@ -66,7 +67,7 @@ class _CRStep10AdditionalDataState extends State<CRStep10AdditionalData> {
                         ),
                         const SizedBox(height: 12),
                         CheckBoxWithTitle(
-                          title: "توجد مواقف مخصصة للمنشأة",
+                          title: "step10check3".tr(),
                           onChanged: (value) {
                             context
                                 .read<CRStep10AddetionalDataCubit>()
@@ -76,8 +77,8 @@ class _CRStep10AdditionalDataState extends State<CRStep10AdditionalData> {
                         if (state.hasParking == true) ...[
                           const SizedBox(height: 16),
                           CustomTextFieldWidget(
-                            label: "عدد المواقف",
-                            hintText: "عدد المواقف",
+                            label: "step10label1".tr(),
+                            hintText: "step10label1".tr(),
                             isDigitsOnly: true,
                             keyboardType: TextInputType.number,
                             spacerSize: 24,
@@ -91,7 +92,7 @@ class _CRStep10AdditionalDataState extends State<CRStep10AdditionalData> {
                         ],
                         const SizedBox(height: 16),
                         CheckBoxWithTitle(
-                          title: "تتوفر خدمة البيع الالكتروني",
+                          title: "exists_after_sale_service".tr(),
                           onChanged: (value) {
                             String v = value == true ? "YES" : "NO";
                             context
@@ -101,7 +102,7 @@ class _CRStep10AdditionalDataState extends State<CRStep10AdditionalData> {
                         ),
                         const SizedBox(height: 12),
                         CheckBoxWithTitle(
-                          title: "تتوفر خدمة التوصيل",
+                          title: "step10check5".tr(),
                           onChanged: (value) {
                             String v = value == true ? "YES" : "NO";
                             context
@@ -116,7 +117,7 @@ class _CRStep10AdditionalDataState extends State<CRStep10AdditionalData> {
                                 Row(mainAxisSize: MainAxisSize.min, children: [
                               Expanded(
                                 child: CheckBoxWithTitle(
-                                  title: "نفس المنشأة",
+                                  title: "same_facility".tr(),
                                   forceSelection:
                                       state.siteDeliveryType == "ITSELF",
                                   onChanged: (value) {
@@ -133,7 +134,7 @@ class _CRStep10AdditionalDataState extends State<CRStep10AdditionalData> {
                                 child: CheckBoxWithTitle(
                                   forceSelection:
                                       state.siteDeliveryType == "OUTERSITE",
-                                  title: "جهة خارجية",
+                                  title: "external_entity".tr(),
                                   onChanged: (value) {
                                     String? v =
                                         value == true ? "OUTERSITE" : null;
@@ -149,8 +150,8 @@ class _CRStep10AdditionalDataState extends State<CRStep10AdditionalData> {
                         if (state.siteDeliveryType == "OUTERSITE") ...[
                           const SizedBox(height: 12),
                           CustomTextFieldWidget(
-                            label: "اسم الجهة",
-                            hintText: "اسم الجهة",
+                            label: "cr_entity_name".tr(),
+                            hintText: "cr_entity_name".tr(),
                             controller: _controller,
                             keyboardType: TextInputType.text,
                             bottomMargin: 24,
@@ -163,7 +164,7 @@ class _CRStep10AdditionalDataState extends State<CRStep10AdditionalData> {
                         ],
                         const SizedBox(height: 12),
                         CheckBoxWithTitle(
-                          title: "تتوفر خدمة صف المركبات",
+                          title: "step10check6".tr(),
                           onChanged: (value) {
                             String v = value == true ? "YES" : "NO";
                             context
@@ -173,8 +174,8 @@ class _CRStep10AdditionalDataState extends State<CRStep10AdditionalData> {
                         ),
                         const SizedBox(height: 16),
                         CustomTextFieldWidget(
-                          label: "رقم اشتراك الكهرباء",
-                          hintText: "ادخل رقم اشتراك الكهرباء",
+                          label: "step10label2".tr(),
+                          hintText: "step10hint2".tr(),
                           isDigitsOnly: true,
                           keyboardType: TextInputType.number,
                           bottomMargin: 24,
@@ -185,8 +186,8 @@ class _CRStep10AdditionalDataState extends State<CRStep10AdditionalData> {
                           },
                         ),
                         CustomTextFieldWidget(
-                          label: "الرقم اشتراك المياه",
-                          hintText: "ادخل الرقم اشتراك المياه",
+                          label: "step10label3".tr(),
+                          hintText: "step10hint3".tr(),
                           isDigitsOnly: true,
                           keyboardType: TextInputType.number,
                           bottomMargin: 24,

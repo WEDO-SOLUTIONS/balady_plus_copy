@@ -70,19 +70,19 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const CRHeaderDesc(header: "بيانات المنشآه"),
+                          CRHeaderDesc(header: "step6title".tr()),
                           const SizedBox(height: 16),
                           HorizontalRadioGroup<QRSiteLocationType>(
-                            groupName: 'بيانات موقع المنشأة',
+                            groupName: "step6groupName".tr(),
                             currentItem: state.siteLocationType,
                             items: [
                               RadioItem<QRSiteLocationType>(
                                 radioValue: QRSiteLocationType.INSIDE_BUILDING,
-                                radioText: "داخل مبني",
+                                radioText: "step6Ratio1".tr(),
                               ),
                               RadioItem<QRSiteLocationType>(
                                 radioValue: QRSiteLocationType.ON_STREET,
-                                radioText: "علي الشارع",
+                                radioText: "step6Ratio2".tr(),
                               ),
                             ],
                             onChanged: (value) {
@@ -96,8 +96,8 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                             const QrBuildingNatureDropDown(),
                             CustomTextFieldWidget(
                               key: const ValueKey("buildingName"),
-                              label: "اسم المبني",
-                              hintText: "اسم المبني",
+                              label: "step6Buildingname".tr(),
+                              hintText: "step6Buildingname".tr(),
                               initialValue: state.buildingName,
                               bottomMargin: 24,
                               onChanged: (value) {
@@ -108,8 +108,8 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                             ),
                             CustomTextFieldWidget(
                               key: const ValueKey("buildingUnit"),
-                              label: "رقم الوحده",
-                              hintText: "رقم الوحده",
+                              label: "step6groupNumber".tr(),
+                              hintText: "step6groupNumber".tr(),
                               isDigitsOnly: true,
                               initialValue: state.buildingUnit,
                               keyboardType: TextInputType.number,
@@ -122,8 +122,8 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                             ),
                             CustomTextFieldWidget(
                               key: const ValueKey("buildingFloor"),
-                              label: "الطابق",
-                              hintText: "الطابق",
+                              label: "step6floor".tr(),
+                              hintText: "step6floor".tr(),
                               isDigitsOnly: true,
                               initialValue: state.buildingFloor,
                               keyboardType: TextInputType.number,
@@ -136,7 +136,7 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                             ),
                             CustomTextFieldWidget(
                               key: const ValueKey("buildingDirections"),
-                              label: "ارشادات الوصول من البوابة الرئيسية",
+                              label: "step6DoorTrack".tr(),
                               maxLines: 3,
                               initialValue: state.buildingDirections,
                               bottomMargin: 24,
@@ -152,8 +152,8 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                             const QrSiteNatureDropDown(),
                             CustomTextFieldWidget(
                               key: const ValueKey("siteName"),
-                              label: "اسم الموقع",
-                              hintText: "اسم الموقع",
+                              label: "cr_site_name".tr(),
+                              hintText: "cr_site_name".tr(),
                               initialValue: state.siteName,
                               bottomMargin: 24,
                               onChanged: (value) {
@@ -164,8 +164,8 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                             ),
                             CustomTextFieldWidget(
                               key: const ValueKey("siteDesc"),
-                              label: "وصف الموقع",
-                              hintText: "وصف الموقع",
+                              label: "cr_site_desc".tr(),
+                              hintText: "cr_site_desc".tr(),
                               initialValue: state.siteDesc,
                               bottomMargin: 24,
                               onChanged: (value) {
@@ -176,8 +176,8 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                             ),
                             CustomTextFieldWidget(
                               key: const ValueKey("siteLandmark"),
-                              label: "اقرب معلم بارز",
-                              hintText: "اقرب معلم بارز",
+                              label: "cr_near_landmark".tr(),
+                              hintText: "cr_near_landmark".tr(),
                               initialValue: state.siteLandmark,
                               bottomMargin: 24,
                               onChanged: (value) {
@@ -188,8 +188,8 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                             ),
                           ],
                           CustomTextFieldWidget(
-                            label: "رقم المبني",
-                            hintText: "رقم المبني",
+                            label: "step6buildingNumber".tr(),
+                            hintText: "step6buildingNumber".tr(),
                             isDigitsOnly: true,
                             initialValue: state.buildingNumber,
                             keyboardType: TextInputType.number,
@@ -203,8 +203,8 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                             },
                           ),
                           CustomTextFieldWidget(
-                            label: "الرقم الاضافي",
-                            hintText: "الرقم الاضافي",
+                            label: "step6AdditionNumber".tr(),
+                            hintText: "step6AdditionNumber".tr(),
                             initialValue: state.addetionalNumber,
                             isDigitsOnly: true,
                             onValidate: (_) {},
@@ -218,8 +218,8 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                             },
                           ),
                           CustomTextFieldWidget(
-                            label: "الرمز البريدي",
-                            hintText: "الرمز البريدي",
+                            label: "step6Email".tr(),
+                            hintText: "step6Email".tr(),
                             isDigitsOnly: true,
                             initialValue: state.postalCode,
                             onValidate: (_) {},
@@ -232,8 +232,7 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                                   .updateFields(postalCode: value);
                             },
                           ),
-                          const CRHeaderDesc(
-                              header: "بيانات مالك/ ملاك المنشأة"),
+                          CRHeaderDesc(header: "cr_owners".tr()),
                           ListView.builder(
                               shrinkWrap: true,
                               itemCount: state.crOwners?.length ?? 0,
@@ -249,11 +248,11 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                                               item: item, index: index);
                                     });
                               }),
-                          const CRHeaderDesc(header: "بيانات تواصل المنشأة"),
+                          CRHeaderDesc(header: "step11title5".tr()),
                           const SizedBox(height: 16),
                           CustomTextFieldWidget(
-                            label: "هويه مدير الموقع",
-                            hintText: "ادخل هويه مدير الموقع",
+                            label: "managerId".tr(),
+                            hintText: "managerEntry".tr(),
                             initialValue: state.nationalId,
                             isDigitsOnly: true,
                             onValidate: (p0) {},
@@ -266,7 +265,7 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                             },
                           ),
                           HijriCalendarAddetionalField(
-                            fieldName: "تاريخ الميلاد",
+                            fieldName: "birth".tr(),
                             currentVlaue: state.birthDate,
                             isMandatory: true,
                             onChanged: (date) {
@@ -311,14 +310,14 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                             //currentValue: "ww",
                             hint: ("vd_mobile_number").tr(),
                           ),
-                          const NotesWidget(
+                          NotesWidget(
                             notes: [
-                              "سوف يتم استلام جميع الاشعارات على رقم الجوال المسجل في النظام"
+                              "notification_recived_on_registred_mobile".tr()
                             ],
                           ),
                           CustomTextFieldWidget(
-                            label: "البريد الالكتروني",
-                            hintText: "ادخل البريد الالكتروني",
+                            label: "health_submitter_mail".tr(),
+                            hintText: "health_submitter_mail".tr(),
                             errorText: state.emailErrorText,
                             initialValue: state.contactInfo?.mail,
                             bottomMargin: 24,
@@ -330,8 +329,8 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                             },
                           ),
                           CustomTextFieldWidget(
-                            label: "هاتف المنشاه",
-                            hintText: "هاتف المنشأة",
+                            label: "phone".tr(),
+                            hintText: "phone".tr(),
                             isDigitsOnly: true,
                             keyboardType: TextInputType.number,
                             initialValue: state.contactInfo?.phone,
@@ -345,8 +344,8 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                             },
                           ),
                           CustomTextFieldWidget(
-                            label: "رقم خدمة العملاء للمنشأة",
-                            hintText: "رقم خدمة العملاء للمنشأة",
+                            label: "cr_customer_service_no".tr(),
+                            hintText: "cr_customer_service_no".tr(),
                             initialValue:
                                 state.contactInfo?.enterpriseUniqueCode,
                             isDigitsOnly: true,
@@ -362,8 +361,8 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                             },
                           ),
                           CustomTextFieldWidget(
-                            label: "الموقع الالكتروني",
-                            hintText: "الموقع الالكتروني",
+                            label: "event_website".tr(),
+                            hintText: "event_website".tr(),
                             spacerSize: 24,
                             showOptional: true,
                             initialValue: state.contactInfo?.website,
@@ -375,8 +374,8 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                             },
                           ),
                           CustomTextFieldWidget(
-                            label: "حساب تويتر",
-                            hintText: "حساب تويتر",
+                            label: "cr_twitter_account".tr(),
+                            hintText: "cr_twitter_account".tr(),
                             initialValue: state.contactInfo?.twitter,
                             showOptional: true,
                             spacerSize: 24,
@@ -388,8 +387,8 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                             },
                           ),
                           CustomTextFieldWidget(
-                            label: "حساب انستغرام",
-                            hintText: "حساب انستغرام",
+                            label: "cr_instagram_account".tr(),
+                            hintText: "cr_instagram_account".tr(),
                             initialValue: state.contactInfo?.instegram,
                             showOptional: true,
                             spacerSize: 24,
@@ -401,8 +400,8 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                             },
                           ),
                           CustomTextFieldWidget(
-                            label: "حساب سناب شات",
-                            hintText: "حساب سناب شات",
+                            label: "cr_snapchat_account".tr(),
+                            hintText: "cr_snapchat_account".tr(),
                             initialValue: state.contactInfo?.snapchat,
                             showOptional: true,
                             spacerSize: 24,
@@ -414,8 +413,8 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                             },
                           ),
                           CustomTextFieldWidget(
-                            label: "حساب فيس بوك",
-                            hintText: "حساب فيس بوك",
+                            label: "cr_facebook_account".tr(),
+                            hintText: "cr_facebook_account".tr(),
                             initialValue: state.contactInfo?.facebook,
                             showOptional: true,
                             spacerSize: 24,
@@ -427,8 +426,8 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                             },
                           ),
                           CustomTextFieldWidget(
-                            label: "رقم الواتس أب",
-                            hintText: "رقم الواتس أب",
+                            label: "cr_whats_account".tr(),
+                            hintText: "cr_whats_account".tr(),
                             initialValue: state.contactInfo?.whatsApp,
                             showOptional: true,
                             isDigitsOnly: true,
@@ -443,7 +442,7 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                           ),
                           const SizedBox(height: 16),
                           YesNoRadioGroupWidget(
-                            groupName: "هل يوجد لديك قنوات دفع ؟",
+                            groupName: "cr_payment_options".tr(),
                             currentValue: state.hasPaymentMethods,
                             onChanged: (value) {
                               context
@@ -454,8 +453,8 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                           if (state.paymentsMethodsStatus ==
                                   BlocStatus.success &&
                               state.hasPaymentMethods == true)
-                            const CustomTextWidget(
-                              "قنوات الدفع",
+                            CustomTextWidget(
+                              "cr_payment_options2".tr(),
                               fontWeight: AppFontWeight.bold,
                               fontSize: 16,
                               fontColor: AppColor.blackModern700Light,

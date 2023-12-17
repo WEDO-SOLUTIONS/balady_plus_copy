@@ -67,7 +67,7 @@ class NewServices extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: CustomTextWidget(
-                                "سجّل اعتراضك",
+                                "notice".tr(),
                                 textStyle: AppStyle.tagStyle.copyWith(
                                   color: AppColor.blackModern700Light,
                                   fontWeight: FontWeight.w700,
@@ -100,7 +100,7 @@ class NewServices extends StatelessWidget {
                               ),
                               btnHeight: 40,
                               btnPadding: const EdgeInsets.all(11),
-                              text: "استعرض المخالفات",
+                              text: "tickets_show".tr(),
                               onPressed: () async {
                                 if (CommonProperties.isLoggedIn) {
                                   NavigationService.navigatorKey.currentState!

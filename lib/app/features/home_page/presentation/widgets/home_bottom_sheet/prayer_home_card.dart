@@ -248,7 +248,10 @@ class PrayerHomeCard extends StatelessWidget {
                                       children: [
                                         if (state.nextPrayer != null)
                                           CustomTextWidget(
-                                            "متبقي على أذان ${state.nextPrayer!.prayer.label.tr()}",
+                                            "remain_to_azan".tr().replaceAll(
+                                                "{}",
+                                                state.nextPrayer!.prayer.label
+                                                    .tr()),
                                             fontColor: AppColor.white,
                                             fontWeight: AppFontWeight.bold,
                                             maxLines: 2,

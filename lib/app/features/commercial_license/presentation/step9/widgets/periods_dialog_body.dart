@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/features/commercial_license/commercial_license_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/utils/enums/enums.dart';
 import '../../../../../core/utils/utils_exports.dart';
@@ -29,7 +30,7 @@ class PeriodsDialogBody extends StatelessWidget {
               false;
           return Builder(builder: (context) {
             return BottomSheetWithActions(
-              title: "ساعات اليوم",
+              title: "cr_days_hours".tr(),
               action: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: ElevatedButtonWidget.add(onPressed: () {
@@ -54,15 +55,15 @@ class PeriodsDialogBody extends StatelessWidget {
                 children: [
                   HorizontalRadioGroup<QRWorkTimes>(
                     currentItem: state.type,
-                    groupName: "نوع الفتره",
+                    groupName: "durationType".tr(),
                     items: [
                       RadioItem<QRWorkTimes>(
                           radioValue: QRWorkTimes.SHIFTED,
-                          radioText: "فتره محدده"),
+                          radioText: "specify_period".tr()),
                       if (is24HourAllowed)
                         RadioItem<QRWorkTimes>(
                             radioValue: QRWorkTimes.OPEN_24HOUR,
-                            radioText: "24 ساعه"),
+                            radioText: "24Hour".tr()),
                     ],
                     onChanged: (radio) => context
                         .read<PeriodsCubit>()
@@ -71,8 +72,8 @@ class PeriodsDialogBody extends StatelessWidget {
                   if (!state.is24Hour) ...[
                     const Divider(thickness: 2),
                     const SizedBox(height: 24),
-                    const CustomTextWidget(
-                      "اضف الفتره",
+                    CustomTextWidget(
+                      "add_period".tr(),
                       fontSize: 16,
                       fontColor: AppColor.blackModern700Light,
                       fontWeight: AppFontWeight.bold,
@@ -87,7 +88,7 @@ class PeriodsDialogBody extends StatelessWidget {
                         children: [
                           Expanded(
                             child: ClockTimeWidget(
-                              title: "من",
+                              title: "from".tr(),
                               currentTime:
                                   state.periods[index].from.format(context),
                               onSelectedTime: (time) => time != null
@@ -101,7 +102,7 @@ class PeriodsDialogBody extends StatelessWidget {
                           const SizedBox(width: 24),
                           Expanded(
                             child: ClockTimeWidget(
-                              title: "الي",
+                              title: "to".tr(),
                               currentTime:
                                   state.periods[index].to.format(context),
                               onSelectedTime: (time) => time != null
@@ -132,8 +133,8 @@ class PeriodsDialogBody extends StatelessWidget {
                     if (state.periods.length <= 1)
                       GestureDetector(
                         onTap: () => context.read<PeriodsCubit>().onAddPeriod(),
-                        child: const CustomTextWidget(
-                          "+ اضافه فتره",
+                        child: CustomTextWidget(
+                          "add_period_2".tr(),
                           fontSize: 16,
                           fontWeight: AppFontWeight.bold,
                           fontColor: AppColor.primary900Light,

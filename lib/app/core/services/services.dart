@@ -337,23 +337,12 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": true,
       "requireLogin": true,
       "action": {"type": "dialog", "value": "/supporter"},
-      "ar": {"title": "supporter", "description": null, "tag": null},
+      "ar": {"title": "Supporter", "description": null, "tag": null},
       "en": {"title": "Supporter", "description": null, "tag": null}
     },
   ],
   "health_certificates_services": [],
   "business_license_services": [
-    /* {
-      "id": 11,
-      "icon": "issue_trade_license",
-      "3d_icon": null,
-      "order": 11,
-      "isNew": false,
-      "isImportant": false,
-      "action": {"type": "page", "value": "/issue-trade-license"},
-      "ar": {"title": "إصدار رخصة تجارية", "description": null, "tag": null},
-      "en": {"title": "Issue Trade License", "description": null, "tag": null}
-    },*/
     {
       "id": 1,
       "icon": "balady_business",
@@ -379,21 +368,6 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "request_service", "description": null, "tag": null},
       "en": {"title": "request_service", "description": null, "tag": null}
     },
-    /*  {
-      "id": 15,
-      "icon": "issue_health_certificate",
-      "3d_icon": null,
-      "order": 15,
-      "isNew": true,
-      "isImportant": false,
-      "action": {"type": "page", "value": RouteName.newHealthCertificatePage},
-      "ar": {"title": "إصدار شهادة صحية", "description": null, "tag": null},
-      "en": {
-        "title": "Issue Health Certificate",
-        "description": null,
-        "tag": null
-      }
-    },*/
     {
       "id": 4,
       "icon": "schedule_date",

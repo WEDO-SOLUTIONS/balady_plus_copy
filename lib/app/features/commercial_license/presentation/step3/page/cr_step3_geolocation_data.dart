@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
@@ -34,7 +35,6 @@ class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
         CommonFunctions.showError(state.errorMessage ?? "");
       }
     }, builder: (context, state) {
-      print("GGG ${state.draftStatus}");
       return Stack(
         children: [
           Column(
@@ -47,11 +47,11 @@ class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CRHeaderDesc(header: "بيانات الموقع الجغرافي"),
+                        CRHeaderDesc(header: "step3Title".tr()),
                         const SizedBox(height: 12),
                         DropDownWithTitle(
                             selectedValue: state.gisResponse?.getFullAddress(),
-                            title: "الموقع",
+                            title: "loaction".tr(),
                             onTap: () async {
                               //Navigator
                               NavigationService.navigatorKey.currentState!.push(
@@ -85,28 +85,28 @@ class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
                             }),
                         ReadOnlyField(
                           subTitle: state.gisResponse?.region,
-                          title: "المنطقه",
+                          title: "region".tr(),
                         ),
                         ReadOnlyField(
                           subTitle: state.gisResponse?.municipalityName,
-                          title: "الامانه",
+                          title: "municipalityName".tr(),
                         ),
                         ReadOnlyField(
                           subTitle: state.gisResponse?.subMunicipalityName,
-                          title: "البلديه",
+                          title: "subMunicipalityName".tr(),
                         ),
                         ReadOnlyField(
                           subTitle: state.gisResponse?.Balady_DistrictName,
-                          title: "الحي",
+                          title: "district".tr(),
                         ),
                         ReadOnlyField(
                           subTitle: state.gisResponse?.streetName,
-                          title: "الشارع",
+                          title: "street".tr(),
                         ),
                         if (state.draftStatus == BlocStatus.success) ...[
                           CustomTextFieldWidget(
-                            label: "رقم المخطط",
-                            hintText: "ادخل رقم المخطط",
+                            label: "planNumber".tr(),
+                            hintText: "enter_plan_number".tr(),
                             controller: context.read<MapBloc>().mapNpController,
                             isDigitsOnly: false,
                             fillColor:
@@ -126,8 +126,8 @@ class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
                             },
                           ),
                           CustomTextFieldWidget(
-                            label: "رقم قطعه الارض",
-                            hintText: "ادخل رقم قطعه الارض",
+                            label: "parcel_number".tr(),
+                            hintText: "enter_parcel_no".tr(),
                             controller:
                                 context.read<MapBloc>().landNpController,
                             isDigitsOnly: false,
@@ -172,12 +172,12 @@ class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
     BottomSheetDialog.showDraggableSheet(
         NavigationService.navigatorKey.currentContext!,
         child: BottomSheetWithActions(
-          title: "تنبيه",
+          title: "cancelLicenseWarningTitleWord".tr(),
           action: Row(
             children: [
               Expanded(
                 child: ElevatedButtonWidget.primaryCustom(
-                    text: "موافق",
+                    text: "agree".tr(),
                     onPressed: () {
                       NavigationService.goBack();
                     }),

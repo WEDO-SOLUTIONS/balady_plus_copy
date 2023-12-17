@@ -17,7 +17,7 @@ class RequestsDateFilter extends StatelessWidget {
           previous.selectedRequestDate != current.selectedRequestDate,
       builder: (context, state) {
         return FilterDatePicker(
-          title: "اخر موعد للاعتراض".tr(),
+          title: "objectionLastApplyDate".tr(),
           initialDate: state.selectedRequestDate,
           initialDateForm: state.dateForm ?? DateForm.gregorian,
           onChange: (selectedDate, dateForm) {

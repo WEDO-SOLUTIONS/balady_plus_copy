@@ -24,7 +24,7 @@ class SubmitBtn extends StatelessWidget {
                       .add(SubmitIncidentEvent());
                 else {
                   CommonFunctions.showError(
-                          "عفواً، يلزم إدخال سبب واحد على الأقل للاعتراض")
+                          "must_enter_one_reason_for_objection".tr())
                       .tr();
                 }
               },

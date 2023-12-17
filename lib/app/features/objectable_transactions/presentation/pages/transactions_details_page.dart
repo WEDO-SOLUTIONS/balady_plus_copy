@@ -83,7 +83,7 @@ class _TransactionsDetailsPageState extends State<TransactionsDetailsPage> {
                                   IconPath.informationCircleIcon),
                               CustomHorizontalSpace(width: 12),
                               CustomTextWidget(
-                                "لا يمكن الاعتراض بسبب انتهاء مدة الاعتراض",
+                                "objectionPeriodExpired".tr(),
                                 fontColor: AppColor.orange800,
                                 fontWeight: AppFontWeight.medium,
                                 fontSize: 13,

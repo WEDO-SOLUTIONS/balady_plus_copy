@@ -83,6 +83,7 @@ class AppInterceptors extends Interceptor {
     "On-Sending-Request ${options.uri}".actionLog();
     // Update language
     options.headers[ApiHeader.language.eName] = languageCode;
+    options.headers["Accept-Language"] = languageCode;
 
     if (await networkConnection.isConnected == false) {
       "Request-Rejected because 'Network-Disconnected'".errorLog();

@@ -133,15 +133,15 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                     AttachContract(),
                     CustomVerticalSpace(height: 16),
                     HorizontalRadioGroup<CRSubmitterType>(
-                      groupName: 'صفة صاحب المحل',
+                      groupName: "cr_renew_owner_type".tr(),
                       currentItem: state.crSubmitterType,
                       items: [
                         RadioItem<CRSubmitterType>(
                             radioValue: CRSubmitterType.owner,
-                            radioText: "مالك"),
+                            radioText: "owner_card".tr()),
                         RadioItem<CRSubmitterType>(
                             radioValue: CRSubmitterType.rental,
-                            radioText: "مستأجر"),
+                            radioText: "renter".tr()),
                       ],
                       onChanged: (value) {
                         context
@@ -151,11 +151,11 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                     ),
                     if (state.crSubmitterType == CRSubmitterType.owner)
                       HorizontalRadioGroup(
-                        groupName: 'نوع العقد',
+                        groupName: "contractOption".tr(),
                         currentItem: state.crContractType,
                         items: [
                           RadioItem<CRContractType>(
-                              radioText: "عقد تملك",
+                              radioText: "cr_renew_ownership".tr(),
                               radioValue: CRContractType.deed),
                         ],
                         onChanged: (value) {
@@ -167,16 +167,16 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                     if (state.crContractType == CRContractType.deed &&
                         state.crSubmitterType == CRSubmitterType.owner)
                       HorizontalRadioGroup<CRContractOption>(
-                        groupName: 'ارفاق العقد',
+                        groupName: "cr_renew_attach".tr(),
                         currentItem: state.crContractOption,
                         items: [
                           if (state.showAttachDeed())
                             RadioItem<CRContractOption>(
-                                radioText: "ارفاق عقد التملك",
+                                radioText: "cr_renew_attach_ownership".tr(),
                                 radioValue: CRContractOption.attach),
                           if (state.showServicehDeed())
                             RadioItem<CRContractOption>(
-                                radioText: "استخدام رقم عقد الصك الالكتروني",
+                                radioText: "cr_renew_use_deed".tr(),
                                 radioValue: CRContractOption.service),
                         ],
                         onChanged: (value) {
@@ -189,8 +189,8 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         state.crSubmitterType == CRSubmitterType.owner &&
                         state.crContractOption == CRContractOption.attach) ...[
                       CustomTextFieldWidget(
-                        label: "رقم عقد التملك",
-                        hintText: "رقم عقد التملك",
+                        label: "cr_ownership_no".tr(),
+                        hintText: "cr_ownership_no".tr(),
                         isDigitsOnly: true,
                         keyboardType: TextInputType.number,
                         bottomMargin: 24,
@@ -202,7 +202,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         },
                       ),
                       HijriCalendarAddetionalField(
-                        fieldName: 'تاريخ عقد التملك',
+                        fieldName: "contractDate".tr(),
                         isMandatory: true,
                         currentVlaue: state.contractDate,
                         onChanged: (value) {
@@ -216,8 +216,8 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         state.crSubmitterType == CRSubmitterType.owner &&
                         state.crContractOption == CRContractOption.service) ...[
                       CustomTextFieldWidget(
-                        label: "رقم عقد التملك",
-                        hintText: "رقم عقد التملك",
+                        label: "cr_ownership_no".tr(),
+                        hintText: "cr_ownership_no".tr(),
                         isDigitsOnly: true,
                         keyboardType: TextInputType.number,
                         bottomMargin: 24,
@@ -229,8 +229,8 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         },
                       ),
                       CustomTextFieldWidget(
-                        label: "رقم الهوية",
-                        hintText: "رقم الهوية",
+                        label: "user_data_applicant_id".tr(),
+                        hintText: "user_data_applicant_id".tr(),
                         isDigitsOnly: true,
                         keyboardType: TextInputType.number,
                         errorText: state.deedOwnerIdValidatorErrorText,
@@ -243,8 +243,8 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         },
                       ),
                       CustomTextFieldWidget(
-                        label: "نوع الهوية",
-                        hintText: "نوع الهوية",
+                        label: "user_data_applicant_type".tr(),
+                        hintText: "user_data_applicant_type".tr(),
                         isDigitsOnly: true,
                         keyboardType: TextInputType.number,
                         bottomMargin: 24,

@@ -28,7 +28,7 @@ class ViolationActionWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      'مضاعفة الغرامة'.tr(),
+                      "double_fine".tr(),
                       textStyle: AppStyle.approvedViolationLabelStyle,
                     ),
                     const SizedBox(

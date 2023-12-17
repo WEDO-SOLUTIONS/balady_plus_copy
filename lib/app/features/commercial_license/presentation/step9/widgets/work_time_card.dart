@@ -75,8 +75,8 @@ class WorkTimeCard extends StatelessWidget {
                     children: [
                       if ((state.workingTimes![index].isSelected ?? false) &&
                           state.workingTimes![index].openShiftOption == null)
-                        const CustomTextWidget(
-                          "اضف المواعيد",
+                        CustomTextWidget(
+                          "add_appointment".tr(),
                           fontSize: 12,
                           fontWeight: AppFontWeight.bold,
                           fontColor: AppColor.primary700Light,
@@ -115,7 +115,7 @@ class WorkTimeCard extends StatelessWidget {
                         Column(
                           children: [
                             CustomTextWidget(
-                              "24 ساعه",
+                              "24Hour".tr(),
                               fontWeight: AppFontWeight.medium,
                               fontSize: 12,
                               textAlign: TextAlign.end,

@@ -184,7 +184,7 @@ class ElevatedButtonWidget extends _ElevatedButton {
             fontSize: 16,
           ),
           btnHeight: 56,
-          text: "إصدار الرخصة بالانشطة المدرجة",
+          text: "cr_make_license_with_current".tr(),
           onPressed: onPressed,
         ));
 
@@ -198,7 +198,7 @@ class ElevatedButtonWidget extends _ElevatedButton {
             fontSize: 16,
           ),
           btnHeight: 56,
-          text: "إرسال طلب إضافة الانشطة للجهة المعنية",
+          text: "send_request_to_authorities".tr(),
           onPressed: onPressed,
         ));
 
