@@ -1,3 +1,5 @@
+import 'package:balady_plus/app/features/ekram/domain/entities/trip_details.dart';
+
 import 'deceased_request_details/deceased_request_details.dart';
 
 class AddTripDialogParams {
@@ -11,7 +13,7 @@ class AddTripDialogParams {
   final int? deathCityId;
   final int? cemetryId;
   final String? cemetryName;
-  final List<Trip>? trips;
+  final List<TripDetails>? trips;
 
   AddTripDialogParams(
       {this.deathInfoId,

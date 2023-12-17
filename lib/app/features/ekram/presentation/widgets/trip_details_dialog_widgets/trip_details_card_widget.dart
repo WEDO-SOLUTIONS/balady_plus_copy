@@ -111,11 +111,13 @@ class TripDetailsDialogCard extends StatelessWidget {
                                 tripDetails.getNextTripLocation()!.$2);
                           },
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               CustomSvgIconWidget(
                                 IconPath.location,
                                 iconSize: 12,
+                              ),
+                              const SizedBox(
+                                width: 8,
                               ),
                               CustomTextWidget(
                                 ("ekram_next_step_location").tr(),
