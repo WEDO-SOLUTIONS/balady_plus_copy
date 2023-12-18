@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
@@ -26,34 +27,73 @@ class SnapAndSendCard extends StatelessWidget {
           const SizedBox(
             height: 12,
           ),
-          Stack(
-            children: [
-              Image.asset(
-                'assets/images/snap_and_send_card.png',
-                fit: BoxFit.fitWidth,
-                package: 'mapness',
-              ),
-              Positioned(
-                  top: 21,
-                  right: 24,
-                  child: Text(
-                    context.l10n.photoAndVideo,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .accentL
-                        .apply(color: Colors.white),
-                  )),
-              Positioned(
-                bottom: 20,
-                right: 21,
-                child: LabeledElevatedButton(
-                  label: context.l10n.sahm,
-                  onPressed: () {
-                    CommonFunctions.openSnapAndSend();
-                  },
+          Container(
+            height: 189,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              image: const DecorationImage(
+                image: AssetImage(
+                  'assets/images/snap_and_send_card.png',
+                  package: PackageConfig.packageName,
                 ),
+                fit: BoxFit.cover,
               ),
-            ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 14,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          context.l10n.photoAndVideo,
+                          style: Theme.of(context)
+                              .extension<ThemeTextStyles>()!
+                              .accentL
+                              .apply(color: Colors.white),
+                        ),
+                        const SizedBox(
+                          height: 6,
+                        ),
+                        Text(
+                          "حسن المشهد الحضري لمدينتك، وبلغ عن مظاهر التشوه البصري",
+                          maxLines: 3,
+                          style: Theme.of(context)
+                              .extension<ThemeTextStyles>()!
+                              .textXS
+                              .apply(color: Colors.white),
+                        ),
+                        const SizedBox(
+                          height: 23,
+                        ),
+                        LabeledElevatedButton(
+                          label: context.l10n.sahm,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 59,
+                            vertical: 5,
+                          ).copyWith(bottom: 11),
+                          onPressed: () {
+                            CommonFunctions.openSnapAndSend();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  Image.asset(
+                    'assets/images/snap_and_send_phone.png',
+                    package: PackageConfig.packageName,
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
