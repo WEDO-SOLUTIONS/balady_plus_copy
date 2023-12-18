@@ -442,11 +442,11 @@ class RenewCommercialLicenseState extends Equatable {
   String getContractName() {
     switch (info?.ownershipResponseDto?.contractType) {
       case "EJAR":
-        return "عقد ايجار";
+        return "rent_contract".tr();
       case "INVEST":
-        return "عقد استثمار";
+        return "invest_contract_2".tr();
       case "DEED":
-        return "عقد تملك";
+        return "deed_contract".tr();
     }
     return info?.ownershipResponseDto?.contractType ?? "";
   }

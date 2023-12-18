@@ -63,7 +63,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     DropDownWithTitle(
-                      title: "مدة التجديد بالسنوات".tr(),
+                      title: "no_renew_years".tr(),
                       selectedValue: state.licensePeriod != null
                           ? state.licensePeriod?.toString()
                           : null,
@@ -78,7 +78,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                           // dialogKeyName: DialogName.objectablePageProductsFilters,
                           // currentRouteName: RouteName.objectableTransactions,
                           child: BottomSheetList(
-                            title: "مدة التجديد بالسنوات".tr(),
+                            title: "no_renew_years".tr(),
                             items: state.renewYears
                                     ?.map((e) => e.toString())
                                     .toList() ??
@@ -121,7 +121,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         state.showINVESTService() ||
                         state.showEJARService()))
                       LabelTextWithOptional(
-                        label: "بيانات اثبات الموقع",
+                        label: "proof_location_data".tr(),
                         labelColor: AppColor.blackModern700Light,
                         labelSize: 16,
                         labelTextAlign: TextAlign.start,
@@ -274,14 +274,14 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                     ],
                     if (state.crSubmitterType == CRSubmitterType.rental)
                       HorizontalRadioGroup(
-                        groupName: 'نوع العقد',
+                        groupName: 'cr_investment_type'.tr(),
                         currentItem: state.crContractType,
                         items: [
                           RadioItem<CRContractType>(
-                              radioText: "عقد الإيجار",
+                              radioText: "rent_contract_1".tr(),
                               radioValue: CRContractType.ejar),
                           RadioItem<CRContractType>(
-                              radioText: "عقد استثمار",
+                              radioText: "invest_contract_2".tr(),
                               radioValue: CRContractType.invest),
                         ],
                         onChanged: (value) {
@@ -293,16 +293,16 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                     if (state.crContractType == CRContractType.ejar &&
                         state.crSubmitterType == CRSubmitterType.rental)
                       HorizontalRadioGroup<CRContractOption>(
-                        groupName: 'ارفاق العقد',
+                        groupName: "cr_renew_attach".tr(),
                         currentItem: state.crContractOption,
                         items: [
                           if (state.showAttachEjar())
                             RadioItem<CRContractOption>(
-                                radioText: "إرفاق عقد الإيجار",
+                                radioText: "attach_ejar".tr(),
                                 radioValue: CRContractOption.attach),
                           if (state.showServiceEjar())
                             RadioItem<CRContractOption>(
-                                radioText: "استخدام رقم عقد الإيجار الالكتروني",
+                                radioText: "use_electronic_ejar".tr(),
                                 radioValue: CRContractOption.service),
                         ],
                         onChanged: (value) {
@@ -316,8 +316,8 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         state.crContractOption == CRContractOption.attach &&
                         state.showAttachEjar()) ...[
                       CustomTextFieldWidget(
-                        label: "رقم عقد الايجار",
-                        hintText: "رقم عقد الايجار",
+                        label: "ejar_no".tr(),
+                        hintText: "ejar_no".tr(),
                         isDigitsOnly: true,
                         keyboardType: TextInputType.number,
                         bottomMargin: 24,
@@ -329,7 +329,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         },
                       ),
                       HijriCalendarAddetionalField(
-                        fieldName: "تاريخ انتهاء عقد الايجار",
+                        fieldName: "ejar_end_date".tr(),
                         currentVlaue: state.contractDate,
                         isMandatory: true,
                         onChanged: (value) {
@@ -344,8 +344,8 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         state.crContractOption == CRContractOption.service &&
                         state.showServiceEjar()) ...[
                       CustomTextFieldWidget(
-                        label: "رقم العقد",
-                        hintText: "رقم العقد",
+                        label: "contract_number".tr(),
+                        hintText: "contract_number".tr(),
                         isDigitsOnly: true,
                         keyboardType: TextInputType.number,
                         bottomMargin: 24,
@@ -358,8 +358,8 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         },
                       ),
                       CustomTextFieldWidget(
-                        label: "رقم النسخة",
-                        hintText: "رقم النسخة",
+                        label: "contract_version_no".tr(),
+                        hintText: "contract_version_no".tr(),
                         isDigitsOnly: true,
                         keyboardType: TextInputType.number,
                         bottomMargin: 24,
@@ -371,8 +371,8 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         },
                       ),
                       CustomTextFieldWidget(
-                        label: "رقم هوية ممثل المستأجر",
-                        hintText: "رقم هوية ممثل المستأجر",
+                        label: "ejar_identity_rep".tr(),
+                        hintText: "ejar_identity_rep".tr(),
                         isDigitsOnly: true,
                         keyboardType: TextInputType.number,
                         bottomMargin: 24,
@@ -399,17 +399,16 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                     if (state.crContractType == CRContractType.invest &&
                         state.crSubmitterType == CRSubmitterType.rental)
                       HorizontalRadioGroup<CRContractOption>(
-                        groupName: 'طريقة ادخال العقد',
+                        groupName: "enter_contract_method".tr(),
                         currentItem: state.crContractOption,
                         items: [
                           if (state.showAttachInvest())
                             RadioItem<CRContractOption>(
-                                radioText: "إرفاق عقد الاستثمار",
+                                radioText: "attach_invest_contract".tr(),
                                 radioValue: CRContractOption.attach),
                           if (state.showServiceInvest())
                             RadioItem<CRContractOption>(
-                                radioText:
-                                    "استخدام رقم عقد الاستثمار الالكتروني",
+                                radioText: "user_attach_invest_contract".tr(),
                                 radioValue: CRContractOption.service),
                         ],
                         onChanged: (value) {
@@ -423,8 +422,8 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         state.crContractOption == CRContractOption.service &&
                         state.showServiceInvest()) ...[
                       CustomTextFieldWidget(
-                        label: "رقم عقد الإستثمار",
-                        hintText: "رقم عقد الإستثمار",
+                        label: "contract_investment_no".tr(),
+                        hintText: "contract_investment_no".tr(),
                         keyboardType: TextInputType.text,
                         bottomMargin: 24,
                         initialValue: state.investmentContractNumber,
@@ -466,22 +465,21 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                     ],*/
 
                     VerticalRadioGroup<CRContractCleanRenewOptions>(
-                      groupName: 'رسوم وعقود النظافة',
+                      groupName: "clean_contracts_fees".tr(),
                       currentItem: state.crContractCleanRenewOptions,
                       items: [
                         if (state.cleanContractshowService())
                           RadioItem<CRContractCleanRenewOptions>(
                               radioValue: CRContractCleanRenewOptions.service,
-                              radioText:
-                                  "التعاقد مع شركات النظافة المؤهلة من الأمانة"),
+                              radioText: "clean_contrat_baladiyah".tr()),
                         if (state.cleanContractshowPayAll())
                           RadioItem<CRContractCleanRenewOptions>(
                               radioValue: CRContractCleanRenewOptions.payAll,
-                              radioText: "دفع رسوم جميع النفايات"),
+                              radioText: "clean_contracts_saddad".tr()),
                         if (state.cleanContractshowAttach())
                           RadioItem<CRContractCleanRenewOptions>(
                               radioValue: CRContractCleanRenewOptions.attach,
-                              radioText: "عقد نظافة مرفق"),
+                              radioText: "clean_contracts_attached".tr()),
                       ],
                       onChanged: (value) {
                         context
@@ -492,7 +490,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                     if (state.crContractCleanRenewOptions ==
                         CRContractCleanRenewOptions.attach)
                       HijriCalendarAddetionalField(
-                        fieldName: 'تاريخ انتهاء عقد النظافة',
+                        fieldName: "cr_end_clean_contract".tr(),
                         isMandatory: true,
                         onChanged: (value) {
                           context
@@ -529,7 +527,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                       ]),
                     if (state.showSalmaExists())
                       YesNoRadioGroupWidget(
-                        groupName: 'هل لديك تصريح سلامة ؟',
+                        groupName: "step4groupName4".tr(),
                         currentValue: state.salamaExists,
                         onChanged: (value) {
                           context
@@ -542,8 +540,8 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         (state.showSalamaReport() &&
                             state.salamaExists == false))
                       CustomTextFieldWidget(
-                        label: "رقم التقرير الفني",
-                        hintText: "رقم التقرير الفني",
+                        label: "slamaReportNumber".tr(),
+                        hintText: "slamaReportNumber".tr(),
                         isDigitsOnly: true,
                         keyboardType: TextInputType.number,
                         bottomMargin: 24,
@@ -568,9 +566,8 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                     if ((state.showSalamaBill() && !state.showSalmaExists()) ||
                         (state.showSalamaBill() && state.salamaExists == false))
                       CustomTextFieldWidget(
-                        label: "شهادة تركيب أدوات الوقاية والحماية من الحريق",
-                        hintText:
-                            "شهادة تركيب أدوات الوقاية والحماية من الحريق",
+                        label: "bill_number_name".tr(),
+                        hintText: "bill_number_name".tr(),
                         isDigitsOnly: true,
                         keyboardType: TextInputType.number,
                         bottomMargin: 24,
@@ -592,8 +589,8 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         (state.showSalamaPermit() &&
                             state.salamaExists == true))
                       CustomTextFieldWidget(
-                        label: "رقم تصريح سلامة",
-                        hintText: "رقم تصريح سلامة",
+                        label: "salamaIssueNo".tr(),
+                        hintText: "salamaIssueNo".tr(),
                         bottomMargin: 24,
                         initialValue: state.salamaPermitNumber,
                         onChanged: (value) {

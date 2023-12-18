@@ -56,7 +56,7 @@ class AttachContract extends StatelessWidget {
                                 width: 8,
                               ),
                               CustomTextWidget(
-                                "عقد مرفق",
+                                "attached_contract".tr(),
                                 fontColor: AppColor.blackModern500Light,
                                 fontSize: 16,
                                 maxLines: 2,
