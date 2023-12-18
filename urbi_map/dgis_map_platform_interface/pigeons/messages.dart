@@ -864,7 +864,8 @@ enum SearchCategoryMessage {
   dentalCenters,
   hotels,
   beautyCenters,
-  recreationCenters
+  recreationCenters,
+  beaches
 }
 
 class SearchCategoryMessage_ {

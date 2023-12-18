@@ -14,7 +14,8 @@ final quickFilters = [
     mapIcon: "assets/icons/svg/ic_marker.svg",
   ),
   QuickFilter(
-    rubrics: [168],
+    rubrics: [],
+    query: 'parks',
     title: "الحدائق",
     uiIcon: "assets/icons/svg/quick_filters/ic_quick_park.svg",
     mapIcon: "assets/icons/svg/ic_marker.svg",
@@ -95,7 +96,7 @@ final quickFilters = [
   ),
   QuickFilter(
       rubrics: [],
-      query: 'beach',
+      query: 'beaches',
       title: 'Beaches',
       uiIcon: 'assets/icons/svg/quick_filters/ic_quick_beaches.svg',
       mapIcon: "assets/icons/svg/ic_marker.svg"),
