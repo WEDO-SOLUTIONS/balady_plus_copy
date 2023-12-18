@@ -9,7 +9,7 @@ import '../../../../new_appointment/presentation/core/models/lookup_list_model.d
 import '../../../domain/entities/find_cemetry_request.dart';
 import '../../../domain/use_cases/get_charity_orgnizations.dart';
 import '../../../domain/use_cases/get_ekram_cities.dart';
-import 'ekram_inquiry_Orgnization_state.dart';
+import 'ekram_inquiry_orgnization_state.dart';
 import 'ekram_inquiry_orgnization_event.dart';
 
 class EkramInquiryOrgnizationBloc

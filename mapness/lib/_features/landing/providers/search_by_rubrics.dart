@@ -23,14 +23,26 @@ class SearchByRubrics extends _$SearchByRubrics {
     if (filter == null) return null;
 
     final dgisController = ref.watch(dgisControllerProvider).value;
-    dgisController
-        ?.searchByRubrics(
-          filter.$1.rubrics,
-          sortingType: SortingTypeMessage.byRelevance,
-        )
-        .then(
-          (value) => state = value,
-        );
+
+    if (filter.$1.rubrics.isEmpty && filter.$1.query != null) {
+      dgisController
+          ?.search(
+            filter.$1.query!,
+            sortingType: SortingTypeMessage.byRelevance,
+          )
+          .then(
+            (value) => state = value,
+          );
+    } else {
+      dgisController
+          ?.searchByRubrics(
+            filter.$1.rubrics,
+            sortingType: SortingTypeMessage.byRelevance,
+          )
+          .then(
+            (value) => state = value,
+          );
+    }
 
     return null;
   }

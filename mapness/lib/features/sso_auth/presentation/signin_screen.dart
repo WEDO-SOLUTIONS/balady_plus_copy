@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
+import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
@@ -30,19 +31,19 @@ class SigninScreen extends ConsumerWidget {
             ),
           ),
           Positioned(
-            child: SvgPicture.asset(
-              'assets/images_svg/balady_logo.svg',
-              height: 40,
-              package: 'mapness',
-            ),
             top: 55,
             left: 0,
             right: 0,
+            child: SvgPicture.asset(
+              'assets/images_svg/balady_logo.svg',
+              height: 40,
+              package: PackageConfig.packageName,
+            ),
           ),
           Positioned(
-            child: _buildcloseButton(context, ref),
             top: 55,
             right: 16,
+            child: _buildcloseButton(context, ref),
           ),
           Positioned.fill(
               child: Center(
@@ -100,7 +101,7 @@ class SigninScreen extends ConsumerWidget {
             child: SvgPicture.asset(
               "assets/icons/svg/ic_search_close.svg",
               semanticsLabel: 'MinApps Screen',
-              package: "mapness",
+              package: PackageConfig.packageName,
               color: Colors.white,
             ),
           ),

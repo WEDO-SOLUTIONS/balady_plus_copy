@@ -45,7 +45,7 @@ class DashboardProfile extends ConsumerWidget {
             }
 
             return Text(
-              '${_greeting(context)}, ${userInfo.givenName ?? ''}',
+              '${_greeting(context)}, ${userInfo.getFirstName()}',
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()!
                   .accentL

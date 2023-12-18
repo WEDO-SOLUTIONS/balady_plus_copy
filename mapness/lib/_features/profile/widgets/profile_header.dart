@@ -2,14 +2,13 @@ import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_features.dart';
 
 class ProfileHeader extends ConsumerStatefulWidget {
-  const ProfileHeader({super.key});
+  final VoidCallback? onBackPress;
+  const ProfileHeader({super.key, this.onBackPress});
 
   @override
   ConsumerState<ProfileHeader> createState() => _ProfileHeaderState();
@@ -53,11 +52,7 @@ class _ProfileHeaderState extends ConsumerState<ProfileHeader> {
               borderRadius: BorderRadius.circular(8),
               color: const Color(0xFFF5F7FA),
               child: InkWell(
-                onTap: () {
-                  StatefulNavigationShell.of(context).goBranch(
-                    ref.read(appFeaturesProvider).naviEnabled ? 3 : 2,
-                  );
-                },
+                onTap: widget.onBackPress,
                 borderRadius: BorderRadius.circular(8),
                 child: Padding(
                   padding: const EdgeInsets.all(8),

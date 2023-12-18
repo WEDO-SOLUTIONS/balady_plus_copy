@@ -8,9 +8,10 @@ import 'package:mapness/shared/routing/transculent_page.dart';
 part 'poi_map.g.dart';
 
 @TypedGoRoute<PoiMapRoute>(
-  path: '/poi-map',
+  path: PoiMapRoute.path,
 )
 class PoiMapRoute extends GoRouteData {
+  static const path = '/poi-map';
   final int dgisObjectId;
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;

@@ -2,7 +2,6 @@ import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -20,29 +19,8 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
 
   @override
   void initState() {
-    _draggableScrollableController = DraggableScrollableController();
-    _draggableScrollableController.addListener(() {
-      if (_draggableScrollableController.size < .1) {
-        // ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
-        // ref
-        //     .watch(layersControlsProvider.notifier)
-        //     .update(visible: false, selectedType: null);
-      }
-    });
-
-    // // TODO(vefimov): костыль, чтобы статус выключенного
-    // // слоя извне не отламывался в шторе слоев;
-    // // нужно переписать логику слоев в целом
-    Future.delayed(Duration.zero, () {
-      var favState = ref.watch(favouriteToggleProvider);
-      if (favState) {
-        ref
-            .read(layersControlsProvider.notifier)
-            .setSelected(LayerType.favourites);
-      }
-    });
-
     super.initState();
+    _draggableScrollableController = DraggableScrollableController();
   }
 
   @override

@@ -30,7 +30,7 @@ class DgisController extends _$DgisController {
   late final StreamController<VisibleRectEvent> _visibleRectStream =
       StreamController.broadcast();
   Stream<VisibleRectEvent> get visibleRectEvents => _visibleRectStream.stream
-      .debounceTime(const Duration(milliseconds: 5000));
+      .debounceTime(const Duration(milliseconds: 2500));
 
   @override
   Future<DgisMapController> build() {

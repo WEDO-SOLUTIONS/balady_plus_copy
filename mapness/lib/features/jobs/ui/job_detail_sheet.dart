@@ -77,11 +77,11 @@ class _JobDetailSheetState extends ConsumerState<JobDetailSheet> {
 
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
-      initialChildSize: 1,
+      initialChildSize: .9,
       minChildSize: .1,
-      maxChildSize: 1,
+      maxChildSize: .9,
       snap: true,
-      snapSizes: [.1, _headerExtent, 1],
+      snapSizes: [.1, _headerExtent, .9],
       builder: (BuildContext context, ScrollController scrollController) {
         return Directionality(
           textDirection: Directionality.of(context),

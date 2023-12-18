@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_picker/Picker.dart';
+import 'package:flutter_picker/picker.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/intl.dart';
 

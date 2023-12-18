@@ -84,28 +84,29 @@ class DashboardHeader extends ConsumerWidget {
                   height: 6,
                 ),
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          context.l10n.jobs,
-                          style: Theme.of(context)
-                              .extension<ThemeTextStyles>()!
-                              .accentL,
-                        ),
-                        Text(
-                          '${data?.jobsCount ?? 0} ${context.l10n.vacancies}',
-                          style: Theme.of(context)
-                              .extension<ThemeTextStyles>()!
-                              .textS
-                              .apply(
-                                  color:
-                                      const Color(0xff1E2A36).withOpacity(.5)),
-                        ),
-                      ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            context.l10n.jobs,
+                            style: Theme.of(context)
+                                .extension<ThemeTextStyles>()!
+                                .accentL,
+                          ),
+                          Text(
+                            '${data?.jobsCount ?? 0} ${context.l10n.vacancies}',
+                            style: Theme.of(context)
+                                .extension<ThemeTextStyles>()!
+                                .textS
+                                .apply(
+                                    color: const Color(0xff1E2A36)
+                                        .withOpacity(.5)),
+                          ),
+                        ],
+                      ),
                     ),
                     _closeButton(onTap: () => context.pop()),
                   ],
