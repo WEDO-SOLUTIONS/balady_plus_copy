@@ -1071,6 +1071,12 @@ abstract class AppLocalizations {
   /// **'منطقة الراحة'**
   String get restArea;
 
+  /// No description provided for @restaurants.
+  ///
+  /// In ar, this message translates to:
+  /// **'المطاعم'**
+  String get restaurants;
+
   /// No description provided for @restroom.
   ///
   /// In ar, this message translates to:
@@ -1106,6 +1112,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'ساهم'**
   String get sahm;
+
+  /// No description provided for @salons.
+  ///
+  /// In ar, this message translates to:
+  /// **'صالونات'**
+  String get salons;
 
   /// No description provided for @schools.
   ///
@@ -1296,7 +1308,7 @@ abstract class AppLocalizations {
   /// No description provided for @sportClubs.
   ///
   /// In ar, this message translates to:
-  /// **'النوادي والصالونات الرياضية'**
+  /// **'الأندية الرياضية'**
   String get sportClubs;
 
   /// No description provided for @sportsGround.
