@@ -10,6 +10,7 @@ import 'package:mapness/_features/landing/widgets/snap_and_send_card.dart';
 import 'package:mapness/_features/stories/stories_widget.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 
 import 'providers/interesting_places.dart';
 import 'widgets/places_horizontal_list.dart';
@@ -108,6 +109,8 @@ class _DashboardState extends ConsumerState<Dashboard> {
       }
     });
 
+    final language = ref.watch(appLanguageProvider);
+
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
       initialChildSize: widget.isCollapsed ? _headerExtent : .75,
@@ -117,7 +120,10 @@ class _DashboardState extends ConsumerState<Dashboard> {
       snapSizes: [_headerExtent, .75, .9],
       builder: (BuildContext context, ScrollController scrollController) {
         return Directionality(
-          textDirection: TextDirection.rtl,
+          textDirection: switch (language) {
+            Language.english => TextDirection.ltr,
+            Language.arabic => TextDirection.rtl,
+          },
           child: ClipRRect(
             borderRadius: const BorderRadius.only(
               topRight: Radius.circular(16.0),

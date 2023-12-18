@@ -45,11 +45,12 @@ class _Location extends _$Location {
   Future<bool> checkLocationPermission() async {
     perm.ServiceStatus serviceStatus =
         await perm.Permission.location.serviceStatus;
+    final router = ref.read(goRouterProvider);
+
     if (serviceStatus != perm.ServiceStatus.disabled) {
       var status = await perm.Permission.location.request();
 
       if (status == perm.PermissionStatus.permanentlyDenied) {
-        final router = ref.read(goRouterProvider);
         router.push(const LocationErrorSheet().location);
         return false;
       } else if (status != perm.PermissionStatus.granted) {
@@ -58,6 +59,8 @@ class _Location extends _$Location {
       } else {
         return true;
       }
+    } else {
+      router.push(const LocationErrorSheet().location);
     }
 
     return false;
