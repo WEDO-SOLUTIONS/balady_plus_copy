@@ -10,6 +10,7 @@ class SsoUserInfo extends Equatable {
       this.phone,
       this.mail,
       this.arName,
+      this.enName,
       this.idNo,
       this.nid,
       this.idType,
@@ -24,6 +25,7 @@ class SsoUserInfo extends Equatable {
   final String? phone;
   final String? mail;
   final String? arName;
+  final String? enName;
   final String? idNo;
   final String? nid;
   final String? idType;
