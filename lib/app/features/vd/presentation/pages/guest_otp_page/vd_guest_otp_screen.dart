@@ -56,7 +56,7 @@ class _VDGuestOtpScreen extends State<VDGuestOtpScreen> {
                         height: MediaQuery.of(context).padding.top),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: DialogHeader(title: "رمز التحقق".tr()),
+                      child: DialogHeader(title: "lbl_verify_code".tr()),
                     ),
                     Container(
                       padding: const EdgeInsets.all(20),

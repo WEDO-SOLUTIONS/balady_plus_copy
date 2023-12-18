@@ -172,7 +172,7 @@ class _InvoiceDetailBodyState extends State<InvoiceDetailBody> {
                       ],
                     ),
                     ExpandableCard(
-                      title: 'بنود الفاتورة'.tr(),
+                      title: "invoice_detail_title".tr(),
                       icon: IconPath.aboutBalady,
                       children: [
                         ListView.builder(
@@ -223,11 +223,11 @@ class _InvoiceDetailBodyState extends State<InvoiceDetailBody> {
               child: ReloadWidget(
                 onTab: () {
                   context.read<InvoiceDetailsCubit>().getInvoiceDetailsById(
-                    widget.invoiceId,
-                    widget.crNumber,
-                    widget.crType,
-                    widget.xSourceApp,
-                  );
+                        widget.invoiceId,
+                        widget.crNumber,
+                        widget.crType,
+                        widget.xSourceApp,
+                      );
                 },
               ),
             );

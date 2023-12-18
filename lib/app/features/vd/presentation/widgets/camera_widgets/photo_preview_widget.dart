@@ -50,7 +50,7 @@ class _photoPreviewWidgetState extends State<photoPreviewWidgetNew> {
                       margin: const EdgeInsetsDirectional.only(
                           bottom: 30, end: 16, start: 16),
                       child: EnhancedCustomElevatedButtonWidget(
-                        btnText: ("إعادة التصوير").tr(),
+                        btnText: ("take_photo_again").tr(),
                         btnHeight: 48,
                         btnRadius: 8,
                         btnColor: AppColor.white,

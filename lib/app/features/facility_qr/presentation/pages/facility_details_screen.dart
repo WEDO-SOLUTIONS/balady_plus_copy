@@ -263,7 +263,6 @@ class FacilityInfoSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const CustomVerticalSpace(height: 24),
-
         FacilityHeaderWidget(
           openNow: viewModel.isOpenNow,
           facilityAddress: viewModel.getCityAndStreet(),
@@ -275,7 +274,6 @@ class FacilityInfoSection extends StatelessWidget {
           reviews: viewModel.getFacilityTotalRatingCount(),
         ),
         const CustomVerticalSpace(height: 24),
-
         QRLabelTextWidget(text: ("qr_working_details").tr()),
         const CustomVerticalSpace(height: 24),
         if (viewModel.facilityRespoonse != null &&
@@ -292,17 +290,13 @@ class FacilityInfoSection extends StatelessWidget {
           descImg: viewModel.getFacilityClassificationImg(),
         ),*/
         const CustomVerticalSpace(height: 24),
-
         QRLabelTextWidget(text: ('rating_tours').tr()),
         const CustomVerticalSpace(height: 24),
-
         QrClassificationWidget(
           icon: viewModel.getFacilityClassificationImg(),
           text: viewModel.getFacilityClassification(),
         ),
-
         const CustomVerticalSpace(height: 24),
-
         if (viewModel.getWebUrl().isNotEmpty) ...[
           const CustomVerticalSpace(height: 24),
           LabelIconSubtitleComponent(
@@ -325,8 +319,6 @@ class FacilityInfoSection extends StatelessWidget {
             },
           )
         ],
-        //  QRLabelTextWidget(text: ("تفاصيل الموقع").tr()),
-        //  QRLabelTextWidget(text: ("تفاصيل التقييم").tr()),
 
         /*
       

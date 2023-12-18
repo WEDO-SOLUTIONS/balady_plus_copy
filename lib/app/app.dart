@@ -47,7 +47,7 @@ class App extends StatelessWidget {
         userAppKey: "2w1otnta9bvvhzo",
         enableAutomaticScreenNameTagging: false);
     FlutterUxcam.startWithConfiguration(config);
-    CommonFunctions.changeLanguage(lang: "en");
+    CommonFunctions.changeLanguage(lang: "ar");
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(

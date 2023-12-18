@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/utils_exports.dart';
 import '../../shared_feature_exports.dart';
@@ -25,15 +26,15 @@ class UpdateAppAlertDialog extends StatelessWidget {
             iconSize: 86,
           ),
           const SizedBox(height: 24),
-          const CustomTextWidget(
-            "تحديث جديد!",
+          CustomTextWidget(
+            "new_update".tr(),
             fontSize: 20,
             fontWeight: AppFontWeight.bold,
             fontColor: AppColor.blackModern600Light,
           ),
           const SizedBox(height: 8),
-          const CustomTextWidget(
-            "الرجاء التحديث للاستمرار في استخدام التطبيق. لقد قمنا بإطلاق تطبيق جديد!",
+          CustomTextWidget(
+            "update_desc".tr(),
             fontSize: 18,
             maxLines: null,
             textAlign: TextAlign.center,
@@ -51,7 +52,7 @@ class UpdateAppAlertDialog extends StatelessWidget {
             ),
             btnHeight: 52,
             btnWidth: MediaQuery.sizeOf(context).width,
-            text: "تحديث التطبيق",
+            text: "update_application".tr(),
             onPressed: () {},
           ),
         ],

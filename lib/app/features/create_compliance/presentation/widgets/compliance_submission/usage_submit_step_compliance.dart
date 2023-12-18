@@ -111,11 +111,11 @@ class UsageSubmissionCompliance extends StatelessWidget {
                 if (state.documentTypeSelection == 2) ...[
                   CustomVerticalSpace(height: 16),
                   ComplianceSubmitTitle(
-                    title: 'بيانات الموقع'.tr(),
+                    title: 'location_data'.tr(),
                     subtitle: "",
                   ),
                   DropDownWithTitle(
-                    title: "الموقع الجغرافي".tr(),
+                    title: "geo_location".tr(),
                     selectedValue: state.gisResponse?.getFullAddress(),
                     onRetry: () {
                       /* context.read<ComplianceBloc>().add(

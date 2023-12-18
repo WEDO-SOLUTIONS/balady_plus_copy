@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/self_ratiing/presentation/widgets/self_rating_result_widgets/self_rating_result_section.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/enums/app_font_weights.dart';
@@ -24,7 +25,7 @@ class SelfRatingResultNotCompleted extends StatelessWidget {
         height: 24,
       ),
       CustomTextWidget(
-        "المخالفات",
+        "violations".tr(),
         fontWeight: AppFontWeight.bold,
         fontSize: 16,
         fontColor: AppColor.blackModern900Light,
@@ -40,7 +41,7 @@ class SelfRatingResultNotCompleted extends StatelessWidget {
                 procdures: result.complianes[index].procedure);
           }),
       ElevatedButtonWidget.primaryCustom(
-          text: "إعادة التقييم",
+          text: "rating_again".tr(),
           onPressed: () {
             Navigator.pushReplacementNamed(
                 context, RouteName.selfRatingMainPage);

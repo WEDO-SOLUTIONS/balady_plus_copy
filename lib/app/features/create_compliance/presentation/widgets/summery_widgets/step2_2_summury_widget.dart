@@ -19,20 +19,20 @@ class Step2_2SummeryWidget extends StatelessWidget {
     return BlocBuilder<ComplianceBloc, ComplianceState>(
       builder: (context, state) {
         return CustomExpansionPanelWidget(
-          title: ("بيانات المالك").tr(),
+          title: ("owner_data").tr(),
           leading: SvgPicture.asset(IconPath.vdSummuryUserInfo),
           children: [
             FieldData(
-              title: ("اسم المالك").tr(),
+              title: ("owner_name").tr(),
               subTitle: state.requestDetails?.ownerDto?.ownerName,
             ),
             CustomVerticalSpace(height: 8),
             FieldData(
-                title: ("رقم هوية المالك").tr(),
+                title: ("owner_national_id").tr(),
                 subTitle: state.requestDetails?.ownerDto?.identityNumber),
             CustomVerticalSpace(height: 8),
             FieldData(
-              title: ("نوع هوية المالك").tr(),
+              title: ("owner_national_type").tr(),
               subTitle: state.requestDetails?.ownerDto?.identityTypeDec ?? "",
             ),
           ],

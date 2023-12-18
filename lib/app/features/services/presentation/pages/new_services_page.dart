@@ -94,10 +94,10 @@ class _NewServicesPageState extends State<NewServicesPage> {
                                 text: "dashboard".tr(),
                                 margin: const EdgeInsets.all(16),
                                 onPressAll: () {
-                                  NavigationService.navigatorKey.currentState!
-                                      .pushNamed(RouteName.DashbordDataPage,
-                                          arguments:
-                                              context.read<DelegatorsCubit>());
+                                  Navigator.pushNamed(
+                                      context, RouteName.DashbordDataPage,
+                                      arguments:
+                                          context.read<DelegatorsCubit>());
                                 },
                               ),
                               const SizedBox(

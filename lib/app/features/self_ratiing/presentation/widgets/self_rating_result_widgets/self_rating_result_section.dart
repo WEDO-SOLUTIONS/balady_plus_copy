@@ -37,14 +37,14 @@ class SelfRatingResultSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SelfRatingResultSectionItem(
-              subTitle: "ممتثل",
+              subTitle: "compliance".tr(),
               title: "${result.percentage}%",
               icon: IconPath.star,
             ),
             if (result.totalViolation != 0) ...[
               CustomHorizontalSpace(width: 8),
               SelfRatingResultSectionItem(
-                subTitle: "مخالفات",
+                subTitle: "violations_text".tr(),
                 title: result.totalViolation.toString(),
                 titleColor: AppColor.blue900Light,
                 icon: IconPath.dangerIcon,

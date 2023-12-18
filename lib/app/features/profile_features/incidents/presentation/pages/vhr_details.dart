@@ -155,7 +155,7 @@ class _VHRDetailsPageState extends State<VHRDetailsPage> {
                           ),
                           CustomVerticalSpace(height: 16),
                           CustomExpansionPanelWidget(
-                              title: ("المرفقات").tr(),
+                              title: ("lbl_attachments").tr(),
                               leading: SvgPicture.asset(IconPath.vdSummuryDesc),
                               children: []),
                         ],

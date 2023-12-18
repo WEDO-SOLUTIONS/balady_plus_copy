@@ -58,7 +58,7 @@ class ViolationEstabloshmentWidget extends StatelessWidget {
                         child: CustomTextWidget(
                           state.selectedEstablishmentSizeItem
                                   ?.establishmentSizeName ??
-                              "اختر",
+                              "select".tr(),
                           textStyle: AppStyle.violationLocationMapStyle,
                           maxLines: 4,
                         ),

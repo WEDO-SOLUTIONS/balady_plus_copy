@@ -29,10 +29,9 @@ class InvestmentMapDetailsPage extends StatefulWidget {
 }
 
 class _InvestmentMapDetailsPageState extends State<InvestmentMapDetailsPage> {
-
   @override
   Widget build(BuildContext context) {
-  InvestmentDetailsResponse  item =
+    InvestmentDetailsResponse item =
         ModalRoute.of(context)!.settings.arguments as InvestmentDetailsResponse;
     return Scaffold(
         body: Stack(
@@ -108,19 +107,19 @@ class _InvestmentMapDetailsPageState extends State<InvestmentMapDetailsPage> {
                 child: Column(
                   children: [
                     MapDetailsSection(
-                      title: "بيانات الفرصة",
+                      title: "investment_space".tr(),
                       icon: IconPath.investmentIcon,
                     ),
                     MapDetailsField(
-                      title: "رقم الفرصة",
+                      title: "investment_number".tr(),
                       subTitle: item.data?.result?.opportunityNumber ?? "",
                     ),
                     MapDetailsField(
-                      title: "نوع النشاط",
+                      title: "investement_type".tr(),
                       subTitle: item.data?.result?.mainActivity ?? "",
                     ),
                     MapDetailsField(
-                      title: "قيمة كراسة الشروط و المنافسات",
+                      title: "investment_price".tr(),
                       subTitle:
                           item.data?.result?.documentValue.toString() ?? "",
                     ),
@@ -143,16 +142,16 @@ class _InvestmentMapDetailsPageState extends State<InvestmentMapDetailsPage> {
                 child: Column(
                   children: [
                     MapDetailsSection(
-                      title: "بيانات الموقع",
+                      title: "investemnt_state".tr(),
                       icon: IconPath.investmentIcon,
                     ),
                     MapDetailsField(
-                      title: "موقع إستلام المنافسات",
+                      title: "investment_delivery".tr(),
                       subTitle:
                           item.data?.result?.submittingEnvelopesLocation ?? "",
                     ),
                     MapDetailsField(
-                      title: "موقع فتح المظاريف",
+                      title: "investement_open".tr(),
                       subTitle:
                           item.data?.result?.envelopeOpeningLocation ?? "",
                     ),

@@ -360,7 +360,7 @@ class ViolationClauses extends StatelessWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         FieldData(
-                                          title: "ملاحظات المراقب",
+                                          title: "transactionNotice".tr(),
                                           subTitle: state
                                                   .details
                                                   ?.nonComplianceClauses?[index]

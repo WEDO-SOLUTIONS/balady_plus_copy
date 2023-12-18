@@ -36,7 +36,7 @@ class _ZmZmPointsPageState extends State<ZmZmPointsPage> {
                   dialogKeyName: DialogName.ZmZmPointsCityDialog,
                   currentRouteName: RouteName.ZmZmPointsPage,
                   child: BottomSheetList(
-                    title: "اختر المدينه".tr(),
+                    title: "city_select".tr(),
                     items: state.cities ?? [],
                     selectedValue: state.selectedCity,
                     onTap: (item) {

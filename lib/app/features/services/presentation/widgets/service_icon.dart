@@ -81,7 +81,7 @@ class ServiceIcon extends StatelessWidget {
                 dialogKeyName: DialogName.vdTypesDialog,
                 currentRouteName: "ServicesPage",
                 child: BottomSheetWithActions(
-                  title: "اختر نوع البلاغ".tr(),
+                  title: "customerVoiceReportTypeWord".tr(),
                   body: VDAllTypesDialog(),
                 ));
           } else if (service.id == 3 &&
@@ -117,7 +117,7 @@ class ServiceIcon extends StatelessWidget {
                   dialogKeyName: DialogName.InqueryDialog,
                   currentRouteName: "ServicesPage",
                   child: BottomSheetWithActions(
-                    title: "اختر التصنيف".tr(),
+                    title: "select_category".tr(),
                     body: GeneralInquiryTypeDialog(),
                   ));
             } else {
@@ -130,7 +130,7 @@ class ServiceIcon extends StatelessWidget {
                               dialogKeyName: DialogName.InqueryDialog,
                               currentRouteName: "ServicesPage",
                               child: BottomSheetWithActions(
-                                title: "اختر التصنيف".tr(),
+                                title: "select_category".tr(),
                                 body: GeneralInquiryTypeDialog(),
                               ));
                         }
@@ -143,7 +143,7 @@ class ServiceIcon extends StatelessWidget {
                   dialogKeyName: DialogName.msrDialog,
                   currentRouteName: "ServicesPage",
                   child: BottomSheetWithActions(
-                    title: "اختر التصنيف".tr(),
+                    title: "select_category".tr(),
                     body: MSRTypeDialog(),
                   ));
             } else {
@@ -156,7 +156,7 @@ class ServiceIcon extends StatelessWidget {
                               dialogKeyName: DialogName.msrDialog,
                               currentRouteName: "ServicesPage",
                               child: BottomSheetWithActions(
-                                title: "اختر التصنيف".tr(),
+                                title: "select_category".tr(),
                                 body: MSRTypeDialog(),
                               ));
                         }
