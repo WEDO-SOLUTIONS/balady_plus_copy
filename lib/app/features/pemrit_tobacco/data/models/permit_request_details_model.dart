@@ -9,39 +9,47 @@ class PermitTobaccoRequestDetailsModel {
   dynamic rejectionInfo;
   List<TransactionsList>? transactionsList;
   dynamic calculatedCostInfo;
+  List<RequestNote>? requestNotes;
+  String? requestKey;
 
-  PermitTobaccoRequestDetailsModel({
-    this.locationInfo,
-    this.submitterInfo,
-    this.requestInfo,
-    this.licenseInfo,
-    this.rejectionInfo,
-    this.transactionsList,
-    this.calculatedCostInfo,
-  });
+  PermitTobaccoRequestDetailsModel(
+      {this.locationInfo,
+      this.submitterInfo,
+      this.requestInfo,
+      this.licenseInfo,
+      this.rejectionInfo,
+      this.transactionsList,
+      this.calculatedCostInfo,
+      this.requestNotes,
+      this.requestKey});
 
   factory PermitTobaccoRequestDetailsModel.fromJson(
           Map<String, dynamic> json) =>
       PermitTobaccoRequestDetailsModel(
-        locationInfo: json["locationInfo"] == null
-            ? null
-            : LocationInfo.fromJson(json["locationInfo"]),
-        submitterInfo: json["submitterInfo"] == null
-            ? null
-            : SubmitterInfo.fromJson(json["submitterInfo"]),
-        requestInfo: json["requestInfo"] == null
-            ? null
-            : RequestInfo.fromJson(json["requestInfo"]),
-        licenseInfo: json["licenseInfo"] == null
-            ? null
-            : LicenseInfo.fromJson(json["licenseInfo"]),
-        rejectionInfo: json["rejectionInfo"],
-        transactionsList: json["transactionsList"] == null
-            ? []
-            : List<TransactionsList>.from(json["transactionsList"]!
-                .map((x) => TransactionsList.fromJson(x))),
-        //   calculatedCostInfo: json["calculatedCostInfo"],
-      );
+          locationInfo: json["locationInfo"] == null
+              ? null
+              : LocationInfo.fromJson(json["locationInfo"]),
+          submitterInfo: json["submitterInfo"] == null
+              ? null
+              : SubmitterInfo.fromJson(json["submitterInfo"]),
+          requestInfo: json["requestInfo"] == null
+              ? null
+              : RequestInfo.fromJson(json["requestInfo"]),
+          licenseInfo: json["licenseInfo"] == null
+              ? null
+              : LicenseInfo.fromJson(json["licenseInfo"]),
+          rejectionInfo: json["rejectionInfo"],
+          /* transactionsList: json["transactionsList"] == null
+              ? []
+              : List<TransactionsList>.from(json["transactionsList"]!
+                  .map((x) => TransactionsList.fromJson(x))),*/
+          requestNotes: json["requestNotes"] == null
+              ? []
+              : List<RequestNote>.from(
+                  json["requestNotes"]!.map((x) => RequestNote.fromJson(x))),
+          requestKey: json["requestKey"]
+          //   calculatedCostInfo: json["calculatedCostInfo"],
+          );
 
   Map<String, dynamic> toJson() => {
         "locationInfo": locationInfo?.toJson(),
@@ -123,7 +131,7 @@ class LicenseInfo {
 }
 
 class Status {
-  int? id;
+  String? id;
   String? name;
   Status({
     this.id,
@@ -132,7 +140,7 @@ class Status {
 
   factory Status.fromMap(Map<String, dynamic> map) {
     return Status(
-      id: map['id'] != null ? map['id'] as int : null,
+      id: map['id'] != null ? map['id'] as String : null,
       name: map['name'] != null ? map['name'] as String : null,
     );
   }
@@ -166,6 +174,27 @@ class LocationInfo {
       };
 }
 
+class HotelInfo {
+  int? licenseNumber;
+
+  int? hotelClassCode;
+  String? hotelClassDesc;
+  String? hotelName;
+  HotelInfo({
+    this.licenseNumber,
+    this.hotelClassCode,
+    this.hotelClassDesc,
+    this.hotelName,
+  });
+
+  factory HotelInfo.fromJson(Map<String, dynamic> json) => HotelInfo(
+        licenseNumber: json["licenseNumber"],
+        hotelClassCode: json["hotelClassCode"],
+        hotelClassDesc: json["hotelClassDesc"],
+        hotelName: json["hotelName"],
+      );
+}
+
 class RequestInfo {
   String? requestIssueDate;
   String? billNumber;
@@ -174,7 +203,7 @@ class RequestInfo {
   BillInfo? billInfo;
   int? requestId;
   String? requestCreationDate;
-
+  HotelInfo? hotelInfo;
   RequestInfo(
       {this.requestIssueDate,
       this.billNumber,
@@ -182,17 +211,23 @@ class RequestInfo {
       this.requestStatusDesc,
       this.billInfo,
       this.requestId,
-      this.requestCreationDate});
+      this.requestCreationDate,
+      this.hotelInfo});
 
   factory RequestInfo.fromJson(Map<String, dynamic> json) => RequestInfo(
-      requestIssueDate: json["requestIssueDate"],
-      billNumber: json["billNumber"],
-      requestStatusCode: json["requestStatusCode"],
-      requestStatusDesc: json["requestStatusDesc"],
-      billInfo:
-          json["billInfo"] == null ? null : BillInfo.fromJson(json["billInfo"]),
-      requestId: json["requestId"],
-      requestCreationDate: json["requestCreationDate"]);
+        requestIssueDate: json["requestIssueDate"],
+        billNumber: json["billNumber"],
+        requestStatusCode: json["requestStatusCode"],
+        requestStatusDesc: json["requestStatusDesc"],
+        billInfo: json["billInfo"] == null
+            ? null
+            : BillInfo.fromJson(json["billInfo"]),
+        requestId: json["requestId"],
+        requestCreationDate: json["requestCreationDate"],
+        hotelInfo: json["hotelInfo"] != null
+            ? HotelInfo.fromJson(json["hotelInfo"])
+            : null,
+      );
 
   Map<String, dynamic> toJson() => {
         "requestIssueDate": requestIssueDate,
@@ -302,5 +337,29 @@ class TransactionsList {
         "oldStatusName": oldStatusName,
         "creationDate": creationDate,
         "notes": notes,
+      };
+}
+
+class RequestNote {
+  final int? id;
+  final String? note;
+  final String? date;
+
+  RequestNote({
+    this.id,
+    this.note,
+    this.date,
+  });
+
+  factory RequestNote.fromJson(Map<String, dynamic> json) => RequestNote(
+        id: json["id"],
+        note: json["note"],
+        date: json["date"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "note": note,
+        "date": date,
       };
 }

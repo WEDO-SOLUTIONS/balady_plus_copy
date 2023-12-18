@@ -258,4 +258,15 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
+
+  @override
+  Future<Either<Failure, String>> getPaymentURL(PaymentRequest params) async {
+    try {
+      final data = await remoteDataSource.getPaymentURL(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+    }
+  }
 }

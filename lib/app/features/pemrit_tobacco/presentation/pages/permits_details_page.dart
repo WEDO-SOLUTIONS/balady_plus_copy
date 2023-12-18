@@ -16,7 +16,6 @@ class PermitsTobaccoDetailsPage extends StatefulWidget {
 
 class _PermitsTobaccoDetailsPageState extends State<PermitsTobaccoDetailsPage> {
   @override
-  @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
         value: ModalRoute.of(context)!.settings.arguments

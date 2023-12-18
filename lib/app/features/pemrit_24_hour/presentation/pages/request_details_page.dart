@@ -15,6 +15,7 @@ import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_w
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/details_header.dart';
 import '../../../_shared_feature_/presentation/widgets/notes_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/payment_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../create_compliance/presentation/widgets/summery_widgets/field_data.dart';
@@ -238,6 +239,20 @@ class PermitsReqeuestDetailsPage extends StatelessWidget {
                                       : const SizedBox()
                                 ],
                               ),*/
+
+                            const CustomVerticalSpace(height: 32),
+                            if (state.requestDetails?.requestInfo
+                                        ?.requestStatusCode ==
+                                    15 &&
+                                state.requestDetails?.requestInfo?.billInfo !=
+                                    null)
+                              PaymentWidget(
+                                requestKey:
+                                    state.requestDetails?.requestKey ?? "",
+                                billNumber: state.requestDetails?.requestInfo
+                                        ?.billInfo?.billNumber ??
+                                    "",
+                              )
                           ],
                         ))),
                   if (state.detailsStatus == BlocStatus.loading ||
