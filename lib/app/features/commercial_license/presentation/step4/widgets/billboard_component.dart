@@ -26,15 +26,15 @@ class BillboardComponent extends StatelessWidget {
         ),
         child: Column(
           children: [
-            const Row(
+            Row(
               children: [
-                CustomSvgIconWidget(
+                const CustomSvgIconWidget(
                   IconPath.additionalActivity,
                   iconSize: 20,
                 ),
-                SizedBox(width: 6),
+                const SizedBox(width: 6),
                 CustomTextWidget(
-                  "اللوحات",
+                  "lbl_boards_title".tr(),
                   fontWeight: AppFontWeight.bold,
                   fontSize: 18,
                   fontColor: AppColor.blackModern600Light,
@@ -56,7 +56,7 @@ class BillboardComponent extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             PlusAddButton(
-                text: "إضافه لوحة",
+                text: "add_new_board".tr(),
                 onPressed: () {
                   BottomSheetDialog.showDraggableSheet(
                     context,
@@ -111,7 +111,7 @@ class _CommercialBoardDialogState extends State<CommercialBoardDialog> {
   Widget build(BuildContext context) {
     bool isBtnDisabled = area == null || area == 0 || selectedItem == null;
     return BottomSheetWithActions(
-      title: "اضافه لوحه اعلانيه",
+      title: "add_new_adv_board".tr(),
       action: Padding(
           padding: const EdgeInsets.symmetric(vertical: 16),
           child: EnhancedCustomElevatedButtonWidget(
@@ -143,7 +143,7 @@ class _CommercialBoardDialogState extends State<CommercialBoardDialog> {
           CustomTapWidgetForLongDialog(
             items: items,
             value: selectedItem,
-            label: "نوع اللوحة",
+            label: "BoardType".tr(),
             marginBottom: 8,
             onChangeType: (item) {
               setState(() {
@@ -152,8 +152,8 @@ class _CommercialBoardDialogState extends State<CommercialBoardDialog> {
             },
           ),
           CustomTextFieldWidget(
-            label: "مساحة اللوحة",
-            hintText: "ادخل مساحة اللوحة",
+            label: "lbl_painting_space".tr(),
+            hintText: "boardSpaceEntry".tr(),
             isDigitsOnly: true,
             initialValue: area != null ? area.toString() : null,
             keyboardType: TextInputType.number,

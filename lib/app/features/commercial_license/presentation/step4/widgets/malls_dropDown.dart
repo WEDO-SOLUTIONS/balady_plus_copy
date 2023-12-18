@@ -16,7 +16,7 @@ class MallsDropDown extends StatelessWidget {
     return BlocBuilder<CrStep4ShopDataCubit, CrStep4ShopDataState>(
         builder: (context, state) {
       return DropDownWithTitle(
-        title: "المركز التجاري".tr(),
+        title: "step4label7".tr(),
         selectedValue: state.selectedMall?.name,
         blocStatus: state.mallsStatus,
         onRetry: () {
@@ -29,9 +29,9 @@ class MallsDropDown extends StatelessWidget {
             //  dialogKeyName: DialogName.reasonCancelDialog,
             // currentRouteName: RouteName.commercialLicenseApplyCancel,
             child: GenericBottomSheetList<QrLookUpItem>(
-              title: "المركز التجاري".tr(),
+              title: "step4label7".tr(),
               items: state.mallsList ?? [],
-              noDataMsg: "لا توجد مراكز متاحة",
+              noDataMsg: "no_malls_available".tr(),
               selectedValue: state.selectedMall,
               onTap: (item) {
                 context.read<CrStep4ShopDataCubit>().updateMall(item);

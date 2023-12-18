@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -12,21 +13,20 @@ class ManagerInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
-      padding: const EdgeInsets.symmetric(
-          horizontal: 16, vertical: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(16)),
         color: AppColor.white,
       ),
-      child: const Column(
+      child: Column(
         children: [
           Row(
             children: [
-              CustomSvgIconWidget(IconPath.clipboard),
-              SizedBox(width: 4),
+              const CustomSvgIconWidget(IconPath.clipboard),
+              const SizedBox(width: 4),
               Flexible(
                 child: CustomTextWidget(
-                  "مدير الموقع",
+                  "managerLocation".tr(),
                   fontColor: AppColor.blackModern600Light,
                   fontSize: 18,
                   fontWeight: AppFontWeight.bold,
@@ -34,7 +34,7 @@ class ManagerInfoCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 18),
+          const SizedBox(height: 18),
           Row(
             children: [
               Expanded(
@@ -42,7 +42,7 @@ class ManagerInfoCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      "الاسم",
+                      "name".tr(),
                       fontColor: AppColor.primary700Light,
                       fontSize: 10,
                       fontWeight: AppFontWeight.semiBold,
@@ -128,7 +128,6 @@ class ManagerInfoCard extends StatelessWidget {
               ),
             ],
           ),
-
         ],
       ),
     );

@@ -84,7 +84,7 @@ class BoardContractCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomTextWidget(
-                    "الحالة".tr(),
+                    "status".tr(),
                     fontColor: AppColor.primary900Light,
                     fontSize: 12,
                     fontWeight: AppFontWeight.bold,
@@ -102,7 +102,7 @@ class BoardContractCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomTextWidget(
-                    "النوع".tr(),
+                    "type".tr(),
                     fontColor: AppColor.primary900Light,
                     fontSize: 12,
                     fontWeight: AppFontWeight.bold,
