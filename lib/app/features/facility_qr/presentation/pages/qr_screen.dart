@@ -248,7 +248,7 @@ void checkBarcode(BuildContext context) async {
                             dialogKeyName: DialogName.vdTypesDialog,
                             currentRouteName: RouteName.qrFacilityScreenRoute,
                             child: BottomSheetWithActions(
-                              title: "اختر نوع البلاغ".tr(),
+                              title: "customerVoiceReportTypeWord".tr(),
                               body: QrTypesDialog(
                                 cmeraParamsPage: CameraParamsPage(
                                     lat: lat,

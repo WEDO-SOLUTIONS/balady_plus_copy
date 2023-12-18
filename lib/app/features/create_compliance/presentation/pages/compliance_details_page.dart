@@ -112,7 +112,7 @@ class ComplianceDetailsPage extends StatelessWidget {
                                     ));
                                   },
                                   child: FieldData(
-                                    title: Helpers.translatingWord('الغاء'),
+                                    title: Helpers.translatingWord('cancel'),
                                   ),
                                 ),
                               ]),

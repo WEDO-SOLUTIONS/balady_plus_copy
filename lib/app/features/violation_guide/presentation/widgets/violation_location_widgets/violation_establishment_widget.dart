@@ -49,7 +49,7 @@ class ViolationEstabloshmentWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomTextWidget(
-                    'حجم المنشأة'.tr(),
+                    "establishment_size".tr(),
                     textStyle: AppStyle.violationLocationAdressStyle,
                   ),
                   Row(

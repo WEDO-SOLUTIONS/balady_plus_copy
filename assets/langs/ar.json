@@ -3775,8 +3775,13 @@
   "you_must_switch_to_entity_profile":"يجب ان تحول الى حساب منشأة حتى تتمكن من استخدام هذه الخدمة", 
   "contino_as_indiviusal":"الاستمرار كفرد", 
   "switch_to_entity":"تحويل الى حساب منشأة", 
-  "retrieve_request":"طلب إستعادة"
-
+  "retrieve_request":"طلب إستعادة", 
+  "compliance_riyadh_note":"إذا كان المبنى في نطاق منطقة الرياض، نأمل الدخول على بوابة أمانة الرياض من خلال الرابط الآتي لاستكمال طلبك", 
+  "go_to_service":"الذهاب للخدمة", 
+  "request_cannot_be_completed":"لا يمكن إكمال الطلب", 
+  "building_must_be_compliance":"يجب ان يكون المبنى ممتثل لجميع البنود حتى يتم اصدار شهادة امتثال، يمكنك متابعة البنود التي يجب الامتثال بها عبر خدمة قيم مبناك", 
+  "move_to_building_rate_service":"الانتقال الى خدمة قيم مبناك", 
+  "establishment_size":"حجم المنشأة"
 
   
 

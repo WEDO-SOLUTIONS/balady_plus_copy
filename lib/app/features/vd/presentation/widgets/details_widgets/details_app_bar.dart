@@ -44,7 +44,7 @@ class DetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: Row(
             children: [
               CustomTextIconButtonWidget(
-                text: ('السابق').tr(),
+                text: ('back').tr(),
                 icon: SvgPicture.asset(IconPath.vdAppBarBack),
                 iconTextTweenSpace: 5,
                 textStyle: const TextStyle(

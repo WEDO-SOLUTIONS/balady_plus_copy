@@ -635,7 +635,7 @@ class SubmitIncidentSection extends StatelessWidget {
                   dialogKeyName: DialogName.vdTypesDialog,
                   currentRouteName: RouteName.qrFacilityScreenRoute,
                   child: BottomSheetWithActions(
-                    title: "اختر نوع البلاغ".tr(),
+                    title: "customerVoiceReportTypeWord".tr(),
                     body: QrTypesDialog(
                       cmeraParamsPage: CameraParamsPage(
                           lat: lat,

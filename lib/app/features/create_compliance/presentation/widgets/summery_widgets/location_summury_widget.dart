@@ -141,7 +141,7 @@ class LocationSection extends StatelessWidget {
     return BlocBuilder<ComplianceBloc, ComplianceState>(
       builder: (context, state) {
         return LabelIconSubtitleComponent(
-          text: ("عنوان الطلب").tr(),
+          text: ("order_address").tr(),
           subWidget: GestureDetector(
             onTap: () {},
             child: Row(

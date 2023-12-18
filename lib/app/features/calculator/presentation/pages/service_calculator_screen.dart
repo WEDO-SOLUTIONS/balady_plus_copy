@@ -277,7 +277,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
               child: Row(
                 children: [
                   CustomTextIconButtonWidget(
-                    text: ('السابق').tr(),
+                    text: ('back').tr(),
                     icon: SvgPicture.asset(IconPath.vdAppBarBack),
                     iconTextTweenSpace: 5,
                     textStyle: TextStyle(
