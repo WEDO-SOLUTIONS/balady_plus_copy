@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -19,11 +17,15 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.hotels => "الفنادق والشقق المفروشه",
       SearchCategoryMessage.beautyCenters => "مراكز التزيين",
       SearchCategoryMessage.recreationCenters => "الأنشطة الترفيهية",
+      //TODO: (scroollocker) Fix this leater
+      SearchCategoryMessage.beaches => "الشواطئ",
     };
   }
 
   String iconName() {
     return switch (this) {
+      //TODO: (scroollocker) Fix this leater
+      SearchCategoryMessage.beaches => "assets/maps/icons/poi_beach_light.svg",
       SearchCategoryMessage.mousques =>
         "assets/maps/icons/poi_mousques_light.svg",
       SearchCategoryMessage.gasStations =>
@@ -49,6 +51,8 @@ extension SearchCategoryData on SearchCategoryMessage {
 
   String markerIconName() {
     return switch (this) {
+      //TODO: (scroollocker) Fix this leater
+      SearchCategoryMessage.beaches => "assets/maps/icons/ic_marker_beach.svg",
       SearchCategoryMessage.mousques =>
         "assets/maps/icons/ic_marker_mosques.svg",
       SearchCategoryMessage.gasStations =>
@@ -91,6 +95,8 @@ extension SearchCategoryData on SearchCategoryMessage {
         "assets/maps/icons/card_icon/school.png",
       SearchCategoryMessage.recreationCenters =>
         "assets/maps/icons/card_icon/school.png",
+      //TODO: (scroollocker) Fix this leater
+      SearchCategoryMessage.beaches => "assets/maps/icons/card_icon/beach.png",
     };
   }
 
@@ -108,6 +114,8 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.hotels => Colors.yellow,
       SearchCategoryMessage.beautyCenters => Colors.amber,
       SearchCategoryMessage.recreationCenters => Colors.amber,
+      //TODO: (scroollocker) Fix this leater
+      SearchCategoryMessage.beaches => Colors.amber,
     };
   }
 }

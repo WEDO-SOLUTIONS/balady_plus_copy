@@ -258,6 +258,33 @@ class SearchHandler: NSObject {
         performSearch(query, completion: completion)
     }
 
+    func searchByBeachCategory(
+        spatialRestriction: [GeoPointMessage]?,
+        searchGeoRect: DGis.GeoRect?,
+        weekTimeMessage: WeekTimeSearchMessage?,
+        sortingType: SortingTypeMessage,
+        pageSize: Int32,
+        completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
+    ) {
+        let query = SearchQueryBuilder.fromQueryText(queryText: "beach")
+            .setAllowedResultTypes(allowedResultTypes: [.attraction])
+            .setPageSize(pageSize: pageSize)
+            .setSortingType(sortingType: sortingType.toSortingType())
+            .setDirectoryFilter(filter:
+                DirectoryFilter(
+                    workTime: buildWeekTimeFilter(weekTimeMessage),
+                    dynamic: []
+                )
+			)
+            .setAreaOfInterest(rect: searchGeoRect)
+            .setSpatialRestriction(spatialRestriction: spatialRestriction?.map {
+                $0.geoPoint
+            })
+            .build()
+
+        performSearch(query, completion: completion)
+    }
+
     func performSearch(
         _ query: SearchQuery,
         completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
