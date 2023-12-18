@@ -5,39 +5,41 @@ class Permit24RequestDetailsModel {
   LicenseInfo? licenseInfo;
   dynamic rejectionInfo;
   List<TransactionsList>? transactionsList;
+  String? requestKey;
   dynamic calculatedCostInfo;
 
-  Permit24RequestDetailsModel({
-    this.locationInfo,
-    this.submitterInfo,
-    this.requestInfo,
-    this.licenseInfo,
-    this.rejectionInfo,
-    this.transactionsList,
-    this.calculatedCostInfo,
-  });
+  Permit24RequestDetailsModel(
+      {this.locationInfo,
+      this.submitterInfo,
+      this.requestInfo,
+      this.licenseInfo,
+      this.rejectionInfo,
+      this.transactionsList,
+      this.calculatedCostInfo,
+      this.requestKey});
 
   factory Permit24RequestDetailsModel.fromJson(Map<String, dynamic> json) =>
       Permit24RequestDetailsModel(
-        locationInfo: json["locationInfo"] == null
-            ? null
-            : LocationInfo.fromJson(json["locationInfo"]),
-        submitterInfo: json["submitterInfo"] == null
-            ? null
-            : SubmitterInfo.fromJson(json["submitterInfo"]),
-        requestInfo: json["requestInfo"] == null
-            ? null
-            : RequestInfo.fromJson(json["requestInfo"]),
-        licenseInfo: json["licenseInfo"] == null
-            ? null
-            : LicenseInfo.fromJson(json["licenseInfo"]),
-        rejectionInfo: json["rejectionInfo"],
-        /* transactionsList: json["transactionsList"] == null
+          locationInfo: json["locationInfo"] == null
+              ? null
+              : LocationInfo.fromJson(json["locationInfo"]),
+          submitterInfo: json["submitterInfo"] == null
+              ? null
+              : SubmitterInfo.fromJson(json["submitterInfo"]),
+          requestInfo: json["requestInfo"] == null
+              ? null
+              : RequestInfo.fromJson(json["requestInfo"]),
+          licenseInfo: json["licenseInfo"] == null
+              ? null
+              : LicenseInfo.fromJson(json["licenseInfo"]),
+          rejectionInfo: json["rejectionInfo"],
+          requestKey: json["requestKey"]
+          /* transactionsList: json["transactionsList"] == null
             ? []
             : List<TransactionsList>.from(json["transactionsList"]!
                 .map((x) => TransactionsList.fromJson(x))),*/
-        //   calculatedCostInfo: json["calculatedCostInfo"],
-      );
+          //   calculatedCostInfo: json["calculatedCostInfo"],
+          );
 
   Map<String, dynamic> toJson() => {
         "locationInfo": locationInfo?.toJson(),

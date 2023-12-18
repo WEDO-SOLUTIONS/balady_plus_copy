@@ -11,7 +11,7 @@ import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
@@ -179,18 +179,18 @@ class EkramAddTripBloc extends Bloc<EkramAddTripEvent, EkramAddTripState> {
 
     final failureOrSuccess = await _addTrip(params);
 
-    failureOrSuccess.fold((failure) {
+    await failureOrSuccess.fold((failure) {
       emitter(state.copyWith(
         status: BlocStatus.failure,
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) async {
+      await _updateDriverLocatioHandler();
       emitter(state.copyWith(
         status: BlocStatus.success,
         errorMessage: "",
       ));
 
-      await _updateDriverLocatioHandler();
       NavigationService.navigatorKey.currentState
           ?.pop(success.data?.responseMessage);
     });
@@ -216,8 +216,12 @@ class EkramAddTripBloc extends Bloc<EkramAddTripEvent, EkramAddTripState> {
 
       result = result?.map((e) {
         e.isDisblaed = trips.contains(e.id);
+        if (e.id == 30502) {
+          e.isDisblaed = true;
+        }
         return e;
       }).toList();
+
       emit(state.copyWith(
         status: BlocStatus.success,
         nextStationType: result,

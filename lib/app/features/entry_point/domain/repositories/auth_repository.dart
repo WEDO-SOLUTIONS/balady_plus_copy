@@ -23,6 +23,6 @@ abstract class EntryPointRepository {
       GetPermissionParamsModel params);
   Future<Either<Failure, ForceUpdateResponse>> getForceVersion(
       ForceUpdateParams params);
-
+  Future<Either<Failure, String>> getPaymentURL(PaymentRequest params);
   Future<Either<Failure, TestModel>> getDataTest();
 }

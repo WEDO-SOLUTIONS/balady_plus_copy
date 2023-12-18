@@ -28,6 +28,7 @@ const _svg = '.svg';
 
 const _pngIconPath = 'assets/icons/png/';
 const _png = '.png';
+const _svgIconPathJod = 'assets/icons/svg/jod/';
 
 class IconPath {
   //! SVG Icons
@@ -402,6 +403,11 @@ class IconPath {
   //  ! New Services Page
 
   static const servicesPageSearch = '${_svgIconPath}services/search$_svg';
-    static const servicesPageArrow = '${_svgIconPath}services/arrow$_svg';
+  static const servicesPageArrow = '${_svgIconPath}services/arrow$_svg';
 
+  static const applePayIcon = '${_svgIconPathJod}apple_pay$_svg';
+  static const madaIcon = '${_svgIconPathJod}mada$_svg';
+  static const masterCardIcon = '${_svgIconPathJod}master_card$_svg';
+  static const visaIcon = '${_svgIconPathJod}visa$_svg';
 }
+///Users/abdelrahmanismail/StudioProjects/balady-plus/assets/icons/svg/jod/apple_pay.svg

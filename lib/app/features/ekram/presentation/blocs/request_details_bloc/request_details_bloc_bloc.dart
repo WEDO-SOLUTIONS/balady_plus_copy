@@ -89,7 +89,8 @@ class RequestDetailsBloc
       final result = await CustomPopUpsWidgets.showBottomSheet(context!,
           child: AddTripDialog(
             params: getCurrentAddTripData(
-                null, state.details.deceasedInfoResponseDtoList![e.index]),
+                null, state.details.deceasedInfoResponseDtoList![e.index],
+                trips: []),
           ),
           height: MediaQuery.of(context).size.height * 0.95);
 
@@ -109,7 +110,8 @@ class RequestDetailsBloc
       final result = await CustomPopUpsWidgets.showBottomSheet(context!,
           child: AddTripDialog(
             params: getCurrentAddTripData(success.data?.result?.lastOrNull,
-                state.details.deceasedInfoResponseDtoList![e.index]),
+                state.details.deceasedInfoResponseDtoList![e.index],
+                trips: success.data?.result),
           ),
           height: MediaQuery.of(context).size.height * 0.95);
 
@@ -155,7 +157,8 @@ class RequestDetailsBloc
   }
 
   AddTripDialogParams getCurrentAddTripData(
-      TripDetails? lastTrip, DeceasedInfoResponseDtoList info) {
+      TripDetails? lastTrip, DeceasedInfoResponseDtoList info,
+      {List<TripDetails>? trips}) {
     if (lastTrip == null) {
       return AddTripDialogParams(
           deathCityId: state.details.deathCityId,
@@ -173,7 +176,7 @@ class RequestDetailsBloc
           currentTripStationTypeId: 30502,
           cemetryId: info.cemeteryId,
           cemetryName: info.cemeteryName,
-          trips: info.trips);
+          trips: trips);
     } else {
       return AddTripDialogParams(
           deathCityId: state.details.deathCityId,
@@ -191,7 +194,7 @@ class RequestDetailsBloc
           currentTripStationTypeId: lastTrip.nextTripStationTypeId,
           cemetryId: info.cemeteryId,
           cemetryName: info.cemeteryName,
-          trips: info.trips);
+          trips: trips);
     }
   }
 

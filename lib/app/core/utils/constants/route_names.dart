@@ -300,6 +300,7 @@ class RouteName {
   static const DashbordDataPage = 'DashbordDataPage';
 
   static const SpecificServicePage = 'SpecificServicePage';
+  static const jodDonationPage = 'JodDonationPage';
 }
 
 class EtmamRoutesNames {

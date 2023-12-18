@@ -76,41 +76,42 @@ class _PermitsLicenseStartServiceState
                       ],
                     ),
                   ),
-                  /*  SafeArea(
+                    SafeArea(
                     top: false,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: ElevatedButtonWidget.startService(
                         onPressed: () async {
-                         
+                        if (CommonProperties.isLoggedIn) {
+                            context
+                                .read<Permit24LicenseBloc>()
+                                .add(const ValidatePermitEvent());
+                          } else {
+                            showDialog(
+                                context: context,
+                                builder: (ctx) => NeedLoginDialog(
+                                        onSuccessLogin:
+                                            (bool? isSuccess) async {
+                                      if (isSuccess ?? false) {
+                                        context
+                                            .read<Permit24LicenseBloc>()
+                                            .add(const ValidatePermitEvent());
+                                      }
+                                    }));
+                          } 
                         },
                       ),
                     ),
-                  )*/
-                  SafeArea(
+                  )
+                /*  SafeArea(
                     top: false,
                     child: ServiceWarningWidget(
                       warning: service.warning ?? "",
                       onPress: () async {
-                        if (CommonProperties.isLoggedIn) {
-                          context
-                              .read<Permit24LicenseBloc>()
-                              .add(const ValidatePermitEvent());
-                        } else {
-                          showDialog(
-                              context: context,
-                              builder: (ctx) => NeedLoginDialog(
-                                      onSuccessLogin: (bool? isSuccess) async {
-                                    if (isSuccess ?? false) {
-                                      context
-                                          .read<Permit24LicenseBloc>()
-                                          .add(const ValidatePermitEvent());
-                                    }
-                                  }));
-                        }
+                        
                       },
                     ),
-                  )
+                  )*/
                 ],
               ),
               if (state.status == BlocStatus.loading)

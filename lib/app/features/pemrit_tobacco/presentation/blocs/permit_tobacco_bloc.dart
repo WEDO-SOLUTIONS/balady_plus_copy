@@ -40,6 +40,7 @@ part 'permit_tobacco_state.dart';
 class PermitTobaccoLicenseBloc
     extends Bloc<PermitTobaccoLicenseEvent, PermitTobaccoLicenseState> {
   PageController controller = PageController();
+  TextEditingController hotelLicenseContrller = TextEditingController();
   CalculatePermitTobaccoHourCost _calculatePermit24HourCost;
   DeletePermitTobaccoHourCost _deletePermit24HourCost;
   GetAllowedActions _getAllowedActions;
@@ -227,6 +228,7 @@ class PermitTobaccoLicenseBloc
       SubmitPermitEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
     final failOrSuccess = await _submitPermit24(SubmitTobaccoRequest(
+        requestId: state.requestDetails?.requestInfo?.requestId,
         licenseNumber: state.licenseId!,
         insideHotel: state.isInsideHotel ?? false,
         hotelLicenseNumber: state.isInsideHotel == true
@@ -259,8 +261,27 @@ class PermitTobaccoLicenseBloc
           detailsStatus: BlocStatus.failure,
           error: (l as ServerFailure).errorMessage));
     }, (r) {
-      emitter(
-          state.copyWith(detailsStatus: BlocStatus.success, requestDetails: r));
+      emitter(state.copyWith(
+          licenseId: r.licenseInfo?.licenseNumber,
+          hotelLicenseNumber: r.requestInfo?.hotelInfo?.licenseNumber != null
+              ? r.requestInfo?.hotelInfo?.licenseNumber.toString()
+              : null,
+          isInsideHotel: r.requestInfo?.hotelInfo != null,
+          permitTobaccoValidateHotelLicenseResponse:
+              r.requestInfo?.hotelInfo != null
+                  ? Nullable(PermitTobaccoValidateHotelLicense(
+                      hotelClass: HotelClass(
+                          id: r.requestInfo?.hotelInfo?.hotelClassCode,
+                          name: r.requestInfo?.hotelInfo?.hotelName),
+                      hotelName: r.requestInfo?.hotelInfo?.hotelName))
+                  : null,
+          detailsStatus: BlocStatus.success,
+          requestDetails: r));
+
+      hotelLicenseContrller.text =
+          r.requestInfo?.hotelInfo?.licenseNumber != null
+              ? r.requestInfo!.hotelInfo!.licenseNumber.toString()
+              : "";
     });
   }
 
