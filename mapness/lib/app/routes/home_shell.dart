@@ -1,10 +1,12 @@
 import 'package:balady_plus/app/features/services/presentation/pages/services_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/landing_page.dart';
 import 'package:mapness/_features/profile/profile_page.dart';
 import 'package:mapness/pages/routing/routing_points.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/routing/scaffold_with_nested_navigation.dart';
 import 'package:mapness/shared/routing/transculent_page.dart';
 
@@ -106,8 +108,20 @@ class ServicesRoute extends GoRouteData {
   const ServicesRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const ServicesPage();
+  Widget build(BuildContext context, GoRouterState state) {
+    return Consumer(
+      builder: (context, ref, child) {
+        final language = ref.watch(appLanguageProvider);
+        return Directionality(
+          textDirection: switch (language) {
+            Language.english => TextDirection.ltr,
+            Language.arabic => TextDirection.rtl,
+          },
+          child: const ServicesPage(),
+        );
+      },
+    );
+  }
 }
 
 class ProfilesBranch extends StatefulShellBranchData {

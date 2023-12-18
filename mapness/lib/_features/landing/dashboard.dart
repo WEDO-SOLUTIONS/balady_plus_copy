@@ -117,7 +117,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
       snapSizes: [_headerExtent, .75, .9],
       builder: (BuildContext context, ScrollController scrollController) {
         return Directionality(
-          textDirection: TextDirection.rtl,
+          textDirection: Directionality.of(context),
           child: ClipRRect(
             borderRadius: const BorderRadius.only(
               topRight: Radius.circular(16.0),
