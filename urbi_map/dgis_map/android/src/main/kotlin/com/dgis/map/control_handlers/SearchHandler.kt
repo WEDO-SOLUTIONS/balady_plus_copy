@@ -205,6 +205,29 @@ class SearchHandler(
         )
     }
 
+    fun searchByBeachCategory(
+        searchGeoRect: GeoRect?,
+        spatialRestriction: List<GeoPoint>?,
+        weekTimeMessage: WeekTimeSearchMessage? = null,
+        sortingType: SortingTypeMessage,
+        pageSize: Int,
+        result: Result<SearchResultMessage>?
+    ) {
+        val query = SearchQueryBuilder.fromQueryText("beach")
+            .setAllowedResultTypes(listOf(ObjectType.ATTRACTION))
+            .setSortingType(sortingType.toSortingType())
+            .setPageSize(pageSize.toInt())
+            .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
+            .setAreaOfInterest(searchGeoRect)
+            .setSpatialRestriction(spatialRestriction)
+            .build()
+
+        performSearch(
+            query = query,
+            result = result
+        )
+    }
+
     private fun performSearch(
         query: SearchQuery,
         result: Result<SearchResultMessage>?
