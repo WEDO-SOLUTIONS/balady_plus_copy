@@ -120,7 +120,8 @@ class TripDetailsDialog extends StatelessWidget {
                                     child: AddTripDialog(
                                       params: getCurrentAddTripData(
                                           state.tripDetails?.lastOrNull,
-                                          state.deathInfo),
+                                          state.deathInfo,
+                                          trips: state.tripDetails),
                                     ),
                                     height: MediaQuery.of(context).size.height *
                                         0.95);
@@ -178,7 +179,8 @@ class TripDetailsDialog extends StatelessWidget {
   }
 
   AddTripDialogParams getCurrentAddTripData(
-      TripDetails? lastTrip, DeceasedInfoResponseDtoList info) {
+      TripDetails? lastTrip, DeceasedInfoResponseDtoList info,
+      {List<TripDetails>? trips}) {
     if (lastTrip == null) {
       return AddTripDialogParams(
           deathCityId: info.deathCityId,
@@ -196,7 +198,7 @@ class TripDetailsDialog extends StatelessWidget {
           currentTripStationTypeId: 30502,
           cemetryId: info.cemeteryId,
           cemetryName: info.cemeteryName,
-          trips: info.trips);
+          trips: trips);
     } else {
       return AddTripDialogParams(
           deathCityId: info.deathCityId,
@@ -214,7 +216,7 @@ class TripDetailsDialog extends StatelessWidget {
           currentTripStationTypeId: lastTrip.nextTripStationTypeId,
           cemetryId: info.cemeteryId,
           cemetryName: info.cemeteryName,
-          trips: info.trips);
+          trips: trips);
     }
   }
 }

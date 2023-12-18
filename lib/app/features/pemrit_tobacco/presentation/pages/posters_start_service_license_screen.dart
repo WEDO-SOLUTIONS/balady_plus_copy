@@ -76,39 +76,31 @@ class _PermitsTobaccoLicenseStartServiceState
                       ],
                     ),
                   ),
-                  /*  SafeArea(
+                  SafeArea(
                     top: false,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: ElevatedButtonWidget.startService(
                         onPressed: () async {
-                         
+                          if (CommonProperties.isLoggedIn) {
+                            context
+                                .read<PermitTobaccoLicenseBloc>()
+                                .add(const ValidatePermitEvent());
+                          } else {
+                            showDialog(
+                                context: context,
+                                builder: (ctx) => NeedLoginDialog(
+                                        onSuccessLogin:
+                                            (bool? isSuccess) async {
+                                      if (isSuccess ?? false) {
+                                        context
+                                            .read<PermitTobaccoLicenseBloc>()
+                                            .add(const ValidatePermitEvent());
+                                      }
+                                    }));
+                          }
                         },
                       ),
-                    ),
-                  )*/
-                  SafeArea(
-                    top: false,
-                    child: ServiceWarningWidget(
-                      warning: service.warning ?? "",
-                      onPress: () async {
-                        if (CommonProperties.isLoggedIn) {
-                          context
-                              .read<PermitTobaccoLicenseBloc>()
-                              .add(const ValidatePermitEvent());
-                        } else {
-                          showDialog(
-                              context: context,
-                              builder: (ctx) => NeedLoginDialog(
-                                      onSuccessLogin: (bool? isSuccess) async {
-                                    if (isSuccess ?? false) {
-                                      context
-                                          .read<PermitTobaccoLicenseBloc>()
-                                          .add(const ValidatePermitEvent());
-                                    }
-                                  }));
-                        }
-                      },
                     ),
                   )
                 ],
