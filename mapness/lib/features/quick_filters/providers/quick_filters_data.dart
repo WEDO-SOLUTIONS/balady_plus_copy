@@ -114,11 +114,16 @@ final quickFilters = [
       20228,
       51241,
       51256,
-      110498,
-      110352
+      110498
     ],
     title: "النوادي والصالونات الرياضية",
     uiIcon: "assets/icons/svg/quick_filters/ic_quick_sport_clubs.svg",
+    mapIcon: "assets/icons/svg/ic_marker.svg",
+  ),
+  QuickFilter(
+    rubrics: [110352],
+    title: "Salons",
+    uiIcon: "assets/icons/svg/quick_filters/ic_quick_salons.svg",
     mapIcon: "assets/icons/svg/ic_marker.svg",
   ),
   QuickFilter(

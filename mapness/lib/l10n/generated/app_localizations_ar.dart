@@ -515,6 +515,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sahm => 'ساهم';
 
   @override
+  String get salons => 'صالونات';
+
+  @override
   String get schools => 'المدارس';
 
   @override
@@ -608,7 +611,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get specifyOnTheMap => 'حدد على الخريطة';
 
   @override
-  String get sportClubs => 'النوادي والصالونات الرياضية';
+  String get sportClubs => 'الأندية الرياضية';
 
   @override
   String get sportsGround => 'الملاعب الرياضية';

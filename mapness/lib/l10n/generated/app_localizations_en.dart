@@ -515,6 +515,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sahm => 'Sahm';
 
   @override
+  String get salons => 'Salons';
+
+  @override
   String get schools => 'Schools';
 
   @override
@@ -608,7 +611,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get specifyOnTheMap => 'Specify on the map';
 
   @override
-  String get sportClubs => 'Sport clubs & Salons';
+  String get sportClubs => 'Sport clubs';
 
   @override
   String get sportsGround => 'Sports ground';
