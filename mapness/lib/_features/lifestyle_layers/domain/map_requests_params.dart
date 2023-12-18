@@ -28,13 +28,13 @@ class MapRequestParams {
     var verifyingKey;
 
     // var proxy = proxy;
-    const gisLayers = 'gis-urbi-services/layers';
 
     final params = toMap();
     final layerId = layer.layerId;
 
     if (proxy != null) {
       const domain = 'https://apiservicesstg.balady.gov.sa';
+    const gisLayers = 'v1/gis-urbi-services/layers';
 
       var hashedUrl = "$domain/$gisLayers/$layerId/query?";
       final mainUrl = "$proxy/$gisLayers";
@@ -48,6 +48,7 @@ class MapRequestParams {
       params.forEach((key, value) => hashedUrl += "$key=$value&");
       resultUrl = hashedUrl.substring(0, hashedUrl.length - 1);
     } else {
+      const gisLayers = 'gis-urbi-services/layers';
       var domainYUrl = domain.replaceAll('/urbi-services/', '');
       var hashedUrl = "$domainYUrl/$gisLayers/$layerId/query?";
       params.forEach((key, value) => hashedUrl += "$key=$value&");
