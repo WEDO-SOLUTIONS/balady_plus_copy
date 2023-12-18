@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 
 class DashboardProfile extends ConsumerWidget {
   const DashboardProfile({Key? key}) : super(key: key);
@@ -21,6 +22,7 @@ class DashboardProfile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userData = ref.watch(authProvider);
+    final lang = ref.watch(appLanguageProvider);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: userData.maybeWhen(
@@ -33,19 +35,20 @@ class DashboardProfile extends ConsumerWidget {
                 textAlign: TextAlign.end,
               ),
           data: (userInfo) {
-            if (userInfo == null) {
-              return Text(
-                _greeting(context),
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .accentL
-                    .apply(color: const Color(0xff4CA5B4)),
-                textAlign: TextAlign.end,
-              );
+            String? name;
+            if (userInfo != null) {
+              final localizedName = switch (lang) {
+                Language.arabic => userInfo.arName,
+                _ => userInfo.enName,
+              }
+                  ?.split(' ')
+                  .first;
+              if (localizedName != null && localizedName.isNotEmpty) {
+                name = '${_greeting(context)}, $localizedName';
+              }
             }
-
             return Text(
-              '${_greeting(context)}, ${userInfo.getFirstName()}',
+              name ?? _greeting(context),
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()!
                   .accentL
