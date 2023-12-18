@@ -337,8 +337,8 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": true,
       "requireLogin": true,
       "action": {"type": "dialog", "value": "/supporter"},
-      "ar": {"title": "Supporter", "description": null, "tag": null},
-      "en": {"title": "Supporter", "description": null, "tag": null}
+      "ar": {"title": "supporter", "description": null, "tag": null},
+      "en": {"title": "supporter", "description": null, "tag": null}
     },
   ],
   "health_certificates_services": [],

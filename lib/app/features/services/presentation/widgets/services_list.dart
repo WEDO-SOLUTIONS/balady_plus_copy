@@ -47,7 +47,7 @@ class ServicesList extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Container(
-            height: 100,
+            height: 110,
             child: ListView.builder(
                 shrinkWrap: true,
                 itemCount: services.length,

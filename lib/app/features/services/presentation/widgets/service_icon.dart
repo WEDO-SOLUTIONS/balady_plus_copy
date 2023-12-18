@@ -368,7 +368,7 @@ class ServiceIcon extends StatelessWidget {
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.all(16),
+                padding: EdgeInsets.only(left: 16, right: 16, top: 16),
                 decoration: BoxDecoration(
                     color: backgroundColor ?? AppColor.white,
                     borderRadius: BorderRadius.all(Radius.circular(8))),
