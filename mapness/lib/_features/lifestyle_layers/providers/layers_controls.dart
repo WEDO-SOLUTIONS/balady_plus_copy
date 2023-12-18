@@ -123,18 +123,20 @@ class LayersControls extends _$LayersControls {
     final mapObjectManager =
         ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
 
-    var mapRequestParams = MapRequestParams(
+    var requestParams = MapRequestParams(
       layer: GISMapLayers.Opportunities,
       southWestLongitude: visibleRect.southWestLon,
       southWestLatitude: visibleRect.southWestLat,
       northEastLongitude: visibleRect.northEastLon,
       northEastLatitude: visibleRect.northEastLat,
-      proxy: env.proxy,
       domain: env.url,
+      proxy: env.proxy,
     );
 
     final response = await controller
-        .getEsriPoints(mapRequestParams)
+        .getEsriPoints(
+      params: requestParams,
+    )
         .timeout(const Duration(minutes: 1), onTimeout: () {
       layersControls.update(
         isLoading: false,
