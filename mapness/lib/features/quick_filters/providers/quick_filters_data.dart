@@ -195,4 +195,10 @@ final quickFilters = [
     uiIcon: "assets/icons/svg/quick_filters/ic_quick_markets.svg",
     mapIcon: "assets/icons/svg/ic_marker.svg",
   ),
+  QuickFilter(
+    rubrics: [161, 165, 161, 9786, 162, 469, 58871],
+    title: "المطاعم",
+    uiIcon: "assets/icons/svg/quick_filters/ic_quick_restaurants.svg",
+    mapIcon: "assets/icons/svg/ic_marker.svg",
+  )
 ];

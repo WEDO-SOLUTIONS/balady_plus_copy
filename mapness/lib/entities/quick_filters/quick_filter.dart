@@ -20,6 +20,7 @@ extension QuickFilterExtension on QuickFilter {
               261 => locale.sportClubs,
               404 => locale.carServices,
               112589 => locale.markets,
+              161 => locale.restaurants,
               _ => title,
             },
     };

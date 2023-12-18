@@ -494,6 +494,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get restArea => 'منطقة الراحة';
 
   @override
+  String get restaurants => 'المطاعم';
+
+  @override
   String get restroom => 'دورة مياة';
 
   @override

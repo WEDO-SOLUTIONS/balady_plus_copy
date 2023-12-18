@@ -494,6 +494,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get restArea => 'Rest area';
 
   @override
+  String get restaurants => 'Restaurants';
+
+  @override
   String get restroom => 'Restroom';
 
   @override

@@ -1,5 +1,6 @@
 {
   "aboutApp": "About App",
+  "accessibility": "Accessibility",
   "addAddress": "Add address",
   "additionalServices": "Additional services",
   "am": "am",
@@ -42,6 +43,7 @@
   "delete": "Delete",
   "deleteAll": "Delete all",
   "deleteHistory": "Delete history",
+  "deliveryAvailable": "Delivery available",
   "dentalCenters": "Dental centers",
   "describeInMoreDetails": "Describe in more details",
   "didNotMatchAnyResults": "did not match any results.",
@@ -117,6 +119,7 @@
   "min": "min",
   "minutes": "minutes",
   "mosques": "Mosques",
+  "motorVisual": "Motor, visual",
   "myChallenge": "My challenge",
   "myLocation": "My location",
   "nationality": "Nationality",
@@ -159,6 +162,7 @@
   "reload": "Reload",
   "remainingTimeForPrayer": "Remaining time for prayer",
   "restArea": "Rest area",
+  "restaurants": "Restaurants",
   "restroom": "Restroom",
   "route": "Route",
   "route1description": "Main advantages and hidden tricks of the navigator feature – in couple slides ",
@@ -230,8 +234,5 @@
   "yesterday": "Yesterday",
   "youArrived": "You arrived",
   "youReHere": "You're here!",
-  "youSearch": "You search",
-  "deliveryAvailable": "Delivery available",
-  "accessibility": "Accessibility",
-  "motorVisual": "Motor, visual"
+  "youSearch": "You search"
 }

@@ -1071,6 +1071,12 @@ abstract class AppLocalizations {
   /// **'منطقة الراحة'**
   String get restArea;
 
+  /// No description provided for @restaurants.
+  ///
+  /// In ar, this message translates to:
+  /// **'المطاعم'**
+  String get restaurants;
+
   /// No description provided for @restroom.
   ///
   /// In ar, this message translates to:
