@@ -4,6 +4,7 @@ extension QuickFilterExtension on QuickFilter {
   String titleOrFailback(AppLocalizations locale) {
     return switch (query) {
       'beaches' => locale.beaches,
+      'parks' => locale.parks,
       _ => rubrics.isEmpty
           ? title
           : switch (rubrics.first) {
