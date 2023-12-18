@@ -7,7 +7,10 @@ abstract class QrLicenseDataSource {
   factory QrLicenseDataSource(QrLicenseService service) =>
       _QrLicenseDataSource(service: service);
 
-  Future<Map<String, dynamic>?> getLicenseInfo({required String licenseNumber});
+  Future<Map<String, dynamic>?> getLicenseInfo({
+    required String? verifyingKEY,
+    required String url,
+  });
 }
 
 class _QrLicenseDataSource implements QrLicenseDataSource {
@@ -16,32 +19,20 @@ class _QrLicenseDataSource implements QrLicenseDataSource {
   _QrLicenseDataSource({required this.service});
 
   @override
-  Future<Map<String, dynamic>?> getLicenseInfo(
-      {required String licenseNumber}) async {
+  Future<Map<String, dynamic>?> getLicenseInfo({
+    required String? verifyingKEY,
+    required String url,
+  }) async {
     Response result;
     try {
-      // curl --location 'https://sa1.ops.2gis.dev/v1/qr-services/mobile/license-details/45059832240' \
-      // --header 'verifyingKEY: Qs9NT2rdN7YajxWe9G7ZoTqC21JNZmvCXaVXKcUnBsU=' \
-      // --header 'Cookie: BIGipServerapistg.app~apistg_pool=4000862218.10531.0000; BIGipServerstag_adf_pool=558934208.24862.0000'
 
       const cookie =
           'BIGipServerapistg.app~apistg_pool=4000862218.10531.0000; BIGipServerstag_adf_pool=558934208.24862.0000';
 
-      const proxy = 'https://sa1.ops.2gis.dev/v1';
-      const domain = 'https://apiservicesstg.balady.gov.sa/v1';
-      const licenseDetails = 'qr-services/mobile/license-details';
-
-      var hashedUrl = "$domain/$licenseDetails/$licenseNumber";
-      const mainUrl = "$proxy/$licenseDetails";
-
-      final verifyingKey = hashRequest_(hashedUrl, "GET");
-
-      hashedUrl = "$mainUrl/$licenseNumber";
-
       result = await service.dio.get(
-        hashedUrl,
+        url,
         options: Options(headers: {
-          'verifyingKEY': verifyingKey,
+          if (verifyingKEY != null) 'verifyingKEY': verifyingKEY,
           'Cookie': cookie,
         }),
       );

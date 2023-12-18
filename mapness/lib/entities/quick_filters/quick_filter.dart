@@ -3,7 +3,8 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 extension QuickFilterExtension on QuickFilter {
   String titleOrFailback(AppLocalizations locale) {
     return switch (query) {
-      'beach' => locale.beaches,
+      'beaches' => locale.beaches,
+      'parks' => locale.parks,
       _ => rubrics.isEmpty
           ? title
           : switch (rubrics.first) {
@@ -20,6 +21,8 @@ extension QuickFilterExtension on QuickFilter {
               261 => locale.sportClubs,
               404 => locale.carServices,
               112589 => locale.markets,
+              161 => locale.restaurants,
+              110352 => locale.salons,
               _ => title,
             },
     };

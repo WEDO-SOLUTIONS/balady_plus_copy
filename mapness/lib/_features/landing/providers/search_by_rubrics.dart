@@ -25,25 +25,46 @@ class SearchByRubrics extends _$SearchByRubrics {
     final dgisController = ref.watch(dgisControllerProvider).value;
 
     if (filter.$1.rubrics.isEmpty && filter.$1.query != null) {
+      final category = getCategoryByTag(filter.$1.query!);
+      if (category == null) return null;
       dgisController
-          ?.search(
-            filter.$1.query!,
+          ?.searchByCategory(
+            category,
             sortingType: SortingTypeMessage.byRelevance,
           )
           .then(
             (value) => state = value,
           );
-    } else {
-      dgisController
-          ?.searchByRubrics(
-            filter.$1.rubrics,
-            sortingType: SortingTypeMessage.byRelevance,
-          )
-          .then(
-            (value) => state = value,
-          );
+      return null;
     }
+    dgisController
+        ?.searchByRubrics(
+          filter.$1.rubrics,
+          sortingType: SortingTypeMessage.byRelevance,
+        )
+        .then(
+          (value) => state = value,
+        );
 
     return null;
+  }
+
+  SearchCategoryMessage? getCategoryByTag(String tag) {
+    return switch (tag) {
+      'beaches' => SearchCategoryMessage.beaches,
+      'mousques' => SearchCategoryMessage.mousques,
+      'gasStations' => SearchCategoryMessage.gasStations,
+      'cafe' => SearchCategoryMessage.cafe,
+      'restaurants' => SearchCategoryMessage.restaurants,
+      'parks' => SearchCategoryMessage.parks,
+      'hospitals' => SearchCategoryMessage.hospitals,
+      'schools' => SearchCategoryMessage.schools,
+      'pharmacies' => SearchCategoryMessage.pharmacies,
+      'dentalCenters' => SearchCategoryMessage.dentalCenters,
+      'hotels' => SearchCategoryMessage.hotels,
+      'beautyCenters' => SearchCategoryMessage.beautyCenters,
+      'recreationCenters' => SearchCategoryMessage.recreationCenters,
+      _ => null,
+    };
   }
 }

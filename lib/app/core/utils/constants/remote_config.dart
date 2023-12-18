@@ -116,7 +116,7 @@ class _RemoteConfig {
     stgVal: "secret",
     preVal: "1afa033f369849a2ac6d0d42e713eb82",
     prodVal: "d19e0d31729144d3bff32d5cebbaef63",
-    urbiPreVal: "1afa033f369849a2ac6d0d42e713eb82",
+    urbiPreVal: "secret",
   );
   static final ssoLogOutUrl = _initValues<String>(
     devVal: "com.momra.balady://logout",

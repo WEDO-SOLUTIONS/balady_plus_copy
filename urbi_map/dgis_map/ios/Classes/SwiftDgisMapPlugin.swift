@@ -16,6 +16,8 @@ class DgisPluginApi: NSObject, PluginApi {
                 vendorConfigName = "urbi-pre-prod-vendor-config"
             case .momrahProd:
                 vendorConfigName = "momrah-prod-vendor-config"
+            case .momrahStg:
+                vendorConfigName = "momrah-staging-vendor-config"
             @unknown default:
                 vendorConfigName = "momrah-prod-vendor-config"
             }

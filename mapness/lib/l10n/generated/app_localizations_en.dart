@@ -95,6 +95,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get completed => 'Completed';
 
   @override
+  String get complianceCardDescription => 'Targeted methods to implement compliance certificate through your map';
+
+  @override
+  String get complianceCardTitle => 'Compliance certificate map';
+
+  @override
+  String get complianceFAQ => 'FAQs';
+
+  @override
+  String get complianceOr => 'Or';
+
+  @override
+  String get complianceRequirements => 'Requirements';
+
+  @override
+  String get complianceToKnow => 'To know more, see';
+
+  @override
   String get connectToMomrah => 'Connect to Momrah';
 
   @override
@@ -111,6 +129,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get coordinates => 'Coordinates';
+
+  @override
+  String get createCompliance => 'Certificate';
 
   @override
   String get daily => 'Daily';
@@ -473,6 +494,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get published => 'Published';
 
   @override
+  String get ratingBuilding => 'Evaluate your building';
+
+  @override
   String get ready => 'Ready';
 
   @override
@@ -494,6 +518,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get restArea => 'Rest area';
 
   @override
+  String get restaurants => 'Restaurants';
+
+  @override
   String get restroom => 'Restroom';
 
   @override
@@ -510,6 +537,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sahm => 'Sahm';
+
+  @override
+  String get salons => 'Salons';
 
   @override
   String get schools => 'Schools';
@@ -587,6 +617,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get skills => 'Skills';
 
   @override
+  String get snapAndSendButton => 'Engage';
+
+  @override
+  String get snapAndSendDescription => 'Improve your citys urban landscape, report visual distortion';
+
+  @override
+  String get snapAndSendTitle => 'Snap & Send';
+
+  @override
   String get snap_and_send => 'Snap & Send';
 
   @override
@@ -605,7 +644,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get specifyOnTheMap => 'Specify on the map';
 
   @override
-  String get sportClubs => 'Sport clubs & Salons';
+  String get sportClubs => 'Sport clubs';
 
   @override
   String get sportsGround => 'Sports ground';

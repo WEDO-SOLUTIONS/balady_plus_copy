@@ -34,6 +34,7 @@ class DgisMapPlugin : FlutterPlugin, PluginApi, ActivityAware {
        val vendorConfigFile = when (message) {
             Messages.VendorConfigMessage.URBI_PRE_PROD -> "urbi-pre-prod-vendor-config.jsonx"
             Messages.VendorConfigMessage.MOMRAH_PROD -> "momrah-prod-vendor-config.jsonx"
+            Messages.VendorConfigMessage.MOMRAH_STG -> "momrah-staging-vendor-config.jsonx"
             null -> "momrah-prod-vendor-config.jsonx"
         }
         val vendorContent = context

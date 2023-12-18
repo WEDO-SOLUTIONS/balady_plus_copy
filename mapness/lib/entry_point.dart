@@ -65,7 +65,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final language = ref.watch(appLanguageProvider);
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: switch (language) {
+        Language.english => TextDirection.ltr,
+        Language.arabic => TextDirection.rtl,
+      },
       child: Stack(
         children: [
           SizedBox(
@@ -117,10 +120,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
 Future<void> setupMapness(EnvType envType) async {
   final vendorConfig = switch (envType) {
-    EnvType.stg ||
-    EnvType.pre ||
-    EnvType.prod =>
-      VendorConfigMessage.momrahProd,
+    EnvType.stg => VendorConfigMessage.momrahStg,
+    EnvType.pre || EnvType.prod => VendorConfigMessage.momrahProd,
     EnvType.urbiPre || EnvType.dev => VendorConfigMessage.urbiPreProd,
   };
 

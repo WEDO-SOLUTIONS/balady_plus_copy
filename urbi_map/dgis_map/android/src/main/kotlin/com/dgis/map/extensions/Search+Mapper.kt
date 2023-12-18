@@ -94,6 +94,7 @@ fun SearchCategoryMessage.toRubrics(): List<RubricId> {
         SearchCategoryMessage.CAFE -> listOf(159, 162)
         SearchCategoryMessage.RESTAURANTS -> listOf(161,165,161,9786,162,469,58871)
         SearchCategoryMessage.PARKS -> listOf(168)
+        SearchCategoryMessage.BEACHES -> listOf(168)
         SearchCategoryMessage.HOSPITALS -> listOf(201)
         SearchCategoryMessage.SCHOOLS -> listOf(245)
         SearchCategoryMessage.PHARMACIES -> listOf(207)

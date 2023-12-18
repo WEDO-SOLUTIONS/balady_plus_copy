@@ -15,13 +15,13 @@ class EnvironmentConfig {
   final String url;
   final String meteoblue;
   final String weatherApi;
-  final String proxy;
+  final String? proxy;
 
   EnvironmentConfig({
     required this.url,
     required this.meteoblue,
     required this.weatherApi,
-    required this.proxy,
+    this.proxy,
   });
 
   factory EnvironmentConfig.urbiDev() => EnvironmentConfig(
@@ -32,15 +32,13 @@ class EnvironmentConfig {
       );
 
   factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
-        proxy: 'https://sa1.ops.2gis.dev',
         url: 'https://apiservicesstg.balady.gov.sa/v1/urbi-services/',
         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
         weatherApi: 'https://api.weatherapi.com',
       );
 
   factory EnvironmentConfig.momrahProd() => EnvironmentConfig(
-        proxy: 'https://sa1.ops.2gis.dev',
-        url: 'https://apiservices.balady.gov.sa/v1/urbi-services/',
+        url: 'https://apiservices.balady.gov.sa/v1/urbi-services/',///url for URBI backcend
         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
         weatherApi: 'https://api.weatherapi.com',
       );
