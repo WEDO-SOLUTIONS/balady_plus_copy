@@ -68,7 +68,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Directionality(
-        textDirection: TextDirection.ltr,
+        textDirection: Directionality.of(context),
         child: Material(
           type: MaterialType.transparency,
           child: Stack(

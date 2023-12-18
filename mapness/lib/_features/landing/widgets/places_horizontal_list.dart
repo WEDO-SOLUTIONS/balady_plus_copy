@@ -29,6 +29,7 @@ class PlacesHorizontalList extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(
               right: 16.0,
+              left: 16.0,
             ),
             child: Text(
               title,
