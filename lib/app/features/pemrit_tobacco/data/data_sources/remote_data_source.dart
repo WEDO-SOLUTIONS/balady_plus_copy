@@ -54,7 +54,12 @@ class PermitsTobaccoRemoteDataSourceImpl
     var response;
     try {
       response = await webService.dio
-          .post(ApiUrl.permitTobaccoSubmit(params.licenseNumber), data: {
+          .post(ApiUrl.permitTobaccoSubmit(params.licenseNumber), 
+          queryParameters: {
+            if (params.requestId!=null) 
+            "requestId": params.requestId
+          },
+          data: {
         "insideHotel": params.insideHotel,
         if (params.hotelLicenseNumber != null)
           "hotelLicenseNumber": params.hotelLicenseNumber,

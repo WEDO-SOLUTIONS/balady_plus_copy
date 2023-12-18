@@ -755,6 +755,11 @@ class ApiUrl {
   static String joodEskanGenerateDonation =
       "v1/joodeskan-services/generate-donation-url";
 
+
+  static const paymentURL =
+      'v1/payment-gateway/payment';
+
+
   //! POST
 
   //! Delete

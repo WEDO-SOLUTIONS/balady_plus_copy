@@ -15,6 +15,7 @@ import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_w
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/details_header.dart';
 import '../../../_shared_feature_/presentation/widgets/notes_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/payment_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../create_compliance/presentation/widgets/summery_widgets/field_data.dart';
@@ -101,6 +102,16 @@ class PermitsTobaccoReqeuestDetailsPage extends StatelessWidget {
                                             Navigator.of(context).pop();
                                           }, state.requestId!);
                                         }
+
+                                        if (e.id == "edit") {
+                                          NavigationService
+                                              .navigatorKey.currentState!
+                                              .pushNamed(
+                                                  RouteName
+                                                      .permitsTobaccoDetailsPage,
+                                                  arguments: context.read<
+                                                      PermitTobaccoLicenseBloc>());
+                                        }
                                       },
                                       child: Container(
                                         margin:
@@ -164,7 +175,7 @@ class PermitsTobaccoReqeuestDetailsPage extends StatelessWidget {
                             const CustomVerticalSpace(height: 16),
                             Step2SummeryWidget(),
                             CustomVerticalSpace(height: 16),
-                            /* if (state.requestDetails?.requestInfo != null &&
+                            if (state.requestDetails?.requestNotes != null &&
                                 state.requestDetails!.requestNotes!.isNotEmpty)
                               ExpandableCard(
                                 title: 'responses_request'.tr(),
@@ -240,7 +251,20 @@ class PermitsTobaccoReqeuestDetailsPage extends StatelessWidget {
                                         )
                                       : const SizedBox()
                                 ],
-                              ),*/
+                              ),
+                            const CustomVerticalSpace(height: 32),
+                            if (state.requestDetails?.requestInfo
+                                        ?.requestStatusCode ==
+                                    15 &&
+                                state.requestDetails?.requestInfo?.billInfo !=
+                                    null)
+                              PaymentWidget(
+                                requestKey:
+                                    state.requestDetails?.requestKey ?? "",
+                                billNumber: state.requestDetails?.requestInfo
+                                        ?.billInfo?.billNumber ??
+                                    "",
+                              )
                           ],
                         ))),
                   if (state.detailsStatus == BlocStatus.loading ||
@@ -310,54 +334,55 @@ class Step2SummeryWidget extends StatelessWidget {
     return BlocBuilder<PermitTobaccoLicenseBloc, PermitTobaccoLicenseState>(
       builder: (context, state) {
         return ExpandableCard(
-          title: "permit_24_data".tr(),
-          icon: IconPath.vdSummurySPL,
-          children: [
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: "license_no".tr(),
-              subTitle:
-                  state.requestDetails?.licenseInfo?.licenseNumber.toString() ??
-                      "",
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: "invoice_no".tr(),
-              subTitle: state.requestDetails?.requestInfo?.billNumber,
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: "municipality".tr(),
-              subTitle: state.requestDetails?.locationInfo?.municipalityName,
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: "sub_municipality".tr(),
-              subTitle: state.requestDetails?.locationInfo?.subMunicipalityName,
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            if (state.requestDetails?.licenseInfo?.permitNumber != null) ...[
+            title: "permit_24_data".tr(),
+            icon: IconPath.vdSummurySPL,
+            children: [
+              const CustomVerticalSpace(
+                height: 16,
+              ),
               FieldData(
-                title: "permit_24_permit_no".tr(),
-                subTitle: state.requestDetails?.licenseInfo?.permitNumber
+                title: "license_no".tr(),
+                subTitle: state.requestDetails?.licenseInfo?.licenseNumber
                         .toString() ??
                     "",
               ),
               const CustomVerticalSpace(
                 height: 16,
               ),
-            ],
-            /* if (state.requestDetails?.licenseInfo?.permitIssueDate != null) ...[
+              FieldData(
+                title: "invoice_no".tr(),
+                subTitle: state.requestDetails?.requestInfo?.billNumber,
+              ),
+              const CustomVerticalSpace(
+                height: 16,
+              ),
+              FieldData(
+                title: "municipality".tr(),
+                subTitle: state.requestDetails?.locationInfo?.municipalityName,
+              ),
+              const CustomVerticalSpace(
+                height: 16,
+              ),
+              FieldData(
+                title: "sub_municipality".tr(),
+                subTitle:
+                    state.requestDetails?.locationInfo?.subMunicipalityName,
+              ),
+              const CustomVerticalSpace(
+                height: 16,
+              ),
+              if (state.requestDetails?.licenseInfo?.permitNumber != null) ...[
+                FieldData(
+                  title: "permit_24_permit_no".tr(),
+                  subTitle: state.requestDetails?.licenseInfo?.permitNumber
+                          .toString() ??
+                      "",
+                ),
+                const CustomVerticalSpace(
+                  height: 16,
+                ),
+              ],
+              /* if (state.requestDetails?.licenseInfo?.permitIssueDate != null) ...[
               FieldData(
                 title: "posters_permit_start_date".tr(),
                 subTitle: state.requestDetails?.licenseInfo?.permitIssueDate,
@@ -366,17 +391,49 @@ class Step2SummeryWidget extends StatelessWidget {
                 height: 16,
               ),
             ],*/
-            if (state.requestDetails?.licenseInfo?.permitEndDate != null) ...[
+              if (state.requestDetails?.licenseInfo?.permitEndDate != null) ...[
+                FieldData(
+                  title: "posters_permit_end_date".tr(),
+                  subTitle: state.requestDetails?.licenseInfo?.permitEndDate,
+                ),
+                const CustomVerticalSpace(
+                  height: 16,
+                ),
+              ],
               FieldData(
-                title: "posters_permit_end_date".tr(),
-                subTitle: state.requestDetails?.licenseInfo?.permitEndDate,
-              ),
+                  title: "licence_inside_hotel".tr(),
+                  subTitle: state.requestDetails?.requestInfo?.hotelInfo != null
+                      ? "yes".tr()
+                      : "no".tr()),
               const CustomVerticalSpace(
                 height: 16,
               ),
-            ]
-          ],
-        );
+              if (state.requestDetails?.requestInfo?.hotelInfo != null) ...[
+                FieldData(
+                    title: "hotel_license_number".tr(),
+                    subTitle: state.requestDetails?.requestInfo?.hotelInfo
+                            ?.licenseNumber
+                            .toString() ??
+                        ""),
+                const CustomVerticalSpace(
+                  height: 16,
+                ),
+                FieldData(
+                    title: "hotel_name".tr(),
+                    subTitle: state
+                            .requestDetails?.requestInfo?.hotelInfo?.hotelName
+                            .toString() ??
+                        ""),
+                const CustomVerticalSpace(
+                  height: 16,
+                ),
+                FieldData(
+                    title: "hotel_class".tr(),
+                    subTitle: state.requestDetails?.requestInfo?.hotelInfo
+                            ?.hotelClassDesc ??
+                        ""),
+              ]
+            ]);
       },
     );
   }

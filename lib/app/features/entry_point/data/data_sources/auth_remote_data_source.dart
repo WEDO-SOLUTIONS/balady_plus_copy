@@ -34,6 +34,8 @@ abstract class EntryPointRemoteDataSource {
   Future<dynamic> getDataTest();
   Future<PermissionResponseModel> getEkramRules(
       {required GetPermissionParamsModel params});
+
+  Future<String> getPaymentURL({required PaymentRequest params});
 }
 
 class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
@@ -385,6 +387,33 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
           data != null ? PermissionResponseModel.fromMap(data) : null;
 
       return parsedResult!.toFuture();
+    } on DioError catch (error) {
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode, dioError: error);
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //  CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<String> getPaymentURL({required PaymentRequest params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(
+        ApiUrl.paymentURL,
+        data: params.toMap(),
+      );
+      print(response.data["data"]);
+      return response.data["data"]?["result"];
     } on DioError catch (error) {
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode, dioError: error);
