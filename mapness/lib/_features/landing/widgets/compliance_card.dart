@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ComplianceCard extends StatelessWidget {
   const ComplianceCard({super.key});
@@ -46,7 +47,7 @@ class ComplianceCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "خريطة شهادة الإمتثال",
+                        context.l10n.complianceCardTitle,
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
                             .accentS
@@ -55,7 +56,7 @@ class ComplianceCard extends StatelessWidget {
                             ),
                       ),
                       Text(
-                        "تعرف على الطرق المستهدفة لتطبيق شهادة الامتثال من خلال الخريطة ",
+                        context.l10n.complianceCardDescription,
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
                             .textXS
@@ -67,7 +68,7 @@ class ComplianceCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(
-                  width: 60,
+                  width: 40,
                 ),
                 Container(
                   decoration: BoxDecoration(
@@ -76,7 +77,7 @@ class ComplianceCard extends StatelessWidget {
                   ),
                   padding: const EdgeInsets.all(12),
                   child: SvgPicture.asset(
-                    'assets/icons/svg/ic_bug.svg',
+                    'assets/icons/svg/ic_compliance.svg',
                     width: 24,
                     height: 24,
                     package: PackageConfig.packageName,
@@ -87,58 +88,54 @@ class ComplianceCard extends StatelessWidget {
             const SizedBox(
               height: 14,
             ),
-            Column(
-              children: [
-                Material(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  child: InkWell(
-                    onTap: () {
-                      CommonFunctions.openCreateCompliance();
-                    },
-                    borderRadius: BorderRadius.circular(8),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 9,
-                        horizontal: 12,
-                      ),
-                      child: Text(
-                        'أصدر الشهادة',
-                        style: Theme.of(context)
-                            .extension<ThemeTextStyles>()
-                            ?.accentM
-                            .copyWith(
-                              color: const Color(0xFF4CA5B4),
-                            ),
-                      ),
-                    ),
+            Material(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              child: InkWell(
+                onTap: () {
+                  CommonFunctions.openCreateCompliance();
+                },
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 9,
+                    horizontal: 12,
+                  ),
+                  child: Text(
+                    context.l10n.createCompliance,
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.accentM
+                        .copyWith(
+                          color: const Color(0xFF4CA5B4),
+                        ),
                   ),
                 ),
-                Material(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(8),
-                  child: InkWell(
-                    onTap: () {
-                      CommonFunctions.openRatingBuilding();
-                    },
-                    borderRadius: BorderRadius.circular(8),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 9,
-                      ),
-                      child: Text(
-                        'أو قيم مبناك',
-                        style: Theme.of(context)
-                            .extension<ThemeTextStyles>()
-                            ?.textS
-                            .copyWith(
-                              color: Colors.white,
-                            ),
-                      ),
-                    ),
+              ),
+            ),
+            Material(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(8),
+              child: InkWell(
+                onTap: () {
+                  CommonFunctions.openRatingBuilding();
+                },
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 9,
+                  ),
+                  child: Text(
+                    context.l10n.ratingBuilding,
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()
+                        ?.textS
+                        .copyWith(
+                          color: Colors.white,
+                        ),
                   ),
                 ),
-              ],
+              ),
             ),
             const Spacer(),
             ClipRRect(
@@ -158,7 +155,7 @@ class ComplianceCard extends StatelessWidget {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: "لمعرفه المزيد اطلع على",
+                          text: context.l10n.complianceToKnow,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()
                               ?.textS
@@ -178,7 +175,7 @@ class ComplianceCard extends StatelessWidget {
                               ),
                         ),
                         TextSpan(
-                          text: "الاسئلة الشائعة",
+                          text: context.l10n.complianceFAQ,
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               CommonFunctions.openComplianceFaq();
@@ -202,7 +199,7 @@ class ComplianceCard extends StatelessWidget {
                               ),
                         ),
                         TextSpan(
-                          text: "أو",
+                          text: context.l10n.complianceOr,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()
                               ?.textS
@@ -222,7 +219,7 @@ class ComplianceCard extends StatelessWidget {
                               ),
                         ),
                         TextSpan(
-                          text: "الاشتراطات",
+                          text: context.l10n.complianceRequirements,
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               CommonFunctions.openComplianceTerms();

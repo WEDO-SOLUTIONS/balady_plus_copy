@@ -95,6 +95,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String get completed => 'مكتمل';
 
   @override
+  String get complianceCardDescription => 'تعرف على الطرق المستهدفة لتطبيق شهادة الامتثال من خلال الخريطة ';
+
+  @override
+  String get complianceCardTitle => 'خريطة شهادة الإمتثال';
+
+  @override
+  String get complianceFAQ => 'الاسئلة الشائعة';
+
+  @override
+  String get complianceOr => 'أو';
+
+  @override
+  String get complianceRequirements => 'الاشتراطات';
+
+  @override
+  String get complianceToKnow => 'لمعرفه المزيد اطلع على';
+
+  @override
   String get connectToMomrah => 'تواصل مع مومراه';
 
   @override
@@ -111,6 +129,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get coordinates => 'الإحداثيات';
+
+  @override
+  String get createCompliance => 'أصدر الشهادة';
 
   @override
   String get daily => 'يوميًا';
@@ -473,6 +494,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get published => 'تم النشر';
 
   @override
+  String get ratingBuilding => 'أو قيم مبناك';
+
+  @override
   String get ready => 'مستعد';
 
   @override
@@ -494,6 +518,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get restArea => 'منطقة الراحة';
 
   @override
+  String get restaurants => 'المطاعم';
+
+  @override
   String get restroom => 'دورة مياة';
 
   @override
@@ -510,6 +537,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get sahm => 'ساهم';
+
+  @override
+  String get salons => 'صالونات';
 
   @override
   String get schools => 'المدارس';
@@ -587,6 +617,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get skills => 'المهارات';
 
   @override
+  String get snapAndSendButton => 'ساهم';
+
+  @override
+  String get snapAndSendDescription => 'حسن المشهد الحضري لمدينتك، وبلغ عن مظاهر التشوه البصري';
+
+  @override
+  String get snapAndSendTitle => 'صور وأرسل';
+
+  @override
   String get snap_and_send => 'التقط وأرسل';
 
   @override
@@ -605,7 +644,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get specifyOnTheMap => 'حدد على الخريطة';
 
   @override
-  String get sportClubs => 'النوادي والصالونات الرياضية';
+  String get sportClubs => 'الأندية الرياضية';
 
   @override
   String get sportsGround => 'الملاعب الرياضية';

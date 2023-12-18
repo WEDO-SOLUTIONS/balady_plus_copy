@@ -54,7 +54,7 @@ class SnapAndSendCard extends StatelessWidget {
                           height: 10,
                         ),
                         Text(
-                          context.l10n.photoAndVideo,
+                          context.l10n.snapAndSendTitle,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
                               .accentL
@@ -64,7 +64,7 @@ class SnapAndSendCard extends StatelessWidget {
                           height: 6,
                         ),
                         Text(
-                          "حسن المشهد الحضري لمدينتك، وبلغ عن مظاهر التشوه البصري",
+                          context.l10n.snapAndSendDescription,
                           maxLines: 3,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
@@ -75,11 +75,11 @@ class SnapAndSendCard extends StatelessWidget {
                           height: 23,
                         ),
                         LabeledElevatedButton(
-                          label: context.l10n.sahm,
+                          label: context.l10n.snapAndSendButton,
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 59,
-                            vertical: 5,
-                          ).copyWith(bottom: 11),
+                            horizontal: 14,
+                            vertical: 10,
+                          ),
                           onPressed: () {
                             CommonFunctions.openSnapAndSend();
                           },
