@@ -8,16 +8,11 @@ import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/esri_feature.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/map_requests_params.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/white_lands.dart';
-import 'package:mapness/_generated/protocol/protocol.pb.dart' as pb;
-
 import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/app/routes/layer_details.dart';
-import 'package:mapness/entities/iwish/models/iwish_entity.dart';
-import 'package:mapness/entities/iwish/models/iwish_marker.dart';
+import 'package:mapness/features/iwish/providers/iwish_markers.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
-import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -27,6 +22,7 @@ import 'package:rxdart/rxdart.dart';
 part 'layers_controls.g.dart';
 
 const mapLayerName = 'esri_markers';
+const iwishLayerName = 'iwish_markers';
 const _markerPrefix = 'esri_markers-';
 
 enum LayerType { favourites, invest, buildings, fencing, joy }
@@ -65,8 +61,8 @@ extension LayerTypeExt on LayerType {
 
 class LayersState {
   final bool layersVisible;
-  LayerType? selectedType;
-  final isLoading;
+  final Set<LayerType> selectedType;
+  final bool isLoading;
 
   List<Marker>? investmentsMarkers;
 
@@ -76,7 +72,7 @@ class LayersState {
     required this.isLoading,
     required this.layersVisible,
     this.whiteLands,
-    this.selectedType,
+    required this.selectedType,
     this.investmentsMarkers,
   });
 }
@@ -95,7 +91,7 @@ class LayersControls extends _$LayersControls {
     ref.onDispose(() {
       state = LayersState(
         layersVisible: false,
-        selectedType: null,
+        selectedType: {},
         isLoading: false,
       );
       listen?.cancel();
@@ -103,7 +99,7 @@ class LayersControls extends _$LayersControls {
 
     return LayersState(
       layersVisible: false,
-      selectedType: null,
+      selectedType: {},
       isLoading: false,
     );
   }
@@ -114,14 +110,16 @@ class LayersControls extends _$LayersControls {
 
     var layersControls = ref.watch(layersControlsProvider.notifier);
     layersControls.update(
-      isLoading: true,
-      selectedType: layerType,
-    );
+        isLoading: true,
+        selectedType: state.selectedType.contains(layerType)
+            ? {...state.selectedType.whereNot((e) => e == layerType)}
+            : {...state.selectedType, layerType});
 
     final visibleRect = layersControls.visibleRectSub.value.visibleRect;
 
     final mapObjectManager =
         ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
+    ref.watch(iwishMarkersProvider);
 
     var requestParams = MapRequestParams(
       layer: GISMapLayers.Opportunities,
@@ -203,7 +201,7 @@ class LayersControls extends _$LayersControls {
 
     layersControls.update(
       isLoading: true,
-      selectedType: layerType,
+      selectedType: {...state.selectedType, layerType},
     );
     final visibleRect = ref
         .watch(layersControlsProvider.notifier)
@@ -261,7 +259,7 @@ class LayersControls extends _$LayersControls {
     var layersControls = ref.watch(layersControlsProvider.notifier);
     layersControls.update(
       isLoading: true,
-      selectedType: layerType,
+      selectedType: {...state.selectedType, layerType},
     );
 
     final mapObjectManager =
@@ -316,7 +314,7 @@ class LayersControls extends _$LayersControls {
 
   void update({
     bool? visible,
-    LayerType? selectedType,
+    Set<LayerType>? selectedType,
     bool? isLoading,
     List<Marker>? investmentsMarkers,
     WhiteLands? whiteLands,
@@ -330,14 +328,16 @@ class LayersControls extends _$LayersControls {
     );
   }
 
-  void setSelected(
-    LayerType? selectedType,
+  void _toggleSelected(
+    LayerType selectedType,
   ) {
     state = LayersState(
       whiteLands: state.whiteLands,
       investmentsMarkers: state.investmentsMarkers,
       layersVisible: state.layersVisible,
-      selectedType: selectedType,
+      selectedType: state.selectedType.contains(selectedType)
+          ? {...state.selectedType.whereNot((e) => e == selectedType)}
+          : {...state.selectedType, selectedType},
       isLoading: state.isLoading,
     );
   }
@@ -345,51 +345,45 @@ class LayersControls extends _$LayersControls {
   Future<void> handleTap(WidgetRef ref, LayerType value) async {
     var layersControls = ref.watch(layersControlsProvider.notifier);
     var currentState = state.selectedType;
+
     switch (value) {
       case LayerType.favourites:
-        await removeAll();
-        if (currentState == LayerType.favourites) {
+        if (currentState.contains(LayerType.favourites)) {
           await ref.read(favouriteToggleProvider.notifier).disable();
-          setSelected(null);
         } else {
-          setSelected(value);
           await ref.read(favouriteToggleProvider.notifier).enable();
         }
       case LayerType.invest:
-        if (currentState == LayerType.invest) {
-          await removeAll();
-          setSelected(null);
-        } else {
-          setSelected(value);
-          layersControls.showMarkers(ref, value);
-        }
+        layersControls.showMarkers(ref, value);
       case LayerType.buildings:
-        if (currentState == LayerType.buildings) {
-          await removeAll();
-          setSelected(null);
-        } else {
+        if (!currentState.contains(LayerType.buildings)) {
           layersControls.buildingCompliance(ref, value);
-          setSelected(value);
         }
 
       case LayerType.fencing:
-        if (currentState == LayerType.fencing) {
-          await removeAll();
-          setSelected(null);
+        if (currentState.contains(LayerType.fencing)) {
         } else {
           layersControls.getLandFences(ref, value);
-          setSelected(value);
         }
-
       case LayerType.joy:
-        if (currentState == LayerType.joy) {
-          await removeAll();
-          setSelected(null);
+        if (currentState.contains(LayerType.joy)) {
+          ref
+              .read(mapObjectManagerProvider(named: iwishLayerName).notifier)
+              .removeAllMarkers();
         } else {
-          await showJoyParks();
-          setSelected(value);
+          showIwish();
         }
     }
+    await removeAll();
+    _toggleSelected(value);
+  }
+
+  Future<void> showIwish() async {
+    final markers = await ref.read(iwishMarkersProvider.future);
+    final iwishObjectManager =
+        ref.read(mapObjectManagerProvider(named: iwishLayerName).notifier);
+
+    await iwishObjectManager.addMarkers(markers);
   }
 
   void showWhiteLands(WhiteLands e) {
@@ -403,65 +397,18 @@ class LayersControls extends _$LayersControls {
     ///NO OP
   }
 
-  Future<void> showJoyParks() async {
-    final mapObjectManager =
-        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
-    final dio = await ref.read(dGisNetworkProvider.future);
-    final raw = await dio.get('iwish');
-    final response = pb.IWishMarkersResponse.fromBuffer(raw.data);
+  Future<void> focusIwish() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    final markers = await ref.read(iwishMarkersProvider.future);
+    final markerIds = markers.map((e) => e.id).toList();
 
-    await removeAll();
-    final markers = response.markers
-        .map(
-          (serverMarker) => IwishMarker(
-            id: serverMarker.id,
-            category: switch (serverMarker.category) {
-              pb.IWishCategory.IWISH_CATEGORY_JOY_PARKS =>
-                IwishCategory.joyParks,
-              pb.IWishCategory.IWISH_CATEGORY_UNKNOWN => IwishCategory.unknown,
-              _ => IwishCategory.unknown,
-            },
-            location: GeoPointMessage(
-              latitude: serverMarker.location.point.latitude,
-              longitude: serverMarker.location.point.longitude,
-            ),
-          ),
-        )
-        .toList();
+    if (markerIds.isEmpty) return;
 
-    final map = markers
-        .map(
-          (stateMarker) => Marker(
-            id: "$_markerPrefix${stateMarker.id}",
-            options: MarkerOptionsMessage(
-              position: GeoPointWithElevationMessage(
-                latitude: stateMarker.location.latitude,
-                longitude: stateMarker.location.longitude,
-                elevation: 0,
-              ),
-              icon: MarkerIconMessage(
-                path: "packages/mapness/assets/icons/svg/ic_joy_parks.svg",
-                width: 30,
-              ),
-              text: "JOY Parks",
-              textStyle: MarkerTextStyleMessage(
-                color: Color(0xFF1BA136).value,
-                strokeColor: Colors.white.value,
-                strokeWidth: 1,
-                fontSize: 14,
-                fontName: "Frutiger",
-                textPlacement: MarkerTextPlacementMessage(
-                  placement: TextPlacementMessage.bottomCenter,
-                ),
-              ),
-            ),
-            onTap: () {
-              IwishCardRoute.open(ref.read(goRouterProvider), stateMarker);
-            },
-          ),
-        )
-        .toList();
-    await mapObjectManager.addMarkers(map);
+    final cameraPosition = await dgisController.calcPositionForMarkers(
+      markerIds,
+      CalcPositionOptionsMessage(),
+    );
+    await ref.read(cameraPositionProvider.notifier).animateTo(cameraPosition);
   }
 
   Future<void> removeAll() async {
