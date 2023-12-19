@@ -28,27 +28,28 @@ class ZmZmBloc extends Bloc<ZmZmEvent, ZmZmState> {
   }
 
   Future<void> _initZmZm(initZmZmEvent e, Emitter emitter) async {
-    emitter(state.copyWith(cities: ["مكة المكرمة", "جدة", "المدينة"]));
+    emitter(
+        state.copyWith(cities: ["makkah".tr(), "jeddah".tr(), "madina".tr()]));
 
     emitter(state.copyWith(items: [
       ZMZMItemModel(
           id: 1,
-          city: "مكة المكرمة",
+          city: "makkah".tr(),
           name: "zmzm_project".tr(),
           mapUrl: "https://goo.gl/maps/pPLWJ4hYTarbkQ8f6?coh=178571&entry=tt"),
       ZMZMItemModel(
           id: 2,
-          city: "جدة",
+          city: "jeddah".tr(),
           name: "zmzm_project".tr(),
           mapUrl: "https://goo.gl/maps/V1ynEY6uWDgLT6fN6?coh=178571&entry=tt"),
       ZMZMItemModel(
           id: 3,
-          city: "جدة",
+          city: "jeddah".tr(),
           name: "zmzm_project".tr(),
           mapUrl: "https://goo.gl/maps/mKaXsBGvwHuYQphw7?coh=178571&entry=tt"),
       ZMZMItemModel(
           id: 4,
-          city: "المدينة",
+          city: "madina".tr(),
           name: "zmzm_project".tr(),
           mapUrl: "https://goo.gl/maps/2NCFyi2zv643aUh46?coh=178571&entry=tt"),
     ]));

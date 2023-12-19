@@ -26,7 +26,7 @@ class ViolationEstabloshmentWidget extends StatelessWidget {
             //  dialogKeyName: DialogName.reasonCancelDialog,
             // currentRouteName: RouteName.commercialLicenseApplyCancel,
             child: GenericBottomSheetList<EstablishmentSizeItem>(
-              title: "حجم المنشأة".tr(),
+              title: "establishment_size".tr(),
               items: state.establishmentSizeResponse?.result ?? [],
               selectedValue: state.selectedEstablishmentSizeItem,
               onTap: (item) {

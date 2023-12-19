@@ -94,7 +94,7 @@ class _DCDetailsPageState extends State<DCDetailsPage> {
                             leading: SvgPicture.asset(IconPath.vdSummuryDesc),
                             children: [
                               FieldData(
-                                title: ("رقم البلاغ").tr(),
+                                title: ("incident_no").tr(),
                                 subTitle: state.pageParams?.details.getId(),
                               ),
                               FieldData(

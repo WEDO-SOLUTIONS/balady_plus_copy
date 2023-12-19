@@ -114,7 +114,7 @@ class _IncidentDetailsPageState extends State<IncidentDetailsPage> {
                           ),
                           const CustomVerticalSpace(height: 16),
                           CustomExpansionPanelWidget(
-                              title: ("ملخص البلاغ").tr(),
+                              title: ("incident_info").tr(),
                               leading: SvgPicture.asset(IconPath.vdSummuryDesc),
                               children: [
                                 FieldData(

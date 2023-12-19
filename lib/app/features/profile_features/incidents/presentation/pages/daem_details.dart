@@ -88,7 +88,7 @@ class _DaemDetailsPageState extends State<DaemDetailsPage> {
                         ),
                         const CustomVerticalSpace(height: 16),
                         CustomExpansionPanelWidget(
-                            title: ("ملخص الطلب").tr(),
+                            title: ("order_summery").tr(),
                             leading: SvgPicture.asset(IconPath.vdSummuryDesc),
                             children: [
                               FieldData(
