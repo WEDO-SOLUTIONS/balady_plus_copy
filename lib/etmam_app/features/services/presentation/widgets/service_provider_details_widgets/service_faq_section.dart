@@ -7,7 +7,8 @@ import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentat
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:balady_plus/etmam_app/features/services/presentation/blocs/service_details_bloc/service_details_bloc.dart';
-
+import '../../../../../core/utils/utils_exports.dart'
+    show AppFontWeight, trans;
 import '../../../../_shared_feature_/shared/presentation/widgets/custom_expansion_widget.dart';
 
 
@@ -58,7 +59,7 @@ class ServiceFaqSection extends StatelessWidget {
                   if ((state.response.service?.faqs?.length ?? 0) >
                       3)
                     CustomElevatedButtonWidget(
-                      btnText: "عرض الكل",
+                      btnText:  trans("show_all"),
                       btnTextColor: AppColor.primary900Light,
                       btnTextSize: 12,
                       btnTextWeight: AppFontWeight.bold,

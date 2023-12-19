@@ -3460,5 +3460,145 @@
 "22":"10 pm",
 "23":"11 pm", 
 "weather":"Weather",
-"events":"Events"
+"events":"Events", 
+"permit_24_service_name":"Permit for commercial activities to be for 24 hours", 
+"service_describtion":"Service Definition", 
+"permit_24_desc": "Through this service, the beneficiary can increase the working hours of the establishment by issuing a permit to open the shop for 24 hours and linking it to the commercial activity license.", 
+"permit_24_req_1":"Cameras completion certificate from the Ministry of Interior.", 
+"requirements":"Requirements", 
+"permit_24_applying_step_1":"Enter the license number.", 
+"permit_24_applying_step_2":"Pay the financial consideration", 
+
+"applying_steps":"Submission method", 
+
+"conditions_and_fines": "Requirements and Fines", 
+"service_conditions_and_fess":"Service Conditions and Requirements", 
+
+"list_municipal_violations":"Regulation of Penalties for Municipal Violations",
+
+"permit_tobacco_name":"Permit to provide tobacco products", 
+
+"tobacco_service_desc":  "Issuing a permit to provide tobacco products on a valid commercial license for establishments licensed for some commercial activities that are permitted to practice the service of providing tobacco products.", 
+
+"tobacco_service_req1":"A valid shop license", 
+"tobacco_service_req2": "The activity should be included in the list of activities allowed to be issued since there are specific activities allowed to offer tobacco products such as restaurants and cafes" , 
+"tobacco_service_applying_step_1":"Determine the establishment's registry and choose the license",
+"tobacco_service_applying_step_2":"Complete the required data",
+"tobacco_service_applying_step_3":"Send the application to the municipality",
+"tobacco_service_applying_step_4":"Pay the fees after the application is approved by the municipality", 
+
+
+
+"posters_service_name":"Temporary Advertising Permit", 
+"posters_service_warning":  "More than one board can be added in one application. \n The service fee may vary from municipality to other.\nFees are calculated per day.\nThe service is for bulletin boards displayed on the shop facade or on the shop front glass. There is no need to issue a permit for the bulletins inside the shop.", 
+
+"posters_service_desc":    "Through this service, you can issue a temporary advertising permit for one or a group of bulletin boards to be displayed on the shop facade or on the shop front glass for a specified period. \n\nYou can also specify the type of the bulletin board (discounts, new products, or services for the shop)." , 
+  "posters_service_req1":"Determine the type of the board (discounts/new product/service for the shop)", 
+  "posters_service_req2":"Enter the poster name", 
+
+  "posters_service_req3": "Determine the dimensions of the board (length and width)", 
+  "posters_service_req4":"Attach the board image", 
+  "posters_service_req5":"Determine the required duration in days", 
+  "posters_service_req6":"Determine permit commencement date ", 
+
+  "first_method":"Method 1", 
+  "second_method":"Method 2", 
+
+
+  "posters_service_applying_first_step_1":"Sign in to the Baaldy App", 
+  "posters_service_applying_first_step_2": "Review the list of commercial licenses", 
+  "posters_service_applying_first_step_3":"Identify the commercial license and view its details", 
+  "posters_service_applying_first_step_4":"Choose a temporary Ad permit service", 
+
+
+
+  "posters_service_applying_second_step_1":"Sign in to the Baaldy App", 
+  "posters_service_applying_second_step_2":"Go to municipal services", 
+  "posters_service_applying_second_step_3":"Go to multi-permits service", 
+  "posters_service_applying_second_step_4":"Choose multiple temporary Ad permit service", 
+
+  "governce_conditions":"Government Requirements and Approvals", 
+  "posters_service_governce_desc":"1. The validity of the temporary advertising permit is based on the validity of the commercial license.\n\n2. Temporary boards on the shop facade must not exceed a maximum of 50% of the facade.\n\n3. The board should be within the display area on the shop facade and a maximum distance of one meter from the shop facade.\n\n4. The time period allowed for advertising shall not exceed 90 days from the date of issuance of the temporary advertising permit.\n\n5. Commercial licenses must be valid.\n\n6. The approval of the Ministry of Commerce is required in the event that the type of temporary advertising board is about (discounts).", 
+
+  "service_fess":"Service Fees", 
+  "posters_service_fee_1":"For each bulletin board in the application:", 
+  "posters_service_fee_2":"Area of the board in square meters * fees of square meter per day * Number of days required as per the permit",
+  "posters_service_fee_3":"Note: Fees vary from municipality to other.", 
+  "service_duration_time":"Service execution time", 
+  "posters_service_duration_desc":"Immediate/non-immediate service according to the municipality to which the commercial license belongs", 
+
+  "fines_penatlies":"Fines & Penalties", 
+  "no_fines":"There is no fines or penalties", 
+  "another_info":"Other Information", 
+
+
+  "renew_service_name":"Renewal of a commercial license", 
+  "duration_10_days":"1-10 days", 
+  "calculator_fees":"Fees Calculator", 
+  "renew_service_desc":"Through this service, you can enhance the continuity of your commercial business, as this service enables you to renew your commercial license, and you can also renew it with the modification of the license data. There are two types of renewals (immediate and non-immediate) depending on the activity and location of your facility.",
+
+  "renew_service_req1":"Lease contract, title deed, or investment contract signed by the Municipality or other government agencies", 
+  "renew_service_req2":"Hygiene contract (optional; depending on the contract and type of activity)", 
+
+  "rewnew_service_applying_step_1":"Determine the establishment's registry and choose the license", 
+  "rewnew_service_applying_step_2":"Pay the fees if the activity is immediate or send the application to the municipality in the case of non-immediate activities.", 
+
+ 
+
+  "issue_service_desc":"Through this service, you can start practicing a commercial business by issuing a commercial activity license in addition to the safety permit issued by the General Directorate of Civil Defense for all commercial activities approved by the Ministry of Municipal, Rural Affairs and Housing.", 
+
+
+  "issue_service_req1":"A picture for the shop from outside and make shop panel clear.", 
+  "issue_service_req2":"Lease contract, title deed or investment contract signed by the Municipality or other government agencies", 
+  "issue_service_req3":"Hygiene contract (optional; depending on the contract and type of activity)", 
+  "issue_service_req4":"Safety tools invoice or safety report from Civil Defense for immediate activities", 
+  "issue_service_req5":"A copy of the building permit", 
+
+
+  "complaince_service_name":"Issuance of Building Compliance Licensing", 
+"complaince_service_desc": "It is a service through which a certificate of compliance is issued to the building stating that the building complies with a set of requirements approved by the Ministry of Municipal and Rural Affairs and Housing in order to reduce visual distortion in commercial and residential buildings and to improve the quality of the urban landscape in cities.", 
+
+
+"complaince_service_req_1":"The applicant must be the owner of the building or an authorized person by the owner of the building with a valid electronic authorization issued by Balady", 
+
+"complaince_service_req_2":"The applicant must have a construction permit or a title deed", 
+
+
+
+"complaince_applying_benf":"Directly by the beneficiary (without an engineering office)", 
+"complaince_applying_benf_step_1":"Login through Balady App", 
+"complaince_applying_benf_step_2":"Access the service of Issuing a Building Compliance Licensing", 
+"complaince_applying_benf_step_3":"Enter the building license data or the building submission document and complete all the required data in the application form to issue the compliance licensing", 
+"complaince_applying_benf_step_4":"Acknowledge in the application that the evaluation elements for the issuance of the buildings compliance licensing contained in this manual have been met.",
+"complaince_applying_benf_step_5":"The Municipality will schedule a visit to verify the entered data", 
+"complaince_applying_benf_step_6": "Amanah/Municipality will approve the application", 
+"complaince_applying_benf_step_7":"Issuing a Building Compliance Licensing for the building",
+
+"complaince_applying_end":"By a qualified engineering office", 
+"complaince_applying_end_step_1":"Login through Balady App, then access the service", 
+"complaince_applying_end_step_2":" Authorize a qualified engineering office to complete the procedures for the issuance of the Building Compliance Licensing", 
+"complaince_applying_end_step_3": "The qualified engineering office will complete all the data required in the application form to issue the Building Compliance Licensing", 
+"complaince_applying_end_step_4": "The qualified engineering office will verify whether the building meets all the conditions and requirements of the Building Compliance Licensing", 
+"complaince_applying_end_step_5": "Acknowledgement that all the conditions and requirements for the issuance of the Building Compliance Licensing mentioned in this manual have been met", 
+"complaince_applying_end_step_6": "The qualified engineering office will complete the procedures for the issuance of the Licensing in accordance with the procedures followed in the Amanah/ Municipality", 
+"complaince_applying_end_step_7": "Issue the Building Compliance Licensing by the Amanah/Municipality through the qualified engineering office" , 
+
+
+"cancel_Service_name":"Cancellation of a commercial license", 
+"cancel_service_warning":"The business activity license must be canceled before the commercial registration is canceled.\n\nThe license will be automatically canceled after one year or more of the license expiry.\n\nDelay in canceling the license exposes you to pay renewal fees upon cancellation, in accordance with the Executive Regulations of Municipal Licensing Procedures 1438 AH.\n\nCancellation fees are SAR 20 provided that the license shall be valid.", 
+
+"cancel_service_desc":"At the stage of terminating the practice of commercial business, the beneficiary must cancel his commercial license associated with the establishment, and through this service, you can cancel the license.", 
+
+"cancel_service_req": "In case the cancellation is not immediate, attachments are requested to prove the closure of the activity.", 
+
+"cancel_applying_benf":"By the beneficiary" , 
+
+"cancel_applying_step1":"Determine the establishment's registry and choose the license" , 
+"cancel_applying_step2":"Complete the required data, if any" , 
+"cancel_applying_step3":"Pay the fees in case of immediate cancellation or send the application to the municipality if the cancellation is not immediate" 
+
+  
+
+ 
+
 }

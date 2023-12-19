@@ -20,8 +20,11 @@ import '../../../_shared_feature_/shared_feature_exports.dart'
         BottomSheetDialog,
         CustomTextWidget,
         DefaultAppBarWidget,
+        ElevatedButtonWidget,
         TabPageContainer;
+import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../../home_page/home_exports.dart' show CircleIcon;
+import '../../../profile/presentation/widgets/sign_in_card.dart';
 import '../../../profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../../../profile_features/dashboard/presentation/widgets/dashboard_list_shimmer.dart';
 import '../../../profile_features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
@@ -85,83 +88,96 @@ class _ServicesPageState extends State<ServicesPage> {
                   ),
                   body: BlocBuilder<ServicesCubit, ServicesState>(
                     builder: (context, state) {
-                      return SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            const SearchServicesTextField(),
-                            if (CommonProperties.isLoggedIn) ...[
-                              HeaderWithAll(
-                                text: "dashboard".tr(),
-                                margin: const EdgeInsets.all(16),
-                                onPressAll: () {
-                                  NavigationService.navigatorKey.currentState!
-                                      .pushNamed(RouteName.DashbordDataPage,
-                                          arguments:
-                                              context.read<DelegatorsCubit>());
-                                },
-                              ),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              Container(
-                                height: 58,
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: dashboardState.cards.length,
-                                  itemBuilder: (context, index) {
-                                    return DashboardCard(
-                                      card: dashboardState.cards[index],
-                                      totalCount: dashboardState
-                                              .cardsStates[
-                                                  dashboardState.cards[index]]
-                                              ?.totalCount ??
-                                          0,
-                                    );
+                      return BlocBuilder<EntryPointCubit, EntryPointState>(
+                          builder: (context, entryPointState) {
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              const SearchServicesTextField(),
+                              if (CommonProperties.isLoggedIn)
+                                Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: ElevatedButtonWidget.logout(
+                                      onPressed: () {
+                                    sl<EntryPointCubit>().clearAuth();
+                                  }),
+                                ),
+                              if (!CommonProperties.isLoggedIn)
+                                const SignInCard(),
+                              if (CommonProperties.isLoggedIn) ...[
+                                HeaderWithAll(
+                                  text: "dashboard".tr(),
+                                  margin: const EdgeInsets.all(16),
+                                  onPressAll: () {
+                                    NavigationService.navigatorKey.currentState!
+                                        .pushNamed(RouteName.DashbordDataPage,
+                                            arguments: context
+                                                .read<DelegatorsCubit>());
                                   },
                                 ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                Container(
+                                  height: 58,
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: dashboardState.cards.length,
+                                    itemBuilder: (context, index) {
+                                      return DashboardCard(
+                                        card: dashboardState.cards[index],
+                                        totalCount: dashboardState
+                                                .cardsStates[
+                                                    dashboardState.cards[index]]
+                                                ?.totalCount ??
+                                            0,
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                              const SizedBox(
+                                height: 16,
                               ),
+                              if (state.islamicServices.isNotEmpty)
+                                ServicesList(
+                                  title: "islamic_services".tr(),
+                                  services: state.islamicServices,
+                                ),
+                              if (state.customerVoiceServices.isNotEmpty)
+                                ServicesList(
+                                  title: "customer_voice_services".tr(),
+                                  services: state.customerVoiceServices,
+                                ),
+                              if (state.municipalServicee.isNotEmpty)
+                                ServicesList(
+                                  title: "municipal_services".tr(),
+                                  services: state.municipalServicee,
+                                ),
+                              if (state.businessLicenseServices.isNotEmpty)
+                                ServicesList(
+                                  title: "business_license_services".tr(),
+                                  services: state.businessLicenseServices,
+                                ),
+                              ServicesList(
+                                title: "honoring_the_dead_services".tr(),
+                                services: state.honoringTheDeadServices,
+                              ),
+                              /*ServicesList(
+                                title: "health_certificates_services".tr(),
+                                services: state.healthCertificatesServices,
+                              ),*/
+                              if (state.helpServices.isNotEmpty)
+                                ServicesList(
+                                  title: "help_services".tr(),
+                                  services: state.helpServices,
+                                ),
+                              const SizedBox(height: 24),
                             ],
-                            const SizedBox(
-                              height: 16,
-                            ),
-                            if (state.islamicServices.isNotEmpty)
-                              ServicesList(
-                                title: "islamic_services".tr(),
-                                services: state.islamicServices,
-                              ),
-                            if (state.customerVoiceServices.isNotEmpty)
-                              ServicesList(
-                                title: "customer_voice_services".tr(),
-                                services: state.customerVoiceServices,
-                              ),
-                            if (state.municipalServicee.isNotEmpty)
-                              ServicesList(
-                                title: "municipal_services".tr(),
-                                services: state.municipalServicee,
-                              ),
-                            if (state.businessLicenseServices.isNotEmpty)
-                              ServicesList(
-                                title: "business_license_services".tr(),
-                                services: state.businessLicenseServices,
-                              ),
-                            ServicesList(
-                              title: "honoring_the_dead_services".tr(),
-                              services: state.honoringTheDeadServices,
-                            ),
-                            /*ServicesList(
-                            title: "health_certificates_services".tr(),
-                            services: state.healthCertificatesServices,
-                          ),*/
-                            if (state.helpServices.isNotEmpty)
-                              ServicesList(
-                                title: "help_services".tr(),
-                                services: state.helpServices,
-                              ),
-                            const SizedBox(height: 24),
-                          ],
-                        ),
-                      );
+                          ),
+                        );
+                      });
                     },
                   ),
                 );

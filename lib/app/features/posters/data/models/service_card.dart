@@ -12,14 +12,13 @@ ServiceModel postersModel() => ServiceModel.fromJson(
         "isImportant": false,
         "action": {"type": "cards", "value": ""},
         "ar": {
-          "title": 'تصريح إعلاني مؤقت',
+          "title": 'posters_service_name',
           "description": "",
           "tag": null,
-          "warning":
-              "يمكن إضافة أكثر من لوحة إعلانية بالطلب الواحد.\n\n قد تختلف رسوم الخدمة من بلدية لبلدية أخرى.\n\n يتم حساب الرسوم باليوم.\n\n الخدمة مخصصة للوحات الإعلانية التي يتم عرضها على واجهة المحل أو على الزجاج الخارجي للمحل، أما اللوحات الإعلانية داخل المحل فلا تحتاج لإصدار تصريح."
+          "warning": "posters_service_warning"
         },
         "en": {
-          "title": 'تصريح إعلاني مؤقت',
+          "title": 'posters_service_name',
           "description": "",
           "tag": null,
           "warning": null
@@ -34,11 +33,10 @@ ServiceModel postersModel() => ServiceModel.fromJson(
             "feesName": "",
             "feesLink": "",
             "ar": {
-              "title": "وصف الخدمة",
-              "description":
-                  "يمكن من خلال هذه الخدمة إصدار تصريح إعلاني مؤقت، للوحة إعلانية أو مجموعة من اللوحات الإعلانية،  ليتم عرضها على واجهة المحل أو الزجاج الأمامي للمحل، لمدة محددة، كما يمكنك تحديد نوع اللوحة الإعلانية (تخفيضات/منتج جديد/خدمة للمحل)."
+              "title": "service_describtion",
+              "description": "posters_service_desc"
             },
-            "en": {"title": "Service Description", "description": ""}
+            "en": {"title": "posters_service_desc", "description": ""}
           },
           {
             "iconName": IconPath.serviceCardReq,
@@ -46,15 +44,15 @@ ServiceModel postersModel() => ServiceModel.fromJson(
             "rate": 0,
             "duration": "0",
             "requirements": [
-              "تحديد نوع اللوحة الإعلانية (تخفيضات/منتج جديد/خدمة للمحل)",
-              "إدخال اسم اللوحة الإعلانية",
-              "تحديد أبعاد اللوحة الإعلانية (الطول والعرض)",
-              "إرفاق صورة اللوحة الإعلانية",
-              "تحديد المدة المطلوبة بالأيام",
-              "تحديد تاريخ بداية التصريح "
+              "posters_service_req1",
+              "posters_service_req2",
+              "posters_service_req3",
+              "posters_service_req4",
+              "posters_service_req5",
+              "posters_service_req6"
             ],
-            "ar": {"title": "المتطلبات", "description": ""},
-            "en": {"title": "Requirements", "description": ""}
+            "ar": {"title": "requirements", "description": ""},
+            "en": {"title": "requirements", "description": ""}
           },
           {
             "iconName": IconPath.serviceCardFlow,
@@ -63,26 +61,26 @@ ServiceModel postersModel() => ServiceModel.fromJson(
             "duration": "0",
             "flow": [
               {
-                "title": "الطريقة الأولى",
+                "title": "first_method",
                 "steps": [
-                  "تسجيل الدخول لتطبيق بلدي ",
-                  "استعراض قائمة الرخص التجارية",
-                  "تحديد الرخصة التجارية وعرض تفاصيلها",
-                  "اختيار خدمة تصريح إعلاني مؤقت"
+                  "posters_service_applying_first_step_1",
+                  "posters_service_applying_first_step_2",
+                  "posters_service_applying_first_step_3",
+                  "posters_service_applying_first_step_4"
                 ],
               },
               {
-                "title": "الطريقة الثانية",
+                "title": "second_method",
                 "steps": [
-                  "تسجيل الدخول لتطبيق بلدي ",
-                  "التوجه للخدمات البلدية",
-                  "التوجه لخدمة التصاريح المتعددة",
-                  "اختيار خدمة تصريح إعلاني مؤقت"
+                  "posters_service_applying_second_step_1",
+                  "posters_service_applying_second_step_2",
+                  "posters_service_applying_second_step_3",
+                  "posters_service_applying_second_step_4"
                 ],
               },
             ],
-            "ar": {"title": "خطوات التقديم", "description": ""},
-            "en": {"title": "", "description": ""}
+            "ar": {"title": "applying_steps", "description": ""},
+            "en": {"title": "applying_steps", "description": ""}
           },
           {
             "iconName": IconPath.warning2,
@@ -91,9 +89,8 @@ ServiceModel postersModel() => ServiceModel.fromJson(
             "duration": "",
             "fees": null,
             "ar": {
-              "title": "الاشتراطات والموافقات الحكومية",
-              "description":
-                  "1-ترتبط صلاحية التصريح الإعلاني المؤقت بصلاحية الرخصة التجارية.\n\n2-اللوحات الإعلانية المؤقتة على واجهة المحل يجب ألا تتعدا 50% من الواجهة كحد أقصى.\n\n3-أن تكون اللوحة الإعلانية ضمن مساحة العرض على واجهة المحل وتبعد مسافة متر عن الواجهة كحد أقصى.\n\n4-ألا تزيد الفترة الزمنية المسموح فيها للإعلان عن 90 يوماً من تاريخ إصدار التصريح الإعلاني المؤقت.\n\n5-يشترط أن تكون الرخصة التجارية سارية .\n\n6-يشترط إرفاق موافقة وزارة التجارة  في حال كان نوع اللوحة الإعلانية المؤقتة (تخفيضات).",
+              "title": "governce_conditions",
+              "description": "posters_service_governce_desc",
             },
             "en": {"title": "Service Description", "description": ""}
           },
@@ -104,25 +101,23 @@ ServiceModel postersModel() => ServiceModel.fromJson(
             "duration": "0",
             "flow": [
               {
-                "title": "رسوم الخدمة",
+                "title": "service_fess",
                 "steps": [
-                  "لكل لوحة إعلانية بالطلب:",
-                  "مساحة اللوحة الإعلانية بالمتر المربع * رسوم المتر المربع لليوم الواحد * عدد الأيام المطلوبة بالتصريح",
-                  "ملحوظة: تختلف الرسوم من بلدية لبلدية أخرى.",
+                  "posters_service_fee_1",
+                  "posters_service_fee_2",
+                  "posters_service_fee_3"
                 ],
               },
               {
-                "title": "وقت تنفيذ الخدمة",
-                "steps": [
-                  "خدمة فورية/غير فورية وفقاً للبلدية التابع لها الرخصة التجارية"
-                ],
+                "title": "service_duration_time",
+                "steps": ["posters_service_duration_desc"],
               },
               {
-                "title": "الغرامات والجزاءات",
-                "steps": ["لا يوجد غرامات أو جزاءات"],
+                "title": "fines_penatlies",
+                "steps": ["no_fines"],
               },
             ],
-            "ar": {"title": "معلومات أخرى", "description": ""},
+            "ar": {"title": "another_info", "description": ""},
             "en": {"title": "", "description": ""}
           },
         ]

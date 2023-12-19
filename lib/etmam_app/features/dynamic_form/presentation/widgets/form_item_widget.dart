@@ -101,7 +101,7 @@ class _FormItemWidgetState extends State<FormItemWidget> {
                     }),
                 if (context.read<BiddingFormBloc>().isLastPage()) ...[
                   LabelTextWithOptional(
-                    label: "تفاصيل الخدمة المطلوبة",
+                    label: trans("required_service_details"),
                     labelSize: 16,
                     showOptional: true,
                   ),
