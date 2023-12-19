@@ -6,12 +6,11 @@ part of 'token_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$tokenHash() => r'644a2432dd13ee61f214296c24659afaf67b129c';
+String _$tokenHash() => r'2f53db8c20ab736edec5ccfb39571500e8a2275e';
 
 /// See also [Token].
 @ProviderFor(Token)
-final tokenProvider =
-    AutoDisposeAsyncNotifierProvider<Token, SsoTokenInfo?>.internal(
+final tokenProvider = AutoDisposeAsyncNotifierProvider<Token, String>.internal(
   Token.new,
   name: r'tokenProvider',
   debugGetCreateSourceHash:
@@ -20,6 +19,6 @@ final tokenProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$Token = AutoDisposeAsyncNotifier<SsoTokenInfo?>;
+typedef _$Token = AutoDisposeAsyncNotifier<String>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

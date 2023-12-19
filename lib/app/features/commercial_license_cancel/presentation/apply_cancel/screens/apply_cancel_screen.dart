@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../../core/utils/app_analytics_events.dart';
 import '../../../../../core/utils/common_functions.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class ApplyCancelScreen extends StatefulWidget {
   const ApplyCancelScreen({Key? key}) : super(key: key);
@@ -120,7 +121,7 @@ class _ApplyCancelScreenState extends State<ApplyCancelScreen> {
         create: (context) => ServiceCardsCubit(service),
         child: Scaffold(
           appBar: DefaultAppBarWidget(
-            title: service.title,
+            title: service.title.tr(),
             // actions: [
             //   Padding(
             //     padding: const EdgeInsetsDirectional.only(end: 10),

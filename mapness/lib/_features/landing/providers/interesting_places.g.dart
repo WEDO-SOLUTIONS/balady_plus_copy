@@ -6,7 +6,7 @@ part of 'interesting_places.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$interestingPlacesHash() => r'a850112e560695359ef191a5b15883e831e0f0b1';
+String _$interestingPlacesHash() => r'6349278b3754d8a98d255d2b6d6d082498dc8e40';
 
 /// See also [InterestingPlaces].
 @ProviderFor(InterestingPlaces)

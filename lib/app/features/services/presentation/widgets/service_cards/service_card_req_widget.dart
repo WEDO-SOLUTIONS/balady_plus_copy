@@ -48,7 +48,7 @@ class ServiceCardReqWidget extends StatelessWidget {
                 ),
                 const SizedBox(width: 4),
                 CustomTextWidget(
-                  card.title,
+                  card.title.tr(),
                   textStyle: AppStyle.cardTitleTextStle,
                 ),
               ],
@@ -57,37 +57,37 @@ class ServiceCardReqWidget extends StatelessWidget {
             Column(
               children: [
                 ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: card.requirements?.length ?? 0,
-                    itemBuilder: (ctx, index) {
-                      return Column(
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(IconPath.checked),
-                              CustomHorizontalSpace(width: 4),
-                              Flexible(
-                                child: CustomTextWidget(
-                                  card.requirements?[index] ?? "",
-                                  fontColor: AppColor.blackModern600Light,
-                                  fontSize: 14,
-                                  maxLines: 10,
-                                  height: 1.4,
-                                  fontWeight: AppFontWeight.bold,
-                                ),
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: card.requirements?.length ?? 0,
+                  itemBuilder: (ctx, index) {
+                    return Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(IconPath.checked),
+                            CustomHorizontalSpace(width: 4),
+                            Flexible(
+                              child: CustomTextWidget(
+                                card.requirements?[index].tr() ?? "",
+                                fontColor: AppColor.blackModern600Light,
+                                fontSize: 14,
+                                maxLines: 10,
+                                height: 1.4,
+                                fontWeight: AppFontWeight.bold,
                               ),
-                            ],
-                          ),
-                          const CustomVerticalSpace(height: 8),
-                          const DrawLineWidget(
-                            lineColor: Color(0x0F0B7E47),
-                          ),
-                          const CustomVerticalSpace(height: 8),
-                        ],
-                      );
-                    },
+                            ),
+                          ],
+                        ),
+                        const CustomVerticalSpace(height: 8),
+                        const DrawLineWidget(
+                          lineColor: Color(0x0F0B7E47),
+                        ),
+                        const CustomVerticalSpace(height: 8),
+                      ],
+                    );
+                  },
                 )
               ],
             )

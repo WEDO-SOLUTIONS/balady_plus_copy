@@ -50,7 +50,7 @@ class ServiceCardDescWidget extends StatelessWidget {
                 ),
                 const SizedBox(width: 4),
                 CustomTextWidget(
-                  card.title,
+                  card.title.tr(),
                   textStyle: AppStyle.cardTitleTextStle,
                 ),
               ],
@@ -60,7 +60,7 @@ class ServiceCardDescWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomTextWidget(
-                  card.description,
+                  card.description.tr(),
                   textStyle: AppStyle.serviceCardDescriptionTextStyle,
                   maxLines: 6,
                 ),
@@ -71,7 +71,7 @@ class ServiceCardDescWidget extends StatelessWidget {
                           NavigationService.navigatorKey.currentState!
                               .pushNamed(RouteName.calculatorMapRoute);
                         },
-                        text: card.feesName!,
+                        text: card.feesName!.tr(),
                       )
                     : const SizedBox(),
                 const SizedBox(height: 12),
@@ -93,7 +93,7 @@ class ServiceCardDescWidget extends StatelessWidget {
                       ServiceCardParameter(
                         title: 'time_serveis'.tr(),
                         iconName: IconPath.duration,
-                        value: card.duration,
+                        value: card.duration.tr(),
                         width: 140,
                       ),
                   ],

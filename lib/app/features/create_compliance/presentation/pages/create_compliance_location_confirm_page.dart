@@ -20,6 +20,7 @@ import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/profile_features/delegators/delegators_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/common_functions.dart';
@@ -91,8 +92,8 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
             "rate": 0,
             "duration": "",
             "requirements": [
-              "complaince_service_req_1"
-                  "complaince_service_req_2"
+              "complaince_service_req_1",
+              "complaince_service_req_2"
             ],
             "ar": {"title": "requirements", "description": ""},
             "en": {"title": "Requirements", "description": ""}
@@ -139,7 +140,7 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
       create: (context) => ServiceCardsCubit(service),
       child: Scaffold(
         appBar: DefaultAppBarWidget(
-          title: service.title,
+          title: service.title.tr(),
           actions: [
             Padding(
               padding: const EdgeInsetsDirectional.only(end: 10),

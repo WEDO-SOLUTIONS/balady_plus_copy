@@ -6,7 +6,7 @@ part of 'iwish_markers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$iwishMarkersHash() => r'e7e135bb7a91c31e1b6264936fbd325d6de7b67f';
+String _$iwishMarkersHash() => r'b9f845e61b2c2d060b35789a467ebb47afa8ba75';
 
 /// See also [_IwishMarkers].
 @ProviderFor(_IwishMarkers)

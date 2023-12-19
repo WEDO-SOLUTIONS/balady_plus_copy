@@ -6,7 +6,7 @@ part of 'layers_controls.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$layersControlsHash() => r'8c757ba41214f5f6a5528f18e491c790d95a0786';
+String _$layersControlsHash() => r'8db9fcdb5a3545e58f77bb96d00676ad73976629';
 
 /// See also [LayersControls].
 @ProviderFor(LayersControls)

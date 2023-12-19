@@ -8,6 +8,7 @@ import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports
 import 'package:balady_plus/app/features/services/services_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../core/utils/app_analytics_events.dart';
 import '../../../core/utils/constants/dialog_names.dart';
@@ -43,7 +44,7 @@ class _IssueStartServiceState extends State<IssueStartService> {
         ],
         child: Scaffold(
           appBar: DefaultAppBarWidget(
-            title: service.title,
+            title: service.title.tr(),
             bottom: ServiceCardsList(
               cards: service.cards,
             ),
@@ -175,8 +176,8 @@ class _IssueStartServiceState extends State<IssueStartService> {
               "rate": 0,
               "duration": "0",
               "requirements": [
-                "issue_service_req1"
-                    "issue_service_req2",
+                "issue_service_req1",
+                "issue_service_req2",
                 "issue_service_req3",
                 "issue_service_req4",
                 "issue_service_req5"

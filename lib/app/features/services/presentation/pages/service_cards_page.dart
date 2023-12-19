@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show DefaultAppBarWidget, ElevatedButtonWidget;
@@ -30,7 +31,7 @@ class _ServiceCardsPageState extends State<ServiceCardsPage> {
       create: (context) => ServiceCardsCubit(service),
       child: Scaffold(
         appBar: DefaultAppBarWidget(
-          title: service.title,
+          title: service.title.tr(),
           bottom: ServiceCardsList(
             cards: service.cards,
           ),
@@ -49,7 +50,7 @@ class _ServiceCardsPageState extends State<ServiceCardsPage> {
             ),
             if (service.warning != null)
               ServiceWarningWidget(
-                warning: service.warning!,
+                warning: service.warning!.tr(),
               )
             else
               SafeArea(

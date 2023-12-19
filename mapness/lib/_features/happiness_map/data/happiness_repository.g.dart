@@ -7,7 +7,7 @@ part of 'happiness_repository.dart';
 // **************************************************************************
 
 String _$happinessRepositoryHash() =>
-    r'4994ce765e1b824262f17d75acd7b45aeba68809';
+    r'858fe7f69541bd481bcf279d4543d5c0110e3ed5';
 
 /// See also [_HappinessRepository].
 @ProviderFor(_HappinessRepository)
