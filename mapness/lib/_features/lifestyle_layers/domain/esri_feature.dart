@@ -1,12 +1,16 @@
 import 'package:dgis_map/library.dart';
-import 'package:flutter/foundation.dart';
+import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
 
-class EsriPointFeature {
+class EsriPointFeature extends PointLayersData {
   EsriPointFeature({
     this.polygon,
     required this.point,
     required this.layerId,
     required this.objectId,
+    required super.id,
+    required super.name,
+    required super.description,
+    required super.type,
   });
 
   final GeoPointWithElevationMessage point;
@@ -54,6 +58,10 @@ class EsriPointFeature {
         longitude: longitude,
         elevation: 0,
       ),
+      id: '',
+      name: '',
+      description: '',
+      type: '',
     );
   }
 }
