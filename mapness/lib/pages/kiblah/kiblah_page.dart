@@ -2,9 +2,8 @@ import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/app/router.dart';
+import 'package:mapness/_features/landing/landing_page.dart';
 import 'package:mapness/app/routes/home_shell.dart';
-import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/pages/kiblah/ui/kiblah_compass.dart';
 import 'package:mapness/pages/kiblah/ui/kiblah_header.dart';
 import 'package:mapness/shared/config/package_config.dart';
@@ -46,19 +45,13 @@ class KiblahPage extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
               child: Material(
                 borderRadius: BorderRadius.circular(8),
-                color: Color(0xFF4CA5B4),
+                color: const Color(0xFF4CA5B4),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(8),
                   onTap: () {
-                    const LandingRoute().go(context);
-                    ref.read(goRouterProvider).push(
-                        const SearchRoute(
-                          // initialQuery: "المساجد القريبة منك",
-                          withClustering: true,
-                        ).location,
-                        extra: {
-                          "rubrics": [13374]
-                        });
+                    const LandingRoute(
+                      focusMaker: LangingFocusMaker.mosques,
+                    ).pushReplacement(context);
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(
