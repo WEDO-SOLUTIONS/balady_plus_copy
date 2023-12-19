@@ -94,7 +94,7 @@ class _ServicesPageState extends State<ServicesPage> {
                           child: Column(
                             children: [
                               const SearchServicesTextField(),
-                              if (CommonProperties.isLoggedIn)
+                              /* if (CommonProperties.isLoggedIn)
                                 Padding(
                                   padding: const EdgeInsets.all(16.0),
                                   child: ElevatedButtonWidget.logout(
@@ -103,7 +103,7 @@ class _ServicesPageState extends State<ServicesPage> {
                                   }),
                                 ),
                               if (!CommonProperties.isLoggedIn)
-                                const SignInCard(),
+                                const SignInCard(),*/
                               if (CommonProperties.isLoggedIn) ...[
                                 HeaderWithAll(
                                   text: "dashboard".tr(),
