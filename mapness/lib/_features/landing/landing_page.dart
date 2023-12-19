@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
+import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_sheet.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -17,7 +19,7 @@ import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'controls.dart' as controls;
 import 'dashboard.dart';
 
-enum LangingFocusMaker { iwish }
+enum LangingFocusMaker { iwish, mosques }
 
 class LandingPage extends ConsumerStatefulWidget {
   final LangingFocusMaker? focusMaker;
@@ -37,6 +39,19 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     switch (widget.focusMaker) {
       case LangingFocusMaker.iwish:
         ref.read(iwishMarkersProvider.notifier).focusMarkersOnMap();
+        break;
+      case LangingFocusMaker.mosques:
+        Future.delayed(Duration.zero, () {
+          ref.read(searchByRubricsQueryProvider.notifier).update((
+            QuickFilter(
+              rubrics: [13374],
+              title: "المساجد",
+              uiIcon: "assets/icons/svg/quick_filters/ic_quick_mosques.svg",
+              mapIcon: "assets/icons/svg/ic_marker.svg",
+            ),
+            1
+          ));
+        });
         break;
       default:
         break;
