@@ -1,4 +1,3 @@
-import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' show runApp;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizedApp;
@@ -13,7 +12,7 @@ import 'app/core/dependency_injection/injection_container.dart';
 void main() async {
   await AppEnv.setupEnv(EnvType.stg);
 
-  await setupMapness();
+  await setupMapness(EnvType.stg);
 
   await SentryFlutter.init(
     (options) {

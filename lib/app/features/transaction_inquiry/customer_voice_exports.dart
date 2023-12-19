@@ -62,4 +62,4 @@ export 'presentation/core/models/classification_response_model.dart';
 
 export 'presentation/core/models/request_details_response.dart'
     hide QuestionList;
-export 'presentation/core/models/request_details_screen_Args.dart';
+export 'presentation/core/models/request_details_screen_args.dart';

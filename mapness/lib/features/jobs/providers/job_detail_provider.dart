@@ -9,7 +9,7 @@ part 'job_detail_provider.g.dart';
 class JobDetailResponse extends _$JobDetailResponse {
   @override
   Future<JobModel?> build({required String id}) async {
-    final dio = ref.watch(dgisHmacNetwrokProvider);
+    final dio = await ref.read(dgisHmacNetwrokProvider.future);
 
     final response = await dio.get('/jobs/$id');
 

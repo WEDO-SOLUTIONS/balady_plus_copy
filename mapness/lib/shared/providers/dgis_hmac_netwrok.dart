@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:dio/dio.dart';
+import 'package:mapness/shared/lib/auth/auth_token_interceptors.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/integration_urls.dart';
 import 'package:mapness/shared/providers/package_info.dart';
@@ -14,7 +15,7 @@ part 'dgis_hmac_netwrok.g.dart';
 @riverpod
 class DgisHmacNetwrok extends _$DgisHmacNetwrok {
   @override
-  Dio build() {
+  Future<Dio> build() async {
     final url = ref.watch(integrationUrlsProvider);
     const timeout = Duration(seconds: 5);
     final appLanguage = ref.watch(appLanguageProvider);
@@ -42,11 +43,21 @@ class DgisHmacNetwrok extends _$DgisHmacNetwrok {
         "X-Language": appLanguage == Language.arabic ? "ar" : "en",
       },
     ))
-      ..interceptors.add(
+      ..interceptors.addAll([
         PrettyDioLogger(
           /// Since protobufs are just binary files what a purpose to print it
           responseBody: false,
         ),
-      );
+        AuthTokenInterceptor.tokenInterceptor(
+          ref,
+          BaseOptions(
+            responseType: ResponseType.bytes,
+            baseUrl: url,
+            sendTimeout: timeout,
+            receiveTimeout: timeout,
+            connectTimeout: timeout,
+          ),
+        )
+      ]);
   }
 }

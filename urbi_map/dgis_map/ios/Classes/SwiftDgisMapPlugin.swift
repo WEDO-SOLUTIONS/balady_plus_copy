@@ -3,13 +3,26 @@ import UIKit
 import DGis
 
 class DgisPluginApi: NSObject, PluginApi {
-    public func initializeMessage(_ message: LogOptionsMessage?, completion: @escaping (FlutterError?) -> Void) {
-        initializeDGis(logOptions: message?.logOptions)
+
+    func initializeMessage(_ message: LogOptionsMessage?, configMessage: VendorConfigMessage, completion: @escaping (FlutterError?) -> Void) {
+        initializeDGis(logOptions: message?.logOptions, configMessage: configMessage)
         completion(nil)
     }
     
-    private func initializeDGis(logOptions: LogOptions?) {
-        let vendorConfigPath = Bundle.main.path(forResource: "vendor-config", ofType: "jsonx")
+    private func initializeDGis(logOptions: LogOptions?,configMessage: VendorConfigMessage) {
+        let vendorConfigName: String
+            switch configMessage {
+            case .urbiPreProd:
+                vendorConfigName = "urbi-pre-prod-vendor-config"
+            case .momrahProd:
+                vendorConfigName = "momrah-prod-vendor-config"
+            case .momrahStg:
+                vendorConfigName = "momrah-staging-vendor-config"
+            @unknown default:
+                vendorConfigName = "momrah-prod-vendor-config"
+            }
+        
+        let vendorConfigPath = Bundle.main.path(forResource: vendorConfigName, ofType: "jsonx")
         let vendorConfigFile = vendorConfigPath.map { File(path: $0) }
         let vendorConfig = vendorConfigPath.flatMap(VendorConfig.from)
         

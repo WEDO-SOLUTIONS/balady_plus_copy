@@ -8,6 +8,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aboutApp => 'حول التطبيق';
 
   @override
+  String get accessibility => 'إمكانية الوصول';
+
+  @override
   String get addAddress => 'إضافة عنوان';
 
   @override
@@ -27,6 +30,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get arrival => 'الوصول';
+
+  @override
+  String get beaches => 'الشواطئ';
+
+  @override
+  String get beautyCenters => 'مراكز التجميل';
 
   @override
   String get best => 'أفضل';
@@ -51,6 +60,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cancel => 'إلغاء';
+
+  @override
+  String get carServices => 'خدمات السيارات';
 
   @override
   String get challenge => 'تحدي';
@@ -83,6 +95,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String get completed => 'مكتمل';
 
   @override
+  String get complianceCardDescription => 'تعرف على الطرق المستهدفة لتطبيق شهادة الامتثال من خلال الخريطة ';
+
+  @override
+  String get complianceCardTitle => 'خريطة شهادة الإمتثال';
+
+  @override
+  String get complianceFAQ => 'الاسئلة الشائعة';
+
+  @override
+  String get complianceOr => 'أو';
+
+  @override
+  String get complianceRequirements => 'الاشتراطات';
+
+  @override
+  String get complianceToKnow => 'لمعرفه المزيد اطلع على';
+
+  @override
   String get connectToMomrah => 'تواصل مع مومراه';
 
   @override
@@ -99,6 +129,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get coordinates => 'الإحداثيات';
+
+  @override
+  String get createCompliance => 'أصدر الشهادة';
 
   @override
   String get daily => 'يوميًا';
@@ -123,6 +156,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get deleteHistory => 'حذف السجلّ';
+
+  @override
+  String get deliveryAvailable => 'التسليم متاح';
 
   @override
   String get dentalCenters => 'مراكز طب الأسنان';
@@ -219,6 +255,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get hospitals => 'المستشفيات';
+
+  @override
+  String get hotels => 'الفنادق';
 
   @override
   String get hrs => 'ساعة';
@@ -326,6 +365,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get mapLayerTransport => 'المواصلات';
 
   @override
+  String get markets => 'الأسواق';
+
+  @override
   String get menu => 'قائمة';
 
   @override
@@ -342,6 +384,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get mosques => 'المساجد';
+
+  @override
+  String get motorVisual => 'الموتور، بصري';
 
   @override
   String get myChallenge => 'التحدي الخاص بي';
@@ -449,7 +494,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get published => 'تم النشر';
 
   @override
+  String get ratingBuilding => 'أو قيم مبناك';
+
+  @override
   String get ready => 'مستعد';
+
+  @override
+  String get recreationalCenters => 'مراكز الترفيه';
 
   @override
   String get refresh => 'إعادة تحميل';
@@ -465,6 +516,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get restArea => 'منطقة الراحة';
+
+  @override
+  String get restaurants => 'المطاعم';
 
   @override
   String get restroom => 'دورة مياة';
@@ -483,6 +537,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get sahm => 'ساهم';
+
+  @override
+  String get salons => 'صالونات';
 
   @override
   String get schools => 'المدارس';
@@ -560,6 +617,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get skills => 'المهارات';
 
   @override
+  String get snapAndSendButton => 'ساهم';
+
+  @override
+  String get snapAndSendDescription => 'حسن المشهد الحضري لمدينتك، وبلغ عن مظاهر التشوه البصري';
+
+  @override
+  String get snapAndSendTitle => 'صور وأرسل';
+
+  @override
   String get snap_and_send => 'التقط وأرسل';
 
   @override
@@ -576,6 +642,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get specifyOnTheMap => 'حدد على الخريطة';
+
+  @override
+  String get sportClubs => 'الأندية الرياضية';
 
   @override
   String get sportsGround => 'الملاعب الرياضية';
@@ -608,7 +677,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get theTripTook => 'استغرقت الرحلة';
 
   @override
-  String get tinId => 'رقم هوية دافع الضرائب';
+  String get tinId => 'رقم الرخصة التجارية';
 
   @override
   String get to => 'إلى';
@@ -678,13 +747,4 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get youSearch => 'انت تبحث';
-
-  @override
-  String get deliveryAvailable => 'التسليم متاح';
-
-  @override
-  String get accessibility => 'إمكانية الوصول';
-
-  @override
-  String get motorVisual => 'الموتور، بصري';
 }

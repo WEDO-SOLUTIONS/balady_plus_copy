@@ -119,9 +119,11 @@ extension SearchCategoryMessage {
         case .cafe:
             return [159, 162]
         case .restaurants:
-            return [161]
+            return [161,165,161,9786,162,469,58871]
         case .parks:
             return [168]
+        case .beaches:
+            return [168]    
         case .hospitals:
             return [201]
         case .schools:

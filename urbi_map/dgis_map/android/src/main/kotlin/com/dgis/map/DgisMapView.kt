@@ -400,6 +400,20 @@ class DgisMapView(
             return
         }
 
+        if (category == SearchCategoryMessage.BEACHES) {
+            searchHandler?.searchByBeachCategory(
+                    searchGeoRect = searchRect?.toGeoRect(),
+                    spatialRestriction = spatialRestriction?.map {
+                        it.toGeoPoint()
+                    },
+                    weekTimeMessage = weekTime,
+                    sortingType = sortingType,
+                    pageSize = pageSize.toInt(),
+                    result = result
+            )
+            return
+        }
+
         searchHandler?.searchByCategories(
                 categories = category.toRubrics(),
                 spatialRestriction = spatialRestriction?.map {

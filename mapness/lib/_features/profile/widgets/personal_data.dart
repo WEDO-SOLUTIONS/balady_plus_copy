@@ -1,10 +1,10 @@
+import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/features/sso_auth/domain/entity/sso_user_info_model.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PersonalData extends StatelessWidget {
-  final SsoUserInfoModel userInfo;
+  final SsoUserInfo userInfo;
 
   const PersonalData({
     super.key,
@@ -24,7 +24,7 @@ class PersonalData extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             PersonalDataRow(
-              title: userInfo.givenName ?? "",
+              title: userInfo.getFirstName(),
               subtitle: context.l10n.firstName,
             ),
             Padding(
@@ -35,7 +35,7 @@ class PersonalData extends StatelessWidget {
               ),
             ),
             PersonalDataRow(
-              title: userInfo.familyName ?? "",
+              title: userInfo.getLastName(),
               subtitle: context.l10n.lastName,
             ),
             Padding(

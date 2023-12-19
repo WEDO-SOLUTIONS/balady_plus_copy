@@ -864,7 +864,8 @@ enum SearchCategoryMessage {
   dentalCenters,
   hotels,
   beautyCenters,
-  recreationCenters
+  recreationCenters,
+  beaches
 }
 
 class SearchCategoryMessage_ {
@@ -995,7 +996,12 @@ class WeatherMapMessage {
   final String? layerName;
   final String? rasterTileUri;
   final bool enabled;
+}
 
+enum VendorConfigMessage {
+  urbiPreProd,
+  momrahProd,
+  momrahStg,
 }
 
 @ConfigurePigeon(
@@ -1329,5 +1335,6 @@ abstract class FlutterMapApi {
 @HostApi()
 abstract class PluginApi {
   @async
-  void initialize(LogOptionsMessage? message);
+  void initialize(
+      LogOptionsMessage? message, VendorConfigMessage? configMessage);
 }

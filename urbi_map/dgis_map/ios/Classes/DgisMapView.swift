@@ -382,6 +382,19 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             return
         }
 
+        // TODO. Remove, when backend data will fixed.
+        if category == .beaches {
+            searchHandler.searchByBeachCategory(
+                spatialRestriction: spatialRestriction,
+                searchGeoRect: searchRect?.geoRect,
+                weekTimeMessage: weekTime,
+                sortingType: sortingType,
+                pageSize: pageSize.int32Value,
+                completion: completion
+            )
+            return
+        }
+
         searchHandler.searchByCategories(
             category.toRubrics(),
             spatialRestriction: spatialRestriction,

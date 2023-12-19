@@ -1,0 +1,145 @@
+# yamllint disable rule:line-length
+---
+name: 🔨🧪 Build & Test
+
+permissions: write-all
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - "urbi"
+      - "urbi-release-*"
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    branches:
+      - "urbi"
+      - "urbi-release-*"
+    paths-ignore:
+      - "**.md"
+      - "doc/**"
+      - ".git/"
+      - ".vscode/"
+
+jobs:
+  # analyze:
+  #   name: Analyze
+  #   if: github.event.pull_request.draft == false
+  #   timeout-minutes: 30
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: ⬇️ Checkout repository
+  #       uses: actions/checkout@v3
+  #     - name: ⚙️ Setup Flutter
+  #       uses: subosito/flutter-action@v2
+  #       with:
+  #         flutter-version: '3.10.3'
+  #         channel: 'stable'
+  #     - name: 🤖🔨 Development setup dgis_map
+  #       run: |
+  #         cd urbi_map/dgis_map
+  #         flutter pub get
+  #         flutter pub run build_runner build --delete-conflicting-outputs
+  #     - name: 🤖🔨 Development setup dgis_map_platform_interface
+  #       run: |
+  #         cd urbi_map/dgis_map_platform_interface
+  #         mkdir lib/src/pigeons/
+  #         mkdir ../dgis_map/android/src/main/kotlin/com/dgis/map/map_api
+  #         flutter pub get
+  #         flutter pub run pigeon --input pigeons/messages.dart
+  #     - name: 🤖🔨 Development setup balady
+  #       run: |
+  #         flutter pub get
+  # - name: ⚠️ℹ️ Run Dart analysis for app package
+  #   uses: zgosalvez/github-actions-analyze-dart@v2.0.9
+  # - name: ⚠️ℹ️ Run Dart analysis for dgis_map package
+  #   uses: zgosalvez/github-actions-analyze-dart@v2.0.9
+  #   with:
+  #     working-directory: "${{github.workspace}}/urbi_map/dgis_map"
+  # - name: ⚠️ℹ️ Run Dart analysis for dgis_map_platform_interface package
+  #   uses: zgosalvez/github-actions-analyze-dart@v2.0.9
+  #   with:
+  #     working-directory: "${{github.workspace}}/urbi_map/dgis_map_platform_interface"
+
+  build:
+    name: Build Android
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: ⬇️ Checkout repository
+        uses: actions/checkout@v3
+      - name: ⚙️ Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.10.3"
+          channel: "stable"
+          cache: true
+      - name: ⚙️ Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: "zulu"
+          java-version: "17.x"
+          cache: "gradle"
+        id: java
+      - name: 🤖🔨 Development setup dgis_map_platform_interface
+        run: |
+          cd urbi_map/dgis_map_platform_interface
+          mkdir lib/src/pigeons/
+          mkdir ../dgis_map/android/src/main/kotlin/com/dgis/map/map_api
+          flutter pub get
+          flutter pub run pigeon --input pigeons/messages.dart
+      - name: 🤖🔨 Development setup dgis_map
+        run: |
+          cd urbi_map/dgis_map
+          flutter pub get
+          flutter pub run build_runner build --delete-conflicting-outputs
+      - name: 🤖🔨 Development setup mapness
+        run: |
+          cd mapness
+          flutter pub get
+          flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: 🤖🔨 Download strings from Localazy
+        uses: localazy/download@v1
+        with:
+          read_key: ${{ secrets.LOCALAZY_READ_KEY }}
+          write_key: ${{ secrets.LOCALAZY_WRITE_KEY }}
+
+      - name: 🤖🔨 Build Android app
+        run: |
+          flutter build apk --target lib/main_urbi_pre.dart --dart-define=GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)" --dart-define=GIT_COMMIT="$(git --no-pager show -s --format='%s')" --dart-define=VENDOR_CONFIG=urbi-pre-prod
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-urbi-pre-prod.apk
+          #flutter build apk --target lib/main_prod.dart --dart-define=GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)" --dart-define=GIT_COMMIT="$(git --no-pager show -s --format='%s')" --dart-define=VENDOR_CONFIG=momrah-prod
+          #mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-momrah-prod.apk
+      - name: 🤖🔨 Upload Urbi Pre Prod apk
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-urbi-pre-prod.apk
+          path: build/app/outputs/flutter-apk/app-urbi-pre-prod.apk
+      #- name: 🤖🔨 Upload Momrah Prod apk
+        #uses: actions/upload-artifact@v3
+        #with:
+          #name: app-momrah-prod.apk
+          #path: build/app/outputs/flutter-apk/app-momrah-prod.apk
+
+  # notify:
+  #   name: Notify
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: send telegram message on push
+  #       uses: appleboy/telegram-action@master
+  #       with:
+  #         to: -4006528048
+  #         token: 6494211382:AAFAgk78N2uia5XFCtHHLnaIupX3EDznzRs
+  #         message: |
+  #           ${{ github.actor }} created commit:
+  #           Commit message: ${{ github.event.commits[0].message }}
+  #           Repository: ${{ github.repository }}
+  #           See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}

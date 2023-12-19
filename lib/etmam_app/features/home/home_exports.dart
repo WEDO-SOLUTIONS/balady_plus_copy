@@ -38,7 +38,7 @@ export 'domain/repositories/home_repository.dart';
 
 /// domain -> use cases
 export 'domain/use_cases/get_main_services.dart';
-export 'domain/use_cases/get_sub_Services.dart';
+export 'domain/use_cases/get_sub_services.dart';
 export 'domain/use_cases/get_top_ordered_sub_Services.dart';
 export 'domain/use_cases/get_top_rated_providers.dart';
 

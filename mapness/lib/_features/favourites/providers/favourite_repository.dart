@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/domain/favourites_state.dart';
@@ -14,7 +15,6 @@ final favouriteRepositoryProvider = _favouriteRepositoryProvider;
 
 @riverpod
 class _FavouriteRepository extends _$FavouriteRepository {
-  Dio get dio => ref.read(dGisNetworkProvider);
 
   Future<void> delete(FavouriteItem item) async {
     await deleteMany([item]);
@@ -32,6 +32,7 @@ class _FavouriteRepository extends _$FavouriteRepository {
   }
 
   Future<void> deleteMany(List<FavouriteItem> items) async {
+    final dio = await ref.read(dGisNetworkProvider.future);
     final request = proto.DeleteFavouriteItemsRequest(
       items: items.map(
         (e) {
@@ -76,6 +77,7 @@ class _FavouriteRepository extends _$FavouriteRepository {
   }
 
   Future<void> addItems(List<FavouriteItem> items) async {
+    final dio = await ref.read(dGisNetworkProvider.future);
     final request = proto.AddFavouriteItemsRequest(items: items.map((e) {
       final FavouriteItemMarkerType itemType;
       final data = state.requireValue;
@@ -104,7 +106,7 @@ class _FavouriteRepository extends _$FavouriteRepository {
 
   @override
   Future<FavouritesState> build() async {
-    final dio = ref.watch(dGisNetworkProvider);
+    final dio = await ref.read(dGisNetworkProvider.future);
     final raw = await dio.get('favourites');
     final response = proto.FavouritesResponse.fromBuffer(raw.data);
 
