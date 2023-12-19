@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_datasource.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_service.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/building_compliance_certificate.dart';
-import 'package:mapness/_features/lifestyle_layers/domain/esri_feature.dart';
+import 'package:mapness/_features/lifestyle_layers/domain/investment_sites.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/map_requests_params.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/white_lands.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -18,32 +18,36 @@ class LifestyleRepository extends _$LifestyleRepository {
     ),
   );
 
-  Future<List<EsriPointFeature>?> getEsriPoints({
-    required MapRequestParams params,}
-  ) async {
-    var esriMarkers = await dataSource.getEsriPoints(params);
-
-    var list = <EsriPointFeature>[];
-
-    var markerList = esriMarkers as List<dynamic>;
-    for (var element in markerList) {
-      list.add(EsriPointFeature.fromJson(element, '${params.layer.layerId}'));
+  Future<List<InvestmentSites>?> getEsriPoints({
+    required MapRequestParams params,
+  }) async {
+    try{
+      var response = await dataSource.getEsriPoints(params);
+      var list = <InvestmentSites>[];
+      list = investmentSitesFromJson(response as List<dynamic>);
+      return list;
+    }
+    catch(e){
+      return null;
     }
 
-    return list;
   }
 
   Future<List<BuildingComplianceCertificate>?> buildingComplianceCertificate(
       MapRequestParams params) async {
-    var response = await dataSource.getEsriPoints(params);
-    return buildingComplianceCertificateFromJson(response ?? []);
+    try {
+      final response = await dataSource.getEsriPoints(params);
+      return buildingComplianceCertificateFromJson(response ?? []);
+    } catch (e) {
+      debugPrint('$e');
+      return null;
+    }
   }
 
   Future<List<WhiteLands>?> getWhiteLands(MapRequestParams params) async {
     var response = await dataSource.getEsriPoints(params);
     try {
-      var landsFencedFromJson2 = whiteLandsFromJson(response ?? []);
-      return landsFencedFromJson2;
+      return whiteLandsFromJson(response ?? []);
     } catch (e) {
       debugPrint('$e');
       return null;
