@@ -106,8 +106,9 @@ class ComplainceMapCard extends StatelessWidget {
                         fontSize: 13,
                         height: 40,
                         onPressed: () {
-                          Navigator.pushNamed(
-                              context, RouteName.createCompliancePage);
+                          CommonFunctions.openCreateCompliance();
+                          // Navigator.pushNamed(
+                          //     context, RouteName.createCompliancePage);
                         }),
                   ),
                   const CustomHorizontalSpace(width: 4),

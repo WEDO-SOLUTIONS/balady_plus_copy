@@ -37,7 +37,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       case LangingFocusMaker.iwish:
         () async {
           final layersControls = ref.read(layersControlsProvider.notifier);
-          await layersControls.showIwish();
+          // await layersControls.showIwish();
           await layersControls.focusIwish();
         }();
         break;
