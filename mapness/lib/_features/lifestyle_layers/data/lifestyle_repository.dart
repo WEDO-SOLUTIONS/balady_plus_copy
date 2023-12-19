@@ -23,7 +23,8 @@ class LifestyleRepository extends _$LifestyleRepository {
   }) async {
     try{
       var response = await dataSource.getEsriPoints(params);
-      return investmentSitesFromJson(response as List<dynamic>);
+      var result = investmentSitesFromJson(response as List<dynamic>);
+      return result;
     }
     catch(e){
       return null;

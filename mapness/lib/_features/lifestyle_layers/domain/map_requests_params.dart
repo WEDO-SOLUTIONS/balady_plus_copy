@@ -31,7 +31,7 @@ class MapRequestParams {
 
     if (proxy != null) {
       const domain = 'https://apiservicesstg.balady.gov.sa';
-    const gisLayers = 'v1/gis-urbi-services/layers';
+      const gisLayers = 'v1/gis-urbi-services/layers';
 
       var hashedUrl = "$domain/$gisLayers/$layerId/query?";
       final mainUrl = "$proxy/$gisLayers";
@@ -48,8 +48,6 @@ class MapRequestParams {
       const gisLayers = 'gis-urbi-services/layers';
       var domainYUrl = domain.replaceAll('/urbi-services/', '');
       var hashedUrl = "$domainYUrl/$gisLayers/$layerId/query?";
-      params.forEach((key, value) => hashedUrl += "$key=$value&");
-      hashedUrl = hashedUrl.substring(0, hashedUrl.length - 1);
       params.forEach((key, value) => hashedUrl += "$key=$value&");
       resultUrl = hashedUrl.substring(0, hashedUrl.length - 1);
     }
@@ -70,7 +68,15 @@ class MapRequestParams {
       var hashedUrl = "$domain/$gisLayers/$layerId/query?";
       params.forEach((key, value) => hashedUrl += "$key=$value&");
       hashedUrl = hashedUrl.substring(0, hashedUrl.length - 1);
-      verifyingKey = hashRequest_(hashedUrl, "GET");
+      verifyingKey = hashRequest(hashedUrl, "GET");
+    } else {
+      var domainYUrl = domain.replaceAll('/urbi-services/', '');
+      const gisLayers = 'gis-urbi-services/layers';
+      var hashedUrl = "$domainYUrl/$gisLayers/$layerId/query?";
+      params.forEach((key, value) => hashedUrl += "$key=$value&");
+      hashedUrl = hashedUrl.substring(0, hashedUrl.length - 1);
+      print("VERIFY KEY URL:::::::::::$hashedUrl");
+      verifyingKey = hashRequest(hashedUrl, "GET");
     }
 
     return verifyingKey;

@@ -28,13 +28,11 @@ class QrLicenseRepository extends _$QrLicenseRepository {
       ///only for urbiPreProd
     const domain = 'https://apiservicesstg.balady.gov.sa/v1';
     var url = "$domain/$licenseDetails/$licenseNumber";
-    verifyKey = hashRequest_(url, "GET");
+    verifyKey = hashRequest(url, "GET");
     final proxyUrl = "$proxy/$licenseDetails";
     resultUrl = "$proxyUrl/$licenseNumber";
     }else{
 
-    // https://apiservicesstg.balady.gov.sa/v1/urbi-services/
-      // const domain = 'https://apiservicesstg.balady.gov.sa/v1';
       var domain = env.url.replaceAll('/urbi-services/', '');
       resultUrl = "$domain/$licenseDetails/$licenseNumber";
     }

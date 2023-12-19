@@ -29,8 +29,11 @@ class DgisController extends _$DgisController {
 
   late final StreamController<VisibleRectEvent> _visibleRectStream =
       StreamController.broadcast();
+
   Stream<VisibleRectEvent> get visibleRectEvents => _visibleRectStream.stream
       .debounceTime(const Duration(milliseconds: 2500));
+
+  final visibleRectSubject = BehaviorSubject<VisibleRectEvent>();
 
   @override
   Future<DgisMapController> build() {
@@ -38,6 +41,7 @@ class DgisController extends _$DgisController {
 
     ref.onDispose(() {
       _visibleRectStream.close();
+      visibleRectSubject.close();
     });
 
     return _completer.future;
@@ -130,6 +134,9 @@ class DgisController extends _$DgisController {
 
     if (!_visibleRectStream.isClosed) {
       _visibleRectStream.sink.add(event);
+    }
+    if (!visibleRectSubject.isClosed) {
+      visibleRectSubject.add(event);
     }
   }
 
