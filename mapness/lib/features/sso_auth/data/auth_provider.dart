@@ -15,7 +15,7 @@ class Auth extends _$Auth {
   }
 
   Future<void> logOut() async {
-    await sl<EntryPointCubit>().clearAuth();
+    await sl<EntryPointCubit>().autoLogout();
     ref.invalidateSelf();
   }
 
