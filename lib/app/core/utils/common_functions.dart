@@ -1044,8 +1044,7 @@ class CommonFunctions {
                 "Error";
 
         FlutterUxcam.logEventWithProperties(URL, {
-                    "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
-
+          "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
           "Data": data.length <= 1024 ? data : data.substring(0, 1023),
           "QueryString": queryString.length <= 1024
               ? queryString

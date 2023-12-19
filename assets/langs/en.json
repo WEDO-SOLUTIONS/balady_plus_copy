@@ -76,7 +76,7 @@
 "shareWithUs":"Join us",
 "newServices":"New services",
 "beTheBestInspectorIn":"Be the best observer in",
-"new":"New",
+"new":"New", 
 "sendImage":"Snap and send",
 "uploadReport":"File a report",
 "sendImageHint":"Improve your city's urban landscape and report manifestations of visual distortion",
@@ -108,14 +108,14 @@
 "issue_health_certificate":"Issuing a health certificate",
 "issue_trade_license":"Issuing a commercial license",
 "move_diseased":"Transporting and preparing deceased",
-"municipal_advisor":"Smart Advisor",
+"municipal_advisor":"Intelligent assistant",
 "prayer_times":"Prayer times",
 "request_service":"Municipal service request",
 "scanner":"Fast code scanner",
-"schedule_date":"Book an appointment online",
+"schedule_date":"Book an online appointment",
 "search_status":"Inquiries",
 "send_image":"Snap and send",
-"supporter":"Supporter",
+"supporter":"Daem",
 "transaction_inquery":"Transaction inquiry",
 "your_opnion_matter":"Your opinion matters",
 "zamzam_points":"Zamzam water distribution outlets",
@@ -2307,7 +2307,7 @@
 "no_result":"No results",
 "ekramMiniApp":"Objections",
 "ekramOrders":"Requests",
-"cemetery_booking_requests":"Cemetery reservation requests",
+"cemetery_booking_requests":"Select and reserve a cemetery",
 "requests_transporting_deceased":"Requests for transporting and preparing the deceased",
 "deceasedName":"Deceased name",
 "cemeteryName":"Cemetery name",
@@ -2960,8 +2960,8 @@
 "skip":"Skip",
 "land_info":"Land information",
 "municipal_commercial":"Commercial services",
-"municipal_ewaa":"Accommodation platform",
-"municipal_health":"Issuing a health certificate",
+"municipal_ewaa":"Ewa platform",
+"municipal_health":"Issue a health certificate",
 "municpal_all":"More",
 "municpal_construction":"Construction services",
 "municpal_housing":"Group housing license",
@@ -3603,7 +3603,25 @@
 
 "cancel_applying_step1":"Determine the establishment's registry and choose the license" , 
 "cancel_applying_step2":"Complete the required data, if any" , 
-"cancel_applying_step3":"Pay the fees in case of immediate cancellation or send the application to the municipality if the cancellation is not immediate" 
+"cancel_applying_step3":"Pay the fees in case of immediate cancellation or send the application to the municipality if the cancellation is not immediate", 
+
+
+"submit_objections":"Submit an objection request", 
+"compliance_certificate":"Issuing a compliance certificate", 
+
+"ekram_benf_transport":"Request of transporting and preparing deceased", 
+"ekram_inquiry_burial_grave":"Inquiry about cemeteries", 
+"ekram_inquiry_about_grave":"Inquiry about a deceased cemetery", 
+"ekram_inquiry_orgnizations":"Inquiry about transport and preparation agencies", 
+"ekram_print_certificate":"Print a burial certificate", 
+"jod":"Donation with Joodeskan", 
+"issue_commerical_license":"Issue a commercial license", 
+"multiple_permits":"Multiple permits", 
+"tobaccoServices":"Disclosure of tobacco", 
+"ekram_empolyee_title":"Diver of the deceased transport vehicle"
+
+
+
 
   
 

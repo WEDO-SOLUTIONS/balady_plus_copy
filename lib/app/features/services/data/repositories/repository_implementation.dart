@@ -12,40 +12,9 @@ class ServicesRepositoryImplementation implements ServicesRepository {
   });
 
   @override
-  Future<Either<Failure, List<ServiceEntity>>>
-      getCustomerVoiceServices() async {
-    try {
-      final services = await localDataSource.getCustomerVoiceServices();
-      return Right(services);
-    } catch (e) {
-      return Left(CacheFailure());
-    }
-  }
-
-  @override
   Future<Either<Failure, List<ServiceEntity>>> getIslamicServices() async {
     try {
       final services = await localDataSource.getIslamicServices();
-      return Right(services);
-    } catch (e) {
-      return Left(CacheFailure());
-    }
-  }
-
-  @override
-  Future<Either<Failure, List<ServiceEntity>>> getNewServices() async {
-    try {
-      final services = await localDataSource.getNewServices();
-      return Right(services);
-    } catch (e) {
-      return Left(CacheFailure());
-    }
-  }
-
-  @override
-  Future<Either<Failure, List<ServiceEntity>>> getImportantServices() async {
-    try {
-      final services = await localDataSource.getImportantServices();
       return Right(services);
     } catch (e) {
       return Left(CacheFailure());
@@ -63,32 +32,10 @@ class ServicesRepositoryImplementation implements ServicesRepository {
     }
   }
 
-  /* @override
-  Future<Either<Failure, List<ServiceEntity>>>
-      getHealthCertificatesServices() async {
-    try {
-     // final services = await localDataSource.getHealthCertificatesServices();
-      return Right(services);
-    } catch (e) {
-      return Left(CacheFailure());
-    }
-  }*/
-
   @override
   Future<Either<Failure, List<ServiceEntity>>> getHelpServices() async {
     try {
       final services = await localDataSource.getHelpServices();
-      return Right(services);
-    } catch (e) {
-      return Left(CacheFailure());
-    }
-  }
-
-  @override
-  Future<Either<Failure, List<ServiceEntity>>>
-      getHonoringTheDeadServices() async {
-    try {
-      final services = await localDataSource.getHonoringTheDeadServices();
       return Right(services);
     } catch (e) {
       return Left(CacheFailure());

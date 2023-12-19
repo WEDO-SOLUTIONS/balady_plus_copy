@@ -12,18 +12,17 @@ import '../../../services_exports.dart'
         CustomerVoiceServices,
         HonoringTheDeadServices,
         HelpServices,
-        HealthCertificatesServices,
         BusinessLicenseServices,
         ServiceEntity;
 
 part 'services_state.dart';
 
 class ServicesCubit extends Cubit<ServicesState> {
-  final ImportantServices importantServices;
-  final NewServices newServices;
+  //final ImportantServices importantServices;
+//  final NewServices newServices;
   final IslamicServices islamicServices;
-  final CustomerVoiceServices customerVoiceServices;
-  final HonoringTheDeadServices honoringTheDeadServices;
+  // final CustomerVoiceServices customerVoiceServices;
+  //final HonoringTheDeadServices honoringTheDeadServices;
   final HelpServices helpServices;
   final MunicipalServices municipalServices;
   //final HealthCertificatesServices healthCertificatesServices;
@@ -31,13 +30,13 @@ class ServicesCubit extends Cubit<ServicesState> {
 
   ServicesCubit({
     required this.businessLicenseServices,
-    required this.customerVoiceServices,
+    //  required this.customerVoiceServices,
     // required this.healthCertificatesServices,
     required this.municipalServices,
     required this.helpServices,
-    required this.honoringTheDeadServices,
-    required this.importantServices,
-    required this.newServices,
+    // required this.honoringTheDeadServices,
+    // required this.importantServices,
+    // required this.newServices,
     required this.islamicServices,
   }) : super(const ServicesState()) {
     loadServices();
@@ -106,14 +105,15 @@ class ServicesCubit extends Cubit<ServicesState> {
     print("checkEkramServices");
     emit(state.copyWith(status: BlocStatus.closeLoading));
 
-    final honoringTheDeadServicesList =
-        await honoringTheDeadServices(NoParams());
+    final businessLicenseServicesList =
+        await businessLicenseServices(NoParams());
+
     emit(state.copyWith(
       status: BlocStatus.success,
-      honoringTheDeadServices:
-          honoringTheDeadServicesList.getOrElse(() => []).where((service) {
+      businessLicenseServices:
+          businessLicenseServicesList.getOrElse(() => []).where((service) {
         if (CommonProperties.showEkramDriver) return true;
-        if (CommonProperties.showEkramDriver != true && service.id == 2)
+        if (CommonProperties.showEkramDriver != true && service.id == 316)
           return false;
         return true;
       }).toList(),

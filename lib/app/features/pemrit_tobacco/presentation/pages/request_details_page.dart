@@ -259,8 +259,9 @@ class PermitsTobaccoReqeuestDetailsPage extends StatelessWidget {
                                 state.requestDetails?.requestInfo?.billInfo !=
                                     null)
                               PaymentWidget(
-                                requestKey:
-                                    state.requestDetails?.requestKey ?? "",
+                                requestKey: state.requestDetails?.requestInfo
+                                        ?.billInfo?.billKey ??
+                                    "",
                                 billNumber: state.requestDetails?.requestInfo
                                         ?.billInfo?.billNumber ??
                                     "",

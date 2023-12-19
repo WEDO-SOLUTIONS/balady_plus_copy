@@ -47,6 +47,7 @@ class ServiceIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var context = NavigationService.navigatorKey.currentContext!;
     return InkWell(
         onTap: () async {
           if (service.action.type == ServiceAction.pageRoute) {
@@ -59,14 +60,14 @@ class ServiceIcon extends StatelessWidget {
               } else {
                 NavigationService.navigatorKey.currentState?.pushNamed(
                   service.action.value,
-                  arguments: service,
+                  arguments: null,
                 );
               }
             } else {
               if (CommonProperties.isLoggedIn) {
                 NavigationService.navigatorKey.currentState?.pushNamed(
                   service.action.value,
-                  arguments: service,
+                  arguments: null,
                 );
               } else {
                 showDialog(
@@ -77,7 +78,7 @@ class ServiceIcon extends StatelessWidget {
                             NavigationService.navigatorKey.currentState
                                 ?.pushNamed(
                               service.action.value,
-                              arguments: service,
+                              arguments: null,
                             );
                           }
                         }));
@@ -148,7 +149,7 @@ class ServiceIcon extends StatelessWidget {
                         }
                       }));
             }
-          } else if (service.id == 201 || service.id == 313) {
+          } else if (service.id == 210 || service.id == 313) {
             if (CommonProperties.isLoggedIn) {
               await BottomSheetDialog.showDraggableSheet(context,
                   dialogKeyName: DialogName.InqueryDialog,
@@ -198,22 +199,7 @@ class ServiceIcon extends StatelessWidget {
                         }
                       }));
             }
-          } else if (service.action.value == RouteName.etmamMainPage) {
-            if (CommonProperties.isLoggedIn) {
-              NavigationService.navigatorKey.currentState
-                  ?.pushNamed(RouteName.etmamMainPage);
-            } else {
-              showDialog(
-                  context: context,
-                  builder: (ctx) =>
-                      NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
-                        if (isSuccess ?? false) {
-                          NavigationService.navigatorKey.currentState
-                              ?.pushNamed(RouteName.etmamMainPage);
-                        }
-                      }));
-            }
-          } else if (service.id == 214 || service.id == 312) {
+          } else if (service.id == 204 || service.id == 312) {
             if (CommonProperties.isLoggedIn) {
               bool isSuccess =
                   await locator<NewAppointmentViewModel>().loadInitialData();
