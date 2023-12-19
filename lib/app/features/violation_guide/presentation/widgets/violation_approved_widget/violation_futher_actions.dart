@@ -45,13 +45,17 @@ class ViolationFurtherAction extends StatelessWidget {
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        CustomTextWidget(
-                          state.details?.listofPenalities?[index]
-                                  .penalityName ??
-                              "",
-                          fontColor: Color(0xCC292929),
-                          fontSize: 14,
-                          fontWeight: AppFontWeight.medium,
+                        Flexible(
+                          child: CustomTextWidget(
+                            state.details?.listofPenalities?[index]
+                                    .penalityName ??
+                                "",
+                            fontColor: Color(0xCC292929),
+                            fontSize: 14,
+                            height: 1.4,
+                            fontWeight: AppFontWeight.medium,
+                            maxLines: 20,
+                          ),
                         ),
                         if (state.details?.listofPenalities?[index]
                                 .penalityPeriod !=

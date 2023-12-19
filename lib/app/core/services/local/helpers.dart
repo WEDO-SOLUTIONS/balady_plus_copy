@@ -8,6 +8,7 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart' as geoLocator;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -351,6 +352,25 @@ class Helpers {
         exceptions: [SentryException(value: url ?? "", type: url)],
       );
       Sentry.captureEvent(event);
+
+      if (sl<EnvType>().isProd) {
+        String data = body != null ? body.toString() : "";
+
+        String queryString = qeuryParms ?? "";
+
+        String message = data != null ? data.toString() : "";
+        String URL = url ?? "";
+        FlutterUxcam.logEventWithProperties(url ?? "Error", {
+          "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
+          "Data": data.length <= 1024 ? data : data.substring(0, 1023),
+          "QueryString": queryString.length <= 1024
+              ? queryString
+              : queryString.substring(0, 1023),
+          "Message":
+              message.length <= 1024 ? message : message.substring(0, 1023),
+          "Environment": sl<EnvType>().name
+        });
+      }
     } catch (ex) {}
   }
 

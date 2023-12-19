@@ -78,7 +78,7 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
             "iconName": IconPath.serviceCardDesc,
             "type": ServiceCardsTypes.desc,
             "rate": 0,
-            "duration": "",
+            "duration": "0",
             "fees": 0,
             "ar": {
               "title": "service_desc",
@@ -90,7 +90,7 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
             "iconName": IconPath.serviceCardReq,
             "type": ServiceCardsTypes.req,
             "rate": 0,
-            "duration": "",
+            "duration": "0",
             "requirements": [
               "complaince_service_req_1",
               "complaince_service_req_2"
@@ -102,7 +102,7 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
             "iconName": IconPath.serviceCardFlow,
             "type": ServiceCardsTypes.flow,
             "rate": 0,
-            "duration": "",
+            "duration": "0",
             "flow": [
               {
                 "title": "complaince_applying_benf",

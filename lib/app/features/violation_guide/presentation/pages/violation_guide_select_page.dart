@@ -13,6 +13,7 @@ class ViolationGuideSelectPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double top = MediaQuery.of(context).padding.top;
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -25,36 +26,56 @@ class ViolationGuideSelectPage extends StatelessWidget {
             ],
           ),
         ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const ViolationGuideSelectTitle(),
-              ViolationSelectOptionsWidget(
-                title: 'violotion_select_option1'.tr(),
-                subtitle: 'violation_subtitle_select_option1'.tr(),
-                color1: AppColor.lightOrange200,
-                color2: AppColor.lightOrange100,
-                logo: IconPath.magicStar,
-                onPressed: () {
-                  NavigationService.navigatorKey.currentState!
-                      .pushNamed(RouteName.violationCreatePage);
-                },
+        child: Stack(
+          children: [
+            Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: EdgeInsets.only(top: top + 16.0),
+                  child: IconButton(
+                      icon: Icon(
+                        Icons.close,
+                        size: 24,
+                      ),
+                      color: AppColor.white,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      }),
+                )),
+            Align(
+              alignment: Alignment.center,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const ViolationGuideSelectTitle(),
+                      ViolationSelectOptionsWidget(
+                        title: 'violotion_select_option1'.tr(),
+                        subtitle: 'violation_subtitle_select_option1'.tr(),
+                        color1: AppColor.lightOrange200,
+                        color2: AppColor.lightOrange100,
+                        logo: IconPath.magicStar,
+                        onPressed: () {
+                          Navigator.pushNamed(
+                              context, RouteName.violationCreatePage);
+                        },
+                      ),
+                      /* const SizedBox(
+                    height: 16,
+                  ),
+                  ViolationSelectOptionsWidget(
+                    logo: IconPath.calculator,
+                    onPressed: () {},
+                    title: 'violation_select_option2'.tr(),
+                    subtitle: 'violation_subtitle_select_option2'.tr(),
+                    color1: AppColor.secondary400Light,
+                    color2: AppColor.blue100,
+                  ),*/
+                    ]),
               ),
-              /* const SizedBox(
-                height: 16,
-              ),
-              ViolationSelectOptionsWidget(
-                logo: IconPath.calculator,
-                onPressed: () {},
-                title: 'violation_select_option2'.tr(),
-                subtitle: 'violation_subtitle_select_option2'.tr(),
-                color1: AppColor.secondary400Light,
-                color2: AppColor.blue100,
-              ),*/
-            ]),
-          ),
+            ),
+          ],
         ),
       ),
     );

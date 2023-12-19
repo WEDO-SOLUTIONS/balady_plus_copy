@@ -15,6 +15,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -1018,7 +1019,47 @@ class CommonFunctions {
       Sentry.captureEvent(event, withScope: (p) {
         //  p.addAttachment(attachment)
       });
-    } catch (ex) {}
+
+// UX Cam Events
+      if (sl<EnvType>().isProd) {
+        String headers = (dioError?.requestOptions.headers.cast().toString() ??
+                response?.requestOptions.headers.cast().toString()) ??
+            "";
+
+        String data = (dioError?.requestOptions.data.toString() ??
+                response?.requestOptions.data.toString()) ??
+            "";
+
+        String queryString =
+            (dioError?.requestOptions.queryParameters.toString() ??
+                    response?.requestOptions.queryParameters.toString()) ??
+                "";
+
+        String message = (dioError?.response?.data.toString() ??
+                response?.data.toString()) ??
+            "";
+
+        String URL =
+            (dioError?.requestOptions.path ?? response?.realUri.path) ??
+                "Error";
+
+        FlutterUxcam.logEventWithProperties(URL, {
+                    "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
+
+          "Data": data.length <= 1024 ? data : data.substring(0, 1023),
+          "QueryString": queryString.length <= 1024
+              ? queryString
+              : queryString.substring(0, 1023),
+          "Headers":
+              headers.length <= 1024 ? headers : headers.substring(0, 1023),
+          "Message":
+              message.length <= 1024 ? message : message.substring(0, 1023),
+          "Environment": sl<EnvType>().name
+        });
+      }
+    } catch (ex) {
+      print(ex);
+    }
   }
 
   static sendUrbiMapLogs() async {
