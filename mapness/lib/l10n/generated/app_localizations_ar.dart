@@ -74,7 +74,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get challenge => 'تحدي';
 
   @override
-  String get changeTheColorSchemeOfAnApp => 'قم بتغيير نظام ألوان التطبيق من الضوء إلى الظلام';
+  String get changeTheColorSchemeOfAnApp => 'تغيير نظام ألوان التطبيق من الفاتح إلى الداكن';
 
   @override
   String get chooseTheLanguageOfAll => 'اختر لغة كل الواجهة في تطبيق بلدي';
@@ -125,7 +125,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get complianceToKnow => 'لمعرفه المزيد اطلع على';
 
   @override
-  String get connectToMomrah => 'تواصل مع مومراه';
+  String get connectToMomrah => 'تسجيل الدخول';
 
   @override
   String get connectionLost => 'فقد الاتصال';
@@ -524,7 +524,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get rate => 'تقييم';
 
   @override
-  String get rateBaladyApp => 'قيّم تطبيق بلادي';
+  String get rateBaladyApp => 'قيّم تطبيق بلدي';
 
   @override
   String get rateMessage => 'إذا أعجبك هذا التطبيق، نرجو تخصيص بعض من وقتك لتقييمنا!  لن يستغرق الأمر أكثر من دقيقة واحدة.';

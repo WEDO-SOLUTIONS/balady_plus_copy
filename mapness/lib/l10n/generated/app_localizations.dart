@@ -234,7 +234,7 @@ abstract class AppLocalizations {
   /// No description provided for @changeTheColorSchemeOfAnApp.
   ///
   /// In ar, this message translates to:
-  /// **'قم بتغيير نظام ألوان التطبيق من الضوء إلى الظلام'**
+  /// **'تغيير نظام ألوان التطبيق من الفاتح إلى الداكن'**
   String get changeTheColorSchemeOfAnApp;
 
   /// No description provided for @chooseTheLanguageOfAll.
@@ -336,7 +336,7 @@ abstract class AppLocalizations {
   /// No description provided for @connectToMomrah.
   ///
   /// In ar, this message translates to:
-  /// **'تواصل مع مومراه'**
+  /// **'تسجيل الدخول'**
   String get connectToMomrah;
 
   /// No description provided for @connectionLost.
@@ -1134,7 +1134,7 @@ abstract class AppLocalizations {
   /// No description provided for @rateBaladyApp.
   ///
   /// In ar, this message translates to:
-  /// **'قيّم تطبيق بلادي'**
+  /// **'قيّم تطبيق بلدي'**
   String get rateBaladyApp;
 
   /// No description provided for @rateMessage.
