@@ -39,7 +39,7 @@ class ProfileInfoPage extends ConsumerWidget {
                       ),
                       const Spacer(),
                       Text(
-                        "Profile Settings",
+                        context.l10n.profileSettings,
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
                             .accentM

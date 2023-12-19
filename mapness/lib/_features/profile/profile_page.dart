@@ -13,6 +13,7 @@ import 'package:mapness/_features/profile/widgets/unathorized_profile.dart';
 import 'package:mapness/app/routes/profile.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_features.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 
@@ -105,7 +106,7 @@ class ProfilePage extends ConsumerWidget {
                               ),
                               const Spacer(),
                               Text(
-                                "Settings",
+                                context.l10n.settings,
                                 style: Theme.of(context)
                                     .extension<ThemeTextStyles>()!
                                     .textM
@@ -174,7 +175,7 @@ class ProfilePage extends ConsumerWidget {
                               ),
                               const Spacer(),
                               Text(
-                                "Help Center",
+                                context.l10n.helpCenter,
                                 style: Theme.of(context)
                                     .extension<ThemeTextStyles>()!
                                     .textM
@@ -245,7 +246,7 @@ class ProfilePage extends ConsumerWidget {
                               ),
                               const Spacer(),
                               Text(
-                                "About the application",
+                                context.l10n.aboutApp,
                                 style: Theme.of(context)
                                     .extension<ThemeTextStyles>()!
                                     .textM
@@ -301,12 +302,11 @@ class ProfilePage extends ConsumerWidget {
                         onTap: () {
                           rateMyApp.showRateDialog(
                             context,
-                            title: 'Rate this app',
-                            message:
-                                'If you like this app, please take a little bit of your time to review it !\nIt really helps us and it shouldn\'t take you more than one minute.', // The dialog message.
-                            rateButton: 'RATE',
-                            noButton: 'NO THANKS',
-                            laterButton: 'MAYBE LATER',
+                            title: context.l10n.rateThisApp,
+                            message: context.l10n.rateMessage,
+                            rateButton: context.l10n.rate,
+                            noButton: context.l10n.noThanks,
+                            laterButton: context.l10n.maybeLater,
                             listener: (button) {
                               switch (button) {
                                 case RateMyAppDialogButton.rate:
@@ -348,7 +348,7 @@ class ProfilePage extends ConsumerWidget {
                               ),
                               const Spacer(),
                               Text(
-                                "Rate Balady App",
+                                context.l10n.rateBaladyApp,
                                 style: Theme.of(context)
                                     .extension<ThemeTextStyles>()!
                                     .textM
