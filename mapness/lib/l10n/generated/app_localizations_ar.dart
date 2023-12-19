@@ -11,6 +11,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aboutBalady => 'حول بلدي';
 
   @override
+  String get aboutPark => 'About park';
+
+  @override
   String get accessibility => 'إمكانية الوصول';
 
   @override
@@ -447,6 +450,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get openUntill => 'مفتوح حتى';
+
+  @override
+  String get parkAmanah => 'Amanah';
+
+  @override
+  String get parkAreaSize => 'Area size';
+
+  @override
+  String get parkOpeningDate => 'Opening date';
+
+  @override
+  String get parkType => 'Type';
 
   @override
   String get parking => 'موقف';

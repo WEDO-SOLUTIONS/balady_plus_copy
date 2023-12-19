@@ -42,6 +42,19 @@ extension IwishItemResponseMapper on pb.IWishObject {
                 photos: photos(variant.photos),
               ))
           .toList(),
+      metadata: IwishMetadata(
+        areaName: metadata.areaName,
+        typeName: metadata.typeName,
+        areaSize: metadata.areaSize,
+        // switch (metadata.areaSize) {
+        //   1 => AreaSize.small,
+        //   2 => AreaSize.medium,
+        //   _ => AreaSize.large,
+        // },
+        openingDate: DateTime.fromMillisecondsSinceEpoch(
+          metadata.openingDate.value.toInt(),
+        ),
+      ),
     );
 
     return iwishEntity;

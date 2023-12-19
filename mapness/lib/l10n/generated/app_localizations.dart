@@ -105,6 +105,12 @@ abstract class AppLocalizations {
   /// **'حول بلدي'**
   String get aboutBalady;
 
+  /// No description provided for @aboutPark.
+  ///
+  /// In ar, this message translates to:
+  /// **'About park'**
+  String get aboutPark;
+
   /// No description provided for @accessibility.
   ///
   /// In ar, this message translates to:
@@ -980,6 +986,30 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'مفتوح حتى'**
   String get openUntill;
+
+  /// No description provided for @parkAmanah.
+  ///
+  /// In ar, this message translates to:
+  /// **'Amanah'**
+  String get parkAmanah;
+
+  /// No description provided for @parkAreaSize.
+  ///
+  /// In ar, this message translates to:
+  /// **'Area size'**
+  String get parkAreaSize;
+
+  /// No description provided for @parkOpeningDate.
+  ///
+  /// In ar, this message translates to:
+  /// **'Opening date'**
+  String get parkOpeningDate;
+
+  /// No description provided for @parkType.
+  ///
+  /// In ar, this message translates to:
+  /// **'Type'**
+  String get parkType;
 
   /// No description provided for @parking.
   ///
