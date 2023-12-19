@@ -55,11 +55,13 @@ class ServiceIcon extends StatelessWidget {
                   isFullHeight: false,
                   height: 300, child: CommercialPermitsDialog(
                 onSelect: (int item) async {
-                  await BottomSheetDialog.showDraggableSheet(context,
-                      isFullHeight: true,
-                      child: PermitsLicenseBottomSheetList(
-                        groupId: item,
-                      ));
+                  if (item == 1042) {
+                    await BottomSheetDialog.showDraggableSheet(context,
+                        isFullHeight: true,
+                        child: PermitsLicenseBottomSheetList(
+                          groupId: item,
+                        ));
+                  }
                 },
               ));
             } else {

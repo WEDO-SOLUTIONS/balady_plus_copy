@@ -959,7 +959,7 @@ packages:
     dependency: transitive
     description:
       name: google_api_headers
-      sha256: b27a55935d5c51cedda8a925f5df8388cc327c94a47fef5a4335e8707e089878
+      sha256: ac6f4e27e35c9eb4fbe8ce4ce7380e651d3a7bee3ad4c2ff30e67aaa73f005d3
       url: "https://pub.dev"
     source: hosted
     version: "1.6.0"
@@ -1256,10 +1256,10 @@ packages:
     dependency: "direct main"
     description:
       name: localize_and_translate
-      sha256: "1bda3672a0dd1bde718d308a34e8e71b2c9f7e7700360d66820d8c761039a828"
+      sha256: f434319b5039fc816eb8d6bb399211107ac0ad7e6c996bc3b6517f027d820e04
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.2-dev"
+    version: "4.1.1"
   logging:
     dependency: transitive
     description:
@@ -1438,10 +1438,10 @@ packages:
     dependency: "direct main"
     description:
       name: package_info_plus
-      sha256: "7e76fad405b3e4016cd39d08f455a4eb5199723cf594cd1b8916d47140d93017"
+      sha256: "10259b111176fba5c505b102e3a5b022b51dd97e30522e906d6922c745584745"
       url: "https://pub.dev"
     source: hosted
-    version: "4.2.0"
+    version: "3.1.2"
   package_info_plus_platform_interface:
     dependency: transitive
     description:
