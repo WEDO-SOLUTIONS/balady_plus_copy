@@ -44,34 +44,27 @@ class ServicesCubit extends Cubit<ServicesState> {
   }
 
   Future<void> loadServices() async {
+    print("load services ");
     emit(state.copyWith(status: BlocStatus.loading));
-    final importantServicesList = await importantServices(NoParams());
-    final newServicesList = await newServices(NoParams());
     final islamicServicesList = await islamicServices(NoParams());
-    final customerVoiceServicesList = await customerVoiceServices(NoParams());
 
     final businessLicenseServicesList =
         await businessLicenseServices(NoParams());
 
-    //final healthCertificatesServicesList =
-    //    await healthCertificatesServices(NoParams());
     final helpServicesList = await helpServices(NoParams());
     final municpalServicesList = await municipalServices(NoParams());
-
-    final honoringTheDeadServicesList =
-        await honoringTheDeadServices(NoParams());
 
     emit(state.copyWith(status: BlocStatus.closeLoading));
     emit(state.copyWith(
       status: BlocStatus.success,
-      importantServices: importantServicesList.getOrElse(() => []),
-      newServices: newServicesList.getOrElse(() => []),
+      importantServices: [],
+      newServices: [],
       islamicServices: islamicServicesList.getOrElse(() => []),
       municipalServices: municpalServicesList.getOrElse(() => []),
-      customerVoiceServices: customerVoiceServicesList.getOrElse(() => []),
+      customerVoiceServices: [],
       businessLicenseServices: businessLicenseServicesList.getOrElse(() => []),
       helpServices: helpServicesList.getOrElse(() => []),
-      honoringTheDeadServices: honoringTheDeadServicesList.getOrElse(() => []),
+      honoringTheDeadServices: [],
     ));
   }
 
@@ -79,7 +72,7 @@ class ServicesCubit extends Cubit<ServicesState> {
     emit(state.copyWith(status: BlocStatus.loading));
 
     final islamicServicesList = await islamicServices(NoParams());
-    final customerVoiceServicesList = await customerVoiceServices(NoParams());
+    final municpalServicesList = await municipalServices(NoParams());
 
     final businessLicenseServicesList =
         await businessLicenseServices(NoParams());
@@ -87,8 +80,6 @@ class ServicesCubit extends Cubit<ServicesState> {
     //final healthCertificatesServicesList =
     //    await healthCertificatesServices(NoParams());
     final helpServicesList = await helpServices(NoParams());
-    final honoringTheDeadServicesList =
-        await honoringTheDeadServices(NoParams());
 
     emit(state.copyWith(status: BlocStatus.closeLoading));
     emit(state.copyWith(
@@ -100,8 +91,8 @@ class ServicesCubit extends Cubit<ServicesState> {
       islamicServices: islamicServicesList.getOrElse(() => []).where((service) {
         return service.title.toLowerCase().contains(searchQuery!.toLowerCase());
       }).toList(),
-      customerVoiceServices:
-          customerVoiceServicesList.getOrElse(() => []).where((service) {
+      municipalServices:
+          municpalServicesList.getOrElse(() => []).where((service) {
         return service.title.toLowerCase().contains(searchQuery!.toLowerCase());
       }).toList(),
       helpServices: helpServicesList.getOrElse(() => []).where((service) {
