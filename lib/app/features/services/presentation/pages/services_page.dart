@@ -15,6 +15,7 @@ import '../../../../core/utils/utils_exports.dart'
         CommonProperties,
         IconPath,
         RouteName;
+import '../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show
         BottomSheetDialog,
@@ -66,21 +67,7 @@ class _ServicesPageState extends State<ServicesPage> {
                     actions: [
                       IconButton(
                           onPressed: () async {
-                            context.read<DelegatorsCubit>().getDelegators();
-                            context.read<DelegatorsCubit>().getAgents();
-                            await BottomSheetDialog.showDraggableSheet(
-                              context,
-                              dialogKeyName: DialogName.delegatorsDialog,
-                              currentRouteName: "ServicesPage",
-                              child: DelegatorList(
-                                delegatorsCubit:
-                                    context.read<DelegatorsCubit>(),
-                              ),
-                            );
-
-                            context
-                                .read<DashboardBloc>()
-                                .add(DashboardEventInitial());
+                            openDelegators();
                           },
                           icon:
                               SvgPicture.asset("assets/icons/svg/refresh.svg"))
@@ -88,10 +75,12 @@ class _ServicesPageState extends State<ServicesPage> {
                   ),
                   body: BlocBuilder<ServicesCubit, ServicesState>(
                     builder: (context, state) {
+                      print("islamicServices ${state.islamicServices.length}");
                       return BlocBuilder<EntryPointCubit, EntryPointState>(
                           builder: (context, entryPointState) {
                         return SingleChildScrollView(
                           child: Column(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               const SearchServicesTextField(),
                               /* if (CommonProperties.isLoggedIn)
@@ -145,11 +134,6 @@ class _ServicesPageState extends State<ServicesPage> {
                                   title: "islamic_services".tr(),
                                   services: state.islamicServices,
                                 ),
-                              if (state.customerVoiceServices.isNotEmpty)
-                                ServicesList(
-                                  title: "customer_voice_services".tr(),
-                                  services: state.customerVoiceServices,
-                                ),
                               if (state.municipalServicee.isNotEmpty)
                                 ServicesList(
                                   title: "municipal_services".tr(),
@@ -160,14 +144,6 @@ class _ServicesPageState extends State<ServicesPage> {
                                   title: "business_license_services".tr(),
                                   services: state.businessLicenseServices,
                                 ),
-                              ServicesList(
-                                title: "honoring_the_dead_services".tr(),
-                                services: state.honoringTheDeadServices,
-                              ),
-                              /*ServicesList(
-                                title: "health_certificates_services".tr(),
-                                services: state.healthCertificatesServices,
-                              ),*/
                               if (state.helpServices.isNotEmpty)
                                 ServicesList(
                                   title: "help_services".tr(),
@@ -185,5 +161,42 @@ class _ServicesPageState extends State<ServicesPage> {
             );
           }),
     );
+  }
+
+  void openDelegators() async {
+    if (CommonProperties.isLoggedIn) {
+      context.read<DelegatorsCubit>().getDelegators();
+      context.read<DelegatorsCubit>().getAgents();
+      await BottomSheetDialog.showDraggableSheet(
+        context,
+        dialogKeyName: DialogName.delegatorsDialog,
+        currentRouteName: "ServicesPage",
+        child: DelegatorList(
+          delegatorsCubit: context.read<DelegatorsCubit>(),
+        ),
+      );
+
+      context.read<DashboardBloc>().add(DashboardEventInitial());
+    } else {
+      showDialog(
+          context: context,
+          builder: (ctx) =>
+              NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                if (isSuccess ?? false) {
+                  context.read<DelegatorsCubit>().getDelegators();
+                  context.read<DelegatorsCubit>().getAgents();
+                  await BottomSheetDialog.showDraggableSheet(
+                    context,
+                    dialogKeyName: DialogName.delegatorsDialog,
+                    currentRouteName: "ServicesPage",
+                    child: DelegatorList(
+                      delegatorsCubit: context.read<DelegatorsCubit>(),
+                    ),
+                  );
+
+                  context.read<DashboardBloc>().add(DashboardEventInitial());
+                }
+              }));
+    }
   }
 }

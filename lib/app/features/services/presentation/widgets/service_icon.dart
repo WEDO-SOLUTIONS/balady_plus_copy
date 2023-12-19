@@ -49,7 +49,43 @@ class ServiceIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
         onTap: () async {
-          if (service.id == 101) {
+          if (service.action.type == ServiceAction.pageRoute) {
+            if (service.requireLogin != true) {
+              if (service.id == 102) {
+                NavigationService.navigatorKey.currentState!.pushNamed(
+                  service.action.value,
+                  arguments: context.read<PrayerTimesCubit>(),
+                );
+              } else {
+                NavigationService.navigatorKey.currentState?.pushNamed(
+                  service.action.value,
+                  arguments: service,
+                );
+              }
+            } else {
+              if (CommonProperties.isLoggedIn) {
+                NavigationService.navigatorKey.currentState?.pushNamed(
+                  service.action.value,
+                  arguments: service,
+                );
+              } else {
+                showDialog(
+                    context: context,
+                    builder: (ctx) => NeedLoginDialog(
+                            onSuccessLogin: (bool? isSuccess) async {
+                          if (isSuccess ?? false) {
+                            NavigationService.navigatorKey.currentState
+                                ?.pushNamed(
+                              service.action.value,
+                              arguments: service,
+                            );
+                          }
+                        }));
+              }
+            }
+          }
+
+          if (service.id == 302) {
             if (CommonProperties.selectedDelegator != null) {
               await BottomSheetDialog.showDraggableSheet(context,
                   isFullHeight: false,
@@ -77,7 +113,7 @@ class ServiceIcon extends StatelessWidget {
             return;
           }
 
-          if (service.id == 1 && service.action.type == ServiceAction.dialog) {
+          if (service.id == 201) {
             await BottomSheetDialog.showDraggableSheet(
                 NavigationService.navigatorKey.currentContext!,
                 dialogKeyName: DialogName.vdTypesDialog,
@@ -86,8 +122,7 @@ class ServiceIcon extends StatelessWidget {
                   title: "customerVoiceReportTypeWord".tr(),
                   body: VDAllTypesDialog(),
                 ));
-          } else if (service.id == 3 &&
-              service.action.type == ServiceAction.dialog) {
+          } else if (service.id == 406) {
             if (CommonProperties.isLoggedIn) {
               await BottomSheetDialog.showDraggableSheet(
                   NavigationService.navigatorKey.currentContext!,
@@ -113,8 +148,7 @@ class ServiceIcon extends StatelessWidget {
                         }
                       }));
             }
-          } else if (service.id == 2 &&
-              service.action.type == ServiceAction.dialog) {
+          } else if (service.id == 201 || service.id == 313) {
             if (CommonProperties.isLoggedIn) {
               await BottomSheetDialog.showDraggableSheet(context,
                   dialogKeyName: DialogName.InqueryDialog,
@@ -139,8 +173,7 @@ class ServiceIcon extends StatelessWidget {
                         }
                       }));
             }
-          } else if (service.id == 5 &&
-              service.action.type == ServiceAction.dialog) {
+          } else if (service.id == 203) {
             if (CommonProperties.isLoggedIn) {
               await BottomSheetDialog.showDraggableSheet(context,
                   dialogKeyName: DialogName.msrDialog,
@@ -165,27 +198,6 @@ class ServiceIcon extends StatelessWidget {
                         }
                       }));
             }
-          } else if (service.id == 2 &&
-              service.action.value == "/prayerTimes") {
-            context.pushNamedRoute(
-              RouteName.prayerTimes,
-              arguments: context.read<PrayerTimesCubit>(),
-            );
-          } else if (service.id == 13) {
-            if (CommonProperties.isLoggedIn) {
-              NavigationService.navigatorKey.currentState
-                  ?.pushNamed(RouteName.municipalAdvisor);
-            } else {
-              showDialog(
-                  context: context,
-                  builder: (ctx) =>
-                      NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
-                        if (isSuccess ?? false) {
-                          NavigationService.navigatorKey.currentState!
-                              .pushNamed(RouteName.municipalAdvisor);
-                        }
-                      }));
-            }
           } else if (service.action.value == RouteName.etmamMainPage) {
             if (CommonProperties.isLoggedIn) {
               NavigationService.navigatorKey.currentState
@@ -201,8 +213,7 @@ class ServiceIcon extends StatelessWidget {
                         }
                       }));
             }
-          } else if (service.id == 4 &&
-              service.action.type == ServiceAction.dialog) {
+          } else if (service.id == 214 || service.id == 312) {
             if (CommonProperties.isLoggedIn) {
               bool isSuccess =
                   await locator<NewAppointmentViewModel>().loadInitialData();
@@ -241,126 +252,56 @@ class ServiceIcon extends StatelessWidget {
                         }
                       }));
             }
-          } else if (service.action.type == ServiceAction.cardsPage) {
-            if (service.requireLogin != true) {
-              NavigationService.navigatorKey.currentState?.pushNamed(
-                RouteName.serviceCards,
-                arguments: service,
-              );
-            } else {
+          }
+          if (service.action.value == RouteName.DCCameraPage) {
+            bool isLocationAvailable =
+                await CommonFunctions.checkLocationSettings(context);
+            bool isCameraAllowed =
+                await CommonFunctions.checkCameraSettings(context);
+            if (isLocationAvailable && isCameraAllowed) {
               if (CommonProperties.isLoggedIn) {
-                NavigationService.navigatorKey.currentState?.pushNamed(
-                  RouteName.serviceCards,
-                  arguments: service,
-                );
+                NavigationService.navigatorKey.currentState!.pushNamed(
+                    RouteName.DCCameraPage,
+                    arguments: CameraParamsPage(
+                        selectedCategory: CategoryItem(categoryId: "CG-14"),
+                        isFromHome: false));
               } else {
                 showDialog(
                     context: context,
                     builder: (ctx) => NeedLoginDialog(
                             onSuccessLogin: (bool? isSuccess) async {
                           if (isSuccess ?? false) {
-                            NavigationService.navigatorKey.currentState
-                                ?.pushNamed(
-                              RouteName.serviceCards,
-                              arguments: service,
-                            );
+                            NavigationService.navigatorKey.currentState!
+                                .pushNamed(RouteName.DCCameraPage,
+                                    arguments: CameraParamsPage(
+                                        selectedCategory:
+                                            CategoryItem(categoryId: "CG-14"),
+                                        isFromHome: false));
                           }
                         }));
               }
             }
-          } else if (service.action.type == ServiceAction.pageRoute) {
-            if (service.action.value == RouteName.DCCameraPage) {
-              bool isLocationAvailable =
-                  await CommonFunctions.checkLocationSettings(context);
-              bool isCameraAllowed =
-                  await CommonFunctions.checkCameraSettings(context);
-              if (isLocationAvailable && isCameraAllowed) {
-                if (CommonProperties.isLoggedIn) {
-                  NavigationService.navigatorKey.currentState!.pushNamed(
-                      RouteName.DCCameraPage,
-                      arguments: CameraParamsPage(
-                          selectedCategory: CategoryItem(categoryId: "CG-14"),
-                          isFromHome: false));
-                } else {
-                  showDialog(
-                      context: context,
-                      builder: (ctx) => NeedLoginDialog(
-                              onSuccessLogin: (bool? isSuccess) async {
-                            if (isSuccess ?? false) {
-                              NavigationService.navigatorKey.currentState!
-                                  .pushNamed(RouteName.DCCameraPage,
-                                      arguments: CameraParamsPage(
-                                          selectedCategory:
-                                              CategoryItem(categoryId: "CG-14"),
-                                          isFromHome: false));
-                            }
-                          }));
-                }
-              }
-            } else if (service.iconName == "municipal_commercial" ||
-                service.iconName == "municpal_construction" ||
-                service.iconName == "municipal_shop" ||
-                service.iconName == "municpal_housing" ||
-                service.iconName == "municipal_ewaa" ||
-                service.iconName == "municpal_toppaco") {
-              if (CommonProperties.isLoggedIn) {
-                CommonFunctions.openBaladyWebView(service.action.value);
-              } else {
-                showDialog(
-                    context: context,
-                    builder: (ctx) => NeedLoginDialog(
-                            onSuccessLogin: (bool? isSuccess) async {
-                          if (isSuccess ?? false) {
-                            CommonFunctions.openBaladyWebView(
-                                service.action.value);
-                          }
-                        }));
-              }
-            } else if (service.iconName == "municipal_health") {
-              if (CommonProperties.isLoggedIn) {
-                NavigationService.navigatorKey.currentState?.pushNamed(
-                  service.action.value,
-                );
-              } else {
-                showDialog(
-                    context: context,
-                    builder: (ctx) => NeedLoginDialog(
-                            onSuccessLogin: (bool? isSuccess) async {
-                          if (isSuccess ?? false) {
-                            NavigationService.navigatorKey.currentState
-                                ?.pushNamed(
-                              service.action.value,
-                            );
-                          }
-                        }));
-              }
-            } else if (service.iconName == "municpal_all") {
-              CommonFunctions.externalLaunch(service.action.value);
+          } else if (service.iconName == "municipal_commercial" ||
+              service.iconName == "municpal_construction" ||
+              service.iconName == "municipal_shop" ||
+              service.iconName == "municpal_housing" ||
+              service.iconName == "municipal_ewaa" ||
+              service.iconName == "municpal_toppaco") {
+            if (CommonProperties.isLoggedIn) {
+              CommonFunctions.openBaladyWebView(service.action.value);
             } else {
-              if (service.requireLogin != true) {
-                NavigationService.navigatorKey.currentState?.pushNamed(
-                  service.action.value,
-                );
-              } else {
-                if (CommonProperties.isLoggedIn) {
-                  NavigationService.navigatorKey.currentState?.pushNamed(
-                    service.action.value,
-                  );
-                } else {
-                  showDialog(
-                      context: context,
-                      builder: (ctx) => NeedLoginDialog(
-                              onSuccessLogin: (bool? isSuccess) async {
-                            if (isSuccess ?? false) {
-                              NavigationService.navigatorKey.currentState
-                                  ?.pushNamed(
-                                service.action.value,
-                              );
-                            }
-                          }));
-                }
-              }
+              showDialog(
+                  context: context,
+                  builder: (ctx) =>
+                      NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                        if (isSuccess ?? false) {
+                          CommonFunctions.openBaladyWebView(
+                              service.action.value);
+                        }
+                      }));
             }
+          } else if (service.iconName == "municpal_all") {
+            CommonFunctions.externalLaunch(service.action.value);
           }
         },
         child: Container(
@@ -389,7 +330,7 @@ class ServiceIcon extends StatelessWidget {
                 child: CustomTextWidget(
                   service.title.tr(),
                   fontSize: 10,
-                  maxLines: 3,
+                  maxLines: 6,
                   textAlign: TextAlign.center,
                   fontColor: AppColor.blackModern700Light,
                   fontWeight: AppFontWeight.bold,

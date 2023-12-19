@@ -90,6 +90,7 @@ class _NewServicesPageState extends State<NewServicesPage> {
                     builder: (context, state) {
                       return SingleChildScrollView(
                         child: Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             const SearchServicesTextField(),
                             if (CommonProperties.isLoggedIn) ...[
