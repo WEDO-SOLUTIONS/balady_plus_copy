@@ -102,7 +102,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutBalady.
   ///
   /// In ar, this message translates to:
-  /// **'About Balady'**
+  /// **'حول بلدي'**
   String get aboutBalady;
 
   /// No description provided for @accessibility.
@@ -156,7 +156,7 @@ abstract class AppLocalizations {
   /// No description provided for @baladyWebsite.
   ///
   /// In ar, this message translates to:
-  /// **'Balady website'**
+  /// **'موقع بلدي'**
   String get baladyWebsite;
 
   /// No description provided for @beaches.
@@ -234,13 +234,13 @@ abstract class AppLocalizations {
   /// No description provided for @changeTheColorSchemeOfAnApp.
   ///
   /// In ar, this message translates to:
-  /// **'Change the color scheme of an app from light to dark'**
+  /// **'قم بتغيير نظام ألوان التطبيق من الضوء إلى الظلام'**
   String get changeTheColorSchemeOfAnApp;
 
   /// No description provided for @chooseTheLanguageOfAll.
   ///
   /// In ar, this message translates to:
-  /// **'Choose the language of all interface in the Balady app'**
+  /// **'اختر لغة كل الواجهة في تطبيق بلدي'**
   String get chooseTheLanguageOfAll;
 
   /// No description provided for @clean.
@@ -612,7 +612,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpCenter.
   ///
   /// In ar, this message translates to:
-  /// **'Help Center'**
+  /// **'مركز المساعدة'**
   String get helpCenter;
 
   /// No description provided for @home.
@@ -858,7 +858,7 @@ abstract class AppLocalizations {
   /// No description provided for @maybeLater.
   ///
   /// In ar, this message translates to:
-  /// **'Maybe later'**
+  /// **'ربما في وقت لاحق'**
   String get maybeLater;
 
   /// No description provided for @menu.
@@ -954,7 +954,7 @@ abstract class AppLocalizations {
   /// No description provided for @noThanks.
   ///
   /// In ar, this message translates to:
-  /// **'No thanks'**
+  /// **'لا، شكرًا'**
   String get noThanks;
 
   /// No description provided for @open24Hours.
@@ -1116,7 +1116,7 @@ abstract class AppLocalizations {
   /// No description provided for @profileSettings.
   ///
   /// In ar, this message translates to:
-  /// **'Profile Settings'**
+  /// **'إعدادات الملف الشخصي'**
   String get profileSettings;
 
   /// No description provided for @published.
@@ -1128,25 +1128,25 @@ abstract class AppLocalizations {
   /// No description provided for @rate.
   ///
   /// In ar, this message translates to:
-  /// **'Rate'**
+  /// **'تقييم'**
   String get rate;
 
   /// No description provided for @rateBaladyApp.
   ///
   /// In ar, this message translates to:
-  /// **'Rate Balady App'**
+  /// **'قيّم تطبيق بلادي'**
   String get rateBaladyApp;
 
   /// No description provided for @rateMessage.
   ///
   /// In ar, this message translates to:
-  /// **'If you like this app, please take a little bit of your time to review it !It really helps us and it shouldn\'t take you more than one minute.'**
+  /// **'إذا أعجبك هذا التطبيق، نرجو تخصيص بعض من وقتك لتقييمنا!  لن يستغرق الأمر أكثر من دقيقة واحدة.'**
   String get rateMessage;
 
   /// No description provided for @rateThisApp.
   ///
   /// In ar, this message translates to:
-  /// **'Rate this app'**
+  /// **'قيم هذا التطبيق'**
   String get rateThisApp;
 
   /// No description provided for @ratingBuilding.

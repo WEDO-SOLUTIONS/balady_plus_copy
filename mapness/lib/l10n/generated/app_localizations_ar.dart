@@ -8,7 +8,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aboutApp => 'حول التطبيق';
 
   @override
-  String get aboutBalady => 'About Balady';
+  String get aboutBalady => 'حول بلدي';
 
   @override
   String get accessibility => 'إمكانية الوصول';
@@ -35,7 +35,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get arrival => 'الوصول';
 
   @override
-  String get baladyWebsite => 'Balady website';
+  String get baladyWebsite => 'موقع بلدي';
 
   @override
   String get beaches => 'الشواطئ';
@@ -74,10 +74,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get challenge => 'تحدي';
 
   @override
-  String get changeTheColorSchemeOfAnApp => 'Change the color scheme of an app from light to dark';
+  String get changeTheColorSchemeOfAnApp => 'قم بتغيير نظام ألوان التطبيق من الضوء إلى الظلام';
 
   @override
-  String get chooseTheLanguageOfAll => 'Choose the language of all interface in the Balady app';
+  String get chooseTheLanguageOfAll => 'اختر لغة كل الواجهة في تطبيق بلدي';
 
   @override
   String get clean => 'تنظيف';
@@ -263,7 +263,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get goodMorning => 'صباح الخير';
 
   @override
-  String get helpCenter => 'Help Center';
+  String get helpCenter => 'مركز المساعدة';
 
   @override
   String get home => 'المنزل';
@@ -386,7 +386,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get markets => 'الأسواق';
 
   @override
-  String get maybeLater => 'Maybe later';
+  String get maybeLater => 'ربما في وقت لاحق';
 
   @override
   String get menu => 'قائمة';
@@ -434,7 +434,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get next => 'التالي';
 
   @override
-  String get noThanks => 'No thanks';
+  String get noThanks => 'لا، شكرًا';
 
   @override
   String get open24Hours => 'مفتوح على مدار 24 ساعة';
@@ -515,22 +515,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profile => 'الملف الشخصي';
 
   @override
-  String get profileSettings => 'Profile Settings';
+  String get profileSettings => 'إعدادات الملف الشخصي';
 
   @override
   String get published => 'تم النشر';
 
   @override
-  String get rate => 'Rate';
+  String get rate => 'تقييم';
 
   @override
-  String get rateBaladyApp => 'Rate Balady App';
+  String get rateBaladyApp => 'قيّم تطبيق بلادي';
 
   @override
-  String get rateMessage => 'If you like this app, please take a little bit of your time to review it !It really helps us and it shouldn\'t take you more than one minute.';
+  String get rateMessage => 'إذا أعجبك هذا التطبيق، نرجو تخصيص بعض من وقتك لتقييمنا!  لن يستغرق الأمر أكثر من دقيقة واحدة.';
 
   @override
-  String get rateThisApp => 'Rate this app';
+  String get rateThisApp => 'قيم هذا التطبيق';
 
   @override
   String get ratingBuilding => 'أو قيم مبناك';
