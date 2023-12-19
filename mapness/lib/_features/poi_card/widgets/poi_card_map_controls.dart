@@ -13,6 +13,7 @@ import 'package:mapness/_features/weather/widgets/weather_control.dart';
 import 'package:mapness/app/routes/kiblah.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/app/routes/weather.dart';
+import 'package:mapness/shared/providers/app_features.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
@@ -23,7 +24,8 @@ class PoiCardMapControls extends ConsumerStatefulWidget {
 
   const PoiCardMapControls({
     required this.biggestHeight,
-    Key? key, required this.scrollController,
+    Key? key,
+    required this.scrollController,
   }) : super(key: key);
 
   @override
@@ -50,7 +52,7 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
         setState(() {
           bottomExtent = extent;
         });
-      }else{
+      } else {
         setState(() {
           bottomExtent = footerHeight + headerHeight;
         });
@@ -120,22 +122,33 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
                         ],
                       ),
                       const Spacer(),
-                      const Column(
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          LayersControl(),
-                          SizedBox(
+                          const LayersControl(),
+                          const SizedBox(
                             height: 8,
                           ),
-                          TrafficControl(),
-                          Spacer(),
-                          ZoomControl(),
-                          Spacer(),
-                          CompassControl(),
-                          SizedBox(
+                          Consumer(
+                            builder: (context, ref, _) {
+                              final navi = ref.watch(appFeaturesProvider);
+                              return Visibility(
+                                visible: navi.naviEnabled,
+                                replacement: const SizedBox.square(
+                                  dimension: 28,
+                                ),
+                                child: const TrafficControl(),
+                              );
+                            },
+                          ),
+                          const Spacer(),
+                          const ZoomControl(),
+                          const Spacer(),
+                          const CompassControl(),
+                          const SizedBox(
                             height: 8,
                           ),
-                          FollowControl(),
+                          const FollowControl(),
                         ],
                       ),
                     ],
