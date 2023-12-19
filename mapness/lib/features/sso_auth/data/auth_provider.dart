@@ -15,14 +15,17 @@ class Auth extends _$Auth {
   }
 
   Future<void> logOut() async {
-    await sl<EntryPointCubit>().autoLogout();
+    await sl<EntryPointCubit>().clearAuth();
     ref.invalidateSelf();
   }
 
   @override
   Future<SsoUserInfo?> build() async {
-    await sl<EntryPointCubit>().refreshSSOProfile();
-    await Future.delayed(const Duration(milliseconds: 250));
+    if (CommonProperties.isLoggedIn) {
+      await sl<EntryPointCubit>().refreshSSOProfile();
+      await Future.delayed(const Duration(milliseconds: 250));
+    }
+
     return CommonProperties.userInfo;
   }
 }
