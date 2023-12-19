@@ -477,7 +477,7 @@ class InvoiceNotesList extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 CustomTextWidget(
-                  "وسائل الدفع",
+                  "payment_methods".tr(),
                   fontWeight: AppFontWeight.bold,
                   fontColor: AppColor.blackModern500Light,
                   textAlign: TextAlign.start,

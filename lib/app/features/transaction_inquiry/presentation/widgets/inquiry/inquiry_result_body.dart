@@ -242,7 +242,7 @@ class InquiryListWidget extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(right: 16.0),
           child: CustomTextWidget(
-            "مسار المعاملة",
+            "inquiery_path".tr(),
             fontColor: Color(0xFF52525B),
             fontSize: 20,
             fontWeight: AppFontWeight.bold,

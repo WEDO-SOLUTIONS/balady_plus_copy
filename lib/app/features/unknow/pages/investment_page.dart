@@ -87,10 +87,10 @@ class _InvestmentPageState extends State<InvestmentPage> {
                               fontColor: AppColor.blackModern500Light,
                             ),
                             HeaderWithDivider(
-                              firstTitle: "نوع الفرصة",
-                              firstValue: "منافسة",
+                              firstTitle: "invest_type".tr(),
+                              firstValue: "invest_status".tr(),
                               firstIconPath: IconPath.dollarCircle,
-                              secondTitle: "السعر",
+                              secondTitle: "invest_price".tr(),
                               secondValue:
                                   " ${data.data?.result?.documentValue} ريال /  الكراسة",
                             ),

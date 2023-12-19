@@ -344,7 +344,7 @@ class _QuranFooterState extends State<QuranFooter> {
                         SvgPicture.asset(IconPath.quranJozzIcon),
                         CustomHorizontalSpace(width: 8),
                         CustomTextWidget(
-                          ("الأجزاء").tr(),
+                          ("parts").tr(),
                           fontSize: 12,
                           fontWeight: AppFontWeight.semiBold,
                         )

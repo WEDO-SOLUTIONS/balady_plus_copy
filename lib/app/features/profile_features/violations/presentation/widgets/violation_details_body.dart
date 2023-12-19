@@ -220,21 +220,21 @@ class _ViolationDetailBodyState extends State<ViolationDetailBody> {
                 const SizedBox(height: 16),
                 if (state.details?.lat != null && state.details?.lon != null)
                   CustomExpansionPanelWidget(
-                    title: ("موقع المخالفة").tr(),
+                    title: ("license_location").tr(),
                     leading: SvgPicture.asset(IconPath.vdSummuryPhoto),
                     children: [
                       if (state.gisStatus == BlocStatus.success) ...[
                         if (state.gisLocation?.streetName != null &&
                             state.gisLocation!.streetName!.isNotEmpty)
                           FieldData(
-                            title: "اسم الشارع",
+                            title: "street_name".tr(),
                             subTitle: state.gisLocation?.streetName ?? "",
                           ),
                         const CustomVerticalSpace(height: 8),
                         if (state.gisLocation?.districtName != null &&
                             state.gisLocation!.districtName!.isNotEmpty)
                           FieldData(
-                            title: "اسم الحي",
+                            title: "subStreet_name".tr(),
                             subTitle: state.gisLocation?.districtName ?? "",
                           ),
                         const CustomVerticalSpace(height: 8),
