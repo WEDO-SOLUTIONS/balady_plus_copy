@@ -5,7 +5,7 @@ import 'package:balady_plus/etmam_app/core/dependency_injection/dependency_injec
     show sl;
 
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
-    show CommonFunctions, IconPath;
+    show CommonFunctions, IconPath, trans;
 import 'package:balady_plus/app/core/utils/utils_exports.dart'
     show AppFontWeight, BlocStatus;
 
@@ -91,8 +91,8 @@ class _ProviderDetailsPageState extends State<ProviderDetailsPage> {
                             const EtmamProviderMainInfo(),
                             if ((state.args.projects?.length ?? 0) > 0) ...[
                               const SizedBox(height: 24),
-                              const CustomTextWidget(
-                                "الأعمال سابقة",
+                              CustomTextWidget(
+                                trans("prevoius_works"),
                                 fontColor: AppColor.blackModern800Light,
                                 fontWeight: AppFontWeight.bold,
                                 fontSize: 16,

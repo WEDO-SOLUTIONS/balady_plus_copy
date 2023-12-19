@@ -87,14 +87,14 @@ class OrderCardWidget extends StatelessWidget {
                       Expanded(
                         child: HeaderWithDescription(
                           details: orderNo ?? "",
-                          header: "رقم الطلب",
+                          header: trans("request_no"),
                         ),
                       ),
                       CustomHorizontalSpace(width: 2),
                       Expanded(
                         child: HeaderWithDescription(
                           details: statusText ?? '',
-                          header: "حاله الطلب",
+                          header: trans("request_status"),
                         ),
                       ),
                     ],
@@ -123,7 +123,7 @@ class OrderCardWidget extends StatelessWidget {
                       Expanded(
                         child: HeaderWithDescription(
                           details: date ?? "",
-                          header: "تاريخ الطلب",
+                          header: trans("order_date"),
                         ),
                       ),
                     ],

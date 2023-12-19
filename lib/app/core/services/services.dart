@@ -106,7 +106,7 @@ Map<String, dynamic> servicesConfig = {
         "type": "page",
         "value": RouteName.jodDonationPage,
       },
-      "ar": {"title": "jod".tr(), "description": null, "tag": null},
+      "ar": {"title": "jod", "description": null, "tag": null},
       "en": {"title": "jod", "description": null, "tag": null}
     },
   ],

@@ -91,8 +91,8 @@ class UpdateHealthCerificatePhotoDialog extends StatelessWidget {
                       CustomVerticalSpace(height: 20),
 
                       CustomTextFieldWidget(
-                        hintText: "رقم النسخة",
-                        label: "رقم النسخة",
+                        hintText: "version_no".tr(),
+                        label: "version_no".tr(),
                         keyboardType: TextInputType.number,
                         isDigitsOnly: true,
                         onChanged: (String? value) {

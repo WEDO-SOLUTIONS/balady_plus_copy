@@ -128,13 +128,13 @@ class EtmamProviderMainInfo extends StatelessWidget {
             InfoCard(
               onTap: () => CommonFunctions.launch(state.args.website ?? ""),
               iconPath: IconPath.websiteIcon,
-              title: "الموقع الإلكتروني",
+              title: trans("website"),
               value: state.args.website ?? "",
             ),
             InfoCard(
               onTap: () => CommonFunctions.launch(state.args.website ?? ""),
               iconPath: IconPath.websiteIcon,
-              title: "البريد الإلكتروني",
+              title: trans("emailFieldLabel"),
               value: state.args.email ?? "",
             ),
             InfoCard(
@@ -142,13 +142,13 @@ class EtmamProviderMainInfo extends StatelessWidget {
               iconPath: IconPath.call,
               title: trans('office_mobile'),
               value: state.args.mainBranchContact,
-              leading: const Row(
+              leading: Row(
                 children: [
-                  CustomSvgIconWidget(IconPath.call),
-                  SizedBox(width: 4),
+                  const CustomSvgIconWidget(IconPath.call),
+                  const SizedBox(width: 4),
                   CustomTextWidget(
-                    "اتصال",
-                    textStyle: TextStyle(
+                    trans("call"),
+                    textStyle: const TextStyle(
                       fontSize: 12,
                       decoration: TextDecoration.underline,
                       fontWeight: FontWeight.bold,

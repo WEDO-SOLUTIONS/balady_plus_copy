@@ -13,6 +13,8 @@ import '../../../data/models/additional_activity_details_response.dart';
 import '../../../data/models/additional_activity_response.dart';
 import '../../../data/models/commercial_request_details_response.dart'
     hide Activity;
+import 'package:localize_and_translate/localize_and_translate.dart';
+
 import '../../../data/models/salama_warning_request.dart';
 import '../../../domain/entities/addetional_activity_details_request.dart';
 import '../../../domain/entities/addetional_activity_request.dart';
@@ -299,7 +301,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
           BottomSheetDialog.showDraggableSheet(
               NavigationService.navigatorKey.currentContext!,
               child: BottomSheetWithActions(
-                title: "تنبيه",
+                title: "warning_2".tr(),
                 action: Row(
                   children: [
                     Expanded(
@@ -363,12 +365,12 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
     BottomSheetDialog.showDraggableSheet(
         NavigationService.navigatorKey.currentContext!,
         child: BottomSheetWithActions(
-          title: "تنبيه",
+          title: "warning_2".tr(),
           action: Row(
             children: [
               Expanded(
                 child: ElevatedButtonWidget.primaryCustom(
-                    text: "موافق",
+                    text: "agree".tr(),
                     onPressed: () {
                       NavigationService.goBack();
                     }),
@@ -434,7 +436,6 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
               subActivitiesStatus: BlocStatus.success,
               subActivities: List.from(success)));
         });
-        print("EEE 555");
 
         if (requestData?.activityInfo?.mainActivity?.detailedActivityId !=
             null) {

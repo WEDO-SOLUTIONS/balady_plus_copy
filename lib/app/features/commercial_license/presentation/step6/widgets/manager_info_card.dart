@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -92,7 +93,7 @@ class ManagerInfoCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomTextWidget(
-                          "الجنسيه",
+                          "nationality".tr(),
                           fontColor: AppColor.primary700Light,
                           fontSize: 10,
                           fontWeight: AppFontWeight.semiBold,
@@ -113,7 +114,7 @@ class ManagerInfoCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomTextWidget(
-                          "المهنه",
+                          "job".tr(),
                           fontColor: AppColor.primary700Light,
                           fontSize: 10,
                           fontWeight: AppFontWeight.semiBold,

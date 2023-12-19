@@ -25,7 +25,8 @@ class PreviousWorks extends StatelessWidget {
   final List<Project>? projects;
 
   const PreviousWorks({
-    super.key, required this.projects,
+    super.key,
+    required this.projects,
   });
 
   @override
@@ -36,8 +37,8 @@ class PreviousWorks extends StatelessWidget {
         const SizedBox(height: 16),
         (projects?.length ?? 0) > 0
             ? Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 12, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(16)),
                   color: AppColor.white,
@@ -48,24 +49,18 @@ class PreviousWorks extends StatelessWidget {
                     ListView.separated(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      separatorBuilder: (_, __) =>
-                          const SizedBox(height: 8),
-                      itemCount:
-                          (projects?.length ?? 0) >
-                                  3
-                              ? 3
-                              : (projects
-                                      ?.length ??
-                                  0),
+                      separatorBuilder: (_, __) => const SizedBox(height: 8),
+                      itemCount: (projects?.length ?? 0) > 3
+                          ? 3
+                          : (projects?.length ?? 0),
                       itemBuilder: (_, index) => PreviousWorkCard(
                         project: projects?[index],
                       ),
                     ),
                     const SizedBox(height: 12),
-                    if ((projects?.length ?? 0) >
-                        3)
+                    if ((projects?.length ?? 0) > 3)
                       CustomElevatedButtonWidget(
-                        btnText: "عرض الكل",
+                        btnText: trans("show_all"),
                         btnTextColor: AppColor.primary900Light,
                         btnTextSize: 12,
                         btnTextWeight: AppFontWeight.bold,
@@ -74,8 +69,7 @@ class PreviousWorks extends StatelessWidget {
                         btnBorderWidth: 1,
                         btnColor: AppColor.white,
                         btnBorderColor: AppColor.primary900Light,
-                        btnPadding:
-                            const EdgeInsets.symmetric(horizontal: 16),
+                        btnPadding: const EdgeInsets.symmetric(horizontal: 16),
                         btnPressed: () {
                           NavigationService.pushNamed(
                               routeName: EtmamRoutesNames.previousWorksPage,

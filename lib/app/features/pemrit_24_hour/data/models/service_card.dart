@@ -14,13 +14,13 @@ ServiceModel permits24Model() => ServiceModel.fromJson(
         "isImportant": false,
         "action": {"type": "cards", "value": ""},
         "ar": {
-          "title": "permit_24_service_name".tr(),
+          "title": "permit_24_service_name",
           "description": "",
           "tag": null,
           "warning": null,
         },
         "en": {
-          "title": 'تصريح إعلاني مؤقت',
+          "title": 'permit_24_service_name',
           "description": "",
           "tag": null,
           "warning": null
@@ -35,11 +35,10 @@ ServiceModel permits24Model() => ServiceModel.fromJson(
             "feesName": "",
             "feesLink": "",
             "ar": {
-              "title": "وصف الخدمة",
-              "description":
-                  "من خلال هذه الخدمة يمكن للمستفيد زيادة ساعات عمل المنشأة بإصدار تصريح لفتح المحل 24 ساعة وربطه برخصة النشاط التجاري"
+              "title": "service_describtion",
+              "description": "permit_24_desc"
             },
-            "en": {"title": "Service Description", "description": ""}
+            "en": {"title": "permit_24_desc", "description": ""}
           },
           {
             "iconName": IconPath.serviceCardReq,
@@ -47,10 +46,10 @@ ServiceModel permits24Model() => ServiceModel.fromJson(
             "rate": 0,
             "duration": "0",
             "requirements": [
-              "شهادة إنجاز الكاميرات من وزارة الداخلية",
+              "permit_24_req_1",
             ],
-            "ar": {"title": "المتطلبات", "description": ""},
-            "en": {"title": "Requirements", "description": ""}
+            "ar": {"title": "requirements", "description": ""},
+            "en": {"title": "requirements", "description": ""}
           },
           {
             "iconName": IconPath.serviceCardFlow,
@@ -60,10 +59,13 @@ ServiceModel permits24Model() => ServiceModel.fromJson(
             "flow": [
               {
                 "title": "",
-                "steps": ["إدخال رقم الرخصة", "سداد المقابل المالي"],
+                "steps": [
+                  "permit_24_applying_step_1",
+                  "permit_24_applying_step_2"
+                ],
               },
             ],
-            "ar": {"title": "خطوات التقديم", "description": ""},
+            "ar": {"title": "applying_steps", "description": ""},
             "en": {"title": "", "description": ""}
           },
           {
@@ -73,10 +75,10 @@ ServiceModel permits24Model() => ServiceModel.fromJson(
             "duration": "",
             "fees": null,
             "ar": {
-              "title": "الاشتراطات والغرامات",
-              "description": "متطلبات واشتراطات الخدمة",
+              "title": "conditions_and_fines",
+              "description": "service_conditions_and_fess",
               "descriptionLink": "https://new.balady.gov.sa/ar/node/11356",
-              "feesName": "لائحة الجزاءات عن المخالفات البلدية",
+              "feesName": "list_municipal_violations",
               "feesLink":
                   "https://balady.gov.sa/sites/default/files/2023-06/%D8%AC%D8%AF%D9%88%D9%84%20%D8%A7%D9%84%D8%AC%D8%B2%D8%A7%D8%A1%D8%A7%D8%AA%20%D8%B9%D9%86%20%D8%A7%D9%84%D9%85%D8%AE%D8%A7%D9%84%D9%81%D8%A7%D8%AA%20%D8%A7%D9%84%D8%A8%D9%84%D8%AF%D9%8A%D8%A9.pdf",
             },

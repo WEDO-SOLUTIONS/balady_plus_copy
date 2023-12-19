@@ -26,6 +26,7 @@ import 'package:balady_plus/etmam_app/features/my_orders/my_orders_exports.dart'
         ShowActionsEvent;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../app/features/_shared_feature_/shared_feature_exports.dart';
 import '../../../../../app/features/objectable_transactions/presentation/widgets/summery_widgets/field_data.dart';
@@ -172,10 +173,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                           iconColor: AppColor.primary600Light,
                           iconSize: 20,
                         ),
-                        title: "بيانات الطلب",
+                        title: trans("request_data"),
                         children: [
                           FieldData(
-                            title: "الخدمة",
+                            title: "order_services".tr(),
                             subTitle: state.response?.serviceName,
                           ),
                           if (state.response?.platformReferenceNumber != null)
@@ -192,10 +193,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                           iconColor: AppColor.primary600Light,
                           iconSize: 20,
                         ),
-                        title: "المكتب المفوض",
+                        title: trans("order_info_provider_office"),
                         children: [
                           FieldData(
-                            title: "اسم المكتب",
+                            title: "order_info_office_name".tr(),
                             subTitle: state.response?.providerName,
                           ),
                         ],
@@ -207,7 +208,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                           iconColor: AppColor.primary600Light,
                           iconSize: 20,
                         ),
-                        title: "خدمات اضافية",
+                        title: "addetional_services".tr(),
                         children: [
                           ListView.builder(
                             shrinkWrap: true,
@@ -277,10 +278,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                           iconColor: AppColor.primary600Light,
                           iconSize: 20,
                         ),
-                        title: "تفاصيل اخري",
+                        title: "other_details".tr(),
                         children: [
                           FieldData(
-                            title: "المدينة",
+                            title: "city".tr(),
                             subTitle: state.response?.cityName,
                           ),
                         ],

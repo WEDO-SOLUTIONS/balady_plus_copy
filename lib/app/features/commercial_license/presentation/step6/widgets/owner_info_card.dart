@@ -131,7 +131,7 @@ class OwnerInfoCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      "رقم الهويه",
+                      "id_number".tr(),
                       fontColor: AppColor.primary700Light,
                       fontSize: 10,
                       fontWeight: AppFontWeight.semiBold,
