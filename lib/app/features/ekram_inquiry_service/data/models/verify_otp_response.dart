@@ -1,8 +1,8 @@
 class VerifyOTPResponseModel {
-  String? printUrl;
+  String? certificateCode;
 
-  VerifyOTPResponseModel({this.printUrl});
+  VerifyOTPResponseModel({this.certificateCode});
 
   factory VerifyOTPResponseModel.fromJson(Map<String, dynamic> json) =>
-      VerifyOTPResponseModel(printUrl: json["printUrl"]);
+      VerifyOTPResponseModel(certificateCode: json["certificateCode"]);
 }

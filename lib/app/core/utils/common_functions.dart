@@ -45,6 +45,7 @@ import './utils_exports.dart'
         AppColor,
         AppConfig,
         AppLanguage,
+        BlocStatus,
         EnvType,
         MimeType,
         RouteName,
@@ -542,6 +543,7 @@ class CommonFunctions {
     await translator.setNewLanguage(
         NavigationService.navigatorKey.currentContext!,
         newLanguage: lang);
+    translator.applyChanges(NavigationService.navigatorKey.currentContext!);
   }
 
   static String replaceArabicNumberWithEnglish(String value) {

@@ -135,7 +135,10 @@ class CustomTextIconButtonWidget extends StatelessWidget {
           children: [
             // Icon Widget
             if (atStart) ...[
-              icon,
+              RotatedBox(
+                quarterTurns: CommonFunctions.isAppAR ? 0 : 2,
+                child: icon,
+              ),
               CustomHorizontalSpace(width: iconTextTweenSpace),
             ],
             // Text
@@ -146,7 +149,10 @@ class CustomTextIconButtonWidget extends StatelessWidget {
             // Icon Widget
             if (atEnd) ...[
               CustomHorizontalSpace(width: iconTextTweenSpace),
-              icon,
+              RotatedBox(
+                quarterTurns: CommonFunctions.isAppAR ? 0 : 2,
+                child: icon,
+              ),
             ],
           ],
         ),
