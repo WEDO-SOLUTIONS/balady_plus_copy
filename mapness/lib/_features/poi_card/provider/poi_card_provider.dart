@@ -1,6 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/poi_card/data/qr_license_repository.dart';
 import 'package:mapness/_features/poi_card/domain/model/qr_trade_license.dart';
+import 'package:mapness/app/router.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -45,7 +46,12 @@ class PoiCardProvider extends _$PoiCardProvider {
     DgisObjectIdMessage objectId,
   ) async {
     final qrLicenseRepository = ref.watch(qrLicenseRepositoryProvider.notifier);
-    final result = await ref.watch(pointOfInterestProvider(objectId).future);
+    final result = await ref
+        .watch(pointOfInterestProvider(objectId).future)
+        .timeout(const Duration(minutes: 1), onTimeout: () {
+      ref.read(goRouterProvider).pop();
+      return null;
+    });
 
     var tradeLicense = result?.tradeLicense;
 

@@ -1,7 +1,3 @@
-import 'dart:convert';
-
-import 'package:hijri/hijri_calendar.dart';
-
 import '../../entry_point_exports.dart';
 
 class SsoUserInfoModel extends SsoUserInfo {
@@ -10,6 +6,7 @@ class SsoUserInfoModel extends SsoUserInfo {
       super.phone,
       super.mail,
       super.arName,
+      super.enName,
       super.idNo,
       super.nid,
       super.idType,
@@ -26,6 +23,7 @@ class SsoUserInfoModel extends SsoUserInfo {
           phone: json["phone"],
           mail: json["mail"],
           arName: json["ar_name"],
+          enName: json["en_name"],
           idNo: json["id_no"],
           nid: json["nid"],
           idType: json["id_type"],
@@ -41,6 +39,7 @@ class SsoUserInfoModel extends SsoUserInfo {
         "phone": phone,
         "mail": mail,
         "ar_name": arName,
+        "en_name": enName,
         "id_no": idNo,
         "nid": nid,
         "id_type": idType,
@@ -56,6 +55,7 @@ class SsoUserInfoModel extends SsoUserInfo {
 extension SSOUserInfoModelFromEntity on SsoUserInfo {
   SsoUserInfoModel get toModel => SsoUserInfoModel(
       arName: arName,
+      enName: enName,
       dob: dob,
       idNo: idNo,
       idType: idType,

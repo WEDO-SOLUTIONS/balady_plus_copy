@@ -69,6 +69,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
       ).notifier,
     );
     ref.listen(searchByRubricsProvider, (previous, next) async {
+      if (!widget.forMap) return;
       await searchObjectManager.removeAllMarkers();
 
       if (next != null) {

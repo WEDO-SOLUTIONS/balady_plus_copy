@@ -7,7 +7,6 @@ import 'package:mapness/_features/lifestyle_layers/data/lifestyle_repository.dar
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/esri_feature.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/map_requests_params.dart';
-import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/white_lands.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as pb;
 
@@ -17,6 +16,7 @@ import 'package:mapness/app/routes/layer_details.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/entities/iwish/models/iwish_marker.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -88,7 +88,6 @@ class LayersControls extends _$LayersControls {
   @override
   LayersState build() {
     final dgisController = ref.watch(dgisControllerProvider).value;
-    var favourites = ref.read(favouriteToggleProvider);
 
     var listen = dgisController?.visibleRectEvents
         .listen((event) => visibleRectSub.add(event));
@@ -104,13 +103,14 @@ class LayersControls extends _$LayersControls {
 
     return LayersState(
       layersVisible: false,
-      selectedType: favourites ? LayerType.favourites : null,
+      selectedType: null,
       isLoading: false,
     );
   }
 
   Future<void> showMarkers(WidgetRef ref, LayerType layerType) async {
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
+    final env = await ref.read(dgisEnvironmentProvider.future);
 
     var layersControls = ref.watch(layersControlsProvider.notifier);
     layersControls.update(
@@ -123,15 +123,26 @@ class LayersControls extends _$LayersControls {
     final mapObjectManager =
         ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
 
-    var mapRequestParams = MapRequestParams(
+    var requestParams = MapRequestParams(
       layer: GISMapLayers.Opportunities,
       southWestLongitude: visibleRect.southWestLon,
       southWestLatitude: visibleRect.southWestLat,
       northEastLongitude: visibleRect.northEastLon,
       northEastLatitude: visibleRect.northEastLat,
+      domain: env.url,
+      proxy: env.proxy,
     );
 
-    final response = await controller.getEsriPoints(mapRequestParams);
+    final response = await controller
+        .getEsriPoints(
+      params: requestParams,
+    )
+        .timeout(const Duration(minutes: 1), onTimeout: () {
+      layersControls.update(
+        isLoading: false,
+      );
+      return null;
+    });
 
     var markers = response
             ?.whereNotNull()
@@ -173,14 +184,16 @@ class LayersControls extends _$LayersControls {
       isLoading: false,
       investmentsMarkers: markers,
     );
-
     await removeAll();
-    await mapObjectManager.addMarkers(markers);
-    await ref.read(cameraPositionProvider.notifier).animateToMarkers(markers);
+    if (markers.isNotEmpty) {
+      await mapObjectManager.addMarkers(markers);
+      await ref.read(cameraPositionProvider.notifier).animateToMarkers(markers);
+    }
   }
 
   Future<void> getLandFences(WidgetRef ref, LayerType layerType) async {
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
+    final env = await ref.read(dgisEnvironmentProvider.future);
     var layersControls = ref.watch(layersControlsProvider.notifier);
     final mapManager = ref.watch(
       mapObjectManagerProvider(
@@ -204,8 +217,18 @@ class LayersControls extends _$LayersControls {
       southWestLatitude: visibleRect.southWestLat,
       northEastLongitude: visibleRect.northEastLon,
       northEastLatitude: visibleRect.northEastLat,
+      proxy: env.proxy,
+      domain: env.url,
     );
-    final response = await controller.getWhiteLands(mapRequestParams);
+    final response = await controller
+        .getWhiteLands(mapRequestParams)
+        .timeout(const Duration(minutes: 1), onTimeout: () {
+      layersControls.update(
+        isLoading: false,
+      );
+      return null;
+    });
+
     var list = response?.map((e) {
           return Polygon(
               id: e.id,
@@ -243,6 +266,7 @@ class LayersControls extends _$LayersControls {
 
     final mapObjectManager =
         ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
+    final env = await ref.read(dgisEnvironmentProvider.future);
 
     var layer = GISMapLayers.BSAimtithalBuildingsCertificateL;
     var mapRequestParams = MapRequestParams(
@@ -251,9 +275,17 @@ class LayersControls extends _$LayersControls {
       southWestLatitude: visibleRect.southWestLat,
       northEastLongitude: visibleRect.northEastLon,
       northEastLatitude: visibleRect.northEastLat,
+      proxy: env.proxy,
+      domain: env.url,
     );
-    final response =
-        await controller.buildingComplianceCertificate(mapRequestParams);
+    final response = await controller
+        .buildingComplianceCertificate(mapRequestParams)
+        .timeout(const Duration(minutes: 1), onTimeout: () {
+      layersControls.update(
+        isLoading: false,
+      );
+      return null;
+    });
 
     var polylines = addPolylineWithPoint(response, layer.layerId);
     layersControls.update(isLoading: false);
@@ -312,10 +344,11 @@ class LayersControls extends _$LayersControls {
 
   Future<void> handleTap(WidgetRef ref, LayerType value) async {
     var layersControls = ref.watch(layersControlsProvider.notifier);
+    var currentState = state.selectedType;
     switch (value) {
       case LayerType.favourites:
         await removeAll();
-        if (state.selectedType == LayerType.favourites) {
+        if (currentState == LayerType.favourites) {
           await ref.read(favouriteToggleProvider.notifier).disable();
           setSelected(null);
         } else {
@@ -323,7 +356,7 @@ class LayersControls extends _$LayersControls {
           await ref.read(favouriteToggleProvider.notifier).enable();
         }
       case LayerType.invest:
-        if (state.selectedType == LayerType.invest) {
+        if (currentState == LayerType.invest) {
           await removeAll();
           setSelected(null);
         } else {
@@ -331,7 +364,7 @@ class LayersControls extends _$LayersControls {
           layersControls.showMarkers(ref, value);
         }
       case LayerType.buildings:
-        if (state.selectedType == LayerType.buildings) {
+        if (currentState == LayerType.buildings) {
           await removeAll();
           setSelected(null);
         } else {
@@ -340,7 +373,7 @@ class LayersControls extends _$LayersControls {
         }
 
       case LayerType.fencing:
-        if (state.selectedType == LayerType.fencing) {
+        if (currentState == LayerType.fencing) {
           await removeAll();
           setSelected(null);
         } else {
@@ -349,7 +382,7 @@ class LayersControls extends _$LayersControls {
         }
 
       case LayerType.joy:
-        if (state.selectedType == LayerType.joy) {
+        if (currentState == LayerType.joy) {
           await removeAll();
           setSelected(null);
         } else {
@@ -361,25 +394,23 @@ class LayersControls extends _$LayersControls {
 
   void showWhiteLands(WhiteLands e) {
     update(whiteLands: e);
-    ref.read(goRouterProvider).push(LayerDetailsRoute().location,
-        extra: {"data": e});
-
-    print(">>>>showLandFencedInfo>>>>>>> ${e.description}");
+    ref
+        .read(goRouterProvider)
+        .push(LayerDetailsRoute().location, extra: {"data": e});
   }
 
   void showMarkerInfo(EsriPointFeature e) {
-    print(">>>>showMarkerInfo>>>>>>> ${e.objectId}");
+    ///NO OP
   }
-
-  void showPointLayersData(PointLayersData e) {}
 
   Future<void> showJoyParks() async {
     final mapObjectManager =
         ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
-    final dio = ref.watch(dGisNetworkProvider);
+    final dio = await ref.read(dGisNetworkProvider.future);
     final raw = await dio.get('iwish');
     final response = pb.IWishMarkersResponse.fromBuffer(raw.data);
 
+    await removeAll();
     final markers = response.markers
         .map(
           (serverMarker) => IwishMarker(
@@ -398,43 +429,39 @@ class LayersControls extends _$LayersControls {
         )
         .toList();
 
-    await mapObjectManager.removeAllMarkers();
-    await mapObjectManager.addMarkers(
-      markers
-          .map(
-            (stateMarker) => Marker(
-              id: "$_markerPrefix${stateMarker.id}",
-              options: MarkerOptionsMessage(
-                position: GeoPointWithElevationMessage(
-                  latitude: stateMarker.location.latitude,
-                  longitude: stateMarker.location.longitude,
-                  elevation: 0,
-                ),
-                icon: MarkerIconMessage(
-                  path: "packages/mapness/assets/icons/svg/ic_joy_parks.svg",
-                  width: 30,
-                ),
-                text: "JOY Parks",
-                textStyle: MarkerTextStyleMessage(
-                  color: Color(0xFF1BA136).value,
-                  strokeColor: Colors.white.value,
-                  strokeWidth: 1,
-                  fontSize: 14,
-                  fontName: "Frutiger",
-                  textPlacement: MarkerTextPlacementMessage(
-                    placement: TextPlacementMessage.bottomCenter,
-                  ),
+    final map = markers
+        .map(
+          (stateMarker) => Marker(
+            id: "$_markerPrefix${stateMarker.id}",
+            options: MarkerOptionsMessage(
+              position: GeoPointWithElevationMessage(
+                latitude: stateMarker.location.latitude,
+                longitude: stateMarker.location.longitude,
+                elevation: 0,
+              ),
+              icon: MarkerIconMessage(
+                path: "packages/mapness/assets/icons/svg/ic_joy_parks.svg",
+                width: 30,
+              ),
+              text: "JOY Parks",
+              textStyle: MarkerTextStyleMessage(
+                color: Color(0xFF1BA136).value,
+                strokeColor: Colors.white.value,
+                strokeWidth: 1,
+                fontSize: 14,
+                fontName: "Frutiger",
+                textPlacement: MarkerTextPlacementMessage(
+                  placement: TextPlacementMessage.bottomCenter,
                 ),
               ),
-              onTap: () {
-                ref
-                    .read(goRouterProvider)
-                    .push(IwishCardRoute(iwishId: stateMarker.id).location);
-              },
             ),
-          )
-          .toList(),
-    );
+            onTap: () {
+              IwishCardRoute.open(ref.read(goRouterProvider), stateMarker);
+            },
+          ),
+        )
+        .toList();
+    await mapObjectManager.addMarkers(map);
   }
 
   Future<void> removeAll() async {

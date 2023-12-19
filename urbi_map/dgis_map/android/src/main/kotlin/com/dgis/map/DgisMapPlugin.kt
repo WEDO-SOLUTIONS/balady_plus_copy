@@ -21,15 +21,25 @@ class DgisMapPlugin : FlutterPlugin, PluginApi, ActivityAware {
 
     private lateinit var context: Context
 
-    override fun initialize(message: Messages.LogOptionsMessage?, result: Messages.Result<Void>?) {
-        initializeDGis(context, message?.toLogOptions(context))
+    override fun initialize(
+            message: Messages.LogOptionsMessage?,
+            configMessage: Messages.VendorConfigMessage?, result: Messages.Result<Void>?) {
+        initializeDGis(context, message?.toLogOptions(context),configMessage)
         result?.success(null)
     }
 
-    private fun initializeDGis(appContext: Context, logOptions: LogOptions?) {
+    private fun initializeDGis(appContext: Context,
+                               logOptions: LogOptions?,
+                               message: Messages.VendorConfigMessage?){
+       val vendorConfigFile = when (message) {
+            Messages.VendorConfigMessage.URBI_PRE_PROD -> "urbi-pre-prod-vendor-config.jsonx"
+            Messages.VendorConfigMessage.MOMRAH_PROD -> "momrah-prod-vendor-config.jsonx"
+            Messages.VendorConfigMessage.MOMRAH_STG -> "momrah-staging-vendor-config.jsonx"
+            null -> "momrah-prod-vendor-config.jsonx"
+        }
         val vendorContent = context
                 .assets
-                .open("vendor-config.jsonx")
+                .open(vendorConfigFile)
                 .bufferedReader()
                 .use(BufferedReader::readText)
         vendorConfig = vendorContent.let { VendorConfig.from(it) }
@@ -37,7 +47,7 @@ class DgisMapPlugin : FlutterPlugin, PluginApi, ActivityAware {
             appContext,
             logOptions = logOptions ?: LogOptions(),
             vendorConfig = VendorConfig(
-                fromAsset = VendorConfigFromAsset("vendor-config.jsonx")
+                fromAsset = VendorConfigFromAsset(vendorConfigFile)
             )
         )
     }

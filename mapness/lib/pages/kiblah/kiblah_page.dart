@@ -1,17 +1,19 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/pages/kiblah/ui/kiblah_compass.dart';
 import 'package:mapness/pages/kiblah/ui/kiblah_header.dart';
 import 'package:mapness/shared/config/package_config.dart';
 
-class KiblahPage extends StatelessWidget {
+class KiblahPage extends ConsumerWidget {
   const KiblahPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     print("KiblahPage rebuild");
 
     return Material(
@@ -49,10 +51,14 @@ class KiblahPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                   onTap: () {
                     const LandingRoute().go(context);
-                    const SearchRoute(
-                      initialQuery: "المساجد القريبة منك",
-                      withClustering: true,
-                    ).push(context);
+                    ref.read(goRouterProvider).push(
+                        const SearchRoute(
+                          // initialQuery: "المساجد القريبة منك",
+                          withClustering: true,
+                        ).location,
+                        extra: {
+                          "rubrics": [13374]
+                        });
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(

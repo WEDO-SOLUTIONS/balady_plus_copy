@@ -69,11 +69,11 @@ class IwishInfo extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            Text(
-              distance,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: grey),
-            ),
+            // Text(
+            //   distance,
+            //   overflow: TextOverflow.ellipsis,
+            //   style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: grey),
+            // ),
           ],
         ),
       ],

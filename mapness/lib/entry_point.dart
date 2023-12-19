@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class MapnessProviderScope extends StatelessWidget {
 
 class MapnessEntryPoint extends ConsumerStatefulWidget {
   final void Function(DgisMapController) mapCreated;
+
   const MapnessEntryPoint({
     required this.mapCreated,
     super.key,
@@ -63,7 +65,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final language = ref.watch(appLanguageProvider);
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: switch (language) {
+        Language.english => TextDirection.ltr,
+        Language.arabic => TextDirection.rtl,
+      },
       child: Stack(
         children: [
           SizedBox(
@@ -113,15 +118,31 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 }
 
-Future<void> setupMapness() async {
+Future<void> setupMapness(EnvType envType) async {
+  final vendorConfig = switch (envType) {
+    EnvType.stg => VendorConfigMessage.momrahStg,
+    EnvType.pre || EnvType.prod => VendorConfigMessage.momrahProd,
+    EnvType.urbiPre || EnvType.dev => VendorConfigMessage.urbiPreProd,
+  };
+
   await initialiseDGis(
     logOptions: LogOptionsMessage(
       systemLevel: LogLevelMessage.error,
       customLevel: LogLevelMessage.error,
     ),
+    config: vendorConfig,
   );
   await Hive.initFlutter();
   Hive.registerAdapter(
     SearchHistoryItemAdapter(),
   );
+  final box = await Hive.openBox("envType");
+  final env = switch (envType) {
+    EnvType.dev => "dev",
+    EnvType.stg => "stg",
+    EnvType.pre => "pre",
+    EnvType.prod => "prod",
+    EnvType.urbiPre => "urbiPre",
+  };
+  await box.put("envType", env);
 }

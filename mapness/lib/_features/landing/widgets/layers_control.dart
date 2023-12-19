@@ -14,11 +14,9 @@ class LayersControl extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return MapButton(
       onTap: () {
+        var state = ref.read(layersControlsProvider);
         ref.watch(layersControlsProvider.notifier)
-            .update(visible: true);
-        // ref
-        //     .watch(mapControlsProvider.notifier)
-        //     .update(MapControlsStateLayers());
+            .update(visible: !state.layersVisible);
       },
       child: SvgPicture.asset(
         "assets/icons/svg/ic_control_layers.svg",

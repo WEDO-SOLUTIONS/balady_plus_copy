@@ -58,13 +58,13 @@ class PrayerHomeCard extends StatelessWidget {
                           state.nextPrayer!.prayer == Prayers.fajr
                               ? "assets/images/sunrise_pray.png"
                               : state.nextPrayer!.prayer == Prayers.dhuhr
-                                  ? "assets/images/day_pray.png"
+                                  ? "assets/images/sunrise_pray.png" // day
                                   : state.nextPrayer!.prayer == Prayers.asr
-                                      ? "assets/images/day_pray.png"
+                                      ? "assets/images/sunrise_pray.png" // day
                                       : state.nextPrayer!.prayer ==
                                               Prayers.maghrib
-                                          ? "assets/images/sunset_pray.png"
-                                          : "assets/images/night_pray.png",
+                                          ? "assets/images/sunrise_pray.png" // sunset
+                                          : "assets/images/sunrise_pray.png", // night
                           package: PackageConfig.packageName,
                         ),
                         fit: BoxFit.cover,
@@ -84,6 +84,8 @@ class PrayerHomeCard extends StatelessWidget {
                                   Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Column(
                                         crossAxisAlignment:
@@ -121,12 +123,9 @@ class PrayerHomeCard extends StatelessWidget {
                                       ),
                                       Container(
                                         padding: const EdgeInsets.all(12),
-                                        decoration: BoxDecoration(
+                                        decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: state.nextPrayer!.prayer ==
-                                                  Prayers.isha
-                                              ? const Color(0x1A4CA5B4)
-                                              : const Color(0x4D1E2A36),
+                                          color: Color(0x40FFFFFF),
                                         ),
                                         child: GestureDetector(
                                           onTap: () {
@@ -230,7 +229,7 @@ class PrayerHomeCard extends StatelessWidget {
                                               .extension<ThemeTextStyles>()!
                                               .accentM
                                               .copyWith(
-                                                color: const Color(0xFF4CA5B4),
+                                                color: Colors.black,
                                               ),
                                         ),
                                       ),

@@ -99,6 +99,12 @@ abstract class AppLocalizations {
   /// **'حول التطبيق'**
   String get aboutApp;
 
+  /// No description provided for @accessibility.
+  ///
+  /// In ar, this message translates to:
+  /// **'إمكانية الوصول'**
+  String get accessibility;
+
   /// No description provided for @addAddress.
   ///
   /// In ar, this message translates to:
@@ -140,6 +146,18 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'الوصول'**
   String get arrival;
+
+  /// No description provided for @beaches.
+  ///
+  /// In ar, this message translates to:
+  /// **'الشواطئ'**
+  String get beaches;
+
+  /// No description provided for @beautyCenters.
+  ///
+  /// In ar, this message translates to:
+  /// **'مراكز التجميل'**
+  String get beautyCenters;
 
   /// No description provided for @best.
   ///
@@ -188,6 +206,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'إلغاء'**
   String get cancel;
+
+  /// No description provided for @carServices.
+  ///
+  /// In ar, this message translates to:
+  /// **'خدمات السيارات'**
+  String get carServices;
 
   /// No description provided for @challenge.
   ///
@@ -249,6 +273,42 @@ abstract class AppLocalizations {
   /// **'مكتمل'**
   String get completed;
 
+  /// No description provided for @complianceCardDescription.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعرف على الطرق المستهدفة لتطبيق شهادة الامتثال من خلال الخريطة '**
+  String get complianceCardDescription;
+
+  /// No description provided for @complianceCardTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'خريطة شهادة الإمتثال'**
+  String get complianceCardTitle;
+
+  /// No description provided for @complianceFAQ.
+  ///
+  /// In ar, this message translates to:
+  /// **'الاسئلة الشائعة'**
+  String get complianceFAQ;
+
+  /// No description provided for @complianceOr.
+  ///
+  /// In ar, this message translates to:
+  /// **'أو'**
+  String get complianceOr;
+
+  /// No description provided for @complianceRequirements.
+  ///
+  /// In ar, this message translates to:
+  /// **'الاشتراطات'**
+  String get complianceRequirements;
+
+  /// No description provided for @complianceToKnow.
+  ///
+  /// In ar, this message translates to:
+  /// **'لمعرفه المزيد اطلع على'**
+  String get complianceToKnow;
+
   /// No description provided for @connectToMomrah.
   ///
   /// In ar, this message translates to:
@@ -284,6 +344,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'الإحداثيات'**
   String get coordinates;
+
+  /// No description provided for @createCompliance.
+  ///
+  /// In ar, this message translates to:
+  /// **'أصدر الشهادة'**
+  String get createCompliance;
 
   /// No description provided for @daily.
   ///
@@ -332,6 +398,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'حذف السجلّ'**
   String get deleteHistory;
+
+  /// No description provided for @deliveryAvailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'التسليم متاح'**
+  String get deliveryAvailable;
 
   /// No description provided for @dentalCenters.
   ///
@@ -524,6 +596,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'المستشفيات'**
   String get hospitals;
+
+  /// No description provided for @hotels.
+  ///
+  /// In ar, this message translates to:
+  /// **'الفنادق'**
+  String get hotels;
 
   /// No description provided for @hrs.
   ///
@@ -735,6 +813,12 @@ abstract class AppLocalizations {
   /// **'المواصلات'**
   String get mapLayerTransport;
 
+  /// No description provided for @markets.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأسواق'**
+  String get markets;
+
   /// No description provided for @menu.
   ///
   /// In ar, this message translates to:
@@ -770,6 +854,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'المساجد'**
   String get mosques;
+
+  /// No description provided for @motorVisual.
+  ///
+  /// In ar, this message translates to:
+  /// **'الموتور، بصري'**
+  String get motorVisual;
 
   /// No description provided for @myChallenge.
   ///
@@ -981,11 +1071,23 @@ abstract class AppLocalizations {
   /// **'تم النشر'**
   String get published;
 
+  /// No description provided for @ratingBuilding.
+  ///
+  /// In ar, this message translates to:
+  /// **'أو قيم مبناك'**
+  String get ratingBuilding;
+
   /// No description provided for @ready.
   ///
   /// In ar, this message translates to:
   /// **'مستعد'**
   String get ready;
+
+  /// No description provided for @recreationalCenters.
+  ///
+  /// In ar, this message translates to:
+  /// **'مراكز الترفيه'**
+  String get recreationalCenters;
 
   /// No description provided for @refresh.
   ///
@@ -1016,6 +1118,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'منطقة الراحة'**
   String get restArea;
+
+  /// No description provided for @restaurants.
+  ///
+  /// In ar, this message translates to:
+  /// **'المطاعم'**
+  String get restaurants;
 
   /// No description provided for @restroom.
   ///
@@ -1052,6 +1160,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'ساهم'**
   String get sahm;
+
+  /// No description provided for @salons.
+  ///
+  /// In ar, this message translates to:
+  /// **'صالونات'**
+  String get salons;
 
   /// No description provided for @schools.
   ///
@@ -1203,6 +1317,24 @@ abstract class AppLocalizations {
   /// **'المهارات'**
   String get skills;
 
+  /// No description provided for @snapAndSendButton.
+  ///
+  /// In ar, this message translates to:
+  /// **'ساهم'**
+  String get snapAndSendButton;
+
+  /// No description provided for @snapAndSendDescription.
+  ///
+  /// In ar, this message translates to:
+  /// **'حسن المشهد الحضري لمدينتك، وبلغ عن مظاهر التشوه البصري'**
+  String get snapAndSendDescription;
+
+  /// No description provided for @snapAndSendTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'صور وأرسل'**
+  String get snapAndSendTitle;
+
   /// No description provided for @snap_and_send.
   ///
   /// In ar, this message translates to:
@@ -1238,6 +1370,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'حدد على الخريطة'**
   String get specifyOnTheMap;
+
+  /// No description provided for @sportClubs.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأندية الرياضية'**
+  String get sportClubs;
 
   /// No description provided for @sportsGround.
   ///
@@ -1302,7 +1440,7 @@ abstract class AppLocalizations {
   /// No description provided for @tinId.
   ///
   /// In ar, this message translates to:
-  /// **'رقم هوية دافع الضرائب'**
+  /// **'رقم الرخصة التجارية'**
   String get tinId;
 
   /// No description provided for @to.
@@ -1442,24 +1580,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'انت تبحث'**
   String get youSearch;
-
-  /// No description provided for @deliveryAvailable.
-  ///
-  /// In ar, this message translates to:
-  /// **'التسليم متاح'**
-  String get deliveryAvailable;
-
-  /// No description provided for @accessibility.
-  ///
-  /// In ar, this message translates to:
-  /// **'إمكانية الوصول'**
-  String get accessibility;
-
-  /// No description provided for @motorVisual.
-  ///
-  /// In ar, this message translates to:
-  /// **'الموتور، بصري'**
-  String get motorVisual;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
