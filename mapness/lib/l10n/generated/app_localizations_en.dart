@@ -8,6 +8,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutApp => 'About App';
 
   @override
+  String get aboutBalady => 'About Balady';
+
+  @override
   String get accessibility => 'Accessibility';
 
   @override
@@ -30,6 +33,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get arrival => 'arrival';
+
+  @override
+  String get baladyWebsite => 'Balady website';
 
   @override
   String get beaches => 'Beaches';
@@ -66,6 +72,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get challenge => 'Challenge';
+
+  @override
+  String get changeTheColorSchemeOfAnApp => 'Change the color scheme of an app from light to dark';
+
+  @override
+  String get chooseTheLanguageOfAll => 'Choose the language of all interface in the Balady app';
 
   @override
   String get clean => 'Clean';
@@ -117,6 +129,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get connectionLost => 'Connection lost';
+
+  @override
+  String get contactInformation => 'Contact information';
 
   @override
   String get continueRide => 'Continue Ride';
@@ -248,6 +263,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get goodMorning => 'Good morning';
 
   @override
+  String get helpCenter => 'Help Center';
+
+  @override
   String get home => 'Home';
 
   @override
@@ -368,6 +386,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markets => 'Markets';
 
   @override
+  String get maybeLater => 'Maybe later';
+
+  @override
   String get menu => 'Menu';
 
   @override
@@ -411,6 +432,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get next => 'Next';
+
+  @override
+  String get noThanks => 'No thanks';
 
   @override
   String get open24Hours => 'Open 24 hours';
@@ -491,7 +515,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile => 'Profile';
 
   @override
+  String get profileSettings => 'Profile Settings';
+
+  @override
   String get published => 'Published';
+
+  @override
+  String get rate => 'Rate';
+
+  @override
+  String get rateBaladyApp => 'Rate Balady App';
+
+  @override
+  String get rateMessage => 'If you like this app, please take a little bit of your time to review it !It really helps us and it shouldn\'t take you more than one minute.';
+
+  @override
+  String get rateThisApp => 'Rate this app';
 
   @override
   String get ratingBuilding => 'Evaluate your building';
@@ -698,6 +737,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get twentyFourSeven => '24/7';
 
   @override
+  String get twitterAccount => 'Twitter account';
+
+  @override
   String get unknown => 'Unknown';
 
   @override
@@ -714,6 +756,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get watchMore => 'Watch more';
+
+  @override
+  String get weAreHappyToConnectYouWithBaladyTeam => 'We are happy to connect you with Balady team, through the following communication channels';
 
   @override
   String get weCouldntFindAnythingTryChangingYourRequest => 'We couldn\'t find anything. Try changing your request';

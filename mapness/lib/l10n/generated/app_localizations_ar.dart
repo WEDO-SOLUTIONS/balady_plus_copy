@@ -8,6 +8,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aboutApp => 'حول التطبيق';
 
   @override
+  String get aboutBalady => 'حول بلدي';
+
+  @override
   String get accessibility => 'إمكانية الوصول';
 
   @override
@@ -30,6 +33,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get arrival => 'الوصول';
+
+  @override
+  String get baladyWebsite => 'موقع بلدي';
 
   @override
   String get beaches => 'الشواطئ';
@@ -66,6 +72,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get challenge => 'تحدي';
+
+  @override
+  String get changeTheColorSchemeOfAnApp => 'تغيير نظام ألوان التطبيق من الفاتح إلى الداكن';
+
+  @override
+  String get chooseTheLanguageOfAll => 'اختر لغة كل الواجهة في تطبيق بلدي';
 
   @override
   String get clean => 'تنظيف';
@@ -113,10 +125,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get complianceToKnow => 'لمعرفه المزيد اطلع على';
 
   @override
-  String get connectToMomrah => 'تواصل مع مومراه';
+  String get connectToMomrah => 'تسجيل الدخول';
 
   @override
   String get connectionLost => 'فقد الاتصال';
+
+  @override
+  String get contactInformation => 'معلومات التواصل';
 
   @override
   String get continueRide => 'متابعة الرحلة';
@@ -248,6 +263,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get goodMorning => 'صباح الخير';
 
   @override
+  String get helpCenter => 'مركز المساعدة';
+
+  @override
   String get home => 'المنزل';
 
   @override
@@ -368,6 +386,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get markets => 'الأسواق';
 
   @override
+  String get maybeLater => 'ربما في وقت لاحق';
+
+  @override
   String get menu => 'قائمة';
 
   @override
@@ -411,6 +432,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get next => 'التالي';
+
+  @override
+  String get noThanks => 'لا، شكرًا';
 
   @override
   String get open24Hours => 'مفتوح على مدار 24 ساعة';
@@ -491,7 +515,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profile => 'الملف الشخصي';
 
   @override
+  String get profileSettings => 'إعدادات الملف الشخصي';
+
+  @override
   String get published => 'تم النشر';
+
+  @override
+  String get rate => 'تقييم';
+
+  @override
+  String get rateBaladyApp => 'قيّم تطبيق بلدي';
+
+  @override
+  String get rateMessage => 'إذا أعجبك هذا التطبيق، نرجو تخصيص بعض من وقتك لتقييمنا!  لن يستغرق الأمر أكثر من دقيقة واحدة.';
+
+  @override
+  String get rateThisApp => 'قيم هذا التطبيق';
 
   @override
   String get ratingBuilding => 'أو قيم مبناك';
@@ -698,6 +737,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get twentyFourSeven => '24/7';
 
   @override
+  String get twitterAccount => 'حساب التوتير';
+
+  @override
   String get unknown => 'غير معروف';
 
   @override
@@ -714,6 +756,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get watchMore => 'مشاهدة المزيد';
+
+  @override
+  String get weAreHappyToConnectYouWithBaladyTeam => 'نسعد بتواصلكم مع فريق بلدي، من خلال قنوات التواصل التالية';
 
   @override
   String get weCouldntFindAnythingTryChangingYourRequest => 'لم نتمكن من العثور على شيء. حاول تغيير طلبك';
