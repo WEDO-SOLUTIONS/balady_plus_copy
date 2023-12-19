@@ -1641,11 +1641,15 @@
 "center_name":"Center name",
 "access_location_with_google_map":"Access the location via Google Maps",
 "km":"Km",
-"msr_roads":"Road requests",
-"msr_lights":"Requests for lighting and signs",
-"msr_parks":"Garden requests",
-"msr_clean":"Hygiene requests",
-"msr_waste":"Huge waste",
+
+
+"msr_roads": "Requests for roads",
+"msr_lights": "Requests for lighting and signs",
+"msr_parks": "Requests for parks",
+"msr_clean": "Requests for cleanliness",
+"msr_waste": "Bulky waste",
+
+
 "lbl_choose_order_type":"Select the type of request",
 "order_location":"Request location",
 "spl_description":"Classification description",
@@ -2247,21 +2251,25 @@
 "distance_meter":"- M",
 "distance_meter2":"M",
 "distance_km":"- KM",
-"Inq_1":"Collective housing",
-"Inq_2":"Charts",
+"Inq_1":"Group housing",
+"Inq_2":"Plans",
 "Inq_3":"Construction licenses",
 "Inq_4":"Building code and housing insurance",
-"Inq_5":"Accommodation and tobacco",
+"Inq_5":"Accommodation and Tobacco ",
 "Inq_6":"Commercial licenses",
-"Inq_7":"Support services",
-"Inq_8":"Ikram Al-Mawta",
+"Inq_7":"Support Services",
+"Inq_8":"Honoring the dead",
 "Inq_9":"Health certificates",
-"Inq_10":"Mumtathil",
-"Inq_11":"Classification of city service providers",
+"Inq_10":"Mumtathil platform",
+"Inq_11":"Classification of cities service providers",
 "Inq_12":"Customer Voice",
 "Inq_13":"Excavation licenses",
 "Inq_14":"Investment opportunities",
 "Inq_16":"Building compliance certificate",
+
+
+
+
 "transferred_stores":"Mobile stores",
 "delete_account":"Delete the account",
 "delete_account_desc":"Please contact the support team directly to know whether it is possible to completely delete your account and any related data.",

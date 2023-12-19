@@ -17,7 +17,7 @@ class AccomodationDropDownTypes extends StatelessWidget {
     return BlocBuilder<CrStep2ActivityDataCubit, CrStep2ActivityDataState>(
         builder: (context, state) {
       return DropDownWithTitle(
-        title: "الفئة".tr(),
+        title: "accomodation".tr(),
         selectedValue: state.selectedAccommodationType?.name,
         blocStatus: state.accommodationTypesStatus,
         onRetry: () {
@@ -30,7 +30,7 @@ class AccomodationDropDownTypes extends StatelessWidget {
             //  dialogKeyName: DialogName.reasonCancelDialog,
             // currentRouteName: RouteName.commercialLicenseApplyCancel,
             child: GenericBottomSheetList<CrLookupsEntity>(
-              title: "الفئة".tr(),
+              title: "accomodation".tr(),
               items: state.accommodationTypes ?? [],
               selectedValue: state.selectedAccommodationType,
               onTap: (item) {
