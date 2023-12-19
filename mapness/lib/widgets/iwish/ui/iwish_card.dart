@@ -5,7 +5,6 @@ import 'package:mapness/widgets/iwish/ui/iwish_photos_mutiview.dart';
 
 class IwishCard extends StatelessWidget {
   final IwishEntity iwish;
-  final String address;
   final String distance;
   final VoidCallback onClose;
   final VoidCallback onTap;
@@ -14,7 +13,6 @@ class IwishCard extends StatelessWidget {
     super.key,
     required this.iwish,
     required this.onClose,
-    required this.address,
     required this.distance,
     required this.onTap,
   });
@@ -39,7 +37,6 @@ class IwishCard extends StatelessWidget {
                   iwish: iwish,
                   distance: distance,
                   onClose: onClose,
-                  address: address,
                 ),
               ),
             ],

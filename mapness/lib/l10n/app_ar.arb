@@ -1,6 +1,7 @@
 {
   "aboutApp": "حول التطبيق",
   "aboutBalady": "حول بلدي",
+  "aboutPark": "About park",
   "accessibility": "إمكانية الوصول",
   "addAddress": "إضافة عنوان",
   "additionalServices": "خدمات إضافية",
@@ -147,6 +148,10 @@
   "openIn": "يفتح في ",
   "openUntil": "مفتوح حتى",
   "openUntill": "مفتوح حتى",
+  "parkAmanah": "Amanah",
+  "parkAreaSize": "Area size",
+  "parkOpeningDate": "Opening date",
+  "parkType": "Type",
   "parking": "موقف",
   "parkingSpaces": "أماكن وقوف السيارات",
   "parks": "الحدائق",

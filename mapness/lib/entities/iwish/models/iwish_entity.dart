@@ -5,6 +5,7 @@ class IwishEntity {
   final String id;
   final String title;
   final String subtitle;
+  final IwishMetadata metadata;
 
   final IwishCategory category;
   final IwishState state;
@@ -17,6 +18,7 @@ class IwishEntity {
   final List<IwishEntityVariant> variants;
 
   IwishEntity({
+    required this.metadata,
     required this.variants,
     required this.photos,
     required this.category,
@@ -39,4 +41,24 @@ enum IwishState {
 enum IwishCategory {
   unknown,
   joyParks,
+}
+
+class IwishMetadata {
+  final String areaName;
+  final String typeName;
+  final int areaSize;
+  final DateTime openingDate;
+
+  const IwishMetadata({
+    required this.areaName,
+    required this.typeName,
+    required this.areaSize,
+    required this.openingDate,
+  });
+}
+
+enum AreaSize {
+  small,
+  medium,
+  large,
 }

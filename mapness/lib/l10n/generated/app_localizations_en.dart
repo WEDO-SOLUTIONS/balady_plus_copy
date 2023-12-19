@@ -11,6 +11,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutBalady => 'About Balady';
 
   @override
+  String get aboutPark => 'About park';
+
+  @override
   String get accessibility => 'Accessibility';
 
   @override
@@ -125,7 +128,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get complianceToKnow => 'To know more, see';
 
   @override
-  String get connectToMomrah => 'Connect to Momrah';
+  String get connectToMomrah => 'Sign in';
 
   @override
   String get connectionLost => 'Connection lost';
@@ -447,6 +450,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get openUntill => 'Open untill';
+
+  @override
+  String get parkAmanah => 'Amanah';
+
+  @override
+  String get parkAreaSize => 'Area size';
+
+  @override
+  String get parkOpeningDate => 'Opening date';
+
+  @override
+  String get parkType => 'Type';
 
   @override
   String get parking => 'Parking';
