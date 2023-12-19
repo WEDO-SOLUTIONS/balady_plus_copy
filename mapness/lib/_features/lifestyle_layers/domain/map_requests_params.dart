@@ -25,9 +25,6 @@ class MapRequestParams {
 
   String getUrl() {
     var resultUrl;
-    var verifyingKey;
-
-    // var proxy = proxy;
 
     final params = toMap();
     final layerId = layer.layerId;
@@ -42,7 +39,7 @@ class MapRequestParams {
       params.forEach((key, value) => hashedUrl += "$key=$value&");
       hashedUrl = hashedUrl.substring(0, hashedUrl.length - 1);
 
-      verifyingKey = hashRequest_(hashedUrl, "GET");
+      // verifyingKey = hashRequest_(hashedUrl, "GET");
 
       hashedUrl = "$mainUrl/$layerId/query?";
       params.forEach((key, value) => hashedUrl += "$key=$value&");

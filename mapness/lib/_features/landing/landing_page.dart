@@ -38,7 +38,11 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     super.initState();
     switch (widget.focusMaker) {
       case LangingFocusMaker.iwish:
-        ref.read(iwishMarkersProvider.notifier).focusMarkersOnMap();
+        () async {
+          final layersControls = ref.read(layersControlsProvider.notifier);
+          // await layersControls.showIwish();
+          await layersControls.focusIwish();
+        }();
         break;
       case LangingFocusMaker.mosques:
         Future.delayed(Duration.zero, () {
@@ -68,6 +72,9 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   Widget build(BuildContext context) {
     final isLayersVisible = ref.watch(layersControlsProvider);
     ref.watch(favouriteMarkersProvider.select((value) => null));
+
+    /// keep iwish markers alive when page is opened
+    ref.watch(mapObjectManagerProvider(named: iwishLayerName).notifier);
     // ref.watch(iwishMarkersProvider.select((value) => null));
     ref.watch(
       mapObjectManagerProvider(named: poiMapLayer),
@@ -91,8 +98,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
               const controls.MapControls(),
               LayoutBuilder(builder: (context, constraints) {
                 return Dashboard(
-                  isCollapsed: isLayersVisible.layersVisible ||
-                      widget.focusMaker != null,
+                  isCollapsed: isLayersVisible.layersVisible,
+                  // || widget.focusMaker != null,
                   biggestHeight: constraints.biggest.height,
                   biggestWidth: constraints.biggest.width,
                 );

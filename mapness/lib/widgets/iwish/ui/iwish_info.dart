@@ -8,7 +8,6 @@ import 'package:mapness/widgets/iwish/ui/iwish_state_label.dart';
 class IwishInfo extends StatelessWidget {
   final IwishEntity iwish;
   final String distance;
-  final String address;
   final VoidCallback onClose;
 
   const IwishInfo({
@@ -16,7 +15,6 @@ class IwishInfo extends StatelessWidget {
     required this.iwish,
     required this.distance,
     required this.onClose,
-    required this.address,
   });
 
   @override
@@ -43,14 +41,20 @@ class IwishInfo extends StatelessWidget {
                         child: Text(
                           iwish.title,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).extension<ThemeTextStyles>()!.headingS.copyWith(color: black),
+                          style: Theme.of(context)
+                              .extension<ThemeTextStyles>()!
+                              .headingS
+                              .copyWith(color: black),
                         ),
                       ),
                     ],
                   ),
                   Text(
-                    iwish.subtitle,
-                    style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: grey),
+                    'JOY Park',
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()!
+                        .textS
+                        .copyWith(color: grey),
                   ),
                 ],
               ),
@@ -64,8 +68,11 @@ class IwishInfo extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                address,
-                style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: black),
+                iwish.subtitle,
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .textS
+                    .copyWith(color: black),
               ),
             ),
             const SizedBox(width: 12),

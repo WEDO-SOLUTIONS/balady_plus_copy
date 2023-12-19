@@ -11,7 +11,7 @@ class Search extends _$Search {
   @override
   List<DirectoryObjectMessage> build() {
     ref.onDispose(() {
-      removeMarkers();
+      _dispose();
     });
 
     return [];
@@ -47,6 +47,15 @@ class Search extends _$Search {
     final dgisController = ref.read(dgisControllerProvider);
 
     await dgisController.value?.removeAll();
+  }
+
+  Future<void> _dispose() async {
+    final dgisController = ref.read(dgisControllerProvider);
+
+    await dgisController.value?.removeAll();
+    if (_currentPage != null) {
+      await dgisController.value?.releasePage(_currentPage!);
+    }
   }
 
   Future<void> _handleResult(
@@ -87,12 +96,6 @@ class Search extends _$Search {
 
     state =
         _currentPage?.items.whereType<DirectoryObjectMessage>().toList() ?? [];
-
-    ref.onDispose(() {
-      if (_currentPage != null) {
-        dgisController.value?.releasePage(_currentPage!);
-      }
-    });
   }
 
   Future<bool> fetchNext() async {

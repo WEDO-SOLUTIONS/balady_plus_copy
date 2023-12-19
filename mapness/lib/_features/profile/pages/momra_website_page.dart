@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class MomraWebsitePage extends StatefulWidget {
@@ -58,7 +59,7 @@ class _MomraWebsitePageState extends State<MomraWebsitePage> {
                       ),
                       const Spacer(),
                       Text(
-                        "Balady website",
+                        context.l10n.baladyWebsite,
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
                             .accentM
