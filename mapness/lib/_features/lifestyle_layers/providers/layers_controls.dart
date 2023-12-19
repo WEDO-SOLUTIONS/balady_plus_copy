@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -72,15 +74,10 @@ class LayersState {
 
   List<Marker>? investmentsMarkers;
 
-  // WhiteLands? whiteLands;
-
   LayersState({
     required this.isLoading,
     required this.layersVisible,
-    this.whiteLands,
     required this.selectedType,
-    // this.whiteLands,
-    this.selectedType,
     this.investmentsMarkers,
   });
 }
@@ -120,85 +117,57 @@ class LayersControls extends _$LayersControls {
   ) async {
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
     final env = await ref.read(dgisEnvironmentProvider.future);
+    final mapObjectManager =
+        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
 
     var layersControls = ref.watch(layersControlsProvider.notifier);
-    layersControls.update(
-        isLoading: true,
-        selectedType: state.selectedType.contains(layerType)
-            ? {...state.selectedType.whereNot((e) => e == layerType)}
-            : {...state.selectedType, layerType});
-    final mapObjectManager =
-        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
 
-    viewPortSubscription?.cancel();
-    var currentState = state.selectedType;
-    await removeAll();
+    layersControls.update(isLoading: true, selectedType: {layerType});
+
     allMarkers.clear();
-    if (currentState == LayerType.invest) {
-      setSelected(null);
-    } else {
-      setSelected(LayerType.invest);
+    await viewPortSubscription?.cancel();
+    await removeAll();
 
-      layersControls.update(
-        isLoading: true,
-        selectedType: layerType,
+    viewPortSubscription = layersControls.visibleRectSub
+        .debounceTime(const Duration(seconds: 1))
+        .listen((value) async {
+      final visibleRect = value.visibleRect;
+
+      final requestParams = MapRequestParams(
+        layer: GISMapLayers.Opportunities,
+        southWestLongitude: visibleRect.southWestLon,
+        southWestLatitude: visibleRect.southWestLat,
+        northEastLongitude: visibleRect.northEastLon,
+        northEastLatitude: visibleRect.northEastLat,
+        domain: env.url,
+        proxy: env.proxy,
       );
 
-      viewPortSubscription = layersControls.visibleRectSub
-          .debounceTime(const Duration(seconds: 1))
-          .listen((value) async {
-        final visibleRect = value.visibleRect;
-
-        final requestParams = MapRequestParams(
-          layer: GISMapLayers.Opportunities,
-          southWestLongitude: visibleRect.southWestLon,
-          southWestLatitude: visibleRect.southWestLat,
-          northEastLongitude: visibleRect.northEastLon,
-          northEastLatitude: visibleRect.northEastLat,
-          domain: env.url,
-          proxy: env.proxy,
-        );
-    final mapObjectManager =
-        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
-    ref.watch(iwishMarkersProvider);
-
-    var requestParams = MapRequestParams(
-      layer: GISMapLayers.Opportunities,
-      southWestLongitude: visibleRect.southWestLon,
-      southWestLatitude: visibleRect.southWestLat,
-      northEastLongitude: visibleRect.northEastLon,
-      northEastLatitude: visibleRect.northEastLat,
-      domain: env.url,
-      proxy: env.proxy,
-    );
-
-        final response = await controller
-            .getEsriPoints(params: requestParams)
-            .onError((error, stackTrace) {
-          debugPrint("$stackTrace");
-          layersControls.update(isLoading: false);
-          return null;
-        }).timeout(const Duration(minutes: 1), onTimeout: () {
-          layersControls.update(isLoading: false);
-          return null;
-        });
-
-        List<Marker> markers = createMarkers(response, layerType);
-
-        layersControls.update(
-          isLoading: false,
-          investmentsMarkers: markers,
-        );
-        if (markers.isNotEmpty) {
-          for (var newMarker in allMarkers) {
-            markers.removeWhere((element) => element.id == newMarker.id);
-          }
-          // await removeAll();
-          await mapObjectManager.addMarkers(markers);
-          allMarkers.addAll(markers);
-        }
+      final response = await controller
+          .getEsriPoints(params: requestParams)
+          .onError((error, stackTrace) {
+        debugPrint("$stackTrace");
+        layersControls.update(isLoading: false);
+        return null;
+      }).timeout(const Duration(minutes: 1), onTimeout: () {
+        layersControls.update(isLoading: false);
+        return null;
       });
-    }
+
+      List<Marker> markers = createMarkers(response, layerType);
+
+      layersControls.update(
+        isLoading: false,
+      );
+
+      if (markers.isNotEmpty) {
+        for (var newMarker in allMarkers) {
+          markers.removeWhere((element) => element.id == newMarker.id);
+        }
+        await mapObjectManager.addMarkers(markers);
+        allMarkers.addAll(markers);
+      }
+    });
   }
 
   List<Marker> createMarkers(
@@ -247,149 +216,104 @@ class LayersControls extends _$LayersControls {
         named: mapLayerName,
       ).notifier,
     );
-    var currentState = state.selectedType;
 
-    layersControls.update(
-      isLoading: true,
-      selectedType: {...state.selectedType, layerType},
-    );
-    final visibleRect = ref
+    layersControls.update(isLoading: true, selectedType: {layerType});
+
+    viewPortSubscription?.cancel();
+
+    viewPortSubscription = ref
         .watch(layersControlsProvider.notifier)
         .visibleRectSub
-        .value
-        .visibleRect;
-
-    var mapRequestParams = MapRequestParams(
-      layer: GISMapLayers.BSWhiteParcelS,
-      southWestLongitude: visibleRect.southWestLon,
-      southWestLatitude: visibleRect.southWestLat,
-      northEastLongitude: visibleRect.northEastLon,
-      northEastLatitude: visibleRect.northEastLat,
-      proxy: env.proxy,
-      domain: env.url,
-    );
-    final response = await controller
-        .getWhiteLands(mapRequestParams)
-        .timeout(const Duration(minutes: 1), onTimeout: () {
-      layersControls.update(
-        isLoading: false,
+        .debounceTime(const Duration(seconds: 1))
+        .map((event) => event.visibleRect)
+        .listen((visibleRect) async {
+      var mapRequestParams = MapRequestParams(
+        layer: GISMapLayers.BSWhiteParcelS,
+        southWestLongitude: visibleRect.southWestLon,
+        southWestLatitude: visibleRect.southWestLat,
+        northEastLongitude: visibleRect.northEastLon,
+        northEastLatitude: visibleRect.northEastLat,
+        proxy: env.proxy,
+        domain: env.url,
       );
-      return null;
-    });
-    viewPortSubscription?.cancel();
-    if (currentState == LayerType.fencing) {
-      await removeAll();
-      setSelected(null);
-    } else {
-      setSelected(LayerType.fencing);
-
-      viewPortSubscription = ref
-          .watch(layersControlsProvider.notifier)
-          .visibleRectSub
-          .debounceTime(const Duration(seconds: 1))
-          .map((event) => event.visibleRect)
-          .listen((visibleRect) async {
-        layersControls.update(
-          isLoading: true,
-          selectedType: layerType,
-        );
-        var mapRequestParams = MapRequestParams(
-          layer: GISMapLayers.BSWhiteParcelS,
-          southWestLongitude: visibleRect.southWestLon,
-          southWestLatitude: visibleRect.southWestLat,
-          northEastLongitude: visibleRect.northEastLon,
-          northEastLatitude: visibleRect.northEastLat,
-          proxy: env.proxy,
-          domain: env.url,
-        );
-        final response = await controller
-            .getWhiteLands(mapRequestParams)
-            .onError((error, stackTrace) {
-          debugPrint("$stackTrace");
-          layersControls.update(isLoading: false);
-          return null;
-        }).timeout(const Duration(minutes: 1), onTimeout: () {
-          layersControls.update(
-            isLoading: false,
-          );
-          return null;
-        });
-
-        var list = response?.map((e) {
-              return Polygon(
-                  id: e.id,
-                  options: PolygonOptionsMessage(
-                      strokeWidth: 2,
-                      strokeColor: 0xFF000000,
-                      color: 0x26000000,
-                      contours: [e.paths]),
-                  onTap: () => showEsriCard(e));
-            }).toList() ??
-            [];
-
+      final response = await controller
+          .getWhiteLands(mapRequestParams)
+          .onError((error, stackTrace) {
+        debugPrint("$stackTrace");
         layersControls.update(isLoading: false);
-        await removeAll();
-        await mapManager.addPolygons(list);
+        return null;
+      }).timeout(const Duration(minutes: 1), onTimeout: () {
+        layersControls.update(
+          isLoading: false,
+        );
+        return null;
       });
-    }
+
+      var list = response?.map((e) {
+            return Polygon(
+                id: e.id,
+                options: PolygonOptionsMessage(
+                    strokeWidth: 2,
+                    strokeColor: 0xFF000000,
+                    color: 0x26000000,
+                    contours: [e.paths]),
+                onTap: () => showEsriCard(e));
+          }).toList() ??
+          [];
+
+      layersControls.update(isLoading: false);
+      await removeAll();
+      await mapManager.addPolygons(list);
+    });
+    // }
   }
 
   Future<void> buildingCompliance(WidgetRef ref, LayerType layerType) async {
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
-    var currentState = state.selectedType;
     final env = await ref.read(dgisEnvironmentProvider.future);
     final mapObjectManager =
         ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
     var layersControls = ref.watch(layersControlsProvider.notifier);
 
     viewPortSubscription?.cancel();
-    if (currentState == LayerType.buildings) {
-      await removeAll();
-      setSelected(null);
-    } else {
-      setSelected(LayerType.buildings);
+    await removeAll();
 
-      viewPortSubscription = ref
-          .watch(layersControlsProvider.notifier)
-          .visibleRectSub
-          .debounceTime(const Duration(seconds: 1))
-          .listen((value) async {
-        var visibleRect = value.visibleRect;
+    viewPortSubscription = ref
+        .watch(layersControlsProvider.notifier)
+        .visibleRectSub
+        .debounceTime(const Duration(seconds: 1))
+        .listen((value) async {
+      var visibleRect = value.visibleRect;
 
-    var layersControls = ref.watch(layersControlsProvider.notifier);
-    layersControls.update(
-      isLoading: true,
-      selectedType: {...state.selectedType, layerType},
-    );
+      layersControls.update(isLoading: true, selectedType: {layerType});
 
-        var mapRequestParams = MapRequestParams(
-          layer: GISMapLayers.BSAimtithalBuildingsCertificateL,
-          southWestLongitude: visibleRect.southWestLon,
-          southWestLatitude: visibleRect.southWestLat,
-          northEastLongitude: visibleRect.northEastLon,
-          northEastLatitude: visibleRect.northEastLat,
-          proxy: env.proxy,
-          domain: env.url,
-        );
-        final response = await controller
-            .buildingComplianceCertificate(mapRequestParams)
-            .onError((error, stackTrace) {
-          debugPrint("$stackTrace");
-          layersControls.update(isLoading: false);
-          return null;
-        }).timeout(const Duration(minutes: 1), onTimeout: () {
-          layersControls.update(
-            isLoading: false,
-          );
-          return null;
-        });
-
+      var mapRequestParams = MapRequestParams(
+        layer: GISMapLayers.BSAimtithalBuildingsCertificateL,
+        southWestLongitude: visibleRect.southWestLon,
+        southWestLatitude: visibleRect.southWestLat,
+        northEastLongitude: visibleRect.northEastLon,
+        northEastLatitude: visibleRect.northEastLat,
+        proxy: env.proxy,
+        domain: env.url,
+      );
+      final response = await controller
+          .buildingComplianceCertificate(mapRequestParams)
+          .onError((error, stackTrace) {
+        debugPrint("$stackTrace");
         layersControls.update(isLoading: false);
-        await removeAll();
-        await mapObjectManager.addPolyLines(
-            addPolylineWithPoint(response, mapRequestParams.layer.layerId));
+        return null;
+      }).timeout(const Duration(minutes: 1), onTimeout: () {
+        layersControls.update(
+          isLoading: false,
+        );
+        return null;
       });
-    }
+
+      layersControls.update(isLoading: false);
+      await removeAll();
+      await mapObjectManager.addPolyLines(
+          addPolylineWithPoint(response, mapRequestParams.layer.layerId));
+    });
   }
 
   List<Polyline> addPolylineWithPoint(
@@ -438,13 +362,13 @@ class LayersControls extends _$LayersControls {
   void _toggleSelected(
     LayerType selectedType,
   ) {
+    var selectedTypeSet = state.selectedType;
     state = LayersState(
-      // whiteLands: state.whiteLands,
       investmentsMarkers: state.investmentsMarkers,
       layersVisible: state.layersVisible,
-      selectedType: state.selectedType.contains(selectedType)
-          ? {...state.selectedType.whereNot((e) => e == selectedType)}
-          : {...state.selectedType, selectedType},
+      selectedType: selectedTypeSet.contains(selectedType)
+          ? {...selectedTypeSet.whereNot((e) => e == selectedType)}
+          : {...selectedTypeSet, selectedType},
       isLoading: state.isLoading,
     );
   }
@@ -460,20 +384,32 @@ class LayersControls extends _$LayersControls {
         } else {
           await ref.read(favouriteToggleProvider.notifier).enable();
         }
+        _toggleSelected(value);
+
       case LayerType.invest:
-        layersControls.showInvestmentOpportunities(ref, value);
-        layersControls.showMarkers(ref, value);
+        if (!currentState.contains(LayerType.invest)) {
+          layersControls.showInvestmentOpportunities(ref, value);
+        } else {
+          await removeAll();
+          currentState.remove(value);
+          layersControls.update(isLoading: false, selectedType: currentState);
+        }
       case LayerType.buildings:
-        layersControls.buildingCompliance(ref, value);
         if (!currentState.contains(LayerType.buildings)) {
           layersControls.buildingCompliance(ref, value);
+        } else {
+          await removeAll();
+          currentState.remove(value);
+          layersControls.update(isLoading: false, selectedType: currentState);
         }
 
       case LayerType.fencing:
-        layersControls.getLandFences(ref, value);
-        if (currentState.contains(LayerType.fencing)) {
-        } else {
+        if (!currentState.contains(LayerType.fencing)) {
           layersControls.getLandFences(ref, value);
+        } else {
+          await removeAll();
+          currentState.remove(value);
+          layersControls.update(isLoading: false, selectedType: currentState);
         }
       case LayerType.joy:
         if (currentState.contains(LayerType.joy)) {
@@ -483,9 +419,8 @@ class LayersControls extends _$LayersControls {
         } else {
           showIwish();
         }
+        _toggleSelected(value);
     }
-    await removeAll();
-    _toggleSelected(value);
   }
 
   Future<void> showIwish() async {
@@ -501,10 +436,6 @@ class LayersControls extends _$LayersControls {
     ref
         .read(goRouterProvider)
         .push(LayerDetailsRoute().location, extra: {"data": e});
-  }
-
-  void showMarkerInfo(EsriPointFeature e) {
-    ///NO OP
   }
 
   Future<void> focusIwish() async {
