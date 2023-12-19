@@ -17,7 +17,8 @@ class AuthTokenInterceptor {
           handler.next(options.copyWith(headers: headers));
         },
         onError: (error, handler) async {
-          if (error.response?.statusCode == 401) {
+          final token = await ref.read(tokenProvider.future);
+          if (error.response?.statusCode == 401 && token.isNotEmpty) {
             try {
               await ref.read(tokenProvider.notifier).refreshToken();
               // Create dummy dio to rehandle data
