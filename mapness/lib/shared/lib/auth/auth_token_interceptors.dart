@@ -17,9 +17,9 @@ class AuthTokenInterceptor {
           handler.next(options.copyWith(headers: headers));
         },
         onError: (error, handler) async {
-          final token = await ref.read(tokenProvider.future);
-          if (error.response?.statusCode == 401 && token.isNotEmpty) {
-            try {
+          try {
+            final token = await ref.read(tokenProvider.future);
+            if (error.response?.statusCode == 401 && token.isNotEmpty) {
               await ref.read(tokenProvider.notifier).refreshToken();
               // Create dummy dio to rehandle data
               final dummyDio = Dio(baseOptions);
@@ -41,18 +41,19 @@ class AuthTokenInterceptor {
                 ),
               );
               handler.resolve(response);
-            } catch (e) {
-              if (e is DioException && e.response?.statusCode == 401) {
-                //LogOut and Redirect to login
-                await ref.read(authProvider.notifier).logOut();
-                ref.read(goRouterProvider).push('/signin');
-              } else if (e is DioException) {
-                handler.reject(e);
-              } else {
-                handler.reject(error);
-              }
+            }
+          } catch (e) {
+            if (e is DioException && e.response?.statusCode == 401) {
+              //LogOut and Redirect to login
+              await ref.read(authProvider.notifier).logOut();
+              ref.read(goRouterProvider).push('/signin');
+            } else if (e is DioException) {
+              handler.reject(e);
+            } else {
+              handler.reject(error);
             }
           }
+
           handler.next(error);
         },
       );
