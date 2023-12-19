@@ -1,9 +1,8 @@
 import 'package:dgis_map/library.dart';
-import 'package:mapness/app/routes/poi_map.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:mapness/_features/weather/domain/enum/weather_enum.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../../shared/providers/map/search.dart';
 
@@ -47,18 +46,15 @@ class WeatherMapController extends _$WeatherMapController {
       state = state.copy(type: type, isEnabled: result);
 
       if (type case WeatherMapType.precipitation) {
-        await searchController.searchByText(
-          'critical_point',
-          icon: MarkerIconMessage(
-            path: "packages/mapness/assets/icons/svg/weather/flood_point.svg",
-            width: 24,
-          ),
-          onTap: (dgisObject){
-            // if(dgisObject!=null){
-            // // PoiMapRoute(dgisObjectId: dgisObject?.objectId).push(context);
-            // }
-          }
-        );
+        await searchController.searchByText('critical_point',
+            icon: MarkerIconMessage(
+              path: "packages/mapness/assets/icons/svg/weather/flood_point.svg",
+              width: 24,
+            ), onTap: (dgisObject) {
+          // if(dgisObject!=null){
+          // // PoiMapRoute(dgisObjectId: dgisObject?.objectId).push(context);
+          // }
+        });
       } else {
         await searchController.removeMarkers();
       }
