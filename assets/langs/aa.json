@@ -633,7 +633,21 @@
 "visual_distortion":"مظاهر التشوه البصري", 
 "visual_distortion_bad":"سمات المظهر السيئ", 
 "visual_distortion_good":"سمات المظهر الجيد", 
-"scroll_for_more":"اسحب الشاشة يمين او يسار للتبديل بين الانواع\nاضغط على البطاقة لقراءة المزيد"
+"scroll_for_more":"اسحب الشاشة يمين او يسار للتبديل بين الانواع\nاضغط على البطاقة لقراءة المزيد", 
+"time_date_appointment":"تاريخ وقت الموعد", 
+
+
+"incident_no":"رقم البلاغ" ,
+"Indivisual":"أفراد", 
+
+"indivisual_services":"خدمات الأفراد", 
+"buisiness_services":"خدمات الأعمال", 
+"helping_services":"خدمات المساعدة" , 
+"daily_services":"خدمات يومية" , 
+
+"inquiery_path":"مسار المعاملة", 
+
+"violation_title_2":"مخالفة غير جسيمة"
 
 
 }
