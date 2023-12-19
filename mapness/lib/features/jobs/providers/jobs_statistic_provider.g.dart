@@ -7,7 +7,7 @@ part of 'jobs_statistic_provider.dart';
 // **************************************************************************
 
 String _$jobStatisticResponseHash() =>
-    r'16c4a64d235899b7124181b0ed966e8da54b59bf';
+    r'dab4ffcf2c12af715e86636322374726852da1bc';
 
 /// See also [JobStatisticResponse].
 @ProviderFor(JobStatisticResponse)

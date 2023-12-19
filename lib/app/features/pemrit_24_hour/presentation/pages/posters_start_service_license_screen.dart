@@ -8,6 +8,7 @@ import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports
 import 'package:balady_plus/app/features/services/services_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
@@ -59,7 +60,7 @@ class _PermitsLicenseStartServiceState
       }, builder: (context, state) {
         return Scaffold(
           appBar: DefaultAppBarWidget(
-            title: service.title,
+            title: service.title.tr(),
             bottom: ServiceCardsList(
               cards: service.cards,
             ),
@@ -76,13 +77,13 @@ class _PermitsLicenseStartServiceState
                       ],
                     ),
                   ),
-                    SafeArea(
+                  SafeArea(
                     top: false,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: ElevatedButtonWidget.startService(
                         onPressed: () async {
-                        if (CommonProperties.isLoggedIn) {
+                          if (CommonProperties.isLoggedIn) {
                             context
                                 .read<Permit24LicenseBloc>()
                                 .add(const ValidatePermitEvent());
@@ -98,12 +99,12 @@ class _PermitsLicenseStartServiceState
                                             .add(const ValidatePermitEvent());
                                       }
                                     }));
-                          } 
+                          }
                         },
                       ),
                     ),
                   )
-                /*  SafeArea(
+                  /*  SafeArea(
                     top: false,
                     child: ServiceWarningWidget(
                       warning: service.warning ?? "",

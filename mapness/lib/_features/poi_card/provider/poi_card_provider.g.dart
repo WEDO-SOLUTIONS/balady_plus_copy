@@ -6,7 +6,7 @@ part of 'poi_card_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$poiCardProviderHash() => r'c5715051f3195f0e9137725792272b18fc9c70e2';
+String _$poiCardProviderHash() => r'4a2db7df75082244264e500b7248732e4c13d13c';
 
 /// Copied from Dart SDK
 class _SystemHash {

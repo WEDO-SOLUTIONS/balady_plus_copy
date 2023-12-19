@@ -23,7 +23,7 @@ final searchByRubricsQueryProvider = AutoDisposeNotifierProvider<
 );
 
 typedef _$SearchByRubricsQuery = AutoDisposeNotifier<(QuickFilter, int)?>;
-String _$searchByRubricsHash() => r'2303b0322c77a69be69d21435488cdc311c57f19';
+String _$searchByRubricsHash() => r'3ba192fec34fb19c123e64294326ab1a5cd4a81b';
 
 /// See also [SearchByRubrics].
 @ProviderFor(SearchByRubrics)

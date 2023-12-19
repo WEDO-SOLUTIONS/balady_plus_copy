@@ -75,9 +75,9 @@ class ServiceIcon extends StatelessWidget {
             return;
           }
 
-          if (service.id == 1 &&
-              service.action.type == ServiceAction.cardsPage) {
-            await BottomSheetDialog.showDraggableSheet(context,
+          if (service.id == 1 && service.action.type == ServiceAction.dialog) {
+            await BottomSheetDialog.showDraggableSheet(
+                NavigationService.navigatorKey.currentContext!,
                 dialogKeyName: DialogName.vdTypesDialog,
                 currentRouteName: "ServicesPage",
                 child: BottomSheetWithActions(
@@ -87,7 +87,8 @@ class ServiceIcon extends StatelessWidget {
           } else if (service.id == 3 &&
               service.action.type == ServiceAction.dialog) {
             if (CommonProperties.isLoggedIn) {
-              await BottomSheetDialog.showDraggableSheet(context,
+              await BottomSheetDialog.showDraggableSheet(
+                  NavigationService.navigatorKey.currentContext!,
                   dialogKeyName: DialogName.daemDialog,
                   currentRouteName: "ServicesPage",
                   child: BottomSheetWithActions(
@@ -368,7 +369,8 @@ class ServiceIcon extends StatelessWidget {
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.only(left: 16, right: 16, top: 16),
+                padding:
+                    EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
                 decoration: BoxDecoration(
                     color: backgroundColor ?? AppColor.white,
                     borderRadius: BorderRadius.all(Radius.circular(8))),

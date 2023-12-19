@@ -6,7 +6,7 @@ part of 'iwish_entity.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$iwishEntityHash() => r'12d9fb0d00878651149ba2a6a8d229250533cb3e';
+String _$iwishEntityHash() => r'd7b57c1e97dbc1e257dbd6dda71f5c9fa5608bbc';
 
 /// Copied from Dart SDK
 class _SystemHash {

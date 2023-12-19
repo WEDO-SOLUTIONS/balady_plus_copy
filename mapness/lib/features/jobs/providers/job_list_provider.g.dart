@@ -6,7 +6,7 @@ part of 'job_list_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$jobListResponseHash() => r'453698ff5caf40bd2c82c26dfda615d3d6cc65b3';
+String _$jobListResponseHash() => r'725de1296b0ab7fe5f85ed981666c1abaa9570ed';
 
 /// Copied from Dart SDK
 class _SystemHash {

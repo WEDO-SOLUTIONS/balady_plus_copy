@@ -6,7 +6,7 @@ part of 'profile_image_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$profileImageHash() => r'a06fecdc65622bbc989046d62375cb9d781ea82f';
+String _$profileImageHash() => r'a71f8a68e2dbeda10c56617f89529079a5ea957c';
 
 /// See also [ProfileImage].
 @ProviderFor(ProfileImage)

@@ -7,7 +7,7 @@ part of 'qr_license_repository.dart';
 // **************************************************************************
 
 String _$qrLicenseRepositoryHash() =>
-    r'68a5d9a281c1284a7f94832e534d445a900e04a8';
+    r'd017e9817aeab59a9868bd8bea8f67c1501f83d6';
 
 /// See also [QrLicenseRepository].
 @ProviderFor(QrLicenseRepository)
