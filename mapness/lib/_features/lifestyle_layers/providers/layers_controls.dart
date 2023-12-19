@@ -9,8 +9,6 @@ import 'package:mapness/_features/lifestyle_layers/data/lifestyle_repository.dar
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/investment_sites.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/map_requests_params.dart';
-import 'package:mapness/_features/lifestyle_layers/domain/white_lands.dart';
-import 'package:mapness/_generated/protocol/protocol.pb.dart' as pb;
 
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/layer_details.dart';
@@ -18,7 +16,6 @@ import 'package:mapness/features/iwish/providers/iwish_markers.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
-import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
