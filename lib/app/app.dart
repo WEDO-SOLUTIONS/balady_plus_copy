@@ -32,6 +32,7 @@ import 'features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:provider/provider.dart';
 
 import 'features/location/presentation/bloc/location_bloc.dart';
+import 'features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'features/weather/presentation/bloc/weather_bloc.dart';
 
 class App extends StatelessWidget {
@@ -55,6 +56,8 @@ class App extends StatelessWidget {
         ),
         BlocProvider.value(value: sl<EtmamEntryPointCubit>()),
         BlocProvider.value(value: sl<LocationCubit>()),
+        BlocProvider.value(
+            value: sl<DashboardBloc>()..add(DashboardEventInitial()))
       ],
       child: BlocProvider<EntryPointCubit>.value(
           value: sl<EntryPointCubit>()..onLoadingApp(),

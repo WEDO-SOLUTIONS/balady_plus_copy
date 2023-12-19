@@ -60,15 +60,15 @@ class ServicesList extends StatelessWidget {
           ),
 
           /* ListView.builder(
-        itemCount: services.length,
-        itemBuilder: (context, index) {
-          return ServiceIcon(
-            service: services[index],
-          );
-        },
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-      ),*/
+            itemCount: services.length,
+            itemBuilder: (context, index) {
+              return ServiceIcon(
+                service: services[index],
+              );
+            },
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+          ),*/
           const SizedBox(height: 16),
         ],
       ),

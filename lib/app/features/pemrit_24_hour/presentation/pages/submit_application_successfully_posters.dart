@@ -12,6 +12,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/utils/common_functions.dart';
+import '../../../_shared_feature_/presentation/widgets/payment_widget.dart';
 import '../../../commercial_license_cancel/data/models/submit_response.dart';
 import '../../../commercial_license_cancel/presentation/submit_application_successfully_cancel/mvvm/submit_rating_view_model.dart';
 import '../../data/models/permit_submit_response_model.dart';
@@ -107,13 +108,11 @@ class _SubmitApplicationSuccessfullyPermitsState
                 ),
               ),
               const SizedBox(height: 16),
-              submitResponse.payUrl != null
-                  ? ElevatedButtonWidget.primaryCustomBorder(
-                      text: "pay_bill".tr(),
-                      onPressed: () async {
-                        CommonFunctions.openBaladyWebView(
-                            submitResponse.payUrl);
-                      },
+              submitResponse.billNumber != null &&
+                      submitResponse.billNumber!.isNotEmpty
+                  ? PaymentWidget(
+                      requestKey: submitResponse.billKey ?? "",
+                      billNumber: submitResponse.billNumber!,
                     )
                   : const SizedBox(),
               const SizedBox(height: 16),

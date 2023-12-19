@@ -246,24 +246,25 @@ class BillInfo {
   double? billAmount;
   int? billerNumber;
   dynamic warningMessage;
+  String? billKey;
 
-  BillInfo({
-    this.billNumber,
-    this.issueDate,
-    this.expiryDate,
-    this.billAmount,
-    this.billerNumber,
-    this.warningMessage,
-  });
+  BillInfo(
+      {this.billNumber,
+      this.issueDate,
+      this.expiryDate,
+      this.billAmount,
+      this.billerNumber,
+      this.warningMessage,
+      this.billKey});
 
   factory BillInfo.fromJson(Map<String, dynamic> json) => BillInfo(
-        billNumber: json["billNumber"],
-        issueDate: json["issueDate"],
-        expiryDate: json["expiryDate"],
-        billAmount: json["billAmount"]?.toDouble(),
-        billerNumber: json["billerNumber"],
-        warningMessage: json["warningMessage"],
-      );
+      billNumber: json["billNumber"],
+      issueDate: json["issueDate"],
+      expiryDate: json["expiryDate"],
+      billAmount: json["billAmount"]?.toDouble(),
+      billerNumber: json["billerNumber"],
+      warningMessage: json["warningMessage"],
+      billKey: json["billKey"]);
 
   Map<String, dynamic> toJson() => {
         "billNumber": billNumber,

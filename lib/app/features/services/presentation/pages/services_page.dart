@@ -53,117 +53,112 @@ class _ServicesPageState extends State<ServicesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<DashboardBloc>(
-      create: (context) => sl<DashboardBloc>()..add(DashboardEventInitial()),
-      child: BlocConsumer<DashboardBloc, DashboardState>(
-          listener: (context, dashboardState) {},
-          builder: (context, dashboardState) {
-            return BlocBuilder<ServicesCubit, ServicesState>(
-              builder: (context, state) {
-                return Scaffold(
-                  backgroundColor: AppColor.white,
-                  appBar: EnhancedAppBar(
-                    title: "services".tr(),
-                    actions: [
-                      IconButton(
-                          onPressed: () async {
-                            openDelegators();
-                          },
-                          icon:
-                              SvgPicture.asset("assets/icons/svg/refresh.svg"))
-                    ],
-                  ),
-                  body: BlocBuilder<ServicesCubit, ServicesState>(
-                    builder: (context, state) {
-                      print("islamicServices ${state.islamicServices.length}");
-                      return BlocBuilder<EntryPointCubit, EntryPointState>(
-                          builder: (context, entryPointState) {
-                        return SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const SearchServicesTextField(),
-                              /* if (CommonProperties.isLoggedIn)
-                                Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: ElevatedButtonWidget.logout(
-                                      onPressed: () {
-                                    sl<EntryPointCubit>().clearAuth();
-                                  }),
-                                ),
-                              if (!CommonProperties.isLoggedIn)
-                                const SignInCard(),*/
-                              if (CommonProperties.isLoggedIn) ...[
-                                HeaderWithAll(
-                                  text: "dashboard".tr(),
-                                  margin: const EdgeInsets.all(16),
-                                  onPressAll: () {
-                                    NavigationService.navigatorKey.currentState!
-                                        .pushNamed(RouteName.DashbordDataPage,
-                                            arguments: context
-                                                .read<DelegatorsCubit>());
+    return BlocConsumer<DashboardBloc, DashboardState>(
+        listener: (context, dashboardState) {},
+        builder: (context, dashboardState) {
+          return BlocBuilder<ServicesCubit, ServicesState>(
+            builder: (context, state) {
+              return Scaffold(
+                backgroundColor: AppColor.white,
+                appBar: EnhancedAppBar(
+                  title: "services".tr(),
+                  actions: [
+                    IconButton(
+                        onPressed: () async {
+                          openDelegators(context);
+                        },
+                        icon: SvgPicture.asset("assets/icons/svg/refresh.svg"))
+                  ],
+                ),
+                body: BlocBuilder<ServicesCubit, ServicesState>(
+                  builder: (context, state) {
+                    return BlocBuilder<EntryPointCubit, EntryPointState>(
+                        builder: (context, entryPointState) {
+                      return SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SearchServicesTextField(),
+                            /* if (CommonProperties.isLoggedIn)
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: ElevatedButtonWidget.logout(
+                                    onPressed: () {
+                                  sl<EntryPointCubit>().clearAuth();
+                                }),
+                              ),
+                            if (!CommonProperties.isLoggedIn)
+                              const SignInCard(),*/
+                            if (CommonProperties.isLoggedIn) ...[
+                              HeaderWithAll(
+                                text: "dashboard".tr(),
+                                margin: const EdgeInsets.all(16),
+                                onPressAll: () {
+                                  NavigationService.navigatorKey.currentState!
+                                      .pushNamed(RouteName.DashbordDataPage,
+                                          arguments:
+                                              context.read<DelegatorsCubit>());
+                                },
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              Container(
+                                height: 58,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: dashboardState.cards.length,
+                                  itemBuilder: (context, index) {
+                                    return DashboardCard(
+                                      card: dashboardState.cards[index],
+                                      totalCount: dashboardState
+                                              .cardsStates[
+                                                  dashboardState.cards[index]]
+                                              ?.totalCount ??
+                                          0,
+                                    );
                                   },
                                 ),
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                Container(
-                                  height: 58,
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: dashboardState.cards.length,
-                                    itemBuilder: (context, index) {
-                                      return DashboardCard(
-                                        card: dashboardState.cards[index],
-                                        totalCount: dashboardState
-                                                .cardsStates[
-                                                    dashboardState.cards[index]]
-                                                ?.totalCount ??
-                                            0,
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
-                              const SizedBox(
-                                height: 16,
                               ),
-                              if (state.islamicServices.isNotEmpty)
-                                ServicesList(
-                                  title: "islamic_services".tr(),
-                                  services: state.islamicServices,
-                                ),
-                              if (state.municipalServicee.isNotEmpty)
-                                ServicesList(
-                                  title: "municipal_services".tr(),
-                                  services: state.municipalServicee,
-                                ),
-                              if (state.businessLicenseServices.isNotEmpty)
-                                ServicesList(
-                                  title: "business_license_services".tr(),
-                                  services: state.businessLicenseServices,
-                                ),
-                              if (state.helpServices.isNotEmpty)
-                                ServicesList(
-                                  title: "help_services".tr(),
-                                  services: state.helpServices,
-                                ),
-                              const SizedBox(height: 24),
                             ],
-                          ),
-                        );
-                      });
-                    },
-                  ),
-                );
-              },
-            );
-          }),
-    );
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            if (state.islamicServices.isNotEmpty)
+                              ServicesList(
+                                title: "islamic_services".tr(),
+                                services: state.islamicServices,
+                              ),
+                            if (state.municipalServicee.isNotEmpty)
+                              ServicesList(
+                                title: "municipal_services".tr(),
+                                services: state.municipalServicee,
+                              ),
+                            if (state.businessLicenseServices.isNotEmpty)
+                              ServicesList(
+                                title: "business_license_services".tr(),
+                                services: state.businessLicenseServices,
+                              ),
+                            if (state.helpServices.isNotEmpty)
+                              ServicesList(
+                                title: "help_services".tr(),
+                                services: state.helpServices,
+                              ),
+                            const SizedBox(height: 24),
+                          ],
+                        ),
+                      );
+                    });
+                  },
+                ),
+              );
+            },
+          );
+        });
   }
 
-  void openDelegators() async {
+  void openDelegators(BuildContext context) async {
     if (CommonProperties.isLoggedIn) {
       context.read<DelegatorsCubit>().getDelegators();
       context.read<DelegatorsCubit>().getAgents();

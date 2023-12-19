@@ -415,7 +415,7 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "requireLogin": true,
       "action": {
-        "type": "page",
+        "type": "dialog",
         "value": "${RemoteConfig.webSiteUrl}/ar/products/10470"
       },
       "ar": {
@@ -434,7 +434,7 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "requireLogin": true,
       "action": {
-        "type": "page",
+        "type": "dialog",
         "value": "${RemoteConfig.webSiteUrl}/ar/products/10574"
       },
       "ar": {"title": "municipal_shop", "description": null, "tag": null},
@@ -513,7 +513,7 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "requireLogin": true,
       "action": {
-        "type": "page",
+        "type": "dialog",
         "value": "${RemoteConfig.webSiteUrl}/ar/products/10543"
       },
       "ar": {"title": "municpal_housing", "description": null, "tag": null},
@@ -527,7 +527,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "requireLogin": true,
-      "action": {"type": "page", "value": "https://fees.balady.gov.sa/ewaa"},
+      "action": {"type": "dialog", "value": "https://fees.balady.gov.sa/ewaa"},
       "ar": {"title": "municipal_ewaa", "description": null, "tag": null},
       "en": {"title": "municipal_ewaa", "description": null, "tag": null}
     },
@@ -572,7 +572,7 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "requireLogin": true,
       "action": {
-        "type": "page",
+        "type": "dialog",
         "value": "${RemoteConfig.webSiteUrl}/ar/products/10920"
       },
       "ar": {"title": "municipal_commercial", "description": null, "tag": null},
