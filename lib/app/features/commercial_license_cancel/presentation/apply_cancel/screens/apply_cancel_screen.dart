@@ -62,7 +62,7 @@ class _ApplyCancelScreenState extends State<ApplyCancelScreen> {
             "iconName": IconPath.serviceCardDesc,
             "type": ServiceCardsTypes.desc,
             "rate": 0,
-            "duration": "1 - 10 أيام",
+            "duration": "duration_10_days",
             "fees": -1,
             "feesName": "calculator_fees",
             "feesLink": "https://apps.balady.gov.sa/Eservices/FeesCalculator",
