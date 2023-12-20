@@ -180,6 +180,26 @@ Map<String, dynamic> servicesConfig = {
       "en": {"title": "schedule_date", "description": null, "tag": null}
     },
     {
+      "id": 205,
+      "icon": "general_inquiries",
+      "3d_icon": null,
+      "order": 4,
+      "isNew": false,
+      "isImportant": false,
+      "requireLogin": true,
+      "action": {"type": "dialog", "value": ""},
+      "ar": {
+        "title": "service_provide_services",
+        "description": null,
+        "tag": null
+      },
+      "en": {
+        "title": "service_provide_services",
+        "description": null,
+        "tag": null
+      }
+    },
+    {
       "id": 206,
       "icon": "submit_compliance",
       "3d_icon": null,
@@ -263,7 +283,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "requireLogin": false,
-      "action": {"type": "page", "value": RouteName.etmamMainPage},
+      "action": {"type": "dialog", "value": RouteName.etmamMainPage},
       "ar": {"title": "balady_works", "description": null, "tag": null},
       "en": {"title": "balady_works", "description": null, "tag": null}
     },
@@ -278,133 +298,6 @@ Map<String, dynamic> servicesConfig = {
       "action": {"type": "page", "value": RouteName.newHealthCertificatePage},
       "ar": {"title": "municipal_health", "description": null, "tag": null},
       "en": {"title": "municipal_health", "description": null, "tag": null}
-    },
-    {
-      "id": 213,
-      "icon": "ekram_benf_transport",
-      "3d_icon": null,
-      "order": 1,
-      "isNew": false,
-      "requireLogin": true,
-      "isImportant": false,
-      "action": {
-        "type": "page",
-        "value": RouteName.ekramTransportationListScreen
-      },
-      "ar": {"title": "ekram_benf_transport", "description": null, "tag": null},
-      "en": {"title": "ekram_benf_transport", "description": null, "tag": null}
-    },
-    {
-      "id": 214,
-      "icon": "ekram_inq_graves",
-      "3d_icon": null,
-      "order": 1,
-      "isNew": false,
-      "requireLogin": true,
-      "isImportant": false,
-      "action": {
-        "type": "page",
-        "value": RouteName.EkramInquiryCemetryDetailsPage
-      },
-      "ar": {
-        "title": "ekram_inquiry_burial_grave",
-        "description": null,
-        "tag": null
-      },
-      "en": {
-        "title": "ekram_inquiry_burial_grave",
-        "description": null,
-        "tag": null
-      }
-    },
-    {
-      "id": 215,
-      "icon": "ekram_inq_grave_dead",
-      "3d_icon": null,
-      "order": 1,
-      "isNew": false,
-      "requireLogin": true,
-      "isImportant": false,
-      "action": {
-        "type": "page",
-        "value": RouteName.EkramInquiryGravesDetailsPage
-      },
-      "ar": {
-        "title": "ekram_inquiry_about_grave",
-        "description": null,
-        "tag": null
-      },
-      "en": {
-        "title": "ekram_inquiry_about_grave",
-        "description": null,
-        "tag": null
-      }
-    },
-    {
-      "id": 216,
-      "icon": "ekram_orgnization",
-      "3d_icon": null,
-      "order": 1,
-      "isNew": false,
-      "requireLogin": true,
-      "isImportant": false,
-      "action": {
-        "type": "page",
-        "value": RouteName.EkramInquiryOrgnizationsDetailsPage
-      },
-      "ar": {
-        "title": "ekram_inquiry_orgnizations",
-        "description": null,
-        "tag": null
-      },
-      "en": {
-        "title": "ekram_inquiry_orgnizations",
-        "description": null,
-        "tag": null
-      }
-    },
-    {
-      "id": 217,
-      "icon": "ekram_print",
-      "3d_icon": null,
-      "order": 1,
-      "isNew": false,
-      "requireLogin": true,
-      "isImportant": false,
-      "action": {
-        "type": "page",
-        "value": RouteName.EkramInquiryPrintDetailsPage
-      },
-      "ar": {
-        "title": "ekram_print_certificate",
-        "description": null,
-        "tag": null
-      },
-      "en": {
-        "title": "ekram_print_certificate",
-        "description": null,
-        "tag": null
-      }
-    },
-    {
-      "id": 218,
-      "icon": "ekram_reserve_cemetry",
-      "3d_icon": null,
-      "order": 1,
-      "isNew": false,
-      "requireLogin": true,
-      "isImportant": false,
-      "action": {"type": "page", "value": RouteName.ekramBookingListScreen},
-      "ar": {
-        "title": "cemetery_booking_request",
-        "description": null,
-        "tag": null
-      },
-      "en": {
-        "title": "cemetery_booking_request",
-        "description": null,
-        "tag": null
-      }
     },
     {
       "id": 219,
@@ -439,6 +332,18 @@ Map<String, dynamic> servicesConfig = {
       },
       "ar": {"title": "municipal_shop", "description": null, "tag": null},
       "en": {"title": "municipal_shop", "description": null, "tag": null}
+    },
+    {
+      "id": 221,
+      "icon": "ekram_inq_grave_dead",
+      "3d_icon": null,
+      "order": 4,
+      "isNew": false,
+      "isImportant": false,
+      "requireLogin": true,
+      "action": {"type": "dialog", "value": ""},
+      "ar": {"title": "ekram_services", "description": null, "tag": null},
+      "en": {"title": "ekram_services", "description": null, "tag": null}
     },
   ],
   "business_license_services": [
@@ -653,21 +558,6 @@ Map<String, dynamic> servicesConfig = {
       },
       "en": {"title": "municpal_construction", "description": null, "tag": null}
     },
-    {
-      "id": 316,
-      "icon": "ekram_employee",
-      "3d_icon": null,
-      "order": 1,
-      "isNew": false,
-      "requireLogin": true,
-      "isImportant": false,
-      "action": {
-        "type": "page",
-        "value": RouteName.driverEkramTransportationListScreen
-      },
-      "ar": {"title": "ekram_empolyee_title", "description": null, "tag": null},
-      "en": {"title": "ekram_empolyee_title", "description": null, "tag": null}
-    },
   ],
   "help_services": [
     {
@@ -811,4 +701,148 @@ Map<String, dynamic> servicesConfig = {
       },
     },*/
   ],
+  "ekram_services": [
+    {
+      "id": 213,
+      "icon": "ekram_benf_transport",
+      "3d_icon": null,
+      "order": 1,
+      "isNew": false,
+      "requireLogin": true,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": RouteName.ekramTransportationListScreen
+      },
+      "ar": {"title": "ekram_benf_transport", "description": null, "tag": null},
+      "en": {"title": "ekram_benf_transport", "description": null, "tag": null}
+    },
+    {
+      "id": 214,
+      "icon": "ekram_inq_graves",
+      "3d_icon": null,
+      "order": 1,
+      "isNew": false,
+      "requireLogin": true,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": RouteName.EkramInquiryCemetryDetailsPage
+      },
+      "ar": {
+        "title": "ekram_inquiry_burial_grave",
+        "description": null,
+        "tag": null
+      },
+      "en": {
+        "title": "ekram_inquiry_burial_grave",
+        "description": null,
+        "tag": null
+      }
+    },
+    {
+      "id": 215,
+      "icon": "ekram_inq_grave_dead",
+      "3d_icon": null,
+      "order": 1,
+      "isNew": false,
+      "requireLogin": true,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": RouteName.EkramInquiryGravesDetailsPage
+      },
+      "ar": {
+        "title": "ekram_inquiry_about_grave",
+        "description": null,
+        "tag": null
+      },
+      "en": {
+        "title": "ekram_inquiry_about_grave",
+        "description": null,
+        "tag": null
+      }
+    },
+    {
+      "id": 216,
+      "icon": "ekram_orgnization",
+      "3d_icon": null,
+      "order": 1,
+      "isNew": false,
+      "requireLogin": true,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": RouteName.EkramInquiryOrgnizationsDetailsPage
+      },
+      "ar": {
+        "title": "ekram_inquiry_orgnizations",
+        "description": null,
+        "tag": null
+      },
+      "en": {
+        "title": "ekram_inquiry_orgnizations",
+        "description": null,
+        "tag": null
+      }
+    },
+    {
+      "id": 217,
+      "icon": "ekram_print",
+      "3d_icon": null,
+      "order": 1,
+      "isNew": false,
+      "requireLogin": true,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": RouteName.EkramInquiryPrintDetailsPage
+      },
+      "ar": {
+        "title": "ekram_print_certificate",
+        "description": null,
+        "tag": null
+      },
+      "en": {
+        "title": "ekram_print_certificate",
+        "description": null,
+        "tag": null
+      }
+    },
+    {
+      "id": 218,
+      "icon": "ekram_reserve_cemetry",
+      "3d_icon": null,
+      "order": 1,
+      "isNew": false,
+      "requireLogin": true,
+      "isImportant": false,
+      "action": {"type": "page", "value": RouteName.ekramBookingListScreen},
+      "ar": {
+        "title": "cemetery_booking_request",
+        "description": null,
+        "tag": null
+      },
+      "en": {
+        "title": "cemetery_booking_request",
+        "description": null,
+        "tag": null
+      }
+    },
+    {
+      "id": 316,
+      "icon": "ekram_employee",
+      "3d_icon": null,
+      "order": 1,
+      "isNew": false,
+      "requireLogin": true,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": RouteName.driverEkramTransportationListScreen
+      },
+      "ar": {"title": "ekram_empolyee_title", "description": null, "tag": null},
+      "en": {"title": "ekram_empolyee_title", "description": null, "tag": null}
+    },
+  ]
 };

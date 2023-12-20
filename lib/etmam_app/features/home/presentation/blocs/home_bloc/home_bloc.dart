@@ -4,6 +4,7 @@ import 'package:balady_plus/etmam_app/core/services/local/use_case.dart';
 
 import 'package:balady_plus/etmam_app/core/utils/common_properties.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart';
+import 'package:balady_plus/etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
 import 'package:balady_plus/etmam_app/features/home/domain/entities/ads/ads_response.dart';
 import 'package:balady_plus/etmam_app/features/home/domain/use_cases/get_ads.dart';
 import 'package:balady_plus/etmam_app/features/home/home_exports.dart'
@@ -46,7 +47,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetProviderDetails _getProviderDetails;
   final GetAds _getAds;
   final FindByRequestType _findByRequestType;
-
+  bool isMunicipalService = true;
   HomeBloc({
     required GetMainServices getMainServices,
     required GetTopOrderedSubService getTopOrderedSubService,
@@ -55,6 +56,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     required GetServicesProvidersByService getServicesProvidersByService,
     required GetProviderDetails getProviderDetails,
     required GetAds getAds,
+    required bool isMunicipalService,
   })  : _getMainServices = getMainServices,
         _getTopOrderedSubService = getTopOrderedSubService,
         _getTopRatedProviders = getTopRatedProviders,
@@ -63,7 +65,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         _getProviderDetails = getProviderDetails,
         _getAds = getAds,
         _findByRequestType = FindByRequestType(repository: sl()),
+        isMunicipalService = isMunicipalService,
         super(const HomeState()) {
+    sl<EtmamEntryPointCubit>().changeServiceType(
+        classificationId:
+            isMunicipalService == true ? "municipal" : "life-style");
     on<HomeEvent>((event, emit) {});
 
     on<GetMainServicesEvent>(_getMainServicesHandler);
@@ -295,10 +301,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     add(
       GetTopRatedProvidersEvent(
         params: TopRatedProviderParams(
-          cityId: CommonProperties.cityId,
-          pageSize: "4",
-          pageIndex: "1",
-        ),
+            cityId: CommonProperties.cityId, pageSize: "4", pageIndex: "1"),
       ),
     );
   }

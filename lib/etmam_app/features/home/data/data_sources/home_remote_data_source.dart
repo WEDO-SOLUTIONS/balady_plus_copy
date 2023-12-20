@@ -3,6 +3,7 @@ import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
 
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
     show ApigeeResponse, ApigeeResponseModel, ProvidersResponseModel;
+import 'package:balady_plus/etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
 import 'package:balady_plus/etmam_app/features/home/data/models/ads/ads_reponse_model.dart';
 import 'package:balady_plus/etmam_app/features/home/home_exports.dart'
     show
@@ -19,6 +20,7 @@ import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     show ApiUrl, ApiParams, WithDelay;
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../app/core/dependency_injection/injection_container.dart';
 import '../../../../../app/core/services/global/web_service.dart';
 
 abstract class HomeRemoteDataSource {
@@ -53,7 +55,8 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
         queryParameters: {
           ApiParams.pageNo: params.pageIndex,
           ApiParams.pageSize: params.pageSize,
-          ApiParams.cityId: params.cityId
+          ApiParams.cityId: params.cityId,
+          "classification-id": sl<EtmamEntryPointCubit>().classificationId
         },
       );
 
@@ -159,7 +162,8 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
           ApiParams.pageNo: params.pageIndex,
           ApiParams.pageSize: params.pageSize,
           ApiParams.name: params.name,
-          ApiParams.sort: ApiParams.desc
+          ApiParams.sort: ApiParams.desc,
+          "classification-id": sl<EtmamEntryPointCubit>().classificationId
         },
       );
 
@@ -220,6 +224,7 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
         ApiUrl.subServices + params.mainServiceId,
         queryParameters: {
           ApiParams.cityId: params.cityId,
+          "classification-id": sl<EtmamEntryPointCubit>().classificationId
         },
       );
 

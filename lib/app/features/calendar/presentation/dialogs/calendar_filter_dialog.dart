@@ -51,6 +51,7 @@ class _CalendarFilterDialogState extends State<CalendarFilterDialog> {
     selectedSeason = widget.params.selectedSeason;
     dateFrom = widget.params.dateFrom;
     dateTo = widget.params.dateTo;
+    textEditingController?.text = widget.params.keyword ?? "";
   }
 
   @override
@@ -68,7 +69,6 @@ class _CalendarFilterDialogState extends State<CalendarFilterDialog> {
                 hintText: "search".tr(),
                 textEditingController: textEditingController,
                 textInputType: TextInputType.text,
-                initialValue: widget.params.keyword,
                 onChanged: (value) {
                   print(value);
                   keyword = value;

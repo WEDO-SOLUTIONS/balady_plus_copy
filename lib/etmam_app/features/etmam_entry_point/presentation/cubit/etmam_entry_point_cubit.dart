@@ -35,6 +35,7 @@ class EtmamEntryPointCubit extends Cubit<EtmamEntryPointState> {
   final UpdateDeviceToken _updateDeviceToken;
 
   final GetForceVersion _getForceVersion;
+  String classificationId = "municipal";
 
   EtmamEntryPointCubit({
     required GetProfile getProfile,
@@ -53,6 +54,10 @@ class EtmamEntryPointCubit extends Cubit<EtmamEntryPointState> {
         _getForceVersion = forceVersion,
         super(const EtmamEntryPointState()) {
     onLoadingApp();
+  }
+
+  void changeServiceType({required String classificationId}) {
+    this.classificationId = classificationId;
   }
 
   Future<void> onLoadingApp() async {

@@ -51,8 +51,17 @@ class _EtmamMainServicesWidget extends State<EtmamMainServicesWidget> {
         // TODO: implement listener
       },
       builder: (context, state) {
+        double height = 100;
+        if ((state.mainServiceResponse?.items?.length ?? 0) > 2) {
+          height = 270;
+        }
+        if ((state.mainServiceResponse?.items?.length ?? 0) == 2) {
+          height = 210;
+        }
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(height: 12),
             Padding(
@@ -85,7 +94,7 @@ class _EtmamMainServicesWidget extends State<EtmamMainServicesWidget> {
               ),
             if (state.mainServiceStatus == BlocStatus.success) ...[
               Container(
-                height: 325,
+                height: height,
                 child: PageView.builder(
                   padEnds: false,
                   itemCount: ((state.mainServiceResponse?.items?.length ?? 0) /
@@ -109,8 +118,8 @@ class _EtmamMainServicesWidget extends State<EtmamMainServicesWidget> {
                         state.mainServiceResponse?.items?.length ?? 0,
                       ),
                     );
-
                     return Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: widgetsToShow!.map(
                         (widget) {
                           return Container(

@@ -12,6 +12,7 @@ abstract class ServicesLocalDataSource {
   Future<List<ServiceEntity>> getMunicipalServices();
   //Future<List<ServiceEntity>> getHealthCertificatesServices();
   Future<List<ServiceEntity>> getHelpServices();
+  Future<List<ServiceEntity>> getEkramServices();
 }
 
 class ServicesLocalDataSourceImplementation implements ServicesLocalDataSource {
@@ -19,12 +20,22 @@ class ServicesLocalDataSourceImplementation implements ServicesLocalDataSource {
   final List<ServiceEntity> _businessLicenseServices = [];
   final List<ServiceEntity> _helpServices = [];
   final List<ServiceEntity> _municipalServices = [];
+  final List<ServiceEntity> _ekramServices = [];
 
   List<ServiceEntity> get _allServices =>
       _islamicServices +
       _businessLicenseServices +
       _helpServices +
-      _municipalServices;
+      _municipalServices +
+      _ekramServices;
+
+  @override
+  Future<List<ServiceEntity>> getEkramServices() async {
+    if (_ekramServices.isEmpty) {
+      await _loadServices();
+    }
+    return _ekramServices;
+  }
 
   @override
   Future<List<ServiceEntity>> getIslamicServices() async {
@@ -64,6 +75,8 @@ class ServicesLocalDataSourceImplementation implements ServicesLocalDataSource {
 
     final helpServicesJson = servicesJson['help_services'] as List<dynamic>;
 
+    final ekramServicesJson = servicesJson['ekram_services'] as List<dynamic>;
+
     _islamicServices.addAll(islamicServicesJson
         .map(
             (service) => ServiceModel.fromJson(service as Map<String, dynamic>))
@@ -83,6 +96,12 @@ class ServicesLocalDataSourceImplementation implements ServicesLocalDataSource {
 
     _helpServices.addAll(
       helpServicesJson.map(
+        (service) => ServiceModel.fromJson(service as Map<String, dynamic>),
+      ),
+    );
+
+    _ekramServices.addAll(
+      ekramServicesJson.map(
         (service) => ServiceModel.fromJson(service as Map<String, dynamic>),
       ),
     );

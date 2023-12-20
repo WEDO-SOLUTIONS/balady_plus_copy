@@ -61,10 +61,10 @@
   },
   {
     "id": 8,
-    "condition": "وجود وحدات تكييف منفصلة في كامل واجهة المبنى المطل على الشارع التجاري",
+    "condition": "There are separate air conditioning units throughout the entire facade of the building overlooking the commercial street.",
     "procedure": [
       "Move the air conditioning units to the roof, taking into consideration non-placing their extensions on the façades of the building",
-      "نقل وحدات التكييف إلى السطح مع مراعاة عدم وضع التمديدات الخاصة بها على واجهات المبنى."
+      "Move the air conditioning units to the roof, taking care not to place their extensions on the facades of the building"
     ],
     "image": "3"
   },

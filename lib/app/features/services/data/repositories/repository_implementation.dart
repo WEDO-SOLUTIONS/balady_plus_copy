@@ -12,6 +12,16 @@ class ServicesRepositoryImplementation implements ServicesRepository {
   });
 
   @override
+  Future<Either<Failure, List<ServiceEntity>>> getEkramServices() async {
+    try {
+      final services = await localDataSource.getEkramServices();
+      return Right(services);
+    } catch (e) {
+      return Left(CacheFailure());
+    }
+  }
+
+  @override
   Future<Either<Failure, List<ServiceEntity>>> getIslamicServices() async {
     try {
       final services = await localDataSource.getIslamicServices();

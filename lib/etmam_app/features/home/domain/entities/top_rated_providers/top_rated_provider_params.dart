@@ -10,12 +10,12 @@ class TopRatedProviderParams {
       required this.cityId,
       this.name});
 
-  TopRatedProviderParams copyWith({
-    String? cityId,
-    String? pageSize,
-    String? pageIndex,
-    String? name,
-  }) {
+  TopRatedProviderParams copyWith(
+      {String? cityId,
+      String? pageSize,
+      String? pageIndex,
+      String? name,
+      String? classificationId}) {
     return TopRatedProviderParams(
         pageSize: pageSize ?? this.pageSize,
         pageIndex: pageIndex ?? this.pageIndex,

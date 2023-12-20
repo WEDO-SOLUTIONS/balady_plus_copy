@@ -288,6 +288,25 @@ class ServiceIcon extends StatelessWidget {
             }
           } else if (service.iconName == "municpal_all") {
             CommonFunctions.externalLaunch(service.action.value);
+          } else if (service.id == 221) {
+            try {
+              NavigationService.navigatorKey.currentState!
+                  .pushNamed(RouteName.SpecificServicePage, arguments: (
+                BlocProvider.of<ServicesCubit>(
+                        NavigationService.bottomNavKey.currentContext!)!
+                    .state
+                    .honoringTheDeadServices,
+                service.title
+              ));
+            } catch (ex) {
+              print(ex);
+            }
+          } else if (service.id == 211 || service.id == 314) {
+            NavigationService.navigatorKey.currentState!
+                .pushNamed(RouteName.etmamMainPage, arguments: true);
+          } else if (service.id == 205) {
+            NavigationService.navigatorKey.currentState!
+                .pushNamed(RouteName.etmamMainPage, arguments: false);
           }
         },
         child: Container(

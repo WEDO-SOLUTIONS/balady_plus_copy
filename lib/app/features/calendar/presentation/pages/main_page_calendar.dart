@@ -67,6 +67,10 @@ class _MainPageCalendarState extends State<MainPageCalendar> {
                       ),
                     ),
                   );
+                  print("keyword ${params}");
+
+                  print("keyword ${params?.keyword}");
+
                   if (context.mounted) {
                     context
                         .read<CalendarBloc>()

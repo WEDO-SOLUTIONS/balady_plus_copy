@@ -286,7 +286,6 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   Future<void> autoLogout() async {
     sharedPrefs.setSSOToken(null);
     sl<DelegatorsCubit>().clearDelegators();
-    final failureOrSuccess = await _clearAuth(NoParams());
 
     //MM sharedPrefs.setUserProfile(null);
     sharedPrefs.setSSOUserProfile(null);
@@ -425,5 +424,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         //  sl<EkramLocationService>().startTimer();
       }
     }
+  }
+
+  void refreshApp() {
+    emit(state.copyWith(blocStatus: BlocStatus.loading));
+
+    emit(state.copyWith(blocStatus: BlocStatus.success));
   }
 }

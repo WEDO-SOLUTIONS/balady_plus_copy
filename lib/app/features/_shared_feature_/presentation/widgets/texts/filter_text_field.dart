@@ -51,9 +51,7 @@ class FilterTextField extends StatelessWidget {
         fillColor: AppColor.scaffoldBackground,
         textFieldStyle: AppStyle.dropDownValueTextStyle,
         onChanged: (value) {
-          _debouncer.run(() {
-            onChanged?.call(value);
-          });
+          onChanged?.call(value);
         },
         onSubmitted: onSubmitted,
       ),
