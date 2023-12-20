@@ -5,13 +5,13 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get aboutApp => 'حول التطبيق';
+  String get aboutApp => 'عن التطبيق';
 
   @override
-  String get aboutBalady => 'حول بلدي';
+  String get aboutBalady => 'عن بلدي';
 
   @override
-  String get aboutPark => 'About park';
+  String get aboutPark => 'عن الحديقة';
 
   @override
   String get accessibility => 'إمكانية الوصول';
@@ -245,6 +245,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get focusOnTheRoad => 'ركِّز في الطريق';
 
   @override
+  String get friday => 'جمعة';
+
+  @override
   String get from => 'من';
 
   @override
@@ -407,6 +410,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get minutes => 'دقائق';
 
   @override
+  String get monday => 'الإثنين';
+
+  @override
   String get mosques => 'المساجد';
 
   @override
@@ -428,7 +434,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get nav_landing => 'الخدمات';
 
   @override
-  String get nav_profile => 'الحساب';
+  String get nav_profile => 'الملف الشخصي ';
 
   @override
   String get nav_route => 'طريق';
@@ -459,6 +465,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get parkOpeningDate => 'Opening date';
+
+  @override
+  String get parkSizeBig => 'Big size park';
+
+  @override
+  String get parkSizeMedium => 'Medium size park';
+
+  @override
+  String get parkSizeSmall => 'Small size park';
+
+  @override
+  String get parkSizeUnknown => 'Unknown size park';
 
   @override
   String get parkType => 'Type';
@@ -596,6 +614,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get salons => 'صالونات';
 
   @override
+  String get saturday => 'السبت';
+
+  @override
   String get schools => 'المدارس';
 
   @override
@@ -614,7 +635,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sendAWish => 'أرسل أمنية';
 
   @override
-  String get sendFeedback => 'ارسل رأيك';
+  String get sendFeedback => 'سجل انطباعك';
 
   @override
   String get sendYourWishes => 'أرسل رغباتك';
@@ -716,6 +737,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get streets => 'الشوارع';
 
   @override
+  String get sunday => 'الأحد';
+
+  @override
   String get tellUsWhatYouWant => 'أخبرنا ماذا تريد...';
 
   @override
@@ -729,6 +753,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get theTripTook => 'استغرقت الرحلة';
+
+  @override
+  String get thursday => 'الخميس';
 
   @override
   String get tinId => 'رقم الرخصة التجارية';
@@ -747,6 +774,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tryAgain => 'حاول مرة أخرى';
+
+  @override
+  String get tuesday => 'الثلاثاء';
 
   @override
   String get twentyFourSeven => '24/7';
@@ -773,10 +803,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get watchMore => 'مشاهدة المزيد';
 
   @override
-  String get weAreHappyToConnectYouWithBaladyTeam => 'نسعد بتواصلكم مع فريق بلدي، من خلال قنوات التواصل التالية';
+  String get weAreHappyToConnectYouWithBaladyTeam => 'تم تطوير بوابة بلدي بالتعاون مع جهات القطاع البلدي المختلفة لتكون البوابة الوطنية الداعمة للمجتمع البلدي.\nوتشمل هذه البوابة في المرحلة الحالية ثلاث مسؤوليات رئيسية وهي:\n- الخدمات التفاعلية التي تساعد في تعزيز مفهوم الشراكة المجتمعية لتحسين جودة الخدمات المقدمة للمستفيدين.\n- الخدمات الإلكترونية التي تساعد على تقديم الطلبات الإلكترونية لاستخراج الرخص الأكثر استخدامًا.\n- الخدمات المعلوماتية والتي تساعد المستفيدين على اتخاذ القرارات ذات العلاقة بما يساهم في تحسين مستوى الرضا عن جهات القطاع البلدي.';
 
   @override
   String get weCouldntFindAnythingTryChangingYourRequest => 'لم نتمكن من العثور على شيء. حاول تغيير طلبك';
+
+  @override
+  String get wednesday => 'الأربعاء';
 
   @override
   String get weekend => 'نهاية الأسبوع';
