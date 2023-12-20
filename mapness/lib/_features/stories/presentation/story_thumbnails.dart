@@ -31,21 +31,19 @@ class StoryThumbnails extends StatelessWidget {
                 behavior: NoGlowingScrollBehavior(),
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                  ),
                   itemCount: stories.length,
                   itemBuilder: (context, i) {
                     final story = stories[i];
                     return AnimatedScrollViewItem(
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            right: i == 0 ? 16 : 0,
-                            left: i == stories.length - 1 ? 16 : 0),
-                        child: StoryThumbnailWidget(
-                          // thumbnail: story,
-                          onPress: () => onThumbnailPressed(story.storyId),
-                          imageUrl: story.thumbnail.imageUrl,
-                          isWatched: story.isViewed,
-                          title: story.thumbnail.title,
-                        ),
+                      child: StoryThumbnailWidget(
+                        // thumbnail: story,
+                        onPress: () => onThumbnailPressed(story.storyId),
+                        imageUrl: story.thumbnail.imageUrl,
+                        isWatched: story.isViewed,
+                        title: story.thumbnail.title,
                       ),
                     );
                   },
