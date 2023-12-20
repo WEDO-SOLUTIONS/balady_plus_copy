@@ -10,6 +10,7 @@ import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/investment_sites.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/map_requests_params.dart';
 
+import 'package:mapness/_features/lifestyle_layers/domain/white_lands.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/layer_details.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
@@ -33,6 +34,19 @@ const _markerPrefix = 'esri_markers-';
 enum LayerType { favourites, invest, buildings, fencing, joy }
 
 extension LayerTypeExt on LayerType {
+
+
+
+  GISMapLayers? getLayerType() {
+    return switch (this) {
+      LayerType.favourites => null,
+      LayerType.invest => GISMapLayers.Opportunities,
+      LayerType.buildings => GISMapLayers.BSAimtithalBuildingsCertificateL,
+      LayerType.fencing => GISMapLayers.BSWhiteParcelS,
+      LayerType.joy => null,
+    };
+  }
+
   String esriLayerId() {
     return switch (this) {
       LayerType.favourites => '',
@@ -66,7 +80,7 @@ extension LayerTypeExt on LayerType {
 
 class LayersState {
   final bool layersVisible;
-  final Set<LayerType> selectedType;
+  final LayerType? selectedType;
   final bool isLoading;
 
   List<Marker>? investmentsMarkers;
@@ -88,246 +102,20 @@ class LayersControls extends _$LayersControls {
   @override
   LayersState build() {
     ref.onDispose(() {
-      state = LayersState(
-        layersVisible: false,
-        selectedType: {},
-        isLoading: false,
-        investmentsMarkers: [],
-      );
       viewPortSubscription?.cancel();
     });
 
     return LayersState(
       layersVisible: false,
-      selectedType: {},
+      selectedType: null,
       isLoading: false,
       investmentsMarkers: [],
     );
   }
 
-  Future<void> showInvestmentOpportunities(
-    WidgetRef ref,
-    LayerType layerType,
-  ) async {
-
-    final controller = ref.watch(lifestyleRepositoryProvider.notifier);
-    final env = await ref.read(dgisEnvironmentProvider.future);
-
-    var layersControls = ref.watch(layersControlsProvider.notifier);
-    var mapController =
-        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
-
-    update(isLoading: true, selectedType: {layerType});
-
-    await layersControls.removeAll();
-
-    await viewPortSubscription?.cancel();
-    viewPortSubscription = ref
-        .watch(dgisControllerProvider.notifier)
-        .visibleRectSubject
-        .debounceTime(const Duration(milliseconds: 2500))
-        .map((event) => event.visibleRect)
-        .asyncMap((visibleRect) => controller
-                .getEsriPoints(
-                    params: MapRequestParams(
-              layer: GISMapLayers.Opportunities,
-              southWestLongitude: visibleRect.southWestLon,
-              southWestLatitude: visibleRect.southWestLat,
-              northEastLongitude: visibleRect.northEastLon,
-              northEastLatitude: visibleRect.northEastLat,
-              domain: env.url,
-              proxy: env.proxy,
-            ))
-                .onError((error, stackTrace) {
-              debugPrint("$stackTrace");
-              update(isLoading: false);
-              return null;
-            }).timeout(const Duration(minutes: 1), onTimeout: () {
-              update(isLoading: false);
-              return null;
-            }))
-        .map((response) => createMarkers(response, layerType))
-        .listen(
-      (markers) async {
-        layersControls.update(isLoading: false);
-        await mapController.addMarkers(markers);
-      },
-    );
-  }
-
-  List<Marker> createMarkers(
-      List<InvestmentSites>? response, LayerType layerType) {
-    var markers = response
-            ?.whereNotNull()
-            .map<Marker>(
-              (e) => Marker(
-                id: e.id,
-                options: MarkerOptionsMessage(
-                  position: GeoPointWithElevationMessage(
-                    latitude: e.latLng?.latitude ?? 0,
-                    longitude: e.latLng?.longitude ?? 0,
-                    elevation: 0,
-                  ),
-                  icon: MarkerIconMessage(
-                    path:
-                        "packages/mapness/assets/icons/svg/layers/investment_opportunities.svg",
-                    width: 30,
-                  ),
-                  textStyle: MarkerTextStyleMessage(
-                    color: const Color(0xFF1BA136).value,
-                    strokeColor: Colors.white.value,
-                    strokeWidth: 1,
-                    fontSize: 14,
-                    fontName: "Frutiger",
-                    textPlacement: MarkerTextPlacementMessage(
-                      placement: TextPlacementMessage.bottomCenter,
-                    ),
-                  ),
-                ),
-                onTap: () => showEsriCard(e),
-              ),
-            )
-            .toList() ??
-        [];
-    return markers;
-  }
-
-  Future<void> getLandFences(WidgetRef ref, LayerType layerType) async {
-    final controller = ref.watch(lifestyleRepositoryProvider.notifier);
-    final env = await ref.read(dgisEnvironmentProvider.future);
-    var layersControls = ref.watch(layersControlsProvider.notifier);
-    final mapManager = ref.watch(
-      mapObjectManagerProvider(
-        named: mapLayerName,
-      ).notifier,
-    );
-
-    layersControls.update(isLoading: true, selectedType: {layerType});
-
-    await layersControls.removeAll();
-
-    viewPortSubscription?.cancel();
-    viewPortSubscription = ref
-        .watch(dgisControllerProvider.notifier)
-        .visibleRectSubject
-        .debounceTime(const Duration(milliseconds: 2500))
-        .map((event) => event.visibleRect)
-        .listen((visibleRect) async {
-      var mapRequestParams = MapRequestParams(
-        layer: GISMapLayers.BSWhiteParcelS,
-        southWestLongitude: visibleRect.southWestLon,
-        southWestLatitude: visibleRect.southWestLat,
-        northEastLongitude: visibleRect.northEastLon,
-        northEastLatitude: visibleRect.northEastLat,
-        proxy: env.proxy,
-        domain: env.url,
-      );
-      final response = await controller
-          .getWhiteLands(mapRequestParams)
-          .onError((error, stackTrace) {
-        debugPrint("$stackTrace");
-        layersControls.update(isLoading: false);
-        return null;
-      }).timeout(const Duration(minutes: 1), onTimeout: () {
-        layersControls.update(
-          isLoading: false,
-        );
-        return null;
-      });
-
-      var list = response?.map((e) {
-            return Polygon(
-                id: e.id,
-                options: PolygonOptionsMessage(
-                    strokeWidth: 2,
-                    strokeColor: 0xFF000000,
-                    color: 0x26000000,
-                    contours: [e.paths]),
-                onTap: () => showEsriCard(e));
-          }).toList() ??
-          [];
-
-      layersControls.update(isLoading: false);
-      await mapManager.addPolygons(list);
-    });
-  }
-
-  Future<void> buildingCompliance(WidgetRef ref, LayerType layerType) async {
-    var layersControls = ref.watch(layersControlsProvider.notifier);
-    final controller = ref.watch(lifestyleRepositoryProvider.notifier);
-
-    update(isLoading: true, selectedType: {layerType});
-    await viewPortSubscription?.cancel();
-    final env = await ref.read(dgisEnvironmentProvider.future);
-    final mapObjectManager =
-        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
-
-    await layersControls.removeAll();
-
-    viewPortSubscription = ref
-        .watch(dgisControllerProvider.notifier)
-        .visibleRectSubject
-        .debounceTime(const Duration(milliseconds: 2500))
-        .map((event) => event.visibleRect)
-        .listen((visibleRect) async {
-      var mapRequestParams = MapRequestParams(
-        layer: GISMapLayers.BSAimtithalBuildingsCertificateL,
-        southWestLongitude: visibleRect.southWestLon,
-        southWestLatitude: visibleRect.southWestLat,
-        northEastLongitude: visibleRect.northEastLon,
-        northEastLatitude: visibleRect.northEastLat,
-        proxy: env.proxy,
-        domain: env.url,
-      );
-      final response = await controller
-          .buildingComplianceCertificate(mapRequestParams)
-          .onError((error, stackTrace) {
-        debugPrint("$stackTrace");
-        update(isLoading: false);
-        return null;
-      }).timeout(const Duration(minutes: 1), onTimeout: () {
-        update(
-          isLoading: false,
-        );
-        return null;
-      });
-
-      update(isLoading: false);
-      await mapObjectManager.addPolyLines(
-          addPolylineWithPoint(response, mapRequestParams.layer.layerId));
-    });
-  }
-
-  List<Polyline> addPolylineWithPoint(
-      List<BuildingComplianceCertificate>? pointList, int layerId) {
-    final List<Polyline> polylines = [];
-    if (pointList != null && pointList.isNotEmpty) {
-      for (var element in pointList) {
-        var pathsGoogle = element.pathsGoogle;
-        if (pathsGoogle != null) {
-          for (List<GeoPointMessage> i in pathsGoogle) {
-            int id = int.parse(element.id);
-            String idPolyline = "${id.toString()}+${i}";
-            polylines.add(
-              Polyline(
-                id: idPolyline,
-                options: PolylineOptionsMessage(
-                    points: i, width: 2, color: 0xff358281),
-                onTap: () {
-                  showEsriCard(element);
-                },
-              ),
-            );
-          }
-        }
-      }
-    }
-    return polylines;
-  }
-
   void update({
     bool? visible,
-    Set<LayerType>? selectedType,
+    LayerType? selectedType,
     bool? isLoading,
     List<Marker>? investmentsMarkers,
   }) {
@@ -337,89 +125,6 @@ class LayersControls extends _$LayersControls {
       selectedType: selectedType ?? state.selectedType,
       isLoading: isLoading ?? state.isLoading,
     );
-  }
-
-  void _toggleSelected(
-    LayerType selectedType,
-  ) {
-    var selectedTypeSet = state.selectedType;
-    state = LayersState(
-      investmentsMarkers: state.investmentsMarkers,
-      layersVisible: state.layersVisible,
-      selectedType: selectedTypeSet.contains(selectedType)
-          ? {...selectedTypeSet.whereNot((e) => e == selectedType)}
-          : {...selectedTypeSet, selectedType},
-      isLoading: state.isLoading,
-    );
-  }
-
-  Future<void> handleTap(WidgetRef ref, LayerType value) async {
-    var layersControls = ref.watch(layersControlsProvider.notifier);
-    var currentState = state.selectedType;
-
-    switch (value) {
-      case LayerType.favourites:
-        if (currentState.contains(LayerType.favourites)) {
-          await ref.read(favouriteToggleProvider.notifier).disable();
-        } else {
-          await ref.read(favouriteToggleProvider.notifier).enable();
-        }
-        _toggleSelected(value);
-
-      case LayerType.invest:
-        if (!currentState.contains(LayerType.invest)) {
-          layersControls.showInvestmentOpportunities(ref, value);
-        } else {
-          viewPortSubscription?.cancel();
-          await removeAll();
-          currentState.remove(value);
-          layersControls.update(
-              isLoading: false,
-              selectedType: currentState);
-        }
-      case LayerType.buildings:
-        if (!currentState.contains(LayerType.buildings)) {
-          layersControls.buildingCompliance(ref, value);
-        } else {
-          viewPortSubscription?.cancel();
-          await removeAll();
-          currentState.remove(value);
-          layersControls.update(isLoading: false, selectedType: currentState);
-        }
-
-      case LayerType.fencing:
-        if (!currentState.contains(LayerType.fencing)) {
-          layersControls.getLandFences(ref, value);
-        } else {
-          viewPortSubscription?.cancel();
-          await removeAll();
-          currentState.remove(value);
-          layersControls.update(isLoading: false, selectedType: currentState);
-        }
-      case LayerType.joy:
-        if (currentState.contains(LayerType.joy)) {
-          ref
-              .read(mapObjectManagerProvider(named: iwishLayerName).notifier)
-              .removeAllMarkers();
-        } else {
-          showIwish();
-        }
-        _toggleSelected(value);
-    }
-  }
-
-  Future<void> showIwish() async {
-    final markers = await ref.read(iwishMarkersProvider.future);
-    final iwishObjectManager =
-        ref.read(mapObjectManagerProvider(named: iwishLayerName).notifier);
-
-    await iwishObjectManager.addMarkers(markers);
-  }
-
-  void showEsriCard(PointLayersData e) {
-    ref
-        .read(goRouterProvider)
-        .push(LayerDetailsRoute().location, extra: {"data": e});
   }
 
   Future<void> focusIwish() async {
@@ -436,12 +141,331 @@ class LayersControls extends _$LayersControls {
     await ref.read(cameraPositionProvider.notifier).animateTo(cameraPosition);
   }
 
-  Future<void> removeAll() async {
+  Future<void> handleTap(LayerType value) async {
+    var layersControls = ref.watch(layersControlsProvider.notifier);
+    var currentState = state.selectedType;
+
+    switch (value) {
+      case LayerType.favourites:
+        if (currentState == (LayerType.favourites)) {
+          await ref.read(favouriteToggleProvider.notifier).disable();
+        } else {
+          await ref.read(favouriteToggleProvider.notifier).enable();
+        }
+        _toggleSelected(value);
+
+      case LayerType.buildings:
+        toggleComplienceBuildings();
+      case LayerType.invest:
+        toggleInvestOpportunities();
+      case LayerType.fencing:
+        toggleWhiteLands();
+      case LayerType.joy:
+        toggleIwish(currentState, value);
+    }
+  }
+
+  Future<void> toggleIwish(LayerType? currentState, LayerType value) async {
+    var layersControls = ref.watch(layersControlsProvider.notifier);
+    if (currentState == (LayerType.joy)) {
+      await ref
+          .read(mapObjectManagerProvider(named: iwishLayerName).notifier)
+          .removeAllMarkers();
+      layersControls.update(isLoading: false, selectedType: null);
+    } else {
+      _showIwish();
+    }
+  }
+
+  Future<void> toggleComplienceBuildings() async {
+    var layersControls = ref.watch(layersControlsProvider.notifier);
+    var currentState = state.selectedType;
+    if (currentState != (LayerType.buildings)) {
+      layersControls.update(isLoading: true, selectedType: LayerType.buildings);
+      layersControls._showBuildingCompliance();
+    } else {
+      viewPortSubscription?.cancel();
+      await _removeAll();
+      layersControls.update(isLoading: false, selectedType: null);
+    }
+  }
+
+  Future<void> _showObjectDetails(PointLayersData layerData) async {
+    final controller = ref.watch(lifestyleRepositoryProvider.notifier);
+    final env = await ref.read(dgisEnvironmentProvider.future);
+
+    var layersControls = ref.watch(layersControlsProvider.notifier);
+    var mapController =
+    ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
+
+    update(isLoading: true);
+
+    await layersControls._removeAll();
+
+
+    await viewPortSubscription?.cancel();
+    viewPortSubscription = ref
+        .watch(dgisControllerProvider.notifier)
+        .visibleRectSubject
+        .debounceTime(const Duration(milliseconds: 2500))
+        .map((event) => event.visibleRect)
+        .asyncMap((visibleRect) =>
+        controller.getEsriPoints(
+            params: MapRequestParams(
+                layer: state.selectedType?.getLayerType(),
+                southWestLongitude: visibleRect.southWestLon,
+                southWestLatitude: visibleRect.southWestLat,
+                northEastLongitude: visibleRect.northEastLon,
+                northEastLatitude: visibleRect.northEastLat,
+                domain: env.url,
+                proxy: env.proxy,
+                objectId: int.tryParse(layerData.id) ?? 0,
+              pointsDetails: true,
+
+            )))
+        .map(_makeMarkers)
+        .listen(
+          (markers) async {
+        layersControls.update(isLoading: false);
+        await mapController.addMarkers(markers);
+      },
+    );
+  }
+
+  Future<void> _showInvestmentOpportunities(LayerType layerType) async {
+    final controller = ref.watch(lifestyleRepositoryProvider.notifier);
+    final env = await ref.read(dgisEnvironmentProvider.future);
+
+    var layersControls = ref.watch(layersControlsProvider.notifier);
+    var mapController =
+    ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
+
+    update(isLoading: true, selectedType: layerType);
+
+    await layersControls._removeAll();
+
+    await viewPortSubscription?.cancel();
+    viewPortSubscription = ref
+        .watch(dgisControllerProvider.notifier)
+        .visibleRectSubject
+        .debounceTime(const Duration(milliseconds: 2500))
+        .map((event) => event.visibleRect)
+        .asyncMap((visibleRect) =>
+        controller.getEsriPoints(
+            params: MapRequestParams(
+              layer: GISMapLayers.Opportunities,
+              southWestLongitude: visibleRect.southWestLon,
+              southWestLatitude: visibleRect.southWestLat,
+              northEastLongitude: visibleRect.northEastLon,
+              northEastLatitude: visibleRect.northEastLat,
+              domain: env.url,
+              proxy: env.proxy,
+            )))
+        .map(_makeMarkers)
+        .listen(
+          (markers) async {
+        layersControls.update(isLoading: false);
+        await mapController.addMarkers(markers);
+      },
+    );
+  }
+
+  Future<void> _showWhiteLands() async {
+    final controller = ref.watch(lifestyleRepositoryProvider.notifier);
+    final env = await ref.read(dgisEnvironmentProvider.future);
+    var layersControls = ref.watch(layersControlsProvider.notifier);
+    final mapManager =
+    ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
+
+    layersControls.update(isLoading: true, selectedType: LayerType.fencing);
+
+    await layersControls._removeAll();
+    await viewPortSubscription?.cancel();
+
+    viewPortSubscription = ref
+        .watch(dgisControllerProvider.notifier)
+        .visibleRectSubject
+        .debounceTime(const Duration(milliseconds: 2500))
+        .map((event) => event.visibleRect)
+        .asyncMap((visibleRect) =>
+        controller.getWhiteLands(MapRequestParams(
+          layer: GISMapLayers.BSWhiteParcelS,
+          southWestLongitude: visibleRect.southWestLon,
+          southWestLatitude: visibleRect.southWestLat,
+          northEastLongitude: visibleRect.northEastLon,
+          northEastLatitude: visibleRect.northEastLat,
+          proxy: env.proxy,
+          domain: env.url,
+        )))
+        .map(_makePolygons)
+        .listen((polygons) async {
+      layersControls.update(isLoading: false);
+      await mapManager.addPolygons(polygons);
+    });
+  }
+
+  Future<void> _showBuildingCompliance() async {
+    final layersControls = ref.watch(layersControlsProvider.notifier);
+    final controller = ref.watch(lifestyleRepositoryProvider.notifier);
+    final env = await ref.read(dgisEnvironmentProvider.future);
     final mapObjectManager =
-        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
+    ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
+
+    await layersControls._removeAll();
+    await viewPortSubscription?.cancel();
+
+    viewPortSubscription = ref
+        .watch(dgisControllerProvider.notifier)
+        .visibleRectSubject
+        .debounceTime(const Duration(milliseconds: 2500))
+        .map((event) => event.visibleRect)
+        .asyncMap((visibleRect) =>
+        controller.buildingComplianceCertificate(MapRequestParams(
+          layer: GISMapLayers.BSAimtithalBuildingsCertificateL,
+          southWestLongitude: visibleRect.southWestLon,
+          southWestLatitude: visibleRect.southWestLat,
+          northEastLongitude: visibleRect.northEastLon,
+          northEastLatitude: visibleRect.northEastLat,
+          proxy: env.proxy,
+          domain: env.url,
+        )))
+        .map(_makePolylineWithPoint)
+        .listen((polylines) async {
+      layersControls.update(isLoading: false);
+      await mapObjectManager.addPolyLines(polylines);
+    });
+  }
+
+  List<Polyline> _makePolylineWithPoint(
+      List<BuildingComplianceCertificate>? pointList,) {
+    final polylines = <Polyline>[];
+    if (pointList != null && pointList.isNotEmpty) {
+      for (var element in pointList) {
+        var pathsGoogle = element.pathsGoogle;
+        if (pathsGoogle != null) {
+          for (List<GeoPointMessage> i in pathsGoogle) {
+            int id = int.parse(element.id);
+            String idPolyline = "${id.toString()}+${i}";
+            polylines.add(
+              Polyline(
+                id: idPolyline,
+                options: PolylineOptionsMessage(
+                    points: i, width: 2, color: 0xff358281),
+                onTap: () => _showEsriCard(element),
+              ),
+            );
+          }
+        }
+      }
+    }
+    return polylines;
+  }
+
+  List<Marker> _makeMarkers(List<InvestmentSites>? response,) {
+    var markers = response
+        ?.whereNotNull()
+        .map<Marker>(
+          (e) =>
+          Marker(
+            id: e.id,
+            options: MarkerOptionsMessage(
+              position: GeoPointWithElevationMessage(
+                latitude: e.latLng?.latitude ?? 0,
+                longitude: e.latLng?.longitude ?? 0,
+                elevation: 0,
+              ),
+              icon: MarkerIconMessage(
+                path:
+                "packages/mapness/assets/icons/svg/layers/investment_opportunities.svg",
+                width: 30,
+              ),
+              textStyle: MarkerTextStyleMessage(
+                color: const Color(0xFF1BA136).value,
+                strokeColor: Colors.white.value,
+                strokeWidth: 1,
+                fontSize: 14,
+                fontName: "Frutiger",
+                textPlacement: MarkerTextPlacementMessage(
+                  placement: TextPlacementMessage.bottomCenter,
+                ),
+              ),
+            ),
+            onTap: () => _showEsriCard(e),
+          ),
+    )
+        .toList() ??
+        [];
+    return markers;
+  }
+
+  List<Polygon> _makePolygons(List<WhiteLands>? list) {
+    return list
+        ?.map((e) =>
+        Polygon(
+            id: e.id,
+            options: PolygonOptionsMessage(
+                strokeWidth: 2,
+                strokeColor: 0xFF000000,
+                color: 0x26000000,
+                contours: [e.paths]),
+            onTap: () => _showEsriCard(e)))
+        .toList() ??
+        [];
+  }
+
+  void _toggleSelected(LayerType selectedType,) {
+    state = LayersState(
+      investmentsMarkers: state.investmentsMarkers,
+      layersVisible: state.layersVisible,
+      selectedType: selectedType,
+      isLoading: state.isLoading,
+    );
+  }
+
+  Future<void> _showIwish() async {
+    final markers = await ref.read(iwishMarkersProvider.future);
+    await ref
+        .read(mapObjectManagerProvider(named: iwishLayerName).notifier)
+        .addMarkers(markers);
+  }
+
+  void _showEsriCard(PointLayersData e) {
+    // _showObjectDetails(e);
+    ref
+        .read(goRouterProvider)
+        .push(LayerDetailsRoute().location, extra: {"data": e});
+  }
+
+  Future<void> _removeAll() async {
+    final mapObjectManager =
+    ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
 
     await mapObjectManager.removeAllMarkers();
     await mapObjectManager.removeAllPolygons();
     await mapObjectManager.removeAllPolyLines();
+  }
+
+  Future<void> toggleInvestOpportunities() async {
+    var layersControls = ref.watch(layersControlsProvider.notifier);
+    var currentState = state.selectedType;
+    if (currentState != (LayerType.invest)) {
+      layersControls._showInvestmentOpportunities(LayerType.invest);
+    } else {
+      viewPortSubscription?.cancel();
+      await _removeAll();
+      layersControls.update(isLoading: false, selectedType: null);
+    }
+  }
+
+  Future<void> toggleWhiteLands() async {
+    var layersControls = ref.watch(layersControlsProvider.notifier);
+    var currentState = state.selectedType;
+    if (currentState != (LayerType.fencing)) {
+      layersControls._showWhiteLands();
+    } else {
+      viewPortSubscription?.cancel();
+      await _removeAll();
+      layersControls.update(isLoading: false, selectedType: null);
+    }
   }
 }

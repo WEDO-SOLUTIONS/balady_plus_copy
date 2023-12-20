@@ -6,7 +6,7 @@ part of 'dgis_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$dgisControllerHash() => r'97fecfe764c63bfcd5710fe6769e7486fcebb50a';
+String _$dgisControllerHash() => r'fb69d3b1369e061d90e7a9fbe96c1bc5446c9137';
 
 /// See also [DgisController].
 @ProviderFor(DgisController)
