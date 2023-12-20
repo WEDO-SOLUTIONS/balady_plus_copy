@@ -56,8 +56,9 @@ class App extends StatelessWidget {
         ),
         BlocProvider.value(value: sl<EtmamEntryPointCubit>()),
         BlocProvider.value(value: sl<LocationCubit>()),
-        BlocProvider.value(
-            value: sl<DashboardBloc>()..add(DashboardEventInitial()))
+        BlocProvider<DashboardBloc>(
+          create: (_) => sl<DashboardBloc>()..add(DashboardEventInitial()),
+        ),
       ],
       child: BlocProvider<EntryPointCubit>.value(
           value: sl<EntryPointCubit>()..onLoadingApp(),

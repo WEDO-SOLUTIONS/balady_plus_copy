@@ -12,6 +12,7 @@ import '../../../_shared_feature_/shared_feature_exports.dart'
 import '../../../entry_point/entry_point_exports.dart' show SsoUserInfo;
 import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../../home_page/home_exports.dart' show CircleIcon;
+import '../../../profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../../../profile_features/delegators/delegators_exports.dart'
     show AgentEntity, DelegatorEntity, DelegatorList, DelegatorsCubit;
 
@@ -81,6 +82,7 @@ class ProfileCard extends StatelessWidget {
               delegatorsCubit: context.read<DelegatorsCubit>(),
             ),
           );
+          BlocProvider.of<DashboardBloc>(context).add(DashboardEventInitial());
         }
       },
       child: Container(

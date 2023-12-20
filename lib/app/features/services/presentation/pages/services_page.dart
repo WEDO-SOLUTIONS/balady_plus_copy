@@ -171,7 +171,7 @@ class _ServicesPageState extends State<ServicesPage> {
         ),
       );
 
-      context.read<DashboardBloc>().add(DashboardEventInitial());
+      BlocProvider.of<DashboardBloc>(context).add(DashboardEventInitial());
     } else {
       showDialog(
           context: context,
@@ -189,7 +189,8 @@ class _ServicesPageState extends State<ServicesPage> {
                     ),
                   );
 
-                  context.read<DashboardBloc>().add(DashboardEventInitial());
+                  BlocProvider.of<DashboardBloc>(context)
+                      .add(DashboardEventInitial());
                 }
               }));
     }

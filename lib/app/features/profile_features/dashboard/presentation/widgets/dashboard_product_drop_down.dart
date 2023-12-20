@@ -53,8 +53,7 @@ class DashboardProductDropDown extends StatelessWidget {
           onTap: () {
             if (status == BlocRequestStatus.submissionGetLoading) return;
             if (products?.isEmpty ?? true) {
-              context
-                  .read<DashboardBloc>()
+              BlocProvider.of<DashboardBloc>(context)
                   .add(DashboardOnProductsPressed(card: card));
             } else {
               showProducts(context: context, state: state);
@@ -124,15 +123,15 @@ class DashboardProductDropDown extends StatelessWidget {
         selectedValue: state.cardsStates[card]?.selectedProduct?.name,
         onTap: (item) {
           Navigator.of(context).pop();
-          context.read<DashboardBloc>().add(
-                DashboardOnProductSelected(
-                  card: card,
-                  product: item == "all".tr()
-                      ? null
-                      : state.cardsStates[card]?.products
-                          .firstWhere((element) => element.name == item),
-                ),
-              );
+          BlocProvider.of<DashboardBloc>(context).add(
+            DashboardOnProductSelected(
+              card: card,
+              product: item == "all".tr()
+                  ? null
+                  : state.cardsStates[card]?.products
+                      .firstWhere((element) => element.name == item),
+            ),
+          );
         },
       ),
     );

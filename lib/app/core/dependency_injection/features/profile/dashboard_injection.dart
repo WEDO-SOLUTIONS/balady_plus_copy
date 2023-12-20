@@ -1,5 +1,13 @@
 import '../../../../features/profile_features/dashboard/dashboard_exports.dart'
-    show DashboardBloc, DashboardRemoteDataSource, DashboardRemoteDataSourceImplementation, DashboardRepository, DashboardRepositoryImplementation, GetDashboardCardProducts, GetDashboardCardStatistics, GetDashboardCards;
+    show
+        DashboardBloc,
+        DashboardRemoteDataSource,
+        DashboardRemoteDataSourceImplementation,
+        DashboardRepository,
+        DashboardRepositoryImplementation,
+        GetDashboardCardProducts,
+        GetDashboardCardStatistics,
+        GetDashboardCards;
 import '../../dependency_injection_exports.dart' show sl;
 
 class DashboardInjection {
@@ -33,6 +41,5 @@ class DashboardInjection {
         getDashboardStatistics: sl(),
       ),
     );
-
   }
 }
