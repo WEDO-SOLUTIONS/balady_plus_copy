@@ -296,6 +296,7 @@ class ServiceIcon extends StatelessWidget {
             end: 8,
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Container(
                 padding:

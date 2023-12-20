@@ -46,8 +46,16 @@ class ServicesList extends StatelessWidget {
             },
           ),
           const SizedBox(height: 16),
-          Container(
-            height: 110,
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: services.map((e) => ServiceIcon(service: e)).toList(),
+            ),
+          ),
+
+          /*  Container(
+           // height: 110,
             child: ListView.builder(
                 shrinkWrap: true,
                 itemCount: services.length,
@@ -57,7 +65,7 @@ class ServicesList extends StatelessWidget {
                     service: services[index],
                   );
                 }),
-          ),
+          ),*/
 
           /* ListView.builder(
             itemCount: services.length,
