@@ -21,6 +21,7 @@ import 'package:mapness/_features/poi_card/widgets/qr_license_info.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/poi_card/widgets/trade_license.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:shimmer/shimmer.dart';
@@ -97,15 +98,18 @@ class _ContentState extends ConsumerState<_Content> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-         Directionality(
-            textDirection: TextDirection.ltr,
-            child: PoiCardMapControls(
-              scrollController: _draggableScrollableController,
-              biggestHeight: widget.biggestHeight,
-            )),
-        DraggableScrollableSheet(
+    return Directionality(
+      textDirection: switch (ref.watch(appLanguageProvider)) {
+        Language.arabic => TextDirection.rtl,
+        Language.english => TextDirection.ltr,
+      },
+      child: Stack(
+        children: [
+          PoiCardMapControls(
+            scrollController: _draggableScrollableController,
+            biggestHeight: widget.biggestHeight,
+          ),
+          DraggableScrollableSheet(
             controller: _draggableScrollableController,
             initialChildSize: _headerExtent(),
             minChildSize: .1,
@@ -118,17 +122,16 @@ class _ContentState extends ConsumerState<_Content> {
             ) {
               final viewModel = PoiCardViewModel(ref: ref);
 
-              return widget.state.map(data: (value) {
-                final poiCardState = value.value;
-                final data =  poiCardState?.gisObjectIdMessage;
+              return widget.state.map(
+                data: (value) {
+                  final poiCardState = value.value;
+                  final data = poiCardState?.gisObjectIdMessage;
 
-                final qrTradeLicense = poiCardState?.qrTradeLicense;
-                final tradeLicense = poiCardState?.tradeLicense;
+                  final qrTradeLicense = poiCardState?.qrTradeLicense;
+                  final tradeLicense = poiCardState?.tradeLicense;
 
-                return Material(
-                  color: Colors.transparent,
-                  child: Directionality(
-                    textDirection: TextDirection.rtl,
+                  return Material(
+                    color: Colors.transparent,
                     child: DecoratedBox(
                       decoration: const BoxDecoration(
                         color: Colors.white,
@@ -216,44 +219,48 @@ class _ContentState extends ConsumerState<_Content> {
                         ),
                       ),
                     ),
-                  ),
-                );
-              }, error: (_) {
-                Future(
-                  () => ref
-                      .read(map_control_provider.mapControlsProvider.notifier)
-                      .update(map_control_provider.MapControlsStateIdle()),
-                );
-                return Shimmer.fromColors(
-                  baseColor: Colors.grey[200]!,
-                  highlightColor: Colors.grey[100]!,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(16),
-                        topLeft: Radius.circular(16),
+                  );
+                },
+                error: (_) {
+                  Future(
+                    () => ref
+                        .read(map_control_provider.mapControlsProvider.notifier)
+                        .update(map_control_provider.MapControlsStateIdle()),
+                  );
+                  return Shimmer.fromColors(
+                    baseColor: Colors.grey[200]!,
+                    highlightColor: Colors.grey[100]!,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(16),
+                          topLeft: Radius.circular(16),
+                        ),
                       ),
                     ),
-                  ),
-                );
-              }, loading: (_) {
-                return Shimmer.fromColors(
-                  baseColor: Colors.grey[200]!,
-                  highlightColor: Colors.grey[100]!,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(16),
-                        topLeft: Radius.circular(16),
+                  );
+                },
+                loading: (_) {
+                  return Shimmer.fromColors(
+                    baseColor: Colors.grey[200]!,
+                    highlightColor: Colors.grey[100]!,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(16),
+                          topLeft: Radius.circular(16),
+                        ),
                       ),
                     ),
-                  ),
-                );
-              });
-            }),
-      ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 
