@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
 class LayersSheet extends ConsumerStatefulWidget {
@@ -27,6 +28,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
   Widget build(BuildContext context) {
     var watch = ref.watch(layersControlsProvider.notifier);
     var state = ref.watch(layersControlsProvider);
+    var lang = ref.watch(appLanguageProvider);
 
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
@@ -37,7 +39,10 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
       snap: true,
       builder: (BuildContext context, ScrollController scrollController) {
         return Directionality(
-          textDirection: TextDirection.rtl,
+          textDirection: switch (lang) {
+            Language.english => TextDirection.ltr,
+            Language.arabic => TextDirection.rtl,
+          },
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: const BoxDecoration(
@@ -104,7 +109,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                           onTap: () {
                             watch.handleTap(value);
                           },
-                          isSelected: state.selectedType==(value),
+                          isSelected: state.selectedType == (value),
                         );
                       },
                     ),
