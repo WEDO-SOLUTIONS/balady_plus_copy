@@ -66,6 +66,14 @@ enum IWishState {
   IWISH_STATE_COMPLETED = 2;
 }
 
+enum IWishSize {
+  IWISH_SIZE_UNKNOWN = 0;
+  IWISH_SIZE_NONE = 1;
+  IWISH_SIZE_SMALL = 2;
+  IWISH_SIZE_MEDIUM = 3;
+  IWISH_SIZE_LARGE = 4;
+}
+
 enum IWishCategory {
   IWISH_CATEGORY_UNKNOWN = 0;
   IWISH_CATEGORY_JOY_PARKS = 1;
@@ -249,7 +257,7 @@ message IWishObject {
   }
 
   message Photo {
-      Image image = 1;
+    Image image = 1;
   }
 
   message Metadata {
@@ -270,6 +278,7 @@ message IWishObject {
   optional int32 selected_variant_id = 9;
   bool feedback_sent = 10;
   Metadata metadata = 11;
+  IWishSize size = 12;
 }
 
 message IWishMarkersResponse {
@@ -324,7 +333,7 @@ message InterestingPlacesResponse {
 
 message Profile {
   message Photo {
-	  Image image = 1;
+    Image image = 1;
   }
 
   reserved 5;
