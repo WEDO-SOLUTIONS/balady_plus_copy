@@ -102,9 +102,9 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                         return FilterRow(
                           value: value,
                           onTap: () {
-                            watch.handleTap(ref, value);
+                            watch.handleTap(value);
                           },
-                          isSelected: state.selectedType.contains(value),
+                          isSelected: state.selectedType==(value),
                         );
                       },
                     ),
