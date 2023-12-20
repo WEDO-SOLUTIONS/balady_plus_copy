@@ -6,6 +6,11 @@ sealed class MapControlsState {
   bool get controlsVisible;
 }
 
+class MapControlsStateIWish extends MapControlsState {
+  @override
+  bool get controlsVisible => true;
+}
+
 class MapControlsStateIdle extends MapControlsState {
   @override
   bool get controlsVisible => true;
@@ -17,6 +22,11 @@ class MapControlsStateDashboard extends MapControlsState {
 }
 
 class MapControlsStateLayers extends MapControlsState {
+  @override
+  bool get controlsVisible => true;
+}
+
+class MapControlsStateMosque extends MapControlsState {
   @override
   bool get controlsVisible => true;
 }
