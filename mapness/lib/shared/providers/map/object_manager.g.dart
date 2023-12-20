@@ -6,7 +6,7 @@ part of 'object_manager.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$mapObjectManagerHash() => r'0f36020daf3dca229c921ad2e306fc90671eaefa';
+String _$mapObjectManagerHash() => r'c0739b2f0c3b0229913fcfd2c139f363970500c4';
 
 /// Copied from Dart SDK
 class _SystemHash {

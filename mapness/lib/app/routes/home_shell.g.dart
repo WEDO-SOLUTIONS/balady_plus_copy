@@ -130,7 +130,6 @@ extension $LandingRouteExtension on LandingRoute {
 
 const _$LangingFocusMakerEnumMap = {
   LangingFocusMaker.iwish: 'iwish',
-  LangingFocusMaker.mosques: 'mosques',
 };
 
 T? _$convertMapValue<T>(
