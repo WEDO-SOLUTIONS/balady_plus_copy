@@ -553,7 +553,7 @@ class CommonFunctions {
         newLanguage: lang);
     translator.applyChanges(NavigationService.navigatorKey.currentContext!);
 
-    materialAppKey.currentState!.setState(() {});
+    materialAppKey.currentState?.setState(() {});
 
     refreshHomePage();
   }
