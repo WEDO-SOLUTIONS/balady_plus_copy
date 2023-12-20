@@ -35,7 +35,7 @@ import 'features/location/presentation/bloc/location_bloc.dart';
 import 'features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'features/weather/presentation/bloc/weather_bloc.dart';
 
-//final GlobalKey<_AppWidgetState> materialAppKey = GlobalKey();
+final GlobalKey<_AppWidgetState> materialAppKey = GlobalKey();
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -63,7 +63,10 @@ class App extends StatelessWidget {
         ),
       ],
       child: BlocProvider<EntryPointCubit>.value(
-          value: sl<EntryPointCubit>()..onLoadingApp(), child: AppWidget()),
+          value: sl<EntryPointCubit>()..onLoadingApp(),
+          child: AppWidget(
+            key: materialAppKey,
+          )),
     );
   }
 }
@@ -80,28 +83,33 @@ class AppWidget extends StatefulWidget {
 class _AppWidgetState extends State<AppWidget> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'appNameWord'.tr(),
-      debugShowCheckedModeBanner: false,
-      navigatorKey: NavigationService.navigatorKey,
-      theme: ThemeData(
-        primaryColor: AppColor.blue,
-        scaffoldBackgroundColor: AppColor.scaffoldBackground,
-        fontFamily: AppConfig.appFontType,
-        useMaterial3: false,
-        appBarTheme: const AppBarTheme(backgroundColor: AppColor.blue),
+    return Directionality(
+      textDirection: translator.activeLanguageCode == "ar"
+          ? TextDirection.rtl
+          : TextDirection.ltr,
+      child: MaterialApp(
+        title: 'appNameWord'.tr(),
+        debugShowCheckedModeBanner: false,
+        navigatorKey: NavigationService.navigatorKey,
+        theme: ThemeData(
+          primaryColor: AppColor.blue,
+          scaffoldBackgroundColor: AppColor.scaffoldBackground,
+          fontFamily: AppConfig.appFontType,
+          useMaterial3: false,
+          appBarTheme: const AppBarTheme(backgroundColor: AppColor.blue),
+        ),
+        builder: EasyLoading.init(builder: BotToastInit()),
+        navigatorObservers: [
+          BotToastNavigatorObserver(),
+          FlutterUxcamNavigatorObserver(),
+        ],
+        localizationsDelegates: translator.delegates.toList()
+          ..add(CountryLocalizations.delegate), // Android + iOS Delegates
+        locale: translator.activeLocale, // Active locale
+        supportedLocales: translator.locals(), // Locals list
+        initialRoute: RouteName.splash,
+        routes: Routes.routes(),
       ),
-      builder: EasyLoading.init(builder: BotToastInit()),
-      navigatorObservers: [
-        BotToastNavigatorObserver(),
-        FlutterUxcamNavigatorObserver(),
-      ],
-      localizationsDelegates: translator.delegates.toList()
-        ..add(CountryLocalizations.delegate), // Android + iOS Delegates
-      locale: translator.activeLocale, // Active locale
-      supportedLocales: translator.locals(), // Locals list
-      initialRoute: RouteName.splash,
-      routes: Routes.routes(),
     );
   }
 }
