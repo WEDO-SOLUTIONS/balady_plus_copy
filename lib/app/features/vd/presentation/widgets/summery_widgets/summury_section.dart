@@ -47,7 +47,7 @@ class _SummurySectionState extends State<SummurySection> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       VdHeaderDesc(
-                        header: ("مراجعة البلاغ").tr(),
+                        header: ("summarry_header").tr(),
                       ),
                       LocationSummuryWidget(),
                       CustomVerticalSpace(height: 16),

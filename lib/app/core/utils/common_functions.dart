@@ -15,6 +15,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -34,6 +35,7 @@ import 'package:uuid/uuid.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
 import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
 import '../../features/_shared_feature_/presentation/pages/pdf_view.dart';
+import '../../features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../features/entry_point/domain/use_cases/get_cookie.dart';
 import '../../features/profile_features/delegators/domain/entities/user_profile_entity.dart';
 import '../../features/vd/domain/entities/gis/gis_params.dart';
@@ -44,6 +46,7 @@ import './utils_exports.dart'
         AppColor,
         AppConfig,
         AppLanguage,
+        BlocStatus,
         EnvType,
         MimeType,
         RouteName,
@@ -378,6 +381,7 @@ class CommonFunctions {
     final Uri googleUrl = Uri.parse(
       'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude',
     );
+    print(googleUrl);
     if (await canLaunchUrl(googleUrl)) {
       await launchUrl(googleUrl);
     } else {
@@ -540,6 +544,7 @@ class CommonFunctions {
     await translator.setNewLanguage(
         NavigationService.navigatorKey.currentContext!,
         newLanguage: lang);
+    translator.applyChanges(NavigationService.navigatorKey.currentContext!);
   }
 
   static String replaceArabicNumberWithEnglish(String value) {
@@ -727,18 +732,23 @@ class CommonFunctions {
 
   static showError(String error) {
     if (error.isNotEmpty) {
-      try {
-        BotToast.showSimpleNotification(
-            title: error,
-            backgroundColor: const Color.fromARGB(255, 204, 51, 51),
-            titleStyle: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontStyle: FontStyle.normal,
-                fontSize: 16.0),
-            hideCloseButton: true,
-            duration: const Duration(seconds: 3));
-      } catch (ex) {}
+      if (error.contains("https")) {
+        CustomPopUpsWidgets.showHTMLErrorMessageDialog(
+            NavigationService.navigatorKey.currentContext!, error);
+      } else {
+        try {
+          BotToast.showSimpleNotification(
+              title: error,
+              backgroundColor: const Color.fromARGB(255, 204, 51, 51),
+              titleStyle: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                  fontStyle: FontStyle.normal,
+                  fontSize: 16.0),
+              hideCloseButton: true,
+              duration: const Duration(seconds: 3));
+        } catch (ex) {}
+      }
     }
   }
 
@@ -1009,7 +1019,46 @@ class CommonFunctions {
       Sentry.captureEvent(event, withScope: (p) {
         //  p.addAttachment(attachment)
       });
-    } catch (ex) {}
+
+// UX Cam Events
+      if (sl<EnvType>().isProd) {
+        String headers = (dioError?.requestOptions.headers.cast().toString() ??
+                response?.requestOptions.headers.cast().toString()) ??
+            "";
+
+        String data = (dioError?.requestOptions.data.toString() ??
+                response?.requestOptions.data.toString()) ??
+            "";
+
+        String queryString =
+            (dioError?.requestOptions.queryParameters.toString() ??
+                    response?.requestOptions.queryParameters.toString()) ??
+                "";
+
+        String message = (dioError?.response?.data.toString() ??
+                response?.data.toString()) ??
+            "";
+
+        String URL =
+            (dioError?.requestOptions.path ?? response?.realUri.path) ??
+                "Error";
+
+        FlutterUxcam.logEventWithProperties(URL, {
+          "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
+          "Data": data.length <= 1024 ? data : data.substring(0, 1023),
+          "QueryString": queryString.length <= 1024
+              ? queryString
+              : queryString.substring(0, 1023),
+          "Headers":
+              headers.length <= 1024 ? headers : headers.substring(0, 1023),
+          "Message":
+              message.length <= 1024 ? message : message.substring(0, 1023),
+          "Environment": sl<EnvType>().name
+        });
+      }
+    } catch (ex) {
+      print(ex);
+    }
   }
 
   static sendUrbiMapLogs() async {

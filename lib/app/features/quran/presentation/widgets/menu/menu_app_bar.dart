@@ -97,7 +97,7 @@ class ZmZmChangeCityDropDownButton extends StatelessWidget {
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           CustomTextWidget(
-            currentCity ?? ("اختر المدينة").tr(),
+            currentCity ?? ("city_select").tr(),
           ),
           Icon(Icons.arrow_drop_down, color: AppColor.white)
         ]),

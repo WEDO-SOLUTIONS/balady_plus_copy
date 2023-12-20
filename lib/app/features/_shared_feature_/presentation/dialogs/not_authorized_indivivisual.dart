@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/constants/dialog_names.dart';
@@ -48,7 +49,7 @@ class NotAuthorizedIndivisualDialog extends StatelessWidget {
                     width: 8,
                   ),
                   CustomTextWidget(
-                    "الخدمة غير متاحة للافراد",
+                    "serivce_no_available_for_indivisual".tr(),
                     fontSize: 15,
                     fontWeight: AppFontWeight.bold,
                     fontColor: AppColor.primary900Light,
@@ -69,8 +70,8 @@ class NotAuthorizedIndivisualDialog extends StatelessWidget {
           const SizedBox(
             height: 24,
           ),
-          const CustomTextWidget(
-            "يجب ان تحول الى حساب منشأة حتى تتمكن من استخدام هذه الخدمة",
+          CustomTextWidget(
+            "you_must_switch_to_entity_profile".tr(),
             fontSize: 12,
             maxLines: 5,
             height: 1.4,
@@ -81,7 +82,8 @@ class NotAuthorizedIndivisualDialog extends StatelessWidget {
             height: 64,
           ),
           ElevatedButtonWidget.primaryCustom(
-              onPressed: () => Navigator.pop(context), text: "الاستمرار كفرد"),
+              onPressed: () => Navigator.pop(context),
+              text: "contino_as_indiviusal".tr()),
           const SizedBox(
             height: 16,
           ),
@@ -102,7 +104,7 @@ class NotAuthorizedIndivisualDialog extends StatelessWidget {
                   Navigator.of(context).pop();
                 } catch (ex) {}
               },
-              text: "تحويل الى حساب منشأة"),
+              text: "switch_to_entity".tr()),
           SizedBox(
             height: 32,
           )

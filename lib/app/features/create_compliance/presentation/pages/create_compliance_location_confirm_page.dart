@@ -20,6 +20,7 @@ import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/profile_features/delegators/delegators_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/common_functions.dart';
@@ -60,7 +61,7 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
         "isImportant": false,
         "action": {"type": "cards", "value": ""},
         "ar": {
-          "title": "إصدار شهادة امتثال المباني",
+          "title": "complaince_service_name",
           "description": "",
           "tag": null,
           "warning": ""
@@ -70,20 +71,18 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
           "description":
               "Improve the civil scene of your city and report visual pollution",
           "tag": null,
-          "warning":
-              ". Please renew the license before it expires or cancel it if you do not want to renew it in order to avoid the required delay penalty fees.\n. The license can be renewed 90 days before its expiry date."
+          "warning": ""
         },
         "cards": [
           {
             "iconName": IconPath.serviceCardDesc,
             "type": ServiceCardsTypes.desc,
             "rate": 0,
-            "duration": "",
+            "duration": "0",
             "fees": 0,
             "ar": {
-              "title": "وصف الخدمة",
-              "description":
-                  "هي خدمة يتم من خلالها إصدار شهادة امتثال للمبنى تفيد بالتزام المبنى بمجموعة من الاشتراطات التي أقرتها وزارة الشؤون البلدية والقروية والإسكان وذلك للحد من مظاهر التشوه البصري في المباني التجارية والسكنية والارتقاء بجودة المشهد الحضري في المدن"
+              "title": "service_desc",
+              "description": "complaince_service_desc"
             },
             "en": {"title": "Service Description", "description": ""}
           },
@@ -91,46 +90,46 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
             "iconName": IconPath.serviceCardReq,
             "type": ServiceCardsTypes.req,
             "rate": 0,
-            "duration": "",
+            "duration": "0",
             "requirements": [
-              "يجب أن يكون مقدم الطلب هو المالك للمبنى أو مفوض من مالك المبنى بتفويض إليكتروني ساري وصادر من بلدي.",
-              "يجب أن يكون لدى مقدم الطلب رخصة إنشائية أو صك ملكية."
+              "complaince_service_req_1",
+              "complaince_service_req_2"
             ],
-            "ar": {"title": "المتطلبات", "description": ""},
+            "ar": {"title": "requirements", "description": ""},
             "en": {"title": "Requirements", "description": ""}
           },
           {
             "iconName": IconPath.serviceCardFlow,
             "type": ServiceCardsTypes.flow,
             "rate": 0,
-            "duration": "",
+            "duration": "0",
             "flow": [
               {
-                "title": "من خلال المستفيد بنفسه (بدون مكتب هندسي)",
+                "title": "complaince_applying_benf",
                 "steps": [
-                  "تسجيل الدخول عبر تطبيق بلدي.",
-                  "الدخول على خدمة إصدار شهادة امتثال المباني.",
-                  "إدخال بيانات رخصة البناء أو وثيقة مستند التقديم للمبنى واستكمال كافة البيانات المطلوبة في نموذج طلب إصدار شهادة الامتثال.",
-                  "الإقرار في الطلب باستيفاء عناصر التقييم الخاصة بإصدار شهادة امتثال المباني الواردة في هذا الدليل",
-                  "قيام البلدية بجدولة زيارة للتحقق من البيانات المدخلة",
-                  "موافقة الأمانة/البلدية على الطلب.",
-                  "إصدار شهادة امتثال المباني للمبنى.",
+                  "complaince_applying_benf_step_1",
+                  "complaince_applying_benf_step_2",
+                  "complaince_applying_benf_step_3",
+                  "complaince_applying_benf_step_4",
+                  "complaince_applying_benf_step_5",
+                  "complaince_applying_benf_step_6",
+                  "complaince_applying_benf_step_7",
                 ]
               },
               {
-                "title": "من خلال المكتب الهندسي المؤهل",
+                "title": "complaince_applying_end",
                 "steps": [
-                  "تسجيل الدخول عبر تطبيق بلدي والدخول على الخدمة.",
-                  "تفويض مكتب هندسي مؤهل لاستكمال إجراءات إصدار شهادة امتثال المباني.",
-                  "قيام المكتب الهندسي المؤهل باستكمال كافة البيانات المطلوبة في نموذج طلب إصدار شهادة الامتثال.",
-                  "قيام المكتب الهندسي المؤهل بالتحقق من استيفاء المبنى لجميع اشتراطات ومتطلبات شهادة امتثال المباني.",
-                  "الإقرار باستيفاء جميع اشتراطات ومتطلبات إصدار شهادة امتثال المباني الواردة في هذا الدليل.",
-                  "يقوم المكتب الهندسي المؤهل باستكمال إجراءات إصدار الشهادة وفق الاجراءات المتبعة في الأمانة/البلدية.",
-                  "إصدار شهادة امتثال المباني من قبل الأمانة/البلدية من خلال المكتب الهندسي المؤهل."
+                  "complaince_applying_end_step_1",
+                  "complaince_applying_end_step_2",
+                  "complaince_applying_end_step_3",
+                  "complaince_applying_end_step_4",
+                  "complaince_applying_end_step_5",
+                  "complaince_applying_end_step_6",
+                  "complaince_applying_end_step_7",
                 ]
               }
             ],
-            "ar": {"title": "خطوات التقديم", "description": ""},
+            "ar": {"title": "applying_steps", "description": ""},
             "en": {"title": "", "description": ""}
           }
         ]
@@ -141,7 +140,7 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
       create: (context) => ServiceCardsCubit(service),
       child: Scaffold(
         appBar: DefaultAppBarWidget(
-          title: service.title,
+          title: service.title.tr(),
           actions: [
             Padding(
               padding: const EdgeInsetsDirectional.only(end: 10),

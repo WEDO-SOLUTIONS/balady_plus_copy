@@ -89,7 +89,7 @@ class ComplianceDetailsPage extends StatelessWidget {
                                     }
                                   },
                                   child: FieldData(
-                                    title: Helpers.translatingWord('تعديل'),
+                                    title: Helpers.translatingWord('edit'),
                                   ),
                                 ),
                                 CustomVerticalSpace(height: 16),
@@ -112,7 +112,7 @@ class ComplianceDetailsPage extends StatelessWidget {
                                     ));
                                   },
                                   child: FieldData(
-                                    title: Helpers.translatingWord('الغاء'),
+                                    title: Helpers.translatingWord('cancel'),
                                   ),
                                 ),
                               ]),

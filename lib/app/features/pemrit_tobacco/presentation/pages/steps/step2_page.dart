@@ -94,52 +94,54 @@ class Step2SummeryWidget extends StatelessWidget {
             const CustomVerticalSpace(
               height: 16,
             ),
-            FieldData(
-              title: "license_no".tr(),
-              subTitle: state.commercialLicenceDetails?.licenseInfo?.licenseId
-                      .toString() ??
-                  "",
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: "license_status".tr(),
-              subTitle: state.commercialLicenceDetails?.licenseInfo?.statusDesc
-                      .toString() ??
-                  "",
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: "license_end_date".tr(),
-              subTitle: state
-                      .commercialLicenceDetails?.licenseInfo?.licenseEndDate
-                      .toString() ??
-                  "",
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: "municipality".tr(),
-              subTitle: state
-                      .commercialLicenceDetails?.locationInfo?.municipalityName
-                      .toString() ??
-                  "",
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: "sub_municipality".tr(),
-              subTitle: state.commercialLicenceDetails?.locationInfo
-                      ?.subMunicipalityName
-                      .toString() ??
-                  "",
-            ),
-            /*const CustomVerticalSpace(
+            if (state.commercialLicenceDetails != null) ...[
+              FieldData(
+                title: "license_no".tr(),
+                subTitle: state.commercialLicenceDetails?.licenseInfo?.licenseId
+                        .toString() ??
+                    "",
+              ),
+              const CustomVerticalSpace(
+                height: 16,
+              ),
+              FieldData(
+                title: "license_status".tr(),
+                subTitle: state
+                        .commercialLicenceDetails?.licenseInfo?.statusDesc
+                        .toString() ??
+                    "",
+              ),
+              const CustomVerticalSpace(
+                height: 16,
+              ),
+              FieldData(
+                title: "license_end_date".tr(),
+                subTitle: state
+                        .commercialLicenceDetails?.licenseInfo?.licenseEndDate
+                        .toString() ??
+                    "",
+              ),
+              const CustomVerticalSpace(
+                height: 16,
+              ),
+              FieldData(
+                title: "municipality".tr(),
+                subTitle: state.commercialLicenceDetails?.locationInfo
+                        ?.municipalityName
+                        .toString() ??
+                    "",
+              ),
+              const CustomVerticalSpace(
+                height: 16,
+              ),
+              FieldData(
+                title: "sub_municipality".tr(),
+                subTitle: state.commercialLicenceDetails?.locationInfo
+                        ?.subMunicipalityName
+                        .toString() ??
+                    "",
+              ),
+              /*const CustomVerticalSpace(
               height: 16,
             ),
             FieldData(
@@ -149,19 +151,45 @@ class Step2SummeryWidget extends StatelessWidget {
                       .toString() ??
                   "",
             ),*/
+              const CustomVerticalSpace(
+                height: 16,
+              ),
+              FieldData(
+                  title: "permit_need_baladiyah".tr(),
+                  subTitle:
+                      state.doesNotNeedsCredentials() ? "no".tr() : "yes".tr()),
+              const CustomVerticalSpace(
+                height: 16,
+              ),
+              FieldData(
+                  title: "permit_needs_fees".tr(),
+                  subTitle: state.needsFees() == true ? "yes".tr() : "no".tr()),
+            ],
+            FieldData(
+                title: "licence_inside_hotel".tr(),
+                subTitle: state.isInsideHotel == true ? "yes".tr() : "no".tr()),
             const CustomVerticalSpace(
               height: 16,
             ),
-            FieldData(
-                title: "permit_need_baladiyah".tr(),
-                subTitle:
-                    state.doesNotNeedsCredentials() ? "no".tr() : "yes".tr()),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-                title: "permit_needs_fees".tr(),
-                subTitle: state.needsFees() == true ? "yes".tr() : "no".tr()),
+            if (state.isInsideHotel == true) ...[
+              FieldData(
+                  title: "hotel_license_number".tr(),
+                  subTitle: state.hotelLicenseNumber),
+              const CustomVerticalSpace(
+                height: 16,
+              ),
+              FieldData(
+                  title: "hotel_name".tr(),
+                  subTitle: state
+                      .permitTobaccoValidateHotelLicenseResponse?.hotelName),
+              const CustomVerticalSpace(
+                height: 16,
+              ),
+              FieldData(
+                  title: "hotel_class".tr(),
+                  subTitle: state.permitTobaccoValidateHotelLicenseResponse
+                      ?.hotelClass?.name),
+            ],
             const CustomVerticalSpace(
               height: 16,
             )

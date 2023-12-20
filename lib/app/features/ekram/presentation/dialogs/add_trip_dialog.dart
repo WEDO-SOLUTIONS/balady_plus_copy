@@ -149,6 +149,7 @@ class _DialogBodyState extends State<DialogBody> {
                 subTitle: state.currentTripStationArrivalTime ?? "",
               ),
               CustomLookUpLongDialog(
+                refreshList: true,
                 items: state.nextStationType ?? [],
                 value: state.nextTripStationTypeId,
                 onChangeType: (LookUpItem? item) {

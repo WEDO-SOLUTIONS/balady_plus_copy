@@ -15,6 +15,7 @@ import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_w
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/details_header.dart';
 import '../../../_shared_feature_/presentation/widgets/notes_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/payment_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../create_compliance/presentation/widgets/summery_widgets/field_data.dart';
@@ -60,14 +61,15 @@ class PermitsReqeuestDetailsPage extends StatelessWidget {
                     const SizedBox(
                       width: 16,
                     ),
-                    CustomTextWidget(
-                      "#${state.requestDetails?.requestInfo?.requestId}",
-                      fontSize: 14,
-                      maxLines: 1,
-                      textOverflow: TextOverflow.ellipsis,
-                      fontWeight: AppFontWeight.medium,
-                      fontColor: AppColor.blackModern700Light,
-                    ),
+                    if (state.requestDetails?.requestInfo?.requestId != null)
+                      CustomTextWidget(
+                        "#${state.requestDetails?.requestInfo?.requestId}",
+                        fontSize: 14,
+                        maxLines: 1,
+                        textOverflow: TextOverflow.ellipsis,
+                        fontWeight: AppFontWeight.medium,
+                        fontColor: AppColor.blackModern700Light,
+                      ),
                   ],
                 ),
                 procedures: () async {
@@ -237,6 +239,21 @@ class PermitsReqeuestDetailsPage extends StatelessWidget {
                                       : const SizedBox()
                                 ],
                               ),*/
+
+                            const CustomVerticalSpace(height: 32),
+                            if (state.requestDetails?.requestInfo
+                                        ?.requestStatusCode ==
+                                    15 &&
+                                state.requestDetails?.requestInfo?.billInfo !=
+                                    null)
+                              PaymentWidget(
+                                requestKey: state.requestDetails?.requestInfo
+                                        ?.billInfo?.billKey ??
+                                    "",
+                                billNumber: state.requestDetails?.requestInfo
+                                        ?.billInfo?.billNumber ??
+                                    "",
+                              )
                           ],
                         ))),
                   if (state.detailsStatus == BlocStatus.loading ||
@@ -317,6 +334,24 @@ class Step2SummeryWidget extends StatelessWidget {
               subTitle:
                   state.requestDetails?.licenseInfo?.licenseNumber.toString() ??
                       "",
+            ),
+            const CustomVerticalSpace(
+              height: 16,
+            ),
+            FieldData(
+              title: "license_status".tr(),
+              subTitle:
+                  state.requestDetails?.licenseInfo?.status?.name.toString() ??
+                      "",
+            ),
+            const CustomVerticalSpace(
+              height: 16,
+            ),
+            FieldData(
+              title: "posters_permit_licesnse_expiry".tr(),
+              subTitle: state.requestDetails?.licenseInfo?.licenseEndDate
+                      .toString() ??
+                  "",
             ),
             const CustomVerticalSpace(
               height: 16,

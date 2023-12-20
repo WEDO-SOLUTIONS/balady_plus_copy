@@ -69,7 +69,8 @@ class CommercialLicensePermitsWidget extends StatelessWidget {
                                 children: [
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         CustomTextWidget(
                                           "permitType".tr(),
@@ -78,15 +79,18 @@ class CommercialLicensePermitsWidget extends StatelessWidget {
                                         const SizedBox(height: 4),
                                         CustomTextWidget(
                                           permit.permitType,
-                                          textStyle: AppStyle.costTitleTextStyle,
+                                          textStyle:
+                                              AppStyle.costTitleTextStyle,
+                                          maxLines: 10,
                                         ),
                                       ],
                                     ),
                                   ),
-                                  const SizedBox(height: 8),
+                                  const SizedBox(width: 8),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         CustomTextWidget(
                                           "expirationDate".tr(),
@@ -95,28 +99,28 @@ class CommercialLicensePermitsWidget extends StatelessWidget {
                                         const SizedBox(height: 4),
                                         CustomTextWidget(
                                           permit.expirationDate,
-                                          textStyle: AppStyle.costTitleTextStyle,
+                                          textStyle:
+                                              AppStyle.costTitleTextStyle,
                                         ),
                                       ],
                                     ),
                                   ),
                                 ],
                               ),
-
                             ],
                           ),
                         ),
                       ))
                   .toList()
               : [
-            Center(
-              child: CustomTextWidget(
-                ('data_not_have_permits').tr(),
-                fontSize: 14,
-                fontColor: AppColor.primary900Light,
-                textAlign: TextAlign.center,
-              ),
-            ),
+                  Center(
+                    child: CustomTextWidget(
+                      ('data_not_have_permits').tr(),
+                      fontSize: 14,
+                      fontColor: AppColor.primary900Light,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ],
         );
       },

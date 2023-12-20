@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../../../../../core/utils/constants/constants.dart';
@@ -13,9 +14,9 @@ class AboutBaladyScreen extends StatefulWidget {
 }
 
 class _AboutBaladyScreenState extends State<AboutBaladyScreen> {
-
   late YoutubePlayerController _controller;
-  String? videoId = YoutubePlayer.convertUrlToId("https://www.youtube.com/watch?v=eJOuxpH2hBo");
+  String? videoId = YoutubePlayer.convertUrlToId(
+      "https://www.youtube.com/watch?v=eJOuxpH2hBo");
   bool _isPlayerReady = false;
   late PlayerState _playerState;
   late YoutubeMetaData _videoMetaData;
@@ -52,16 +53,14 @@ class _AboutBaladyScreenState extends State<AboutBaladyScreen> {
     super.dispose();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       appBar: const DefaultAppBarWidget(
         title: "عن بلدي",
       ),
       body: Container(
-        margin: const EdgeInsets.symmetric(vertical: 24,horizontal: 16),
+        margin: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
         padding: const EdgeInsets.all(20),
         decoration: const BoxDecoration(
           boxShadow: Constants.boxShadow,
@@ -97,7 +96,7 @@ class _AboutBaladyScreenState extends State<AboutBaladyScreen> {
               children: [
                 Padding(
                   padding: EdgeInsets.only(top: 10),
-                  child: Icon(Icons.circle , size: 6),
+                  child: Icon(Icons.circle, size: 6),
                 ),
                 SizedBox(width: 8),
                 Flexible(
@@ -118,7 +117,7 @@ class _AboutBaladyScreenState extends State<AboutBaladyScreen> {
               children: [
                 Padding(
                   padding: EdgeInsets.only(top: 10),
-                  child: Icon(Icons.circle , size: 6),
+                  child: Icon(Icons.circle, size: 6),
                 ),
                 SizedBox(width: 8),
                 Flexible(
@@ -134,17 +133,17 @@ class _AboutBaladyScreenState extends State<AboutBaladyScreen> {
               ],
             ),
             const SizedBox(height: 8),
-            const Row(
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(top: 10),
-                  child: Icon(Icons.circle , size: 6),
+                  child: Icon(Icons.circle, size: 6),
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Flexible(
                   child: CustomTextWidget(
-                    "الخدمات المعلوماتية والتي تساعد المستفيدين على اتخاذ القرارات ذات العلاقة بما يساهم في تحسين مستوى الرضا عن جهات القطاع البلدي.",
+                    "about_balady_desc".tr(),
                     fontColor: AppColor.blackModern500Light,
                     fontWeight: AppFontWeight.bold,
                     fontSize: 14,

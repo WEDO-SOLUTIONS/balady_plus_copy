@@ -111,11 +111,11 @@ class UsageSubmissionCompliance extends StatelessWidget {
                 if (state.documentTypeSelection == 2) ...[
                   CustomVerticalSpace(height: 16),
                   ComplianceSubmitTitle(
-                    title: 'بيانات الموقع'.tr(),
+                    title: 'location_data'.tr(),
                     subtitle: "",
                   ),
                   DropDownWithTitle(
-                    title: "الموقع الجغرافي".tr(),
+                    title: "geo_location".tr(),
                     selectedValue: state.gisResponse?.getFullAddress(),
                     onRetry: () {
                       /* context.read<ComplianceBloc>().add(
@@ -141,35 +141,35 @@ class UsageSubmissionCompliance extends StatelessWidget {
                   ),
                   if (state.gisResponse != null) ...[
                     ReadOnlyField(
-                        title: "الأمانة".tr(),
+                        title: "municipality".tr(),
                         subTitle: state.gisResponse?.amanaName ?? ""),
                     ReadOnlyField(
-                        title: "البلدية".tr(),
+                        title: "sub_municipality".tr(),
                         subTitle: state.gisResponse?.municipalityName ?? ""),
                     ReadOnlyField(
-                        title: "المدينة".tr(),
+                        title: "city".tr(),
                         subTitle: state.gisResponse?.city ?? ""),
                     ReadOnlyField(
-                        title: "الحي".tr(),
+                        title: "district".tr(),
                         subTitle: state.gisResponse?.districtName ?? ""),
                     ReadOnlyField(
-                        title: "رقم المخطط".tr(),
+                        title: "planNumber".tr(),
                         subTitle: state.gisResponse?.planNo ?? ""),
                     ReadOnlyField(
-                        title: "اسم المخطط".tr(),
+                        title: "plan_name".tr(),
                         subTitle: state.gisResponse?.planName ?? ""),
                     ReadOnlyField(
-                        title: "اسم الشارع".tr(),
+                        title: "street_name".tr(),
                         subTitle: state.gisResponse?.streetName ?? ""),
                     ComplianceSubmitTitle(
-                      title: 'بيانات قطع الأراضي'.tr(),
+                      title: "lands_info".tr(),
                       subtitle: "",
                     ),
                     ReadOnlyField(
-                        title: "رقم قطعة الأرض".tr(),
+                        title: "parcel_number".tr(),
                         subTitle: state.gisResponse?.parcelNo ?? ""),
                     ReadOnlyField(
-                        title: "مساحة الارض".tr(),
+                        title: "land_area".tr(),
                         subTitle: state.gisResponse?.area ?? ""),
                     /*ComplianceSubmitTitle(
                     title: 'الاحداثيات'.tr(),
@@ -186,11 +186,11 @@ class UsageSubmissionCompliance extends StatelessWidget {
                 if (state.documentTypeSelection == 1) ...[
                   CustomVerticalSpace(height: 16),
                   ComplianceSubmitTitle(
-                    title: 'بيانات الموقع'.tr(),
+                    title: "location_data".tr(),
                     subtitle: "",
                   ),
                   DropDownWithTitle(
-                    title: "الموقع الجغرافي".tr(),
+                    title: "geo_location".tr(),
                     selectedValue: state.requestDetails?.locationResponseInfoDto
                         ?.getFullAddress(),
                     onRetry: () {},
@@ -215,42 +215,42 @@ class UsageSubmissionCompliance extends StatelessWidget {
                     },
                   ),
                   ReadOnlyField(
-                      title: "الأمانة".tr(),
+                      title: "municipality".tr(),
                       subTitle: state.requestDetails?.locationResponseInfoDto
                               ?.municipalityName ??
                           ""),
                   ReadOnlyField(
-                      title: "البلدية".tr(),
+                      title: "sub_municipality".tr(),
                       subTitle: state.requestDetails?.locationResponseInfoDto
                               ?.subMunicipalityName ??
                           ""),
                   ReadOnlyField(
-                      title: "المدينة".tr(),
+                      title: "city".tr(),
                       subTitle: state.requestDetails?.locationResponseInfoDto
                               ?.cityName ??
                           ""),
                   ReadOnlyField(
-                      title: "الحي".tr(),
+                      title: "district".tr(),
                       subTitle: state.requestDetails?.locationResponseInfoDto
                               ?.districtName ??
                           ""),
                   ReadOnlyField(
-                      title: "رقم المخطط".tr(),
+                      title: "planNumber".tr(),
                       subTitle: state.requestDetails?.locationResponseInfoDto
                               ?.mapNumber ??
                           ""),
                   ReadOnlyField(
-                      title: "اسم المخطط".tr(),
+                      title: "plan_name".tr(),
                       subTitle: state.requestDetails?.locationResponseInfoDto
                               ?.mapName ??
                           ""),
                   ReadOnlyField(
-                      title: "اسم الشارع".tr(),
+                      title: "street_name".tr(),
                       subTitle: state.requestDetails?.locationResponseInfoDto
                               ?.streetName ??
                           ""),
                   ComplianceSubmitTitle(
-                    title: 'بيانات قطع الأراضي'.tr(),
+                    title: "lands_info".tr(),
                     subtitle: "",
                   ),
                   ListView.builder(
@@ -263,7 +263,7 @@ class UsageSubmissionCompliance extends StatelessWidget {
                         return Column(
                           children: [
                             ReadOnlyField(
-                                title: "رقم قطعة الأرض".tr(),
+                                title: "parcel_number".tr(),
                                 subTitle: state
                                         .requestDetails
                                         ?.locationResponseInfoDto
@@ -272,7 +272,7 @@ class UsageSubmissionCompliance extends StatelessWidget {
                                         .landNumber ??
                                     ""),
                             ReadOnlyField(
-                                title: "مساحة الارض".tr(),
+                                title: "land_area".tr(),
                                 subTitle: state
                                         .requestDetails
                                         ?.locationResponseInfoDto

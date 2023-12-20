@@ -84,7 +84,7 @@ class AppInterceptors extends Interceptor {
     "On-Sending-Request ${options.uri}".actionLog();
     // Update language
     options.headers[ApiHeader.language.eName] = languageCode;
-
+    options.headers["Accept-Language"] = languageCode;
     if (options.uri.toString().toLowerCase().contains("etmamplus-services") ||
         options.uri.toString().toLowerCase().contains("dashboard-services") ||
         options.uri.toString().toLowerCase().contains("mobile-dynamic-forms") ||

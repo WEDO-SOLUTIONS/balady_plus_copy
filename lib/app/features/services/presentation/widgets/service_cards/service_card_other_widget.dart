@@ -52,7 +52,7 @@ class ServiceCardOtherWidget extends StatelessWidget {
                             ),
                             const SizedBox(width: 4),
                             CustomTextWidget(
-                              e.title ?? "",
+                              e.title?.tr() ?? "",
                               textStyle: AppStyle.cardTitleTextStle,
                             ),
                           ],
@@ -65,7 +65,7 @@ class ServiceCardOtherWidget extends StatelessWidget {
                                 .map((e) => Column(
                                       children: [
                                         CustomTextWidget(
-                                          e,
+                                          e.tr(),
                                           textStyle: AppStyle
                                               .serviceCardDescriptionTextStyle,
                                           maxLines: 50,

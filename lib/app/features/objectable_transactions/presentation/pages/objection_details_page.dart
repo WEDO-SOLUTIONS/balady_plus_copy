@@ -116,14 +116,14 @@ class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
                                                 const CustomVerticalSpace(
                                                     height: 32),
                                                 NotesWidget(notes: [
-                                                  "أنت علي وشك حذف طلب, هل أنت متأكد من إلغاء طلب الإعتراض؟"
+                                                  "cancel_objection_desc".tr()
                                                 ])
                                               ],
                                             )),
                                       );
                                     },
                                     child: FieldData(
-                                      title: "إلغاء طلب الإعتراض",
+                                      title: "cancel_objection_title".tr(),
                                     ),
                                   ),
                                   CustomVerticalSpace(height: 16),

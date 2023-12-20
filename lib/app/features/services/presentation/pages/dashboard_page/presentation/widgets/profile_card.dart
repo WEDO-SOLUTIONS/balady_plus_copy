@@ -43,7 +43,7 @@ class ProfileCard extends StatelessWidget {
         "in_balady".tr();
 
     String? agentType =
-        (agent?.agencyTypeName ?? delegator?.roleName) ?? "أفراد";
+        (agent?.agencyTypeName ?? delegator?.roleName) ?? "Indivisual".tr();
 
     Color? agentBgColor = Color(0xffEAF3EF);
     Color? agentTextColor = Color(0xff2A8663);

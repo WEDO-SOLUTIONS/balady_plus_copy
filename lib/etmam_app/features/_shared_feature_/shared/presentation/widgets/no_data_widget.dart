@@ -36,7 +36,7 @@ class NoDataWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CustomTextWidget(
-            trans('لا يوجد خدمات متاحة'),
+            trans("no_available_services"),
             fontSize: 14,
             fontColor: AppColor.bottomNavigationShadow,
             fontWeight: AppFontWeight.regular,

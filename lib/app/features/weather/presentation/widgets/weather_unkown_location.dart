@@ -78,7 +78,7 @@ class UnKownWeatherLocation extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         CustomTextWidget(
-                          'تحديد الموقع',
+                          "municipalAdvisorLocationButton".tr(),
                           textAlign: TextAlign.center,
                           fontColor: Colors.white,
                           fontSize: 12,

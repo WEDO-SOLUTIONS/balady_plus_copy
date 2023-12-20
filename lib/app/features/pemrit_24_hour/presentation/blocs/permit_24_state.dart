@@ -5,22 +5,26 @@ class Permit24LicenseState extends Equatable {
   final BlocStatus status;
   final BlocStatus detailsStatus;
   final BlocStatus alertsStatus;
-
   final int currentPageValue;
   final List<Widget> pagesList;
   final int? requestId;
   final String? error;
   final bool? isDraft;
   final List<PermitAlertItem>? alerts;
+  final List<PermitAlertItem>? endorsments;
+
   final int? licenseId;
   final bool? agreement;
   final CalculateCost24PermitResponse? calculateCost24PermitResponse;
   final Permit24RequestDetailsModel? requestDetails;
   final CommercialLicenceDetails? commercialLicenceDetails;
+  final BlocStatus endormentsStatus;
   const Permit24LicenseState({
     this.status = BlocStatus.initial,
     this.detailsStatus = BlocStatus.initial,
     this.alertsStatus = BlocStatus.initial,
+    this.endormentsStatus = BlocStatus.initial,
+    this.endorsments,
     this.licenseId,
     this.groupId,
     this.currentPageValue = 0,
@@ -44,6 +48,7 @@ class Permit24LicenseState extends Equatable {
         currentPageValue,
         pagesList,
         requestId,
+        endorsments,
         isDraft,
         error,
         groupId,
@@ -53,7 +58,8 @@ class Permit24LicenseState extends Equatable {
         agreement,
         calculateCost24PermitResponse,
         requestDetails,
-        commercialLicenceDetails
+        commercialLicenceDetails,
+        endormentsStatus
       ];
 
   Permit24LicenseState copyWith(
@@ -61,12 +67,14 @@ class Permit24LicenseState extends Equatable {
       BlocStatus? posterTypesStatus,
       BlocStatus? detailsStatus,
       BlocStatus? alertsStatus,
+      BlocStatus? endormentsStatus,
       int? currentPageValue,
       List<Widget>? pagesList,
       Nullable<int?>? requestId,
       bool? isDraft,
       String? error,
       List<PermitAlertItem>? alerts,
+      List<PermitAlertItem>? endorsments,
       int? licenseId,
       bool? agreement,
       CalculateCost24PermitResponse? calculateCost24PermitResponse,
@@ -88,15 +96,23 @@ class Permit24LicenseState extends Equatable {
         licenseId: licenseId ?? this.licenseId,
         agreement: agreement ?? this.agreement,
         requestDetails: requestDetails ?? this.requestDetails,
+        endormentsStatus: endormentsStatus ?? this.endormentsStatus,
+        endorsments: endorsments ?? this.endorsments,
         commercialLicenceDetails:
             commercialLicenceDetails ?? this.commercialLicenceDetails);
   }
 
-  String? ALERT_SERVICE_USAGE_GUIDANCE() => alerts
+  String? ALERT_ENDORSMENTS() => endorsments
       ?.firstWhereOrNull(
           (element) => element.id == "TWENTY_FOUR_PERMIT_ENDORSEMENT")
       ?.name
       ?.replaceAll("{0}", CommonProperties.userInfo?.arName ?? "");
+
+  String? ALERTS() => alerts
+      ?.firstWhereOrNull((element) =>
+          element.id ==
+          "TWENTY_FOUR_PERMIT_FEES_DIFFER_ACCORDING_TO_MUNICIPALITY")
+      ?.name;
 
   bool isStep2Valid() {
     if (true) {

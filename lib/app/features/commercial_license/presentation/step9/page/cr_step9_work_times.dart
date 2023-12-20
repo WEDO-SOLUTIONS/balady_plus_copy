@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../commercial_license_exports.dart';
@@ -41,7 +42,7 @@ class _CRStep9WorkTimesState extends State<CRStep9WorkTimes> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CRHeaderDesc(header: "مواعيد العمل"),
+                        CRHeaderDesc(header: "step11title7".tr()),
                         const SizedBox(height: 16),
                         BlocBuilder<WorkTimesCubit, WorkTimesState>(
                           buildWhen: (previous, current) =>

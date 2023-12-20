@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -26,7 +27,7 @@ class BillboardCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CustomTextWidget(
-                "نوع اللوحة",
+                "BoardType".tr(),
                 fontColor: AppColor.primary700Light,
                 fontSize: 12,
                 fontWeight: AppFontWeight.bold,
@@ -49,7 +50,7 @@ class BillboardCard extends StatelessWidget {
           ),
           SizedBox(height: 16),
           CustomTextWidget(
-            "مساحة اللوحة",
+            "lbl_painting_space".tr(),
             fontColor: AppColor.primary700Light,
             fontSize: 12,
             fontWeight: AppFontWeight.bold,

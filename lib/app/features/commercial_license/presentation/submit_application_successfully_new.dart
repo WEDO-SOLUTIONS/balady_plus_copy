@@ -129,7 +129,7 @@ class _SubmitApplicationSuccessfullyNewState
               const SizedBox(height: 16),
               submitResponse.payUrl != null
                   ? ElevatedButtonWidget.primaryCustomBorder(
-                      text: 'دفع الفاتورة'.tr(),
+                      text: "pay_bill".tr(),
                       onPressed: () async {
                         CommonFunctions.openBaladyWebView(
                             submitResponse.payUrl);

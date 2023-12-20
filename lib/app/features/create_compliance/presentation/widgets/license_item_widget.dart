@@ -115,7 +115,7 @@ class ComplianceLicenseItemWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      'تاريخ الاصدار'.tr(),
+                      "issue_data".tr(),
                       textStyle: AppStyle.complianceTitleLabelLicenseStyle,
                     ),
                     const SizedBox(
@@ -134,7 +134,7 @@ class ComplianceLicenseItemWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      'تاريخ الانتهاء'.tr(),
+                      "expiry_data".tr(),
                       textStyle: AppStyle.complianceTitleLabelLicenseStyle,
                     ),
                     const SizedBox(

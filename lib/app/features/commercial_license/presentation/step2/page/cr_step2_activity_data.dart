@@ -49,7 +49,7 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const CRHeaderDesc(header: "بيانات النـشاط"),
+                          CRHeaderDesc(header: "step2_header".tr()),
                           const SizedBox(height: 12),
                           BlocBuilder<CrStep1ApplicantDataCubit,
                               CrStep1ApplicantDataState>(
@@ -65,7 +65,7 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                                   return CustomTapWidgetForLongDialog(
                                       items: state.getIsicActivities(),
                                       value: step2State.selectedIsicActivity,
-                                      label: "نشاط أيزيك",
+                                      label: "step2_label1".tr(),
                                       marginBottom: 8,
                                       onChangeType: (item) {
                                         IsicActivity? i = state
@@ -112,7 +112,7 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                         ),*/
                           const CustomVerticalSpace(height: 12),
                           ReadOnlyField(
-                            title: "نوع المنشاه".tr(),
+                            title: "step2_label3".tr(),
                             subTitle: state.selectedSubActivity?.facilityName,
                             showSpace: false,
                           ),
@@ -126,7 +126,7 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                                 : null,
                             keyboardType: TextInputType.number,
                             suffixIcon: CustomTextWidget(
-                              "متر مربع",
+                              "m2".tr(),
                               fontSize: 12,
                               fontWeight: AppFontWeight.semiBold,
                               fontColor: AppColor.blackModern400Light,
@@ -143,8 +143,8 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                             AccomodationDropDownTypes(),
                             const CustomVerticalSpace(height: 16),
                             CustomTextFieldWidget(
-                              label: 'عدد الوحدات'.tr(),
-                              hintText: 'عدد الوحدات'.tr(),
+                              label: "lbl_unit".tr(),
+                              hintText: "lbl_unit".tr(),
                               isDigitsOnly: true,
                               initialValue: state.unitCount != null
                                   ? state.unitCount.toString()
@@ -166,7 +166,7 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                             const CustomVerticalSpace(height: 16),
                           ],
                           ReadOnlyField(
-                            title: "مساحة النشاط الرئيسي".tr(),
+                            title: "cr_main_activity_area".tr(),
                             subTitle: state.getTotalArea().toString(),
                             showSpace: false,
                           ),
@@ -178,7 +178,7 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                           ),
                           if (state.showAtm()) ...[
                             CustomTextWidget(
-                              "هل تم دفع رسوم تأسيس الصراف؟",
+                              "cr_atm_paid".tr(),
                               fontColor: AppColor.blackModern700Light,
                               fontSize: 16,
                               fontWeight: AppFontWeight.bold,
@@ -190,7 +190,7 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                                   children: [
                                     Expanded(
                                       child: CheckBoxWithTitle(
-                                        title: "نعم",
+                                        title: "yes".tr(),
                                         forceSelection:
                                             state.atmFeesPaid == true,
                                         onChanged: (value) {
@@ -205,7 +205,7 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                                       child: CheckBoxWithTitle(
                                         forceSelection:
                                             state.atmFeesPaid == false,
-                                        title: "لا",
+                                        title: "no".tr(),
                                         onChanged: (value) {
                                           context
                                               .read<CrStep2ActivityDataCubit>()
@@ -237,7 +237,6 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                 CRPreviousNextButtons(
                   isBtnDisabled: !state.isFormValid(),
                   onPressed: () {
-                    print("GG");
                     context
                         .read<CrStep2ActivityDataCubit>()
                         .getSalamaWarningMessage();

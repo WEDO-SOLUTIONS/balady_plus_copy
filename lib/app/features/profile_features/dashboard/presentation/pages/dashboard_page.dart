@@ -45,112 +45,108 @@ class _DashBoardPageState extends State<DashBoardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<DashboardBloc>(
-      create: (context) => sl<DashboardBloc>()..add(DashboardEventInitial()),
-      child: Scaffold(
-        appBar: DefaultAppBarWidget(
-          flexibleSpace: const Image(
-            image: AssetImage(
-              ImagePath.appBarBackground,
-            ),
-            fit: BoxFit.cover,
+    return Scaffold(
+      appBar: DefaultAppBarWidget(
+        flexibleSpace: const Image(
+          image: AssetImage(
+            ImagePath.appBarBackground,
           ),
-          title: 'dashboard'.tr(),
-          actions: const [
-            /*Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: GestureDetector(
-                onTap: () =>
-                    Navigator.of(context).pushNamed(RouteName.notificationPage),
-                child: const CircleIcon(
-                  backgroundColor: AppColor.primary50Light,
-                  icon: IconPath.billIcon,
-                  circleSize: 48.0,
-                  iconSize: 30.0,
-                ),
-              ),
-            ),*/
-          ],
+          fit: BoxFit.cover,
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Builder(
-            builder: (context) {
-              return BlocConsumer<DashboardBloc, DashboardState>(
-                listener: (_, state) async {
-                  switch (state.status) {
-                    case BlocRequestStatus.submissionGetFailure:
-                      MessageDialog.showErrorNotification(msg: state.error);
-                      break;
-                    default:
-                      break;
-                  }
-                },
-                builder: (context, state) {
-                  switch (state.status) {
-                    case BlocRequestStatus.submissionGetLoading:
-                      return const DashboardListShimmer();
-                    case BlocRequestStatus.submissionGetSuccess:
-                      return state.totalCount() == 0 && state.allCardsSuccess()
-                          ? const NoDataComponent()
-                          : SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.all(16),
-                                    padding: const EdgeInsets.all(16),
-                                    height: 64,
-                                    decoration: const BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(16)),
-                                      color: AppColor.secondary50Light,
-                                    ),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const DrawIconBasedTypeWidget(
-                                          icon: IconPath.aboutBalady,
-                                          iconColor: AppColor.secondary900Light,
-                                        ),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsetsDirectional
-                                                .only(
-                                              top: 4,
-                                              start: 4,
-                                            ),
-                                            child: CustomTextWidget(
-                                              "the_following_data".tr(),
-                                              maxLines: 2,
-                                              textStyle: AppStyle
-                                                  .dashboardNoteTextStyle,
-                                            ),
+        title: 'dashboard'.tr(),
+        actions: const [
+          /*Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: GestureDetector(
+              onTap: () =>
+                  Navigator.of(context).pushNamed(RouteName.notificationPage),
+              child: const CircleIcon(
+                backgroundColor: AppColor.primary50Light,
+                icon: IconPath.billIcon,
+                circleSize: 48.0,
+                iconSize: 30.0,
+              ),
+            ),
+          ),*/
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Builder(
+          builder: (context) {
+            return BlocConsumer<DashboardBloc, DashboardState>(
+              listener: (_, state) async {
+                switch (state.status) {
+                  case BlocRequestStatus.submissionGetFailure:
+                    MessageDialog.showErrorNotification(msg: state.error);
+                    break;
+                  default:
+                    break;
+                }
+              },
+              builder: (context, state) {
+                switch (state.status) {
+                  case BlocRequestStatus.submissionGetLoading:
+                    return const DashboardListShimmer();
+                  case BlocRequestStatus.submissionGetSuccess:
+                    return state.totalCount() == 0 && state.allCardsSuccess()
+                        ? const NoDataComponent()
+                        : SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.all(16),
+                                  padding: const EdgeInsets.all(16),
+                                  height: 64,
+                                  decoration: const BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(16)),
+                                    color: AppColor.secondary50Light,
+                                  ),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const DrawIconBasedTypeWidget(
+                                        icon: IconPath.aboutBalady,
+                                        iconColor: AppColor.secondary900Light,
+                                      ),
+                                      Expanded(
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsetsDirectional.only(
+                                            top: 4,
+                                            start: 4,
                                           ),
-                                        )
-                                      ],
-                                    ),
+                                          child: CustomTextWidget(
+                                            "the_following_data".tr(),
+                                            maxLines: 2,
+                                            textStyle:
+                                                AppStyle.dashboardNoteTextStyle,
+                                          ),
+                                        ),
+                                      )
+                                    ],
                                   ),
-                                  ListView.builder(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: state.cards.length,
-                                    itemBuilder: (context, index) {
-                                      return DashboardCard(
-                                          card: state.cards[index]);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            );
-                    default:
-                      return const SizedBox.shrink();
-                  }
-                },
-              );
-            },
-          ),
+                                ),
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: state.cards.length,
+                                  itemBuilder: (context, index) {
+                                    return DashboardCard(
+                                        card: state.cards[index]);
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                  default:
+                    return const SizedBox.shrink();
+                }
+              },
+            );
+          },
         ),
       ),
     );

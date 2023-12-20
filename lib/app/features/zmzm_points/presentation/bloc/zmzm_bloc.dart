@@ -7,6 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 part 'zmzm_event.dart';
 
@@ -27,32 +28,29 @@ class ZmZmBloc extends Bloc<ZmZmEvent, ZmZmState> {
   }
 
   Future<void> _initZmZm(initZmZmEvent e, Emitter emitter) async {
-    emitter(state.copyWith(cities: ["مكة المكرمة", "جدة", "المدينة"]));
+    emitter(
+        state.copyWith(cities: ["makkah".tr(), "jeddah".tr(), "madina".tr()]));
 
     emitter(state.copyWith(items: [
       ZMZMItemModel(
           id: 1,
-          city: "مكة المكرمة",
-          name:
-              "مشروع خادم الحرمين الشريفين لسقيا زمزم (جميع الأماكن تابعة للمشروع)",
+          city: "makkah".tr(),
+          name: "zmzm_project".tr(),
           mapUrl: "https://goo.gl/maps/pPLWJ4hYTarbkQ8f6?coh=178571&entry=tt"),
       ZMZMItemModel(
           id: 2,
-          city: "جدة",
-          name:
-              "مشروع خادم الحرمين الشريفين لسقيا زمزم (جميع الأماكن تابعة للمشروع)",
+          city: "jeddah".tr(),
+          name: "zmzm_project".tr(),
           mapUrl: "https://goo.gl/maps/V1ynEY6uWDgLT6fN6?coh=178571&entry=tt"),
       ZMZMItemModel(
           id: 3,
-          city: "جدة",
-          name:
-              "مشروع خادم الحرمين الشريفين لسقيا زمزم (جميع الأماكن تابعة للمشروع)",
+          city: "jeddah".tr(),
+          name: "zmzm_project".tr(),
           mapUrl: "https://goo.gl/maps/mKaXsBGvwHuYQphw7?coh=178571&entry=tt"),
       ZMZMItemModel(
           id: 4,
-          city: "المدينة",
-          name:
-              "مشروع خادم الحرمين الشريفين لسقيا زمزم (جميع الأماكن تابعة للمشروع)",
+          city: "madina".tr(),
+          name: "zmzm_project".tr(),
           mapUrl: "https://goo.gl/maps/2NCFyi2zv643aUh46?coh=178571&entry=tt"),
     ]));
   }

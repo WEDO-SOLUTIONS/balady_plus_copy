@@ -14,6 +14,7 @@ import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.
 import '../../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../../../posters/presentation/widgets/steps/step2/field_data.dart';
 import '../../../../vd/presentation/widgets/summery_widgets/field_data.dart';
 import '../../../data/models/orgnization_charity_list.dart';
 import '../../bloc/inquiry_cemetry_bloc/ekram_inquiry_cemetry_bloc.dart';
@@ -42,9 +43,9 @@ class InquiryOrgnizationResultsDetailsPage extends StatelessWidget {
             const CustomVerticalSpace(
               height: 16,
             ),
-            ContactInfo(
+            /* ContactInfo(
               item: item,
-            )
+            )*/
           ],
         )),
       ),
@@ -70,14 +71,14 @@ class OrgnizationDetails extends StatelessWidget {
               height: 16,
             ),
             FieldData(
-              title: "city".tr(),
+              title: "ekram_city_name".tr(),
               subTitle: item.cityName,
             ),
             const CustomVerticalSpace(
               height: 16,
             ),
             FieldData(
-              title: "ekram_entity_charity_name".tr(),
+              title: "ekram_orgnization_charity_name".tr(),
               subTitle: item.orgName,
             ),
             const CustomVerticalSpace(
@@ -90,7 +91,7 @@ class OrgnizationDetails extends StatelessWidget {
             const CustomVerticalSpace(
               height: 16,
             ),
-            FieldData(
+            /* FieldData(
               title: "municipality".tr(),
               subTitle: item.municipalityName,
             ),
@@ -103,7 +104,7 @@ class OrgnizationDetails extends StatelessWidget {
             ),
             const CustomVerticalSpace(
               height: 16,
-            ),
+            ),*/
             FieldData(
               title: "street".tr(),
               subTitle: item.streetName,
@@ -111,32 +112,57 @@ class OrgnizationDetails extends StatelessWidget {
             const CustomVerticalSpace(
               height: 16,
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(NavigationService.navigatorKey.currentContext!)
-                    .pushNamed(
-                  RouteName.inappWebview,
-                  arguments: (
-                    requestNum: ''.tr(),
-                    url: item.locationViewerUrl,
-                    isObjections: false
-                  ),
-                );
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CustomTextWidget(
-                    ("location").tr(),
-                    fontSize: 17,
-                    fontWeight: AppFontWeight.medium,
-                    fontColor: AppColor.black,
-                    textAlign: TextAlign.start,
-                  ),
-                  CustomSvgIconWidget(IconPath.qrOpenLinkIcon)
-                ],
-              ),
+            FieldData(
+              title: "mobile_no_1".tr(),
+              subTitle: item.mobileNo1,
             ),
+            const CustomVerticalSpace(
+              height: 16,
+            ),
+            FieldData(
+              title: "mobile_no_2".tr(),
+              subTitle: item.mobileNo2,
+            ),
+            const CustomVerticalSpace(
+              height: 16,
+            ),
+            FieldData(
+              title: "email".tr(),
+              subTitle: item.email,
+            ),
+            const CustomVerticalSpace(
+              height: 16,
+            ),
+            InkWell(
+                onTap: () {
+                  Navigator.of(NavigationService.navigatorKey.currentContext!)
+                      .pushNamed(
+                    RouteName.inappWebview,
+                    arguments: (
+                      requestNum: ''.tr(),
+                      url: item.locationViewerUrl,
+                      isObjections: false
+                    ),
+                  );
+                },
+                child: Row(
+                  children: [
+                    CustomSvgIconWidget(
+                      IconPath.location,
+                      iconSize: 24,
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    CustomTextWidget(
+                      ("ekram_orgnization_location").tr(),
+                      fontSize: 17,
+                      fontWeight: AppFontWeight.medium,
+                      fontColor: AppColor.black,
+                      textAlign: TextAlign.start,
+                    ),
+                  ],
+                )),
           ],
         )
       ],
@@ -160,24 +186,6 @@ class ContactInfo extends StatelessWidget {
           children: [
             const CustomVerticalSpace(
               height: 16,
-            ),
-            FieldData(
-              title: "mobile_no_1".tr(),
-              subTitle: item.mobileNo1,
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: "mobile_no_2".tr(),
-              subTitle: item.mobileNo2,
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: "email".tr(),
-              subTitle: item.email,
             ),
           ],
         )

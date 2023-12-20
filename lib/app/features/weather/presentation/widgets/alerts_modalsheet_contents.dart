@@ -113,8 +113,8 @@ class AlertsModalSheetContent extends StatelessWidget {
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const CustomTextWidget(
-                                    "الفترة",
+                                  CustomTextWidget(
+                                    "period".tr(),
                                     fontColor: AppColor.blackModern700Light,
                                     fontSize: 12,
                                   ),

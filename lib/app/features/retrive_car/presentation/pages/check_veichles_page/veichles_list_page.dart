@@ -89,7 +89,7 @@ class _VeichlesListPageState extends State<VeichlesListPage> {
                               btnTextColor: state.selectedVehicle == null
                                   ? AppColor.black400
                                   : AppColor.white,
-                              btnText: "إختيار",
+                              btnText: "chose".tr(),
                               btnRadius: 8,
                               btnHeight: 56,
                               btnPressed: () {

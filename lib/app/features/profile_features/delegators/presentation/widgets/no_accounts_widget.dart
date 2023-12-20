@@ -21,7 +21,7 @@ class NoAccountsWidget extends StatelessWidget {
         ),
         CustomVerticalSpace(height: 18),
         CustomTextWidget(
-          "ليس لديك حسابات صالحة مرتبطة بهذا الحساب".tr(),
+          "no_valid_account".tr(),
           fontColor: Color(0xff52525B),
           fontSize: 14,
           fontWeight: AppFontWeight.bold,

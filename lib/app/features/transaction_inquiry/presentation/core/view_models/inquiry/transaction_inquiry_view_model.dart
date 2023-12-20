@@ -14,13 +14,13 @@ import '../../models/inquiry_transaction_response.dart';
 
 class TransactionInquiryViewModel extends BaseViewModel {
   bool isFormValid = false;
-  DropDownItem? type = DropDownItem(id: "1", name: "معاملات واردة");
+  DropDownItem? type = DropDownItem(id: "1", name: "inq_incoming".tr());
   String refrenceNumber = "";
   String? year;
   DropDownItem? municipality;
   // Item municipality = Item(id: "2", name: "أمانة حفر الباطن");
 
-  List<DropDownItem> types = [DropDownItem(id: "1", name: "معاملات واردة")];
+  List<DropDownItem> types = [DropDownItem(id: "1", name: "inq_incoming".tr())];
   List<DropDownItem> municipalities = [
     DropDownItem(id: "1", name: "وزارة الشؤون البلدية والقروية والإسكان"),
     DropDownItem(id: "2", name: "أمانة حفر الباطن"),

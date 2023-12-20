@@ -33,7 +33,7 @@ class INCRequestsPage extends StatelessWidget {
           BlocBuilder<IncidentsBloc, IncidentsState>(builder: (context, state) {
         return Scaffold(
           appBar: DefaultAppBarWidget(
-            title: 'صوت العميل'.tr(),
+            title: "reports".tr(),
             bottom: AppBarSeachBar(
               crmRequestType: state.crmRequestType,
               onChanged: (value) {

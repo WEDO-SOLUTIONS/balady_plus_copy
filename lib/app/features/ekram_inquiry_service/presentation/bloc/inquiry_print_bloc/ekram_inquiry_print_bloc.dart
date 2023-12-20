@@ -16,7 +16,6 @@ import '../../../../new_appointment/presentation/core/models/lookup_list_model.d
 import '../../../domain/entities/find_grave_request.dart';
 import '../../../domain/entities/send_otp_params.dart';
 import '../../../domain/entities/verify_otp_params.dart';
-import '../../../domain/use_cases/find_grave.dart';
 import '../../../domain/use_cases/get_ekram_cities.dart';
 import '../../../domain/use_cases/get_ekram_districts.dart';
 import '../../../domain/use_cases/get_ekram_identity_types.dart';
@@ -66,7 +65,7 @@ class EkramInquiryPrintBloc
       NavigationService.navigatorKey.currentState?.pop(true);
 
       CommonFunctions.showApigeeFile(
-          "${RemoteConfig.apigeeURL}/v2/ekram-mobile-services/reports/licenses/${state.sendOtpResponse?.certificateCode}",
+          "${RemoteConfig.apigeeURL}/v2/ekram-mobile-services/reports/licenses/${r.certificateCode}",
           DateTime.now().millisecond.toString());
 
       /*CommonFunctions.showApigeeFile(

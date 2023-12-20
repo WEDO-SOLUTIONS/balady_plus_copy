@@ -183,8 +183,6 @@ class _CalcualtorWidgetState extends State<CalcualtorWidget> {
         }
       },
       builder: (context, state) {
-        print(
-            "ffffffffff ${sl<CommercialLicenseBloc>().state.crCalculateFeesResponse?.totalCost}");
         return Container(
           color: Colors.transparent,
           child: Column(
@@ -280,7 +278,6 @@ class _CalcualtorWidgetState extends State<CalcualtorWidget> {
               CRPreviousNextButtons(
                 isBtnDisabled: false,
                 onPressed: () {
-                  print("HH");
                   context.read<CrStep13ReviewDataCubit>().save();
                 },
               ),

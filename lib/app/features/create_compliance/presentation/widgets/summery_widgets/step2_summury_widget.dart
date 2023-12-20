@@ -19,7 +19,7 @@ class Step2SummeryWidget extends StatelessWidget {
     return BlocBuilder<ComplianceBloc, ComplianceState>(
       builder: (context, state) {
         return CustomExpansionPanelWidget(
-          title: ("بيانات مقدم الطلب").tr(),
+          title: ("user_data_applicant").tr(),
           leading: SvgPicture.asset(IconPath.vdSummuryUserInfo),
           children: [
             FieldData(

@@ -68,12 +68,14 @@ class Permit24LicenseBloc
 
     on<GetPermitRequestDetailsEvent>(_getRequestDetails);
     on<GetPermitAlertsEvent>(_getPostersAlertsHandler);
+    on<GetPermitEndorsmentsEvent>(_getPostersEndorsmentHandler);
 
     on<DeletePermitRequestEvent>(_deleteRequestsHandler);
     on<CalculatePermitCostEvent>(_calculateRequestsHandler);
     on<ToggleAgreementEvent>(_toggleAgreementHandler);
 
     add(const GetPermitAlertsEvent());
+    add(const GetPermitEndorsmentsEvent());
   }
 
   Future<void> _toggleAgreementHandler(
@@ -130,7 +132,7 @@ class Permit24LicenseBloc
   Future<void> _getPostersAlertsHandler(
       GetPermitAlertsEvent e, Emitter emitter) async {
     emitter(state.copyWith(alertsStatus: BlocStatus.loading));
-    final failOrSuccess = await _getPermitsAlerts(NoParams());
+    final failOrSuccess = await _getPermitsAlerts("ALERTS");
 
     failOrSuccess.fold((l) {
       print(l);
@@ -140,6 +142,22 @@ class Permit24LicenseBloc
     }, (r) {
       emitter(
           state.copyWith(alertsStatus: BlocStatus.success, alerts: r.result));
+    });
+  }
+
+  Future<void> _getPostersEndorsmentHandler(
+      GetPermitEndorsmentsEvent e, Emitter emitter) async {
+    emitter(state.copyWith(alertsStatus: BlocStatus.loading));
+    final failOrSuccess = await _getPermitsAlerts("ENDORSEMENT");
+
+    failOrSuccess.fold((l) {
+      print(l);
+      emitter(state.copyWith(
+          endormentsStatus: BlocStatus.failure,
+          error: (l as ServerFailure).errorMessage));
+    }, (r) {
+      emitter(state.copyWith(
+          endormentsStatus: BlocStatus.success, endorsments: r.result));
     });
   }
 

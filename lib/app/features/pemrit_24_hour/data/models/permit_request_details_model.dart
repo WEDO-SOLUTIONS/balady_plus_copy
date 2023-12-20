@@ -5,39 +5,41 @@ class Permit24RequestDetailsModel {
   LicenseInfo? licenseInfo;
   dynamic rejectionInfo;
   List<TransactionsList>? transactionsList;
+  String? requestKey;
   dynamic calculatedCostInfo;
 
-  Permit24RequestDetailsModel({
-    this.locationInfo,
-    this.submitterInfo,
-    this.requestInfo,
-    this.licenseInfo,
-    this.rejectionInfo,
-    this.transactionsList,
-    this.calculatedCostInfo,
-  });
+  Permit24RequestDetailsModel(
+      {this.locationInfo,
+      this.submitterInfo,
+      this.requestInfo,
+      this.licenseInfo,
+      this.rejectionInfo,
+      this.transactionsList,
+      this.calculatedCostInfo,
+      this.requestKey});
 
   factory Permit24RequestDetailsModel.fromJson(Map<String, dynamic> json) =>
       Permit24RequestDetailsModel(
-        locationInfo: json["locationInfo"] == null
-            ? null
-            : LocationInfo.fromJson(json["locationInfo"]),
-        submitterInfo: json["submitterInfo"] == null
-            ? null
-            : SubmitterInfo.fromJson(json["submitterInfo"]),
-        requestInfo: json["requestInfo"] == null
-            ? null
-            : RequestInfo.fromJson(json["requestInfo"]),
-        licenseInfo: json["licenseInfo"] == null
-            ? null
-            : LicenseInfo.fromJson(json["licenseInfo"]),
-        rejectionInfo: json["rejectionInfo"],
-        transactionsList: json["transactionsList"] == null
+          locationInfo: json["locationInfo"] == null
+              ? null
+              : LocationInfo.fromJson(json["locationInfo"]),
+          submitterInfo: json["submitterInfo"] == null
+              ? null
+              : SubmitterInfo.fromJson(json["submitterInfo"]),
+          requestInfo: json["requestInfo"] == null
+              ? null
+              : RequestInfo.fromJson(json["requestInfo"]),
+          licenseInfo: json["licenseInfo"] == null
+              ? null
+              : LicenseInfo.fromJson(json["licenseInfo"]),
+          rejectionInfo: json["rejectionInfo"],
+          requestKey: json["requestKey"]
+          /* transactionsList: json["transactionsList"] == null
             ? []
             : List<TransactionsList>.from(json["transactionsList"]!
-                .map((x) => TransactionsList.fromJson(x))),
-        //   calculatedCostInfo: json["calculatedCostInfo"],
-      );
+                .map((x) => TransactionsList.fromJson(x))),*/
+          //   calculatedCostInfo: json["calculatedCostInfo"],
+          );
 
   Map<String, dynamic> toJson() => {
         "locationInfo": locationInfo?.toJson(),
@@ -117,7 +119,7 @@ class LicenseInfo {
 }
 
 class Status {
-  int? id;
+  String? id;
   String? name;
   Status({
     this.id,
@@ -126,7 +128,7 @@ class Status {
 
   factory Status.fromMap(Map<String, dynamic> map) {
     return Status(
-      id: map['id'] != null ? map['id'] as int : null,
+      id: map['id'] != null ? map['id'] as String : null,
       name: map['name'] != null ? map['name'] as String : null,
     );
   }
@@ -205,24 +207,25 @@ class BillInfo {
   double? billAmount;
   int? billerNumber;
   dynamic warningMessage;
+  String? billKey;
 
-  BillInfo({
-    this.billNumber,
-    this.issueDate,
-    this.expiryDate,
-    this.billAmount,
-    this.billerNumber,
-    this.warningMessage,
-  });
+  BillInfo(
+      {this.billNumber,
+      this.issueDate,
+      this.expiryDate,
+      this.billAmount,
+      this.billerNumber,
+      this.warningMessage,
+      this.billKey});
 
   factory BillInfo.fromJson(Map<String, dynamic> json) => BillInfo(
-        billNumber: json["billNumber"],
-        issueDate: json["issueDate"],
-        expiryDate: json["expiryDate"],
-        billAmount: json["billAmount"]?.toDouble(),
-        billerNumber: json["billerNumber"],
-        warningMessage: json["warningMessage"],
-      );
+      billNumber: json["billNumber"],
+      issueDate: json["issueDate"],
+      expiryDate: json["expiryDate"],
+      billAmount: json["billAmount"]?.toDouble(),
+      billerNumber: json["billerNumber"],
+      warningMessage: json["warningMessage"],
+      billKey: json["billKey"]);
 
   Map<String, dynamic> toJson() => {
         "billNumber": billNumber,

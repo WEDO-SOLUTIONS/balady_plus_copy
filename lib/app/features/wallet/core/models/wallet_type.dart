@@ -18,10 +18,10 @@ class WalletType {
 List<WalletType> wallerTypesData = [
   WalletType(
       icon: IconPath.card,
-      title: "المتاجر المتنقلة".tr(),
+      title: "transferred_stores".tr(),
       types: LicenseTypes.peddler),
   WalletType(
       icon: IconPath.personalCard,
-      title: "الشهادات الصحية".tr(),
+      title: "healthCertificates".tr(),
       types: LicenseTypes.health)
 ];

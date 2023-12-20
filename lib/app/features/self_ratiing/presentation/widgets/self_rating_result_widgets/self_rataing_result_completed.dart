@@ -35,7 +35,7 @@ class SelfRatingResultCompleted extends StatelessWidget {
         ),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           CustomTextWidget(
-            " المبنى الخاص بكم يلتزم بالقوانين البلدية بنسبة 100%، وهذا يعكس الامتثال الجدي للضوابط المحلية والالتزام الواضح بالمعايير المعمول بها.",
+            "rating_late_description".tr(),
             fontColor: AppColor.blackModern600Light,
             height: 1.64,
             maxLines: 90,
@@ -44,7 +44,7 @@ class SelfRatingResultCompleted extends StatelessWidget {
           ),
           CustomVerticalSpace(height: 28),
           CustomTextWidget(
-            "يمكنك المباشرة باصدار شهادة امتثال للمبنى",
+            "rating_last_description2".tr(),
             fontColor: AppColor.secondary900Light,
             height: 1.71,
             maxLines: 90,

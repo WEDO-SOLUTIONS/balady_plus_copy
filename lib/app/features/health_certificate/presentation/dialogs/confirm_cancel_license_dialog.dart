@@ -31,7 +31,7 @@ class ConfirmCancelLicenseDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CustomTextWidget(
-                  Helpers.translatingWord("تأكيد الغاء الشهادة"),
+                  Helpers.translatingWord("confirm_cancel_certificate"),
                   fontColor: AppColor.blackModern900Light,
                   fontWeight: AppFontWeight.bold,
                   maxLines: 10,

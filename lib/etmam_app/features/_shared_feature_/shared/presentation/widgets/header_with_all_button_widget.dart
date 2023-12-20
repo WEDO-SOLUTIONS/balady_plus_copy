@@ -5,6 +5,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../../app/core/utils/constants/app_colors.dart';
 import '../../../../../../app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../../../../app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../../../../core/utils/constants/app_config.dart';
 
 class HeaderWithAllButtonWidget extends StatelessWidget {
   final String header;
@@ -43,8 +44,8 @@ class HeaderWithAllButtonWidget extends StatelessWidget {
             visible: showAllButton,
             child: GestureDetector(
               onTap: allOnPressed,
-              child: const CustomTextWidget(
-                "عرض الكل",
+              child:  CustomTextWidget(
+                trans("show_all"),
                 fontWeight: AppFontWeight.bold,
                 fontColor: AppColor.primary900Light,
                 fontSize: 13,

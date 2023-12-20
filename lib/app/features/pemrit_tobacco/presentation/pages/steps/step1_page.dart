@@ -46,9 +46,10 @@ class _PermitStep1PageState extends State<PermitStep1Page> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    VdHeaderDesc(
-                      header: ("permit_tobacco_license_details").tr(),
-                    ),
+                    if (state.commercialLicenceDetails != null)
+                      VdHeaderDesc(
+                        header: ("permit_tobacco_license_details").tr(),
+                      ),
                     //const Step1SummeryWidget(),
                     const CustomVerticalSpace(height: 16),
                     const Step2SummeryWidget(),
@@ -86,55 +87,57 @@ class Step2SummeryWidget extends StatelessWidget {
       builder: (context, state) {
         return Column(
           children: [
-            FieldData(
-              title: "license_no".tr(),
-              subTitle: state.commercialLicenceDetails?.licenseInfo?.licenseId
-                      .toString() ??
-                  "",
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: "license_status".tr(),
-              subTitle: state.commercialLicenceDetails?.licenseInfo?.statusDesc
-                      .toString() ??
-                  "",
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: "license_end_date".tr(),
-              subTitle: state
-                      .commercialLicenceDetails?.licenseInfo?.licenseEndDate
-                      .toString() ??
-                  "",
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: "municipality".tr(),
-              subTitle: state
-                      .commercialLicenceDetails?.locationInfo?.municipalityName
-                      .toString() ??
-                  "",
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-              title: "sub_municipality".tr(),
-              subTitle: state.commercialLicenceDetails?.locationInfo
-                      ?.subMunicipalityName
-                      .toString() ??
-                  "",
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            /* FieldData(
+            if (state.commercialLicenceDetails != null) ...[
+              FieldData(
+                title: "license_no".tr(),
+                subTitle: state.commercialLicenceDetails?.licenseInfo?.licenseId
+                        .toString() ??
+                    "",
+              ),
+              const CustomVerticalSpace(
+                height: 16,
+              ),
+              FieldData(
+                title: "license_status".tr(),
+                subTitle: state
+                        .commercialLicenceDetails?.licenseInfo?.statusDesc
+                        .toString() ??
+                    "",
+              ),
+              const CustomVerticalSpace(
+                height: 16,
+              ),
+              FieldData(
+                title: "license_end_date".tr(),
+                subTitle: state
+                        .commercialLicenceDetails?.licenseInfo?.licenseEndDate
+                        .toString() ??
+                    "",
+              ),
+              const CustomVerticalSpace(
+                height: 16,
+              ),
+              FieldData(
+                title: "municipality".tr(),
+                subTitle: state.commercialLicenceDetails?.locationInfo
+                        ?.municipalityName
+                        .toString() ??
+                    "",
+              ),
+              const CustomVerticalSpace(
+                height: 16,
+              ),
+              FieldData(
+                title: "sub_municipality".tr(),
+                subTitle: state.commercialLicenceDetails?.locationInfo
+                        ?.subMunicipalityName
+                        .toString() ??
+                    "",
+              ),
+              const CustomVerticalSpace(
+                height: 16,
+              ),
+              /* FieldData(
               title: "license_health_end_date".tr(),
               subTitle: state
                       .commercialLicenceDetails?.licenseInfo?.licenseEndDate
@@ -144,22 +147,20 @@ class Step2SummeryWidget extends StatelessWidget {
             const CustomVerticalSpace(
               height: 16,
             ),*/
-            FieldData(
-                title: "permit_need_baladiyah".tr(),
-                subTitle:
-                    state.doesNotNeedsCredentials() ? "no".tr() : "yes".tr()),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            FieldData(
-                title: "permit_needs_fees".tr(),
-                subTitle: state.needsFees() == true ? "yes".tr() : "no".tr()),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
-            const CustomVerticalSpace(
-              height: 16,
-            ),
+              FieldData(
+                  title: "permit_need_baladiyah".tr(),
+                  subTitle:
+                      state.doesNotNeedsCredentials() ? "no".tr() : "yes".tr()),
+              const CustomVerticalSpace(
+                height: 16,
+              ),
+              FieldData(
+                  title: "permit_needs_fees".tr(),
+                  subTitle: state.needsFees() == true ? "yes".tr() : "no".tr()),
+              const CustomVerticalSpace(
+                height: 16,
+              ),
+            ],
             const CustomVerticalSpace(
               height: 16,
             ),
@@ -169,6 +170,9 @@ class Step2SummeryWidget extends StatelessWidget {
             ),
             if (state.isInsideHotel == true) ...[
               CustomTextFieldWidget(
+                controller: context
+                    .read<PermitTobaccoLicenseBloc>()
+                    .hotelLicenseContrller,
                 label: "hotel_license_number".tr(),
                 onChanged: (String? val) {
                   context

@@ -10,14 +10,19 @@ class ViolationCreateTitleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        
         CustomTextWidget(
           'violation_create_title'.tr(),
           textStyle: AppStyle.violationCreateTitle,
         ),
+        const SizedBox(
+          height: 8,
+        ),
         CustomTextWidget(
           'violation_create_subtitle'.tr(),
           textStyle: AppStyle.violatioCreateSubtitle,
+          maxLines: 6,
+          textAlign: TextAlign.center,
+          height: 1.4,
         ),
       ],
     );

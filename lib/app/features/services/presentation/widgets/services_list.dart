@@ -34,6 +34,7 @@ class ServicesList extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           HeaderWithAll(
             text: title,
@@ -46,18 +47,18 @@ class ServicesList extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Container(
-            height: 100,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: services
-                    .map((e) => ServiceIcon(
-                          service: e,
-                        ))
-                    .toList(),
-              ),
-            ),
+            height: 110,
+            child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: services.length,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  return ServiceIcon(
+                    service: services[index],
+                  );
+                }),
           ),
+
           /* ListView.builder(
             itemCount: services.length,
             itemBuilder: (context, index) {

@@ -867,7 +867,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       if (valid)
         add(SaveImtethalItemsEvent(save: e.save));
       else {
-        CommonFunctions.showError("الرجاء اختيار جميع بنود الإمتثال");
+        CommonFunctions.showError("please_select_all_complaince_terms".tr());
       }
     } else if (state.currentStep == 4 && state.benificiaryTypeSelection == 2) {
       add(SaveContractEvent());

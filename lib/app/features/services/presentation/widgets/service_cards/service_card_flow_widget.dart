@@ -50,7 +50,7 @@ class ServiceCardFlowWidget extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     CustomTextWidget(
-                      card.title,
+                      card.title.tr(),
                       textStyle: AppStyle.cardTitleTextStle,
                     ),
                   ],
@@ -67,7 +67,7 @@ class ServiceCardFlowWidget extends StatelessWidget {
                         color: AppColor.blackModern50Light,
                       ),
                       child: CustomEnhancedExpansionPanelWidget(
-                        title: card.flow?[index].title ?? "",
+                        title: card.flow?[index].title?.tr() ?? "",
                         isExpanded: true,
                         //  leading: SvgPicture.asset(IconPath.serviceCardDesc),
                         backgroundColor: Color(0x80E6EFEF),
@@ -103,7 +103,7 @@ class ServiceCardFlowWidget extends StatelessWidget {
                                         const CustomHorizontalSpace(width: 8),
                                         Flexible(
                                           child: CustomTextWidget(
-                                            e,
+                                            e.tr(),
                                             maxLines: 30,
                                             fontColor:
                                                 AppColor.blackModern500Light,

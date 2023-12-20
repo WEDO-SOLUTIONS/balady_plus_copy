@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/enums/visual_distortion.dart';
@@ -12,10 +13,9 @@ class VisualDistortionDetailsScreen extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
-   VisualDistortion visualDistortion =
+    VisualDistortion visualDistortion =
         ModalRoute.of(context)!.settings.arguments as VisualDistortion;
 
     return Scaffold(
@@ -34,7 +34,7 @@ class VisualDistortionDetailsScreen extends StatelessWidget {
             ),
           ),
         ],
-        title: "مظاهر التشوه البصري",
+        title: "visual_distortion".tr(),
       ),
       body: Stack(
         children: [
@@ -126,8 +126,8 @@ class VisualDistortionDetailsScreen extends StatelessWidget {
                                         ),
                                         child: CustomTextWidget(
                                           index.isEven
-                                              ? "سمات المظهر السيئ"
-                                              : "سمات المظهر الجيد",
+                                              ? "visual_distortion_bad".tr()
+                                              : "visual_distortion_good".tr(),
                                           fontSize: 12,
                                           fontWeight: AppFontWeight.semiBold,
                                           fontColor: AppColor.white,
@@ -175,8 +175,8 @@ class VisualDistortionDetailsScreen extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      const CustomTextWidget(
-                        "اسحب الشاشة يمين او يسار للتبديل بين الانواع\nاضغط على البطاقة لقراءة المزيد",
+                      CustomTextWidget(
+                        "scroll_for_more".tr(),
                         fontSize: 12,
                         maxLines: null,
                         textAlign: TextAlign.center,

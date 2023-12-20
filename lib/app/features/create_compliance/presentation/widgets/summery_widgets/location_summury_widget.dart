@@ -26,18 +26,18 @@ class LocationSummuryWidget extends StatelessWidget {
             ? Column(
                 children: [
                   CustomExpansionPanelWidget(
-                    title: ('بيانات الموقع').tr(),
+                    title: ('location_data').tr(),
                     leading: SvgPicture.asset(IconPath.vdSummuryPhoto),
                     children: [
                       CustomVerticalSpace(height: 16),
                       FieldData(
-                          title: "الأمانة".tr(),
+                          title: "municipality".tr(),
                           subTitle: state.requestDetails
                                   ?.locationResponseInfoDto?.municipalityName ??
                               ""),
                       CustomVerticalSpace(height: 16),
                       FieldData(
-                          title: "البلدية".tr(),
+                          title: "sub_municipality".tr(),
                           subTitle: state
                                   .requestDetails
                                   ?.locationResponseInfoDto
@@ -45,31 +45,31 @@ class LocationSummuryWidget extends StatelessWidget {
                               ""),
                       CustomVerticalSpace(height: 16),
                       FieldData(
-                          title: "المدينة".tr(),
+                          title: "city".tr(),
                           subTitle: state.requestDetails
                                   ?.locationResponseInfoDto?.cityName ??
                               ""),
                       CustomVerticalSpace(height: 16),
                       FieldData(
-                          title: "الحي".tr(),
+                          title: "district".tr(),
                           subTitle: state.requestDetails
                                   ?.locationResponseInfoDto?.districtName ??
                               ""),
                       CustomVerticalSpace(height: 16),
                       FieldData(
-                          title: "رقم المخطط".tr(),
+                          title: "planNumber".tr(),
                           subTitle: state.requestDetails
                                   ?.locationResponseInfoDto?.mapNumber ??
                               ""),
                       CustomVerticalSpace(height: 16),
                       FieldData(
-                          title: "اسم المخطط".tr(),
+                          title: "plan_name".tr(),
                           subTitle: state.requestDetails
                                   ?.locationResponseInfoDto?.mapName ??
                               ""),
                       CustomVerticalSpace(height: 16),
                       FieldData(
-                          title: "اسم الشارع".tr(),
+                          title: "street_name".tr(),
                           subTitle: state.requestDetails
                                   ?.locationResponseInfoDto?.streetName ??
                               ""),
@@ -88,7 +88,7 @@ class LocationSummuryWidget extends StatelessWidget {
                             return Column(
                               children: [
                                 FieldData(
-                                    title: "رقم قطعة الأرض".tr(),
+                                    title: "parcel_number".tr(),
                                     subTitle: state
                                             .requestDetails
                                             ?.locationResponseInfoDto
@@ -98,7 +98,7 @@ class LocationSummuryWidget extends StatelessWidget {
                                         ""),
                                 const CustomVerticalSpace(height: 16),
                                 FieldData(
-                                    title: "مساحة الارض".tr(),
+                                    title: "land_area".tr(),
                                     subTitle: state
                                             .requestDetails
                                             ?.locationResponseInfoDto
@@ -141,7 +141,7 @@ class LocationSection extends StatelessWidget {
     return BlocBuilder<ComplianceBloc, ComplianceState>(
       builder: (context, state) {
         return LabelIconSubtitleComponent(
-          text: ("عنوان الطلب").tr(),
+          text: ("order_address").tr(),
           subWidget: GestureDetector(
             onTap: () {},
             child: Row(

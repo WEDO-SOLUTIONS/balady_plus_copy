@@ -38,7 +38,7 @@ class _EditPostersDialogState extends State<EditPostersDialog> {
             children: [
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 CustomTextWidget(
-                  Helpers.translatingWord("تعديل الملصقات".tr()),
+                  Helpers.translatingWord("edit_posters".tr()),
                   fontColor: AppColor.blackModern900Light,
                   fontWeight: AppFontWeight.bold,
                   maxLines: 10,

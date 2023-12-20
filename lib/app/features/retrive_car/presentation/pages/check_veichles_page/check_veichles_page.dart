@@ -39,7 +39,7 @@ class _CheckVeichlesPageState extends State<CheckVeichlesPage> {
         builder: (context, state) {
           return Scaffold(
               appBar: DetailsHeader(
-                title: "بيانات المركبة",
+                title: "retrieve_title".tr(),
               ),
               body: Stack(
                 children: [

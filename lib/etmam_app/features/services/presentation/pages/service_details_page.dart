@@ -28,8 +28,8 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         ModalRoute.of(context)!.settings.arguments as ServiceDetailsResponse;
 
     return Scaffold(
-        appBar: const DefaultAppBarWidget(
-          title: "تفاصيل الخدمة",
+        appBar: DefaultAppBarWidget(
+          title: trans("order_info_service_details"),
         ),
         body: BlocProvider(
           create: (context) => ServiceDetailsBloc(
@@ -51,8 +51,8 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const CustomTextWidget(
-                                "بيانات المكتب",
+                              CustomTextWidget(
+                                trans("office_info"),
                                 fontColor: AppColor.blackModern800Light,
                                 fontWeight: AppFontWeight.bold,
                                 fontSize: 16,
@@ -93,8 +93,8 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                     "${state.response.provider?.rating} (${state.response.provider?.ratingsCount})",
                               ),
                               const SizedBox(height: 24),
-                              const CustomTextWidget(
-                                "بيانات الخدمة",
+                              CustomTextWidget(
+                                trans("service_info"),
                                 fontColor: AppColor.blackModern800Light,
                                 fontWeight: AppFontWeight.bold,
                                 fontSize: 16,
@@ -115,8 +115,8 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                       0) >
                                   0) ...[
                                 const SizedBox(height: 24),
-                                const CustomTextWidget(
-                                  "الأعمال سابقة",
+                                CustomTextWidget(
+                                  trans("prevoius_works"),
                                   fontColor: AppColor.blackModern800Light,
                                   fontWeight: AppFontWeight.bold,
                                   fontSize: 16,
@@ -129,8 +129,8 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                               if ((state.response.service?.faqs?.length ?? 0) >
                                   0) ...[
                                 const SizedBox(height: 24),
-                                const CustomTextWidget(
-                                  "الاسئلة الشائعة",
+                                CustomTextWidget(
+                                  trans("faq"),
                                   fontColor: AppColor.blackModern800Light,
                                   fontWeight: AppFontWeight.bold,
                                   fontSize: 16,

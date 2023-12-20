@@ -225,7 +225,7 @@ class AttachmentListWidget extends StatelessWidget {
                 ),
                 if (showChangeImage)
                   ElevatedButtonWidget.primaryCustomBorder(
-                      text: "تغيير",
+                      text: "change".tr(),
                       onPressed: () async {
                         FocusManager.instance.primaryFocus?.unfocus();
 

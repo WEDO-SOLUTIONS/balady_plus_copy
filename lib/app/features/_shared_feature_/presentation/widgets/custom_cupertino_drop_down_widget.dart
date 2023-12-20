@@ -478,6 +478,7 @@ class CustomLookUpLongDialog extends StatefulWidget {
   final bool showHintAsTitle;
   final Function? onEmptyList;
   final bool isDisbaled;
+  final bool refreshList;
 
   CustomLookUpLongDialog(
       {Key? key,
@@ -491,6 +492,7 @@ class CustomLookUpLongDialog extends StatefulWidget {
       this.showOptional = false,
       this.showHintAsTitle = true,
       this.isDisbaled = false,
+      this.refreshList = false,
       this.onEmptyList})
       : super(key: key);
 
@@ -507,7 +509,7 @@ class _CustomLookUpLongDialog extends State<CustomLookUpLongDialog> {
         textValue: widget.value?.name,
         showOptional: widget.showOptional,
         onTap: widget.isDisbaled == false
-            ? widget.items.isNotEmpty
+            ? widget.items.isNotEmpty && !widget.refreshList
                 ? () async {
                     FocusManager.instance.primaryFocus?.unfocus();
                     await CustomPopUpsWidgets.showBottomSheet(

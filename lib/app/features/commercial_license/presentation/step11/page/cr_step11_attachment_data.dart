@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
@@ -57,10 +58,10 @@ class _CRStep11AttachmentDataState extends State<CRStep11AttachmentData> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const CRHeaderDesc(
+                          CRHeaderDesc(
                             maxLines: null,
                             textHeight: 1.5,
-                            header: "بيانات المرفق",
+                            header: "step5title".tr(),
                             desc: "",
                           ),
                           const SizedBox(height: 12),
@@ -84,9 +85,8 @@ class _CRStep11AttachmentDataState extends State<CRStep11AttachmentData> {
                               },
                             ),
                           UndertakingWidget(
-                            text: "أتعهد على جميع ماتم ذكره اعلاه",
-                            desc:
-                                "اقر واتعهد بصحة كافة البيانات التي تم رفعها على موقع بلدي واتحمل كامل المسؤولية القانونية والنظامية في حال تبين خلاف ذلك. كما اتعهد بابلاغ وزارة الشؤون البلدية والقروية في حال طرء اي تغيير على البيانات واتحمل كامل المسؤولية في حال تبين خلاف ذلك.",
+                            text: "posters_agreement_title".tr(),
+                            desc: "posters_agreement_desc".tr(),
                             onChange: (value) {
                               context
                                   .read<CRStep11AttachmentCubit>()

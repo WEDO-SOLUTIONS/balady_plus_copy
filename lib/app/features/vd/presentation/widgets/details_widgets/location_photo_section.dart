@@ -70,7 +70,7 @@ class LocationSection extends StatelessWidget {
     return BlocBuilder<CreateVDBloc, CreateVDState>(
       builder: (context, state) {
         return LabelIconSubtitleComponent(
-          text: ("عنوان البلاغ").tr(),
+          text: ("lbl_site_details_hint1").tr(),
           subWidget: GestureDetector(
             onTap: () {
               if (!showOnly)

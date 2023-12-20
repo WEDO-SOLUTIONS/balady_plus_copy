@@ -1,8 +1,3 @@
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
-import 'package:balady_plus/app/core/utils/constants/app_style.dart';
-import 'package:balady_plus/app/features/_shared_feature_/data/entities/custom_expansion_panel.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/under_testing/custom_enhanced_expansion_panel_list_widget.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/violation_guide/presentation/bloc/violation_bloc.dart';
 import 'package:balady_plus/app/features/violation_guide/presentation/bloc/violation_state.dart';
 import 'package:balady_plus/app/features/violation_guide/presentation/widgets/violation_results_widgets/violation_details_widget.dart';

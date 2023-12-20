@@ -19,17 +19,12 @@ import '../dependency_injection_exports.dart' show sl;
 class ServicesInjection {
   static void init() {
     //! Use Case
-    sl.registerLazySingleton(() => CustomerVoiceServices(sl()));
     sl.registerLazySingleton(() => IslamicServices(sl()));
     sl.registerLazySingleton(() => BusinessLicenseServices(sl()));
     sl.registerLazySingleton(() => HelpServices(sl()));
-    sl.registerLazySingleton(() => HonoringTheDeadServices(sl()));
     sl.registerLazySingleton(() => MunicipalServices(sl()));
 
     //sl.registerLazySingleton(() => HealthCertificatesServices(sl()));
-
-    sl.registerLazySingleton(() => NewServices(sl()));
-    sl.registerLazySingleton(() => ImportantServices(sl()));
 
     //! Repository
     sl.registerLazySingleton<ServicesRepository>(

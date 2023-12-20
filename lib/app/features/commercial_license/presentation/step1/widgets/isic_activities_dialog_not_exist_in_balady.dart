@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/features/commercial_license/commercial_license_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/services/local/helpers.dart';
 import '../../../../../core/services/local/navigation_services.dart';
@@ -58,8 +59,8 @@ class IsicActivitiesDialogNotExistInBalady extends StatelessWidget {
                 children: [
                   const CustomSvgIconWidget(IconPath.warning2),
                   const SizedBox(height: 16),
-                  const CustomTextWidget(
-                    "بعض انشطة السجل التجاري غير موجودة في انشطة الوزارة،يمكنك استكمال  إصدار رخصة تجارية بالانشطة المتاحة او تحويل الطلب للمعنيين في الوزارة لاضافة الانشطة الغير موجودة",
+                  CustomTextWidget(
+                    "cr_some_activity_does_not_exists".tr(),
                     fontWeight: AppFontWeight.bold,
                     fontColor: AppColor.blackModern700Light,
                     fontSize: 16,
@@ -69,7 +70,7 @@ class IsicActivitiesDialogNotExistInBalady extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   CustomExpansionPanelWidget(
-                    title: "الانشطة المدرجة",
+                    title: "cr_listed_activities".tr(),
                     arrowBg: AppColor.primary300Light,
                     leading: const CustomSvgIconWidget(
                       IconPath.boxTick,
@@ -115,7 +116,7 @@ class IsicActivitiesDialogNotExistInBalady extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   CustomExpansionPanelWidget(
-                    title: "الانشطة الغير مدرجة",
+                    title: "cr_not_listed_activities".tr(),
                     arrowBg: AppColor.blue300Light,
                     leading: const CustomSvgIconWidget(
                       IconPath.boxTick,
@@ -179,12 +180,12 @@ class IsicActivitiesDialogNotExistInBalady extends StatelessWidget {
     BottomSheetDialog.showDraggableSheet(
         NavigationService.navigatorKey.currentContext!,
         child: BottomSheetWithActions(
-          title: "تنبيه",
+          title: "cancelLicenseWarningTitleWord".tr(),
           action: Row(
             children: [
               Expanded(
                 child: ElevatedButtonWidget.primaryCustom(
-                    text: "موافق",
+                    text: "agree".tr(),
                     onPressed: () {
                       context
                           .read<CrStep1ApplicantDataCubit>()
@@ -193,9 +194,7 @@ class IsicActivitiesDialogNotExistInBalady extends StatelessWidget {
               ),
             ],
           ),
-          body: WarningMessage(
-              message:
-                  "عزيزي المستفيد... نشاط/أنشطة السجل التجاري غير موجودة في أنشطة وزارة الشئون البلدية والقروية، تم إرسال الطلب إلى الجهة المعنية بالوزارة لإضافتها إلى أنشطة الوزارة وسيتم إبلاغكم برسالة نصية عند إضافة النشاط/الأنشطة"),
+          body: WarningMessage(message: "cr_acivity_not_exists".tr()),
         ));
   }
 }

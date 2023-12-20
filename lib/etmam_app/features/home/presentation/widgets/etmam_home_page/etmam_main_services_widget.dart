@@ -58,7 +58,7 @@ class _EtmamMainServicesWidget extends State<EtmamMainServicesWidget> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: CustomTextWidget(
-                "الخدمات المتاحة",
+                trans("available_services"),
                 fontSize: 18,
                 fontWeight: AppFontWeight.bold,
                 fontColor: AppColor.black700,

@@ -50,8 +50,8 @@ class _OfficeInfoPageState extends State<OfficeInfoPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 8),
-                const CustomTextWidget(
-                  "بيانات المكتب",
+                CustomTextWidget(
+                  trans("office_info"),
                   fontColor: AppColor.blackModern800Light,
                   fontWeight: AppFontWeight.bold,
                   fontSize: 16,
@@ -79,12 +79,12 @@ class _OfficeInfoPageState extends State<OfficeInfoPage> {
                   iconPath: IconPath.call,
                   title: trans('office_mobile'),
                   value: provider.mainBranchContact,
-                  leading: const Row(
+                  leading: Row(
                     children: [
-                      CustomSvgIconWidget(IconPath.call),
-                      SizedBox(width: 4),
+                      const CustomSvgIconWidget(IconPath.call),
+                      const SizedBox(width: 4),
                       CustomTextWidget(
-                        "اتصال",
+                        trans("call"),
                         textStyle: TextStyle(
                           fontSize: 12,
                           decoration: TextDecoration.underline,
