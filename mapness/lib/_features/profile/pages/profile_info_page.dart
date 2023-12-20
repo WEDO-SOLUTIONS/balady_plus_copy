@@ -121,6 +121,7 @@ class ProfileInfoPage extends ConsumerWidget {
                   child: InkWell(
                     onTap: () async {
                       await ref.read(authProvider.notifier).logOut();
+                      context.pop();
                     },
                     borderRadius: BorderRadius.circular(8),
                     child: Container(
