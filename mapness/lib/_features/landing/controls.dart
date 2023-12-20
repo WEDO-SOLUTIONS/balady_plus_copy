@@ -12,6 +12,7 @@ import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/app/routes/kiblah.dart';
 import 'package:mapness/app/routes/weather.dart';
 import 'package:mapness/shared/providers/app_features.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
@@ -28,9 +29,15 @@ class MapControls extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controlsState = ref.watch(mapControlsProvider);
     final currentRoute = ref.watch(currentRouteProvider);
+    final language = ref.watch(appLanguageProvider);
 
     final controlsHidden =
         controlsState is! MapControlsStateIdle || currentRoute != '/landing';
+
+    final direction = switch (language) {
+      Language.english => TextDirection.ltr,
+      Language.arabic => TextDirection.rtl,
+    };
 
     return IgnorePointer(
       ignoring: controlsHidden,
@@ -131,9 +138,9 @@ class MapControls extends ConsumerWidget {
               AnimatedOpacity(
                 opacity: controlsState is MapControlsStateIdle ? 1 : 0,
                 duration: const Duration(milliseconds: 250),
-                child: const Directionality(
-                  textDirection: TextDirection.rtl,
-                  child: Padding(
+                child: Directionality(
+                  textDirection: direction,
+                  child: const Padding(
                     padding: EdgeInsets.only(bottom: 12.0),
                     child: MapQuickFilters(
                       forMap: true,
