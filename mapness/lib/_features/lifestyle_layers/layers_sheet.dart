@@ -104,7 +104,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                           onTap: () {
                             watch.handleTap(ref, value);
                           },
-                          isSelected: state.selectedType == value,
+                          isSelected: state.selectedType.contains(value),
                         );
                       },
                     ),

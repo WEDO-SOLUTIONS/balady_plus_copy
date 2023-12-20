@@ -127,8 +127,8 @@ Future<void> setupMapness(EnvType envType) async {
 
   await initialiseDGis(
     logOptions: LogOptionsMessage(
-      systemLevel: LogLevelMessage.error,
-      customLevel: LogLevelMessage.error,
+      systemLevel: LogLevelMessage.fatal,
+      customLevel: LogLevelMessage.fatal,
     ),
     config: vendorConfig,
   );

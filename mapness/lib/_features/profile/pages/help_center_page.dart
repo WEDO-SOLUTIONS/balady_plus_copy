@@ -7,6 +7,7 @@ import 'package:mapness/_features/profile/widgets/contact_info.dart';
 import 'package:mapness/_features/profile/widgets/expandable_cell.dart';
 import 'package:mapness/app/routes/profile.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class HelpCenterPage extends StatelessWidget {
   const HelpCenterPage({super.key});
@@ -35,7 +36,7 @@ class HelpCenterPage extends StatelessWidget {
                       ),
                       const Spacer(),
                       Text(
-                        "Help Center",
+                        context.l10n.helpCenter,
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
                             .accentM
@@ -85,7 +86,7 @@ class HelpCenterPage extends StatelessWidget {
                     color: const Color(0xFFF5F7FA),
                     child: InkWell(
                       onTap: () {
-                        MomraWebsitePageRoute().push(context);
+                        const MomraWebsitePageRoute().push(context);
                       },
                       borderRadius: BorderRadius.circular(12),
                       child: Padding(
@@ -107,7 +108,7 @@ class HelpCenterPage extends StatelessWidget {
                             ),
                             const Spacer(),
                             Text(
-                              "Balady website",
+                              context.l10n.baladyWebsite,
                               style: Theme.of(context)
                                   .extension<ThemeTextStyles>()!
                                   .textM
@@ -139,11 +140,11 @@ class HelpCenterPage extends StatelessWidget {
               const SizedBox(
                 height: 16,
               ),
-              const ExpandableCell(
-                title: "Contact information",
+              ExpandableCell(
+                title: context.l10n.contactInformation,
                 count: 3,
                 icon: "assets/images_svg/help_contact.svg",
-                content: ContactInfo(),
+                content: const ContactInfo(),
               ),
               const SizedBox(
                 height: 8,
@@ -152,15 +153,17 @@ class HelpCenterPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
                   children: [
-                    const Spacer(),
-                    Text(
-                      "We are happy to connect you with Balady team, through\nthe following communication channels",
-                      textDirection: TextDirection.rtl,
-                      style: Theme.of(context)
-                          .extension<ThemeTextStyles>()!
-                          .textXS
-                          .copyWith(
-                              color: const Color(0xFF1E2A36).withOpacity(0.36)),
+                    Expanded(
+                      child: Text(
+                        context.l10n.weAreHappyToConnectYouWithBaladyTeam,
+                        textDirection: TextDirection.rtl,
+                        style: Theme.of(context)
+                            .extension<ThemeTextStyles>()!
+                            .textXS
+                            .copyWith(
+                                color:
+                                    const Color(0xFF1E2A36).withOpacity(0.36)),
+                      ),
                     ),
                   ],
                 ),

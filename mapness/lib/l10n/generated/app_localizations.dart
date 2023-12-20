@@ -99,6 +99,18 @@ abstract class AppLocalizations {
   /// **'حول التطبيق'**
   String get aboutApp;
 
+  /// No description provided for @aboutBalady.
+  ///
+  /// In ar, this message translates to:
+  /// **'حول بلدي'**
+  String get aboutBalady;
+
+  /// No description provided for @aboutPark.
+  ///
+  /// In ar, this message translates to:
+  /// **'About park'**
+  String get aboutPark;
+
   /// No description provided for @accessibility.
   ///
   /// In ar, this message translates to:
@@ -146,6 +158,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'الوصول'**
   String get arrival;
+
+  /// No description provided for @baladyWebsite.
+  ///
+  /// In ar, this message translates to:
+  /// **'موقع بلدي'**
+  String get baladyWebsite;
 
   /// No description provided for @beaches.
   ///
@@ -218,6 +236,18 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تحدي'**
   String get challenge;
+
+  /// No description provided for @changeTheColorSchemeOfAnApp.
+  ///
+  /// In ar, this message translates to:
+  /// **'تغيير نظام ألوان التطبيق من الفاتح إلى الداكن'**
+  String get changeTheColorSchemeOfAnApp;
+
+  /// No description provided for @chooseTheLanguageOfAll.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر لغة كل الواجهة في تطبيق بلدي'**
+  String get chooseTheLanguageOfAll;
 
   /// No description provided for @clean.
   ///
@@ -312,7 +342,7 @@ abstract class AppLocalizations {
   /// No description provided for @connectToMomrah.
   ///
   /// In ar, this message translates to:
-  /// **'تواصل مع مومراه'**
+  /// **'تسجيل الدخول'**
   String get connectToMomrah;
 
   /// No description provided for @connectionLost.
@@ -320,6 +350,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'فقد الاتصال'**
   String get connectionLost;
+
+  /// No description provided for @contactInformation.
+  ///
+  /// In ar, this message translates to:
+  /// **'معلومات التواصل'**
+  String get contactInformation;
 
   /// No description provided for @continueRide.
   ///
@@ -579,6 +615,12 @@ abstract class AppLocalizations {
   /// **'صباح الخير'**
   String get goodMorning;
 
+  /// No description provided for @helpCenter.
+  ///
+  /// In ar, this message translates to:
+  /// **'مركز المساعدة'**
+  String get helpCenter;
+
   /// No description provided for @home.
   ///
   /// In ar, this message translates to:
@@ -819,6 +861,12 @@ abstract class AppLocalizations {
   /// **'الأسواق'**
   String get markets;
 
+  /// No description provided for @maybeLater.
+  ///
+  /// In ar, this message translates to:
+  /// **'ربما في وقت لاحق'**
+  String get maybeLater;
+
   /// No description provided for @menu.
   ///
   /// In ar, this message translates to:
@@ -909,6 +957,12 @@ abstract class AppLocalizations {
   /// **'التالي'**
   String get next;
 
+  /// No description provided for @noThanks.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا، شكرًا'**
+  String get noThanks;
+
   /// No description provided for @open24Hours.
   ///
   /// In ar, this message translates to:
@@ -932,6 +986,30 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'مفتوح حتى'**
   String get openUntill;
+
+  /// No description provided for @parkAmanah.
+  ///
+  /// In ar, this message translates to:
+  /// **'Amanah'**
+  String get parkAmanah;
+
+  /// No description provided for @parkAreaSize.
+  ///
+  /// In ar, this message translates to:
+  /// **'Area size'**
+  String get parkAreaSize;
+
+  /// No description provided for @parkOpeningDate.
+  ///
+  /// In ar, this message translates to:
+  /// **'Opening date'**
+  String get parkOpeningDate;
+
+  /// No description provided for @parkType.
+  ///
+  /// In ar, this message translates to:
+  /// **'Type'**
+  String get parkType;
 
   /// No description provided for @parking.
   ///
@@ -1065,11 +1143,41 @@ abstract class AppLocalizations {
   /// **'الملف الشخصي'**
   String get profile;
 
+  /// No description provided for @profileSettings.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعدادات الملف الشخصي'**
+  String get profileSettings;
+
   /// No description provided for @published.
   ///
   /// In ar, this message translates to:
   /// **'تم النشر'**
   String get published;
+
+  /// No description provided for @rate.
+  ///
+  /// In ar, this message translates to:
+  /// **'تقييم'**
+  String get rate;
+
+  /// No description provided for @rateBaladyApp.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيّم تطبيق بلدي'**
+  String get rateBaladyApp;
+
+  /// No description provided for @rateMessage.
+  ///
+  /// In ar, this message translates to:
+  /// **'إذا أعجبك هذا التطبيق، نرجو تخصيص بعض من وقتك لتقييمنا!  لن يستغرق الأمر أكثر من دقيقة واحدة.'**
+  String get rateMessage;
+
+  /// No description provided for @rateThisApp.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيم هذا التطبيق'**
+  String get rateThisApp;
 
   /// No description provided for @ratingBuilding.
   ///
@@ -1479,6 +1587,12 @@ abstract class AppLocalizations {
   /// **'24/7'**
   String get twentyFourSeven;
 
+  /// No description provided for @twitterAccount.
+  ///
+  /// In ar, this message translates to:
+  /// **'حساب التوتير'**
+  String get twitterAccount;
+
   /// No description provided for @unknown.
   ///
   /// In ar, this message translates to:
@@ -1514,6 +1628,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'مشاهدة المزيد'**
   String get watchMore;
+
+  /// No description provided for @weAreHappyToConnectYouWithBaladyTeam.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسعد بتواصلكم مع فريق بلدي، من خلال قنوات التواصل التالية'**
+  String get weAreHappyToConnectYouWithBaladyTeam;
 
   /// No description provided for @weCouldntFindAnythingTryChangingYourRequest.
   ///

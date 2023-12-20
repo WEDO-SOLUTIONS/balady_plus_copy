@@ -17,8 +17,8 @@ class LayerDetailsRoute extends GoRouteData {
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    var extra = state.extra as Map<String, dynamic>;
-    var data = extra['data'] as PointLayersData?;
+    var extra = state.extra as Map<String, dynamic>?;
+    var data = extra?['data'] as PointLayersData?;
     return TransculentPage(
       child: LayersDetailsWidget(
         data: data,

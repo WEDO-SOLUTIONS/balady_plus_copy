@@ -2440,6 +2440,100 @@ class IWishObject_Photo extends $pb.GeneratedMessage {
   Image ensureImage() => $_ensure(0);
 }
 
+class IWishObject_Metadata extends $pb.GeneratedMessage {
+  factory IWishObject_Metadata({
+    $core.String? areaName,
+    $core.String? typeName,
+    $core.int? areaSize,
+    Timestamp? openingDate,
+  }) {
+    final $result = create();
+    if (areaName != null) {
+      $result.areaName = areaName;
+    }
+    if (typeName != null) {
+      $result.typeName = typeName;
+    }
+    if (areaSize != null) {
+      $result.areaSize = areaSize;
+    }
+    if (openingDate != null) {
+      $result.openingDate = openingDate;
+    }
+    return $result;
+  }
+  IWishObject_Metadata._() : super();
+  factory IWishObject_Metadata.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory IWishObject_Metadata.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'IWishObject.Metadata', package: const $pb.PackageName(_omitMessageNames ? '' : 'balady.protocol'), createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'areaName')
+    ..aOS(2, _omitFieldNames ? '' : 'typeName')
+    ..a<$core.int>(3, _omitFieldNames ? '' : 'areaSize', $pb.PbFieldType.O3)
+    ..aOM<Timestamp>(4, _omitFieldNames ? '' : 'openingDate', subBuilder: Timestamp.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  IWishObject_Metadata clone() => IWishObject_Metadata()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  IWishObject_Metadata copyWith(void Function(IWishObject_Metadata) updates) => super.copyWith((message) => updates(message as IWishObject_Metadata)) as IWishObject_Metadata;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static IWishObject_Metadata create() => IWishObject_Metadata._();
+  IWishObject_Metadata createEmptyInstance() => create();
+  static $pb.PbList<IWishObject_Metadata> createRepeated() => $pb.PbList<IWishObject_Metadata>();
+  @$core.pragma('dart2js:noInline')
+  static IWishObject_Metadata getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<IWishObject_Metadata>(create);
+  static IWishObject_Metadata? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get areaName => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set areaName($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasAreaName() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearAreaName() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get typeName => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set typeName($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasTypeName() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearTypeName() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.int get areaSize => $_getIZ(2);
+  @$pb.TagNumber(3)
+  set areaSize($core.int v) { $_setSignedInt32(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasAreaSize() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearAreaSize() => clearField(3);
+
+  @$pb.TagNumber(4)
+  Timestamp get openingDate => $_getN(3);
+  @$pb.TagNumber(4)
+  set openingDate(Timestamp v) { setField(4, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasOpeningDate() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearOpeningDate() => clearField(4);
+  @$pb.TagNumber(4)
+  Timestamp ensureOpeningDate() => $_ensure(3);
+}
+
 class IWishObject extends $pb.GeneratedMessage {
   factory IWishObject({
     $core.String? id,
@@ -2452,6 +2546,7 @@ class IWishObject extends $pb.GeneratedMessage {
     $core.Iterable<IWishObject_Variant>? variants,
     $core.int? selectedVariantId,
     $core.bool? feedbackSent,
+    IWishObject_Metadata? metadata,
   }) {
     final $result = create();
     if (id != null) {
@@ -2484,6 +2579,9 @@ class IWishObject extends $pb.GeneratedMessage {
     if (feedbackSent != null) {
       $result.feedbackSent = feedbackSent;
     }
+    if (metadata != null) {
+      $result.metadata = metadata;
+    }
     return $result;
   }
   IWishObject._() : super();
@@ -2501,6 +2599,7 @@ class IWishObject extends $pb.GeneratedMessage {
     ..pc<IWishObject_Variant>(8, _omitFieldNames ? '' : 'variants', $pb.PbFieldType.PM, subBuilder: IWishObject_Variant.create)
     ..a<$core.int>(9, _omitFieldNames ? '' : 'selectedVariantId', $pb.PbFieldType.O3)
     ..aOB(10, _omitFieldNames ? '' : 'feedbackSent')
+    ..aOM<IWishObject_Metadata>(11, _omitFieldNames ? '' : 'metadata', subBuilder: IWishObject_Metadata.create)
     ..hasRequiredFields = false
   ;
 
@@ -2604,6 +2703,17 @@ class IWishObject extends $pb.GeneratedMessage {
   $core.bool hasFeedbackSent() => $_has(9);
   @$pb.TagNumber(10)
   void clearFeedbackSent() => clearField(10);
+
+  @$pb.TagNumber(11)
+  IWishObject_Metadata get metadata => $_getN(10);
+  @$pb.TagNumber(11)
+  set metadata(IWishObject_Metadata v) { setField(11, v); }
+  @$pb.TagNumber(11)
+  $core.bool hasMetadata() => $_has(10);
+  @$pb.TagNumber(11)
+  void clearMetadata() => clearField(11);
+  @$pb.TagNumber(11)
+  IWishObject_Metadata ensureMetadata() => $_ensure(10);
 }
 
 class IWishMarkersResponse extends $pb.GeneratedMessage {

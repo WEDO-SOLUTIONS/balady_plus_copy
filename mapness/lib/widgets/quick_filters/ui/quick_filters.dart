@@ -24,23 +24,19 @@ class QuickFilters extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 40,
-      child: ListView.builder(
+      child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: padding,
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
         itemCount: filters.length,
         itemBuilder: (BuildContext context, int index) {
-          return Padding(
-            padding: EdgeInsets.only(
-              right: index == 0 ? 0 : 8,
-            ),
-            child: QuickFilter(
-              item: filters[index],
-              selected: index == selectedIndex,
-              onTap: () {
-                onTap(index);
-              },
-              background: itemBackground,
-            ),
+          return QuickFilter(
+            item: filters[index],
+            selected: index == selectedIndex,
+            onTap: () {
+              onTap(index);
+            },
+            background: itemBackground,
           );
         },
       ),
