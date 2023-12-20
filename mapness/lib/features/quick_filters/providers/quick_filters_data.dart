@@ -94,13 +94,13 @@ final quickFilters = [
     uiIcon: "assets/icons/svg/quick_filters/ic_quick_recreation.svg",
     mapIcon: "assets/icons/svg/quick_filters/recreation_pin.svg",
   ),
-  QuickFilter(
-    rubrics: [],
-    query: 'beaches',
-    title: 'Beaches',
-    uiIcon: 'assets/icons/svg/quick_filters/ic_quick_beaches.svg',
-    mapIcon: "assets/icons/svg/quick_filters/beaches_pin.svg",
-  ),
+  // QuickFilter(
+  //   rubrics: [],
+  //   query: 'beaches',
+  //   title: 'Beaches',
+  //   uiIcon: 'assets/icons/svg/quick_filters/ic_quick_beaches.svg',
+  //   mapIcon: "assets/icons/svg/quick_filters/beaches_pin.svg",
+  // ),
   QuickFilter(
     rubrics: [
       261,
