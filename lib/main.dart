@@ -21,6 +21,7 @@ void main() async {
       options.tracesSampleRate = 1.0;
       // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
       // We recommend adjusting this value in production.
+      options.profilesSampleRate = 1.0;
       options.attachScreenshot = true;
       options.enableUserInteractionTracing = true;
       options.captureFailedRequests = true;
