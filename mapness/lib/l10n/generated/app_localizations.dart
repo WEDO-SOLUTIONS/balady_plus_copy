@@ -96,19 +96,19 @@ abstract class AppLocalizations {
   /// No description provided for @aboutApp.
   ///
   /// In ar, this message translates to:
-  /// **'حول التطبيق'**
+  /// **'عن التطبيق'**
   String get aboutApp;
 
   /// No description provided for @aboutBalady.
   ///
   /// In ar, this message translates to:
-  /// **'حول بلدي'**
+  /// **'عن بلدي'**
   String get aboutBalady;
 
   /// No description provided for @aboutPark.
   ///
   /// In ar, this message translates to:
-  /// **'About park'**
+  /// **'عن الحديقة'**
   String get aboutPark;
 
   /// No description provided for @accessibility.
@@ -573,6 +573,12 @@ abstract class AppLocalizations {
   /// **'ركِّز في الطريق'**
   String get focusOnTheRoad;
 
+  /// No description provided for @friday.
+  ///
+  /// In ar, this message translates to:
+  /// **'جمعة'**
+  String get friday;
+
   /// No description provided for @from.
   ///
   /// In ar, this message translates to:
@@ -897,6 +903,12 @@ abstract class AppLocalizations {
   /// **'دقائق'**
   String get minutes;
 
+  /// No description provided for @monday.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإثنين'**
+  String get monday;
+
   /// No description provided for @mosques.
   ///
   /// In ar, this message translates to:
@@ -942,7 +954,7 @@ abstract class AppLocalizations {
   /// No description provided for @nav_profile.
   ///
   /// In ar, this message translates to:
-  /// **'الحساب'**
+  /// **'الملف الشخصي '**
   String get nav_profile;
 
   /// No description provided for @nav_route.
@@ -1004,6 +1016,30 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'Opening date'**
   String get parkOpeningDate;
+
+  /// No description provided for @parkSizeBig.
+  ///
+  /// In ar, this message translates to:
+  /// **'Big size park'**
+  String get parkSizeBig;
+
+  /// No description provided for @parkSizeMedium.
+  ///
+  /// In ar, this message translates to:
+  /// **'Medium size park'**
+  String get parkSizeMedium;
+
+  /// No description provided for @parkSizeSmall.
+  ///
+  /// In ar, this message translates to:
+  /// **'Small size park'**
+  String get parkSizeSmall;
+
+  /// No description provided for @parkSizeUnknown.
+  ///
+  /// In ar, this message translates to:
+  /// **'Unknown size park'**
+  String get parkSizeUnknown;
 
   /// No description provided for @parkType.
   ///
@@ -1275,6 +1311,12 @@ abstract class AppLocalizations {
   /// **'صالونات'**
   String get salons;
 
+  /// No description provided for @saturday.
+  ///
+  /// In ar, this message translates to:
+  /// **'السبت'**
+  String get saturday;
+
   /// No description provided for @schools.
   ///
   /// In ar, this message translates to:
@@ -1314,7 +1356,7 @@ abstract class AppLocalizations {
   /// No description provided for @sendFeedback.
   ///
   /// In ar, this message translates to:
-  /// **'ارسل رأيك'**
+  /// **'سجل انطباعك'**
   String get sendFeedback;
 
   /// No description provided for @sendYourWishes.
@@ -1515,6 +1557,12 @@ abstract class AppLocalizations {
   /// **'الشوارع'**
   String get streets;
 
+  /// No description provided for @sunday.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأحد'**
+  String get sunday;
+
   /// No description provided for @tellUsWhatYouWant.
   ///
   /// In ar, this message translates to:
@@ -1544,6 +1592,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'استغرقت الرحلة'**
   String get theTripTook;
+
+  /// No description provided for @thursday.
+  ///
+  /// In ar, this message translates to:
+  /// **'الخميس'**
+  String get thursday;
 
   /// No description provided for @tinId.
   ///
@@ -1580,6 +1634,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'حاول مرة أخرى'**
   String get tryAgain;
+
+  /// No description provided for @tuesday.
+  ///
+  /// In ar, this message translates to:
+  /// **'الثلاثاء'**
+  String get tuesday;
 
   /// No description provided for @twentyFourSeven.
   ///
@@ -1632,7 +1692,7 @@ abstract class AppLocalizations {
   /// No description provided for @weAreHappyToConnectYouWithBaladyTeam.
   ///
   /// In ar, this message translates to:
-  /// **'نسعد بتواصلكم مع فريق بلدي، من خلال قنوات التواصل التالية'**
+  /// **'تم تطوير بوابة بلدي بالتعاون مع جهات القطاع البلدي المختلفة لتكون البوابة الوطنية الداعمة للمجتمع البلدي.\nوتشمل هذه البوابة في المرحلة الحالية ثلاث مسؤوليات رئيسية وهي:\n- الخدمات التفاعلية التي تساعد في تعزيز مفهوم الشراكة المجتمعية لتحسين جودة الخدمات المقدمة للمستفيدين.\n- الخدمات الإلكترونية التي تساعد على تقديم الطلبات الإلكترونية لاستخراج الرخص الأكثر استخدامًا.\n- الخدمات المعلوماتية والتي تساعد المستفيدين على اتخاذ القرارات ذات العلاقة بما يساهم في تحسين مستوى الرضا عن جهات القطاع البلدي.'**
   String get weAreHappyToConnectYouWithBaladyTeam;
 
   /// No description provided for @weCouldntFindAnythingTryChangingYourRequest.
@@ -1640,6 +1700,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'لم نتمكن من العثور على شيء. حاول تغيير طلبك'**
   String get weCouldntFindAnythingTryChangingYourRequest;
+
+  /// No description provided for @wednesday.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأربعاء'**
+  String get wednesday;
 
   /// No description provided for @weekend.
   ///

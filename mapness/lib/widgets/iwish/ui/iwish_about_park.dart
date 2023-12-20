@@ -6,7 +6,13 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class IwishAboutPark extends StatelessWidget {
   final IwishMetadata metadata;
-  const IwishAboutPark({Key? key, required this.metadata}) : super(key: key);
+  final ParkSize parkSize;
+
+  const IwishAboutPark({
+    super.key,
+    required this.metadata,
+    required this.parkSize,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +43,12 @@ class IwishAboutPark extends StatelessWidget {
         ),
         const SizedBox(height: 2),
         Text(
-          metadata.typeName,
+          switch (parkSize) {
+            ParkSize.small => locale.parkSizeSmall,
+            ParkSize.medium => locale.parkSizeMedium,
+            ParkSize.large => locale.parkSizeBig,
+            ParkSize.unknown => locale.parkSizeUnknown,
+          },
           style: data,
         ),
         const SizedBox(height: 22),
@@ -49,7 +60,7 @@ class IwishAboutPark extends StatelessWidget {
         ),
         const SizedBox(height: 2),
         Text(
-          metadata.typeName,
+          NumberFormat('#,###').format(metadata.areaSize),
           style: data,
         ),
         const SizedBox(height: 22),
@@ -73,7 +84,7 @@ class IwishAboutPark extends StatelessWidget {
         ),
         const SizedBox(height: 2),
         Text(
-          metadata.typeName,
+          metadata.areaName,
           style: data,
         ),
       ],

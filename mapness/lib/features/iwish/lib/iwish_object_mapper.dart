@@ -55,6 +55,12 @@ extension IwishItemResponseMapper on pb.IWishObject {
           metadata.openingDate.value.toInt(),
         ),
       ),
+      parkSize: switch (size) {
+        pb.IWishSize.IWISH_SIZE_SMALL => ParkSize.small,
+        pb.IWishSize.IWISH_SIZE_MEDIUM => ParkSize.medium,
+        pb.IWishSize.IWISH_SIZE_LARGE => ParkSize.large,
+        _ => ParkSize.unknown,
+      },
     );
 
     return iwishEntity;

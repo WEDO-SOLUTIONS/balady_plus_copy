@@ -131,7 +131,10 @@ class IwishPlaceCard extends ConsumerWidget {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: IwishAboutPark(metadata: entity.metadata),
+                            child: IwishAboutPark(
+                              metadata: entity.metadata,
+                              parkSize: entity.parkSize,
+                            ),
                           ),
                         )
                       ],

@@ -10,7 +10,6 @@ import 'package:mapness/_features/lifestyle_layers/layers_sheet.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
-import 'package:mapness/features/iwish/providers/iwish_markers.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
@@ -51,7 +50,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
               rubrics: [13374],
               title: "المساجد",
               uiIcon: "assets/icons/svg/quick_filters/ic_quick_mosques.svg",
-              mapIcon: "assets/icons/svg/ic_marker.svg",
+              mapIcon: "assets/icons/svg/quick_filters/mosques_pin.svg",
             ),
             1
           ));
