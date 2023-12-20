@@ -1,17 +1,15 @@
+import 'dart:io';
+
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:balady_plus/app/core/utils/map_utils.dart';
-import 'package:flutter/foundation.dart';
-import 'dart:io' show Platform;
-
-import 'package:flutter/material.dart' show WidgetsFlutterBinding;
-import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
-import 'package:flutter_inappwebview/flutter_inappwebview.dart'
-    show AndroidInAppWebViewController;
-import 'package:hijri/hijri_calendar.dart' show HijriCalendar;
+import 'package:balady_plus/etmam_app/core/dependency_injection/dependency_injection_exports.dart'
+    as diEtmam show initialize;
 import 'package:flutter/material.dart'
     show BoxShadow, Color, Colors, WidgetsFlutterBinding;
 import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:hijri/hijri_calendar.dart' show HijriCalendar;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizationDefaultType, translator;
 import 'package:path_provider/path_provider.dart';
@@ -25,8 +23,6 @@ import './app/core/services/services_exports.dart'
 import './app/core/utils/utils_exports.dart'
     show AppConfig, CommonFunctions, EnvType;
 import 'app/core/services/local/initializer.dart';
-import 'package:balady_plus/etmam_app/core/dependency_injection/dependency_injection_exports.dart'
-    as diEtmam show initialize;
 
 abstract class AppEnv {
   static Future<void> setupEnv(EnvType type) async {
@@ -67,7 +63,7 @@ abstract class AppEnv {
       assetsDirectory: AppConfig.appLanguagesPath,
     );
 
-    if (Platform.isAndroid && kDebugMode) {
+    if (Platform.isAndroid) {
       await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
     }
     HijriCalendar.setLocal(translator.activeLanguageCode);
