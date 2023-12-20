@@ -1,7 +1,6 @@
 //import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
 //   show showUpdateAppPopUpWidget;
 import 'package:balady_plus/app/features/entry_point/domain/use_cases/get_test_data.dart';
-import 'package:balady_plus/app/features/transaction_inquiry/customer_voice_exports.dart';
 import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +14,6 @@ import '../../../../../etmam_app/features/etmam_entry_point/presentation/cubit/e
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/services/local/helpers.dart';
-import '../../../../core/services/local/location_service.dart';
 import '../../../../core/services/services_exports.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../location/presentation/bloc/location_bloc.dart';
@@ -286,7 +284,6 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   Future<void> autoLogout() async {
     sharedPrefs.setSSOToken(null);
     sl<DelegatorsCubit>().clearDelegators();
-    final failureOrSuccess = await _clearAuth(NoParams());
 
     //MM sharedPrefs.setUserProfile(null);
     sharedPrefs.setSSOUserProfile(null);
