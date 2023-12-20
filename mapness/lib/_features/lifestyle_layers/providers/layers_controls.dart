@@ -83,10 +83,7 @@ class LayersState {
 
 @riverpod
 class LayersControls extends _$LayersControls {
-  // final visibleRectSub = BehaviorSubject<VisibleRect?>();
   StreamSubscription? viewPortSubscription;
-
-  // List<Marker> allMarkers = [];
 
   @override
   LayersState build() {
@@ -97,7 +94,6 @@ class LayersControls extends _$LayersControls {
         isLoading: false,
         investmentsMarkers: [],
       );
-      // listen.cancel();
       viewPortSubscription?.cancel();
     });
 
@@ -254,7 +250,6 @@ class LayersControls extends _$LayersControls {
       layersControls.update(isLoading: false);
       await mapManager.addPolygons(list);
     });
-    // }
   }
 
   Future<void> buildingCompliance(WidgetRef ref, LayerType layerType) async {
@@ -422,7 +417,6 @@ class LayersControls extends _$LayersControls {
   }
 
   void showEsriCard(PointLayersData e) {
-    // update(whiteLands: e);
     ref
         .read(goRouterProvider)
         .push(LayerDetailsRoute().location, extra: {"data": e});

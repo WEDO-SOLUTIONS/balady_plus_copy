@@ -25,7 +25,6 @@ class QrLicenseRepository extends _$QrLicenseRepository {
     const licenseDetails = 'qr-services/mobile/license-details';
 
     if(proxy!=null){
-      ///only for urbiPreProd
     const domain = 'https://apiservicesstg.balady.gov.sa/v1';
     var url = "$domain/$licenseDetails/$licenseNumber";
     verifyKey = hashRequest(url, "GET");
