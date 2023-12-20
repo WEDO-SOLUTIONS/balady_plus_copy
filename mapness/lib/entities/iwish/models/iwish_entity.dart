@@ -9,6 +9,7 @@ class IwishEntity {
 
   final IwishCategory category;
   final IwishState state;
+  final ParkSize parkSize;
 
   final bool feedbackSent;
   final GeoPointMessage location;
@@ -18,6 +19,7 @@ class IwishEntity {
   final List<IwishEntityVariant> variants;
 
   IwishEntity({
+    required this.parkSize,
     required this.metadata,
     required this.variants,
     required this.photos,
@@ -57,7 +59,8 @@ class IwishMetadata {
   });
 }
 
-enum AreaSize {
+enum ParkSize {
+  unknown,
   small,
   medium,
   large,

@@ -2547,6 +2547,7 @@ class IWishObject extends $pb.GeneratedMessage {
     $core.int? selectedVariantId,
     $core.bool? feedbackSent,
     IWishObject_Metadata? metadata,
+    IWishSize? size,
   }) {
     final $result = create();
     if (id != null) {
@@ -2582,6 +2583,9 @@ class IWishObject extends $pb.GeneratedMessage {
     if (metadata != null) {
       $result.metadata = metadata;
     }
+    if (size != null) {
+      $result.size = size;
+    }
     return $result;
   }
   IWishObject._() : super();
@@ -2600,6 +2604,7 @@ class IWishObject extends $pb.GeneratedMessage {
     ..a<$core.int>(9, _omitFieldNames ? '' : 'selectedVariantId', $pb.PbFieldType.O3)
     ..aOB(10, _omitFieldNames ? '' : 'feedbackSent')
     ..aOM<IWishObject_Metadata>(11, _omitFieldNames ? '' : 'metadata', subBuilder: IWishObject_Metadata.create)
+    ..e<IWishSize>(12, _omitFieldNames ? '' : 'size', $pb.PbFieldType.OE, defaultOrMaker: IWishSize.IWISH_SIZE_UNKNOWN, valueOf: IWishSize.valueOf, enumValues: IWishSize.values)
     ..hasRequiredFields = false
   ;
 
@@ -2714,6 +2719,15 @@ class IWishObject extends $pb.GeneratedMessage {
   void clearMetadata() => clearField(11);
   @$pb.TagNumber(11)
   IWishObject_Metadata ensureMetadata() => $_ensure(10);
+
+  @$pb.TagNumber(12)
+  IWishSize get size => $_getN(11);
+  @$pb.TagNumber(12)
+  set size(IWishSize v) { setField(12, v); }
+  @$pb.TagNumber(12)
+  $core.bool hasSize() => $_has(11);
+  @$pb.TagNumber(12)
+  void clearSize() => clearField(12);
 }
 
 class IWishMarkersResponse extends $pb.GeneratedMessage {
