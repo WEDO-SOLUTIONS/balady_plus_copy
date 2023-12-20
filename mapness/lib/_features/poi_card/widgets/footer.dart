@@ -220,7 +220,6 @@ class _PoiCardFooterState extends ConsumerState<PoiCardFooter> {
         child: SizedBox(
           height: footerHeight,
           child: Row(
-            textDirection: TextDirection.ltr,
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
             children: childrenRtl,
