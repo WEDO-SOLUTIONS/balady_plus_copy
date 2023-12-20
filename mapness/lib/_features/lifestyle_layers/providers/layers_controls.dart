@@ -3,18 +3,16 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_repository.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/investment_sites.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/map_requests_params.dart';
-
 import 'package:mapness/_features/lifestyle_layers/domain/white_lands.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/layer_details.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
-import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -33,48 +31,15 @@ const _markerPrefix = 'esri_markers-';
 
 enum LayerType { favourites, invest, buildings, fencing, joy }
 
-extension LayerTypeExt on LayerType {
-
-
-
-  GISMapLayers? getLayerType() {
-    return switch (this) {
-      LayerType.favourites => null,
-      LayerType.invest => GISMapLayers.Opportunities,
-      LayerType.buildings => GISMapLayers.BSAimtithalBuildingsCertificateL,
-      LayerType.fencing => GISMapLayers.BSWhiteParcelS,
-      LayerType.joy => null,
-    };
+@riverpod
+class SelectedLayer extends _$SelectedLayer {
+  void setLayerType(LayerType? layerType) {
+    state = layerType;
   }
 
-  String esriLayerId() {
-    return switch (this) {
-      LayerType.favourites => '',
-      LayerType.invest => '2',
-      LayerType.buildings => '7',
-      LayerType.fencing => '8',
-      LayerType.joy => '',
-    };
-  }
-
-  String iconPath() {
-    return switch (this) {
-      LayerType.favourites => "assets/icons/svg/layers/bookmark.svg",
-      LayerType.invest => "assets/icons/svg/layers/Invest.svg",
-      LayerType.buildings => "assets/icons/svg/layers/buildings.svg",
-      LayerType.fencing => "assets/icons/svg/layers/fence.svg",
-      LayerType.joy => "assets/icons/svg/layers/joy.svg",
-    };
-  }
-
-  String title(AppLocalizations l10n) {
-    return switch (this) {
-      LayerType.favourites => l10n.favourites,
-      LayerType.invest => l10n.investmentOpportunities,
-      LayerType.buildings => l10n.compilanceBuildings,
-      LayerType.fencing => l10n.fencingVacantLands,
-      LayerType.joy => l10n.joyParks,
-    };
+  @override
+  LayerType? build(LayerType? layerType) {
+    return null;
   }
 }
 
@@ -84,7 +49,6 @@ class LayersState {
   final bool isLoading;
 
   List<Marker>? investmentsMarkers;
-  List<Polygon>? polygones;
   List<Polyline>? polylines;
 
   LayersState({
@@ -163,6 +127,12 @@ class LayersControls extends _$LayersControls {
       case LayerType.joy:
         toggleIwish(currentState, value);
     }
+    state = LayersState(
+      investmentsMarkers: state.investmentsMarkers,
+      layersVisible: state.layersVisible,
+      selectedType: value == state.selectedType ? null : value,
+      isLoading: state.isLoading,
+    );
   }
 
   Future<void> toggleIwish(LayerType? currentState, LayerType value) async {
@@ -196,12 +166,11 @@ class LayersControls extends _$LayersControls {
 
     var layersControls = ref.watch(layersControlsProvider.notifier);
     var mapController =
-    ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
+        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
 
     update(isLoading: true);
 
     await layersControls._removeAll();
-
 
     await viewPortSubscription?.cancel();
     viewPortSubscription = ref
@@ -209,23 +178,21 @@ class LayersControls extends _$LayersControls {
         .visibleRectSubject
         .debounceTime(const Duration(milliseconds: 2500))
         .map((event) => event.visibleRect)
-        .asyncMap((visibleRect) =>
-        controller.getEsriPoints(
-            params: MapRequestParams(
-                layer: state.selectedType?.getLayerType(),
-                southWestLongitude: visibleRect.southWestLon,
-                southWestLatitude: visibleRect.southWestLat,
-                northEastLongitude: visibleRect.northEastLon,
-                northEastLatitude: visibleRect.northEastLat,
-                domain: env.url,
-                proxy: env.proxy,
-                objectId: int.tryParse(layerData.id) ?? 0,
+        .asyncMap((visibleRect) => controller.getEsriPoints(
+                params: MapRequestParams(
+              layer: state.selectedType?.getLayerType(),
+              southWestLongitude: visibleRect.southWestLon,
+              southWestLatitude: visibleRect.southWestLat,
+              northEastLongitude: visibleRect.northEastLon,
+              northEastLatitude: visibleRect.northEastLat,
+              domain: env.url,
+              proxy: env.proxy,
+              objectId: int.tryParse(layerData.id) ?? 0,
               pointsDetails: true,
-
             )))
         .map(_makeMarkers)
         .listen(
-          (markers) async {
+      (markers) async {
         layersControls.update(isLoading: false);
         await mapController.addMarkers(markers);
       },
@@ -238,7 +205,7 @@ class LayersControls extends _$LayersControls {
 
     var layersControls = ref.watch(layersControlsProvider.notifier);
     var mapController =
-    ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
+        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
 
     update(isLoading: true, selectedType: layerType);
 
@@ -250,9 +217,8 @@ class LayersControls extends _$LayersControls {
         .visibleRectSubject
         .debounceTime(const Duration(milliseconds: 2500))
         .map((event) => event.visibleRect)
-        .asyncMap((visibleRect) =>
-        controller.getEsriPoints(
-            params: MapRequestParams(
+        .asyncMap((visibleRect) => controller.getEsriPoints(
+                params: MapRequestParams(
               layer: GISMapLayers.Opportunities,
               southWestLongitude: visibleRect.southWestLon,
               southWestLatitude: visibleRect.southWestLat,
@@ -263,7 +229,7 @@ class LayersControls extends _$LayersControls {
             )))
         .map(_makeMarkers)
         .listen(
-          (markers) async {
+      (markers) async {
         layersControls.update(isLoading: false);
         await mapController.addMarkers(markers);
       },
@@ -275,7 +241,7 @@ class LayersControls extends _$LayersControls {
     final env = await ref.read(dgisEnvironmentProvider.future);
     var layersControls = ref.watch(layersControlsProvider.notifier);
     final mapManager =
-    ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
+        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
 
     layersControls.update(isLoading: true, selectedType: LayerType.fencing);
 
@@ -287,16 +253,15 @@ class LayersControls extends _$LayersControls {
         .visibleRectSubject
         .debounceTime(const Duration(milliseconds: 2500))
         .map((event) => event.visibleRect)
-        .asyncMap((visibleRect) =>
-        controller.getWhiteLands(MapRequestParams(
-          layer: GISMapLayers.BSWhiteParcelS,
-          southWestLongitude: visibleRect.southWestLon,
-          southWestLatitude: visibleRect.southWestLat,
-          northEastLongitude: visibleRect.northEastLon,
-          northEastLatitude: visibleRect.northEastLat,
-          proxy: env.proxy,
-          domain: env.url,
-        )))
+        .asyncMap((visibleRect) => controller.getWhiteLands(MapRequestParams(
+              layer: GISMapLayers.BSWhiteParcelS,
+              southWestLongitude: visibleRect.southWestLon,
+              southWestLatitude: visibleRect.southWestLat,
+              northEastLongitude: visibleRect.northEastLon,
+              northEastLatitude: visibleRect.northEastLat,
+              proxy: env.proxy,
+              domain: env.url,
+            )))
         .map(_makePolygons)
         .listen((polygons) async {
       layersControls.update(isLoading: false);
@@ -309,7 +274,7 @@ class LayersControls extends _$LayersControls {
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
     final env = await ref.read(dgisEnvironmentProvider.future);
     final mapObjectManager =
-    ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
+        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
 
     await layersControls._removeAll();
     await viewPortSubscription?.cancel();
@@ -320,15 +285,15 @@ class LayersControls extends _$LayersControls {
         .debounceTime(const Duration(milliseconds: 2500))
         .map((event) => event.visibleRect)
         .asyncMap((visibleRect) =>
-        controller.buildingComplianceCertificate(MapRequestParams(
-          layer: GISMapLayers.BSAimtithalBuildingsCertificateL,
-          southWestLongitude: visibleRect.southWestLon,
-          southWestLatitude: visibleRect.southWestLat,
-          northEastLongitude: visibleRect.northEastLon,
-          northEastLatitude: visibleRect.northEastLat,
-          proxy: env.proxy,
-          domain: env.url,
-        )))
+            controller.buildingComplianceCertificate(MapRequestParams(
+              layer: GISMapLayers.BSAimtithalBuildingsCertificateL,
+              southWestLongitude: visibleRect.southWestLon,
+              southWestLatitude: visibleRect.southWestLat,
+              northEastLongitude: visibleRect.northEastLon,
+              northEastLatitude: visibleRect.northEastLat,
+              proxy: env.proxy,
+              domain: env.url,
+            )))
         .map(_makePolylineWithPoint)
         .listen((polylines) async {
       layersControls.update(isLoading: false);
@@ -337,7 +302,8 @@ class LayersControls extends _$LayersControls {
   }
 
   List<Polyline> _makePolylineWithPoint(
-      List<BuildingComplianceCertificate>? pointList,) {
+    List<BuildingComplianceCertificate>? pointList,
+  ) {
     final polylines = <Polyline>[];
     if (pointList != null && pointList.isNotEmpty) {
       for (var element in pointList) {
@@ -361,59 +327,61 @@ class LayersControls extends _$LayersControls {
     return polylines;
   }
 
-  List<Marker> _makeMarkers(List<InvestmentSites>? response,) {
+  List<Marker> _makeMarkers(
+    List<InvestmentSites>? response,
+  ) {
     var markers = response
-        ?.whereNotNull()
-        .map<Marker>(
-          (e) =>
-          Marker(
-            id: e.id,
-            options: MarkerOptionsMessage(
-              position: GeoPointWithElevationMessage(
-                latitude: e.latLng?.latitude ?? 0,
-                longitude: e.latLng?.longitude ?? 0,
-                elevation: 0,
-              ),
-              icon: MarkerIconMessage(
-                path:
-                "packages/mapness/assets/icons/svg/layers/investment_opportunities.svg",
-                width: 30,
-              ),
-              textStyle: MarkerTextStyleMessage(
-                color: const Color(0xFF1BA136).value,
-                strokeColor: Colors.white.value,
-                strokeWidth: 1,
-                fontSize: 14,
-                fontName: "Frutiger",
-                textPlacement: MarkerTextPlacementMessage(
-                  placement: TextPlacementMessage.bottomCenter,
+            ?.whereNotNull()
+            .map<Marker>(
+              (e) => Marker(
+                id: e.id,
+                options: MarkerOptionsMessage(
+                  position: GeoPointWithElevationMessage(
+                    latitude: e.latLng?.latitude ?? 0,
+                    longitude: e.latLng?.longitude ?? 0,
+                    elevation: 0,
+                  ),
+                  icon: MarkerIconMessage(
+                    path:
+                        "packages/mapness/assets/icons/svg/layers/investment_opportunities.svg",
+                    width: 30,
+                  ),
+                  textStyle: MarkerTextStyleMessage(
+                    color: const Color(0xFF1BA136).value,
+                    strokeColor: Colors.white.value,
+                    strokeWidth: 1,
+                    fontSize: 14,
+                    fontName: "Frutiger",
+                    textPlacement: MarkerTextPlacementMessage(
+                      placement: TextPlacementMessage.bottomCenter,
+                    ),
+                  ),
                 ),
+                onTap: () => _showEsriCard(e),
               ),
-            ),
-            onTap: () => _showEsriCard(e),
-          ),
-    )
-        .toList() ??
+            )
+            .toList() ??
         [];
     return markers;
   }
 
   List<Polygon> _makePolygons(List<WhiteLands>? list) {
     return list
-        ?.map((e) =>
-        Polygon(
-            id: e.id,
-            options: PolygonOptionsMessage(
-                strokeWidth: 2,
-                strokeColor: 0xFF000000,
-                color: 0x26000000,
-                contours: [e.paths]),
-            onTap: () => _showEsriCard(e)))
-        .toList() ??
+            ?.map((e) => Polygon(
+                id: e.id,
+                options: PolygonOptionsMessage(
+                    strokeWidth: 2,
+                    strokeColor: 0xFF000000,
+                    color: 0x26000000,
+                    contours: [e.paths]),
+                onTap: () => _showEsriCard(e)))
+            .toList() ??
         [];
   }
 
-  void _toggleSelected(LayerType selectedType,) {
+  void _toggleSelected(
+    LayerType selectedType,
+  ) {
     state = LayersState(
       investmentsMarkers: state.investmentsMarkers,
       layersVisible: state.layersVisible,
@@ -438,7 +406,7 @@ class LayersControls extends _$LayersControls {
 
   Future<void> _removeAll() async {
     final mapObjectManager =
-    ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
+        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
 
     await mapObjectManager.removeAllMarkers();
     await mapObjectManager.removeAllPolygons();
