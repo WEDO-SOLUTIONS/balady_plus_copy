@@ -38,9 +38,6 @@ class MapRequestParams {
 
       params.forEach((key, value) => hashedUrl += "$key=$value&");
       hashedUrl = hashedUrl.substring(0, hashedUrl.length - 1);
-
-      // verifyingKey = hashRequest_(hashedUrl, "GET");
-
       hashedUrl = "$mainUrl/$layerId/query?";
       params.forEach((key, value) => hashedUrl += "$key=$value&");
       resultUrl = hashedUrl.substring(0, hashedUrl.length - 1);
@@ -56,7 +53,7 @@ class MapRequestParams {
   }
 
   String? getVerifyingKey() {
-    var verifyingKey;
+    String verifyingKey;
 
     const gisLayers = 'v1/gis-urbi-services/layers';
 
@@ -75,7 +72,6 @@ class MapRequestParams {
       var hashedUrl = "$domainYUrl/$gisLayers/$layerId/query?";
       params.forEach((key, value) => hashedUrl += "$key=$value&");
       hashedUrl = hashedUrl.substring(0, hashedUrl.length - 1);
-      print("VERIFY KEY URL:::::::::::$hashedUrl");
       verifyingKey = hashRequest(hashedUrl, "GET");
     }
 
