@@ -13,7 +13,7 @@ import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 
 const _objectManager = "QuickFilters";
 
-class MapQuickFilters extends ConsumerStatefulWidget {
+class MapQuickFilters extends ConsumerWidget {
   const MapQuickFilters({
     super.key,
     this.customFilters,
@@ -26,50 +26,15 @@ class MapQuickFilters extends ConsumerStatefulWidget {
   final bool forMap;
 
   @override
-  ConsumerState<MapQuickFilters> createState() => _MapQuickFiltersState();
-}
-
-class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
-  late ClusteringMapObjectManager _clustering;
-
-  @override
-  void initState() {
-    super.initState();
-    _clustering = ClusteringMapObjectManager(
-      options: ClusteringMapObjectManagerOptionsMessage(
-        logicalPixel: 40,
-        maxZoom: 16,
-      ),
-      renderCluster: _renderCluster,
-    );
-  }
-
-  SimpleClusterOptionsMessage _renderCluster(int objectCount) {
-    return SimpleClusterOptionsMessage(
-      icon: MarkerIconMessage(
-        path: "packages/mapness/assets/icons/svg/ic_marker.svg",
-        width: 24,
-      ),
-      text: "$objectCount",
-      textStyle: MarkerTextStyleMessage(
-        textPlacement: MarkerTextPlacementMessage(
-          placement: TextPlacementMessage.centerCenter,
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final selectedFilter = ref.watch(searchByRubricsQueryProvider);
     final searchObjectManager = ref.watch(
       mapObjectManagerProvider(
         named: _objectManager,
-        clustering: _clustering,
       ).notifier,
     );
     ref.listen(searchByRubricsProvider, (previous, next) async {
-      if (!widget.forMap) return;
+      if (!forMap) return;
       await searchObjectManager.removeAllMarkers();
 
       if (next != null) {
@@ -117,10 +82,10 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
         }
       },
       selectedIndex: selectedFilter?.$2,
-      itemBackground: widget.forMap ? Colors.white : const Color(0x0D1E2A36),
-      customFilters: widget.customFilters,
-      onCustomTap: widget.onCustomTap,
-      padding: widget.forMap
+      itemBackground: forMap ? Colors.white : const Color(0x0D1E2A36),
+      customFilters: customFilters,
+      onCustomTap: onCustomTap,
+      padding: forMap
           ? const EdgeInsets.symmetric(
               horizontal: 12,
             )

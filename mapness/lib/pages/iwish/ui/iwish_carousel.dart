@@ -4,14 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/poi_card/widgets/shimmer.dart';
 import 'package:mapness/app/routes/iwish.dart';
-import 'package:mapness/features/iwish/providers/iwish_address.dart';
 import 'package:mapness/features/iwish/providers/iwish_distance.dart';
 import 'package:mapness/features/iwish/providers/iwish_entity.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/widgets/iwish/ui/iwish_card.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
+import 'package:mapness/widgets/iwish/ui/iwish_card.dart';
 
 class IwishCarousel extends ConsumerWidget {
   final String? initialId;
@@ -54,7 +53,6 @@ class IwishCarousel extends ConsumerWidget {
                   child: IwishCard(
                     iwish: iwish,
                     onClose: () => context.pop(),
-                    address: ref.read(iwishAddressProvider(iwish)),
                     distance: ref.read(iwishDistanceProvider(iwish)),
                     onTap: () =>
                         IwishCardRoute(iwishId: iwish.id).replace(context),

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class AboutBaladyPage extends StatelessWidget {
   const AboutBaladyPage({super.key});
@@ -13,7 +14,7 @@ class AboutBaladyPage extends StatelessWidget {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Directionality(
-        textDirection: TextDirection.ltr,
+        textDirection: Directionality.of(context),
         child: Material(
           color: Colors.white,
           child: ListView(
@@ -32,7 +33,7 @@ class AboutBaladyPage extends StatelessWidget {
                       ),
                       const Spacer(),
                       Text(
-                        "About Balady",
+                        context.l10n.aboutApp,
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
                             .accentM
@@ -94,14 +95,15 @@ class AboutBaladyPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
                   children: [
-                    const Spacer(),
-                    Text(
-                      "We are happy to connect you with Balady team,\nthrough the following communication channels",
-                      textDirection: TextDirection.rtl,
-                      style: Theme.of(context)
-                          .extension<ThemeTextStyles>()!
-                          .textM
-                          .copyWith(color: const Color(0xFF1E2A36)),
+                    Expanded(
+                      child: Text(
+                        context.l10n.weAreHappyToConnectYouWithBaladyTeam,
+                        textDirection: TextDirection.rtl,
+                        style: Theme.of(context)
+                            .extension<ThemeTextStyles>()!
+                            .textM
+                            .copyWith(color: const Color(0xFF1E2A36)),
+                      ),
                     ),
                   ],
                 ),

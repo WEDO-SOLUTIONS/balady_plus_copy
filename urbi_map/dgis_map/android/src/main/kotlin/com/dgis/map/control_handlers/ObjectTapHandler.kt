@@ -278,7 +278,11 @@ class ObjectTapHandler(
                 .setId(managerId)
                 .build()
 
-        val manager = MapObjectManager(map = this.map)
+        val manager = MapObjectManager.withGeneralization(
+            map = this.map,
+            logicalPixel = LogicalPixel(value = 40f),
+            maxZoom = Zoom(value = 18f)
+        )
 
         mapObjectsExecutorService.submit {
             this.managers[managerId] = manager
