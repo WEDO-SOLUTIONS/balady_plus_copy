@@ -7,6 +7,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../_shared_feature_/presentation/cards/expandable_card.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/undertaking_widget.dart';
 import '../../../../commercial_license_cancel/presentation/commercial_license_cancel/widgets/widget_title_invoice.dart';
 import '../../../../create_compliance/presentation/widgets/summery_widgets/field_data.dart';
@@ -60,7 +61,7 @@ class _PermitStep1PageState extends State<PermitStep1Page> {
                     UndertakingWidget(
                       text: "posters_agreement_title".tr(),
                       desc:
-                          "${state.ALERT_SERVICE_USAGE_GUIDANCE()} ${"<br><br>"}  ${"posters_agreement_desc".tr()}",
+                          "${state.ALERT_ENDORSMENTS()} ${"<br><br>"}  ${"posters_agreement_desc".tr()}",
                       onChange: (value) {
                         context
                             .read<Permit24LicenseBloc>()
@@ -77,6 +78,18 @@ class _PermitStep1PageState extends State<PermitStep1Page> {
                 alignment: Alignment.bottomCenter, child: CalcualtorWidget()),
             if (state.status.isSubmissionLoading)
               const CustomCircularLoadingWidget(),
+            if (state.alertsStatus == BlocStatus.failure)
+              ReloadWidget(onTab: () {
+                context
+                    .read<Permit24LicenseBloc>()
+                    .add(const GetPermitAlertsEvent());
+              }),
+            if (state.endormentsStatus == BlocStatus.failure)
+              ReloadWidget(onTab: () {
+                context
+                    .read<Permit24LicenseBloc>()
+                    .add(const GetPermitEndorsmentsEvent());
+              }),
           ],
         );
       },
@@ -153,12 +166,12 @@ class Step2SummeryWidget extends StatelessWidget {
             const CustomVerticalSpace(
               height: 16,
             ),
-            FieldData(
+            /*FieldData(
                 title: "permit_needs_fees".tr(),
                 subTitle: state.needsFees() == true ? "yes".tr() : "no".tr()),
             const CustomVerticalSpace(
               height: 16,
-            )
+            )*/
           ],
         );
       },
@@ -274,7 +287,7 @@ class _CalcualtorWidgetState extends State<CalcualtorWidget> {
                           ),
                         ),
                         child: CustomTextWidget(
-                          "permit_24_feesNote".tr(),
+                          state.ALERTS() ?? "",
                           fontColor: Color(0xFF52525B),
                           fontSize: 12,
                           height: 1.4,

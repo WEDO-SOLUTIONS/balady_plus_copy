@@ -8,6 +8,7 @@ import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports
 import 'package:balady_plus/app/features/services/services_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../core/utils/app_analytics_events.dart';
 import '../../../core/utils/constants/dialog_names.dart';
@@ -43,7 +44,7 @@ class _IssueStartServiceState extends State<IssueStartService> {
         ],
         child: Scaffold(
           appBar: DefaultAppBarWidget(
-            title: service.title,
+            title: service.title.tr(),
             bottom: ServiceCardsList(
               cards: service.cards,
             ),
@@ -143,13 +144,13 @@ class _IssueStartServiceState extends State<IssueStartService> {
           "isImportant": false,
           "action": {"type": "cards", "value": ""},
           "ar": {
-            "title": "إصدار رخصة تجارية",
+            "title": "issue_trade_license",
             "description": "",
             "tag": null,
             "warning": null
           },
           "en": {
-            "title": "إصدار رخصة تجارية",
+            "title": "issue_trade_license",
             "description": "",
             "tag": null,
             "warning": null
@@ -159,14 +160,13 @@ class _IssueStartServiceState extends State<IssueStartService> {
               "iconName": IconPath.serviceCardDesc,
               "type": ServiceCardsTypes.desc,
               "rate": 0,
-              "duration": "1 - 10 أيام",
+              "duration": "duration_10_days",
               "fees": -1,
-              "feesName": "حاسبة الرسوم المعلوماتية",
+              "feesName": "calculator_fees",
               "feesLink": "https://apps.balady.gov.sa/Eservices/FeesCalculator",
               "ar": {
-                "title": "وصف الخدمة",
-                "description":
-                    "من خلال هذه الخدمة يمكنك البدء بممارسة العمل التجاري من خلال إصدار رخصة نشاط تجاري بالإضافة إلى تصريح السلامة الصادر من المديرية العامة للدفاع المدني لجميع الأنشطة التجارية المعتمدة لدى وزارة الشؤون البلدية والقروية والإسكان."
+                "title": "service_desc",
+                "description": "issue_service_desc"
               },
               "en": {"title": "Service Description", "description": ""}
             },
@@ -176,14 +176,14 @@ class _IssueStartServiceState extends State<IssueStartService> {
               "rate": 0,
               "duration": "0",
               "requirements": [
-                "صورة خارجية للمحل ويتم إبراز لوحة المحل.",
-                "عقد الإيجار أو صك الملكية أو عقد الاستثمار للموقع من البلدية أو الجهات الحكومية الأخرى.",
-                "عقد النظافة (اختياري حسب التعاقد ونوع النشاط).",
-                "فاتورة أدوات السلامة أو تقرير سلامة من الدفاع المدني للأنشطة الفورية.",
-                "صورة من رخصة البناء."
+                "issue_service_req1",
+                "issue_service_req2",
+                "issue_service_req3",
+                "issue_service_req4",
+                "issue_service_req5"
               ],
-              "ar": {"title": "المتطلبات", "description": ""},
-              "en": {"title": "Requirements", "description": ""}
+              "ar": {"title": "requirements", "description": ""},
+              "en": {"title": "requirements", "description": ""}
             },
             {
               "iconName": IconPath.warning2,
@@ -192,10 +192,10 @@ class _IssueStartServiceState extends State<IssueStartService> {
               "duration": "",
               "fees": null,
               "ar": {
-                "title": "الاشتراطات والغرامات",
-                "description": "متطلبات واشتراطات الخدمة",
+                "title": "conditions_and_fines",
+                "description": "service_conditions_and_fess",
                 "descriptionLink": "https://new.balady.gov.sa/ar/node/10856",
-                "feesName": "لائحة الجزاءات عن المخالفات البلدية",
+                "feesName": "list_municipal_violations",
                 "feesLink":
                     "https://balady.gov.sa/sites/default/files/2023-06/%D8%AC%D8%AF%D9%88%D9%84%20%D8%A7%D9%84%D8%AC%D8%B2%D8%A7%D8%A1%D8%A7%D8%AA%20%D8%B9%D9%86%20%D8%A7%D9%84%D9%85%D8%AE%D8%A7%D9%84%D9%81%D8%A7%D8%AA%20%D8%A7%D9%84%D8%A8%D9%84%D8%AF%D9%8A%D8%A9.pdf",
               },

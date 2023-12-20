@@ -322,7 +322,11 @@ class ObjectTapHandler {
         let managerId = UUID().uuidString
         let managerMessage = MapObjectManagerMessage.make(withId: managerId)
         
-        let manager = MapObjectManager(map: self.map)
+        let manager = MapObjectManager.withGeneralization(
+            map: self.map,
+            logicalPixel: LogicalPixel(value: 40),
+            maxZoom: Zoom(value: 18)
+        )
         self.objectsQueue.sync {
             self.managers[managerId] = manager
             completion(managerMessage, nil)

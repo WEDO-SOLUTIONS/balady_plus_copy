@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../../core/utils/app_analytics_events.dart';
 import '../../../../../core/utils/common_functions.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class ApplyCancelScreen extends StatefulWidget {
   const ApplyCancelScreen({Key? key}) : super(key: key);
@@ -46,37 +47,29 @@ class _ApplyCancelScreenState extends State<ApplyCancelScreen> {
         "isImportant": false,
         "action": {"type": "cards", "value": ""},
         "ar": {
-          "title": "الغاء رخصة تجارية",
+          "title": "cancel_Service_name",
           "description": "",
           "tag": null,
-          "warning": "يجب أن يتم إلغاء رخصة النشاط التجاري قبل شطب السجل التجاري."
-              "\n\n"
-              "سوف يتم إلغاء الرخصة بشكل آلــي بعد مرور سنة وأكثر من انتهاء الرخصة.\n\n"
-              "تأخرك في إلغاء الرخصة يعرضك لدفع رسوم تجديد عند الإلغاء وذلك وفقًــا للائحة التنفيذية لإجراءات التراخيص البلدية 1438 هـ.\n\n"
-              "رسوم الإلغاء 20 ريال مع ضرورة أن تكون الرخصة سارية.\n"
+          "warning": "cancel_service_warning"
         },
         "en": {
-          "title": "الغاء رخصة تجارية",
+          "title": "cancel_Service_name",
           "description": "",
           "tag": null,
-          "warning": "يجب أن يتم إلغاء رخصة النشاط التجاري قبل شطب السجل التجاري.\n"
-              "سوف يتم إلغاء الرخصة بشكل آلــي بعد مرور سنة وأكثر من انتهاء الرخصة.\n"
-              "تأخرك في إلغاء الرخصة يعرضك لدفع رسوم تجديد عند الإلغاء وذلك وفقًــا للائحة التنفيذية لإجراءات التراخيص البلدية 1438 هـ.\n"
-              "رسوم الإلغاء 20 ريال مع ضرورة أن تكون الرخصة سارية.\n"
+          "warning": "cancel_service_warning"
         },
         "cards": [
           {
             "iconName": IconPath.serviceCardDesc,
             "type": ServiceCardsTypes.desc,
             "rate": 0,
-            "duration": "1 - 10 أيام",
+            "duration": "duration_10_days",
             "fees": -1,
-            "feesName": "حاسبة الرسوم المعلوماتية",
+            "feesName": "calculator_fees",
             "feesLink": "https://apps.balady.gov.sa/Eservices/FeesCalculator",
             "ar": {
-              "title": "وصف الخدمة",
-              "description":
-                  "في مرحلة إنهاء ممارسة العمل التجاري يتوجب على المستفيد إلغاء رخصته التجارية المرتبطة بالمنشأة، ومن خلال هذه الخدمة يمكنك إلغاء الرخصة."
+              "title": "service_describtion",
+              "description": "cancel_service_desc"
             },
             "en": {"title": "Service Description", "description": ""}
           },
@@ -86,9 +79,9 @@ class _ApplyCancelScreenState extends State<ApplyCancelScreen> {
             "rate": 0,
             "duration": "0",
             "requirements": [
-              "في حالة أن الإلغاء غير فوري، يتم طلب مرفقات لإثبات إغلاق النشاط.",
+              "cancel_service_req",
             ],
-            "ar": {"title": "المتطلبات", "description": ""},
+            "ar": {"title": "requirements", "description": ""},
             "en": {"title": "Requirements", "description": ""}
           },
           {
@@ -98,15 +91,15 @@ class _ApplyCancelScreenState extends State<ApplyCancelScreen> {
             "duration": "0",
             "flow": [
               {
-                "title": "من خلال المستفيد",
+                "title": "cancel_applying_benf",
                 "steps": [
-                  "تحديد سجل المنشأة واختيار الرخصة.",
-                  "استكمال البيانات المطلوبة إن وجدت.",
-                  "دفع الرسوم في حال الإلغاء الفوري أو إرسال الطلب للبلدية في حال أن الإلغاء غير فوري."
+                  "cancel_applying_step1",
+                  "cancel_applying_step2",
+                  "cancel_applying_step3"
                 ]
               },
             ],
-            "ar": {"title": "خطوات التقديم", "description": ""},
+            "ar": {"title": "applying_steps", "description": ""},
             "en": {"title": "", "description": ""}
           },
           {
@@ -115,7 +108,7 @@ class _ApplyCancelScreenState extends State<ApplyCancelScreen> {
             "rate": 0,
             "duration": "",
             "fees": null,
-            "ar": {"title": "الغرامات والجزاءات", "description": "اضغط هنا"},
+            "ar": {"title": "fines_penatlies", "description": "click_here"},
             "en": {"title": "Service Description", "description": ""}
           },
         ]
@@ -128,7 +121,7 @@ class _ApplyCancelScreenState extends State<ApplyCancelScreen> {
         create: (context) => ServiceCardsCubit(service),
         child: Scaffold(
           appBar: DefaultAppBarWidget(
-            title: service.title,
+            title: service.title.tr(),
             // actions: [
             //   Padding(
             //     padding: const EdgeInsetsDirectional.only(end: 10),

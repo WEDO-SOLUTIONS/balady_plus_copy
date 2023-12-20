@@ -54,14 +54,14 @@ class ExitDraftDialog extends StatelessWidget {
                 ),
                 CustomVerticalSpace(height: 16),
                 CustomTextWidget(
-                  Helpers.translatingWord("الخروج من الطلب".tr()),
+                  Helpers.translatingWord("exit_order"),
                   fontColor: AppColor.blackModern600Light,
                   fontWeight: AppFontWeight.bold,
                   fontSize: 20,
                 ),
                 CustomVerticalSpace(height: 16),
                 CustomTextWidget(
-                  "لن يتم حفظ مسودة لطلبك،هل انت متأكد من رغبتك في الخروج ؟",
+                  "request_will_no_be_saved".tr(),
                   fontColor: AppColor.blackModern500Light,
                   fontWeight: AppFontWeight.bold,
                   fontSize: 18,
@@ -76,7 +76,7 @@ class ExitDraftDialog extends StatelessWidget {
 
                     onSave();
                   },
-                  text: Helpers.translatingWord("خروج"),
+                  text: Helpers.translatingWord("exit"),
                 ),
                 CustomVerticalSpace(height: 16),
                 ElevatedButtonWidget.primaryCustomBorder(
@@ -84,7 +84,7 @@ class ExitDraftDialog extends StatelessWidget {
                     Navigator.pop(context);
                     onClose();
                   },
-                  text: Helpers.translatingWord("العودة للطلب"),
+                  text: Helpers.translatingWord("back_order"),
                 ),
                 /* EnhancedCustomElevatedButtonWidget(
                   btnPressed: () {},

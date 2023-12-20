@@ -49,7 +49,7 @@ class ServiceCardConditionsWidget extends StatelessWidget {
                 ),
                 const SizedBox(width: 4),
                 CustomTextWidget(
-                  card.title,
+                  card.title.tr(),
                   textStyle: AppStyle.cardTitleTextStle,
                 ),
               ],
@@ -59,7 +59,7 @@ class ServiceCardConditionsWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomTextWidget(
-                  card.description,
+                  card.description.tr(),
                   textStyle: AppStyle.serviceCardDescriptionTextStyle,
                   maxLines: 40,
                 ),

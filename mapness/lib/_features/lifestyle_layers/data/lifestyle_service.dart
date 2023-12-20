@@ -15,18 +15,14 @@ class LifestyleLayersService {
           (X509Certificate cert, String host, int port) => true;
       return client;
     };
-
-    // curl -k -l 'https://sa1.ops.2gis.dev/v1/gis-urbi-services/layers/1' \
-    // -H 'verifyingKEY: pW70C4zvLRd6bgXmJxuQoVVaBeGdLBah/BpwSkEU36w='
-    // dio.options.baseUrl = "https://sa1.ops.2gis.dev/v1/gis-urbi-services/layers/";
     dio.options.connectTimeout = const Duration(milliseconds: 60000);
     dio.options.receiveTimeout = const Duration(milliseconds: 60000);
     dio.options.sendTimeout = const Duration(milliseconds: 60000);
-    dio.options.headers = {};
+    // dio.options.headers = {};
     dio.interceptors.add(PrettyDioLogger(
-      responseBody: true,
+      responseBody: false,
       requestHeader: true,
-      requestBody: true,
+      requestBody: false,
       responseHeader: true
     ));
   }

@@ -26,7 +26,7 @@ class ViolationEstabloshmentWidget extends StatelessWidget {
             //  dialogKeyName: DialogName.reasonCancelDialog,
             // currentRouteName: RouteName.commercialLicenseApplyCancel,
             child: GenericBottomSheetList<EstablishmentSizeItem>(
-              title: "حجم المنشأة".tr(),
+              title: "establishment_size".tr(),
               items: state.establishmentSizeResponse?.result ?? [],
               selectedValue: state.selectedEstablishmentSizeItem,
               onTap: (item) {
@@ -49,7 +49,7 @@ class ViolationEstabloshmentWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomTextWidget(
-                    'حجم المنشأة'.tr(),
+                    "establishment_size".tr(),
                     textStyle: AppStyle.violationLocationAdressStyle,
                   ),
                   Row(
@@ -58,7 +58,7 @@ class ViolationEstabloshmentWidget extends StatelessWidget {
                         child: CustomTextWidget(
                           state.selectedEstablishmentSizeItem
                                   ?.establishmentSizeName ??
-                              "اختر",
+                              "select".tr(),
                           textStyle: AppStyle.violationLocationMapStyle,
                           maxLines: 4,
                         ),

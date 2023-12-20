@@ -32,7 +32,7 @@ class BookMarkAppBar extends StatelessWidget implements PreferredSizeWidget {
                   color: AppColor.white,
                 )),
             CustomTextWidget(
-              ("العلامات المرجعيه").tr(),
+              ("bookmarks").tr(),
               fontColor: AppColor.blackModern50Light,
               fontSize: 20,
               fontWeight: AppFontWeight.bold,

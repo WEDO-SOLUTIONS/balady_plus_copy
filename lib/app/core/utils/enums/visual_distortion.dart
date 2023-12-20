@@ -3,73 +3,64 @@ import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 enum VisualDistortion {
   distortedWritings(
     cardImg: ImagePath.distortedWritings,
-    label: "الكتابات المشوهة للجدران والدهان",
+    label: "distortedWritings",
     badAppearanceImg: ImagePath.buildingFacadesBad,
-    badAppearanceDesc:
-    "المباني المهجورة غير مكتملة الصيانة / أو التي لم تتم صيانتها بشكل جيد موضوعًا تعطي انطباعًا عامًا بالإهمال.",
-    badAppearanceDesc2:
-    "تشغل المباني المهجورة حيزًا كبيرًا في الأماكنالعامة الحيوية التي ربما تم استخدامها لأغراض أخرى، مما يسبب الشعور بالفوضى والازدحام.",
+    badAppearanceDesc: "distortedWritings_badAppearanceDesc",
+    badAppearanceDesc2: "distortedWritings_badAppearanceDes2",
     goodAppearanceImg: ImagePath.buildingFacadesGood,
-    goodAppearanceDesc:
-    "يجب النظر في هدم المباني المهجورة أو تجديدها من خلال استخدامها لأغراض",
-    goodAppearanceDesc2:
-    "يجب النظر في هدم المباني المهجورة أو تجديدها من خلال استخدامها لأغراض أخرى وتجميلها",
+    goodAppearanceDesc: "distortedWritings_goodAppearanceDesc",
+    goodAppearanceDesc2: "distortedWritings_goodAppearanceDesc2",
   ),
   umbrellas(
     cardImg: ImagePath.umbrellas,
-    label: "المظلات",
+    label: "umbrellas",
     badAppearanceImg: ImagePath.buildingFacadesBad,
-    badAppearanceDesc:
-    "المباني المهجورة غير مكتملة الصيانة / أو التي لم تتم صيانتها بشكل جيد موضوعًا تعطي انطباعًا عامًا بالإهمال.",
-    badAppearanceDesc2:
-    "تشغل المباني المهجورة حيزًا كبيرًا في الأماكنالعامة الحيوية التي ربما تم استخدامها لأغراض أخرى، مما يسبب الشعور بالفوضى والازدحام.",
+    badAppearanceDesc: "umbrellas_badAppearanceDesc",
+    badAppearanceDesc2: "umbrellas_badAppearanceDesc2",
     goodAppearanceImg: ImagePath.buildingFacadesGood,
-    goodAppearanceDesc:
-    "يجب النظر في هدم المباني المهجورة أو تجديدها من خلال استخدامها لأغراض",
-    goodAppearanceDesc2:
-    "يجب النظر في هدم المباني المهجورة أو تجديدها من خلال استخدامها لأغراض أخرى وتجميلها",
+    goodAppearanceDesc: "umbrellas_goodAppearanceDesc",
+    goodAppearanceDesc2: "umbrellas_goodAppearanceDesc2",
   ),
   abandonedBuildings(
     cardImg: ImagePath.abandonedBuildings,
-    label: "المباني المهجورة",
+    label: "abandonedBuildings",
     badAppearanceImg: ImagePath.buildingFacadesBad,
     badAppearanceDesc:
-    "المباني المهجورة غير مكتملة الصيانة / أو التي لم تتم صيانتها بشكل جيد موضوعًا تعطي انطباعًا عامًا بالإهمال.",
+        "abandonedBuildings_badAppearanceDesc1",
     badAppearanceDesc2:
-    "تشغل المباني المهجورة حيزًا كبيرًا في الأماكنالعامة الحيوية التي ربما تم استخدامها لأغراض أخرى، مما يسبب الشعور بالفوضى والازدحام.",
+        "abandonedBuildings_badAppearanceDesc2",
     goodAppearanceImg: ImagePath.buildingFacadesGood,
     goodAppearanceDesc:
-    "يجب النظر في هدم المباني المهجورة أو تجديدها من خلال استخدامها لأغراض",
+        "abandonedBuildings_goodAppearanceDesc",
     goodAppearanceDesc2:
-    "يجب النظر في هدم المباني المهجورة أو تجديدها من خلال استخدامها لأغراض أخرى وتجميلها",
+        "abandonedBuildings_goodAppearanceDesc2",
   ),
   coveringPorches(
     cardImg: ImagePath.coveringPorches,
-    label: "تغطية الشرفات",
+    label: "coveringPorches",
     badAppearanceImg: ImagePath.buildingFacadesBad,
     badAppearanceDesc:
-    "المباني المهجورة غير مكتملة الصيانة / أو التي لم تتم صيانتها بشكل جيد موضوعًا تعطي انطباعًا عامًا بالإهمال.",
-    badAppearanceDesc2:
-    "تشغل المباني المهجورة حيزًا كبيرًا في الأماكنالعامة الحيوية التي ربما تم استخدامها لأغراض أخرى، مما يسبب الشعور بالفوضى والازدحام.",
+        "coveringPorches_badAppearanceDesc",
+    badAppearanceDesc2:"coveringPorches_badAppearanceDesc2",
     goodAppearanceImg: ImagePath.buildingFacadesGood,
     goodAppearanceDesc:
-    "يجب النظر في هدم المباني المهجورة أو تجديدها من خلال استخدامها لأغراض",
+        "coveringPorches_goodAppearanceDesc",
     goodAppearanceDesc2:
-    "يجب النظر في هدم المباني المهجورة أو تجديدها من خلال استخدامها لأغراض أخرى وتجميلها",
+       "coveringPorches_goodAppearanceDesc2",
   ),
   buildingFacades(
     cardImg: ImagePath.buildingFacades,
-    label: "واجهات المباني",
+    label: "buildingFacades",
     badAppearanceImg: ImagePath.buildingFacadesBad,
     badAppearanceDesc:
-        "المباني المهجورة غير مكتملة الصيانة / أو التي لم تتم صيانتها بشكل جيد موضوعًا تعطي انطباعًا عامًا بالإهمال.",
+        "buildingFacades_badAppearanceDesc",
     badAppearanceDesc2:
-        "تشغل المباني المهجورة حيزًا كبيرًا في الأماكنالعامة الحيوية التي ربما تم استخدامها لأغراض أخرى، مما يسبب الشعور بالفوضى والازدحام.",
+        "buildingFacades_badAppearanceDesc2",
     goodAppearanceImg: ImagePath.buildingFacadesGood,
     goodAppearanceDesc:
-        "يجب النظر في هدم المباني المهجورة أو تجديدها من خلال استخدامها لأغراض",
+        "buildingFacades_goodAppearanceDesc",
     goodAppearanceDesc2:
-        "يجب النظر في هدم المباني المهجورة أو تجديدها من خلال استخدامها لأغراض أخرى وتجميلها",
+        "buildingFacades_goodAppearanceDesc2",
   );
 
   const VisualDistortion({

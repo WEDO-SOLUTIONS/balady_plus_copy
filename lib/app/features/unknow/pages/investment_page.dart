@@ -87,46 +87,46 @@ class _InvestmentPageState extends State<InvestmentPage> {
                               fontColor: AppColor.blackModern500Light,
                             ),
                             HeaderWithDivider(
-                              firstTitle: "نوع الفرصة",
-                              firstValue: "منافسة",
+                              firstTitle: "invest_type".tr(),
+                              firstValue: "invest_status".tr(),
                               firstIconPath: IconPath.dollarCircle,
-                              secondTitle: "السعر",
+                              secondTitle: "invest_price".tr(),
                               secondValue:
                                   " ${data.data?.result?.documentValue} ريال /  الكراسة",
                             ),
                             CustomTextWidget(
-                              "تفاصيل الفرصة",
+                              "invest_detail".tr(),
                               fontSize: 16,
                               fontWeight: AppFontWeight.bold,
                               fontColor: AppColor.blackModern800Light,
                             ),
                             SizedBox(height: 16),
                             DetailsCard(
-                              title: 'اسم الفرصة',
+                              title: "invest_title".tr(),
                               value:
                                   data.data?.result?.opportunityDescription ??
                                       "",
                             ),
                             DetailsCard(
-                              title: 'رقم الفرصة',
+                              title: "investment_number".tr(),
                               value: data.data?.result?.opportunityNumber ?? "",
                             ),
                             DetailsCard(
-                              title: 'الجهة',
+                              title: 'authority'.tr(),
                               value:
                                   data.data?.result?.getEntityORMinstryName() ??
                                       "",
                             ),
                             DetailsCard(
-                                title: 'نوع النشاط',
+                                title: "lbl_service_activity_hint1".tr(),
                                 value: data.data?.result?.mainActivity ?? ""),
                             DetailsCard(
-                                title: 'سعر الكراسة',
+                                title: "map_price".tr(),
                                 value: data.data?.result?.documentValue
                                         .toString() ??
                                     ""),
                             DetailsCard(
-                                title: 'نوع الدفع',
+                                title: "invest_price_type".tr(),
                                 value: data.data?.result?.paymentType ?? ""),
                             //DetailsCard(title: 'نوع العطاء', value: data.data?.result?.bid),
                             DetailsCard(

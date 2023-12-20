@@ -98,8 +98,8 @@ class EtmamHomeAppBarWidget extends StatelessWidget {
             ],
           ),
           const CustomVerticalSpace(height: 11),
-          const CustomTextWidget(
-            'حدد المدينة التي تريد تنفيذ الخدمة فيها',
+          CustomTextWidget(
+            trans("etmam_appBar_text"),
             fontWeight: AppFontWeight.bold,
             fontColor: AppColor.secondary200,
             fontSize: 14,

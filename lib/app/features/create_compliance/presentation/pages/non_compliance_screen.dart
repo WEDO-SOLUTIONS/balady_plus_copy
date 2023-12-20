@@ -48,7 +48,7 @@ class NonComplianceScreen extends StatelessWidget {
                   margin: EdgeInsetsDirectional.only(
                       top: MediaQuery.of(context).padding.top + 10, start: 16),
                   child: CustomTextIconButtonWidget(
-                    text: ('السابق').tr(),
+                    text: ('back').tr(),
                     icon: SvgPicture.asset(IconPath.vdAppBarBack),
                     iconTextTweenSpace: 5,
                     textStyle: const TextStyle(
@@ -78,7 +78,7 @@ class NonComplianceScreen extends StatelessWidget {
                             height: 26,
                           ),
                           CustomTextWidget(
-                            "لا يمكن إكمال الطلب",
+                            "request_cannot_be_completed".tr(),
                             fontSize: 22,
                             fontWeight: AppFontWeight.bold,
                             fontColor: AppColor.black,
@@ -88,7 +88,7 @@ class NonComplianceScreen extends StatelessWidget {
                             height: 20,
                           ),
                           CustomTextWidget(
-                            "يجب ان يكون المبنى ممتثل لجميع البنود حتى يتم اصدار شهادة امتثال، يمكنك متابعة البنود التي يجب الامتثال بها عبر خدمة قيم مبناك",
+                            "building_must_be_compliance".tr(),
                             fontSize: 16,
                             fontWeight: AppFontWeight.medium,
                             fontColor: AppColor.black500,
@@ -115,7 +115,7 @@ class NonComplianceScreen extends StatelessWidget {
                                   .pushNamedAndRemoveUntil(
                                       RouteName.selfRatingMainPage, predicate);
                             },
-                            text: "الانتقال الى خدمة قيم مبناك"),
+                            text: "move_to_building_rate_service".tr()),
                         const CustomVerticalSpace(
                           height: 16,
                         ),
@@ -127,7 +127,7 @@ class NonComplianceScreen extends StatelessWidget {
                               NavigationService.navigatorKey.currentState!
                                   .popUntil((predicate));
                             },
-                            text: " العودة لصفحة الخدمات"),
+                            text: "return_to_services_page".tr()),
                       ],
                     ),
                   ),

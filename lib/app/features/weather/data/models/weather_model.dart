@@ -27,22 +27,6 @@ class AlertsModel extends Alerts {
 
   factory AlertsModel.fromJson(Map<String, dynamic> json) {
     final jsonData = json["alert"] as List<dynamic>;
-    final dummyData = {
-      "headline": "NWS New York City - Upton (Long Island and New York City)",
-      "msgtype": '',
-      "severity": '',
-      "urgency": '',
-      "areas": 'الشرقية',
-      "category": "Extreme temperature value",
-      "certainty": '',
-      "event": "Heat Advisory",
-      "note": '',
-      "effective": "2022-07-21T19:38:00.000Z",
-      "expires": "2022-07-25T00:00:00.000Z",
-      "desc":
-          "الدفاع المدني يهيب بالجميع أخذ الحيطة والحذر والابتعاد عن بطون الأودية ومجاري السيول والالتزام بتعليماته.جعلها الله أمطار خير وبركة. تعاونكم هدفنا وسلامتكم غايتنا. ",
-      "instruction": ""
-    };
 
     return AlertsModel(
       alert: jsonData.isEmpty

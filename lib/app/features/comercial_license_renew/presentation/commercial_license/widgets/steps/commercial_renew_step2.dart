@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:dio/dio.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sentry_dio/sentry_dio.dart';
@@ -50,10 +51,10 @@ class _CommercialRenewStep2State extends State<CommercialRenewStep2> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const CRHeaderDesc(
+                      CRHeaderDesc(
                         maxLines: null,
                         textHeight: 1.5,
-                        header: "بيانات المرفق",
+                        header: "step5title".tr(),
                         desc: "",
                       ),
                       const SizedBox(height: 12),

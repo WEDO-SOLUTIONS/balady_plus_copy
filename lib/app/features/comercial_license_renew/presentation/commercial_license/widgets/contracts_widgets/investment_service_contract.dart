@@ -42,7 +42,7 @@ class InvestmentServiceContract extends StatelessWidget {
                               ),
                               Flexible(
                                 child: CustomTextWidget(
-                                  "عقد الكتروني",
+                                  "electrnoic_contract".tr(),
                                   fontColor: AppColor.blackModern500Light,
                                   fontSize: 16,
                                   maxLines: 2,
@@ -62,7 +62,7 @@ class InvestmentServiceContract extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CustomTextWidget(
-                              "نوع اثبات الموقع",
+                              "location_proof_type".tr(),
                               fontColor: AppColor.primary900Light,
                               fontSize: 12,
                               fontWeight: AppFontWeight.bold,
@@ -80,7 +80,7 @@ class InvestmentServiceContract extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CustomTextWidget(
-                              "رمر العقد في الأمانة",
+                              "contract_symbol_in_municipality".tr(),
                               fontColor: AppColor.primary900Light,
                               fontSize: 12,
                               fontWeight: AppFontWeight.bold,
@@ -106,7 +106,7 @@ class InvestmentServiceContract extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CustomTextWidget(
-                              "تاريخ نهاية العقد",
+                              "contract_expiry_date".tr(),
                               fontColor: AppColor.primary900Light,
                               fontSize: 12,
                               fontWeight: AppFontWeight.bold,

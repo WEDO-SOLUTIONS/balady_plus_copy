@@ -5,50 +5,50 @@ final quickFilters = [
     rubrics: [13374],
     title: "المساجد",
     uiIcon: "assets/icons/svg/quick_filters/ic_quick_mosques.svg",
-    mapIcon: "assets/icons/svg/ic_marker.svg",
+    mapIcon: "assets/icons/svg/quick_filters/mosques_pin.svg",
   ),
   QuickFilter(
     rubrics: [18547],
     title: "المحطات",
     uiIcon: "assets/icons/svg/quick_filters/ic_quick_gas_station.svg",
-    mapIcon: "assets/icons/svg/ic_marker.svg",
+    mapIcon: "assets/icons/svg/quick_filters/gas_pin.svg",
   ),
   QuickFilter(
     rubrics: [],
     query: 'parks',
     title: "الحدائق",
     uiIcon: "assets/icons/svg/quick_filters/ic_quick_park.svg",
-    mapIcon: "assets/icons/svg/ic_marker.svg",
+    mapIcon: "assets/icons/svg/quick_filters/parks_pin.svg",
   ),
   QuickFilter(
     rubrics: [201],
     title: "المستشفيات",
     uiIcon: "assets/icons/svg/quick_filters/ic_quick_hospital.svg",
-    mapIcon: "assets/icons/svg/ic_marker.svg",
+    mapIcon: "assets/icons/svg/quick_filters/hospitals_pin.svg",
   ),
   QuickFilter(
     rubrics: [245],
     title: "المدارس",
     uiIcon: "assets/icons/svg/quick_filters/ic_quick_school.svg",
-    mapIcon: "assets/icons/svg/ic_marker.svg",
+    mapIcon: "assets/icons/svg/quick_filters/schools_pin.svg",
   ),
   QuickFilter(
     rubrics: [207],
     title: "الصيدليات",
     uiIcon: "assets/icons/svg/quick_filters/ic_quick_medicine.svg",
-    mapIcon: "assets/icons/svg/ic_marker.svg",
+    mapIcon: "assets/icons/svg/quick_filters/pharmacies_pin.svg",
   ),
   QuickFilter(
     rubrics: [222],
     title: "الأسنان",
     uiIcon: "assets/icons/svg/quick_filters/ic_quick_dental.svg",
-    mapIcon: "assets/icons/svg/ic_marker.svg",
+    mapIcon: "assets/icons/svg/quick_filters/dental_pin.svg",
   ),
   QuickFilter(
     rubrics: [269],
     title: "الفنادق",
     uiIcon: "assets/icons/svg/quick_filters/ic_quick_hotels.svg",
-    mapIcon: "assets/icons/svg/ic_marker.svg",
+    mapIcon: "assets/icons/svg/quick_filters/hotels_pin.svg",
   ),
   QuickFilter(
     rubrics: [
@@ -71,7 +71,7 @@ final quickFilters = [
     ],
     title: "مراكز التجميل",
     uiIcon: "assets/icons/svg/quick_filters/ic_quick_beauty.svg",
-    mapIcon: "assets/icons/svg/ic_marker.svg",
+    mapIcon: "assets/icons/svg/quick_filters/beauty_pin.svg",
   ),
   QuickFilter(
     rubrics: [
@@ -92,14 +92,15 @@ final quickFilters = [
     ],
     title: "مراكز الترفيه",
     uiIcon: "assets/icons/svg/quick_filters/ic_quick_recreation.svg",
-    mapIcon: "assets/icons/svg/ic_marker.svg",
+    mapIcon: "assets/icons/svg/quick_filters/recreation_pin.svg",
   ),
   QuickFilter(
-      rubrics: [],
-      query: 'beaches',
-      title: 'Beaches',
-      uiIcon: 'assets/icons/svg/quick_filters/ic_quick_beaches.svg',
-      mapIcon: "assets/icons/svg/ic_marker.svg"),
+    rubrics: [],
+    query: 'beaches',
+    title: 'Beaches',
+    uiIcon: 'assets/icons/svg/quick_filters/ic_quick_beaches.svg',
+    mapIcon: "assets/icons/svg/quick_filters/beaches_pin.svg",
+  ),
   QuickFilter(
     rubrics: [
       261,
@@ -119,13 +120,13 @@ final quickFilters = [
     ],
     title: "النوادي والصالونات الرياضية",
     uiIcon: "assets/icons/svg/quick_filters/ic_quick_sport_clubs.svg",
-    mapIcon: "assets/icons/svg/ic_marker.svg",
+    mapIcon: "assets/icons/svg/quick_filters/sport_pin.svg",
   ),
   QuickFilter(
     rubrics: [110352],
     title: "Salons",
     uiIcon: "assets/icons/svg/quick_filters/ic_quick_salons.svg",
-    mapIcon: "assets/icons/svg/ic_marker.svg",
+    mapIcon: "assets/icons/svg/quick_filters/salons_pin.svg",
   ),
   QuickFilter(
     rubrics: [
@@ -170,7 +171,7 @@ final quickFilters = [
     ],
     title: "خدمات السيارات",
     uiIcon: "assets/icons/svg/quick_filters/ic_quick_car_services.svg",
-    mapIcon: "assets/icons/svg/ic_marker.svg",
+    mapIcon: "assets/icons/svg/quick_filters/cars_pin.svg",
   ),
   QuickFilter(
     rubrics: [
@@ -199,12 +200,12 @@ final quickFilters = [
     ],
     title: "الأسواق",
     uiIcon: "assets/icons/svg/quick_filters/ic_quick_markets.svg",
-    mapIcon: "assets/icons/svg/ic_marker.svg",
+    mapIcon: "assets/icons/svg/quick_filters/markets_pin.svg",
   ),
   QuickFilter(
     rubrics: [161, 165, 161, 9786, 162, 469, 58871],
     title: "المطاعم",
     uiIcon: "assets/icons/svg/quick_filters/ic_quick_restaurants.svg",
-    mapIcon: "assets/icons/svg/ic_marker.svg",
+    mapIcon: "assets/icons/svg/quick_filters/restaurants_pin.svg",
   )
 ];

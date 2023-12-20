@@ -59,7 +59,7 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
                 if (widget.onSuccessLogin != null)
                   widget.onSuccessLogin!(isSuccess);
               },
-              btnText: ("تسجيل الدخول").tr(),
+              btnText: ("signInButton").tr(),
               btnTextSize: 18,
               btnTextWeight: AppFontWeight.bold,
               btnTextColor: AppColor.white,

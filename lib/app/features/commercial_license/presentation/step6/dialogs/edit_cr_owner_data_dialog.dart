@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
@@ -26,24 +27,24 @@ class _EditCrOwnerDataDialogState extends State<EditCrOwnerDataDialog> {
     return Column(
       children: [
         CustomTextFieldWidget(
-          label: "اسم المالك",
-          hintText: "اسم المالك",
+          label: "owner_name".tr(),
+          hintText: "owner_name".tr(),
           initialValue: item.ownerName,
           bottomMargin: 24,
           enabled: false,
           onChanged: (value) {},
         ),
         CustomTextFieldWidget(
-          label: "رقم الهوية",
-          hintText: "رقم الهوية",
+          label: "owner_id".tr(),
+          hintText: "owner_id".tr(),
           initialValue: item.identityNumber,
           bottomMargin: 24,
           enabled: false,
           onChanged: (value) {},
         ),
         CustomTextFieldWidget(
-          label: "رقم الجوال",
-          hintText: "رقم الجوال",
+          label: "owner_number".tr(),
+          hintText: "owner_number".tr(),
           initialValue: item.ownerMobileNumber,
           bottomMargin: 24,
           onChanged: (value) {
@@ -51,8 +52,8 @@ class _EditCrOwnerDataDialogState extends State<EditCrOwnerDataDialog> {
           },
         ),
         CustomTextFieldWidget(
-          label: "البريد الالكتروني",
-          hintText: "البريد الالكتروني",
+          label: "email".tr(),
+          hintText: "email".tr(),
           initialValue: item.ownerEmail,
           bottomMargin: 24,
           onChanged: (value) {

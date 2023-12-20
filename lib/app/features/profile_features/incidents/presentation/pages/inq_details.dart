@@ -33,10 +33,9 @@ class InqDetailsPage extends StatefulWidget {
 }
 
 class _InqDetailsPageState extends State<InqDetailsPage> {
-
   @override
   Widget build(BuildContext context) {
-   RequestDetailsPageParams params =
+    RequestDetailsPageParams params =
         ModalRoute.of(context)!.settings.arguments as RequestDetailsPageParams;
 
     return BlocProvider(
@@ -98,19 +97,19 @@ class _InqDetailsPageState extends State<InqDetailsPage> {
                               state.details!.incidentInformation!.inquiryReply!
                                   .isNotEmpty)
                             CustomExpansionPanelWidget(
-                                title: ("رد الدعم الفني").tr(),
+                                title: ("support_reply").tr(),
                                 leading:
                                     SvgPicture.asset(IconPath.vdSummuryDesc),
                                 children: [
                                   FieldData(
-                                    title: ("تم الرد").tr(),
+                                    title: ("inq_replied").tr(),
                                     subTitle: state.details?.incidentInformation
                                         ?.inquiryReply,
                                   ),
                                 ]),
                           CustomVerticalSpace(height: 16),
                           CustomExpansionPanelWidget(
-                              title: ("ملخص الاستفسار").tr(),
+                              title: ("inq_summery").tr(),
                               leading: SvgPicture.asset(IconPath.vdSummuryDesc),
                               children: [
                                 if (state.details?.incidentInformation
@@ -119,25 +118,25 @@ class _InqDetailsPageState extends State<InqDetailsPage> {
                                     state.details!.incidentInformation!
                                         .inquiryReply!.isNotEmpty)
                                   FieldData(
-                                    title: ("تم الرد").tr(),
+                                    title: ("inq_replied").tr(),
                                     subTitle: state.details?.incidentInformation
                                         ?.inquiryReply,
                                   ),
                                 CustomVerticalSpace(height: 8),
                                 FieldData(
-                                  title: ("العنوان").tr(),
+                                  title: ("address").tr(),
                                   subTitle:
                                       state.details?.locationInfo?.address,
                                 ),
                                 CustomVerticalSpace(height: 8),
                                 FieldData(
-                                  title: ("التصنيف التخصصي").tr(),
+                                  title: ("spl_classification").tr(),
                                   subTitle: state.pageParams?.details
                                       .getSplClassificationName(),
                                 ),
                                 CustomVerticalSpace(height: 8),
                                 FieldData(
-                                  title: ("الوصف").tr(),
+                                  title: ("description").tr(),
                                   subTitle: state.details?.incidentInformation
                                       ?.issueDescription,
                                 ),
@@ -178,7 +177,7 @@ class _InqDetailsPageState extends State<InqDetailsPage> {
                                 ]),
                           CustomVerticalSpace(height: 16),
                           CustomExpansionPanelWidget(
-                              title: ("المرفقات").tr(),
+                              title: ("lbl_attachments").tr(),
                               leading: SvgPicture.asset(IconPath.vdSummuryDesc),
                               children: [AttachmentViewSection()]),
                         ],

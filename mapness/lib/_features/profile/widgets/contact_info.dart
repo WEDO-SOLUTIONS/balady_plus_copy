@@ -1,5 +1,6 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ContactInfo extends StatelessWidget {
   const ContactInfo({super.key});
@@ -8,9 +9,9 @@ class ContactInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const ContactRow(
+        ContactRow(
           contact: "Balady_CS@",
-          subtitle: "Twitter account",
+          subtitle: context.l10n.twitterAccount,
           border: false,
         ),
         Padding(
@@ -26,9 +27,9 @@ class ContactInfo extends StatelessWidget {
             ),
           ),
         ),
-        const ContactRow(
+        ContactRow(
           contact: "199040",
-          subtitle: "Last name",
+          subtitle: context.l10n.lastName,
           border: false,
         ),
         Padding(
@@ -44,9 +45,9 @@ class ContactInfo extends StatelessWidget {
             ),
           ),
         ),
-        const ContactRow(
+        ContactRow(
           contact: "infoCS@balady.gov.sa",
-          subtitle: "Email",
+          subtitle: context.l10n.email,
           border: true,
         ),
       ],
@@ -101,7 +102,7 @@ class ContactRow extends StatelessWidget {
                         .copyWith(color: const Color(0xFF1E2A36)),
                   ),
                   Text(
-                    contact,
+                    subtitle,
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
                         .textS

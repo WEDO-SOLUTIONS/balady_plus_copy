@@ -104,7 +104,7 @@ class ObjectionsDetailsBloc
         errorMessage: "",
       ));
 
-      CommonFunctions.showSuccess("تم الغاء طلب الإعتراض");
+      CommonFunctions.showSuccess("objctions_cancelled");
       add(GetObjectionDetailsEvent(
           params: state.details?.objectionRequestNumber ?? "", refresh: true));
     });

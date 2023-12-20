@@ -165,7 +165,7 @@ class _PermitLicensesListWidgetState extends State<PermitLicensesListWidget> {
                             ),
                           if (selectedValues.contains(item))
                             ElevatedButtonWidget.primaryCustomBorder(
-                              text: "تم الإختيار",
+                              text: "selection_chosen",
                               onPressed: () {
                                 setState(() {
                                   selectedValues!.remove(item);

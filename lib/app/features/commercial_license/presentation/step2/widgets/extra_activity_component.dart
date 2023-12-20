@@ -35,15 +35,15 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
           ),
           child: Column(
             children: [
-              const Row(
+              Row(
                 children: [
-                  CustomSvgIconWidget(
+                  const CustomSvgIconWidget(
                     IconPath.additionalActivity,
                     iconSize: 20,
                   ),
-                  SizedBox(width: 6),
+                  const SizedBox(width: 6),
                   CustomTextWidget(
-                    "نشاط اضافي",
+                    "addetional_data".tr(),
                     fontWeight: AppFontWeight.bold,
                     fontSize: 18,
                     fontColor: AppColor.blackModern600Light,
@@ -67,7 +67,7 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
               ),
               const SizedBox(height: 12),
               PlusAddButton(
-                text: "ارفاق نشاط",
+                text: "attach_activity".tr(),
                 onPressed: () => BottomSheetDialog.showDraggableSheet(
                   context,
                   child: Builder(
@@ -78,7 +78,7 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                             CrStep2ActivityDataState>(
                           builder: (context, state) {
                             return BottomSheetWithActions(
-                              title: "إضافة نشاط",
+                              title: "activity_add".tr(),
                               action: Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 16),
@@ -87,12 +87,12 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
 
                                   if (a <= 0) {
                                     CommonFunctions.showError(
-                                        "عفوا مساحة النشاط يجب أن تكون أكبر من الصفر");
+                                        "activity_must_be_bigger_than_0".tr());
                                     return;
                                   }
                                   if (a >= state.getTotalArea()) {
                                     CommonFunctions.showError(
-                                        "مساحة المحل أقل من مجموع مساحات الأنشطة الإضافية");
+                                        "total_areas_error".tr());
                                     return;
                                   }
 
@@ -115,7 +115,9 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                                                   .getAddetionalActivityItems() ??
                                               [],
                                           value: state.addetionalItem,
-                                          label: "نشاط أيزيك",
+                                          label:
+                                              "userLicensesLicenseDetailsAIESECActivityWord"
+                                                  .tr(),
                                           marginBottom: 8,
                                           onChangeType: (item) {
                                             AddetionalActivityItem? i = state
@@ -137,7 +139,7 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                                                   .addetionalActivityItemDetails ??
                                               [],
                                           value: state.addetionalDetailsItem,
-                                          label: "النشاط التفصيلي",
+                                          label: "detailedActivityName".tr(),
                                           marginBottom: 8,
                                           onChangeType: (item) {
                                             AddetionalActivityItemDetails? i =
@@ -158,16 +160,12 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                                           }),
                                       const CustomVerticalSpace(height: 12),
                                       CustomTextFieldWidget(
-                                        label:
-                                            "مساحة النشاط الإضافي من إجمالي المساحة"
-                                                .tr(),
-                                        hintText:
-                                            "مساحة النشاط الإضافي من إجمالي المساحة"
-                                                .tr(),
+                                        label: "addetional_total_area".tr(),
+                                        hintText: "addetional_total_area".tr(),
                                         isDigitsOnly: true,
                                         keyboardType: TextInputType.number,
-                                        suffixIcon: const CustomTextWidget(
-                                          "متر  مربع",
+                                        suffixIcon: CustomTextWidget(
+                                          "square_meter".tr(),
                                           fontSize: 12,
                                           fontWeight: AppFontWeight.semiBold,
                                           fontColor:

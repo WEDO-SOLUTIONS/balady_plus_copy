@@ -93,7 +93,10 @@ class PrayerHomeCard extends StatelessWidget {
                                         children: [
                                           if (state.nextPrayer != null)
                                             Text(
-                                              "متبقي على أذان ${state.nextPrayer!.prayer.label.tr()}",
+                                              "remain_to_azan".tr().replaceAll(
+                                                  "{}",
+                                                  state.nextPrayer!.prayer.label
+                                                      .tr()),
                                               style: Theme.of(context)
                                                   .extension<ThemeTextStyles>()!
                                                   .accentXS
@@ -155,7 +158,7 @@ class PrayerHomeCard extends StatelessWidget {
                                   const SizedBox(height: 6),
                                   state.nextPrayer != null
                                       ? Text(
-                                          "صلاة ${state.nextPrayer!.prayer.label.tr()}",
+                                          "${"pray".tr()} ${state.nextPrayer!.prayer.label.tr()}",
                                           style: Theme.of(context)
                                               .extension<ThemeTextStyles>()!
                                               .accentXS

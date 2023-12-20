@@ -119,7 +119,7 @@ class _ServiceTypesBodyState extends State<ServiceTypesBody> {
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: SearchTextFieldWidget(
-                        hintText: "ابحث",
+                        hintText: trans("search"),
                         containerHeight: 50,
                         onTextChanged: (String? text) {
                           if (text != state.name)

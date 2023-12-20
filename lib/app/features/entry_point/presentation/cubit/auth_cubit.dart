@@ -43,6 +43,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   final GetTestData _getTestData;
   final GetGISData _getGisData;
   final GetEkramPermission _getEkramPermission;
+  final GetPaymentUrl _getPaymentUrl;
 
   EntryPointCubit(
       {required GetToken getToken,
@@ -69,6 +70,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         _getAPIgeeToken = getAPIgeeToken,
         _clearAuth = clearAuth,
         _logout = logout,
+        _getPaymentUrl = GetPaymentUrl(repository: sl()),
         _getForceVersion = forceVersion,
         _getTestData = GetTestData(repository: sl()),
         _getEkramPermission = GetEkramPermission(repository: sl()),
@@ -284,6 +286,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   Future<void> autoLogout() async {
     sharedPrefs.setSSOToken(null);
     sl<DelegatorsCubit>().clearDelegators();
+    final failureOrSuccess = await _clearAuth(NoParams());
+
     //MM sharedPrefs.setUserProfile(null);
     sharedPrefs.setSSOUserProfile(null);
     clearSSOInfo();
@@ -377,6 +381,17 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         return (state.userLocation, state.userLocationGIS);
       });
     }
+  }
+
+  Future<String?> getPaymentURL(PaymentRequest request) async {
+    var result = await _getPaymentUrl(request);
+    result.fold((l) {
+      CommonFunctions.showError((l as ServerFailure).errorMessage);
+    }, (r) async {
+      return r;
+    });
+
+    return result.getRight;
   }
 
   Future<void> getEkramPermissions({bool allowTracking = false}) async {

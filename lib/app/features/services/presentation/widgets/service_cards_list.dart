@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/utils_exports.dart' show AppColor, IconPath;
 import '../../../home_page/home_exports.dart' show HomeTag;
@@ -31,7 +32,7 @@ class ServiceCardsList extends StatelessWidget implements PreferredSizeWidget {
                   onTap: () =>
                       context.read<ServiceCardsCubit>().selectCard(card),
                   child: HomeTag(
-                    title: card.title,
+                    title: card.title.tr(),
                     icon: card.iconName,
                     color: AppColor.primary900Light,
                     selected: state.selectedCard == card,

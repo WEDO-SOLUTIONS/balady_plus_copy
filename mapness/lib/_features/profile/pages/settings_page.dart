@@ -39,7 +39,7 @@ class SettingsPage extends StatelessWidget {
                       ),
                       const Spacer(),
                       Text(
-                        "Settings",
+                        context.l10n.settings,
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
                             .accentM
@@ -102,7 +102,7 @@ class SettingsPage extends StatelessWidget {
                   children: [
                     const Spacer(),
                     Text(
-                      "Choose the language of all interface in the Balady app",
+                      context.l10n.chooseTheLanguageOfAll,
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .textXS
@@ -125,7 +125,7 @@ class SettingsPage extends StatelessWidget {
                   children: [
                     const Spacer(),
                     Text(
-                      "Change the color scheme of an app from light to dark",
+                      context.l10n.changeTheColorSchemeOfAnApp,
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .textXS

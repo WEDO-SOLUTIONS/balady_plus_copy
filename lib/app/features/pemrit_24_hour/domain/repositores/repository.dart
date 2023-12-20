@@ -11,7 +11,7 @@ abstract class Permits24Repository {
   Future<Either<Failure, Permit24AllowedAction>> getPermitAllowedActions(
       {required int params});
 
-  Future<Either<Failure, PermitAlertsResponse>> getPermitsAlerts();
+  Future<Either<Failure, PermitAlertsResponse>> getPermitsAlerts(String type);
   Future<Either<Failure, bool>> validateBeforeApply({required int params});
 
   Future<Either<Failure, PermitSubmitResponseModel>> submit(

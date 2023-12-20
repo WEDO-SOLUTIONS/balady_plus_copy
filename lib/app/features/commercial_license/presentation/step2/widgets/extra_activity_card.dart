@@ -26,8 +26,8 @@ class ExtraActivityCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const CustomTextWidget(
-                "نشاط ايزيك",
+              CustomTextWidget(
+                "isic".tr(),
                 fontColor: AppColor.primary700Light,
                 fontSize: 12,
                 fontWeight: AppFontWeight.bold,
@@ -49,8 +49,8 @@ class ExtraActivityCard extends StatelessWidget {
             fontWeight: AppFontWeight.semiBold,
           ),
           const SizedBox(height: 16),
-          const CustomTextWidget(
-            "النشاط التفصيلي",
+          CustomTextWidget(
+            "subActivity".tr(),
             fontColor: AppColor.primary700Light,
             fontSize: 12,
             fontWeight: AppFontWeight.bold,
@@ -64,7 +64,7 @@ class ExtraActivityCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           CustomTextWidget(
-            "نوع موافقة الدفاع المدني".tr(),
+            "fire_approval_type".tr(),
             fontColor: AppColor.primary700Light,
             fontSize: 12,
             fontWeight: AppFontWeight.bold,
@@ -78,7 +78,7 @@ class ExtraActivityCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           CustomTextWidget(
-            "مساحة النشاط".tr(),
+            "activity_area".tr(),
             fontColor: AppColor.primary700Light,
             fontSize: 12,
             fontWeight: AppFontWeight.bold,

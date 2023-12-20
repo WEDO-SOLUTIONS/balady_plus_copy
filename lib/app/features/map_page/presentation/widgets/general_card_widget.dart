@@ -137,7 +137,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                                   dialogKeyName: DialogName.vdTypesDialog,
                                   currentRouteName: "HomePage",
                                   child: BottomSheetWithActions(
-                                    title: "اختر نوع البلاغ".tr(),
+                                    title: "customerVoiceReportTypeWord".tr(),
                                     body: QrTypesDialog(
                                       cmeraParamsPage: CameraParamsPage(
                                           lat: lat,

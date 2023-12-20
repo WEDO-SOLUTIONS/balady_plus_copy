@@ -25,7 +25,9 @@ class GraveDetailsItemWidget extends StatelessWidget {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 16),
+            padding: const EdgeInsets.only(
+              top: 16,
+            ),
             child: GridView(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -37,7 +39,7 @@ class GraveDetailsItemWidget extends StatelessWidget {
               ),
               children: [
                 RequestParameter(
-                  title: 'full_decassed_name'.tr(),
+                  title: 'name'.tr(),
                   value: item.deceasedName ?? "",
                 ),
                 RequestParameter(
@@ -45,7 +47,7 @@ class GraveDetailsItemWidget extends StatelessWidget {
                   value: item.burialDate ?? "",
                 ),
                 RequestParameter(
-                  title: 'city_state'.tr(),
+                  title: 'burial_city'.tr(),
                   value: item.cityName ?? "",
                 ),
                 RequestParameter(
@@ -55,8 +57,9 @@ class GraveDetailsItemWidget extends StatelessWidget {
               ],
             ),
           ),
-          ElevatedButtonWidget.primaryCustom(
-              onPressed: () {}, text: "location".tr())
+
+          /* ElevatedButtonWidget.primaryCustom(
+              onPressed: () {}, text: "location".tr())*/
         ],
       ),
     );

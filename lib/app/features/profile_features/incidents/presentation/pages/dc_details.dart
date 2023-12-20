@@ -31,10 +31,9 @@ class DCDetailsPage extends StatefulWidget {
 }
 
 class _DCDetailsPageState extends State<DCDetailsPage> {
-
   @override
   Widget build(BuildContext context) {
- RequestDetailsPageParams   params =
+    RequestDetailsPageParams params =
         ModalRoute.of(context)!.settings.arguments as RequestDetailsPageParams;
 
     return BlocProvider(
@@ -95,7 +94,7 @@ class _DCDetailsPageState extends State<DCDetailsPage> {
                             leading: SvgPicture.asset(IconPath.vdSummuryDesc),
                             children: [
                               FieldData(
-                                title: ("رقم البلاغ").tr(),
+                                title: ("incident_no").tr(),
                                 subTitle: state.pageParams?.details.getId(),
                               ),
                               FieldData(
@@ -128,7 +127,7 @@ class _DCDetailsPageState extends State<DCDetailsPage> {
                           ),
                           CustomVerticalSpace(height: 16),
                           CustomExpansionPanelWidget(
-                              title: ("المرفقات").tr(),
+                              title: ("lbl_attachments").tr(),
                               leading: SvgPicture.asset(IconPath.vdSummuryDesc),
                               children: []),
                         ],

@@ -5,6 +5,7 @@ import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
@@ -60,10 +61,10 @@ class _CRStep5AttachmentDataState extends State<CRStep5AttachmentData> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const CRHeaderDesc(
+                          CRHeaderDesc(
                             maxLines: null,
                             textHeight: 1.5,
-                            header: "بيانات المرفقات",
+                            header: "step11title3".tr(),
                             desc: "",
                           ),
                           const SizedBox(height: 12),
@@ -96,7 +97,7 @@ class _CRStep5AttachmentDataState extends State<CRStep5AttachmentData> {
                               },
                             ),
                           CustomTextFieldWidget(
-                            label: "ملاحظات المستفيد",
+                            label: "cr_benf_notes".tr(),
                             initialValue: state.notes,
                             maxLines: 10,
                             onChanged: (String? text) {

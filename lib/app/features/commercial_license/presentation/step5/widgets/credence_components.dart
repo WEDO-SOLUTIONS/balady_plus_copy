@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/widgets/summery_widgets/field_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../_shared_feature_/data/entities/file_data_item.dart';
 import '../../../../_shared_feature_/presentation/buttons/elevated_icon_button_widgets.dart';
@@ -26,11 +27,11 @@ class CredenceComponents extends StatelessWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CRHeaderDesc(
+                  CRHeaderDesc(
                     maxLines: null,
                     textHeight: 1.5,
-                    header: "الموافقات",
-                    desc: "موافقات الجهات الرسمية",
+                    header: "cr_credence".tr(),
+                    desc: "cr_credence_agreements".tr(),
                   ),
                   const CustomVerticalSpace(height: 16),
                   ListView.builder(
@@ -83,14 +84,14 @@ class CredenceItemComponent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           FieldData(
-            title: "الجهة",
+            title: "authority".tr(),
             subTitle: item.credenceName ?? "",
           ),
           const CustomVerticalSpace(
             height: 16,
           ),
           FieldData(
-            title: "نوع الموافقة",
+            title: "approvalType".tr(),
             subTitle: item.credenceTypeName ?? "",
           ),
           const CustomVerticalSpace(
@@ -99,8 +100,8 @@ class CredenceItemComponent extends StatelessWidget {
           if (item.credenceTypeId == 2) ...[
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
-              child: const CustomTextWidget(
-                "طباعة خطاب الإحالة",
+              child: CustomTextWidget(
+                "print_credence_letter".tr(),
                 fontColor: AppColor.primary700Light,
                 fontSize: 12,
                 maxLines: 10,
@@ -108,7 +109,7 @@ class CredenceItemComponent extends StatelessWidget {
               ),
             ),
             CustomElevatedIconButtonWidget(
-              text: "الخطاب",
+              text: "letter".tr(),
               btnColor: Colors.transparent,
               btnHeight: 56,
               btnPadding: EdgeInsets.symmetric(horizontal: 16),

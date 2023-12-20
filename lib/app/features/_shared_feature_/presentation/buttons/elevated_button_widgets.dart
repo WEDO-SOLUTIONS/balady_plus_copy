@@ -22,7 +22,7 @@ class ElevatedButtonWidget extends _ElevatedButton {
   ElevatedButtonWidget.login({required VoidCallback onPressed})
       : super(CustomElevatedButtonWidget(
           btnMargin: const EdgeInsets.only(top: 12.0),
-          text: ("تسجيل الدخول").tr(),
+          text: ("signInButton").tr(),
           btnColor: AppColor.primary800Light,
           textStyle: AppStyle.elevatedButtonStyle.copyWith(
               color: AppColor.blackModern50Light,
@@ -184,7 +184,7 @@ class ElevatedButtonWidget extends _ElevatedButton {
             fontSize: 16,
           ),
           btnHeight: 56,
-          text: "إصدار الرخصة بالانشطة المدرجة",
+          text: "cr_make_license_with_current".tr(),
           onPressed: onPressed,
         ));
 
@@ -198,7 +198,7 @@ class ElevatedButtonWidget extends _ElevatedButton {
             fontSize: 16,
           ),
           btnHeight: 56,
-          text: "إرسال طلب إضافة الانشطة للجهة المعنية",
+          text: "send_request_to_authorities".tr(),
           onPressed: onPressed,
         ));
 
@@ -374,7 +374,7 @@ class ElevatedButtonWidget extends _ElevatedButton {
 
   ElevatedButtonWidget.retriveCar({required VoidCallback onPressed})
       : super(CustomElevatedButtonWidget(
-          text: ("طلب إستعادة").tr(),
+          text: ("retrieve_request").tr(),
           btnRadius: 6,
           btnHeight: 40,
           btnColor: AppColor.primary800Light,

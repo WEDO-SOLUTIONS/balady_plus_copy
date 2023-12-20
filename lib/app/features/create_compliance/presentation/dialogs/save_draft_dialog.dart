@@ -11,12 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
-import '../../../../core/utils/constants/paths/icon_paths.dart';
-import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
-import '../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
-import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
 class SaveDraftDialog extends StatelessWidget {
   final Function onClose;
@@ -54,14 +49,14 @@ class SaveDraftDialog extends StatelessWidget {
                 ),
                 CustomVerticalSpace(height: 16),
                 CustomTextWidget(
-                  Helpers.translatingWord("الخروج من الطلب".tr()),
+                  "exit_order".tr(),
                   fontColor: AppColor.blackModern600Light,
                   fontWeight: AppFontWeight.bold,
                   fontSize: 20,
                 ),
                 CustomVerticalSpace(height: 16),
                 CustomTextWidget(
-                  "تم انشاء مسودة لطلبك، يمكنك العودة للطلب أو اكماله لاحقاً من الطلبات",
+                  "cancellation_license_message".tr(),
                   fontColor: AppColor.blackModern500Light,
                   fontWeight: AppFontWeight.bold,
                   fontSize: 18,
@@ -76,7 +71,7 @@ class SaveDraftDialog extends StatelessWidget {
 
                     onSave();
                   },
-                  text: Helpers.translatingWord("حفظ وخروج"),
+                  text: Helpers.translatingWord("save_exit"),
                 ),
                 CustomVerticalSpace(height: 16),
                 ElevatedButtonWidget.primaryCustomBorder(
@@ -84,7 +79,7 @@ class SaveDraftDialog extends StatelessWidget {
                     Navigator.pop(context);
                     onClose();
                   },
-                  text: Helpers.translatingWord("العودة للطلب"),
+                  text: Helpers.translatingWord("back_order"),
                 ),
                 /* EnhancedCustomElevatedButtonWidget(
                   btnPressed: () {},

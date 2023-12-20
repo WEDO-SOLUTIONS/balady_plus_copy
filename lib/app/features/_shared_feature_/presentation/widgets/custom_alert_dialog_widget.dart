@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/utils_exports.dart'
-    show AppColor, AppFontWeight, AppStyle, MessageType, UIHelper;
+    show
+        AppColor,
+        AppFontWeight,
+        AppStyle,
+        CommonFunctions,
+        MessageType,
+        UIHelper;
+import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../shared_feature_exports.dart'
     show CustomTextButtonWidget, CustomTextWidget;
 
@@ -149,6 +159,140 @@ class CustomAlertDialogWidget extends StatelessWidget {
                 text: secondaryBtnText!,
               ),
           ],
+    );
+  }
+}
+
+class CustomHTMLAlertDialogWidget extends StatelessWidget {
+  final Color? backgroundColor;
+  final BorderRadiusGeometry? borderRadius;
+  final double radius;
+  final BorderSide? borderSide;
+  final Color borderSideColor;
+  final EdgeInsets insetPadding;
+  final EdgeInsetsGeometry buttonPadding;
+  final EdgeInsetsGeometry actionsPadding;
+  final EdgeInsetsGeometry contentPadding;
+  final Widget? title;
+  final EdgeInsetsGeometry titlePadding;
+  final BoxBorder? titleBorder;
+  final Color titleBorderColor;
+  final double titleBorderWidth;
+  final MessageType titleMessageType;
+  final String? titleText;
+  final Color titleTextColor;
+  final double titleTextSize;
+  final AppFontWeight titleTextWeight;
+  final Widget? content;
+  final String? contentText;
+  final Color contentTextColor;
+  final List<Widget>? actions;
+  final VoidCallback? primaryBtnPressed;
+  final String? primaryBtnText;
+  final VoidCallback? secondaryBtnPressed;
+  final String? secondaryBtnText;
+  const CustomHTMLAlertDialogWidget({
+    super.key,
+    this.backgroundColor,
+    this.borderRadius,
+    this.radius = 10.0,
+    this.borderSide,
+    this.borderSideColor = Colors.transparent,
+    this.insetPadding = const EdgeInsets.symmetric(
+      horizontal: UIHelper.mediumPadding,
+    ),
+    this.buttonPadding = EdgeInsets.zero,
+    this.actionsPadding = EdgeInsets.zero,
+    this.contentPadding = const EdgeInsets.symmetric(
+      vertical: UIHelper.middlePadding,
+      horizontal: UIHelper.mediumPadding,
+    ),
+    this.title,
+    this.titlePadding = const EdgeInsets.symmetric(
+      vertical: UIHelper.smallPadding,
+    ),
+    this.titleBorder,
+    this.titleBorderColor = AppColor.gray,
+    this.titleBorderWidth = 1.0,
+    this.titleMessageType = MessageType.none,
+    this.titleText,
+    this.titleTextColor = AppColor.black,
+    this.titleTextSize = 18.0,
+    this.titleTextWeight = AppFontWeight.bold,
+    this.content,
+    this.contentText,
+    this.contentTextColor = AppColor.black,
+    this.actions,
+    this.primaryBtnPressed,
+    this.primaryBtnText,
+    this.secondaryBtnPressed,
+    this.secondaryBtnText,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: backgroundColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: borderRadius ?? BorderRadius.all(Radius.circular(radius)),
+        side: borderSide ?? BorderSide(color: borderSideColor),
+      ),
+      insetPadding: insetPadding,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsetsDirectional.only(start: 10),
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context).pop(true);
+                },
+                child: Icon(Icons.close),
+              ),
+            ),
+            Flexible(
+              child: content ??
+                  Html(
+                    shrinkWrap: true,
+                    data: contentText ?? "",
+                    onLinkTap:
+                        (String? url, Map<String, String> attributes, element) {
+                      //open URL in webview, or launch URL in browser, or any other logic here
+                      if (url != null) {
+                        CommonFunctions.openBaladyWebView(url);
+                      }
+                    },
+                    style: {
+                      "body": Style(
+                          fontSize: FontSize(14.0),
+                          fontWeight: FontWeight.w600,
+                          lineHeight: const LineHeight(1.4),
+                          textAlign: TextAlign.start,
+                          maxLines: 50,
+                          color: contentTextColor,
+                          fontFamily: Constants.appFontType),
+                    },
+                  ),
+            ),
+          ],
+        ),
+      ),
+      /*actions: actions ??
+          [
+            CustomTextButtonWidget(
+              onPressed:
+                  primaryBtnPressed ?? () => Navigator.of(context).pop(true),
+              text: primaryBtnText ?? "close".tr(),
+            ),
+            if (secondaryBtnPressed != null && secondaryBtnText != null)
+              CustomTextButtonWidget(
+                onPressed: secondaryBtnPressed!,
+                text: secondaryBtnText!,
+              ),
+          ],*/
     );
   }
 }

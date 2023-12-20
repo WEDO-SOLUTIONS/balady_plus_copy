@@ -5,6 +5,7 @@ import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/utils/constants/app_colors.dart';
@@ -81,8 +82,7 @@ class UpdateHealthCerificatePhotoDialog extends StatelessWidget {
                       // subtitle
 
                       CustomTextWidget(
-                        Helpers.translatingWord(
-                            "الرجاء تعبئة بيانات تحديث الصورة الشخصية"),
+                        Helpers.translatingWord("please_fill_all_info"),
                         fontColor: AppColor.warmGrey2,
                         fontWeight: AppFontWeight.medium,
                         maxLines: 10,
@@ -91,8 +91,8 @@ class UpdateHealthCerificatePhotoDialog extends StatelessWidget {
                       CustomVerticalSpace(height: 20),
 
                       CustomTextFieldWidget(
-                        hintText: "رقم النسخة",
-                        label: "رقم النسخة",
+                        hintText: "version_no".tr(),
+                        label: "version_no".tr(),
                         keyboardType: TextInputType.number,
                         isDigitsOnly: true,
                         onChanged: (String? value) {
@@ -104,7 +104,7 @@ class UpdateHealthCerificatePhotoDialog extends StatelessWidget {
                       CustomVerticalSpace(height: 16),
 
                       CustomTextWidget(
-                        "رقم نسخة بطاقة الهوية الحالية",
+                        "id_version_number".tr(),
                         fontSize: 14,
                         fontWeight: AppFontWeight.bold,
                         fontColor: AppColor.blackModern500Light,
@@ -112,7 +112,7 @@ class UpdateHealthCerificatePhotoDialog extends StatelessWidget {
                       CustomVerticalSpace(height: 16),
 
                       HijriCalendarAddetionalField(
-                        fieldName: "تاريخ الميلاد",
+                        fieldName: "date_of_birth".tr(),
                         isMandatory: true,
                         currentVlaue: state.birthDate,
                         onChanged: (String? value) {
@@ -136,7 +136,7 @@ class UpdateHealthCerificatePhotoDialog extends StatelessWidget {
                           ),
                           alignment: Alignment.center,
                           child: CustomTextWidget(
-                            "سيتم إرسال رمز توثيق لتأكيد رقم الجوال",
+                            "otp_will_be_sent".tr(),
                             fontSize: 14,
                             fontWeight: AppFontWeight.bold,
                             fontColor: AppColor.blackModern500Light,
@@ -149,7 +149,7 @@ class UpdateHealthCerificatePhotoDialog extends StatelessWidget {
                                 .read<UpdatePhotoCertificateCubit>()
                                 .sendOTP();
                           },
-                          text: "تحديث",
+                          text: "updateButton".tr(),
                           isDisabled: !state.isFormValid),
 
                       const CustomVerticalSpace(height: 40),

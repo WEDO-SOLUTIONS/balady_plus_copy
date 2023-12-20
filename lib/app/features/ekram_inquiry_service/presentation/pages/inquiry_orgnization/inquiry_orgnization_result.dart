@@ -40,14 +40,17 @@ class InquiryOrgnizationResultsPage extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Stack(
                 children: [
-                  ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: state.charityOrgnizations!.length,
-                      itemBuilder: (ctx, index) {
-                        return OrgnizationDetailsItemWidget(
-                          item: state.charityOrgnizations![index],
-                        );
-                      }),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 100),
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: state.charityOrgnizations!.length,
+                        itemBuilder: (ctx, index) {
+                          return OrgnizationDetailsItemWidget(
+                            item: state.charityOrgnizations![index],
+                          );
+                        }),
+                  ),
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(

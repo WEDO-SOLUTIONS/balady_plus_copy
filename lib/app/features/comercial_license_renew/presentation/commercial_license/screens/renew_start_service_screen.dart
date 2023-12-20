@@ -8,6 +8,7 @@ import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports
 import 'package:balady_plus/app/features/services/services_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/app_analytics_events.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
@@ -53,7 +54,7 @@ class _RenewStartServiceState extends State<RenewStartService> {
         builder: (context, state) {
           return Scaffold(
             appBar: DefaultAppBarWidget(
-              title: service.title,
+              title: service.title.tr(),
               bottom: ServiceCardsList(
                 cards: service.cards,
               ),
@@ -116,13 +117,13 @@ class _RenewStartServiceState extends State<RenewStartService> {
           "isImportant": false,
           "action": {"type": "cards", "value": ""},
           "ar": {
-            "title": "تجديد رخصة تجارية",
+            "title": "renew_service_name",
             "description": "",
             "tag": null,
             "warning": ""
           },
           "en": {
-            "title": "تجديد رخصة تجارية",
+            "title": "renew_service_name",
             "description": "",
             "tag": null,
             "warning": null
@@ -132,14 +133,13 @@ class _RenewStartServiceState extends State<RenewStartService> {
               "iconName": IconPath.serviceCardDesc,
               "type": ServiceCardsTypes.desc,
               "rate": 0,
-              "duration": "1 - 10 أيام",
+              "duration": "duration_10_days",
               "fees": -1,
-              "feesName": "حاسبة الرسوم المعلوماتية",
+              "feesName": "calculator_fees",
               "feesLink": "https://apps.balady.gov.sa/Eservices/FeesCalculator",
               "ar": {
-                "title": "وصف الخدمة",
-                "description":
-                    "من خلال هذه الخدمة يمكنك تعزيز استمرارية عملك التجاري حيث تمكنك هذه الخدمة من تجديد رخصتك التجارية، كما يمكنك تجديد مع تعديل بيانات الرخصة. وهنالك نوعين من التجديد فوري وغير فوري حسب النشاط وموقع منشأتك."
+                "title": "service_desc",
+                "description": "renew_service_desc"
               },
               "en": {"title": "Service Description", "description": ""}
             },
@@ -148,12 +148,9 @@ class _RenewStartServiceState extends State<RenewStartService> {
               "type": ServiceCardsTypes.req,
               "rate": 0,
               "duration": "0",
-              "requirements": [
-                "عقد الإيجار أو صك الملكية أو عقد الاستثمار للموقع من البلدية أو الجهات الحكومية الأخرى.",
-                "عقد النظافة (اختياري حسب التعاقد ونوع النشاط)."
-              ],
-              "ar": {"title": "المتطلبات", "description": ""},
-              "en": {"title": "Requirements", "description": ""}
+              "requirements": ["renew_service_req1", "renew_service_req2"],
+              "ar": {"title": "requirements", "description": ""},
+              "en": {"title": "requirements", "description": ""}
             },
             {
               "iconName": IconPath.serviceCardFlow,
@@ -164,12 +161,12 @@ class _RenewStartServiceState extends State<RenewStartService> {
                 {
                   "title": "",
                   "steps": [
-                    "تحديد سجل المنشأة واختيار الرخصة",
-                    "دفع الرسوم إذا كان النشاط فوري أو إرسال الطلب للبلدية في حال الأنشطة غير الفوري.",
+                    "rewnew_service_applying_step_1",
+                    "rewnew_service_applying_step_2",
                   ]
                 },
               ],
-              "ar": {"title": "خطوات التقديم", "description": ""},
+              "ar": {"title": "applying_steps", "description": ""},
               "en": {"title": "", "description": ""}
             },
             {
@@ -179,10 +176,10 @@ class _RenewStartServiceState extends State<RenewStartService> {
               "duration": "",
               "fees": null,
               "ar": {
-                "title": "الاشتراطات والغرامات",
-                "description": "متطلبات واشتراطات الخدمة",
+                "title": "conditions_and_fines",
+                "description": "service_conditions_and_fess",
                 "descriptionLink": "https://new.balady.gov.sa/ar/node/10855",
-                "feesName": "لائحة الجزاءات عن المخالفات البلدية",
+                "feesName": "list_municipal_violations",
                 "feesLink":
                     "https://balady.gov.sa/sites/default/files/2023-06/%D8%AC%D8%AF%D9%88%D9%84%20%D8%A7%D9%84%D8%AC%D8%B2%D8%A7%D8%A1%D8%A7%D8%AA%20%D8%B9%D9%86%20%D8%A7%D9%84%D9%85%D8%AE%D8%A7%D9%84%D9%81%D8%A7%D8%AA%20%D8%A7%D9%84%D8%A8%D9%84%D8%AF%D9%8A%D8%A9.pdf",
               },

@@ -80,9 +80,10 @@ class Permits24RepositoryImplementation implements Permits24Repository {
   }
 
   @override
-  Future<Either<Failure, PermitAlertsResponse>> getPermitsAlerts() async {
+  Future<Either<Failure, PermitAlertsResponse>> getPermitsAlerts(
+      String type) async {
     try {
-      final data = await remoteDataSource.getPermitsAlerts();
+      final data = await remoteDataSource.getPermitsAlerts(type);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());

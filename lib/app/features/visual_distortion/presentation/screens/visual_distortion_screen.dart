@@ -3,6 +3,7 @@ import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/enums/visual_distortion.dart';
@@ -29,7 +30,7 @@ class VisualDistortionScreen extends StatelessWidget {
             ),
           ),
         ],
-        title: "مظاهر التشوه البصري",
+        title: "visual_distortion".tr(),
       ),
       body: Stack(
         children: [

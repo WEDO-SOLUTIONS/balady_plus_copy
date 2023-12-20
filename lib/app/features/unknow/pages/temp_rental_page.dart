@@ -74,53 +74,53 @@ class _TempRentalPageState extends State<TempRentalPage> {
                       fontColor: AppColor.blackModern500Light,
                     ),
                     HeaderWithDivider(
-                      firstTitle: "نوع الفرصة",
-                      firstValue: "إيجار مؤقت",
+                      firstTitle: "invest_type".tr(),
+                      firstValue: "temo_rental".tr(),
                       firstIconPath: IconPath.moneyTime,
-                      secondTitle: "السعر",
+                      secondTitle: "invest_price".tr(),
                       secondValue: getDailyCost(),
                     ),
                     CustomTextWidget(
-                      "تفاصيل الفرصة",
+                      "invest_detail".tr(),
                       fontSize: 16,
                       fontWeight: AppFontWeight.bold,
                       fontColor: AppColor.blackModern800Light,
                     ),
                     SizedBox(height: 16),
                     DetailsCard(
-                        title: 'اسم الفرصة',
+                        title: "invest_title".tr(),
                         value: data.data?.details?.siteDescription ?? ""),
                     DetailsCard(
-                        title: 'رقم الموقع',
+                        title: "location_number".tr(),
                         value: data.data?.details?.id ?? ""),
                     DetailsCard(
-                        title: 'الجهة',
+                        title: 'orgniztion_furas'.tr(),
                         value:
                             data.data?.details?.getEntityORMinstryName() ?? ""),
                     DetailsCard(
-                        title: 'نوع النشاط',
+                        title: 'lbl_service_activity_hint1'.tr(),
                         value: data.data?.details?.getActivityName() ?? ""),
                     DetailsCard(
-                      title: 'سعر المتر',
+                      title: "meter_price".tr(),
                       value: data.data?.details?.getPrice() ?? "",
-                      note: "سعر المتر متغير بتغير اليوم",
+                      note: "details_note".tr(),
                     ),
                     SizedBox(height: 18),
                     CustomTextWidget(
-                      "تفاصيل الموقع",
+                      "location_details".tr(),
                       fontSize: 16,
                       fontWeight: AppFontWeight.bold,
                       fontColor: AppColor.blackModern800Light,
                     ),
                     SizedBox(height: 16),
                     DetailsCard(
-                        title: 'مساحة الموقع',
+                        title: "map_space".tr(),
                         value: data.data?.details?.getArea() ?? ""),
                     DetailsCard(
-                        title: 'الأمانة',
+                        title: 'municipality'.tr(),
                         value: data.data?.details?.municipality ?? ""),
                     DetailsCard(
-                        title: 'البلدية',
+                        title: 'sub_municipality'.tr(),
                         value: data.data?.details?.subMunicipality ?? ""),
                     SizedBox(height: 18),
                     DownloadForasApp(),

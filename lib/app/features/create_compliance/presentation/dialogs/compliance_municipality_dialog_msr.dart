@@ -21,8 +21,7 @@ class ComplianceMunicipalityMSRDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String msg = Helpers.translatingWord(
-        "إذا كان المبنى في نطاق منطقة الرياض، نأمل الدخول على بوابة أمانة الرياض من خلال الرابط الآتي لاستكمال طلبك");
+    String msg = Helpers.translatingWord("compliance_riyadh_note");
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -49,14 +48,6 @@ class ComplianceMunicipalityMSRDialog extends StatelessWidget {
                   iconSize: 82,
                 ),
                 Constants.verticalSpaceLarge,
-                /*CustomTextWidget(
-                  Helpers.translatingWord(
-                      "إذام كان المبنى في نطاق منطقة الرياض، نأمل الدخول على بواية أمانة الرياض من خلال الرابط الآتي لاستكمال طلبك"),
-                  fontColor: AppColor.blackModern600Light,
-                  fontWeight: AppFontWeight.bold,
-                  fontSize: 20,
-                ),
-                Constants.verticalSpaceMedium,*/
                 CustomTextWidget(
                   msg,
                   fontColor: AppColor.blackModern500Light,
@@ -72,7 +63,7 @@ class ComplianceMunicipalityMSRDialog extends StatelessWidget {
                     CommonFunctions.externalLaunch(
                         "https://eservices.alriyadh.gov.sa/Pages/ServicesRedirect.aspx?ServiceCode=2&MainServiceCode=67");
                   },
-                  btnText: Helpers.translatingWord("الذهاب للخدمة"),
+                  btnText: Helpers.translatingWord("go_to_service"),
                   btnTextSize: 18,
                   btnTextWeight: AppFontWeight.bold,
                   btnTextColor: AppColor.white,

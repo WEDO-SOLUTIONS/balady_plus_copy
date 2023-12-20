@@ -612,8 +612,9 @@ const IWishObject$json = {
     {'1': 'variants', '3': 8, '4': 3, '5': 11, '6': '.balady.protocol.IWishObject.Variant', '10': 'variants'},
     {'1': 'selected_variant_id', '3': 9, '4': 1, '5': 5, '9': 0, '10': 'selectedVariantId', '17': true},
     {'1': 'feedback_sent', '3': 10, '4': 1, '5': 8, '10': 'feedbackSent'},
+    {'1': 'metadata', '3': 11, '4': 1, '5': 11, '6': '.balady.protocol.IWishObject.Metadata', '10': 'metadata'},
   ],
-  '3': [IWishObject_Location$json, IWishObject_Variant$json, IWishObject_Voted$json, IWishObject_Photo$json],
+  '3': [IWishObject_Location$json, IWishObject_Variant$json, IWishObject_Voted$json, IWishObject_Photo$json, IWishObject_Metadata$json],
   '8': [
     {'1': '_selected_variant_id'},
   ],
@@ -664,6 +665,23 @@ const IWishObject_Photo$json = {
   ],
 };
 
+@$core.Deprecated('Use iWishObjectDescriptor instead')
+const IWishObject_Metadata$json = {
+  '1': 'Metadata',
+  '2': [
+    {'1': 'area_name', '3': 1, '4': 1, '5': 9, '9': 0, '10': 'areaName', '17': true},
+    {'1': 'type_name', '3': 2, '4': 1, '5': 9, '9': 1, '10': 'typeName', '17': true},
+    {'1': 'area_size', '3': 3, '4': 1, '5': 5, '9': 2, '10': 'areaSize', '17': true},
+    {'1': 'opening_date', '3': 4, '4': 1, '5': 11, '6': '.balady.protocol.Timestamp', '9': 3, '10': 'openingDate', '17': true},
+  ],
+  '8': [
+    {'1': '_area_name'},
+    {'1': '_type_name'},
+    {'1': '_area_size'},
+    {'1': '_opening_date'},
+  ],
+};
+
 /// Descriptor for `IWishObject`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List iWishObjectDescriptor = $convert.base64Decode(
     'CgtJV2lzaE9iamVjdBIOCgJpZBgBIAEoCVICaWQSOgoIY2F0ZWdvcnkYAiABKA4yHi5iYWxhZH'
@@ -674,15 +692,21 @@ final $typed_data.Uint8List iWishObjectDescriptor = $convert.base64Decode(
     'FsYWR5LnByb3RvY29sLklXaXNoT2JqZWN0LlBob3RvUgZwaG90b3MSQAoIdmFyaWFudHMYCCAD'
     'KAsyJC5iYWxhZHkucHJvdG9jb2wuSVdpc2hPYmplY3QuVmFyaWFudFIIdmFyaWFudHMSMwoTc2'
     'VsZWN0ZWRfdmFyaWFudF9pZBgJIAEoBUgAUhFzZWxlY3RlZFZhcmlhbnRJZIgBARIjCg1mZWVk'
-    'YmFja19zZW50GAogASgIUgxmZWVkYmFja1NlbnQaOAoITG9jYXRpb24SLAoFcG9pbnQYASABKA'
-    'syFi5iYWxhZHkucHJvdG9jb2wuUG9pbnRSBXBvaW50GuwBCgdWYXJpYW50Eg4KAmlkGAEgASgF'
-    'UgJpZBIUCgV0aXRsZRgCIAEoCVIFdGl0bGUSRgoHcHJldmlldxgDIAEoCzIsLmJhbGFkeS5wcm'
-    '90b2NvbC5JV2lzaE9iamVjdC5WYXJpYW50LlByZXZpZXdSB3ByZXZpZXcSOgoGcGhvdG9zGAQg'
-    'AygLMiIuYmFsYWR5LnByb3RvY29sLklXaXNoT2JqZWN0LlBob3RvUgZwaG90b3MaNwoHUHJldm'
-    'lldxIsCgVpbWFnZRgBIAEoCzIWLmJhbGFkeS5wcm90b2NvbC5JbWFnZVIFaW1hZ2UaVgoFVm90'
-    'ZWQSIwoNdmFyaWFudF9pbmRleBgBIAEoBVIMdmFyaWFudEluZGV4EigKEGlzX2ZlZWRiYWNrX3'
-    'NlbnQYAiABKAhSDmlzRmVlZGJhY2tTZW50GjUKBVBob3RvEiwKBWltYWdlGAEgASgLMhYuYmFs'
-    'YWR5LnByb3RvY29sLkltYWdlUgVpbWFnZUIWChRfc2VsZWN0ZWRfdmFyaWFudF9pZA==');
+    'YmFja19zZW50GAogASgIUgxmZWVkYmFja1NlbnQSQQoIbWV0YWRhdGEYCyABKAsyJS5iYWxhZH'
+    'kucHJvdG9jb2wuSVdpc2hPYmplY3QuTWV0YWRhdGFSCG1ldGFkYXRhGjgKCExvY2F0aW9uEiwK'
+    'BXBvaW50GAEgASgLMhYuYmFsYWR5LnByb3RvY29sLlBvaW50UgVwb2ludBrsAQoHVmFyaWFudB'
+    'IOCgJpZBgBIAEoBVICaWQSFAoFdGl0bGUYAiABKAlSBXRpdGxlEkYKB3ByZXZpZXcYAyABKAsy'
+    'LC5iYWxhZHkucHJvdG9jb2wuSVdpc2hPYmplY3QuVmFyaWFudC5QcmV2aWV3UgdwcmV2aWV3Ej'
+    'oKBnBob3RvcxgEIAMoCzIiLmJhbGFkeS5wcm90b2NvbC5JV2lzaE9iamVjdC5QaG90b1IGcGhv'
+    'dG9zGjcKB1ByZXZpZXcSLAoFaW1hZ2UYASABKAsyFi5iYWxhZHkucHJvdG9jb2wuSW1hZ2VSBW'
+    'ltYWdlGlYKBVZvdGVkEiMKDXZhcmlhbnRfaW5kZXgYASABKAVSDHZhcmlhbnRJbmRleBIoChBp'
+    'c19mZWVkYmFja19zZW50GAIgASgIUg5pc0ZlZWRiYWNrU2VudBo1CgVQaG90bxIsCgVpbWFnZR'
+    'gBIAEoCzIWLmJhbGFkeS5wcm90b2NvbC5JbWFnZVIFaW1hZ2Ua7wEKCE1ldGFkYXRhEiAKCWFy'
+    'ZWFfbmFtZRgBIAEoCUgAUghhcmVhTmFtZYgBARIgCgl0eXBlX25hbWUYAiABKAlIAVIIdHlwZU'
+    '5hbWWIAQESIAoJYXJlYV9zaXplGAMgASgFSAJSCGFyZWFTaXpliAEBEkIKDG9wZW5pbmdfZGF0'
+    'ZRgEIAEoCzIaLmJhbGFkeS5wcm90b2NvbC5UaW1lc3RhbXBIA1ILb3BlbmluZ0RhdGWIAQFCDA'
+    'oKX2FyZWFfbmFtZUIMCgpfdHlwZV9uYW1lQgwKCl9hcmVhX3NpemVCDwoNX29wZW5pbmdfZGF0'
+    'ZUIWChRfc2VsZWN0ZWRfdmFyaWFudF9pZA==');
 
 @$core.Deprecated('Use iWishMarkersResponseDescriptor instead')
 const IWishMarkersResponse$json = {

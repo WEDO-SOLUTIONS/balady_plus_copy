@@ -38,14 +38,17 @@ class InquiryGraveResultsPage extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Stack(
                 children: [
-                  ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: state.findGraveResponse!.length,
-                      itemBuilder: (ctx, index) {
-                        return GraveDetailsItemWidget(
-                          item: state.findGraveResponse![index],
-                        );
-                      }),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 100),
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: state.findGraveResponse!.length,
+                        itemBuilder: (ctx, index) {
+                          return GraveDetailsItemWidget(
+                            item: state.findGraveResponse![index],
+                          );
+                        }),
+                  ),
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(

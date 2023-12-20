@@ -20,7 +20,7 @@ class OldCalendarCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: padding ?? EdgeInsets.only(top: 16, left: 16, right: 16),
-      height: 220,
+      height: 222,
       width: width ?? MediaQuery.of(context).size.width - 32,
       decoration: BoxDecoration(
         color: Colors.white,

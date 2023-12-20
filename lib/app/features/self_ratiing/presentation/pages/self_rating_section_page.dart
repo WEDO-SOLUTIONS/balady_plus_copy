@@ -11,6 +11,7 @@ import 'package:balady_plus/app/features/self_ratiing/presentation/widgets/self_
 import 'package:balady_plus/app/features/self_ratiing/presentation/widgets/self_rating_sections_widgets/third_section_rating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/common_functions.dart';
 import '../../data/models/rating_self_success_result.dart';
@@ -56,7 +57,7 @@ class _SelfRatingSectionPageState extends State<SelfRatingSectionPage> {
                                 complianes: state.complianes));
                   } else {
                     CommonFunctions.showError(
-                        "الرجاء اختيار جميع بنود الإمتثال");
+                        "please_select_all_complaince_terms".tr());
                   }
                 },
               ),

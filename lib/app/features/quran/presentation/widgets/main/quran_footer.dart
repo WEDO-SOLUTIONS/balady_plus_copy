@@ -133,7 +133,7 @@ class _QuranFooterState extends State<QuranFooter> {
                         SvgPicture.asset(IconPath.quranBookMarkIcon),
                         CustomHorizontalSpace(width: 8),
                         CustomTextWidget(
-                          ("الإنتقال إلى العلامة").tr(),
+                          ("move_to_mark").tr(),
                           fontSize: 12,
                           fontWeight: AppFontWeight.semiBold,
                         )
@@ -168,7 +168,7 @@ class _QuranFooterState extends State<QuranFooter> {
                                               MainAxisAlignment.start,
                                           children: [
                                             CustomTextWidget(
-                                              ("رقم الصفحه").tr(),
+                                              ("pageNumber").tr(),
                                               fontColor:
                                                   AppColor.blackModern700Light,
                                               fontSize: 16,
@@ -188,8 +188,7 @@ class _QuranFooterState extends State<QuranFooter> {
                                             )),
                                         CustomVerticalSpace(height: 16),
                                         CustomTextWidget(
-                                          ("الرجاء إدخال رقم صفحة ما بين 1 و 604")
-                                              .tr(),
+                                          ("pageEntry").tr(),
                                           fontColor:
                                               AppColor.blackModern600Light,
                                           fontSize: 15,
@@ -210,12 +209,12 @@ class _QuranFooterState extends State<QuranFooter> {
                                                                 .text)));
                                               Navigator.pop(context);
                                             },
-                                            text: ("انتقال").tr())
+                                            text: ("move").tr())
                                       ],
                                     ),
                                   ),
                                 ),
-                                title: ("إنتقال إلى الصفحة").tr(),
+                                title: ("move_to_page").tr(),
                               ));
                     },
                     child: Row(
@@ -223,7 +222,7 @@ class _QuranFooterState extends State<QuranFooter> {
                         SvgPicture.asset(IconPath.quranChangePageIcon),
                         CustomHorizontalSpace(width: 8),
                         CustomTextWidget(
-                          ("تغيير الصفحة").tr(),
+                          ("change_page").tr(),
                           fontSize: 12,
                           fontWeight: AppFontWeight.semiBold,
                         )
@@ -281,7 +280,7 @@ class _QuranFooterState extends State<QuranFooter> {
                                     ),
                                   ),
                                 ),
-                                title: 'اختر السورة',
+                                title: "chooseSurah".tr(),
                               ));
                     },
                     child: Row(
@@ -289,7 +288,7 @@ class _QuranFooterState extends State<QuranFooter> {
                         SvgPicture.asset(IconPath.quranMenuIcon),
                         CustomHorizontalSpace(width: 8),
                         CustomTextWidget(
-                          ("الفهرس").tr(),
+                          ("index").tr(),
                           fontSize: 12,
                           fontWeight: AppFontWeight.semiBold,
                         )
@@ -337,7 +336,7 @@ class _QuranFooterState extends State<QuranFooter> {
                                     ),
                                   ),
                                 ),
-                                title: 'اختر الجزء',
+                                title: "choosePart".tr(),
                               ));
                     },
                     child: Row(
@@ -345,7 +344,7 @@ class _QuranFooterState extends State<QuranFooter> {
                         SvgPicture.asset(IconPath.quranJozzIcon),
                         CustomHorizontalSpace(width: 8),
                         CustomTextWidget(
-                          ("الأجزاء").tr(),
+                          ("parts").tr(),
                           fontSize: 12,
                           fontWeight: AppFontWeight.semiBold,
                         )
@@ -366,7 +365,7 @@ class _QuranFooterState extends State<QuranFooter> {
                         SvgPicture.asset(IconPath.quranPrayIcon),
                         CustomHorizontalSpace(width: 8),
                         CustomTextWidget(
-                          ("دعاء الختم").tr(),
+                          ("end_doaa").tr(),
                           fontSize: 12,
                           fontWeight: AppFontWeight.semiBold,
                         )

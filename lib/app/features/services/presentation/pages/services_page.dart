@@ -15,13 +15,17 @@ import '../../../../core/utils/utils_exports.dart'
         CommonProperties,
         IconPath,
         RouteName;
+import '../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show
         BottomSheetDialog,
         CustomTextWidget,
         DefaultAppBarWidget,
+        ElevatedButtonWidget,
         TabPageContainer;
+import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../../home_page/home_exports.dart' show CircleIcon;
+import '../../../profile/presentation/widgets/sign_in_card.dart';
 import '../../../profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../../../profile_features/dashboard/presentation/widgets/dashboard_list_shimmer.dart';
 import '../../../profile_features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
@@ -49,46 +53,42 @@ class _ServicesPageState extends State<ServicesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<DashboardBloc>(
-      create: (context) => sl<DashboardBloc>()..add(DashboardEventInitial()),
-      child: BlocConsumer<DashboardBloc, DashboardState>(
-          listener: (context, dashboardState) {},
-          builder: (context, dashboardState) {
-            return BlocBuilder<ServicesCubit, ServicesState>(
-              builder: (context, state) {
-                return Scaffold(
-                  backgroundColor: AppColor.white,
-                  appBar: EnhancedAppBar(
-                    title: "services".tr(),
-                    actions: [
-                      IconButton(
-                          onPressed: () async {
-                            context.read<DelegatorsCubit>().getDelegators();
-                            context.read<DelegatorsCubit>().getAgents();
-                            await BottomSheetDialog.showDraggableSheet(
-                              context,
-                              dialogKeyName: DialogName.delegatorsDialog,
-                              currentRouteName: "ServicesPage",
-                              child: DelegatorList(
-                                delegatorsCubit:
-                                    context.read<DelegatorsCubit>(),
-                              ),
-                            );
-
-                            context
-                                .read<DashboardBloc>()
-                                .add(DashboardEventInitial());
-                          },
-                          icon:
-                              SvgPicture.asset("assets/icons/svg/refresh.svg"))
-                    ],
-                  ),
-                  body: BlocBuilder<ServicesCubit, ServicesState>(
-                    builder: (context, state) {
+    return BlocConsumer<DashboardBloc, DashboardState>(
+        listener: (context, dashboardState) {},
+        builder: (context, dashboardState) {
+          return BlocBuilder<ServicesCubit, ServicesState>(
+            builder: (context, state) {
+              return Scaffold(
+                backgroundColor: AppColor.white,
+                appBar: EnhancedAppBar(
+                  title: "services".tr(),
+                  actions: [
+                    IconButton(
+                        onPressed: () async {
+                          openDelegators(context);
+                        },
+                        icon: SvgPicture.asset("assets/icons/svg/refresh.svg"))
+                  ],
+                ),
+                body: BlocBuilder<ServicesCubit, ServicesState>(
+                  builder: (context, state) {
+                    return BlocBuilder<EntryPointCubit, EntryPointState>(
+                        builder: (context, entryPointState) {
                       return SingleChildScrollView(
                         child: Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             const SearchServicesTextField(),
+                            /* if (CommonProperties.isLoggedIn)
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: ElevatedButtonWidget.logout(
+                                    onPressed: () {
+                                  sl<EntryPointCubit>().clearAuth();
+                                }),
+                              ),
+                            if (!CommonProperties.isLoggedIn)
+                              const SignInCard(),*/
                             if (CommonProperties.isLoggedIn) ...[
                               HeaderWithAll(
                                 text: "dashboard".tr(),
@@ -130,11 +130,6 @@ class _ServicesPageState extends State<ServicesPage> {
                                 title: "islamic_services".tr(),
                                 services: state.islamicServices,
                               ),
-                            if (state.customerVoiceServices.isNotEmpty)
-                              ServicesList(
-                                title: "customer_voice_services".tr(),
-                                services: state.customerVoiceServices,
-                              ),
                             if (state.municipalServicee.isNotEmpty)
                               ServicesList(
                                 title: "municipal_services".tr(),
@@ -145,14 +140,6 @@ class _ServicesPageState extends State<ServicesPage> {
                                 title: "business_license_services".tr(),
                                 services: state.businessLicenseServices,
                               ),
-                            ServicesList(
-                              title: "honoring_the_dead_services".tr(),
-                              services: state.honoringTheDeadServices,
-                            ),
-                            /*ServicesList(
-                            title: "health_certificates_services".tr(),
-                            services: state.healthCertificatesServices,
-                          ),*/
                             if (state.helpServices.isNotEmpty)
                               ServicesList(
                                 title: "help_services".tr(),
@@ -162,12 +149,49 @@ class _ServicesPageState extends State<ServicesPage> {
                           ],
                         ),
                       );
-                    },
-                  ),
-                );
-              },
-            );
-          }),
-    );
+                    });
+                  },
+                ),
+              );
+            },
+          );
+        });
+  }
+
+  void openDelegators(BuildContext context) async {
+    if (CommonProperties.isLoggedIn) {
+      context.read<DelegatorsCubit>().getDelegators();
+      context.read<DelegatorsCubit>().getAgents();
+      await BottomSheetDialog.showDraggableSheet(
+        context,
+        dialogKeyName: DialogName.delegatorsDialog,
+        currentRouteName: "ServicesPage",
+        child: DelegatorList(
+          delegatorsCubit: context.read<DelegatorsCubit>(),
+        ),
+      );
+
+      context.read<DashboardBloc>().add(DashboardEventInitial());
+    } else {
+      showDialog(
+          context: context,
+          builder: (ctx) =>
+              NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                if (isSuccess ?? false) {
+                  context.read<DelegatorsCubit>().getDelegators();
+                  context.read<DelegatorsCubit>().getAgents();
+                  await BottomSheetDialog.showDraggableSheet(
+                    context,
+                    dialogKeyName: DialogName.delegatorsDialog,
+                    currentRouteName: "ServicesPage",
+                    child: DelegatorList(
+                      delegatorsCubit: context.read<DelegatorsCubit>(),
+                    ),
+                  );
+
+                  context.read<DashboardBloc>().add(DashboardEventInitial());
+                }
+              }));
+    }
   }
 }

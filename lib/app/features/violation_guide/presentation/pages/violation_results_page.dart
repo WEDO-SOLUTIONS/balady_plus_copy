@@ -119,7 +119,7 @@ class _ViolationResultsPageState extends State<ViolationResultsPage> {
                                           CrossAxisAlignment.center,
                                       children: [
                                         CustomTextWidget(
-                                          "مخالفة جسيمة",
+                                          "approved_violation_title".tr(),
                                           fontColor: !crticalSelected
                                               ? AppColor.primary900Light
                                               : AppColor.white,
@@ -178,7 +178,7 @@ class _ViolationResultsPageState extends State<ViolationResultsPage> {
                                           CrossAxisAlignment.center,
                                       children: [
                                         CustomTextWidget(
-                                          "مخالفة غير جسيمة",
+                                          "violation_title_2".tr(),
                                           fontColor: crticalSelected
                                               ? AppColor.primary900Light
                                               : AppColor.white,
