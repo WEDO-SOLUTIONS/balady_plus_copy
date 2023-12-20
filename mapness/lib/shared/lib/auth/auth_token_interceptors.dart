@@ -45,7 +45,7 @@ class AuthTokenInterceptor {
           } catch (e) {
             if (e is DioException && e.response?.statusCode == 401) {
               //LogOut and Redirect to login
-              await ref.read(authProvider.notifier).logOut();
+              await ref.read(authProvider.notifier).tokenExpireLogout();
               ref.read(goRouterProvider).push('/signin');
             } else if (e is DioException) {
               handler.reject(e);
