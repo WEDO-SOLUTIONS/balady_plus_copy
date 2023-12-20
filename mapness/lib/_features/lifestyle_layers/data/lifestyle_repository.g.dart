@@ -7,7 +7,7 @@ part of 'lifestyle_repository.dart';
 // **************************************************************************
 
 String _$lifestyleRepositoryHash() =>
-    r'd15566cb06d4f8f74ca49edd29eb15a8b24d0a8a';
+    r'1d814591d396d38676bc291c731c3a85feacda19';
 
 /// See also [LifestyleRepository].
 @ProviderFor(LifestyleRepository)

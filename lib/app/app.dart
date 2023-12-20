@@ -35,7 +35,7 @@ import 'features/location/presentation/bloc/location_bloc.dart';
 import 'features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'features/weather/presentation/bloc/weather_bloc.dart';
 
-final GlobalKey<_AppWidgetState> materialAppKey = GlobalKey();
+//final GlobalKey<_AppWidgetState> materialAppKey = GlobalKey();
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -83,7 +83,6 @@ class _AppWidgetState extends State<AppWidget> {
     return MaterialApp(
       title: 'appNameWord'.tr(),
       debugShowCheckedModeBanner: false,
-      key: materialAppKey,
       navigatorKey: NavigationService.navigatorKey,
       theme: ThemeData(
         primaryColor: AppColor.blue,
