@@ -78,7 +78,7 @@ class _ServicesPageState extends State<ServicesPage> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            //  const SearchServicesTextField(),
+                            const SearchServicesTextField(),
                             /* if (CommonProperties.isLoggedIn)
                               Padding(
                                 padding: const EdgeInsets.all(16.0),
@@ -89,7 +89,7 @@ class _ServicesPageState extends State<ServicesPage> {
                               ),
                             if (!CommonProperties.isLoggedIn)
                               const SignInCard(),*/
-                            /*  if (CommonProperties.isLoggedIn) ...[
+                            if (CommonProperties.isLoggedIn) ...[
                               HeaderWithAll(
                                 text: "dashboard".tr(),
                                 margin: const EdgeInsets.all(16),
@@ -121,7 +121,7 @@ class _ServicesPageState extends State<ServicesPage> {
                                   },
                                 ),
                               ),
-                            ],*/
+                            ],
                             const SizedBox(
                               height: 16,
                             ),
