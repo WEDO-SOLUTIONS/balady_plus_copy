@@ -314,6 +314,36 @@ class AppLocalizationsAr extends AppLocalizations {
   String get iwish => 'أتمنى';
 
   @override
+  String get iwish_food_truck => 'Food Trucks';
+
+  @override
+  String get iwish_fountain => 'Fountain';
+
+  @override
+  String get iwish_free_area => 'Free\nArea';
+
+  @override
+  String get iwish_green_spaces => 'Green spaces';
+
+  @override
+  String get iwish_outdoor_club => 'Outdoor Club';
+
+  @override
+  String get iwish_play_ground => 'Play ground';
+
+  @override
+  String get iwish_running => 'Running Track';
+
+  @override
+  String get iwish_sitting_benches => 'Sitting Benches';
+
+  @override
+  String get iwish_sport_court => 'Sportive Courts';
+
+  @override
+  String get iwish_vending_machine => 'Vending Machines';
+
+  @override
   String get jobDescription => 'وصف الوظيفة';
 
   @override

@@ -711,6 +711,66 @@ abstract class AppLocalizations {
   /// **'أتمنى'**
   String get iwish;
 
+  /// No description provided for @iwish_food_truck.
+  ///
+  /// In ar, this message translates to:
+  /// **'Food Trucks'**
+  String get iwish_food_truck;
+
+  /// No description provided for @iwish_fountain.
+  ///
+  /// In ar, this message translates to:
+  /// **'Fountain'**
+  String get iwish_fountain;
+
+  /// No description provided for @iwish_free_area.
+  ///
+  /// In ar, this message translates to:
+  /// **'Free\nArea'**
+  String get iwish_free_area;
+
+  /// No description provided for @iwish_green_spaces.
+  ///
+  /// In ar, this message translates to:
+  /// **'Green spaces'**
+  String get iwish_green_spaces;
+
+  /// No description provided for @iwish_outdoor_club.
+  ///
+  /// In ar, this message translates to:
+  /// **'Outdoor Club'**
+  String get iwish_outdoor_club;
+
+  /// No description provided for @iwish_play_ground.
+  ///
+  /// In ar, this message translates to:
+  /// **'Play ground'**
+  String get iwish_play_ground;
+
+  /// No description provided for @iwish_running.
+  ///
+  /// In ar, this message translates to:
+  /// **'Running Track'**
+  String get iwish_running;
+
+  /// No description provided for @iwish_sitting_benches.
+  ///
+  /// In ar, this message translates to:
+  /// **'Sitting Benches'**
+  String get iwish_sitting_benches;
+
+  /// No description provided for @iwish_sport_court.
+  ///
+  /// In ar, this message translates to:
+  /// **'Sportive Courts'**
+  String get iwish_sport_court;
+
+  /// No description provided for @iwish_vending_machine.
+  ///
+  /// In ar, this message translates to:
+  /// **'Vending Machines'**
+  String get iwish_vending_machine;
+
   /// No description provided for @jobDescription.
   ///
   /// In ar, this message translates to:
