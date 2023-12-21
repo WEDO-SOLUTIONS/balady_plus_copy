@@ -768,7 +768,7 @@ abstract class AppLocalizations {
   /// No description provided for @lastName.
   ///
   /// In ar, this message translates to:
-  /// **'اسم العائلة'**
+  /// **'رقم التواصل'**
   String get lastName;
 
   /// No description provided for @layersOnTheMap.
@@ -1176,13 +1176,13 @@ abstract class AppLocalizations {
   /// No description provided for @profile.
   ///
   /// In ar, this message translates to:
-  /// **'الملف الشخصي'**
+  /// **'الحساب'**
   String get profile;
 
   /// No description provided for @profileSettings.
   ///
   /// In ar, this message translates to:
-  /// **'إعدادات الملف الشخصي'**
+  /// **'إعدادات الحساب'**
   String get profileSettings;
 
   /// No description provided for @published.

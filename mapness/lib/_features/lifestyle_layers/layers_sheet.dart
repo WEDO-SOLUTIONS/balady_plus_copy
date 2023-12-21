@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -167,7 +168,7 @@ class FilterRow extends StatelessWidget {
                 width: 14,
               ),
               Text(
-                value.title(context.l10n),
+                value.titleLocale(context.l10n),
                 style: Theme.of(context).extension<ThemeTextStyles>()!.textM,
               ),
             ],

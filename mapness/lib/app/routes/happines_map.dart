@@ -51,7 +51,7 @@ TransculentPage<void> _happinesTransition({
 }) {
   return TransculentPage(
     child: Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: Directionality.of(context),
       child: Align(alignment: Alignment.bottomCenter, child: child),
     ),
   );

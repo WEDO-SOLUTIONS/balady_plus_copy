@@ -13,7 +13,7 @@ class PathNavMapControlls extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection: TextDirection.ltr,
+      textDirection: Directionality.of(context),
       child: Padding(
         padding: const EdgeInsets.only(
           left: 12,

@@ -174,7 +174,7 @@ class _ContentState extends ConsumerState<_Content> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Favourites(data),
+                                          // Favourites(data),
                                           About(
                                             data,
                                             onEntranceTap: () =>

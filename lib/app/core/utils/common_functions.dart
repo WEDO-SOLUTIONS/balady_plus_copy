@@ -522,7 +522,8 @@ class CommonFunctions {
   }
 
   static bool get isAuthed => sl.isRegistered<AuthData>();
-  static bool get isAppAR => AppConfig.languageCode == AppLanguage.ar.name;
+  static bool get isAppAR =>
+      translator.activeLanguageCode == AppLanguage.ar.name;
 
   static Future<bool> onLogin() async => await sl<EntryPointCubit>().onLogin();
   static bool doesContainsLettrs(String str) {

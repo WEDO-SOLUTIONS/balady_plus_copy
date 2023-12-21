@@ -295,7 +295,9 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     _logout(NoParams());
     //MM  sl<VDCategoryBloc>().add(RefreshCategoriesEvent());
 
-    Helpers.backToHome();
+    // Fix White screen on startup
+    // Helpers.backToHome();
+    CommonFunctions.showError("session_ended_error".tr());
   }
 
   Future<void> refreshSSOProfile() async {

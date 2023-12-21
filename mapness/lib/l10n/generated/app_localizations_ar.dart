@@ -341,7 +341,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get languageTitle => 'الإنجليزية';
 
   @override
-  String get lastName => 'اسم العائلة';
+  String get lastName => 'رقم التواصل';
 
   @override
   String get layersOnTheMap => 'الطبقات على الخريطة';
@@ -545,10 +545,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get presentTime => 'الوقت الحالي';
 
   @override
-  String get profile => 'الملف الشخصي';
+  String get profile => 'الحساب';
 
   @override
-  String get profileSettings => 'إعدادات الملف الشخصي';
+  String get profileSettings => 'إعدادات الحساب';
 
   @override
   String get published => 'تم النشر';

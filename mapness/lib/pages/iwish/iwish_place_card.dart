@@ -43,6 +43,7 @@ class IwishPlaceCard extends ConsumerWidget {
             builder: (context, scrollController) => Column(
               children: [
                 IwishPhotosRow(photos: entity.photos),
+                const SizedBox(height: 8),
                 Expanded(
                   child: Container(
                     decoration: const BoxDecoration(
@@ -123,18 +124,16 @@ class IwishPlaceCard extends ConsumerWidget {
                         //     ],
                         //   ),
                         // ),
-                        Expanded(
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 16),
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: IwishAboutPark(
-                              metadata: entity.metadata,
-                              parkSize: entity.parkSize,
-                            ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: IwishAboutPark(
+                            metadata: entity.metadata,
+                            parkSize: entity.parkSize,
                           ),
                         )
                       ],

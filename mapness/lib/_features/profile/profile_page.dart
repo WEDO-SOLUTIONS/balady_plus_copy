@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/profile/widgets/profile_header.dart';
 import 'package:mapness/_features/profile/widgets/profile_image_widget.dart';
 import 'package:mapness/_features/profile/widgets/unathorized_profile.dart';
@@ -38,10 +39,13 @@ class ProfilePage extends ConsumerWidget {
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
         child: Directionality(
-          textDirection: TextDirection.ltr,
+          textDirection: Directionality.of(context),
           child: Material(
             color: Colors.white,
             child: ListView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+              ),
               children: [
                 SafeArea(
                   bottom: false,
@@ -54,7 +58,7 @@ class ProfilePage extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(
-                  height: 6,
+                  height: 16,
                 ),
                 Consumer(
                   builder: (context, ref, child) {
@@ -75,307 +79,61 @@ class ProfilePage extends ConsumerWidget {
                 const SizedBox(
                   height: 16,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: SizedBox(
-                    height: 52,
-                    child: Material(
-                      borderRadius: BorderRadius.circular(12),
-                      color: const Color(0xFFF5F7FA),
-                      child: InkWell(
-                        onTap: () {
-                          const SettingsRoute().push(context);
-                        },
-                        borderRadius: BorderRadius.circular(12),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12.0),
-                          child: Row(
-                            children: [
-                              const SizedBox(
-                                width: 16.0,
-                              ),
-                              SvgPicture.asset(
-                                'assets/icons/svg/ic_chevron_left.svg',
-                                height: 24,
-                                width: 24,
-                                package: PackageConfig.packageName,
-                                colorFilter: const ColorFilter.mode(
-                                  Color(0xFF1E2A36),
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                              const Spacer(),
-                              Text(
-                                context.l10n.settings,
-                                style: Theme.of(context)
-                                    .extension<ThemeTextStyles>()!
-                                    .textM
-                                    .copyWith(color: const Color(0xFF1E2A36)),
-                              ),
-                              const SizedBox(
-                                width: 12.0,
-                              ),
-                              SvgPicture.asset(
-                                'assets/images_svg/profile_settings.svg',
-                                height: 24,
-                                width: 24,
-                                package: PackageConfig.packageName,
-                                colorFilter: const ColorFilter.mode(
-                                  Color(0xFF1E928F),
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 16.0,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                _buildSettingsRow(
+                  assetImage: 'assets/images_svg/profile_settings.svg',
+                  text: context.l10n.settings,
+                  onTap: () {
+                    const SettingsRoute().push(context);
+                  },
                 ),
                 const SizedBox(
                   height: 16,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: SizedBox(
-                    height: 52,
-                    child: Material(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(12),
-                      ),
-                      color: const Color(0xFFF5F7FA),
-                      child: InkWell(
-                        onTap: () {
-                          const HelpCenterRoute().push(context);
-                        },
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(12),
-                          topRight: Radius.circular(12),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12.0),
-                          child: Row(
-                            children: [
-                              const SizedBox(
-                                width: 16.0,
-                              ),
-                              SvgPicture.asset(
-                                'assets/icons/svg/ic_chevron_left.svg',
-                                height: 24,
-                                width: 24,
-                                package: PackageConfig.packageName,
-                                colorFilter: const ColorFilter.mode(
-                                  Color(0xFF1E2A36),
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                              const Spacer(),
-                              Text(
-                                context.l10n.helpCenter,
-                                style: Theme.of(context)
-                                    .extension<ThemeTextStyles>()!
-                                    .textM
-                                    .copyWith(color: const Color(0xFF1E2A36)),
-                              ),
-                              const SizedBox(
-                                width: 12.0,
-                              ),
-                              SvgPicture.asset(
-                                'assets/images_svg/profile_help.svg',
-                                height: 24,
-                                width: 24,
-                                package: PackageConfig.packageName,
-                                colorFilter: const ColorFilter.mode(
-                                  Color(0xFF1E928F),
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 16.0,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                _buildSettingsRow(
+                  assetImage: 'assets/images_svg/profile_help.svg',
+                  text: context.l10n.helpCenter,
+                  onTap: () {
+                    const HelpCenterRoute().push(context);
+                  },
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Container(
-                    color: const Color(0xFFF5F7FA),
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 52),
-                      child: Divider(
-                        height: 1,
-                        color: const Color(0xFF1E2A36).withOpacity(0.2),
-                      ),
-                    ),
-                  ),
+                _buildDivider(),
+                _buildSettingsRow(
+                  assetImage: 'assets/images_svg/profile_info.svg',
+                  text: context.l10n.aboutApp,
+                  onTap: () {
+                    const AboutBaladyRoute().push(context);
+                  },
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: SizedBox(
-                    height: 52,
-                    child: Material(
-                      color: const Color(0xFFF5F7FA),
-                      child: InkWell(
-                        onTap: () {
-                          const AboutBaladyRoute().push(context);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12.0),
-                          child: Row(
-                            children: [
-                              const SizedBox(
-                                width: 16.0,
-                              ),
-                              SvgPicture.asset(
-                                'assets/icons/svg/ic_chevron_left.svg',
-                                height: 24,
-                                width: 24,
-                                package: PackageConfig.packageName,
-                                colorFilter: const ColorFilter.mode(
-                                  Color(0xFF1E2A36),
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                              const Spacer(),
-                              Text(
-                                context.l10n.aboutApp,
-                                style: Theme.of(context)
-                                    .extension<ThemeTextStyles>()!
-                                    .textM
-                                    .copyWith(color: const Color(0xFF1E2A36)),
-                              ),
-                              const SizedBox(
-                                width: 12.0,
-                              ),
-                              SvgPicture.asset(
-                                'assets/images_svg/profile_info.svg',
-                                height: 24,
-                                width: 24,
-                                package: PackageConfig.packageName,
-                                colorFilter: const ColorFilter.mode(
-                                  Color(0xFF1E928F),
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 16.0,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Container(
-                    color: const Color(0xFFF5F7FA),
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 52),
-                      child: Divider(
-                        height: 1,
-                        color: const Color(0xFF1E2A36).withOpacity(0.2),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: SizedBox(
-                    height: 52,
-                    child: Material(
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(12),
-                        bottomRight: Radius.circular(12),
-                      ),
-                      color: const Color(0xFFF5F7FA),
-                      child: InkWell(
-                        onTap: () {
-                          rateMyApp.showRateDialog(
-                            context,
-                            title: context.l10n.rateThisApp,
-                            message: context.l10n.rateMessage,
-                            rateButton: context.l10n.rate,
-                            noButton: context.l10n.noThanks,
-                            laterButton: context.l10n.maybeLater,
-                            listener: (button) {
-                              switch (button) {
-                                case RateMyAppDialogButton.rate:
-                                  break;
-                                case RateMyAppDialogButton.later:
-                                  break;
-                                case RateMyAppDialogButton.no:
-                                  break;
-                              }
+                _buildDivider(),
+                _buildSettingsRow(
+                  assetImage: 'assets/images_svg/profile_star.svg',
+                  text: context.l10n.rateBaladyApp,
+                  onTap: () {
+                    rateMyApp.showRateDialog(
+                      context,
+                      title: context.l10n.rateThisApp,
+                      message: context.l10n.rateMessage,
+                      rateButton: context.l10n.rate,
+                      noButton: context.l10n.noThanks,
+                      laterButton: context.l10n.maybeLater,
+                      listener: (button) {
+                        switch (button) {
+                          case RateMyAppDialogButton.rate:
+                            break;
+                          case RateMyAppDialogButton.later:
+                            break;
+                          case RateMyAppDialogButton.no:
+                            break;
+                        }
 
-                              return true;
-                            },
-                            ignoreNativeDialog: Platform.isAndroid,
-                            dialogStyle: const DialogStyle(),
-                            onDismissed: () => rateMyApp.callEvent(
-                                RateMyAppEventType.laterButtonPressed),
-                          );
-                        },
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(12),
-                          bottomRight: Radius.circular(12),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12.0),
-                          child: Row(
-                            children: [
-                              const SizedBox(
-                                width: 16.0,
-                              ),
-                              SvgPicture.asset(
-                                'assets/icons/svg/ic_chevron_left.svg',
-                                height: 24,
-                                width: 24,
-                                package: PackageConfig.packageName,
-                                colorFilter: const ColorFilter.mode(
-                                  Color(0xFF1E2A36),
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                              const Spacer(),
-                              Text(
-                                context.l10n.rateBaladyApp,
-                                style: Theme.of(context)
-                                    .extension<ThemeTextStyles>()!
-                                    .textM
-                                    .copyWith(color: const Color(0xFF1E2A36)),
-                              ),
-                              const SizedBox(
-                                width: 12.0,
-                              ),
-                              SvgPicture.asset(
-                                'assets/images_svg/profile_star.svg',
-                                height: 24,
-                                width: 24,
-                                package: PackageConfig.packageName,
-                                colorFilter: const ColorFilter.mode(
-                                  Color(0xFF1E928F),
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 16.0,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                        return true;
+                      },
+                      ignoreNativeDialog: Platform.isAndroid,
+                      dialogStyle: const DialogStyle(),
+                      onDismissed: () => rateMyApp
+                          .callEvent(RateMyAppEventType.laterButtonPressed),
+                    );
+                  },
                 ),
                 // Consumer(
                 //   builder: (context, ref, child) {
@@ -446,6 +204,97 @@ class ProfilePage extends ConsumerWidget {
       ),
     );
   }
+
+  Widget _buildDivider() {
+    return Container(
+      color: const Color(0xFFF5F7FA),
+      child: Padding(
+        padding: const EdgeInsets.only(
+          right: 52,
+          left: 8,
+        ),
+        child: Divider(
+          height: 1,
+          color: const Color(0xFF1E2A36).withOpacity(0.2),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSettingsRow({
+    required String assetImage,
+    required String text,
+    VoidCallback? onTap,
+  }) {
+    return Consumer(
+      builder: (context, ref, _) {
+        final direction = ref.watch(uiDirectionProvider);
+
+        return SizedBox(
+          height: 52,
+          child: Material(
+            borderRadius: BorderRadius.circular(12),
+            color: const Color(0xFFF5F7FA),
+            child: InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(12),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                child: Row(
+                  children: [
+                    const SizedBox(
+                      width: 16.0,
+                    ),
+                    SvgPicture.asset(
+                      assetImage,
+                      height: 24,
+                      width: 24,
+                      package: PackageConfig.packageName,
+                      colorFilter: const ColorFilter.mode(
+                        Color(0xFF1E928F),
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 12.0,
+                    ),
+                    if (direction == TextDirection.rtl) const Spacer(),
+                    Text(
+                      text,
+                      textDirection: direction,
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .textM
+                          .copyWith(color: const Color(0xFF1E2A36)),
+                    ),
+                    if (direction == TextDirection.ltr) const Spacer(),
+                    const SizedBox(
+                      width: 12.0,
+                    ),
+                    SvgPicture.asset(
+                      direction == TextDirection.rtl
+                          ? 'assets/icons/svg/ic_chevron_left.svg'
+                          : 'assets/icons/svg/ic_chevron_right.svg',
+                      height: 24,
+                      width: 24,
+                      package: PackageConfig.packageName,
+                      colorFilter: const ColorFilter.mode(
+                        Color(0xFF1E2A36),
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 16.0,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
 
 class AuthorizedRow extends StatelessWidget {
@@ -472,19 +321,16 @@ class AuthorizedRow extends StatelessWidget {
                 const SizedBox(
                   width: 16.0,
                 ),
-                SvgPicture.asset(
-                  'assets/icons/svg/ic_chevron_left.svg',
-                  height: 24,
-                  width: 24,
-                  package: PackageConfig.packageName,
-                  colorFilter: const ColorFilter.mode(
-                    Color(0xFF1E2A36),
-                    BlendMode.srcIn,
-                  ),
+                const ProfileImageWidget(
+                  editable: false,
+                  dimension: 36,
+                ),
+                const SizedBox(
+                  width: 12.0,
                 ),
                 Expanded(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         userData.getFirstAndLastName(),
@@ -503,12 +349,21 @@ class AuthorizedRow extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(
-                  width: 12.0,
-                ),
-                const ProfileImageWidget(
-                  editable: false,
-                  dimension: 36,
+                Consumer(
+                  builder: (context, ref, _) {
+                    return SvgPicture.asset(
+                      ref.watch(uiDirectionProvider) == TextDirection.ltr
+                          ? 'assets/icons/svg/ic_chevron_right.svg'
+                          : 'assets/icons/svg/ic_chevron_left.svg',
+                      height: 24,
+                      width: 24,
+                      package: PackageConfig.packageName,
+                      colorFilter: const ColorFilter.mode(
+                        Color(0xFF1E2A36),
+                        BlendMode.srcIn,
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(
                   width: 16.0,

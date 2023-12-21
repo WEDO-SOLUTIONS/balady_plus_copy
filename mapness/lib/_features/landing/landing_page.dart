@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +11,7 @@ import 'package:mapness/_features/lifestyle_layers/layers_sheet.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
@@ -39,8 +41,27 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       case LangingFocusMaker.iwish:
         () async {
           final layersControls = ref.read(layersControlsProvider.notifier);
-          // await layersControls.showIwish();
-          await layersControls.focusIwish();
+          await layersControls.showIwish();
+          try {
+            // await layersControls.focusIwish();
+            await ref.read(cameraPositionProvider.notifier).animateTo(
+                  CameraPositionMessage(
+                    point: GeoPointMessage(
+                      latitude: 24.7113,
+                      longitude: 46.6744,
+                    ),
+                    zoom: 11,
+                    tilt: 0,
+                    bearing: 0,
+                  ),
+                );
+            // dgisController
+          } catch (e) {
+            // todo: make it better
+            if (kDebugMode) {
+              print(e);
+            }
+          }
         }();
         break;
       case LangingFocusMaker.mosques:

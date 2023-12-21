@@ -2,11 +2,11 @@ import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_bearing.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_haptics.dart';
 import 'package:mapness/shared/config/package_config.dart';
-
 import 'package:mapness/shared/providers/compass.dart';
 
 class KiblahHeader extends ConsumerWidget {
@@ -58,6 +58,9 @@ class KiblahHeader extends ConsumerWidget {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(10),
                   onTap: () {
+                    ref.read(mapControlsProvider.notifier).update(
+                          MapControlsStateDashboard(),
+                        );
                     const LandingRoute().go(context);
                   },
                   child: Container(

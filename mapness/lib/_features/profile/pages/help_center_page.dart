@@ -1,23 +1,27 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/profile/widgets/contact_info.dart';
 import 'package:mapness/_features/profile/widgets/expandable_cell.dart';
 import 'package:mapness/app/routes/profile.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-class HelpCenterPage extends StatelessWidget {
+class HelpCenterPage extends ConsumerWidget {
   const HelpCenterPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final direction = ref.watch(uiDirectionProvider);
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Directionality(
-        textDirection: TextDirection.ltr,
+        textDirection: Directionality.of(context),
         child: Material(
           color: Colors.white,
           child: ListView(
@@ -31,18 +35,6 @@ class HelpCenterPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Row(
                     children: [
-                      const SizedBox(
-                        width: 40,
-                      ),
-                      const Spacer(),
-                      Text(
-                        context.l10n.helpCenter,
-                        style: Theme.of(context)
-                            .extension<ThemeTextStyles>()!
-                            .accentM
-                            .copyWith(color: const Color(0xFF1E2A36)),
-                      ),
-                      const Spacer(),
                       SizedBox(
                         height: 40,
                         width: 40,
@@ -57,7 +49,9 @@ class HelpCenterPage extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.all(8),
                               child: SvgPicture.asset(
-                                'assets/icons/svg/ic_chevron_right.svg',
+                                direction == TextDirection.ltr
+                                    ? 'assets/icons/svg/ic_chevron_left.svg'
+                                    : 'assets/icons/svg/ic_chevron_right.svg',
                                 height: 24,
                                 width: 24,
                                 package: PackageConfig.packageName,
@@ -69,7 +63,19 @@ class HelpCenterPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                      )
+                      ),
+                      const Spacer(),
+                      Text(
+                        context.l10n.helpCenter,
+                        style: Theme.of(context)
+                            .extension<ThemeTextStyles>()!
+                            .accentM
+                            .copyWith(color: const Color(0xFF1E2A36)),
+                      ),
+                      const Spacer(),
+                      const SizedBox(
+                        width: 40,
+                      ),
                     ],
                   ),
                 ),
@@ -97,16 +103,18 @@ class HelpCenterPage extends StatelessWidget {
                               width: 16.0,
                             ),
                             SvgPicture.asset(
-                              'assets/icons/svg/ic_chevron_left.svg',
+                              'assets/images_svg/help_website.svg',
                               height: 24,
                               width: 24,
                               package: PackageConfig.packageName,
                               colorFilter: const ColorFilter.mode(
-                                Color(0xFF1E2A36),
+                                Color(0xFF1E928F),
                                 BlendMode.srcIn,
                               ),
                             ),
-                            const Spacer(),
+                            const SizedBox(
+                              width: 12.0,
+                            ),
                             Text(
                               context.l10n.baladyWebsite,
                               style: Theme.of(context)
@@ -114,16 +122,16 @@ class HelpCenterPage extends StatelessWidget {
                                   .textM
                                   .copyWith(color: const Color(0xFF1E2A36)),
                             ),
-                            const SizedBox(
-                              width: 12.0,
-                            ),
+                            const Spacer(),
                             SvgPicture.asset(
-                              'assets/images_svg/help_website.svg',
+                              direction == TextDirection.ltr
+                                  ? 'assets/icons/svg/ic_chevron_right.svg'
+                                  : 'assets/icons/svg/ic_chevron_left.svg',
                               height: 24,
                               width: 24,
                               package: PackageConfig.packageName,
                               colorFilter: const ColorFilter.mode(
-                                Color(0xFF1E928F),
+                                Color(0xFF1E2A36),
                                 BlendMode.srcIn,
                               ),
                             ),
@@ -156,7 +164,7 @@ class HelpCenterPage extends StatelessWidget {
                     Expanded(
                       child: Text(
                         context.l10n.weAreHappyToConnectYouWithBaladyTeam,
-                        textDirection: TextDirection.rtl,
+                        textDirection: direction,
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
                             .textXS

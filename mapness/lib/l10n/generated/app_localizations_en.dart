@@ -341,7 +341,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageTitle => 'English';
 
   @override
-  String get lastName => 'Last name';
+  String get lastName => 'Contact Information';
 
   @override
   String get layersOnTheMap => 'Layers on the map';

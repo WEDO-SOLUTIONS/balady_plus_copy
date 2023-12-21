@@ -9,6 +9,7 @@ import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/investment_sites.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/map_requests_params.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/white_lands.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/layer_details.dart';
@@ -28,8 +29,6 @@ part 'layers_controls.g.dart';
 const mapLayerName = 'esri_markers';
 const iwishLayerName = 'iwish_markers';
 const _markerPrefix = 'esri_markers-';
-
-enum LayerType { favourites, invest, buildings, fencing, joy }
 
 @riverpod
 class SelectedLayer extends _$SelectedLayer {
@@ -110,13 +109,13 @@ class LayersControls extends _$LayersControls {
     var currentState = state.selectedType;
 
     switch (value) {
-      case LayerType.favourites:
-        if (currentState == (LayerType.favourites)) {
-          await ref.read(favouriteToggleProvider.notifier).disable();
-        } else {
-          await ref.read(favouriteToggleProvider.notifier).enable();
-        }
-        _toggleSelected(value);
+      // case LayerType.favourites:
+      //   if (currentState == (LayerType.favourites)) {
+      //     await ref.read(favouriteToggleProvider.notifier).disable();
+      //   } else {
+      //     await ref.read(favouriteToggleProvider.notifier).enable();
+      //   }
+      //   _toggleSelected(value);
 
       case LayerType.buildings:
         toggleComplienceBuildings();
@@ -143,7 +142,7 @@ class LayersControls extends _$LayersControls {
           .removeAllMarkers();
       layersControls.update(isLoading: false, selectedType: null);
     } else {
-      _showIwish();
+      showIwish();
     }
   }
 
@@ -171,7 +170,6 @@ class LayersControls extends _$LayersControls {
     update(isLoading: true);
 
     await layersControls._removeAll();
-
     await viewPortSubscription?.cancel();
     viewPortSubscription = ref
         .watch(dgisControllerProvider.notifier)
@@ -390,7 +388,10 @@ class LayersControls extends _$LayersControls {
     );
   }
 
-  Future<void> _showIwish() async {
+  Future<void> showIwish() async {
+    if (state.selectedType == LayerType.joy) {
+      return;
+    }
     final markers = await ref.read(iwishMarkersProvider.future);
     await ref
         .read(mapObjectManagerProvider(named: iwishLayerName).notifier)

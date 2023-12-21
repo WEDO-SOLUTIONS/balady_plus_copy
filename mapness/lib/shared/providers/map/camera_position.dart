@@ -18,7 +18,7 @@ class CameraPosition extends _$CameraPosition {
       },
     );
 
-    return state;
+    return null;
   }
 
   Future<void> animateTo(CameraPositionMessage position) async {

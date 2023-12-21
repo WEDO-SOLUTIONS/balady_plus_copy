@@ -24,13 +24,14 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   DgisObjectIdMessage objectId,
 ) async {
   final cameraController = ref.watch(cameraPositionProvider.notifier);
+  final cameraData = ref.read(cameraPositionProvider);
   final highlightController = ref.watch(highlightProvider.notifier);
   final dgisController = ref.watch(dgisControllerProvider);
   final result = await dgisController.value?.searchByObjectId(objectId);
   final mapObjectManager =
       ref.watch(mapObjectManagerProvider(named: poiMapLayer).notifier);
 
-  final cameraZoom = ref.read(cameraPositionProvider)?.zoom;
+  final cameraZoom = cameraData?.zoom;
   print(
     'coordinates: ${result?.markerPosition?.latitude} ${result?.markerPosition?.longitude} zoom: $cameraZoom',
   );

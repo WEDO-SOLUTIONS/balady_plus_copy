@@ -90,9 +90,10 @@ class ContactRow extends StatelessWidget {
             vertical: 12,
           ),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const Spacer(),
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     contact,
