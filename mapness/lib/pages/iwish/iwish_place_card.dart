@@ -11,6 +11,7 @@ import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_about_park.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_info.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_photos_row.dart';
+import 'package:mapness/widgets/iwish/ui/iwish_state_label.dart';
 
 import '../../../shared/ui/sheets/loading_sheet.dart';
 
@@ -38,8 +39,8 @@ class IwishPlaceCard extends ConsumerWidget {
         return SafeArea(
           bottom: false,
           child: DraggableScrollableSheet(
-            minChildSize: 0.35,
-            initialChildSize: 0.35,
+            minChildSize: 0.4,
+            initialChildSize: 0.4,
             builder: (context, scrollController) => Column(
               children: [
                 IwishPhotosRow(photos: entity.photos),
@@ -52,91 +53,96 @@ class IwishPlaceCard extends ConsumerWidget {
                       borderRadius:
                           BorderRadius.vertical(top: Radius.circular(12)),
                     ),
-                    child: ListView(
-                      controller: scrollController,
-                      padding: EdgeInsets.zero,
-                      shrinkWrap: true,
+                    child: SafeArea(
+                      top: false,
+                      child: ListView(
+                        controller: scrollController,
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
 
-                      // mainAxisSize: MainAxisSize.min,
-                      // crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            borderRadius:
-                                BorderRadius.vertical(top: Radius.circular(12)),
+                        // mainAxisSize: MainAxisSize.min,
+                        // crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(12)),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                IwishInfo(
+                                  iwish: entity,
+                                  distance: distance,
+                                  onClose: () => context.pop(),
+                                ),
+                                const SizedBox(height: 8),
+                                IwishStateLabel(state: entity.state),
+                                const SizedBox(height: 16),
+                                LabeledElevatedButton(
+                                  enabled: !entity.feedbackSent,
+                                  onPressed: () async {
+                                    CommonFunctions.authOrOpen(ref, context,
+                                        callback: () {
+                                      IwishFeedbackRoute(iwishId: iwishId)
+                                          .replace(context);
+                                    });
+                                  },
+                                  label: entity.feedbackSent
+                                      ? context.l10n.wishesSent
+                                      : context.l10n.sendFeedback,
+                                ),
+                              ],
+                            ),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              IwishInfo(
-                                iwish: entity,
-                                distance: distance,
-                                onClose: () => context.pop(),
-                              ),
-                              const SizedBox(height: 16),
-                              LabeledElevatedButton(
-                                enabled: !entity.feedbackSent,
-                                onPressed: () async {
-                                  CommonFunctions.authOrOpen(ref, context,
-                                      callback: () {
-                                    IwishFeedbackRoute(iwishId: iwishId)
-                                        .replace(context);
-                                  });
-                                },
-                                label: entity.feedbackSent
-                                    ? context.l10n.wishesSent
-                                    : context.l10n.sendFeedback,
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        // SizedBox(
-                        //   height: 41,
-                        //   child: Row(
-                        //     mainAxisAlignment: MainAxisAlignment.start,
-                        //     children: [
-                        //       BriefRouteButton(
-                        //         finishPoint: RouteSearchPointMessage(
-                        //           coordinates: GeoPointMessage(
-                        //             latitude: entity.location.latitude,
-                        //             longitude: entity.location.longitude,
-                        //           ),
-                        //           objectId: DgisObjectIdMessage(
-                        //             objectId: 0,
-                        //             entranceId: 0,
-                        //           ),
-                        //         ),
-                        //         onTap: () {
-                        //           RoutingRoutesRoute(
-                        //             finishLabel: entity.title,
-                        //             finishLatitude: entity.location.latitude,
-                        //             finishLongitude: entity.location.longitude,
-                        //             startLabel: context.l10n.myLocation,
-                        //             startLatitude: null,
-                        //             startLongitude: null,
-                        //           ).pushReplacement(context);
-                        //         },
-                        //         routeType: RouteSearchOptionsMessage.car,
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 16),
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: IwishAboutPark(
-                            metadata: entity.metadata,
-                            parkSize: entity.parkSize,
-                          ),
-                        )
-                      ],
+                          const SizedBox(height: 16),
+                          // SizedBox(
+                          //   height: 41,
+                          //   child: Row(
+                          //     mainAxisAlignment: MainAxisAlignment.start,
+                          //     children: [
+                          //       BriefRouteButton(
+                          //         finishPoint: RouteSearchPointMessage(
+                          //           coordinates: GeoPointMessage(
+                          //             latitude: entity.location.latitude,
+                          //             longitude: entity.location.longitude,
+                          //           ),
+                          //           objectId: DgisObjectIdMessage(
+                          //             objectId: 0,
+                          //             entranceId: 0,
+                          //           ),
+                          //         ),
+                          //         onTap: () {
+                          //           RoutingRoutesRoute(
+                          //             finishLabel: entity.title,
+                          //             finishLatitude: entity.location.latitude,
+                          //             finishLongitude: entity.location.longitude,
+                          //             startLabel: context.l10n.myLocation,
+                          //             startLatitude: null,
+                          //             startLongitude: null,
+                          //           ).pushReplacement(context);
+                          //         },
+                          //         routeType: RouteSearchOptionsMessage.car,
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 16),
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: IwishAboutPark(
+                              metadata: entity.metadata,
+                              parkSize: entity.parkSize,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),

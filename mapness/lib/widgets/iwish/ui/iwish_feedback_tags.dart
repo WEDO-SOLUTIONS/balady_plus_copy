@@ -49,7 +49,7 @@ class IwishFeedbackTags extends StatelessWidget {
                     padding: const EdgeInsets.all(10),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         SvgPicture.asset(
                           e.assetUrl,
@@ -58,12 +58,19 @@ class IwishFeedbackTags extends StatelessWidget {
                           package: PackageConfig.packageName,
                           colorFilter: const ColorFilter.mode(
                             Color(0xff5E676F),
-                            BlendMode.dstIn,
+                            BlendMode.srcATop,
                           ),
                         ),
                         Text(
                           e.displayName,
-                          style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: const Color(0xFF1D2A36)),
+                          textAlign: TextAlign.end,
+                          style: Theme.of(context)
+                              .extension<ThemeTextStyles>()!
+                              .textS
+                              .copyWith(
+                                color: const Color(0xFF1D2A36),
+                                fontSize: 10,
+                              ),
                         ),
                       ],
                     ),

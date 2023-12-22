@@ -233,6 +233,7 @@ message IWishObjectMarker {
   string id = 1;
   IWishCategory category = 2;
   Location location = 3;
+  IWishState state = 4;
 }
 
 message IWishObject {
