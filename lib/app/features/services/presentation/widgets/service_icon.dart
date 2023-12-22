@@ -65,18 +65,16 @@ class ServiceIcon extends StatelessWidget {
               }
             } else {
               if (CommonProperties.isLoggedIn) {
-                if (service.id == 211 || service.id == 314) {
-                  openPage();
-                } else {
-                  showDialog(
-                      context: context,
-                      builder: (ctx) => NeedLoginDialog(
-                              onSuccessLogin: (bool? isSuccess) async {
-                            if (isSuccess ?? false) {
-                              openPage();
-                            }
-                          }));
-                }
+                openPage();
+              } else {
+                showDialog(
+                    context: context,
+                    builder: (ctx) => NeedLoginDialog(
+                            onSuccessLogin: (bool? isSuccess) async {
+                          if (isSuccess ?? false) {
+                            openPage();
+                          }
+                        }));
               }
             }
           }
