@@ -180,7 +180,7 @@ class _ApplyCancelScreenState extends State<ApplyCancelScreen> {
                         : child!;
                   },
                   child: ServiceWarningWidget(
-                    warning: service.warning ?? "",
+                    warning: service.warning?.tr() ?? "",
                     onPress: () async {
                       NavigatorState navigator = Navigator.of(context);
                       CancellationRequestResponse? cancellationRequest =

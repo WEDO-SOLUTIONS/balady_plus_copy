@@ -48,7 +48,8 @@ class _ServicesPageState extends State<ServicesPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    context.read<ServicesCubit>().checkEkramServices();
+    if (CommonProperties.isLoggedIn)
+      context.read<ServicesCubit>().checkEkramServices();
   }
 
   @override

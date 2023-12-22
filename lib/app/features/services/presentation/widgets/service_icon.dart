@@ -65,23 +65,18 @@ class ServiceIcon extends StatelessWidget {
               }
             } else {
               if (CommonProperties.isLoggedIn) {
-                NavigationService.navigatorKey.currentState?.pushNamed(
-                  service.action.value,
-                  arguments: null,
-                );
-              } else {
-                showDialog(
-                    context: context,
-                    builder: (ctx) => NeedLoginDialog(
-                            onSuccessLogin: (bool? isSuccess) async {
-                          if (isSuccess ?? false) {
-                            NavigationService.navigatorKey.currentState
-                                ?.pushNamed(
-                              service.action.value,
-                              arguments: null,
-                            );
-                          }
-                        }));
+                if (service.id == 211 || service.id == 314) {
+                  openPage();
+                } else {
+                  showDialog(
+                      context: context,
+                      builder: (ctx) => NeedLoginDialog(
+                              onSuccessLogin: (bool? isSuccess) async {
+                            if (isSuccess ?? false) {
+                              openPage();
+                            }
+                          }));
+                }
               }
             }
           }
@@ -296,17 +291,11 @@ class ServiceIcon extends StatelessWidget {
                         NavigationService.bottomNavKey.currentContext!)!
                     .state
                     .honoringTheDeadServices,
-                service.title
+                service.title.tr()
               ));
             } catch (ex) {
               print(ex);
             }
-          } else if (service.id == 211 || service.id == 314) {
-            NavigationService.navigatorKey.currentState!
-                .pushNamed(RouteName.etmamMainPage, arguments: true);
-          } else if (service.id == 205) {
-            NavigationService.navigatorKey.currentState!
-                .pushNamed(RouteName.etmamMainPage, arguments: false);
           }
         },
         child: Container(
@@ -381,5 +370,19 @@ class ServiceIcon extends StatelessWidget {
         ],
       ),*/
         );
+  }
+
+  void openPage() {
+    if (service.id == 211 || service.id == 314) {
+      NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.etmamMainPage, arguments: (true, ""));
+    } else if (service.id == 205) {
+      NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.etmamMainPage, arguments: (false, ""));
+    } else
+      NavigationService.navigatorKey.currentState?.pushNamed(
+        service.action.value,
+        arguments: null,
+      );
   }
 }

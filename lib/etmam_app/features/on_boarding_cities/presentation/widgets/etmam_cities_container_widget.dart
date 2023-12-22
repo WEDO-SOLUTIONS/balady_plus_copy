@@ -57,7 +57,8 @@ class _CityContainerWidgetState extends State<EtmamCitiesContainerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    String? args = ModalRoute.of(context)!.settings.arguments as String?;
+    (bool?, String?)? args =
+        ModalRoute.of(context)!.settings.arguments as (bool?, String?)?;
 
     return Container(
       width: double.infinity,
@@ -138,7 +139,7 @@ class _CityContainerWidgetState extends State<EtmamCitiesContainerWidget> {
                       //   sharedPrefs.setIsFirstLaunch(false);
                       sl<CityBloc>().add(SelectCityEvent(
                           item: state.searchedItems?[selectedIndex],
-                          subServiceid: args));
+                          subServiceid: args?.$2));
                       //    Navigator.of(context).pushReplacementNamed(
                       //        EtmamRoutesNames.bottomNavigation);
                     },

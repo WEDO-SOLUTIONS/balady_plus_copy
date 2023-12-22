@@ -187,7 +187,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "requireLogin": true,
-      "action": {"type": "dialog", "value": ""},
+      "action": {"type": "page", "value": ""},
       "ar": {
         "title": "service_provide_services",
         "description": null,
@@ -283,7 +283,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "requireLogin": false,
-      "action": {"type": "dialog", "value": RouteName.etmamMainPage},
+      "action": {"type": "page", "value": RouteName.etmamMainPage},
       "ar": {"title": "balady_works", "description": null, "tag": null},
       "en": {"title": "balady_works", "description": null, "tag": null}
     },

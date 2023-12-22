@@ -16,7 +16,8 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart' show PlatformFile;
 import 'package:firebase_analytics/firebase_analytics.dart';
 // import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
+import 'package:flutter_bloc/flutter_bloc.dart'
+    show BlocProvider, EventTransformer;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
@@ -44,6 +45,7 @@ import '../../features/_shared_feature_/presentation/widgets/custom_popups_widge
 import '../../features/calendar/presentation/bloc/calendar_bloc.dart';
 import '../../features/entry_point/domain/use_cases/get_cookie.dart';
 import '../../features/events/presentation/bloc/events_bloc.dart';
+import '../../features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../../features/profile_features/delegators/domain/entities/user_profile_entity.dart';
 import '../../features/vd/domain/entities/gis/gis_params.dart';
 import '../../features/vd/domain/entities/gis/gis_response.dart';
@@ -1179,6 +1181,11 @@ class CommonFunctions {
     sl<EntryPointCubit>().autoLogout();
   }
 
+  static void openJodService() {
+    NavigationService.navigatorKey.currentState!
+        .pushNamed(RouteName.jodDonationPage);
+  }
+
   static void openSnapAndSend() async {
     await BottomSheetDialog.showDraggableSheet(
         NavigationService.navigatorKey.currentContext!,
@@ -1221,6 +1228,10 @@ class CommonFunctions {
   static void refreshHomePage() async {
     sl<EventsBloc>().add(const events.GetSearchEvent());
     sl<CalendarBloc>().add(const calendar.GetSearchEvent());
+
+    BlocProvider.of<DashboardBloc>(
+            NavigationService.navigatorKey.currentContext!)
+        .add(DashboardEventInitial());
   }
 }
 
