@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -9,8 +10,9 @@ class IwishFeedbackTags extends StatelessWidget {
   final List<IwishFeedbackTag> tags;
   final Set<String> selectedTags;
   final void Function(String id) onTagToggled;
+  final tagsGroup = AutoSizeGroup();
 
-  const IwishFeedbackTags({
+  IwishFeedbackTags({
     super.key,
     required this.tags,
     required this.selectedTags,
@@ -21,7 +23,7 @@ class IwishFeedbackTags extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.count(
       shrinkWrap: true,
-      crossAxisCount: 4,
+      crossAxisCount: 3,
       mainAxisSpacing: 10,
       crossAxisSpacing: 10,
       childAspectRatio: 78 / 90,
@@ -61,15 +63,19 @@ class IwishFeedbackTags extends StatelessWidget {
                             BlendMode.srcATop,
                           ),
                         ),
-                        Text(
+                        AutoSizeText(
                           e.displayName,
+                          group: tagsGroup,
+                          maxLines: 2,
+                          wrapWords: false,
+                          minFontSize: 8,
                           textAlign: TextAlign.end,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
-                              .textS
+                              .textM
                               .copyWith(
                                 color: const Color(0xFF1D2A36),
-                                fontSize: 10,
+                                // fontSize: 14,
                               ),
                         ),
                       ],

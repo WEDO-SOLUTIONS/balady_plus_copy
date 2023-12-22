@@ -1,9 +1,7 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
-import 'package:mapness/widgets/iwish/ui/iwish_state_label.dart';
 
 class IwishInfo extends StatelessWidget {
   final IwishEntity iwish;
