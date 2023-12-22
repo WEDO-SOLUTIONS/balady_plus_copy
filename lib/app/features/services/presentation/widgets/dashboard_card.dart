@@ -36,6 +36,7 @@ class DashboardCard extends StatelessWidget {
           CustomTextWidget(
             card.name,
             fontSize: 14,
+            textAlign: TextAlign.center,
             fontWeight: AppFontWeight.regular,
             fontColor: const Color(0xff1E2A36),
           ),

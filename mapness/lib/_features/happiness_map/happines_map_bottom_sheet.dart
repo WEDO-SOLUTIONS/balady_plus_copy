@@ -204,7 +204,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                               if (isCollapsed) const SizedBox(height: 24),
                               if (!isCollapsed) ...[
                                 const SizedBox(height: 20),
-                                const HappinessTagsGrid(),
+                                HappinessTagsGrid(),
                                 const SizedBox(height: 20),
                                 Material(
                                   color: const Color(0xffE8E9EA),

@@ -150,7 +150,7 @@ abstract class AppLocalizations {
   /// No description provided for @areYouSureYouWantToLogOutOfYourAccount.
   ///
   /// In ar, this message translates to:
-  /// **'هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟'**
+  /// **'هل تريد تسجيل الخروج من الحساب؟'**
   String get areYouSureYouWantToLogOutOfYourAccount;
 
   /// No description provided for @arrival.
@@ -162,7 +162,7 @@ abstract class AppLocalizations {
   /// No description provided for @baladyWebsite.
   ///
   /// In ar, this message translates to:
-  /// **'موقع بلدي'**
+  /// **'منصة بلدي'**
   String get baladyWebsite;
 
   /// No description provided for @beaches.
@@ -210,7 +210,7 @@ abstract class AppLocalizations {
   /// No description provided for @call.
   ///
   /// In ar, this message translates to:
-  /// **'اتصال'**
+  /// **'إتصل'**
   String get call;
 
   /// No description provided for @calories.
@@ -240,13 +240,13 @@ abstract class AppLocalizations {
   /// No description provided for @changeTheColorSchemeOfAnApp.
   ///
   /// In ar, this message translates to:
-  /// **'تغيير نظام ألوان التطبيق من الفاتح إلى الداكن'**
+  /// **'تغيير نمط التطبيق من النهاري  إلى الليلي'**
   String get changeTheColorSchemeOfAnApp;
 
   /// No description provided for @chooseTheLanguageOfAll.
   ///
   /// In ar, this message translates to:
-  /// **'اختر لغة كل الواجهة في تطبيق بلدي'**
+  /// **'إختر لغة واجهات التطبيق'**
   String get chooseTheLanguageOfAll;
 
   /// No description provided for @clean.
@@ -438,7 +438,7 @@ abstract class AppLocalizations {
   /// No description provided for @deliveryAvailable.
   ///
   /// In ar, this message translates to:
-  /// **'التسليم متاح'**
+  /// **'متاح خدمة التوصيل'**
   String get deliveryAvailable;
 
   /// No description provided for @dentalCenters.
@@ -456,7 +456,7 @@ abstract class AppLocalizations {
   /// No description provided for @didNotMatchAnyResults.
   ///
   /// In ar, this message translates to:
-  /// **'لم يتطابق مع أية نتائج.'**
+  /// **'لم يتطابق مع أية نتائج'**
   String get didNotMatchAnyResults;
 
   /// No description provided for @done.
@@ -468,7 +468,7 @@ abstract class AppLocalizations {
   /// No description provided for @droneView.
   ///
   /// In ar, this message translates to:
-  /// **'عرض طائرة بدون طيار'**
+  /// **'عرض بانورامي'**
   String get droneView;
 
   /// No description provided for @edit.
@@ -600,7 +600,7 @@ abstract class AppLocalizations {
   /// No description provided for @go.
   ///
   /// In ar, this message translates to:
-  /// **'ذهاب'**
+  /// **'إنطلق'**
   String get go;
 
   /// No description provided for @goodAfternoon.
@@ -702,7 +702,7 @@ abstract class AppLocalizations {
   /// No description provided for @investmentOpportunities.
   ///
   /// In ar, this message translates to:
-  /// **'فرص الاستثمار'**
+  /// **'الفرص الإستثمارية'**
   String get investmentOpportunities;
 
   /// No description provided for @iwish.
@@ -710,6 +710,66 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'أتمنى'**
   String get iwish;
+
+  /// No description provided for @iwish_food_truck.
+  ///
+  /// In ar, this message translates to:
+  /// **'شاحنات الطعام'**
+  String get iwish_food_truck;
+
+  /// No description provided for @iwish_fountain.
+  ///
+  /// In ar, this message translates to:
+  /// **'نافورة مائية'**
+  String get iwish_fountain;
+
+  /// No description provided for @iwish_free_area.
+  ///
+  /// In ar, this message translates to:
+  /// **'ساحة حرة'**
+  String get iwish_free_area;
+
+  /// No description provided for @iwish_green_spaces.
+  ///
+  /// In ar, this message translates to:
+  /// **'مناطق خضراء'**
+  String get iwish_green_spaces;
+
+  /// No description provided for @iwish_outdoor_club.
+  ///
+  /// In ar, this message translates to:
+  /// **'نادي خارجي'**
+  String get iwish_outdoor_club;
+
+  /// No description provided for @iwish_play_ground.
+  ///
+  /// In ar, this message translates to:
+  /// **'ساحة لعب الأطفال'**
+  String get iwish_play_ground;
+
+  /// No description provided for @iwish_running.
+  ///
+  /// In ar, this message translates to:
+  /// **'مضمار جري'**
+  String get iwish_running;
+
+  /// No description provided for @iwish_sitting_benches.
+  ///
+  /// In ar, this message translates to:
+  /// **'مقاعد الجلوس'**
+  String get iwish_sitting_benches;
+
+  /// No description provided for @iwish_sport_court.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملاعب رياضية'**
+  String get iwish_sport_court;
+
+  /// No description provided for @iwish_vending_machine.
+  ///
+  /// In ar, this message translates to:
+  /// **'آلات البيع الذاتي'**
+  String get iwish_vending_machine;
 
   /// No description provided for @jobDescription.
   ///
@@ -780,7 +840,7 @@ abstract class AppLocalizations {
   /// No description provided for @lightning.
   ///
   /// In ar, this message translates to:
-  /// **'برق'**
+  /// **'الاضاءة'**
   String get lightning;
 
   /// No description provided for @loading.
@@ -798,7 +858,7 @@ abstract class AppLocalizations {
   /// No description provided for @loginToAccess.
   ///
   /// In ar, this message translates to:
-  /// **'تسجيل الدخول للوصول الى'**
+  /// **'تسجيل الدخول'**
   String get loginToAccess;
 
   /// No description provided for @lookForUsefulPlacesCafesMallsForExampleMallNearby.
@@ -816,19 +876,19 @@ abstract class AppLocalizations {
   /// No description provided for @maneuvers.
   ///
   /// In ar, this message translates to:
-  /// **'مناورات'**
+  /// **'تحويلات'**
   String get maneuvers;
 
   /// No description provided for @maneuversAreOff.
   ///
   /// In ar, this message translates to:
-  /// **'المناورات متوقفة'**
+  /// **'لاتتضمن التحويلات'**
   String get maneuversAreOff;
 
   /// No description provided for @maneuversIncluded.
   ///
   /// In ar, this message translates to:
-  /// **'المناورات شاملة'**
+  /// **'التحويلات متضمنه'**
   String get maneuversIncluded;
 
   /// No description provided for @mapLayerCar.
@@ -846,7 +906,7 @@ abstract class AppLocalizations {
   /// No description provided for @mapLayerMonorail.
   ///
   /// In ar, this message translates to:
-  /// **'السكة المفردة'**
+  /// **'مونوريل'**
   String get mapLayerMonorail;
 
   /// No description provided for @mapLayerParking.
@@ -858,7 +918,7 @@ abstract class AppLocalizations {
   /// No description provided for @mapLayerTransport.
   ///
   /// In ar, this message translates to:
-  /// **'المواصلات'**
+  /// **'النقل'**
   String get mapLayerTransport;
 
   /// No description provided for @markets.
@@ -954,13 +1014,13 @@ abstract class AppLocalizations {
   /// No description provided for @nav_profile.
   ///
   /// In ar, this message translates to:
-  /// **'الملف الشخصي '**
+  /// **'الحساب'**
   String get nav_profile;
 
   /// No description provided for @nav_route.
   ///
   /// In ar, this message translates to:
-  /// **'طريق'**
+  /// **'رحلتي'**
   String get nav_route;
 
   /// No description provided for @next.
@@ -1002,49 +1062,49 @@ abstract class AppLocalizations {
   /// No description provided for @parkAmanah.
   ///
   /// In ar, this message translates to:
-  /// **'Amanah'**
+  /// **'أمانة'**
   String get parkAmanah;
 
   /// No description provided for @parkAreaSize.
   ///
   /// In ar, this message translates to:
-  /// **'Area size'**
+  /// **'المساحة'**
   String get parkAreaSize;
 
   /// No description provided for @parkOpeningDate.
   ///
   /// In ar, this message translates to:
-  /// **'Opening date'**
+  /// **'تاريخ الإفتتاح'**
   String get parkOpeningDate;
 
   /// No description provided for @parkSizeBig.
   ///
   /// In ar, this message translates to:
-  /// **'Big size park'**
+  /// **'حديقة كبيرة'**
   String get parkSizeBig;
 
   /// No description provided for @parkSizeMedium.
   ///
   /// In ar, this message translates to:
-  /// **'Medium size park'**
+  /// **'حديقة متوسطة'**
   String get parkSizeMedium;
 
   /// No description provided for @parkSizeSmall.
   ///
   /// In ar, this message translates to:
-  /// **'Small size park'**
+  /// **'حديقة صغيرة'**
   String get parkSizeSmall;
 
   /// No description provided for @parkSizeUnknown.
   ///
   /// In ar, this message translates to:
-  /// **'Unknown size park'**
+  /// **'غير محدد'**
   String get parkSizeUnknown;
 
   /// No description provided for @parkType.
   ///
   /// In ar, this message translates to:
-  /// **'Type'**
+  /// **'النوع'**
   String get parkType;
 
   /// No description provided for @parking.
@@ -1092,19 +1152,19 @@ abstract class AppLocalizations {
   /// No description provided for @placesToShop.
   ///
   /// In ar, this message translates to:
-  /// **'أماكن للتسوق'**
+  /// **'أماكن التسوق'**
   String get placesToShop;
 
   /// No description provided for @placesToVisit.
   ///
   /// In ar, this message translates to:
-  /// **'أماكن للزيارة'**
+  /// **'أماكن الزيارة'**
   String get placesToVisit;
 
   /// No description provided for @planned.
   ///
   /// In ar, this message translates to:
-  /// **'مخطط'**
+  /// **'مخططة'**
   String get planned;
 
   /// No description provided for @playground.
@@ -1116,7 +1176,7 @@ abstract class AppLocalizations {
   /// No description provided for @pleaseRestartApplicationForTheNewSettingsToTakeEffect.
   ///
   /// In ar, this message translates to:
-  /// **'يرجى إعادة تشغيل التطبيق حتى تصبح الإعدادات الجديدة سارية المفعول.'**
+  /// **'يرجى إعادة تشغيل التطبيق لتفعيل الإعدادات الجديدة'**
   String get pleaseRestartApplicationForTheNewSettingsToTakeEffect;
 
   /// No description provided for @pleaseTryAgainLater.
@@ -1134,7 +1194,7 @@ abstract class AppLocalizations {
   /// No description provided for @poi_boulevard_riyadh_city.
   ///
   /// In ar, this message translates to:
-  /// **'بوليفارد مدينة الرياض'**
+  /// **'بوليفارد رياض سيتي'**
   String get poi_boulevard_riyadh_city;
 
   /// No description provided for @poi_edge_of_the_world.
@@ -1206,13 +1266,13 @@ abstract class AppLocalizations {
   /// No description provided for @rateMessage.
   ///
   /// In ar, this message translates to:
-  /// **'إذا أعجبك هذا التطبيق، نرجو تخصيص بعض من وقتك لتقييمنا!  لن يستغرق الأمر أكثر من دقيقة واحدة.'**
+  /// **'إذا أعجبك هذا التطبيق، نرجو تخصيص بعض من وقتك للتقييم!  لن يستغرق الأمر أكثر من دقيقة واحدة.'**
   String get rateMessage;
 
   /// No description provided for @rateThisApp.
   ///
   /// In ar, this message translates to:
-  /// **'قيم هذا التطبيق'**
+  /// **'قيم التطبيق'**
   String get rateThisApp;
 
   /// No description provided for @ratingBuilding.
@@ -1278,7 +1338,7 @@ abstract class AppLocalizations {
   /// No description provided for @route.
   ///
   /// In ar, this message translates to:
-  /// **'طريق'**
+  /// **'مسار'**
   String get route;
 
   /// No description provided for @route1description.
@@ -1308,7 +1368,7 @@ abstract class AppLocalizations {
   /// No description provided for @salons.
   ///
   /// In ar, this message translates to:
-  /// **'صالونات'**
+  /// **'الصالونات'**
   String get salons;
 
   /// No description provided for @saturday.
@@ -1332,7 +1392,7 @@ abstract class AppLocalizations {
   /// No description provided for @seating.
   ///
   /// In ar, this message translates to:
-  /// **'الجلوس'**
+  /// **'أماكن الجلوس'**
   String get seating;
 
   /// No description provided for @sec.
@@ -1356,13 +1416,13 @@ abstract class AppLocalizations {
   /// No description provided for @sendFeedback.
   ///
   /// In ar, this message translates to:
-  /// **'سجل انطباعك'**
+  /// **'شارك انطباعك'**
   String get sendFeedback;
 
   /// No description provided for @sendYourWishes.
   ///
   /// In ar, this message translates to:
-  /// **'أرسل رغباتك'**
+  /// **'شارك إنطباعك'**
   String get sendYourWishes;
 
   /// No description provided for @sending.
@@ -1410,19 +1470,19 @@ abstract class AppLocalizations {
   /// No description provided for @shareYourFeelings.
   ///
   /// In ar, this message translates to:
-  /// **'شارك مشاعرك'**
+  /// **'شارك إنطباعك'**
   String get shareYourFeelings;
 
   /// No description provided for @shareYourFeelingsAboutPark.
   ///
   /// In ar, this message translates to:
-  /// **'شارك مشاعرك حول الحديقة'**
+  /// **'شارك إنطباعك حول الحديقة'**
   String get shareYourFeelingsAboutPark;
 
   /// No description provided for @shortest.
   ///
   /// In ar, this message translates to:
-  /// **'الأقصر'**
+  /// **'أقصر مسار'**
   String get shortest;
 
   /// No description provided for @showFavoritesOnMap.
@@ -1434,13 +1494,13 @@ abstract class AppLocalizations {
   /// No description provided for @showLess.
   ///
   /// In ar, this message translates to:
-  /// **'إظهار أقل'**
+  /// **'عرض أقل'**
   String get showLess;
 
   /// No description provided for @showMore.
   ///
   /// In ar, this message translates to:
-  /// **'إظهار المزيد'**
+  /// **'عرض المزيد'**
   String get showMore;
 
   /// No description provided for @signIn.
@@ -1488,7 +1548,7 @@ abstract class AppLocalizations {
   /// No description provided for @snap_and_send.
   ///
   /// In ar, this message translates to:
-  /// **'التقط وأرسل'**
+  /// **'صور وأرسل'**
   String get snap_and_send;
 
   /// No description provided for @somethingWentWrong.
@@ -1506,7 +1566,7 @@ abstract class AppLocalizations {
   /// No description provided for @sorryRouteNotFound.
   ///
   /// In ar, this message translates to:
-  /// **'عذرا، لم يتم العثور على الطريق'**
+  /// **'عذرا، لم يتم العثور على مسار'**
   String get sorryRouteNotFound;
 
   /// No description provided for @soundSettings.
@@ -1584,7 +1644,7 @@ abstract class AppLocalizations {
   /// No description provided for @theShortestRoute.
   ///
   /// In ar, this message translates to:
-  /// **'أقصر طريق '**
+  /// **'أقصر مسار'**
   String get theShortestRoute;
 
   /// No description provided for @theTripTook.
@@ -1662,13 +1722,13 @@ abstract class AppLocalizations {
   /// No description provided for @vacancies.
   ///
   /// In ar, this message translates to:
-  /// **'الشواغر'**
+  /// **'الفرص الوظيفية'**
   String get vacancies;
 
   /// No description provided for @viewingARoute.
   ///
   /// In ar, this message translates to:
-  /// **'عرض الطريق'**
+  /// **'عرض المسار'**
   String get viewingARoute;
 
   /// No description provided for @visualAesthetic.
@@ -1722,7 +1782,7 @@ abstract class AppLocalizations {
   /// No description provided for @wishesSent.
   ///
   /// In ar, this message translates to:
-  /// **'تم إرسال الأمنيات'**
+  /// **'تم مشاركة إنطباعك'**
   String get wishesSent;
 
   /// No description provided for @work.

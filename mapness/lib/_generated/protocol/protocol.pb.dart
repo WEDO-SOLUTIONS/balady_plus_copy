@@ -2057,6 +2057,7 @@ class IWishObjectMarker extends $pb.GeneratedMessage {
     $core.String? id,
     IWishCategory? category,
     IWishObjectMarker_Location? location,
+    IWishState? state,
   }) {
     final $result = create();
     if (id != null) {
@@ -2068,6 +2069,9 @@ class IWishObjectMarker extends $pb.GeneratedMessage {
     if (location != null) {
       $result.location = location;
     }
+    if (state != null) {
+      $result.state = state;
+    }
     return $result;
   }
   IWishObjectMarker._() : super();
@@ -2078,6 +2082,7 @@ class IWishObjectMarker extends $pb.GeneratedMessage {
     ..aOS(1, _omitFieldNames ? '' : 'id')
     ..e<IWishCategory>(2, _omitFieldNames ? '' : 'category', $pb.PbFieldType.OE, defaultOrMaker: IWishCategory.IWISH_CATEGORY_UNKNOWN, valueOf: IWishCategory.valueOf, enumValues: IWishCategory.values)
     ..aOM<IWishObjectMarker_Location>(3, _omitFieldNames ? '' : 'location', subBuilder: IWishObjectMarker_Location.create)
+    ..e<IWishState>(4, _omitFieldNames ? '' : 'state', $pb.PbFieldType.OE, defaultOrMaker: IWishState.IWISH_STATE_UNKNOWN, valueOf: IWishState.valueOf, enumValues: IWishState.values)
     ..hasRequiredFields = false
   ;
 
@@ -2130,6 +2135,15 @@ class IWishObjectMarker extends $pb.GeneratedMessage {
   void clearLocation() => clearField(3);
   @$pb.TagNumber(3)
   IWishObjectMarker_Location ensureLocation() => $_ensure(2);
+
+  @$pb.TagNumber(4)
+  IWishState get state => $_getN(3);
+  @$pb.TagNumber(4)
+  set state(IWishState v) { setField(4, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasState() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearState() => clearField(4);
 }
 
 class IWishObject_Location extends $pb.GeneratedMessage {

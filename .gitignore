@@ -32,6 +32,8 @@ mapness/**/*.g.dart
 .pub-cache/
 .pub/
 /build/
+/android/app/build/
+**/.fvm
 
 # Symbolication related
 app.*.symbols

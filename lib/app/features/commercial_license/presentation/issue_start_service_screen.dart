@@ -9,11 +9,15 @@ import 'package:balady_plus/app/features/services/services_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:provider/provider.dart';
 
+import '../../../core/dependency_injection/injection_container.dart';
 import '../../../core/utils/app_analytics_events.dart';
 import '../../../core/utils/constants/dialog_names.dart';
 import '../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../_shared_feature_/presentation/dialogs/not_authorized_indivivisual.dart';
+import '../../services/presentation/mvvm/service_data_view_model.dart';
+import '../../services/presentation/widgets/service_cards_dynamic/service_card_desc_widget.dart';
 
 class IssueStartService extends StatefulWidget {
   const IssueStartService({Key? key}) : super(key: key);
@@ -32,101 +36,80 @@ class _IssueStartServiceState extends State<IssueStartService> {
 
   @override
   Widget build(BuildContext context) {
-    ServiceEntity service = model();
-
     int? requestId = ModalRoute.of(context)!.settings.arguments as int?;
 
     return MultiBlocProvider(
         providers: [
-          BlocProvider(
-            create: (context) => ServiceCardsCubit(service),
+          ChangeNotifierProvider(
+            create: (BuildContext context) => ServiceDataViewModel(
+              webService: sl(),
+              serviceId: 11010,
+            ),
           ),
         ],
         child: Scaffold(
-          appBar: DefaultAppBarWidget(
-            title: service.title.tr(),
-            bottom: ServiceCardsList(
-              cards: service.cards,
-            ),
-          ),
           body: Stack(
             children: [
               Column(
                 children: [
-                  const Expanded(
-                    child: Column(
-                      children: [
-                        SizedBox(height: 16),
-                        ServiceCardDescription(),
-                      ],
-                    ),
-                  ),
-                  SafeArea(
-                    top: false,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: ElevatedButtonWidget.startService(
-                        onPressed: () async {
-                          if (CommonProperties.isLoggedIn) {
-                            if (CommonProperties.selectedDelegator != null) {
-                              Navigator.of(context).pushNamed(
-                                  RouteName.commercialLicensePage,
-                                  arguments: requestId);
-                            } else {
-                              await BottomSheetDialog.showDraggableSheet(
-                                context,
-                                isFullHeight: false,
-                                dialogKeyName:
-                                    DialogName.notAuthorizedIndivisualDialog,
-                                currentRouteName:
-                                    RouteName.commercialLicenseServicePage,
-                                child: NotAuthorizedIndivisualDialog(),
-                              );
-                            }
+                  const Expanded(child: ServiceCardDescWidget()),
+                  Container(
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(36),
+                          topRight: Radius.circular(36),
+                        ),
+                        color: Colors.white),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 18, vertical: 26),
+                    child: ElevatedButtonWidget.startService(
+                      onPressed: () async {
+                        if (CommonProperties.isLoggedIn) {
+                          if (CommonProperties.selectedDelegator != null) {
+                            Navigator.of(context).pushNamed(
+                                RouteName.commercialLicensePage,
+                                arguments: requestId);
                           } else {
-                            showDialog(
-                                context: context,
-                                builder: (ctx) => NeedLoginDialog(
-                                        onSuccessLogin:
-                                            (bool? isSuccess) async {
-                                      if (isSuccess ?? false) {
-                                        if (CommonProperties
-                                                .selectedDelegator !=
-                                            null) {
-                                          Navigator.of(context).pushNamed(
-                                              RouteName.commercialLicensePage,
-                                              arguments: requestId);
-                                        } else {
-                                          await BottomSheetDialog
-                                              .showDraggableSheet(
-                                            context,
-                                            isFullHeight: false,
-                                            dialogKeyName: DialogName
-                                                .notAuthorizedIndivisualDialog,
-                                            currentRouteName: RouteName
-                                                .commercialLicenseServicePage,
-                                            child:
-                                                NotAuthorizedIndivisualDialog(),
-                                          );
-                                        }
-                                      }
-                                    }));
+                            await BottomSheetDialog.showDraggableSheet(
+                              context,
+                              isFullHeight: false,
+                              dialogKeyName:
+                                  DialogName.notAuthorizedIndivisualDialog,
+                              currentRouteName:
+                                  RouteName.commercialLicenseServicePage,
+                              child: NotAuthorizedIndivisualDialog(),
+                            );
                           }
-                        },
-                      ),
-                    ),
-                  )
-                  /* SafeArea(
-                    top: false,
-                    child: ServiceWarningWidget(
-                      warning: service.warning ?? "",
-                      onPress: () async {
-                        Navigator.of(context).pushNamed(
-                            RouteName.commercialLicensePage,
-                            arguments: requestId);
+                        } else {
+                          showDialog(
+                              context: context,
+                              builder: (ctx) => NeedLoginDialog(
+                                      onSuccessLogin: (bool? isSuccess) async {
+                                    if (isSuccess ?? false) {
+                                      if (CommonProperties.selectedDelegator !=
+                                          null) {
+                                        Navigator.of(context).pushNamed(
+                                            RouteName.commercialLicensePage,
+                                            arguments: requestId);
+                                      } else {
+                                        await BottomSheetDialog
+                                            .showDraggableSheet(
+                                          context,
+                                          isFullHeight: false,
+                                          dialogKeyName: DialogName
+                                              .notAuthorizedIndivisualDialog,
+                                          currentRouteName: RouteName
+                                              .commercialLicenseServicePage,
+                                          child:
+                                              NotAuthorizedIndivisualDialog(),
+                                        );
+                                      }
+                                    }
+                                  }));
+                        }
                       },
                     ),
-                  )*/
+                  )
                 ],
               ),
             ],
@@ -134,6 +117,7 @@ class _IssueStartServiceState extends State<IssueStartService> {
         ));
   }
 
+/*
   ServiceModel model() => ServiceModel.fromJson(
         {
           "id": 1,
@@ -204,4 +188,8 @@ class _IssueStartServiceState extends State<IssueStartService> {
           ]
         },
       );
+
+
+
+*/
 }

@@ -596,6 +596,7 @@ const IWishObjectMarker$json = {
     {'1': 'id', '3': 1, '4': 1, '5': 9, '10': 'id'},
     {'1': 'category', '3': 2, '4': 1, '5': 14, '6': '.balady.protocol.IWishCategory', '10': 'category'},
     {'1': 'location', '3': 3, '4': 1, '5': 11, '6': '.balady.protocol.IWishObjectMarker.Location', '10': 'location'},
+    {'1': 'state', '3': 4, '4': 1, '5': 14, '6': '.balady.protocol.IWishState', '10': 'state'},
   ],
   '3': [IWishObjectMarker_Location$json],
 };
@@ -613,8 +614,9 @@ final $typed_data.Uint8List iWishObjectMarkerDescriptor = $convert.base64Decode(
     'ChFJV2lzaE9iamVjdE1hcmtlchIOCgJpZBgBIAEoCVICaWQSOgoIY2F0ZWdvcnkYAiABKA4yHi'
     '5iYWxhZHkucHJvdG9jb2wuSVdpc2hDYXRlZ29yeVIIY2F0ZWdvcnkSRwoIbG9jYXRpb24YAyAB'
     'KAsyKy5iYWxhZHkucHJvdG9jb2wuSVdpc2hPYmplY3RNYXJrZXIuTG9jYXRpb25SCGxvY2F0aW'
-    '9uGjgKCExvY2F0aW9uEiwKBXBvaW50GAEgASgLMhYuYmFsYWR5LnByb3RvY29sLlBvaW50UgVw'
-    'b2ludA==');
+    '9uEjEKBXN0YXRlGAQgASgOMhsuYmFsYWR5LnByb3RvY29sLklXaXNoU3RhdGVSBXN0YXRlGjgK'
+    'CExvY2F0aW9uEiwKBXBvaW50GAEgASgLMhYuYmFsYWR5LnByb3RvY29sLlBvaW50UgVwb2ludA'
+    '==');
 
 @$core.Deprecated('Use iWishObjectDescriptor instead')
 const IWishObject$json = {

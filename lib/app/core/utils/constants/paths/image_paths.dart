@@ -132,4 +132,9 @@ class ImagePath {
   static const calendarNationalDay = '${_imagePath}calendar_national_day$_png';
   static const saudiFlag = '${_imagePath}saudi_flag$_png';
   static const calendarBackground = '${_imagePath}calendar_background$_svg';
+
+
+
+  static const backgroundServiceCard = '${_imagePath}background_service_card$_png';
+
 }

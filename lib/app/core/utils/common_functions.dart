@@ -3,7 +3,11 @@ import 'dart:io' show File;
 import 'dart:typed_data' show Uint8List;
 import 'dart:ui';
 import 'dart:math' show asin, cos, sqrt;
-
+import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart'
+    as calendar;
+import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
+import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart'
+    as events;
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/location/presentation/bloc/location_bloc.dart';
 import 'package:bot_toast/bot_toast.dart';
@@ -12,7 +16,8 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart' show PlatformFile;
 import 'package:firebase_analytics/firebase_analytics.dart';
 // import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
+import 'package:flutter_bloc/flutter_bloc.dart'
+    show BlocProvider, EventTransformer;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
@@ -32,11 +37,15 @@ import 'package:url_launcher/url_launcher.dart'
     show LaunchMode, canLaunchUrl, launchUrl;
 import 'package:uuid/uuid.dart';
 
+import '../../app.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
 import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
 import '../../features/_shared_feature_/presentation/pages/pdf_view.dart';
 import '../../features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
+import '../../features/calendar/presentation/bloc/calendar_bloc.dart';
 import '../../features/entry_point/domain/use_cases/get_cookie.dart';
+import '../../features/events/presentation/bloc/events_bloc.dart';
+import '../../features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../../features/profile_features/delegators/domain/entities/user_profile_entity.dart';
 import '../../features/vd/domain/entities/gis/gis_params.dart';
 import '../../features/vd/domain/entities/gis/gis_response.dart';
@@ -546,6 +555,10 @@ class CommonFunctions {
         NavigationService.navigatorKey.currentContext!,
         newLanguage: lang);
     translator.applyChanges(NavigationService.navigatorKey.currentContext!);
+
+    materialAppKey.currentState?.setState(() {});
+
+    refreshHomePage();
   }
 
   static String replaceArabicNumberWithEnglish(String value) {
@@ -1168,6 +1181,11 @@ class CommonFunctions {
     sl<EntryPointCubit>().autoLogout();
   }
 
+  static void openJodService() {
+    NavigationService.navigatorKey.currentState!
+        .pushNamed(RouteName.jodDonationPage);
+  }
+
   static void openSnapAndSend() async {
     await BottomSheetDialog.showDraggableSheet(
         NavigationService.navigatorKey.currentContext!,
@@ -1205,6 +1223,15 @@ class CommonFunctions {
       currentRouteName: "HomePage",
       child: BuildingRequirementsDialog(),
     );
+  }
+
+  static void refreshHomePage() async {
+    sl<EventsBloc>().add(const events.GetSearchEvent());
+    sl<CalendarBloc>().add(const calendar.GetSearchEvent());
+
+    BlocProvider.of<DashboardBloc>(
+            NavigationService.navigatorKey.currentContext!)
+        .add(DashboardEventInitial());
   }
 }
 

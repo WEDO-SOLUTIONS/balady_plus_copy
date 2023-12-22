@@ -23,7 +23,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widgets/etmam_home_page/etmam_bidding_widget.dart';
 
 class EtmamHomePage extends StatefulWidget {
-  const EtmamHomePage({Key? key}) : super(key: key);
+  final bool isMunicipalService;
+  const EtmamHomePage({Key? key, this.isMunicipalService = true})
+      : super(key: key);
 
   @override
   State<EtmamHomePage> createState() => _EtmamHomePage();
@@ -42,6 +44,7 @@ class _EtmamHomePage extends State<EtmamHomePage> {
     return Scaffold(
         body: BlocProvider(
       create: (context) => HomeBloc(
+          isMunicipalService: widget.isMunicipalService,
           getMainServices: sl(),
           getTopOrderedSubService: sl(),
           getTopRatedProviders: sl(),
@@ -57,24 +60,25 @@ class _EtmamHomePage extends State<EtmamHomePage> {
         },
         builder: (context, state) {
           return Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               const EtmamHomeAppBarWidget(),
               Expanded(
                 child: SingleChildScrollView(
-                  child: Stack(alignment: Alignment.center, children: [
-                    const Column(children: [
-                      EtmamMainServicesWidget(),
-                      EtmamBannerSlider(),
-
-                      EtmamBiddingWidget(),
-                      // EtmamSubServicesWidget(),
-                      EtmamTopRatedProvidersWidget(),
-                    ]),
-                    if (state.status == BlocStatus.loading)
-                      const Center(child: CustomLoadingWidget())
+                  child: Column(children: [
+                    const EtmamMainServicesWidget(),
+                    if (context.read<HomeBloc>().isMunicipalService ==
+                        true) ...[
+                      const EtmamBannerSlider(),
+                      const EtmamBiddingWidget(),
+                    ],
+                    // EtmamSubServicesWidget(),
+                    const EtmamTopRatedProvidersWidget(),
                   ]),
                 ),
               ),
+              if (state.status == BlocStatus.loading)
+                const Center(child: CustomLoadingWidget()),
             ],
           );
         },

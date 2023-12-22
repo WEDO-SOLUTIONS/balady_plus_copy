@@ -1,8 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/services/services_exports.dart' show NoParams;
 import '../../../../../core/utils/utils_exports.dart';
+import '../../../domain/use_cases/ekram_services.dart';
 import '../../../domain/use_cases/municipal_services.dart';
 import '../../../services_exports.dart'
     show
@@ -27,6 +29,7 @@ class ServicesCubit extends Cubit<ServicesState> {
   final MunicipalServices municipalServices;
   //final HealthCertificatesServices healthCertificatesServices;
   final BusinessLicenseServices businessLicenseServices;
+  final EkramServices ekramServices;
 
   ServicesCubit({
     required this.businessLicenseServices,
@@ -38,6 +41,7 @@ class ServicesCubit extends Cubit<ServicesState> {
     // required this.importantServices,
     // required this.newServices,
     required this.islamicServices,
+    required this.ekramServices,
   }) : super(const ServicesState()) {
     loadServices();
   }
@@ -52,6 +56,7 @@ class ServicesCubit extends Cubit<ServicesState> {
 
     final helpServicesList = await helpServices(NoParams());
     final municpalServicesList = await municipalServices(NoParams());
+    final ekramServicesList = await ekramServices(NoParams());
 
     emit(state.copyWith(status: BlocStatus.closeLoading));
     emit(state.copyWith(
@@ -63,7 +68,7 @@ class ServicesCubit extends Cubit<ServicesState> {
       customerVoiceServices: [],
       businessLicenseServices: businessLicenseServicesList.getOrElse(() => []),
       helpServices: helpServicesList.getOrElse(() => []),
-      honoringTheDeadServices: [],
+      honoringTheDeadServices: ekramServicesList.getOrElse(() => []),
     ));
   }
 
@@ -72,6 +77,7 @@ class ServicesCubit extends Cubit<ServicesState> {
 
     final islamicServicesList = await islamicServices(NoParams());
     final municpalServicesList = await municipalServices(NoParams());
+    final ekramServicesList = await ekramServices(NoParams());
 
     final businessLicenseServicesList =
         await businessLicenseServices(NoParams());
@@ -83,6 +89,10 @@ class ServicesCubit extends Cubit<ServicesState> {
     emit(state.copyWith(status: BlocStatus.closeLoading));
     emit(state.copyWith(
       status: BlocStatus.success,
+      honoringTheDeadServices:
+          ekramServicesList.getOrElse(() => []).where((service) {
+        return service.title.toLowerCase().contains(searchQuery!.toLowerCase());
+      }).toList(),
       businessLicenseServices:
           businessLicenseServicesList.getOrElse(() => []).where((service) {
         return service.title.toLowerCase().contains(searchQuery!.toLowerCase());
@@ -105,12 +115,11 @@ class ServicesCubit extends Cubit<ServicesState> {
     print("checkEkramServices");
     emit(state.copyWith(status: BlocStatus.closeLoading));
 
-    final businessLicenseServicesList =
-        await businessLicenseServices(NoParams());
+    final businessLicenseServicesList = await ekramServices(NoParams());
 
     emit(state.copyWith(
       status: BlocStatus.success,
-      businessLicenseServices:
+      honoringTheDeadServices:
           businessLicenseServicesList.getOrElse(() => []).where((service) {
         if (CommonProperties.showEkramDriver) return true;
         if (CommonProperties.showEkramDriver != true && service.id == 316)

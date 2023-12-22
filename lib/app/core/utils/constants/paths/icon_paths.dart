@@ -400,7 +400,15 @@ class IconPath {
 
   static const menuIcon = '${_svgIconPath}menu_icon$_svg';
 
-  //  ! New Services Page
+  static const flag2Icon = '${_svgIconPath}flag_2$_svg';
+  static const taskSquareList = '${_svgIconPath}task_square_list$_svg';
+  static const mobileEmpty = '${_svgIconPath}mobile_empty$_svg';
+  static const monitorIcon = '${_svgIconPath}monitor$_svg';
+  static const downloadButton = '${_svgIconPath}download_button$_svg';
+  static const linkSquare2 = '${_svgIconPath}link_square$_svg';
+
+
+
 
   static const servicesPageSearch = '${_svgIconPath}services/search$_svg';
   static const servicesPageArrow = '${_svgIconPath}services/arrow$_svg';
@@ -409,5 +417,13 @@ class IconPath {
   static const madaIcon = '${_svgIconPathJod}mada$_svg';
   static const masterCardIcon = '${_svgIconPathJod}master_card$_svg';
   static const visaIcon = '${_svgIconPathJod}visa$_svg';
+  static const sadaddIcon = '${_svgIconPathJod}sadadd$_svg';
+
+
+
+  static const starNew = '${_svgIconPath}star_new$_svg';
+
+
+
 }
 ///Users/abdelrahmanismail/StudioProjects/balady-plus/assets/icons/svg/jod/apple_pay.svg

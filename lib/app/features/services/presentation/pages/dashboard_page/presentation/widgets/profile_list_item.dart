@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, ContextConversion;
+    show AppColor, AppStyle, CommonFunctions, ContextConversion;
 import '../../../../../../home_page/home_exports.dart' show CircleIcon;
 import '../../dashboard_page_exports.dart' show ProfileItem;
 
@@ -43,7 +43,10 @@ class ProfileListItem extends StatelessWidget {
                 textStyle: AppStyle.profileListBetaTextStyle,
               ),
             const SizedBox(width: 16),
-            SvgPicture.asset(IconPath.leftArrow),
+            RotatedBox(
+              quarterTurns: CommonFunctions.isAppAR ? 0 : 2,
+              child: SvgPicture.asset(IconPath.leftArrow),
+            )
           ],
         ),
       ),

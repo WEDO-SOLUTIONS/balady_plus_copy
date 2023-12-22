@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:mapness/_features/common/providers/map_viewport_changes.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart';
+import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:geobase/geobase.dart' as gb;
@@ -33,12 +34,14 @@ class StoriesRepo extends _$StoriesRepo {
   }
 
   Future<StoriesResponse> _fetch(Dio dio, [gb.Polygon? polygon]) async {
+    mixpanel?.timeEvent("StoriesRepo: _fetch");
     final url = polygon != null
         ? 'stories?bound=${polygon.toText(format: gb.WKT.geometry)}'
         : 'stories';
 
     final rawResponse = await dio.get(url);
     final storiesResponse = StoriesResponse.fromBuffer(rawResponse.data);
+    mixpanel?.track("StoriesRepo: _fetch");
     return storiesResponse;
   }
 }

@@ -339,7 +339,6 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
 
       details.hashingRequestNumber = e.hashingRequestNumber;
       details.serviceTypeId = e.serviceTypeId;
-
       NavigationService.navigatorKey.currentState!
           .pushNamed(RouteName.objectionsDetailsPage, arguments: success);
     });

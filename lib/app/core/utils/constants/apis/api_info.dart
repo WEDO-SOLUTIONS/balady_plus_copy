@@ -577,6 +577,13 @@ class ApiUrl {
   static String savePoster(String requestId) =>
       "v1/commercial-promotions-services/posters/$requestId";
 
+/////////////////////////////////////////////////////////
+  static  String getServicesCards(int servicesId) => '/v1/portal-services/cards/$servicesId';
+
+
+
+
+
   static String getPermitAttachmentTypes(
           {required int requestId, required int typeId}) =>
       "v1/commercial-promotions-services/attachments-types/$requestId/$typeId";
