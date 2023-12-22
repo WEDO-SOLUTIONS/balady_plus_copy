@@ -19,7 +19,17 @@ class Token extends _$Token {
 
   @override
   Future<String> build() async {
+    final subscription = sl<EntryPointCubit>().stream.listen((state) {
+      _setToken(CommonProperties.token);
+    });
+    ref.onDispose(() {
+      subscription.cancel();
+    });
     await sl<EntryPointCubit>().checkifTokenExpired();
     return Future.value(CommonProperties.token);
+  }
+
+  void _setToken(String token) {
+    state = AsyncData(token);
   }
 }
