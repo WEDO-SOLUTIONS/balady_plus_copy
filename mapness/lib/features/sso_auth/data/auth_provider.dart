@@ -31,6 +31,13 @@ class Auth extends _$Auth {
       await Future.delayed(const Duration(milliseconds: 250));
     }
 
+    final authSubscription = sl<EntryPointCubit>().stream.listen((event) {
+      state = AsyncValue.data(event.userInfo);
+    });
+    ref.onDispose(() {
+      authSubscription.cancel();
+    });
+
     return CommonProperties.userInfo;
   }
 }
