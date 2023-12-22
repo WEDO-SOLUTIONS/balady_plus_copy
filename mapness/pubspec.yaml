@@ -75,6 +75,7 @@ dependencies:
   mixpanel_flutter: ^2.2.0
   rate_my_app: ^2.0.0
   webview_flutter: ^4.4.2
+  auto_size_text: ^3.0.0
 
 dev_dependencies:
   flutter_test:
