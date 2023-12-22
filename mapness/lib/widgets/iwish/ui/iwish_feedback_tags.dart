@@ -21,7 +21,7 @@ class IwishFeedbackTags extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.count(
       shrinkWrap: true,
-      crossAxisCount: 4,
+      crossAxisCount: 3,
       mainAxisSpacing: 10,
       crossAxisSpacing: 10,
       childAspectRatio: 78 / 90,
@@ -66,10 +66,10 @@ class IwishFeedbackTags extends StatelessWidget {
                           textAlign: TextAlign.end,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
-                              .textS
+                              .textM
                               .copyWith(
                                 color: const Color(0xFF1D2A36),
-                                fontSize: 10,
+                                // fontSize: 14,
                               ),
                         ),
                       ],
