@@ -378,7 +378,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "requireLogin": true,
       "isImportant": false,
-      "action": {"type": "dialog", "value": ""},
+      "action": {"type": "page", "value": ""},
       "ar": {"title": "multiple_permits", "description": null, "tag": null},
       "en": {"title": "multiple_permits", "description": null, "tag": null}
     },

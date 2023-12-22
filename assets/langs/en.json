@@ -288,7 +288,7 @@
 "last_update":"Last update",
 "details":"Details",
 "request":"Request",
-"filters":"Liquidation",
+"filters":"Filters",
 "product":"Product",
 "date_form":"Date Format",
 "hijri":"AH",
@@ -4181,7 +4181,23 @@
 "violation_title_2":"Non-serious violation", 
 
 "ekram_services":"Ekram Services", 
-"service_provide_services":"Services Providers"
+"service_provide_services":"Services Providers", 
+
+
+"submission_channels": "Service Channels",
+"payment_method": "Payment Channels",
+"go_to_calculator_cost": "Fee calculator",
+"cost_card": "Service Cost",
+"how_to_apply": "Submission method",
+
+"requirements_fines": "Requirements and fines",
+
+
+"government_requirements_approvals": "تعرف على قائمة الاشتراطات والموافقات الحكومية المطلوبة بحسب نوع النشاط.",
+"service_requirements_conditions" : "متطلبات واشتراطات الخدمة",
+"fines_penalties_title": "قم بالاطلاع على التعليمات التنفيذية بلائحة الغرامات والجزاءات عن المخالفة البلدية.",
+"list_penalties_municipal_violations": "لائحة الجزاءات عن المخالفات البلدية"
+
 
    
 }

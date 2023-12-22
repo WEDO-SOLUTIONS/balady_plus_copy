@@ -79,34 +79,6 @@ class ServiceIcon extends StatelessWidget {
             }
           }
 
-          if (service.id == 302) {
-            if (CommonProperties.selectedDelegator != null) {
-              await BottomSheetDialog.showDraggableSheet(context,
-                  isFullHeight: false,
-                  height: 300, child: CommercialPermitsDialog(
-                onSelect: (int item) async {
-                  if (item == 1042) {
-                    await BottomSheetDialog.showDraggableSheet(context,
-                        isFullHeight: true,
-                        child: PermitsLicenseBottomSheetList(
-                          groupId: item,
-                        ));
-                  }
-                },
-              ));
-            } else {
-              await BottomSheetDialog.showDraggableSheet(
-                context,
-                isFullHeight: false,
-                dialogKeyName: DialogName.notAuthorizedIndivisualDialog,
-                currentRouteName: RouteName.postersStartService,
-                child: NotAuthorizedIndivisualDialog(),
-              );
-            }
-
-            return;
-          }
-
           if (service.id == 201) {
             await BottomSheetDialog.showDraggableSheet(
                 NavigationService.navigatorKey.currentContext!,
@@ -370,8 +342,34 @@ class ServiceIcon extends StatelessWidget {
         );
   }
 
-  void openPage() {
-    if (service.id == 211 || service.id == 314) {
+  void openPage() async {
+    var context = NavigationService.navigatorKey.currentContext!;
+    if (service.id == 302) {
+      if (CommonProperties.selectedDelegator != null) {
+        await BottomSheetDialog.showDraggableSheet(context,
+            isFullHeight: false, height: 300, child: CommercialPermitsDialog(
+          onSelect: (int item) async {
+            if (item == 1042) {
+              await BottomSheetDialog.showDraggableSheet(context,
+                  isFullHeight: true,
+                  child: PermitsLicenseBottomSheetList(
+                    groupId: item,
+                  ));
+            }
+          },
+        ));
+      } else {
+        await BottomSheetDialog.showDraggableSheet(
+          context,
+          isFullHeight: false,
+          dialogKeyName: DialogName.notAuthorizedIndivisualDialog,
+          currentRouteName: RouteName.postersStartService,
+          child: NotAuthorizedIndivisualDialog(),
+        );
+      }
+
+      return;
+    } else if (service.id == 211 || service.id == 314) {
       NavigationService.navigatorKey.currentState!
           .pushNamed(RouteName.etmamMainPage, arguments: (true, ""));
     } else if (service.id == 205) {

@@ -3388,6 +3388,8 @@
   "must_comment": "يجب اضافة تعليق",
 
 
+
+
   "attached_successfully": "تم ارفاق الملف بنجاح", 
 
 
@@ -3894,6 +3896,23 @@
 "violation_title_2":"مخالفة غير جسيمة", 
 
 "ekram_services":"إكرام الموتى", 
-"service_provide_services":"خدمات مقدمي الخدمات"
+"service_provide_services":"خدمات مقدمي الخدمات", 
+
+
+"submission_channels": "قنوات التقديم",
+"payment_method": "طرق الدفع المتاحة",
+"go_to_calculator_cost": "الذهاب الى حاسبة الرسوم",
+"cost_card": "التكلفة",
+"how_to_apply": "طريقة التقديم",
+
+"requirements_fines": "الاشتراطات والغرامات",
+
+
+"government_requirements_approvals": "تعرف على قائمة الاشتراطات والموافقات الحكومية المطلوبة بحسب نوع النشاط.",
+"service_requirements_conditions" : "متطلبات واشتراطات الخدمة",
+"fines_penalties_title": "قم بالاطلاع على التعليمات التنفيذية بلائحة الغرامات والجزاءات عن المخالفة البلدية.",
+"list_penalties_municipal_violations": "لائحة الجزاءات عن المخالفات البلدية"
+
+
  
 }

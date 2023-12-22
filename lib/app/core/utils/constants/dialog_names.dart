@@ -166,4 +166,12 @@ class DialogName {
   // static const reasonCancelDialog = '/reasonCancelDialog';
   static const disclosedMonthsSheetDialog = '/disclosedMonthsSheetDialog';
 
+
+
+
+
+  static const howToApplySheetDialog = '/howToApplySheetDialog';
+  static const requirementsSheetDialog = '/howToApplySheetDialog';
+  static const requirementsFinesSheetDialog = '/howToApplySheetDialog';
+
 }
