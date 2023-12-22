@@ -63,6 +63,7 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
     dateTo = widget.params.dateTo;
     //   isFree = widget.params.isFree;
     sortBy = widget.params.sortBy;
+    textEditingController?.text = widget.params.keyword ?? "";
   }
 
   @override
@@ -79,7 +80,6 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                 hintText: "search".tr(),
                 textEditingController: textEditingController,
                 textInputType: TextInputType.text,
-                initialValue: widget.params.keyword,
                 onChanged: (value) {
                   keyword = value;
                 },

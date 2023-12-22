@@ -13,6 +13,7 @@ import 'package:balady_plus/app/features/services/services_exports.dart'
         ServicesRepository,
         ServicesRepositoryImplementation;
 
+import '../../../features/services/domain/use_cases/ekram_services.dart';
 import '../../../features/services/domain/use_cases/municipal_services.dart';
 import '../dependency_injection_exports.dart' show sl;
 
@@ -23,6 +24,7 @@ class ServicesInjection {
     sl.registerLazySingleton(() => BusinessLicenseServices(sl()));
     sl.registerLazySingleton(() => HelpServices(sl()));
     sl.registerLazySingleton(() => MunicipalServices(sl()));
+    sl.registerLazySingleton(() => EkramServices(sl()));
 
     //sl.registerLazySingleton(() => HealthCertificatesServices(sl()));
 

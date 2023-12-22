@@ -20,7 +20,7 @@ class ServiceModel extends ServiceEntity {
       super.requireLogin});
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
-    json.addAll(json[translator.activeLanguageCode] as Map<String, dynamic>);
+    json.addAll(json["ar"] as Map<String, dynamic>);
     final List<ServiceCardEntity> cardList = [];
     for (final card in json['cards'] ?? []) {
       cardList.add(ServiceCardModel.fromJson(card));

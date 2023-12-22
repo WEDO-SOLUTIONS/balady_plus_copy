@@ -37,6 +37,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
             islamicServices: sl(),
             businessLicenseServices: sl(),
             municipalServices: sl(),
+            ekramServices: sl(),
             //healthCertificatesServices: sl(),
             helpServices: sl(),
           ),

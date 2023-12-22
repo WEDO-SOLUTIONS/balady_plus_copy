@@ -15,12 +15,14 @@ class EtmamMainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    (bool?, String?)? args =
+        ModalRoute.of(context)?.settings.arguments as (bool?, String?)?;
     return BlocProvider.value(
       value: sl<CityBloc>(),
       child: BlocBuilder<CityBloc, CityState>(
         builder: (context, state) {
           return CommonProperties.cityId.isNotEmpty
-              ? EtmamHomePage()
+              ? EtmamHomePage(isMunicipalService: args?.$1 ?? true)
               : EtmamSelectCityPage();
         },
       ),

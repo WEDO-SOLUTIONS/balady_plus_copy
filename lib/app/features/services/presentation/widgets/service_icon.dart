@@ -65,53 +65,18 @@ class ServiceIcon extends StatelessWidget {
               }
             } else {
               if (CommonProperties.isLoggedIn) {
-                NavigationService.navigatorKey.currentState?.pushNamed(
-                  service.action.value,
-                  arguments: null,
-                );
+                openPage();
               } else {
                 showDialog(
                     context: context,
                     builder: (ctx) => NeedLoginDialog(
                             onSuccessLogin: (bool? isSuccess) async {
                           if (isSuccess ?? false) {
-                            NavigationService.navigatorKey.currentState
-                                ?.pushNamed(
-                              service.action.value,
-                              arguments: null,
-                            );
+                            openPage();
                           }
                         }));
               }
             }
-          }
-
-          if (service.id == 302) {
-            if (CommonProperties.selectedDelegator != null) {
-              await BottomSheetDialog.showDraggableSheet(context,
-                  isFullHeight: false,
-                  height: 300, child: CommercialPermitsDialog(
-                onSelect: (int item) async {
-                  if (item == 1042) {
-                    await BottomSheetDialog.showDraggableSheet(context,
-                        isFullHeight: true,
-                        child: PermitsLicenseBottomSheetList(
-                          groupId: item,
-                        ));
-                  }
-                },
-              ));
-            } else {
-              await BottomSheetDialog.showDraggableSheet(
-                context,
-                isFullHeight: false,
-                dialogKeyName: DialogName.notAuthorizedIndivisualDialog,
-                currentRouteName: RouteName.postersStartService,
-                child: NotAuthorizedIndivisualDialog(),
-              );
-            }
-
-            return;
           }
 
           if (service.id == 201) {
@@ -288,6 +253,19 @@ class ServiceIcon extends StatelessWidget {
             }
           } else if (service.iconName == "municpal_all") {
             CommonFunctions.externalLaunch(service.action.value);
+          } else if (service.id == 221) {
+            try {
+              NavigationService.navigatorKey.currentState!
+                  .pushNamed(RouteName.SpecificServicePage, arguments: (
+                BlocProvider.of<ServicesCubit>(
+                        NavigationService.bottomNavKey.currentContext!)!
+                    .state
+                    .honoringTheDeadServices,
+                service.title.tr()
+              ));
+            } catch (ex) {
+              print(ex);
+            }
           }
         },
         child: Container(
@@ -296,6 +274,7 @@ class ServiceIcon extends StatelessWidget {
             end: 8,
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Container(
                 padding:
@@ -361,5 +340,45 @@ class ServiceIcon extends StatelessWidget {
         ],
       ),*/
         );
+  }
+
+  void openPage() async {
+    var context = NavigationService.navigatorKey.currentContext!;
+    if (service.id == 302) {
+      if (CommonProperties.selectedDelegator != null) {
+        await BottomSheetDialog.showDraggableSheet(context,
+            isFullHeight: false, height: 300, child: CommercialPermitsDialog(
+          onSelect: (int item) async {
+            if (item == 1042) {
+              await BottomSheetDialog.showDraggableSheet(context,
+                  isFullHeight: true,
+                  child: PermitsLicenseBottomSheetList(
+                    groupId: item,
+                  ));
+            }
+          },
+        ));
+      } else {
+        await BottomSheetDialog.showDraggableSheet(
+          context,
+          isFullHeight: false,
+          dialogKeyName: DialogName.notAuthorizedIndivisualDialog,
+          currentRouteName: RouteName.postersStartService,
+          child: NotAuthorizedIndivisualDialog(),
+        );
+      }
+
+      return;
+    } else if (service.id == 211 || service.id == 314) {
+      NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.etmamMainPage, arguments: (true, ""));
+    } else if (service.id == 205) {
+      NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.etmamMainPage, arguments: (false, ""));
+    } else
+      NavigationService.navigatorKey.currentState?.pushNamed(
+        service.action.value,
+        arguments: null,
+      );
   }
 }

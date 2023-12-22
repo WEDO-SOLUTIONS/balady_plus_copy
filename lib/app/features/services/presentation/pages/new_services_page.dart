@@ -75,8 +75,7 @@ class _NewServicesPageState extends State<NewServicesPage> {
                             ),
                           );
 
-                          context
-                              .read<DashboardBloc>()
+                          BlocProvider.of<DashboardBloc>(context)
                               .add(DashboardEventInitial());
                         },
                         icon: SvgPicture.asset("assets/icons/svg/refresh.svg"))

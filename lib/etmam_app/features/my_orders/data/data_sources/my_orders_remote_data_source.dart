@@ -1,3 +1,4 @@
+import 'package:balady_plus/etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
 import 'package:balady_plus/etmam_app/features/my_orders/data/models/request_details_response_model.dart';
 import 'package:balady_plus/etmam_app/core/utils/common_functions.dart';
 import 'package:balady_plus/etmam_app/core/utils/common_properties.dart';
@@ -25,6 +26,7 @@ import 'package:balady_plus/etmam_app/features/my_orders/my_orders_exports.dart'
         RequestItemModel,
         CancelOrderResponse;
 
+import '../../../../../app/core/dependency_injection/injection_container.dart';
 import '../../../../../app/core/services/global/web_service.dart';
 
 abstract class MyOrdersRemoteDataSource {
@@ -278,6 +280,8 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
             ApiParams.page_No: params.pageIndex,
             ApiParams.page_Size: 10,
             ApiParams.profileId: CommonProperties.profileId,
+            "service-classifications":
+                sl<EtmamEntryPointCubit>().classificationId,
             if (params.closed != null) "closed-status": params.closed,
           },
           options: Options(headers: {

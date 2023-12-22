@@ -173,7 +173,8 @@ class _WalletScreenState extends State<WalletScreen> {
                                                   "",
                                               cardNumber: state
                                                       .getItems()[index]
-                                                      .licenseId ??
+                                                      .licenseId
+                                                      .toString() ??
                                                   "",
                                               expireDate: state.items?[index]
                                                       .endDateHijri ??

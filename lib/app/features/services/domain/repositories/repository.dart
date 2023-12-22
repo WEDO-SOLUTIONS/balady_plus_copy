@@ -10,4 +10,9 @@ abstract class ServicesRepository {
   Future<Either<Failure, List<ServiceEntity>>> getHelpServices();
 
   Future<Either<Failure, List<ServiceEntity>>> getMunicipalServices();
+
+  Future<Either<Failure, List<ServiceEntity>>> getEkramServices();
+
+
+
 }

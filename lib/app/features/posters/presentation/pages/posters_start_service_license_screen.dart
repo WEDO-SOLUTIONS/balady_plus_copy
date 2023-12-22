@@ -101,7 +101,7 @@ class _PostersLicenseStartServiceState
                   SafeArea(
                     top: false,
                     child: ServiceWarningWidget(
-                      warning: service.warning ?? "",
+                      warning: service.warning?.tr() ?? "",
                       onPress: () async {
                         if (CommonProperties.isLoggedIn) {
                           // if (CommonProperties.selectedDelegator != null) {

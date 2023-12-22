@@ -1,6 +1,7 @@
 //import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
 //   show showUpdateAppPopUpWidget;
 import 'package:balady_plus/app/features/entry_point/domain/use_cases/get_test_data.dart';
+import 'package:balady_plus/app/features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -187,6 +188,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           return false;
         }
         getEkramPermissions();
+        try {
+          BlocProvider.of<DashboardBloc>(
+                  NavigationService.navigatorKey.currentContext!)
+              .add(DashboardEventInitial());
+        } catch (ex) {}
       }
     });
     EasyLoading.dismiss();
@@ -424,5 +430,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         //  sl<EkramLocationService>().startTimer();
       }
     }
+  }
+
+  void refreshApp() {
+    emit(state.copyWith(blocStatus: BlocStatus.loading));
+
+    emit(state.copyWith(blocStatus: BlocStatus.success));
   }
 }

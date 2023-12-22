@@ -9,12 +9,16 @@ import 'package:balady_plus/app/features/services/services_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../_shared_feature_/presentation/dialogs/not_authorized_indivivisual.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../commercial_license_details/data/models/commercial_licence_details.dart';
+import '../../../services/presentation/mvvm/service_data_view_model.dart';
+import 'package:balady_plus/app/features/services/presentation/widgets/service_cards_dynamic/service_card_desc_widget.dart';
 import '../../data/models/service_card.dart';
 import '../blocs/permit_24_bloc.dart';
 
@@ -37,19 +41,22 @@ class _PermitsLicenseStartServiceState
 
   @override
   Widget build(BuildContext context) {
-    ServiceEntity service = permits24Model();
+    //ServiceEntity service = permits24Model();
     CommercialLicenceDetails? commercialLicenceDetails =
         ModalRoute.of(context)!.settings.arguments as CommercialLicenceDetails;
 
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => ServiceCardsCubit(service),
-        ),
-        BlocProvider(
           create: (context) => Permit24LicenseBloc(
               licenseId: commercialLicenceDetails.licenseInfo?.licenseId,
               commercialLicenceDetails: commercialLicenceDetails),
+        ),
+        ChangeNotifierProvider(
+          create: (BuildContext context) => ServiceDataViewModel(
+            webService: sl(),
+            serviceId: 10528,
+          ),
         ),
       ],
       child: BlocConsumer<Permit24LicenseBloc, Permit24LicenseState>(
@@ -59,60 +66,41 @@ class _PermitsLicenseStartServiceState
         }
       }, builder: (context, state) {
         return Scaffold(
-          appBar: DefaultAppBarWidget(
-            title: service.title.tr(),
-            bottom: ServiceCardsList(
-              cards: service.cards,
-            ),
-          ),
           body: Stack(
             children: [
               Column(
                 children: [
-                  const Expanded(
-                    child: Column(
-                      children: [
-                        SizedBox(height: 16),
-                        ServiceCardDescription(),
-                      ],
-                    ),
-                  ),
-                  SafeArea(
-                    top: false,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: ElevatedButtonWidget.startService(
-                        onPressed: () async {
-                          if (CommonProperties.isLoggedIn) {
-                            context
-                                .read<Permit24LicenseBloc>()
-                                .add(const ValidatePermitEvent());
-                          } else {
-                            showDialog(
-                                context: context,
-                                builder: (ctx) => NeedLoginDialog(
-                                        onSuccessLogin:
-                                            (bool? isSuccess) async {
-                                      if (isSuccess ?? false) {
-                                        context
-                                            .read<Permit24LicenseBloc>()
-                                            .add(const ValidatePermitEvent());
-                                      }
-                                    }));
-                          }
-                        },
-                      ),
-                    ),
-                  )
-                  /*  SafeArea(
-                    top: false,
-                    child: ServiceWarningWidget(
-                      warning: service.warning ?? "",
-                      onPress: () async {
-                        
+                  const Expanded(child: ServiceCardDescWidget()),
+                  Container(
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(36),
+                          topRight: Radius.circular(36),
+                        ),
+                        color: Colors.white),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 18, vertical: 26),
+                    child: ElevatedButtonWidget.startService(
+                      onPressed: () async {
+                        if (CommonProperties.isLoggedIn) {
+                          context
+                              .read<Permit24LicenseBloc>()
+                              .add(const ValidatePermitEvent());
+                        } else {
+                          showDialog(
+                              context: context,
+                              builder: (ctx) => NeedLoginDialog(
+                                      onSuccessLogin: (bool? isSuccess) async {
+                                    if (isSuccess ?? false) {
+                                      context
+                                          .read<Permit24LicenseBloc>()
+                                          .add(const ValidatePermitEvent());
+                                    }
+                                  }));
+                        }
                       },
                     ),
-                  )*/
+                  )
                 ],
               ),
               if (state.status == BlocStatus.loading)

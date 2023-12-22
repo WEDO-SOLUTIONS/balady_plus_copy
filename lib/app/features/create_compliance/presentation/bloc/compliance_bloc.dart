@@ -1017,7 +1017,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
           ModalRoute.withName(RouteName.bottomNavigation);
       NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
           RouteName.etmamMainPageCitySelector, predicate,
-          arguments: r);
+          arguments: (true, r));
     });
   }
 

@@ -165,10 +165,10 @@ class _PermitLicensesListWidgetState extends State<PermitLicensesListWidget> {
                             ),
                           if (selectedValues.contains(item))
                             ElevatedButtonWidget.primaryCustomBorder(
-                              text: "selection_chosen",
+                              text: "selection_chosen".tr(),
                               onPressed: () {
                                 setState(() {
-                                  selectedValues!.remove(item);
+                                  selectedValues.remove(item);
                                 });
                               },
                             ),

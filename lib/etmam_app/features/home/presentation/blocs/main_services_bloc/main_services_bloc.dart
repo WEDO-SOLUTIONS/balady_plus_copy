@@ -30,11 +30,13 @@ part 'main_services_state.dart';
 class MainServicesBloc extends Bloc<MainServicesEvent, MainServicesState> {
   final GetSubService _getSubService;
   final GetMainServices _getMainServices;
+  final String classificationId;
 
   MainServicesBloc(
       {required MainServiceResponse mainServiceResponse,
       required GetSubService getSubService,
-      required GetMainServices getMainServices})
+      required GetMainServices getMainServices,
+      required this.classificationId})
       : _getSubService = getSubService,
         _getMainServices = getMainServices,
         super(MainServicesState(mainServiceResponse: mainServiceResponse)) {
@@ -44,7 +46,10 @@ class MainServicesBloc extends Bloc<MainServicesEvent, MainServicesState> {
 
     add(GetMainServiceEvent(
         params: MainServiceParams(
-            cityId: CommonProperties.cityId, pageIndex: "1", pageSize: "30")));
+      cityId: CommonProperties.cityId,
+      pageIndex: "1",
+      pageSize: "30",
+    )));
   }
 
   Future<void> _getMainServicesHandler(

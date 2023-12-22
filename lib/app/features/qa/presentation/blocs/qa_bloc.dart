@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/qa/data/qa_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
@@ -24,7 +25,12 @@ class QABloc extends Bloc<QADataEvent, QAState> {
   }
 
   Future<void> _getQaDataHandler(GetQADataEvent e, Emitter emitter) async {
-    String qa = await rootBundle.loadString("assets/qa.json");
+    String qa = "";
+    if (CommonFunctions.isAppAR) {
+      qa = await rootBundle.loadString("assets/qa.json");
+    } else {
+      qa = await rootBundle.loadString("assets/qa_en.json");
+    }
     var r = json.decode(qa);
     try {
       List<QAModel>? d = r != null

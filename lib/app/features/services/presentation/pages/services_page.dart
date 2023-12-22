@@ -48,7 +48,8 @@ class _ServicesPageState extends State<ServicesPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    context.read<ServicesCubit>().checkEkramServices();
+    if (CommonProperties.isLoggedIn)
+      context.read<ServicesCubit>().checkEkramServices();
   }
 
   @override
@@ -171,7 +172,7 @@ class _ServicesPageState extends State<ServicesPage> {
         ),
       );
 
-      context.read<DashboardBloc>().add(DashboardEventInitial());
+      BlocProvider.of<DashboardBloc>(context).add(DashboardEventInitial());
     } else {
       showDialog(
           context: context,
@@ -189,7 +190,8 @@ class _ServicesPageState extends State<ServicesPage> {
                     ),
                   );
 
-                  context.read<DashboardBloc>().add(DashboardEventInitial());
+                  BlocProvider.of<DashboardBloc>(context)
+                      .add(DashboardEventInitial());
                 }
               }));
     }

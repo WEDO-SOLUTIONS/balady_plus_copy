@@ -18,7 +18,7 @@ class ServiceCardModel extends ServiceCardEntity {
       super.descriptionLink});
 
   factory ServiceCardModel.fromJson(Map<String, dynamic> json) {
-    json.addAll(json[translator.activeLanguageCode] as Map<String, dynamic>);
+    json.addAll(json["ar"] as Map<String, dynamic>);
     final service = ServiceCardModel(
       title: json['title'] as String,
       iconName: json['iconName'] as String,

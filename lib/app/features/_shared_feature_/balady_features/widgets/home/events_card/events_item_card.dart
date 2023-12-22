@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -34,7 +35,7 @@ class EventItemCard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
           ),
-          alignment: Alignment.bottomRight,
+          alignment: AlignmentDirectional.bottomStart,
           child: Stack(
             children: [
               ClipRRect(
@@ -61,9 +62,10 @@ class EventItemCard extends StatelessWidget {
                 ),
               ),
               Align(
-                alignment: Alignment.bottomRight,
+                alignment: AlignmentDirectional.bottomStart,
                 child: Container(
-                  padding: const EdgeInsets.only(right: 24, bottom: 20),
+                  padding:
+                      const EdgeInsetsDirectional.only(start: 24, bottom: 20),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,7 +73,9 @@ class EventItemCard extends StatelessWidget {
                       Flexible(
                         child: Text(
                           item.eventName ?? "",
-                          textAlign: TextAlign.right,
+                          textAlign: CommonFunctions.isAppAR
+                              ? TextAlign.right
+                              : TextAlign.left,
                           maxLines: 2,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()

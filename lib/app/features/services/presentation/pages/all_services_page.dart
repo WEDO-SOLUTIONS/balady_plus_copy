@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/utils_exports.dart'
@@ -16,8 +15,7 @@ import '../../../_shared_feature_/shared_feature_exports.dart'
         DrawIconBasedTypeWidget,
         TabPageContainer;
 import '../../../home_page/home_exports.dart' show CircleIcon;
-import '../../../profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
-import '../../../profile_features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
+
 import '../../services_exports.dart'
     show
         SearchServicesTextField,
@@ -110,22 +108,25 @@ class _AllServicesPageState extends State<AllServicesPage> {
             SizedBox(
               height: 16,
             ),
-            GridView.builder(
-              shrinkWrap: true,
-              itemCount: searchedServices.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                mainAxisSpacing: 5.0,
-                crossAxisSpacing: 5.0,
+            Padding(
+              padding: const EdgeInsetsDirectional.only(start: 8),
+              child: GridView.builder(
+                shrinkWrap: true,
+                itemCount: searchedServices.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  mainAxisSpacing: 5.0,
+                  crossAxisSpacing: 5.0,
+                ),
+                itemBuilder: (_, index) {
+                  return ServiceIcon(
+                    service: searchedServices[index],
+                    width: 72,
+                    height: 112,
+                    backgroundColor: Color(0xffF5F7FA),
+                  );
+                },
               ),
-              itemBuilder: (_, index) {
-                return ServiceIcon(
-                  service: searchedServices[index],
-                  width: 72,
-                  height: 112,
-                  backgroundColor: Color(0xffF5F7FA),
-                );
-              },
             ),
             const SizedBox(height: 24),
           ],

@@ -48,7 +48,8 @@ class SelfRatingBloc extends Bloc<SelfRatingEvent, SelfRatingState> {
     emitter(state.copyWith(status: BlocStatus.loading));
 
     String qa = await rootBundle.loadString("assets/self_rating.json");
-
+    if (!CommonFunctions.isAppAR)
+      qa = await rootBundle.loadString("assets/self_rating_en.json");
     var r = json.decode(qa);
 
     try {
