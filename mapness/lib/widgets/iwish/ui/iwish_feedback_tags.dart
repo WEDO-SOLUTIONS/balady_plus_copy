@@ -67,6 +67,8 @@ class IwishFeedbackTags extends StatelessWidget {
                           e.displayName,
                           group: tagsGroup,
                           maxLines: 2,
+                          wrapWords: false,
+                          minFontSize: 8,
                           textAlign: TextAlign.end,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!

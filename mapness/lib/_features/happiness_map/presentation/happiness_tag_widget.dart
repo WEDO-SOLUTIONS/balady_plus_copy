@@ -48,6 +48,9 @@ class HappinessTagWidget extends StatelessWidget {
               AutoSizeText(
                 title,
                 maxLines: 2,
+                wrapWords: false,
+                minFontSize: 8,
+                group: tagSizeGroup,
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
                     .accentXS
