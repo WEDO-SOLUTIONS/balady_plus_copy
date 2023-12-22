@@ -1,4 +1,5 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/entities/iwish/models/iwish_marker.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
 
@@ -17,12 +18,12 @@ extension IwishMarkerMapper on IwishMarker {
         ),
         icon: MarkerIconMessage(
           // TODO(demezy): place here logic when backend will provide state
-          path: switch ((isSelected, true)) {
+          path: switch ((isSelected, state)) {
             (true, _) =>
               "packages/mapness/assets/icons/svg/ic_iwish_marker_selected.svg",
-            (_, true) =>
+            (_, IwishState.completed) =>
               "packages/mapness/assets/icons/svg/ic_iwish_marker_completed.svg",
-            (_, false) =>
+            (_, _) =>
               "packages/mapness/assets/icons/svg/ic_iwish_marker_planned.svg",
           },
           width: 30,

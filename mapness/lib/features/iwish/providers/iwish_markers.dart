@@ -22,17 +22,22 @@ Future<List<IwishMarker>> _iwishMarkersNetwork(ref) async {
   return response.markers
       .map(
         (serverMarker) => IwishMarker(
-          id: serverMarker.id,
-          category: switch (serverMarker.category) {
-            pb.IWishCategory.IWISH_CATEGORY_JOY_PARKS => IwishCategory.joyParks,
-            pb.IWishCategory.IWISH_CATEGORY_UNKNOWN => IwishCategory.unknown,
-            _ => IwishCategory.unknown,
-          },
-          location: GeoPointMessage(
-            latitude: serverMarker.location.point.latitude,
-            longitude: serverMarker.location.point.longitude,
-          ),
-        ),
+            id: serverMarker.id,
+            category: switch (serverMarker.category) {
+              pb.IWishCategory.IWISH_CATEGORY_JOY_PARKS =>
+                IwishCategory.joyParks,
+              pb.IWishCategory.IWISH_CATEGORY_UNKNOWN => IwishCategory.unknown,
+              _ => IwishCategory.unknown,
+            },
+            location: GeoPointMessage(
+              latitude: serverMarker.location.point.latitude,
+              longitude: serverMarker.location.point.longitude,
+            ),
+            state: switch (serverMarker.state) {
+              pb.IWishState.IWISH_STATE_PLANNED => IwishState.planned,
+              pb.IWishState.IWISH_STATE_COMPLETED => IwishState.completed,
+              pb.IWishState.IWISH_STATE_UNKNOWN || _ => IwishState.unknown,
+            }),
       )
       .toList();
 }

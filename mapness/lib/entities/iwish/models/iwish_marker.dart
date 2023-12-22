@@ -5,8 +5,10 @@ class IwishMarker {
   final String id;
   final IwishCategory category;
   final GeoPointMessage location;
+  final IwishState state;
 
   IwishMarker({
+    required this.state,
     required this.id,
     required this.category,
     required this.location,
