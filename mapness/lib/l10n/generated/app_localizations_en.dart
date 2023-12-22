@@ -668,7 +668,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sendFeedback => 'Send feedback';
 
   @override
-  String get sendYourWishes => 'Send your wishes';
+  String get sendYourWishes => 'Send feedback';
 
   @override
   String get sending => 'Sending...';
@@ -692,10 +692,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shareYourFeedback => 'Share your feedback';
 
   @override
-  String get shareYourFeelings => 'Share your feelings';
+  String get shareYourFeelings => 'Share your Impression';
 
   @override
-  String get shareYourFeelingsAboutPark => 'Share your feelings about park';
+  String get shareYourFeelingsAboutPark => 'Share your impression about park';
 
   @override
   String get shortest => 'Shortest';
@@ -788,7 +788,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get thursday => 'thursday';
 
   @override
-  String get tinId => 'TIN ID';
+  String get tinId => 'License Number';
 
   @override
   String get to => 'To';
@@ -848,7 +848,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get whatCanTheNavigatorDo => 'What can \nthe navigator do?';
 
   @override
-  String get wishesSent => 'Wishes sent';
+  String get wishesSent => 'Feedback sent';
 
   @override
   String get work => 'Work';
