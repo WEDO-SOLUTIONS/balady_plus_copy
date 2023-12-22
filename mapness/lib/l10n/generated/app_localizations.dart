@@ -1014,7 +1014,7 @@ abstract class AppLocalizations {
   /// No description provided for @nav_profile.
   ///
   /// In ar, this message translates to:
-  /// **'الملف الشخصي '**
+  /// **'الحساب'**
   String get nav_profile;
 
   /// No description provided for @nav_route.
@@ -1080,25 +1080,25 @@ abstract class AppLocalizations {
   /// No description provided for @parkSizeBig.
   ///
   /// In ar, this message translates to:
-  /// **'Big size park'**
+  /// **'حديقة كبيرة'**
   String get parkSizeBig;
 
   /// No description provided for @parkSizeMedium.
   ///
   /// In ar, this message translates to:
-  /// **'Medium size park'**
+  /// **'حديقة متوسطة'**
   String get parkSizeMedium;
 
   /// No description provided for @parkSizeSmall.
   ///
   /// In ar, this message translates to:
-  /// **'Small size park'**
+  /// **'حديقة صغيرة'**
   String get parkSizeSmall;
 
   /// No description provided for @parkSizeUnknown.
   ///
   /// In ar, this message translates to:
-  /// **'Unknown size park'**
+  /// **'غير محدد'**
   String get parkSizeUnknown;
 
   /// No description provided for @parkType.

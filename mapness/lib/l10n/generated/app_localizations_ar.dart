@@ -464,7 +464,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get nav_landing => 'الخدمات';
 
   @override
-  String get nav_profile => 'الملف الشخصي ';
+  String get nav_profile => 'الحساب';
 
   @override
   String get nav_route => 'رحلتي';
@@ -497,16 +497,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get parkOpeningDate => 'تاريخ الإفتتاح';
 
   @override
-  String get parkSizeBig => 'Big size park';
+  String get parkSizeBig => 'حديقة كبيرة';
 
   @override
-  String get parkSizeMedium => 'Medium size park';
+  String get parkSizeMedium => 'حديقة متوسطة';
 
   @override
-  String get parkSizeSmall => 'Small size park';
+  String get parkSizeSmall => 'حديقة صغيرة';
 
   @override
-  String get parkSizeUnknown => 'Unknown size park';
+  String get parkSizeUnknown => 'غير محدد';
 
   @override
   String get parkType => 'النوع';
