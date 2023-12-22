@@ -4,12 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as pb;
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/entities/iwish/models/iwish_feedback_entity.dart';
+import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/iwish/lib/iwish_object_mapper.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'iwish_entity.g.dart';
+
 const mapLayerName = 'iwish-entity-markers';
 const _markerPrefix = 'iwish-marker-';
 
@@ -20,6 +22,7 @@ class _IwishEntity extends _$IwishEntity {
   }
 
   Future<bool> submitFeedback(IwishFeedbackEntity feedback) async {
+    mixpanel?.timeEvent("IwishFeedbackEntity: submitFeedback");
     final dio = await ref.read(dGisNetworkProvider.future);
     final request = pb.IWishFeedbackRequest(
       rating: feedback.mood?.index ?? -1 + 1,
@@ -41,6 +44,7 @@ class _IwishEntity extends _$IwishEntity {
         print(error.toDebugString());
       }
     }
+    mixpanel?.track("IwishFeedbackEntity: submitFeedback");
     return false;
   }
 
@@ -54,7 +58,7 @@ class _IwishEntity extends _$IwishEntity {
     print(response.toProto3Json());
 
     final mapObjectManager =
-    ref.watch(mapObjectManagerProvider(named:mapLayerName).notifier);
+        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
     var point = response.location.point;
     // final cameraController = ref.watch(cameraPositionProvider.notifier);
     // await cameraController.animateTo(

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
@@ -15,7 +16,6 @@ final favouriteRepositoryProvider = _favouriteRepositoryProvider;
 
 @riverpod
 class _FavouriteRepository extends _$FavouriteRepository {
-
   Future<void> delete(FavouriteItem item) async {
     await deleteMany([item]);
   }
@@ -77,6 +77,7 @@ class _FavouriteRepository extends _$FavouriteRepository {
   }
 
   Future<void> addItems(List<FavouriteItem> items) async {
+    mixpanel?.timeEvent("Favorites: addItems");
     final dio = await ref.read(dGisNetworkProvider.future);
     final request = proto.AddFavouriteItemsRequest(items: items.map((e) {
       final FavouriteItemMarkerType itemType;
@@ -102,14 +103,16 @@ class _FavouriteRepository extends _$FavouriteRepository {
     } on DioException catch (e) {
       print(proto.ErrorResponse.fromBuffer(e.response!.data));
     }
+    mixpanel?.timeEvent("Favorites: addItems");
   }
 
   @override
   Future<FavouritesState> build() async {
+    mixpanel?.timeEvent("Favorites: build");
     final dio = await ref.read(dGisNetworkProvider.future);
     final raw = await dio.get('favourites');
     final response = proto.FavouritesResponse.fromBuffer(raw.data);
-
+    mixpanel?.timeEvent("Favorites: build");
     return response.toDomain();
   }
 }

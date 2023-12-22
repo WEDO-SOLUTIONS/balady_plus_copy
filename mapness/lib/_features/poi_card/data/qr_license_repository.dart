@@ -3,6 +3,7 @@ import 'package:mapness/_features/lifestyle_layers/data/common_function.dart';
 import 'package:mapness/_features/poi_card/data/qr_license_datasource.dart';
 import 'package:mapness/_features/poi_card/data/qr_license_service.dart';
 import 'package:mapness/_features/poi_card/domain/model/qr_trade_license.dart';
+import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -17,21 +18,20 @@ class QrLicenseRepository extends _$QrLicenseRepository {
   );
 
   Future<QrLicenseMessage?> getLicenseInfo(String licenseNumber) async {
-
+    mixpanel?.timeEvent("Qr License: getLicenseInfo");
     final env = await ref.read(dgisEnvironmentProvider.future);
     var resultUrl;
     var verifyKey;
     var proxy = env.proxy;
     const licenseDetails = 'qr-services/mobile/license-details';
 
-    if(proxy!=null){
-    const domain = 'https://apiservicesstg.balady.gov.sa/v1';
-    var url = "$domain/$licenseDetails/$licenseNumber";
-    verifyKey = hashRequest(url, "GET");
-    final proxyUrl = "$proxy/$licenseDetails";
-    resultUrl = "$proxyUrl/$licenseNumber";
-    }else{
-
+    if (proxy != null) {
+      const domain = 'https://apiservicesstg.balady.gov.sa/v1';
+      var url = "$domain/$licenseDetails/$licenseNumber";
+      verifyKey = hashRequest(url, "GET");
+      final proxyUrl = "$proxy/$licenseDetails";
+      resultUrl = "$proxyUrl/$licenseNumber";
+    } else {
       var domain = env.url.replaceAll('/urbi-services/', '');
       resultUrl = "$domain/$licenseDetails/$licenseNumber";
     }
@@ -42,6 +42,7 @@ class QrLicenseRepository extends _$QrLicenseRepository {
     );
 
     if (response == null) return null;
+    mixpanel?.track("Qr License: getLicenseInfo");
     return QrLicenseMessage.fromJson(response);
   }
 

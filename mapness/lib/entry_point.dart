@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,8 @@ import 'package:mapness/widgets/map/map_page.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
 import 'app/router.dart';
+
+late Mixpanel? mixpanel;
 
 class MapnessProviderScope extends StatelessWidget {
   const MapnessProviderScope({super.key, required this.child});
@@ -40,7 +43,6 @@ class MapnessEntryPoint extends ConsumerStatefulWidget {
 
 class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   OverlayEntry? _debugOverlay;
-  Mixpanel? mixpanel;
 
   @override
   void initState() {
@@ -58,6 +60,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       Overlay.of(context, rootOverlay: true).insert(_debugOverlay!);
     });
     initMixpanel();
+    mixpanel?.actionLog();
   }
 
   @override
@@ -112,8 +115,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> initMixpanel() async {
-    mixpanel = await Mixpanel.init("2d045d85e25087812e92c62b84d6fbc3",
-        trackAutomaticEvents: true);
+    mixpanel = await Mixpanel.init(
+      "2d045d85e25087812e92c62b84d6fbc3",
+      trackAutomaticEvents: true,
+      optOutTrackingDefault: false,
+    );
+    mixpanel?.setLoggingEnabled(true);
   }
 }
 

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:mapness/_features/weather/data/datasources/web_service_weather.dart';
 import 'package:mapness/_features/weather/domain/entities/weather_params.dart';
+import 'package:mapness/entry_point.dart';
 
 abstract class WeatherRemoteDataSource {
   factory WeatherRemoteDataSource(WebServiceWeather service) =>
@@ -26,6 +27,7 @@ class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
   @override
   Future<Map<String, dynamic>?>? getCurrentWeatherData(
       {required WeatherParams params, required CancelToken cancelToken}) async {
+    mixpanel?.timeEvent("WebServiceWeather: getCurrentWeatherData");
     String weatherAPI = '/v1/current.json?';
     try {
       var map = params.toMap();
@@ -40,12 +42,14 @@ class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
     } catch (e) {
       log("WEATHER API EXCEPTION $e");
     }
+    mixpanel?.track("WebServiceWeather: getCurrentWeatherData");
     return null;
   }
 
   @override
   Future<Map<String, dynamic>?>? getForecastData(
       {required WeatherParams params, required CancelToken cancelToken}) async {
+    mixpanel?.timeEvent("WebServiceWeather: getForecastData");
     String weatherAPI = '/v1/forecast.json?';
     try {
       var map = params.toMap();
@@ -60,6 +64,7 @@ class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
     } catch (e) {
       log("WEATHER API EXCEPTION $e");
     }
+    mixpanel?.track("WebServiceWeather: getForecastData");
     return null;
   }
 }
