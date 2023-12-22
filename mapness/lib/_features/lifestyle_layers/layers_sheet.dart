@@ -32,6 +32,8 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
     var state = ref.watch(layersControlsProvider);
     var lang = ref.watch(appLanguageProvider);
 
+    print("build ${state.selectedType}");
+
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
       initialChildSize: .6,
