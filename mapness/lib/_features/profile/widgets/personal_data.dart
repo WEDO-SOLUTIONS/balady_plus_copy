@@ -21,7 +21,7 @@ class PersonalData extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             PersonalDataRow(
               title: userInfo.getFirstName(),
@@ -115,7 +115,7 @@ class PersonalDataRow extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 16, top: 10, bottom: 12, right: 16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title,
               style: Theme.of(context)

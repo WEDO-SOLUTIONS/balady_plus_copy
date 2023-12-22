@@ -31,56 +31,50 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidget> {
     // var selectedPoint = widget.data as InvestmentSites?;
     // var selectedPoint = widget.data as BuildingComplianceCertificate?;
     final language = ref.watch(appLanguageProvider);
-    return Directionality(
-      textDirection: switch (language) {
-        Language.english => TextDirection.ltr,
-        Language.arabic => TextDirection.rtl,
-      },
-      child: SafeArea(
-        child: Material(
-          color: Colors.transparent,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                if (selectedPoint is WhiteLands?)
-                  WhiteLandMapCard(
-                    municipality: selectedPoint?.MUNNAME,
-                    streetName: selectedPoint?.STREETNAME,
-                    parcelNo: selectedPoint?.PARCELCODE,
-                    stageNo: selectedPoint?.PHASE,
-                    onClose: () => context.pop(),
-                  ),
-                if (selectedPoint is InvestmentSites?)
-                  OpprtunityMapCard(
-                    description: selectedPoint?.description,
-                    type: selectedPoint?.type ?? '',
-                    bidEndDate: selectedPoint?.BIDENDDATE,
-                    dailyCost: '${selectedPoint?.DAILYLEASECOST}',
-                    documentValue: '${selectedPoint?.DOCUMENTVALUE}',
-                    id: selectedPoint?.ID,
-                    opprtunityNumber: selectedPoint?.OPPORTUNITYNUMBER,
-                    subMunicipality: selectedPoint?.SUBMUNICIPALITY_ID,
-                    mainActivcity: selectedPoint?.MAIN_ACTIVITY_NAME,
+    return SafeArea(
+      child: Material(
+        color: Colors.transparent,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              if (selectedPoint is WhiteLands?)
+                WhiteLandMapCard(
+                  municipality: selectedPoint?.MUNNAME,
+                  streetName: selectedPoint?.STREETNAME,
+                  parcelNo: selectedPoint?.PARCELCODE,
+                  stageNo: selectedPoint?.PHASE,
+                  onClose: () => context.pop(),
+                ),
+              if (selectedPoint is InvestmentSites?)
+                OpprtunityMapCard(
+                  description: selectedPoint?.description,
+                  type: selectedPoint?.type ?? '',
+                  bidEndDate: selectedPoint?.BIDENDDATE,
+                  dailyCost: '${selectedPoint?.DAILYLEASECOST}',
+                  documentValue: '${selectedPoint?.DOCUMENTVALUE}',
+                  id: selectedPoint?.ID,
+                  opprtunityNumber: selectedPoint?.OPPORTUNITYNUMBER,
+                  subMunicipality: selectedPoint?.SUBMUNICIPALITY_ID,
+                  mainActivcity: selectedPoint?.MAIN_ACTIVITY_NAME,
 
-                    ///???
-                    // location: selectedPoint?.,
-                    //   area: selectedPoint?.,
-                    // isSeasonal: selectedPoint?.,
-                    // isFree: selectedPoint?.,
-                    onClose: () => context.pop(),
-                  ),
-                if (selectedPoint is BuildingComplianceCertificate?)
-                  ComplainceMapCard(
-                    amana: selectedPoint?.AMANANAME,
-                    targetBuildingType: selectedPoint?.TARGETBUILDINGTYPE,
-                    streetName: selectedPoint?.STREETNAME,
-                    stageNo: selectedPoint?.STAGENO,
-                    onClose: () => context.pop(),
-                  ),
-              ],
-            ),
+                  ///???
+                  // location: selectedPoint?.,
+                  //   area: selectedPoint?.,
+                  // isSeasonal: selectedPoint?.,
+                  // isFree: selectedPoint?.,
+                  onClose: () => context.pop(),
+                ),
+              if (selectedPoint is BuildingComplianceCertificate?)
+                ComplainceMapCard(
+                  amana: selectedPoint?.AMANANAME,
+                  targetBuildingType: selectedPoint?.TARGETBUILDINGTYPE,
+                  streetName: selectedPoint?.STREETNAME,
+                  stageNo: selectedPoint?.STAGENO,
+                  onClose: () => context.pop(),
+                ),
+            ],
           ),
         ),
       ),

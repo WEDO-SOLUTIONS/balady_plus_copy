@@ -3,6 +3,7 @@ import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/debug_overlay/debug_overlay.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
@@ -63,12 +64,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   Widget build(BuildContext context) {
     final goRouter = ref.watch(goRouterProvider);
     final language = ref.watch(appLanguageProvider);
+    final direction = ref.watch(uiDirectionProvider);
 
     return Directionality(
-      textDirection: switch (language) {
-        Language.english => TextDirection.ltr,
-        Language.arabic => TextDirection.rtl,
-      },
+      textDirection: direction,
       child: Stack(
         children: [
           SizedBox(

@@ -18,18 +18,15 @@ class LifestyleRepository extends _$LifestyleRepository {
     ),
   );
 
-  Future<List<InvestmentSites>?> getEsriPoints({
-    required MapRequestParams params,
-  }) async {
-    try{
+  Future<List<InvestmentSites>?> getEsriPoints(
+      {required MapRequestParams params}) async {
+    try {
       var response = await dataSource.getEsriPoints(params);
       var result = investmentSitesFromJson(response as List<dynamic>);
       return result;
-    }
-    catch(e){
+    } catch (e) {
       return null;
     }
-
   }
 
   Future<List<BuildingComplianceCertificate>?> buildingComplianceCertificate(
@@ -44,8 +41,8 @@ class LifestyleRepository extends _$LifestyleRepository {
   }
 
   Future<List<WhiteLands>?> getWhiteLands(MapRequestParams params) async {
-    var response = await dataSource.getEsriPoints(params);
     try {
+      var response = await dataSource.getEsriPoints(params);
       return whiteLandsFromJson(response ?? []);
     } catch (e) {
       debugPrint('$e');

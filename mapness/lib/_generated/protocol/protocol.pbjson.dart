@@ -109,6 +109,24 @@ final $typed_data.Uint8List iWishStateDescriptor = $convert.base64Decode(
     'CgpJV2lzaFN0YXRlEhcKE0lXSVNIX1NUQVRFX1VOS05PV04QABIXChNJV0lTSF9TVEFURV9QTE'
     'FOTkVEEAESGQoVSVdJU0hfU1RBVEVfQ09NUExFVEVEEAI=');
 
+@$core.Deprecated('Use iWishSizeDescriptor instead')
+const IWishSize$json = {
+  '1': 'IWishSize',
+  '2': [
+    {'1': 'IWISH_SIZE_UNKNOWN', '2': 0},
+    {'1': 'IWISH_SIZE_NONE', '2': 1},
+    {'1': 'IWISH_SIZE_SMALL', '2': 2},
+    {'1': 'IWISH_SIZE_MEDIUM', '2': 3},
+    {'1': 'IWISH_SIZE_LARGE', '2': 4},
+  ],
+};
+
+/// Descriptor for `IWishSize`. Decode as a `google.protobuf.EnumDescriptorProto`.
+final $typed_data.Uint8List iWishSizeDescriptor = $convert.base64Decode(
+    'CglJV2lzaFNpemUSFgoSSVdJU0hfU0laRV9VTktOT1dOEAASEwoPSVdJU0hfU0laRV9OT05FEA'
+    'ESFAoQSVdJU0hfU0laRV9TTUFMTBACEhUKEUlXSVNIX1NJWkVfTUVESVVNEAMSFAoQSVdJU0hf'
+    'U0laRV9MQVJHRRAE');
+
 @$core.Deprecated('Use iWishCategoryDescriptor instead')
 const IWishCategory$json = {
   '1': 'IWishCategory',
@@ -613,6 +631,7 @@ const IWishObject$json = {
     {'1': 'selected_variant_id', '3': 9, '4': 1, '5': 5, '9': 0, '10': 'selectedVariantId', '17': true},
     {'1': 'feedback_sent', '3': 10, '4': 1, '5': 8, '10': 'feedbackSent'},
     {'1': 'metadata', '3': 11, '4': 1, '5': 11, '6': '.balady.protocol.IWishObject.Metadata', '10': 'metadata'},
+    {'1': 'size', '3': 12, '4': 1, '5': 14, '6': '.balady.protocol.IWishSize', '10': 'size'},
   ],
   '3': [IWishObject_Location$json, IWishObject_Variant$json, IWishObject_Voted$json, IWishObject_Photo$json, IWishObject_Metadata$json],
   '8': [
@@ -693,20 +712,21 @@ final $typed_data.Uint8List iWishObjectDescriptor = $convert.base64Decode(
     'KAsyJC5iYWxhZHkucHJvdG9jb2wuSVdpc2hPYmplY3QuVmFyaWFudFIIdmFyaWFudHMSMwoTc2'
     'VsZWN0ZWRfdmFyaWFudF9pZBgJIAEoBUgAUhFzZWxlY3RlZFZhcmlhbnRJZIgBARIjCg1mZWVk'
     'YmFja19zZW50GAogASgIUgxmZWVkYmFja1NlbnQSQQoIbWV0YWRhdGEYCyABKAsyJS5iYWxhZH'
-    'kucHJvdG9jb2wuSVdpc2hPYmplY3QuTWV0YWRhdGFSCG1ldGFkYXRhGjgKCExvY2F0aW9uEiwK'
-    'BXBvaW50GAEgASgLMhYuYmFsYWR5LnByb3RvY29sLlBvaW50UgVwb2ludBrsAQoHVmFyaWFudB'
-    'IOCgJpZBgBIAEoBVICaWQSFAoFdGl0bGUYAiABKAlSBXRpdGxlEkYKB3ByZXZpZXcYAyABKAsy'
-    'LC5iYWxhZHkucHJvdG9jb2wuSVdpc2hPYmplY3QuVmFyaWFudC5QcmV2aWV3UgdwcmV2aWV3Ej'
-    'oKBnBob3RvcxgEIAMoCzIiLmJhbGFkeS5wcm90b2NvbC5JV2lzaE9iamVjdC5QaG90b1IGcGhv'
-    'dG9zGjcKB1ByZXZpZXcSLAoFaW1hZ2UYASABKAsyFi5iYWxhZHkucHJvdG9jb2wuSW1hZ2VSBW'
-    'ltYWdlGlYKBVZvdGVkEiMKDXZhcmlhbnRfaW5kZXgYASABKAVSDHZhcmlhbnRJbmRleBIoChBp'
-    'c19mZWVkYmFja19zZW50GAIgASgIUg5pc0ZlZWRiYWNrU2VudBo1CgVQaG90bxIsCgVpbWFnZR'
-    'gBIAEoCzIWLmJhbGFkeS5wcm90b2NvbC5JbWFnZVIFaW1hZ2Ua7wEKCE1ldGFkYXRhEiAKCWFy'
-    'ZWFfbmFtZRgBIAEoCUgAUghhcmVhTmFtZYgBARIgCgl0eXBlX25hbWUYAiABKAlIAVIIdHlwZU'
-    '5hbWWIAQESIAoJYXJlYV9zaXplGAMgASgFSAJSCGFyZWFTaXpliAEBEkIKDG9wZW5pbmdfZGF0'
-    'ZRgEIAEoCzIaLmJhbGFkeS5wcm90b2NvbC5UaW1lc3RhbXBIA1ILb3BlbmluZ0RhdGWIAQFCDA'
-    'oKX2FyZWFfbmFtZUIMCgpfdHlwZV9uYW1lQgwKCl9hcmVhX3NpemVCDwoNX29wZW5pbmdfZGF0'
-    'ZUIWChRfc2VsZWN0ZWRfdmFyaWFudF9pZA==');
+    'kucHJvdG9jb2wuSVdpc2hPYmplY3QuTWV0YWRhdGFSCG1ldGFkYXRhEi4KBHNpemUYDCABKA4y'
+    'Gi5iYWxhZHkucHJvdG9jb2wuSVdpc2hTaXplUgRzaXplGjgKCExvY2F0aW9uEiwKBXBvaW50GA'
+    'EgASgLMhYuYmFsYWR5LnByb3RvY29sLlBvaW50UgVwb2ludBrsAQoHVmFyaWFudBIOCgJpZBgB'
+    'IAEoBVICaWQSFAoFdGl0bGUYAiABKAlSBXRpdGxlEkYKB3ByZXZpZXcYAyABKAsyLC5iYWxhZH'
+    'kucHJvdG9jb2wuSVdpc2hPYmplY3QuVmFyaWFudC5QcmV2aWV3UgdwcmV2aWV3EjoKBnBob3Rv'
+    'cxgEIAMoCzIiLmJhbGFkeS5wcm90b2NvbC5JV2lzaE9iamVjdC5QaG90b1IGcGhvdG9zGjcKB1'
+    'ByZXZpZXcSLAoFaW1hZ2UYASABKAsyFi5iYWxhZHkucHJvdG9jb2wuSW1hZ2VSBWltYWdlGlYK'
+    'BVZvdGVkEiMKDXZhcmlhbnRfaW5kZXgYASABKAVSDHZhcmlhbnRJbmRleBIoChBpc19mZWVkYm'
+    'Fja19zZW50GAIgASgIUg5pc0ZlZWRiYWNrU2VudBo1CgVQaG90bxIsCgVpbWFnZRgBIAEoCzIW'
+    'LmJhbGFkeS5wcm90b2NvbC5JbWFnZVIFaW1hZ2Ua7wEKCE1ldGFkYXRhEiAKCWFyZWFfbmFtZR'
+    'gBIAEoCUgAUghhcmVhTmFtZYgBARIgCgl0eXBlX25hbWUYAiABKAlIAVIIdHlwZU5hbWWIAQES'
+    'IAoJYXJlYV9zaXplGAMgASgFSAJSCGFyZWFTaXpliAEBEkIKDG9wZW5pbmdfZGF0ZRgEIAEoCz'
+    'IaLmJhbGFkeS5wcm90b2NvbC5UaW1lc3RhbXBIA1ILb3BlbmluZ0RhdGWIAQFCDAoKX2FyZWFf'
+    'bmFtZUIMCgpfdHlwZV9uYW1lQgwKCl9hcmVhX3NpemVCDwoNX29wZW5pbmdfZGF0ZUIWChRfc2'
+    'VsZWN0ZWRfdmFyaWFudF9pZA==');
 
 @$core.Deprecated('Use iWishMarkersResponseDescriptor instead')
 const IWishMarkersResponse$json = {

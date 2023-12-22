@@ -68,97 +68,101 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
     final controlsHidden = (controlsState is! MapControlsStateIdle &&
         currentRoute == PoiMapRoute.path);
 
-    return IgnorePointer(
-      ignoring: controlsHidden,
-      child: SafeArea(
-        bottom: false,
-        child: AnimatedOpacity(
-          opacity: controlsHidden ? 0 : 1,
-          duration: const Duration(milliseconds: 250),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 12,
-                    top: 12,
-                    right: 12,
-                    bottom: 16,
-                  ),
-                  child: Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          WeatherControl(
-                              onTap: () => const WeatherRoute().push(context)),
-                          const SizedBox(height: 8),
-                          const HappinesControl(),
-                          const Spacer(),
-                          const IndoorControl(),
-                          const Spacer(),
-                          // MapButton(
-                          //   child: Image.asset(
-                          //     "assets/images/beta_icon.png",
-                          //     height: 44,
-                          //   ),
-                          //   onTap: () {
-                          //     Stories.showOnboarding(
-                          //         context, StoryTypes.route, 'route');
-                          //   },
-                          // ),
-                          // const SizedBox(height: 8),
-                          MapButton(
-                            child: SvgPicture.asset(
-                              "assets/icons/svg/ic_controls_qibla.svg",
-                              semanticsLabel: 'MinApps Screen',
-                              package: "mapness",
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: IgnorePointer(
+        ignoring: controlsHidden,
+        child: SafeArea(
+          bottom: false,
+          child: AnimatedOpacity(
+            opacity: controlsHidden ? 0 : 1,
+            duration: const Duration(milliseconds: 250),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 12,
+                      top: 12,
+                      right: 12,
+                      bottom: 16,
+                    ),
+                    child: Row(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            WeatherControl(
+                                onTap: () =>
+                                    const WeatherRoute().push(context)),
+                            const SizedBox(height: 8),
+                            const HappinesControl(),
+                            const Spacer(),
+                            const IndoorControl(),
+                            const Spacer(),
+                            // MapButton(
+                            //   child: Image.asset(
+                            //     "assets/images/beta_icon.png",
+                            //     height: 44,
+                            //   ),
+                            //   onTap: () {
+                            //     Stories.showOnboarding(
+                            //         context, StoryTypes.route, 'route');
+                            //   },
+                            // ),
+                            // const SizedBox(height: 8),
+                            MapButton(
+                              child: SvgPicture.asset(
+                                "assets/icons/svg/ic_controls_qibla.svg",
+                                semanticsLabel: 'MinApps Screen',
+                                package: "mapness",
+                              ),
+                              onTap: () {
+                                const KiblahRoute().pushReplacement(context);
+                              },
                             ),
-                            onTap: () {
-                              const KiblahRoute().pushReplacement(context);
-                            },
-                          ),
-                        ],
-                      ),
-                      const Spacer(),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const LayersControl(),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Consumer(
-                            builder: (context, ref, _) {
-                              final navi = ref.watch(appFeaturesProvider);
-                              return Visibility(
-                                visible: navi.naviEnabled,
-                                replacement: const SizedBox.square(
-                                  dimension: 28,
-                                ),
-                                child: const TrafficControl(),
-                              );
-                            },
-                          ),
-                          const Spacer(),
-                          const ZoomControl(),
-                          const Spacer(),
-                          const CompassControl(),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          const FollowControl(),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                        const Spacer(),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const LayersControl(),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Consumer(
+                              builder: (context, ref, _) {
+                                final navi = ref.watch(appFeaturesProvider);
+                                return Visibility(
+                                  visible: navi.naviEnabled,
+                                  replacement: const SizedBox.square(
+                                    dimension: 28,
+                                  ),
+                                  child: const TrafficControl(),
+                                );
+                              },
+                            ),
+                            const Spacer(),
+                            const ZoomControl(),
+                            const Spacer(),
+                            const CompassControl(),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            const FollowControl(),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: bottomExtent,
-              ),
-            ],
+                SizedBox(
+                  height: bottomExtent,
+                ),
+              ],
+            ),
           ),
         ),
       ),

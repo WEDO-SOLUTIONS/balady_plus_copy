@@ -245,6 +245,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get focusOnTheRoad => 'Focus on the road';
 
   @override
+  String get friday => 'friday';
+
+  @override
   String get from => 'From';
 
   @override
@@ -338,7 +341,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageTitle => 'English';
 
   @override
-  String get lastName => 'Last name';
+  String get lastName => 'Contact Information';
 
   @override
   String get layersOnTheMap => 'Layers on the map';
@@ -407,6 +410,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get minutes => 'minutes';
 
   @override
+  String get monday => 'monday';
+
+  @override
   String get mosques => 'Mosques';
 
   @override
@@ -459,6 +465,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get parkOpeningDate => 'Opening date';
+
+  @override
+  String get parkSizeBig => 'Big size park';
+
+  @override
+  String get parkSizeMedium => 'Medium size park';
+
+  @override
+  String get parkSizeSmall => 'Small size park';
+
+  @override
+  String get parkSizeUnknown => 'Unknown size park';
 
   @override
   String get parkType => 'Type';
@@ -596,6 +614,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get salons => 'Salons';
 
   @override
+  String get saturday => 'saturday';
+
+  @override
   String get schools => 'Schools';
 
   @override
@@ -716,6 +737,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get streets => 'Streets';
 
   @override
+  String get sunday => 'sunday';
+
+  @override
   String get tellUsWhatYouWant => 'Tell us what you want...';
 
   @override
@@ -729,6 +753,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get theTripTook => 'The trip took';
+
+  @override
+  String get thursday => 'thursday';
 
   @override
   String get tinId => 'TIN ID';
@@ -747,6 +774,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tryAgain => 'Try again';
+
+  @override
+  String get tuesday => 'tuesday';
 
   @override
   String get twentyFourSeven => '24/7';
@@ -773,10 +803,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get watchMore => 'Watch more';
 
   @override
-  String get weAreHappyToConnectYouWithBaladyTeam => 'We are happy to connect you with Balady team, through the following communication channels';
+  String get weAreHappyToConnectYouWithBaladyTeam => 'Balady portal was developed in cooperation with various municipal sector entities to be the national portal that supports the municipal community.\nAt the current stage, this portal includes three main responsibilities:\n\n- Interactive services that help enhance the concept of community partnership to improve the quality of services provided to beneficiaries.\n\n- Electronic services that help submit electronic applications to obtain the most frequently used licenses.\n\n- Information services that help beneficiaries make relevant decisions, which contributes to improving the level of satisfaction with municipal sector entities.';
 
   @override
   String get weCouldntFindAnythingTryChangingYourRequest => 'We couldn\'t find anything. Try changing your request';
+
+  @override
+  String get wednesday => 'wednesday';
 
   @override
   String get weekend => 'Weekend';

@@ -39,7 +39,7 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
     });
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: Directionality.of(context),
       child: Stack(
         fit: StackFit.passthrough,
         children: [

@@ -199,7 +199,7 @@ class _PoiCardFooterState extends ConsumerState<PoiCardFooter> {
 
     final childrenRtl = (hasContacts == false && hasEntrances == false)
         ? [
-            favItem(flex: 2),
+            // favItem(flex: 2),
             // shareItem(flex: 2),
             carItem(flex: 2),
           ]
@@ -207,7 +207,7 @@ class _PoiCardFooterState extends ConsumerState<PoiCardFooter> {
             // shareItem(flex: 2),
             if (hasEntrances) entranceItem(flex: 2),
             if (hasContacts) phoneItem(flex: 2),
-            favItem(flex: 2),
+            // favItem(flex: 2),
             carItem(flex: carIconFlex),
           ];
 
@@ -220,7 +220,6 @@ class _PoiCardFooterState extends ConsumerState<PoiCardFooter> {
         child: SizedBox(
           height: footerHeight,
           child: Row(
-            textDirection: TextDirection.ltr,
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
             children: childrenRtl,

@@ -31,7 +31,7 @@ class ExpandableCell extends StatelessWidget {
         titleBuilder:
             (animationValue, easeInValue, isExpanded, toggleFunction) {
           return Material(
-            color: Color(0xFFF5F7FA),
+            color: const Color(0xFFF5F7FA),
             borderRadius: BorderRadius.only(
               topLeft: const Radius.circular(8),
               topRight: const Radius.circular(8),
@@ -53,34 +53,19 @@ class ExpandableCell extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Transform.rotate(
-                      angle: pi * animationValue,
-                      child: SvgPicture.asset(
-                        "assets/icons/svg/ic_chevron_down.svg",
-                        height: 24,
-                        width: 24,
-                        package: PackageConfig.packageName,
-                      ),
+                    SvgPicture.asset(
+                      icon,
+                      height: 24,
+                      width: 24,
+                      package: PackageConfig.packageName,
                     ),
                     const SizedBox(
-                      width: 2,
+                      width: 12,
                     ),
-                    if (count != null)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 2.0),
-                        child: Text(
-                          "$count",
-                          style: Theme.of(context)
-                              .extension<ThemeTextStyles>()!
-                              .textM
-                              .copyWith(color: const Color(0xFF1E2A36)),
-                        ),
-                      ),
-                    const Spacer(),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 2.0),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             title,
@@ -105,14 +90,29 @@ class ExpandableCell extends StatelessWidget {
                         ],
                       ),
                     ),
+                    const Spacer(),
+                    if (count != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 2.0),
+                        child: Text(
+                          "$count",
+                          style: Theme.of(context)
+                              .extension<ThemeTextStyles>()!
+                              .textM
+                              .copyWith(color: const Color(0xFF1E2A36)),
+                        ),
+                      ),
                     const SizedBox(
-                      width: 12,
+                      width: 2,
                     ),
-                    SvgPicture.asset(
-                      icon,
-                      height: 24,
-                      width: 24,
-                      package: PackageConfig.packageName,
+                    Transform.rotate(
+                      angle: pi * animationValue,
+                      child: SvgPicture.asset(
+                        "assets/icons/svg/ic_chevron_down.svg",
+                        height: 24,
+                        width: 24,
+                        package: PackageConfig.packageName,
+                      ),
                     ),
                   ],
                 ),

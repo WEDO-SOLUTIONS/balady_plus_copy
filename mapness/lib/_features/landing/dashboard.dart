@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/features/_shared_feature_/balady_features/balady_exports.dart';
 import 'package:flutter/material.dart' hide SearchBar, ScrollPosition;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/landing/widgets/compliance_card.dart';
@@ -11,7 +12,6 @@ import 'package:mapness/_features/landing/widgets/snap_and_send_card.dart';
 import 'package:mapness/_features/stories/stories_widget.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/providers/app_language.dart';
 
 import 'providers/interesting_places.dart';
 import 'widgets/places_horizontal_list.dart';
@@ -110,7 +110,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
       }
     });
 
-    final language = ref.watch(appLanguageProvider);
+    final direction = ref.watch(uiDirectionProvider);
 
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
@@ -121,10 +121,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
       snapSizes: [_headerExtent, .75, .9],
       builder: (BuildContext context, ScrollController scrollController) {
         return Directionality(
-          textDirection: switch (language) {
-            Language.english => TextDirection.ltr,
-            Language.arabic => TextDirection.rtl,
-          },
+          textDirection: direction,
           child: ClipRRect(
             borderRadius: const BorderRadius.only(
               topRight: Radius.circular(16.0),

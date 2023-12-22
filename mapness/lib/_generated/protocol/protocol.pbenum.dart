@@ -121,6 +121,27 @@ class IWishState extends $pb.ProtobufEnum {
   const IWishState._($core.int v, $core.String n) : super(v, n);
 }
 
+class IWishSize extends $pb.ProtobufEnum {
+  static const IWishSize IWISH_SIZE_UNKNOWN = IWishSize._(0, _omitEnumNames ? '' : 'IWISH_SIZE_UNKNOWN');
+  static const IWishSize IWISH_SIZE_NONE = IWishSize._(1, _omitEnumNames ? '' : 'IWISH_SIZE_NONE');
+  static const IWishSize IWISH_SIZE_SMALL = IWishSize._(2, _omitEnumNames ? '' : 'IWISH_SIZE_SMALL');
+  static const IWishSize IWISH_SIZE_MEDIUM = IWishSize._(3, _omitEnumNames ? '' : 'IWISH_SIZE_MEDIUM');
+  static const IWishSize IWISH_SIZE_LARGE = IWishSize._(4, _omitEnumNames ? '' : 'IWISH_SIZE_LARGE');
+
+  static const $core.List<IWishSize> values = <IWishSize> [
+    IWISH_SIZE_UNKNOWN,
+    IWISH_SIZE_NONE,
+    IWISH_SIZE_SMALL,
+    IWISH_SIZE_MEDIUM,
+    IWISH_SIZE_LARGE,
+  ];
+
+  static final $core.Map<$core.int, IWishSize> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static IWishSize? valueOf($core.int value) => _byValue[value];
+
+  const IWishSize._($core.int v, $core.String n) : super(v, n);
+}
+
 class IWishCategory extends $pb.ProtobufEnum {
   static const IWishCategory IWISH_CATEGORY_UNKNOWN = IWishCategory._(0, _omitEnumNames ? '' : 'IWISH_CATEGORY_UNKNOWN');
   static const IWishCategory IWISH_CATEGORY_JOY_PARKS = IWishCategory._(1, _omitEnumNames ? '' : 'IWISH_CATEGORY_JOY_PARKS');

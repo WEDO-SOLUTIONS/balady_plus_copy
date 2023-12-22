@@ -88,6 +88,9 @@ jobs:
           java-version: "17.x"
           cache: "gradle"
         id: java
+      - name: Add Android ABI filter
+        run: |
+          git apply .github/workflows/abi_filter.patch
       - name: 🤖🔨 Development setup dgis_map_platform_interface
         run: |
           cd urbi_map/dgis_map_platform_interface

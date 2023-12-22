@@ -4,7 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
 class LayersSheet extends ConsumerStatefulWidget {
@@ -27,6 +30,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
   Widget build(BuildContext context) {
     var watch = ref.watch(layersControlsProvider.notifier);
     var state = ref.watch(layersControlsProvider);
+    var lang = ref.watch(appLanguageProvider);
 
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
@@ -37,7 +41,10 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
       snap: true,
       builder: (BuildContext context, ScrollController scrollController) {
         return Directionality(
-          textDirection: TextDirection.rtl,
+          textDirection: switch (lang) {
+            Language.english => TextDirection.ltr,
+            Language.arabic => TextDirection.rtl,
+          },
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: const BoxDecoration(
@@ -102,9 +109,9 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                         return FilterRow(
                           value: value,
                           onTap: () {
-                            watch.handleTap(ref, value);
+                            watch.handleTap(value);
                           },
-                          isSelected: state.selectedType.contains(value),
+                          isSelected: state.selectedType == (value),
                         );
                       },
                     ),
@@ -161,7 +168,7 @@ class FilterRow extends StatelessWidget {
                 width: 14,
               ),
               Text(
-                value.title(context.l10n),
+                value.titleLocale(context.l10n),
                 style: Theme.of(context).extension<ThemeTextStyles>()!.textM,
               ),
             ],

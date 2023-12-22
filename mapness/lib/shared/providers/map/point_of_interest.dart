@@ -24,14 +24,16 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   DgisObjectIdMessage objectId,
 ) async {
   final cameraController = ref.watch(cameraPositionProvider.notifier);
+  final cameraData = ref.read(cameraPositionProvider);
   final highlightController = ref.watch(highlightProvider.notifier);
   final dgisController = ref.watch(dgisControllerProvider);
   final result = await dgisController.value?.searchByObjectId(objectId);
   final mapObjectManager =
       ref.watch(mapObjectManagerProvider(named: poiMapLayer).notifier);
 
+  final cameraZoom = cameraData?.zoom;
   print(
-    'coordinates: ${result?.markerPosition?.latitude} ${result?.markerPosition?.longitude}',
+    'coordinates: ${result?.markerPosition?.latitude} ${result?.markerPosition?.longitude} zoom: $cameraZoom',
   );
 
   await highlightController.addHighlight(objectId);
@@ -46,7 +48,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
         latitude: result.markerPosition!.latitude,
         longitude: result.markerPosition!.longitude,
       ),
-      zoom: 17,
+      zoom: cameraZoom ?? 17,
       tilt: 0,
       bearing: 0,
     ),

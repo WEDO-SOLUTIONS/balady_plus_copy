@@ -201,7 +201,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
             .select((value) => value is! SearchStateResults)) ||
         closing;
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: Directionality.of(context),
       child: DraggableScrollableSheet(
         controller: _controller,
         initialChildSize: closable ? 0 : _headerExtent,

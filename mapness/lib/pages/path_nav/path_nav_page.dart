@@ -62,7 +62,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: Directionality.of(context),
       child: Ink(
         width: MediaQuery.of(context).size.width,
         child: Stack(

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/profile/widgets/personal_data.dart';
 import 'package:mapness/_features/profile/widgets/profile_image_widget.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
@@ -16,11 +17,12 @@ class ProfileInfoPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userData = ref.watch(authProvider).requireValue!;
+    final direction = ref.watch(uiDirectionProvider);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Directionality(
-        textDirection: TextDirection.ltr,
+        textDirection: Directionality.of(context),
         child: Material(
           color: Colors.white,
           child: ListView(
@@ -34,18 +36,6 @@ class ProfileInfoPage extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Row(
                     children: [
-                      const SizedBox(
-                        width: 40,
-                      ),
-                      const Spacer(),
-                      Text(
-                        context.l10n.profileSettings,
-                        style: Theme.of(context)
-                            .extension<ThemeTextStyles>()!
-                            .accentM
-                            .copyWith(color: const Color(0xFF1E2A36)),
-                      ),
-                      const Spacer(),
                       SizedBox(
                         height: 40,
                         width: 40,
@@ -60,7 +50,9 @@ class ProfileInfoPage extends ConsumerWidget {
                             child: Padding(
                               padding: const EdgeInsets.all(8),
                               child: SvgPicture.asset(
-                                'assets/icons/svg/ic_chevron_right.svg',
+                                direction == TextDirection.ltr
+                                    ? 'assets/icons/svg/ic_chevron_left.svg'
+                                    : 'assets/icons/svg/ic_chevron_right.svg',
                                 height: 24,
                                 width: 24,
                                 package: PackageConfig.packageName,
@@ -72,7 +64,19 @@ class ProfileInfoPage extends ConsumerWidget {
                             ),
                           ),
                         ),
-                      )
+                      ),
+                      const Spacer(),
+                      Text(
+                        context.l10n.profileSettings,
+                        style: Theme.of(context)
+                            .extension<ThemeTextStyles>()!
+                            .accentM
+                            .copyWith(color: const Color(0xFF1E2A36)),
+                      ),
+                      const Spacer(),
+                      const SizedBox(
+                        width: 40,
+                      ),
                     ],
                   ),
                 ),
@@ -121,7 +125,6 @@ class ProfileInfoPage extends ConsumerWidget {
                   child: InkWell(
                     onTap: () async {
                       await ref.read(authProvider.notifier).logOut();
-
                       context.pop();
                     },
                     borderRadius: BorderRadius.circular(8),

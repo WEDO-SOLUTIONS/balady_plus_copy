@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/profile/widgets/dark_mode_cell.dart';
 import 'package:mapness/_features/profile/widgets/expandable_cell.dart';
 import 'package:mapness/shared/config/package_config.dart';
@@ -12,15 +13,15 @@ import 'package:mapness/shared/providers/app_language.dart';
 
 import '../widgets/language_picker.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Directionality(
-        textDirection: TextDirection.ltr,
+        textDirection: ref.watch(uiDirectionProvider),
         child: Material(
           color: Colors.white,
           child: ListView(
@@ -34,18 +35,6 @@ class SettingsPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Row(
                     children: [
-                      const SizedBox(
-                        width: 40,
-                      ),
-                      const Spacer(),
-                      Text(
-                        context.l10n.settings,
-                        style: Theme.of(context)
-                            .extension<ThemeTextStyles>()!
-                            .accentM
-                            .copyWith(color: const Color(0xFF1E2A36)),
-                      ),
-                      const Spacer(),
                       SizedBox(
                         height: 40,
                         width: 40,
@@ -60,7 +49,10 @@ class SettingsPage extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.all(8),
                               child: SvgPicture.asset(
-                                'assets/icons/svg/ic_chevron_right.svg',
+                                ref.watch(uiDirectionProvider) ==
+                                        TextDirection.ltr
+                                    ? 'assets/icons/svg/ic_chevron_left.svg'
+                                    : 'assets/icons/svg/ic_chevron_right.svg',
                                 height: 24,
                                 width: 24,
                                 package: PackageConfig.packageName,
@@ -72,7 +64,19 @@ class SettingsPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                      )
+                      ),
+                      const Spacer(),
+                      Text(
+                        context.l10n.settings,
+                        style: Theme.of(context)
+                            .extension<ThemeTextStyles>()!
+                            .accentM
+                            .copyWith(color: const Color(0xFF1E2A36)),
+                      ),
+                      const Spacer(),
+                      const SizedBox(
+                        width: 40,
+                      ),
                     ],
                   ),
                 ),
@@ -100,7 +104,6 @@ class SettingsPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
                   children: [
-                    const Spacer(),
                     Text(
                       context.l10n.chooseTheLanguageOfAll,
                       style: Theme.of(context)
@@ -123,7 +126,6 @@ class SettingsPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
                   children: [
-                    const Spacer(),
                     Text(
                       context.l10n.changeTheColorSchemeOfAnApp,
                       style: Theme.of(context)
