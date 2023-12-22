@@ -1,3 +1,5 @@
+import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -56,8 +58,13 @@ class Stories {
       handleDeeplink: (url) {
         if (url.startsWith('/')) {
           router.push(url);
+        } else if (url.startsWith('https://www.joodeskan.sa/')) {
+          NavigationService.navigatorKey.currentState?.pushNamed(
+            RouteName.jodDonationPage,
+          );
+        } else {
+          launchUrl(Uri.parse(url));
         }
-        launchUrl(Uri.parse(url));
       },
     );
 
