@@ -16,7 +16,7 @@ import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
 import 'app/router.dart';
 
-late Mixpanel? mixpanel;
+Mixpanel? mixpanel;
 
 class MapnessProviderScope extends StatelessWidget {
   const MapnessProviderScope({super.key, required this.child});
@@ -60,7 +60,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       Overlay.of(context, rootOverlay: true).insert(_debugOverlay!);
     });
     initMixpanel();
-    mixpanel?.actionLog();
   }
 
   @override
