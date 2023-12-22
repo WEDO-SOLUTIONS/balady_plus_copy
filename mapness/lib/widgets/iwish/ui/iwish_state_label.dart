@@ -14,19 +14,21 @@ class IwishStateLabel extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: switch (state) {
-            IwishState.unknown => Colors.grey,
-            IwishState.planned => const Color(0xFFFFB814),
-            IwishState.completed => const Color(0xFF52B374),
-          }),
+        borderRadius: BorderRadius.circular(4),
+        // color:
+      ),
       child: Text(
         switch (state) {
           IwishState.unknown => context.l10n.unknown,
           IwishState.planned => context.l10n.planned,
           IwishState.completed => context.l10n.completed,
         },
-        style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: Colors.white),
+        style: Theme.of(context).extension<ThemeTextStyles>()!.accentS.copyWith(
+                color: switch (state) {
+              IwishState.unknown => Colors.grey,
+              IwishState.planned => const Color(0xFFFFB814),
+              IwishState.completed => const Color(0xFF52B374),
+            }),
       ),
     );
   }

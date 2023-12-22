@@ -67,7 +67,10 @@ class IwishFeedbackTags extends StatelessWidget {
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
                               .textS
-                              .copyWith(color: const Color(0xFF1D2A36)),
+                              .copyWith(
+                                color: const Color(0xFF1D2A36),
+                                fontSize: 10,
+                              ),
                         ),
                       ],
                     ),
