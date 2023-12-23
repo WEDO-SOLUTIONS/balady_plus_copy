@@ -26,7 +26,7 @@ class LayersState {
 }
 
 enum LayerType {
-  // favourites,
+  favourites,
   invest,
   buildings,
   fencing,

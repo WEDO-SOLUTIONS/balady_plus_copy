@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_repository.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/investment_sites.dart';
@@ -107,13 +108,13 @@ class LayersControls extends _$LayersControls {
     var currentState = state.selectedType;
 
     switch (value) {
-      // case LayerType.favourites:
-      //   if (currentState == (LayerType.favourites)) {
-      //     await ref.read(favouriteToggleProvider.notifier).disable();
-      //   } else {
-      //     await ref.read(favouriteToggleProvider.notifier).enable();
-      //   }
-      //   _toggleSelected(value);
+      case LayerType.favourites:
+        if (currentState == (LayerType.favourites)) {
+          await ref.read(favouriteToggleProvider.notifier).disable();
+        } else {
+          await ref.read(favouriteToggleProvider.notifier).enable();
+        }
+      // _toggleSelected(value);
 
       case LayerType.buildings:
         toggleComplienceBuildings();
