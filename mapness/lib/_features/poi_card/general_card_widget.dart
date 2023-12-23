@@ -6,12 +6,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart'
     as map_control_provider;
+import 'package:mapness/_features/poi_card/constants/about_mock.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/about.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/contacts_info.dart';
+import 'package:mapness/_features/poi_card/widgets/description.dart';
 import 'package:mapness/_features/poi_card/widgets/favourites.dart';
 import 'package:mapness/_features/poi_card/widgets/footer.dart';
 import 'package:mapness/_features/poi_card/widgets/header.dart';
@@ -130,6 +132,11 @@ class _ContentState extends ConsumerState<_Content> {
                   final qrTradeLicense = poiCardState?.qrTradeLicense;
                   final tradeLicense = poiCardState?.tradeLicense;
 
+                  final about = aboutMock(
+                    data!.id!.objectId,
+                    ref.read(appLanguageProvider),
+                  );
+
                   return Material(
                     color: Colors.transparent,
                     child: DecoratedBox(
@@ -158,7 +165,7 @@ class _ContentState extends ConsumerState<_Content> {
                               slivers: [
                                 SliverPersistentHeader(
                                   delegate: PoiCardHeaderDelegate(
-                                    data: data!,
+                                    data: data,
                                     ontapClose: () {
                                       // const LandingRoute().go(context);
                                       context.pop();
@@ -180,6 +187,10 @@ class _ContentState extends ConsumerState<_Content> {
                                             onEntranceTap: () =>
                                                 showEntrance(data),
                                           ),
+                                          if (about != null)
+                                            Description(
+                                              text: about,
+                                            ),
                                           if (data.openingHours != null)
                                             OpeningHours(
                                                 data.getOpeningHoursModel()),
