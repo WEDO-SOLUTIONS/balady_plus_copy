@@ -144,7 +144,7 @@ abstract class AppLocalizations {
   /// No description provided for @areYouSureYouWantToDeleteAllFavorites.
   ///
   /// In ar, this message translates to:
-  /// **'هل أنت متأكد أنك تريد حذف كافة المفضلة؟'**
+  /// **'هل متأكد من حذف كافة المفضلة؟'**
   String get areYouSureYouWantToDeleteAllFavorites;
 
   /// No description provided for @areYouSureYouWantToLogOutOfYourAccount.
@@ -534,7 +534,7 @@ abstract class AppLocalizations {
   /// No description provided for @fencingVacantLands.
   ///
   /// In ar, this message translates to:
-  /// **'تسوير الأراضي الشاغرة'**
+  /// **'تسوير الأراضي الفضاء'**
   String get fencingVacantLands;
 
   /// No description provided for @findAJob.
@@ -1080,7 +1080,7 @@ abstract class AppLocalizations {
   /// No description provided for @parkSizeBig.
   ///
   /// In ar, this message translates to:
-  /// **'حديقة كبيرة'**
+  /// **'حديقة حي'**
   String get parkSizeBig;
 
   /// No description provided for @parkSizeMedium.
@@ -1758,7 +1758,7 @@ abstract class AppLocalizations {
   /// No description provided for @weCouldntFindAnythingTryChangingYourRequest.
   ///
   /// In ar, this message translates to:
-  /// **'لم نتمكن من العثور على شيء. حاول تغيير طلبك'**
+  /// **'لم نتمكن من العثور على شيء.رجاء المحاولة مرة أخرى'**
   String get weCouldntFindAnythingTryChangingYourRequest;
 
   /// No description provided for @wednesday.
@@ -1788,7 +1788,7 @@ abstract class AppLocalizations {
   /// No description provided for @work.
   ///
   /// In ar, this message translates to:
-  /// **'عمل'**
+  /// **'العمل'**
   String get work;
 
   /// No description provided for @workHours.
@@ -1812,7 +1812,7 @@ abstract class AppLocalizations {
   /// No description provided for @youArrived.
   ///
   /// In ar, this message translates to:
-  /// **'لقد وصلت'**
+  /// **'لقد وصلت إلى وجهتك'**
   String get youArrived;
 
   /// No description provided for @youReHere.
@@ -1824,7 +1824,7 @@ abstract class AppLocalizations {
   /// No description provided for @youSearch.
   ///
   /// In ar, this message translates to:
-  /// **'انت تبحث'**
+  /// **'إبحث'**
   String get youSearch;
 }
 

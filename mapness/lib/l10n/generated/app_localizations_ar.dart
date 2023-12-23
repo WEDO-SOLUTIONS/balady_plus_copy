@@ -29,7 +29,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get arabicFullName => 'الاسم الكامل باللغة العربية';
 
   @override
-  String get areYouSureYouWantToDeleteAllFavorites => 'هل أنت متأكد أنك تريد حذف كافة المفضلة؟';
+  String get areYouSureYouWantToDeleteAllFavorites => 'هل متأكد من حذف كافة المفضلة؟';
 
   @override
   String get areYouSureYouWantToLogOutOfYourAccount => 'هل تريد تسجيل الخروج من الحساب؟';
@@ -224,7 +224,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get favourites => 'المفضلة';
 
   @override
-  String get fencingVacantLands => 'تسوير الأراضي الشاغرة';
+  String get fencingVacantLands => 'تسوير الأراضي الفضاء';
 
   @override
   String get findAJob => 'العثور على وظيفة';
@@ -497,7 +497,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get parkOpeningDate => 'تاريخ الإفتتاح';
 
   @override
-  String get parkSizeBig => 'حديقة كبيرة';
+  String get parkSizeBig => 'حديقة حي';
 
   @override
   String get parkSizeMedium => 'حديقة متوسطة';
@@ -836,7 +836,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get weAreHappyToConnectYouWithBaladyTeam => 'تم تطوير بوابة بلدي بالتعاون مع جهات القطاع البلدي المختلفة لتكون البوابة الوطنية الداعمة للمجتمع البلدي.\nوتشمل هذه البوابة في المرحلة الحالية ثلاث مسؤوليات رئيسية وهي:\n- الخدمات التفاعلية التي تساعد في تعزيز مفهوم الشراكة المجتمعية لتحسين جودة الخدمات المقدمة للمستفيدين.\n- الخدمات الإلكترونية التي تساعد على تقديم الطلبات الإلكترونية لاستخراج الرخص الأكثر استخدامًا.\n- الخدمات المعلوماتية والتي تساعد المستفيدين على اتخاذ القرارات ذات العلاقة بما يساهم في تحسين مستوى الرضا عن جهات القطاع البلدي.';
 
   @override
-  String get weCouldntFindAnythingTryChangingYourRequest => 'لم نتمكن من العثور على شيء. حاول تغيير طلبك';
+  String get weCouldntFindAnythingTryChangingYourRequest => 'لم نتمكن من العثور على شيء.رجاء المحاولة مرة أخرى';
 
   @override
   String get wednesday => 'الأربعاء';
@@ -851,7 +851,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get wishesSent => 'تم مشاركة إنطباعك';
 
   @override
-  String get work => 'عمل';
+  String get work => 'العمل';
 
   @override
   String get workHours => 'ساعات العمل';
@@ -863,11 +863,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get yesterday => 'أمس';
 
   @override
-  String get youArrived => 'لقد وصلت';
+  String get youArrived => 'لقد وصلت إلى وجهتك';
 
   @override
   String get youReHere => 'أنت هنا!';
 
   @override
-  String get youSearch => 'انت تبحث';
+  String get youSearch => 'إبحث';
 }
