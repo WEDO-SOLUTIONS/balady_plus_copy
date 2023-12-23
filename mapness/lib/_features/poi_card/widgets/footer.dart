@@ -9,9 +9,7 @@ import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_favorite_dialog.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/app/routes/routing.dart';
-import 'package:mapness/app/routes/signin.dart';
 import 'package:mapness/features/routing/ui/brief_route_widgets.dart';
-import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
@@ -107,15 +105,16 @@ class _PoiCardFooterState extends ConsumerState<PoiCardFooter> {
             ? 'assets/icons/svg/ic_fav_solid.svg'
             : 'assets/icons/svg/ic_fav_poi.svg',
         onTap: () async {
+          final viewModel = widget.viewModel;
           await _onFavTap(favouriteItem);
-          // if (favData == null) {
-          //   final directoryObjectMessage = objectMessage;
-          //   if (directoryObjectMessage != null) {
-          //     viewModel.addToFavourites(directoryObjectMessage);
-          //   }
-          // } else {
-          //   viewModel.removeFromFavourite(favData);
-          // }
+          if (favData == null) {
+            final directoryObjectMessage = objectMessage;
+            if (directoryObjectMessage != null) {
+              viewModel.addToFavourites(directoryObjectMessage);
+            }
+          } else {
+            viewModel.removeFromFavourite(favData);
+          }
         },
         desc: (hasContacts == false)
             ? Text(
@@ -199,7 +198,7 @@ class _PoiCardFooterState extends ConsumerState<PoiCardFooter> {
 
     final childrenRtl = (hasContacts == false && hasEntrances == false)
         ? [
-            // favItem(flex: 2),
+            favItem(flex: 2),
             // shareItem(flex: 2),
             carItem(flex: 2),
           ]
@@ -207,7 +206,7 @@ class _PoiCardFooterState extends ConsumerState<PoiCardFooter> {
             // shareItem(flex: 2),
             if (hasEntrances) entranceItem(flex: 2),
             if (hasContacts) phoneItem(flex: 2),
-            // favItem(flex: 2),
+            favItem(flex: 2),
             carItem(flex: carIconFlex),
           ];
 
