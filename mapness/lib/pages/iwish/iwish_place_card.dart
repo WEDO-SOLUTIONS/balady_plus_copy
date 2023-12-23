@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/iwish.dart';
+import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/features/iwish/providers/iwish_distance.dart';
 import 'package:mapness/features/iwish/providers/iwish_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -35,6 +36,12 @@ class IwishPlaceCard extends ConsumerWidget {
       ),
       data: (entity) {
         final distance = ref.read(iwishDistanceProvider(entity));
+
+        final metadata = entity.metadata;
+        final showMetadata = entity.parkSize != ParkSize.unknown ||
+            metadata.areaSize != 0 ||
+            metadata.openingDate != DateTime.fromMillisecondsSinceEpoch(0) ||
+            metadata.areaName != '';
 
         return SafeArea(
           bottom: false,
@@ -129,18 +136,20 @@ class IwishPlaceCard extends ConsumerWidget {
                           //     ],
                           //   ),
                           // ),
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 16),
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
+                          if (showMetadata)
+                            Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: IwishAboutPark(
+                                metadata: entity.metadata,
+                                parkSize: entity.parkSize,
+                              ),
                             ),
-                            child: IwishAboutPark(
-                              metadata: entity.metadata,
-                              parkSize: entity.parkSize,
-                            ),
-                          )
                         ],
                       ),
                     ),
