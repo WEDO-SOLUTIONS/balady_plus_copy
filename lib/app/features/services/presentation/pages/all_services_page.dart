@@ -81,7 +81,10 @@ class _AllServicesPageState extends State<AllServicesPage> {
                 onChanged: (String t) {
                   query = t;
                   searchedServices = services
-                      .where((element) => element.title.contains(t))
+                      .where((element) => element.title
+                          .tr()
+                          .toLowerCase()
+                          .contains(t.toLowerCase()))
                       .toList();
 
                   setState(() {});

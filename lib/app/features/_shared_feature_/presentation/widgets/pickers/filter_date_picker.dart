@@ -79,11 +79,12 @@ class _FilterDatePickerState extends State<FilterDatePicker> {
   }
 
   void showPickerHijriDate(DateTime? currentDate, BuildContext context) {
-    final minValue = widget.startDate == null
-        ? DateTime.tryParse("1882/01/01") != null
-            ? HijriCalendar.fromDate(DateTime.tryParse("1882/01/01")!)
-            : null
-        : HijriCalendar.fromDate(widget.startDate!);
+    var minValue;
+    try {
+      minValue = widget.startDate == null
+          ? HijriCalendar.fromDate((DateTime(1937, 3, 14)))
+          : HijriCalendar.fromDate(widget.startDate!);
+    } catch (ex) {}
     final maxValue =
         widget.endDate == null ? null : HijriCalendar.fromDate(widget.endDate!);
     final date =
