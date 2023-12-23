@@ -54,7 +54,7 @@ protoc:
   protoc protocol.proto --dart_out=lib/_generated/protocol
 
 
-apk-release filename: locale_gen prebuild
+apk-release version: locale_gen prebuild
   #!/usr/bin/env bash
   set -euo pipefail
 
@@ -63,15 +63,15 @@ apk-release filename: locale_gen prebuild
 
   echo build urbi pre
   fvm flutter build apk --target lib/main_urbi_pre.dart
-  mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/urbi-pre-{{filename}}.apk
+  mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/urbi-pre-{{version}}.apk
 
   echo build main prod
   fvm flutter build apk --target lib/main_prod.dart
-  mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/momrah-prod-{{filename}}.apk
+  mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/momrah-prod-{{version}}.apk
 
   # echo build main stage
   # fvm flutter build apk --target lib/main_stg.dart --debug
-  # mv build/app/outputs/flutter-apk/app-debug.apk build/app/outputs/flutter-apk/momrah-stage-debug-{{filename}}.apk
+  # mv build/app/outputs/flutter-apk/app-debug.apk build/app/outputs/flutter-apk/momrah-stage-debug-{{version}}.apk
 
   echo remove abi filter
   git apply -R .github/workflows/abi_filter.patch || echo could not unapply abi filter patch
