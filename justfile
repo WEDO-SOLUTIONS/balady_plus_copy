@@ -59,7 +59,7 @@ apk-release filename: locale_gen prebuild
   set -euo pipefail
 
   echo add abi filter
-  git apply .github/workflows/abi_filter.patch
+  git apply .github/workflows/abi_filter.patch || echo could not apply abi filter patch
 
   echo build urbi pre
   fvm flutter build apk --target lib/main_urbi_pre.dart
@@ -74,5 +74,5 @@ apk-release filename: locale_gen prebuild
   # mv build/app/outputs/flutter-apk/app-debug.apk build/app/outputs/flutter-apk/momrah-stage-debug-{{filename}}.apk
 
   echo remove abi filter
-  git apply -R .github/workflows/abi_filter.patch
+  git apply -R .github/workflows/abi_filter.patch || echo could not unapply abi filter patch
 
