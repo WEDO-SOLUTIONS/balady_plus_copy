@@ -238,6 +238,7 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                     child: EventFilterDatePicker(
                       title: "events_filter_dateTo".tr(),
                       initialDateForm: DateForm.gregorian,
+                      startDate: dateFrom,
                       initialDate: dateTo,
                       onChange: (DateTime date, DateForm dateForm) {
                         setState(() {

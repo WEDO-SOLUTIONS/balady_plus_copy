@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/constants/route_names.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../widgets/menu/menu_app_bar.dart';
 import '../widgets/menu/menu_card_widget.dart';
@@ -24,6 +25,7 @@ class _MenuQuranPageState extends State<MenuQuranPage> {
     searchedQuranData.addAll(quranData);
 
     CommonFunctions.sendEventToAnalytics(AppEvents.Quran);
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceQuran);
   }
 
   @override

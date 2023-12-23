@@ -120,7 +120,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                           ),
                                           child: CustomTextWidget(
                                             "the_following_data".tr(),
-                                            maxLines: 2,
+                                            maxLines: 10,
                                             textStyle:
                                                 AppStyle.dashboardNoteTextStyle,
                                           ),

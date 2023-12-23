@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/constants/dialog_names.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../_shared_feature_/presentation/dialogs/not_authorized_indivivisual.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
@@ -36,7 +37,6 @@ class _PermitsLicenseStartServiceState
   void initState() {
     // TODO: implement initState
     super.initState();
-    // CommonFunctions.sendEventToAnalytics(AppEvents.renewCommercialLicenseOpen);
   }
 
   @override

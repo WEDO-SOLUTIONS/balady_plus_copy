@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:open_file_plus/open_file_plus.dart';
@@ -555,6 +556,7 @@ class CommonFunctions {
         NavigationService.navigatorKey.currentContext!,
         newLanguage: lang);
     translator.applyChanges(NavigationService.navigatorKey.currentContext!);
+    HijriCalendar.setLocal(lang);
 
     materialAppKey.currentState?.setState(() {});
 
@@ -1233,6 +1235,8 @@ class CommonFunctions {
             NavigationService.navigatorKey.currentContext!)
         .add(DashboardEventInitial());
   }
+
+  static void sendUXCamEvent(String event) {}
 }
 
 class CommonProperties {

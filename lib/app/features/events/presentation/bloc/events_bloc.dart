@@ -143,11 +143,14 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     emitter(state.copyWith(
       cityStatus: BlocRequestStatus.submissionGetLoading,
     ));
-    final failureOrSuccess = await _getCategory(EventsCategoryParams(key: 8));
+    final failureOrSuccess = await _getCategory(EventsCategoryParams(key: 3));
     failureOrSuccess.fold((l) {
       emitter(
         state.copyWith(
-          cityStatus: BlocRequestStatus.submissionGetFailure,
+          cityStatus: (l as ServerFailure).errorCode == "2"
+              ? BlocRequestStatus.submissionGetSuccess
+              : BlocRequestStatus.submissionGetFailure,
+          citiesList: [],
         ),
       );
     }, (r) {
@@ -170,7 +173,10 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     failureOrSuccess.fold((l) {
       emitter(
         state.copyWith(
-          seasonStatus: BlocRequestStatus.submissionGetFailure,
+          seasonStatus: (l as ServerFailure).errorCode == "2"
+              ? BlocRequestStatus.submissionGetSuccess
+              : BlocRequestStatus.submissionGetFailure,
+          seasonList: [],
         ),
       );
     }, (r) {
@@ -188,11 +194,14 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     emitter(state.copyWith(
       feesStatus: BlocRequestStatus.submissionGetLoading,
     ));
-    final failureOrSuccess = await _getCategory(EventsCategoryParams(key: 17));
+    final failureOrSuccess = await _getCategory(EventsCategoryParams(key: 6));
     failureOrSuccess.fold((l) {
       emitter(
         state.copyWith(
-          feesStatus: BlocRequestStatus.submissionGetFailure,
+          feesStatus: (l as ServerFailure).errorCode == "2"
+              ? BlocRequestStatus.submissionGetSuccess
+              : BlocRequestStatus.submissionGetFailure,
+          feesList: [],
         ),
       );
     }, (r) {
@@ -211,11 +220,14 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     emitter(state.copyWith(
       audinceStatus: BlocRequestStatus.submissionGetLoading,
     ));
-    final failureOrSuccess = await _getCategory(EventsCategoryParams(key: 16));
+    final failureOrSuccess = await _getCategory(EventsCategoryParams(key: 5));
     failureOrSuccess.fold((l) {
       emitter(
         state.copyWith(
-          audinceStatus: BlocRequestStatus.submissionGetFailure,
+          audinceStatus: (l as ServerFailure).errorCode == "2"
+              ? BlocRequestStatus.submissionGetSuccess
+              : BlocRequestStatus.submissionGetFailure,
+          audinceList: [],
         ),
       );
     }, (r) {
@@ -233,11 +245,14 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     emitter(state.copyWith(
       categoryStatus: BlocRequestStatus.submissionGetLoading,
     ));
-    final failureOrSuccess = await _getCategory(EventsCategoryParams(key: 4));
+    final failureOrSuccess = await _getCategory(EventsCategoryParams(key: 2));
     failureOrSuccess.fold((l) {
       emitter(
         state.copyWith(
-          categoryStatus: BlocRequestStatus.submissionGetFailure,
+          categoryStatus: (l as ServerFailure).errorCode == "2"
+              ? BlocRequestStatus.submissionGetSuccess
+              : BlocRequestStatus.submissionGetFailure,
+          categoryList: [],
         ),
       );
     }, (r) {

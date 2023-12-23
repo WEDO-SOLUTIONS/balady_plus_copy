@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../core/utils/constants/ux_cam_events.dart';
+
 class JodDonationPage extends StatefulWidget {
   const JodDonationPage({super.key});
 
@@ -24,6 +26,7 @@ class _JodDonationPageState extends State<JodDonationPage> {
   void initState() {
     super.initState();
     provider = JodDonationViewModel(sl());
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceDonate);
   }
 
   @override
@@ -125,7 +128,8 @@ class _JodDonationPageState extends State<JodDonationPage> {
                 disabledColor: Colors.transparent,
                 onValidate: (text) => (text?.isNotEmpty ?? false) &&
                         double.tryParse(text!) != null &&
-                        double.parse(text) > 0 && double.parse(text) <= 1000000
+                        double.parse(text) > 0 &&
+                        double.parse(text) <= 1000000
                     ? null
                     : "required_field_must_number_jod".tr(),
               ),

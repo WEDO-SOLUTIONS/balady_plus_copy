@@ -80,7 +80,7 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
           Align(
-            alignment: Alignment.centerLeft,
+            alignment: AlignmentDirectional.centerEnd,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [

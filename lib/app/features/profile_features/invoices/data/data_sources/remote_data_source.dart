@@ -242,6 +242,7 @@ class InvoicesRemoteDataSourceImplementation
 
       return InvoiceDetailsModel.fromJson(result);
     } on DioError catch (error) {
+      print(error);
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {
         rethrow;
@@ -252,6 +253,8 @@ class InvoicesRemoteDataSourceImplementation
         dioError: error,
       );
     } catch (ex) {
+      print(ex);
+
       if (ex is ServerException) {
         rethrow;
       } else {

@@ -6,6 +6,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/constants/constants.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
@@ -22,6 +23,13 @@ class VDAllTypesDialog extends StatefulWidget {
 }
 
 class _VDAllTypesDialog extends State<VDAllTypesDialog> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceSnapAndSend);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

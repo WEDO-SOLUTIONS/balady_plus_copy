@@ -14,31 +14,41 @@ class DashboardCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 58,
       width: 80,
-      margin: const EdgeInsets.symmetric(horizontal: 8),
+      margin: const EdgeInsets.symmetric(
+        horizontal: 8,
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 16),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8), color: Color(0xffF5F7FA)),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CustomTextWidget(
-            totalCount.toString(),
-            fontSize: 21,
-            fontWeight: AppFontWeight.bold,
-            fontColor: const Color(0xff359748),
+          Expanded(
+            flex: 1,
+            child: CustomTextWidget(
+              totalCount.toString(),
+              fontSize: 21,
+              fontWeight: AppFontWeight.bold,
+              fontColor: const Color(0xff359748),
+            ),
           ),
           const SizedBox(
             height: 6,
           ),
-          CustomTextWidget(
-            card.name,
-            fontSize: 14,
-            textAlign: TextAlign.center,
-            fontWeight: AppFontWeight.regular,
-            fontColor: const Color(0xff1E2A36),
+          Flexible(
+            flex: 2,
+            child: CustomTextWidget(
+              card.name,
+              fontSize: 14,
+              maxLines: 4,
+              height: 1.3,
+              textAlign: TextAlign.center,
+              fontWeight: AppFontWeight.regular,
+              fontColor: const Color(0xff1E2A36),
+            ),
           ),
         ],
       ),

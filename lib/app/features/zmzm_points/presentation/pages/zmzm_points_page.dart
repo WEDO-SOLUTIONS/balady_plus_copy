@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/dialog_names.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../data/models/zmzm_item_model.dart';
 import '../bloc/zmzm_bloc.dart';
 import '../widgets/zmzm_app_bar.dart';
@@ -19,6 +20,13 @@ class ZmZmPointsPage extends StatefulWidget {
 }
 
 class _ZmZmPointsPageState extends State<ZmZmPointsPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceZamzamOutlets);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

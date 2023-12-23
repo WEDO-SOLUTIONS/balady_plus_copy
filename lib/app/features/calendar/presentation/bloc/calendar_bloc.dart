@@ -115,11 +115,14 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     emitter(state.copyWith(
       seasonStatus: BlocRequestStatus.submissionGetLoading,
     ));
-    final failureOrSuccess = await _getCategory(EventsCategoryParams(key: 13));
+    final failureOrSuccess = await _getCategory(EventsCategoryParams(key: 4));
     failureOrSuccess.fold((l) {
       emitter(
         state.copyWith(
-          seasonStatus: BlocRequestStatus.submissionGetFailure,
+          seasonStatus: (l as ServerFailure).errorCode == "2"
+              ? BlocRequestStatus.submissionGetSuccess
+              : BlocRequestStatus.submissionGetFailure,
+          seasonList: [],
         ),
       );
     }, (r) {

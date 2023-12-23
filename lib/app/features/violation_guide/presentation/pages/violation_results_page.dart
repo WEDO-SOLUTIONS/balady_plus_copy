@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/common_functions.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
@@ -26,6 +27,13 @@ class ViolationResultsPage extends StatefulWidget {
 }
 
 class _ViolationResultsPageState extends State<ViolationResultsPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.sendUXCamEvent(UXCamEvents.finishServiceViolationsGuide);
+  }
+
   bool crticalSelected = true;
   @override
   Widget build(BuildContext context) {

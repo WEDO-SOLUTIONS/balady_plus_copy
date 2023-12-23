@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
@@ -31,6 +32,7 @@ class _EventsMainPageState extends State<EventsMainPage> {
     super.initState();
 
     CommonFunctions.sendEventToAnalytics(AppEvents.events);
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceEvents);
   }
 
   @override
