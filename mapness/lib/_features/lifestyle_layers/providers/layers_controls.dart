@@ -140,7 +140,6 @@ class LayersControls extends _$LayersControls {
           .removeAllMarkers();
       layersControls.update(isLoading: false, selectedType: null);
     } else {
-      _removeAll();
       showIwish();
     }
   }
@@ -384,9 +383,11 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> showIwish() async {
-    if (state.selectedType == LayerType.joy) {
-      return;
-    }
+    await _removeAll();
+
+    // if (state.selectedType == LayerType.joy) {
+    //   return;
+    // }
     final markers = await ref.read(iwishMarkersProvider.future);
     await ref
         .read(mapObjectManagerProvider(named: mapLayerName).notifier)
