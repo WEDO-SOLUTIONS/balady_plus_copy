@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/happiness_map/data/happiness_tags.dart';
@@ -8,7 +9,9 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import '../data/happines_manager.dart';
 
 class HappinessTagsGrid extends ConsumerWidget {
-  const HappinessTagsGrid({Key? key}) : super(key: key);
+  final sizeGroup = AutoSizeGroup();
+
+  HappinessTagsGrid({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,6 +38,7 @@ class HappinessTagsGrid extends ConsumerWidget {
                   ? happinessManager.removeTag(tag.code)
                   : happinessManager.addTag(tag.code),
               isSelected: isSelected,
+              tagSizeGroup: sizeGroup,
             );
           },
         ),
@@ -43,6 +47,7 @@ class HappinessTagsGrid extends ConsumerWidget {
           iconAsset: 'assets/icons/svg/ic_ellipsis.svg',
           onPressed: () {},
           isSelected: false,
+          tagSizeGroup: sizeGroup,
         ),
       ],
     );

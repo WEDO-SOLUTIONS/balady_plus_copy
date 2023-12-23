@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart';
+import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -10,6 +11,7 @@ part 'happiness_repository.g.dart';
 class _HappinessRepository extends _$HappinessRepository {
   // returns should close or not
   Future<void> submitFeedback(HappinessState feedback) async {
+    mixpanel?.timeEvent("Happiness map: submitFeedback");
     final dio = await ref.read(dGisNetworkProvider.future);
     state = const AsyncLoading();
     final data = HappinessRequest(
@@ -28,6 +30,8 @@ class _HappinessRepository extends _$HappinessRepository {
         data: data.writeToBuffer(),
       );
       state = const AsyncData(true);
+
+      mixpanel?.track("Happiness map: submitFeedback");
     } on DioException {
       state = AsyncError(
         'Dio error',

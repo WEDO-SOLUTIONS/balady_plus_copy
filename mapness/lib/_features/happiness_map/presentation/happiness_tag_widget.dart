@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -9,6 +10,7 @@ class HappinessTagWidget extends StatelessWidget {
   final String iconAsset;
   final void Function() onPressed;
   final bool isSelected;
+  final AutoSizeGroup tagSizeGroup;
 
   const HappinessTagWidget({
     super.key,
@@ -16,6 +18,7 @@ class HappinessTagWidget extends StatelessWidget {
     required this.isSelected,
     required this.title,
     required this.iconAsset,
+    required this.tagSizeGroup,
   });
 
   @override
@@ -42,9 +45,16 @@ class HappinessTagWidget extends StatelessWidget {
                 package: PackageConfig.packageName,
               ),
               const Spacer(),
-              Text(
+              AutoSizeText(
                 title,
-                style: Theme.of(context).extension<ThemeTextStyles>()!.accentXS.copyWith(color: const Color(0xFF1D2A36)),
+                maxLines: 2,
+                wrapWords: false,
+                minFontSize: 8,
+                group: tagSizeGroup,
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .accentXS
+                    .copyWith(color: const Color(0xFF1D2A36)),
               )
             ],
           ),

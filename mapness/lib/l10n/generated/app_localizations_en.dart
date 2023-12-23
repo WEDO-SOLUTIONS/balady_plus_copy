@@ -314,6 +314,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get iwish => 'iWish';
 
   @override
+  String get iwish_food_truck => 'Food Trucks';
+
+  @override
+  String get iwish_fountain => 'Fountain';
+
+  @override
+  String get iwish_free_area => 'Free\nArea';
+
+  @override
+  String get iwish_green_spaces => 'Green spaces';
+
+  @override
+  String get iwish_outdoor_club => 'Outdoor Club';
+
+  @override
+  String get iwish_play_ground => 'Play ground';
+
+  @override
+  String get iwish_running => 'Running Track';
+
+  @override
+  String get iwish_sitting_benches => 'Sitting Benches';
+
+  @override
+  String get iwish_sport_court => 'Sportive Courts';
+
+  @override
+  String get iwish_vending_machine => 'Vending Machines';
+
+  @override
   String get jobDescription => 'Job Description';
 
   @override
@@ -632,13 +662,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectYourStartingAndDestinationPointsAndWeWillShowYouConvenientRoutes => 'Select your starting and destination points, and we will show you convenient routes';
 
   @override
-  String get sendAWish => 'Send a wish';
+  String get sendAWish => 'Send feedback';
 
   @override
   String get sendFeedback => 'Send feedback';
 
   @override
-  String get sendYourWishes => 'Send your wishes';
+  String get sendYourWishes => 'Send feedback';
 
   @override
   String get sending => 'Sending...';
@@ -662,10 +692,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shareYourFeedback => 'Share your feedback';
 
   @override
-  String get shareYourFeelings => 'Share your feelings';
+  String get shareYourFeelings => 'Share your Impression';
 
   @override
-  String get shareYourFeelingsAboutPark => 'Share your feelings about park';
+  String get shareYourFeelingsAboutPark => 'Share your impression about park';
 
   @override
   String get shortest => 'Shortest';
@@ -758,7 +788,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get thursday => 'thursday';
 
   @override
-  String get tinId => 'TIN ID';
+  String get tinId => 'License Number';
 
   @override
   String get to => 'To';
@@ -818,7 +848,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get whatCanTheNavigatorDo => 'What can \nthe navigator do?';
 
   @override
-  String get wishesSent => 'Wishes sent';
+  String get wishesSent => 'Feedback sent';
 
   @override
   String get work => 'Work';

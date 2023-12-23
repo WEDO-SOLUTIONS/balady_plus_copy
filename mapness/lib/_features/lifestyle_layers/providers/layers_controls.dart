@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_repository.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/investment_sites.dart';
@@ -105,7 +104,6 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> handleTap(LayerType value) async {
-    var layersControls = ref.watch(layersControlsProvider.notifier);
     var currentState = state.selectedType;
 
     switch (value) {
@@ -147,15 +145,14 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> toggleComplienceBuildings() async {
-    var layersControls = ref.watch(layersControlsProvider.notifier);
     var currentState = state.selectedType;
     if (currentState != (LayerType.buildings)) {
-      layersControls.update(isLoading: true, selectedType: LayerType.buildings);
-      layersControls._showBuildingCompliance();
+      update(isLoading: true);
+      _showBuildingCompliance();
     } else {
       viewPortSubscription?.cancel();
       await _removeAll();
-      layersControls.update(isLoading: false, selectedType: null);
+      update(isLoading: false, selectedType: null);
     }
   }
 
@@ -201,13 +198,12 @@ class LayersControls extends _$LayersControls {
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
     final env = await ref.read(dgisEnvironmentProvider.future);
 
-    var layersControls = ref.watch(layersControlsProvider.notifier);
     var mapController =
         ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
 
     update(isLoading: true, selectedType: layerType);
 
-    await layersControls._removeAll();
+    await _removeAll();
 
     await viewPortSubscription?.cancel();
     viewPortSubscription = ref
@@ -228,8 +224,11 @@ class LayersControls extends _$LayersControls {
         .map(_makeMarkers)
         .listen(
       (markers) async {
-        layersControls.update(isLoading: false);
-        await mapController.addMarkers(markers);
+        update(isLoading: false);
+        await mapController.removeAllMarkers();
+        if (state.selectedType == LayerType.invest) {
+          await mapController.addMarkers(markers);
+        }
       },
     );
   }
@@ -237,13 +236,12 @@ class LayersControls extends _$LayersControls {
   Future<void> _showWhiteLands() async {
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
     final env = await ref.read(dgisEnvironmentProvider.future);
-    var layersControls = ref.watch(layersControlsProvider.notifier);
     final mapManager =
         ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
 
-    layersControls.update(isLoading: true, selectedType: LayerType.fencing);
+    update(isLoading: true, selectedType: LayerType.fencing);
 
-    await layersControls._removeAll();
+    await _removeAll();
     await viewPortSubscription?.cancel();
 
     viewPortSubscription = ref
@@ -262,19 +260,21 @@ class LayersControls extends _$LayersControls {
             )))
         .map(_makePolygons)
         .listen((polygons) async {
-      layersControls.update(isLoading: false);
-      await mapManager.addPolygons(polygons);
+      update(isLoading: false);
+      await mapManager.removeAllPolygons();
+      if (state.selectedType == LayerType.fencing) {
+        await mapManager.addPolygons(polygons);
+      }
     });
   }
 
   Future<void> _showBuildingCompliance() async {
-    final layersControls = ref.watch(layersControlsProvider.notifier);
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
     final env = await ref.read(dgisEnvironmentProvider.future);
     final mapObjectManager =
         ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
 
-    await layersControls._removeAll();
+    await _removeAll();
     await viewPortSubscription?.cancel();
 
     viewPortSubscription = ref
@@ -293,10 +293,15 @@ class LayersControls extends _$LayersControls {
               domain: env.url,
             )))
         .map(_makePolylineWithPoint)
-        .listen((polylines) async {
-      layersControls.update(isLoading: false);
-      await mapObjectManager.addPolyLines(polylines);
-    });
+        .listen(
+      (polylines) async {
+        update(isLoading: false, selectedType: LayerType.buildings);
+        await mapObjectManager.removeAllPolyLines();
+        if (state.selectedType == LayerType.buildings) {
+          await mapObjectManager.addPolyLines(polylines);
+        }
+      },
+    );
   }
 
   List<Polyline> _makePolylineWithPoint(
@@ -377,17 +382,6 @@ class LayersControls extends _$LayersControls {
         [];
   }
 
-  void _toggleSelected(
-    LayerType selectedType,
-  ) {
-    state = LayersState(
-      investmentsMarkers: state.investmentsMarkers,
-      layersVisible: state.layersVisible,
-      selectedType: selectedType,
-      isLoading: state.isLoading,
-    );
-  }
-
   Future<void> showIwish() async {
     if (state.selectedType == LayerType.joy) {
       return;
@@ -407,7 +401,7 @@ class LayersControls extends _$LayersControls {
 
   Future<void> _removeAll() async {
     final mapObjectManager =
-        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
+        ref.read(mapObjectManagerProvider(named: mapLayerName).notifier);
 
     await mapObjectManager.removeAllMarkers();
     await mapObjectManager.removeAllPolygons();

@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/profile/domain/user_profile_data.dart';
+import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -68,6 +69,9 @@ class ProfileImage extends _$ProfileImage {
   /// Загружает изображение на бекенд.
   /// Возвращает ссылку на изображение.
   Future<String> _uploadImage(Uint8List bytes) async {
+    // start the timer for the event "Image Upload"
+    mixpanel?.timeEvent("Profile Image Upload");
+
     final dio = await ref.read(dGisNetworkProvider.future);
     try {
       final response = await dio.post(
@@ -76,7 +80,7 @@ class ProfileImage extends _$ProfileImage {
       );
 
       final result = proto.Profile_Photo.fromBuffer(response.data);
-
+      mixpanel?.track("Profile Image Upload");
       return result.image.url;
     } catch (error, trace) {
       _log(error, trace);

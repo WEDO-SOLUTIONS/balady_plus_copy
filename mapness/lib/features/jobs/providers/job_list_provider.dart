@@ -1,3 +1,4 @@
+import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/jobs/models/job_list_model.dart';
 import 'package:mapness/features/jobs/models/job_response_model.dart';
 import 'package:mapness/shared/providers/dgis_hmac_netwrok.dart';
@@ -16,6 +17,7 @@ class JobListResponse extends _$JobListResponse {
   JobListModel? _allJobs;
 
   Future<JobListModel?> _load() async {
+    mixpanel?.timeEvent("JobList: _load");
     try {
       _isLoading = true;
       final dio = await ref.read(dgisHmacNetwrokProvider.future);
@@ -45,7 +47,7 @@ class JobListResponse extends _$JobListResponse {
     } finally {
       _isLoading = false;
     }
-
+    mixpanel?.track("JobList: _load");
     return _allJobs;
   }
 

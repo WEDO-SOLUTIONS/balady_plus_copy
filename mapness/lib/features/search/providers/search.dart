@@ -1,5 +1,6 @@
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
+import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -20,6 +21,7 @@ class SearchQuery extends _$SearchQuery {
   String build(String scope) => "";
 
   void update(String value) {
+    mixpanel?.track('SearchQuery', properties: {'value': value});
     state = value;
   }
 }
@@ -38,6 +40,7 @@ class Search extends _$Search {
   CancelableOperation? _searchOperation;
 
   Future<void> fetchSuggest(String query) async {
+    mixpanel?.timeEvent("Search: fetchSuggest");
     _searchOperation?.cancel();
     if (query.isEmpty) {
       state = SearchStateHistory();
@@ -53,9 +56,11 @@ class Search extends _$Search {
           ? SearchStateEmpty()
           : SearchStateSuggest(result),
     );
+    mixpanel?.track("Search: fetchSuggest");
   }
 
   Future<void> searchByText(String query) async {
+    mixpanel?.timeEvent("Search: searchByText");
     _searchOperation?.cancel();
     final dgisController = await ref.read(dgisControllerProvider.future);
 
@@ -71,9 +76,11 @@ class Search extends _$Search {
           ? SearchStateEmpty()
           : SearchStateResults(results),
     );
+    mixpanel?.track("Search: fetchSuggest");
   }
 
   Future<void> searchByQuery(SearchQueryMessage query) async {
+    mixpanel?.timeEvent("Search: searchByQuery");
     _searchOperation?.cancel();
     final dgisController = await ref.read(dgisControllerProvider.future);
 
@@ -89,5 +96,6 @@ class Search extends _$Search {
           ? SearchStateEmpty()
           : SearchStateResults(results),
     );
+    mixpanel?.track("Search: searchByQuery");
   }
 }
