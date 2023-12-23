@@ -83,20 +83,22 @@ class ServiceCardDescWidget extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                    Flexible(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          viewModel.servicesCardsDetails!
-                                                  .fieldDescriptionService ??
-                                              '',
-                                          style: AppStyle.resultsLastDescription
-                                              .copyWith(
-                                            color: AppColor.primary300Light,
+                                    Expanded(
+                                      child: SingleChildScrollView(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            viewModel.servicesCardsDetails!
+                                                    .fieldDescriptionService ??
+                                                '',
+                                            style: AppStyle.resultsLastDescription
+                                                .copyWith(
+                                              color: AppColor.primary300Light,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 6,
                                           ),
-                                          textAlign: TextAlign.center,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 6,
                                         ),
                                       ),
                                     ),
