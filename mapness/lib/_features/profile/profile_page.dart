@@ -258,16 +258,17 @@ class ProfilePage extends ConsumerWidget {
                     const SizedBox(
                       width: 12.0,
                     ),
-                    if (direction == TextDirection.rtl) const Spacer(),
-                    Text(
-                      text,
-                      textDirection: direction,
-                      style: Theme.of(context)
-                          .extension<ThemeTextStyles>()!
-                          .textM
-                          .copyWith(color: const Color(0xFF1E2A36)),
+                    Expanded(
+                      child: Text(
+                        text,
+                        textAlign: TextAlign.start,
+                        textDirection: direction,
+                        style: Theme.of(context)
+                            .extension<ThemeTextStyles>()!
+                            .textM
+                            .copyWith(color: const Color(0xFF1E2A36)),
+                      ),
                     ),
-                    if (direction == TextDirection.ltr) const Spacer(),
                     const SizedBox(
                       width: 12.0,
                     ),
