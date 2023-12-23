@@ -99,7 +99,7 @@ class _RemoteConfig {
   );
   static final ssoUrl = _initValues<String>(
     devVal: "https://sa1.ops.2gis.dev",
-    stgVal: "https://ssoappdev.momra.gov.sa",
+    stgVal: "https://ssoappstg.momra.gov.sa",
     preVal: "https://ssoappstg.momra.gov.sa",
     prodVal: "https://ssoapp.balady.gov.sa",
     urbiPreVal: "https://sa1.ops.2gis.dev",
@@ -134,7 +134,7 @@ class _RemoteConfig {
   );
   static final ssoMomraDomain = _initValues<String>(
     devVal: ".ssoappdev.momra.gov.sa",
-    stgVal: ".ssoappdev.momra.gov.sa",
+    stgVal: ".ssoappstg.momra.gov.sa",
     preVal: ".ssoappstg.momra.gov.sa",
     prodVal: ".ssoapp.balady.gov.sa",
     urbiPreVal: ".ssoappstg.momra.gov.sa",
