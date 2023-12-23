@@ -42,6 +42,7 @@ class CalendarRepositoryImpl implements CalendarRepository {
     } on ServerException catch (error) {
       return Left(ServerFailure(
         error.errorMessage,
+        errorCode: error.errorCode,
         statusCode: error.statusCode,
       ));
     }

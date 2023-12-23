@@ -48,7 +48,7 @@ class OldEventHomeCard extends StatelessWidget {
             Align(
               alignment: Alignment.bottomRight,
               child: Container(
-                padding: EdgeInsets.only(right: 8, bottom: 16),
+                padding: EdgeInsetsDirectional.only(start: 8, bottom: 16),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,

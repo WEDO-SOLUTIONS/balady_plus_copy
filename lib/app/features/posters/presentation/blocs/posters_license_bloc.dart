@@ -9,6 +9,7 @@ import 'package:meta/meta.dart';
 import 'package:balady_plus/app/core/utils/extensions/date_time_extension.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
 import '../../../../core/utils/nullable.dart';
 import 'package:collection/collection.dart';
@@ -178,6 +179,9 @@ class PostersLicenseBloc
 
       NavigationService.navigatorKey.currentState!
           .pushNamed(RouteName.postersDetailsPage, arguments: this);
+
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.startServiceIndivisualPostersPermit);
     });
   }
 
@@ -330,6 +334,14 @@ class PostersLicenseBloc
           RouteName.submitApplicationSuccessfullyPosters,
           arguments: r,
         );
+
+        if (r.isGrouped) {
+          CommonFunctions.sendUXCamEvent(
+              UXCamEvents.finishServiceMultiplePostersPermit);
+        } else {
+          CommonFunctions.sendUXCamEvent(
+              UXCamEvents.finishServiceIndivisualPostersPermit);
+        }
       }
     });
   }
@@ -399,6 +411,9 @@ class PostersLicenseBloc
           status: BlocStatus.success, requestId: Nullable(r.requestId)));
       NavigationService.navigatorKey.currentState!
           .pushNamed(RouteName.postersStartService, arguments: this);
+
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.startServiceMultiplePostersPermit);
     });
   }
 

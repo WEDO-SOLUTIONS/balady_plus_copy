@@ -175,8 +175,7 @@ class ProfileCard extends StatelessWidget {
               flex: 1,
               child: Container(
                 height: 28,
-                padding:
-                    EdgeInsets.only(left: 18, right: 18, bottom: 6, top: 6),
+                padding: EdgeInsets.only(left: 2, right: 2, bottom: 6, top: 6),
                 decoration: BoxDecoration(
                     color: agentBgColor,
                     borderRadius: BorderRadius.circular(6)),

@@ -85,21 +85,24 @@ class _NextPrayerState extends State<NextPrayer> {
             final minutes = (time.inMinutes % 60).toString().padLeft(2, '0');
             final seconds = (time.inSeconds % 60).toString().padLeft(2, '0');
 
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                PrayerCountDownContainer(
-                  count: seconds,
-                ),
-                const SizedBox(width: 16),
-                PrayerCountDownContainer(
-                  count: minutes,
-                ),
-                const SizedBox(width: 16),
-                PrayerCountDownContainer(
-                  count: hours,
-                ),
-              ],
+            return Directionality(
+              textDirection: TextDirection.rtl,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  PrayerCountDownContainer(
+                    count: seconds,
+                  ),
+                  const SizedBox(width: 16),
+                  PrayerCountDownContainer(
+                    count: minutes,
+                  ),
+                  const SizedBox(width: 16),
+                  PrayerCountDownContainer(
+                    count: hours,
+                  ),
+                ],
+              ),
             );
           },
         ),

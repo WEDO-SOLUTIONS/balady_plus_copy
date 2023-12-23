@@ -55,7 +55,8 @@ class ServiceIcon extends StatelessWidget {
               if (service.id == 102) {
                 NavigationService.navigatorKey.currentState!.pushNamed(
                   service.action.value,
-                  arguments: context.read<PrayerTimesCubit>(),
+                  arguments: NavigationService.bottomNavKey.currentContext!
+                      .read<PrayerTimesCubit>(),
                 );
               } else {
                 NavigationService.navigatorKey.currentState?.pushNamed(

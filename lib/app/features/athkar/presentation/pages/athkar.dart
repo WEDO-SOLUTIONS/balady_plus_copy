@@ -5,6 +5,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/common_functions.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 
 class Athkar extends StatefulWidget {
   Athkar({super.key});
@@ -19,6 +20,7 @@ class _AthkarState extends State<Athkar> {
     super.initState();
 
     CommonFunctions.sendEventToAnalytics(AppEvents.Athkar);
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceAthkar);
   }
 
   @override

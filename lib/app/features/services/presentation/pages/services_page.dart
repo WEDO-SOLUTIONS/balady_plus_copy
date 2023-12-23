@@ -104,22 +104,22 @@ class _ServicesPageState extends State<ServicesPage> {
                               const SizedBox(
                                 height: 8,
                               ),
-                              Container(
-                                height: 58,
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: dashboardState.cards.length,
-                                  itemBuilder: (context, index) {
-                                    return DashboardCard(
-                                      card: dashboardState.cards[index],
-                                      totalCount: dashboardState
-                                              .cardsStates[
-                                                  dashboardState.cards[index]]
-                                              ?.totalCount ??
-                                          0,
-                                    );
-                                  },
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: IntrinsicHeight(
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: dashboardState.cards
+                                        .map((e) => DashboardCard(
+                                              card: e,
+                                              totalCount: dashboardState
+                                                      .cardsStates[e]
+                                                      ?.totalCount ??
+                                                  0,
+                                            ))
+                                        .toList(),
+                                  ),
                                 ),
                               ),
                             ],

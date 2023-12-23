@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../_shared_feature_/presentation/cards/expandable_card.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
@@ -35,6 +36,7 @@ class _PermitStep1PageState extends State<PermitStep1Page> {
     super.initState();
 
     context.read<Permit24LicenseBloc>().add(const CalculatePermitCostEvent());
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startService24HourPermit);
   }
 
   bool isAgreement = false;

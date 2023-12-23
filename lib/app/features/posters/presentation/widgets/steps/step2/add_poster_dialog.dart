@@ -71,219 +71,228 @@ class _AddPosterDialogState extends State<AddPosterDialog> {
   Widget build(BuildContext context) {
     return BlocBuilder<PostersLicenseBloc, PostersLicenseState>(
         builder: (context, state) {
-      return Container(
-        color: AppColor.white,
-        padding: const EdgeInsets.all(16),
-        child: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomTextWidget(
-                          Helpers.translatingWord("posters_add".tr()),
-                          fontColor: AppColor.blackModern900Light,
-                          fontWeight: AppFontWeight.bold,
-                          maxLines: 10,
-                        ),
-                        InkWell(
-                            onTap: () => Navigator.pop(context),
-                            child: CircleIcon(
-                              icon: Icons.close,
-                              iconColor: AppColor.primary600Light,
-                              backgroundColor: AppColor.geyser.withOpacity(0.4),
-                              iconSize: 18,
-                            )),
-                      ]),
-                  PosterDropDown(
-                    onSelect: (PermitPosterTypeItem? item) async {
-                      setState(() {
-                        posterType = item;
-                      });
+      return GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: Container(
+          color: AppColor.white,
+          padding: const EdgeInsets.all(16),
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomTextWidget(
+                            Helpers.translatingWord("posters_add".tr()),
+                            fontColor: AppColor.blackModern900Light,
+                            fontWeight: AppFontWeight.bold,
+                            maxLines: 10,
+                          ),
+                          InkWell(
+                              onTap: () => Navigator.pop(context),
+                              child: CircleIcon(
+                                icon: Icons.close,
+                                iconColor: AppColor.primary600Light,
+                                backgroundColor:
+                                    AppColor.geyser.withOpacity(0.4),
+                                iconSize: 18,
+                              )),
+                        ]),
+                    PosterDropDown(
+                      onSelect: (PermitPosterTypeItem? item) async {
+                        setState(() {
+                          posterType = item;
+                        });
 
-                      attachments = await context
-                              .read<PostersLicenseBloc>()
-                              .getAttachments(posterType!.id!) ??
-                          [];
-                      setState(() {});
-                    },
-                    item: posterType,
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  CustomTextFieldWidget(
-                    label: "poster_name".tr(),
-                    initialValue: posterName,
-                    onChanged: (String? value) {
-                      posterName = value;
-                      setState(() {});
-                    },
-                  ),
-                  const SizedBox(
-                    height: 32,
-                  ),
-                  Row(
-                    children: [
-                      CustomTextWidget(
-                        Helpers.translatingWord("poster_dim".tr()),
-                        textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                            color: AppColor.blackModern700Light),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: CustomTextFieldWidget(
-                          label: "poster_length".tr(),
-                          keyboardType: TextInputType.number,
-                          isDigitsOnly: true,
-                          initialValue:
-                              length != null ? length.toString() : null,
-                          suffixIcon: Text("poster_cm".tr()),
-                          onChanged: (String? value) {
-                            setState(() {
-                              length = double.tryParse(value ?? "");
-                            });
-                            _area.text =
-                                ((length ?? 0) * (width ?? 0)).toString();
-                          },
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 16,
-                      ),
-                      Expanded(
-                        child: CustomTextFieldWidget(
-                          label: "poster_width".tr(),
-                          keyboardType: TextInputType.number,
-                          initialValue: width != null ? width.toString() : null,
-                          suffixIcon: Text("poster_cm".tr()),
-                          onChanged: (String? value) {
-                            setState(() {
-                              width = double.tryParse(value ?? "");
-                            });
-                            _area.text =
-                                ((length ?? 0) * (width ?? 0)).toString();
-                          },
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 16,
-                      ),
-                      Expanded(
-                        child: CustomTextFieldWidget(
-                          label: "poster_area".tr(),
-                          suffixIcon: Text("poster_cm2".tr()),
-                          enabled: false,
-                          controller: _area,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 32,
-                  ),
-                  if (attachments == null)
-                    ReloadWidget(
-                      onTab: () async {
                         attachments = await context
                                 .read<PostersLicenseBloc>()
                                 .getAttachments(posterType!.id!) ??
                             [];
                         setState(() {});
                       },
+                      item: posterType,
                     ),
-                  AttachmentListWidget(
-                    attachments: attachments ?? [],
-                    deleteFile: (int index) {
-                      /*   context
-                                      .read<RenewCommercialLicenseBloc>()
-                                      .deleteFile(index);*/
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    CustomTextFieldWidget(
+                      label: "poster_name".tr(),
+                      initialValue: posterName,
+                      onChanged: (String? value) {
+                        posterName = value;
+                        setState(() {});
+                      },
+                    ),
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    Row(
+                      children: [
+                        CustomTextWidget(
+                          Helpers.translatingWord("poster_dim".tr()),
+                          textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              color: AppColor.blackModern700Light),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: CustomTextFieldWidget(
+                            label: "poster_length".tr(),
+                            keyboardType: TextInputType.number,
+                            isDigitsOnly: true,
+                            initialValue:
+                                length != null ? length.toString() : null,
+                            suffixIcon: Text("poster_cm".tr()),
+                            onChanged: (String? value) {
+                              setState(() {
+                                length = double.tryParse(value ?? "");
+                              });
+                              _area.text =
+                                  ((length ?? 0) * (width ?? 0)).toString();
+                            },
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 16,
+                        ),
+                        Expanded(
+                          child: CustomTextFieldWidget(
+                            label: "poster_width".tr(),
+                            keyboardType: TextInputType.number,
+                            initialValue:
+                                width != null ? width.toString() : null,
+                            suffixIcon: Text("poster_cm".tr()),
+                            onChanged: (String? value) {
+                              setState(() {
+                                width = double.tryParse(value ?? "");
+                              });
+                              _area.text =
+                                  ((length ?? 0) * (width ?? 0)).toString();
+                            },
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 16,
+                        ),
+                        Expanded(
+                          child: CustomTextFieldWidget(
+                            label: "poster_area".tr(),
+                            suffixIcon: Text("poster_cm2".tr()),
+                            enabled: false,
+                            controller: _area,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    if (attachments == null)
+                      ReloadWidget(
+                        onTab: () async {
+                          attachments = await context
+                                  .read<PostersLicenseBloc>()
+                                  .getAttachments(posterType!.id!) ??
+                              [];
+                          setState(() {});
+                        },
+                      ),
+                    AttachmentListWidget(
+                      attachments: attachments ?? [],
+                      deleteFile: (int index) {
+                        /*   context
+                                        .read<RenewCommercialLicenseBloc>()
+                                        .deleteFile(index);*/
 
-                      attachments?[index].base64 = null;
-                      attachments?[index].fileName = null;
-                      attachments?[index].filePath = null;
-
-                      setState(() {});
-                    },
-                    saveFile: (int index, String filePath, String fileName,
-                        String base64) async {
-                      PermitAttachmentItem? item = attachments?[index].copyWith(
-                          base64: base64,
-                          fileName: fileName,
-                          posterTypeId: posterType?.id,
-                          filePath: filePath);
-
-                      PostersUploadResponse? uploadResponse = await context
-                          .read<PostersLicenseBloc>()
-                          .uploadAttachment(item!);
-                      if (uploadResponse != null) {
-                        attachments?[index] =
-                            item.copyWith(key: uploadResponse?.key);
+                        attachments?[index].base64 = null;
+                        attachments?[index].fileName = null;
+                        attachments?[index].filePath = null;
 
                         setState(() {});
-                      }
-                    },
-                  ),
-                  /* if (attachments?.isNotEmpty ?? false)
-                    ...(attachments ?? []).map((e) {
-                      return AttachmentListWidget(
-                        attachments: attachments ?? [],
-                        deleteFile: (int index) {
-                          /*   context
-                                      .read<RenewCommercialLicenseBloc>()
-                                      .deleteFile(index);*/
-                        },
-                        saveFile: (int index, String filePath, String fileName,
-                            String base64) {
-                          /* context.read<RenewCommercialLicenseBloc>().saveFile(
-                                      index: index,
-                                      fileName: fileName,
-                                      fileBase64: base64,
-                                      filePath: filePath);*/
-                        },
-                      );
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
-                        child: ElevatedButtonWidget.primaryCustomBorder(
-                            onPressed: () {}, text: e.name ?? ""),
-                      );
-                    }).toList(),*/
-                  const SizedBox(
-                    height: 32,
-                  ),
-                  ElevatedButtonWidget.custom(
-                      text:
-                          widget.item == null ? "add".tr() : "saveButton".tr(),
-                      isDisabled: !isFormValid(),
-                      onPressed: () {
-                        PosterItem item = PosterItem(
-                            length: length,
-                            width: width,
-                            name: posterName,
-                            attachedDocuments: attachments,
-                            posterType: posterType);
+                      },
+                      saveFile: (int index, String filePath, String fileName,
+                          String base64) async {
+                        PermitAttachmentItem? item = attachments?[index]
+                            .copyWith(
+                                base64: base64,
+                                fileName: fileName,
+                                posterTypeId: posterType?.id,
+                                filePath: filePath);
 
-                        widget.onAdd(item);
-                        Navigator.pop(context, item);
-                      })
-                ],
+                        PostersUploadResponse? uploadResponse = await context
+                            .read<PostersLicenseBloc>()
+                            .uploadAttachment(item!);
+                        if (uploadResponse != null) {
+                          attachments?[index] =
+                              item.copyWith(key: uploadResponse?.key);
+
+                          setState(() {});
+                        }
+                      },
+                    ),
+                    /* if (attachments?.isNotEmpty ?? false)
+                      ...(attachments ?? []).map((e) {
+                        return AttachmentListWidget(
+                          attachments: attachments ?? [],
+                          deleteFile: (int index) {
+                            /*   context
+                                        .read<RenewCommercialLicenseBloc>()
+                                        .deleteFile(index);*/
+                          },
+                          saveFile: (int index, String filePath, String fileName,
+                              String base64) {
+                            /* context.read<RenewCommercialLicenseBloc>().saveFile(
+                                        index: index,
+                                        fileName: fileName,
+                                        fileBase64: base64,
+                                        filePath: filePath);*/
+                          },
+                        );
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 16.0),
+                          child: ElevatedButtonWidget.primaryCustomBorder(
+                              onPressed: () {}, text: e.name ?? ""),
+                        );
+                      }).toList(),*/
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    ElevatedButtonWidget.custom(
+                        text: widget.item == null
+                            ? "add".tr()
+                            : "saveButton".tr(),
+                        isDisabled: !isFormValid(),
+                        onPressed: () {
+                          PosterItem item = PosterItem(
+                              length: length,
+                              width: width,
+                              name: posterName,
+                              attachedDocuments: attachments,
+                              posterType: posterType);
+
+                          widget.onAdd(item);
+                          Navigator.pop(context, item);
+                        })
+                  ],
+                ),
               ),
-            ),
-            if (state.status.isSubmissionLoading)
-              const CustomCircularLoadingWidget(),
-          ],
+              if (state.status.isSubmissionLoading)
+                const CustomCircularLoadingWidget(),
+            ],
+          ),
         ),
       );
     });
