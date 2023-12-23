@@ -46,7 +46,7 @@ class ZmZmBloc extends Bloc<ZmZmEvent, ZmZmState> {
           id: 3,
           city: "jeddah".tr(),
           name: "zmzm_project".tr(),
-          mapUrl: "https://goo.gl/maps/mKaXsBGvwHuYQphw7?coh=178571&entry=tt"),
+          mapUrl: "https://maps.app.goo.gl/odha4UTAFZD2rcxH6"),
       ZMZMItemModel(
           id: 4,
           city: "madina".tr(),
