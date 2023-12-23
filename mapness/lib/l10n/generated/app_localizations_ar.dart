@@ -98,7 +98,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commercialLicenseNumber => ' رقم الرخصة التجارية';
 
   @override
-  String get compilanceBuildings => 'مباني الامتثال';
+  String get compilanceBuildings => 'مواقع إمتثال المباني';
 
   @override
   String get complete => 'مكتمل';
@@ -308,7 +308,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get invalid => 'غير صالح';
 
   @override
-  String get investmentOpportunities => 'الفرص الإستثمارية';
+  String get investmentOpportunities => 'إستثمر فى مدينتك';
 
   @override
   String get iwish => 'أتمنى';
@@ -833,7 +833,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get watchMore => 'مشاهدة المزيد';
 
   @override
-  String get weAreHappyToConnectYouWithBaladyTeam => 'تم تطوير بوابة بلدي بالتعاون مع جهات القطاع البلدي المختلفة لتكون البوابة الوطنية الداعمة للمجتمع البلدي.\nوتشمل هذه البوابة في المرحلة الحالية ثلاث مسؤوليات رئيسية وهي:\n- الخدمات التفاعلية التي تساعد في تعزيز مفهوم الشراكة المجتمعية لتحسين جودة الخدمات المقدمة للمستفيدين.\n- الخدمات الإلكترونية التي تساعد على تقديم الطلبات الإلكترونية لاستخراج الرخص الأكثر استخدامًا.\n- الخدمات المعلوماتية والتي تساعد المستفيدين على اتخاذ القرارات ذات العلاقة بما يساهم في تحسين مستوى الرضا عن جهات القطاع البلدي.';
+  String get weAreHappyToConnectYouWithBaladyTeam => 'تم تطوير تطبيق بلدي بالتعاون مع جهات القطاع البلدي المختلفة لتكون البوابة الوطنية الداعمة للمجتمع البلدي.\nويشمل هذا التطبيق في المرحلة الحالية أربعة مسؤوليات رئيسية وهي:\n- التركيز على عناصر لايف ستايل والمتطلبات اليومية للمستخدمين\n- الخدمات التفاعلية التي تساعد في تعزيز مفهوم الشراكة المجتمعية لتحسين جودة الخدمات المقدمة للمستفيدين.\n- الخدمات الإلكترونية التي تساعد على تقديم الطلبات الإلكترونية لاستخراج الرخص الأكثر استخدامًا.\n- الخدمات المعلوماتية والتي تساعد المستفيدين على اتخاذ القرارات ذات العلاقة بما يساهم في تحسين مستوى الرضا عن جهات القطاع البلدي.';
 
   @override
   String get weCouldntFindAnythingTryChangingYourRequest => 'لم نتمكن من العثور على شيء.رجاء المحاولة مرة أخرى';

@@ -143,7 +143,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get continueTrip => 'Continue trip';
 
   @override
-  String get contributedToImproving => 'Contributed to improving the urban landscape';
+  String get contributedToImproving => 'Enhance Urban Scene';
 
   @override
   String get coordinates => 'Coordinates';
@@ -497,13 +497,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get parkOpeningDate => 'Opening date';
 
   @override
-  String get parkSizeBig => 'Big size park';
+  String get parkSizeBig => 'Neighborhood Park';
 
   @override
   String get parkSizeMedium => 'Medium size park';
 
   @override
-  String get parkSizeSmall => 'Small size park';
+  String get parkSizeSmall => 'Pocket Park';
 
   @override
   String get parkSizeUnknown => 'Unknown size park';
@@ -833,7 +833,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get watchMore => 'Watch more';
 
   @override
-  String get weAreHappyToConnectYouWithBaladyTeam => 'Balady portal was developed in cooperation with various municipal sector entities to be the national portal that supports the municipal community.\nAt the current stage, this portal includes three main responsibilities:\n\n- Interactive services that help enhance the concept of community partnership to improve the quality of services provided to beneficiaries.\n\n- Electronic services that help submit electronic applications to obtain the most frequently used licenses.\n\n- Information services that help beneficiaries make relevant decisions, which contributes to improving the level of satisfaction with municipal sector entities.';
+  String get weAreHappyToConnectYouWithBaladyTeam => 'Baldy\'s Application, developed in collaboration with various municipal sector entities, has evolved into a national application dedicated to bolstering the municipal community. At present, the application fulfills four key roles: \n1.Firstly, concentrating on the lifestyle aspects and daily requirements of its users \n2.It facilitates interactive services to fortify community partnerships and improve service quality,\n3.Providing digital services for the streamlined submission of electronic applications for commonly used licenses, and\n4.Offering information services to empower users in making well-informed decisions, thereby elevating satisfaction levels with municipal sector authorities.';
 
   @override
   String get weCouldntFindAnythingTryChangingYourRequest => 'We couldn\'t find anything. Try changing your request';
