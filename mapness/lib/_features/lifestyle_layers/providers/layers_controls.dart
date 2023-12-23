@@ -27,7 +27,6 @@ import '../domain/point_layers_data.dart';
 part 'layers_controls.g.dart';
 
 const mapLayerName = 'esri_markers';
-const iwishLayerName = 'iwish_markers';
 const _markerPrefix = 'esri_markers-';
 
 @riverpod
@@ -137,10 +136,11 @@ class LayersControls extends _$LayersControls {
     var layersControls = ref.watch(layersControlsProvider.notifier);
     if (currentState == (LayerType.joy)) {
       await ref
-          .read(mapObjectManagerProvider(named: iwishLayerName).notifier)
+          .read(mapObjectManagerProvider(named: mapLayerName).notifier)
           .removeAllMarkers();
       layersControls.update(isLoading: false, selectedType: null);
     } else {
+      _removeAll();
       showIwish();
     }
   }
@@ -389,7 +389,7 @@ class LayersControls extends _$LayersControls {
     }
     final markers = await ref.read(iwishMarkersProvider.future);
     await ref
-        .read(mapObjectManagerProvider(named: iwishLayerName).notifier)
+        .read(mapObjectManagerProvider(named: mapLayerName).notifier)
         .addMarkers(markers);
   }
 

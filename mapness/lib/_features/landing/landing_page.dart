@@ -93,9 +93,6 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     final isLayersVisible = ref.watch(layersControlsProvider);
     ref.watch(favouriteMarkersProvider.select((value) => null));
 
-    /// keep iwish markers alive when page is opened
-    ref.watch(mapObjectManagerProvider(named: iwishLayerName).notifier);
-    // ref.watch(iwishMarkersProvider.select((value) => null));
     ref.watch(
       mapObjectManagerProvider(named: poiMapLayer),
     );
