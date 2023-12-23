@@ -46,6 +46,7 @@ class WeatherMapController extends _$WeatherMapController {
       state = state.copy(type: type, isEnabled: result);
 
       if (type case WeatherMapType.precipitation) {
+        /// показывает иконки затоплений на карте
         // await searchController.searchByText('critical_point',
         //     icon: MarkerIconMessage(
         //       path: "packages/mapness/assets/icons/svg/weather/flood_point.svg",
