@@ -71,7 +71,11 @@ class IwishPlaceCard extends ConsumerWidget {
                         // crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.only(
+                              left: 16,
+                              right: 16,
+                              bottom: 16,
+                            ),
                             decoration: const BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.vertical(
@@ -80,6 +84,19 @@ class IwishPlaceCard extends ConsumerWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Container(
+                                    margin: const EdgeInsets.only(top: 8),
+                                    height: 4,
+                                    width: 40,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[300],
+                                      borderRadius: BorderRadius.circular(2),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
                                 IwishInfo(
                                   iwish: entity,
                                   distance: distance,
