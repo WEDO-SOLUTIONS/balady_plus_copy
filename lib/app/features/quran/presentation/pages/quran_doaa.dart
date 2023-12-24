@@ -26,24 +26,27 @@ class _QuranDoaaPageState extends State<QuranDoaaPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: DoaaAppBar(),
-        body: Container(
-            padding: EdgeInsets.all(16),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  CustomTextWidget(
-                    "quran_doaa".tr(),
-                    fontWeight: AppFontWeight.medium,
-                    fontSize: 26,
-                    fontFamily: "HafsSmart",
-                    maxLines: 1000,
-                    height: 1.6,
-                    fontColor: AppColor.black,
-                  ),
-                ],
-              ),
-            )));
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+          appBar: DoaaAppBar(),
+          body: Container(
+              padding: EdgeInsets.all(16),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    CustomTextWidget(
+                      "quran_doaa".tr(),
+                      fontWeight: AppFontWeight.medium,
+                      fontSize: 26,
+                      fontFamily: "HafsSmart",
+                      maxLines: 1000,
+                      height: 1.6,
+                      fontColor: AppColor.black,
+                    ),
+                  ],
+                ),
+              ))),
+    );
   }
 }

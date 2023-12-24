@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -64,6 +65,18 @@ class SsoUserInfo extends Equatable {
     return names.last;
   }
 
+  String getFirstNameEn() {
+    List<String> names = enName?.split(' ') ?? [""];
+
+    return names.first;
+  }
+
+  String getLastNameEn() {
+    List<String> names = enName?.split(' ') ?? [""];
+
+    return names.last;
+  }
+
   String getMiddleName() {
     try {
       List<String> names = sname?.split(',') ?? [""];
@@ -87,7 +100,11 @@ class SsoUserInfo extends Equatable {
   }
 
   String getFirstAndLastName() {
-    return getFirstName() + " " + getLastName();
+    if (CommonFunctions.isAppAR) {
+      return getFirstName() + " " + getLastName();
+    } else {
+      return getFirstNameEn() + " " + getLastNameEn();
+    }
   }
 
   String getIdType() {

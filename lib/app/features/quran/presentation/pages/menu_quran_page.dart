@@ -30,28 +30,31 @@ class _MenuQuranPageState extends State<MenuQuranPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: MenuAppBar(
-        onSearch: (String? text) {
-          searchedQuranData =
-              quranData.where((e) => e.name.contains(text ?? "")).toList();
-          setState(() {});
-        },
-      ),
-      body: Container(
-        padding: EdgeInsets.all(16),
-        child: ListView.builder(
-            itemCount: searchedQuranData.length,
-            itemBuilder: (ctx, index) {
-              return QuranMenuCardWidget(
-                item: searchedQuranData[index],
-                index: searchedQuranData[index].id,
-                onTap: () {
-                  Navigator.of(context).pushNamed(RouteName.quranScreen,
-                      arguments: searchedQuranData[index].id - 1);
-                },
-              );
-            }),
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        appBar: MenuAppBar(
+          onSearch: (String? text) {
+            searchedQuranData =
+                quranData.where((e) => e.name.contains(text ?? "")).toList();
+            setState(() {});
+          },
+        ),
+        body: Container(
+          padding: EdgeInsets.all(16),
+          child: ListView.builder(
+              itemCount: searchedQuranData.length,
+              itemBuilder: (ctx, index) {
+                return QuranMenuCardWidget(
+                  item: searchedQuranData[index],
+                  index: searchedQuranData[index].id,
+                  onTap: () {
+                    Navigator.of(context).pushNamed(RouteName.quranScreen,
+                        arguments: searchedQuranData[index].id - 1);
+                  },
+                );
+              }),
+        ),
       ),
     );
   }

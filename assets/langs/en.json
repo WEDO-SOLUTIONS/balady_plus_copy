@@ -791,11 +791,6 @@
 "attachment_name":"Attachment name",
 "images":"Photos",
 "files":"Files",
-"QuranComments":"",
-"no_quran_bookmarks":"No bookmarks",
-"quran_book_mark_ramoved":"Remove mark",
-"quran_book_mark_save":"Save mark",
-"quran_doaa":"* O Allah, bestow your mercy upon me through the blessings of the Great Quran. Let it be my guiding light, showing me the way and showering me with your mercy. Help me recall what I have forgotten, enlighten me about what I do not know, and enable me to recite it day and night. Let it be my strong evidence and argument in all matters. * O Allah! Set right for me my religion, which is the safeguard of my affairs. And set right for me the affairs of the world wherein is my living. Decree the Hereafter to be good for me. And make this life, for me, (a source) of abundance for every good and make my death (a source) of comfort to me and protection against every evil. * O Allah, make the best part of my life, the last part, the. best deed the last deed and the best day, the day I meet. *O Allah! I ask you for a pure life, a sound death [before reaching senility] and a return [to the Hereafter] which is not disgraceful or embarrassing. *O Allah, I beg You for the best of what can be asked for, the best supplication, the ultimate success, the best deeds, the best reward, the best life, and the best death. Keep me steadfast, make my scales heavy, establish my belief, elevate my ranks, accept my salāh, forgive my sins and I ask You for lofty ranks in Paradise. *O Allah, we beg You for all that which will necessitate Your mercy and the determination to do all that which will necessitate Your forgiveness; for protection from every sin and accomplishment of every good; for attainment of Paradise and for freedom from fire. * O Allah, grant us the best outcome in all of our affairs, and protect us from the humiliation of this world and the punishment of the hereafter. * O Allah, apportion for us enough fear and awe of You to prevent us from sinning against You, and enough obedience to You to make us reach Your Paradise, and enough certainty to make the difficulties of this world easy for us. O Allah, let us enjoy our hearing and sight and strength as long as You allow us to live, and make it an inheritance for us. Let our retaliation be upon those who have wronged us, and help us against those who harbor enmity towards us. Let not our afflictions be in our religion. Do not make the world our biggest concern or the full extent of our knowledge, and do not give power over us to anyone who will not have mercy on us. O Allah, do not allow us to sin except that You forgive us, nor to have any worry except that you relieve us therein, nor for any debt to come upon us except that You see it compensated, nor for any need except You facilitate it as You are the Most Merciful of those who show mercy. Our Lord! Grant us the good of this world and the Hereafter, and protect us from the torment of the Fire.",
 "CalculatorComments":"Computer",
 "calculator_note1":"Note: Anyone who must collect waste and transport it to the landfills designated for that purpose, in accordance with municipal requirements, according to the license granted thereto, is excluded from the applicable waste collection fee.",
 "calculator_note2":"Alert ... Delays and prior years' fees are subject to change based on the date of submission of the request",
@@ -2878,21 +2873,8 @@
 "invoice_detail_title":"Invoice items",
 "payment_methods":"Payment methods",
 "Quran":"Quran",
-"bookmark_text":"Bookmarks",
-"end_doaa":"Dua Khatm al-Quran",
-"lookForAya":"Find a verse",
-"signLook":"Move to the tag",
-"pageNumber":"Page number",
-"pageEntry":"Please enter a page number between 1 and 604",
-"nextPage":"Go to",
-"goToNextPage":"Go to page",
-"changePage":"Change page",
-"chooseSurah":"Choose the surah",
-"index":"Index",
-"choosePart":"Select the part",
-"parts":"Parts",
+
 "quran":"The Holy Quran",
-"quranSearch":"Search by surah name...",
 "chooseCity":"Select the city",
 "ayaSearch":"Find a verse",
 "VD":"VD",
@@ -4029,12 +4011,6 @@
 "period":"Period",
 "please_select_all_complaince_terms":"Please select all compliance terms",
 "chose":"Choice",
-"bookmarks":"Bookmarks",
-"finish_quran_pray":"Finish Qura'an pray",
-"move_to_mark":"Move to mark",
-"move":"Move",
-"move_to_page":"Move to page",
-"change_page":"Change page",
 "inq_summery":"Inquiry summary",
 "support_reply":"Technical support reply",
 "no_valid_account":"You do not have valid accounts associated with this account",
@@ -4198,9 +4174,37 @@
 "fines_penalties_title": "قم بالاطلاع على التعليمات التنفيذية بلائحة الغرامات والجزاءات عن المخالفة البلدية.",
 "list_penalties_municipal_violations": "لائحة الجزاءات عن المخالفات البلدية", 
 
-"update_photo":"Update Photo"
+"update_photo":"Update Photo" ,
 
 
 
-   
+"QuranComments": "",
+"no_quran_bookmarks": "لا توجد علامات مرجعية",
+"quran_book_mark_ramoved": "إزالة علامة",
+"quran_book_mark_save": "حفظ علامة",
+"quran_doaa": "اللَّهُمَّ ارْحَمْنِي بالقُرْءَانِ وَاجْعَلهُ لِي إِمَاماً وَنُوراً وَهُدًى وَرَحْمَةً * اللَّهُمَّ ذَكِّرْنِي مِنْهُ مَانَسِيتُ وَعَلِّمْنِي مِنْهُ مَاجَهِلْتُ وَارْزُقْنِي تِلاَوَتَهُ آنَاءَ اللَّيْلِ وَأَطْرَافَ النَّهَارِ وَاجْعَلْهُ لِي حُجَّةً يَارَبَّ العَالَمِينَ * اللَّهُمَّ أَصْلِحْ لِي دِينِي الَّذِي هُوَ عِصْمَةُ أَمْرِي، وَأَصْلِحْ لِي دُنْيَأيَ الَّتِي فِيهَا مَعَاشِي، وَأَصْلِحْ لِي آخِرَتِي الَّتِي فِيهَا مَعَادِي، وَاجْعَلِ الحَيَاةَ زِيَادَةً لِي فِي كُلِّ خَيْرٍ وَاجْعَلِ المَوْتَ رَاحَةً لِي مِنْ كُلِّ شَرٍّ * اللَّهُمَّ اجْعَلْ خَيْرَ عُمْرِي آخِرَهُ وَخَيْرَ عَمَلِي خَوَاتِمَهُ وَخَيْرَ أَيَّامِي يَوْمَ أَلْقَاكَ فِيهِ * اللَّهُمَّ إِنِّي أَسْأَلُكَ عِيشَةً هَنِيَّةً وَمِيتَةً سَوِيَّةً وَمَرَدًّا غَيْرَ مُخْزٍ وَلاَ فَاضِحٍ * اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ المَسْأَلةِ وَخَيْرَ الدُّعَاءِ وَخَيْرَ النَّجَاحِ وَخَيْرَ العِلْمِ وَخَيْرَ العَمَلِ وَخَيْرَ الثَّوَابِ وَخَيْرَ الحَيَاةِ وَخيْرَ المَمَاتِ وَثَبِّتْنِي وَثَقِّلْ مَوَازِينِي وَحَقِّقْ إِيمَانِي وَارْفَعْ دَرَجَتِي وَتَقَبَّلْ صَلاَتِي وَاغْفِرْ خَطِيئَاتِي وَأَسْأَلُكَ العُلَا مِنَ الجَنَّةِ * اللَّهُمَّ إِنِّي أَسْأَلُكَ مُوجِبَاتِ رَحْمَتِكَ وَعَزَائِمِ مَغْفِرَتِكَ وَالسَّلاَمَةَ مِنْ كُلِّ إِثْمٍ وَالغَنِيمَةَ مِنْ كُلِّ بِرٍّ وَالفَوْزَ بِالجَنَّةِ وَالنَّجَاةَ مِنَ النَّارِ * اللَّهُمَّ أَحْسِنْ عَاقِبَتَنَا فِي الأُمُورِ كُلِّهَا، وَأجِرْنَا مِنْ خِزْيِ الدُّنْيَا وَعَذَابِ الآخِرَةِ * اللَّهُمَّ اقْسِمْ لَنَا مِنْ خَشْيَتِكَ مَاتَحُولُ بِهِ بَيْنَنَا وَبَيْنَ مَعْصِيَتِكَ وَمِنْ طَاعَتِكَ مَاتُبَلِّغُنَا بِهَا جَنَّتَكَ وَمِنَ اليَقِينِ مَاتُهَوِّنُ بِهِ عَلَيْنَا مَصَائِبَ الدُّنْيَا وَمَتِّعْنَا بِأَسْمَاعِنَا وَأَبْصَارِنَا وَقُوَّتِنَا مَاأَحْيَيْتَنَا وَاجْعَلْهُ الوَارِثَ مِنَّا وَاجْعَلْ ثَأْرَنَا عَلَى مَنْ ظَلَمَنَا وَانْصُرْنَا عَلَى مَنْ عَادَانَا وَلاَ تجْعَلْ مُصِيبَتَنَا فِي دِينِنَا وَلاَ تَجْعَلِ الدُّنْيَا أَكْبَرَ هَمِّنَا وَلَا مَبْلَغَ عِلْمِنَا وَلاَ تُسَلِّطْ عَلَيْنَا مَنْ لَا يَرْحَمُنَا * اللَّهُمَّ لَا تَدَعْ لَنَا ذَنْبًا إِلَّا غَفَرْتَهُ وَلَا هَمَّا إِلَّا فَرَّجْتَهُ وَلَا دَيْنًا إِلَّا قَضَيْتَهُ وَلَا حَاجَةً مِنْ حَوَائِجِ الدُّنْيَا وَالآخِرَةِ إِلَّا قَضَيْتَهَا يَاأَرْحَمَ الرَّاحِمِينَ * رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ وَصَلَّى اللهُ عَلَى سَيِّدِنَا وَنَبِيِّنَا مُحَمَّدٍ وَعَلَى آلِهِ وَأَصْحَابِهِ الأَخْيَارِ وَسَلَّمَ تَسْلِيمًا كَثِيراً.", 
+
+"bookmarks":"العلامات المرجعيه", 
+"finish_quran_pray":"دعاء الختم", 
+"move_to_mark":"الإنتقال إلى العلامة", 
+"move":"انتقال", 
+"move_to_page":"إنتقال إلى الصفحة", 
+"change_page":"تغيير الصفحة", 
+
+"bookmark_text": "العلامات المرجعية",
+  "end_doaa": "دعاء الختم",
+  "lookForAya": "ابحث عن آية",
+  "signLook": "الانتقال إلى العلامة",
+  "pageNumber": "رقم الصفحه",
+  "pageEntry": "الرجاء إدخال رقم صفحة ما بين 1 و 604",
+  "nextPage": "إنتقال",
+  "goToNextPage": "انتقال إلى الصفحة",
+  "changePage": "تغيير الصفحة",
+  "chooseSurah": "اختر السورة",
+  "index": "الفهرس",
+  "choosePart": "اختر الجزء",
+  "parts": "الأجزاء",
+  "quranSearch": "بحث  باسم السورة ... "
+
+
 }

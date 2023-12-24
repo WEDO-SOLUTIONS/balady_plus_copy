@@ -152,69 +152,73 @@ class _QuranFooterState extends State<QuranFooter> {
                               isFullHeight: true,
                               dialogKeyName: DialogName.quranPageFilterDialog,
                               currentRouteName: RouteName.quranScreen,
-                              child: BottomSheetWithActions(
-                                body: Container(
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            CustomTextWidget(
-                                              ("pageNumber").tr(),
-                                              fontColor:
-                                                  AppColor.blackModern700Light,
-                                              fontSize: 16,
-                                              textAlign: TextAlign.start,
-                                              fontWeight: AppFontWeight.bold,
-                                            ),
-                                          ],
-                                        ),
-                                        CustomVerticalSpace(height: 16),
-                                        Container(
-                                            height: 48,
-                                            child: CustomTextFieldWidget(
-                                              textFieldHeight: 48,
-                                              controller: PageNumberController,
-                                              keyboardType:
-                                                  TextInputType.number,
-                                            )),
-                                        CustomVerticalSpace(height: 16),
-                                        CustomTextWidget(
-                                          ("pageEntry").tr(),
-                                          fontColor:
-                                              AppColor.blackModern600Light,
-                                          fontSize: 15,
-                                          textAlign: TextAlign.start,
-                                          fontWeight: AppFontWeight.semiBold,
-                                        ),
-                                        CustomVerticalSpace(height: 32),
-                                        ElevatedButtonWidget.primaryCustom(
-                                            onPressed: () {
-                                              if (int.tryParse(
-                                                      PageNumberController
-                                                          .text) !=
-                                                  null)
-                                                context.read<QuranBloc>().add(
-                                                    MoveToPageEvent(
-                                                        page: int.parse(
-                                                            PageNumberController
-                                                                .text)));
-                                              Navigator.pop(context);
-                                            },
-                                            text: ("move").tr())
-                                      ],
+                              child: Directionality(
+                                textDirection: TextDirection.rtl,
+                                child: BottomSheetWithActions(
+                                  body: Container(
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              CustomTextWidget(
+                                                ("pageNumber").tr(),
+                                                fontColor: AppColor
+                                                    .blackModern700Light,
+                                                fontSize: 16,
+                                                textAlign: TextAlign.start,
+                                                fontWeight: AppFontWeight.bold,
+                                              ),
+                                            ],
+                                          ),
+                                          CustomVerticalSpace(height: 16),
+                                          Container(
+                                              height: 48,
+                                              child: CustomTextFieldWidget(
+                                                textFieldHeight: 48,
+                                                controller:
+                                                    PageNumberController,
+                                                keyboardType:
+                                                    TextInputType.number,
+                                              )),
+                                          CustomVerticalSpace(height: 16),
+                                          CustomTextWidget(
+                                            ("pageEntry").tr(),
+                                            fontColor:
+                                                AppColor.blackModern600Light,
+                                            fontSize: 15,
+                                            textAlign: TextAlign.start,
+                                            fontWeight: AppFontWeight.semiBold,
+                                          ),
+                                          CustomVerticalSpace(height: 32),
+                                          ElevatedButtonWidget.primaryCustom(
+                                              onPressed: () {
+                                                if (int.tryParse(
+                                                        PageNumberController
+                                                            .text) !=
+                                                    null)
+                                                  context.read<QuranBloc>().add(
+                                                      MoveToPageEvent(
+                                                          page: int.parse(
+                                                              PageNumberController
+                                                                  .text)));
+                                                Navigator.pop(context);
+                                              },
+                                              text: ("move").tr())
+                                        ],
+                                      ),
                                     ),
                                   ),
+                                  title: ("move_to_page").tr(),
                                 ),
-                                title: ("move_to_page").tr(),
                               ));
                     },
                     child: Row(
@@ -249,38 +253,41 @@ class _QuranFooterState extends State<QuranFooter> {
                           await BottomSheetDialog.showDraggableSheet(context,
                               dialogKeyName: DialogName.quranSuraFilterDialog,
                               currentRouteName: RouteName.quranScreen,
-                              child: BottomSheetWithActions(
-                                body: Container(
-                                  padding: EdgeInsets.all(16),
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      children: [
-                                        ListView.builder(
-                                            itemCount: quranData.length,
-                                            shrinkWrap: true,
-                                            physics:
-                                                NeverScrollableScrollPhysics(),
-                                            itemBuilder: (ctx, index) {
-                                              return QuranMenuCardWidget(
-                                                item: quranData[index],
-                                                index: index,
-                                                onTap: () {
-                                                  context
-                                                      .read<QuranBloc>()
-                                                      .controller
-                                                      .jumpToPage(context
-                                                          .read<QuranBloc>()
-                                                          .getSuraPageNumber(
-                                                              index + 1));
-                                                  Navigator.pop(context);
-                                                },
-                                              );
-                                            }),
-                                      ],
+                              child: Directionality(
+                                textDirection: TextDirection.rtl,
+                                child: BottomSheetWithActions(
+                                  body: Container(
+                                    padding: EdgeInsets.all(16),
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        children: [
+                                          ListView.builder(
+                                              itemCount: quranData.length,
+                                              shrinkWrap: true,
+                                              physics:
+                                                  NeverScrollableScrollPhysics(),
+                                              itemBuilder: (ctx, index) {
+                                                return QuranMenuCardWidget(
+                                                  item: quranData[index],
+                                                  index: index,
+                                                  onTap: () {
+                                                    context
+                                                        .read<QuranBloc>()
+                                                        .controller
+                                                        .jumpToPage(context
+                                                            .read<QuranBloc>()
+                                                            .getSuraPageNumber(
+                                                                index + 1));
+                                                    Navigator.pop(context);
+                                                  },
+                                                );
+                                              }),
+                                        ],
+                                      ),
                                     ),
                                   ),
+                                  title: "chooseSurah".tr(),
                                 ),
-                                title: "chooseSurah".tr(),
                               ));
                     },
                     child: Row(
@@ -306,37 +313,40 @@ class _QuranFooterState extends State<QuranFooter> {
                           await BottomSheetDialog.showDraggableSheet(context,
                               dialogKeyName: DialogName.quranJozzFilterDialog,
                               currentRouteName: RouteName.quranScreen,
-                              child: BottomSheetWithActions(
-                                body: Container(
-                                  padding: EdgeInsets.all(16),
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      children: [
-                                        ListView.builder(
-                                            itemCount: 30,
-                                            shrinkWrap: true,
-                                            physics:
-                                                NeverScrollableScrollPhysics(),
-                                            itemBuilder: (ctx, index) {
-                                              return QuranJozzCardWidget(
-                                                index: index + 1,
-                                                onTap: () {
-                                                  context
-                                                      .read<QuranBloc>()
-                                                      .controller
-                                                      .jumpToPage(context
-                                                          .read<QuranBloc>()
-                                                          .getJozzPageNumber(
-                                                              index + 1));
-                                                  Navigator.pop(context);
-                                                },
-                                              );
-                                            }),
-                                      ],
+                              child: Directionality(
+                                textDirection: TextDirection.rtl,
+                                child: BottomSheetWithActions(
+                                  body: Container(
+                                    padding: EdgeInsets.all(16),
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        children: [
+                                          ListView.builder(
+                                              itemCount: 30,
+                                              shrinkWrap: true,
+                                              physics:
+                                                  NeverScrollableScrollPhysics(),
+                                              itemBuilder: (ctx, index) {
+                                                return QuranJozzCardWidget(
+                                                  index: index + 1,
+                                                  onTap: () {
+                                                    context
+                                                        .read<QuranBloc>()
+                                                        .controller
+                                                        .jumpToPage(context
+                                                            .read<QuranBloc>()
+                                                            .getJozzPageNumber(
+                                                                index + 1));
+                                                    Navigator.pop(context);
+                                                  },
+                                                );
+                                              }),
+                                        ],
+                                      ),
                                     ),
                                   ),
+                                  title: "choosePart".tr(),
                                 ),
-                                title: "choosePart".tr(),
                               ));
                     },
                     child: Row(

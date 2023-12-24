@@ -272,9 +272,9 @@ class UXCamEvents {
 
   static String openLicensesDetails = "open_Licenses_Details";
 
-  static String openObjectionsList = "open_Objections_List";
-  static String openObjectionsFilter = "open_Objections_Filter";
-  static String openObjectionsDetails = "open_Objections_Details";
+  static String openObjectionsList = "open_Objections_List"; //Done
+  static String openObjectionsFilter = "open_Objections_Filter"; //Done
+  static String openObjectionsDetails = "open_Objections_Details"; //Done
 
   static String openInvoicesList = "open_Invoices_List"; //Done
   static String openInvoicesFilter = "open_Invoices_Filter"; //Done

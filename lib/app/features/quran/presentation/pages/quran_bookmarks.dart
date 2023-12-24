@@ -17,30 +17,33 @@ class QuranBookMarkPage extends StatefulWidget {
 class _QuranBookMarkPageState extends State<QuranBookMarkPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: BookMarkAppBar(),
-      body: BlocProvider(
-        create: (context) => BookMarkBloc(),
-        child: BlocConsumer<BookMarkBloc, BookMarkState>(
-          listener: (context, state) {},
-          builder: (context, state) {
-            return (((state.items?.items?.length ?? 0) > 0))
-                ? ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: state.items?.items?.length ?? 0,
-                    itemBuilder: ((context, index) {
-                      return GestureDetector(
-                          onTap: () {
-                            Navigator.of(context)
-                                .pop(state.items!.items![index].pageNumber);
-                          },
-                          child:
-                              BookMarkItem(item: state.items!.items![index]));
-                    }))
-                : EmptyListWidget(
-                    title: "no_quran_bookmarks".tr(),
-                  );
-          },
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        appBar: BookMarkAppBar(),
+        body: BlocProvider(
+          create: (context) => BookMarkBloc(),
+          child: BlocConsumer<BookMarkBloc, BookMarkState>(
+            listener: (context, state) {},
+            builder: (context, state) {
+              return (((state.items?.items?.length ?? 0) > 0))
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: state.items?.items?.length ?? 0,
+                      itemBuilder: ((context, index) {
+                        return GestureDetector(
+                            onTap: () {
+                              Navigator.of(context)
+                                  .pop(state.items!.items![index].pageNumber);
+                            },
+                            child:
+                                BookMarkItem(item: state.items!.items![index]));
+                      }))
+                  : EmptyListWidget(
+                      title: "no_quran_bookmarks".tr(),
+                    );
+            },
+          ),
         ),
       ),
     );
