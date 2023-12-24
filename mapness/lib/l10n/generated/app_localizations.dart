@@ -258,7 +258,7 @@ abstract class AppLocalizations {
   /// No description provided for @clean.
   ///
   /// In ar, this message translates to:
-  /// **'تنظيف'**
+  /// **'مسح'**
   String get clean;
 
   /// No description provided for @closedUntill.
@@ -840,14 +840,20 @@ abstract class AppLocalizations {
   /// No description provided for @legendComplienceBuildingGreen.
   ///
   /// In ar, this message translates to:
-  /// **'legendComplienceBuildingGreen'**
+  /// **'أراضي مسورة'**
   String get legendComplienceBuildingGreen;
 
   /// No description provided for @legendComplienceBuildingGrey.
   ///
   /// In ar, this message translates to:
-  /// **'legendComplienceBuildingGreen'**
+  /// **'أراضي مستهدفة للتسوير'**
   String get legendComplienceBuildingGrey;
+
+  /// No description provided for @legendComplienceBuildingTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'حالات تسوير الأراضي'**
+  String get legendComplienceBuildingTitle;
 
   /// No description provided for @lightning.
   ///

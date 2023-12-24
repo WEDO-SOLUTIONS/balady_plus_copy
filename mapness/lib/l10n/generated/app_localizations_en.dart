@@ -377,10 +377,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get layersOnTheMap => 'Layers on the map';
 
   @override
-  String get legendComplienceBuildingGreen => 'legendComplienceBuildingGreen';
+  String get legendComplienceBuildingGreen => 'Fenced lands';
 
   @override
-  String get legendComplienceBuildingGrey => 'legendComplienceBuildingGreen';
+  String get legendComplienceBuildingGrey => 'Lands targeted for fencing';
+
+  @override
+  String get legendComplienceBuildingTitle => 'Land fencing status';
 
   @override
   String get lightning => 'Lightning';

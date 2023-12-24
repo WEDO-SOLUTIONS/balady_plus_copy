@@ -86,7 +86,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get chooseTheLanguageOfAll => 'إختر لغة واجهات التطبيق';
 
   @override
-  String get clean => 'تنظيف';
+  String get clean => 'مسح';
 
   @override
   String get closedUntill => 'مغلق حتى';
@@ -377,10 +377,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get layersOnTheMap => 'الطبقات على الخريطة';
 
   @override
-  String get legendComplienceBuildingGreen => 'legendComplienceBuildingGreen';
+  String get legendComplienceBuildingGreen => 'أراضي مسورة';
 
   @override
-  String get legendComplienceBuildingGrey => 'legendComplienceBuildingGreen';
+  String get legendComplienceBuildingGrey => 'أراضي مستهدفة للتسوير';
+
+  @override
+  String get legendComplienceBuildingTitle => 'حالات تسوير الأراضي';
 
   @override
   String get lightning => 'الاضاءة';
