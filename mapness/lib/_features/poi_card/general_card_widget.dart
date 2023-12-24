@@ -6,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart'
     as map_control_provider;
-import 'package:mapness/_features/poi_card/constants/about_mock.dart';
+import 'package:mapness/_features/poi_card/constants/info_mock.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
@@ -136,6 +136,13 @@ class _ContentState extends ConsumerState<_Content> {
                     data!.id!.objectId,
                     ref.read(appLanguageProvider),
                   );
+                  final name = aboutMock(
+                    data.id!.objectId,
+                    ref.read(appLanguageProvider),
+                  );
+                  if (name != null) {
+                    data.title = name;
+                  }
 
                   return Material(
                     color: Colors.transparent,
