@@ -12,11 +12,13 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/services/local/navigation_services.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show
         AppColor,
         AppStyle,
         BlocRequestStatus,
+        CommonFunctions,
         DateTimeExtension,
         IconPath,
         RouteName;
@@ -65,6 +67,8 @@ class _InvoiceDetailBodyState extends State<InvoiceDetailBody> {
           widget.crType,
           widget.xSourceApp,
         );
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.openInvoicesDtails);
   }
 
   @override

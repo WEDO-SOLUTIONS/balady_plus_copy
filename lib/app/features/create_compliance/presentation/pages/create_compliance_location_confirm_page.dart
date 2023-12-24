@@ -1,19 +1,3 @@
-/*import 'package:balady_plus/app/app.dart';
-import 'package:balady_plus/app/features/create_compliance/presentation/widgets/create_compliance_location_widgets/create_compliance_widget.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
-class CreateComplianceLocationPage extends StatelessWidget {
-  const CreateComplianceLocationPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: CreateComplianceLocationWidget(),
-    );
-  }
-}*/
-
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
@@ -26,6 +10,7 @@ import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/dialog_names.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/enums.dart';
 import '../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
@@ -50,92 +35,16 @@ class CreateComplianceLocationPage extends StatefulWidget {
 
 class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
   @override
-  Widget build(BuildContext context) {
-    ServiceEntity service = ServiceModel.fromJson(
-      {
-        "id": 1,
-        "icon": "send_image",
-        "3d_icon": null,
-        "order": 1,
-        "isNew": false,
-        "isImportant": false,
-        "action": {"type": "cards", "value": ""},
-        "ar": {
-          "title": "complaince_service_name",
-          "description": "",
-          "tag": null,
-          "warning": ""
-        },
-        "en": {
-          "title": "Send Image",
-          "description":
-              "Improve the civil scene of your city and report visual pollution",
-          "tag": null,
-          "warning": ""
-        },
-        "cards": [
-          {
-            "iconName": IconPath.serviceCardDesc,
-            "type": ServiceCardsTypes.desc,
-            "rate": 0,
-            "duration": "0",
-            "fees": 0,
-            "ar": {
-              "title": "service_desc",
-              "description": "complaince_service_desc"
-            },
-            "en": {"title": "Service Description", "description": ""}
-          },
-          {
-            "iconName": IconPath.serviceCardReq,
-            "type": ServiceCardsTypes.req,
-            "rate": 0,
-            "duration": "0",
-            "requirements": [
-              "complaince_service_req_1",
-              "complaince_service_req_2"
-            ],
-            "ar": {"title": "requirements", "description": ""},
-            "en": {"title": "Requirements", "description": ""}
-          },
-          {
-            "iconName": IconPath.serviceCardFlow,
-            "type": ServiceCardsTypes.flow,
-            "rate": 0,
-            "duration": "0",
-            "flow": [
-              {
-                "title": "complaince_applying_benf",
-                "steps": [
-                  "complaince_applying_benf_step_1",
-                  "complaince_applying_benf_step_2",
-                  "complaince_applying_benf_step_3",
-                  "complaince_applying_benf_step_4",
-                  "complaince_applying_benf_step_5",
-                  "complaince_applying_benf_step_6",
-                  "complaince_applying_benf_step_7",
-                ]
-              },
-              {
-                "title": "complaince_applying_end",
-                "steps": [
-                  "complaince_applying_end_step_1",
-                  "complaince_applying_end_step_2",
-                  "complaince_applying_end_step_3",
-                  "complaince_applying_end_step_4",
-                  "complaince_applying_end_step_5",
-                  "complaince_applying_end_step_6",
-                  "complaince_applying_end_step_7",
-                ]
-              }
-            ],
-            "ar": {"title": "applying_steps", "description": ""},
-            "en": {"title": "", "description": ""}
-          }
-        ]
-      },
-    );
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.startCardServiceComplianceCertificate);
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    ServiceEntity service = serviceModel;
     return BlocProvider(
       create: (context) => ServiceCardsCubit(service),
       child: Scaffold(
@@ -244,3 +153,88 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
     );
   }
 }
+
+ServiceModel get serviceModel => ServiceModel.fromJson(
+      {
+        "id": 1,
+        "icon": "send_image",
+        "3d_icon": null,
+        "order": 1,
+        "isNew": false,
+        "isImportant": false,
+        "action": {"type": "cards", "value": ""},
+        "ar": {
+          "title": "complaince_service_name",
+          "description": "",
+          "tag": null,
+          "warning": ""
+        },
+        "en": {
+          "title": "Send Image",
+          "description":
+              "Improve the civil scene of your city and report visual pollution",
+          "tag": null,
+          "warning": ""
+        },
+        "cards": [
+          {
+            "iconName": IconPath.serviceCardDesc,
+            "type": ServiceCardsTypes.desc,
+            "rate": 0,
+            "duration": "0",
+            "fees": 0,
+            "ar": {
+              "title": "service_desc",
+              "description": "complaince_service_desc"
+            },
+            "en": {"title": "Service Description", "description": ""}
+          },
+          {
+            "iconName": IconPath.serviceCardReq,
+            "type": ServiceCardsTypes.req,
+            "rate": 0,
+            "duration": "0",
+            "requirements": [
+              "complaince_service_req_1",
+              "complaince_service_req_2"
+            ],
+            "ar": {"title": "requirements", "description": ""},
+            "en": {"title": "Requirements", "description": ""}
+          },
+          {
+            "iconName": IconPath.serviceCardFlow,
+            "type": ServiceCardsTypes.flow,
+            "rate": 0,
+            "duration": "0",
+            "flow": [
+              {
+                "title": "complaince_applying_benf",
+                "steps": [
+                  "complaince_applying_benf_step_1",
+                  "complaince_applying_benf_step_2",
+                  "complaince_applying_benf_step_3",
+                  "complaince_applying_benf_step_4",
+                  "complaince_applying_benf_step_5",
+                  "complaince_applying_benf_step_6",
+                  "complaince_applying_benf_step_7",
+                ]
+              },
+              {
+                "title": "complaince_applying_end",
+                "steps": [
+                  "complaince_applying_end_step_1",
+                  "complaince_applying_end_step_2",
+                  "complaince_applying_end_step_3",
+                  "complaince_applying_end_step_4",
+                  "complaince_applying_end_step_5",
+                  "complaince_applying_end_step_6",
+                  "complaince_applying_end_step_7",
+                ]
+              }
+            ],
+            "ar": {"title": "applying_steps", "description": ""},
+            "en": {"title": "", "description": ""}
+          }
+        ]
+      },
+    );

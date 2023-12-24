@@ -11,6 +11,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../../etmam_app/core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/errors_exports.dart';
 import '../../../../../core/services/services_exports.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../vd/vd_exports.dart' show GISParams, GISResponse, GetGISData;
 import '../../domain/entities/building_compliance_entity.dart';
@@ -1693,6 +1694,8 @@ class MunicipalAdvisorBloc
                 ],
               ),
             );
+            CommonFunctions.sendUXCamEvent(
+                UXCamEvents.finishServiceSmartAssistant);
           },
         );
       },
@@ -2129,6 +2132,8 @@ class MunicipalAdvisorBloc
           add(MunicipalAdvisorLoadCalculationLookupsEvent());
           return [];
         } else {
+          CommonFunctions.sendUXCamEvent(
+              UXCamEvents.finishServiceSmartAssistant);
           return [
             ChatMessage(
               message: "${'municipalAdvisorId'.tr()}: ${state.id}",
@@ -2157,6 +2162,8 @@ class MunicipalAdvisorBloc
           add(MunicipalAdvisorGetShopOwnershipEvent());
           return [];
         } else {
+          CommonFunctions.sendUXCamEvent(
+              UXCamEvents.finishServiceSmartAssistant);
           return [
             ChatMessage(
               message: "${'municipalAdvisorId'.tr()}: ${state.id}",
@@ -2187,6 +2194,8 @@ class MunicipalAdvisorBloc
           add(MunicipalAdvisorGetRequestFlowEvent());
           return [];
         } else {
+          CommonFunctions.sendUXCamEvent(
+              UXCamEvents.finishServiceSmartAssistant);
           return [
             ChatMessage(
               message: "${'municipalAdvisorId'.tr()}: ${state.id}",
@@ -2209,6 +2218,8 @@ class MunicipalAdvisorBloc
           ];
         }
       case MunicipalAdvisorSteps.imtethal:
+        CommonFunctions.sendUXCamEvent(UXCamEvents.finishServiceSmartAssistant);
+
         return [
           ChatMessage(
             message: 'imtethalAdvisorResponse'.tr(),

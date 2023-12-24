@@ -12,6 +12,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../core/services/local/helpers.dart';
 import '../../../core/utils/app_analytics_events.dart';
+import '../../../core/utils/constants/ux_cam_events.dart';
 import '../domain/entities/cr_submit_response.dart';
 
 class SubmitApplicationSuccessfullyNew extends StatefulWidget {
@@ -30,6 +31,9 @@ class _SubmitApplicationSuccessfullyNewState
     super.initState();
     CommonFunctions.sendEventToAnalytics(
         AppEvents.issueCommercialLicenseSuccess);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.finishServiceIssueACommercialLicense);
   }
 
   @override

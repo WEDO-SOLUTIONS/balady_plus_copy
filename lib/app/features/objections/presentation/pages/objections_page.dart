@@ -4,8 +4,10 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
+import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/constants/route_names.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show
         BottomSheetDialog,
@@ -25,8 +27,21 @@ import '../../objections_exports.dart'
         SearchRequestsEvent;
 import '../widgets/requests_filters_bottom_sheet.dart';
 
-class ObjectionsPage extends StatelessWidget {
+class ObjectionsPage extends StatefulWidget {
   const ObjectionsPage({super.key});
+
+  @override
+  State<ObjectionsPage> createState() => _ObjectionsPageState();
+}
+
+class _ObjectionsPageState extends State<ObjectionsPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.openObjectionsList);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +63,8 @@ class ObjectionsPage extends StatelessWidget {
                 builder: (context, state) {
                   return FilterIcon(
                     onTap: () async {
+                      CommonFunctions.sendUXCamEvent(
+                          UXCamEvents.openObjectionsFilter);
                       context
                           .read<ObjectionsBloc>()
                           .add(RequestsLoadLookupsEvent());

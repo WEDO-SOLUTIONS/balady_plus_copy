@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../../../core/utils/app_analytics_events.dart';
 import '../../../../../../core/utils/common_functions.dart';
+import '../../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../data/general_inquiry_data.dart';
@@ -24,9 +25,10 @@ class _GeneralInquiryPageState extends State<GeneralInquiryPage> {
   @override
   void initState() {
     super.initState();
-    //MM  Helpers.sendEventToAnalytics(AppEvents.VD_Open_Details);
 
     CommonFunctions.sendEventToAnalytics(AppEvents.generalInq);
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceGeneralInquiries);
   }
 
   @override

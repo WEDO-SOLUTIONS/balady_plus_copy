@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../../core/utils/app_analytics_events.dart';
 import '../../../../../core/utils/common_functions.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 
 class ApplyCancelScreen extends StatefulWidget {
   const ApplyCancelScreen({Key? key}) : super(key: key);
@@ -28,6 +29,8 @@ class _ApplyCancelScreenState extends State<ApplyCancelScreen> {
     // TODO: implement initState
     super.initState();
     CommonFunctions.sendEventToAnalytics(AppEvents.cancelCommercialLicenseOpen);
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.startCardServiceCancelLicenseService);
   }
 
   @override
@@ -87,6 +90,8 @@ class _ApplyCancelScreenState extends State<ApplyCancelScreen> {
                           reasonCancel: viewModel.reasonCancel,
                         ),
                       );
+                      CommonFunctions.sendUXCamEvent(
+                          UXCamEvents.startServiceCancelLicenseService);
                     } else if (viewModel.messageHtml != null) {
                       showDialog(
                         context: context,

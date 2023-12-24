@@ -11,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/dialog_names.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../_shared_feature_/presentation/dialogs/not_authorized_indivivisual.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
@@ -34,6 +35,9 @@ class _PostersLicenseStartServiceState
     // TODO: implement initState
     super.initState();
     // CommonFunctions.sendEventToAnalytics(AppEvents.renewCommercialLicenseOpen);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.startCardServiceIndivisualPostersPermit);
   }
 
   @override

@@ -13,6 +13,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:tuple/tuple.dart';
 
 import '../../../../../core/utils/constants/dialog_names.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/enums/enums.dart';
 import '../../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
@@ -113,6 +114,9 @@ class FacilityRatingViewModel extends BaseViewModel {
           ));
 
       facilityQRViewModel.getFacilityData(licenseId, showLoader: false); //MM
+
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.finishServiceYourFeedbackRating);
     } else {
       showError(response.item2 ?? "");
     }

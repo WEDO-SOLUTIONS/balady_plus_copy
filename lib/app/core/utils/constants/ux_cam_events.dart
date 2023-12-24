@@ -34,13 +34,13 @@ class UXCamEvents {
 
 // Municipal service request
   static String startServiceMunicipalServiceRequest =
-      "Start_Service_MunicipalServiceRequest";
+      "Start_Service_MunicipalServiceRequest"; //Done
   static String finishServiceMunicipalServiceRequest =
       "Finish_Service_MunicipalServiceRequest"; //Done
 
 // AppointmentBooking
   static String startServiceAppointmentBooking =
-      "Start_Service_AppointmentBooking";
+      "Start_Service_AppointmentBooking"; //Done
   static String finishServiceAppointmentBooking =
       "Finish_Service_AppointmentBooking"; //Done
 
@@ -51,33 +51,39 @@ class UXCamEvents {
       "Finish_Service_ServicesProviders";
 
 // Compliance Certificate
+  static String startCardServiceComplianceCertificate =
+      "Start_Card_Service_ComplianceCertificate"; //Done
   static String startServiceComplianceCertificate =
-      "Start_Service_ComplianceCertificate";
+      "Start_Service_ComplianceCertificate"; //Done
   static String finishServiceComplianceCertificate =
       "Finish_Service_ComplianceCertificate"; //Done
 
 // Premises Assessment
+  static String mainServicePremisesAssessment =
+      "Main_Service_PremisesAssessment"; //Done
+
   static String startServicePremisesAssessment =
-      "Start_Service_PremisesAssessment";
+      "Start_Service_PremisesAssessment"; //Done
   static String finishServicePremisesAssessment =
-      "Finish_Service_PremisesAssessment";
+      "Finish_Service_PremisesAssessment"; //Done
 
 // Report Write Off Vehicle
   static String startServiceReportWriteOffVehicle =
-      "Start_Service_ReportWriteOffVehicle";
+      "Start_Service_ReportWriteOffVehicle"; //Done
   static String finishServiceReportWriteOffVehicle =
       "Finish_Service_ReportWriteOffVehicle"; //Done
 
   // Retrieve Impounded Vehicle
   static String startServiceRetrieveImpoundedVehicle =
-      "Start_Service_RetrieveImpoundedVehicle";
+      "Start_Service_RetrieveImpoundedVehicle"; //Done
   static String finishServiceRetrieveImpoundedVehicle =
       "Finish_Service_RetrieveImpoundedVehicle"; //Done
 
   // General Inquiries
-  static String startServiceGeneralInquiries = "Start_Service_GeneralInquiries";
+  static String startServiceGeneralInquiries =
+      "Start_Service_GeneralInquiries"; //Done
   static String finishServiceGeneralInquiries =
-      "Finish_Service_GeneralInquiries";
+      "Finish_Service_GeneralInquiries"; //Done
 
   // Licensing and planning services
   static String startServiceLicensingAndPlanningServices =
@@ -87,9 +93,9 @@ class UXCamEvents {
 
   // Health Certificate
   static String startServiceHealthCertificate =
-      "Start_Service_HealthCertificate";
+      "Start_Service_HealthCertificate"; //Done
   static String finishServiceHealthCertificate =
-      "Finish_Service_HealthCertificate";
+      "Finish_Service_HealthCertificate"; //Done
 
   // Construction Services
   static String startServiceConstructionServices =
@@ -102,10 +108,12 @@ class UXCamEvents {
   static String startServiceEkramServices = "Start_Service_EkramServices";
 
   // Issue a commercial license
+  static String startCardServiceIssueACommercialLicense =
+      "Start_Card_Service_IssueACommercialLicense"; //Done
   static String startServiceIssueACommercialLicense =
-      "Start_Service_IssueACommercialLicense";
+      "Start_Service_IssueACommercialLicense"; //Done
   static String finishServiceIssueACommercialLicense =
-      "Finish_Service_IssueACommercialLicense";
+      "Finish_Service_IssueACommercialLicense"; //Done
 
 // Tobacco Disclosure
   static String startServiceTobaccoDisclosure =
@@ -124,11 +132,11 @@ class UXCamEvents {
   static String startServiceCommercialServices =
       "Start_Service_CommercialServices";
 
-  // Intelligent assistant
-  static String startServiceIntelligentAssistant =
-      "Start_Service_IntelligentAssistant";
-  static String finishServiceIntelligentAssistant =
-      "Finish_Service_IntelligentAssistant";
+  // Smart assistant
+  static String startServiceSmartAssistant =
+      "Start_Service_SmartAssistant"; //Done
+  static String finishServiceSmartAssistant =
+      "Finish_Service_SmartAssistant"; //Done
 
   // Violations Guide
   static String startServiceViolationsGuide =
@@ -137,26 +145,42 @@ class UXCamEvents {
       "Finish_Service_ViolationsGuide"; //Done
 
   // Fees Calculator
-  static String startServiceFeesCalculator = "Start_Service_FeesCalculator";
-  static String finishServiceFeesCalculator = "Finish_Service_FeesCalculator";
+  static String startServiceFeesCalculator =
+      "Start_Service_FeesCalculator"; //Done
+  static String finishServiceFeesCalculator =
+      "Finish_Service_FeesCalculator"; //Done
 
   // Your Feedback
-  static String startServiceYourFeedback = "Start_Service_YourFeedback";
-  static String finishServiceYourFeedback = "Finish_Service_YourFeedback";
+  static String startServiceYourFeedback = "Start_Service_YourFeedback"; //Done
+  static String finishServiceYourFeedback =
+      "Finish_Service_YourFeedback"; //Done
+
+  static String startServiceYourFeedbackRating =
+      "Start_Service_YourFeedback_Rating"; //Done
+  static String finishServiceYourFeedbackRating =
+      "Finish_Service_YourFeedback_Rating"; //Done
 
   // Request Follow-up
-  static String startServiceRequestFollowUp = "Start_Service_RequestFollowUp";
-  static String finishServiceRequestFollowUp = "Finish_Service_RequestFollowUp";
+  static String startServiceRequestFollowUp =
+      "Start_Service_RequestFollowUp"; //Done
+  static String finishServiceRequestFollowUp =
+      "Finish_Service_RequestFollowUp"; //Done
 
-  // Request Follow-up
-  static String startServiceDaem = "Start_Service_Daem";
+  // Daem
+  static String startServiceDaem = "Start_Service_Daem"; //Done
   static String finishServiceDaem = "Finish_Service_Daem"; //Done
 
   // Body Transportation
   static String startServiceBodyTransportation =
-      "Start_Service_BodyTransportation";
+      "Start_Service_BodyTransportation"; //Done
   static String finishServiceBodyTransportation =
-      "Finish_Service_BodyTransportation";
+      "Finish_Service_BodyTransportation"; //Done
+
+  static String detailsServiceBodyTransportation =
+      "Details_Service_BodyTransportation";
+
+  static String listServiceBodyTransportation =
+      "List_Service_BodyTransportation";
 
   // Cemetery Inquiry
   static String startServiceCemeteryInquiry = "Start_Service_CemeteryInquiry";
@@ -173,15 +197,22 @@ class UXCamEvents {
       "Finish_Service_FuneralServiceInquiry";
 
   // Select and reserve a cemetery
+
+  static String selectAndReserveACemeteryList =
+      "List_Service_SelectAndReserveACemetery"; //Done
   static String startServiceSelectAndReserveACemetery =
-      "Start_Service_SelectAndReserveACemetery";
+      "Start_Service_SelectAndReserveACemetery"; //Done
   static String finishServiceSelectAndReserveACemetery =
-      "Finish_Service_SelectAndReserveACemetery";
+      "Finish_Service_SelectAndReserveACemetery"; //Done
 
   // FuneralCarDriver
+  static String detailsServiceFuneralCarDriver =
+      "Details_Service_FuneralCarDriver";
+
   static String startServiceFuneralCarDriver = "Start_Service_FuneralCarDriver";
   static String finishServiceFuneralCarDriver =
       "Finish_Service_FuneralCarDriver";
+  static String listServiceFuneralCarDriver = "List_Service_FuneralCarDriver";
 
   // Issue 24 Hour Permit
   static String startService24HourPermit = "Start_Service_24HourPermit"; //Done
@@ -189,33 +220,72 @@ class UXCamEvents {
       "Finish_Service_24HourPermit"; //Done
 
   // Issue Tobacco Permit
+  static String startCardServiceTobaccoPermit =
+      "Start_Card_Service_TobaccoPermit"; //Done
   static String startServiceTobaccoPermit =
       "Start_Service_TobaccoPermit"; //Done
   static String finishServiceTobaccoPermit =
       "Finish_Service_TobaccoPermit"; //Done
 
   // Cancel License Service
+  static String startCardServiceCancelLicenseService =
+      "Start_Card_Service_CancelLicenseService"; //Done
   static String startServiceCancelLicenseService =
-      "Start_Service_CancelLicenseService";
+      "Start_Service_CancelLicenseService"; //Done
   static String finishServiceCancelLicenseService =
       "Finish_Service_CancelLicenseService"; //Done
 
   // Renew License Service
+  static String startCardServiceRenewLicenseService =
+      "Start_Card_Service_RenewLicenseService"; //Done
+
   static String startServiceRenewLicenseService =
-      "Start_Service_RenewLicenseService";
+      "Start_Service_RenewLicenseService"; //Done
   static String finishServiceRenewLicenseService =
-      "Finish_Service_RenewLicenseService";
+      "Finish_Service_RenewLicenseService"; //Done
 
   // Issue Indivisual Posters Permit
+  static String startCardServiceIndivisualPostersPermit =
+      "Start_Card_Service_IndivisualPostersPermit"; //Done
+
   static String startServiceIndivisualPostersPermit =
       "Start_Service_IndivisualPostersPermit"; //Done
   static String finishServiceIndivisualPostersPermit =
       "Finish_Service_IndivisualPostersPermit"; //Done
 
   // Issue multiple Posters Permit
-
+  static String startCardServiceMultiplePostersPermit =
+      "Start_Card_Service_MultiplePostersPermit"; //Done
   static String startServiceMultiplePostersPermit =
       "Start_Service_MultiplePostersPermit"; //Done
   static String finishServiceMultiplePostersPermit =
       "Finish_Service_MultiplePostersPermit"; //Done
+
+  static String openWallet = "open_Wallet";
+  static String openWalletDetails = "open_Wallet_Details";
+
+  static String openRequestsList = "open_Requests_List"; //Done
+  static String openRequestsFilter = "open_Requests_Filter"; //Done
+
+  static String openLicensesList = "open_Licenses_List"; //Done
+  static String openLicensesFilter = "open_Licenses_Filter"; //Done
+
+  static String openLicensesDetails = "open_Licenses_Details";
+
+  static String openObjectionsList = "open_Objections_List";
+  static String openObjectionsFilter = "open_Objections_Filter";
+  static String openObjectionsDetails = "open_Objections_Details";
+
+
+  static String openInvoicesList = "open_Invoices_List"; //Done
+  static String openInvoicesFilter = "open_Invoices_Filter"; //Done
+  static String openInvoicesDtails = "open_Invoices_Details"; //Done
+
+  static String openViolationsList = "open_Violations_List"; //Done
+  static String openViolationsFilter = "open_Violations_Filter"; //Done
+  static String openViolationsDetails = "open_Violations_Details"; //Done
+
+  static String openDashboard = "open_Dashboard"; //Done
+
+  static String openDelegators = "open_Delegators"; //Done
 }

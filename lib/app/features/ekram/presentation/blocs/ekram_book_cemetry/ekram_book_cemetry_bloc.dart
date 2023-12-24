@@ -16,6 +16,7 @@ import '../../../../../core/errors/failures.dart';
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/services/local/use_case.dart';
 import '../../../../../core/utils/common_functions.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../core/utils/enums/enums.dart';
 import '../../../../../core/utils/nullable.dart';
@@ -680,6 +681,9 @@ class EkramBookCemetryBloc
                 type: PAGE_TYPE.ekramCemetry,
                 thanksMessage: success.data?.result?.message,
               ));
+
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.finishServiceSelectAndReserveACemetery);
     });
   }
 

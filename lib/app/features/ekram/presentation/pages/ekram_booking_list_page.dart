@@ -11,13 +11,13 @@ import 'package:balady_plus/app/features/ekram/ekram_exports.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../etmam_app/core/utils/utils_exports.dart'
-    show CommonFunctions, trans;
-import '../../../../../etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_app_bar_widget.dart';
+import '../../../../../etmam_app/core/utils/utils_exports.dart' show trans;
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/debouncer.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
@@ -40,6 +40,13 @@ class EkramBookingListPage extends StatefulWidget {
 class _EkramBookingListPageState extends State<EkramBookingListPage> {
   final ScrollController _scrollContrller = ScrollController();
   final _debouncer = Debouncer(milliseconds: 500);
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.sendUXCamEvent(UXCamEvents.selectAndReserveACemeteryList);
+  }
 
   @override
   Widget build(BuildContext context) {

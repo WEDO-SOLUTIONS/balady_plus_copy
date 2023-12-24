@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/common_functions.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../data/models/new_ticket_page_args.dart';
@@ -25,6 +26,7 @@ class _NewDaemPageState extends State<NewDaemPage> {
     //MM  Helpers.sendEventToAnalytics(AppEvents.VD_Open_Details);
 
     CommonFunctions.sendEventToAnalytics(AppEvents.Daem);
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceDaem);
   }
 
   @override

@@ -4196,7 +4196,10 @@
 "government_requirements_approvals": "تعرف على قائمة الاشتراطات والموافقات الحكومية المطلوبة بحسب نوع النشاط.",
 "service_requirements_conditions" : "متطلبات واشتراطات الخدمة",
 "fines_penalties_title": "قم بالاطلاع على التعليمات التنفيذية بلائحة الغرامات والجزاءات عن المخالفة البلدية.",
-"list_penalties_municipal_violations": "لائحة الجزاءات عن المخالفات البلدية"
+"list_penalties_municipal_violations": "لائحة الجزاءات عن المخالفات البلدية", 
+
+"update_photo":"Update Photo"
+
 
 
    

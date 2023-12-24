@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../core/utils/app_analytics_events.dart';
+import '../../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../vd/domain/entities/camera/camera_page_params.dart';
 import '../../../blocs/create_dc_request/camera_bloc/dc_camera_bloc.dart';
@@ -24,6 +25,9 @@ class _DCCameraPageState extends State<DCCameraPage>
     // Helpers.sendEventToAnalytics(AppEvents.VD_Open_Camera);
 
     CommonFunctions.sendEventToAnalytics(AppEvents.damagedCarsReport);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.startServiceReportWriteOffVehicle);
   }
 
   @override

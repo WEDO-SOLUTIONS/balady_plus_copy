@@ -1,4 +1,3 @@
-import 'package:balady_plus/etmam_app/core/utils/common_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -6,8 +5,10 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
 import '../../../../../core/utils/app_analytics_events.dart';
+import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../../core/utils/constants/route_names.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show
         BottomSheetDialog,
@@ -37,6 +38,8 @@ class _InvoicesPageState extends State<InvoicesPage> {
   void initState() {
     super.initState();
     CommonFunctions.sendEventToAnalytics(AppEvents.Invoices);
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.openInvoicesList);
   }
 
   @override
@@ -102,6 +105,8 @@ class _InvoicesPageState extends State<InvoicesPage> {
                                 ),
                               );
                         }
+                        CommonFunctions.sendUXCamEvent(
+                            UXCamEvents.openInvoicesFilter);
                       },
                     );
                   },

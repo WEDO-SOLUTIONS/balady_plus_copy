@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/dependency_injection/injection_container.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
@@ -19,6 +20,15 @@ class EkramBookCemetryPage extends StatefulWidget {
 }
 
 class _EkramBookCemetryPageState extends State<EkramBookCemetryPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.startServiceSelectAndReserveACemetery);
+  }
+
   @override
   Widget build(BuildContext context) {
     EkramRequestsBloc? ekramRequestsBloc =
