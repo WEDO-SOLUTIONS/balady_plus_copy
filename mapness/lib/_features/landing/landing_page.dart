@@ -120,8 +120,6 @@ class _LandingPageState extends ConsumerState<LandingPage> {
               const controls.MapControls(),
               LayoutBuilder(builder: (context, constraints) {
                 return Dashboard(
-                  isCollapsed: isLayersVisible.layersVisible,
-                  // || widget.focusMaker != null,
                   biggestHeight: constraints.biggest.height,
                   biggestWidth: constraints.biggest.width,
                 );

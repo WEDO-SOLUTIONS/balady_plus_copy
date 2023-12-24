@@ -305,72 +305,69 @@ class AuthorizedRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      child: Material(
+    return Material(
+      borderRadius: BorderRadius.circular(12),
+      color: const Color(0xFFF5F7FA),
+      child: InkWell(
+        onTap: () {
+          const ProfileInfoPageRoute().push(context);
+        },
         borderRadius: BorderRadius.circular(12),
-        color: const Color(0xFFF5F7FA),
-        child: InkWell(
-          onTap: () {
-            const ProfileInfoPageRoute().push(context);
-          },
-          borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12.0),
-            child: Row(
-              children: [
-                const SizedBox(
-                  width: 16.0,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          child: Row(
+            children: [
+              const SizedBox(
+                width: 16.0,
+              ),
+              const ProfileImageWidget(
+                editable: false,
+                dimension: 36,
+              ),
+              const SizedBox(
+                width: 12.0,
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      userData.getFirstAndLastName(),
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .textM
+                          .copyWith(color: const Color(0xFF1E2A36)),
+                    ),
+                    Text(
+                      userData.idNo ?? "",
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .textS
+                          .copyWith(color: const Color(0x5C1E2A36)),
+                    ),
+                  ],
                 ),
-                const ProfileImageWidget(
-                  editable: false,
-                  dimension: 36,
-                ),
-                const SizedBox(
-                  width: 12.0,
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        userData.getFirstAndLastName(),
-                        style: Theme.of(context)
-                            .extension<ThemeTextStyles>()!
-                            .textM
-                            .copyWith(color: const Color(0xFF1E2A36)),
-                      ),
-                      Text(
-                        userData.idNo ?? "",
-                        style: Theme.of(context)
-                            .extension<ThemeTextStyles>()!
-                            .textS
-                            .copyWith(color: const Color(0x5C1E2A36)),
-                      ),
-                    ],
-                  ),
-                ),
-                Consumer(
-                  builder: (context, ref, _) {
-                    return SvgPicture.asset(
-                      ref.watch(uiDirectionProvider) == TextDirection.ltr
-                          ? 'assets/icons/svg/ic_chevron_right.svg'
-                          : 'assets/icons/svg/ic_chevron_left.svg',
-                      height: 24,
-                      width: 24,
-                      package: PackageConfig.packageName,
-                      colorFilter: const ColorFilter.mode(
-                        Color(0xFF1E2A36),
-                        BlendMode.srcIn,
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(
-                  width: 16.0,
-                ),
-              ],
-            ),
+              ),
+              Consumer(
+                builder: (context, ref, _) {
+                  return SvgPicture.asset(
+                    ref.watch(uiDirectionProvider) == TextDirection.ltr
+                        ? 'assets/icons/svg/ic_chevron_right.svg'
+                        : 'assets/icons/svg/ic_chevron_left.svg',
+                    height: 24,
+                    width: 24,
+                    package: PackageConfig.packageName,
+                    colorFilter: const ColorFilter.mode(
+                      Color(0xFF1E2A36),
+                      BlendMode.srcIn,
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(
+                width: 16.0,
+              ),
+            ],
           ),
         ),
       ),
