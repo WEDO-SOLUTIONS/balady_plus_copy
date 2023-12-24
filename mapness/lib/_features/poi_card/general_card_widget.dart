@@ -136,7 +136,7 @@ class _ContentState extends ConsumerState<_Content> {
                     data!.id!.objectId,
                     ref.read(appLanguageProvider),
                   );
-                  final name = aboutMock(
+                  final name = nameMock(
                     data.id!.objectId,
                     ref.read(appLanguageProvider),
                   );
