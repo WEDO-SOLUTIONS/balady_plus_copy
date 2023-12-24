@@ -14,7 +14,6 @@ import 'package:mapness/_features/poi_card/widgets/about.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/contacts_info.dart';
 import 'package:mapness/_features/poi_card/widgets/description.dart';
-import 'package:mapness/_features/poi_card/widgets/favourites.dart';
 import 'package:mapness/_features/poi_card/widgets/footer.dart';
 import 'package:mapness/_features/poi_card/widgets/header.dart';
 import 'package:mapness/_features/poi_card/widgets/opening_hours.dart';
@@ -23,6 +22,7 @@ import 'package:mapness/_features/poi_card/widgets/qr_license_info.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/poi_card/widgets/trade_license.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
@@ -193,7 +193,10 @@ class _ContentState extends ConsumerState<_Content> {
                                             ),
                                           if (data.openingHours != null)
                                             OpeningHours(
-                                                data.getOpeningHoursModel()),
+                                              data.getOpeningHoursModel(
+                                                context.l10n,
+                                              ),
+                                            ),
                                           ContactsInfo(
                                             viewModel: viewModel,
                                             data: data,

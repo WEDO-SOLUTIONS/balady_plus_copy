@@ -1,15 +1,16 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 
 extension WeekDayName on WeekDayMessage {
-  String displayName() {
+  String displayName(AppLocalizations locale) {
     return switch (this) {
-      WeekDayMessage.monday => "monday",
-      WeekDayMessage.tuesday => "tuesday",
-      WeekDayMessage.wednesday => "wednesday",
-      WeekDayMessage.thursday => "thursday",
-      WeekDayMessage.friday => "friday",
-      WeekDayMessage.saturday => "saturday",
-      WeekDayMessage.sunday => "sunday"
+      WeekDayMessage.monday => locale.monday,
+      WeekDayMessage.tuesday => locale.tuesday,
+      WeekDayMessage.wednesday => locale.wednesday,
+      WeekDayMessage.thursday => locale.thursday,
+      WeekDayMessage.friday => locale.friday,
+      WeekDayMessage.saturday => locale.saturday,
+      WeekDayMessage.sunday => locale.sunday,
     };
   }
 }

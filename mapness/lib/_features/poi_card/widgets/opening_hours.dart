@@ -5,6 +5,7 @@ import 'package:mapness/_features/poi_card/domain/model/opening_hours_model.dart
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/expandable_widget.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class OpeningHours extends StatefulWidget {
   final OpeningHoursModel? model;
@@ -35,11 +36,15 @@ class _OpeningHoursState extends State<OpeningHours> {
     super.initState();
   }
 
-  List<Widget>? convertWeekTimeInterval(BuildContext context, List<OpenHours>? openingHours) {
+  List<Widget>? convertWeekTimeInterval(
+      BuildContext context, List<OpenHours>? openingHours) {
     return openingHours?.map((e) {
       final weekDay = e.weekDay;
 
-      final textStyle = Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: colorPrimary);
+      final textStyle = Theme.of(context)
+          .extension<ThemeTextStyles>()!
+          .textM
+          .copyWith(color: colorPrimary);
       return Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -55,7 +60,7 @@ class _OpeningHoursState extends State<OpeningHours> {
             flex: 1,
             child: e.isWeekend
                 ? Text(
-                    'Weekend',
+                    context.l10n.weekend,
                     style: textStyle,
                   )
                 : Row(
@@ -73,11 +78,14 @@ class _OpeningHoursState extends State<OpeningHours> {
 
   @override
   Widget build(BuildContext context) {
-    final todayOpeningInfo = widget.model?.getTodayOpeningInfo();
+    final todayOpeningInfo = widget.model?.getTodayOpeningInfo(context.l10n);
     final isWeekend = todayOpeningInfo?.isWeekend ?? false;
 
-    var fontStyle = Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: colorPrimary);
-    var widgets = convertWeekTimeInterval(context,openingHours);
+    var fontStyle = Theme.of(context)
+        .extension<ThemeTextStyles>()!
+        .textM
+        .copyWith(color: colorPrimary);
+    var widgets = convertWeekTimeInterval(context, openingHours);
 
     return is24x7 || isOpenSameTime
         ? CardContent(
@@ -86,7 +94,7 @@ class _OpeningHoursState extends State<OpeningHours> {
         : ExpandableWidget(
             title: Row(
               children: [
-                Text("Today", style: fontStyle),
+                Text(context.l10n.today, style: fontStyle),
                 if (todayOpeningInfo != null) ...[
                   Text(' ', style: fontStyle),
                   Text(todayOpeningInfo.openHour ?? '', style: fontStyle),
@@ -107,17 +115,22 @@ class _OpeningHoursState extends State<OpeningHours> {
   }
 
   Widget _buildTitle() {
-    final style = Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: colorPrimary);
+    final style = Theme.of(context)
+        .extension<ThemeTextStyles>()!
+        .textM
+        .copyWith(color: colorPrimary);
 
     final openHours = widget.model?.openingHours?.first;
+
+    print("_buildTitle $openHours");
 
     return Row(
       children: [
         timeIcon(colorIconPositive),
         const SizedBox(width: 12),
-        if (is24x7) Text("24/7", style: style),
+        if (is24x7) Text(context.l10n.twentyFourSeven, style: style),
         if (isOpenSameTime) ...[
-          Text("Daily", style: style),
+          Text(context.l10n.daily, style: style),
           Text(' ', style: style),
           Text(openHours!.openHour!, style: style),
           Text(' - ', style: style),
