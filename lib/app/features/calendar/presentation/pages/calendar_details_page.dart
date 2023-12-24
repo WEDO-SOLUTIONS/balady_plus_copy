@@ -119,7 +119,7 @@ class _CalendarDetailsPageState extends State<CalendarDetailsPage> {
                                         height: 36,
                                         padding: EdgeInsets.all(5),
                                         decoration: ShapeDecoration(
-                                          color: const Color(0xFFE8EFF1),
+                                          color: AppColor.primary100Light,
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(10),

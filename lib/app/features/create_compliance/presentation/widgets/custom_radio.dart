@@ -40,7 +40,7 @@ class RadioCustomWidget extends StatelessWidget {
             Radio(
               value: value,
               activeColor: state.benificiaryTypeSelection == value
-                  ? Color(0xff447F91)
+                  ? AppColor.primary700Light
                   : null,
               groupValue: state.benificiaryTypeSelection,
               onChanged: (value) {
@@ -145,7 +145,7 @@ class CustomRadio1 extends StatelessWidget {
                   .add(UpdateFieldsEvent(benificiaryTypeSelection: val));
             },
             activeColor: state.benificiaryTypeSelection == value
-                ? Color(0xff447F91)
+                ? AppColor.primary700Light
                 : null,
             secondary: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

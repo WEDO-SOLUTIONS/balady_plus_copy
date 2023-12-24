@@ -18,7 +18,7 @@ class AppStyle {
   static final athkarTimeStyle = TextStyle(
     fontSize: 14,
     fontFamily: fontFamily,
-    color: Color(0xff2C6F83),
+    color: AppColor.primary800Light,
     fontWeight: AppFontWeight.bold.fontWeight,
   );
   static final timerStyle = TextStyle(

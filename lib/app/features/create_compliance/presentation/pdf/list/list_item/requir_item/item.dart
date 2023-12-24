@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../../../core/utils/constants/app_colors.dart';
+
 class Item extends StatelessWidget {
   final String desc;
   const Item({
@@ -18,7 +20,7 @@ class Item extends StatelessWidget {
         margin: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: const Color(0xFFE8EFF1),
+          color: AppColor.primary100Light,
         ),
         child: Text(
           desc,

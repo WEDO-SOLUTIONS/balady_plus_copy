@@ -20,7 +20,7 @@ class SelfRatingResultSection extends StatelessWidget {
         right: 16,
       ),
       decoration: ShapeDecoration(
-        color: Color(0xFFE8EFF1),
+        color: AppColor.primary100Light,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),

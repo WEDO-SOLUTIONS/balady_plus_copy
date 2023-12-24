@@ -3,6 +3,8 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/t
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../core/utils/constants/app_colors.dart';
+
 class RatingSingleRatioOption extends StatelessWidget {
   const RatingSingleRatioOption(
       {super.key,
@@ -42,7 +44,7 @@ class RatingSingleRatioOption extends StatelessWidget {
               onChanged: (val) {
                 onChanged(val);
               },
-              activeColor: selectdValue == value ? Color(0xff447F91) : null,
+              activeColor: selectdValue == value ? AppColor.primary700Light : null,
             ),
             Flexible(
               child: CustomTextWidget(

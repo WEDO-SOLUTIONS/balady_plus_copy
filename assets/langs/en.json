@@ -1822,7 +1822,6 @@
 "license_card_license_details":"Certificate details",
 "activity_cost":"Service fees",
 "visit_cost":"Inspection fees",
-"reset":"Meter filtering",
 "lbl_final_cost":"Final cost",
 "lbl_total_price":"Total fee cost",
 "lbl_devided_as":"Divided as follows:",
@@ -4156,7 +4155,7 @@
 "inquiery_path":"Inquiry path",
 "violation_title_2":"Non-serious violation", 
 
-"ekram_services":"Ekram Services", 
+"ekram_services":"Ekram", 
 "service_provide_services":"Services Providers", 
 
 
@@ -4204,7 +4203,9 @@
   "index": "الفهرس",
   "choosePart": "اختر الجزء",
   "parts": "الأجزاء",
-  "quranSearch": "بحث  باسم السورة ... "
+  "quranSearch": "بحث  باسم السورة ... ", 
+  "reset": "تصفية العداد"
+
 
 
 }
