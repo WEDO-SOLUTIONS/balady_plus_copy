@@ -14,6 +14,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/constants/constants.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
@@ -53,6 +54,7 @@ class _ServiceCalculatorResultScreenState
       totalCost = widget.calculateDiggingResponse?.totalCost;
     }
     CommonFunctions.sendEventToAnalytics(AppEvents.calculatorSuccess);
+    CommonFunctions.sendUXCamEvent(UXCamEvents.finishServiceFeesCalculator);
   }
 
   @override

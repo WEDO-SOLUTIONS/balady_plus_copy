@@ -133,7 +133,7 @@ class Date extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: const Color(0xFFA7C587),
+        color: AppColor.secondary900Light,
         borderRadius: BorderRadius.circular(8),
       ),
       child: const Column(

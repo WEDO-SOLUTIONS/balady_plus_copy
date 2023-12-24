@@ -6,8 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
+import '../../../../../../core/utils/common_functions.dart';
 import '../../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../../core/utils/constants/constants.dart';
+import '../../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../_shared_feature_/data/entities/drop_down_item.dart';
 import '../../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
@@ -26,6 +28,14 @@ class NewTransactionInquiryScreen extends StatefulWidget {
 }
 
 class _NewTransactionInquiryScreen extends State<NewTransactionInquiryScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceRequestFollowUp);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TransactionInquiryBloc, TransactionInquiryState>(

@@ -379,8 +379,8 @@ class LayersControls extends _$LayersControls {
                 id: e.id,
                 options: PolygonOptionsMessage(
                     strokeWidth: 2,
-                    strokeColor: 0xFF000000,
-                    color: 0x26000000,
+                    strokeColor: e.strokeColor,
+                    color: e.color,
                     contours: [e.paths]),
                 onTap: () => _showEsriCard(e)))
             .toList() ??

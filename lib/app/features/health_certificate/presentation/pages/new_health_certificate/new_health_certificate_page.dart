@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/base/base_view_model.dart';
 import '../../../../../core/utils/app_analytics_events.dart';
 import '../../../../../core/utils/common_functions.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../blocs/new_health_certificate_bloc/new_health_certificate_bloc.dart';
@@ -28,8 +29,7 @@ class _NewHealthCertificatePageState extends State<NewHealthCertificatePage> {
     super.initState();
 
     CommonFunctions.sendEventToAnalytics(AppEvents.IssuHealthCert);
-
-    //MM  Helpers.sendEventToAnalytics(AppEvents.VD_Open_Details);
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceHealthCertificate);
   }
 
   @override

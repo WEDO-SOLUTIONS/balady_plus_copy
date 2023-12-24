@@ -36,27 +36,30 @@ class _QuranSearchPageState extends State<QuranSearchPage> {
           // TODO: implement listener
         },
         builder: (context, state) {
-          return Scaffold(
-            appBar: SearchAppBar(
-              onSearch: (String? text) {
-                _debouncer.run(() {
-                  context.read<SearchBloc>().add(SearchAyaEvent(text: text));
-                });
-              },
-            ),
-            body: Container(
-              padding: EdgeInsets.all(16),
-              child: ListView.builder(
-                  itemCount: state.searchedData?.length ?? 0,
-                  itemBuilder: (ctx, index) {
-                    return QuranSearchCardWidget(
-                      item: state.searchedData![index],
-                      onTap: () {
-                        Navigator.of(context)
-                            .pop(state.searchedData![index].pageNo);
-                      },
-                    );
-                  }),
+          return Directionality(
+            textDirection: TextDirection.rtl,
+            child: Scaffold(
+              appBar: SearchAppBar(
+                onSearch: (String? text) {
+                  _debouncer.run(() {
+                    context.read<SearchBloc>().add(SearchAyaEvent(text: text));
+                  });
+                },
+              ),
+              body: Container(
+                padding: EdgeInsets.all(16),
+                child: ListView.builder(
+                    itemCount: state.searchedData?.length ?? 0,
+                    itemBuilder: (ctx, index) {
+                      return QuranSearchCardWidget(
+                        item: state.searchedData![index],
+                        onTap: () {
+                          Navigator.of(context)
+                              .pop(state.searchedData![index].pageNo);
+                        },
+                      );
+                    }),
+              ),
             ),
           );
         },

@@ -61,7 +61,7 @@ class UpdateHealthCerificatePhotoDialog extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           CustomTextWidget(
-                            Helpers.translatingWord("تحديث الصورة"),
+                            Helpers.translatingWord("update_photo"),
                             fontColor: AppColor.blackModern900Light,
                             fontWeight: AppFontWeight.bold,
                             maxLines: 10,
@@ -130,7 +130,7 @@ class UpdateHealthCerificatePhotoDialog extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 12),
                           decoration: ShapeDecoration(
-                            color: Color(0xFFE8EFF1),
+                            color: AppColor.primary100Light,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8)),
                           ),

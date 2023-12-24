@@ -8,6 +8,7 @@ import '../../../../../core/dependency_injection/dependency_injection_exports.da
 import '../../../../../core/utils/app_analytics_events.dart';
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/dialog_names.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show
         BottomSheetDialog,
@@ -40,6 +41,8 @@ class _LicensesPageState extends State<LicensesPage> {
     // TODO: implement initState
     super.initState();
     CommonFunctions.sendEventToAnalytics(AppEvents.Licenses);
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.openLicensesList);
   }
 
   @override
@@ -104,6 +107,9 @@ class _LicensesPageState extends State<LicensesPage> {
                               ),
                             );
                       }
+
+                      CommonFunctions.sendUXCamEvent(
+                          UXCamEvents.openLicensesFilter);
                     },
                   );
                 },

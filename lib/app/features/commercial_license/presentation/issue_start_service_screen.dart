@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import '../../../core/dependency_injection/injection_container.dart';
 import '../../../core/utils/app_analytics_events.dart';
 import '../../../core/utils/constants/dialog_names.dart';
+import '../../../core/utils/constants/ux_cam_events.dart';
 import '../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../_shared_feature_/presentation/dialogs/not_authorized_indivivisual.dart';
 import '../../services/presentation/mvvm/service_data_view_model.dart';
@@ -32,6 +33,8 @@ class _IssueStartServiceState extends State<IssueStartService> {
     // TODO: implement initState
     super.initState();
     CommonFunctions.sendEventToAnalytics(AppEvents.issueCommercialLicenseOpen);
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.startCardServiceIssueACommercialLicense);
   }
 
   @override

@@ -1,15 +1,10 @@
 import 'dart:math';
 
-import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:custom_image_crop/custom_image_crop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/shared/config/package_config.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ImageEditorPage extends ConsumerStatefulWidget {
   const ImageEditorPage(this.image, {super.key});

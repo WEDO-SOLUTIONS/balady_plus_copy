@@ -21,6 +21,7 @@ import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/constants/remote_config.dart';
 import '../../../../core/utils/constants/route_names.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../../core/utils/enums/enums.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
@@ -46,7 +47,8 @@ class _QrScreenState extends State<QrScreen> {
   @override
   void initState() {
     super.initState();
-    //MM  Helpers.sendEventToAnalytics(AppEvents.QR_Camera);
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceYourFeedback);
   }
 
   @override
@@ -263,6 +265,8 @@ void checkBarcode(BuildContext context) async {
                   },
                 ),
               )).then((value) => controller.resumeCamera());
+
+      CommonFunctions.sendUXCamEvent(UXCamEvents.finishServiceYourFeedback);
     } else {
       Timer(const Duration(seconds: 3), () async {
         controller.resumeCamera();

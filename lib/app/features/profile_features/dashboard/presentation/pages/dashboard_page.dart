@@ -9,6 +9,7 @@ import '../../../../../core/dependency_injection/dependency_injection_exports.da
 import '../../../../../core/utils/app_analytics_events.dart';
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/constants.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, IconPath, RouteName;
@@ -41,6 +42,8 @@ class _DashBoardPageState extends State<DashBoardPage> {
     super.initState();
 
     CommonFunctions.sendEventToAnalytics(AppEvents.delegators);
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.openDashboard);
   }
 
   @override

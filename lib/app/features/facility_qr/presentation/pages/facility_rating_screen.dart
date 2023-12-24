@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../core/base/base_view_model.dart';
 import '../../../../core/utils/constants/app_colors.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/need_login_widget.dart';
 
@@ -33,6 +34,8 @@ class _FacilityRatingScreenState extends State<FacilityRatingScreen> {
   void initState() {
     super.initState();
     //MM  Helpers.sendEventToAnalytics(AppEvents.QR_Rating);
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceYourFeedbackRating);
   }
 
   @override

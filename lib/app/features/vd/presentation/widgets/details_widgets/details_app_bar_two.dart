@@ -124,7 +124,7 @@ class DetailsAppBarTwo extends StatelessWidget implements PreferredSizeWidget {
               barRadius: const Radius.circular(33),
               backgroundColor: AppColor.primary100Light,
               linearGradient: LinearGradient(colors: [
-                Color(0xff155F75),
+                AppColor.primary900Light,
                 Color(0xff159EBB),
               ]),
             ),

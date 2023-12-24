@@ -45,6 +45,7 @@ import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/dialog_names.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/enums.dart';
 import '../../../_shared_feature_/presentation/dialogs/incident_type_with_search_dialog.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
@@ -257,6 +258,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
     //MM Helpers.sendEventToAnalytics(AppEvents.Calculator_details);
 
     CommonFunctions.sendEventToAnalytics(AppEvents.calculator);
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceFeesCalculator);
   }
 
   @override
@@ -338,7 +340,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
                   barRadius: Radius.circular(33),
                   backgroundColor: AppColor.primary100Light,
                   linearGradient: LinearGradient(colors: [
-                    Color(0xff155F75),
+                    AppColor.primary900Light,
                     Color(0xff159EBB),
                   ]),
                 ),

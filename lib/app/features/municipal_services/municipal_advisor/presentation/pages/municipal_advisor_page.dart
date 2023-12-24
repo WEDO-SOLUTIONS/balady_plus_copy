@@ -6,6 +6,7 @@ import '../../../../../core/dependency_injection/dependency_injection_exports.da
     show sl;
 import '../../../../../core/utils/app_analytics_events.dart';
 import '../../../../../core/utils/common_functions.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show DefaultAppBarWidget;
 import '../../municipal_advisor_exports.dart'
@@ -29,6 +30,8 @@ class _MunicipalAdvisorPageState extends State<MunicipalAdvisorPage> {
     // TODO: implement initState
     super.initState();
     CommonFunctions.sendEventToAnalytics(AppEvents.municipalAdvisor);
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceSmartAssistant);
   }
 
   @override

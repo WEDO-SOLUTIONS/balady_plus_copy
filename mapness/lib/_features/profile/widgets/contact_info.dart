@@ -29,7 +29,7 @@ class ContactInfo extends StatelessWidget {
         ),
         ContactRow(
           contact: "199040",
-          subtitle: context.l10n.lastName,
+          subtitle: context.l10n.profileContactInformation,
           border: false,
         ),
         Padding(

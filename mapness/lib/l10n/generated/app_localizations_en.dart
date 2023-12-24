@@ -5,6 +5,9 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get about => 'About';
+
+  @override
   String get aboutApp => 'About App';
 
   @override
@@ -113,7 +116,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get complianceCardDescription => 'Targeted methods to implement compliance certificate through your map';
 
   @override
-  String get complianceCardTitle => 'Compliance certificate map';
+  String get complianceCardTitle => 'Building Compliance Locations';
 
   @override
   String get complianceFAQ => 'FAQs';
@@ -134,7 +137,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get connectionLost => 'Connection lost';
 
   @override
-  String get contactInformation => 'Contact information';
+  String get contactInformation => 'Contact Information';
 
   @override
   String get continueRide => 'Continue Ride';
@@ -224,7 +227,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get favourites => 'Favourites';
 
   @override
-  String get fencingVacantLands => 'Fencing vacant lands';
+  String get fencingVacantLands => 'Fencing vacant blocks of land';
 
   @override
   String get findAJob => 'Find a job';
@@ -308,7 +311,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalid => 'invalid';
 
   @override
-  String get investmentOpportunities => 'Investment opportunities';
+  String get investmentOpportunities => 'Invest in your City';
 
   @override
   String get iwish => 'iWish';
@@ -359,7 +362,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get jobsAraundYou => 'Jobs around you';
 
   @override
-  String get joyParks => 'JOY Parks';
+  String get joyParks => 'Joy Parks';
 
   @override
   String get km => 'Km';
@@ -371,10 +374,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageTitle => 'English';
 
   @override
-  String get lastName => 'Contact Information';
+  String get layersOnTheMap => 'Layers on the map';
 
   @override
-  String get layersOnTheMap => 'Layers on the map';
+  String get legendComplienceBuildingGreen => 'Fenced lands';
+
+  @override
+  String get legendComplienceBuildingGrey => 'Lands targeted for fencing';
+
+  @override
+  String get legendComplienceBuildingTitle => 'Land fencing status';
 
   @override
   String get lightning => 'Lightning';
@@ -578,7 +587,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile => 'Profile';
 
   @override
+  String get profileContactInformation => 'Contact number \n';
+
+  @override
   String get profileSettings => 'Profile Settings';
+
+  @override
+  String get profileSettingsLastName => 'Last name';
 
   @override
   String get published => 'Published';
@@ -833,7 +848,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get watchMore => 'Watch more';
 
   @override
-  String get weAreHappyToConnectYouWithBaladyTeam => 'Baldy\'s Application, developed in collaboration with various municipal sector entities, has evolved into a national application dedicated to bolstering the municipal community. At present, the application fulfills four key roles: \n1.Firstly, concentrating on the lifestyle aspects and daily requirements of its users \n2.It facilitates interactive services to fortify community partnerships and improve service quality,\n3.Providing digital services for the streamlined submission of electronic applications for commonly used licenses, and\n4.Offering information services to empower users in making well-informed decisions, thereby elevating satisfaction levels with municipal sector authorities.';
+  String get weAreHappyToConnectYouWithBaladyTeam => 'Baldy\'s Application, developed in collaboration with various municipal sector entities, has evolved into a national application dedicated to bolstering the municipal community. At present, the application fulfills four key dimensions, concentrating on the lifestyle aspects and daily requirements of its users, facilitates interactive services to fortify community partnerships and improve service quality, providing digital services for the streamlined submission of electronic applications for commonly used licenses, and Offering information services to empower users in making well-informed decisions, thereby elevating satisfaction levels with municipal sector authorities.';
 
   @override
   String get weCouldntFindAnythingTryChangingYourRequest => 'We couldn\'t find anything. Try changing your request';

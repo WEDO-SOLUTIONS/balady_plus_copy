@@ -9,6 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../calendar/presentation/widgets/old_calendar_card.dart';
 import '../../bloc/events_bloc.dart';
@@ -75,7 +76,7 @@ class EventsTitleLocationWidget extends StatelessWidget {
                   height: 36,
                   padding: EdgeInsets.all(5),
                   decoration: ShapeDecoration(
-                    color: const Color(0xFFE8EFF1),
+                    color: AppColor.primary100Light,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

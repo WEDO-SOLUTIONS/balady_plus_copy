@@ -14,6 +14,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/services/local/helpers.dart';
 import '../../../../../core/utils/app_analytics_events.dart';
 import '../../../../../core/utils/common_functions.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../commercial_license/data/models/cr_submit_response_model.dart';
 
 class SubmitApplicationSuccessfullyRenew extends StatefulWidget {
@@ -32,6 +33,9 @@ class _SubmitApplicationSuccessfullyRenewState
     super.initState();
     CommonFunctions.sendEventToAnalytics(
         AppEvents.renewCommercialLicenseSuccess);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.finishServiceRenewLicenseService);
   }
 
   @override

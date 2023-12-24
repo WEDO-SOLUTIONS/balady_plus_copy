@@ -38,7 +38,7 @@ class ViolationFurtherAction extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
                   decoration: ShapeDecoration(
-                    color: Color(0xFFE8EFF1),
+                    color: AppColor.primary100Light,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
                   ),

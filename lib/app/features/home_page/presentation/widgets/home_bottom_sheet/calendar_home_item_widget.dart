@@ -226,7 +226,7 @@ class RemainingDaysWidget extends StatelessWidget {
         height: 76,
         padding: EdgeInsets.all(9),
         decoration: ShapeDecoration(
-            color: Color(0xFFA7C587),
+            color: AppColor.secondary900Light,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12))),
         child: Column(

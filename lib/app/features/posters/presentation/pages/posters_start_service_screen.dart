@@ -9,6 +9,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/features/services/services_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../data/models/service_card.dart';
 
 import '../../../../core/utils/constants/dialog_names.dart';
@@ -28,7 +29,9 @@ class _PostersStartServiceState extends State<PostersStartService> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // CommonFunctions.sendEventToAnalytics(AppEvents.renewCommercialLicenseOpen);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.startCardServiceMultiplePostersPermit);
   }
 
   @override

@@ -115,7 +115,7 @@ class ThirdSubmissionCompliance extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      color: const Color(0xffE8EFF1),
+                      color: AppColor.primary100Light,
                     ),
                     child: CustomTextWidget(
                       'document_message'.tr(),

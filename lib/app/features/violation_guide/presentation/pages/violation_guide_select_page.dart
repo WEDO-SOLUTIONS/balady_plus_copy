@@ -22,7 +22,7 @@ class ViolationGuideSelectPage extends StatelessWidget {
             end: Alignment.bottomRight,
             colors: [
               Color(0xFFFFFFFF),
-              Color(0xff2C6F83),
+              AppColor.primary800Light,
             ],
           ),
         ),

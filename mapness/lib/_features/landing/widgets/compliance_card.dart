@@ -5,15 +5,18 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-class ComplianceCard extends StatelessWidget {
+class ComplianceCard extends ConsumerWidget {
   const ComplianceCard({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.only(
         left: 16,
@@ -79,17 +82,27 @@ class ComplianceCard extends StatelessWidget {
                         const SizedBox(
                           width: 40,
                         ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(37),
-                          ),
-                          padding: const EdgeInsets.all(12),
-                          child: SvgPicture.asset(
-                            'assets/icons/svg/ic_compliance.svg',
-                            width: 24,
-                            height: 24,
-                            package: PackageConfig.packageName,
+                        GestureDetector(
+                          onTap: () {
+                            ref
+                                .read(layersControlsProvider.notifier)
+                                .update(visible: true);
+                            ref
+                                .read(layersControlsProvider.notifier)
+                                .handleTap(LayerType.buildings);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(37),
+                            ),
+                            padding: const EdgeInsets.all(12),
+                            child: SvgPicture.asset(
+                              'assets/icons/svg/ic_compliance.svg',
+                              width: 24,
+                              height: 24,
+                              package: PackageConfig.packageName,
+                            ),
                           ),
                         )
                       ],
