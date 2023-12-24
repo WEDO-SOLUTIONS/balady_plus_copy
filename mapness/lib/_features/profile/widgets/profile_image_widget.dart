@@ -92,23 +92,25 @@ class ProfileImageWidget extends ConsumerWidget {
         return Stack(
           children: [
             imageWidget,
-            if (editable) ...[
-              Positioned(
-                right: 0,
-                bottom: 0,
-                child: FloatingActionButton(
-                  mini: true,
-                  backgroundColor: AppColor.white,
-                  onPressed: () => _onEdit(ref),
-                  elevation: 0,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  child: const Icon(
-                    Icons.edit,
-                    color: Color(0xFF1E928F),
-                  ),
-                ),
-              ),
-            ],
+
+            /// remove profile image edit button for a while
+            // if (editable) ...[
+            //   Positioned(
+            //     right: 0,
+            //     bottom: 0,
+            //     child: FloatingActionButton(
+            //       mini: true,
+            //       backgroundColor: AppColor.white,
+            //       onPressed: () => _onEdit(ref),
+            //       elevation: 0,
+            //       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            //       child: const Icon(
+            //         Icons.edit,
+            //         color: Color(0xFF1E928F),
+            //       ),
+            //     ),
+            //   ),
+            // ],
           ],
         );
       }),
