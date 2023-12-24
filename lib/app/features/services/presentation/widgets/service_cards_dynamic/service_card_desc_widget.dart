@@ -66,7 +66,8 @@ class ServiceCardDescWidget extends StatelessWidget {
                                     ),
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         SvgPicture.asset(
                                           IconPath.starNew,
@@ -83,20 +84,21 @@ class ServiceCardDescWidget extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                    Flexible(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          viewModel.servicesCardsDetails!
-                                                  .fieldDescriptionService ??
-                                              '',
-                                          style: AppStyle.resultsLastDescription
-                                              .copyWith(
-                                            color: AppColor.primary300Light,
+                                    Expanded(
+                                      child: SingleChildScrollView(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            viewModel.servicesCardsDetails!
+                                                    .fieldDescriptionService ??
+                                                '',
+                                            style: AppStyle
+                                                .resultsLastDescription
+                                                .copyWith(
+                                              color: AppColor.primary300Light,
+                                            ),
+                                            textAlign: TextAlign.center,
                                           ),
-                                          textAlign: TextAlign.center,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 6,
                                         ),
                                       ),
                                     ),
@@ -343,7 +345,8 @@ class ServiceCardDescWidget extends StatelessWidget {
                                             },
                                             leading: SvgPicture.asset(
                                               IconPath.element_3Icon,
-                                              colorFilter: const ColorFilter.mode(
+                                              colorFilter:
+                                                  const ColorFilter.mode(
                                                 AppColor.primary900Light,
                                                 BlendMode.srcIn,
                                               ),
@@ -408,7 +411,8 @@ class ServiceCardDescWidget extends StatelessWidget {
                                                                   requestNum:
                                                                       'fines_penalties'
                                                                           .tr(),
-                                                                  url: viewModel.servicesCardsDetails
+                                                                  url: viewModel
+                                                                      .servicesCardsDetails
                                                                       ?.fieldServiceRequirements,
                                                                   isObjections:
                                                                       false
@@ -468,7 +472,8 @@ class ServiceCardDescWidget extends StatelessWidget {
                                                                   requestNum:
                                                                       'list_penalties_municipal_violations'
                                                                           .tr(),
-                                                                  url: viewModel.servicesCardsDetails
+                                                                  url: viewModel
+                                                                      .servicesCardsDetails
                                                                       ?.fieldViolationsAndFines,
                                                                   isObjections:
                                                                       false

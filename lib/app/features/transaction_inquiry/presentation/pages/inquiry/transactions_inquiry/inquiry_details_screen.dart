@@ -7,6 +7,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../../core/utils/app_analytics_events.dart';
 import '../../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../../core/utils/constants/constants.dart';
+import '../../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../core/models/inquiry_transaction_response.dart';
 import '../../../widgets/inquiry/inquiry_result_body.dart';

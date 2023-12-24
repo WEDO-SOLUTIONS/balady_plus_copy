@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/services/services_exports.dart' show NoParams;
@@ -91,21 +92,33 @@ class ServicesCubit extends Cubit<ServicesState> {
       status: BlocStatus.success,
       honoringTheDeadServices:
           ekramServicesList.getOrElse(() => []).where((service) {
-        return service.title.toLowerCase().contains(searchQuery!.toLowerCase());
+        return true;
       }).toList(),
       businessLicenseServices:
           businessLicenseServicesList.getOrElse(() => []).where((service) {
-        return service.title.toLowerCase().contains(searchQuery!.toLowerCase());
+        return service.title
+            .tr()
+            .toLowerCase()
+            .contains(searchQuery!.toLowerCase());
       }).toList(),
       islamicServices: islamicServicesList.getOrElse(() => []).where((service) {
-        return service.title.toLowerCase().contains(searchQuery!.toLowerCase());
+        return service.title
+            .tr()
+            .toLowerCase()
+            .contains(searchQuery!.toLowerCase());
       }).toList(),
       municipalServices:
           municpalServicesList.getOrElse(() => []).where((service) {
-        return service.title.toLowerCase().contains(searchQuery!.toLowerCase());
+        return service.title
+            .tr()
+            .toLowerCase()
+            .contains(searchQuery!.toLowerCase());
       }).toList(),
       helpServices: helpServicesList.getOrElse(() => []).where((service) {
-        return service.title.toLowerCase().contains(searchQuery!.toLowerCase());
+        return service.title
+            .tr()
+            .toLowerCase()
+            .contains(searchQuery!.toLowerCase());
       }).toList(),
       searchQuery: Nullable(searchQuery),
     ));

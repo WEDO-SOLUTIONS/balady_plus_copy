@@ -81,7 +81,10 @@ class _AllServicesPageState extends State<AllServicesPage> {
                 onChanged: (String t) {
                   query = t;
                   searchedServices = services
-                      .where((element) => element.title.contains(t))
+                      .where((element) => element.title
+                          .tr()
+                          .toLowerCase()
+                          .contains(t.toLowerCase()))
                       .toList();
 
                   setState(() {});
@@ -115,7 +118,7 @@ class _AllServicesPageState extends State<AllServicesPage> {
                 itemCount: searchedServices.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 4,
-                  mainAxisSpacing: 5.0,
+                  mainAxisSpacing: 20.0,
                   crossAxisSpacing: 5.0,
                 ),
                 itemBuilder: (_, index) {

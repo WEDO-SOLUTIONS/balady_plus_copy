@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../data/models/rating_self_success_result.dart';
 import '../widgets/self_rating_result_widgets/self_rataing_result_completed.dart';
@@ -25,6 +26,7 @@ class _SelfRatingResultPageState extends State<SelfRatingResultPage> {
     // TODO: implement initState
     super.initState();
     CommonFunctions.sendEventToAnalytics(AppEvents.selfRatingSuccess);
+    CommonFunctions.sendUXCamEvent(UXCamEvents.finishServicePremisesAssessment);
   }
 
   @override

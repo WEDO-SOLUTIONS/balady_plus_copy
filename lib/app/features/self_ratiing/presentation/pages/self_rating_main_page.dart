@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/paths/image_paths.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 
 class SelfRatingMainPage extends StatefulWidget {
   const SelfRatingMainPage({super.key});
@@ -23,6 +24,7 @@ class _SelfRatingMainPageState extends State<SelfRatingMainPage> {
     // TODO: implement initState
     super.initState();
     CommonFunctions.sendEventToAnalytics(AppEvents.selfRating);
+    CommonFunctions.sendUXCamEvent(UXCamEvents.mainServicePremisesAssessment);
   }
 
   @override

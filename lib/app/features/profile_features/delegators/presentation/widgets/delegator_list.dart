@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/utils_exports.dart'
-    show AppFontWeight, BlocRequestStatus, CommonProperties;
+    show AppFontWeight, BlocRequestStatus, CommonFunctions, CommonProperties;
 import '../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show
@@ -16,7 +17,7 @@ import '../../../../services/presentation/pages/dashboard_page/presentation/widg
 import '../../delegators_exports.dart' show DelegatorsCubit, DelegatorsState;
 import 'no_accounts_widget.dart';
 
-class DelegatorList extends StatelessWidget {
+class DelegatorList extends StatefulWidget {
   final DelegatorsCubit _delegatorsCubit;
   final bool fromService;
   const DelegatorList({
@@ -26,9 +27,21 @@ class DelegatorList extends StatelessWidget {
   }) : _delegatorsCubit = delegatorsCubit;
 
   @override
+  State<DelegatorList> createState() => _DelegatorListState();
+}
+
+class _DelegatorListState extends State<DelegatorList> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.sendUXCamEvent(UXCamEvents.openDelegators);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: _delegatorsCubit,
+      value: widget._delegatorsCubit,
       child: Builder(builder: (context) {
         return BottomSheetWithActions(
           title: "profile_switch_account".tr(),
@@ -37,7 +50,7 @@ class DelegatorList extends StatelessWidget {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (fromService &&
+                  if (widget.fromService &&
                       state.delegators.length == 0 &&
                       state.agents.length == 0) ...[
                     NoAccountsWidget()
@@ -53,10 +66,10 @@ class DelegatorList extends StatelessWidget {
                     ),
                     if (state.tab == 0)
                       DelegatorsBody(
-                        delegatorsCubit: _delegatorsCubit,
+                        delegatorsCubit: widget._delegatorsCubit,
                       ),
                     if (state.tab == 1)
-                      AgentsBody(delegatorsCubit: _delegatorsCubit)
+                      AgentsBody(delegatorsCubit: widget._delegatorsCubit)
                   ]
                 ],
               );

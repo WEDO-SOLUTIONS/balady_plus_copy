@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/utils/app_analytics_events.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../services/presentation/mvvm/service_data_view_model.dart';
 import '../../../../services/presentation/widgets/service_cards_dynamic/service_card_desc_widget.dart';
@@ -31,12 +32,12 @@ class _RenewStartServiceState extends State<RenewStartService> {
     // TODO: implement initState
     super.initState();
     CommonFunctions.sendEventToAnalytics(AppEvents.renewCommercialLicenseOpen);
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.startCardServiceRenewLicenseService);
   }
 
   @override
   Widget build(BuildContext context) {
-    ServiceEntity service = model();
-
     int licenseId = ModalRoute.of(context)!.settings.arguments as int;
 
     return MultiBlocProvider(

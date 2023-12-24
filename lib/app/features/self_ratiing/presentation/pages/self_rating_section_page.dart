@@ -14,6 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/common_functions.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../data/models/rating_self_success_result.dart';
 
 class SelfRatingSectionPage extends StatefulWidget {
@@ -26,6 +27,14 @@ class SelfRatingSectionPage extends StatefulWidget {
 class _SelfRatingSectionPageState extends State<SelfRatingSectionPage> {
   PageController pageController = PageController(initialPage: 0);
   double currentStep = 1;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startServicePremisesAssessment);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

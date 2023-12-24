@@ -6,6 +6,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:tuple/tuple.dart';
 
 import '../../../../../../core/base/base_view_model.dart';
+import '../../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../../core/utils/enums/enums.dart';
 import '../../../../../_shared_feature_/data/entities/drop_down_item.dart';
 import '../../../../../_shared_feature_/data/entities/success_screen_args.dart';
@@ -168,6 +169,10 @@ class NewInquiryViewModel extends BaseViewModel {
             RouteName.successRoute, predicate,
             arguments: SuccessScreenArgs(
                 type: PAGE_TYPE.inquiry, idNumber: incidentResult?.pyId));
+
+        CommonFunctions.sendUXCamEvent(
+            UXCamEvents.finishServiceGeneralInquiries);
+
         return Future.value(true);
       } else {
         if (response.item3?.errors != null &&

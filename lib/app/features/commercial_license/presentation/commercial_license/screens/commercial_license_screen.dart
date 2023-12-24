@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/dependency_injection/injection_container.dart';
+import '../../../../../core/utils/common_functions.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../commercial_license_exports.dart';
 import '../../step10/bloc/cr_step10_addetional_data_cubit.dart';
 import '../../step11/bloc/cr_step11_attachment_data_cubit.dart';
@@ -11,8 +13,23 @@ import '../../step4/bloc/cr_step4_shop_data_cubit.dart';
 import '../../step5/bloc/cr_step5_attachment_data_cubit.dart';
 import '../../step6/bloc/cr_step6_establishment_data_cubit.dart';
 
-class CommercialLicenseScreen extends StatelessWidget {
+class CommercialLicenseScreen extends StatefulWidget {
   const CommercialLicenseScreen({Key? key}) : super(key: key);
+
+  @override
+  State<CommercialLicenseScreen> createState() =>
+      _CommercialLicenseScreenState();
+}
+
+class _CommercialLicenseScreenState extends State<CommercialLicenseScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.startServiceIssueACommercialLicense);
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../../../core/dependency_injection/injection_container.dart';
+import '../../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../renew_commercial_license_exports.dart'
     show RenewApply, RenewApplyRequest, ValidateRenewBeforeApply;
@@ -70,6 +71,9 @@ class RenewStartServiceBloc
       NavigationService.navigatorKey.currentState?.pushNamed(
           RouteName.renewCommercialLicenseSubmitForm,
           arguments: r.data!.result);
+
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.startServiceRenewLicenseService);
     });
   }
 

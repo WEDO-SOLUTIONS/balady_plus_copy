@@ -11,12 +11,12 @@ class ProfileSections {
   static ProfileSection get personalProfile => ProfileSection(
         title: 'personal_profile'.tr(),
         items: [
-          ProfileItem(
+          /* ProfileItem(
             title: "personal_information".tr(),
             icon: IconPath.personalInformation,
             route: RouteName.personalInformation,
             args: CommonProperties.userInfo,
-          ),
+          ),*/
           ProfileItem(
             title: "dashboard".tr(),
             icon: IconPath.dashboard,

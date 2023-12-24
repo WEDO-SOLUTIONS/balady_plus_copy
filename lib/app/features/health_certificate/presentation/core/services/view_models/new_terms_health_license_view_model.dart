@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/services/local/navigation_services.dart';
+import '../../../../../../core/utils/common_functions.dart';
+import '../../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../../core/utils/enums/enums.dart';
 import '../../../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../models/apply_new_health_request.dart';
@@ -50,6 +52,9 @@ class NewTermsHealthLicenseViewModel extends BaseViewModel {
         navigateToSuccessScreen(
             requestIdNumber: submitRequestResponse.data!.result!.requestId!,
             msg: submitRequestResponse.data!.result!.message ?? "");
+
+        CommonFunctions.sendUXCamEvent(
+            UXCamEvents.finishServiceHealthCertificate);
       }
     } else {
       if (response?.data?.result?.requestId != null) {

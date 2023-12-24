@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../../../../core/base/base_view.dart';
 import '../../../../../../core/base/base_view_model.dart';
+import '../../../../../../core/utils/common_functions.dart';
 import '../../../../../../core/utils/constants/constants.dart';
+import '../../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../_shared_feature_/presentation/pages/map_view.dart';
 import '../../../../data/general_inquiry_data.dart';
 import '../../../core/models/selected_location.dart';
@@ -30,13 +32,16 @@ class _NewRequestLocationScreen extends State<NewRequestLocationScreen> {
   @override
   void initState() {
     super.initState();
-  }
 
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.startServiceMunicipalServiceRequest);
+  }
 
   @override
   Widget build(BuildContext context) {
-   CustomerVoiceReportTypeModel reportType = ModalRoute.of(context)!.settings.arguments
-        as CustomerVoiceReportTypeModel;
+    CustomerVoiceReportTypeModel reportType = ModalRoute.of(context)!
+        .settings
+        .arguments as CustomerVoiceReportTypeModel;
 
     return BaseView<NewMSRMapViewModel>(onModelReady: (model) {
       model.type = reportType;

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/app_analytics_events.dart';
 import '../../../../../core/utils/constants/dialog_names.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show
@@ -34,6 +35,8 @@ class _ViolationsPageState extends State<ViolationsPage> {
   void initState() {
     super.initState();
     CommonFunctions.sendEventToAnalytics(AppEvents.profile);
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.openViolationsList);
   }
 
   @override
@@ -49,6 +52,9 @@ class _ViolationsPageState extends State<ViolationsPage> {
                 builder: (context, state) {
                   return FilterIcon(
                     onTap: () async {
+                      CommonFunctions.sendUXCamEvent(
+                          UXCamEvents.openViolationsFilter);
+
                       context
                           .read<ViolationsBloc>()
                           .add(ViolationsLoadLookupsEvent());
