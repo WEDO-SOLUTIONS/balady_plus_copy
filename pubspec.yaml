@@ -18,7 +18,6 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 version: 3.7.0+1
 
-
 environment:
   sdk: ">=3.0.1 <4.0.0"
 
@@ -117,8 +116,7 @@ dependencies:
   flutter_local_notifications: 14.1.2
   # A flutter plugin for getting the local timezone of the device.
   flutter_timezone: ^1.0.7
-  youtube_player_flutter:
-    path: packages/youtube_player_flutter-8.1.2
+  youtube_player_flutter: 8.1.2
   launch_review: ^3.0.1
 
   flutter_appauth:
