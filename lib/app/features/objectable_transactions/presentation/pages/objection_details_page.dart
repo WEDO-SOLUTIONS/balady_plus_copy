@@ -14,6 +14,7 @@ import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/constants/remote_config.dart';
 import '../../../../core/utils/constants/route_names.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
 import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
@@ -41,6 +42,14 @@ class ObjectionsDetailsPage extends StatefulWidget {
 }
 
 class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.openObjectionsDetails);
+  }
+
   @override
   Widget build(BuildContext context) {
     ObjectionDetails? params =

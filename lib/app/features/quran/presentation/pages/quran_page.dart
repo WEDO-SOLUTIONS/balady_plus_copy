@@ -50,143 +50,146 @@ class _QuranPageState extends State<QuranPage> {
             listener: (context, state) {
               // TODO: implement listener
             },
-            child: Scaffold(
-                appBar: AppBar(
-                  elevation: 0,
-                  title: CustomTextWidget(
-                    state.currentTitle ?? "",
-                    fontColor: AppColor.white,
-                    fontSize: 20,
-                    fontFamily: "uthmanic",
-                    textAlign: TextAlign.center,
-                  ),
-                  leading: GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () {
-                      NavigationService.navigatorKey.currentState?.pop();
-                    },
-                    child: Icon(Icons.arrow_back_ios),
-                  ),
-                  flexibleSpace: Stack(
-                    children: [
-                      Container(
-                        padding:
-                            EdgeInsets.only(bottom: 40, left: 16, right: 16),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          image: DecorationImage(
-                            image: AssetImage(ImagePath.zmzmBackground),
-                            fit: BoxFit.cover,
+            child: Directionality(
+              textDirection: TextDirection.rtl,
+              child: Scaffold(
+                  appBar: AppBar(
+                    elevation: 0,
+                    title: CustomTextWidget(
+                      state.currentTitle ?? "",
+                      fontColor: AppColor.white,
+                      fontSize: 20,
+                      fontFamily: "uthmanic",
+                      textAlign: TextAlign.center,
+                    ),
+                    leading: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () {
+                        NavigationService.navigatorKey.currentState?.pop();
+                      },
+                      child: Icon(Icons.arrow_back_ios),
+                    ),
+                    flexibleSpace: Stack(
+                      children: [
+                        Container(
+                          padding:
+                              EdgeInsets.only(bottom: 40, left: 16, right: 16),
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            image: DecorationImage(
+                              image: AssetImage(ImagePath.zmzmBackground),
+                              fit: BoxFit.cover,
+                            ),
+                            boxShadow: Constants.appBarBoxShadow,
                           ),
-                          boxShadow: Constants.appBarBoxShadow,
+                          alignment: AlignmentDirectional.bottomCenter,
                         ),
-                        alignment: AlignmentDirectional.bottomCenter,
-                      ),
-                    ],
-                  ),
-                  actions: [],
-                  systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
-                    statusBarBrightness: Brightness.light,
-                  ),
-                ),
-                body: Container(
-                  child: Stack(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          context.read<QuranBloc>().add(ToggleDetailsEvent());
-                        },
-                        child: PageView.builder(
-                          physics: AlwaysScrollableScrollPhysics(),
-                          controller: context.read<QuranBloc>().controller,
-                          onPageChanged: (int page) {
-                            context
-                                .read<QuranBloc>()
-                                .add(ChangePageEvent(page: page));
-                          },
-                          itemCount: state.suras?.length ?? 0,
-                          itemBuilder: ((context, i) {
-                            return Container(
-                                margin: EdgeInsets.symmetric(horizontal: 10),
-                                // padding: EdgeInsets.all(8),
-                                child: SvgPicture.file(context
-                                    .read<QuranBloc>()
-                                    .getImagePath((i + 1).toString()))
-                                /*: ListView(children: [
-                                        for (int index = 0;
-                                            (index <
-                                                (state.suras?[i + 1]?.values
-                                                        .length ??
-                                                    0));
-                                            index++) ...[
-                                          if (state.suras?[i + 1]?[index + 1]
-                                                  ?.suraAyat.first.keys.first ==
-                                              1)
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 8),
-                                              child: Stack(
-                                                alignment: Alignment.center,
-                                                children: [
-                                                  SvgPicture.asset(
-                                                      ImagePath.ayah),
-                                                  CustomTextWidget(
-                                                    state
-                                                            .suras?[i + 1]
-                                                                ?[index + 1]
-                                                            ?.suraName ??
-                                                        "",
-                                                    fontColor: AppColor.black,
-                                                    textAlign: TextAlign.center,
-                                                    height: 1.6,
-                                                    fontSize: 24,
-                                                    fontFamily:
-                                                        "sura_juza_names",
-                                                    maxLines: 1000,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          CustomTextWidget(
-                                            "${state.suras?[i + 1]?[index + 1]?.suraAyat.map((e) => e.values).toList().join(" ").replaceAll("(", "").replaceAll(")", "")}" ??
-                                                "",
-                                            fontColor: AppColor.black,
-                                            textAlign: TextAlign.center,
-                                            height: 1.6,
-                                            fontSize: 25,
-                                            letterSpacing: 0.0001,
-                                            fontFamily: "HafsSmart",
-                                            maxLines: 1000,
-                                          )
-                                        ],
-                                        CustomVerticalSpace(height: 20),
-                                        CustomTextWidget(
-                                          (state.currentPageValue + 1)
-                                              .toString(),
-                                          fontColor: AppColor.primary900Light,
-                                          textAlign: TextAlign.center,
-                                          fontWeight: AppFontWeight.bold,
-                                        )
-                                      ])*/
-                                );
-                          }),
-                        ),
-                      ),
-                      if (state.showDetails == true) ...[
-                        QuranHeader(
-                          jozz: state.currentJozz ?? 0,
-                          suraName: state.currentTitle ?? "",
-                          pageNumber: state.currentPageValue,
-                        ),
-                        QuranFooter()
                       ],
-                      BookMarkSign(),
-                      if (state.status == BlocStatus.loading)
-                        CustomCircularLoadingWidget()
-                    ],
+                    ),
+                    actions: [],
+                    systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
+                      statusBarBrightness: Brightness.light,
+                    ),
                   ),
-                )),
+                  body: Container(
+                    child: Stack(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            context.read<QuranBloc>().add(ToggleDetailsEvent());
+                          },
+                          child: PageView.builder(
+                            physics: AlwaysScrollableScrollPhysics(),
+                            controller: context.read<QuranBloc>().controller,
+                            onPageChanged: (int page) {
+                              context
+                                  .read<QuranBloc>()
+                                  .add(ChangePageEvent(page: page));
+                            },
+                            itemCount: state.suras?.length ?? 0,
+                            itemBuilder: ((context, i) {
+                              return Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 10),
+                                  // padding: EdgeInsets.all(8),
+                                  child: SvgPicture.file(context
+                                      .read<QuranBloc>()
+                                      .getImagePath((i + 1).toString()))
+                                  /*: ListView(children: [
+                                          for (int index = 0;
+                                              (index <
+                                                  (state.suras?[i + 1]?.values
+                                                          .length ??
+                                                      0));
+                                              index++) ...[
+                                            if (state.suras?[i + 1]?[index + 1]
+                                                    ?.suraAyat.first.keys.first ==
+                                                1)
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 8),
+                                                child: Stack(
+                                                  alignment: Alignment.center,
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                        ImagePath.ayah),
+                                                    CustomTextWidget(
+                                                      state
+                                                              .suras?[i + 1]
+                                                                  ?[index + 1]
+                                                              ?.suraName ??
+                                                          "",
+                                                      fontColor: AppColor.black,
+                                                      textAlign: TextAlign.center,
+                                                      height: 1.6,
+                                                      fontSize: 24,
+                                                      fontFamily:
+                                                          "sura_juza_names",
+                                                      maxLines: 1000,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            CustomTextWidget(
+                                              "${state.suras?[i + 1]?[index + 1]?.suraAyat.map((e) => e.values).toList().join(" ").replaceAll("(", "").replaceAll(")", "")}" ??
+                                                  "",
+                                              fontColor: AppColor.black,
+                                              textAlign: TextAlign.center,
+                                              height: 1.6,
+                                              fontSize: 25,
+                                              letterSpacing: 0.0001,
+                                              fontFamily: "HafsSmart",
+                                              maxLines: 1000,
+                                            )
+                                          ],
+                                          CustomVerticalSpace(height: 20),
+                                          CustomTextWidget(
+                                            (state.currentPageValue + 1)
+                                                .toString(),
+                                            fontColor: AppColor.primary900Light,
+                                            textAlign: TextAlign.center,
+                                            fontWeight: AppFontWeight.bold,
+                                          )
+                                        ])*/
+                                  );
+                            }),
+                          ),
+                        ),
+                        if (state.showDetails == true) ...[
+                          QuranHeader(
+                            jozz: state.currentJozz ?? 0,
+                            suraName: state.currentTitle ?? "",
+                            pageNumber: state.currentPageValue,
+                          ),
+                          QuranFooter()
+                        ],
+                        BookMarkSign(),
+                        if (state.status == BlocStatus.loading)
+                          CustomCircularLoadingWidget()
+                      ],
+                    ),
+                  )),
+            ),
           );
         },
       ),
