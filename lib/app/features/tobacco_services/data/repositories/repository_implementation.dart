@@ -6,6 +6,7 @@ import 'package:balady_plus/app/features/tobacco_services/data/models/disclosure
 import 'package:balady_plus/app/features/tobacco_services/data/models/facility.dart';
 import 'package:balady_plus/app/features/tobacco_services/data/models/tobacco_schedule.dart';
 import 'package:dartz/dartz.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class TobaccoListRepositoryImplementation {
   final TobaccoListRemoteDataSource remoteDataSource;
@@ -17,7 +18,7 @@ class TobaccoListRepositoryImplementation {
       final data = await remoteDataSource.getUserFacilities();
       return Right(data);
     } on NoDataFoundException {
-      return Left(NoDataFoundFailure());
+      return Left(ServerFailure("no_data_shown".tr()));
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));
     }
