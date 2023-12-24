@@ -1236,7 +1236,9 @@ class CommonFunctions {
         .add(DashboardEventInitial());
   }
 
-  static void sendUXCamEvent(String event) {}
+  static void sendUXCamEvent(String event) {
+    FlutterUxcam.logEvent(event);
+  }
 }
 
 class CommonProperties {
