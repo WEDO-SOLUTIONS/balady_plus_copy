@@ -18,7 +18,7 @@ class ComplienceBuildingLegend extends ConsumerWidget {
     final textStyles = context.textStyle;
     final locale = context.l10n;
 
-    if (layer.selectedType != LayerType.buildings) {
+    if (layer.selectedType != LayerType.fencing) {
       return const SizedBox.shrink();
     }
 
@@ -100,7 +100,8 @@ class _LegendItem extends StatelessWidget {
             text,
             style: textStyles.textXS,
             group: group,
-            maxLines: 1,
+            minFontSize: 8,
+            maxLines: 2,
           ),
         ),
       ],
