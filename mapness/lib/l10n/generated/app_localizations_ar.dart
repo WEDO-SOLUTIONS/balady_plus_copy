@@ -134,7 +134,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get connectionLost => 'فقد الاتصال';
 
   @override
-  String get contactInformation => 'معلومات التواصل';
+  String get contactInformation => 'اسم العائلة';
 
   @override
   String get continueRide => 'متابعة الرحلة';
@@ -371,9 +371,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get languageTitle => 'الإنجليزية';
 
   @override
-  String get lastName => 'اسم العائلة';
-
-  @override
   String get layersOnTheMap => 'الطبقات على الخريطة';
 
   @override
@@ -398,7 +395,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get maneuvers => 'تحويلات';
 
   @override
-  String get maneuversAreOff => 'لاتتضمن التحويلات';
+  String get maneuversAreOff => 'لا تتضمن التحويلات';
 
   @override
   String get maneuversIncluded => 'التحويلات متضمنه';
@@ -578,7 +575,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profile => 'الحساب';
 
   @override
+  String get profileContactInformation => 'معلومات الاتصال';
+
+  @override
   String get profileSettings => 'إعدادات الحساب';
+
+  @override
+  String get profileSettingsLastName => 'اسم العائلة';
 
   @override
   String get published => 'تم النشر';

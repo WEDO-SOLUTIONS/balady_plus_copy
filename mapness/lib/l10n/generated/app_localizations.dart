@@ -354,7 +354,7 @@ abstract class AppLocalizations {
   /// No description provided for @contactInformation.
   ///
   /// In ar, this message translates to:
-  /// **'معلومات التواصل'**
+  /// **'اسم العائلة'**
   String get contactInformation;
 
   /// No description provided for @continueRide.
@@ -825,12 +825,6 @@ abstract class AppLocalizations {
   /// **'الإنجليزية'**
   String get languageTitle;
 
-  /// No description provided for @lastName.
-  ///
-  /// In ar, this message translates to:
-  /// **'اسم العائلة'**
-  String get lastName;
-
   /// No description provided for @layersOnTheMap.
   ///
   /// In ar, this message translates to:
@@ -882,7 +876,7 @@ abstract class AppLocalizations {
   /// No description provided for @maneuversAreOff.
   ///
   /// In ar, this message translates to:
-  /// **'لاتتضمن التحويلات'**
+  /// **'لا تتضمن التحويلات'**
   String get maneuversAreOff;
 
   /// No description provided for @maneuversIncluded.
@@ -1239,11 +1233,23 @@ abstract class AppLocalizations {
   /// **'الحساب'**
   String get profile;
 
+  /// No description provided for @profileContactInformation.
+  ///
+  /// In ar, this message translates to:
+  /// **'معلومات الاتصال'**
+  String get profileContactInformation;
+
   /// No description provided for @profileSettings.
   ///
   /// In ar, this message translates to:
   /// **'إعدادات الحساب'**
   String get profileSettings;
+
+  /// No description provided for @profileSettingsLastName.
+  ///
+  /// In ar, this message translates to:
+  /// **'اسم العائلة'**
+  String get profileSettingsLastName;
 
   /// No description provided for @published.
   ///

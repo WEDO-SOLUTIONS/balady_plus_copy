@@ -41,7 +41,7 @@ class PersonalData extends ConsumerWidget {
             ),
             PersonalDataRow(
               title: userInfo.getLocalizedLastName(language),
-              subtitle: context.l10n.lastName,
+              subtitle: context.l10n.profileSettingsLastName,
             ),
             Padding(
               padding: const EdgeInsets.only(right: 16),

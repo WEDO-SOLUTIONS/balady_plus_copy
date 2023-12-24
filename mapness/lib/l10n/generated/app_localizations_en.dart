@@ -113,7 +113,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get complianceCardDescription => 'Targeted methods to implement compliance certificate through your map';
 
   @override
-  String get complianceCardTitle => 'Compliance certificate map';
+  String get complianceCardTitle => 'Building Compliance Locations';
 
   @override
   String get complianceFAQ => 'FAQs';
@@ -134,7 +134,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get connectionLost => 'Connection lost';
 
   @override
-  String get contactInformation => 'Contact information';
+  String get contactInformation => 'Contact Information';
 
   @override
   String get continueRide => 'Continue Ride';
@@ -224,7 +224,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get favourites => 'Favourites';
 
   @override
-  String get fencingVacantLands => 'Fencing vacant lands';
+  String get fencingVacantLands => 'Fencing vacant blocks of land';
 
   @override
   String get findAJob => 'Find a job';
@@ -308,7 +308,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalid => 'invalid';
 
   @override
-  String get investmentOpportunities => 'Investment opportunities';
+  String get investmentOpportunities => 'Invest in your City';
 
   @override
   String get iwish => 'iWish';
@@ -359,7 +359,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get jobsAraundYou => 'Jobs around you';
 
   @override
-  String get joyParks => 'JOY Parks';
+  String get joyParks => 'Joy Parks';
 
   @override
   String get km => 'Km';
@@ -369,9 +369,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageTitle => 'English';
-
-  @override
-  String get lastName => 'Last name';
 
   @override
   String get layersOnTheMap => 'Layers on the map';
@@ -578,7 +575,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile => 'Profile';
 
   @override
+  String get profileContactInformation => 'Contact information';
+
+  @override
   String get profileSettings => 'Profile Settings';
+
+  @override
+  String get profileSettingsLastName => 'Last name';
 
   @override
   String get published => 'Published';
