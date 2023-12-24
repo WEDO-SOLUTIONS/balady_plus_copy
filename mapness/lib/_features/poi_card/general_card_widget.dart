@@ -6,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart'
     as map_control_provider;
-import 'package:mapness/_features/poi_card/constants/about_mock.dart';
+import 'package:mapness/_features/poi_card/constants/info_mock.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
@@ -14,7 +14,6 @@ import 'package:mapness/_features/poi_card/widgets/about.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/contacts_info.dart';
 import 'package:mapness/_features/poi_card/widgets/description.dart';
-import 'package:mapness/_features/poi_card/widgets/favourites.dart';
 import 'package:mapness/_features/poi_card/widgets/footer.dart';
 import 'package:mapness/_features/poi_card/widgets/header.dart';
 import 'package:mapness/_features/poi_card/widgets/opening_hours.dart';
@@ -23,6 +22,7 @@ import 'package:mapness/_features/poi_card/widgets/qr_license_info.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/poi_card/widgets/trade_license.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
@@ -136,6 +136,13 @@ class _ContentState extends ConsumerState<_Content> {
                     data!.id!.objectId,
                     ref.read(appLanguageProvider),
                   );
+                  final name = aboutMock(
+                    data.id!.objectId,
+                    ref.read(appLanguageProvider),
+                  );
+                  if (name != null) {
+                    data.title = name;
+                  }
 
                   return Material(
                     color: Colors.transparent,
@@ -193,7 +200,10 @@ class _ContentState extends ConsumerState<_Content> {
                                             ),
                                           if (data.openingHours != null)
                                             OpeningHours(
-                                                data.getOpeningHoursModel()),
+                                              data.getOpeningHoursModel(
+                                                context.l10n,
+                                              ),
+                                            ),
                                           ContactsInfo(
                                             viewModel: viewModel,
                                             data: data,

@@ -7,10 +7,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/_features/profile/pages/image_editor_page.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/profile.dart';
-import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/shared/config/package_config.dart';
 
 import '../providers/_index.dart';
@@ -36,7 +34,7 @@ class ProfileImageWidget extends ConsumerWidget {
 
     Uint8List? croppedBytes = await ref
         .read(goRouterProvider)
-        .push(ImageEditorRoute().location, extra: bytes);
+        .push(const ImageEditorRoute().location, extra: bytes);
 
     if (croppedBytes != null) {
       ref
@@ -50,7 +48,7 @@ class ProfileImageWidget extends ConsumerWidget {
     final profileImage = ref.watch(profileImageProvider);
 
     return GestureDetector(
-      onTap: editable ? () => _onEdit(ref) : null,
+      // onTap: editable ? () => _onEdit(ref) : null,
       child: Builder(builder: (context) {
         final defaultImage = SvgPicture.asset(
           'assets/icons/svg/ic_nav_profile.svg',
@@ -94,23 +92,25 @@ class ProfileImageWidget extends ConsumerWidget {
         return Stack(
           children: [
             imageWidget,
-            if (editable) ...[
-              Positioned(
-                right: 0,
-                bottom: 0,
-                child: FloatingActionButton(
-                  mini: true,
-                  backgroundColor: AppColor.white,
-                  onPressed: () => _onEdit(ref),
-                  elevation: 0,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  child: const Icon(
-                    Icons.edit,
-                    color: Color(0xFF1E928F),
-                  ),
-                ),
-              ),
-            ],
+
+            /// remove profile image edit button for a while
+            // if (editable) ...[
+            //   Positioned(
+            //     right: 0,
+            //     bottom: 0,
+            //     child: FloatingActionButton(
+            //       mini: true,
+            //       backgroundColor: AppColor.white,
+            //       onPressed: () => _onEdit(ref),
+            //       elevation: 0,
+            //       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            //       child: const Icon(
+            //         Icons.edit,
+            //         color: Color(0xFF1E928F),
+            //       ),
+            //     ),
+            //   ),
+            // ],
           ],
         );
       }),

@@ -5,6 +5,9 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get about => 'حول';
+
+  @override
   String get aboutApp => 'عن التطبيق';
 
   @override
@@ -83,7 +86,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get chooseTheLanguageOfAll => 'إختر لغة واجهات التطبيق';
 
   @override
-  String get clean => 'تنظيف';
+  String get clean => 'مسح';
 
   @override
   String get closedUntill => 'مغلق حتى';
@@ -134,7 +137,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get connectionLost => 'فقد الاتصال';
 
   @override
-  String get contactInformation => 'معلومات التواصل';
+  String get contactInformation => 'اسم العائلة';
 
   @override
   String get continueRide => 'متابعة الرحلة';
@@ -371,10 +374,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get languageTitle => 'الإنجليزية';
 
   @override
-  String get lastName => 'رقم التواصل';
+  String get layersOnTheMap => 'الطبقات على الخريطة';
 
   @override
-  String get layersOnTheMap => 'الطبقات على الخريطة';
+  String get legendComplienceBuildingGreen => 'أراضي مسورة';
+
+  @override
+  String get legendComplienceBuildingGrey => 'أراضي مستهدفة للتسوير';
+
+  @override
+  String get legendComplienceBuildingTitle => 'حالات تسوير الأراضي';
 
   @override
   String get lightning => 'الاضاءة';
@@ -398,7 +407,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get maneuvers => 'تحويلات';
 
   @override
-  String get maneuversAreOff => 'لاتتضمن التحويلات';
+  String get maneuversAreOff => 'لا تتضمن التحويلات';
 
   @override
   String get maneuversIncluded => 'التحويلات متضمنه';
@@ -578,7 +587,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profile => 'الحساب';
 
   @override
+  String get profileContactInformation => 'رقم التواصل\n';
+
+  @override
   String get profileSettings => 'إعدادات الحساب';
+
+  @override
+  String get profileSettingsLastName => 'اسم العائلة';
 
   @override
   String get published => 'تم النشر';
@@ -833,7 +848,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get watchMore => 'مشاهدة المزيد';
 
   @override
-  String get weAreHappyToConnectYouWithBaladyTeam => 'تم تطوير تطبيق بلدي بالتعاون مع جهات القطاع البلدي المختلفة لتكون البوابة الوطنية الداعمة للمجتمع البلدي.\nويشمل هذا التطبيق في المرحلة الحالية أربعة مسؤوليات رئيسية وهي:\n- التركيز على عناصر لايف ستايل والمتطلبات اليومية للمستخدمين\n- الخدمات التفاعلية التي تساعد في تعزيز مفهوم الشراكة المجتمعية لتحسين جودة الخدمات المقدمة للمستفيدين.\n- الخدمات الإلكترونية التي تساعد على تقديم الطلبات الإلكترونية لاستخراج الرخص الأكثر استخدامًا.\n- الخدمات المعلوماتية والتي تساعد المستفيدين على اتخاذ القرارات ذات العلاقة بما يساهم في تحسين مستوى الرضا عن جهات القطاع البلدي.';
+  String get weAreHappyToConnectYouWithBaladyTeam => 'تم تطوير تطبيق بلدي بالتعاون مع جهات القطاع البلدي المختلفة لتكون البوابة الوطنية الداعمة للمجتمع البلدي ويشمل هذا التطبيق في المرحلة الحالية أربعة محاور رئيسية وهى التركيز على خدمات لايف ستايل والمتطلبات اليومية للمستخدمين، الخدمات التفاعلية التي تساعد في تعزيز مفهوم الشراكة المجتمعية لتحسين جودة الخدمات المقدمة للمستفيدين،  الخدمات الإلكترونية التي تساعد على تقديم الطلبات الإلكترونية لاستخراج الرخص الأكثر استخدامًا إضافة إلى الخدمات المعلوماتية والتي تساعد المستفيدين على اتخاذ القرارات ذات العلاقة بما يساهم في تحسين مستوى الرضا عن جهات القطاع البلدي.';
 
   @override
   String get weCouldntFindAnythingTryChangingYourRequest => 'لم نتمكن من العثور على شيء.رجاء المحاولة مرة أخرى';

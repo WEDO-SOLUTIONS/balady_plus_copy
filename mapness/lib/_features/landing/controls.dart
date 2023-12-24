@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
+import 'package:mapness/_features/landing/widgets/complience_building_legend.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/happines_control.dart';
 import 'package:mapness/_features/landing/widgets/indoor_control.dart';
@@ -100,24 +101,18 @@ class MapControls extends ConsumerWidget {
                         ),
                         const Spacer(),
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             const LayersControl(),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            Consumer(
-                              builder: (context, ref, _) {
-                                return const TrafficControl();
-                              },
-                            ),
+                            const SizedBox(height: 8),
+                            const TrafficControl(),
                             const Spacer(),
                             const ZoomControl(),
                             const Spacer(),
                             const CompassControl(),
-                            const SizedBox(
-                              height: 8,
-                            ),
+                            const SizedBox(height: 8),
+                            ComplienceBuildingLegend(),
+                            const SizedBox(height: 8),
                             const FollowControl(),
                           ],
                         ),
