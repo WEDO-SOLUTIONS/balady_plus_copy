@@ -8,6 +8,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/base/base_view_model.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/dialog_names.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/utils_exports.dart'
     show
         CommonFunctions,
@@ -240,6 +241,23 @@ class ServiceIcon extends StatelessWidget {
               service.iconName == "municipal_ewaa" ||
               service.iconName == "municpal_toppaco") {
             if (CommonProperties.isLoggedIn) {
+              if (service.id == 305) {
+                CommonFunctions.sendUXCamEvent(
+                    UXCamEvents.startServiceSharedHousingLicense);
+              } else if (service.id == 306) {
+                CommonFunctions.sendUXCamEvent(
+                    UXCamEvents.startServiceEwaaPlatform);
+              } else if (service.id == 309) {
+                CommonFunctions.sendUXCamEvent(
+                    UXCamEvents.startServiceCommercialServices);
+              } else if (service.id == 315) {
+                CommonFunctions.sendUXCamEvent(
+                    UXCamEvents.startServiceConstructionServices);
+              } else if (service.id == 220) {
+                CommonFunctions.sendUXCamEvent(
+                    UXCamEvents.startServiceMobileStores);
+              }
+
               CommonFunctions.openBaladyWebView(service.action.value);
             } else {
               showDialog(
@@ -255,6 +273,8 @@ class ServiceIcon extends StatelessWidget {
           } else if (service.iconName == "municpal_all") {
             CommonFunctions.externalLaunch(service.action.value);
           } else if (service.id == 221) {
+            CommonFunctions.sendUXCamEvent(
+                UXCamEvents.startServiceEkramServices);
             try {
               NavigationService.navigatorKey.currentState!
                   .pushNamed(RouteName.SpecificServicePage, arguments: (

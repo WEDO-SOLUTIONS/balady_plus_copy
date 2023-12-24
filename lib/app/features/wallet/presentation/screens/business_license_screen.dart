@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
@@ -11,8 +12,20 @@ import '../../wallet_exports.dart';
 import '../widgets/wallet_label_info.dart';
 import '../widgets/wallet_user_image_widget.dart';
 
-class BusinessLicenseScreen extends StatelessWidget {
+class BusinessLicenseScreen extends StatefulWidget {
   BusinessLicenseScreen({Key? key}) : super(key: key);
+
+  @override
+  State<BusinessLicenseScreen> createState() => _BusinessLicenseScreenState();
+}
+
+class _BusinessLicenseScreenState extends State<BusinessLicenseScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.sendUXCamEvent(UXCamEvents.openWalletDetails);
+  }
 
   @override
   Widget build(BuildContext context) {

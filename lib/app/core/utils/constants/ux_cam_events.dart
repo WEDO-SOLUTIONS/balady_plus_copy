@@ -24,11 +24,14 @@ class UXCamEvents {
       "Start_Service_ZamzamOutlets"; //Done
 
 // Snap And Send
+  static String typeServiceSnapAndSend = "Types_Service_Snap&Send";
+
   static String startServiceSnapAndSend = "Start_Service_Snap&Send"; //Done
   static String finishServiceSnapAndSend = "Finish_Service_Snap&Send"; //Done
 
 // Appeal Request
-  static String startServiceAppealRequest = "Start_Service_AppealRequest";
+  static String startServiceAppealRequest =
+      "Start_Service_AppealRequest"; //Done
   static String finishServiceAppealRequest =
       "Finish_Service_AppealRequest"; //Done
 
@@ -99,13 +102,14 @@ class UXCamEvents {
 
   // Construction Services
   static String startServiceConstructionServices =
-      "Start_Service_ConstructionServices";
+      "Start_Service_ConstructionServices"; //Done
 
   // Mobile Stores
-  static String startServiceMobileStores = "Start_Service_MobileStores";
+  static String startServiceMobileStores = "Start_Service_MobileStores"; //Done
 
   // Ekram Services
-  static String startServiceEkramServices = "Start_Service_EkramServices";
+  static String startServiceEkramServices =
+      "Start_Service_EkramServices"; //Done
 
   // Issue a commercial license
   static String startCardServiceIssueACommercialLicense =
@@ -123,14 +127,14 @@ class UXCamEvents {
 
   // Shared Housing License
   static String startServiceSharedHousingLicense =
-      "Start_Service_SharedHousingLicense";
+      "Start_Service_SharedHousingLicense"; //Done
 
   // Ewa’a Platform
-  static String startServiceEwaaPlatform = "Start_Service_EwaaPlatform";
+  static String startServiceEwaaPlatform = "Start_Service_EwaaPlatform"; //Done
 
 // Commercial services
   static String startServiceCommercialServices =
-      "Start_Service_CommercialServices";
+      "Start_Service_CommercialServices"; //Done
 
   // Smart assistant
   static String startServiceSmartAssistant =
@@ -183,18 +187,23 @@ class UXCamEvents {
       "List_Service_BodyTransportation";
 
   // Cemetery Inquiry
-  static String startServiceCemeteryInquiry = "Start_Service_CemeteryInquiry";
-  static String finishServiceCemeteryInquiry = "Finish_Service_CemeteryInquiry";
+  static String startServiceCemeteryInquiry =
+      "Start_Service_CemeteryInquiry"; //Done
+  static String finishServiceCemeteryInquiry =
+      "Finish_Service_CemeteryInquiry"; //Done
 
   // Grave Inquiry
-  static String startServiceGraveInquiry = "Start_Service_GraveInquiry";
-  static String finishServiceGraveInquiry = "Finish_Service_GraveInquiry";
+  static String startServiceGraveInquiry = "Start_Service_GraveInquiry"; //Done
+  static String finishServiceGraveInquiry =
+      "Finish_Service_GraveInquiry"; //Done
 
   // Funeral Service Inquiry
+  static String detailsServiceFuneralServiceInquiry =
+      "Details_Service_FuneralServiceInquiry"; //Done
   static String startServiceFuneralServiceInquiry =
-      "Start_Service_FuneralServiceInquiry";
+      "Start_Service_FuneralServiceInquiry"; //Done
   static String finishServiceFuneralServiceInquiry =
-      "Finish_Service_FuneralServiceInquiry";
+      "Finish_Service_FuneralServiceInquiry"; //Done
 
   // Select and reserve a cemetery
 
@@ -261,8 +270,8 @@ class UXCamEvents {
   static String finishServiceMultiplePostersPermit =
       "Finish_Service_MultiplePostersPermit"; //Done
 
-  static String openWallet = "open_Wallet";
-  static String openWalletDetails = "open_Wallet_Details";
+  static String openWallet = "open_Wallet"; //Done
+  static String openWalletDetails = "open_Wallet_Details"; //Done
 
   static String openRequestsList = "open_Requests_List"; //Done
   static String openRequestsFilter = "open_Requests_Filter"; //Done
@@ -270,7 +279,7 @@ class UXCamEvents {
   static String openLicensesList = "open_Licenses_List"; //Done
   static String openLicensesFilter = "open_Licenses_Filter"; //Done
 
-  static String openLicensesDetails = "open_Licenses_Details";
+  static String openLicensesDetails = "open_Licenses_Details"; //Done
 
   static String openObjectionsList = "open_Objections_List"; //Done
   static String openObjectionsFilter = "open_Objections_Filter"; //Done

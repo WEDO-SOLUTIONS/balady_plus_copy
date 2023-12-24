@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
@@ -13,8 +14,24 @@ import '../../bloc/inquiry_orgnizations_bloc/ekram_inquiry_orgnization_state.dar
 import '../../bloc/inquiry_orgnizations_bloc/ekram_inquiry_orgnization_bloc.dart';
 import '../../bloc/inquiry_orgnizations_bloc/ekram_inquiry_orgnization_event.dart';
 
-class InquiryOrgnizaionDetailsPage extends StatelessWidget {
+class InquiryOrgnizaionDetailsPage extends StatefulWidget {
   const InquiryOrgnizaionDetailsPage({super.key});
+
+  @override
+  State<InquiryOrgnizaionDetailsPage> createState() =>
+      _InquiryOrgnizaionDetailsPageState();
+}
+
+class _InquiryOrgnizaionDetailsPageState
+    extends State<InquiryOrgnizaionDetailsPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.startServiceFuneralServiceInquiry);
+  }
 
   @override
   Widget build(BuildContext context) {
