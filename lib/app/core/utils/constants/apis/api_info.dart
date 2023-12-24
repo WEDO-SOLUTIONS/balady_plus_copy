@@ -578,11 +578,8 @@ class ApiUrl {
       "v1/commercial-promotions-services/posters/$requestId";
 
 /////////////////////////////////////////////////////////
-  static  String getServicesCards(int servicesId) => '/v1/portal-services/cards/$servicesId';
-
-
-
-
+  static String getServicesCards(int servicesId) =>
+      '/v1/portal-services/cards/$servicesId';
 
   static String getPermitAttachmentTypes(
           {required int requestId, required int typeId}) =>
@@ -666,7 +663,7 @@ class ApiUrl {
 
 // Ekram
   static const ekramRules =
-      '/v1/iam-services/user-configuration/أنطمة بلدي/نظام إكرام الموتى';
+      '/v1/iam-services/user-configuration/أنظمة بلدي/نظام إكرام الموتى';
   static const deathCities = 'v2/ekram-mobile-services/cities/1';
   static const burialCities = 'v2/ekram-mobile-services/cities/2';
   static const ekramOrgnizations =
@@ -762,10 +759,7 @@ class ApiUrl {
   static String joodEskanGenerateDonation =
       "v1/joodeskan-services/generate-donation-url";
 
-
-  static const paymentURL =
-      'v1/payment-gateway/payment';
-
+  static const paymentURL = 'v1/payment-gateway/payment';
 
   //! POST
 
