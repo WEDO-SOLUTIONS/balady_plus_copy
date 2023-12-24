@@ -15,7 +15,6 @@ class PostersDetailsPage extends StatefulWidget {
 
 class _PostersDetailsPageState extends State<PostersDetailsPage> {
   @override
-  @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
         value: ModalRoute.of(context)!.settings.arguments as PostersLicenseBloc,

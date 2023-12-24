@@ -81,6 +81,7 @@ class WorkCard extends StatelessWidget {
     );
   }
 }
+
 class HomeCard extends StatelessWidget {
   const HomeCard({Key? key}) : super(key: key);
 

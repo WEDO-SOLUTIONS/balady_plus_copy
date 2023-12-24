@@ -9,9 +9,13 @@ import 'package:balady_plus/app/features/services/services_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/utils/app_analytics_events.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
+import '../../../../services/presentation/mvvm/service_data_view_model.dart';
+import '../../../../services/presentation/widgets/service_cards_dynamic/service_card_desc_widget.dart';
 import '../blocs/renew_start_service_bloc/renew_commercial_license_bloc.dart';
 
 class RenewStartService extends StatefulWidget {
@@ -41,8 +45,11 @@ class _RenewStartServiceState extends State<RenewStartService> {
           create: (BuildContext context) =>
               RenewStartServiceBloc(licenseId: licenseId),
         ),
-        BlocProvider(
-          create: (context) => ServiceCardsCubit(service),
+        ChangeNotifierProvider(
+          create: (BuildContext context) => ServiceDataViewModel(
+            webService: sl(),
+            serviceId: 10485,
+          ),
         ),
       ],
       child: BlocConsumer<RenewStartServiceBloc, RenewStartServiceState>(
@@ -53,52 +60,32 @@ class _RenewStartServiceState extends State<RenewStartService> {
         },
         builder: (context, state) {
           return Scaffold(
-            appBar: DefaultAppBarWidget(
-              title: service.title.tr(),
-              bottom: ServiceCardsList(
-                cards: service.cards,
-              ),
-            ),
             body: Stack(
               children: [
                 Column(
                   children: [
-                    const Expanded(
-                      child: Column(
-                        children: [
-                          SizedBox(height: 16),
-                          ServiceCardDescription(),
-                        ],
-                      ),
-                    ),
-                    SafeArea(
-                      top: false,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: ElevatedButtonWidget.startService(
-                          onPressed: () async {
-                            context
-                                .read<RenewStartServiceBloc>()
-                                .add(const ValidateBeforeApplyEvent());
-                          },
-                        ),
-                      ),
-                    )
-                    /*SafeArea(
-                      top: false,
-                      child: ServiceWarningWidget(
-                        warning: service.warning ?? "",
-                        onPress: () async {
+                    const Expanded(child: ServiceCardDescWidget()),
+                    Container(
+                      decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(36),
+                            topRight: Radius.circular(36),
+                          ),
+                          color: Colors.white),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 18, vertical: 26),
+                      child: ElevatedButtonWidget.startService(
+                        onPressed: () async {
                           context
                               .read<RenewStartServiceBloc>()
                               .add(const ValidateBeforeApplyEvent());
                         },
                       ),
-                    )*/
+                    )
                   ],
                 ),
                 if (state.status == BlocStatus.loading)
-                  const CustomCircularLoadingWidget()
+                  const CustomCircularLoadingWidget(),
               ],
             ),
           );

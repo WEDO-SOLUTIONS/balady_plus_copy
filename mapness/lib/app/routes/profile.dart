@@ -1,7 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/profile/pages/about_balady_page.dart';
 import 'package:mapness/_features/profile/pages/help_center_page.dart';
+import 'package:mapness/_features/profile/pages/image_editor_page.dart';
 import 'package:mapness/_features/profile/pages/momra_website_page.dart';
 import 'package:mapness/_features/profile/pages/profile_info_page.dart';
 import 'package:mapness/_features/profile/pages/settings_page.dart';
@@ -29,6 +32,9 @@ part 'profile.g.dart';
     TypedGoRoute<ProfileInfoPageRoute>(
       path: 'info',
     ),
+    TypedGoRoute<ImageEditorRoute>(
+      path: 'image_editor',
+    ),
   ],
 )
 class ProfileRoute extends GoRouteData {
@@ -54,6 +60,21 @@ class SettingsRoute extends GoRouteData {
       const TransculentPage(
         child: SettingsPage(),
       );
+}
+
+class ImageEditorRoute extends GoRouteData {
+  const ImageEditorRoute();
+
+  static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    var extra = state.extra as Uint8List;
+
+    return TransculentPage(
+      child: ImageEditorPage(extra),
+    );
+  }
 }
 
 class HelpCenterRoute extends GoRouteData {

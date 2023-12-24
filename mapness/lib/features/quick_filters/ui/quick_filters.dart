@@ -36,19 +36,19 @@ class QuickFilters extends ConsumerWidget {
     final favouritesState = ref.watch(favouriteRepositoryProvider);
     final naviFeature = ref.watch(appFeaturesProvider);
     final favourites = <FilterItem>[
+      // FilterItem(
+      //   icon: "assets/icons/svg/quick_filters/ic_quick_bookmark.svg",
+      // ),
+      // if (favouritesState.valueOrNull?.home != null && naviFeature.naviEnabled)
       //   FilterItem(
-      //     icon: "assets/icons/svg/quick_filters/ic_quick_bookmark.svg",
+      //     title: context.l10n.home,
+      //     icon: "assets/icons/svg/quick_filters/ic_quick_home.svg",
       //   ),
-      //   if (favouritesState.valueOrNull?.home != null && naviFeature.naviEnabled)
-      //     FilterItem(
-      //       title: context.l10n.home,
-      //       icon: "assets/icons/svg/quick_filters/ic_quick_home.svg",
-      //     ),
-      //   if (favouritesState.valueOrNull?.work != null && naviFeature.naviEnabled)
-      //     FilterItem(
-      //       title: context.l10n.work,
-      //       icon: "assets/icons/svg/quick_filters/ic_quick_work.svg",
-      //     ),
+      // if (favouritesState.valueOrNull?.work != null && naviFeature.naviEnabled)
+      //   FilterItem(
+      //     title: context.l10n.work,
+      //     icon: "assets/icons/svg/quick_filters/ic_quick_work.svg",
+      //   ),
     ];
 
     final customItems = customFilters ?? [];

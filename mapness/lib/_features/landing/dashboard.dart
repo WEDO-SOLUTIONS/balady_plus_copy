@@ -10,6 +10,7 @@ import 'package:mapness/_features/landing/widgets/dashboard_profile.dart';
 import 'package:mapness/_features/landing/widgets/events_home_card_wrapper.dart';
 // import 'package:mapness/_features/landing/widgets/jobs_around_card.dart';
 import 'package:mapness/_features/landing/widgets/snap_and_send_card.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/stories/stories_widget.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -19,7 +20,6 @@ import 'widgets/places_horizontal_list.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({
-    this.isCollapsed = false,
     super.key,
     required this.biggestHeight,
     required this.biggestWidth,
@@ -27,7 +27,6 @@ class Dashboard extends ConsumerStatefulWidget {
 
   final double biggestHeight;
   final double biggestWidth;
-  final bool isCollapsed;
 
   @override
   ConsumerState<Dashboard> createState() => _DashboardState();
@@ -110,12 +109,21 @@ class _DashboardState extends ConsumerState<Dashboard> {
         );
       }
     });
+    ref.listen(layersControlsProvider, (previous, next) {
+      if (next.layersVisible) {
+        _draggableScrollableController.animateTo(
+          _headerExtent,
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.linear,
+        );
+      }
+    });
 
     final direction = ref.watch(uiDirectionProvider);
 
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
-      initialChildSize: widget.isCollapsed ? _headerExtent : .75,
+      initialChildSize: .75,
       minChildSize: _headerExtent,
       maxChildSize: .9,
       snap: true,

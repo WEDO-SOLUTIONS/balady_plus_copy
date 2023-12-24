@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/utils/constants/route_names.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
 import '../blocs/permit_tobacco_bloc.dart';
 
@@ -15,6 +16,13 @@ class PermitsTobaccoDetailsPage extends StatefulWidget {
 }
 
 class _PermitsTobaccoDetailsPageState extends State<PermitsTobaccoDetailsPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceTobaccoPermit);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(

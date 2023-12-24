@@ -22,7 +22,7 @@ class EventsDescriptionWidget extends StatelessWidget {
         CustomTextWidget(
           description,
           maxLines: 300,
-          textAlign: TextAlign.right,
+          textAlign: TextAlign.start,
           textStyle: AppStyle.eventsDescriptionTextStyle,
         ),
       ],

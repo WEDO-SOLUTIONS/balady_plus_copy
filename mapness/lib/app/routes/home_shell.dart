@@ -54,10 +54,6 @@ class HomeShellRoute extends StatefulShellRouteData {
   @override
   Page<void> pageBuilder(BuildContext context, GoRouterState state,
       StatefulNavigationShell navigationShell) {
-    if (state.fullPath == "/profile") {
-      return TransculentPage(child: navigationShell);
-    }
-
     return TransculentPage(
       child: ScaffoldWithNestedNavigation(
         navigationShell: navigationShell,

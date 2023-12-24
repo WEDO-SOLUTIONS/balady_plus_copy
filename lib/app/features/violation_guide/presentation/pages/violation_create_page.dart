@@ -13,6 +13,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import 'map/bloc/map_bloc.dart';
 
 class ViolationCreatePage extends StatefulWidget {
@@ -23,6 +24,13 @@ class ViolationCreatePage extends StatefulWidget {
 }
 
 class _ViolationCreatePageState extends State<ViolationCreatePage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceViolationsGuide);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(

@@ -70,7 +70,7 @@ class _RequestCommercialLicenseDetailsBodyState
                 Row(
                   children: [
                     const DrawIconBasedTypeWidget(
-                      icon: IconPath.calender,
+                      icon: IconPath.calendar,
                       iconSize: 24,
                     ),
                     const SizedBox(width: 4),

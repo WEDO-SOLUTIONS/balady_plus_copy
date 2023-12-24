@@ -115,11 +115,10 @@ class EventDataSourceImpl extends EventsRemoteDataSource {
 
       return EventsCategoryResponseModel.fromMap(data["data"]);
     } on DioError catch (error) {
-      throw ServerException(
-        error.toString(),
-        statusCode: error.response?.statusCode,
-        dioError: error,
-      );
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode,
+          dioError: error,
+          errorCode: error is NoDataFoundException ? "2" : null);
     } catch (ex) {
       if (ex is ServerException) {
         rethrow;

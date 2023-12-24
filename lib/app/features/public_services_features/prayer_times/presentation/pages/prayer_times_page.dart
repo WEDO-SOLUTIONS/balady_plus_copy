@@ -8,6 +8,7 @@ import 'package:hijri/hijri_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/app_analytics_events.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show
         AppColor,
@@ -43,13 +44,13 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
     });
 
     CommonFunctions.sendEventToAnalytics(AppEvents.prayingTimes);
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startServicePrayerTimes);
   }
 
   late PrayerTimesCubit cubit;
   @override
   Widget build(BuildContext context) {
     cubit = ModalRoute.of(context)!.settings.arguments as PrayerTimesCubit;
-
     return BlocProvider.value(
       value: cubit,
       child: Scaffold(

@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/app_analytics_events.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../_shared_feature_/presentation/icons/filter_icon.dart';
@@ -38,6 +39,7 @@ class _MainPageCalendarState extends State<MainPageCalendar> {
     super.initState();
 
     CommonFunctions.sendEventToAnalytics(AppEvents.calendar);
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceKingdomCalendar);
   }
 
   @override

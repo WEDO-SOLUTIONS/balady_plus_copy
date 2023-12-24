@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
 import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/core/services/local/use_case.dart';
@@ -24,10 +26,8 @@ class EventRepositoryImpl implements EventRepository {
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
     } on ServerException catch (error) {
-      return Left(ServerFailure(
-        error.errorMessage,
-        statusCode: error.statusCode,
-      ));
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
     }
   }
 
@@ -55,6 +55,7 @@ class EventRepositoryImpl implements EventRepository {
     } on ServerException catch (error) {
       return Left(ServerFailure(
         error.errorMessage,
+        errorCode: error.errorCode,
         statusCode: error.statusCode,
       ));
     }

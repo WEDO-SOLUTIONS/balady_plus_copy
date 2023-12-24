@@ -9,6 +9,7 @@ import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_sheet.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -41,7 +42,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       case LangingFocusMaker.iwish:
         () async {
           final layersControls = ref.read(layersControlsProvider.notifier);
-          await layersControls.showIwish();
+          layersControls.handleTap(LayerType.joy);
           try {
             // await layersControls.focusIwish();
             await ref.read(cameraPositionProvider.notifier).animateTo(
@@ -93,9 +94,10 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     final isLayersVisible = ref.watch(layersControlsProvider);
     ref.watch(favouriteMarkersProvider.select((value) => null));
 
-    /// keep iwish markers alive when page is opened
-    ref.watch(mapObjectManagerProvider(named: iwishLayerName).notifier);
+    /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
+    ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
     // ref.watch(iwishMarkersProvider.select((value) => null));
+
     ref.watch(
       mapObjectManagerProvider(named: poiMapLayer),
     );
@@ -118,8 +120,6 @@ class _LandingPageState extends ConsumerState<LandingPage> {
               const controls.MapControls(),
               LayoutBuilder(builder: (context, constraints) {
                 return Dashboard(
-                  isCollapsed: isLayersVisible.layersVisible,
-                  // || widget.focusMaker != null,
                   biggestHeight: constraints.biggest.height,
                   biggestWidth: constraints.biggest.width,
                 );

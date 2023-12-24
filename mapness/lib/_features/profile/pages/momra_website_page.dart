@@ -7,21 +7,23 @@ import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class MomraWebsitePage extends StatefulWidget {
+class MomraWebsitePage extends ConsumerStatefulWidget {
   const MomraWebsitePage({super.key});
 
   @override
-  State<MomraWebsitePage> createState() => _MomraWebsitePageState();
+  ConsumerState<MomraWebsitePage> createState() => _MomraWebsitePageState();
 }
 
-class _MomraWebsitePageState extends State<MomraWebsitePage> {
+class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
   late WebViewController controller;
 
   @override
   void initState() {
     super.initState();
+    final language = ref.read(appLanguageProvider);
 
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -34,7 +36,12 @@ class _MomraWebsitePageState extends State<MomraWebsitePage> {
           onWebResourceError: (WebResourceError error) {},
         ),
       )
-      ..loadRequest(Uri.parse('https://momrah.gov.sa/en'));
+      ..loadRequest(
+        Uri.parse(switch (language) {
+          Language.arabic => 'https://balady.gov.sa/ar',
+          Language.english => 'https://balady.gov.sa/en',
+        }),
+      );
   }
 
   @override

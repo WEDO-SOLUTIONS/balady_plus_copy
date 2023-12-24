@@ -10,14 +10,14 @@ import '../../../../_shared_feature_/presentation/widgets/draw_icon_based_type_w
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
 class CardCostInfoWidget extends StatelessWidget {
-
   const CardCostInfoWidget({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    CommercialLicenseCancelBloc bloc = context.watch<CommercialLicenseCancelBloc>();
+    CommercialLicenseCancelBloc bloc =
+        context.watch<CommercialLicenseCancelBloc>();
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
@@ -48,7 +48,8 @@ class CardCostInfoWidget extends StatelessWidget {
                 ),
               ),
               CustomTextButtonWidget(
-                text: "show_details".tr(),
+                text:
+                    bloc.showCostInfo ? "hide_info".tr() : "show_details".tr(),
                 onPressed: () {
                   bloc.add(ShowCostInfo(!bloc.showCostInfo));
                 },
@@ -58,8 +59,8 @@ class CardCostInfoWidget extends StatelessWidget {
           Row(
             children: [
               CustomTextWidget(
-                bloc.saveCancellationReasonResponse!
-                    .calculatorResponse.totalCost
+                bloc.saveCancellationReasonResponse!.calculatorResponse
+                    .totalCost
                     .toString(),
                 textStyle: AppStyle.boardingTitle
                     .copyWith(color: AppColor.primary900Light),
@@ -76,20 +77,22 @@ class CardCostInfoWidget extends StatelessWidget {
           BlocBuilder<CommercialLicenseCancelBloc,
               CommercialLicenseCancelState>(
             builder: (context, state) {
-              return bloc.showCostInfo ? Column(
-                children: bloc.saveCancellationReasonResponse!
-                    .calculatorResponse.costsInfo
-                    .map(
-                      (costsInfo) => Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: WidgetTitleInvoice(
-                      money: '${costsInfo.costItemValue} ر.س',
-                      title: costsInfo.costItemDescription,
-                    ),
-                  ),
-                )
-                    .toList(),
-              ) : const SizedBox();
+              return bloc.showCostInfo
+                  ? Column(
+                      children: bloc.saveCancellationReasonResponse!
+                          .calculatorResponse.costsInfo
+                          .map(
+                            (costsInfo) => Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: WidgetTitleInvoice(
+                                money: '${costsInfo.costItemValue} ر.س',
+                                title: costsInfo.costItemDescription,
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    )
+                  : const SizedBox();
             },
           ),
         ],
