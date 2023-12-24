@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/profile/widgets/profile_header.dart';
 import 'package:mapness/_features/profile/widgets/profile_image_widget.dart';
@@ -17,6 +18,8 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_features.dart';
 import 'package:rate_my_app/rate_my_app.dart';
+
+final InAppReview inAppReview = InAppReview.instance;
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
@@ -109,94 +112,33 @@ class ProfilePage extends ConsumerWidget {
                   assetImage: 'assets/images_svg/profile_star.svg',
                   text: context.l10n.rateBaladyApp,
                   onTap: () {
-                    rateMyApp.showRateDialog(
-                      context,
-                      title: context.l10n.rateThisApp,
-                      message: context.l10n.rateMessage,
-                      rateButton: context.l10n.rate,
-                      noButton: context.l10n.noThanks,
-                      laterButton: context.l10n.maybeLater,
-                      listener: (button) {
-                        switch (button) {
-                          case RateMyAppDialogButton.rate:
-                            break;
-                          case RateMyAppDialogButton.later:
-                            break;
-                          case RateMyAppDialogButton.no:
-                            break;
-                        }
+                    // rateMyApp.showRateDialog(
+                    //   context,
+                    //   title: context.l10n.rateThisApp,
+                    //   message: context.l10n.rateMessage,
+                    //   rateButton: context.l10n.rate,
+                    //   noButton: context.l10n.noThanks,
+                    //   laterButton: context.l10n.maybeLater,
+                    //   listener: (button) {
+                    //     switch (button) {
+                    //       case RateMyAppDialogButton.rate:
+                    //         break;
+                    //       case RateMyAppDialogButton.later:
+                    //         break;
+                    //       case RateMyAppDialogButton.no:
+                    //         break;
+                    //     }
 
-                        return true;
-                      },
-                      ignoreNativeDialog: Platform.isAndroid,
-                      dialogStyle: const DialogStyle(),
-                      onDismissed: () => rateMyApp
-                          .callEvent(RateMyAppEventType.laterButtonPressed),
-                    );
+                    //     return true;
+                    //   },
+                    //   ignoreNativeDialog: Platform.isAndroid,
+                    //   dialogStyle: const DialogStyle(),
+                    //   onDismissed: () => rateMyApp
+                    //       .callEvent(RateMyAppEventType.laterButtonPressed),
+                    // );
+                    inAppReview.openStoreListing(appStoreId: 'id1522185123');
                   },
                 ),
-                // Consumer(
-                //   builder: (context, ref, child) {
-                //     final userData = ref.watch(authProvider);
-
-                //     return userData.maybeWhen(
-                //       orElse: () => const SizedBox.shrink(),
-                //       data: (userData) {
-                //         if (userData == null) return const SizedBox.shrink();
-                //         return Padding(
-                //           padding: const EdgeInsets.only(top: 16.0),
-                //           child: ExpandableCell(
-                //             title: context.l10n.personalData,
-                //             count: 7,
-                //             icon: "assets/icons/svg/ic_profile_data.svg",
-                //             content: PersonalData(
-                //               userInfo: userData,
-                //             ),
-                //           ),
-                //         );
-                //       },
-                //     );
-                //   },
-                // ),
-                // const SizedBox(
-                //   height: 16,
-                // ),
-                // Consumer(
-                //   builder: (context, ref, child) {
-                //     final language = ref.watch(appLanguageProvider);
-
-                //     return ExpandableCell(
-                //       title: context.l10n.language,
-                //       subtitle: language.title,
-                //       count: 2,
-                //       icon: "assets/icons/svg/ic_profile_lang.svg",
-                //       content: const LanguagePicker(),
-                //     );
-                //   },
-                // ),
-                // const SizedBox(
-                //   height: 16,
-                // ),
-                // const DarkModeCell(),
-                // const SizedBox(
-                //   height: 16,
-                // ),
-                // ExpandableCell(
-                //   title: context.l10n.aboutApp,
-                //   count: 1,
-                //   icon: "assets/icons/svg/ic_profile_about.svg",
-                //   content: const SizedBox(
-                //     height: 100,
-                //   ),
-                // ),
-                // const SizedBox(
-                //   height: 16,
-                // ),
-                // Consumer(
-                //   builder: (context, ref, child) => LogoutCell(
-                //     onTap: ref.read(authProvider.notifier).logOut,
-                //   ),
-                // ),
               ],
             ),
           ),
@@ -206,16 +148,19 @@ class ProfilePage extends ConsumerWidget {
   }
 
   Widget _buildDivider() {
-    return Container(
-      color: const Color(0xFFF5F7FA),
-      child: Padding(
-        padding: const EdgeInsets.only(
-          right: 52,
-          left: 8,
-        ),
-        child: Divider(
-          height: 1,
-          color: const Color(0xFF1E2A36).withOpacity(0.2),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+      child: Container(
+        color: const Color(0xFFF5F7FA),
+        child: Padding(
+          padding: const EdgeInsets.only(
+            right: 52,
+            left: 8,
+          ),
+          child: Divider(
+            height: 1,
+            color: const Color(0xFF1E2A36).withOpacity(0.2),
+          ),
         ),
       ),
     );

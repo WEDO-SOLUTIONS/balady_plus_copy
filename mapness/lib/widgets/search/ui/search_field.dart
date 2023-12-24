@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
@@ -55,9 +56,9 @@ class _SearchFieldState extends State<SearchField> {
               filled: true,
               hintText: context.l10n.search,
               fillColor: const Color(0xFF1E2A36).withOpacity(0.05),
-              contentPadding: const EdgeInsets.only(
-                right: 8,
-                left: 38,
+              contentPadding: EdgeInsets.only(
+                right: context.isRTL ? 8 : 38,
+                left: context.isRTL ? 38 : 8,
                 top: 0,
                 bottom: 0,
               ),
@@ -80,7 +81,8 @@ class _SearchFieldState extends State<SearchField> {
           ),
         ),
         Align(
-          alignment: Alignment.centerRight,
+          alignment:
+              context.isRTL ? Alignment.centerRight : Alignment.centerLeft,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: SvgPicture.asset(

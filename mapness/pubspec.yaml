@@ -76,6 +76,7 @@ dependencies:
   rate_my_app: ^2.0.0
   webview_flutter: ^4.4.2
   auto_size_text: ^3.0.0
+  in_app_review: ^2.0.8
 
 dev_dependencies:
   flutter_test:
