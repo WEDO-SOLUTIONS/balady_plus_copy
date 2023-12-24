@@ -63,7 +63,7 @@ class MapQuickFilters extends ConsumerWidget {
 
         await searchObjectManager.addMarkers(markers);
 
-        ref.read(cameraPositionProvider.notifier).animateToMarkers(markers);
+        // ref.read(cameraPositionProvider.notifier).animateToMarkers(markers);
       }
     });
 
