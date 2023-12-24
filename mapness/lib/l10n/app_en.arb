@@ -130,7 +130,7 @@
   "loading": "loading...",
   "logOut": "Log out",
   "loginToAccess": "Login to access",
-  "lookForUsefulPlacesCafesMallsForExampleMallNearby": "Look for useful places, cafes, malls for example: Mall nearby",
+  "lookForUsefulPlacesCafesMallsForExampleMallNearby": "Look for places, landmarks and Points of Interests around you, like shopping malls, Restaurants, recreational centers, and more.",
   "mallNearby": "Mall nearby",
   "maneuvers": "Maneuvers",
   "maneuversAreOff": "Maneuvers are offу",
@@ -188,7 +188,7 @@
   "poi_boulevard_riyadh_city": "Boulevard\\nRiyadh City",
   "poi_edge_of_the_world": "Edge of the\\nworld",
   "poi_faisaliya_tower": "Faisaliya\\nTower",
-  "poi_kingdom_center": "Kingdom\\nCenter",
+  "poi_kingdom_center": "Kingdom\nCenter",
   "poi_masmak_fortress": "Masmak\\nFortress",
   "prayerTime": "Prayer time",
   "presentTime": "Present time",
@@ -292,5 +292,5 @@
   "yesterday": "Yesterday",
   "youArrived": "You arrived",
   "youReHere": "You're here!",
-  "youSearch": "You search"
+  "youSearch": "ٍٍٍSearch"
 }
