@@ -57,7 +57,7 @@ class PersonalData extends StatelessWidget {
               ),
             ),
             PersonalDataRow(
-              title: userInfo.getFormattedBirthDate(),
+              title: userInfo.dob ?? "",
               subtitle: context.l10n.dateOfBirth,
             ),
             Padding(

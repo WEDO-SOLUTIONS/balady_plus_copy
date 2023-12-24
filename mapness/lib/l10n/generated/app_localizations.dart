@@ -828,7 +828,7 @@ abstract class AppLocalizations {
   /// No description provided for @lastName.
   ///
   /// In ar, this message translates to:
-  /// **'رقم التواصل'**
+  /// **'اسم العائلة'**
   String get lastName;
 
   /// No description provided for @layersOnTheMap.
