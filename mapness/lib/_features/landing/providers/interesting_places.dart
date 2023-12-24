@@ -58,7 +58,9 @@ class InterestingPlaces extends _$InterestingPlaces {
 // TODO: remove stubs
 extension InterestingPlaceX on InterestingPlace {
   String titleOrFallback({required AppLocalizations locale}) {
-    final intId = int.tryParse(id);
+    final intId = int.tryParse(entity.id);
+
+    // print('FLAG: intID $intId');
 
     if (intId != null) {
       final mock = nameMock(
@@ -68,11 +70,12 @@ extension InterestingPlaceX on InterestingPlace {
           _ => Language.english,
         },
       );
+      // print('FLAG: mock $mock');
       if (mock != null) {
         return mock;
       }
     }
-    return switch (id) {
+    return switch (entity.id) {
       '70000001079215988' => locale.poi_boulevard_riyadh_city,
       '70030076256609771' => locale.poi_kingdom_center,
       '70030076201501940' => locale.poi_faisaliya_tower,
