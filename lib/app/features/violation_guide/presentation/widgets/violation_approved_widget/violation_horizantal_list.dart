@@ -8,6 +8,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/utils/constants/app_colors.dart';
+
 class ViolationApprovedHortizantalList extends StatelessWidget {
   const ViolationApprovedHortizantalList({super.key});
 
@@ -20,7 +22,7 @@ class ViolationApprovedHortizantalList extends StatelessWidget {
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: const Color(0xff155f75),
+            color: AppColor.primary900Light,
             borderRadius: BorderRadius.circular(16),
           ),
           child:
@@ -63,11 +65,11 @@ class ViolationApprovedHortizantalList extends StatelessWidget {
                             border: Border.all(
                                 width: 1,
                                 color: state.selectedIndex == index
-                                    ? const Color(0xffA7C587)
+                                    ? AppColor.secondary900Light
                                     : const Color(0xffA1BFC8)),
                             color: state.selectedIndex == index
                                 ? const Color(0xffA7C587)
-                                : const Color(0xff155F75),
+                                : AppColor.primary900Light,
                           ),
                           child: CustomTextWidget(
                             numbers[index],

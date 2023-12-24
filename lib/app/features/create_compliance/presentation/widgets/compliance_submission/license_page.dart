@@ -7,6 +7,8 @@ import 'package:balady_plus/app/features/create_compliance/presentation/widgets/
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/utils/constants/app_colors.dart';
+
 class ComplianceLicensePage extends StatelessWidget {
   const ComplianceLicensePage({
     super.key,
@@ -51,7 +53,7 @@ class ComplianceLicensePage extends StatelessWidget {
               ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                color: const Color(0xffE8EFF1),
+                color: AppColor.primary100Light,
               ),
               child: CustomTextWidget(
                 'document_message'.tr(),

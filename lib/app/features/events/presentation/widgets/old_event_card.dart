@@ -43,7 +43,7 @@ class OldEventHomeCard extends StatelessWidget {
                   gradient: LinearGradient(
                       begin: FractionalOffset.topCenter,
                       end: FractionalOffset.bottomCenter,
-                      colors: [Color(0x0000394A), Color(0xFF155F75)])),
+                      colors: [Color(0x0000394A), AppColor.primary900Light])),
             ),
             Align(
               alignment: Alignment.bottomRight,
@@ -155,7 +155,7 @@ class Date extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: const Color(0xFFA7C587),
+        color: AppColor.secondary900Light,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(

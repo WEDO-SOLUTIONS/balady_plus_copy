@@ -84,7 +84,7 @@ class _BoardingPageState extends State<BoardingPage> {
             size: const Size(31, 9),
             unselectedSize: const Size(9, 9),
             unselectedColor: Color(0xffE8EFF1),
-            selectedColor: Color(0xff155F75),
+            selectedColor: AppColor.primary900Light,
             duration: const Duration(milliseconds: 200),
             onItemClicked: (index) {
               _pageController.animateToPage(
@@ -96,7 +96,7 @@ class _BoardingPageState extends State<BoardingPage> {
           ),
         ),
         Container(
-          decoration:const BoxDecoration(
+          decoration: const BoxDecoration(
             color: AppColor.white,
           ),
           padding: const EdgeInsets.all(16),
@@ -113,7 +113,7 @@ class _BoardingPageState extends State<BoardingPage> {
                   horizontal: 24,
                   vertical: 14,
                 ),
-                btnColor: Color(0xff155F75),
+                btnColor: AppColor.primary900Light,
                 text: selectedPage < _pages.length - 1
                     ? "boarding_button_text".tr()
                     : "boarding_end_text".tr(),

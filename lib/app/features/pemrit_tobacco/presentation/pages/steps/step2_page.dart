@@ -302,7 +302,7 @@ class _CalcualtorWidgetState extends State<CalcualtorWidget> {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: ShapeDecoration(
-                          color: Color(0xFFE8EFF1),
+                          color: AppColor.primary100Light,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),

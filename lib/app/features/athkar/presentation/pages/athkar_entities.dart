@@ -14,11 +14,14 @@ class _AthkarEntitiesState extends State<AthkarEntities> {
   Widget build(BuildContext context) {
     AthkarEntitiesParams params =
         ModalRoute.of(context)!.settings.arguments as AthkarEntitiesParams;
-    return Scaffold(
-      // backgroundColor: AppColor.scaffoldBackground,
-      appBar: AthkarAppBar(title: params.title),
-      body:
-          AthkarEntitiesListView(athkarEntitiesList: params.athkarEntitiesList),
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        // backgroundColor: AppColor.scaffoldBackground,
+        appBar: AthkarAppBar(title: "الأذكار"),
+        body: AthkarEntitiesListView(
+            athkarEntitiesList: params.athkarEntitiesList),
+      ),
     );
   }
 }
