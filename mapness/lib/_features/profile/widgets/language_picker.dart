@@ -87,13 +87,6 @@ class LanguageRow extends ConsumerWidget {
                       .textM
                       .copyWith(color: const Color(0xFF1E2A36)),
                 ),
-                const Spacer(),
-                SvgPicture.asset(
-                  language.icon,
-                  height: 24,
-                  width: 24,
-                  package: PackageConfig.packageName,
-                ),
               ],
             ),
           ),
