@@ -72,6 +72,8 @@ apk-release version: locale_gen prebuild
   # echo build main stage
   # fvm flutter build apk --target lib/main_stg.dart --debug
   # mv build/app/outputs/flutter-apk/app-debug.apk build/app/outputs/flutter-apk/momrah-stage-debug-{{version}}.apk
+  fvm flutter build apk --target lib/main_stg.dart
+  mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/momrah-stage-debug-{{version}}.apk
 
   echo remove abi filter
   git apply -R .github/workflows/abi_filter.patch || echo could not unapply abi filter patch

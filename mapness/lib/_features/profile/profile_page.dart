@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
+import 'package:mapness/_features/profile/domain/user_profile_data.dart';
 import 'package:mapness/_features/profile/widgets/profile_header.dart';
 import 'package:mapness/_features/profile/widgets/profile_image_widget.dart';
 import 'package:mapness/_features/profile/widgets/unathorized_profile.dart';
@@ -17,6 +16,7 @@ import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_features.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 
 final InAppReview inAppReview = InAppReview.instance;
@@ -243,13 +243,15 @@ class ProfilePage extends ConsumerWidget {
   }
 }
 
-class AuthorizedRow extends StatelessWidget {
+class AuthorizedRow extends ConsumerWidget {
   const AuthorizedRow({super.key, required this.userData});
 
   final SsoUserInfo userData;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final language = ref.read(appLanguageProvider);
+
     return Material(
       borderRadius: BorderRadius.circular(12),
       color: const Color(0xFFF5F7FA),
@@ -277,7 +279,7 @@ class AuthorizedRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      userData.getFirstAndLastName(),
+                      userData.getLocalizedFirstAndLastName(language),
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .textM

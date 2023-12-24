@@ -8,7 +8,6 @@ import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
-import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 
@@ -63,7 +62,7 @@ class MapQuickFilters extends ConsumerWidget {
 
         await searchObjectManager.addMarkers(markers);
 
-        ref.read(cameraPositionProvider.notifier).animateToMarkers(markers);
+        // ref.read(cameraPositionProvider.notifier).animateToMarkers(markers);
       }
     });
 

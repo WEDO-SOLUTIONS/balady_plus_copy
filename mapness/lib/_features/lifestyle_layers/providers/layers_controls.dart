@@ -67,9 +67,14 @@ class LayersControls extends _$LayersControls {
       viewPortSubscription?.cancel();
     });
 
+    LayerType? selectedType;
+    if (ref.read(favouriteToggleProvider)) {
+      selectedType = LayerType.favourites;
+    }
+
     return LayersState(
       layersVisible: false,
-      selectedType: null,
+      selectedType: selectedType,
       isLoading: false,
       investmentsMarkers: [],
     );
@@ -113,13 +118,14 @@ class LayersControls extends _$LayersControls {
     var currentState = state.selectedType;
 
     switch (value) {
-      // case LayerType.favourites:
-      //   if (currentState == (LayerType.favourites)) {
-      //     await ref.read(favouriteToggleProvider.notifier).disable();
-      //   } else {
-      //     await ref.read(favouriteToggleProvider.notifier).enable();
-      //   }
-      // // _toggleSelected(value);
+      case LayerType.favourites:
+        if (currentState == (LayerType.favourites)) {
+          await ref.read(favouriteToggleProvider.notifier).disable();
+        } else {
+          _removeAll();
+          await ref.read(favouriteToggleProvider.notifier).enable();
+        }
+      // _toggleSelected(value);
       case LayerType.buildings:
         toggleComplienceBuildings();
       case LayerType.invest:
@@ -129,6 +135,11 @@ class LayersControls extends _$LayersControls {
       case LayerType.joy:
         toggleIwish(currentState, value);
     }
+
+    if (value != LayerType.favourites) {
+      await ref.read(favouriteToggleProvider.notifier).disable();
+    }
+
     state = LayersState(
       investmentsMarkers: state.investmentsMarkers,
       layersVisible: state.layersVisible,

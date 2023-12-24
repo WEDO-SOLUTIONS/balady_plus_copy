@@ -5,11 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
+import 'package:mapness/_features/profile/domain/user_profile_data.dart';
 import 'package:mapness/_features/profile/widgets/personal_data.dart';
 import 'package:mapness/_features/profile/widgets/profile_image_widget.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 
 class ProfileInfoPage extends ConsumerWidget {
   const ProfileInfoPage({super.key});
@@ -18,6 +20,7 @@ class ProfileInfoPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userData = ref.watch(authProvider).requireValue!;
     final direction = ref.watch(uiDirectionProvider);
+    final language = ref.read(appLanguageProvider);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -94,7 +97,7 @@ class ProfileInfoPage extends ConsumerWidget {
                       height: 12,
                     ),
                     Text(
-                      userData.getFirstAndLastName(),
+                      userData.getLocalizedFirstAndLastName(language),
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .headingS

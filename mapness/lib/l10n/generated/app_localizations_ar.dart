@@ -371,7 +371,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get languageTitle => 'الإنجليزية';
 
   @override
-  String get lastName => 'رقم التواصل';
+  String get lastName => 'اسم العائلة';
 
   @override
   String get layersOnTheMap => 'الطبقات على الخريطة';
