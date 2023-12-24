@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/constants/app_colors.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
@@ -18,8 +19,22 @@ import '../../bloc/inquiry_grave_bloc/ekram_inquiry_grave_state.dart';
 import '../../widgets/inquiry_cemetry/cemetry_details_item_widget.dart';
 import '../../widgets/inquiry_graves/grave_details_item_widget.dart';
 
-class InquiryGraveResultsPage extends StatelessWidget {
+class InquiryGraveResultsPage extends StatefulWidget {
   const InquiryGraveResultsPage({super.key});
+
+  @override
+  State<InquiryGraveResultsPage> createState() =>
+      _InquiryGraveResultsPageState();
+}
+
+class _InquiryGraveResultsPageState extends State<InquiryGraveResultsPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.finishServiceGraveInquiry);
+  }
 
   @override
   Widget build(BuildContext context) {

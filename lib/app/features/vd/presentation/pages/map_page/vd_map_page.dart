@@ -12,6 +12,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/constants.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 
@@ -35,6 +36,8 @@ class _VDMapScreen extends State<VDMapScreen> {
   void initState() {
     super.initState();
     //MM   Helpers.sendEventToAnalytics(AppEvents.VD_Open_Map);
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.mapServiceSnapAndSend);
   }
 
   @override

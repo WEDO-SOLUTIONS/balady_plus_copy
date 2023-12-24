@@ -27,7 +27,7 @@ class _VDAllTypesDialog extends State<VDAllTypesDialog> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceSnapAndSend);
+    CommonFunctions.sendUXCamEvent(UXCamEvents.typeServiceSnapAndSend);
   }
 
   @override

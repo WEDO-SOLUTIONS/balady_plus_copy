@@ -1,7 +1,7 @@
 [
   {
     "id": 1, 
-    "condition":"Modify the use of the building basement parking lots approved in accordance with the license issued to it by the secretariat/ municipality",
+    "condition":"Modify the use of the building basement parking lots approved in accordance with the license issued to it by the Municipality/ SubMunicipality",
     "procedure": [
       "Reuse the basement parking lots in case it is closed by the landlord",
       "Remove any building components and any storage materials in the basement that are in violation, and adhere to the maintenance of the basement parking lots and the plan of such maintenance."
@@ -105,7 +105,7 @@
    {
      "id": 13,
      "image": "6",
-     "condition": "Cover balconies without obtaining the proper licenses from the secretariat/ municipality",
+     "condition": "Cover balconies without obtaining the proper licenses from the Municipality/ SubMunicipality",
      "procedure": [
        "Remove the hangars used to cover the balconies and restore the balcony state to be in according to the issued building permit",
        "If the landlord desires to close the balcony and cover it, a (renovation) license shall be issued first to begin the work of closing the balcony, provided that such coverage shall not affect the aesthetic appearance of the building"

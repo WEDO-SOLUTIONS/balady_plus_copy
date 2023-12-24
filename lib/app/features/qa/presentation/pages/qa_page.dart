@@ -12,6 +12,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../_shared_feature_/presentation/under_testing/custom_enhanced_expansion_panel_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/search_text_field_widget.dart';
 import '../../../create_compliance/presentation/pdf/home/home.dart';
@@ -31,6 +32,8 @@ class _QAPageState extends State<QAPage> {
   void initState() {
     super.initState();
     CommonFunctions.sendEventToAnalytics(AppEvents.faq);
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.complianceFAQ);
   }
 
   @override

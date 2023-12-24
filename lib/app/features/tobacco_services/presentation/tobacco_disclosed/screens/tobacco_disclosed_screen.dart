@@ -10,25 +10,31 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../core/utils/common_functions.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
+
 class TobaccoDisclosedScreen extends StatefulWidget {
   const TobaccoDisclosedScreen({Key? key}) : super(key: key);
 
   @override
-  State<TobaccoDisclosedScreen> createState() =>
-      _TobaccoDisclosedScreenState();
+  State<TobaccoDisclosedScreen> createState() => _TobaccoDisclosedScreenState();
 }
 
-class _TobaccoDisclosedScreenState
-    extends State<TobaccoDisclosedScreen> {
+class _TobaccoDisclosedScreenState extends State<TobaccoDisclosedScreen> {
   // PageController controller = PageController();
   // int currentPageValue = 0;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceTobaccoDisclosure);
+  }
 
   @override
   Widget build(BuildContext context) {
-    TobaccoDisclosedViewModel provider = ModalRoute.of(context)!
-        .settings
-        .arguments as TobaccoDisclosedViewModel;
+    TobaccoDisclosedViewModel provider =
+        ModalRoute.of(context)!.settings.arguments as TobaccoDisclosedViewModel;
     return ChangeNotifierProvider(
       create: (BuildContext context) => provider,
       child: WillPopScope(
@@ -45,7 +51,7 @@ class _TobaccoDisclosedScreenState
                     pageLength: 1,
                     currentStep: 1,
                     backOnPress: () {
-                        showBackDialog();
+                      showBackDialog();
                     },
                     onTapCloseAction: () => showBackDialog(),
                   ),
@@ -113,5 +119,4 @@ class _TobaccoDisclosedScreenState
       },
     );
   }
-
 }

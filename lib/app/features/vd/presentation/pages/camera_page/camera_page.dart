@@ -14,6 +14,9 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../core/utils/common_functions.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
+
 class VDCameraPage extends StatefulWidget {
   VDCameraPage({
     super.key,
@@ -29,6 +32,8 @@ class _VDCameraPageState extends State<VDCameraPage>
   void initState() {
     super.initState();
     // Helpers.sendEventToAnalytics(AppEvents.VD_Open_Camera); //MM
+    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceSnapAndSend);
+    CommonFunctions.sendUXCamEvent(UXCamEvents.cameraServiceSnapAndSend);
   }
 
   @override

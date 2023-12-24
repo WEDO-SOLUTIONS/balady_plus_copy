@@ -37,6 +37,8 @@ class _PermitsLicenseStartServiceState
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.detailsService24HourPermit);
   }
 
   @override

@@ -19,8 +19,26 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
-class CommercialLicenseDetailsPage extends StatelessWidget {
+import '../../../../core/utils/common_functions.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
+
+class CommercialLicenseDetailsPage extends StatefulWidget {
   const CommercialLicenseDetailsPage({super.key});
+
+  @override
+  State<CommercialLicenseDetailsPage> createState() =>
+      _CommercialLicenseDetailsPageState();
+}
+
+class _CommercialLicenseDetailsPageState
+    extends State<CommercialLicenseDetailsPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.openLicensesDetails);
+  }
 
   @override
   Widget build(BuildContext context) {

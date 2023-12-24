@@ -7,6 +7,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:collection/collection.dart';
 
 import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../_shared_feature_/presentation/cards/expandable_card.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
@@ -24,8 +25,26 @@ import '../../data/models/allowed_actions_response.dart';
 import '../../data/models/permit_request_details_model.dart';
 import '../blocs/permit_tobacco_bloc.dart';
 
-class PermitsTobaccoReqeuestDetailsPage extends StatelessWidget {
+class PermitsTobaccoReqeuestDetailsPage extends StatefulWidget {
   const PermitsTobaccoReqeuestDetailsPage({super.key});
+
+  @override
+  State<PermitsTobaccoReqeuestDetailsPage> createState() => _PermitsTobaccoReqeuestDetailsPageState();
+}
+
+class _PermitsTobaccoReqeuestDetailsPageState extends State<PermitsTobaccoReqeuestDetailsPage> {
+
+
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+       CommonFunctions.sendUXCamEvent(
+        UXCamEvents.detailsServiceTobaccoPermit);
+
+  }
+
+
 
   @override
   Widget build(BuildContext context) {

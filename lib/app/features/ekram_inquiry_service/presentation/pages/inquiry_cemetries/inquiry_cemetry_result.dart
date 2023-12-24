@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
@@ -13,8 +14,22 @@ import '../../bloc/inquiry_cemetry_bloc/ekram_inquiry_cemetry_bloc.dart';
 import '../../bloc/inquiry_cemetry_bloc/ekram_inquiry_cemetry_event.dart';
 import '../../widgets/inquiry_cemetry/cemetry_details_item_widget.dart';
 
-class InquiryCemetryResultsPage extends StatelessWidget {
+class InquiryCemetryResultsPage extends StatefulWidget {
   const InquiryCemetryResultsPage({super.key});
+
+  @override
+  State<InquiryCemetryResultsPage> createState() =>
+      _InquiryCemetryResultsPageState();
+}
+
+class _InquiryCemetryResultsPageState extends State<InquiryCemetryResultsPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.finishServiceCemeteryInquiry);
+  }
 
   @override
   Widget build(BuildContext context) {
