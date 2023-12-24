@@ -79,7 +79,7 @@ class PersonalData extends StatelessWidget {
               ),
             ),
             PersonalDataRow(
-              title: userInfo.getFirstAndLastName(),
+              title: userInfo.enName ?? "",
               subtitle: context.l10n.englishFullName,
             ),
             Padding(

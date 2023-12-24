@@ -154,28 +154,30 @@ class HelpCenterPage extends ConsumerWidget {
                 icon: "assets/images_svg/help_contact.svg",
                 content: const ContactInfo(),
               ),
-              const SizedBox(
-                height: 8,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        context.l10n.weAreHappyToConnectYouWithBaladyTeam,
-                        textDirection: direction,
-                        style: Theme.of(context)
-                            .extension<ThemeTextStyles>()!
-                            .textXS
-                            .copyWith(
-                                color:
-                                    const Color(0xFF1E2A36).withOpacity(0.36)),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+
+              /// text for "balady portal is developed..."
+              // const SizedBox(
+              //   height: 8,
+              // ),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              //   child: Row(
+              //     children: [
+              //       Expanded(
+              //         child: Text(
+              //           context.l10n.weAreHappyToConnectYouWithBaladyTeam,
+              //           textDirection: direction,
+              //           style: Theme.of(context)
+              //               .extension<ThemeTextStyles>()!
+              //               .textXS
+              //               .copyWith(
+              //                   color:
+              //                       const Color(0xFF1E2A36).withOpacity(0.36)),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
             ],
           ),
         ),

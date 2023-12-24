@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -48,7 +49,7 @@ class IwishFeedbackTags extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                   onTap: () => onTagToggled(e.id),
                   child: Padding(
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(20),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -69,7 +70,8 @@ class IwishFeedbackTags extends StatelessWidget {
                           maxLines: 2,
                           wrapWords: false,
                           minFontSize: 8,
-                          textAlign: TextAlign.end,
+                          textAlign:
+                              context.isRTL ? TextAlign.right : TextAlign.left,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
                               .textM

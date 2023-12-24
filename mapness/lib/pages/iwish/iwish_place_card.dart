@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/iwish.dart';
+import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/features/iwish/providers/iwish_distance.dart';
 import 'package:mapness/features/iwish/providers/iwish_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -36,6 +37,12 @@ class IwishPlaceCard extends ConsumerWidget {
       data: (entity) {
         final distance = ref.read(iwishDistanceProvider(entity));
 
+        final metadata = entity.metadata;
+        final showMetadata = entity.parkSize != ParkSize.unknown ||
+            metadata.areaSize != 0 ||
+            metadata.openingDate != DateTime.fromMillisecondsSinceEpoch(0) ||
+            metadata.areaName != '';
+
         return SafeArea(
           bottom: false,
           child: DraggableScrollableSheet(
@@ -64,7 +71,11 @@ class IwishPlaceCard extends ConsumerWidget {
                         // crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.only(
+                              left: 16,
+                              right: 16,
+                              bottom: 16,
+                            ),
                             decoration: const BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.vertical(
@@ -73,6 +84,19 @@ class IwishPlaceCard extends ConsumerWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Container(
+                                    margin: const EdgeInsets.only(top: 8),
+                                    height: 4,
+                                    width: 40,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[300],
+                                      borderRadius: BorderRadius.circular(2),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
                                 IwishInfo(
                                   iwish: entity,
                                   distance: distance,
@@ -129,18 +153,20 @@ class IwishPlaceCard extends ConsumerWidget {
                           //     ],
                           //   ),
                           // ),
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 16),
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
+                          if (showMetadata)
+                            Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: IwishAboutPark(
+                                metadata: entity.metadata,
+                                parkSize: entity.parkSize,
+                              ),
                             ),
-                            child: IwishAboutPark(
-                              metadata: entity.metadata,
-                              parkSize: entity.parkSize,
-                            ),
-                          )
                         ],
                       ),
                     ),

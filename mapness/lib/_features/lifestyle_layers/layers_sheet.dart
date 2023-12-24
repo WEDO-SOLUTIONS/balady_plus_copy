@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
+import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
@@ -111,6 +112,9 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                         return FilterRow(
                           value: value,
                           onTap: () {
+                            ref
+                                .read(searchByRubricsQueryProvider.notifier)
+                                .update(null);
                             watch.handleTap(value);
                           },
                           isSelected: state.selectedType == (value),

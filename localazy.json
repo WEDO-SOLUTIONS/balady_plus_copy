@@ -9,6 +9,7 @@
     }
   },
   "download": {
-    "files": "mapness/lib/l10n/app_${lang}.arb"
+    "files": "mapness/lib/l10n/app_${lang}.arb",
+    "includeSourceLang": true
   }
 }

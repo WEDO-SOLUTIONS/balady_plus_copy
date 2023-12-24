@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_repository.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/investment_sites.dart';
@@ -26,7 +27,6 @@ import '../domain/point_layers_data.dart';
 part 'layers_controls.g.dart';
 
 const mapLayerName = 'esri_markers';
-const iwishLayerName = 'iwish_markers';
 const _markerPrefix = 'esri_markers-';
 
 @riverpod
@@ -103,6 +103,12 @@ class LayersControls extends _$LayersControls {
     await ref.read(cameraPositionProvider.notifier).animateTo(cameraPosition);
   }
 
+  Future<void> disable() async {
+    if (state.selectedType != null) {
+      handleTap(state.selectedType!);
+    }
+  }
+
   Future<void> handleTap(LayerType value) async {
     var currentState = state.selectedType;
 
@@ -113,8 +119,7 @@ class LayersControls extends _$LayersControls {
       //   } else {
       //     await ref.read(favouriteToggleProvider.notifier).enable();
       //   }
-      //   _toggleSelected(value);
-
+      // // _toggleSelected(value);
       case LayerType.buildings:
         toggleComplienceBuildings();
       case LayerType.invest:
@@ -136,7 +141,7 @@ class LayersControls extends _$LayersControls {
     var layersControls = ref.watch(layersControlsProvider.notifier);
     if (currentState == (LayerType.joy)) {
       await ref
-          .read(mapObjectManagerProvider(named: iwishLayerName).notifier)
+          .read(mapObjectManagerProvider(named: mapLayerName).notifier)
           .removeAllMarkers();
       layersControls.update(isLoading: false, selectedType: null);
     } else {
@@ -383,12 +388,14 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> showIwish() async {
-    if (state.selectedType == LayerType.joy) {
-      return;
-    }
+    await _removeAll();
+
+    // if (state.selectedType == LayerType.joy) {
+    //   return;
+    // }
     final markers = await ref.read(iwishMarkersProvider.future);
     await ref
-        .read(mapObjectManagerProvider(named: iwishLayerName).notifier)
+        .read(mapObjectManagerProvider(named: mapLayerName).notifier)
         .addMarkers(markers);
   }
 
