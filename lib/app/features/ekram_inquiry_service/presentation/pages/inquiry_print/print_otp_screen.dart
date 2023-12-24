@@ -14,6 +14,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 import '../../../../../core/utils/constants/constants.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
@@ -33,7 +34,8 @@ class _EkrimPrintOtpScreen extends State<EkrimPrintOtpScreen> {
   @override
   void initState() {
     super.initState();
-    //MM  Helpers.sendEventToAnalytics(AppEvents.VD_Open_OTP);
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.otpPrintBurialCertificate);
   }
 
   @override

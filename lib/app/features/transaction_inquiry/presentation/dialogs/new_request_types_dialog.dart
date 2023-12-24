@@ -7,6 +7,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/base/base_view_model.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
@@ -58,6 +59,9 @@ class _MSRTypeDialog extends State<MSRTypeDialog> {
           title: "msr_waste",
           id: 6),
     ];
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.typeServiceMunicipalServiceRequest);
   }
 
   @override

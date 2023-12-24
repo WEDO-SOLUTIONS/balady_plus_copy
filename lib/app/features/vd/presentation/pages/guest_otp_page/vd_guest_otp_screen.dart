@@ -15,6 +15,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:sms_user_consent/sms_user_consent.dart';
 
 import '../../../../../core/utils/constants/constants.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
@@ -31,7 +32,8 @@ class _VDGuestOtpScreen extends State<VDGuestOtpScreen> {
   @override
   void initState() {
     super.initState();
-    //MM  Helpers.sendEventToAnalytics(AppEvents.VD_Open_OTP);
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.otpServiceSnapAndSend);
   }
 
   @override

@@ -5,9 +5,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/services/local/helpers.dart';
+import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../_shared_feature_/presentation/cards/expandable_card.dart';
 import '../../../_shared_feature_/presentation/fields/read_only_field.dart';
@@ -28,6 +30,14 @@ class EkramCemetryDetailsPage extends StatefulWidget {
 }
 
 class _EkramCemetryDetailsPageState extends State<EkramCemetryDetailsPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.selectAndReserveACemeteryDetails);
+  }
+
   @override
   Widget build(BuildContext context) {
     final CemetryRequestDetails params =

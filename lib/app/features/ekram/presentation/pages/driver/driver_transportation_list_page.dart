@@ -21,6 +21,7 @@ import '../../../../../../etmam_app/features/_shared_feature_/shared/presentatio
 import '../../../../../core/services/local/helpers.dart';
 import '../../../../../core/services/local/location_service.dart';
 import '../../../../../core/utils/common_functions.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/icons/filter_icon.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
@@ -50,6 +51,9 @@ class _DriverEkramTransportationListPageState
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.listServiceFuneralCarDriver);
+
     CommonFunctions.checkLocationSettings(context);
     sl<EkramLocationService>().start();
   }

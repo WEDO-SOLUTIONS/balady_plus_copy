@@ -20,6 +20,7 @@ import 'package:balady_plus/etmam_app/features/home/home_exports.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../app/core/utils/constants/ux_cam_events.dart';
 import '../widgets/etmam_home_page/etmam_bidding_widget.dart';
 
 class EtmamHomePage extends StatefulWidget {
@@ -37,6 +38,13 @@ class _EtmamHomePage extends State<EtmamHomePage> {
     super.initState();
     //CommonFunctions.sendEventToAnalytics(AppEvents.HomePage);
     sl<EtmamEntryPointCubit>().onLogin();
+
+    if (widget.isMunicipalService) {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.startServiceLicensingAndPlanningServices);
+    } else {
+      CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceServicesProviders);
+    }
   }
 
   @override

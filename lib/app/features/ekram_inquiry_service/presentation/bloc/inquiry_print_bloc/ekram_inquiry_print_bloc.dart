@@ -9,6 +9,7 @@ import 'package:sms_user_consent/sms_user_consent.dart';
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/failures.dart';
 import '../../../../../core/utils/constants/remote_config.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../ekram/domain/use_cases/get_nationalities.dart';
 import '../../../../ekram/domain/use_cases/get_nationality_types.dart';
@@ -67,6 +68,8 @@ class EkramInquiryPrintBloc
       CommonFunctions.showApigeeFile(
           "${RemoteConfig.apigeeURL}/v2/ekram-mobile-services/reports/licenses/${r.certificateCode}",
           DateTime.now().millisecond.toString());
+
+      CommonFunctions.sendUXCamEvent(UXCamEvents.finishPrintBurialCertificate);
 
       /*CommonFunctions.showApigeeFile(
           "https://apiservicesstg.balady.gov.sa/v2/ekram-mobile-services/reports/licenses/E09055EB-228C-466E-97B9-57A3EAA66D8E",

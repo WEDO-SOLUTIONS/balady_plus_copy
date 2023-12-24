@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/constants.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
@@ -27,6 +28,8 @@ class _DaemTypeDialog extends State<DaemTypeDialog> {
   @override
   void initState() {
     super.initState();
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.typesServiceDaem);
   }
 
   @override

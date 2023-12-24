@@ -12,6 +12,7 @@ import '../../../../../core/base/base_view_model.dart';
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/failures.dart';
 import '../../../../../core/services/local/navigation_services.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, CommonFunctions, IconPath, RouteName;
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -116,6 +117,9 @@ class RequestsListItem extends StatelessWidget {
                           isDeletable: false,
                           isPrintable: false));
                 }
+
+                CommonFunctions.sendUXCamEvent(
+                    UXCamEvents.detailsServiceHealthCertificate);
               } else if (request.requestTypeId == 1130) {
                 /*  Navigator.pushNamed(context, RouteName.complianceDetailsPage,
                     arguments: (
@@ -144,6 +148,9 @@ class RequestsListItem extends StatelessWidget {
                         request.redirectUrl);
                   }
                 });
+
+                CommonFunctions.sendUXCamEvent(
+                    UXCamEvents.detailsServiceComplianceCertificate);
               } else if (request.requestTypeId == 1008 ||
                   request.requestTypeId == 1005 ||
                   request.requestTypeId == 1004) {
@@ -164,17 +171,17 @@ class RequestsListItem extends StatelessWidget {
               } else if (request.requestTypeId == 1042 ||
                   request.requestTypeId == 1043) {
                 NavigationService.navigatorKey.currentState!.pushNamed(
-                     RouteName.posterReqeuestDetailsPage,
+                    RouteName.posterReqeuestDetailsPage,
                     arguments: request.requestNumber);
               } else if (request.requestTypeId == 1028) {
                 NavigationService.navigatorKey.currentState!.pushNamed(
-                  RouteName.permitsRequestDetailsPage,
+                    RouteName.permitsRequestDetailsPage,
                     arguments: request.requestNumber);
               } else if (request.requestTypeId == 1026) {
                 NavigationService.navigatorKey.currentState!.pushNamed(
-                   RouteName.permitsTobaccoRequestDetailsPage,
+                    RouteName.permitsTobaccoRequestDetailsPage,
                     arguments: request.requestNumber);
-              }else {
+              } else {
                 if (request.redirectUrl == null) {
                   if (request.requestTypeId == 50001) {
                     EasyLoading.show();

@@ -7,6 +7,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:collection/collection.dart';
 
 import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../_shared_feature_/presentation/cards/expandable_card.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
@@ -24,8 +25,22 @@ import '../../data/models/allowed_actions_response.dart';
 import '../../data/models/permit_request_details_model.dart';
 import '../blocs/permit_24_bloc.dart';
 
-class PermitsReqeuestDetailsPage extends StatelessWidget {
+class PermitsReqeuestDetailsPage extends StatefulWidget {
   const PermitsReqeuestDetailsPage({super.key});
+
+  @override
+  State<PermitsReqeuestDetailsPage> createState() =>
+      _PermitsReqeuestDetailsPageState();
+}
+
+class _PermitsReqeuestDetailsPageState
+    extends State<PermitsReqeuestDetailsPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.sendUXCamEvent(UXCamEvents.detailsService24HourPermit);
+  }
 
   @override
   Widget build(BuildContext context) {
