@@ -5,6 +5,9 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get about => 'حول';
+
+  @override
   String get aboutApp => 'عن التطبيق';
 
   @override
@@ -374,6 +377,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get layersOnTheMap => 'الطبقات على الخريطة';
 
   @override
+  String get legendComplienceBuildingGreen => 'legendComplienceBuildingGreen';
+
+  @override
+  String get legendComplienceBuildingGrey => 'legendComplienceBuildingGreen';
+
+  @override
   String get lightning => 'الاضاءة';
 
   @override
@@ -575,7 +584,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profile => 'الحساب';
 
   @override
-  String get profileContactInformation => 'معلومات الاتصال';
+  String get profileContactInformation => 'رقم التواصل\n';
 
   @override
   String get profileSettings => 'إعدادات الحساب';
@@ -836,7 +845,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get watchMore => 'مشاهدة المزيد';
 
   @override
-  String get weAreHappyToConnectYouWithBaladyTeam => 'تم تطوير تطبيق بلدي بالتعاون مع جهات القطاع البلدي المختلفة لتكون البوابة الوطنية الداعمة للمجتمع البلدي.\nويشمل هذا التطبيق في المرحلة الحالية أربعة مسؤوليات رئيسية وهي:\n- التركيز على عناصر لايف ستايل والمتطلبات اليومية للمستخدمين\n- الخدمات التفاعلية التي تساعد في تعزيز مفهوم الشراكة المجتمعية لتحسين جودة الخدمات المقدمة للمستفيدين.\n- الخدمات الإلكترونية التي تساعد على تقديم الطلبات الإلكترونية لاستخراج الرخص الأكثر استخدامًا.\n- الخدمات المعلوماتية والتي تساعد المستفيدين على اتخاذ القرارات ذات العلاقة بما يساهم في تحسين مستوى الرضا عن جهات القطاع البلدي.';
+  String get weAreHappyToConnectYouWithBaladyTeam => 'تم تطوير تطبيق بلدي بالتعاون مع جهات القطاع البلدي المختلفة لتكون البوابة الوطنية الداعمة للمجتمع البلدي ويشمل هذا التطبيق في المرحلة الحالية أربعة محاور رئيسية وهى التركيز على خدمات لايف ستايل والمتطلبات اليومية للمستخدمين، الخدمات التفاعلية التي تساعد في تعزيز مفهوم الشراكة المجتمعية لتحسين جودة الخدمات المقدمة للمستفيدين،  الخدمات الإلكترونية التي تساعد على تقديم الطلبات الإلكترونية لاستخراج الرخص الأكثر استخدامًا إضافة إلى الخدمات المعلوماتية والتي تساعد المستفيدين على اتخاذ القرارات ذات العلاقة بما يساهم في تحسين مستوى الرضا عن جهات القطاع البلدي.';
 
   @override
   String get weCouldntFindAnythingTryChangingYourRequest => 'لم نتمكن من العثور على شيء.رجاء المحاولة مرة أخرى';

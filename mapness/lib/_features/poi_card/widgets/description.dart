@@ -1,5 +1,7 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class Description extends StatelessWidget {
   const Description({super.key, required this.text});
@@ -9,7 +11,40 @@ class Description extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CardContent(
-      child: Text(text),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 2,
+          horizontal: 8,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              context.l10n.about,
+              style: Theme.of(context)
+                  .extension<ThemeTextStyles>()
+                  ?.textM
+                  .copyWith(
+                    color: const Color(0xFF1E2A36),
+                    height: 1.5,
+                  ),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            Text(
+              text,
+              style: Theme.of(context)
+                  .extension<ThemeTextStyles>()
+                  ?.textS
+                  .copyWith(
+                    color: const Color(0x801E2A36),
+                    height: 1.5,
+                  ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

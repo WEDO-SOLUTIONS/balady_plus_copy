@@ -5,6 +5,9 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get about => 'About';
+
+  @override
   String get aboutApp => 'About App';
 
   @override
@@ -374,6 +377,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get layersOnTheMap => 'Layers on the map';
 
   @override
+  String get legendComplienceBuildingGreen => 'legendComplienceBuildingGreen';
+
+  @override
+  String get legendComplienceBuildingGrey => 'legendComplienceBuildingGreen';
+
+  @override
   String get lightning => 'Lightning';
 
   @override
@@ -575,7 +584,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile => 'Profile';
 
   @override
-  String get profileContactInformation => 'Contact information';
+  String get profileContactInformation => 'Contact number \n';
 
   @override
   String get profileSettings => 'Profile Settings';
@@ -836,7 +845,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get watchMore => 'Watch more';
 
   @override
-  String get weAreHappyToConnectYouWithBaladyTeam => 'Baldy\'s Application, developed in collaboration with various municipal sector entities, has evolved into a national application dedicated to bolstering the municipal community. At present, the application fulfills four key roles: \n1.Firstly, concentrating on the lifestyle aspects and daily requirements of its users \n2.It facilitates interactive services to fortify community partnerships and improve service quality,\n3.Providing digital services for the streamlined submission of electronic applications for commonly used licenses, and\n4.Offering information services to empower users in making well-informed decisions, thereby elevating satisfaction levels with municipal sector authorities.';
+  String get weAreHappyToConnectYouWithBaladyTeam => 'Baldy\'s Application, developed in collaboration with various municipal sector entities, has evolved into a national application dedicated to bolstering the municipal community. At present, the application fulfills four key dimensions, concentrating on the lifestyle aspects and daily requirements of its users, facilitates interactive services to fortify community partnerships and improve service quality, providing digital services for the streamlined submission of electronic applications for commonly used licenses, and Offering information services to empower users in making well-informed decisions, thereby elevating satisfaction levels with municipal sector authorities.';
 
   @override
   String get weCouldntFindAnythingTryChangingYourRequest => 'We couldn\'t find anything. Try changing your request';

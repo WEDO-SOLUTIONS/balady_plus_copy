@@ -93,6 +93,12 @@ abstract class AppLocalizations {
     Locale('en')
   ];
 
+  /// No description provided for @about.
+  ///
+  /// In ar, this message translates to:
+  /// **'حول'**
+  String get about;
+
   /// No description provided for @aboutApp.
   ///
   /// In ar, this message translates to:
@@ -831,6 +837,18 @@ abstract class AppLocalizations {
   /// **'الطبقات على الخريطة'**
   String get layersOnTheMap;
 
+  /// No description provided for @legendComplienceBuildingGreen.
+  ///
+  /// In ar, this message translates to:
+  /// **'legendComplienceBuildingGreen'**
+  String get legendComplienceBuildingGreen;
+
+  /// No description provided for @legendComplienceBuildingGrey.
+  ///
+  /// In ar, this message translates to:
+  /// **'legendComplienceBuildingGreen'**
+  String get legendComplienceBuildingGrey;
+
   /// No description provided for @lightning.
   ///
   /// In ar, this message translates to:
@@ -1236,7 +1254,7 @@ abstract class AppLocalizations {
   /// No description provided for @profileContactInformation.
   ///
   /// In ar, this message translates to:
-  /// **'معلومات الاتصال'**
+  /// **'رقم التواصل\n'**
   String get profileContactInformation;
 
   /// No description provided for @profileSettings.
@@ -1758,7 +1776,7 @@ abstract class AppLocalizations {
   /// No description provided for @weAreHappyToConnectYouWithBaladyTeam.
   ///
   /// In ar, this message translates to:
-  /// **'تم تطوير تطبيق بلدي بالتعاون مع جهات القطاع البلدي المختلفة لتكون البوابة الوطنية الداعمة للمجتمع البلدي.\nويشمل هذا التطبيق في المرحلة الحالية أربعة مسؤوليات رئيسية وهي:\n- التركيز على عناصر لايف ستايل والمتطلبات اليومية للمستخدمين\n- الخدمات التفاعلية التي تساعد في تعزيز مفهوم الشراكة المجتمعية لتحسين جودة الخدمات المقدمة للمستفيدين.\n- الخدمات الإلكترونية التي تساعد على تقديم الطلبات الإلكترونية لاستخراج الرخص الأكثر استخدامًا.\n- الخدمات المعلوماتية والتي تساعد المستفيدين على اتخاذ القرارات ذات العلاقة بما يساهم في تحسين مستوى الرضا عن جهات القطاع البلدي.'**
+  /// **'تم تطوير تطبيق بلدي بالتعاون مع جهات القطاع البلدي المختلفة لتكون البوابة الوطنية الداعمة للمجتمع البلدي ويشمل هذا التطبيق في المرحلة الحالية أربعة محاور رئيسية وهى التركيز على خدمات لايف ستايل والمتطلبات اليومية للمستخدمين، الخدمات التفاعلية التي تساعد في تعزيز مفهوم الشراكة المجتمعية لتحسين جودة الخدمات المقدمة للمستفيدين،  الخدمات الإلكترونية التي تساعد على تقديم الطلبات الإلكترونية لاستخراج الرخص الأكثر استخدامًا إضافة إلى الخدمات المعلوماتية والتي تساعد المستفيدين على اتخاذ القرارات ذات العلاقة بما يساهم في تحسين مستوى الرضا عن جهات القطاع البلدي.'**
   String get weAreHappyToConnectYouWithBaladyTeam;
 
   /// No description provided for @weCouldntFindAnythingTryChangingYourRequest.
