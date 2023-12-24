@@ -78,6 +78,8 @@ dependencies:
   auto_size_text: ^3.0.0
   in_app_review: ^2.0.8
   youtube_player_flutter: ^8.1.2
+  custom_image_crop: ^0.0.13
+  flutter_image_compress: ^2.1.0
 
 dev_dependencies:
   flutter_test:

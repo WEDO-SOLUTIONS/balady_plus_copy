@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -5,6 +7,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_features/profile/pages/image_editor_page.dart';
+import 'package:mapness/app/router.dart';
+import 'package:mapness/app/routes/profile.dart';
+import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/shared/config/package_config.dart';
 
 import '../providers/_index.dart';
@@ -27,9 +33,16 @@ class ProfileImageWidget extends ConsumerWidget {
     }
 
     final bytes = await image.readAsBytes();
-    ref
-        .read(profileImageProvider.notifier)
-        .changeUserProfileImageByBytes(bytes);
+
+    Uint8List? croppedBytes = await ref
+        .read(goRouterProvider)
+        .push(ImageEditorRoute().location, extra: bytes);
+
+    if (croppedBytes != null) {
+      ref
+          .read(profileImageProvider.notifier)
+          .changeUserProfileImageByBytes(croppedBytes);
+    }
   }
 
   @override

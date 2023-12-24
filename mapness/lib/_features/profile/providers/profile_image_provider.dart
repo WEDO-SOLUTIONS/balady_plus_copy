@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/profile/domain/user_profile_data.dart';
 import 'package:mapness/entry_point.dart';
@@ -66,9 +67,23 @@ class ProfileImage extends _$ProfileImage {
     return imageBase64;
   }
 
+  Future<Uint8List> _comporessList(Uint8List list) async {
+    var result = await FlutterImageCompress.compressWithList(
+      list,
+      minHeight: 200,
+      minWidth: 200,
+      quality: 40,
+      rotate: 0,
+    );
+    print(list.length);
+    print(result.length);
+    return result;
+  }
+
   /// Загружает изображение на бекенд.
   /// Возвращает ссылку на изображение.
   Future<String> _uploadImage(Uint8List bytes) async {
+    bytes = await _comporessList(bytes);
     // start the timer for the event "Image Upload"
     mixpanel?.timeEvent("Profile Image Upload");
 
@@ -78,6 +93,7 @@ class ProfileImage extends _$ProfileImage {
         "/profile/photo",
         data: bytes,
       );
+      print("response: ${response.statusMessage}");
 
       final result = proto.Profile_Photo.fromBuffer(response.data);
       mixpanel?.track("Profile Image Upload");
