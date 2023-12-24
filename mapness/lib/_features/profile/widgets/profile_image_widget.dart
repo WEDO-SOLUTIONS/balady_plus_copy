@@ -48,7 +48,7 @@ class ProfileImageWidget extends ConsumerWidget {
     final profileImage = ref.watch(profileImageProvider);
 
     return GestureDetector(
-      onTap: editable ? () => _onEdit(ref) : null,
+      // onTap: editable ? () => _onEdit(ref) : null,
       child: Builder(builder: (context) {
         final defaultImage = SvgPicture.asset(
           'assets/icons/svg/ic_nav_profile.svg',
