@@ -1237,7 +1237,9 @@ class CommonFunctions {
   }
 
   static void sendUXCamEvent(String event) {
-    FlutterUxcam.logEvent(event);
+    try {
+      FlutterUxcam.logEvent(event);
+    } catch (ex) {}
   }
 }
 
