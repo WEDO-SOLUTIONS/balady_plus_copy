@@ -276,7 +276,6 @@ class UXCamEvents {
   static String openObjectionsFilter = "open_Objections_Filter";
   static String openObjectionsDetails = "open_Objections_Details";
 
-
   static String openInvoicesList = "open_Invoices_List"; //Done
   static String openInvoicesFilter = "open_Invoices_Filter"; //Done
   static String openInvoicesDtails = "open_Invoices_Details"; //Done
