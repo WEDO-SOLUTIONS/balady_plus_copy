@@ -120,15 +120,12 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   // ignore: prefer_const_constructors
-                  child: SizedBox(
-                    height: 220,
-                    child: YoutubePlayer(
-                      controller: _controller,
-                      bottomActions: [
-                        CurrentPosition(),
-                        ProgressBar(isExpanded: true),
-                      ],
-                    ),
+                  child: YoutubePlayer(
+                    controller: _controller,
+                    bottomActions: [
+                      CurrentPosition(),
+                      ProgressBar(isExpanded: true),
+                    ],
                   ),
                 ),
               ),

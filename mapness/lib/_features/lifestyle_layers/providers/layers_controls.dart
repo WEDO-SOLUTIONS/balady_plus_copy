@@ -113,14 +113,13 @@ class LayersControls extends _$LayersControls {
     var currentState = state.selectedType;
 
     switch (value) {
-      case LayerType.favourites:
-        if (currentState == (LayerType.favourites)) {
-          await ref.read(favouriteToggleProvider.notifier).disable();
-        } else {
-          await ref.read(favouriteToggleProvider.notifier).enable();
-        }
-      // _toggleSelected(value);
-
+      // case LayerType.favourites:
+      //   if (currentState == (LayerType.favourites)) {
+      //     await ref.read(favouriteToggleProvider.notifier).disable();
+      //   } else {
+      //     await ref.read(favouriteToggleProvider.notifier).enable();
+      //   }
+      // // _toggleSelected(value);
       case LayerType.buildings:
         toggleComplienceBuildings();
       case LayerType.invest:
