@@ -60,7 +60,7 @@ class _WalletScreenState extends State<WalletScreen> {
                           ),
                           ...wallerTypesData
                               .mapIndexed((index, e) => RoundedCard(
-                                    title: e.title,
+                                    title: e.title.tr(),
                                     iconPath: e.icon,
                                     isSelected:
                                         state.selectedTypeIndex == index + 1,
