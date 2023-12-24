@@ -2,6 +2,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
@@ -76,6 +77,7 @@ class MapQuickFilters extends ConsumerWidget {
         if (selectedFilter?.$2 == index) {
           ref.read(searchByRubricsQueryProvider.notifier).update(null);
         } else {
+          ref.read(layersControlsProvider.notifier).disable();
           ref
               .read(searchByRubricsQueryProvider.notifier)
               .update((filter, index));

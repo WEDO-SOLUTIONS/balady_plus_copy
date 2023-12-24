@@ -103,6 +103,12 @@ class LayersControls extends _$LayersControls {
     await ref.read(cameraPositionProvider.notifier).animateTo(cameraPosition);
   }
 
+  Future<void> disable() async {
+    if (state.selectedType != null) {
+      handleTap(state.selectedType!);
+    }
+  }
+
   Future<void> handleTap(LayerType value) async {
     var currentState = state.selectedType;
 
