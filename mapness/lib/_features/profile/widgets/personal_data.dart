@@ -1,9 +1,12 @@
 import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/_features/profile/domain/user_profile_data.dart';
 
-class PersonalData extends StatelessWidget {
+class PersonalData extends ConsumerWidget {
   final SsoUserInfo userInfo;
 
   const PersonalData({
@@ -12,7 +15,9 @@ class PersonalData extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final language = ref.read(appLanguageProvider);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
@@ -24,7 +29,7 @@ class PersonalData extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             PersonalDataRow(
-              title: userInfo.getFirstName(),
+              title: userInfo.getLocalizedFirstName(language),
               subtitle: context.l10n.firstName,
             ),
             Padding(
@@ -35,7 +40,7 @@ class PersonalData extends StatelessWidget {
               ),
             ),
             PersonalDataRow(
-              title: userInfo.getLastName(),
+              title: userInfo.getLocalizedLastName(language),
               subtitle: context.l10n.lastName,
             ),
             Padding(
