@@ -118,7 +118,7 @@ class _AllServicesPageState extends State<AllServicesPage> {
                 itemCount: searchedServices.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 4,
-                  mainAxisSpacing: 20.0,
+                  mainAxisSpacing: 30.0,
                   crossAxisSpacing: 5.0,
                 ),
                 itemBuilder: (_, index) {
