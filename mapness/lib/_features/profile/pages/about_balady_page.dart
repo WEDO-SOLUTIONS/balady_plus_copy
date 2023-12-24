@@ -7,12 +7,50 @@ import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-class AboutBaladyPage extends ConsumerWidget {
+class AboutBaladyPage extends ConsumerStatefulWidget {
   const AboutBaladyPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AboutBaladyPage> createState() => _AboutBaladyPageState();
+}
+
+class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
+  late YoutubePlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = YoutubePlayerController(
+      initialVideoId: '4iRVvB1iZAc',
+      flags: const YoutubePlayerFlags(
+        mute: false,
+        autoPlay: false,
+        disableDragSeek: false,
+        loop: false,
+        isLive: false,
+        forceHD: false,
+        enableCaption: false,
+      ),
+    );
+  }
+
+  @override
+  void deactivate() {
+    // Pauses video while navigating to next page.
+    _controller.pause();
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final direction = ref.watch(uiDirectionProvider);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -84,12 +122,12 @@ class AboutBaladyPage extends ConsumerWidget {
                   // ignore: prefer_const_constructors
                   child: SizedBox(
                     height: 220,
-                    child: const Image(
-                      image: AssetImage(
-                        'assets/images/img_video-placeholder.png',
-                        package: PackageConfig.packageName,
-                      ),
-                      fit: BoxFit.cover,
+                    child: YoutubePlayer(
+                      controller: _controller,
+                      bottomActions: [
+                        CurrentPosition(),
+                        ProgressBar(isExpanded: true),
+                      ],
                     ),
                   ),
                 ),
