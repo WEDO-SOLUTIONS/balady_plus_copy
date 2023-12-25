@@ -3,14 +3,12 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_repository.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/investment_sites.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/map_requests_params.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/white_lands.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/layer_details.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
@@ -27,7 +25,6 @@ import '../domain/point_layers_data.dart';
 part 'layers_controls.g.dart';
 
 const mapLayerName = 'esri_markers';
-const _markerPrefix = 'esri_markers-';
 
 @riverpod
 class SelectedLayer extends _$SelectedLayer {
@@ -121,7 +118,7 @@ class LayersControls extends _$LayersControls {
       //   }
       // // _toggleSelected(value);
       case LayerType.buildings:
-        toggleComplienceBuildings();
+        toggleComplianceBuildings();
       case LayerType.invest:
         toggleInvestOpportunities();
       case LayerType.fencing:
@@ -149,7 +146,7 @@ class LayersControls extends _$LayersControls {
     }
   }
 
-  Future<void> toggleComplienceBuildings() async {
+  Future<void> toggleComplianceBuildings() async {
     var currentState = state.selectedType;
     if (currentState != (LayerType.buildings)) {
       update(isLoading: true);
@@ -159,44 +156,6 @@ class LayersControls extends _$LayersControls {
       await _removeAll();
       update(isLoading: false, selectedType: null);
     }
-  }
-
-  Future<void> _showObjectDetails(PointLayersData layerData) async {
-    final controller = ref.watch(lifestyleRepositoryProvider.notifier);
-    final env = await ref.read(dgisEnvironmentProvider.future);
-
-    var layersControls = ref.watch(layersControlsProvider.notifier);
-    var mapController =
-        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
-
-    update(isLoading: true);
-
-    await layersControls._removeAll();
-    await viewPortSubscription?.cancel();
-    viewPortSubscription = ref
-        .watch(dgisControllerProvider.notifier)
-        .visibleRectSubject
-        .debounceTime(const Duration(milliseconds: 2500))
-        .map((event) => event.visibleRect)
-        .asyncMap((visibleRect) => controller.getEsriPoints(
-                params: MapRequestParams(
-              layer: state.selectedType?.getLayerType(),
-              southWestLongitude: visibleRect.southWestLon,
-              southWestLatitude: visibleRect.southWestLat,
-              northEastLongitude: visibleRect.northEastLon,
-              northEastLatitude: visibleRect.northEastLat,
-              domain: env.url,
-              proxy: env.proxy,
-              objectId: int.tryParse(layerData.id) ?? 0,
-              pointsDetails: true,
-            )))
-        .map(_makeMarkers)
-        .listen(
-      (markers) async {
-        layersControls.update(isLoading: false);
-        await mapController.addMarkers(markers);
-      },
-    );
   }
 
   Future<void> _showInvestmentOpportunities(LayerType layerType) async {
@@ -210,7 +169,7 @@ class LayersControls extends _$LayersControls {
 
     await _removeAll();
 
-    await viewPortSubscription?.cancel();
+    await _closeViewPortSubscription();
     viewPortSubscription = ref
         .watch(dgisControllerProvider.notifier)
         .visibleRectSubject
@@ -247,7 +206,7 @@ class LayersControls extends _$LayersControls {
     update(isLoading: true, selectedType: LayerType.fencing);
 
     await _removeAll();
-    await viewPortSubscription?.cancel();
+    await _closeViewPortSubscription();
 
     viewPortSubscription = ref
         .watch(dgisControllerProvider.notifier)
@@ -280,7 +239,7 @@ class LayersControls extends _$LayersControls {
         ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
 
     await _removeAll();
-    await viewPortSubscription?.cancel();
+    await _closeViewPortSubscription();
 
     viewPortSubscription = ref
         .watch(dgisControllerProvider.notifier)
@@ -307,6 +266,10 @@ class LayersControls extends _$LayersControls {
         }
       },
     );
+  }
+
+  Future<void> _closeViewPortSubscription() async {
+    await viewPortSubscription?.cancel();
   }
 
   List<Polyline> _makePolylineWithPoint(
@@ -400,10 +363,8 @@ class LayersControls extends _$LayersControls {
   }
 
   void _showEsriCard(PointLayersData e) {
-    // _showObjectDetails(e);
-    ref
-        .read(goRouterProvider)
-        .push(LayerDetailsRoute().location, extra: {"data": e});
+    var goRouter = ref.read(goRouterProvider);
+    LayerDetailsRoute.open(goRouter, e);
   }
 
   Future<void> _removeAll() async {

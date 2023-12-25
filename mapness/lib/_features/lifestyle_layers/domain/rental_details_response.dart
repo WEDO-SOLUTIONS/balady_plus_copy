@@ -1,6 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:dgis_map/library.dart';
-import 'package:intl/intl.dart';
 
 class RentalDetailsResponse {
   RentalDetailsResponse({
@@ -346,8 +344,6 @@ class Details {
       }
     }
     return "0.0";
-
-    return "";
   }
 
   // String? getActivityName() {

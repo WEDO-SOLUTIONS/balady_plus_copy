@@ -13,6 +13,23 @@ part 'layer_details.g.dart';
 class LayerDetailsRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
+  static void open(GoRouter router, PointLayersData e) {
+    var layerDetailsRoute = LayerDetailsRoute();
+    var location = layerDetailsRoute.location;
+
+    // ref
+    //     .read(goRouterProvider)
+    //     .push(layerDetailsRoute.location,);
+
+    final matches = router.routerDelegate.currentConfiguration.matches;
+    var extra = {"data": e};
+    if (matches.last.matchedLocation == '/layer-details') {
+      router.pushReplacement(location, extra: extra);
+    } else {
+      router.push(location, extra: extra);
+    }
+  }
+
   LayerDetailsRoute();
 
   @override
