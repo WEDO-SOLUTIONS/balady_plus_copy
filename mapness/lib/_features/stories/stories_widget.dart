@@ -51,9 +51,7 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
       child: thumbnails.when(
         data: (data) => StoryThumbnails(
           onThumbnailPressed: (id) => openStory(context, id),
-
-          /// arabic => reversed
-          stories: data.reversed.toList(),
+          stories: data.toList(),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => StoryRefreshButton(
