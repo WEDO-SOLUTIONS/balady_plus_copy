@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_repository.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/map_requests_params.dart';
@@ -31,11 +32,11 @@ class LayersDetails extends _$LayersDetails {
 
     return switch (layerType) {
       GISMapLayers.Opportunities =>
-        (await controller.getEsriPoints(params: requestParams))?.first,
+        (await controller.getEsriPoints(params: requestParams,cancelToken: CancelToken()))?.first,
       GISMapLayers.BSWhiteParcelS =>
-        (await controller.getWhiteLands(requestParams))?.first,
+        (await controller.getWhiteLands(requestParams,CancelToken()))?.first,
       GISMapLayers.BSAimtithalBuildingsCertificateL =>
-        (await controller.buildingComplianceCertificate(requestParams))?.first,
+        (await controller.buildingComplianceCertificate(requestParams,CancelToken()))?.first,
       _ => null,
     };
   }

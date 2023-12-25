@@ -19,9 +19,9 @@ class LifestyleRepository extends _$LifestyleRepository {
   );
 
   Future<List<InvestmentSites>?> getEsriPoints(
-      {required MapRequestParams params}) async {
+      {required MapRequestParams params, CancelToken? cancelToken,}) async {
     try {
-      var response = await dataSource.getEsriPoints(params);
+      var response = await dataSource.getEsriPoints(params, cancelToken);
       var result = investmentSitesFromJson(response as List<dynamic>);
       return result;
     } catch (e) {
@@ -30,9 +30,10 @@ class LifestyleRepository extends _$LifestyleRepository {
   }
 
   Future<List<BuildingComplianceCertificate>?> buildingComplianceCertificate(
-      MapRequestParams params) async {
+      MapRequestParams params,
+      CancelToken? cancelToken,) async {
     try {
-      final response = await dataSource.getEsriPoints(params);
+      final response = await dataSource.getEsriPoints(params, cancelToken);
       return buildingComplianceCertificateFromJson(response ?? []);
     } catch (e) {
       debugPrint('$e');
@@ -40,9 +41,10 @@ class LifestyleRepository extends _$LifestyleRepository {
     }
   }
 
-  Future<List<WhiteLands>?> getWhiteLands(MapRequestParams params) async {
+  Future<List<WhiteLands>?> getWhiteLands(MapRequestParams params,
+      CancelToken? cancelToken,) async {
     try {
-      var response = await dataSource.getEsriPoints(params);
+      var response = await dataSource.getEsriPoints(params, cancelToken);
       return whiteLandsFromJson(response ?? []);
     } catch (e) {
       debugPrint('$e');

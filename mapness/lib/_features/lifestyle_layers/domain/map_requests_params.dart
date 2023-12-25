@@ -91,10 +91,10 @@ class MapRequestParams {
       "geometryType": "esriGeometryEnvelope",
       if (pointsDetails == true && objectId != null) "objectIds": objectId,
       if (pointsDetails != true && objectId == null)
-        "geometry": "$southWestLongitude,"
-            "$southWestLatitude,"
-            "$northEastLongitude,"
-            "$northEastLatitude",
+        "geometry": "${southWestLongitude?.toStringAsFixed(3)},"
+            "${southWestLatitude?.toStringAsFixed(3)},"
+            "${northEastLongitude?.toStringAsFixed(3)},"
+            "${northEastLatitude?.toStringAsFixed(3)}",
       // "spatialRel": "esriSpatialRelIntersects",
       "resultRecordCount": layer?.resultRecordCount ?? 0
     };
