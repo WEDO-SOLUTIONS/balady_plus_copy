@@ -255,6 +255,12 @@ abstract class AppLocalizations {
   /// **'إختر لغة واجهات التطبيق'**
   String get chooseTheLanguageOfAll;
 
+  /// No description provided for @circulation.
+  ///
+  /// In ar, this message translates to:
+  /// **'مسارات الحركة والوصول الشامل'**
+  String get circulation;
+
   /// No description provided for @clean.
   ///
   /// In ar, this message translates to:
@@ -360,7 +366,7 @@ abstract class AppLocalizations {
   /// No description provided for @contactInformation.
   ///
   /// In ar, this message translates to:
-  /// **'اسم العائلة'**
+  /// **'معلومات التواصل'**
   String get contactInformation;
 
   /// No description provided for @continueRide.
@@ -476,6 +482,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'عرض بانورامي'**
   String get droneView;
+
+  /// No description provided for @dustbins.
+  ///
+  /// In ar, this message translates to:
+  /// **'سلة المهملات'**
+  String get dustbins;
 
   /// No description provided for @edit.
   ///
@@ -626,6 +638,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'صباح الخير'**
   String get goodMorning;
+
+  /// No description provided for @green_spaces.
+  ///
+  /// In ar, this message translates to:
+  /// **'المسطحات الخضراء'**
+  String get green_spaces;
 
   /// No description provided for @helpCenter.
   ///
@@ -855,6 +873,12 @@ abstract class AppLocalizations {
   /// **'حالات تسوير الأراضي'**
   String get legendComplienceBuildingTitle;
 
+  /// No description provided for @lighting.
+  ///
+  /// In ar, this message translates to:
+  /// **'أنظمة الانارة'**
+  String get lighting;
+
   /// No description provided for @lightning.
   ///
   /// In ar, this message translates to:
@@ -882,7 +906,7 @@ abstract class AppLocalizations {
   /// No description provided for @lookForUsefulPlacesCafesMallsForExampleMallNearby.
   ///
   /// In ar, this message translates to:
-  /// **'ابحث عن الأماكن والمقاهي ومراكز التسوق المفيدة على سبيل المثال: مول قريب'**
+  /// **'ابحث عن الأماكن والمعالم ونقاط الإهتمام \n   حولك،من مراكز تسوق، مطاعم، وأماكن ترفيه وغيرها.'**
   String get lookForUsefulPlacesCafesMallsForExampleMallNearby;
 
   /// No description provided for @mallNearby.
@@ -1473,6 +1497,12 @@ abstract class AppLocalizations {
   /// **'الإعدادات'**
   String get settings;
 
+  /// No description provided for @shaded_area.
+  ///
+  /// In ar, this message translates to:
+  /// **'المساحات المظللة'**
+  String get shaded_area;
+
   /// No description provided for @share.
   ///
   /// In ar, this message translates to:
@@ -1482,7 +1512,7 @@ abstract class AppLocalizations {
   /// No description provided for @shareChallengeWithUs.
   ///
   /// In ar, this message translates to:
-  /// **'شاركنا التحدي. ساهم في مكافحة التلوث البصري في مدينتك'**
+  /// **'شاركنا التحدي. ساهم في مكافحة التشوه البصري في مدينتك'**
   String get shareChallengeWithUs;
 
   /// No description provided for @shareFeedback.
@@ -1550,6 +1580,18 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'قم بتسجيل الدخول لفتح الإمكانيات الكاملة لتطبيق بلدي'**
   String get signInToUnlockTheFullPotentialOfTheBaladyApp;
+
+  /// No description provided for @signage.
+  ///
+  /// In ar, this message translates to:
+  /// **'اللافتات الارشادية'**
+  String get signage;
+
+  /// No description provided for @sitting_area.
+  ///
+  /// In ar, this message translates to:
+  /// **'مقاعد الجلوس'**
+  String get sitting_area;
 
   /// No description provided for @skills.
   ///
@@ -1778,6 +1820,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'مشاهدة المزيد'**
   String get watchMore;
+
+  /// No description provided for @wc.
+  ///
+  /// In ar, this message translates to:
+  /// **'دورات المياه'**
+  String get wc;
 
   /// No description provided for @weAreHappyToConnectYouWithBaladyTeam.
   ///

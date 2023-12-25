@@ -86,6 +86,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chooseTheLanguageOfAll => 'Choose the language of all interface in the Balady app';
 
   @override
+  String get circulation => 'Circulation / accessibility';
+
+  @override
   String get clean => 'Clean';
 
   @override
@@ -197,6 +200,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get droneView => 'Drone view';
 
   @override
+  String get dustbins => 'Dustbins';
+
+  @override
   String get edit => 'Edit';
 
   @override
@@ -270,6 +276,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get goodMorning => 'Good morning';
+
+  @override
+  String get green_spaces => 'Green Spaces';
 
   @override
   String get helpCenter => 'Help Center';
@@ -386,6 +395,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get legendComplienceBuildingTitle => 'Land fencing status';
 
   @override
+  String get lighting => 'Lighting';
+
+  @override
   String get lightning => 'Lightning';
 
   @override
@@ -398,7 +410,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginToAccess => 'Login to access';
 
   @override
-  String get lookForUsefulPlacesCafesMallsForExampleMallNearby => 'Look for useful places, cafes, malls for example: Mall nearby';
+  String get lookForUsefulPlacesCafesMallsForExampleMallNearby => 'Look for places, landmarks and Points of Interests around you, like shopping malls, Restaurants, recreational centers, and more.';
 
   @override
   String get mallNearby => 'Mall nearby';
@@ -572,7 +584,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get poi_faisaliya_tower => 'Faisaliya\\nTower';
 
   @override
-  String get poi_kingdom_center => 'Kingdom\\nCenter';
+  String get poi_kingdom_center => 'Kingdom\nCenter';
 
   @override
   String get poi_masmak_fortress => 'Masmak\\nFortress';
@@ -695,6 +707,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
+  String get shaded_area => 'Shaded Area';
+
+  @override
   String get share => 'Share';
 
   @override
@@ -732,6 +747,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signInToUnlockTheFullPotentialOfTheBaladyApp => 'Sign in to unlock the full potential\nof the Balady app';
+
+  @override
+  String get signage => 'Signage / wayfinding';
+
+  @override
+  String get sitting_area => 'Sitting Area';
 
   @override
   String get skills => 'Skills';
@@ -848,6 +869,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get watchMore => 'Watch more';
 
   @override
+  String get wc => 'WС';
+
+  @override
   String get weAreHappyToConnectYouWithBaladyTeam => 'Baldy\'s Application, developed in collaboration with various municipal sector entities, has evolved into a national application dedicated to bolstering the municipal community. At present, the application fulfills four key dimensions, concentrating on the lifestyle aspects and daily requirements of its users, facilitates interactive services to fortify community partnerships and improve service quality, providing digital services for the streamlined submission of electronic applications for commonly used licenses, and Offering information services to empower users in making well-informed decisions, thereby elevating satisfaction levels with municipal sector authorities.';
 
   @override
@@ -884,5 +908,5 @@ class AppLocalizationsEn extends AppLocalizations {
   String get youReHere => 'You\'re here!';
 
   @override
-  String get youSearch => 'You search';
+  String get youSearch => 'ٍٍٍSearch';
 }
