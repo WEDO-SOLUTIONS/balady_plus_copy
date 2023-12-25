@@ -53,12 +53,6 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidget> {
                       opprtunityNumber: selectedPoint.OPPORTUNITYNUMBER,
                       subMunicipality: selectedPoint.SUBMUNICIPALITY_ID,
                       mainActivcity: selectedPoint.MAIN_ACTIVITY_NAME,
-
-                      ///???
-                      // location: selectedPoint?.,
-                      //   area: selectedPoint?.,
-                      // isSeasonal: selectedPoint?.,
-                      // isFree: selectedPoint?.,
                       onClose: () => context.pop(),
                     );
                   case BuildingComplianceCertificate? selectedPoint:

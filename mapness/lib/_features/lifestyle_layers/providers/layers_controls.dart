@@ -57,6 +57,8 @@ class LayersState {
   });
 }
 
+const duration = const Duration(milliseconds: 1000);
+
 @riverpod
 class LayersControls extends _$LayersControls {
   StreamSubscription? viewPortSubscription;
@@ -246,7 +248,7 @@ class LayersControls extends _$LayersControls {
         .watch(dgisControllerProvider.notifier)
         .visibleRectSubject
         .map((event) => event.visibleRect)
-        .debounceTime(const Duration(milliseconds: 1000))
+        .debounceTime(duration)
         .asyncMap(
           (visibleRect) => controller.getEsriPoints(
             params: _createParams(visibleRect, layerType, env),
@@ -283,7 +285,7 @@ class LayersControls extends _$LayersControls {
     viewPortSubscription = ref
         .watch(dgisControllerProvider.notifier)
         .visibleRectSubject
-        .debounceTime(const Duration(milliseconds: 2500))
+        .debounceTime(duration)
         .map((event) => event.visibleRect)
         .asyncMap((visibleRect) => controller.getWhiteLands(
               MapRequestParams(
@@ -320,17 +322,16 @@ class LayersControls extends _$LayersControls {
     viewPortSubscription = ref
         .watch(dgisControllerProvider.notifier)
         .visibleRectSubject
-        .debounceTime(const Duration(milliseconds: 1000))
+        .debounceTime(duration)
         .map((event) => event.visibleRect)
         .asyncMap((visibleRect) => controller.buildingComplianceCertificate(
             _createParams(visibleRect, LayerType.buildings, env), cancelToken))
         .listen(
-      (polylines) async {
+      (data) async {
         update(isLoading: false);
         await mapObjectManager.removeAllPolyLines();
         if (state.selectedType == LayerType.buildings) {
-          await mapObjectManager
-              .addPolyLines(_makePolylineWithPoint(polylines));
+          await mapObjectManager.addPolyLines(_makePolylineWithPoint(data));
         }
       },
     );

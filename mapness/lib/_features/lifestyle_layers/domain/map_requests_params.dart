@@ -61,28 +61,25 @@ class MapRequestParams {
 
     final params = toMap();
     final layerId = layer?.layerId ?? 0;
+    var hashedUrl;
 
     if (proxy != null) {
       const domain = 'https://apiservicesstg.balady.gov.sa';
-      var hashedUrl = "$domain/$gisLayers/$layerId/query?";
-      params.forEach((key, value) => hashedUrl += "$key=$value&");
-      hashedUrl = hashedUrl.substring(0, hashedUrl.length - 1);
-      verifyingKey = hashRequest(hashedUrl, "GET");
+      hashedUrl = "$domain/$gisLayers/$layerId/query?";
     } else {
       var domainYUrl = domain.replaceAll('/urbi-services/', '');
       const gisLayers = 'gis-urbi-services/layers';
-      var hashedUrl = "$domainYUrl/$gisLayers/$layerId/query?";
-      params.forEach((key, value) => hashedUrl += "$key=$value&");
-      hashedUrl = hashedUrl.substring(0, hashedUrl.length - 1);
-      verifyingKey = hashRequest(hashedUrl, "GET");
+      hashedUrl = "$domainYUrl/$gisLayers/$layerId/query?";
     }
 
+    params.forEach((key, value) => hashedUrl += "$key=$value&");
+    hashedUrl = hashedUrl.substring(0, hashedUrl.length - 1);
+    verifyingKey = hashRequest(hashedUrl, "GET");
     return verifyingKey;
   }
 
   Map<String, dynamic> toMap() {
     return {
-      // "outFields": layer?.outFieldsLong.join(","),
       "outFields": (layer != null && pointsDetails == true)
           ? layer?.outFieldsLong.join(",")
           : "OBJECTID",
@@ -95,7 +92,6 @@ class MapRequestParams {
             "${southWestLatitude?.toStringAsFixed(3)},"
             "${northEastLongitude?.toStringAsFixed(3)},"
             "${northEastLatitude?.toStringAsFixed(3)}",
-      // "spatialRel": "esriSpatialRelIntersects",
       "resultRecordCount": layer?.resultRecordCount ?? 0
     };
   }

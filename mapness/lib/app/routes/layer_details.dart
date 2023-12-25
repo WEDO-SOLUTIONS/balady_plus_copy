@@ -8,22 +8,18 @@ import 'package:mapness/shared/routing/transculent_page.dart';
 part 'layer_details.g.dart';
 
 @TypedGoRoute<LayerDetailsRoute>(
-  path: '/layer-details',
+  path: LayerDetailsRoute.path,
 )
 class LayerDetailsRoute extends GoRouteData {
+static const path = '/layer-details';
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   static void open(GoRouter router, PointLayersData e) {
-    var layerDetailsRoute = LayerDetailsRoute();
-    var location = layerDetailsRoute.location;
-
-    // ref
-    //     .read(goRouterProvider)
-    //     .push(layerDetailsRoute.location,);
-
+    final layerDetailsRoute = LayerDetailsRoute();
+    final location = layerDetailsRoute.location;
     final matches = router.routerDelegate.currentConfiguration.matches;
-    var extra = {"data": e};
-    if (matches.last.matchedLocation == '/layer-details') {
+    final extra = {"data": e};
+    if (matches.last.matchedLocation == path) {
       router.pushReplacement(location, extra: extra);
     } else {
       router.push(location, extra: extra);
