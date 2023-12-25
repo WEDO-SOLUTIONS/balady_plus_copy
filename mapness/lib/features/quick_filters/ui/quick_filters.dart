@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
+import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart' as models;
 import 'package:mapness/features/quick_filters/providers/quick_filters.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -36,19 +38,19 @@ class QuickFilters extends ConsumerWidget {
     final favouritesState = ref.watch(favouriteRepositoryProvider);
     final naviFeature = ref.watch(appFeaturesProvider);
     final favourites = <FilterItem>[
-      // FilterItem(
-      //   icon: "assets/icons/svg/quick_filters/ic_quick_bookmark.svg",
-      // ),
-      // if (favouritesState.valueOrNull?.home != null && naviFeature.naviEnabled)
-      //   FilterItem(
-      //     title: context.l10n.home,
-      //     icon: "assets/icons/svg/quick_filters/ic_quick_home.svg",
-      //   ),
-      // if (favouritesState.valueOrNull?.work != null && naviFeature.naviEnabled)
-      //   FilterItem(
-      //     title: context.l10n.work,
-      //     icon: "assets/icons/svg/quick_filters/ic_quick_work.svg",
-      //   ),
+      FilterItem(
+        icon: "assets/icons/svg/quick_filters/ic_quick_bookmark.svg",
+      ),
+      if (favouritesState.valueOrNull?.home != null && naviFeature.naviEnabled)
+        FilterItem(
+          title: context.l10n.home,
+          icon: "assets/icons/svg/quick_filters/ic_quick_home.svg",
+        ),
+      if (favouritesState.valueOrNull?.work != null && naviFeature.naviEnabled)
+        FilterItem(
+          title: context.l10n.work,
+          icon: "assets/icons/svg/quick_filters/ic_quick_work.svg",
+        ),
     ];
 
     final customItems = customFilters ?? [];
@@ -77,34 +79,34 @@ class QuickFilters extends ConsumerWidget {
         } else
 
         /// favourite bookmark (navigate to favourites)
-        // if (index == customItems.length) {
-        //   onFavouritesBookmarkTap();
-        // } else
+        if (index == customItems.length) {
+          onFavouritesBookmarkTap();
+        } else
 
         /// favourites (home and work)
-        // if (index > customItems.length &&
-        //     index < favourites.length + customItems.length) {
-        //   final filter = favourites[index - customItems.length];
-        //   final FavouriteItem? point;
-        //   final home = favouritesState.valueOrNull?.home;
-        //   final work = favouritesState.valueOrNull?.work;
-        //   if (filter.title == context.l10n.home && home != null) {
-        //     point = home;
-        //   } else if (filter.title == context.l10n.work && work != null) {
-        //     point = work;
-        //   } else {
-        //     return;
-        //   }
+        if (index > customItems.length &&
+            index < favourites.length + customItems.length) {
+          final filter = favourites[index - customItems.length];
+          final FavouriteItem? point;
+          final home = favouritesState.valueOrNull?.home;
+          final work = favouritesState.valueOrNull?.work;
+          if (filter.title == context.l10n.home && home != null) {
+            point = home;
+          } else if (filter.title == context.l10n.work && work != null) {
+            point = work;
+          } else {
+            return;
+          }
 
-        //   RoutingRoutesRoute(
-        //     finishLabel: point.title,
-        //     finishLatitude: point.coordinates.latitude,
-        //     finishLongitude: point.coordinates.longitude,
-        //     startLabel: context.l10n.myLocation,
-        //     startLatitude: null,
-        //     startLongitude: null,
-        //   ).push(context);
-        // } else
+          RoutingRoutesRoute(
+            finishLabel: point.title,
+            finishLatitude: point.coordinates.latitude,
+            finishLongitude: point.coordinates.longitude,
+            startLabel: context.l10n.myLocation,
+            startLatitude: null,
+            startLongitude: null,
+          ).push(context);
+        } else
 
         /// all other filters
         if (index >= favourites.length + customItems.length) {

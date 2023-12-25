@@ -109,7 +109,7 @@ class _FavouriteRepository extends _$FavouriteRepository {
   @override
   Future<FavouritesState> build() async {
     mixpanel?.timeEvent("Favorites: build");
-    final dio = await ref.read(dGisNetworkProvider.future);
+    final dio = await ref.watch(dGisNetworkProvider.future);
     final raw = await dio.get('favourites');
     final response = proto.FavouritesResponse.fromBuffer(raw.data);
     mixpanel?.timeEvent("Favorites: build");
