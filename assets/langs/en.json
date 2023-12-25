@@ -104,7 +104,7 @@
 "damaged_cars1":"Damaged cars",
 "fee_calculator":"Fees Calculator",
 "general_inquiries":"General inquiries",
-"holy_quran":"Quran",
+"holy_quran":"Quran", 
 "issue_health_certificate":"Issuing a health certificate",
 "issue_trade_license":"Issuing a commercial license",
 "move_diseased":"Transporting and preparing deceased",
@@ -3589,7 +3589,7 @@
 
 "submit_objections":"Appeal Request", 
 "compliance_certificate":"Compliance Certificate", 
-
+ 
 "ekram_benf_transport":"Body Transportation", 
 "ekram_inquiry_burial_grave":"Cemetery Inquiry", 
 "ekram_inquiry_about_grave":"Grave Inquiry", 

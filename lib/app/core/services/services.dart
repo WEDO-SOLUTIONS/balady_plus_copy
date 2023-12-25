@@ -25,7 +25,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "requireLogin": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/prayerTimes"},
+      "action": {"type": "page", "value": RouteName.prayerTimes},
       "ar": {"title": "prayerTimes", "description": null},
       "en": {"title": "prayerTimes", "description": null}
     },

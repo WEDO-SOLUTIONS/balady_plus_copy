@@ -20,22 +20,22 @@ class RouteName {
   static const serviceCards = '/serviceCards';
 
   //? General Services
-  static const prayerTimes = '/prayerTimes';
+  static const prayerTimes = 'Prayer_Times_Page';
   static const qiblahCompass = '/qiblahCompass';
 
   //? Municipal Services
-  static const municipalAdvisor = '/municipal-advisor';
-  static const locationPage = '/location-page';
+  static const municipalAdvisor = 'Smart_Assistant_Page';
+  static const locationPage = 'Smart_Assistant_Location_Page';
 
   //! Setting
   static const personalInformation = '/personalInformation';
-  static const dashboard = '/dashboard';
+  static const dashboard = 'Dashboard_Page';
   static const notificationPage = '/notificationPage';
-  static const requests = '/requests';
-  static const invoices = '/invoices';
-  static const invoiceDetails = '/invoiceDetails';
-  static const licenses = '/licenses';
-  static const incRequestsPage = '/incRequestsPage';
+  static const requests = 'My_Requests_Page';
+  static const invoices = "My_Invoices_Page";
+  static const invoiceDetails = 'My_Invoices_Details_Page';
+  static const licenses = 'My_Licenses_Page';
+  static const incRequestsPage = 'Customer_Voice_Page';
   static const aboutBalady = '/aboutBalady';
   static const rateUs = '/rateUs';
   static const help = '/help';
@@ -43,11 +43,9 @@ class RouteName {
 
   // -------  Objections ---------
 
-  static const objections = '/objections';
-  static const objectableTransactions = '/objectableTransactionsPage';
-  static const createObjectionDetails = '/createObjectionDetails';
-  static const createViolationObjectionDetails =
-      '/createViolationObjectionDetails';
+  static const objections = 'Objections_Page';
+  static const objectableTransactions = 'Objectable_Transactions_Page';
+  static const createObjectionDetails = 'Objectable_Transaction_Create_Page';
 
   static const transactionDetailsPage = '/TransactionDetailsPage';
   static const objectionsDetailsPage = '/ObjectionsDetailsPage';
@@ -56,8 +54,8 @@ class RouteName {
   static const vdCameraPage = '/vdCameraPage';
   static const vdCreateVDDetailsPage = '/vdCreateVDDetailsPage';
   static const vdMapRoute = '/vdMapRoute';
-  static const vdGuestOtpScreen = '/vdGuestOtpScreen';
-  static const successRoute = '/successRoute';
+  static const vdGuestOtpScreen = 'SnapAndSend_OTP_Page';
+  static const successRoute = 'Success_Page';
 
   // -------  QR ---------
   static const qrFacilityRatingRoute = '/qrFacilityRatingRoute';
