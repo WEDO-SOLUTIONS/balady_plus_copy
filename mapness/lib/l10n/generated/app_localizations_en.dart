@@ -398,7 +398,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginToAccess => 'Login to access';
 
   @override
-  String get lookForUsefulPlacesCafesMallsForExampleMallNearby => 'Look for useful places, cafes, malls for example: Mall nearby';
+  String get lookForUsefulPlacesCafesMallsForExampleMallNearby => 'Look for places, landmarks and Points of Interests around you, like shopping malls, Restaurants, recreational centers, and more.';
 
   @override
   String get mallNearby => 'Mall nearby';
@@ -572,7 +572,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get poi_faisaliya_tower => 'Faisaliya\\nTower';
 
   @override
-  String get poi_kingdom_center => 'Kingdom\\nCenter';
+  String get poi_kingdom_center => 'Kingdom\nCenter';
 
   @override
   String get poi_masmak_fortress => 'Masmak\\nFortress';
@@ -884,5 +884,5 @@ class AppLocalizationsEn extends AppLocalizations {
   String get youReHere => 'You\'re here!';
 
   @override
-  String get youSearch => 'You search';
+  String get youSearch => 'ٍٍٍSearch';
 }

@@ -360,7 +360,7 @@ abstract class AppLocalizations {
   /// No description provided for @contactInformation.
   ///
   /// In ar, this message translates to:
-  /// **'اسم العائلة'**
+  /// **'معلومات التواصل'**
   String get contactInformation;
 
   /// No description provided for @continueRide.
@@ -882,7 +882,7 @@ abstract class AppLocalizations {
   /// No description provided for @lookForUsefulPlacesCafesMallsForExampleMallNearby.
   ///
   /// In ar, this message translates to:
-  /// **'ابحث عن الأماكن والمقاهي ومراكز التسوق المفيدة على سبيل المثال: مول قريب'**
+  /// **'ابحث عن الأماكن والمعالم ونقاط الإهتمام \n   حولك،من مراكز تسوق، مطاعم، وأماكن ترفيه وغيرها.'**
   String get lookForUsefulPlacesCafesMallsForExampleMallNearby;
 
   /// No description provided for @mallNearby.
@@ -1482,7 +1482,7 @@ abstract class AppLocalizations {
   /// No description provided for @shareChallengeWithUs.
   ///
   /// In ar, this message translates to:
-  /// **'شاركنا التحدي. ساهم في مكافحة التلوث البصري في مدينتك'**
+  /// **'شاركنا التحدي. ساهم في مكافحة التشوه البصري في مدينتك'**
   String get shareChallengeWithUs;
 
   /// No description provided for @shareFeedback.
