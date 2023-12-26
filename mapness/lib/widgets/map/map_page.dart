@@ -63,7 +63,8 @@ class _MapPageState extends ConsumerState<MapPage>
       key: ValueKey(_keyIndex),
       androidUseExpensive: true,
       onMapCreated: (DgisMapController controller) async {
-        controller.setCameraPosition(
+        await dgisController.onMapCreated(controller);
+        await controller.setCameraPosition(
           CameraPositionMessage(
             point: GeoPointMessage(
               latitude: 24.774265,
@@ -74,7 +75,6 @@ class _MapPageState extends ConsumerState<MapPage>
             bearing: 0,
           ),
         );
-        dgisController.onMapCreated(controller);
       },
     );
   }
