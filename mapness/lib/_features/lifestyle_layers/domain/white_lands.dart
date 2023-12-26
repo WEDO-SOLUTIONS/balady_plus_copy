@@ -1,6 +1,6 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
-
 
 List<WhiteLands> whiteLandsFromJson(List list) =>
     List<WhiteLands>.from(list.map((x) => WhiteLands.fromJson(x)));
@@ -19,7 +19,7 @@ class WhiteLands extends PointLayersData {
   final String? PARCELAREA;
   final String? CITYNAME;
   final String? PARCELNO;
-  final dynamic? PARCELLENGTH;
+  final dynamic PARCELLENGTH;
   final String? PHASE;
 
   WhiteLands({
@@ -41,6 +41,7 @@ class WhiteLands extends PointLayersData {
     this.PARCELNO,
     this.PARCELLENGTH,
   }) : super(
+          layerType: GISMapLayers.BSWhiteParcelS,
           id: id,
           name: name,
           description: description,
@@ -64,9 +65,5 @@ class WhiteLands extends PointLayersData {
       PARCELNO: json['attributes']["PARCELNO"] ?? '',
       PARCELLENGTH: json['attributes']["PARCELLENGTH"] ?? '',
       PHASE: json['attributes']['PHASE'],
-      /////////////////////////
-      paths: getList(json['geometry']["rings"])
-
-      // not tested yat
-      );
+      paths: getList(json['geometry']["rings"]));
 }

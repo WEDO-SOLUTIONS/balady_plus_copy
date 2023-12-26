@@ -111,18 +111,21 @@ enum GISMapLayers {
         "STREETWIDTH"
       ],
       outFieldsLong: [
-        "OBJECTID",
-        "PRIORITYAREA",
-        "STARTDATE",
-        "TARGETBUILDINGTYPE",
-        "STAGENO",
-        "AMANANAME",
-        "STREETNAME",
-        "MUNICIPALITYNAME",
-        "DISTRICTNAME",
-        "STREETTYPE",
-        "STREETWIDTH"
+        "*"
       ],
+      // outFieldsLong: [
+      //   "OBJECTID",
+      //   "PRIORITYAREA",
+      //   "STARTDATE",
+      //   "TARGETBUILDINGTYPE",
+      //   "STAGENO",
+      //   "AMANANAME",
+      //   "STREETNAME",
+      //   "MUNICIPALITYNAME",
+      //   "DISTRICTNAME",
+      //   "STREETTYPE",
+      //   "STREETWIDTH"
+      // ],
       resultRecordCount: 100),
 
   /*VDPriorityAreaRouteS(layerId: 8, outFieldsShort: [
@@ -162,18 +165,21 @@ enum GISMapLayers {
         "PHASE",
       ],
       outFieldsLong: [
-        "OBJECTID",
-        "AMANANAME",
-        "MUNNAME",
-        "PARCELCODE",
-        "STATUS",
-        "STREETNAME",
-        "PARCELAREA",
-        "CITYNAME",
-        "PARCELNO",
-        "PARCELLENGTH",
-        "PHASE",
+        "*"
       ],
+      // outFieldsLong: [
+      //   "OBJECTID",
+      //   "AMANANAME",
+      //   "MUNNAME",
+      //   "PARCELCODE",
+      //   "STATUS",
+      //   "STREETNAME",
+      //   "PARCELAREA",
+      //   "CITYNAME",
+      //   "PARCELNO",
+      //   "PARCELLENGTH",
+      //   "PHASE",
+      // ],
       resultRecordCount: 100),
 
   CadastralParcels(
