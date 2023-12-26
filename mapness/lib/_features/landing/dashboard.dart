@@ -55,9 +55,6 @@ class _DashboardState extends ConsumerState<Dashboard> {
           }
         });
       });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {});
-    });
   }
 
   @override
