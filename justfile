@@ -1,4 +1,4 @@
-prebuild: pubget build_pigeon codegen
+prebuild: pubget locale_gen build_pigeon codegen
   
 pubget:
   #!/bin/bash
@@ -16,6 +16,7 @@ locale_gen:
 
   localazy download
   cd mapness
+  mkdir -p lib/l10n
   fvm flutter gen-l10n # --arb-dir=lib/src/l10n/ --template-arb-file=intl_ru.arb --output-localization-file=generated/ --output-class=AppLocalization --output-dir=lib/src/l10n/generated/app_localizations --no-synthetic-package
 
 
@@ -54,7 +55,7 @@ protoc:
   protoc protocol.proto --dart_out=lib/_generated/protocol
 
 
-apk-release version: locale_gen prebuild
+apk-release version: prebuild
   #!/usr/bin/env bash
   set -euo pipefail
 
