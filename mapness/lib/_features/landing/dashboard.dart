@@ -11,6 +11,7 @@ import 'package:mapness/_features/landing/widgets/events_home_card_wrapper.dart'
 // import 'package:mapness/_features/landing/widgets/jobs_around_card.dart';
 import 'package:mapness/_features/landing/widgets/snap_and_send_card.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/_features/stories/stories.dart';
 import 'package:mapness/_features/stories/stories_widget.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -121,97 +122,106 @@ class _DashboardState extends ConsumerState<Dashboard> {
 
     final direction = ref.watch(uiDirectionProvider);
 
-    return DraggableScrollableSheet(
-      controller: _draggableScrollableController,
-      initialChildSize: .75,
-      minChildSize: _headerExtent,
-      maxChildSize: .9,
-      snap: true,
-      snapSizes: [_headerExtent, .75, .9],
-      builder: (BuildContext context, ScrollController scrollController) {
-        return Directionality(
-          textDirection: direction,
-          child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(16.0),
-              topLeft: Radius.circular(16.0),
-            ),
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(16.0),
-                  topLeft: Radius.circular(16.0),
+    return WillPopScope(
+      onWillPop: () async {
+        if (Stories.isShowing) {
+          Stories.hide();
+          return false;
+        }
+        return true;
+      },
+      child: DraggableScrollableSheet(
+        controller: _draggableScrollableController,
+        initialChildSize: .75,
+        minChildSize: _headerExtent,
+        maxChildSize: .9,
+        snap: true,
+        snapSizes: [_headerExtent, .75, .9],
+        builder: (BuildContext context, ScrollController scrollController) {
+          return Directionality(
+            textDirection: direction,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(16.0),
+                topLeft: Radius.circular(16.0),
+              ),
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(16.0),
+                    topLeft: Radius.circular(16.0),
+                  ),
+                ),
+                child: CustomScrollView(
+                  controller: scrollController,
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  physics: const ClampingScrollPhysics(),
+                  slivers: [
+                    SliverPersistentHeader(
+                      delegate: DashboardHeaderDelegate(
+                        draggableScrollableController:
+                            _draggableScrollableController,
+                      ),
+                      pinned: true,
+                    ),
+                    SliverList.list(
+                      children: [
+                        Container(
+                          color: const Color(0xFFF1F4F8),
+                          padding: const EdgeInsets.only(
+                            top: 16.0,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const DashboardProfile(),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const StoriesWidget(),
+                              _buildInterestingPlacesCards(),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const SnapAndSendCard(),
+                              const ComplianceCard(),
+                              _buildShoppingMallsCards(),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              EventsHomeCardWrapper(
+                                key: ValueKey(
+                                    'events_home_card_wrapper_${direction.name}'),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              // const JobsAroundCard(),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const PrayerHomeCard(),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const CalendarHomeCard(),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              child: CustomScrollView(
-                controller: scrollController,
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                physics: const ClampingScrollPhysics(),
-                slivers: [
-                  SliverPersistentHeader(
-                    delegate: DashboardHeaderDelegate(
-                      draggableScrollableController:
-                          _draggableScrollableController,
-                    ),
-                    pinned: true,
-                  ),
-                  SliverList.list(
-                    children: [
-                      Container(
-                        color: const Color(0xFFF1F4F8),
-                        padding: const EdgeInsets.only(
-                          top: 16.0,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const DashboardProfile(),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            const StoriesWidget(),
-                            _buildInterestingPlacesCards(),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            const SnapAndSendCard(),
-                            const ComplianceCard(),
-                            _buildShoppingMallsCards(),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            EventsHomeCardWrapper(
-                              key: ValueKey(
-                                  'events_home_card_wrapper_${direction.name}'),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            // const JobsAroundCard(),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            const PrayerHomeCard(),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            const CalendarHomeCard(),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
