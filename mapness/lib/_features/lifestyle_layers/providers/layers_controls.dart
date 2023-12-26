@@ -80,8 +80,8 @@ class LayersControls extends _$LayersControls {
       viewPortSubscription?.cancel();
 
       switch (value) {
-        case LayerType.favourites:
-          toggleFavourites(currentState);
+        // case LayerType.favourites:
+        //   toggleFavourites(currentState);
         case LayerType.buildings:
           toggleComplianceBuildings();
         case LayerType.invest:
@@ -101,18 +101,18 @@ class LayersControls extends _$LayersControls {
     );
   }
 
-  Future<void> toggleFavourites(LayerType? currentState) async {
-    viewPortSubscription?.cancel();
-    await _removeAll();
-    cancelToken?.cancel();
-    if (currentState == (LayerType.favourites)) {
-      await ref.read(favouriteToggleProvider.notifier).disable();
-      setSelection(selectedType: null);
-    } else {
-      await ref.read(favouriteToggleProvider.notifier).enable();
-      setSelection(selectedType: LayerType.favourites);
-    }
-  }
+  // Future<void> toggleFavourites(LayerType? currentState) async {
+  //   viewPortSubscription?.cancel();
+  //   await _removeAll();
+  //   cancelToken?.cancel();
+  //   if (currentState == (LayerType.favourites)) {
+  //     await ref.read(favouriteToggleProvider.notifier).disable();
+  //     setSelection(selectedType: null);
+  //   } else {
+  //     await ref.read(favouriteToggleProvider.notifier).enable();
+  //     setSelection(selectedType: LayerType.favourites);
+  //   }
+  // }
 
   void update({
     bool? visible,
