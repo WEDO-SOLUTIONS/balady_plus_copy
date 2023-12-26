@@ -4,7 +4,6 @@ import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_repository.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/investment_sites.dart';
@@ -58,7 +57,7 @@ class LayersState {
   });
 }
 
-const duration = const Duration(milliseconds: 1000);
+const duration = Duration(milliseconds: 1000);
 
 @riverpod
 class LayersControls extends _$LayersControls {
@@ -162,17 +161,15 @@ class LayersControls extends _$LayersControls {
   void handleTap(LayerType value) => tapSubject.add(value);
 
   Future<void> toggleIwish(LayerType? currentState, LayerType value) async {
-    var layersControls = ref.watch(layersControlsProvider.notifier);
+    var layers = ref.watch(layersControlsProvider.notifier);
     viewPortSubscription?.cancel();
 
     if (currentState == LayerType.joy) {
       await ref
           .read(mapObjectManagerProvider(named: mapLayerName).notifier)
           .removeAllMarkers();
-      layersControls.setSelection(selectedType: null);
-      layersControls.update(
-        isLoading: false,
-      );
+      layers.setSelection(selectedType: null);
+      layers.update(isLoading: false);
     } else {
       setSelection(selectedType: LayerType.joy);
       showIwish();
@@ -424,17 +421,28 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> showIwish() async {
-    update(
-      isLoading: true,
-    );
+    update(isLoading: true);
     await _removeAll();
-    final markers = await ref.read(iwishMarkersProvider.future);
+    const duration = Duration(seconds: 10);
+    final markers = await (ref.read(iwishMarkersProvider.future))
+        .onError((error, stackTrace) {
+      onError();
+      return [];
+    }).timeout(duration, onTimeout: () {
+      onError();
+      return [];
+    });
     await ref
         .read(mapObjectManagerProvider(named: mapLayerName).notifier)
-        .addMarkers(markers);
-    update(
-      isLoading: false,
-    );
+        .addMarkers(markers)
+        .onError((error, stackTrace) => onError())
+        .timeout(duration, onTimeout: () => onError());
+    update(isLoading: false);
+  }
+
+  void onError() {
+    setSelection(selectedType: null);
+    update(isLoading: false);
   }
 
   void _showEsriCard(PointLayersData e) {
