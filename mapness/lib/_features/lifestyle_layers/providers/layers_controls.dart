@@ -46,18 +46,21 @@ class LayersState {
   final LayerType? selectedType;
   final bool isLoading;
 
-  List<Marker>? investmentsMarkers;
-  List<Polyline>? polylines;
+  Map<String, Marker> investmentsMarkers = {};
+  Map<String, Polyline> polylines = {};
+  Map<String, Polygon> polygons = {};
 
   LayersState({
     required this.isLoading,
     required this.layersVisible,
     required this.selectedType,
     required this.investmentsMarkers,
+    required this.polylines,
+    required this.polygons,
   });
 }
 
-const duration = Duration(milliseconds: 1000);
+const duration = Duration(milliseconds: 700);
 
 @riverpod
 class LayersControls extends _$LayersControls {
@@ -96,7 +99,9 @@ class LayersControls extends _$LayersControls {
       layersVisible: false,
       selectedType: null,
       isLoading: false,
-      investmentsMarkers: [],
+      investmentsMarkers: {},
+      polygons: {},
+      polylines: {},
     );
   }
 
@@ -115,15 +120,18 @@ class LayersControls extends _$LayersControls {
 
   void update({
     bool? visible,
-    // LayerType? selectedType,
     bool? isLoading,
-    List<Marker>? investmentsMarkers,
+    Map<String, Marker>? investmentsMarkers,
+    Map<String, Polyline>? polylines,
+    Map<String, Polygon>? polygons,
   }) {
     state = LayersState(
       investmentsMarkers: investmentsMarkers ?? state.investmentsMarkers,
       layersVisible: visible ?? state.layersVisible,
       selectedType: state.selectedType,
       isLoading: isLoading ?? state.isLoading,
+      polygons: polygons ?? state.polygons,
+      polylines: polylines ?? state.polylines,
     );
   }
 
@@ -135,6 +143,8 @@ class LayersControls extends _$LayersControls {
       layersVisible: state.layersVisible,
       selectedType: selectedType,
       isLoading: state.isLoading,
+      polygons: state.polygons,
+      polylines: state.polylines,
     );
   }
 
@@ -186,9 +196,7 @@ class LayersControls extends _$LayersControls {
       viewPortSubscription?.cancel();
       await _removeAll();
       setSelection(selectedType: null);
-      update(
-        isLoading: false,
-      );
+      update(isLoading: false);
     }
   }
 
@@ -266,6 +274,13 @@ class LayersControls extends _$LayersControls {
         update(isLoading: false);
         // await mapController.removeAllMarkers();
         if (state.selectedType == LayerType.invest) {
+          var stateMarkers = state.investmentsMarkers;
+          markers.retainWhere((e) => !stateMarkers.containsKey(e.id));
+          for (var element in markers) {
+            stateMarkers[element.id] = element;
+          }
+          update(investmentsMarkers: stateMarkers);
+
           await map.addMarkers(markers);
         }
       },
@@ -304,11 +319,18 @@ class LayersControls extends _$LayersControls {
               cancelToken,
             ))
         .map(_makePolygons)
-        .listen((polygons) async {
+        .listen((data) async {
       update(isLoading: false);
-      await mapManager.removeAllPolygons();
+      // await mapManager.removeAllPolygons();
       if (state.selectedType == LayerType.fencing) {
-        await mapManager.addPolygons(polygons);
+        var statePolygons = state.polygons;
+        data.retainWhere((e) => !statePolygons.containsKey(e.id));
+        for (var element in data) {
+          statePolygons[element.id] = element;
+        }
+        update(polygons: statePolygons);
+
+        await mapManager.addPolygons(data);
       }
     });
   }
@@ -334,9 +356,16 @@ class LayersControls extends _$LayersControls {
         .listen(
       (data) async {
         update(isLoading: false);
-        await mapObjectManager.removeAllPolyLines();
+        // await mapObjectManager.removeAllPolyLines();
         if (state.selectedType == LayerType.buildings) {
-          await mapObjectManager.addPolyLines(_makePolylineWithPoint(data));
+          var polylineList = _makePolylineWithPoint(data);
+          var statePolylines = state.polylines;
+          polylineList.retainWhere((e) => !statePolylines.containsKey(e.id));
+          for (var element in polylineList) {
+            statePolylines[element.id] = element;
+          }
+          update(polylines: statePolylines);
+          await mapObjectManager.addPolyLines(polylineList);
         }
       },
     );
@@ -451,6 +480,7 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> _removeAll() async {
+    update(polylines: {}, polygons: {}, investmentsMarkers: {});
     final map =
         ref.read(mapObjectManagerProvider(named: mapLayerName).notifier);
     await map.removeAllMarkers();

@@ -82,7 +82,8 @@ class MapRequestParams {
     return {
       "outFields": (layer != null && pointsDetails == true)
           ? layer?.outFieldsLong.join(",")
-          : "OBJECTID,STATUS",
+          : layer?.outFieldsShort.join(","),
+          // : "OBJECTID,STATUS",
       // "where": "1=1",
       "f": "json",
       "geometryType": "esriGeometryEnvelope",
