@@ -13,11 +13,9 @@ import 'package:mapness/_features/landing/widgets/snap_and_send_card.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/stories/stories.dart';
 import 'package:mapness/_features/stories/stories_widget.dart';
-import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-import 'providers/interesting_places.dart';
-import 'widgets/places_horizontal_list.dart';
+import 'widgets/interesting_places_cards.dart';
+import 'widgets/shopping_malls_cards.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({
@@ -62,41 +60,6 @@ class _DashboardState extends ConsumerState<Dashboard> {
   void dispose() {
     _draggableScrollableController.dispose();
     super.dispose();
-  }
-
-  Widget _buildInterestingPlacesCards() {
-    return Consumer(
-      builder: (context, ref, child) {
-        final places = ref.watch(interestingPlacesProvider).where((e) {
-          return e.tags.contains(
-            proto
-                .InterestingPlaceTag.INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL,
-          );
-        }).toList();
-
-        return PlacesHorizontalList(
-          title: context.l10n.placesToVisit,
-          places: places,
-        );
-      },
-    );
-  }
-
-  Widget _buildShoppingMallsCards() {
-    return Consumer(
-      builder: (context, ref, child) {
-        final places = ref.watch(interestingPlacesProvider).where((e) {
-          return e.tags.contains(
-            proto.InterestingPlaceTag.INTERESTING_PLACE_CATEGORY_FLOORS,
-          );
-        }).toList();
-
-        return PlacesHorizontalList(
-          title: context.l10n.placesToShop,
-          places: places,
-        );
-      },
-    );
   }
 
   @override
@@ -181,13 +144,13 @@ class _DashboardState extends ConsumerState<Dashboard> {
                                 height: 20,
                               ),
                               const StoriesWidget(),
-                              _buildInterestingPlacesCards(),
+                              const InterestingPlacesCardsList(),
                               const SizedBox(
                                 height: 20,
                               ),
                               const SnapAndSendCard(),
                               const ComplianceCard(),
-                              _buildShoppingMallsCards(),
+                              const ShoppingMallsCardsList(),
                               const SizedBox(
                                 height: 20,
                               ),
