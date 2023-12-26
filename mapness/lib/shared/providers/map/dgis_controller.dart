@@ -18,8 +18,7 @@ GeoRectMessage saRect = GeoRectMessage(
   southWest: GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
 );
 
-// @Riverpod(keepAlive: true)
-@riverpod
+@Riverpod(keepAlive: true)
 class DgisController extends _$DgisController {
   CameraPositionMessage? _lastCameraPosition;
 
