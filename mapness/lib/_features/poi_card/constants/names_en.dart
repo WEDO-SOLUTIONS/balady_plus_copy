@@ -1,5 +1,4 @@
 const namesEn = {
-  70030076486430785: "Rijal Alma'a",
   70030076695941558: "Boulevard World",
   70030076527675534: "Jeddah Historical Gate",
   70030076255291035: "Holly Mosque (Masjid al-Haram)",

@@ -86,6 +86,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get chooseTheLanguageOfAll => 'إختر لغة واجهات التطبيق';
 
   @override
+  String get circulation => 'مسارات الحركة والوصول الشامل';
+
+  @override
   String get clean => 'مسح';
 
   @override
@@ -197,6 +200,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get droneView => 'عرض بانورامي';
 
   @override
+  String get dustbins => 'سلة المهملات';
+
+  @override
   String get edit => 'تعديل';
 
   @override
@@ -270,6 +276,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get goodMorning => 'صباح الخير';
+
+  @override
+  String get green_spaces => 'المسطحات الخضراء';
 
   @override
   String get helpCenter => 'مركز المساعدة';
@@ -384,6 +393,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get legendComplienceBuildingTitle => 'حالات تسوير الأراضي';
+
+  @override
+  String get lighting => 'أنظمة الانارة';
 
   @override
   String get lightning => 'الاضاءة';
@@ -695,6 +707,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settings => 'الإعدادات';
 
   @override
+  String get shaded_area => 'المساحات المظللة';
+
+  @override
   String get share => 'مشاركة';
 
   @override
@@ -732,6 +747,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get signInToUnlockTheFullPotentialOfTheBaladyApp => 'قم بتسجيل الدخول لفتح الإمكانيات الكاملة لتطبيق بلدي';
+
+  @override
+  String get signage => 'اللافتات الارشادية';
+
+  @override
+  String get sitting_area => 'مقاعد الجلوس';
 
   @override
   String get skills => 'المهارات';
@@ -846,6 +867,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get watchMore => 'مشاهدة المزيد';
+
+  @override
+  String get wc => 'دورات المياه';
 
   @override
   String get weAreHappyToConnectYouWithBaladyTeam => 'تم تطوير تطبيق بلدي بالتعاون مع جهات القطاع البلدي المختلفة لتكون البوابة الوطنية الداعمة للمجتمع البلدي ويشمل هذا التطبيق في المرحلة الحالية أربعة محاور رئيسية وهى التركيز على خدمات لايف ستايل والمتطلبات اليومية للمستخدمين، الخدمات التفاعلية التي تساعد في تعزيز مفهوم الشراكة المجتمعية لتحسين جودة الخدمات المقدمة للمستفيدين،  الخدمات الإلكترونية التي تساعد على تقديم الطلبات الإلكترونية لاستخراج الرخص الأكثر استخدامًا إضافة إلى الخدمات المعلوماتية والتي تساعد المستفيدين على اتخاذ القرارات ذات العلاقة بما يساهم في تحسين مستوى الرضا عن جهات القطاع البلدي.';
