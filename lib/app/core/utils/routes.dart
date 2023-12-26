@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/chatbot/presentation/pages/chatbot_screen.dart';
 import 'package:balady_plus/app/features/comercial_license_renew/presentation/commercial_license/screens/submit_application_successfully_renew.dart';
 import 'package:balady_plus/app/features/comercial_license_renew/renew_commercial_license_exports.dart'
     show RenewStartService, RenewCommercialLicenseScreen;
@@ -739,6 +740,9 @@ class Routes {
 
         RouteName.SpecificServicePage: (context) => const AllServicesPage(),
         RouteName.jodDonationPage: (context) => const JodDonationPage(),
+
+    RouteName.chatbot: (context) => const ChatBotScreen(),
+
       };
 }
 
