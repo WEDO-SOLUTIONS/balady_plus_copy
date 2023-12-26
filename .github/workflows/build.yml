@@ -119,7 +119,7 @@ jobs:
         run: |
           cd mapness
           mkdir -p lib/l10n/generated
-          chmod -R +rw lib/l10n
+          chmod -R 777 lib/l10n
           flutter gen-l10n
 
       - name: 🤖🔨 Build Android app
