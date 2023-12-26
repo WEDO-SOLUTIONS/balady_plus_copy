@@ -21,6 +21,12 @@ class Stories {
     _transitionState.currentState?.dismiss();
   }
 
+  static get isShowing => _overlayEntry != null;
+
+  static void hide() {
+    _hide();
+  }
+
   static void _hide() {
     _overlayEntry?.remove();
     _overlayEntry = null;
