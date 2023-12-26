@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/common/providers/permissions.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
-import 'package:mapness/_features/common/providers/permissions.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
