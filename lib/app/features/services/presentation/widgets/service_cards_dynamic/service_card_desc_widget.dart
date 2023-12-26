@@ -152,7 +152,7 @@ class ServiceCardDescWidget extends StatelessWidget {
                                           child: Column(
                                             children: [
                                               Text(
-                                                '${viewModel.servicesCardsDetails!.fieldTimeFrom ?? ''}-${viewModel.servicesCardsDetails!.fieldTimeTo ?? ''}',
+                                                '${viewModel.servicesCardsDetails!.fieldTimeFrom ?? ''} - ${viewModel.servicesCardsDetails!.fieldTimeTo ?? ''}',
                                                 style: AppStyle.eventsDayStyle
                                                     .copyWith(
                                                   color: Colors.white,
@@ -169,6 +169,7 @@ class ServiceCardDescWidget extends StatelessWidget {
                                                 ),
                                               ),
                                             ],
+                                            crossAxisAlignment: ,
                                           ),
                                         ),
                                       ),
