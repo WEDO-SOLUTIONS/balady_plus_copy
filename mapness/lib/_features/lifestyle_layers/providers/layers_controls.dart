@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_repository.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/investment_sites.dart';
@@ -79,14 +80,8 @@ class LayersControls extends _$LayersControls {
       viewPortSubscription?.cancel();
 
       switch (value) {
-        // case LayerType.favourites:
-        //   if (currentState == (LayerType.favourites)) {
-        //     await ref.read(favouriteToggleProvider.notifier).disable();
-        //   } else {
-        //     await ref.read(favouriteToggleProvider.notifier).enable();
-        //   }
-        // // _toggleSelected(value);
-
+        case LayerType.favourites:
+          toggleFavourites(currentState);
         case LayerType.buildings:
           toggleComplianceBuildings();
         case LayerType.invest:
@@ -104,6 +99,19 @@ class LayersControls extends _$LayersControls {
       isLoading: false,
       investmentsMarkers: [],
     );
+  }
+
+  Future<void> toggleFavourites(LayerType? currentState) async {
+    viewPortSubscription?.cancel();
+    await _removeAll();
+    cancelToken?.cancel();
+    if (currentState == (LayerType.favourites)) {
+      await ref.read(favouriteToggleProvider.notifier).disable();
+      setSelection(selectedType: null);
+    } else {
+      await ref.read(favouriteToggleProvider.notifier).enable();
+      setSelection(selectedType: LayerType.favourites);
+    }
   }
 
   void update({
