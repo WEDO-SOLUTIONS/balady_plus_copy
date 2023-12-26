@@ -137,7 +137,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get connectionLost => 'فقد الاتصال';
 
   @override
-  String get contactInformation => 'اسم العائلة';
+  String get contactInformation => 'معلومات التواصل';
 
   @override
   String get continueRide => 'متابعة الرحلة';
@@ -398,7 +398,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loginToAccess => 'تسجيل الدخول';
 
   @override
-  String get lookForUsefulPlacesCafesMallsForExampleMallNearby => 'ابحث عن الأماكن والمقاهي ومراكز التسوق المفيدة على سبيل المثال: مول قريب';
+  String get lookForUsefulPlacesCafesMallsForExampleMallNearby => 'ابحث عن الأماكن والمعالم ونقاط الإهتمام \n   حولك،من مراكز تسوق، مطاعم، وأماكن ترفيه وغيرها.';
 
   @override
   String get mallNearby => 'مركز تجاري قريب';
@@ -698,7 +698,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get share => 'مشاركة';
 
   @override
-  String get shareChallengeWithUs => 'شاركنا التحدي. ساهم في مكافحة التلوث البصري في مدينتك';
+  String get shareChallengeWithUs => 'شاركنا التحدي. ساهم في مكافحة التشوه البصري في مدينتك';
 
   @override
   String get shareFeedback => 'مشاركة الملاحظات';

@@ -15,7 +15,7 @@ class StoriesRepo extends _$StoriesRepo {
 
   @override
   Future<StoriesResponse> build() async {
-    final dio = await ref.read(dGisNetworkProvider.future);
+    final dio = await ref.watch(dGisNetworkProvider.future);
 
     ref.listen(
       mapViewportChangesProvider,
