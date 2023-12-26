@@ -169,7 +169,6 @@ class ServiceCardDescWidget extends StatelessWidget {
                                                 ),
                                               ),
                                             ],
-                                            crossAxisAlignment: ,
                                           ),
                                         ),
                                       ),
