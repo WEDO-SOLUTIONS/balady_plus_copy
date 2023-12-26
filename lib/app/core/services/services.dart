@@ -562,7 +562,7 @@ Map<String, dynamic> servicesConfig = {
   "help_services": [
     {
       "id": 401,
-      "icon": "municipal_advisor",
+      "icon": "chat_bot",
       "3d_icon": null,
       "order": 13,
       "isNew": false,
