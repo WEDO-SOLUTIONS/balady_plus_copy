@@ -1,9 +1,10 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/need_login_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
-import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/loading_list_widget.dart';
 import 'package:balady_plus/app/features/tobacco_services/data/data_sources/remote_data_source.dart';
 import 'package:balady_plus/app/features/tobacco_services/data/repositories/repository_implementation.dart';
 import 'package:balady_plus/app/features/tobacco_services/presentation/tobacco_list/mvvm/tobacco_list_view_model.dart';
@@ -22,12 +23,10 @@ class TobaccoListPage extends StatefulWidget {
 class _TobaccoListPageState extends State<TobaccoListPage> {
   late TobaccoListViewModel provider;
 
-  // final _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    // _scrollController.addListener(_onScroll);
     provider = TobaccoListViewModel(
       TobaccoListRepositoryImplementation(
         remoteDataSource: TobaccoListRemoteDataSourceImplementation(
@@ -35,11 +34,9 @@ class _TobaccoListPageState extends State<TobaccoListPage> {
         ),
       ),
     );
+    CommonFunctions.sendUXCamEvent(UXCamEvents.openFacilityListScreen);
   }
 
-  // void _onScroll() {
-  //   provider.getUserFacilities();
-  // }
 
   @override
   Widget build(BuildContext context) {

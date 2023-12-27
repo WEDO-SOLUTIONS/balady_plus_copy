@@ -3594,9 +3594,12 @@
 "ekram_inquiry_burial_grave":"Cemetery Inquiry", 
 "ekram_inquiry_about_grave":"Grave Inquiry", 
 "ekram_inquiry_orgnizations":"Funeral Service Inquiry", 
-"ekram_print_certificate":"Print Burial Certificate", 
-"jod":"Donate", 
-"issue_commerical_license":"Commercial License", 
+"ekram_print_certificate":"Print Burial Certificate",
+
+
+  "jod":"Donate",
+"donate": "Donate",
+  "issue_commerical_license":"Commercial License",
 "multiple_permits":"Multiple Permits", 
 "tobaccoServices":"Tobacco Disclosure", 
 "ekram_empolyee_title":"Funeral Car Driver", 
