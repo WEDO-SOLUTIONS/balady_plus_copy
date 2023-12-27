@@ -20,9 +20,9 @@ GeoRectMessage saRect = GeoRectMessage(
 
 @Riverpod(keepAlive: true)
 class DgisController extends _$DgisController {
-  CameraPositionMessage? _lastCameraPosition;
+  // CameraPositionMessage? _lastCameraPosition;
 
-  CameraPositionMessage? _lastRectPosition;
+  // CameraPositionMessage? _lastRectPosition;
 
   late Completer<DgisMapController> _completer;
 
@@ -89,17 +89,17 @@ class DgisController extends _$DgisController {
       );
     }
 
-    final visibleRectSubscription =
-        controller.visibleRectEvents.listen(_visibleRectListener);
-    final cameraPositionSubscription =
-        controller.cameraPositionEvents.listen(_cameraPositionListener);
+    // final visibleRectSubscription =
+    //     controller.visibleRectEvents.listen(_visibleRectListener);
+    // final cameraPositionSubscription =
+    //     controller.cameraPositionEvents.listen(_cameraPositionListener);
+    // ref.onDispose(
+    //   () {
+    //     visibleRectSubscription.cancel();
+    //     cameraPositionSubscription.cancel();
+    //   },
+    // );
 
-    ref.onDispose(
-      () {
-        visibleRectSubscription.cancel();
-        cameraPositionSubscription.cancel();
-      },
-    );
     await controller.setZoomRestrictions(min: 5.5);
     Future.delayed(
       const Duration(milliseconds: 100),
@@ -121,25 +121,25 @@ class DgisController extends _$DgisController {
     controller.installVoice("voice-jennifer");
   }
 
-  void _visibleRectListener(VisibleRectEvent event) async {
-    if ((!await state.value!
-        .containsRect(saRect, event.visibleRect.geoRectMessage()))) {
-      if (_lastRectPosition != null) {
-        await state.value!.setCameraPosition(_lastRectPosition!);
-      }
-    } else {
-      _lastRectPosition = _lastCameraPosition;
-    }
+  // void _visibleRectListener(VisibleRectEvent event) async {
+  //   if ((!await state.value!
+  //       .containsRect(saRect, event.visibleRect.geoRectMessage()))) {
+  //     if (_lastRectPosition != null) {
+  //       await state.value!.setCameraPosition(_lastRectPosition!);
+  //     }
+  //   } else {
+  //     _lastRectPosition = _lastCameraPosition;
+  //   }
 
-    if (!_visibleRectStream.isClosed) {
-      _visibleRectStream.sink.add(event);
-    }
-    if (!visibleRectSubject.isClosed) {
-      visibleRectSubject.add(event);
-    }
-  }
+  //   if (!_visibleRectStream.isClosed) {
+  //     _visibleRectStream.sink.add(event);
+  //   }
+  //   if (!visibleRectSubject.isClosed) {
+  //     visibleRectSubject.add(event);
+  //   }
+  // }
 
-  void _cameraPositionListener(CameraPositionMessage event) async {
-    _lastCameraPosition = event;
-  }
+  // void _cameraPositionListener(CameraPositionMessage event) async {
+  //   _lastCameraPosition = event;
+  // }
 }
