@@ -52,7 +52,7 @@ class _SendMessageCardChatBotState extends State<SendMessageCardChatBot> {
                           horizontal: 16,
                           vertical: 10,
                         ),
-                        hintText: 'chat_cot_hint'.tr(),
+                        hintText: 'chat_bot_hint'.tr(),
                         fillColor: AppColor.blackModern100Light,
                         filled: true,
                         border: BorderType.outline.inputBorder(
