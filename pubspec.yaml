@@ -159,7 +159,7 @@ dependencies:
   firebase_core: ^2.24.0
   firebase_messaging:
   firebase_analytics:
-  flutter_uxcam: ^2.4.3
+  flutter_uxcam: ^2.4.7
   card_swiper: ^3.0.1
   carousel_slider: ^4.2.1
   add_2_calendar: ^2.1.2
