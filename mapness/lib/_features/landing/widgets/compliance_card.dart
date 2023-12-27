@@ -160,108 +160,102 @@ class ComplianceCard extends ConsumerWidget {
                       ),
                     ),
                     const Spacer(),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(
-                          sigmaY: 7.5,
-                          sigmaX: 7.5,
-                        ),
-                        child: Container(
-                          color: Colors.white.withOpacity(0.8),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 6,
-                            horizontal: 12,
-                          ),
-                          child: RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: context.l10n.complianceToKnow,
-                                  style: Theme.of(context)
-                                      .extension<ThemeTextStyles>()
-                                      ?.textS
-                                      .copyWith(
-                                        color: const Color(0xFF4CA5B4)
-                                            .withOpacity(0.7),
-                                        fontSize: 11,
-                                      ),
-                                ),
-                                TextSpan(
-                                  text: " ",
-                                  style: Theme.of(context)
-                                      .extension<ThemeTextStyles>()
-                                      ?.textS
-                                      .copyWith(
-                                        color: const Color(0xFF4CA5B4)
-                                            .withOpacity(0.7),
-                                        fontSize: 11,
-                                      ),
-                                ),
-                                TextSpan(
-                                  text: context.l10n.complianceFAQ,
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      CommonFunctions.openComplianceFaq();
-                                    },
-                                  style: Theme.of(context)
-                                      .extension<ThemeTextStyles>()
-                                      ?.textS
-                                      .copyWith(
-                                        color: const Color(0xFF4CA5B4),
-                                        fontSize: 12,
-                                      ),
-                                ),
-                                TextSpan(
-                                  text: " ",
-                                  style: Theme.of(context)
-                                      .extension<ThemeTextStyles>()
-                                      ?.textS
-                                      .copyWith(
-                                        color: const Color(0xFF4CA5B4)
-                                            .withOpacity(0.7),
-                                        fontSize: 11,
-                                      ),
-                                ),
-                                TextSpan(
-                                  text: context.l10n.complianceOr,
-                                  style: Theme.of(context)
-                                      .extension<ThemeTextStyles>()
-                                      ?.textS
-                                      .copyWith(
-                                        color: const Color(0xFF4CA5B4)
-                                            .withOpacity(0.7),
-                                        fontSize: 11,
-                                      ),
-                                ),
-                                TextSpan(
-                                  text: " ",
-                                  style: Theme.of(context)
-                                      .extension<ThemeTextStyles>()
-                                      ?.textS
-                                      .copyWith(
-                                        color: const Color(0xFF4CA5B4)
-                                            .withOpacity(0.7),
-                                        fontSize: 11,
-                                      ),
-                                ),
-                                TextSpan(
-                                  text: context.l10n.complianceRequirements,
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      CommonFunctions.openComplianceTerms();
-                                    },
-                                  style: Theme.of(context)
-                                      .extension<ThemeTextStyles>()
-                                      ?.textS
-                                      .copyWith(
-                                        color: const Color(0xFF4CA5B4),
-                                        fontSize: 12,
-                                      ),
-                                ),
-                              ],
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 6,
+                        horizontal: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.8),
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: context.l10n.complianceToKnow,
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()
+                                  ?.textS
+                                  .copyWith(
+                                    color: const Color(0xFF4CA5B4)
+                                        .withOpacity(0.7),
+                                    fontSize: 11,
+                                  ),
                             ),
-                          ),
+                            TextSpan(
+                              text: " ",
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()
+                                  ?.textS
+                                  .copyWith(
+                                    color: const Color(0xFF4CA5B4)
+                                        .withOpacity(0.7),
+                                    fontSize: 11,
+                                  ),
+                            ),
+                            TextSpan(
+                              text: context.l10n.complianceFAQ,
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  CommonFunctions.openComplianceFaq();
+                                },
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()
+                                  ?.textS
+                                  .copyWith(
+                                    color: const Color(0xFF4CA5B4),
+                                    fontSize: 12,
+                                  ),
+                            ),
+                            TextSpan(
+                              text: " ",
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()
+                                  ?.textS
+                                  .copyWith(
+                                    color: const Color(0xFF4CA5B4)
+                                        .withOpacity(0.7),
+                                    fontSize: 11,
+                                  ),
+                            ),
+                            TextSpan(
+                              text: context.l10n.complianceOr,
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()
+                                  ?.textS
+                                  .copyWith(
+                                    color: const Color(0xFF4CA5B4)
+                                        .withOpacity(0.7),
+                                    fontSize: 11,
+                                  ),
+                            ),
+                            TextSpan(
+                              text: " ",
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()
+                                  ?.textS
+                                  .copyWith(
+                                    color: const Color(0xFF4CA5B4)
+                                        .withOpacity(0.7),
+                                    fontSize: 11,
+                                  ),
+                            ),
+                            TextSpan(
+                              text: context.l10n.complianceRequirements,
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  CommonFunctions.openComplianceTerms();
+                                },
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()
+                                  ?.textS
+                                  .copyWith(
+                                    color: const Color(0xFF4CA5B4),
+                                    fontSize: 12,
+                                  ),
+                            ),
+                          ],
                         ),
                       ),
                     ),

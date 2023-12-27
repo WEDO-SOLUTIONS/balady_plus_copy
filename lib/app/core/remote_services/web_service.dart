@@ -191,17 +191,14 @@ class WebService {
       Map<String, String>? extraHeadersParams,
       bool autoLogout = true}) async {
     bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
-    print("JJJ");
     String queryString = "";
     if (relativePath != null) {
       queryString = relativePath;
     }
-    print("JJJ ddd");
 
     if (queryParams != null) {
       queryString = "?" + Uri(queryParameters: queryParams).query;
     }
-    print("JJJrrr");
 
     var requestUrl = baseURL + url + queryString;
     print("url: " + requestUrl);

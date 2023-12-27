@@ -38,6 +38,13 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   @override
   void initState() {
     super.initState();
+    _streamSubscription?.cancel();
+    _streamSubscription = ref
+        .watch(dgisControllerProvider)
+        .value
+        ?.objectTapEvents
+        .listen(_objectTapListener);
+
     switch (widget.focusMaker) {
       case LangingFocusMaker.iwish:
         () async {
@@ -101,13 +108,6 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     ref.watch(
       mapObjectManagerProvider(named: poiMapLayer),
     );
-
-    _streamSubscription?.cancel();
-    _streamSubscription = ref
-        .watch(dgisControllerProvider)
-        .value
-        ?.objectTapEvents
-        .listen(_objectTapListener);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,

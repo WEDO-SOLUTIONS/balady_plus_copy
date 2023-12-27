@@ -3,7 +3,6 @@ import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_fe
     show ApigeeResponse;
 import 'package:balady_plus/etmam_app/features/etmam_entry_point/etmam_entry_point_exports.dart';
 import 'package:balady_plus/etmam_app/features/etmam_entry_point/domain/entities/create_profile_params.dart';
-import 'package:flutter_appauth/flutter_appauth.dart';
 
 import '../../../../core/errors/errors_exports.dart' show Failure;
 

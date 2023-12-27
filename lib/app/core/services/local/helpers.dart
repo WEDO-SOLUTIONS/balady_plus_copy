@@ -326,8 +326,6 @@ class Helpers {
       dynamic body,
       int? statusCode,
       String? errorMsg}) async {
-    print("Send Log");
-
     try {
       SentryRequest request = SentryRequest(
           url: url,

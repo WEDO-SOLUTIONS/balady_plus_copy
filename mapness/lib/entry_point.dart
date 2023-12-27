@@ -137,6 +137,7 @@ Future<void> setupMapness(EnvType envType) async {
     ),
     config: vendorConfig,
   );
+
   await Hive.initFlutter();
   Hive.registerAdapter(
     SearchHistoryItemAdapter(),

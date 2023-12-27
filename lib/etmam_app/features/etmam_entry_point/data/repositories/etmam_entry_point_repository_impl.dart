@@ -4,7 +4,6 @@ import 'package:balady_plus/etmam_app/features/etmam_entry_point/etmam_entry_poi
 
 import 'package:dartz/dartz.dart' show Either, Left, Right;
 import 'package:balady_plus/etmam_app/features/etmam_entry_point/domain/entities/create_profile_params.dart';
-import 'package:flutter_appauth/flutter_appauth.dart';
 
 import '../../../../core/errors/errors_exports.dart'
     show Failure, ServerException, ServerFailure, AuthNotFoundedFailure;

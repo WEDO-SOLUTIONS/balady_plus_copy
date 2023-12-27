@@ -1,5 +1,6 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart' hide CloseButton;
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
@@ -25,6 +26,15 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
   void initState() {
     super.initState();
     _draggableScrollableController = DraggableScrollableController();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _draggableScrollableController.isAttached
+          ? _draggableScrollableController.animateTo(
+              .6,
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.linear,
+            )
+          : null;
+    });
   }
 
   @override
@@ -33,14 +43,12 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
     var state = ref.watch(layersControlsProvider);
     var lang = ref.watch(appLanguageProvider);
 
-    print("build ${state.selectedType}");
-
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
-      initialChildSize: .6,
+      initialChildSize: .0,
       minChildSize: .15,
       maxChildSize: .6,
-      snapSizes: const [.3, .6],
+      snapSizes: const [.0, .3, .6],
       snap: true,
       builder: (BuildContext context, ScrollController scrollController) {
         return Directionality(
