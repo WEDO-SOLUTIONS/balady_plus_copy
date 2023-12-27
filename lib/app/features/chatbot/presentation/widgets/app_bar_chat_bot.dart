@@ -1,16 +1,13 @@
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/core/utils/extensions/date_time_extension.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/chatbot/data/models/chat_bot_message.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/mvvm/chatboot_provider.dart';
+import 'package:balady_plus/app/features/chatbot/presentation/widgets/close_chat_bot_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
 class AppBarChatBot extends StatelessWidget {
-
   const AppBarChatBot({super.key});
 
   @override
@@ -19,15 +16,16 @@ class AppBarChatBot extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-            colors: [
-              const Color(0xff78EA06).withOpacity(.13),
-              const Color(0xff78EA06).withOpacity(.10),
-              const Color(0xff78EA06).withOpacity(.05),
-              const Color(0xff78EA06).withOpacity(.03),
-            ],
-            begin: AlignmentDirectional.centerStart,
-            end: AlignmentDirectional.bottomEnd,
-            tileMode: TileMode.clamp),
+          colors: [
+            const Color(0xff78EA06).withOpacity(.13),
+            const Color(0xff78EA06).withOpacity(.10),
+            const Color(0xff78EA06).withOpacity(.05),
+            const Color(0xff78EA06).withOpacity(.03),
+          ],
+          begin: AlignmentDirectional.centerStart,
+          end: AlignmentDirectional.bottomEnd,
+          tileMode: TileMode.clamp,
+        ),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -39,7 +37,12 @@ class AppBarChatBot extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => const CloseChatBotPopup(),
+                  );
+                },
                 icon: const Icon(Icons.close),
               ),
             ],
