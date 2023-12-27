@@ -38,12 +38,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   @override
   void initState() {
     super.initState();
-    _streamSubscription?.cancel();
-    _streamSubscription = ref
-        .watch(dgisControllerProvider)
-        .value
-        ?.objectTapEvents
-        .listen(_objectTapListener);
+
+    setupTapListener();
 
     switch (widget.focusMaker) {
       case LangingFocusMaker.iwish:
@@ -88,6 +84,12 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       default:
         break;
     }
+  }
+
+  void setupTapListener() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    _streamSubscription =
+        dgisController.objectTapEvents.listen(_objectTapListener);
   }
 
   @override
