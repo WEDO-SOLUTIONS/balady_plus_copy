@@ -115,6 +115,13 @@ jobs:
           read_key: ${{ secrets.LOCALAZY_READ_KEY }}
           write_key: ${{ secrets.LOCALAZY_WRITE_KEY }}
 
+      - name: 🤖🔨 Generate dart locale bindings
+        run: |
+          cd mapness
+          mkdir -p lib/l10n/generated
+          chmod -R 777 lib/l10n
+          sudo flutter gen-l10n
+
       - name: 🤖🔨 Build Android app
         run: |
           flutter build apk --target lib/main_urbi_pre.dart --dart-define=GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)" --dart-define=GIT_COMMIT="$(git --no-pager show -s --format='%s')" --dart-define=VENDOR_CONFIG=urbi-pre-prod
