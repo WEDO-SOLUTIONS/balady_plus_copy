@@ -37,10 +37,12 @@ class MapQuickFilters extends ConsumerWidget {
       if (!forMap) return;
       await searchObjectManager.removeAllMarkers();
 
-      if (next != null) {
+      final value = next.unwrapPrevious().valueOrNull;
+
+      if (value != null) {
         List<Marker> markers = [];
         for (final markerInfo
-            in (next.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty())) {
+            in (value.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty())) {
           markers.add(
             Marker(
               id: markerInfo?.objectId?.objectId.toString() ??
