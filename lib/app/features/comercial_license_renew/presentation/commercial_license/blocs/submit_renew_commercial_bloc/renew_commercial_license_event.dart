@@ -29,3 +29,8 @@ class UpdateRenewYearsEvent extends RenewCommercialLicenseEvent {
   final String year;
   const UpdateRenewYearsEvent({required this.year});
 }
+
+class ChangeInsidePetrolStationEvent extends RenewCommercialLicenseEvent {
+  final bool value;
+  const ChangeInsidePetrolStationEvent({required this.value});
+}

@@ -811,4 +811,11 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
       ));
     }
   }
+
+  void updateInsidePetrol(bool value) {
+    emit(state.copyWith(
+      errorMessage: "",
+      insidePetrolStation: value,
+    ));
+  }
 }

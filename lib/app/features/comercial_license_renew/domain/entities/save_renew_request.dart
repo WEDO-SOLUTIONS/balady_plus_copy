@@ -23,6 +23,7 @@ class SaveRenewRequest extends Equatable {
   final String? salamaReportNumber;
   final String? salamaPermitNumber;
   final bool? salamaPermitExist;
+  final bool? insidePetrolStation;
 
   Map<String, dynamic> toMap() => {
         "citizenPledgedToClean": citizenPledgedToClean,
@@ -48,7 +49,8 @@ class SaveRenewRequest extends Equatable {
         "salamaReportNumber": salamaReportNumber,
         if (salamaPermitNumber != null && salamaPermitNumber!.isNotEmpty)
           "salamaPermitNumber": salamaPermitNumber,
-        "salamaPermitExist": salamaPermitExist
+        "salamaPermitExist": salamaPermitExist,
+        "insidePetrolStation": insidePetrolStation ?? false
       };
   @override
   List<Object?> get props => [
@@ -58,7 +60,8 @@ class SaveRenewRequest extends Equatable {
         salamaBillNumber,
         salamaReportNumber,
         deedInfoRequest,
-        salamaPermitExist
+        salamaPermitExist,
+        insidePetrolStation
       ];
   SaveRenewRequest(
       {this.requestId,
@@ -76,5 +79,6 @@ class SaveRenewRequest extends Equatable {
       this.salamaReportNumber,
       this.salamaPermitNumber,
       this.deedInfoRequest,
-      this.salamaPermitExist});
+      this.salamaPermitExist,
+      this.insidePetrolStation});
 }
