@@ -36,6 +36,12 @@ class _SubmitCompliancePageState extends State<SubmitCompliancePage> {
 
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.startServiceComplianceCertificate);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.Compliance_Certificate_Open_Create_Details_Event);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.Compliance_Certificate_Open_Select_Method_Step_Event);
   }
 
   @override

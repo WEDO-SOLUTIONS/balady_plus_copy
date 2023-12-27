@@ -25,6 +25,8 @@ class _SelfRatingMainPageState extends State<SelfRatingMainPage> {
     super.initState();
     CommonFunctions.sendEventToAnalytics(AppEvents.selfRating);
     CommonFunctions.sendUXCamEvent(UXCamEvents.mainServicePremisesAssessment);
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.PremisesAssessment_Main_Page_Event);
   }
 
   @override
@@ -63,11 +65,9 @@ class _SelfRatingMainPageState extends State<SelfRatingMainPage> {
                         color2: AppColor.lightOrange100,
                         logo: IconPath.selfRatingBuilding,
                         onPressed: () {
-                          Navigator.pushReplacement(
+                          Navigator.pushReplacementNamed(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const SelfRatingSectionPage()),
+                            RouteName.SelfRatingSectionPage,
                           );
                         },
                       ),

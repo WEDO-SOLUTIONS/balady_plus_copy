@@ -27,6 +27,9 @@ class _SelfRatingResultPageState extends State<SelfRatingResultPage> {
     super.initState();
     CommonFunctions.sendEventToAnalytics(AppEvents.selfRatingSuccess);
     CommonFunctions.sendUXCamEvent(UXCamEvents.finishServicePremisesAssessment);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.PremisesAssessment_Check_Result_Event);
   }
 
   @override

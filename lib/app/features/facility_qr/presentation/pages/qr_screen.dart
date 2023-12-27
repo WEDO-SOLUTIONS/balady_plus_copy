@@ -49,6 +49,8 @@ class _QrScreenState extends State<QrScreen> {
     super.initState();
 
     CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceYourFeedback);
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.YourFeedback_Open_Scan_Event);
   }
 
   @override
@@ -246,6 +248,8 @@ void checkBarcode(BuildContext context) async {
                           ?.comLicenseInfo?.locationInfo?.longitude;
 
                       if (lat != null && long != null) {
+                        CommonFunctions.sendUXCamEvent(
+                            UXCamEvents.SnapAndSend_Open_From_FeedBack_Event);
                         await BottomSheetDialog.showDraggableSheet(context,
                             dialogKeyName: DialogName.vdTypesDialog,
                             currentRouteName: RouteName.qrFacilityScreenRoute,

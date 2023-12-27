@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../../../core/utils/app_analytics_events.dart';
 import '../../../../../../core/utils/common_functions.dart';
+import '../../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../core/view_models/msr/new_msr_details_view_model.dart';
@@ -24,6 +25,9 @@ class _NewMSRPageState extends State<NewMSRPage> {
     //MM  Helpers.sendEventToAnalytics(AppEvents.VD_Open_Details);
 
     CommonFunctions.sendEventToAnalytics(AppEvents.municipalRequest);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.MunicipalServiceRequest_Open_Details_Step_Event);
   }
 
   @override

@@ -62,6 +62,9 @@ class _MSRTypeDialog extends State<MSRTypeDialog> {
 
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.typeServiceMunicipalServiceRequest);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.MunicipalServiceRequest_Open_Types_Event);
   }
 
   @override

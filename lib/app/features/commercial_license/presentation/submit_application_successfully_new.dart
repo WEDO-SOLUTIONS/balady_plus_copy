@@ -34,6 +34,9 @@ class _SubmitApplicationSuccessfullyNewState
 
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.finishServiceIssueACommercialLicense);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.CommercialLicense_Open_Success_Page_Event);
   }
 
   @override

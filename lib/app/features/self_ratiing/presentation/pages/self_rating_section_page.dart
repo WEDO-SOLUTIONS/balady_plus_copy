@@ -33,6 +33,9 @@ class _SelfRatingSectionPageState extends State<SelfRatingSectionPage> {
     // TODO: implement initState
     super.initState();
     CommonFunctions.sendUXCamEvent(UXCamEvents.startServicePremisesAssessment);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.PremisesAssessment_Details_Page_Event);
   }
 
   @override

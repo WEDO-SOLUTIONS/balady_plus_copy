@@ -40,6 +40,9 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
     super.initState();
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.startCardServiceComplianceCertificate);
+
+            CommonFunctions.sendUXCamEvent(
+        UXCamEvents.Compliance_Certificate_Open_Service_Card_Event);
   }
 
   @override

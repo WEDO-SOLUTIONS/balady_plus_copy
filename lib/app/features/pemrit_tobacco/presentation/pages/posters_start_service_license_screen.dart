@@ -40,6 +40,9 @@ class _PermitsTobaccoLicenseStartServiceState
     // CommonFunctions.sendEventToAnalytics(AppEvents.renewCommercialLicenseOpen);
 
     CommonFunctions.sendUXCamEvent(UXCamEvents.startCardServiceTobaccoPermit);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.Permit_Tobaco_Open_Service_Card_Event);
   }
 
   @override

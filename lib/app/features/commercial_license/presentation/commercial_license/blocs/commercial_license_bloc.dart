@@ -5,6 +5,7 @@ import 'package:meta/meta.dart';
 
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/services/services_exports.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../vd/domain/entities/gis/gis_params.dart';
 import '../../../../vd/domain/entities/gis/gis_response.dart';
@@ -45,18 +46,19 @@ class CommercialLicenseBloc
 
     emit(
         state.copyWith(status: BlocStatus.success, currentPageValue: nextPage));
+    sendEventBasedOnPage(nextPage);
 
     hideKeyboard();
   }
 
   Future<void> _goToNextPageHandler(
       GoToNextPageEvent e, Emitter emitter) async {
-    //print("next page");
+    int nextPage = state.currentPageValue + 1;
+
     print("DataLog ${state}");
     if (isLastPage()) {
     } else {
       if (state.status == BlocStatus.performing) return;
-      int nextPage = state.currentPageValue + 1;
 
       emitter(state.copyWith(
         status: BlocStatus.performing,
@@ -66,17 +68,20 @@ class CommercialLicenseBloc
 
       emitter(state.copyWith(
           status: BlocStatus.success, currentPageValue: nextPage));
+      sendEventBasedOnPage(nextPage);
     }
+
     hideKeyboard();
   }
 
   Future<void> _goToPreviousPageHandler(
       GoToPreviousPageEvent e, Emitter emitter) async {
+    int prvoiusPage = state.currentPageValue - 1;
+
     if (state.currentPageValue == 0.0) {
       NavigationService.navigatorKey.currentState!.pop();
     } else {
       if (state.status == BlocStatus.performing) return;
-      int prvoiusPage = state.currentPageValue - 1;
       emitter(state.copyWith(
         status: BlocStatus.performing,
       ));
@@ -84,7 +89,10 @@ class CommercialLicenseBloc
 
       emitter(state.copyWith(
           status: BlocStatus.success, currentPageValue: prvoiusPage));
+
+      sendEventBasedOnPage(prvoiusPage);
     }
+
     hideKeyboard();
   }
 
@@ -94,6 +102,38 @@ class CommercialLicenseBloc
 
   hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  void sendEventBasedOnPage(int nextPage) {
+    String eventName = "";
+    if (nextPage == 0) {
+      eventName = UXCamEvents.CommercialLicense_Open_Applicant_Info_Step_Event;
+    } else if (nextPage == 1) {
+      eventName = UXCamEvents.CommercialLicense_Open_Activity_Info_Step_Event;
+    } else if (nextPage == 2) {
+      eventName = UXCamEvents.CommercialLicense_Open_Location_Info_Step_Event;
+    } else if (nextPage == 3) {
+      eventName =
+          UXCamEvents.CommercialLicense_Open_Shop_And_Board_Details_Step_Event;
+    } else if (nextPage == 4) {
+      eventName = UXCamEvents.CommercialLicense_Open_Attachment_Step_Event;
+    } else if (nextPage == 5) {
+      eventName =
+          UXCamEvents.CommercialLicense_Open_QR_Establishment_Info_Event;
+    } else if (nextPage == 6) {
+      eventName =
+          UXCamEvents.CommercialLicense_Open_QR_Working_Hours_Info_Event;
+    } else if (nextPage == 7) {
+      eventName = UXCamEvents.CommercialLicense_Open_QR_Addetional_Data_Event;
+    } else if (nextPage == 8) {
+      eventName = UXCamEvents.CommercialLicense_Open_QR_Attachment_Info_Event;
+    } else if (nextPage == 9) {
+      eventName = UXCamEvents.CommercialLicense_Open_Saddad_Years_Step_Event;
+    } else if (nextPage == 10) {
+      eventName = UXCamEvents.CommercialLicense_Open_Calculator_Step_Event;
+    }
+
+    CommonFunctions.sendUXCamEvent(eventName);
   }
 
   Future<void> _updateRequestIdHandler(

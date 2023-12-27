@@ -5,16 +5,35 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/services/local/navigation_services.dart';
+import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/app_style.dart';
 import '../../../../../core/utils/constants/route_names.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/draw_icon_based_type_widget.dart';
 import '../../blocs/ekram_requests_bloc/ekram_requests_bloc.dart';
 
-class EkramBookCemetryStartService extends StatelessWidget {
+class EkramBookCemetryStartService extends StatefulWidget {
   const EkramBookCemetryStartService({super.key});
+
+  @override
+  State<EkramBookCemetryStartService> createState() => _EkramBookCemetryStartServiceState();
+}
+
+class _EkramBookCemetryStartServiceState extends State<EkramBookCemetryStartService> {
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.SelectAndReserveCemetery_Create_Condolence_Enter_Page_Event);
+  }
 
   @override
   Widget build(BuildContext context) {

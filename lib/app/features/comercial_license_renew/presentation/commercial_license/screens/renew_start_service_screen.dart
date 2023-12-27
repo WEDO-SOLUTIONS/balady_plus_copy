@@ -34,6 +34,9 @@ class _RenewStartServiceState extends State<RenewStartService> {
     CommonFunctions.sendEventToAnalytics(AppEvents.renewCommercialLicenseOpen);
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.startCardServiceRenewLicenseService);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.RenewCommercialLicense_Open_Service_Card_Event);
   }
 
   @override

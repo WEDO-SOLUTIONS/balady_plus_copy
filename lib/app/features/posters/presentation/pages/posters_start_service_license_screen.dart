@@ -38,6 +38,9 @@ class _PostersLicenseStartServiceState
 
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.startCardServiceIndivisualPostersPermit);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.Posters_Open_Service_Card_For_License_Event);
   }
 
   @override

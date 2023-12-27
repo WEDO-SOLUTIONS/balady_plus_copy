@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:formz/formz.dart';
 
@@ -35,6 +36,18 @@ class NewHealthCertificateBloc
 
     final model = locator<NewDetailsHealthLicenseViewModel>();
     model.init(isRenew: renew ?? false);
+
+    if (renew == true) {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.HealthCertificate_renew_Create_Details_Page_Event);
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.HealthCertificate_renew_Open_Details_Step_Event);
+    } else {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.HealthCertificate_Issue_Create_Details_Page_Event);
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.HealthCertificate_Issue_Open_Details_Step_Event);
+    }
   }
 
   void cancelIncident() {
@@ -70,7 +83,28 @@ class NewHealthCertificateBloc
           status: BlocStatus.success,
           currentPageValue: nextPage,
           errorMessage: ""));
+
+      final model = locator<HealthLicenseViewModel>();
+
+      if (nextPage == 0) {
+        if (model.isRenew) {
+          CommonFunctions.sendUXCamEvent(
+              UXCamEvents.HealthCertificate_renew_Open_Details_Step_Event);
+        } else {
+          CommonFunctions.sendUXCamEvent(
+              UXCamEvents.HealthCertificate_Issue_Open_Details_Step_Event);
+        }
+      } else if (nextPage == 1) {
+        if (model.isRenew) {
+          CommonFunctions.sendUXCamEvent(
+              UXCamEvents.HealthCertificate_renew_Open_Terms_Step_Event);
+        } else {
+          CommonFunctions.sendUXCamEvent(
+              UXCamEvents.HealthCertificate_Issue_Open_Terms_Step_Event);
+        }
+      }
     }
+
     hideKeyboard();
   }
 
@@ -90,6 +124,26 @@ class NewHealthCertificateBloc
           status: BlocStatus.success,
           currentPageValue: prvoiusPage,
           errorMessage: ""));
+
+      final model = locator<HealthLicenseViewModel>();
+
+      if (prvoiusPage == 0) {
+        if (model.isRenew) {
+          CommonFunctions.sendUXCamEvent(
+              UXCamEvents.HealthCertificate_renew_Open_Details_Step_Event);
+        } else {
+          CommonFunctions.sendUXCamEvent(
+              UXCamEvents.HealthCertificate_Issue_Open_Details_Step_Event);
+        }
+      } else if (prvoiusPage == 1) {
+        if (model.isRenew) {
+          CommonFunctions.sendUXCamEvent(
+              UXCamEvents.HealthCertificate_renew_Open_Terms_Step_Event);
+        } else {
+          CommonFunctions.sendUXCamEvent(
+              UXCamEvents.HealthCertificate_Issue_Open_Terms_Step_Event);
+        }
+      }
     }
     hideKeyboard();
   }

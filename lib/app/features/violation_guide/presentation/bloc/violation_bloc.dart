@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/utils/constants/route_names.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../data/models/establishment_size_response.dart';
 import '../../data/models/regualation_cluses_details.dart';
 import '../../data/models/regulation_clause_response.dart';
@@ -178,6 +179,8 @@ class ViolationBloc extends Bloc<ViolationEvent, ViolationState> {
         regulationClausesResponse: success,
         errorMessage: "",
       ));
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.ViolationGuide_Open_Result_Event);
 
       NavigationService.navigatorKey.currentState!
           .pushNamed(RouteName.violationResultsPage, arguments: this);
@@ -220,6 +223,9 @@ class ViolationBloc extends Bloc<ViolationEvent, ViolationState> {
         NavigationService.navigatorKey.currentState!.pushNamed(
             RouteName.violationRegulationDetailsPage,
             arguments: this);
+
+        CommonFunctions.sendUXCamEvent(
+            UXCamEvents.PViolationGuide_Open_Result_Select_Violation_Event);
       }
     });
   }
@@ -227,9 +233,15 @@ class ViolationBloc extends Bloc<ViolationEvent, ViolationState> {
   void selectViolatorType(ViolatorItem item) {
     emit(state.copyWith(violatorItem: item, currentStep: 1));
     pageController.jumpToPage(1);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.PViolationGuide_Open_Select_Type_Step_Event);
   }
 
   void selectEstablishment(EstablishmentSizeItem? item) {
     emit(state.copyWith(selectedEstablishmentSizeItem: Nullable(item)));
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.ViolationGuide_Open_Select_Establishment_Size_Event);
   }
 }

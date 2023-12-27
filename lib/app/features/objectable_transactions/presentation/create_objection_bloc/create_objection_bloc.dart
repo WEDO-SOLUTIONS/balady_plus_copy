@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/use_cases/create_objection.dart';
 import 'package:dartz/dartz.dart';
@@ -172,6 +173,9 @@ class CreateObjectionBloc
 
   Future<void> _createIncidentRegisteredHandler(
       CreateIncidentRegisteredEvent e, Emitter emitter) async {
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.Objectable_Transaction_Send_Request_Event);
+
     hideKeyboard();
     emitter(state.copyWith(status: BlocStatus.loading));
 
@@ -242,6 +246,8 @@ class CreateObjectionBloc
       bool Function(Route<dynamic>) predicate =
           ModalRoute.withName(RouteName.bottomNavigation);
 
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.Objectable_Transaction_Open_Success_Page_Event);
       NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
           RouteName.successRoute, predicate,
           arguments: SuccessScreenArgs(
@@ -289,8 +295,10 @@ class CreateObjectionBloc
     emitter(state.copyWith(
       status: BlocStatus.performing,
     ));
-    await controller.animateToPage(nextPage,
-        duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+    controller.jumpToPage(
+      nextPage,
+    );
+    sendPageData(nextPage);
     emitter(
         state.copyWith(status: BlocStatus.success, currentPageValue: nextPage));
 
@@ -307,8 +315,9 @@ class CreateObjectionBloc
       emitter(state.copyWith(
         status: BlocStatus.performing,
       ));
-      await controller.animateToPage(prvoiusPage,
-          duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+      controller.jumpToPage(prvoiusPage);
+      sendPageData(prvoiusPage);
+
       emitter(state.copyWith(
           status: BlocStatus.success, currentPageValue: prvoiusPage));
     }
@@ -323,5 +332,20 @@ class CreateObjectionBloc
 
   bool isLastPage() {
     return state.currentPageValue == (pagesList.length - 1);
+  }
+
+  void sendPageData(int pageNo) {
+    String eventName = "";
+    if (pageNo == 0) {
+      eventName = UXCamEvents.Objectable_Transaction_Open_Info_Step_Event;
+    } else if (pageNo == 1) {
+      eventName = UXCamEvents.Objectable_Transaction_Open_User_Data_Step_Event;
+    } else if (pageNo == 2) {
+      eventName = UXCamEvents.Objectable_Transaction_Open_Reasons_Step_Event;
+    } else if (pageNo == 3) {
+      eventName = UXCamEvents.Objectable_Transaction_Open_Review_Step_Event;
+    }
+
+    CommonFunctions.sendUXCamEvent(eventName);
   }
 }

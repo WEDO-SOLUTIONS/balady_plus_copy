@@ -381,12 +381,8 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
       emit(state.copyWith(
           status: BlocStatus.success, sendOtpResponse: Nullable(r)));
       if (showOTPPage == true)
-        NavigationService.navigatorKey.currentState?.push(MaterialPageRoute(
-          builder: (context) => BlocProvider.value(
-            value: this,
-            child: CommercialOtpScreen(),
-          ),
-        ));
+        NavigationService.navigatorKey.currentState
+            ?.pushNamed(RouteName.CommercialOtpScreen, arguments: this);
     });
   }
 

@@ -10,6 +10,7 @@ import 'package:meta/meta.dart';
 import '../../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../../core/errors/failures.dart';
 import '../../../../../../core/services/services_exports.dart';
+import '../../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../../core/utils/enums/enums.dart';
 import '../../../../../../core/utils/utils_exports.dart';
 import '../../../../../_shared_feature_/data/entities/success_screen_args.dart';
@@ -75,10 +76,11 @@ class RenewCommercialLicenseBloc
 
   Future<void> _goToNextPageHandler(
       GoToNextPageEvent e, Emitter emitter) async {
+    int nextPage = state.currentPageValue + 1;
+
     if (isLastPage()) {
     } else {
       if (state.status == BlocStatus.performing) return;
-      int nextPage = state.currentPageValue + 1;
 
       emitter(state.copyWith(status: BlocStatus.performing, errorMessage: ""));
 
@@ -87,23 +89,28 @@ class RenewCommercialLicenseBloc
 
       emitter(state.copyWith(
           status: BlocStatus.success, currentPageValue: nextPage));
+      sendStepEvent(nextPage);
     }
+
     hideKeyboard();
   }
 
   Future<void> _goToPreviousPageHandler(
       GoToPreviousPageEvent e, Emitter emitter) async {
+    int prvoiusPage = state.currentPageValue - 1;
+
     if (state.currentPageValue == 0.0) {
       NavigationService.navigatorKey.currentState!.pop();
     } else {
       if (state.status == BlocStatus.performing) return;
-      int prvoiusPage = state.currentPageValue - 1;
       emitter(state.copyWith(status: BlocStatus.performing, errorMessage: ""));
       await controller.animateToPage(prvoiusPage,
           duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
       emitter(state.copyWith(
           status: BlocStatus.success, currentPageValue: prvoiusPage));
+      sendStepEvent(prvoiusPage);
     }
+
     hideKeyboard();
   }
 
@@ -563,6 +570,9 @@ class RenewCommercialLicenseBloc
   }
 
   void submitRenew() async {
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.RenewCommercialLicense_Send_Request_Event);
+
     int requestId = state.requestId!;
     emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     final response = await _submitRenew(requestId);
@@ -615,4 +625,17 @@ class RenewCommercialLicenseBloc
       });
     }
   }*/
+
+  void sendStepEvent(int stepNo) {
+    if (stepNo == 0) {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.RenewCommercialLicense_Open_Info_Step_Event);
+    } else if (stepNo == 1) {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.RenewCommercialLicense_Open_Attachments_Step_Event);
+    } else if (stepNo == 2) {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.RenewCommercialLicense_Open_Calculator_Step_Event);
+    }
+  }
 }

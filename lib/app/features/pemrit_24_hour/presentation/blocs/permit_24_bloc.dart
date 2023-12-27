@@ -9,6 +9,7 @@ import 'package:meta/meta.dart';
 import 'package:balady_plus/app/core/utils/extensions/date_time_extension.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
 import '../../../../core/utils/nullable.dart';
 import 'package:collection/collection.dart';
@@ -110,6 +111,9 @@ class Permit24LicenseBloc
           status: BlocStatus.failure,
           error: (l as ServerFailure).errorMessage));
     }, (r) {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.My_Requests_24_Permit_Details_Delete_Request_Event);
+
       emitter(state.copyWith(status: BlocStatus.success));
       add(GetPermitRequestDetailsEvent());
     });
@@ -196,6 +200,8 @@ class Permit24LicenseBloc
         RouteName.submitApplicationSuccessfullyPermits,
         arguments: r,
       );
+
+      CommonFunctions.sendUXCamEvent(UXCamEvents.Permit_24_Send_Request_Event);
     });
   }
 
@@ -217,10 +223,11 @@ class Permit24LicenseBloc
 
   Future<void> _goToNextPageHandler(
       GoToNextPageEvent e, Emitter emitter) async {
+    int nextPage = state.currentPageValue + 1;
+
     if (isLastPage()) {
     } else {
       if (state.status == BlocStatus.performing) return;
-      int nextPage = state.currentPageValue + 1;
 
       emitter(state.copyWith(status: BlocStatus.performing, error: ""));
 
@@ -228,17 +235,24 @@ class Permit24LicenseBloc
 
       emitter(state.copyWith(
           error: "", status: BlocStatus.success, currentPageValue: nextPage));
+
+      if (nextPage == 0) {
+        CommonFunctions.sendUXCamEvent(
+            UXCamEvents.Permit_24_Open_Success_Page_Event);
+      }
     }
+
     hideKeyboard();
   }
 
   Future<void> _goToPreviousPageHandler(
       GoToPreviousPageEvent e, Emitter emitter) async {
+    int prvoiusPage = state.currentPageValue - 1;
+
     if (state.currentPageValue == 0.0) {
       NavigationService.navigatorKey.currentState!.pop();
     } else {
       if (state.status == BlocStatus.performing) return;
-      int prvoiusPage = state.currentPageValue - 1;
       emitter(state.copyWith(status: BlocStatus.performing, error: ""));
       controller.jumpToPage(prvoiusPage);
 
@@ -246,7 +260,13 @@ class Permit24LicenseBloc
           error: "",
           status: BlocStatus.success,
           currentPageValue: prvoiusPage));
+
+      if (prvoiusPage == 0) {
+        CommonFunctions.sendUXCamEvent(
+            UXCamEvents.Permit_24_Open_Success_Page_Event);
+      }
     }
+
     hideKeyboard();
   }
 

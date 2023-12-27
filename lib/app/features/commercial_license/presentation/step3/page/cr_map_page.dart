@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../../core/utils/constants/constants.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../bloc/map_bloc.dart';
 import '../widgets/map_widgets/cr_map_view.dart';
@@ -30,54 +31,61 @@ class _CRMapScreen extends State<CRMapScreen> {
   void initState() {
     super.initState();
     //MM   Helpers.sendEventToAnalytics(AppEvents.VD_Open_Map);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.CommercialLicense_Open_Map_Locator_Page_Event);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: AppColor.white4,
-        appBar: null,
-        body: BlocConsumer<MapBloc, MapState>(
-          listener: (context, state) {
-            // TODO: implement listener
-            if (state.status == BlocStatus.failure)
-              CommonFunctions.showError(state.errorMessage ?? "");
-          },
-          builder: (context, state) {
-            return Stack(
-              children: [
-                CRMapView(
-                  showRadius: false,
-                  showSearchPaddingScreen: true,
-                  readOnly: false,
-                ),
-                // exit button
-                Align(
-                  alignment: AlignmentDirectional.topStart,
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Container(
-                      margin: EdgeInsetsDirectional.only(
-                          top: MediaQuery.of(context).padding.top + 5,
-                          start: 12),
-                      child: Image.asset(
-                        widget.closeIcon
-                            ? Constants.imgPath + 'exit@3x.png' //MM
-                            : Constants.imgPath + 'exitBack@3x.png',
-                        height: 38,
-                        width: 38,
+    MapBloc bloc = ModalRoute.of(context)?.settings.arguments as MapBloc;
+    return BlocProvider.value(
+      value: bloc,
+      child: Scaffold(
+          backgroundColor: AppColor.white4,
+          appBar: null,
+          body: BlocConsumer<MapBloc, MapState>(
+            listener: (context, state) {
+              // TODO: implement listener
+              if (state.status == BlocStatus.failure)
+                CommonFunctions.showError(state.errorMessage ?? "");
+            },
+            builder: (context, state) {
+              return Stack(
+                children: [
+                  CRMapView(
+                    showRadius: false,
+                    showSearchPaddingScreen: true,
+                    readOnly: false,
+                  ),
+                  // exit button
+                  Align(
+                    alignment: AlignmentDirectional.topStart,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Container(
+                        margin: EdgeInsetsDirectional.only(
+                            top: MediaQuery.of(context).padding.top + 5,
+                            start: 12),
+                        child: Image.asset(
+                          widget.closeIcon
+                              ? Constants.imgPath + 'exit@3x.png' //MM
+                              : Constants.imgPath + 'exitBack@3x.png',
+                          height: 38,
+                          width: 38,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                // loading
-                if (state.status == BlocStatus.loading)
-                  const CustomCircularLoadingWidget()
-              ],
-            );
-          },
-        ));
+                  // loading
+                  if (state.status == BlocStatus.loading)
+                    const CustomCircularLoadingWidget()
+                ],
+              );
+            },
+          )),
+    );
   }
 }

@@ -235,6 +235,9 @@ class EkramRequestTransportationBloc extends Bloc<
   Future<void> _submitRequestEvent(
       SubmitRequestEvent e, Emitter emitter) async {
     if (state.status == BlocStatus.loading) return;
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents
+        .RequestsTransportingAndPreparingDeceased_Send_Request_Event);
     hideKeyboard();
 
     emitter(state.copyWith(status: BlocStatus.loading));
@@ -268,6 +271,9 @@ class EkramRequestTransportationBloc extends Bloc<
               type: PAGE_TYPE.ekramCemetry,
               thanksMessage: success.data?.responseMessage));
 
+      CommonFunctions.sendUXCamEvent(UXCamEvents
+          .RequestsTransportingAndPreparingDeceased_Open_Success_Page_Event);
+
       CommonFunctions.sendUXCamEvent(
           UXCamEvents.finishServiceBodyTransportation);
     });
@@ -287,6 +293,7 @@ class EkramRequestTransportationBloc extends Bloc<
       status: BlocStatus.performing,
     ));
     controller.jumpToPage(nextPage);
+    sendStepPage(nextPage);
     emitter(
         state.copyWith(status: BlocStatus.success, currentPageValue: nextPage));
 
@@ -304,6 +311,8 @@ class EkramRequestTransportationBloc extends Bloc<
         status: BlocStatus.performing,
       ));
       controller.jumpToPage(prvoiusPage);
+      sendStepPage(prvoiusPage);
+
       emitter(state.copyWith(
           status: BlocStatus.success, currentPageValue: prvoiusPage));
     }
@@ -316,5 +325,21 @@ class EkramRequestTransportationBloc extends Bloc<
 
   hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  void sendStepPage(int page) {
+    if (page == 0) {
+      CommonFunctions.sendUXCamEvent(UXCamEvents
+          .RequestsTransportingAndPreparingDeceased_Open_Applicant_Info_Step_Event);
+    } else if (page == 1) {
+      CommonFunctions.sendUXCamEvent(UXCamEvents
+          .RequestsTransportingAndPreparingDeceased_Open_Deceased_Info_Step_Event);
+    } else if (page == 2) {
+      CommonFunctions.sendUXCamEvent(UXCamEvents
+          .RequestsTransportingAndPreparingDeceased_Open_Location_Info_Step_Event);
+    } else if (page == 3) {
+      CommonFunctions.sendUXCamEvent(UXCamEvents
+          .RequestsTransportingAndPreparingDeceased_Open_Review_Info_Step_Event);
+    }
   }
 }

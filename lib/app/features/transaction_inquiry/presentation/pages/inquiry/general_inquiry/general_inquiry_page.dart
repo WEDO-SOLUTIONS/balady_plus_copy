@@ -29,6 +29,9 @@ class _GeneralInquiryPageState extends State<GeneralInquiryPage> {
     CommonFunctions.sendEventToAnalytics(AppEvents.generalInq);
 
     CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceGeneralInquiries);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.General_Inquiries_Open_Create_Details_Event);
   }
 
   @override

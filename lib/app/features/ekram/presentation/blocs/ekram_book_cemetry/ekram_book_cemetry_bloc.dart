@@ -625,6 +625,9 @@ class EkramBookCemetryBloc
   Future<void> _submitRequestEvent(
       SubmitRequestEvent e, Emitter emitter) async {
     if (state.status == BlocStatus.loading) return;
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.SelectAndReserveCemetery_Send_Request_Event);
     hideKeyboard();
 
     emitter(state.copyWith(status: BlocStatus.loading));
@@ -681,6 +684,8 @@ class EkramBookCemetryBloc
                 type: PAGE_TYPE.ekramCemetry,
                 thanksMessage: success.data?.result?.message,
               ));
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.SelectAndReserveCemetery_Open_Success_Page_Event);
 
       CommonFunctions.sendUXCamEvent(
           UXCamEvents.finishServiceSelectAndReserveACemetery);
@@ -701,6 +706,7 @@ class EkramBookCemetryBloc
       status: BlocStatus.performing,
     ));
     controller.jumpToPage(nextPage);
+    sendStepPage(nextPage);
     emitter(
         state.copyWith(status: BlocStatus.success, currentPageValue: nextPage));
 
@@ -718,6 +724,8 @@ class EkramBookCemetryBloc
         status: BlocStatus.performing,
       ));
       controller.jumpToPage(prvoiusPage);
+      sendStepPage(prvoiusPage);
+
       emitter(state.copyWith(
           status: BlocStatus.success, currentPageValue: prvoiusPage));
     }
@@ -730,5 +738,18 @@ class EkramBookCemetryBloc
 
   hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  void sendStepPage(int page) {
+    if (page == 0) {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.SelectAndReserveCemetery_Open_Applicant_Info_Step_Event);
+    } else if (page == 1) {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.SelectAndReserveCemetery_Open_Deceased_Info_Step_Event);
+    } else if (page == 2) {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.SelectAndReserveCemetery_Open_Review_Info_Step_Event);
+    }
   }
 }

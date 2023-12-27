@@ -1176,7 +1176,7 @@
 "bottomNavigationBarStoreWord":"Store",
 "bottomNavigationBarMoreWord":"More",
 "homeHeaderWelcomeToWord":"Welcome ..",
-"homeHeaderInBaladyAppWord":"In Balady App",
+"homeHeaderInBaladyAppWord":"In Balady App", 
 "homeHeaderBaladyWord":"Balady",
 "homeHeaderFirstCardTitleWord":"Happy new year to the country",
 "homeHeaderFirstCardHashtagWord":"#هي_لنا_دار",
@@ -2900,7 +2900,7 @@
 "zmzm_name":"The Custodian of the Two Holy Mosques project for Zamzam water (all places included with the project)",
 "jeddah":"Jeddah",
 "park_subtitle":"Garden type",
-"ruined_car_request":"Report Write-Off Vehicle",
+"ruined_car_request":"Report Write-Off Vehicle", 
 "general_requests":"General Inquiries",
 "abandoned":"Neglected",
 "booking_words":"You can now book an appointment via the Application!",
@@ -3589,7 +3589,7 @@
 
 "submit_objections":"Appeal Request", 
 "compliance_certificate":"Compliance Certificate", 
- 
+  
 "ekram_benf_transport":"Body Transportation", 
 "ekram_inquiry_burial_grave":"Cemetery Inquiry", 
 "ekram_inquiry_about_grave":"Grave Inquiry", 

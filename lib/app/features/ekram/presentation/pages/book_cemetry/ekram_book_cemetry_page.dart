@@ -27,6 +27,12 @@ class _EkramBookCemetryPageState extends State<EkramBookCemetryPage> {
 
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.startServiceSelectAndReserveACemetery);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.SelectAndReserveCemetery_Create_Details_Enter_Page_Event);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.SelectAndReserveCemetery_Open_Applicant_Info_Step_Event);
   }
 
   @override

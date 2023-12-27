@@ -74,10 +74,12 @@ import '../../features/calendar/calendar_exports.dart';
 import '../../features/calendar/presentation/pages/calendar_details_page.dart';
 import '../../features/commercial_license/presentation/issue_start_service_screen.dart';
 import '../../features/commercial_license/presentation/step3/page/cr_map_page.dart';
+import '../../features/commercial_license/presentation/step6/page/commercial_otp_screen.dart';
 import '../../features/commercial_license/presentation/submit_application_successfully_new.dart';
 import '../../features/create_compliance/presentation/pages/compliance_details_page.dart';
 import '../../features/create_compliance/presentation/pages/map_page/complinace_map_page.dart';
 import '../../features/create_compliance/presentation/pages/non_compliance_screen.dart';
+import '../../features/create_compliance/presentation/pages/otp_page/compliance_otp_screen.dart';
 import '../../features/create_compliance/presentation/pages/submit_compliance_page.dart';
 import '../../features/ekram/presentation/pages/book_cemetry/ekram_book_cemetry_page.dart';
 import '../../features/ekram/presentation/pages/book_cemetry/ekram_book_cemetry_start_service.dart';
@@ -121,6 +123,7 @@ import '../../features/posters/presentation/pages/submit_application_successfull
 import '../../features/qa/presentation/pages/qa_page.dart';
 import '../../features/self_ratiing/presentation/pages/self_rating_main_page.dart';
 import '../../features/self_ratiing/presentation/pages/self_rating_result_page.dart';
+import '../../features/self_ratiing/presentation/pages/self_rating_section_page.dart';
 import '../../features/services/presentation/pages/all_services_page.dart';
 import '../../features/services/presentation/pages/dashboard_page/presentation/pages/profile_page.dart';
 import '../../features/unknow/pages/investment_page.dart';
@@ -479,9 +482,6 @@ class Routes {
 
         RouteName.violationDetailsPage: (context) => ViolationsDetailsPage(),
 
-        RouteName.createViolationObjectionDetails: (context) =>
-            const CreateViolationObjectionPage(),
-
         RouteName.transactionDetailsPage: (context) =>
             const TransactionsDetailsPage(),
 
@@ -573,12 +573,14 @@ class Routes {
 
         RouteName.complinaceMapView: (context) => ComplinaceMapScreen(),
         RouteName.selfRatingMainPage: (context) => SelfRatingMainPage(),
+        RouteName.SelfRatingSectionPage: (context) => SelfRatingSectionPage(),
         RouteName.selfRatingResultPage: (context) => SelfRatingResultPage(),
 
         RouteName.complianceDetailsPage: (context) => ComplianceDetailsPage(),
         RouteName.nonComplianceScreen: (context) => NonComplianceScreen(),
 
         RouteName.submitCompliancePage: (context) => SubmitCompliancePage(),
+        RouteName.submitComplianceOTPPage: (context) => ComplianceOtpScreen(),
 
         RouteName.eventsMainPage: (context) => EventsMainPage(),
 
@@ -612,6 +614,8 @@ class Routes {
 
         // ISSUE Commercial
         RouteName.crMapScreen: (context) => CRMapScreen(),
+        RouteName.CommercialOtpScreen: (context) => CommercialOtpScreen(),
+
         RouteName.requestCommercialLicenseDetails: (context) =>
             const RequestCommercialLicenseDetailsPage(),
 

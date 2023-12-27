@@ -34,7 +34,6 @@ class _CrStep2ConditionsPageState extends State<CrStep2ConditionsPage> {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Container(
-        // height: context.screenHeight * 0.90,
         color: AppColor.scaffoldBackground,
         padding: EdgeInsets.all(16),
         child: Column(

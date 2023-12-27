@@ -646,6 +646,7 @@ class WebService {
           "Authorization": basicAuthForGuest
       };
       var response;
+      print(requestUrl);
       if (duration == null) {
         response = await http.get(
           Uri.parse(requestUrl),

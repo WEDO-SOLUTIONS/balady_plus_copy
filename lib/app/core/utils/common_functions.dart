@@ -89,6 +89,7 @@ import '../services/services_exports.dart'
         NoParams,
         WebService;
 import 'constants/dialog_names.dart';
+import 'constants/ux_cam_events.dart';
 import 'enums/enums.dart';
 
 FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
@@ -1038,9 +1039,13 @@ class CommonFunctions {
 
 // UX Cam Events
       if (sl<EnvType>().isProd) {
-        String headers = (dioError?.requestOptions.headers.cast().toString() ??
-                response?.requestOptions.headers.cast().toString()) ??
-            "";
+        Map<String, dynamic> headersMap = (dioError?.requestOptions.headers ??
+                response?.requestOptions.headers) ??
+            {};
+        headersMap.remove("Authorization");
+        headersMap.remove("authorization");
+
+        String headers = (headersMap.cast().toString());
 
         String data = (dioError?.requestOptions.data.toString() ??
                 response?.requestOptions.data.toString()) ??
@@ -1059,7 +1064,7 @@ class CommonFunctions {
             (dioError?.requestOptions.path ?? response?.realUri.path) ??
                 "Error";
 
-        FlutterUxcam.logEventWithProperties(URL, {
+        FlutterUxcam.logEventWithProperties("APIError", {
           "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
           "Data": data.length <= 1024 ? data : data.substring(0, 1023),
           "QueryString": queryString.length <= 1024
@@ -1189,6 +1194,9 @@ class CommonFunctions {
   }
 
   static void openSnapAndSend() async {
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.SnapAndSend_Open_From_Home_Event);
+
     await BottomSheetDialog.showDraggableSheet(
         NavigationService.navigatorKey.currentContext!,
         dialogKeyName: DialogName.vdTypesDialog,

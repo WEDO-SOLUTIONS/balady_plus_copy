@@ -87,7 +87,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "3.8.0+180"
+    version: "3.8.0+183"
   balady_uikit:
     dependency: "direct main"
     description:

@@ -455,7 +455,7 @@
   "dc_damaged_type": "رفع بلاغ مركبة مهملة",
   "dc_retreive_car": "استعادة مركبة مسحوبة",
   "dc_type_select": "اختر نوع الطلب",
-  "dc_type_self": "عن نفسي",
+  "dc_type_self": "عن نفسي", 
   "dc_type_agent": "وكيل",
   "dc_type_owner": "مدير / مالك منشأة",
   "dc_type_dead": "عن متوفي",
@@ -3486,7 +3486,7 @@
   "hotel_license_number":"رقم الرخصة التجارية للفندق", 
  
   "hotel_name":"اسم الفندق",
-  "hotel_class":"فئة الفندق", 
+  "hotel_class":"فئة الفندق",  
   "wrong_input_data":"القيمة المدخلة غير صحيحة", 
   "permit_tobacco_cancel_confirm_msg":"عزيزي المستفيد، هل تريد الاستمرار بإلغاء طلب تصريح تقديم منتجات التبغ رقم {}", 
   "permit_tobacco_name":"تصريح تقديم منتجات التبغ", 

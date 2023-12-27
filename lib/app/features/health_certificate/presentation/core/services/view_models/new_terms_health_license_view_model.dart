@@ -42,6 +42,14 @@ class NewTermsHealthLicenseViewModel extends BaseViewModel {
   }
 
   Future<ApplyNewHealthRequest?> submit() async {
+    if (dataModel.isRenew) {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.HealthCertificate_renew_Submit_Event);
+    } else {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.HealthCertificate_Issue_Submit_Event);
+    }
+
     ApplyNewHealthRequest? response = await dataModel.applyHealthCertificate();
 
     if (response?.data?.result?.gotoRating == false &&
@@ -55,6 +63,14 @@ class NewTermsHealthLicenseViewModel extends BaseViewModel {
 
         CommonFunctions.sendUXCamEvent(
             UXCamEvents.finishServiceHealthCertificate);
+
+        if (dataModel.isRenew) {
+          CommonFunctions.sendUXCamEvent(
+              UXCamEvents.HealthCertificate_renew_Success_Event);
+        } else {
+          CommonFunctions.sendUXCamEvent(
+              UXCamEvents.HealthCertificate_Issue_Success_Event);
+        }
       }
     } else {
       if (response?.data?.result?.requestId != null) {
