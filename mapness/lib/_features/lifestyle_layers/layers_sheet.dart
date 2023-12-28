@@ -3,14 +3,17 @@ import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/_features/landing/providers/map_controls.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
+import 'package:mapness/app/router.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
+
+import 'map_controls.dart';
 
 class LayersSheet extends ConsumerStatefulWidget {
   const LayersSheet({super.key});
@@ -26,6 +29,12 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
   void initState() {
     super.initState();
     _draggableScrollableController = DraggableScrollableController();
+    _draggableScrollableController.addListener(() {
+      if (_draggableScrollableController.size < .2) {
+        ref.read(goRouterProvider).pop();
+      }
+    });
+
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _draggableScrollableController.isAttached
           ? _draggableScrollableController.animateTo(
@@ -43,101 +52,113 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
     var state = ref.watch(layersControlsProvider);
     var lang = ref.watch(appLanguageProvider);
 
-    return DraggableScrollableSheet(
-      controller: _draggableScrollableController,
-      initialChildSize: .0,
-      minChildSize: .15,
-      maxChildSize: .6,
-      snapSizes: const [.0, .3, .6],
-      snap: true,
-      builder: (BuildContext context, ScrollController scrollController) {
-        return Directionality(
-          textDirection: switch (lang) {
-            Language.english => TextDirection.ltr,
-            Language.arabic => TextDirection.rtl,
-          },
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(16.0),
-                topLeft: Radius.circular(16.0),
-              ),
-            ),
-            child: Stack(
-              children: [
-                CustomScrollView(
-                  controller: scrollController,
-                  primary: false,
-                  physics: const ClampingScrollPhysics(),
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: Column(children: [
-                        Container(
-                          height: 4,
-                          width: 40,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFDDE4EE),
-                            borderRadius: BorderRadius.all(Radius.circular(24)),
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      children: [
+        const MapControls(),
+        DraggableScrollableSheet(
+          controller: _draggableScrollableController,
+          initialChildSize: .6,
+          minChildSize: .0,
+          maxChildSize: .6,
+          snapSizes: const [.0, .3, .6],
+          snap: true,
+          builder: (BuildContext context, ScrollController scrollController) {
+            return Directionality(
+              textDirection: switch (lang) {
+                Language.english => TextDirection.ltr,
+                Language.arabic => TextDirection.rtl,
+              },
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(16.0),
+                    topLeft: Radius.circular(16.0),
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    CustomScrollView(
+                      controller: scrollController,
+                      primary: false,
+                      physics: const ClampingScrollPhysics(),
+                      slivers: [
+                        SliverToBoxAdapter(
+                          child: Material(
+                            color: Colors.transparent,
+                            child: Column(children: [
+                              Container(
+                                height: 4,
+                                width: 40,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFFDDE4EE),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(24)),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    context.l10n.layersOnTheMap,
+                                    style: Theme.of(context)
+                                        .extension<ThemeTextStyles>()!
+                                        .headingS,
+                                  ),
+                                  const Spacer(),
+                                  CustomCloseButton(
+                                    onClose: () async {
+                                      // ref
+                                      //     .watch(layersControlsProvider.notifier)
+                                      //     .update(visible: false);
+                                      // ref
+                                      //     .watch(mapControlsProvider.notifier)
+                                      //     .update(MapControlsStateIdle());
+                                      context.pop();
+                                    },
+                                  )
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                            ]),
                           ),
                         ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              context.l10n.layersOnTheMap,
-                              style: Theme.of(context)
-                                  .extension<ThemeTextStyles>()!
-                                  .headingS,
-                            ),
-                            const Spacer(),
-                            CustomCloseButton(
-                              onClose: () async {
-                                ref
-                                    .watch(layersControlsProvider.notifier)
-                                    .update(visible: false);
-                                ref
-                                    .watch(mapControlsProvider.notifier)
-                                    .update(MapControlsStateIdle());
-                              },
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                      ]),
-                    ),
-                    SliverList.separated(
-                      separatorBuilder: (_, __) => const SizedBox(height: 16),
-                      itemCount: LayerType.values.length,
-                      itemBuilder: (_, int index) {
-                        var value = LayerType.values[index];
+                        SliverList.separated(
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(height: 16),
+                          itemCount: LayerType.values.length,
+                          itemBuilder: (_, int index) {
+                            var value = LayerType.values[index];
 
-                        return FilterRow(
-                          value: value,
-                          onTap: () {
-                            ref
-                                .read(searchByRubricsQueryProvider.notifier)
-                                .update(null);
-                            watch.handleTap(value);
+                            return FilterRow(
+                              value: value,
+                              onTap: () {
+                                ref
+                                    .read(searchByRubricsQueryProvider.notifier)
+                                    .update(null);
+                                watch.handleTap(value);
+                              },
+                              isSelected: state.selectedType == (value),
+                            );
                           },
-                          isSelected: state.selectedType == (value),
-                        );
-                      },
+                        ),
+                      ],
                     ),
+                    if (state.isLoading)
+                      const Center(child: CircularProgressIndicator()),
                   ],
                 ),
-                if (state.isLoading)
-                  const Center(child: CircularProgressIndicator()),
-              ],
-            ),
-          ),
-        );
-      },
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 }

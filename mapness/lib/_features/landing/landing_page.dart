@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
-import 'package:mapness/_features/lifestyle_layers/layers_sheet.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/app/routes/poi_map.dart';
@@ -101,7 +100,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isLayersVisible = ref.watch(layersControlsProvider);
+    ref.watch(layersControlsProvider);
     ref.watch(favouriteMarkersProvider.select((value) => null));
 
     /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
@@ -127,7 +126,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
                   biggestWidth: constraints.biggest.width,
                 );
               }),
-              if (isLayersVisible.layersVisible) const LayersSheet()
+              // if (isLayersVisible.layersVisible) const LayersSheet()
             ],
           ),
         ),
@@ -142,14 +141,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
         {'objectId': event.dgisObjectId.objectId},
       );
       if (context.mounted) {
-        final currentRoute = ref.read(currentRouteProvider);
-
-        if (currentRoute == "/poi-map") {
-          PoiMapRoute(dgisObjectId: event.dgisObjectId.objectId)
-              .pushReplacement(context);
-        } else {
-          PoiMapRoute(dgisObjectId: event.dgisObjectId.objectId).push(context);
-        }
+        PoiMapRoute.open(context, event.dgisObjectId.objectId);
       }
     }
   }
