@@ -34,11 +34,11 @@ double distanceToZoom(
   if (minDistance < 1) {
     return 15;
   } else if (minDistance < 5) {
-    return 14;
+    return 13;
   } else if (minDistance < 10) {
-    return 12;
+    return 11;
   } else if (minDistance < 20) {
-    return 10;
+    return 9;
   }
   return 7;
 }
@@ -62,6 +62,14 @@ class MapQuickFilters extends ConsumerStatefulWidget {
 class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
   bool isZoomInteracted = false;
   bool isCoordComputed = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      isZoomInteracted = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,6 +114,8 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
         Debouncer(milliseconds: 300).run(() async {
           await _computeCameraPosition(markers);
         });
+      } else {
+        isZoomInteracted = false;
       }
     });
 
@@ -150,6 +160,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
     final location = ref.read(cameraPositionProvider)?.point;
 
     if (location?.latitude == null && location?.longitude == null) return;
+    if (isZoomInteracted) return;
 
     final position = (location?.latitude ?? 0, location?.longitude ?? 0);
 
