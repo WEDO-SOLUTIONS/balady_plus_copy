@@ -84,12 +84,10 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
       if (!widget.forMap) return;
       await searchObjectManager.removeAllMarkers();
 
-      final value = next.unwrapPrevious().valueOrNull;
-
-      if (value != null) {
+      if (next != null) {
         List<Marker> markers = [];
         for (final markerInfo
-            in (value.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty())) {
+            in (next.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty())) {
           markers.add(
             Marker(
               id: markerInfo?.objectId?.objectId.toString() ??

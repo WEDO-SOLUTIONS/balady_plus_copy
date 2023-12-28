@@ -2,7 +2,6 @@ import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:rxdart/rxdart.dart';
 
 part 'search_by_rubrics.g.dart';
 
@@ -19,47 +18,35 @@ class SearchByRubricsQuery extends _$SearchByRubricsQuery {
 @riverpod
 class SearchByRubrics extends _$SearchByRubrics {
   @override
-  Stream<SearchResultMessage?> build() {
+  SearchResultMessage? build() {
     final filter = ref.watch(searchByRubricsQueryProvider);
-    if (filter == null) return Stream.value(null);
+    if (filter == null) return null;
 
-    return ref
-        .watch(dgisControllerProvider.notifier)
-        .visibleRectSubject
-        .debounceTime(const Duration(milliseconds: 750))
-        .map((event) => event.visibleRect)
-        .asyncMap(
-      (event) async {
-        final result = await performSearch(filter.$1, event.geoRectMessage());
-
-        if (ref.read(searchByRubricsQueryProvider) == filter) {
-          return result;
-        }
-        return null;
-      },
-    );
-  }
-
-  Future<SearchResultMessage?> performSearch(
-      QuickFilter filter, GeoRectMessage searchRect) async {
     final dgisController = ref.watch(dgisControllerProvider).value;
 
-    if (filter.rubrics.isEmpty && filter.query != null) {
-      final category = getCategoryByTag(filter.query!);
+    if (filter.$1.rubrics.isEmpty && filter.$1.query != null) {
+      final category = getCategoryByTag(filter.$1.query!);
       if (category == null) return null;
-
-      return await dgisController?.searchByCategory(
-        category,
-        sortingType: SortingTypeMessage.byRelevance,
-        searchRect: searchRect,
-      );
+      dgisController
+          ?.searchByCategory(
+            category,
+            sortingType: SortingTypeMessage.byRelevance,
+          )
+          .then(
+            (value) => state = value,
+          );
+      return null;
     }
+    dgisController
+        ?.searchByRubrics(
+          filter.$1.rubrics,
+          sortingType: SortingTypeMessage.byRelevance,
+        )
+        .then(
+          (value) => state = value,
+        );
 
-    return await dgisController?.searchByRubrics(
-      filter.rubrics,
-      sortingType: SortingTypeMessage.byRelevance,
-      searchRect: searchRect,
-    );
+    return null;
   }
 
   SearchCategoryMessage? getCategoryByTag(String tag) {
