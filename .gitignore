@@ -12,7 +12,7 @@ migrate_working_dir/
 
 # mapness related ignore
 mapness/**/*.g.dart
-mapness/lib/l10n
+mapness/lib/l10n/generated
 
 # IntelliJ related
 *.iml
