@@ -1,14 +1,31 @@
 import 'package:balady_plus/app/core/services/local/helpers.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-class SubmitDisclosedSuccessfullyScreen extends StatelessWidget {
+class SubmitDisclosedSuccessfullyScreen extends StatefulWidget {
   const SubmitDisclosedSuccessfullyScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SubmitDisclosedSuccessfullyScreen> createState() => _SubmitDisclosedSuccessfullyScreenState();
+}
+
+class _SubmitDisclosedSuccessfullyScreenState extends State<SubmitDisclosedSuccessfullyScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+
+    CommonFunctions.sendUXCamEvent(
+      UXCamEvents.openConfirmTobaccoDisclosedScreen,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
