@@ -1,8 +1,8 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:rxdart/rxdart.dart';
 
 part 'search_by_rubrics.g.dart';
 
@@ -19,24 +19,18 @@ class SearchByRubricsQuery extends _$SearchByRubricsQuery {
 @riverpod
 class SearchByRubrics extends _$SearchByRubrics {
   @override
-  Stream<SearchResultMessage?> build() {
+  Future<SearchResultMessage?> build() async {
     final filter = ref.watch(searchByRubricsQueryProvider);
-    if (filter == null) return Stream.value(null);
+    if (filter == null) return null;
 
-    return ref
-        .watch(dgisControllerProvider.notifier)
-        .visibleRectSubject
-        .debounceTime(const Duration(milliseconds: 750))
-        .map((event) => event.visibleRect)
-        .asyncMap(
-      (event) async {
-        final result = await performSearch(filter.$1, event.geoRectMessage());
+    final searchRect =
+        ref.watch(searchInRectProvider.select((value) => value.$1));
+    final dgisController = ref.read(dgisControllerProvider.notifier);
 
-        if (ref.read(searchByRubricsQueryProvider) == filter) {
-          return result;
-        }
-        return null;
-      },
+    return await performSearch(
+      filter.$1,
+      searchRect ??
+          dgisController.visibleRectSubject.value.visibleRect.geoRectMessage(),
     );
   }
 

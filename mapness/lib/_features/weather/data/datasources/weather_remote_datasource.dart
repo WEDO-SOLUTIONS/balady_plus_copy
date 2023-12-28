@@ -36,13 +36,13 @@ class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
         queryParameters: map,
         cancelToken: cancelToken,
       );
+      mixpanel?.track("WebServiceWeather: getCurrentWeatherData");
       return response.data;
     } on DioException catch (e) {
       log("WEATHER API DioException $e");
     } catch (e) {
       log("WEATHER API EXCEPTION $e");
     }
-    mixpanel?.track("WebServiceWeather: getCurrentWeatherData");
     return null;
   }
 

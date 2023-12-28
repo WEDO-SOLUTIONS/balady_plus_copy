@@ -10,6 +10,7 @@ import 'package:mapness/_features/landing/widgets/happines_control.dart';
 import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/layers_control.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
+import 'package:mapness/_features/landing/widgets/search_in_area.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/app/routes/kiblah.dart';
 import 'package:mapness/app/routes/weather.dart';
@@ -77,25 +78,33 @@ class MapControls extends ConsumerWidget {
                             //   },
                             // ),
                             // const SizedBox(height: 8),
-                            MapButton(
-                              child: SvgPicture.asset(
-                                "assets/icons/svg/ic_controls_qibla.svg",
-                                semanticsLabel: 'MinApps Screen',
-                                package: "mapness",
-                              ),
-                              onTap: () async {
-                                final location =
-                                    ref.read(locationProvider.notifier);
+                            Row(
+                              children: [
+                                MapButton(
+                                  child: SvgPicture.asset(
+                                    "assets/icons/svg/ic_controls_qibla.svg",
+                                    semanticsLabel: 'MinApps Screen',
+                                    package: "mapness",
+                                  ),
+                                  onTap: () async {
+                                    final location =
+                                        ref.read(locationProvider.notifier);
 
-                                await location
-                                    .checkLocationPermission()
-                                    .then((allowed) {
-                                  if (allowed) {
-                                    const KiblahRoute()
-                                        .pushReplacement(context);
-                                  }
-                                });
-                              },
+                                    await location
+                                        .checkLocationPermission()
+                                        .then((allowed) {
+                                      if (allowed) {
+                                        const KiblahRoute()
+                                            .pushReplacement(context);
+                                      }
+                                    });
+                                  },
+                                ),
+                                const SizedBox(
+                                  width: 12,
+                                ),
+                                const SearchInArea(),
+                              ],
                             ),
                           ],
                         ),
