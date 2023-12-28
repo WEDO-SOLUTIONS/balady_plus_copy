@@ -72,7 +72,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   await ref.read(cameraPositionProvider.notifier).animateTo(
         CameraPositionMessage(
           point: isInViewPort && point != null ? point : markerPoint,
-          zoom: cameraZoom ?? 17,
+          zoom: isInViewPort ? cameraZoom ?? 17 : 17,
           tilt: 0,
           bearing: 0,
         ),
