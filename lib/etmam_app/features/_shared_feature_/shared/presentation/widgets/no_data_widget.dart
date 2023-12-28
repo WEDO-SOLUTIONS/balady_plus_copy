@@ -12,8 +12,10 @@ import '../../../../../core/utils/utils_exports.dart'
 
 class NoDataWidget extends StatelessWidget {
   final double widgetHeight;
+  final String? title;
 
-  const NoDataWidget({Key? key, this.widgetHeight = 80}) : super(key: key);
+  const NoDataWidget({Key? key, this.widgetHeight = 80, this.title})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,7 @@ class NoDataWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CustomTextWidget(
-            trans("no_available_services"),
+            title ?? trans("no_available_services"),
             fontSize: 14,
             fontColor: AppColor.bottomNavigationShadow,
             fontWeight: AppFontWeight.regular,

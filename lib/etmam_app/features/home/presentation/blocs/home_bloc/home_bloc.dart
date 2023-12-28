@@ -176,8 +176,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     failureOrSuccess.fold((failure) {
       emitter(state.copyWith(
-        topRatedProvidersStatus: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
+        topRatedProvidersStatus: (failure as ServerFailure).errorCode == "2"
+            ? BlocStatus.success
+            : BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorCode == "2"
+            ? ""
+            : (failure as ServerFailure).errorMessage,
       ));
     }, (success) {
       emitter(state.copyWith(
@@ -190,6 +194,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future<void> _getSubServicesHandler(
       GetSubServicesEvent e, Emitter emitter) async {
+    if (state.status == BlocStatus.loading) return;
     emitter(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
 
     final failureOrSuccess = await _getSubService(e.params);
