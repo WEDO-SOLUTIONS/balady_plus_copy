@@ -3,6 +3,7 @@ import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_fe
 
 import 'package:flutter/material.dart';
 
+import '../../../../../app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../home/presentation/widgets/etmam_home_page/etmam_top_rated_providers_widgets.dart';
 
 class ProviderItemWidget extends StatelessWidget {
@@ -48,7 +49,7 @@ class ProviderItemWidget extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(8)),
-                  child: CustomNetworkImageWidget(
+                  child: CustomCachedNetworkImage(
                     providerIcon ?? "",
                     imageHeight: 58,
                     imageWidth: 58,

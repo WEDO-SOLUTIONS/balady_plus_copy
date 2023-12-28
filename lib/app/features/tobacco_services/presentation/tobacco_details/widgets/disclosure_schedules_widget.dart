@@ -4,6 +4,7 @@ import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/tobacco_services/presentation/tobacco_details/mvvm/tobacco_details_view_model.dart';
 import 'package:balady_plus/app/features/tobacco_services/presentation/tobacco_disclosed/mvvm/tobacco_disclosed_view_model.dart';
@@ -83,6 +84,8 @@ class DisclosureSchedulesWidget extends StatelessWidget {
                                                     .facilityInfo
                                                     .registrationNumber !=
                                                 null) {
+                                              CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceTobaccoDisclosed);
+
                                               TobaccoDisclosedViewModel?
                                                   viewModel =
                                                   await BottomSheetDialog
@@ -113,6 +116,10 @@ class DisclosureSchedulesWidget extends StatelessWidget {
                                                 );
                                                 provider
                                                     .getUserFacilitiesDetails();
+                                              } else {
+                                                CommonFunctions.sendUXCamEvent(
+                                                  UXCamEvents.closeServiceTobaccoDisclosed,
+                                                );
                                               }
                                             } else {
                                               CommonFunctions.showError(
