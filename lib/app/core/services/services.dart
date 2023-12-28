@@ -573,18 +573,6 @@ Map<String, dynamic> servicesConfig = {
       "en": {"title": "municipal_advisor", "description": null, "tag": null}
     },
     {
-      "id": 401,
-      "icon": "municipal_advisor",
-      "3d_icon": null,
-      "order": 13,
-      "isNew": false,
-      "isImportant": false,
-      "requireLogin": true,
-      "action": {"type": "page", "value": RouteName.municipalAdvisor},
-      "ar": {"title": "municipal_advisor", "description": null, "tag": null},
-      "en": {"title": "municipal_advisor", "description": null, "tag": null}
-    },
-    {
       "id": 402,
       "icon": "violation-guide",
       "3d_icon": null,
@@ -635,6 +623,18 @@ Map<String, dynamic> servicesConfig = {
         "description": "You can now book an appointment through the app!",
         "tag": null
       }
+    },
+    {
+      "id": 401,
+      "icon": "municipal_advisor",
+      "3d_icon": null,
+      "order": 13,
+      "isNew": false,
+      "isImportant": false,
+      "requireLogin": true,
+      "action": {"type": "page", "value": RouteName.municipalAdvisor},
+      "ar": {"title": "municipal_advisor", "description": null, "tag": null},
+      "en": {"title": "municipal_advisor", "description": null, "tag": null}
     },
     {
       "id": 405,
