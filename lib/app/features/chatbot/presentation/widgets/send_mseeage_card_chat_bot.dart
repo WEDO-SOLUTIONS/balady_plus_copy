@@ -7,7 +7,6 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/c
 import 'package:balady_plus/app/features/chatbot/data/models/chat_bot_message.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/mvvm/chatboot_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
@@ -33,51 +32,51 @@ class _SendMessageCardChatBotState extends State<SendMessageCardChatBot> {
           topRight: Radius.circular(16),
         ),
       ),
-      child: Selector<ChatBotProvider, bool>(
-        selector: (_, provider) => provider.isLoading,
-        builder: (_, isLoading, __) {
-          return SafeArea(
-            top: false,
-            child: IgnorePointer(
-              ignoring: false,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _controller,
-                      minLines: 1,
-                      maxLines: 3,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 10,
-                        ),
-                        hintText: 'chat_bot_hint'.tr(),
-                        fillColor: AppColor.blackModern100Light,
-                        filled: true,
-                        border: BorderType.outline.inputBorder(
-                          color: AppColor.blackModern100Light,
-                          radius: 8,
-                        ),
-                        enabledBorder: BorderType.outline.inputBorder(
-                          color: AppColor.blackModern100Light,
-                          radius: 8,
-                        ),
-                        focusedBorder: BorderType.outline.inputBorder(
-                          color: AppColor.blackModern100Light,
-                          radius: 8,
-                        ),
-                        errorBorder: BorderType.outline.inputBorder(
-                          color: AppColor.error,
-                          radius: 8,
-                        ),
-                      ),
-                      // onSubmitted: (text) => sendMessage(provider, text),
-                      textInputAction: TextInputAction.newline,
+      child: SafeArea(
+        top: false,
+        child: IgnorePointer(
+          ignoring: false,
+          child: Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  controller: _controller,
+                  minLines: 1,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
+                    hintText: 'chat_bot_hint'.tr(),
+                    fillColor: AppColor.blackModern100Light,
+                    filled: true,
+                    border: BorderType.outline.inputBorder(
+                      color: AppColor.blackModern100Light,
+                      radius: 8,
+                    ),
+                    enabledBorder: BorderType.outline.inputBorder(
+                      color: AppColor.blackModern100Light,
+                      radius: 8,
+                    ),
+                    focusedBorder: BorderType.outline.inputBorder(
+                      color: AppColor.blackModern100Light,
+                      radius: 8,
+                    ),
+                    errorBorder: BorderType.outline.inputBorder(
+                      color: AppColor.error,
+                      radius: 8,
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  isLoading
+                  // onSubmitted: (text) => sendMessage(provider, text),
+                  textInputAction: TextInputAction.newline,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Selector<ChatBotProvider, bool>(
+                selector: (_, provider) => provider.isLoading,
+                builder: (_, isLoading, __) {
+                  return isLoading
                       ? const CustomCircularLoadingWidget()
                       : InkWell(
                           onTap: () => sendMessage(provider),
@@ -87,12 +86,12 @@ class _SendMessageCardChatBotState extends State<SendMessageCardChatBot> {
                             circleSize: 40,
                             backgroundColor: AppColor.primary900Light,
                           ),
-                        ),
-                ],
+                        );
+                },
               ),
-            ),
-          );
-        },
+            ],
+          ),
+        ),
       ),
     );
   }
