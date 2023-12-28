@@ -1249,6 +1249,12 @@ class CommonFunctions {
       FlutterUxcam.logEvent(event);
     } catch (ex) {}
   }
+
+  static void sendUXCamEventWithProperties(String event,Map<String, dynamic> data) {
+    try {
+      FlutterUxcam.logEventWithProperties(event,data);
+    } catch (ex) {}
+  }
 }
 
 class CommonProperties {

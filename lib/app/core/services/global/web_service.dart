@@ -56,8 +56,8 @@ class WebService {
 
     dio.interceptors.add(
       PrettyDioLogger(
-        requestHeader: false,
-        requestBody: false,
+        requestHeader: true,
+        requestBody: true,
         responseBody: true,
       ),
     );

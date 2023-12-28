@@ -4207,8 +4207,11 @@
   "choosePart": "اختر الجزء",
   "parts": "الأجزاء",
   "quranSearch": "بحث  باسم السورة ... ", 
-  "reset": "تصفية العداد"
+  "reset": "تصفية العداد",
 
 
+
+  "chat_bot_hint": "Please write your inquiry here....",
+  "chat_bot_message_welcome": "Hello and welcome. \nI am the smart assistant for the Ministry of Municipal and Rural Affairs and Housing. Please proceed with your inquiry, and I will be happy to answer you."
 
 }

@@ -336,6 +336,9 @@ class RouteName {
 
   static const SpecificServicePage = 'SpecificServicePage';
   static const jodDonationPage = 'JodDonationPage';
+
+  static const chatbot = '/chatbot';
+
 }
 
 class EtmamRoutesNames {
