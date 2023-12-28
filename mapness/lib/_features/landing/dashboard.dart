@@ -13,6 +13,7 @@ import 'package:mapness/_features/landing/widgets/snap_and_send_card.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/stories/stories.dart';
 import 'package:mapness/_features/stories/stories_widget.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 
 import 'widgets/interesting_places_cards.dart';
 import 'widgets/shopping_malls_cards.dart';
@@ -88,6 +89,9 @@ class _DashboardState extends ConsumerState<Dashboard> {
     return WillPopScope(
       onWillPop: () async {
         if (Stories.isShowing) {
+          ref.read(urbiMetricsProvider.notifier).logEvent(
+                'Stories/close',
+              );
           Stories.hide();
           return false;
         }

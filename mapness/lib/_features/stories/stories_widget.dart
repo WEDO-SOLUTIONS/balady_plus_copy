@@ -5,6 +5,7 @@ import 'package:mapness/_features/stories/data/story_service.dart';
 import 'package:mapness/_features/stories/presentation/story_refresh_button.dart';
 import 'package:mapness/_features/stories/presentation/story_thumbnails.dart';
 import 'package:mapness/_features/stories/stories.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 
 import '../common/providers/network_status.dart';
 
@@ -33,6 +34,10 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
   }
 
   openStory(BuildContext context, String id) {
+    ref.read(urbiMetricsProvider.notifier).logEvent(
+      'Stories/open_story',
+      {'id': id},
+    );
     Stories.showStoryById(context, id);
   }
 
@@ -56,6 +61,7 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => StoryRefreshButton(
           onPressed: () {
+            ref.read(urbiMetricsProvider.notifier).logEvent('Stories/refresh');
             ref.read(storyServiceProvider.notifier).refresh();
           },
         ),

@@ -11,6 +11,7 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dar
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 
 class ComplianceCard extends ConsumerWidget {
   const ComplianceCard({super.key});
@@ -84,6 +85,10 @@ class ComplianceCard extends ConsumerWidget {
                         ),
                         GestureDetector(
                           onTap: () {
+                            ref.read(urbiMetricsProvider.notifier).logEvent(
+                              'Compliance/open_compliance',
+                              {'id': 'compliance'},
+                            );
                             ref
                                 .read(layersControlsProvider.notifier)
                                 .update(visible: true);
@@ -115,6 +120,10 @@ class ComplianceCard extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(8),
                       child: InkWell(
                         onTap: () {
+                          ref.read(urbiMetricsProvider.notifier).logEvent(
+                            'Compliance/open_create_compliance',
+                            {'id': 'compliance'},
+                          );
                           CommonFunctions.openCreateCompliance();
                         },
                         borderRadius: BorderRadius.circular(8),
@@ -140,6 +149,10 @@ class ComplianceCard extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(8),
                       child: InkWell(
                         onTap: () {
+                          ref.read(urbiMetricsProvider.notifier).logEvent(
+                            'Compliance/open_rating_building',
+                            {'id': 'compliance'},
+                          );
                           CommonFunctions.openRatingBuilding();
                         },
                         borderRadius: BorderRadius.circular(8),

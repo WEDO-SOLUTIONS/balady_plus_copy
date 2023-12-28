@@ -1014,13 +1014,13 @@ packages:
     source: hosted
     version: "1.0.8"
   flutter_uxcam:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_uxcam
-      sha256: "9d646ac67d92dec5d92f64e72ba5340eb48009af46ad913dfc2730781fe91393"
+      sha256: "94c31f21ae7f045a63170eaca0b6e831a0176154c9978440248fac58b42a57dd"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.6"
+    version: "2.4.7"
   flutter_web_plugins:
     dependency: transitive
     description: flutter

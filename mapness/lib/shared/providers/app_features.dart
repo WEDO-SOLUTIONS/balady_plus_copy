@@ -1,3 +1,4 @@
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -27,6 +28,7 @@ class _AppFeatures extends _$AppFeatures {
 
   void enableNavi() {
     mixpanel?.registerSuperPropertiesOnce({'AppFeatures': 'navi'});
+    FlutterUxcam.setSessionProperty('AppFeatures', 'navi');
     ref.read(sharedPrefsProvider).setBool("$_prefsKey.navi", true);
     ref.invalidateSelf();
   }

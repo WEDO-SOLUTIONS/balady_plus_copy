@@ -80,6 +80,7 @@ dependencies:
   youtube_player_flutter: ^8.1.2
   custom_image_crop: ^0.0.13
   flutter_image_compress: ^2.1.0
+  flutter_uxcam: ^2.4.7
 
 dev_dependencies:
   flutter_test:

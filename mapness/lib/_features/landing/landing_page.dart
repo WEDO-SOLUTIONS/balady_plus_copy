@@ -12,6 +12,7 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dar
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -136,6 +137,10 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
   void _objectTapListener(TapEvent event) {
     if (event is ObjectTapEvent) {
+      ref.read(urbiMetricsProvider.notifier).logEvent(
+        'Landing/objectTap',
+        {'objectId': event.dgisObjectId.objectId},
+      );
       if (context.mounted) {
         final currentRoute = ref.read(currentRouteProvider);
 
