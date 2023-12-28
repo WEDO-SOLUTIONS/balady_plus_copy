@@ -372,6 +372,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
         brand: state.brand,
         floorNumber: int.tryParse(state.floorNumber ?? ""),
         hasElevator: state.hasElevator,
+        insidePetrolStation: state.insidePetrolStation,
         isCitizenPledgedToClean: state.isCitizenPledgedToClean,
         shopName: state.shopName,
         shopUnitNumber: state.shopUnitNumber,
@@ -713,6 +714,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
       String? salamaBillNumber = requestData?.shopInfo?.salamaBillNumber;
       String? salamaPermitNumber = requestData?.shopInfo?.salamaPermitNumber;
       String? slamaReportNumber = requestData?.shopInfo?.slamaReportNumber;
+      bool? insidePetrolStation = requestData?.insidePetrolStation;
 
       int? noOfCameras = requestData?.shopInfo?.noOfCameras;
 
@@ -785,6 +787,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
           shopName: shopName,
           draftStatus: BlocStatus.success,
           existInMall: existInMall,
+          insidePetrolStation: insidePetrolStation,
           selectedBoards: selectedBoards,
           hasElevator: hasElevator,
           isCitizenPledgedToClean: Nullable(isCitizenPledgedToClean),

@@ -7,9 +7,7 @@ import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_fe
     show
         CustomIndicatorWidget,
         CustomInkWellButtonWidget,
-        CustomNetworkImageWidget,
         CustomShimmerHorizontalListWidget,
-        CustomSvgIconWidget,
         CustomTextWidget,
         CustomVerticalSpace,
         ReloadWidget;
@@ -30,6 +28,7 @@ import 'package:balady_plus/etmam_app/features/home/home_exports.dart'
         SubServiceParams,
         SubServiceResponse;
 
+import '../../../../../../app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../../_shared_feature_/shared/presentation/widgets/header_with_all_button_widget.dart';
 import '../../../../_shared_feature_/shared/presentation/widgets/no_data_widget.dart';
 
@@ -218,7 +217,7 @@ class EtmamServiceCardWidget extends StatelessWidget {
           children: [
             Container(
               margin: const EdgeInsetsDirectional.all(16),
-              child: CustomNetworkImageWidget(
+              child: CustomCachedNetworkImage(
                 serviceIcon,
                 imageHeight: 35,
                 imageWidth: 35,

@@ -630,7 +630,7 @@ class RenewCommercialLicenseBloc
 
   Future<void> _changeInsidePetrolStationHandler(
       ChangeInsidePetrolStationEvent e, Emitter emitter) async {
-    emitter(state.copyWith(insidePetrolStation: e.value));
+    emitter(state.copyWith(insidePetrolStation: e.value, errorMessage: ""));
   }
 
   void sendStepEvent(int stepNo) {

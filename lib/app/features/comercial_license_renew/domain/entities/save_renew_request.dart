@@ -50,7 +50,7 @@ class SaveRenewRequest extends Equatable {
         if (salamaPermitNumber != null && salamaPermitNumber!.isNotEmpty)
           "salamaPermitNumber": salamaPermitNumber,
         "salamaPermitExist": salamaPermitExist,
-        "insidePetrolStation": insidePetrolStation ?? false
+        "insidePetrolStation": insidePetrolStation
       };
   @override
   List<Object?> get props => [

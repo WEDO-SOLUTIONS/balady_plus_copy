@@ -20,7 +20,7 @@ class IsShopInsidePetroStationWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomTextWidget(
-              trans("is_deaceased_requrie_special_transfer"),
+              trans("is_license_inside_petrol_station"),
               fontColor: AppColor.blackModern700Light,
               fontSize: 16.0,
               textAlign: TextAlign.start,

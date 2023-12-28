@@ -19,50 +19,51 @@ class RenewRequestDetails {
   final List<AttachmentsInfo>? attachmentsInfo;
   final List<dynamic>? requestNotesInfo;
   final CalculatorResponse? calculatorResponse;
+  final bool? insidePetrolStation;
 
-  RenewRequestDetails({
-    this.requestId,
-    this.statusId,
-    this.statusName,
-    this.subMunicipalityId,
-    this.subMunicipalityName,
-    this.typeId,
-    this.typeName,
-    this.licenseTypeId,
-    this.licenseTypeName,
-    this.lastUpdateDate,
-    this.licenseInfo,
-    this.attachmentsInfo,
-    this.requestNotesInfo,
-    this.calculatorResponse,
-  });
+  RenewRequestDetails(
+      {this.requestId,
+      this.statusId,
+      this.statusName,
+      this.subMunicipalityId,
+      this.subMunicipalityName,
+      this.typeId,
+      this.typeName,
+      this.licenseTypeId,
+      this.licenseTypeName,
+      this.lastUpdateDate,
+      this.licenseInfo,
+      this.attachmentsInfo,
+      this.requestNotesInfo,
+      this.calculatorResponse,
+      this.insidePetrolStation});
 
   factory RenewRequestDetails.fromJson(Map<String, dynamic> json) =>
       RenewRequestDetails(
-        requestId: json["requestId"],
-        statusId: json["statusId"],
-        statusName: json["statusName"],
-        subMunicipalityId: json["subMunicipalityId"],
-        subMunicipalityName: json["subMunicipalityName"],
-        typeId: json["typeId"],
-        typeName: json["typeName"],
-        licenseTypeId: json["licenseTypeId"],
-        licenseTypeName: json["licenseTypeName"],
-        lastUpdateDate: json["lastUpdateDate"],
-        licenseInfo: json["licenseInfo"] == null
-            ? null
-            : LicenseInfo.fromJson(json["licenseInfo"]),
-        attachmentsInfo: json["attachmentsInfo"] == null
-            ? []
-            : List<AttachmentsInfo>.from(json["attachmentsInfo"]!
-                .map((x) => AttachmentsInfo.fromJson(x))),
-        requestNotesInfo: json["requestNotesInfo"] == null
-            ? []
-            : List<dynamic>.from(json["requestNotesInfo"]!.map((x) => x)),
-        calculatorResponse: json["calculatorResponse"] == null
-            ? null
-            : CalculatorResponse.fromJson(json["calculatorResponse"]),
-      );
+          requestId: json["requestId"],
+          statusId: json["statusId"],
+          statusName: json["statusName"],
+          subMunicipalityId: json["subMunicipalityId"],
+          subMunicipalityName: json["subMunicipalityName"],
+          typeId: json["typeId"],
+          typeName: json["typeName"],
+          licenseTypeId: json["licenseTypeId"],
+          licenseTypeName: json["licenseTypeName"],
+          lastUpdateDate: json["lastUpdateDate"],
+          licenseInfo: json["licenseInfo"] == null
+              ? null
+              : LicenseInfo.fromJson(json["licenseInfo"]),
+          attachmentsInfo: json["attachmentsInfo"] == null
+              ? []
+              : List<AttachmentsInfo>.from(json["attachmentsInfo"]!
+                  .map((x) => AttachmentsInfo.fromJson(x))),
+          requestNotesInfo: json["requestNotesInfo"] == null
+              ? []
+              : List<dynamic>.from(json["requestNotesInfo"]!.map((x) => x)),
+          calculatorResponse: json["calculatorResponse"] == null
+              ? null
+              : CalculatorResponse.fromJson(json["calculatorResponse"]),
+          insidePetrolStation: json["insidePetrolStation"]);
 
   Map<String, dynamic> toJson() => {
         "requestId": requestId,

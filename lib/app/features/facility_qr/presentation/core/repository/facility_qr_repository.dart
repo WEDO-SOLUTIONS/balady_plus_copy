@@ -124,7 +124,8 @@ class FacilityQRRepository {
 
       result = SubmitRatingResponse.fromJson(body.data);
     } on DioError catch (error) {
-      errorMsg = error.message ?? ("errors_server_error_1").tr();
+      errorMsg = error.response?.data?["data"]?["responseMessage"] ??
+          ("errors_server_error_1").tr();
       //throw ServerException(error.toString(),
       //     statusCode: error.response?.statusCode);
     } catch (ex) {
