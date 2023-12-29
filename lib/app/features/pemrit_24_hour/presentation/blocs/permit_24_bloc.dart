@@ -238,7 +238,7 @@ class Permit24LicenseBloc
 
       if (nextPage == 0) {
         CommonFunctions.sendUXCamEvent(
-            UXCamEvents.Permit_24_Open_Success_Page_Event);
+            UXCamEvents.Permit_24_Open_Review_Step_Event);
       }
     }
 
@@ -263,7 +263,7 @@ class Permit24LicenseBloc
 
       if (prvoiusPage == 0) {
         CommonFunctions.sendUXCamEvent(
-            UXCamEvents.Permit_24_Open_Success_Page_Event);
+            UXCamEvents.Permit_24_Open_Review_Step_Event);
       }
     }
 

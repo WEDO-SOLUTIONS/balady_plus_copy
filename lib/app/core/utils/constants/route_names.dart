@@ -108,6 +108,8 @@ class RouteName {
 
   static const calculatorMapRoute = 'CalculatorFees_Create_Map_Page';
 
+  static const calculatorResultsScreen = 'CalculatorFees_Results_Page';
+
   // ------- Health Certificates  ---------
 
   static const newHealthCertificatePage =
