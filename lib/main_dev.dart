@@ -23,12 +23,8 @@ void main() async {
     (options) {
       options.dsn =
           'https://c9e9c70957e4433e99fb6be6fc1cafc8@sentry.42.solutions/24';
-      // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
-      // We recommend adjusting this value in production.
-      options.tracesSampleRate = 1.0;
-      // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
-      // We recommend adjusting this value in production.
-      options.profilesSampleRate = 1.0;
+      options.tracesSampleRate = 0.1;
+      options.profilesSampleRate = 0.1;
       options.attachScreenshot = true;
       options.enableUserInteractionTracing = true;
       options.captureFailedRequests = true;

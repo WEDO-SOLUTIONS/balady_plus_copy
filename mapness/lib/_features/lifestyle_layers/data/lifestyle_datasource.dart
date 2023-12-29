@@ -9,8 +9,8 @@ abstract class LifestyleDataSource {
 
   Future<List<dynamic>?> getEsriPoints(
     MapRequestParams params,
+    CancelToken? cancelToken,
   );
-
 }
 
 class _LifestyleDataSource implements LifestyleDataSource {
@@ -21,6 +21,7 @@ class _LifestyleDataSource implements LifestyleDataSource {
   @override
   Future<List<dynamic>?> getEsriPoints(
     MapRequestParams params,
+    CancelToken? cancelToken,
   ) async {
     var points;
     try {
@@ -29,7 +30,7 @@ class _LifestyleDataSource implements LifestyleDataSource {
         params.getUrl(),
         options: Options(headers: {
           if (verifyingKey != null) 'verifyingKEY': verifyingKey,
-        }),
+        }),cancelToken: cancelToken,
       );
 
       return points.data['data']['result']['features'];

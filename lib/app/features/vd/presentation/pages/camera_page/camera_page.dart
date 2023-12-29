@@ -34,6 +34,9 @@ class _VDCameraPageState extends State<VDCameraPage>
     // Helpers.sendEventToAnalytics(AppEvents.VD_Open_Camera); //MM
     CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceSnapAndSend);
     CommonFunctions.sendUXCamEvent(UXCamEvents.cameraServiceSnapAndSend);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.SnapAndSend_Open_Camera_Step_Event);
   }
 
   @override

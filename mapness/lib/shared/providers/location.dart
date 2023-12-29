@@ -9,7 +9,7 @@ part 'location.g.dart';
 
 final locationProvider = _locationProvider;
 
-@riverpod
+@Riverpod(keepAlive: true)
 class _Location extends _$Location {
   @override
   GeoPointMessage? build() {

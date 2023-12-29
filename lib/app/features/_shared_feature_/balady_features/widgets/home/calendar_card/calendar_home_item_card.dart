@@ -4,6 +4,8 @@ import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/shared/config/package_config.dart';
 
+import '../../../../../../core/utils/common_functions.dart';
+import '../../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../calendar/domain/entities/search_calendar/search_calendar_item.dart';
 
 class CalendarHomeItemCard extends StatelessWidget {
@@ -76,6 +78,8 @@ class CalendarHomeItemCard extends StatelessWidget {
             remainingText: "remaining".tr(),
             timer: item.remainingDays(),
             addToCalendar: () {
+              CommonFunctions.sendUXCamEvent(
+                  UXCamEvents.KingdomCalendar_List_AddToCalender_Event);
               Add2Calendar.addEvent2Cal(
                 buildEvent(
                   title: item.name ?? "",

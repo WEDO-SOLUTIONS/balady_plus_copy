@@ -28,6 +28,9 @@ class _NewAppointmentPageState extends State<NewAppointmentPage> {
 
     CommonFunctions.sendEventToAnalytics(AppEvents.makeAppointment);
     CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceAppointmentBooking);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.Appointment_Booking_Open_Create_Details_Event);
   }
 
   @override

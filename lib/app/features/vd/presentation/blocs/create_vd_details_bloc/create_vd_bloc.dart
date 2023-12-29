@@ -41,6 +41,7 @@ import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/services/local/shared_prefs_manager.dart';
 import '../../../../../core/utils/constants/keys/general_keys.dart';
 import '../../../../../core/utils/constants/remote_config.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../core/utils/enums/enums.dart';
 import '../../../../_shared_feature_/data/entities/success_screen_args.dart';
@@ -291,6 +292,8 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
   Future<void> _createIncidentRegisteredHandler(
       CreateIncidentRegisteredEvent e, Emitter emitter) async {
     hideKeyboard();
+    CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Submit_Event);
+
     emitter(state.copyWith(status: BlocStatus.loading));
     CreateIncidentParams params = e.params ??
         CreateIncidentParams(
@@ -359,12 +362,15 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
               type: PAGE_TYPE.newVD,
               fromHomePage: state.isFromHome,
               thanksMessage: success.data?.responseMessage));
-      //MM    Helpers.sendEventToAnalytics(AppEvents.VD_Success_Registered_Submit);
+
+      CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Success_Event);
     });
   }
 
   Future<void> _createIncidentUnRegisteredHandler(
       CreateIncidentUnRegisteredEvent e, Emitter emitter) async {
+    CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Submit_Event);
+
     hideKeyboard();
     emitter(state.copyWith(status: BlocStatus.loading));
     //print("refrences11111 ${state.otpResponse?.referenceId}");
@@ -447,6 +453,8 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
         sharedPrefs.storeGuestInfo(
             state.firstName, state.lastName, state.mobileNumber);
       }
+
+      CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Success_Event);
 
       //MM     Helpers.sendEventToAnalytics(AppEvents.VD_Success_UnRegistered_Submit);
     });
@@ -561,13 +569,17 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
         otpResponse: success,
         errorMessage: "",
       ));
-      if (e.params.showOTPPage == true)
+      if (e.params.showOTPPage == true) {
+        CommonFunctions.sendUXCamEvent(
+            UXCamEvents.SnapAndSend_Open_OTP_Step_Event);
+
         NavigationService.navigatorKey.currentState?.push(MaterialPageRoute(
           builder: (context) => BlocProvider.value(
             value: this,
             child: VDGuestOtpScreen(),
           ),
         ));
+      }
     });
   }
 
@@ -604,12 +616,13 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
 
   Future<void> _goToNextPageHandler(
       GoToNextPageEvent e, Emitter emitter) async {
+    int nextPage = state.currentPageValue + 1;
+
     ////print("next page");
     //print("DataLog ${state}");
     if (isLastPage()) {
     } else {
       if (state.status == BlocStatus.performing) return;
-      int nextPage = state.currentPageValue + 1;
 
       emitter(state.copyWith(
         status: BlocStatus.performing,
@@ -632,32 +645,37 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
         }
       } else {
         controller.jumpToPage(nextPage);
-
+        sendEventStep(nextPage);
         emitter(state.copyWith(
             status: BlocStatus.success,
             currentPageValue: nextPage,
             errorMessage: ""));
       }
     }
+
     hideKeyboard();
   }
 
   Future<void> _goToPreviousPageHandler(
       GoToPreviousPageEvent e, Emitter emitter) async {
+    int prvoiusPage = state.currentPageValue - 1;
+
     if (state.currentPageValue == 0.0) {
       NavigationService.navigatorKey.currentState!.pop();
     } else {
       if (state.status == BlocStatus.performing) return;
-      int prvoiusPage = state.currentPageValue - 1;
       emitter(state.copyWith(
         status: BlocStatus.performing,
       ));
       controller.jumpToPage(prvoiusPage);
+      sendEventStep(prvoiusPage);
+
       emitter(state.copyWith(
           status: BlocStatus.success,
           currentPageValue: prvoiusPage,
           errorMessage: ""));
     }
+
     hideKeyboard();
   }
 
@@ -685,6 +703,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
     } else {
       currentLocation = state.currentUserlocation;
     }
+    CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Open_Map_Step_Event);
 
     await NavigationService.navigatorKey.currentState!
         .pushNamed(RouteName.vdMapRoute,
@@ -726,6 +745,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
         ));
 
         controller.jumpToPage(e.nextPage);
+        sendEventStep(e.nextPage);
 
         emitter(state.copyWith(
             status: BlocStatus.success, currentPageValue: e.nextPage));
@@ -735,6 +755,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
       });
     } else {
       controller.jumpToPage(e.nextPage);
+      sendEventStep(e.nextPage);
 
       emitter(state.copyWith(
           status: BlocStatus.success, currentPageValue: e.nextPage));
@@ -750,5 +771,34 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
 
   hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  void sendEventStep(int page) {
+    String eventName = "";
+
+    if (CommonProperties.isLoggedIn) {
+      if (page == 0) {
+        eventName = UXCamEvents.SnapAndSend_Open_Location_Step_Event;
+      } else if (page == 1) {
+        eventName = UXCamEvents.SnapAndSend_Open_SPL_Step_Event;
+      } else if (page == 2) {
+        eventName = UXCamEvents.SnapAndSend_Open_Details_Step_Event;
+      } else if (page == 3) {
+        eventName = UXCamEvents.SnapAndSend_Open_Review_Step_Event;
+      }
+    } else {
+      if (page == 0) {
+        eventName = UXCamEvents.SnapAndSend_Open_Location_Step_Event;
+      } else if (page == 1) {
+        eventName = UXCamEvents.SnapAndSend_Open_SPL_Step_Event;
+      } else if (page == 2) {
+        eventName = UXCamEvents.SnapAndSend_Open_Guest_Info_Step_Event;
+      } else if (page == 3) {
+        eventName = UXCamEvents.SnapAndSend_Open_Details_Step_Event;
+      } else if (page == 4) {
+        eventName = UXCamEvents.SnapAndSend_Open_Review_Step_Event;
+      }
+    }
+    CommonFunctions.sendUXCamEvent(eventName);
   }
 }

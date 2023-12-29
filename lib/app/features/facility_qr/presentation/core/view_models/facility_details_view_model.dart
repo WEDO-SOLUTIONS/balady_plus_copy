@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../core/base/base_view_model.dart';
 import '../../../../../core/utils/constants/paths/icon_paths.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/enums/enums.dart';
 import '../../../data/qr_photo.dart';
 
@@ -29,15 +30,21 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
     if (qr != null && qr.contains("qrcode/qr/exp")) {
       int lastIndex = qr.lastIndexOf("/");
       if (lastIndex != -1) {
+        CommonFunctions.sendUXCamEvent(
+            UXCamEvents.YourFeedback_Scan_Correct_QR_Event);
         String licenseId = qr.substring(lastIndex + 1);
         qrCode = qr;
         return licenseId;
       } else {
         // showError("error2");
         showError(("wrong_qr_code").tr());
+        CommonFunctions.sendUXCamEvent(
+            UXCamEvents.YourFeedback_Scan_Wrong_QR_Event);
       }
     } else {
       showError(("wrong_qr_code").tr());
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.YourFeedback_Scan_Wrong_QR_Event);
     }
   }
 
@@ -55,6 +62,8 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
         notifyListeners();
         getRatingsData();
         setEntityPhotos();
+        CommonFunctions.sendUXCamEvent(
+            UXCamEvents.YourFeedback_Retrive_License_Data_Event);
         return true;
       } else {
         String error =

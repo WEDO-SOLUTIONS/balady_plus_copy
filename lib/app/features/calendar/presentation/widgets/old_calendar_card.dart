@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../domain/entities/search_calendar/search_calendar_item.dart';
 import 'calendar_image_widget.dart';
 
@@ -101,6 +102,9 @@ class OldCalendarCard extends StatelessWidget {
                   remainingText: "remaining".tr(),
                   timer: item.remainingDays(),
                   addToCalendar: () {
+                    CommonFunctions.sendUXCamEvent(
+                        UXCamEvents.KingdomCalendar_List_AddToCalender_Event);
+
                     Add2Calendar.addEvent2Cal(
                       buildEvent(
                         title: item.name ?? "",

@@ -93,6 +93,8 @@ class FacilityRatingViewModel extends BaseViewModel {
   }
 
   void submitRating(String licenseId) async {
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.YourFeedback_Submit_Rating_Event);
     showLoading();
     final Tuple3<bool?, String?, SubmitRatingResponse?> response =
         await _repositry.postLicenseRatingitems(licenseId, ratingItems);
@@ -112,7 +114,8 @@ class FacilityRatingViewModel extends BaseViewModel {
             title: ("send_evaluation").tr(),
             desc: ("rating_success_message").tr(),
           ));
-
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.YourFeedback_Success_Rating_Event);
       facilityQRViewModel.getFacilityData(licenseId, showLoader: false); //MM
 
       CommonFunctions.sendUXCamEvent(

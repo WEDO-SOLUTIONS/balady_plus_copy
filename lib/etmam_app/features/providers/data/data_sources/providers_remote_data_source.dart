@@ -14,6 +14,9 @@ import 'package:balady_plus/etmam_app/features/providers/providers_exports.dart'
     show ProviderParams, ProviderDetailsParams, ProviderDetailsResponseModel;
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../app/core/dependency_injection/injection_container.dart';
+import '../../../etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
+
 abstract class ProvidersRemoteDataSource {
   Future<ApigeeResponse<ProvidersResponseModel>> getProviders(
       {required ProviderParams params});
@@ -36,7 +39,8 @@ class ProvidersRemoteDataSourceImpl extends ProvidersRemoteDataSource {
         ApiUrl.topOrderedServiceProviders,
         queryParameters: {
           ApiParams.cityId: params.cityId,
-          ApiParams.maxCount: params.pageIndex
+          ApiParams.maxCount: params.pageIndex,
+          "classification-id": sl<EtmamEntryPointCubit>().classificationId
         },
       );
 

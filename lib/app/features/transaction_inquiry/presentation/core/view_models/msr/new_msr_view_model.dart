@@ -9,6 +9,7 @@ import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/services/local/helpers.dart';
 import '../../../../../../core/services/local/navigation_services.dart';
 import '../../../../../../core/utils/constants/remote_config.dart';
+import '../../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../../core/utils/enums/enums.dart';
 import '../../../../../_shared_feature_/data/entities/drop_down_item.dart';
 import '../../../../../_shared_feature_/data/entities/success_screen_args.dart';
@@ -131,6 +132,9 @@ class NewMSRViewModel extends BaseViewModel {
     Tuple3<bool?, String?, CreateIncidentResult?> response;
     String error = ("server_error_1").tr();
     try {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.MunicipalServiceRequest_Submit_Event);
+
       showLoading();
       String? userId = CommonProperties.userInfo?.idNo;
       String? userMobile = CommonProperties.userInfo?.phone;
@@ -333,6 +337,9 @@ class NewMSRViewModel extends BaseViewModel {
             ModalRoute.withName(RouteName.bottomNavigation),
             arguments: SuccessScreenArgs(
                 type: PAGE_TYPE.msr, idNumber: createRequestresponse?.pyId));
+
+        CommonFunctions.sendUXCamEvent(
+            UXCamEvents.MunicipalServiceRequest_Success_Event);
       }
     } else {
       hideLoading();

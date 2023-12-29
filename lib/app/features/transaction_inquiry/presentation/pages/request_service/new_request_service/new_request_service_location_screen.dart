@@ -35,6 +35,9 @@ class _NewRequestLocationScreen extends State<NewRequestLocationScreen> {
 
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.startServiceMunicipalServiceRequest);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.MunicipalServiceRequest_Open_Map_Step_Event);
   }
 
   @override

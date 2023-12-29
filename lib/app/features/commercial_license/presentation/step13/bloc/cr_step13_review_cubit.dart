@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/dependency_injection/dependency_injection_exports.dart';
 import '../../../../../core/errors/errors_exports.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/enums/enums.dart';
 import '../../../../../core/utils/etmam_route_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
@@ -27,6 +28,8 @@ class CrStep13ReviewDataCubit extends Cubit<CrStep13ReviewState> {
   void onSelectSaddadYear(IsicActivity isicActivity) async {}
 
   void save() async {
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.CommercialLicense_Send_Request_Event);
     try {
       int requestId = sl<CommercialLicenseBloc>().state.requestId!;
       String saddadPeriod = sl<CommercialLicenseBloc>().state.selectedPeriod!;

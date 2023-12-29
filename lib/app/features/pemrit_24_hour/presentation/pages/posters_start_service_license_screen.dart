@@ -39,6 +39,9 @@ class _PermitsLicenseStartServiceState
     super.initState();
 
     CommonFunctions.sendUXCamEvent(UXCamEvents.detailsService24HourPermit);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.Permit_24_Open_Service_Card_Event);
   }
 
   @override

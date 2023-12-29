@@ -44,6 +44,8 @@ class _DashBoardPageState extends State<DashBoardPage> {
     CommonFunctions.sendEventToAnalytics(AppEvents.delegators);
 
     CommonFunctions.sendUXCamEvent(UXCamEvents.openDashboard);
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.DashBoard_Click_Dashboard_Event);
   }
 
   @override

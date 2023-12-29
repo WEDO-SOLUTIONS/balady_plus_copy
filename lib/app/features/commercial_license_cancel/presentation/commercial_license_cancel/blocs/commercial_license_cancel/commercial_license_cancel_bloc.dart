@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
+import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/data/models/save_cancellation_reason_response.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/data/models/submit_response.dart';
@@ -96,6 +97,9 @@ class CommercialLicenseCancelBloc
       SubmitCancelRequestPage e, Emitter emitter) async {
     emitter(const CommercialLicenseCancelLoadingState());
     Response? response;
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.CancelCommercialLicense_Send_Request_Event);
     try {
       response = await webService.dio.post(
         ApiUrl.commercialLicenseCancelSubmit(requestId),
@@ -107,6 +111,9 @@ class CommercialLicenseCancelBloc
       submitResponse!.crType = crType;
       emitter(
           SubmitCancelRequestSucceededState(submitResponse: submitResponse!));
+
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.CancelCommercialLicense_Open_Success_Page_Event);
     } on Exception catch (exception) {
       CommonFunctions.sendEvent(
         dioError: exception is DioException ? exception : null,

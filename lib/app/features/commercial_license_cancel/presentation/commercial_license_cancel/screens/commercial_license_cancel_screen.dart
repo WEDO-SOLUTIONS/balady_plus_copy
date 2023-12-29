@@ -17,6 +17,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../core/utils/constants/ux_cam_events.dart';
+
 class CommercialLicenseCancelScreen extends StatefulWidget {
   const CommercialLicenseCancelScreen({Key? key}) : super(key: key);
 
@@ -34,6 +36,15 @@ class _CommercialLicenseCancelScreenState
     CommercialLicenseCancelOneScreen(),
     const CommercialLicenseCancelTwoScreen(),
   ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.CancelCommercialLicense_Open_Create_Details_Event);
+  }
 
   @override
   Widget build(BuildContext context) {

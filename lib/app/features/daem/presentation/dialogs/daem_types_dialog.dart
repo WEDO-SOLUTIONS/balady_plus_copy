@@ -30,6 +30,8 @@ class _DaemTypeDialog extends State<DaemTypeDialog> {
     super.initState();
 
     CommonFunctions.sendUXCamEvent(UXCamEvents.typesServiceDaem);
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.Daem_Open_Types_Dialog_Event);
   }
 
   @override

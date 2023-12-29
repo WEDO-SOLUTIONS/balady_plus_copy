@@ -1,6 +1,8 @@
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -21,6 +23,10 @@ class SearchQuery extends _$SearchQuery {
   String build(String scope) => "";
 
   void update(String value) {
+    ref.read(urbiMetricsProvider.notifier).logEvent(
+      "SearchQuery",
+      {"value": value},
+    );
     mixpanel?.track('SearchQuery', properties: {'value': value});
     state = value;
   }
@@ -40,6 +46,7 @@ class Search extends _$Search {
   CancelableOperation? _searchOperation;
 
   Future<void> fetchSuggest(String query) async {
+    ref.read(urbiMetricsProvider.notifier).logEvent("Search/fetchSuggest");
     mixpanel?.timeEvent("Search: fetchSuggest");
     _searchOperation?.cancel();
     if (query.isEmpty) {
@@ -60,6 +67,10 @@ class Search extends _$Search {
   }
 
   Future<void> searchByText(String query) async {
+    ref.read(urbiMetricsProvider.notifier).logEvent(
+      "Search/searchByText",
+      {"query": query},
+    );
     mixpanel?.timeEvent("Search: searchByText");
     _searchOperation?.cancel();
     final dgisController = await ref.read(dgisControllerProvider.future);
@@ -80,6 +91,10 @@ class Search extends _$Search {
   }
 
   Future<void> searchByQuery(SearchQueryMessage query) async {
+    ref.read(urbiMetricsProvider.notifier).logEvent(
+      'Search/searchByQuery',
+      {'query_id': query.id},
+    );
     mixpanel?.timeEvent("Search: searchByQuery");
     _searchOperation?.cancel();
     final dgisController = await ref.read(dgisControllerProvider.future);

@@ -27,6 +27,8 @@ class _NewDaemPageState extends State<NewDaemPage> {
 
     CommonFunctions.sendEventToAnalytics(AppEvents.Daem);
     CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceDaem);
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.Daem_Open_Create_Details_Event);
   }
 
   @override

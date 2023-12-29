@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,7 +8,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, BlocRequestStatus, RouteName;
+    show AppColor, BlocRequestStatus, CommonFunctions, RouteName;
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../dashboard_exports.dart'
     show
@@ -109,6 +110,8 @@ class DashboardProductDropDown extends StatelessWidget {
     required BuildContext context,
     required DashboardState state,
   }) async {
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.DashBoard_Click_Dashboard_Filter_Event);
     final items =
         state.cardsStates[card]?.products.map((e) => e.name).toList() ?? [];
     items.insert(0, "all".tr());

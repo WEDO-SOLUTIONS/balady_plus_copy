@@ -6,6 +6,7 @@ import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/entities/iwish/models/iwish_feedback_entity.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/iwish/lib/iwish_object_mapper.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -22,6 +23,13 @@ class _IwishEntity extends _$IwishEntity {
   }
 
   Future<bool> submitFeedback(IwishFeedbackEntity feedback) async {
+    ref
+        .read(urbiMetricsProvider.notifier)
+        .logEvent("IwishFeedbackEntity/submitFeedback", {
+      "feedback": feedback.mood.toString(),
+      "tags": feedback.tags.toString(),
+      "comment": feedback.comment,
+    });
     mixpanel?.timeEvent("IwishFeedbackEntity: submitFeedback");
     final dio = await ref.read(dGisNetworkProvider.future);
     final request = pb.IWishFeedbackRequest(

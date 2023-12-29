@@ -31,6 +31,9 @@ class _ApplyCancelScreenState extends State<ApplyCancelScreen> {
     CommonFunctions.sendEventToAnalytics(AppEvents.cancelCommercialLicenseOpen);
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.startCardServiceCancelLicenseService);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.CancelCommercialLicense_Open_Service_Card_Event);
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
 
 
@@ -10,22 +11,22 @@ class InvestmentSites extends PointLayersData {
   String? STATUS;
   String? OPPORTUNITYNUMBER;
   String? ID;
-  dynamic? DOCUMENTVALUE;
-  dynamic? DAILYLEASECOST;
+  dynamic DOCUMENTVALUE;
+  dynamic DAILYLEASECOST;
   String? TYPE;
   String? OPPORTUNITYDESCRIPTION;
   String? SITENUMBER;
   String? BIDENDDATE;
   String? SITEADDRESS;
-  dynamic? SITEAREA;
+  dynamic SITEAREA;
   String? MAIN_ACTIVITY_NAME;
   String? SUB_ACTIVITY_NAME;
   String? LOCATIONLISTSTRING;
-  dynamic? DATEOFOPENENVELOPES;
-  dynamic? ANNOUNCEMENTDATE;
-  dynamic? RFPENDDATE;
-  dynamic? RENTALENDDATE;
-  dynamic? RENTALSTARTDATE;
+  dynamic DATEOFOPENENVELOPES;
+  dynamic ANNOUNCEMENTDATE;
+  dynamic RFPENDDATE;
+  dynamic RENTALENDDATE;
+  dynamic RENTALSTARTDATE;
   String? REGION_ID;
   String? AMANA_ID;
   String? MUNICIPALITY_ID;
@@ -62,6 +63,7 @@ class InvestmentSites extends PointLayersData {
       this.MUNICIPALITY_ID,
       this.SUBMUNICIPALITY_ID})
       : super(
+            layerType: GISMapLayers.Opportunities,
             id: id,
             name: name,
             description: description,

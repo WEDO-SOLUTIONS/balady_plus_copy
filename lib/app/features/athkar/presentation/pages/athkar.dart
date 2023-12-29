@@ -21,6 +21,7 @@ class _AthkarState extends State<Athkar> {
 
     CommonFunctions.sendEventToAnalytics(AppEvents.Athkar);
     CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceAthkar);
+    CommonFunctions.sendUXCamEvent(UXCamEvents.Athkar_Open_Event);
   }
 
   @override

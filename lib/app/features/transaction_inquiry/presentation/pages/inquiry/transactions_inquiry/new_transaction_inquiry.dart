@@ -34,6 +34,9 @@ class _NewTransactionInquiryScreen extends State<NewTransactionInquiryScreen> {
     super.initState();
 
     CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceRequestFollowUp);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.RequestFollowUp_Open_Create_Details_Event);
   }
 
   @override

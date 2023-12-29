@@ -68,6 +68,6 @@ class StoryService extends _$StoryService {
     return [
       ...stories.where((element) => element.isViewed),
       ...stories.where((element) => !element.isViewed),
-    ];
+    ].reversed.toList();
   }
 }

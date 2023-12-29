@@ -17,6 +17,7 @@ import 'package:collection/collection.dart';
 
 import '../../../../../etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
 import '../../../../core/utils/constants/route_names.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/enums.dart';
 import '../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../data/models/apply_create_compliance_request_model.dart';
@@ -179,6 +180,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
   Future<void> _pageChangeHandler(ChangePageEvent e, Emitter emitter) async {
     emitter(state.copyWith(currentStep: e.index, errorMessage: ""));
     pageController.jumpToPage((e.index).toInt());
+    sendEventPage((e.index).toInt());
   }
 
   Future<void> _updateFormFields(UpdateFieldsEvent e, Emitter emitter) async {
@@ -238,6 +240,14 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
           selectedLicense: Nullable(null),
           ownershipDate: Nullable(null),
           ownershipText: Nullable(null)));
+
+    if (e.benificiaryTypeSelection == 1) {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.Compliance_Certificate_Open_Select_Benficiry_Event);
+    } else if (e.benificiaryTypeSelection == 2) {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.Compliance_Certificate_Open_Select_EngOffice_Event);
+    }
   }
 
   /* Future<void> _radioChangeHandler(RadioSelectEvent e, Emitter emitter) async {
@@ -343,6 +353,8 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
             errorMessage: ""));
         await pageController.animateToPage(nextPage,
             duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+
+        sendEventPage(nextPage);
       }
     });
   }
@@ -485,6 +497,8 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
             errorMessage: ""));
         await pageController.animateToPage(nextPage,
             duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+
+        sendEventPage(nextPage);
       } else {
         setUpDraft(r);
       }
@@ -664,15 +678,16 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
         status: BlocStatus.failure,
       ));
     }, (r) {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.Compliance_Certificate_Send_OTP_Event);
+
       emitter(state.copyWith(
           status: BlocStatus.success, sendOtpResponse: Nullable(r)));
       if (e.showOTPPage == true)
-        NavigationService.navigatorKey.currentState?.push(MaterialPageRoute(
-          builder: (context) => BlocProvider.value(
-            value: this,
-            child: ComplianceOtpScreen(),
-          ),
-        ));
+        NavigationService.navigatorKey.currentState?.pushNamed(
+          RouteName.submitComplianceOTPPage,
+          arguments: this,
+        );
     });
   }
 
@@ -713,6 +728,9 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
         status: BlocStatus.failure,
       ));
     }, (r) {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.Compliance_Certificate_Verify_OTP_Event);
+
       emitter(state.copyWith(
           status: BlocStatus.success, contactMobileVerified: Nullable(true)));
     });
@@ -850,6 +868,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
             errorMessage: ""));
         await pageController.animateToPage(nextPage,
             duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+        sendEventPage(nextPage);
       }
     } else if (state.currentStep == 2 && state.benificiaryTypeSelection == 1) {
       if (state.generateRequest() == state.applyRequest ||
@@ -881,6 +900,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
           status: BlocStatus.success, currentStep: nextPage, errorMessage: ""));
       await pageController.animateToPage(nextPage,
           duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+      sendEventPage(nextPage);
     }
     hideKeyboard();
   }
@@ -898,6 +918,8 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       ));
       await pageController.animateToPage(prvoiusPage,
           duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+      sendEventPage(prvoiusPage);
+
       emitter(state.copyWith(
           status: BlocStatus.success,
           currentStep: prvoiusPage,
@@ -966,11 +988,15 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
             errorMessage: ""));
         await pageController.animateToPage(nextPage,
             duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+        sendEventPage(nextPage);
       }
     });
   }
 
   Future<void> _submitRequest(SubmitComplianceEvent e, Emitter emitter) async {
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.Compliance_Certificate_Send_Request_Event);
+
     emitter(state.copyWith(
       status: BlocStatus.loading,
     ));
@@ -994,6 +1020,8 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
               isFawry: r.$2,
               type: PAGE_TYPE.emtethal,
               idNumber: state.requestId.toString()));
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.Compliance_Certificate_Open_Success_Page_Event);
     });
   }
 
@@ -1136,6 +1164,33 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     hideKeyboard();
 
     emitter(state.copyWith(agreement: e.isagree, errorMessage: ""));
+  }
+
+  void sendEventPage(int page) {
+    String eventName = "";
+
+    if (page == 0) {
+      eventName =
+          UXCamEvents.Compliance_Certificate_Open_Select_Method_Step_Event;
+    } else if (page == 1) {
+      eventName =
+          UXCamEvents.Compliance_Certificate_Open_Application_Info_Step_Event;
+    } else if (page == 2) {
+      eventName =
+          UXCamEvents.Compliance_Certificate_Open_Document_Info_Step_Event;
+    } else if (page == 3) {
+      eventName = UXCamEvents.Compliance_Certificate_Open_Usage_Info_Step_Event;
+    } else if (page == 4) {
+      eventName =
+          UXCamEvents.Compliance_Certificate_Open_Compliance_Info_Step_Event;
+    } else if (page == 5) {
+      eventName =
+          UXCamEvents.Compliance_Certificate_Open_Attachments_Info_Step_Event;
+    } else if (page == 6) {
+      eventName = UXCamEvents.Compliance_Certificate_Open_Review_Step_Event;
+    }
+
+    if (eventName.isNotEmpty) CommonFunctions.sendUXCamEvent(eventName);
   }
 
   static showCustomDialog(Widget dialog, {bool isDismiss = true}) {

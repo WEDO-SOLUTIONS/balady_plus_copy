@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_plus/app/features/services/presentation/widgets/enhanced_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
 import '../../../../../../../core/utils/utils_exports.dart'
-    show AppColor, CommonProperties;
+    show AppColor, CommonFunctions, CommonProperties;
 import '../../../../../../_shared_feature_/shared_feature_exports.dart'
     show DefaultAppBarWidget, ElevatedButtonWidget, TabPageContainer;
 import '../../../../../../profile_features/delegators/delegators_exports.dart'
@@ -27,8 +28,6 @@ class _DashbordDataPageState extends State<DashbordDataPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    //  CommonFunctions.sendEventToAnalytics(AppEvents.more);
   }
 
   @override

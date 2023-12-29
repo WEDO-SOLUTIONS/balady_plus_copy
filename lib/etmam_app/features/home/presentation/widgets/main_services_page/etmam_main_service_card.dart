@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     show AppColor, AppFontWeight;
 
+import '../../../../../../app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
+
 class EtmamMainServiceCardWidget extends StatelessWidget {
   final String serviceName;
   final String serviceIcon;
@@ -43,7 +45,7 @@ class EtmamMainServiceCardWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // icon
-              CustomNetworkImageWidget(
+              CustomCachedNetworkImage(
                 serviceIcon,
                 imageHeight: 52,
                 imageWidth: 52,

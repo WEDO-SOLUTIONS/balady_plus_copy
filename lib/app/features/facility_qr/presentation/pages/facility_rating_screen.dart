@@ -36,6 +36,8 @@ class _FacilityRatingScreenState extends State<FacilityRatingScreen> {
     //MM  Helpers.sendEventToAnalytics(AppEvents.QR_Rating);
 
     CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceYourFeedbackRating);
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.YourFeedback_Open_Rating_Event);
   }
 
   @override

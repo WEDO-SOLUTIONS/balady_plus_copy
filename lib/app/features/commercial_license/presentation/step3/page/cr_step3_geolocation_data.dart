@@ -54,13 +54,13 @@ class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
                             title: "loaction".tr(),
                             onTap: () async {
                               //Navigator
-                              NavigationService.navigatorKey.currentState!.push(
-                                MaterialPageRoute(builder: (ctx) {
-                                  return BlocProvider.value(
-                                      value: context.read<MapBloc>(),
-                                      child: CRMapScreen());
-                                }),
-                              ).then((value) {
+
+                              NavigationService.navigatorKey.currentState!
+                                  .pushNamed(
+                                RouteName.crMapScreen,
+                                arguments: context.read<MapBloc>(),
+                              )
+                                  .then((value) {
                                 if (value != null) {
                                   MapScreenParams? params =
                                       value as MapScreenParams;

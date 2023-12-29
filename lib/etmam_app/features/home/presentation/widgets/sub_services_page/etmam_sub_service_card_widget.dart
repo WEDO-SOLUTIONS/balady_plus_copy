@@ -3,6 +3,7 @@ import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     show AppColor, AppFontWeight;
 
 import '../../../../../../app/core/utils/constants/constants.dart';
+import '../../../../../../app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../../_shared_feature_/shared/shared_feature_exports.dart'
     show
         CustomInkWellButtonWidget,
@@ -45,7 +46,7 @@ class EtmamSubServicePageCardWidget extends StatelessWidget {
           child: Column(
             children: [
               // icon
-              CustomNetworkImageWidget(
+              CustomCachedNetworkImage(
                 subServiceIcon,
                 imageHeight: 38,
                 imageWidth: 38,

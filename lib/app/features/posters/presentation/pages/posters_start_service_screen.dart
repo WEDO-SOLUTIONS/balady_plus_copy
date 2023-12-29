@@ -32,6 +32,9 @@ class _PostersStartServiceState extends State<PostersStartService> {
 
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.startCardServiceMultiplePostersPermit);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.Posters_Open_Service_Card_For_Multiple_Event);
   }
 
   @override

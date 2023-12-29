@@ -28,6 +28,7 @@ import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/enums.dart';
 import '../../../../core/utils/map_utils.dart';
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
@@ -631,6 +632,9 @@ class SubmitIncidentSection extends StatelessWidget {
                 ?.comLicenseInfo?.locationInfo?.longitude;
 
             if (lat != null && long != null) {
+              CommonFunctions.sendUXCamEvent(
+                  UXCamEvents.SnapAndSend_Open_From_FeedBack_Event);
+
               await BottomSheetDialog.showDraggableSheet(context,
                   dialogKeyName: DialogName.vdTypesDialog,
                   currentRouteName: RouteName.qrFacilityScreenRoute,

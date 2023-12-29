@@ -33,6 +33,8 @@ class _EventsMainPageState extends State<EventsMainPage> {
 
     CommonFunctions.sendEventToAnalytics(AppEvents.events);
     CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceEvents);
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.Events_Open_List_Event);
   }
 
   @override

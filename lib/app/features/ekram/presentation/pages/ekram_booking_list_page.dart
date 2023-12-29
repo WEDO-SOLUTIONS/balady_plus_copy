@@ -46,6 +46,9 @@ class _EkramBookingListPageState extends State<EkramBookingListPage> {
     // TODO: implement initState
     super.initState();
     CommonFunctions.sendUXCamEvent(UXCamEvents.selectAndReserveACemeteryList);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.SelectAndReserveCemetery_List_Enter_Page_Event);
   }
 
   @override

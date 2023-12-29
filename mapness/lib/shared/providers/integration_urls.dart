@@ -2,7 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'integration_urls.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class IntegrationUrls extends _$IntegrationUrls {
   bool isProduction = true;
 

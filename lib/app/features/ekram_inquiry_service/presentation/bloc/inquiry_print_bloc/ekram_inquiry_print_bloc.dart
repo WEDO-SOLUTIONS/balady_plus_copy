@@ -47,6 +47,15 @@ class EkramInquiryPrintBloc
     on<VerifySendOTPEvent>(_printVerifyOTPEvent);
   }
 
+  static String Print_Burial_Certificate_Page_Event =
+      "Print_Burial_Certificate_Page_Event";
+  static String Print_Burial_Certificate_Send_OTP_Event =
+      "Print_Burial_Certificate_Send_OTP_Event";
+  static String Print_Burial_Certificate_Verify_OTP_Event =
+      "Print_Burial_Certificate_Verify_OTP_Event";
+  static String Print_Burial_Certificate_Print_OTP_Event =
+      "Print_Burial_Certificate_Print_OTP_Event";
+
   Future<void> _printVerifyOTPEvent(
       VerifySendOTPEvent e, Emitter emitter) async {
     emitter(state.copyWith(
@@ -62,8 +71,13 @@ class EkramInquiryPrintBloc
           status: BlocStatus.failure,
           errorMsg: (l as ServerFailure).errorMessage));
     }, (r) {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.Print_Burial_Certificate_Verify_OTP_Event);
       emitter(state.copyWith(status: BlocStatus.success, errorMsg: ""));
       NavigationService.navigatorKey.currentState?.pop(true);
+
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.Print_Burial_Certificate_Print_Event);
 
       CommonFunctions.showApigeeFile(
           "${RemoteConfig.apigeeURL}/v2/ekram-mobile-services/reports/licenses/${r.certificateCode}",
@@ -78,6 +92,8 @@ class EkramInquiryPrintBloc
   }
 
   Future<void> _printSendOTPEvent(PrintSendOTPEvent e, Emitter emitter) async {
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.Print_Burial_Certificate_Request_OTP_Event);
     emitter(state.copyWith(
       status: BlocStatus.loading,
     ));
@@ -94,6 +110,9 @@ class EkramInquiryPrintBloc
           status: BlocStatus.failure,
           errorMsg: (l as ServerFailure).errorMessage));
     }, (r) {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.Print_Burial_Certificate_Send_OTP_Event);
+
       emitter(state.copyWith(
           status: BlocStatus.success, errorMsg: "", sendOtpResponse: r));
 
