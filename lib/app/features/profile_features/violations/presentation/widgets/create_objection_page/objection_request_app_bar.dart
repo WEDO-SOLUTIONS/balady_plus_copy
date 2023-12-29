@@ -90,7 +90,7 @@ class ObjectionRequestAppBar extends StatelessWidget
                 width: MediaQuery.of(context).size.width - 32,
                 addAutomaticKeepAlive: false,
                 lineHeight: 6.7,
-                isRTL: true,
+                isRTL: CommonFunctions.isAppAR ? true : false,
                 animationDuration: 0,
                 restartAnimation: false,
                 percent: currentStep /
