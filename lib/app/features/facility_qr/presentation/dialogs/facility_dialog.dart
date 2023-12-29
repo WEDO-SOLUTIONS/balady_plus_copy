@@ -6,9 +6,11 @@ import 'package:balady_plus/app/features/facility_qr/facility_qr_exports.dart'
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/route_names.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
@@ -16,8 +18,7 @@ import '../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.da
 import '../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
-class FacilityDialog extends StatelessWidget {
-  String? coverPhoto;
+class FacilityDialog extends StatefulWidget {
   String? facilityName;
   double? rate;
   int? reviewers;
@@ -39,6 +40,22 @@ class FacilityDialog extends StatelessWidget {
       required this.onRatingScreen,
       required this.onIncidentScreen})
       : super(key: key);
+
+  @override
+  State<FacilityDialog> createState() => _FacilityDialogState();
+}
+
+class _FacilityDialogState extends State<FacilityDialog> {
+  String? coverPhoto;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.YourFeedback_Show_Dialog_QR_Event);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +94,7 @@ class FacilityDialog extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(4),
                       child: CustomNetworkImageWidget(
-                        facilityImg ?? "",
+                        widget.facilityImg ?? "",
                         imageHeight: 82,
                         imageWidth: 82,
                         ssoAuth: false,
@@ -85,17 +102,17 @@ class FacilityDialog extends StatelessWidget {
                     ),
                     Constants.verticalSpaceMedium,
                     CustomTextWidget(
-                      facilityName ?? "",
+                      widget.facilityName ?? "",
                       fontColor: AppColor.black,
                       fontWeight: AppFontWeight.bold,
                       fontSize: 22,
                     ),
                     Constants.verticalSpaceSmall,
                     RateAndReviewWidget(
-                        rate: rate ?? 0, review: reviewers ?? 0),
+                        rate: widget.rate ?? 0, review: widget.reviewers ?? 0),
                     Constants.verticalSpaceMedium,
                     CustomTextWidget(
-                      address ?? "",
+                      widget.address ?? "",
                       fontColor: AppColor.black500,
                       fontWeight: AppFontWeight.medium,
                       fontSize: 16,
@@ -105,8 +122,9 @@ class FacilityDialog extends StatelessWidget {
                       btnPressed: () async {
                         await BottomSheetDialog.showDraggableSheet(context,
                             child: BottomSheetWithActions(
-                              title:
-                                  ("review").tr() + " " + (facilityName ?? ""),
+                              title: ("review").tr() +
+                                  " " +
+                                  (widget.facilityName ?? ""),
                               body: FacilityRatingScreen(),
                             ));
                       },
@@ -119,7 +137,7 @@ class FacilityDialog extends StatelessWidget {
                     Constants.verticalSpaceSmall,
                     EnhancedCustomElevatedButtonWidget(
                       btnPressed: () {
-                        onIncidentScreen();
+                        widget.onIncidentScreen();
                       },
                       btnText: ("submit_incident_facility").tr(),
                       btnTextSize: 16,

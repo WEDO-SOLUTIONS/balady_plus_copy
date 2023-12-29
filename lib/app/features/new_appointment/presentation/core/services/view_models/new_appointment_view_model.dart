@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:mime/mime.dart';
 import 'package:tuple/tuple.dart';
 
@@ -358,6 +359,9 @@ class NewAppointmentViewModel extends BaseViewModel {
   }
 
   Future<SaveAppointmentResponse?> saveAppointment() async {
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.Appointment_Booking_Send_Request_Event);
+
     String userId = CommonProperties.userInfo?.idNo ?? "";
     String email = CommonProperties.userInfo?.getEmail() ?? "";
     String name = CommonProperties.userInfo?.arName ?? "";
@@ -410,6 +414,9 @@ class NewAppointmentViewModel extends BaseViewModel {
               type: PAGE_TYPE.appointmentScreen,
               idNumber: response.item3?.data?.result?.id.toString() ?? "",
               fromHomePage: true));
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.Appointment_Booking_Open_Success_Page_Event);
+
       return response.item3;
     } else {
       showError(response.item2 ?? "");

@@ -29,6 +29,9 @@ class _CommercialLicenseScreenState extends State<CommercialLicenseScreen> {
 
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.startServiceIssueACommercialLicense);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.CommercialLicense_Open_Create_Details_Event);
   }
 
   @override

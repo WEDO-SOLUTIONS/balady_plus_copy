@@ -32,6 +32,8 @@ class _ViolationResultsPageState extends State<ViolationResultsPage> {
     // TODO: implement initState
     super.initState();
     CommonFunctions.sendUXCamEvent(UXCamEvents.finishServiceViolationsGuide);
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.finishServiceViolationsGuide);
   }
 
   bool crticalSelected = true;

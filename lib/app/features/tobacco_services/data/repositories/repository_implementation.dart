@@ -18,13 +18,20 @@ class TobaccoListRepositoryImplementation {
       final data = await remoteDataSource.getUserFacilities();
       return Right(data);
     } on NoDataFoundException {
-      return Left(ServerFailure("no_data_shown".tr()));
+      return const Right([]);
     } on ServerException catch (error) {
-      return Left(ServerFailure(error.errorMessage));
+      print("object");
+      return Left(
+        ServerFailure(
+          error.errorMessage,
+          errorCode: error.dioError!.response!.data["data"]['responseCode'],
+        ),
+      );
     }
   }
 
-  Future<Either<Failure, TobaccoSchedule>> getUserFacilitiesDetails(String registrationNumber) async {
+  Future<Either<Failure, TobaccoSchedule>> getUserFacilitiesDetails(
+      String registrationNumber) async {
     try {
       final data = await remoteDataSource.getUserFacilitiesDetails(
         registrationNumber,
@@ -51,8 +58,7 @@ class TobaccoListRepositoryImplementation {
   Future<Either<Failure, dynamic>> uploadDisclosure(
       DisclosureRequest disclosureRequest) async {
     try {
-      final data =
-          await remoteDataSource.uploadDisclosure(disclosureRequest);
+      final data = await remoteDataSource.uploadDisclosure(disclosureRequest);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());

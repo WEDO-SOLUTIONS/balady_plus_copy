@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,6 +23,12 @@ class _CreateObjectionDetailsPageState
   @override
   void initState() {
     super.initState();
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.Objectable_Transactions_Open_Create_Details_Event);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.Objectable_Transaction_Open_Info_Step_Event);
   }
 
   @override

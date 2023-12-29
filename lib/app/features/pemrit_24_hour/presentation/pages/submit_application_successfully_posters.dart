@@ -33,6 +33,9 @@ class _SubmitApplicationSuccessfullyPermitsState
     // TODO: implement initState
     super.initState();
     CommonFunctions.sendUXCamEvent(UXCamEvents.finishService24HourPermit);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.Permit_24_Open_Success_Page_Event);
   }
 
   @override

@@ -67,6 +67,8 @@ class TransactionInquiryViewModel extends BaseViewModel {
     hideKeyboard();
     showLoading();
     var body;
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.RequestFollowUp_Send_Request_Event);
     try {
       body = await webServices
           .postApigeeRequest("/v1/cts/document-details", body: {
@@ -95,6 +97,8 @@ class TransactionInquiryViewModel extends BaseViewModel {
         NavigationService.navigatorKey.currentState!.pushNamed(
             RouteName.inquiryDetailsScreen,
             arguments: this.response);
+        CommonFunctions.sendUXCamEvent(
+            UXCamEvents.RequestFollowUp_Open_Success_Page_Event);
 
         notifyListeners();
         return Future.value(true);

@@ -1,3 +1,5 @@
+import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/need_login_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
@@ -10,8 +12,21 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
-class TobaccoDetailsPage extends StatelessWidget {
+class TobaccoDetailsPage extends StatefulWidget {
   const TobaccoDetailsPage({super.key});
+
+  @override
+  State<TobaccoDetailsPage> createState() => _TobaccoDetailsPageState();
+}
+
+class _TobaccoDetailsPageState extends State<TobaccoDetailsPage> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.sendUXCamEvent(UXCamEvents.openFacilityDetailsScreen);
+  }
 
   @override
   Widget build(BuildContext context) {

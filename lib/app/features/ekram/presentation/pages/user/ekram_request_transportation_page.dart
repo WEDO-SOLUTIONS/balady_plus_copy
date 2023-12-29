@@ -28,6 +28,10 @@ class _EkramRequestTransportationPageState
     super.initState();
 
     CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceBodyTransportation);
+    CommonFunctions.sendUXCamEvent(UXCamEvents
+        .RequestsTransportingAndPreparingDeceased_Create_Details_Enter_Page_Event);
+    CommonFunctions.sendUXCamEvent(UXCamEvents
+        .RequestsTransportingAndPreparingDeceased_Open_Applicant_Info_Step_Event);
   }
 
   @override

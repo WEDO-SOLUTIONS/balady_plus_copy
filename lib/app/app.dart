@@ -40,7 +40,10 @@ class App extends StatelessWidget {
         enableNetworkLogging: true,
         userAppKey: "2w1otnta9bvvhzo",
         enableAutomaticScreenNameTagging: false);
+    FlutterUxcam.optIntoSchematicRecordings();
+
     FlutterUxcam.startWithConfiguration(config);
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(

@@ -10,10 +10,10 @@ class DialogName {
   static const calculatorEditBoardDialog = '/calculatorEditBoardDialog';
   static const calculatorAddBoardDialog = '/calculatorAddBoardDialog';
 
-  static const qrRatingSuccessDialog = '/qrRatingSuccessDialog';
-  static const qrRatingDialog = '/qrRatingDialog';
+  static const qrRatingSuccessDialog = 'YourFeedback_Rating_Success_Dialog';
+  static const qrRatingDialog = 'YourFeedback_Rating_Dialog';
 
-  static const vdTypesDialog = '/vdTypesDialog';
+  static const vdTypesDialog = 'SnapAndSend_Types_Page';
 
   static const healthCertificateActionsDialog =
       '/healthCertificateActionsDialog';
@@ -124,14 +124,15 @@ class DialogName {
   static const quranSuraFilterDialog = '/quranSuraFilterDialog';
   static const quranJozzFilterDialog = '/quranJozzFilterDialog';
   static const dcPlateDialog = '/dcPlateDialog';
-  static const dcVeichlesDialog = '/dcVeichlesDialog';
+  static const dcVeichlesDialog =
+      'Retrieve_Impounded_Vehicle_Show_User_Vehicles_Types_Page';
 
   static const ZmZmPointsCityDialog = '/ZmZmPointsCityDialog';
   static const etmamDetailsActions = '/etmamDetailsActions';
 
-  static const daemDialog = '/daemDialog';
-  static const InqueryDialog = '/InqueryDialog';
-  static const msrDialog = '/msrDialog';
+  static const daemDialog = 'Daem_Select_Type_Dialog';
+  static const InqueryDialog = 'General_Inquiries_Select_Type_Dialog';
+  static const msrDialog = 'MunicipalServiceRequest_Select_Type_Dialog';
 
   static const complianceRequestActionsDialog =
       '/complianceRequestActionsDialog';
@@ -152,26 +153,19 @@ class DialogName {
 
   static const reasonCancelDialog = '/reasonCancelDialog';
 
+  static const commercialLicenseActionSheetDialog =
+      '/commercialLicenseActionSheetDialog';
+  static const commercialLicenseReasonCancelSheet =
+      '/commercialLicenseReasonCancelSheet';
+  static const requestCommercialLicenseActionSheetDialog =
+      '/requestCommercialLicenseActionSheetDialog';
 
-
-  static const commercialLicenseActionSheetDialog = '/commercialLicenseActionSheetDialog';
-  static const commercialLicenseReasonCancelSheet = '/commercialLicenseReasonCancelSheet';
-  static const requestCommercialLicenseActionSheetDialog = '/requestCommercialLicenseActionSheetDialog';
-
-
-    static const notAuthorizedIndivisualDialog = '/notAuthorizedIndivisualDialog';
-
-
+  static const notAuthorizedIndivisualDialog = '/notAuthorizedIndivisualDialog';
 
   // static const reasonCancelDialog = '/reasonCancelDialog';
   static const disclosedMonthsSheetDialog = '/disclosedMonthsSheetDialog';
 
-
-
-
-
   static const howToApplySheetDialog = '/howToApplySheetDialog';
   static const requirementsSheetDialog = '/howToApplySheetDialog';
   static const requirementsFinesSheetDialog = '/howToApplySheetDialog';
-
 }

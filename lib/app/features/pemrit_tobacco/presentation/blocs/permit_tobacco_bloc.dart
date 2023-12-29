@@ -10,6 +10,7 @@ import 'package:meta/meta.dart';
 import 'package:balady_plus/app/core/utils/extensions/date_time_extension.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
 import '../../../../core/utils/nullable.dart';
 import 'package:collection/collection.dart';
@@ -167,6 +168,9 @@ class PermitTobaccoLicenseBloc
           status: BlocStatus.failure,
           error: (l as ServerFailure).errorMessage));
     }, (r) {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.My_Requests_Tobaco_Permit_Details_Delete_Request_Event);
+
       emitter(state.copyWith(status: BlocStatus.success));
       add(GetPermitRequestDetailsEvent());
     });
@@ -226,6 +230,9 @@ class PermitTobaccoLicenseBloc
 
   Future<void> _submitPosterHandler(
       SubmitPermitEvent e, Emitter emitter) async {
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.Permit_Tobaco_Send_Request_Event);
+
     emitter(state.copyWith(status: BlocStatus.loading));
     final failOrSuccess = await _submitPermit24(SubmitTobaccoRequest(
         requestId: state.requestDetails?.requestInfo?.requestId,
@@ -247,6 +254,8 @@ class PermitTobaccoLicenseBloc
         RouteName.submitApplicationSuccessfullyTobaccoPermits,
         arguments: r,
       );
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.Permit_Tobaco_Open_Success_Page_Event);
     });
   }
 
@@ -287,10 +296,11 @@ class PermitTobaccoLicenseBloc
 
   Future<void> _goToNextPageHandler(
       GoToNextPageEvent e, Emitter emitter) async {
+    int nextPage = state.currentPageValue + 1;
+
     if (isLastPage()) {
     } else {
       if (state.status == BlocStatus.performing) return;
-      int nextPage = state.currentPageValue + 1;
 
       emitter(state.copyWith(status: BlocStatus.performing, error: ""));
 
@@ -298,17 +308,20 @@ class PermitTobaccoLicenseBloc
 
       emitter(state.copyWith(
           error: "", status: BlocStatus.success, currentPageValue: nextPage));
+      sendEventSteps(nextPage);
     }
+
     hideKeyboard();
   }
 
   Future<void> _goToPreviousPageHandler(
       GoToPreviousPageEvent e, Emitter emitter) async {
+    int prvoiusPage = state.currentPageValue - 1;
+
     if (state.currentPageValue == 0.0) {
       NavigationService.navigatorKey.currentState!.pop();
     } else {
       if (state.status == BlocStatus.performing) return;
-      int prvoiusPage = state.currentPageValue - 1;
       emitter(state.copyWith(status: BlocStatus.performing, error: ""));
       controller.jumpToPage(prvoiusPage);
 
@@ -316,12 +329,23 @@ class PermitTobaccoLicenseBloc
           error: "",
           status: BlocStatus.success,
           currentPageValue: prvoiusPage));
+      sendEventSteps(prvoiusPage);
     }
     hideKeyboard();
   }
 
   bool isLastPage() {
     return state.currentPageValue == (state.pagesList.length - 1);
+  }
+
+  void sendEventSteps(int page) {
+    if (page == 0) {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.Permit_Tobaco_Open_Hotel_Step_Event);
+    } else if (page == 1) {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.Permit_Tobaco_Open_Review_Step_Event);
+    }
   }
 
   hideKeyboard() {

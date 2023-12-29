@@ -6,6 +6,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:tuple/tuple.dart';
 
 import '../../../../../../core/services/local/navigation_services.dart';
+import '../../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../../core/utils/enums/enums.dart';
 import '../../../../../_shared_feature_/data/entities/success_screen_args.dart';
@@ -172,6 +173,7 @@ class NewDaemTicketBloc extends Bloc<NewDaemTicketEvent, NewDaemTicketState> {
 
   Future<void> _createTicket(CreateTicketEvent e, Emitter emitter) async {
     if (state.status == BlocStatus.loading) return;
+    CommonFunctions.sendUXCamEvent(UXCamEvents.Daem_Send_Request_Event);
 
     emitter(state.copyWith(status: BlocStatus.loading));
 
@@ -292,6 +294,8 @@ class NewDaemTicketBloc extends Bloc<NewDaemTicketEvent, NewDaemTicketState> {
           ModalRoute.withName(RouteName.bottomNavigation),
           arguments:
               SuccessScreenArgs(type: PAGE_TYPE.daem, idNumber: state.daemId));
+
+      CommonFunctions.sendUXCamEvent(UXCamEvents.Daem_Open_Success_Page_Event);
     }
   }
 

@@ -21,14 +21,12 @@ class TobaccoDisclosedScreen extends StatefulWidget {
 }
 
 class _TobaccoDisclosedScreenState extends State<TobaccoDisclosedScreen> {
-  // PageController controller = PageController();
-  // int currentPageValue = 0;
-
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceTobaccoDisclosure);
+    CommonFunctions.sendUXCamEvent(
+      UXCamEvents.openConfirmTobaccoDisclosedScreen,
+    );
   }
 
   @override
@@ -101,6 +99,9 @@ class _TobaccoDisclosedScreenState extends State<TobaccoDisclosedScreen> {
                 ElevatedButtonWidget.primaryCustom(
                   text: "exit".tr(),
                   onPressed: () {
+                    CommonFunctions.sendUXCamEvent(
+                      UXCamEvents.closeServiceTobaccoDisclosed,
+                    );
                     Navigator.of(context).pop(true);
                     Navigator.of(context).pop(true);
                   },

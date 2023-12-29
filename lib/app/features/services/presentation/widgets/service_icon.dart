@@ -82,6 +82,8 @@ class ServiceIcon extends StatelessWidget {
           }
 
           if (service.id == 201) {
+            CommonFunctions.sendUXCamEvent(
+                UXCamEvents.SnapAndSend_Open_From_Services_Event);
             await BottomSheetDialog.showDraggableSheet(
                 NavigationService.navigatorKey.currentContext!,
                 dialogKeyName: DialogName.vdTypesDialog,

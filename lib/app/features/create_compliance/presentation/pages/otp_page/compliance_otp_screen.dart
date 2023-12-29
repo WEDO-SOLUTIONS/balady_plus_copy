@@ -38,10 +38,16 @@ class _ComplianceOtpScreen extends State<ComplianceOtpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ComplianceOTPBloc(
-          mobileNumber: "",
-          createBloc: BlocProvider.of<ComplianceBloc>(context)),
+    ComplianceBloc bloc =
+        ModalRoute.of(context)!.settings.arguments as ComplianceBloc;
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              ComplianceOTPBloc(mobileNumber: "", createBloc: bloc),
+        ),
+        BlocProvider.value(value: bloc),
+      ],
       child: BlocConsumer<ComplianceOTPBloc, ComplianceOTPState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure) {

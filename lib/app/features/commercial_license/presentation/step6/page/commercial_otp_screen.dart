@@ -15,6 +15,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:sms_user_consent/sms_user_consent.dart';
 
 import '../../../../../core/utils/constants/constants.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
@@ -34,14 +35,26 @@ class _CommercialOtpScreen extends State<CommercialOtpScreen> {
   void initState() {
     super.initState();
     //MM  Helpers.sendEventToAnalytics(AppEvents.VD_Open_OTP);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.CommercialLicense_Check_QR_OTP_Page_Event);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CommercialOtpBloc(
-          mobileNumber: "",
-          createBloc: BlocProvider.of<CRStep6EstablishmentCubit>(context)),
+    CRStep6EstablishmentCubit bloc =
+        ModalRoute.of(context)?.settings.arguments as CRStep6EstablishmentCubit;
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              CommercialOtpBloc(mobileNumber: "", createBloc: bloc),
+        ),
+        BlocProvider.value(
+          value: bloc,
+        ),
+      ],
       child: BlocConsumer<CommercialOtpBloc, CommercialOTPState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure) {

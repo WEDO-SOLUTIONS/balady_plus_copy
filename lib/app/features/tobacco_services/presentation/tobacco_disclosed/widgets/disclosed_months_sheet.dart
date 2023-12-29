@@ -4,6 +4,7 @@ import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/entities/file_data_item.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
@@ -93,7 +94,8 @@ class DisclosedMonthsSheet extends StatelessWidget {
                               ),
                               CustomTextWidget(
                                 '*'.tr(),
-                                textStyle: AppStyle.dropDownTitleTextStyle.copyWith(
+                                textStyle:
+                                    AppStyle.dropDownTitleTextStyle.copyWith(
                                   color: Colors.red.shade700,
                                 ),
                               ),
@@ -141,7 +143,9 @@ class DisclosedMonthsSheet extends StatelessWidget {
                       }
                     },
                     disabledColor: Colors.transparent,
-                    onValidate: (text) => (text?.isNotEmpty ?? false) && double.tryParse(text!) != null && double.parse(text) > 0
+                    onValidate: (text) => (text?.isNotEmpty ?? false) &&
+                            double.tryParse(text!) != null &&
+                            double.parse(text) > 0
                         ? null
                         : "required_field_must_number".tr(),
                   ),
@@ -177,8 +181,9 @@ class DisclosedMonthsSheet extends StatelessWidget {
                     if (file != null) {
                       if ((file.sizeInMB * 1000) <= 10024) {
                         await provider.uploadTobaccoServicesAttachments(file);
-                        if(provider.attachmentId != null) {
-                          CommonFunctions.showSuccess("attached_successfully".tr());
+                        if (provider.attachmentId != null) {
+                          CommonFunctions.showSuccess(
+                              "attached_successfully".tr());
                         }
                       } else {
                         CommonFunctions.showError("file_max_size".tr());
@@ -239,7 +244,12 @@ class DisclosedMonthsSheet extends StatelessWidget {
                   ),
                   const SizedBox(width: 3),
                   CustomTextButtonWidget(
-                    onPressed: () => provider.setReason(true),
+                    onPressed: () {
+                      provider.setReason(true);
+                      CommonFunctions.sendUXCamEvent(
+                        UXCamEvents.startServiceTobaccoDisclosedNoRevenue,
+                      );
+                    },
                     text: 'click_here'.tr(),
                     btnTextSize: 14,
                     btnHeight: 40,
@@ -260,7 +270,8 @@ class DisclosedMonthsSheet extends StatelessWidget {
               selector: (_, provider) => provider.isLoading,
               child: ElevatedButtonWidget.primaryCustom(
                 onPressed: () async {
-                  if (provider.reason || (provider.amount != null && provider.amount != 0)) {
+                  if (provider.reason ||
+                      (provider.amount != null && provider.amount != 0)) {
                     if (!provider.reason || provider.reasonCancel != null) {
                       if (!provider.reason ||
                           provider.removeDisclosureComments != null) {
@@ -275,9 +286,9 @@ class DisclosedMonthsSheet extends StatelessWidget {
                                 attachmentId: provider.attachmentId,
                                 disclosureAmount: provider.amount,
                                 removeDisclosureComments:
-                                provider.removeDisclosureComments,
+                                    provider.removeDisclosureComments,
                                 removeDisclosureReasonId:
-                                provider.reasonCancel?.id,
+                                    provider.reasonCancel?.id,
                               ),
                             ),
                           );

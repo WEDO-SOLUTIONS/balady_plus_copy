@@ -8,6 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/constants/constants.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/details_header.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
@@ -23,6 +24,14 @@ class UsersEkramTransportationDetailsPage extends StatefulWidget {
 
 class _UsersEkramTransportationDetailsPageState
     extends State<UsersEkramTransportationDetailsPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.detailsServiceBodyTransportation);
+  }
+
   @override
   Widget build(BuildContext context) {
     DeceasedRequestDetails params =

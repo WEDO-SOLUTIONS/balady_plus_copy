@@ -182,6 +182,11 @@ class PostersLicenseBloc
 
       CommonFunctions.sendUXCamEvent(
           UXCamEvents.startServiceIndivisualPostersPermit);
+
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.Posters_Open_Create_Details_For_License_Event);
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.Posters_Open_licenses_Step_For_License_Event);
     });
   }
 
@@ -314,6 +319,14 @@ class PostersLicenseBloc
 
   Future<void> _submitPosterHandler(
       SubmitPosterEvent e, Emitter emitter) async {
+    if (state.licenseId == null) {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.Posters_Send_Request_For_Multiple_Event);
+    } else {
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.Posters_Send_Request_For_License_Event);
+    }
+
     emitter(state.copyWith(status: BlocStatus.loading));
     final failOrSuccess = await _posterSubmit(state.requestId!);
 
@@ -338,9 +351,15 @@ class PostersLicenseBloc
         if (r.isGrouped) {
           CommonFunctions.sendUXCamEvent(
               UXCamEvents.finishServiceMultiplePostersPermit);
+
+          CommonFunctions.sendUXCamEvent(
+              UXCamEvents.Posters_Open_Success_Page_For_Multiple_Event);
         } else {
           CommonFunctions.sendUXCamEvent(
               UXCamEvents.finishServiceIndivisualPostersPermit);
+
+          CommonFunctions.sendUXCamEvent(
+              UXCamEvents.Posters_Open_Success_Page_For_License_Event);
         }
       }
     });
@@ -414,6 +433,12 @@ class PostersLicenseBloc
 
       CommonFunctions.sendUXCamEvent(
           UXCamEvents.startServiceMultiplePostersPermit);
+
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.Posters_Open_Create_Details_For_Multiple_Event);
+
+      CommonFunctions.sendUXCamEvent(
+          UXCamEvents.Posters_Open_licenses_Step_For_Multiple_Event);
     });
   }
 
@@ -466,7 +491,7 @@ class PostersLicenseBloc
       emitter(state.copyWith(status: BlocStatus.performing, error: ""));
 
       controller.jumpToPage(nextPage);
-
+      sendNextPageEvent(nextPage);
       emitter(state.copyWith(
           error: "", status: BlocStatus.success, currentPageValue: nextPage));
     }
@@ -482,6 +507,7 @@ class PostersLicenseBloc
       int prvoiusPage = state.currentPageValue - 1;
       emitter(state.copyWith(status: BlocStatus.performing, error: ""));
       controller.jumpToPage(prvoiusPage);
+      sendNextPageEvent(prvoiusPage);
 
       emitter(state.copyWith(
           error: "",
@@ -538,15 +564,42 @@ class PostersLicenseBloc
 
   Future<void> _updateStartDateHandler(
       ChangePermitStartDate e, Emitter emitter) async {
-    emitter(state.copyWith(startDate: e.date));
+    emitter(state.copyWith(startDate: e.date, error: ""));
   }
 
   Future<void> _updateDurationHandler(
       ChangePermitDurationEvent e, Emitter emitter) async {
-    emitter(state.copyWith(duration: e.value));
+    emitter(state.copyWith(duration: e.value, error: ""));
   }
 
   hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  void sendNextPageEvent(int page) {
+    String eventName = "";
+    if (page == 0) {
+      if (state.licenseId == null) {
+        eventName = UXCamEvents.Posters_Open_licenses_Step_For_Multiple_Event;
+      } else {
+        eventName = UXCamEvents.Posters_Open_licenses_Step_For_License_Event;
+      }
+    } else if (page == 1) {
+      if (state.licenseId == null) {
+        eventName =
+            UXCamEvents.Posters_Open_Posters_Data_Step_For_Multiple_Event;
+      } else {
+        eventName =
+            UXCamEvents.Posters_Open_Posters_Data_Step_For_License_Event;
+      }
+    } else if (page == 2) {
+      if (state.licenseId == null) {
+        eventName = UXCamEvents.Posters_Open_Review_Step_For_Multiple_Event;
+      } else {
+        eventName = UXCamEvents.Posters_Open_Review_Step_For_License_Event;
+      }
+    }
+
+    CommonFunctions.sendUXCamEvent(eventName);
   }
 }

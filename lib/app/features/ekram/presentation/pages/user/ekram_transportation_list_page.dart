@@ -21,6 +21,7 @@ import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../../core/utils/constants/route_names.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/icons/filter_icon.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
@@ -53,6 +54,10 @@ class _EkramTransportationListPageState
     // TODO: implement initState
     super.initState();
     CommonFunctions.checkLocationSettings(context);
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.listServiceBodyTransportation);
+    CommonFunctions.sendUXCamEvent(UXCamEvents
+        .RequestsTransportingAndPreparingDeceased_List_Enter_Page_Event);
   }
 
   @override

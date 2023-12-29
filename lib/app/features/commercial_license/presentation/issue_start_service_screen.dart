@@ -35,6 +35,8 @@ class _IssueStartServiceState extends State<IssueStartService> {
     CommonFunctions.sendEventToAnalytics(AppEvents.issueCommercialLicenseOpen);
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.startCardServiceIssueACommercialLicense);
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.CommercialLicense_Open_Service_Card_Event);
   }
 
   @override

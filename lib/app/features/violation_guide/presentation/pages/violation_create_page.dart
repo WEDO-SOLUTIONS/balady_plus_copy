@@ -29,6 +29,9 @@ class _ViolationCreatePageState extends State<ViolationCreatePage> {
     // TODO: implement initState
     super.initState();
     CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceViolationsGuide);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.PViolationGuide_Open_Select_Type_Step_Event);
   }
 
   @override

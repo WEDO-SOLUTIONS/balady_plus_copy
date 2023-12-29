@@ -21,6 +21,12 @@ class _PermitsTobaccoDetailsPageState extends State<PermitsTobaccoDetailsPage> {
     // TODO: implement initState
     super.initState();
     CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceTobaccoPermit);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.Permit_Tobaco_Open_Create_Details_Event);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.Permit_Tobaco_Open_Hotel_Step_Event);
   }
 
   @override

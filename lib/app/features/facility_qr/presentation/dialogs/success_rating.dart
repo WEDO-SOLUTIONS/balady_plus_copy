@@ -4,13 +4,18 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 
-class SuccessRatingDialog extends StatelessWidget {
+class SuccessRatingDialog extends StatefulWidget {
   final String title;
   final String desc;
 
   const SuccessRatingDialog(
       {super.key, required this.desc, required this.title});
 
+  @override
+  State<SuccessRatingDialog> createState() => _SuccessRatingDialogState();
+}
+
+class _SuccessRatingDialogState extends State<SuccessRatingDialog> {
   @override
   Widget build(BuildContext context) {
     return BottomSheetWithActions(
@@ -25,7 +30,7 @@ class SuccessRatingDialog extends StatelessWidget {
             ),
             CustomVerticalSpace(height: 16),
             CustomTextWidget(
-              title,
+              widget.title,
               fontColor: Color(0xFF292929),
               fontWeight: AppFontWeight.bold,
               fontSize: 20,
@@ -33,7 +38,7 @@ class SuccessRatingDialog extends StatelessWidget {
             ),
             CustomVerticalSpace(height: 8),
             CustomTextWidget(
-              desc,
+              widget.desc,
               fontColor: AppColor.blackModern500Light,
               fontWeight: AppFontWeight.bold,
               fontSize: 14,

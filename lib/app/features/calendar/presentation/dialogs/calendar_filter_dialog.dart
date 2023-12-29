@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_style.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/date_form.dart';
 import '../../../../core/utils/nullable.dart';
 import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
@@ -52,6 +54,9 @@ class _CalendarFilterDialogState extends State<CalendarFilterDialog> {
     dateFrom = widget.params.dateFrom;
     dateTo = widget.params.dateTo;
     textEditingController?.text = widget.params.keyword ?? "";
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.KingdomCalendar_List_Click_Filter_Event);
   }
 
   @override
@@ -140,6 +145,9 @@ class _CalendarFilterDialogState extends State<CalendarFilterDialog> {
                 children: [
                   ElevatedButtonWidget.apply(
                     onPressed: () {
+                      CommonFunctions.sendUXCamEvent(UXCamEvents
+                          .KingdomCalendar_List_Click_Apply_Filter_Event);
+
                       Navigator.pop(
                           context,
                           widget.params.copyWith(

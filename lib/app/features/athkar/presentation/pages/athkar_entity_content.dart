@@ -9,6 +9,9 @@ import 'package:balady_plus/app/features/athkar/presentation/widgets/counter/ath
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import '../../../../core/utils/common_functions.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
+
 class AthkarEntityContent extends StatefulWidget {
   const AthkarEntityContent({
     super.key,
@@ -30,6 +33,8 @@ class _AthkarEntityContentState extends State<AthkarEntityContent> {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _controller.jumpToPage(params.pageNumber);
     });
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.Athkar_Open_Category_Item_Event);
   }
 
   @override
@@ -103,11 +108,14 @@ class _AthkarEntityContentState extends State<AthkarEntityContent> {
         counter++;
       });
     }
+    CommonFunctions.sendUXCamEvent(UXCamEvents.Athkar_Click_Count);
   }
 
   void _resetCounter() {
     setState(() {
       counter = 0;
     });
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.Athkar_Click_Clear_Count);
   }
 }

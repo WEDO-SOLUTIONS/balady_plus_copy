@@ -2,6 +2,9 @@ import 'package:balady_plus/app/features/athkar/athkar_exports.dart'
     show AthkarAppBar, AthkarEntitiesListView, AthkarEntitiesParams;
 import 'package:flutter/material.dart';
 
+import '../../../../core/utils/common_functions.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
+
 class AthkarEntities extends StatefulWidget {
   const AthkarEntities({super.key});
 
@@ -10,6 +13,14 @@ class AthkarEntities extends StatefulWidget {
 }
 
 class _AthkarEntitiesState extends State<AthkarEntities> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.Athkar_Open_Category_Event);
+  }
+
   @override
   Widget build(BuildContext context) {
     AthkarEntitiesParams params =

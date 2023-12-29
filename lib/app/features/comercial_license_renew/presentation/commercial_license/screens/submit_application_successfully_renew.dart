@@ -36,6 +36,9 @@ class _SubmitApplicationSuccessfullyRenewState
 
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.finishServiceRenewLicenseService);
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.RenewCommercialLicense_Open_Success_Page_Event);
   }
 
   @override

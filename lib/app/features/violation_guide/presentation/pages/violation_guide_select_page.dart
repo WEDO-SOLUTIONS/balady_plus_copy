@@ -8,8 +8,24 @@ import 'package:balady_plus/app/features/violation_guide/presentation/widgets/vi
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-class ViolationGuideSelectPage extends StatelessWidget {
+import '../../../../core/utils/constants/ux_cam_events.dart';
+
+class ViolationGuideSelectPage extends StatefulWidget {
   const ViolationGuideSelectPage({super.key});
+
+  @override
+  State<ViolationGuideSelectPage> createState() =>
+      _ViolationGuideSelectPageState();
+}
+
+class _ViolationGuideSelectPageState extends State<ViolationGuideSelectPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    CommonFunctions.sendUXCamEvent(UXCamEvents.ViolationGuide_Open_Event);
+  }
 
   @override
   Widget build(BuildContext context) {

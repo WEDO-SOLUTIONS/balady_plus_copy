@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -12,6 +13,7 @@ import '../../../../core/utils/utils_exports.dart'
         AppColor,
         AppFontWeight,
         BlocRequestStatus,
+        CommonFunctions,
         CommonProperties,
         IconPath,
         RouteName;
@@ -67,6 +69,9 @@ class _ServicesPageState extends State<ServicesPage> {
                     IconButton(
                         onPressed: () async {
                           openDelegators(context);
+
+                          CommonFunctions.sendUXCamEvent(UXCamEvents
+                              .DashBoard_Click_Switch_Account_From_Services_Event);
                         },
                         icon: SvgPicture.asset("assets/icons/svg/refresh.svg"))
                   ],
@@ -99,6 +104,9 @@ class _ServicesPageState extends State<ServicesPage> {
                                       .pushNamed(RouteName.DashbordDataPage,
                                           arguments:
                                               context.read<DelegatorsCubit>());
+
+                                  CommonFunctions.sendUXCamEvent(UXCamEvents
+                                      .DashBoard_Click_View_All_Event);
                                 },
                               ),
                               const SizedBox(

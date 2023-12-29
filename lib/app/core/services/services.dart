@@ -25,7 +25,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "requireLogin": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/prayerTimes"},
+      "action": {"type": "page", "value": RouteName.prayerTimes},
       "ar": {"title": "prayerTimes", "description": null},
       "en": {"title": "prayerTimes", "description": null}
     },
@@ -151,7 +151,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "requireLogin": true,
       "isImportant": false,
-      "action": {"type": "page", "value": "/objectableTransactionsPage"},
+      "action": {"type": "page", "value": RouteName.objectableTransactions},
       "ar": {"title": "submit_objections", "description": null, "tag": null},
       "en": {"title": "submit_objections", "description": null, "tag": null}
     },
@@ -251,7 +251,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": true,
       "isImportant": false,
       "requireLogin": true,
-      "action": {"type": "page", "value": "/DCVeichlePage"},
+      "action": {"type": "page", "value": RouteName.DCVeichlePage},
       "ar": {"title": "dc_retreive_car", "description": "", "tag": ""},
       "en": {"title": "dc_retreive_car", "description": null, "tag": null}
     },
@@ -491,7 +491,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "requireLogin": true,
-      "action": {"type": "page", "value": "/objectableTransactionsPage"},
+      "action": {"type": "page", "value": RouteName.objectableTransactions},
       "ar": {"title": "submit_objections", "description": null, "tag": null},
       "en": {"title": "submit_objections", "description": null, "tag": null}
     },

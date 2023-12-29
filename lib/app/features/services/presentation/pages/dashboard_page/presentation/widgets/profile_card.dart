@@ -5,8 +5,9 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../../core/utils/constants/app_style.dart';
 import '../../../../../../../core/utils/constants/dialog_names.dart';
+import '../../../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppFontWeight, IconPath, RouteName;
+    show AppColor, AppFontWeight, CommonFunctions, IconPath, RouteName;
 import '../../../../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetDialog, CustomAutoSizeTextWidget, CustomTextWidget;
 import '../../../../../../entry_point/entry_point_exports.dart'
@@ -94,6 +95,9 @@ class ProfileCard extends StatelessWidget {
 
           Navigator.of(context).pop();
         } else {
+          CommonFunctions.sendUXCamEvent(
+              UXCamEvents.DashBoard_Click_Switch_Account_From_Dashboard_Event);
+
           context.read<DelegatorsCubit>().getDelegators();
           context.read<DelegatorsCubit>().getAgents();
           await BottomSheetDialog.showDraggableSheet(

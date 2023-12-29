@@ -96,6 +96,10 @@ class NewInquiryViewModel extends BaseViewModel {
 
   Future createRequest() async {
     ///MMM
+    ///
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.General_Inquiries_Send_Request_Event);
+
     Tuple3<bool?, String?, CreateIncidentResult?> response;
     String error = ("server_error_1").tr();
     try {
@@ -172,6 +176,9 @@ class NewInquiryViewModel extends BaseViewModel {
 
         CommonFunctions.sendUXCamEvent(
             UXCamEvents.finishServiceGeneralInquiries);
+
+        CommonFunctions.sendUXCamEvent(
+            UXCamEvents.General_Inquiries_Open_Success_Page_Event);
 
         return Future.value(true);
       } else {

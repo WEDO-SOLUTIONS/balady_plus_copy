@@ -12,6 +12,7 @@ import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/constants/route_names.dart';
+import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
 import '../../../_shared_feature_/presentation/under_testing/custom_expansion_panel_widget.dart';
@@ -36,8 +37,22 @@ import '../widgets/summery_widgets/step5_summury_widget.dart';
 import '../widgets/summery_widgets/step6_summury_widget.dart';
 import 'complete_compliance_page.dart';
 
-class ComplianceDetailsPage extends StatelessWidget {
+class ComplianceDetailsPage extends StatefulWidget {
   const ComplianceDetailsPage({super.key});
+
+  @override
+  State<ComplianceDetailsPage> createState() => _ComplianceDetailsPageState();
+}
+
+class _ComplianceDetailsPageState extends State<ComplianceDetailsPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.My_Requests_Compliance_Details_Request_Event);
+  }
 
   @override
   Widget build(BuildContext context) {

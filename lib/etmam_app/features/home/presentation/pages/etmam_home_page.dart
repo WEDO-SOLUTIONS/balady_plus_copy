@@ -67,23 +67,27 @@ class _EtmamHomePage extends State<EtmamHomePage> {
           }
         },
         builder: (context, state) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
+          return Stack(
             children: [
-              const EtmamHomeAppBarWidget(),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(children: [
-                    const EtmamMainServicesWidget(),
-                    if (context.read<HomeBloc>().isMunicipalService ==
-                        true) ...[
-                      const EtmamBannerSlider(),
-                      const EtmamBiddingWidget(),
-                    ],
-                    // EtmamSubServicesWidget(),
-                    const EtmamTopRatedProvidersWidget(),
-                  ]),
-                ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const EtmamHomeAppBarWidget(),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(children: [
+                        const EtmamMainServicesWidget(),
+                        if (context.read<HomeBloc>().isMunicipalService ==
+                            true) ...[
+                          const EtmamBannerSlider(),
+                          const EtmamBiddingWidget(),
+                        ],
+                        // EtmamSubServicesWidget(),
+                        const EtmamTopRatedProvidersWidget(),
+                      ]),
+                    ),
+                  ),
+                ],
               ),
               if (state.status == BlocStatus.loading)
                 const Center(child: CustomLoadingWidget()),

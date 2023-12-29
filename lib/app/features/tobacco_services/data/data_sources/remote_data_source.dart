@@ -44,6 +44,12 @@ class TobaccoListRemoteDataSourceImplementation
       if (error is NoDataFoundException) {
         rethrow;
       }
+      if(error.response != null && error.response!.data["data"]['responseCode'] == 'TMAE002') {
+        throw NoDataFoundException(
+          error.response!.requestOptions,
+          error.response!,
+        );
+      }
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
