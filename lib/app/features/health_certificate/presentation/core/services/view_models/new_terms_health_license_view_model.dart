@@ -77,6 +77,17 @@ class NewTermsHealthLicenseViewModel extends BaseViewModel {
         navigateToSuccessScreen(
             requestIdNumber: response!.data!.result!.requestId!,
             msg: response.data!.result!.message ?? "");
+
+        CommonFunctions.sendUXCamEvent(
+            UXCamEvents.finishServiceHealthCertificate);
+
+        if (dataModel.isRenew) {
+          CommonFunctions.sendUXCamEvent(
+              UXCamEvents.HealthCertificate_renew_Success_Event);
+        } else {
+          CommonFunctions.sendUXCamEvent(
+              UXCamEvents.HealthCertificate_Issue_Success_Event);
+        }
       }
     }
   }
