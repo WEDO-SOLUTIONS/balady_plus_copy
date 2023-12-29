@@ -18,6 +18,7 @@ List<IwishFeedbackTag> iwishTags(AppLocalizations l10n, ParkSize parkSize) {
         (e) => IwishFeedbackTag(
           id: e.$1,
           displayName: e.$2,
+          rtlAsset: e.$1 == 'lighting' || e.$1 == 'circulation',
           assetUrl: 'assets/icons/svg/${e.$1}.svg',
         ),
       )
