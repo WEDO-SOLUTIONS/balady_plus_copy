@@ -28,7 +28,7 @@ class MapSuggestList extends ConsumerWidget {
         return SuggestItem(
           suggest: suggests[index],
           onObjectTap: (object) {
-            PoiMapRoute(dgisObjectId: object.id!.objectId).push(context);
+            PoiMapRoute.open(context, object.id!.objectId);
           },
         );
       },

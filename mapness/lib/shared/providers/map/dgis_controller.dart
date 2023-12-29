@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/common/providers/permissions.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
-import 'package:mapness/_features/common/providers/permissions.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
@@ -18,12 +18,11 @@ GeoRectMessage saRect = GeoRectMessage(
   southWest: GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
 );
 
-// @Riverpod(keepAlive: true)
-@riverpod
+@Riverpod(keepAlive: true)
 class DgisController extends _$DgisController {
-  CameraPositionMessage? _lastCameraPosition;
+  // CameraPositionMessage? _lastCameraPosition;
 
-  CameraPositionMessage? _lastRectPosition;
+  // CameraPositionMessage? _lastRectPosition;
 
   late Completer<DgisMapController> _completer;
 
@@ -92,15 +91,15 @@ class DgisController extends _$DgisController {
 
     final visibleRectSubscription =
         controller.visibleRectEvents.listen(_visibleRectListener);
-    final cameraPositionSubscription =
-        controller.cameraPositionEvents.listen(_cameraPositionListener);
-
+    // final cameraPositionSubscription =
+    //     controller.cameraPositionEvents.listen(_cameraPositionListener);
     ref.onDispose(
       () {
         visibleRectSubscription.cancel();
-        cameraPositionSubscription.cancel();
+        // cameraPositionSubscription.cancel();
       },
     );
+
     await controller.setZoomRestrictions(min: 5.5);
     Future.delayed(
       const Duration(milliseconds: 100),
@@ -123,14 +122,14 @@ class DgisController extends _$DgisController {
   }
 
   void _visibleRectListener(VisibleRectEvent event) async {
-    if ((!await state.value!
-        .containsRect(saRect, event.visibleRect.geoRectMessage()))) {
-      if (_lastRectPosition != null) {
-        await state.value!.setCameraPosition(_lastRectPosition!);
-      }
-    } else {
-      _lastRectPosition = _lastCameraPosition;
-    }
+    // if ((!await state.value!
+    //     .containsRect(saRect, event.visibleRect.geoRectMessage()))) {
+    //   if (_lastRectPosition != null) {
+    //     await state.value!.setCameraPosition(_lastRectPosition!);
+    //   }
+    // } else {
+    //   _lastRectPosition = _lastCameraPosition;
+    // }
 
     if (!_visibleRectStream.isClosed) {
       _visibleRectStream.sink.add(event);
@@ -140,7 +139,7 @@ class DgisController extends _$DgisController {
     }
   }
 
-  void _cameraPositionListener(CameraPositionMessage event) async {
-    _lastCameraPosition = event;
-  }
+  // void _cameraPositionListener(CameraPositionMessage event) async {
+  //   _lastCameraPosition = event;
+  // }
 }

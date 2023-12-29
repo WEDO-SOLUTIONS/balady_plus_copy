@@ -6,22 +6,22 @@ import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 class MapRequestParams {
   GISMapLayers? layer;
   int? objectId;
-  double southWestLongitude;
-  double southWestLatitude;
-  double northEastLongitude;
-  double northEastLatitude;
+  double? southWestLongitude;
+  double? southWestLatitude;
+  double? northEastLongitude;
+  double? northEastLatitude;
   String? proxy;
   String domain;
   bool? pointsDetails;
 
   MapRequestParams(
-      {required this.layer,
-      required this.southWestLongitude,
-      required this.southWestLatitude,
-      required this.northEastLongitude,
-      required this.northEastLatitude,
+      {this.layer,
+      this.southWestLongitude,
+      this.southWestLatitude,
+      this.northEastLongitude,
+      this.northEastLatitude,
       required this.domain,
-        this.pointsDetails,
+      this.pointsDetails,
       this.proxy,
       this.objectId});
 
@@ -61,42 +61,38 @@ class MapRequestParams {
 
     final params = toMap();
     final layerId = layer?.layerId ?? 0;
+    var hashedUrl;
 
     if (proxy != null) {
       const domain = 'https://apiservicesstg.balady.gov.sa';
-      var hashedUrl = "$domain/$gisLayers/$layerId/query?";
-      params.forEach((key, value) => hashedUrl += "$key=$value&");
-      hashedUrl = hashedUrl.substring(0, hashedUrl.length - 1);
-      verifyingKey = hashRequest(hashedUrl, "GET");
+      hashedUrl = "$domain/$gisLayers/$layerId/query?";
     } else {
       var domainYUrl = domain.replaceAll('/urbi-services/', '');
       const gisLayers = 'gis-urbi-services/layers';
-      var hashedUrl = "$domainYUrl/$gisLayers/$layerId/query?";
-      params.forEach((key, value) => hashedUrl += "$key=$value&");
-      hashedUrl = hashedUrl.substring(0, hashedUrl.length - 1);
-      verifyingKey = hashRequest(hashedUrl, "GET");
+      hashedUrl = "$domainYUrl/$gisLayers/$layerId/query?";
     }
 
+    params.forEach((key, value) => hashedUrl += "$key=$value&");
+    hashedUrl = hashedUrl.substring(0, hashedUrl.length - 1);
+    verifyingKey = hashRequest(hashedUrl, "GET");
     return verifyingKey;
   }
 
   Map<String, dynamic> toMap() {
     return {
-      "outFields": layer?.outFieldsLong.join(","),
-      // (layer != null && pointsDetails == true)
-          // ? layer?.outFieldsLong.join(",")
-          // : layer.outFieldsShort.join(","),
-          // : "OBJECTID",
-      // "outFields": "OBJECTID",
+      "outFields": (layer != null && pointsDetails == true)
+          ? layer?.outFieldsLong.join(",")
+          : layer?.outFieldsShort.join(","),
+          // : "OBJECTID,STATUS",
       // "where": "1=1",
       "f": "json",
       "geometryType": "esriGeometryEnvelope",
       if (pointsDetails == true && objectId != null) "objectIds": objectId,
-      if (pointsDetails != true && objectId == null)"geometry": "$southWestLongitude,"
-          "$southWestLatitude,"
-          "$northEastLongitude,"
-          "$northEastLatitude",
-      // "spatialRel": "esriSpatialRelIntersects",
+      if (pointsDetails != true && objectId == null)
+        "geometry": "${southWestLongitude?.toStringAsFixed(3)},"
+            "${southWestLatitude?.toStringAsFixed(3)},"
+            "${northEastLongitude?.toStringAsFixed(3)},"
+            "${northEastLatitude?.toStringAsFixed(3)}",
       "resultRecordCount": layer?.resultRecordCount ?? 0
     };
   }

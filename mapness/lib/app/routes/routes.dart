@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:mapness/app/routes/esri_layers.dart';
 import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/app/routes/happines_map.dart';
 import 'package:mapness/app/routes/iwish.dart';
@@ -31,4 +32,5 @@ final $appRoutes = [
   ...$layerDetailsRoutes,
   ...$SignInRoutes,
   ...$locationErrorBoundaryRoute,
+  ...$layersRoutes,
 ];

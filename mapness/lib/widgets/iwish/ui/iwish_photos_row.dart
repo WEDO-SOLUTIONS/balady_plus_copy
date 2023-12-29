@@ -12,10 +12,25 @@ class IwishPhotosRow extends StatelessWidget {
       height: 96,
       child: ListView.separated(
         itemBuilder: (context, index) {
+          final isLtr = Directionality.of(context) == TextDirection.ltr;
+          final double leftPadding;
+          final double righPadding;
+
+          if (index == 0) {
+            leftPadding = isLtr ? 12 : 0;
+            righPadding = isLtr ? 0 : 12;
+          } else if (index == photos.length - 1) {
+            leftPadding = isLtr ? 0 : 12;
+            righPadding = isLtr ? 12 : 0;
+          } else {
+            leftPadding = 0;
+            righPadding = 0;
+          }
+
           return Padding(
             padding: EdgeInsets.only(
-              left: index == photos.length - 1 ? 12 : 0,
-              right: index == 0 ? 12 : 0,
+              left: leftPadding,
+              right: righPadding,
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),

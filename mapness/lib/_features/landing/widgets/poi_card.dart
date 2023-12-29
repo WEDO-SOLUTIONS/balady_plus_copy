@@ -3,6 +3,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 
 class PoiCard extends ConsumerWidget {
   const PoiCard({
@@ -30,6 +31,10 @@ class PoiCard extends ConsumerWidget {
           fit: BoxFit.cover,
           child: InkWell(
             onTap: () {
+              ref.read(urbiMetricsProvider.notifier).logEvent(
+                'poi/open_place',
+                {'id': objectId.objectId},
+              );
               PoiMapRoute.open(context, objectId.objectId);
             },
             child: SizedBox(

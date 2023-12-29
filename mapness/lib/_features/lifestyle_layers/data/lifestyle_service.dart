@@ -20,7 +20,7 @@ class LifestyleLayersService {
     dio.options.sendTimeout = const Duration(milliseconds: 60000);
     // dio.options.headers = {};
     dio.interceptors.add(PrettyDioLogger(
-      responseBody: false,
+      responseBody: true,
       requestHeader: true,
       requestBody: false,
       responseHeader: true

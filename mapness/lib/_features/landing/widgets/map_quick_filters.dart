@@ -1,4 +1,6 @@
+import 'package:balady_plus/app/core/utils/debouncer.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
@@ -8,12 +10,40 @@ import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 
 const _objectManager = "QuickFilters";
 
-class MapQuickFilters extends ConsumerWidget {
+double distanceToZoom(
+    (List<(double, double)> coordinates, (double, double) position) data) {
+  double minDistance = double.infinity;
+  for (final coordinate in data.$1) {
+    final distance = CommonFunctions.distance(
+      coordinate.$1,
+      coordinate.$2,
+      data.$2.$1,
+      data.$2.$2,
+    );
+    if (distance < minDistance) {
+      minDistance = distance;
+    }
+  }
+
+  if (minDistance < 1) {
+    return 15;
+  } else if (minDistance < 5) {
+    return 13;
+  } else if (minDistance < 10) {
+    return 11;
+  } else if (minDistance < 20) {
+    return 9;
+  }
+  return 7;
+}
+
+class MapQuickFilters extends ConsumerStatefulWidget {
   const MapQuickFilters({
     super.key,
     this.customFilters,
@@ -26,15 +56,32 @@ class MapQuickFilters extends ConsumerWidget {
   final bool forMap;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MapQuickFilters> createState() => _MapQuickFiltersState();
+}
+
+class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
+  bool isZoomInteracted = false;
+  bool isCoordComputed = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      isZoomInteracted = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final selectedFilter = ref.watch(searchByRubricsQueryProvider);
+
     final searchObjectManager = ref.watch(
       mapObjectManagerProvider(
         named: _objectManager,
       ).notifier,
     );
     ref.listen(searchByRubricsProvider, (previous, next) async {
-      if (!forMap) return;
+      if (!widget.forMap) return;
       await searchObjectManager.removeAllMarkers();
 
       if (next != null) {
@@ -62,7 +109,11 @@ class MapQuickFilters extends ConsumerWidget {
 
         await searchObjectManager.addMarkers(markers);
 
-        // ref.read(cameraPositionProvider.notifier).animateToMarkers(markers);
+        Debouncer(milliseconds: 300).run(() async {
+          await _computeCameraPosition(markers);
+        });
+      } else {
+        isZoomInteracted = false;
       }
     });
 
@@ -83,10 +134,10 @@ class MapQuickFilters extends ConsumerWidget {
         }
       },
       selectedIndex: selectedFilter?.$2,
-      itemBackground: forMap ? Colors.white : const Color(0x0D1E2A36),
-      customFilters: customFilters,
-      onCustomTap: onCustomTap,
-      padding: forMap
+      itemBackground: widget.forMap ? Colors.white : const Color(0x0D1E2A36),
+      customFilters: widget.customFilters,
+      onCustomTap: widget.onCustomTap,
+      padding: widget.forMap
           ? const EdgeInsets.symmetric(
               horizontal: 12,
             )
@@ -94,5 +145,45 @@ class MapQuickFilters extends ConsumerWidget {
               horizontal: 16,
             ),
     );
+  }
+
+  Future<void> _computeCameraPosition(List<Marker> markers) async {
+    if (isCoordComputed) return;
+
+    final List<(double, double)> coordinates = markers.map((e) {
+      final position = e.options.position;
+      return (position.latitude, position.longitude);
+    }).toList();
+
+    final location = ref.read(cameraPositionProvider)?.point;
+
+    if (location?.latitude == null && location?.longitude == null) return;
+    if (isZoomInteracted) return;
+
+    final position = (location?.latitude ?? 0, location?.longitude ?? 0);
+
+    isCoordComputed = true;
+
+    double zoom = markers.isEmpty
+        ? 7.0
+        : await compute(distanceToZoom, (coordinates, position));
+
+    isCoordComputed = false;
+    final cameraPosition = ref.read(cameraPositionProvider);
+
+    if (isZoomInteracted && cameraPosition?.zoom != null) {
+      zoom = cameraPosition!.zoom < zoom ? cameraPosition.zoom : zoom;
+    }
+
+    if (cameraPosition?.point == null) return;
+
+    ref.read(cameraPositionProvider.notifier).animateTo(CameraPositionMessage(
+          point: cameraPosition!.point,
+          tilt: cameraPosition.tilt,
+          bearing: cameraPosition.bearing,
+          zoom: zoom,
+        ));
+
+    isZoomInteracted = true;
   }
 }

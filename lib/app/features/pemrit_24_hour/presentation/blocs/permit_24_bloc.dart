@@ -266,8 +266,6 @@ class Permit24LicenseBloc
             UXCamEvents.Permit_24_Open_Review_Step_Event);
       }
     }
-
-    hideKeyboard();
   }
 
   bool isLastPage() {
