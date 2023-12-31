@@ -44,44 +44,45 @@ class SaveShopDetailsRequest {
   DeedInfoRequest? deedInfo;
   EjarInfoRequest? ejarContractInfo;
   CleanContractItem? cleanContractInfo;
-  SaveShopDetailsRequest({
-    this.requestId,
-    this.cleanContractEndDate,
-    this.existInMall,
-    this.mallId,
-    this.floorNumber,
-    this.isCitizenPledgedToClean,
-    this.landNumber,
-    this.planNumber,
-    this.shopName,
-    this.shopUnitNumber,
-    this.buildingLicenseDate,
-    this.buildingLicenseNo,
-    this.buildingOwnerIdno,
-    this.buildingOwnerName,
-    this.holesCount,
-    this.floorCount,
-    this.hasElevator,
-    this.noOfCameras,
-    this.contractDate,
-    this.contractNumber,
-    this.contractOption,
-    this.contractType,
-    this.salamaBillNumber,
-    this.slamaReportNumber,
-    this.cleanContractNumber,
-    this.investmentContractNumber,
-    this.blockNumber,
-    this.brand,
-    this.salamaPermitNumber,
-    this.salamaPermitExist,
-    this.boardContractNumber,
-    this.selectedBoardContractOption,
-    this.boardsInfo,
-    this.deedInfo,
-    this.ejarContractInfo,
-    this.cleanContractInfo,
-  });
+  bool? insidePetrolStation;
+  SaveShopDetailsRequest(
+      {this.requestId,
+      this.cleanContractEndDate,
+      this.existInMall,
+      this.mallId,
+      this.floorNumber,
+      this.isCitizenPledgedToClean,
+      this.landNumber,
+      this.planNumber,
+      this.shopName,
+      this.shopUnitNumber,
+      this.buildingLicenseDate,
+      this.buildingLicenseNo,
+      this.buildingOwnerIdno,
+      this.buildingOwnerName,
+      this.holesCount,
+      this.floorCount,
+      this.hasElevator,
+      this.noOfCameras,
+      this.contractDate,
+      this.contractNumber,
+      this.contractOption,
+      this.contractType,
+      this.salamaBillNumber,
+      this.slamaReportNumber,
+      this.cleanContractNumber,
+      this.investmentContractNumber,
+      this.blockNumber,
+      this.brand,
+      this.salamaPermitNumber,
+      this.salamaPermitExist,
+      this.boardContractNumber,
+      this.selectedBoardContractOption,
+      this.boardsInfo,
+      this.deedInfo,
+      this.ejarContractInfo,
+      this.cleanContractInfo,
+      this.insidePetrolStation});
 
   Map<String, dynamic> toMap() {
     return {
@@ -121,7 +122,8 @@ class SaveShopDetailsRequest {
       "salamaPermitNumber": salamaPermitNumber,
       "salamaPermitExist": salamaPermitExist,
       "boardContractNumber": boardContractNumber,
-      "selectedBoardContractOption": selectedBoardContractOption
+      "selectedBoardContractOption": selectedBoardContractOption,
+      "insidePetrolStation": insidePetrolStation
     };
   }
 }

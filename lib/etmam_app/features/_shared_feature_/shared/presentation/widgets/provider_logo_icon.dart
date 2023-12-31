@@ -2,6 +2,7 @@ import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     show AppColor;
 import 'package:flutter/material.dart';
 
+import '../../../../../../app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'custom_network_icon_widget.dart';
 
 class ProviderLogoIcon extends StatelessWidget {
@@ -39,7 +40,7 @@ class ProviderLogoIcon extends StatelessWidget {
         margin: imageMargin,
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(radius)),
-          child: CustomNetworkImageWidget(
+          child: CustomCachedNetworkImage(
             imageUrl,
             imageHeight: imageSize,
             imageWidth: imageSize,
@@ -67,7 +68,7 @@ class EtmamProviderLogoIcon extends StatelessWidget {
       margin: imageMargin,
       child: ClipRRect(
         borderRadius: const BorderRadius.all(Radius.circular(8)),
-        child: CustomNetworkImageWidget(
+        child: CustomCachedNetworkImage(
           imageUrl,
           imageHeight: imageSize,
           imageWidth: imageSize,

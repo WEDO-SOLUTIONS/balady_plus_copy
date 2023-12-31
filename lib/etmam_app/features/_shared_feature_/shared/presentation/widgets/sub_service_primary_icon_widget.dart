@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../../app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppColorsTheme;
 import '../../shared_feature_exports.dart' show CustomNetworkImageWidget;
@@ -35,7 +36,7 @@ class SubServicePrimaryIconWidget extends StatelessWidget {
                   spreadRadius: 0)
             ]),
         child: Center(
-            child: CustomNetworkImageWidget(
+            child: CustomCachedNetworkImage(
           icon,
           imageHeight: iconSize,
           imageWidth: iconSize,
@@ -68,7 +69,7 @@ class EtmamSubServicePrimaryIconWidget extends StatelessWidget {
           shape: BoxShape.circle,
         ),
         child: Center(
-            child: CustomNetworkImageWidget(
+            child: CustomCachedNetworkImage(
           icon,
           imageHeight: iconSize,
           imageWidth: iconSize,

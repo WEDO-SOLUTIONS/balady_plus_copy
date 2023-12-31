@@ -17,25 +17,26 @@ class RequestCommercialLicenseDetailsModel {
   List<AttachmentsInfo>? attachmentsInfo;
   List<RequestNotesInfo>? requestNotesInfo;
   bool availableCloseDate;
+  bool? insidePetrolStation;
 
-  RequestCommercialLicenseDetailsModel({
-    required this.requestId,
-    required this.statusId,
-    required this.cancellationReasonId,
-    required this.cancellationReasonName,
-    required this.statusName,
-    required this.subMunicipalityId,
-    required this.subMunicipalityName,
-    required this.typeId,
-    required this.typeName,
-    required this.licenseTypeId,
-    required this.licenseTypeName,
-    required this.lastUpdateDate,
-    required this.licenseInfo,
-    required this.attachmentsInfo,
-    required this.requestNotesInfo,
-    required this.availableCloseDate,
-  });
+  RequestCommercialLicenseDetailsModel(
+      {required this.requestId,
+      required this.statusId,
+      required this.cancellationReasonId,
+      required this.cancellationReasonName,
+      required this.statusName,
+      required this.subMunicipalityId,
+      required this.subMunicipalityName,
+      required this.typeId,
+      required this.typeName,
+      required this.licenseTypeId,
+      required this.licenseTypeName,
+      required this.lastUpdateDate,
+      required this.licenseInfo,
+      required this.attachmentsInfo,
+      required this.requestNotesInfo,
+      required this.availableCloseDate,
+      this.insidePetrolStation});
 
   factory RequestCommercialLicenseDetailsModel.fromJson(
           Map<String, dynamic> json) =>
@@ -60,6 +61,7 @@ class RequestCommercialLicenseDetailsModel {
             ? List<AttachmentsInfo>.from(
                 json["attachmentsInfo"].map((x) => AttachmentsInfo.fromJson(x)))
             : null,
+        insidePetrolStation: json["insidePetrolStation"],
         requestNotesInfo: json["requestNotesInfo"] != null
             ? List<RequestNotesInfo>.from(json["requestNotesInfo"]
                 .map((x) => RequestNotesInfo.fromJson(x)))
