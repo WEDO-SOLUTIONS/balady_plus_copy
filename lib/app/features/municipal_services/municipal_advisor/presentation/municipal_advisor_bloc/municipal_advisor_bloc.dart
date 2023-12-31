@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:collection/collection.dart';
 
 import '../../../../../../etmam_app/core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/errors_exports.dart';
@@ -15,6 +16,8 @@ import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../vd/vd_exports.dart' show GISParams, GISResponse, GetGISData;
 import '../../domain/entities/building_compliance_entity.dart';
+import '../../domain/entities/civil_defence_entity.dart';
+import '../../domain/use_cases/get_civil_defense_conditions.dart';
 import '../../municipal_advisor_exports.dart';
 
 part 'municipal_advisor_event.dart';
@@ -56,6 +59,7 @@ class MunicipalAdvisorBloc
   final SubmitConsultation _submitConsultation;
   final GetBuildingCompliance _getBuildingCompliance;
   final GetGISImage _getGisImage;
+  final GetCivilDefenseConditions _getCivilDefenseConditions;
 
   MunicipalAdvisorBloc({
     required GetConsultationKey getConsultationKey,
@@ -124,6 +128,7 @@ class MunicipalAdvisorBloc
         _submitConsultation = submitConsultation,
         _getBuildingCompliance = sl<GetBuildingCompliance>(),
         _getGisImage = sl<GetGISImage>(),
+        _getCivilDefenseConditions = GetCivilDefenseConditions(sl()),
         super(const MunicipalAdvisorState()) {
     on<MunicipalAdvisorAddMessageEvent>(
       (event, emit) async {
@@ -531,6 +536,24 @@ class MunicipalAdvisorBloc
       },
     );
 
+    on<MunicipalAdvisorSelectSalamaEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            hasSalama: Nullable(event.hasSalama),
+            lastEvent: event,
+          ),
+        );
+
+        add(MunicipalAdvisorAddMessageEvent(
+          message: event.hasSalama ? 'yes'.tr() : 'no'.tr(),
+          step: MunicipalAdvisorSteps.salamaPermitQuestion,
+        ));
+        add(MunicipalAdvisorGetIssuingPredefinedConditionsEvent());
+      },
+    );
+
     on<MunicipalAdvisorSelectAreaEvent>(
       (event, emit) async {
         emit(
@@ -624,10 +647,7 @@ class MunicipalAdvisorBloc
             subMunicipalityGisCode:
                 state.activityLocation?.gisResponse.municipalityuniquecode,
             districtCode: int.tryParse(
-                    state.activityLocation?.gisResponse.Balady_DistrictID ??
-                        "") ??
-                //TODO remove this static value when gis fixes it
-                1010106,
+                state.activityLocation?.gisResponse.Balady_DistrictID ?? ""),
             streetCode: int.tryParse(
                 state.activityLocation?.gisResponse.streetCode ?? ""),
             longitude:
@@ -654,14 +674,14 @@ class MunicipalAdvisorBloc
 
         final saveAdditionalActivities = await _saveAdditionalActivities(
           AdditionalActivitiesParams(
-            consultationKey: state.consultationKey!,
-            ids: additionalActivities.map((e) => e.activityId).toList(),
-          ),
+              consultationKey: state.consultationKey!,
+              ids: additionalActivities.map((e) => e.activityId).toList(),
+              hasSalamaPermit: state.hasSalama),
         );
         saveAdditionalActivities.fold(
           (failure) => emitFailure(emit, failure),
           (_) {
-            add(MunicipalAdvisorGetIssuingPredefinedConditionsEvent());
+            add(MunicipalAdvisorGetCivilDefenceEvent());
           },
         );
       },
@@ -747,11 +767,22 @@ class MunicipalAdvisorBloc
         failureOrSuccess.fold(
           (failure) => emitFailure(emit, failure),
           (civilDefensePredefinedConditions) {
+            List<CivilDefenceEntity>? civilDefenceList = state.civilDefenceList;
+
+            if (state.hasSalama == true) {
+              civilDefenceList
+                  ?.removeWhere((element) => element.id != "PERMIT");
+            } else if (state.hasSalama == false) {
+              civilDefenceList
+                  ?.removeWhere((element) => element.id == "PERMIT");
+            }
             emit(
               state.copyWith(
                 status: BlocRequestStatus.submissionGetSuccess,
-                civilDefensePredefinedConditions:
-                    civilDefensePredefinedConditions,
+                civilDefensePredefinedConditions: [
+                  ...civilDefensePredefinedConditions,
+                  ...civilDefenceList?.map((e) => e.name) ?? []
+                ],
                 messages: [
                   ...state.messages,
                   ...nextStep(
@@ -1756,6 +1787,54 @@ class MunicipalAdvisorBloc
         if (state.lastEvent != null) add(state.lastEvent!);
       },
     );
+
+    on<MunicipalAdvisorGetCivilDefenceEvent>(
+      (event, emit) async {
+        emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
+        final failOrSuccess = await _getCivilDefenseConditions(KeyParamsModel(
+          key: state.consultationKey!,
+        ));
+
+        await failOrSuccess.fold((failure) async {
+          emitFailure(emit, failure);
+        }, (r) async {
+          print("RRRRRRRR $r");
+          emit(state.copyWith(status: BlocRequestStatus.submissionGetSuccess));
+
+          CivilDefenceEntity? permit =
+              r.firstWhereOrNull((element) => element.id == "PERMIT");
+          if (permit != null) {
+            emit(state.copyWith(
+              status: BlocRequestStatus.submissionGetSuccess,
+              civilDefenceList: r,
+              messages: [
+                ...state.messages,
+                ChatMessage(
+                  message: 'step4groupName4'.tr(),
+                  step: MunicipalAdvisorSteps.salamaPermitQuestion,
+                  isResponse: true,
+                ),
+              ],
+            ));
+          } else {
+            emit(state.copyWith(
+              status: BlocRequestStatus.submissionGetSuccess,
+              civilDefenceList: r,
+              messages: [
+                ...state.messages,
+                ChatMessage(
+                  message: 'municipalAdvisorRequirements'.tr(),
+                  step: MunicipalAdvisorSteps.requirements,
+                  isResponse: true,
+                  customWidget: true,
+                ),
+              ],
+            ));
+            add(MunicipalAdvisorGetIssuingPredefinedConditionsEvent());
+          }
+        });
+      },
+    );
   }
 
   String get issueTradeLicenseUser {
@@ -1995,6 +2074,16 @@ class MunicipalAdvisorBloc
             isResponse: true,
           ),
         ];
+
+      case MunicipalAdvisorSteps.salamaPermitQuestion:
+        return [
+          ChatMessage(
+            message: 'municipalAdvisorRequirements'.tr(),
+            step: MunicipalAdvisorSteps.requirements,
+            isResponse: true,
+            customWidget: true,
+          ),
+        ];
       case MunicipalAdvisorSteps.inputSummary:
         return [
           ChatMessage(
@@ -2003,6 +2092,7 @@ class MunicipalAdvisorBloc
             isResponse: true,
           ),
         ];
+
       case MunicipalAdvisorSteps.confirmInformation:
         if (data == 'changeInfo') {
           return [
@@ -2017,14 +2107,7 @@ class MunicipalAdvisorBloc
             add(MunicipalAdvisorSaveConsultationProgressEvent());
           });
 
-          return [
-            ChatMessage(
-              message: 'municipalAdvisorRequirements'.tr(),
-              step: MunicipalAdvisorSteps.requirements,
-              isResponse: true,
-              customWidget: true,
-            ),
-          ];
+          return [];
         }
       case MunicipalAdvisorSteps.changeInformation:
         return [

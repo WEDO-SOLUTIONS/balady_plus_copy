@@ -33,6 +33,7 @@ import '../../municipal_advisor_exports.dart'
         SupervisingAuthorityEntity,
         UpdatePermitParamsModel;
 import '../entities/building_compliance_entity.dart';
+import '../entities/civil_defence_entity.dart';
 
 abstract class MunicipalAdvisorRepository {
   Future<Either<Failure, List<IsicActivityEntity>>> getIsicActivities();
@@ -60,6 +61,9 @@ abstract class MunicipalAdvisorRepository {
     KeyParamsModel params,
   );
   Future<Either<Failure, List<String>>> getCivilDefensePredefinedConditions(
+    KeyParamsModel params,
+  );
+  Future<Either<Failure, List<CivilDefenceEntity>>> getCivilDefenseConditions(
     KeyParamsModel params,
   );
   Future<Either<Failure, List<CleaningEntity>>> getCleaningMechanisms(
