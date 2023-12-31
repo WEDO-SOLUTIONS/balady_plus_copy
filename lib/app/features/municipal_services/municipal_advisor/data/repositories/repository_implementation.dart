@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:balady_plus/app/features/municipal_services/municipal_advisor/data/models/building_compliance_model.dart';
+import 'package:balady_plus/app/features/municipal_services/municipal_advisor/domain/entities/civil_defence_entity.dart';
 import 'package:balady_plus/app/features/vd/domain/entities/gis/gis_params.dart';
 import 'package:dartz/dartz.dart';
 
@@ -367,6 +368,18 @@ class MunicipalAdvisorRepositoryImplementation
   Future<Either<Failure, String>> getGISImage(GISParams params) async {
     try {
       final data = await remoteDataSource.getImageUrl(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(
+          ServerFailure(error.errorMessage, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<CivilDefenceEntity>>> getCivilDefenseConditions(
+      KeyParamsModel params) async {
+    try {
+      final data = await remoteDataSource.getCivilDefenseConditions(params);
       return Right(data);
     } on ServerException catch (error) {
       return Left(

@@ -1,7 +1,6 @@
 import 'package:balady_plus/app/features/entry_point/data/models/test_model.dart';
 import 'package:dartz/dartz.dart' show Either;
 import 'package:flutter_appauth/flutter_appauth.dart';
-
 import '../../../../core/errors/errors_exports.dart' show Failure;
 import '../../data/models/get_permission_params_model.dart';
 import '../../data/models/permission_response_model.dart';

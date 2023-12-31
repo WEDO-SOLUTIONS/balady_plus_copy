@@ -50,7 +50,7 @@ class OrderCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 290,
+        height: 320,
         margin: const EdgeInsets.symmetric(vertical: 6),
         decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(Radius.circular(12)),
@@ -129,7 +129,6 @@ class OrderCardWidget extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 24),
-                  CustomVerticalSpace(height: 10),
                   if (tag != null && tag?.value != null)
                     TagWidget(
                       text: tag!.value!,
@@ -137,7 +136,6 @@ class OrderCardWidget extends StatelessWidget {
                 ],
               ),
             ),
-            const Spacer(),
             Padding(
               padding: const EdgeInsets.all(16),
               child: CustomElevatedButtonWidget(

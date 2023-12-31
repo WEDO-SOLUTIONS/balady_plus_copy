@@ -15,8 +15,9 @@ import 'package:balady_plus/etmam_app/features/submit_request/submit_request_exp
 import 'package:flutter/material.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocStatus;
 import 'package:collection/collection.dart';
-
+import 'package:balady_plus/app/core/utils/utils_exports.dart' as balady;
 import '../../../../../../../app/core/dependency_injection/injection_container.dart';
+import '../../../../../../../app/core/utils/constants/ux_cam_events.dart';
 import '../../../../../../../app/features/_shared_feature_/data/entities/drop_down_item.dart';
 import '../../../../../../core/utils/enums/dynamic_forms.dart';
 import '../../../../../dynamic_form/domain/entities/create_form_item_response.dart';
@@ -179,6 +180,18 @@ class SubmitRequestBloc extends Bloc<SubmitRequestEvent, SubmitRequestState> {
                       idNumber: success.data?.result?.number,
                       thanksMessage: success.data?.result?.successMessage,
                       type: PageTypes.orderScreen));
+        }
+
+        if (sl<EtmamEntryPointCubit>().classificationId == "municipal") {
+          balady.CommonFunctions.sendUXCamEvent(
+              UXCamEvents.finishServiceLicensingAndPlanningServices);
+          balady.CommonFunctions.sendUXCamEvent(
+              UXCamEvents.finishServiceLicensingAndPlanningServicesDelegation);
+        } else {
+          balady.CommonFunctions.sendUXCamEvent(
+              UXCamEvents.finishServiceServicesProviders);
+          balady.CommonFunctions.sendUXCamEvent(
+              UXCamEvents.finishServiceLicensingAndPlanningServicesDelegation);
         }
       });
     }

@@ -491,7 +491,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "requireLogin": true,
-      "action": {"type": "page", "value": "/objectableTransactionsPage"},
+      "action": {"type": "page", "value": RouteName.objectableTransactions},
       "ar": {"title": "submit_objections", "description": null, "tag": null},
       "en": {"title": "submit_objections", "description": null, "tag": null}
     },

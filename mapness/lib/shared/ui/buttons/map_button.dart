@@ -44,50 +44,37 @@ class _MapButtonState extends State<MapButton> {
         });
         widget.onTapDown?.call(details);
       },
-      child: AnimatedOpacity(
-        opacity: widget.disabled ? 0.8 : 1,
-        duration: const Duration(milliseconds: 250),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: widget.borderRadius,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.07),
-                spreadRadius: 0,
-                blurRadius: 1,
-                offset: const Offset(0, 0),
-              ),
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 4,
-                spreadRadius: 0,
-                offset: const Offset(0, 2),
-              )
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: widget.borderRadius,
-            child: BackdropFilter(
-              filter: ImageFilter.blur(
-                sigmaY: 20.0,
-                sigmaX: 20.0,
-              ),
-              child: Material(
-                borderRadius: widget.borderRadius,
-                color: _pressed
-                    ? const Color(0x261E2A36)
-                    : Colors.white.withOpacity(0.8),
-                child: Container(
-                  constraints: const BoxConstraints(minWidth: 48),
-                  height: 48,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      widget.child,
-                    ],
-                  ),
-                ),
-              ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: widget.borderRadius,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.07),
+              spreadRadius: 0,
+              blurRadius: 1,
+              offset: const Offset(0, 0),
+            ),
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 4,
+              spreadRadius: 0,
+              offset: const Offset(0, 2),
+            )
+          ],
+        ),
+        child: Material(
+          borderRadius: widget.borderRadius,
+          color: _pressed
+              ? const Color(0x261E2A36)
+              : Colors.white.withOpacity(0.8),
+          child: Container(
+            constraints: const BoxConstraints(minWidth: 48),
+            height: 48,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                widget.child,
+              ],
             ),
           ),
         ),

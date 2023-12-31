@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart' show Either;
+import 'package:flutter_appauth/flutter_appauth.dart';
 
 import '../../../../core/errors/errors_exports.dart' show Failure;
 import '../../../../core/services/services_exports.dart' show UseCase, NoParams;
 import '../../entry_point_exports.dart';
-import 'package:flutter_appauth/flutter_appauth.dart';
 
 class ClearAuth extends UseCase<EndSessionResponse, NoParams> {
   final EntryPointRepository repository;

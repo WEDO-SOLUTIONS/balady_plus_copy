@@ -165,6 +165,9 @@ class _JodDonationPageState extends State<JodDonationPage> {
                       String? url = await provider
                           .getJoodEskanServicesGenerateDonationUrl();
                       if (url != null) {
+                        CommonFunctions.sendUXCamEvent(
+                          UXCamEvents.openWebDonateScreen,
+                        );
                         navigator.pushNamed(
                           RouteName.inappWebview,
                           arguments: (
@@ -178,7 +181,7 @@ class _JodDonationPageState extends State<JodDonationPage> {
                       CommonFunctions.showError('you_must_choose_amount'.tr());
                     }
                   },
-                  text: 'تبرع'.tr(),
+                  text: 'donate'.tr(),
                 ),
               ),
             ],

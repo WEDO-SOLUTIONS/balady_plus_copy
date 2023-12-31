@@ -21,6 +21,12 @@ class Stories {
     _transitionState.currentState?.dismiss();
   }
 
+  static get isShowing => _overlayEntry != null;
+
+  static void hide() {
+    _hide();
+  }
+
   static void _hide() {
     _overlayEntry?.remove();
     _overlayEntry = null;
@@ -52,20 +58,22 @@ class Stories {
 
   static void showStoryById(BuildContext context, String id) {
     final router = GoRouter.of(rootNavigatorKey.currentContext!);
+    void handleDeeplink(String url) {
+      if (url.startsWith('/')) {
+        router.push(url);
+      } else if (url.startsWith('https://www.joodeskan.sa/')) {
+        NavigationService.navigatorKey.currentState?.pushNamed(
+          RouteName.jodDonationPage,
+        );
+      } else {
+        launchUrl(Uri.parse(url));
+      }
+    }
+
     final storyWidget = StoriesFullscreen(
       onClose: () => _transitionState.currentState?.dismiss(),
       initialStoryId: id,
-      handleDeeplink: (url) {
-        if (url.startsWith('/')) {
-          router.push(url);
-        } else if (url.startsWith('https://www.joodeskan.sa/')) {
-          NavigationService.navigatorKey.currentState?.pushNamed(
-            RouteName.jodDonationPage,
-          );
-        } else {
-          launchUrl(Uri.parse(url));
-        }
-      },
+      handleDeeplink: handleDeeplink,
     );
 
     showStory(context, storyWidget);

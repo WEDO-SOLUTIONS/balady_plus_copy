@@ -146,6 +146,17 @@ class MunicipalAdvisorSelectATMEvent extends MunicipalAdvisorEvent {
   List<Object?> get props => [atm];
 }
 
+class MunicipalAdvisorSelectSalamaEvent extends MunicipalAdvisorEvent {
+  final bool hasSalama;
+
+  const MunicipalAdvisorSelectSalamaEvent({
+    required this.hasSalama,
+  });
+
+  @override
+  List<Object?> get props => [hasSalama];
+}
+
 class MunicipalAdvisorSelectAreaEvent extends MunicipalAdvisorEvent {
   final num area;
 
@@ -391,6 +402,8 @@ class MunicipalAdvisorContinueToRequestPath extends MunicipalAdvisorEvent {
 class GetImtethalStatusEvent extends MunicipalAdvisorEvent {}
 
 class MunicipalAdvisorGetRequestFlowEvent extends MunicipalAdvisorEvent {}
+
+class MunicipalAdvisorGetCivilDefenceEvent extends MunicipalAdvisorEvent {}
 
 class MunicipalAdvisorSubmitConsultationEvent extends MunicipalAdvisorEvent {}
 

@@ -6,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../../core/utils/utils_exports.dart'
-    show ContextConversion, IconPath;
+    show CommonFunctions, ContextConversion, IconPath;
 import 'package:percent_indicator/percent_indicator.dart';
 
 import '../../../../../core/utils/constants/app_colors.dart';
@@ -92,7 +92,7 @@ class ObjectionRequestAppBar extends StatelessWidget
                 width: MediaQuery.of(context).size.width - 32,
                 addAutomaticKeepAlive: false,
                 lineHeight: 6.7,
-                isRTL: true,
+                isRTL: CommonFunctions.isAppAR ? true : false,
                 animationDuration: 0,
                 restartAnimation: false,
                 percent: currentStep /

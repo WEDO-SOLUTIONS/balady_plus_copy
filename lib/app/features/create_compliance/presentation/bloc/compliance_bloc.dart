@@ -296,8 +296,8 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       emitter(state.copyWith(status: BlocStatus.performing));
       emitter(state.copyWith(
           status: BlocStatus.success, currentStep: nextPage, errorMessage: ""));
-      await pageController.animateToPage(nextPage,
-          duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+      pageController.jumpToPage(nextPage);
+      sendEventPage(nextPage);
     });
   }
 
@@ -351,8 +351,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
             status: BlocStatus.success,
             currentStep: nextPage,
             errorMessage: ""));
-        await pageController.animateToPage(nextPage,
-            duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+        pageController.jumpToPage(nextPage);
 
         sendEventPage(nextPage);
       }
@@ -495,8 +494,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
             status: BlocStatus.success,
             currentStep: nextPage,
             errorMessage: ""));
-        await pageController.animateToPage(nextPage,
-            duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+        pageController.jumpToPage(nextPage);
 
         sendEventPage(nextPage);
       } else {
@@ -866,8 +864,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
             status: BlocStatus.success,
             currentStep: nextPage,
             errorMessage: ""));
-        await pageController.animateToPage(nextPage,
-            duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+        pageController.jumpToPage(nextPage);
         sendEventPage(nextPage);
       }
     } else if (state.currentStep == 2 && state.benificiaryTypeSelection == 1) {
@@ -898,8 +895,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       ));
       emitter(state.copyWith(
           status: BlocStatus.success, currentStep: nextPage, errorMessage: ""));
-      await pageController.animateToPage(nextPage,
-          duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+      pageController.jumpToPage(nextPage);
       sendEventPage(nextPage);
     }
     hideKeyboard();
@@ -916,8 +912,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       emitter(state.copyWith(
         status: BlocStatus.performing,
       ));
-      await pageController.animateToPage(prvoiusPage,
-          duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+      pageController.jumpToPage(prvoiusPage);
       sendEventPage(prvoiusPage);
 
       emitter(state.copyWith(
@@ -986,8 +981,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
             status: BlocStatus.success,
             currentStep: nextPage,
             errorMessage: ""));
-        await pageController.animateToPage(nextPage,
-            duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+        pageController.jumpToPage(nextPage);
         sendEventPage(nextPage);
       }
     });

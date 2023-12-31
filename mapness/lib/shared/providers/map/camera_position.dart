@@ -1,20 +1,24 @@
+import 'dart:async';
+
 import 'package:dgis_map/library.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'camera_position.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class CameraPosition extends _$CameraPosition {
+  StreamSubscription? _cameraPositionSubscription;
+
   @override
   CameraPositionMessage? build() {
     final dgisController = ref.watch(dgisControllerProvider);
-    final cameraPositionSubscription = dgisController
-        .value?.cameraPositionEvents
+    _cameraPositionSubscription ??= dgisController.value?.cameraPositionEvents
         .listen(_cameraPositionListener);
     ref.onDispose(
       () {
-        cameraPositionSubscription?.cancel();
+        _cameraPositionSubscription?.cancel();
+        _cameraPositionSubscription = null;
       },
     );
 

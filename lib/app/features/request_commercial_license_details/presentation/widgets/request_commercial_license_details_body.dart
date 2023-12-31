@@ -132,16 +132,6 @@ class _RequestCommercialLicenseDetailsBodyState
                               ?.toWrittenDate() ??
                           "",
                     ),
-                    if (requestCommercialLicenseDetails.insidePetrolStation !=
-                        null)
-                      CardParameter(
-                        title: 'is_license_inside_petrol_station'.tr(),
-                        value: requestCommercialLicenseDetails
-                                    .insidePetrolStation ==
-                                true
-                            ? "yes".tr()
-                            : "no".tr(),
-                      ),
 
                     requestCommercialLicenseDetails.cancellationReasonName !=
                             null

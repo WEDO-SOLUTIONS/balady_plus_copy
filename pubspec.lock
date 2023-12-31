@@ -599,7 +599,7 @@ packages:
   flutter_appauth:
     dependency: "direct main"
     description:
-      path: "flutter_appauth/flutter_appauth"
+      path: "packages/flutter_appauth/flutter_appauth"
       relative: true
     source: path
     version: "2.2.0+1"

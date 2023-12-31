@@ -1,9 +1,11 @@
 import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
+import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/debug_overlay/debug_overlay.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -120,6 +122,15 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       optOutTrackingDefault: false,
     );
     mixpanel?.setLoggingEnabled(true);
+    FlutterUxConfig config = FlutterUxConfig(
+      enableAdvancedGestureRecognition: true,
+      enableCrashHandling: true,
+      enableMultiSessionRecord: true,
+      enableNetworkLogging: true,
+      userAppKey: "2w1otnta9bvvhzo",
+      enableAutomaticScreenNameTagging: false,
+    );
+    FlutterUxcam.startWithConfiguration(config);
   }
 }
 
@@ -137,6 +148,7 @@ Future<void> setupMapness(EnvType envType) async {
     ),
     config: vendorConfig,
   );
+
   await Hive.initFlutter();
   Hive.registerAdapter(
     SearchHistoryItemAdapter(),
