@@ -4206,7 +4206,11 @@
   "parts": "الأجزاء",
   "quranSearch": "بحث  باسم السورة ... ", 
   "reset": "تصفية العداد", 
-  "is_license_inside_petrol_station":"Is Shop Inside Petrol Station"
+  "is_license_inside_petrol_station":"Is Shop Inside Petrol Station", 
+
+  "chat_bot_hint": "Please write your inquiry here....",
+  "chat_bot_message_welcome": "Hello and welcome. \nI am the smart assistant for the Ministry of Municipal and Rural Affairs and Housing. Please proceed with your inquiry, and I will be happy to answer you."
+
 
 
 
