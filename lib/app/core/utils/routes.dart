@@ -73,6 +73,7 @@ import '../../features/_shared_feature_/presentation/pages/view_apigee_image_scr
 import '../../features/calculator/presentation/pages/service_calculator_result_screen.dart';
 import '../../features/calendar/calendar_exports.dart';
 import '../../features/calendar/presentation/pages/calendar_details_page.dart';
+import '../../features/chatbot/presentation/pages/chatbot_screen.dart';
 import '../../features/commercial_license/presentation/issue_start_service_screen.dart';
 import '../../features/commercial_license/presentation/step3/page/cr_map_page.dart';
 import '../../features/commercial_license/presentation/step6/page/commercial_otp_screen.dart';
@@ -746,6 +747,8 @@ class Routes {
 
         RouteName.SpecificServicePage: (context) => const AllServicesPage(),
         RouteName.jodDonationPage: (context) => const JodDonationPage(),
+
+        RouteName.chatbot: (context) => const ChatBotScreen(),
       };
 }
 
