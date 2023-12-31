@@ -1,16 +1,16 @@
 import 'package:balady_plus/app/features/municipal_services/municipal_advisor/municipal_advisor_exports.dart';
 import 'package:equatable/equatable.dart';
 
-class ChatBotMessage extends Equatable {
+  class ChatBotMessageEntities extends Equatable {
   final String message;
   final bool isResponse;
   final bool haveError;
   final DateTime timeStamp;
 
-  ChatBotMessage({
+  ChatBotMessageEntities({
     required this.message,
-    this.isResponse = false,
-    this.haveError = false,
+    required this.isResponse,
+    required this.haveError ,
   }) : timeStamp = DateTime.now();
 
   @override

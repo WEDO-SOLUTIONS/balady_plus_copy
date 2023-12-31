@@ -1,4 +1,5 @@
-import 'package:balady_plus/app/features/chatbot/data/models/chat_bot_message.dart';
+import 'package:balady_plus/app/features/chatbot/data/models/chat_bot_message_model.dart';
+import 'package:balady_plus/app/features/chatbot/domain/entities/chat_bot_message_entities.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/mvvm/chatboot_provider.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/widgets/chat_bot_bubble.dart';
 import 'package:flutter/material.dart';
@@ -14,14 +15,14 @@ class ChatBotList extends StatelessWidget {
     ChatBotProvider provider = context.watch<ChatBotProvider?>()!;
 
     return Expanded(
-      child: ValueListenableBuilder<List<ChatBotMessage>>(
+      child: ValueListenableBuilder<List<ChatBotMessageEntities>>(
         valueListenable: provider.chatBotMessage,
         builder: (_, listMessages, child) {
           return ListView.builder(
             controller: provider.scrollController,
             itemBuilder: (_, index) {
               // int size = listMessages.length - 1;
-              ChatBotMessage message = listMessages[index];
+              ChatBotMessageEntities message = listMessages[index];
               return ChatBotBubble(chatMessage: message);
             },
             itemCount: listMessages.length,
