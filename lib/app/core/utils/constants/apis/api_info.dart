@@ -78,6 +78,9 @@ class ApiUrl {
 
   static const gisImageUrl = '/v1/gis-services/image-url';
 
+  static const validActivitiesAreasUrl =
+      '/v1/balady-commercial-services/business-rules/valid-activities-areas';
+
   //! Profile
   //! Delegators
   static const delegators =
@@ -760,7 +763,6 @@ class ApiUrl {
       "v1/joodeskan-services/generate-donation-url";
 
   static const paymentURL = 'v1/payment-gateway/payment';
-
 
   static const chatBot = 'v1/chatbot-services/chat';
 

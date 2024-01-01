@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class AdditionalActivitiesParamsModel extends Equatable {
   final String consultationKey;
-  final List<int> ids;
+  final List<(int, double?)> ids;
   final bool? hasSalamaPermit;
 
   const AdditionalActivitiesParamsModel(

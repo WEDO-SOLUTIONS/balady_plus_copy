@@ -34,6 +34,7 @@ import '../../municipal_advisor_exports.dart'
         UpdatePermitParamsModel;
 import '../entities/building_compliance_entity.dart';
 import '../entities/civil_defence_entity.dart';
+import '../entities/validate_additional_activities_params.dart';
 
 abstract class MunicipalAdvisorRepository {
   Future<Either<Failure, List<IsicActivityEntity>>> getIsicActivities();
@@ -52,6 +53,11 @@ abstract class MunicipalAdvisorRepository {
   Future<Either<Failure, bool>> saveAdditionalActivities(
     AdditionalActivitiesParamsModel params,
   );
+
+  Future<Either<Failure, bool>> validateAdditionalActivities(
+    ValidateAdditionalActivitiesParams params,
+  );
+
   Future<Either<Failure, List<String>>> getIssuingPredefinedConditions();
   Future<Either<Failure, List<LicensePermitEntity>>> getLicensePermits(
     KeyParamsModel params,

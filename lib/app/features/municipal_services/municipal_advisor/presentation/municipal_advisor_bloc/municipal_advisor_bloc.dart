@@ -17,7 +17,9 @@ import '../../../../../core/utils/utils_exports.dart';
 import '../../../../vd/vd_exports.dart' show GISParams, GISResponse, GetGISData;
 import '../../domain/entities/building_compliance_entity.dart';
 import '../../domain/entities/civil_defence_entity.dart';
+import '../../domain/entities/validate_additional_activities_params.dart';
 import '../../domain/use_cases/get_civil_defense_conditions.dart';
+import '../../domain/use_cases/validate_addetional_activites.dart';
 import '../../municipal_advisor_exports.dart';
 
 part 'municipal_advisor_event.dart';
@@ -60,6 +62,7 @@ class MunicipalAdvisorBloc
   final GetBuildingCompliance _getBuildingCompliance;
   final GetGISImage _getGisImage;
   final GetCivilDefenseConditions _getCivilDefenseConditions;
+  final ValidateAddetionalActivites _validateAddetionalActivites;
 
   MunicipalAdvisorBloc({
     required GetConsultationKey getConsultationKey,
@@ -129,6 +132,7 @@ class MunicipalAdvisorBloc
         _getBuildingCompliance = sl<GetBuildingCompliance>(),
         _getGisImage = sl<GetGISImage>(),
         _getCivilDefenseConditions = GetCivilDefenseConditions(sl()),
+        _validateAddetionalActivites = ValidateAddetionalActivites(sl()),
         super(const MunicipalAdvisorState()) {
     on<MunicipalAdvisorAddMessageEvent>(
       (event, emit) async {
@@ -379,12 +383,13 @@ class MunicipalAdvisorBloc
                 state.copyWith(
                   status: BlocRequestStatus.submissionGetSuccess,
                   additionalActivities: additionalActivities,
-                  messages: [
+                  /* messages: [
                     ...state.messages,
                     ...nextStep(MunicipalAdvisorSteps.subActivity),
-                  ],
+                  ],*/
                 ),
               );
+              add(MunicipalAdvisorGetActivityDetailsEvent());
             }
           },
         );
@@ -399,15 +404,18 @@ class MunicipalAdvisorBloc
             selectedAdditionalActivities: event.additionalActivities,
           ),
         );
-        if (event.additionalActivities.isNotEmpty) {
-          add(MunicipalAdvisorAddMessageEvent(
-            message: event.additionalActivities
-                .map((e) => e.masterActivityName)
-                .join('\n'),
-            step: MunicipalAdvisorSteps.additionalActivities,
-          ));
-        }
-        add(MunicipalAdvisorGetActivityDetailsEvent());
+
+        final failOrSuccess = await _validateAddetionalActivites(
+            ValidateAdditionalActivitiesParams(
+                shopArea: state.selectedArea?.toDouble() ?? 0,
+                mainActivityId: state.selectedIsicSubActivity?.id ?? 0,
+                addetionalActivites: state.selectedAdditionalActivities
+                    .map((e) =>
+                        (e.activityId, double.tryParse(e.inputArea ?? "")))
+                    .toList()));
+
+        failOrSuccess.fold((failure) => emitFailure(emit, failure),
+            (r) => add(MunicipalAdvisorSaveConsultationProgressEvent()));
       },
     );
 
@@ -439,7 +447,7 @@ class MunicipalAdvisorBloc
                   status: BlocRequestStatus.submissionGetSuccess,
                   messages: [
                     ...state.messages,
-                    ...nextStep(MunicipalAdvisorSteps.additionalActivities),
+                    ...nextStep(MunicipalAdvisorSteps.subActivity),
                   ],
                 ),
               );
@@ -457,7 +465,7 @@ class MunicipalAdvisorBloc
               status: BlocRequestStatus.submissionGetSuccess,
               messages: [
                 ...state.messages,
-                ...nextStep(MunicipalAdvisorSteps.additionalActivities),
+                ...nextStep(MunicipalAdvisorSteps.subActivity),
               ],
             ),
           );
@@ -479,7 +487,7 @@ class MunicipalAdvisorBloc
                 accommodationTypes: accommodationTypes,
                 messages: [
                   ...state.messages,
-                  ...nextStep(MunicipalAdvisorSteps.additionalActivities),
+                  ...nextStep(MunicipalAdvisorSteps.subActivity),
                 ],
               ),
             );
@@ -667,7 +675,6 @@ class MunicipalAdvisorBloc
           (failure) => emitFailure(emit, failure),
           (_) {},
         );
-
         if (failureOrSuccess.isLeft()) return;
 
         final additionalActivities = state.selectedAdditionalActivities;
@@ -675,12 +682,24 @@ class MunicipalAdvisorBloc
         final saveAdditionalActivities = await _saveAdditionalActivities(
           AdditionalActivitiesParams(
               consultationKey: state.consultationKey!,
-              ids: additionalActivities.map((e) => e.activityId).toList(),
+              ids: additionalActivities
+                  .map(
+                      (e) => (e.activityId, double.tryParse(e.inputArea ?? "")))
+                  .toList(),
               hasSalamaPermit: state.hasSalama),
         );
+        if (failureOrSuccess.isLeft()) return;
         saveAdditionalActivities.fold(
           (failure) => emitFailure(emit, failure),
           (_) {
+            if (state.selectedAdditionalActivities.isNotEmpty) {
+              add(MunicipalAdvisorAddMessageEvent(
+                message: state.selectedAdditionalActivities
+                    .map((e) => e.activityName)
+                    .join('\n'),
+                step: MunicipalAdvisorSteps.additionalActivities,
+              ));
+            }
             add(MunicipalAdvisorGetCivilDefenceEvent());
           },
         );
@@ -1792,8 +1811,11 @@ class MunicipalAdvisorBloc
       (event, emit) async {
         emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
         final failOrSuccess = await _getCivilDefenseConditions(KeyParamsModel(
-          key: state.consultationKey!,
-        ));
+            key: state.consultationKey!,
+            civilDefenseActivityRequestDtoList: state
+                .selectedAdditionalActivities
+                .map((e) => (e.activityId, double.tryParse(e.inputArea ?? "")))
+                .toList()));
 
         await failOrSuccess.fold((failure) async {
           emitFailure(emit, failure);
@@ -1835,6 +1857,50 @@ class MunicipalAdvisorBloc
         });
       },
     );
+
+    on<ChangeAreaInAddetionalActivityEvent>((event, emit) async {
+      List<ActivityDetailsEntity> selectedAdditionalActivities =
+          state.selectedAdditionalActivities;
+      int index = state.selectedAdditionalActivities.indexWhere(
+          (element) => element.activityId == event.activityDetails.activityId);
+      emit(state.copyWith(
+          selectedAdditionalActivities: selectedAdditionalActivities,
+          status: BlocRequestStatus.submissionGetLoading));
+
+      if (index != -1) {
+        selectedAdditionalActivities[index].inputArea = event.area;
+      }
+
+      emit(state.copyWith(
+          selectedAdditionalActivities: selectedAdditionalActivities,
+          status: BlocRequestStatus.submissionGetSuccess));
+    });
+
+    on<DeleteAddetionalActivityEvent>((event, emit) async {
+      List<ActivityDetailsEntity> selectedAdditionalActivities =
+          state.selectedAdditionalActivities;
+      int index = state.selectedAdditionalActivities.indexWhere(
+          (element) => element.activityId == event.activityDetails.activityId);
+      emit(state.copyWith(
+          selectedAdditionalActivities: selectedAdditionalActivities,
+          status: BlocRequestStatus.submissionGetLoading));
+
+      if (index != -1) {
+        selectedAdditionalActivities.removeAt(index);
+      }
+
+      emit(state.copyWith(
+          selectedAdditionalActivities: selectedAdditionalActivities,
+          status: BlocRequestStatus.submissionGetSuccess));
+    });
+
+    on<AddAddetionalActivityEvent>((event, emit) async {
+      emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
+
+      emit(state.copyWith(
+          selectedAdditionalActivities: event.list,
+          status: BlocRequestStatus.submissionGetSuccess));
+    });
   }
 
   String get issueTradeLicenseUser {
@@ -1984,14 +2050,14 @@ class MunicipalAdvisorBloc
           ),
         ];
       case MunicipalAdvisorSteps.subActivity:
-        return [
+        /* return [
           ChatMessage(
             message: 'municipalAdvisorAdditionalActivities'.tr(),
             step: MunicipalAdvisorSteps.additionalActivities,
             isResponse: true,
           ),
-        ];
-      case MunicipalAdvisorSteps.additionalActivities:
+        ];*/
+
         if (state.changingInfo) {
           return [
             ChatMessage(
@@ -2036,6 +2102,65 @@ class MunicipalAdvisorBloc
           );
         }
         return messages;
+      case MunicipalAdvisorSteps.additionalActivities:
+        print("MunicipalAdvisorSteps.additionalActivities");
+        return [
+          ChatMessage(
+            message: 'municipalAdvisorInputSummery'.tr(),
+            step: MunicipalAdvisorSteps.inputSummary,
+            isResponse: true,
+            customWidget: true,
+          ),
+          ChatMessage(
+            message: 'municipalAdvisorConfirmSummery'.tr(),
+            step: MunicipalAdvisorSteps.confirmInformation,
+            isResponse: true,
+          ),
+        ];
+      /* if (state.changingInfo) {
+          return [
+            ChatMessage(
+              message: 'municipalAdvisorArea'.tr(),
+              step: MunicipalAdvisorSteps.area,
+              isResponse: true,
+            )
+          ];
+        }
+        final messages = [
+          ChatMessage(
+            message:
+                '${'facilityType'.tr()}: ${state.activityDetails!.facilityName}',
+            step: MunicipalAdvisorSteps.area,
+            isResponse: true,
+            customWidget: true,
+          ),
+        ];
+        if (state.activityDetails!.isHotel) {
+          messages.add(
+            ChatMessage(
+              message: 'municipalAdvisorHotelType'.tr(),
+              step: MunicipalAdvisorSteps.accommodationType,
+              isResponse: true,
+            ),
+          );
+        } else if (state.activityDetails!.isAtm) {
+          messages.add(
+            ChatMessage(
+              message: 'municipalAdvisorATM'.tr(),
+              step: MunicipalAdvisorSteps.atm,
+              isResponse: true,
+            ),
+          );
+        } else {
+          messages.add(
+            ChatMessage(
+              message: 'municipalAdvisorArea'.tr(),
+              step: MunicipalAdvisorSteps.area,
+              isResponse: true,
+            ),
+          );
+        }
+        return messages;*/
       case MunicipalAdvisorSteps.accommodationType:
         return [
           ChatMessage(
@@ -2061,19 +2186,29 @@ class MunicipalAdvisorBloc
           ),
         ];
       case MunicipalAdvisorSteps.area:
-        return [
-          ChatMessage(
-            message: 'municipalAdvisorInputSummery'.tr(),
-            step: MunicipalAdvisorSteps.inputSummary,
-            isResponse: true,
-            customWidget: true,
-          ),
-          ChatMessage(
-            message: 'municipalAdvisorConfirmSummery'.tr(),
-            step: MunicipalAdvisorSteps.confirmInformation,
-            isResponse: true,
-          ),
-        ];
+        if (state.additionalActivities.isEmpty) {
+          return [
+            ChatMessage(
+              message: 'municipalAdvisorInputSummery'.tr(),
+              step: MunicipalAdvisorSteps.inputSummary,
+              isResponse: true,
+              customWidget: true,
+            ),
+            ChatMessage(
+              message: 'municipalAdvisorConfirmSummery'.tr(),
+              step: MunicipalAdvisorSteps.confirmInformation,
+              isResponse: true,
+            ),
+          ];
+        } else {
+          return [
+            ChatMessage(
+              message: 'municipalAdvisorAdditionalActivities'.tr(),
+              step: MunicipalAdvisorSteps.additionalActivities,
+              isResponse: true,
+            ),
+          ];
+        }
 
       case MunicipalAdvisorSteps.salamaPermitQuestion:
         return [

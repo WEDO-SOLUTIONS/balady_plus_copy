@@ -399,6 +399,26 @@ class MunicipalAdvisorContinueToRequestPath extends MunicipalAdvisorEvent {
   List<Object?> get props => [continueToRequestPath];
 }
 
+class AddAddetionalActivityEvent extends MunicipalAdvisorEvent {
+  final List<ActivityDetailsEntity> list;
+
+  const AddAddetionalActivityEvent({required this.list});
+}
+
+class ChangeAreaInAddetionalActivityEvent extends MunicipalAdvisorEvent {
+  final String area;
+  final ActivityDetailsEntity activityDetails;
+
+  const ChangeAreaInAddetionalActivityEvent(
+      {required this.activityDetails, required this.area});
+}
+
+class DeleteAddetionalActivityEvent extends MunicipalAdvisorEvent {
+  final ActivityDetailsEntity activityDetails;
+
+  const DeleteAddetionalActivityEvent({required this.activityDetails});
+}
+
 class GetImtethalStatusEvent extends MunicipalAdvisorEvent {}
 
 class MunicipalAdvisorGetRequestFlowEvent extends MunicipalAdvisorEvent {}
