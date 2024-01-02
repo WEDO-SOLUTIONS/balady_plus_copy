@@ -7,11 +7,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
-import 'package:mapness/_features/lifestyle_layers/layers_sheet.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -38,6 +38,9 @@ class _LandingPageState extends ConsumerState<LandingPage> {
   @override
   void initState() {
     super.initState();
+
+    setupTapListener();
+
     switch (widget.focusMaker) {
       case LangingFocusMaker.iwish:
         () async {
@@ -83,6 +86,12 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     }
   }
 
+  void setupTapListener() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    _streamSubscription =
+        dgisController.objectTapEvents.listen(_objectTapListener);
+  }
+
   @override
   void deactivate() {
     _streamSubscription?.cancel();
@@ -91,7 +100,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isLayersVisible = ref.watch(layersControlsProvider);
+    ref.watch(layersControlsProvider);
     ref.watch(favouriteMarkersProvider.select((value) => null));
 
     /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
@@ -101,13 +110,6 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     ref.watch(
       mapObjectManagerProvider(named: poiMapLayer),
     );
-
-    _streamSubscription?.cancel();
-    _streamSubscription = ref
-        .watch(dgisControllerProvider)
-        .value
-        ?.objectTapEvents
-        .listen(_objectTapListener);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -124,7 +126,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
                   biggestWidth: constraints.biggest.width,
                 );
               }),
-              if (isLayersVisible.layersVisible) const LayersSheet()
+              // if (isLayersVisible.layersVisible) const LayersSheet()
             ],
           ),
         ),
@@ -134,15 +136,12 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
   void _objectTapListener(TapEvent event) {
     if (event is ObjectTapEvent) {
+      ref.read(urbiMetricsProvider.notifier).logEvent(
+        'Landing/objectTap',
+        {'objectId': event.dgisObjectId.objectId},
+      );
       if (context.mounted) {
-        final currentRoute = ref.read(currentRouteProvider);
-
-        if (currentRoute == "/poi-map") {
-          PoiMapRoute(dgisObjectId: event.dgisObjectId.objectId)
-              .pushReplacement(context);
-        } else {
-          PoiMapRoute(dgisObjectId: event.dgisObjectId.objectId).push(context);
-        }
+        PoiMapRoute.open(context, event.dgisObjectId.objectId);
       }
     }
   }

@@ -1060,22 +1060,22 @@ class CommonFunctions {
                 response?.data.toString()) ??
             "";
 
-        String URL =
-            (dioError?.requestOptions.path ?? response?.realUri.path) ??
-                "Error";
+        String? URL = (dioError?.requestOptions.path ?? response?.realUri.path);
 
-        FlutterUxcam.logEventWithProperties("APIError", {
-          "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
-          "Data": data.length <= 1024 ? data : data.substring(0, 1023),
-          "QueryString": queryString.length <= 1024
-              ? queryString
-              : queryString.substring(0, 1023),
-          "Headers":
-              headers.length <= 1024 ? headers : headers.substring(0, 1023),
-          "Message":
-              message.length <= 1024 ? message : message.substring(0, 1023),
-          "Environment": sl<EnvType>().name
-        });
+        if (URL != null) {
+          FlutterUxcam.logEventWithProperties("APIError", {
+            "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
+            "Data": data.length <= 1024 ? data : data.substring(0, 1023),
+            "QueryString": queryString.length <= 1024
+                ? queryString
+                : queryString.substring(0, 1023),
+            "Headers":
+                headers.length <= 1024 ? headers : headers.substring(0, 1023),
+            "Message":
+                message.length <= 1024 ? message : message.substring(0, 1023),
+            "Environment": sl<EnvType>().name
+          });
+        }
       }
     } catch (ex) {
       print(ex);
@@ -1247,6 +1247,13 @@ class CommonFunctions {
   static void sendUXCamEvent(String event) {
     try {
       FlutterUxcam.logEvent(event);
+    } catch (ex) {}
+  }
+
+  static void sendUXCamEventWithProperties(
+      String event, Map<String, dynamic> data) {
+    try {
+      FlutterUxcam.logEventWithProperties(event, data);
     } catch (ex) {}
   }
 }

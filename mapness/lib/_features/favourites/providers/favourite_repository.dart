@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
-import 'package:mapness/entry_point.dart';
-import 'package:mapness/shared/providers/dgis_environment.dart';
-import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/domain/favourites_state.dart';
 import 'package:mapness/_features/favourites/mappers/add_request_item.dart';
 import 'package:mapness/_features/favourites/mappers/delete_favourite_items_request_item_mapper.dart';
 import 'package:mapness/_features/favourites/mappers/favourites_response_mapper.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
+import 'package:mapness/entry_point.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'favourite_repository.g.dart';
@@ -77,6 +77,9 @@ class _FavouriteRepository extends _$FavouriteRepository {
   }
 
   Future<void> addItems(List<FavouriteItem> items) async {
+    ref.read(urbiMetricsProvider.notifier).logEvent("Favorites/addItems", {
+      "items": items.map((e) => e.id).toList(),
+    });
     mixpanel?.timeEvent("Favorites: addItems");
     final dio = await ref.read(dGisNetworkProvider.future);
     final request = proto.AddFavouriteItemsRequest(items: items.map((e) {
@@ -103,16 +106,16 @@ class _FavouriteRepository extends _$FavouriteRepository {
     } on DioException catch (e) {
       print(proto.ErrorResponse.fromBuffer(e.response!.data));
     }
-    mixpanel?.timeEvent("Favorites: addItems");
+    mixpanel?.track("Favorites: addItems");
   }
 
   @override
   Future<FavouritesState> build() async {
     mixpanel?.timeEvent("Favorites: build");
-    final dio = await ref.read(dGisNetworkProvider.future);
+    final dio = await ref.watch(dGisNetworkProvider.future);
     final raw = await dio.get('favourites');
     final response = proto.FavouritesResponse.fromBuffer(raw.data);
-    mixpanel?.timeEvent("Favorites: build");
+    mixpanel?.track("Favorites: build");
     return response.toDomain();
   }
 }

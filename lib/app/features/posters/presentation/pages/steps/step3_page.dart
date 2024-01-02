@@ -77,7 +77,8 @@ class _PostersStep3PageState extends State<PostersStep3Page> {
             ),
             const Align(
                 alignment: Alignment.bottomCenter, child: CalcualtorWidget()),
-            if (state.status.isSubmissionLoading)
+            if (state.status.isSubmissionLoading ||
+                state.detailsStatus == BlocStatus.loading)
               const CustomCircularLoadingWidget(),
           ],
         );

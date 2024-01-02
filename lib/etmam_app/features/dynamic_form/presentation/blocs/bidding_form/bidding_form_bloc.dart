@@ -34,6 +34,7 @@ import 'package:mime/mime.dart';
 
 import '../../../../../../app/core/dependency_injection/injection_container.dart';
 import '../../../../../../app/core/services/local/navigation_services.dart';
+import '../../../../../../app/core/utils/constants/ux_cam_events.dart';
 import '../../../../../../app/core/utils/enums/bloc_status.dart';
 import '../../../../../../app/features/_shared_feature_/data/entities/drop_down_item.dart';
 import '../../../../../../app/features/_shared_feature_/data/entities/file_data_item.dart';
@@ -362,6 +363,18 @@ class BiddingFormBloc extends Bloc<BiddingFormEvent, BiddingFormState> {
           arguments: SuccessScreenArgs(
               thanksMessage: success.data?.result?.responseMessage,
               type: PageTypes.orderScreen));
+
+      if (sl<EtmamEntryPointCubit>().classificationId == "municipal") {
+        CommonFunctions.sendUXCamEvent(
+            UXCamEvents.finishServiceLicensingAndPlanningServices);
+        CommonFunctions.sendUXCamEvent(
+            UXCamEvents.finishServiceLicensingAndPlanningServicesBidding);
+      } else {
+        CommonFunctions.sendUXCamEvent(
+            UXCamEvents.finishServiceServicesProviders);
+        CommonFunctions.sendUXCamEvent(
+            UXCamEvents.finishServiceLicensingAndPlanningServicesBidding);
+      }
     });
   }
 

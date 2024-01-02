@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,5 +42,16 @@ class CommonFunctions {
     if (isAuth) {
       callback?.call();
     }
+  }
+
+  static double distance(double lat1, double lon1, double lat2, double lon2) {
+    const r = 6371; // km
+    const p = pi / 180;
+
+    final a = 0.5 -
+        cos((lat2 - lat1) * p) / 2 +
+        cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2;
+
+    return 2 * r * asin(sqrt(a));
   }
 }

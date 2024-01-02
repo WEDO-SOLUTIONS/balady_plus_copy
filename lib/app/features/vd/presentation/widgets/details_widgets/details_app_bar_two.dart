@@ -10,7 +10,8 @@ import 'package:percent_indicator/percent_indicator.dart';
 
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/constants.dart';
-import '../../../../../core/utils/utils_exports.dart' show IconPath;
+import '../../../../../core/utils/utils_exports.dart'
+    show CommonFunctions, IconPath;
 import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../home_page/home_exports.dart' show CircleIcon;
@@ -117,7 +118,7 @@ class DetailsAppBarTwo extends StatelessWidget implements PreferredSizeWidget {
               width: MediaQuery.of(context).size.width - 32,
               addAutomaticKeepAlive: false,
               lineHeight: 6.7,
-              isRTL: true,
+              isRTL: CommonFunctions.isAppAR ? true : false,
               animationDuration: 0,
               restartAnimation: false,
               percent: currentStep / pageLength,

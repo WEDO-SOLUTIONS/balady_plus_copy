@@ -491,7 +491,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "requireLogin": true,
-      "action": {"type": "page", "value": "/objectableTransactionsPage"},
+      "action": {"type": "page", "value": RouteName.objectableTransactions},
       "ar": {"title": "submit_objections", "description": null, "tag": null},
       "en": {"title": "submit_objections", "description": null, "tag": null}
     },
@@ -659,7 +659,18 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "supporter", "description": null, "tag": null},
       "en": {"title": "supporter", "description": null, "tag": null}
     },
-
+    {
+      "id": 407,
+      "icon": "chat_bot",
+      "3d_icon": null,
+      "order": 13,
+      "isNew": false,
+      "isImportant": false,
+      "requireLogin": true,
+      "action": {"type": "page", "value": RouteName.chatbot},
+      "ar": {"title": "municipal_advisor", "description": null, "tag": null},
+      "en": {"title": "municipal_advisor", "description": null, "tag": null}
+    },
     /*{
       "id": 7,
       "icon": "municpal_toppaco",

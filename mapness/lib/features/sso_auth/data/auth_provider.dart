@@ -3,7 +3,9 @@ import 'package:balady_plus/app/core/dependency_injection/dependency_injection_e
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_provider.g.dart';
@@ -11,6 +13,7 @@ part 'auth_provider.g.dart';
 @riverpod
 class Auth extends _$Auth {
   Future<void> doAuth() async {
+    ref.read(urbiMetricsProvider.notifier).logEvent("Auth/doAuth");
     mixpanel?.timeEvent("Auth: doAuth");
     await CommonFunctions.onLogin();
     ref.invalidateSelf();
@@ -18,14 +21,17 @@ class Auth extends _$Auth {
   }
 
   Future<void> logOut() async {
+    ref.read(urbiMetricsProvider.notifier).logEvent("Auth/logOut");
     mixpanel?.timeEvent("Auth: logOut");
     await sl<EntryPointCubit>().clearAuth();
     ref.invalidateSelf();
     mixpanel?.track("Auth: logOut");
     mixpanel?.reset();
+    FlutterUxcam.setUserIdentity(null);
   }
 
   Future<void> tokenExpireLogout() async {
+    ref.read(urbiMetricsProvider.notifier).logEvent("Auth/tokenExpireLogout");
     mixpanel?.timeEvent("Auth: tokenExpireLogout");
     await sl<EntryPointCubit>().autoLogout();
     ref.invalidateSelf();
@@ -46,7 +52,10 @@ class Auth extends _$Auth {
       authSubscription.cancel();
     });
 
-    mixpanel?.identify("${CommonProperties.userInfo?.idNo}");
+    final userId = CommonProperties.userInfo?.idNo;
+    mixpanel?.identify("$userId");
+
+    FlutterUxcam.setUserIdentity(userId);
     return CommonProperties.userInfo;
   }
 }

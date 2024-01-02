@@ -41,7 +41,7 @@ class MapSearchResults extends ConsumerWidget {
           ref.read(searchHistoryProvider(scope.value).notifier).put(
                 SearchHistoryItem.fromDirectoryObject(item),
               );
-          PoiMapRoute(dgisObjectId: item.id!.objectId).push(context);
+          PoiMapRoute.open(context,item.id!.objectId);
         },
       ),
     );

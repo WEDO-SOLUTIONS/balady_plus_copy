@@ -1,6 +1,7 @@
 import 'package:cube_transition_plus/cube_transition_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/stories/data/story_service.dart';
 import 'package:mapness/_features/stories/domain/frame/story_frame_action.dart';
 import 'package:mapness/_features/stories/presentation/frame/story_frames_player.dart';
@@ -39,9 +40,11 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
 
     storiesAsync.whenData((data) {
       final nearStories = data.skip(initialPage - 1).take(3);
+
       for (final story in nearStories) {
         final unseenFrames =
             story.frames.where((element) => element.isWatched == false).take(2);
+
         for (final element in unseenFrames) {
           precacheImage(NetworkImage(element.imageUrl), context);
         }
@@ -109,24 +112,28 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
       loading: () => blank,
       data: (storiesData) {
         final stories = storiesData;
+        final direction = ref.read(uiDirectionProvider);
 
-        return CubePageView(
-          onPageChanged: (index) => _onChangeStory(index, stories.length),
-          controller: _storyController,
-          startPage: initialPage,
-          children: [
-            blank,
-            ...stories.map(
-              (story) => StoryFramesPlayer(
-                onActionPressed: (action) => onActionPressed(action, context),
-                story: story,
-                onNextStory: _previousStory,
-                onPreviousStory: _nextStory,
-                onClose: onClose,
+        return Directionality(
+          textDirection: direction,
+          child: CubePageView(
+            onPageChanged: (index) => _onChangeStory(index, stories.length),
+            controller: _storyController,
+            startPage: initialPage,
+            children: [
+              blank,
+              ...stories.map(
+                (story) => StoryFramesPlayer(
+                  onActionPressed: (action) => onActionPressed(action, context),
+                  story: story,
+                  onNextStory: _nextStory,
+                  onPreviousStory: _previousStory,
+                  onClose: onClose,
+                ),
               ),
-            ),
-            blank,
-          ],
+              blank,
+            ],
+          ),
         );
       },
     );

@@ -1,6 +1,6 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
-
 
 List<BuildingComplianceCertificate> buildingComplianceCertificateFromJson(
         List list) =>
@@ -40,6 +40,7 @@ class BuildingComplianceCertificate extends PointLayersData {
       this.STREETWIDTH,
       this.TARGETBUILDINGTYPE})
       : super(
+          layerType: GISMapLayers.BSAimtithalBuildingsCertificateL,
           id: id,
           name: name,
           description: description,
@@ -64,22 +65,9 @@ class BuildingComplianceCertificate extends PointLayersData {
           STREETTYPE: json['attributes']["STREETTYPE"] ?? '',
           STREETWIDTH: json['attributes']["STREETWIDTH"] ?? '',
           pathsGoogle: getGoogleList(json['geometry']["paths"]),
-          ///////////////
           paths: getList(json['geometry']["paths"])
-
-          /*paths: [
-            GeoPointMessage(
-                latitude: 26.369406393621627, longitude: 50.19933225597286),
-            GeoPointMessage(
-                latitude: 26.373032789329308, longitude: 50.19579384705713),
-            GeoPointMessage(
-                latitude: 26.373032789329308, longitude: 50.19579384705713),
-            GeoPointMessage(
-                latitude: 26.374354635533997, longitude: 50.19360020012975)
-          ]*/
-
-          // not tested yat
           );
+
   String getMunAndDis() {
     return (MUNICIPALITYNAME ?? "") + "," + (DISTRICTNAME ?? "");
   }

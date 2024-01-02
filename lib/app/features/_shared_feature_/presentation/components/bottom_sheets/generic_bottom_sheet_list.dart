@@ -47,9 +47,9 @@ class _GenericBottomSheetListState<T> extends State<GenericBottomSheetList> {
   @override
   void initState() {
     super.initState();
-    items = widget.items;
+    items = [...widget.items];
     selectedValue = widget.selectedValue;
-    selectedValues = widget.selectedValues;
+    selectedValues = [...widget.selectedValues ?? []];
     multipleSelection = widget.selectedValues != null;
   }
 

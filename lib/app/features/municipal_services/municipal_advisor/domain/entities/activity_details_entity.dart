@@ -14,22 +14,23 @@ class ActivityDetailsEntity extends Equatable {
   final bool isAtm;
   final bool isHotel;
   final bool? homogeneous;
+  String? inputArea;
 
-  const ActivityDetailsEntity({
-    required this.activityId,
-    required this.activityName,
-    required this.isicNumber,
-    required this.isicName,
-    required this.masterActivityId,
-    required this.masterActivityName,
-    required this.facilityId,
-    required this.facilityName,
-    required this.minimumArea,
-    required this.maximumArea,
-    required this.isAtm,
-    required this.isHotel,
-    required this.homogeneous,
-  });
+  ActivityDetailsEntity(
+      {required this.activityId,
+      required this.activityName,
+      required this.isicNumber,
+      required this.isicName,
+      required this.masterActivityId,
+      required this.masterActivityName,
+      required this.facilityId,
+      required this.facilityName,
+      required this.minimumArea,
+      required this.maximumArea,
+      required this.isAtm,
+      required this.isHotel,
+      required this.homogeneous,
+      this.inputArea});
 
   @override
   List<Object?> get props => [
@@ -46,5 +47,8 @@ class ActivityDetailsEntity extends Equatable {
         isAtm,
         isHotel,
         homogeneous,
+        inputArea
       ];
+
+  String? get text => activityName;
 }

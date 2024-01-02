@@ -3,7 +3,7 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 extension LayerTypeExt on LayerType {
-  GISMapLayers? getLayerType() {
+  GISMapLayers? getGISLayerType() {
     return switch (this) {
       // LayerType.favourites => null,
       LayerType.invest => GISMapLayers.Opportunities,

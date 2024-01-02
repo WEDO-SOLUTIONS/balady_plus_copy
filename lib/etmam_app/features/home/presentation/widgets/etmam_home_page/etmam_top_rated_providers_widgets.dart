@@ -1,7 +1,6 @@
-import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
-    show HeaderWithAllButtonWidget;
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/etmam_app/core/utils/common_properties.dart';
+import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/no_data_widget.dart';
 import 'package:balady_plus/etmam_app/features/home/home_exports.dart';
 import 'package:balady_plus/etmam_app/features/providers/providers_exports.dart'
     show ProviderDetailsParams;
@@ -12,6 +11,7 @@ import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
 import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocStatus;
 
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../_shared_feature_/shared/presentation/widgets/header_with_all_button_widget.dart';
 import '../../../../_shared_feature_/shared/shared_feature_exports.dart'
     show
@@ -61,7 +61,8 @@ class EtmamTopRatedProvidersWidget extends StatelessWidget {
                           pageIndex: "1")));
                 },
               ),
-            if (state.topRatedProvidersStatus == BlocStatus.success)
+            if (state.topRatedProvidersStatus == BlocStatus.success &&
+                (state.topRatedProviderResponse?.items?.length ?? 0) > 0)
               Container(
                 // padding: const EdgeInsetsDirectional.only(start: 16, end: 16),
                 margin: const EdgeInsetsDirectional.only(bottom: 16),
@@ -105,6 +106,11 @@ class EtmamTopRatedProvidersWidget extends StatelessWidget {
                   },
                 ),
               ),
+            if ((state.topRatedProvidersStatus == BlocStatus.success &&
+                (state.topRatedProviderResponse?.items?.length ?? 0) == 0))
+              NoDataWidget(
+                title: "no_data".tr(),
+              )
           ],
         );
       },
@@ -143,6 +149,7 @@ class EtmamServiceProviderItem extends StatelessWidget {
         ),
         width: 303,
         margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        padding: EdgeInsets.only(bottom: 30),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [

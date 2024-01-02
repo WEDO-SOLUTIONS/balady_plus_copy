@@ -1,4 +1,5 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 
 class PointLayersData {
   final String id;
@@ -7,12 +8,14 @@ class PointLayersData {
   final String type;
 
   final GeoPointWithElevationMessage? latLng;
+  final GISMapLayers layerType;
 
   PointLayersData({
     required this.id,
     required this.name,
     required this.description,
     required this.type,
+    required this.layerType,
     this.latLng,
   });
 }

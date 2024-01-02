@@ -8,9 +8,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation, translator;
+import 'package:provider/provider.dart';
 
-import '../etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
-import '../etmam_app/features/my_orders/presentation/pages/orders_page.dart';
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
 import './core/services/services_exports.dart' show NavigationService;
 import './core/utils/utils_exports.dart'
@@ -21,19 +20,11 @@ import './core/utils/utils_exports.dart'
         CommonFunctions,
         EtmamRoutesNames,
         RouteName;
-import './core/dependency_injection/dependency_injection_exports.dart' show sl;
+import '../etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
 import 'core/utils/routes.dart';
-import 'features/appointments/presentation/pages/appointments_list_screen.dart';
-import 'features/bottom_navigation/presentation/pages/bottom_navigation_page.dart';
-import 'features/calendar/presentation/bloc/calendar_bloc.dart';
-import 'features/calendar/presentation/bloc/calendar_event.dart';
 import 'features/entry_point/presentation/cubit/auth_cubit.dart';
-
-import 'package:provider/provider.dart';
-
 import 'features/location/presentation/bloc/location_bloc.dart';
 import 'features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
-import 'features/weather/presentation/bloc/weather_bloc.dart';
 
 final GlobalKey<_AppWidgetState> materialAppKey = GlobalKey();
 
@@ -49,7 +40,10 @@ class App extends StatelessWidget {
         enableNetworkLogging: true,
         userAppKey: "2w1otnta9bvvhzo",
         enableAutomaticScreenNameTagging: false);
+    FlutterUxcam.optIntoSchematicRecordings();
+
     FlutterUxcam.startWithConfiguration(config);
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(

@@ -14,6 +14,8 @@ import '../../../commercial_license_exports.dart';
 import '../../../data/models/board_contract_response.dart';
 import '../widgets/board_contract_card.dart';
 import '../widgets/clean_contract_card.dart';
+import '../widgets/is_shop_inside_petorl.dart';
+
 import '../widgets/malls_dropDown.dart';
 
 class CRStep4ShopData extends StatefulWidget {
@@ -218,6 +220,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               },
                             ),
                           ],
+                          IsShopInsidePetroStationWidget(),
                           YesNoRadioGroupWidget(
                             groupName: "step4groupName3".tr(),
                             currentValue: state.isCitizenPledgedToClean,

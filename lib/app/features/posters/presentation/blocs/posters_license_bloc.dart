@@ -564,12 +564,12 @@ class PostersLicenseBloc
 
   Future<void> _updateStartDateHandler(
       ChangePermitStartDate e, Emitter emitter) async {
-    emitter(state.copyWith(startDate: e.date));
+    emitter(state.copyWith(startDate: e.date, error: ""));
   }
 
   Future<void> _updateDurationHandler(
       ChangePermitDurationEvent e, Emitter emitter) async {
-    emitter(state.copyWith(duration: e.value));
+    emitter(state.copyWith(duration: e.value, error: ""));
   }
 
   hideKeyboard() {

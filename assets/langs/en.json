@@ -1050,9 +1050,9 @@
 "choose_provider":"Select the service provider",
 "add":"Add",
 "etmam_order_info":"Request data",
-"order_info_provider_office":"Delegated Office",
+"order_info_provider_office":"Service Provider Office",
 "order_info_provider_office_desc":"There is a long-established fact that readable content",
-"order_info_office_name":"Office name",
+"order_info_office_name":"Service Provider name",
 "order_info_service":"Service",
 "order_info_personal_info":"Personal information",
 "order_info_personal_info_desc":"There is a long-established fact that readable content",
@@ -3594,12 +3594,10 @@
 "ekram_inquiry_burial_grave":"Cemetery Inquiry", 
 "ekram_inquiry_about_grave":"Grave Inquiry", 
 "ekram_inquiry_orgnizations":"Funeral Service Inquiry", 
-"ekram_print_certificate":"Print Burial Certificate",
-
-
-  "jod":"Donate",
+"ekram_print_certificate":"Print Burial Certificate", 
+"jod":"Donate", 
 "donate": "Donate",
-  "issue_commerical_license":"Commercial License",
+"issue_commerical_license":"Commercial License", 
 "multiple_permits":"Multiple Permits", 
 "tobaccoServices":"Tobacco Disclosure", 
 "ekram_empolyee_title":"Funeral Car Driver", 
@@ -4207,7 +4205,13 @@
   "choosePart": "اختر الجزء",
   "parts": "الأجزاء",
   "quranSearch": "بحث  باسم السورة ... ", 
-  "reset": "تصفية العداد"
+  "reset": "تصفية العداد", 
+  "is_license_inside_petrol_station":"Is Shop Inside Petrol Station", 
+
+  "chat_bot_hint": "Please write your inquiry here....",
+  "chat_bot_message_welcome": "Hello and welcome. \nI am the smart assistant for the Ministry of Municipal and Rural Affairs and Housing. Please proceed with your inquiry, and I will be happy to answer you."
+
+
 
 
 

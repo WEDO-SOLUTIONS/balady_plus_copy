@@ -3,7 +3,6 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:mapness/entities/iwish/models/iwish_feedback_tag.dart';
 import 'package:mapness/shared/config/package_config.dart';
 
@@ -49,36 +48,45 @@ class IwishFeedbackTags extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                   onTap: () => onTagToggled(e.id),
                   child: Padding(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(10),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SvgPicture.asset(
                           e.assetUrl,
                           height: 24,
                           width: 24,
                           package: PackageConfig.packageName,
+                          matchTextDirection: e.rtlAsset,
                           colorFilter: const ColorFilter.mode(
                             Color(0xff5E676F),
                             BlendMode.srcATop,
                           ),
                         ),
-                        AutoSizeText(
-                          e.displayName,
-                          group: tagsGroup,
-                          maxLines: 2,
-                          wrapWords: false,
-                          minFontSize: 8,
-                          textAlign:
-                              context.isRTL ? TextAlign.right : TextAlign.left,
-                          style: Theme.of(context)
-                              .extension<ThemeTextStyles>()!
-                              .textM
-                              .copyWith(
-                                color: const Color(0xFF1D2A36),
-                                // fontSize: 14,
-                              ),
+                        Expanded(
+                          child: Container(
+                            alignment: context.isRTL
+                                ? Alignment.bottomRight
+                                : Alignment.bottomLeft,
+                            width: double.infinity,
+                            child: AutoSizeText(
+                              e.displayName,
+                              group: tagsGroup,
+                              maxLines: 2,
+                              wrapWords: false,
+                              minFontSize: 8,
+                              textAlign: context.isRTL
+                                  ? TextAlign.right
+                                  : TextAlign.left,
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()!
+                                  .textM
+                                  .copyWith(
+                                    color: const Color(0xFF1D2A36),
+                                  ),
+                            ),
+                          ),
                         ),
                       ],
                     ),

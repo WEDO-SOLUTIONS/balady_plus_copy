@@ -13,6 +13,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
+import '../../../../core/utils/common_functions.dart';
+
 class ViolationAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double currentStep;
   final VoidCallback backOnPress;
@@ -91,7 +93,7 @@ class ViolationAppBar extends StatelessWidget implements PreferredSizeWidget {
               width: MediaQuery.of(context).size.width - 32,
               addAutomaticKeepAlive: false,
               lineHeight: 6.7,
-              isRTL: true,
+              isRTL: CommonFunctions.isAppAR ? true : false,
               animationDuration: 0,
               restartAnimation: false,
               percent: currentStep / stepCounter,

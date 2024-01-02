@@ -9,17 +9,20 @@ class UXCamEvents {
   static String startServiceDonate = "Start_Service_Donate"; //Done
   static String openWebDonateScreen = "Open_Web_Donate_Screen"; //Done
 
-
-
 // Tobacco Disclosure
   static String openFacilityListScreen = "Open_Facility_List_Screen"; //Done
-  static String openFacilityDetailsScreen = "Open_Facility_Details_Screen"; //Done
-  static String startServiceTobaccoDisclosed = "Start_Service_Tobacco_Disclosed"; //Done
-  static String startServiceTobaccoDisclosedNoRevenue = "Start_Service_Tobacco_Disclosed_No_Revenue_Disclose"; //Done
-  static String closeServiceTobaccoDisclosed = "Close_Service_Tobacco_Disclosed"; //Done
-  static String openConfirmTobaccoDisclosedScreen = "Open_Confirm_Tobacco_Disclosed_Screen"; //Done
-  static String openTobaccoDisclosedSuccessfullyScreen = "Open_Tobacco_Disclosed_Successfully_Screen";
-
+  static String openFacilityDetailsScreen =
+      "Open_Facility_Details_Screen"; //Done
+  static String startServiceTobaccoDisclosed =
+      "Start_Service_Tobacco_Disclosed"; //Done
+  static String startServiceTobaccoDisclosedNoRevenue =
+      "Start_Service_Tobacco_Disclosed_No_Revenue_Disclose"; //Done
+  static String closeServiceTobaccoDisclosed =
+      "Close_Service_Tobacco_Disclosed"; //Done
+  static String openConfirmTobaccoDisclosedScreen =
+      "Open_Confirm_Tobacco_Disclosed_Screen"; //Done
+  static String openTobaccoDisclosedSuccessfullyScreen =
+      "Open_Tobacco_Disclosed_Successfully_Screen";
 
 // Kingdom calendar
   static String startServiceKingdomCalendar =
@@ -27,6 +30,14 @@ class UXCamEvents {
 
 // Athkar
   static String startServiceAthkar = "Start_Service_Athkar"; //Done
+
+// ChatBot
+  static String openChatBotScreen = "Open_Chat_Bot_Screen"; //Done
+  static String sendMessageChatBotScreen =
+      "Send_Message_Chat_Bot_Screen"; //Done
+  static String responseMessageChatBotScreen =
+      "Response_Message_Chat_Bot_Screen"; //Done
+  static String closeChatBotScreen = "Close_Chat_Bot_Screen"; //Done
 
 // Events
   static String startServiceEvents = "Start_Service_Events"; //Done
@@ -72,6 +83,9 @@ class UXCamEvents {
       "Start_Service_ServicesProviders";
   static String finishServiceServicesProviders =
       "Finish_Service_ServicesProviders";
+
+  static String finishServiceServicesProvidersDelegation =
+      "Finish_Service_ServicesProviders_Delegation";
 
 // Compliance Certificate
   static String startCardServiceComplianceCertificate =
@@ -119,6 +133,12 @@ class UXCamEvents {
   static String finishServiceLicensingAndPlanningServices =
       "Finish_Service_LicensingAndPlanningServices";
 
+  static String finishServiceLicensingAndPlanningServicesBidding =
+      "Finish_Service_LicensingAndPlanningServices_Bidding";
+
+  static String finishServiceLicensingAndPlanningServicesDelegation =
+      "Finish_Service_LicensingAndPlanningServices_Delegation";
+
   // Health Certificate
   static String startServiceHealthCertificate =
       "Start_Service_HealthCertificate"; //Done
@@ -146,7 +166,6 @@ class UXCamEvents {
       "Start_Service_IssueACommercialLicense"; //Done
   static String finishServiceIssueACommercialLicense =
       "Finish_Service_IssueACommercialLicense"; //Done
-
 
   // Shared Housing License
   static String startServiceSharedHousingLicense =

@@ -9,7 +9,7 @@ class MapSearchHistory extends StatelessWidget {
   Widget build(BuildContext context) {
     return SearchHistory(
       onTap: (item) {
-        PoiMapRoute(dgisObjectId: item.objectId!).push(context);
+        PoiMapRoute.open(context,item.objectId!);
       },
     );
   }
