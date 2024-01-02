@@ -165,7 +165,7 @@ class CrStep4ShopDataState extends Equatable {
       this.boardContractItems,
       this.draftLoaded,
       this.currentDistrctId,
-      this.insidePetrolStation,
+      this.insidePetrolStation = false,
       this.draftStatus = BlocStatus.initial});
 
   @override

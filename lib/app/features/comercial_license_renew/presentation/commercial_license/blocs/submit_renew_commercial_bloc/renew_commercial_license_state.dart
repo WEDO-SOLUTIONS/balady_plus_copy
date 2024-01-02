@@ -109,7 +109,7 @@ class RenewCommercialLicenseState extends Equatable {
       this.renewRequestDetails,
       this.deedVerified,
       this.deedInfoRequst,
-      this.insidePetrolStation});
+      this.insidePetrolStation = false});
 
   @override
   List<Object?> get props => [
