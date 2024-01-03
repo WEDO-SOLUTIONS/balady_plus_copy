@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/core/errors/failures.dart';
+import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/chatbot/data/models/chat_bot_message_model.dart';
 import 'package:balady_plus/app/features/chatbot/domain/entities/chat_bot_message_entities.dart';
 import 'package:balady_plus/app/features/chatbot/domain/use_cases/chat_bot_use_cases.dart';
+import 'package:balady_plus/app/features/chatbot/presentation/mvvm/message_chatboot_provider.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/widgets.dart';
 
@@ -12,8 +16,13 @@ class ChatBotProvider extends BaseViewModel {
 
   ScrollController scrollController = ScrollController();
 
-  ValueNotifier<List<ChatBotMessageEntities>> chatBotMessage =
-      ValueNotifier<List<ChatBotMessageEntities>>([]);
+  // ValueNotifier<List<ChatBotMessageEntities>> chatBotMessage =
+  //     ValueNotifier<List<ChatBotMessageEntities>>([]);
+
+  ValueNotifier<List<MessageChatBotProvider>> chatBotMessage = ValueNotifier<
+      List<MessageChatBotProvider>>([]);
+
+  // StreamSubscription? listen;
 
   ChatBotProvider(this.repository);
 
@@ -21,26 +30,77 @@ class ChatBotProvider extends BaseViewModel {
     isLoading = true;
     notifyListeners();
     try {
-      Either<Failure, ChatBotMessageEntities> response;
-      response = await repository.repository.sendQuestionMessage(
-        question: question,
+      MessageChatBotProvider provider = MessageChatBotProvider(
+        repository: repository,
+        message: ValueNotifier<ChatBotMessageEntities>(
+          ChatBotMessageEntities(
+            question: question,
+            answer: '',
+            haveError: false,
+          ),
+        ),
       );
-      response.fold(
-        (error) {
-          setMessage(
-            ChatBotMessageModel(
-              message: error.toString(),
-              isResponse: true,
-              haveError: true,
-            ),
-          );
-        },
-        (message) {
-          setMessage(message);
-        },
-      );
-      isLoading = false;
-      notifyListeners();
+
+      chatBotMessage.value.add(provider);
+      provider.addListener(() {
+        if (!provider.isLoading) {
+          isLoading = false;
+            scrollController.animateTo(
+              scrollController.position.maxScrollExtent + 900,
+              curve: Curves.easeOut,
+              duration: const Duration(milliseconds: 300),
+            );
+          notifyListeners();
+        }
+      });
+
+      // Either<Failure, Stream> response;
+      // response = await repository.repository.sendQuestionMessage(
+      //   question: question,
+      // );
+      // response.fold(
+      //   (error) {
+      //     setMessage(
+      //       ChatBotMessageModel(
+      //         message: error.toString(),
+      //         isResponse: true,
+      //         haveError: true,
+      //       ),
+      //     );
+      //   },
+      //   (stream) {
+      //
+      //     listen = stream.listen((message) {
+      //       setMessage(
+      //         ChatBotMessageModel(
+      //           message: message + " New Data Form Server",
+      //           isResponse: true,
+      //           haveError: true,
+      //         ),
+      //       );
+      //     });
+      //
+      //     listen!.onDone(() {
+      //       isLoading = false;
+      //       notifyListeners();
+      //       listen!.cancel();
+      //       listen= null;
+      //     });
+      //     listen!.onError((error) {
+      //       setMessage(
+      //         ChatBotMessageModel(
+      //           message: error.toString(),
+      //           isResponse: true,
+      //           haveError: true,
+      //         ),
+      //       );
+      //       isLoading = false;
+      //       notifyListeners();
+      //       listen!.cancel();
+      //       listen= null;
+      //     });
+      //   },
+      // );
       return chatBotMessage;
     } catch (exception) {
       CommonFunctions.sendEvent(
@@ -48,26 +108,28 @@ class ChatBotProvider extends BaseViewModel {
         response: null,
         ex: Exception(exception.toString()),
       );
-      setMessage(
-        ChatBotMessageModel(
-          message: exception.toString(),
-          isResponse: true,
-          haveError: true,
-        ),
-      );
+      // setMessage(
+      //   ChatBotMessageModel(
+      //     message: exception.toString(),
+      //     isResponse: true,
+      //     haveError: true,
+      //   ),
+      // );
     }
     isLoading = false;
     notifyListeners();
     return chatBotMessage;
   }
 
-  void setMessage(ChatBotMessageEntities message) {
-    chatBotMessage.value.add(message);
-    chatBotMessage.notifyListeners();
-    scrollController.animateTo(
-      scrollController.position.maxScrollExtent + 150,
-      curve: Curves.easeOut,
-      duration: const Duration(milliseconds: 300),
-    );
-  }
+
+
+  // void setMessage(ChatBotMessageEntities message) {
+  //   chatBotMessage.value.add(message);
+  //   chatBotMessage.notifyListeners();
+  //   scrollController.animateTo(
+  //     scrollController.position.maxScrollExtent + 150,
+  //     curve: Curves.easeOut,
+  //     duration: const Duration(milliseconds: 300),
+  //   );
+  // }
 }

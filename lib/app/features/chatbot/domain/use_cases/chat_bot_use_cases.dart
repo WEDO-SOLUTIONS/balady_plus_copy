@@ -5,13 +5,13 @@ import 'package:balady_plus/app/features/chatbot/domain/repositories/chat_bot_re
 import 'package:dartz/dartz.dart';
 
 
-class SendQuestionMessageChatBot extends UseCase<ChatBotMessageEntities, String> {
+class SendQuestionMessageChatBot extends UseCase<Stream, String> {
   final ChatBotRepository repository;
 
   SendQuestionMessageChatBot(this.repository);
 
   @override
-  Future<Either<Failure, ChatBotMessageEntities>> call(String params) async {
+  Future<Either<Failure, Stream>> call(String params) async {
     return await repository.sendQuestionMessage(question: params);
   }
 }

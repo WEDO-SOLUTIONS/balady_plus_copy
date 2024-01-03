@@ -76,17 +76,17 @@ class _SendMessageCardChatBotState extends State<SendMessageCardChatBot> {
               Selector<ChatBotProvider, bool>(
                 selector: (_, provider) => provider.isLoading,
                 builder: (_, isLoading, __) {
-                  return isLoading
-                      ? const CustomCircularLoadingWidget()
-                      : InkWell(
-                          onTap: () => sendMessage(provider),
-                          child: const CircleIcon(
-                            icon: IconPath.send,
-                            iconSize: 24,
-                            circleSize: 40,
-                            backgroundColor: AppColor.primary900Light,
-                          ),
-                        );
+                  return InkWell(
+                    onTap: () => isLoading
+                        ? provider.chatBotMessage.value.last.closeAnswer()
+                        : sendMessage(provider),
+                    child: CircleIcon(
+                      icon: isLoading ? Icons.stop : IconPath.send,
+                      iconSize: 24,
+                      circleSize: 40,
+                      backgroundColor: AppColor.primary900Light,
+                    ),
+                  );
                 },
               ),
             ],
@@ -99,7 +99,7 @@ class _SendMessageCardChatBotState extends State<SendMessageCardChatBot> {
   void sendMessage(ChatBotProvider provider, [String? message]) {
     final text = message ?? _controller.text;
     if (text.isEmpty) return;
-    provider.setMessage(ChatBotMessageModel(message: text));
+    // provider.setMessage(ChatBotMessageModel(message: text));
     provider.sendQuestion(text);
     _controller.text = '';
     FocusScope.of(context).unfocus();

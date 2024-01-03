@@ -1,15 +1,15 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
-import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
-import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
-import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
-import 'package:balady_plus/app/features/chatbot/data/models/chat_bot_message_model.dart';
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' show Options,ResponseType, Response ,DioError;
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 abstract class ChatBotDataSources {
-  Future<ChatBotMessageModel> sendQuestionMessage({required String question});
+  Future<Stream> sendQuestionMessage({required String question});
 }
 
 class ChatBotDataSourcesImplementation extends ChatBotDataSources {
@@ -18,31 +18,28 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
   ChatBotDataSourcesImplementation({required this.webService});
 
   @override
-  Future<ChatBotMessageModel> sendQuestionMessage({required String question}) async {
-    var response;
+  Future<Stream> sendQuestionMessage(
+      {required String question}) async {
+    Response? response;
     try {
-      DateTime dateSendData = DateTime.now();
-      response = await webService.dio.post(
-        ApiUrl.chatBot,
-        data: {"question": question},
+      response = await webService.dio.get(
+        // ApiUrl.chatBot,
+        "https://realtime.ably.io/event-stream?channels=myChannel&v=1.2&key=xVLyHw.ZUmIRw:SwXPp7FC8_V5l3Y8NyG97zhQh1fd1Yma9ADKa-0NWos",
+        // data: {"question": question},
         options: Options(
           headers: {"Accept": "*/*"},
+          responseType: ResponseType.stream,
         ),
       );
-      DateTime dateGetData = DateTime.now();
-      final data = response.data;
-      final result = ResponseBodyModel.fromMap(data).data?.result;
-      var dataEvent = {
-        "Question": question,
-        "Answer": result['response'],
-        "Duration_Seconds": dateGetData.difference(dateSendData).inSeconds,
-        "Duration_Milliseconds": dateGetData.difference(dateSendData).inMilliseconds,
-      };
-      CommonFunctions.sendUXCamEventWithProperties(
-        UXCamEvents.sendQuestionChatBot,
-        dataEvent,
+      StreamTransformer<Uint8List, List<int>> unit8Transformer =
+      StreamTransformer.fromHandlers(
+        handleData: (data, sink) => sink.add(List<int>.from(data)),
       );
-      return ChatBotMessageModel(message: result['response'], isResponse: true);
+      Stream stream = response.data?.stream
+          .transform(unit8Transformer)
+          .transform(const Utf8Decoder())
+          .transform(const LineSplitter());
+      return stream;
     } on DioError catch (error) {
       if (error is NoDataFoundException) {
         rethrow;
@@ -66,4 +63,33 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
       }
     }
   }
+
+  // Future<ChatBotMessageModel> sendQuestionMessageS(
+  //     {required String question}) async {
+  //   var response;
+  //   try {
+  //
+  //   } on DioError catch (error) {
+  //     if (error is NoDataFoundException) {
+  //       rethrow;
+  //     }
+  //     throw ServerException(
+  //       error.toString(),
+  //       statusCode: error.response?.statusCode,
+  //       dioError: error,
+  //     );
+  //   } catch (ex) {
+  //     if (ex is ServerException) {
+  //       rethrow;
+  //     } else {
+  //       throw ServerException(
+  //         "errors_server_error_2".tr(),
+  //         exception: APIException(
+  //           errorMessage: ex.toString(),
+  //         ),
+  //         response: response,
+  //       );
+  //     }
+  //   }
+  // }
 }

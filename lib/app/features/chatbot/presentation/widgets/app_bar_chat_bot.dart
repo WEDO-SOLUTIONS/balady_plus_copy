@@ -1,7 +1,5 @@
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/features/chatbot/data/models/chat_bot_message_model.dart';
-import 'package:balady_plus/app/features/chatbot/domain/entities/chat_bot_message_entities.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/mvvm/chatboot_provider.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/widgets/close_chat_bot_popup.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +52,7 @@ class AppBarChatBot extends StatelessWidget {
               left: 16,
               bottom: 16,
             ),
-            child: ValueListenableBuilder<List<ChatBotMessageEntities>>(
+            child: ValueListenableBuilder<List>(
               valueListenable: provider.chatBotMessage,
               builder: (_, listMessages, child) {
                 List<Widget> list = [
