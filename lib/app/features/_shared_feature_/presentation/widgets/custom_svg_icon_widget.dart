@@ -171,7 +171,7 @@ class _CustomCachedNetworkImage extends State<CustomCachedNetworkImage> {
             imageUrl: widget.imagePath,
             httpHeaders: {
               "verifyingKEY":
-                  CommonFunctions.hashRequest(widget.imagePath, "GET")
+                  CommonFunctions.hashRequest(widget.imagePath, "GET"),
             },
             width: widget.imageWidth,
             height: widget.imageHeight,
@@ -185,8 +185,6 @@ class _CustomCachedNetworkImage extends State<CustomCachedNetworkImage> {
                   );
             },
             errorWidget: (context, url, error) {
-              print(error);
-              print(CommonFunctions.hashRequest(widget.imagePath, "GET"));
               return widget.placeHolderWidget ??
                   Container(
                     color: AppColor.primary900Light,

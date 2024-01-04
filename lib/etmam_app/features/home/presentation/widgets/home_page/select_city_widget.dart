@@ -8,12 +8,13 @@ import 'package:balady_plus/etmam_app/features/home/home_exports.dart';
 import 'package:balady_plus/etmam_app/features/on_boarding_cities/on_boarding_cities_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../../app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../../_shared_feature_/shared/shared_feature_exports.dart'
     show
         CustomIconButtonWidget,
         CustomTextButtonWithIconWidget,
         CustomTextWidget,
+        CustomNetworkImageWidget,
+        CustomSvgIconWidget,
         showDialogWidget;
 
 class SelectCityWidget extends StatefulWidget {
@@ -75,7 +76,7 @@ class CityIconWidget extends StatelessWidget {
           child: SizedBox(
         height: 28,
         width: 28,
-        child: CustomCachedNetworkImage(
+        child: CustomNetworkImageWidget(
           imagePath,
           imageHeight: 28,
           imageWidth: 28,

@@ -63,7 +63,7 @@ class AppColor {
 
   static const Color lightTurquoise = Color(0xFFecf9f8);
 
-  static const Color darkTurquoise = Color(0xff155F75);
+  static const Color darkTurquoise = Color(0xff046F6D);
   static const Color warmGrey2 = Color(0xFF979797);
   static const Color baladyDarkGreen2 = Color(0xFF389492);
   static const Color greenishYellow500 = Color(0xFF9bd65c);
