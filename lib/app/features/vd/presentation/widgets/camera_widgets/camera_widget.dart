@@ -47,7 +47,9 @@ class _CameraWidgetState extends State<CameraWidget>
       } else if (state == AppLifecycleState.resumed) {
         context.read<CameraBloc>().add(OnNewCameraSelected());
       }
-    } catch (ex) {}
+    } catch (ex) {
+      print("EXXXXXXX $ex");
+    }
   }
 
   @override

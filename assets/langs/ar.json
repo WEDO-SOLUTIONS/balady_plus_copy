@@ -3899,7 +3899,7 @@
 "violation_title_2":"مخالفة غير جسيمة", 
 
 "ekram_services":"إكرام", 
-"service_provide_services":"خدمات مقدمي الخدمات", 
+"service_provide_services":"خدمات المدن", 
 
 
 "submission_channels": "قنوات التقديم",
@@ -3920,7 +3920,9 @@
 "is_license_inside_petrol_station":"هل المحل داخل محطة وقود ؟", 
 
 "chat_bot_hint": "اكتب استفسارك هنا...",
-"chat_bot_message_welcome": "أهلًا وسهلًا\n أنا المساعد الذكي لوزارة الشؤون البلدية والقروية والاسكان، تفضل باستفسارك وسأكون سعيدًا بالإجابة عليك"
+"chat_bot_message_welcome": "أهلًا وسهلًا\n أنا المساعد الذكي لوزارة الشؤون البلدية والقروية والاسكان، تفضل باستفسارك وسأكون سعيدًا بالإجابة عليك", 
+
+"errors_phone_not_exists":"رقم الهاتف غير متوفر"
 
 
 
