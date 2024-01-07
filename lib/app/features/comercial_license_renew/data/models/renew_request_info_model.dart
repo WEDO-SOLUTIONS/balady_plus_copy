@@ -1,25 +1,26 @@
 import '../../domain/entities/renew_request_info.dart';
 
 class RenewRequestInfoModel extends RenewRequestInfo {
-  RenewRequestInfoModel({
-    super.cleanContractResponseDto,
-    super.ownershipResponseDto,
-    super.salamaResponseDto,
-  });
+  RenewRequestInfoModel(
+      {super.cleanContractResponseDto,
+      super.ownershipResponseDto,
+      super.salamaResponseDto,
+      super.insidePetrolStation});
 
   factory RenewRequestInfoModel.fromJson(Map<String, dynamic> json) =>
       RenewRequestInfoModel(
-        cleanContractResponseDto: json["cleanContractResponseDto"] == null
-            ? null
-            : CleanContractResponseDtoModel.fromJson(
-                json["cleanContractResponseDto"]),
-        ownershipResponseDto: json["ownershipResponseDto"] == null
-            ? null
-            : OwnershipResponseDtoModel.fromJson(json["ownershipResponseDto"]),
-        salamaResponseDto: json["salamaResponseDto"] == null
-            ? null
-            : SalamaResponseDtoModel.fromJson(json["salamaResponseDto"]),
-      );
+          cleanContractResponseDto: json["cleanContractResponseDto"] == null
+              ? null
+              : CleanContractResponseDtoModel.fromJson(
+                  json["cleanContractResponseDto"]),
+          ownershipResponseDto: json["ownershipResponseDto"] == null
+              ? null
+              : OwnershipResponseDtoModel.fromJson(
+                  json["ownershipResponseDto"]),
+          salamaResponseDto: json["salamaResponseDto"] == null
+              ? null
+              : SalamaResponseDtoModel.fromJson(json["salamaResponseDto"]),
+          insidePetrolStation: json["insidePetrolStation"]);
 }
 
 class CleanContractResponseDtoModel extends CleanContractResponseDto {

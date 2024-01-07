@@ -4157,7 +4157,7 @@
 "violation_title_2":"Non-serious violation", 
 
 "ekram_services":"Ekram", 
-"service_provide_services":"Services Providers", 
+"service_provide_services":"City Services", 
 
 
 "submission_channels": "Service Channels",
@@ -4209,7 +4209,8 @@
   "is_license_inside_petrol_station":"Is Shop Inside Petrol Station", 
 
   "chat_bot_hint": "Please write your inquiry here....",
-  "chat_bot_message_welcome": "Hello and welcome. \nI am the smart assistant for the Ministry of Municipal and Rural Affairs and Housing. Please proceed with your inquiry, and I will be happy to answer you."
+  "chat_bot_message_welcome": "Hello and welcome. \nI am the smart assistant for the Ministry of Municipal and Rural Affairs and Housing. Please proceed with your inquiry, and I will be happy to answer you.",
+  "errors_phone_not_exists":"Phone Not Exists"
 
 
 

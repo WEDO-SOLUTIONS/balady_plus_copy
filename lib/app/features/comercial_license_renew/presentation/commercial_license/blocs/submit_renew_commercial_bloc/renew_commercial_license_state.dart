@@ -54,6 +54,7 @@ class RenewCommercialLicenseState extends Equatable {
   final RenewRequestDetails? renewRequestDetails;
   final bool? salamaExists;
   final bool? insidePetrolStation;
+  final bool? disableInsidePetrolStation; 
 
   Cr700Validation get deedOwnerIdValidator => deedInfoRequst?.ownerId == null
       ? Cr700Validation.pure()
@@ -109,7 +110,7 @@ class RenewCommercialLicenseState extends Equatable {
       this.renewRequestDetails,
       this.deedVerified,
       this.deedInfoRequst,
-      this.insidePetrolStation = false});
+      this.insidePetrolStation, this.disableInsidePetrolStation});
 
   @override
   List<Object?> get props => [
@@ -154,7 +155,7 @@ class RenewCommercialLicenseState extends Equatable {
         deedInfoRequst,
         calculateInfoRequestStatus,
         salamaExists,
-        insidePetrolStation
+        insidePetrolStation, disableInsidePetrolStation
       ];
 
   RenewCommercialLicenseState copyWith(
@@ -199,7 +200,11 @@ class RenewCommercialLicenseState extends Equatable {
       final RenewRequestDetails? renewRequestDetails,
       final DeedInfoRequest? deedInfoRequst,
       final Nullable<bool?>? salamaExists,
-      final bool? insidePetrolStation}) {
+      final bool? insidePetrolStation, 
+      final bool? disableInsidePetrolStation
+      
+      
+      }) {
     return RenewCommercialLicenseState(
         status: status ?? this.status,
         calculateInfoRequestStatus:
@@ -280,7 +285,10 @@ class RenewCommercialLicenseState extends Equatable {
         deedInfoRequst: deedInfoRequst ?? this.deedInfoRequst,
         salamaExists:
             salamaExists == null ? this.salamaExists : salamaExists.value,
-        insidePetrolStation: insidePetrolStation ?? this.insidePetrolStation);
+        insidePetrolStation: insidePetrolStation ?? this.insidePetrolStation, 
+        disableInsidePetrolStation: disableInsidePetrolStation ?? this.disableInsidePetrolStation
+        
+        );
   }
 
   bool showSalamaReport() {

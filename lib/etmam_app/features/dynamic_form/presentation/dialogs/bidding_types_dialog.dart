@@ -10,7 +10,6 @@ import 'package:balady_plus/etmam_app/features/dynamic_form/domain/entities/bidd
 import 'package:balady_plus/etmam_app/features/dynamic_form/domain/entities/bidding_type/bidding_type_response.dart';
 import 'package:balady_plus/etmam_app/features/dynamic_form/presentation/blocs/bidding_type/bidding_type_bloc.dart';
 import 'package:balady_plus/etmam_app/features/dynamic_form/presentation/widgets/bidding_drop_down_component.dart';
-import 'package:balady_plus/etmam_app/features/dynamic_form/presentation/widgets/bidding_type_widget.dart';
 import 'package:balady_plus/etmam_app/features/dynamic_form/presentation/widgets/bidding_warning_widget.dart';
 import 'package:balady_plus/etmam_app/core/utils/enums/app_font_weight.dart';
 import 'package:flutter/material.dart';
@@ -22,13 +21,12 @@ import '../../../../../app/core/services/local/navigation_services.dart';
 import '../../../../../app/core/utils/constants/constants.dart';
 import '../../../../../app/core/utils/constants/route_names.dart';
 import '../../../../../app/core/utils/enums/bloc_status.dart';
-import '../../../../../app/core/utils/enums/enums.dart';
 import '../../../../../app/features/_shared_feature_/data/entities/drop_down_item.dart';
 import '../../../../../app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
-import '../../../../../app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../../../app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../_shared_feature_/shared/presentation/widgets/custom_app_bar_widget.dart';
 import '../../../_shared_feature_/shared/presentation/widgets/custom_loading_widget.dart';
+import '../../../_shared_feature_/shared/presentation/widgets/custom_network_icon_widget.dart';
 
 class BiddingTypeDialog extends StatefulWidget {
   BiddingTypeDialog({Key? key}) : super(key: key);
@@ -208,7 +206,7 @@ class VDCardWidgetInDialog extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 5),
                 child: Column(
                   children: [
-                    CustomCachedNetworkImage(
+                    CustomNetworkImageWidget(
                       icon,
                       imageHeight: 96,
                       imageFit: BoxFit.fitWidth,
@@ -217,9 +215,9 @@ class VDCardWidgetInDialog extends StatelessWidget {
                         height: 96,
                       ),
                     ),
-                    CustomVerticalSpace(height: 10),
+                    const CustomVerticalSpace(height: 10),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: CustomTextWidget(
                         title,
                         fontSize: 14,

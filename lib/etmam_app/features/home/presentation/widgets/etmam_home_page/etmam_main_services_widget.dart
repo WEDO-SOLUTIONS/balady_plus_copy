@@ -1,5 +1,4 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
-import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart'
     show BlocStatus, IconPath;
 
@@ -8,7 +7,8 @@ import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_fe
         CustomIndicatorWidget,
         CustomInkWellButtonWidget,
         CustomShimmerHorizontalListWidget,
-        CustomTextWidget,
+        CustomTextWidget,CustomSvgIconWidget,
+        CustomNetworkImageWidget,
         CustomVerticalSpace,
         ReloadWidget;
 import 'package:flutter/material.dart';
@@ -28,7 +28,6 @@ import 'package:balady_plus/etmam_app/features/home/home_exports.dart'
         SubServiceParams,
         SubServiceResponse;
 
-import '../../../../../../app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../../_shared_feature_/shared/presentation/widgets/header_with_all_button_widget.dart';
 import '../../../../_shared_feature_/shared/presentation/widgets/no_data_widget.dart';
 
@@ -217,7 +216,7 @@ class EtmamServiceCardWidget extends StatelessWidget {
           children: [
             Container(
               margin: const EdgeInsetsDirectional.all(16),
-              child: CustomCachedNetworkImage(
+              child: CustomNetworkImageWidget(
                 serviceIcon,
                 imageHeight: 35,
                 imageWidth: 35,

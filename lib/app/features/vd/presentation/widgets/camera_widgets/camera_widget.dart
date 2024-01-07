@@ -36,15 +36,19 @@ class _CameraWidgetState extends State<CameraWidget>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (context.read<CameraBloc>().cameraController == null ||
-        !context.read<CameraBloc>().cameraController!.value.isInitialized) {
-      return;
-    }
-    if (state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.paused) {
-      context.read<CameraBloc>().cameraController?.dispose();
-    } else if (state == AppLifecycleState.resumed) {
-      context.read<CameraBloc>().add(OnNewCameraSelected());
+    try {
+      if (context.read<CameraBloc>().cameraController == null ||
+          !context.read<CameraBloc>().cameraController!.value.isInitialized) {
+        return;
+      }
+      if (state == AppLifecycleState.inactive ||
+          state == AppLifecycleState.paused) {
+        context.read<CameraBloc>().cameraController?.dispose();
+      } else if (state == AppLifecycleState.resumed) {
+        context.read<CameraBloc>().add(OnNewCameraSelected());
+      }
+    } catch (ex) {
+      print("EXXXXXXX $ex");
     }
   }
 

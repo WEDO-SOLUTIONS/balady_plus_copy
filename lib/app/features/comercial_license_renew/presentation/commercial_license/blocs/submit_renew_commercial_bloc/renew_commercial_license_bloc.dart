@@ -569,6 +569,14 @@ class RenewCommercialLicenseBloc
             ?.tenancyContractInfo?.tenancyContractNumber,
         versionNumber: state
             .info?.ownershipResponseDto?.tenancyContractInfo?.versionNumber);
+
+    final bool? insidePetrolStation = state.info?.insidePetrolStation;
+
+    insidePetrolStation != null;
+
+    emit(state.copyWith(
+        insidePetrolStation: insidePetrolStation,
+        disableInsidePetrolStation: insidePetrolStation != null));
   }
 
   void submitRenew() async {
@@ -630,7 +638,8 @@ class RenewCommercialLicenseBloc
 
   Future<void> _changeInsidePetrolStationHandler(
       ChangeInsidePetrolStationEvent e, Emitter emitter) async {
-    emitter(state.copyWith(insidePetrolStation: e.value, errorMessage: ""));
+    if (state.disableInsidePetrolStation == false)
+      emitter(state.copyWith(insidePetrolStation: e.value, errorMessage: ""));
   }
 
   void sendStepEvent(int stepNo) {

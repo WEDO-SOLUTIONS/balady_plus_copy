@@ -9,12 +9,13 @@ class RenewRequestInfo {
   final CleanContractResponseDto? cleanContractResponseDto;
   final OwnershipResponseDto? ownershipResponseDto;
   final SalamaResponseDto? salamaResponseDto;
+  final bool? insidePetrolStation;
 
-  RenewRequestInfo({
-    this.cleanContractResponseDto,
-    this.ownershipResponseDto,
-    this.salamaResponseDto,
-  });
+  RenewRequestInfo(
+      {this.cleanContractResponseDto,
+      this.ownershipResponseDto,
+      this.salamaResponseDto,
+      this.insidePetrolStation});
 
   CRRenewCleanOption? getCleanOption() {
     if (cleanContractResponseDto?.cleanContractOptions?.cleanOption ==
@@ -144,8 +145,6 @@ class TenancyContractInfo {
       versionNumber: versionNumber ?? this.versionNumber,
     );
   }
-
-
 }
 
 class DeedInfoResponse {
@@ -161,8 +160,6 @@ class DeedInfoResponse {
     this.ownerIdType,
     this.ownershipType,
   });
-
- 
 }
 
 class ContractOptionsResponseDto {

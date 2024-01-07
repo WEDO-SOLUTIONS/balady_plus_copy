@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart' show SvgPicture;
 
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppColorsTheme, StringIconChecker;
+import 'custom_svg_cached.dart';
 
 class CustomNetworkImageWidget extends StatefulWidget {
   final String imagePath;
@@ -145,14 +146,12 @@ class _SvgNetworkState extends State<SvgNetwork> {
     //print("ffldmvldk ${widget.imagePath}");
     return /*isSvg
         ?*/
-        SvgPicture.network(
-      widget.imagePath,
+        CachedNetworkSvgImage(
+      url: widget.imagePath,
+      //  loadinggif: String.fromCharCodes(charCodes),
       width: widget.imageWidth,
       height: widget.imageHeight,
       fit: widget.imageFit,
-      headers: {
-        "verifyingKEY": CommonFunctions.hashRequest(widget.imagePath, "GET")
-      },
       placeholderBuilder: (BuildContext context) {
         return PlaceHolderNetwork(
           placeHolderWidget: widget.placeHolderWidget,
