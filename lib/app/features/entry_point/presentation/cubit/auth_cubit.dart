@@ -19,6 +19,7 @@ import '../../../../core/services/services_exports.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../location/presentation/bloc/location_bloc.dart';
 import '../../../profile_features/delegators/delegators_exports.dart';
+import '../../../weather_alerts/presentation/bloc/weather_alerts_cubit.dart';
 import '../../data/models/get_permission_params_model.dart';
 import '../../domain/use_cases/get_ekram_permission.dart';
 import '../../entry_point_exports.dart';
@@ -106,6 +107,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       getEkramPermissions();
     });
     refreshAPIGeeToken();
+
+    sl<WeatherAlertsCubit>().startTracking();
 
     //getUserLocationData();
   }
