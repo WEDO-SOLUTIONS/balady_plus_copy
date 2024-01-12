@@ -5,6 +5,7 @@ green := '\033[0;32m'
 cyan:='\033[0;36m'
 yellow:='\033[0;33m' 
 byellow :='\033[1;33m'
+red :='\033[0;31m'
 nc := '\033[0m'
 
 prebuild: pubget locale_gen build_pigeon codegen
@@ -67,13 +68,30 @@ protoc:
   cd mapness
   protoc protocol.proto --dart_out=lib/_generated/protocol
 
+apply-patches:
+  #!/usr/bin/env bash
+  set -euo pipefail
+
+  echo -e '{{yellow}}add abi filter{{nc}}'
+  git apply .github/workflows/abi_filter.patch || echo -e '{{red}}could not apply abi filter patch{{nc}}'
+  echo -e '{{yellow}}remove app version force update{{nc}}'
+  git apply mapness/scripts/disable-force-update.patch || echo -e '{{red}}could not remove app version force update{{nc}}'
+
+unapply-patches:
+  #!/usr/bin/env bash
+  set -euo pipefail
+
+  echo -e '{{yellow}}restore app version force update{{nc}}'
+  git apply -R mapness/scripts/disable-force-update.patch || echo -e '{{red}}could not restore app version force update{{nc}}'
+  echo -e '{{yellow}}remove abi filter{{nc}}'
+  git apply -R .github/workflows/abi_filter.patch || echo -e '{{red}}could not unapply abi filter patch{{nc}}'
+
 
 apk-release version: prebuild
   #!/usr/bin/env bash
   set -euo pipefail
 
-  echo -e '{{yellow}}add abi filter{{nc}}'
-  git apply .github/workflows/abi_filter.patch || echo could not apply abi filter patch
+  just apply-patches
 
   echo -e '{{yellow}}build urbi pre{{nc}}'
   fvm flutter build apk --target lib/main_urbi_pre.dart
@@ -92,8 +110,7 @@ apk-release version: prebuild
   mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/momrah-stage-{{version}}.apk
   echo -e '{{cyan}}main stage ready!{{nc}}'
 
-  echo -e '{{yellow}}remove abi filter{{nc}}'
-  git apply -R .github/workflows/abi_filter.patch || echo could not unapply abi filter patch
+  just unapply-patches
 
   echo -e '{{green}}done, you may open build with{{nc}}: {{byellow}}just open_built{{nc}}'
 

@@ -98,7 +98,10 @@ class LayersControls extends _$LayersControls {
 
     return LayersState(
       layersVisible: false,
-      selectedType: null,
+      selectedType:
+
+          /// since favorites state has external state (it is stored in shared prefs) => load
+          ref.read(favouriteToggleProvider) ? LayerType.favourites : null,
       isLoading: false,
       investmentsMarkers: {},
       polygons: {},

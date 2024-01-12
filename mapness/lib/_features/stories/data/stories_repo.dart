@@ -18,7 +18,6 @@ class StoriesRepo extends _$StoriesRepo {
       mapViewportChangesProvider,
       (_, next) async {
         state = AsyncValue.data(await _fetch(dio, next));
-        ref.invalidateSelf();
       },
     );
 

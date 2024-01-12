@@ -3,6 +3,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
+import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
@@ -80,23 +81,11 @@ class _PoiCardFooterState extends ConsumerState<PoiCardFooter> {
     final hasContacts = objectMessage?.contactInfos.isNotEmpty == true;
     final carIconFlex = (hasEntrances || hasContacts) ? 3 : 2;
 
+    /// костыль чтобы триггерить перерисовку иконки
+    ref.watch(favouriteRepositoryProvider);
     final isFav = widget.viewModel.isFavourite(model);
-    final favData = widget.viewModel.getFavouriteOrNull(model);
 
-    final favouriteItem = favData ??
-        FavouriteItem(
-          coordinates: Coordinates(
-            latitude: objectMessage?.markerPosition?.latitude ?? 0,
-            longitude: objectMessage?.markerPosition?.longitude ?? 0,
-          ),
-          id: 'overriden',
-          subtitle: objectMessage?.subtitle ?? '',
-          title: objectMessage?.title ?? '',
-          entity: FavouriteItemEntity(
-            sourceType: EntitySourceType.urbi,
-            id: objectMessage?.id?.objectId.toString() ?? 'id',
-          ),
-        );
+    final favouriteItem = widget.viewModel.getFavouriteOrNull(model);
 
     favItem({int flex = 1}) {
       return buildIconButton(
@@ -104,18 +93,7 @@ class _PoiCardFooterState extends ConsumerState<PoiCardFooter> {
         assetName: isFav
             ? 'assets/icons/svg/ic_fav_solid.svg'
             : 'assets/icons/svg/ic_fav_poi.svg',
-        onTap: () async {
-          final viewModel = widget.viewModel;
-          await _onFavTap(favouriteItem);
-          if (favData == null) {
-            final directoryObjectMessage = objectMessage;
-            if (directoryObjectMessage != null) {
-              viewModel.addToFavourites(directoryObjectMessage);
-            }
-          } else {
-            viewModel.removeFromFavourite(favData);
-          }
-        },
+        onTap: () => _onFavTap(favouriteItem),
         desc: (hasContacts == false)
             ? Text(
                 context.l10n.favourites,
@@ -228,32 +206,67 @@ class _PoiCardFooterState extends ConsumerState<PoiCardFooter> {
     );
   }
 
-  Future<void> _onFavTap(FavouriteItem favouriteItem) async {
+  Future<void> _onFavTap(
+    FavouriteItem? favouriteItem,
+  ) async {
     CommonFunctions.authOrOpen(ref, context, callback: () {
-      showDialog(
-        // barrierColor: Colors.transparent,
-        useSafeArea: false,
-        context: context,
-        builder: (contextDialog) => ProviderScope(
-          parent: ProviderScope.containerOf(context),
-          child: Theme(
-            data: Theme.of(context),
-            child: MediaQuery(
-              data: MediaQuery.of(context),
-              child: Directionality(
-                textDirection: Directionality.of(context),
-                child: Localizations.override(
-                  context: context,
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: PoiFavoriteDialog(favItem: favouriteItem),
+      final favState = ref.read(favouriteRepositoryProvider);
+      final viewModel = widget.viewModel;
+      final objectMessage = widget.data;
+
+      final newFav = FavouriteItem(
+        coordinates: Coordinates(
+          latitude: objectMessage.markerPosition?.latitude ?? 0,
+          longitude: objectMessage.markerPosition?.longitude ?? 0,
+        ),
+        id: 'overriden',
+        subtitle: objectMessage.subtitle,
+        title: objectMessage.title,
+        entity: FavouriteItemEntity(
+          sourceType: EntitySourceType.urbi,
+          id: objectMessage.id?.objectId.toString() ?? 'id',
+        ),
+      );
+
+      /// if already in favourites - remove
+      if (favouriteItem != null) {
+        viewModel.removeFromFavourite(favouriteItem);
+        return;
+      }
+
+      /// do not show dialog if home and work are set
+      if (favState.valueOrNull?.home != null &&
+          favState.valueOrNull?.work != null) {
+        viewModel.addToFavourites(objectMessage);
+      } else {
+        /// show dialog to choose home, work or regular
+        showDialog(
+          // barrierColor: Colors.transparent,
+          useSafeArea: false,
+          context: context,
+          builder: (contextDialog) => ProviderScope(
+            parent: ProviderScope.containerOf(context),
+            child: Theme(
+              data: Theme.of(context),
+              child: MediaQuery(
+                data: MediaQuery.of(context),
+                child: Directionality(
+                  textDirection: Directionality.of(context),
+                  child: Localizations.override(
+                    context: context,
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: PoiFavoriteDialog(
+                        favItem: newFav,
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      );
+        );
+      }
     });
   }
 }
