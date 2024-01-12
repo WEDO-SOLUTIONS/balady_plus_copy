@@ -10,9 +10,6 @@ part 'stories_repo.g.dart';
 
 @riverpod
 class StoriesRepo extends _$StoriesRepo {
-  bool _isInitialized = false;
-  StoriesResponse _lastResponse = StoriesResponse();
-
   @override
   Future<StoriesResponse> build() async {
     final dio = await ref.watch(dGisNetworkProvider.future);
@@ -20,17 +17,12 @@ class StoriesRepo extends _$StoriesRepo {
     ref.listen(
       mapViewportChangesProvider,
       (_, next) async {
-        _lastResponse = await _fetch(dio, next);
+        state = AsyncValue.data(await _fetch(dio, next));
         ref.invalidateSelf();
       },
     );
 
-    if (!_isInitialized) {
-      _lastResponse = await _fetch(dio);
-      _isInitialized = true;
-    }
-
-    return _lastResponse;
+    return await _fetch(dio);
   }
 
   Future<StoriesResponse> _fetch(Dio dio, [gb.Polygon? polygon]) async {
@@ -39,7 +31,7 @@ class StoriesRepo extends _$StoriesRepo {
         ? 'stories?bound=${polygon.toText(format: gb.WKT.geometry)}'
         : 'stories';
 
-    final rawResponse = await dio.get(url);
+    final rawResponse = await dio.get(url, options: defaultCacheOptions);
     final storiesResponse = StoriesResponse.fromBuffer(rawResponse.data);
     mixpanel?.track("StoriesRepo: _fetch");
     return storiesResponse;

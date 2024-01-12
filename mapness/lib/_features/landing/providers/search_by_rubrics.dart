@@ -1,4 +1,5 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -18,32 +19,47 @@ class SearchByRubricsQuery extends _$SearchByRubricsQuery {
 @riverpod
 class SearchByRubrics extends _$SearchByRubrics {
   @override
-  SearchResultMessage? build() {
+  Future<SearchResultMessage?> build() async {
     final filter = ref.watch(searchByRubricsQueryProvider);
     if (filter == null) return null;
 
+    final searchRect =
+        ref.watch(searchInRectProvider.select((value) => value.$1));
+    final dgisController = ref.read(dgisControllerProvider.notifier);
+
+    return await performSearch(
+      filter.$1,
+      searchRect ??
+          dgisController.visibleRectSubject.value.visibleRect.geoRectMessage(),
+    );
+  }
+
+  Future<SearchResultMessage?> performSearch(
+      QuickFilter filter, GeoRectMessage searchRect) async {
     final dgisController = ref.watch(dgisControllerProvider).value;
 
-    if (filter.$1.rubrics.isEmpty && filter.$1.query != null) {
-      final category = getCategoryByTag(filter.$1.query!);
+    if (filter.rubrics.isEmpty && filter.query != null) {
+      final category = getCategoryByTag(filter.query!);
       if (category == null) return null;
       dgisController
           ?.searchByCategory(
             category,
             sortingType: SortingTypeMessage.byRelevance,
+            searchRect: searchRect,
           )
           .then(
-            (value) => state = value,
+            (value) => state = AsyncValue.data(value),
           );
       return null;
     }
     dgisController
         ?.searchByRubrics(
-          filter.$1.rubrics,
+          filter.rubrics,
           sortingType: SortingTypeMessage.byRelevance,
+          searchRect: searchRect,
         )
         .then(
-          (value) => state = value,
+          (value) => state = AsyncValue.data(value),
         );
 
     return null;

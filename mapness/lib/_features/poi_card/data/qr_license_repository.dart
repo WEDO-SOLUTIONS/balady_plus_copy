@@ -26,10 +26,10 @@ class QrLicenseRepository extends _$QrLicenseRepository {
     const licenseDetails = 'qr-services/mobile/license-details';
 
     if (proxy != null) {
-      const domain = 'https://apiservicesstg.balady.gov.sa/v1';
-      var url = "$domain/$licenseDetails/$licenseNumber";
+      const domain = 'https://apiservicesstg.balady.gov.sa';
+      var url = "$domain/v1/$licenseDetails/$licenseNumber";
       verifyKey = hashRequest(url, "GET");
-      final proxyUrl = "$proxy/$licenseDetails";
+      final proxyUrl = "$proxy/v1/$licenseDetails";
       resultUrl = "$proxyUrl/$licenseNumber";
     } else {
       var domain = env.url.replaceAll('/urbi-services/', '');
@@ -43,6 +43,7 @@ class QrLicenseRepository extends _$QrLicenseRepository {
 
     if (response == null) return null;
     mixpanel?.track("Qr License: getLicenseInfo");
+    
     return QrLicenseMessage.fromJson(response);
   }
 

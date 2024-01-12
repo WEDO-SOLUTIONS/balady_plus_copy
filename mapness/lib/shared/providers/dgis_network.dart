@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:mapness/shared/lib/auth/auth_token_interceptors.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
@@ -11,10 +12,17 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'dgis_network.g.dart';
 
+final defaultCacheOptions = buildCacheOptions(
+  const Duration(days: 7),
+  forceRefresh: true,
+);
+
 @riverpod
 class _DGisNetwork extends _$DGisNetwork {
+  final _dioCacheManager = DioCacheManager(CacheConfig());
+
   @override
-  Future<Dio> build()async {
+  Future<Dio> build() async {
     final env = await ref.read(dgisEnvironmentProvider.future);
     final url = env.url;
     const timeout = Duration(seconds: 5);
@@ -54,7 +62,8 @@ class _DGisNetwork extends _$DGisNetwork {
               receiveTimeout: timeout,
               connectTimeout: timeout,
             ),
-          )
+          ),
+          _dioCacheManager.interceptor,
         ],
       );
   }

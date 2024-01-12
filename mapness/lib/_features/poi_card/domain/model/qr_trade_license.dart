@@ -15,17 +15,16 @@ class StatusDetails {
 class QrLicenseMessage {
   final int requestId;
   final String shopName;
-  final String mobile;
+  final String? mobile;
   final int parkingCount;
   final bool hasParking;
   final bool serveDisabledPersons;
   final bool hasVehicleParking;
   final bool hasDelivery;
   final LicenseInfo licenseInfo;
-
-  // final NationalAddressInfo nationalAddressInfo;
+  final NationalAddressInfo nationalAddressInfo;
   // final SiteDetailsInfo siteDetailsInfo;
-  // final List<WorkingTimesInfo> workingTimesInfo;
+  final List<WorkingTimesInfo> workingTimesInfo;
   // final dynamic attachmentsInfo; // You might want to change the type to match the actual data
 
   QrLicenseMessage({
@@ -38,9 +37,9 @@ class QrLicenseMessage {
     required this.hasVehicleParking,
     required this.hasDelivery,
     required this.licenseInfo,
-    // required this.nationalAddressInfo,
+    required this.nationalAddressInfo,
     // required this.siteDetailsInfo,
-    // required this.workingTimesInfo,
+    required this.workingTimesInfo,
     // required this.attachmentsInfo,
   });
 
@@ -48,18 +47,19 @@ class QrLicenseMessage {
     return QrLicenseMessage(
       requestId: json['requestId'] as int,
       shopName: json['shopName'] as String,
-      mobile: json['mobile'] as String,
+      mobile: json['mobile'] as String?,
       parkingCount: json['parkingCount'] as int,
       hasParking: json['hasParking'] as bool,
       serveDisabledPersons: json['serveDisabledPersons'] as bool,
       hasVehicleParking: json['hasVehicleParking'] as bool,
       hasDelivery: json['hasDelivery'] as bool,
       licenseInfo: LicenseInfo.fromJson(json['licenseInfo']),
-      // nationalAddressInfo: NationalAddressInfo.fromJson(json['nationalAddressInfo']),
+      nationalAddressInfo:
+          NationalAddressInfo.fromJson(json['nationalAddressInfo']),
       // siteDetailsInfo: SiteDetailsInfo.fromJson(json['siteDetailsInfo']),
-      // workingTimesInfo: (json['workingTimesInfo'] as List<dynamic>)
-      //     .map((e) => WorkingTimesInfo.fromJson(e))
-      //     .toList(),
+      workingTimesInfo: (json['workingTimesInfo'] as List<dynamic>)
+          .map((e) => WorkingTimesInfo.fromJson(e))
+          .toList(),
       // attachmentsInfo: json[
       //     'attachmentsInfo'], // Adjust this based on the actual data structure
     );

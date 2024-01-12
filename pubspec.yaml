@@ -194,6 +194,9 @@ dependencies:
 
 dependency_overrides:
   geolocator_android: ^4.2.2
+  # for dio_http_cache
+  json_serializable: ^6.7.1
+  dio: ^5.0.0
 
 dev_dependencies:
   flutter_lints: ^2.0.1

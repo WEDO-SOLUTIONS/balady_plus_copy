@@ -56,9 +56,9 @@ class _SearchFieldState extends State<SearchField> {
               filled: true,
               hintText: context.l10n.search,
               fillColor: const Color(0xFF1E2A36).withOpacity(0.05),
-              contentPadding: EdgeInsets.only(
-                right: context.isRTL ? 8 : 38,
-                left: context.isRTL ? 38 : 8,
+              contentPadding: const EdgeInsetsDirectional.only(
+                start: 8,
+                end: 38,
                 top: 0,
                 bottom: 0,
               ),
@@ -109,7 +109,7 @@ class _SearchFieldState extends State<SearchField> {
                   widget.onChanged?.call("");
                 },
                 child: Align(
-                  alignment: Alignment.centerLeft,
+                  alignment: AlignmentDirectional.centerEnd,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SvgPicture.asset(

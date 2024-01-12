@@ -43,7 +43,6 @@ class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
     } catch (e) {
       log("WEATHER API EXCEPTION $e");
     }
-    mixpanel?.track("WebServiceWeather: getCurrentWeatherData");
     return null;
   }
 

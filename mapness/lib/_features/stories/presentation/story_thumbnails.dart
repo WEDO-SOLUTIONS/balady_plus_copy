@@ -38,6 +38,7 @@ class StoryThumbnails extends StatelessWidget {
                   itemBuilder: (context, i) {
                     final story = stories[i];
                     return AnimatedScrollViewItem(
+                      key: ValueKey(story.storyId),
                       child: StoryThumbnailWidget(
                         // thumbnail: story,
                         onPress: () => onThumbnailPressed(story.storyId),

@@ -43,9 +43,11 @@ class InterestingPlaces extends _$InterestingPlaces {
   Future<List<InterestingPlace>> _fetch(gb.Polygon polygon) async {
     final wkt = polygon.toText(format: gb.WKT.geometry);
 
-    // TODO(nogipx): remove stubs
     try {
-      final response = await (await _dio).get('/interesting-places?bound=$wkt');
+      final response = await (await _dio).get(
+        '/interesting-places?bound=$wkt',
+        options: defaultCacheOptions,
+      );
       final places = proto.InterestingPlacesResponse.fromBuffer(response.data)
           .interestingPlaces;
       return places;

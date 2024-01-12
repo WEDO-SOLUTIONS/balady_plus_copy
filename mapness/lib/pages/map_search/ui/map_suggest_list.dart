@@ -19,8 +19,8 @@ class MapSuggestList extends ConsumerWidget {
     return ListView.separated(
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
-      padding: const EdgeInsets.only(
-        right: 16,
+      padding: const EdgeInsetsDirectional.only(
+        start: 16,
         bottom: 16,
       ),
       physics: const NeverScrollableScrollPhysics(),
@@ -35,7 +35,7 @@ class MapSuggestList extends ConsumerWidget {
       itemCount: suggests.length,
       separatorBuilder: (BuildContext context, int index) {
         return const Padding(
-          padding: EdgeInsets.only(right: 36.0),
+          padding: EdgeInsetsDirectional.only(start: 52.0),
           child: Divider(),
         );
       },

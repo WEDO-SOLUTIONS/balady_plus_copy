@@ -49,8 +49,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
     );
     final router = ref.watch(goRouterProvider);
     final favItemsAsync = ref.watch(favouriteRepositoryProvider);
-    const showMarkers = false; // ref.watch(favouriteToggleProvider);
-    // final showMarkers = ref.watch(favouriteToggleProvider);
+    final showMarkers = ref.watch(favouriteToggleProvider);
 
     /// clear markers (for state change handling)
     await mapObjectManager.removeAllMarkers();
