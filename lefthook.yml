@@ -1,0 +1,23 @@
+pre-commit:
+  skip: rebase
+  commands:
+    dart-linter:
+      glob: mapness/**/*.dart
+      run: dart analyze {staged_files}
+    dart-formatter:
+      glob: mapness/**/*.dart
+      run: dart format --fix {staged_files} && git add {staged_files}
+
+commit-msg:
+  skip: rebase
+  scripts:
+    "commit-msg-validator.sh":
+      fail_text: "Commit message validation failed"
+      runner: bash
+
+
+pre-push:
+  scripts:
+    "branch-name-validator.sh":
+      runner: bash
+      fail_text: "Branch name validation failed"
