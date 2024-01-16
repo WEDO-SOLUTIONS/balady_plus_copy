@@ -9,6 +9,8 @@ PODS:
   - AppAuth/Core (1.4.0)
   - AppAuth/ExternalUserAgent (1.4.0):
     - AppAuth/Core
+  - background_location (0.0.1):
+    - Flutter
   - camera_avfoundation (0.0.1):
     - Flutter
   - connectivity_plus (0.0.1):
@@ -338,6 +340,7 @@ DEPENDENCIES:
   - add_2_calendar (from `.symlinks/plugins/add_2_calendar/ios`)
   - app_settings (from `.symlinks/plugins/app_settings/ios`)
   - AppAuth (from `https://github.com/MahmoudMB/AppAuth-iOS.git`)
+  - background_location (from `.symlinks/plugins/background_location/ios`)
   - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
@@ -430,6 +433,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/app_settings/ios"
   AppAuth:
     :git: https://github.com/MahmoudMB/AppAuth-iOS.git
+  background_location:
+    :path: ".symlinks/plugins/background_location/ios"
   camera_avfoundation:
     :path: ".symlinks/plugins/camera_avfoundation/ios"
   connectivity_plus:
@@ -528,6 +533,7 @@ SPEC CHECKSUMS:
   add_2_calendar: e9d68636aed37fb18e12f5a3d74c2e0589487af0
   app_settings: 017320c6a680cdc94c799949d95b84cb69389ebc
   AppAuth: aadc4cc25bef2435551896b5bfa9316b42fde656
+  background_location: 1b80c1fe3abd9912bca298618f6e365abf6f588f
   camera_avfoundation: 3125e8cd1a4387f6f31c6c63abb8a55892a9eeeb
   connectivity_plus: bf0076dd84a130856aa636df1c71ccaff908fa1d
   device_info_plus: c6fb39579d0f423935b0c9ce7ee2f44b71b9fce6

@@ -192,6 +192,7 @@ dependencies:
   mixpanel_flutter: ^2.2.0
   rate_my_app: ^2.0.0
   flutter_datetime_picker_plus: ^2.1.0
+  background_location: ^0.11.8
 
 dependency_overrides:
   geolocator_android: ^4.2.2

@@ -45,6 +45,7 @@ import '../../features/map_page/data/repositories/layers_repositories.dart';
 import '../../features/unknow/data/repositories/repository_implementation.dart';
 import '../../features/unknow/domain/repositories/repository.dart';
 import '../../features/weather/presentation/bloc/weather_bloc.dart';
+import '../../features/weather_alerts/presentation/bloc/weather_alerts_cubit.dart';
 import '../dependency_injection/dependency_injection_exports.dart'
     show
         CrInjection,
@@ -158,6 +159,8 @@ void initialize() {
   sl.registerLazySingleton(() => CRMWebService(dio: Dio()));
   sl.registerLazySingleton(
       () => BottomNavBarCubit(initialNavBar: BottomNavBar.home));
+
+  sl.registerLazySingleton(() => WeatherAlertsCubit());
 
 // Weather
   //Blocs
