@@ -297,3 +297,6 @@ flutter:
           weight: 700
         - asset: fonts/frutigerltarabic75black.ttf
           weight: 900
+    - family: BaladyIcons.ttf
+      fonts:
+        - asset: assets/fonts/BaladyIcons.ttf

@@ -6,9 +6,10 @@ targets:
 
 builders:
   balady_uikit|color_generator:
-    import: "lib/gen/color_generator.dart"
+    import: "lib/gen/generator/color_generator.dart"
     builder_factories: ["colorConstantsBuilder"]
     build_extensions:
-      .json: [".color_constants.dart"]
-    auto_apply: dependents
+      .json: [".g.dart"]
+    auto_apply: none
     build_to: source
+    applies_builders: [ "source_gen|combining_builder" ]
