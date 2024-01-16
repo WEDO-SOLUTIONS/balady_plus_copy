@@ -12,7 +12,7 @@ class WeatherAlertsCubit extends Cubit<WeatherAlertsState> {
   WeatherAlertsCubit() : super(const WeatherAlertsState());
 
   void startTracking() async {
-    /*await BackgroundLocation.stopLocationService();
+    await BackgroundLocation.stopLocationService();
 
     await BackgroundLocation.startLocationService(distanceFilter: 4);
 
@@ -36,7 +36,7 @@ class WeatherAlertsCubit extends Cubit<WeatherAlertsState> {
 
         print(id);
       }
-    });*/
+    });
   }
 
   void stopTracking() {
