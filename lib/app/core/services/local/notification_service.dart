@@ -139,7 +139,7 @@ class NotificationService {
     );
 
     FirebaseMessaging.instance.getToken().then((value) {
-      //Helpers.sendLog(url: "token", data: value);
+      if (value != null && value.isNotEmpty) CommonProperties.fcmToken = value;
     });
     // FirebaseMessaging.instance.subscribeToTopic("all").then((value) {});
     FirebaseMessaging.instance

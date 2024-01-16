@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/base/base_view_model.dart';
 import '../../../../../core/services/local/navigation_services.dart';
+import '../../core/models/appointment_details_model.dart';
 import '../../core/services/view_models/new_appointment_view_model.dart';
 import '../../pages/new_appointment_screens/book_new_appointment_date_time_screen.dart';
 import '../../pages/new_appointment_screens/new_appointment_first_step_screen.dart';
@@ -26,15 +27,18 @@ class NewAppointmentBloc
     BookNewAppointmentDateTimeScreen(),
   ];
 
-  NewAppointmentBloc({bool? withPreviousTransaction})
+  NewAppointmentBloc(
+      {bool? withPreviousTransaction, AppointmentItemInfo? editedItem})
       : super(NewAppointmentState(
-            withPreviousTransaction: withPreviousTransaction)) {
+            withPreviousTransaction: false, editedItemInfo: editedItem)) {
     on<NewAppointmentEvent>((event, emit) {
       controller.addListener(() {});
     });
 
     on<GoToNextPageEvent>(_goToNextPageHandler);
     on<GoToPreviousPageEvent>(_goToPreviousPageHandler);
+
+    dataModel.setUpDraft(item: editedItem);
   }
 
   void cancelIncident() {
@@ -71,6 +75,10 @@ class NewAppointmentBloc
               status: BlocStatus.success,
               currentPageValue: nextPage,
               errorMessage: ""));
+        } else {
+          emitter(state.copyWith(
+            status: BlocStatus.success,
+          ));
         }
       } else if (nextPage == pagesList.length - 1) {
         dataModel.saveAppointment();

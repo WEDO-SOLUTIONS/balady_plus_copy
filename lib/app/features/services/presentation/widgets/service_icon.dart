@@ -174,7 +174,7 @@ class ServiceIcon extends StatelessWidget {
                   await locator<NewAppointmentViewModel>().loadInitialData();
               if (isSuccess) {
                 NavigationService.navigatorKey.currentState!
-                    .pushNamed(RouteName.NewAppointmentPage, arguments: false);
+                    .pushNamed(RouteName.NewAppointmentPage, arguments: null);
                 /* await BottomSheetDialog.showDraggableSheet(context,
                   dialogKeyName: DialogName.selectAppointmentTypeDialog,
                   currentRouteName: "ServicesPage",
@@ -194,7 +194,7 @@ class ServiceIcon extends StatelessWidget {
                               .loadInitialData();
                           NavigationService.navigatorKey.currentState!
                               .pushNamed(RouteName.NewAppointmentPage,
-                                  arguments: false);
+                                  arguments: null);
                           /* await BottomSheetDialog.showDraggableSheet(context,
                             dialogKeyName:
                                 DialogName.selectAppointmentTypeDialog,

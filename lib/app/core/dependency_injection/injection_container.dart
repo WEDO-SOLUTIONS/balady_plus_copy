@@ -82,6 +82,7 @@ import 'features/objections_injection.dart';
 import 'features/renew_commercial_injection.dart';
 import 'features/retrive_dc_injection.dart';
 import 'features/violation_guide_injection.dart';
+import 'features/weather_alerts_injection.dart';
 
 /// sl -> Service Locator
 final sl = GetIt.instance;
@@ -153,6 +154,9 @@ void initialize() {
   CalendarInjection.init();
   //? Ekram
   EkramInjection.init();
+
+  //? Wather Alerts
+  WeatherAlertsInjection.init();
 
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));

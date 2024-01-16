@@ -7,6 +7,7 @@ import 'package:collection/collection.dart';
 
 import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../_shared_feature_/data/entities/drop_down_item.dart';
+import '../../../pages/new_appointment_screens/new_appointment_first_step_screen.dart';
 import '../../models/attachment_item_model.dart';
 import '../../models/department_model.dart';
 import '../../models/lookup_list_model.dart';
@@ -19,20 +20,34 @@ import 'new_appointment_view_model.dart';
 
 class NewAppointmentFirstStepViewModel extends BaseViewModel {
   bool withPreviousTransaction = false;
+  bool isDraft = false;
   final dataModel = locator<NewAppointmentViewModel>();
 
-  NewAppointmentFirstStepViewModel({required this.withPreviousTransaction}) {
+  NewAppointmentFirstStepViewModel(
+      {required this.withPreviousTransaction, required this.isDraft}) {
     locator<NewAppointmentViewModel>().withPreviousTransaction =
         withPreviousTransaction;
-    locator<NewAppointmentViewModel>().init();
-
+    if (isDraft == false) locator<NewAppointmentViewModel>().init();
     dataModel.setShowSpecialConditionSection();
     dataModel.setShowSpecialConditionOld();
     dataModel.checkIfUserIsOld();
+    validateForm();
+    // setUpDraft();
   }
 
-  final TextEditingController otherServiceNameController =
-      TextEditingController();
+  /*void setUpDraft() async {
+    notifyListeners();
+    await dataModel.setUpDraft();
+
+    Timer(Duration(seconds: 5), () {
+      appointmentKey.currentState!.setState(() {});
+
+      notifyListeners();
+      validateForm();
+      notifyListeners();
+      appointmentKey.currentState!.setState(() {});
+    });
+  }*/
 
   //String get getNotes => dataModel.notes ?? "";
 
@@ -325,6 +340,7 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
     dataModel.init();
     //  isFormValid = StreamController<bool>();
     isFormValid = false;
+    dataModel.editedItem = null;
   }
 
   void resetVariables() {
@@ -364,8 +380,13 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
     dataModel.availableDatesResponse = null;
     //dataModel.availableTimesResponse = null;
 
-    dataModel.selectedDate = null;
-    dataModel.selectedTime = null;
+    if (dataModel.saveDate == false) {
+      dataModel.selectedDate = null;
+      dataModel.selectedTime = null;
+    }
+    if (dataModel.saveDate == true) {
+      dataModel.selectedDate?.times = [];
+    }
 
     setAppointmentTypeItem = null;
     dataModel.appointmentTypeList = null;
@@ -373,12 +394,16 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
 
   void resetIfSelectSubClass() {
     setServiceName = "";
-    otherServiceNameController.text = "";
+    dataModel.otherServiceNameController.text = "";
     dataModel.availableDatesResponse = null;
     //dataModel.availableTimesResponse = null;
-
-    dataModel.selectedDate = null;
-    dataModel.selectedTime = null;
+    if (dataModel.saveDate == false) {
+      dataModel.selectedDate = null;
+      dataModel.selectedTime = null;
+    }
+    if (dataModel.saveDate == true) {
+      dataModel.selectedDate?.times = [];
+    }
   }
 
   void deleteAttachment(int index) {

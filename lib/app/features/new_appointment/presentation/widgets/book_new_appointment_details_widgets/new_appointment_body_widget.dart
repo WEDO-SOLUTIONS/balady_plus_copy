@@ -20,7 +20,7 @@ import '../book_new_appointment_widgets/book_appointment_attachments_widget_new.
 import '../book_new_appointment_widgets/book_appointment_special_needs_widget.dart';
 
 class NewAppointmentBody extends StatefulWidget {
-  const NewAppointmentBody({Key? key}) : super(key: key);
+  NewAppointmentBody({Key? key}) : super(key: key);
 
   @override
   _NewAppointmentBody createState() => _NewAppointmentBody();
@@ -85,10 +85,8 @@ class AppointmentInfoSection extends StatefulWidget {
 
 class _AppointmentInfoSection extends State<AppointmentInfoSection> {
   final FocusNode _descFocusNode = FocusNode();
-  final TextEditingController _descController = TextEditingController();
   final FocusNode _transactionNoFocusNode = FocusNode();
-  final TextEditingController _transactionNoController =
-      TextEditingController();
+
   final FocusNode _otherServiceNameNoFocusNode = FocusNode();
 
   @override
@@ -218,7 +216,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
           ),*/
         CustomVerticalSpace(height: 16),
         CustomTextFieldWidgetWithOptinal(
-          controller: _transactionNoController,
+          controller: model.dataModel.transactionNoController,
           focusNode: _transactionNoFocusNode,
           label: ("bookNewAppointmentServiceNumberFieldLabelWord").tr(),
           hintText: ("bookNewAppointmentServiceNumberFieldHintWord").tr(),
@@ -250,7 +248,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
         CustomVerticalSpace(height: 16),
 
         CustomTextFieldWidget(
-          controller: _descController,
+          controller: model.dataModel.descController,
           focusNode: _descFocusNode,
           fillColor: Colors.transparent,
           label: ("bookNewAppointmentNotesFieldLabelWord").tr(),

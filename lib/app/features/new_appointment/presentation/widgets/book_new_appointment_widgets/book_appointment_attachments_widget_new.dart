@@ -51,7 +51,7 @@ class _AppointmentAttachmentSectionState
               // setState(() {});
             },
           ),
-        CustomVerticalSpace(height: 16),
+        const CustomVerticalSpace(height: 16),
         if (model.attachmentsList.isNotEmpty) ...[
           ListView.builder(
             shrinkWrap: true,
@@ -59,6 +59,7 @@ class _AppointmentAttachmentSectionState
             itemCount: model.attachmentsList.length,
             itemBuilder: (ctx, index) {
               return ObjectionReasonAttachment(
+                showDelete: model.attachmentsList[index].updatable == true,
                 onDelete: () {
                   model.deleteAttachment(index);
                   setState(() {});

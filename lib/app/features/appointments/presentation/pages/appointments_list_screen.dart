@@ -130,6 +130,8 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
                                                                 .cancelable,
                                                         isPrintable: appointment
                                                             .printable,
+                                                        isEditable: appointment
+                                                            .editable,
                                                         fromHomePage: true));
                                           }
                                         }

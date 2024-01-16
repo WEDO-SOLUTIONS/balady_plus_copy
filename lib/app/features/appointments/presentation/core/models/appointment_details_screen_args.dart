@@ -5,10 +5,12 @@ class AppointmentDetailsScreenArgs {
   final bool? isCancelable;
   final bool? isPrintable;
   final bool? fromHomePage;
+  final bool? isEditable;
 
   AppointmentDetailsScreenArgs(
       {this.appointmentItemInfo,
       this.isCancelable,
       this.isPrintable,
+      this.isEditable,
       this.fromHomePage = false});
 }

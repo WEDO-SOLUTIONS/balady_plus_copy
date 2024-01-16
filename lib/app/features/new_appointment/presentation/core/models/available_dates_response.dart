@@ -17,11 +17,14 @@ class AvailableDatesResponse {
   List<StatusDetail>? statusDetails;
   Data? data;
 
-  factory AvailableDatesResponse.fromJson(Map<String, dynamic> json) =>
+  factory AvailableDatesResponse.fromJson(Map<String, dynamic> json,
+          {String? currentDraftTime}) =>
       AvailableDatesResponse(
         statusDetails: List<StatusDetail>.from(
             json["statusDetails"].map((x) => StatusDetail.fromJson(x))),
-        data: json["data"] != null ? Data.fromJson(json["data"]) : null,
+        data: json["data"] != null
+            ? Data.fromJson(json["data"], currentDraftTime: currentDraftTime)
+            : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -42,12 +45,14 @@ class Data {
   String? responseMessage;
   List<DateItem>? result;
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory Data.fromJson(Map<String, dynamic> json,
+          {String? currentDraftTime}) =>
+      Data(
         responseCode: json["responseCode"],
         responseMessage: json["responseMessage"],
         result: json["result"] != null
-            ? List<DateItem>.from(
-                json["result"].map((x) => DateItem.fromJson(x)))
+            ? List<DateItem>.from(json["result"].map((x) =>
+                DateItem.fromJson(x, currentDraftTime: currentDraftTime)))
             : null,
       );
 
@@ -65,7 +70,8 @@ class DateItem {
   String? date;
   List<TimeItem>? times;
 
-  factory DateItem.fromJson(Map<String, dynamic> json) {
+  factory DateItem.fromJson(Map<String, dynamic> json,
+      {String? currentDraftTime}) {
     DateItem date = DateItem(
       dayName: json["dayName"],
       date: json["date"],
@@ -73,8 +79,11 @@ class DateItem {
           ? null
           : List<TimeItem>.from(json["times"].map((x) => TimeItem.fromJson(x))),
     );
-    date.times =
-        date.times?.where((e) => e.availableTime == true).toList() ?? [];
+    date.times = date.times
+            ?.where(
+                (e) => e.availableTime == true || e.timeKey == currentDraftTime)
+            .toList() ??
+        [];
     return date;
   }
 

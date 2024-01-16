@@ -766,6 +766,7 @@ class ApiUrl {
 
   static const chatBot = 'v1/chatbot-services/chat';
 
+  static const weatherAlerts = 'v1/mater-services/notifications/locations';
   //! POST
 
   //! Delete

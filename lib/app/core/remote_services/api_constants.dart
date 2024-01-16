@@ -176,6 +176,8 @@ class ApiConstants {
   static const String AppointmentServiceConfig =
       '$AppointmentURL/service-config/';
   static const String AppointmentSave = '$AppointmentURL/save-appointment';
+  static String AppointmentUpdate(int id) =>
+      '/v1/appointments-mobile-services/appoinments/$id';
 
   static const String AppointmentUploadFile =
       '$AppointmentURL/appointment-upload-attachment/1091';

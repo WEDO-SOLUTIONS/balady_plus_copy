@@ -1,0 +1,64 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
+import 'package:balady_plus/app/features/vd/domain/entities/gis/gis_params.dart';
+import 'package:balady_plus/app/features/violation_guide/domain/entites/regulation_clauses_details_params.dart';
+
+import 'package:dio/dio.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:mime/mime.dart';
+
+import '../../../../core/errors/exceptions.dart';
+import '../../../../core/services/global/web_service.dart';
+import '../../../../core/utils/constants/apis/api_info.dart';
+import '../models/weather_alerts_request_model.dart';
+
+abstract class WeatherAlertsRemoteDataSource {
+  Future<bool> sendLocationToGetWeatherAlerts(
+    WeatherAlertRequestModel params,
+  );
+}
+
+class WeatherAlertsRemoteDataSourceImpl extends WeatherAlertsRemoteDataSource {
+  final WebService webService;
+
+  WeatherAlertsRemoteDataSourceImpl({required this.webService});
+
+  @override
+  Future<bool> sendLocationToGetWeatherAlerts(
+      WeatherAlertRequestModel params) async {
+    var response;
+    try {
+      response = await webService.dio.put(ApiUrl.weatherAlerts,
+          data: params.toMap(),
+          options: Options(
+            headers: {
+              ApiHeader.requiresToken.eName: false,
+            },
+          ));
+
+      final data = response.data;
+
+      return true;
+    } on DioError catch (error) {
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {} catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+}
