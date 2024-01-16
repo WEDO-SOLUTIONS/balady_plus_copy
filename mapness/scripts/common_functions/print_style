@@ -49,5 +49,3 @@ case $color in
         color_code=""
         ;;
 esac
-
-echo -e "$style_code$color_code$text$reset"
