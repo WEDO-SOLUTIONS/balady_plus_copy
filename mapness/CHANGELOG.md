@@ -6,6 +6,7 @@
 
 ## 3.9.0(3)
 - BALADY-1357 [Quick Filters] quick filters in opened dashboard do not work
+- BALADY-951: [UIkit] Components Library - Layouting
 - BALADY-941: [UIkit] Components Library - Icons
 
 ## 3.9.0(1) - Current
