@@ -490,7 +490,7 @@ class _BillInfoDataWidget extends StatelessWidget {
       title: Helpers.translatingWord("health_bill"),
       underline: false,
       children: [
-        billingInfo != null
+        billingInfo != null && billingInfo.billCreated == true
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -543,7 +543,7 @@ class _BillInfoDataWidget extends StatelessWidget {
                       ),
                     )
                   ])
-            : Container()
+            : NotesWidget(notes: billingInfo?.warnings ?? [])
       ],
     );
   }
@@ -717,11 +717,15 @@ class LicenseBillBodySectionWidget extends StatelessWidget {
           _BillInfoWidget(
             createDate: billInfo.billCreationDate ?? "",
             billNumber: billInfo.billNumber ?? "",
+            billCreated: billInfo.billCreated,
+            warnings: billInfo.warnings,
           ),
           // // bill details
-          if (billInfo.billFees != null && billInfo.billFees!.isNotEmpty)
+          /*if (billInfo.billFees != null &&
+              billInfo.billFees!.isNotEmpty &&
+              billInfo.billCreated == true)
             BillDetailsWidget(
-                fees: billInfo.billFees!, totalAmount: billInfo.billAmount),
+                fees: billInfo.billFees!, totalAmount: billInfo.billAmount),*/
           Constants.verticalSpaceLarge,
         ],
       ),
@@ -732,8 +736,14 @@ class LicenseBillBodySectionWidget extends StatelessWidget {
 class _BillInfoWidget extends StatelessWidget {
   String createDate;
   String billNumber;
+  bool? billCreated;
+  List<String>? warnings;
 
-  _BillInfoWidget({required this.createDate, required this.billNumber});
+  _BillInfoWidget(
+      {required this.createDate,
+      required this.billNumber,
+      this.billCreated,
+      this.warnings});
 
   @override
   Widget build(BuildContext context) {
@@ -741,20 +751,23 @@ class _BillInfoWidget extends StatelessWidget {
       title: Helpers.translatingWord("health_bill_info"),
       underline: false,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            FieldData(
-              title: Helpers.translatingWord("health_bill_date"),
-              subTitle: createDate,
-            ),
-            CustomVerticalSpace(height: 8),
-            FieldData(
-              title: Helpers.translatingWord("health_bill_number"),
-              subTitle: billNumber,
-            ),
-          ],
-        )
+        if (billCreated == true)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              FieldData(
+                title: Helpers.translatingWord("health_bill_date"),
+                subTitle: createDate,
+              ),
+              CustomVerticalSpace(height: 8),
+              FieldData(
+                title: Helpers.translatingWord("health_bill_number"),
+                subTitle: billNumber,
+              ),
+            ],
+          ),
+        if (billCreated == false && warnings != null)
+          NotesWidget(notes: warnings ?? [])
       ],
     );
   }
