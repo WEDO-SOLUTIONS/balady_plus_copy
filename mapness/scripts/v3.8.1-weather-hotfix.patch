@@ -1,0 +1,339 @@
+diff --git a/mapness/lib/_features/weather/data/datasources/weather_remote_datasource.dart b/mapness/lib/_features/weather/data/datasources/weather_remote_datasource.dart
+index a936e3ac..d82b487b 100644
+--- a/mapness/lib/_features/weather/data/datasources/weather_remote_datasource.dart
++++ b/mapness/lib/_features/weather/data/datasources/weather_remote_datasource.dart
+@@ -1,5 +1,6 @@
+ import 'dart:async';
+ import 'dart:developer';
++import 'package:balady_plus/app/core/utils/constants/apis/api_headers.dart';
+ import 'package:dio/dio.dart';
+ import 'package:mapness/_features/weather/data/datasources/web_service_weather.dart';
+ import 'package:mapness/_features/weather/domain/entities/weather_params.dart';
+@@ -13,7 +14,7 @@ abstract class WeatherRemoteDataSource {
+     required WeatherParams params,
+     required CancelToken cancelToken,
+   });
+-  Future<Map<String, dynamic>?>? getForecastData({
++  Future<Map<String, dynamic>?>? getForecastWeatherData({
+     required WeatherParams params,
+     required CancelToken cancelToken,
+   });
+@@ -47,17 +48,18 @@ class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
+   }
+ 
+   @override
+-  Future<Map<String, dynamic>?>? getForecastData(
++  Future<Map<String, dynamic>?>? getForecastWeatherData(
+       {required WeatherParams params, required CancelToken cancelToken}) async {
+     mixpanel?.timeEvent("WebServiceWeather: getForecastData");
+-    String weatherAPI = '/v1/forecast.json?';
++    String weatherAPI = 'v1/weather-services/forecast?';
+     try {
+-      var map = params.toMap();
+-      final response = await webServiceWeather.dio.get(
+-        weatherAPI,
+-        queryParameters: map,
+-        cancelToken: cancelToken,
+-      );
++      final response = await webServiceWeather.dio.get(weatherAPI,
++          queryParameters: params.toMap(),
++          options: Options(headers: {
++            "Accept-Language": params.languageCode,
++            ApiHeader.requiresToken.eName: false,
++            ApiHeader.verifyingKEY.name: params.getVerifyingKey()
++          }),cancelToken: cancelToken);
+       mixpanel?.track("WebServiceWeather: getForecastData");
+       return response.data;
+     } on DioException catch (e) {
+diff --git a/mapness/lib/_features/weather/data/datasources/web_service_weather.dart b/mapness/lib/_features/weather/data/datasources/web_service_weather.dart
+index 03c2d9f8..0aa19d32 100644
+--- a/mapness/lib/_features/weather/data/datasources/web_service_weather.dart
++++ b/mapness/lib/_features/weather/data/datasources/web_service_weather.dart
+@@ -7,7 +7,7 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+ class WebServiceWeather {
+   final Dio dio;
+ 
+-  WebServiceWeather({required this.dio}) {
++  WebServiceWeather({required this.dio, required String baseUrl,}) {
+ 
+     (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
+         (HttpClient client) {
+@@ -16,7 +16,7 @@ class WebServiceWeather {
+       return client;
+     };
+ 
+-    dio.options.baseUrl = "https://api.weatherapi.com";
++    dio.options.baseUrl = baseUrl;
+     dio.options.connectTimeout = const Duration(milliseconds: 60000);
+     dio.options.receiveTimeout = const Duration(milliseconds: 60000);
+     dio.options.sendTimeout = const Duration(milliseconds: 60000);
+diff --git a/mapness/lib/_features/weather/data/models/weather_model.dart b/mapness/lib/_features/weather/data/models/weather_model.dart
+index a485bb44..6dd650cc 100644
+--- a/mapness/lib/_features/weather/data/models/weather_model.dart
++++ b/mapness/lib/_features/weather/data/models/weather_model.dart
+@@ -432,8 +432,9 @@ class LocationModel extends Location {
+       );
+ }
+ 
+-AllWeatherInfoModel mapper(Map<String, dynamic>? data) {
++AllWeatherInfoModel mapper(Map<String, dynamic>? json) {
+   try {
++    final data = json?["data"]?["result"];
+     var alertModel;
+     var alertsData = data?['alerts'];
+     if (alertsData != null) {
+diff --git a/mapness/lib/_features/weather/data/repository/weather_repository.dart b/mapness/lib/_features/weather/data/repository/weather_repository.dart
+index b61ceb2e..da607093 100644
+--- a/mapness/lib/_features/weather/data/repository/weather_repository.dart
++++ b/mapness/lib/_features/weather/data/repository/weather_repository.dart
+@@ -4,33 +4,34 @@ import 'package:mapness/_features/weather/data/datasources/web_service_weather.d
+ import 'package:mapness/_features/weather/data/models/weather_model.dart';
+ import 'package:mapness/_features/weather/domain/entities/weather_params.dart';
+ import 'package:mapness/shared/providers/app_language.dart';
++import 'package:mapness/shared/providers/dgis_environment.dart';
+ import 'package:riverpod_annotation/riverpod_annotation.dart';
+ 
+ part 'weather_repository.g.dart';
+ 
+ @riverpod
+ class WeatherRepository extends _$WeatherRepository {
+-  final weatherDataSource = WeatherRemoteDataSource(
+-    WebServiceWeather(
+-      dio: Dio(),
+-    ),
+-  );
++  late final WeatherRemoteDataSource weatherDataSource;
+ 
+   Future<AllWeatherInfoModel?> getForecastWeather(
+     double latitude,
+     double longitude,
++    int numberOfDays,
+     CancelToken cancelToken,
+   ) async {
+     final locale = ref.read(appLanguageProvider).locale;
++    final env = await ref.read(dgisEnvironmentProvider.future);
+ 
+     final weatherParams = WeatherParams(
+       latitude: latitude,
+       longitude: longitude,
+-      numberOfDays: 5,
++      numberOfDays: numberOfDays,
+       alert: "yes",
+       languageCode: locale.languageCode,
++      domain: env.weatherApi,
++      proxy: env.proxy,
+     );
+-    final data = await weatherDataSource.getForecastData(
++    final data = await weatherDataSource.getForecastWeatherData(
+       params: weatherParams,
+       cancelToken: cancelToken,
+     );
+@@ -38,32 +39,16 @@ class WeatherRepository extends _$WeatherRepository {
+     return result;
+   }
+ 
+-  Future<AllWeatherInfoModel?> getCurrentWeather(
+-    double latitude,
+-    double longitude,
+-    CancelToken cancelToken,
+-  ) async {
+-    final locale = ref.read(appLanguageProvider).locale;
+-
+-    final weatherParams = WeatherParams(
+-      latitude: latitude,
+-      longitude: longitude,
+-      numberOfDays: 1,
+-      alert: "no",
+-      languageCode: locale.languageCode,
+-    );
+-
+-    final data = await weatherDataSource.getCurrentWeatherData(
+-      params: weatherParams,
+-      cancelToken: cancelToken,
++  @override
++  Future<void> build() async {
++    final env = await ref.read(dgisEnvironmentProvider.future);
++    weatherDataSource = WeatherRemoteDataSource(
++      WebServiceWeather(
++        dio: Dio(),
++        baseUrl: env.weatherApi,
++      ),
+     );
+-    final result = mapper(data);
+-
+-    return result;
+   }
+-
+-  @override
+-  void build() {}
+ }
+ 
+ final weatherRepository = weatherRepositoryProvider;
+diff --git a/mapness/lib/_features/weather/domain/entities/weather_params.dart b/mapness/lib/_features/weather/domain/entities/weather_params.dart
+index a48a2f9a..2eb33f85 100644
+--- a/mapness/lib/_features/weather/domain/entities/weather_params.dart
++++ b/mapness/lib/_features/weather/domain/entities/weather_params.dart
+@@ -1,43 +1,59 @@
+ // ignore_for_file: public_member_api_docs, sort_constructors_first
++import 'package:mapness/_features/lifestyle_layers/data/common_function.dart';
++import 'package:mapness/shared/config/environment_config.dart';
++
+ class WeatherParams {
+   double? longitude;
+   double? latitude;
+   int numberOfDays;
+   String? languageCode;
+   String? alert;
+-  String? key;
++  String domain;
++  String? proxy;
+ 
+   WeatherParams(
+       {this.longitude,
+       this.latitude,
+       required this.numberOfDays,
++      required this.domain,
++      this.proxy,
+       this.languageCode = "ar",
+-      this.alert = "yes",
+-      this.key = '7fb258f132b04a298ae154452233007'});
++      this.alert = "yes"});
+ 
+   WeatherParams copyWith({
+     double? longitude,
+     double? latitude,
+     int? numberOfDays,
+-    String? key,
+   }) {
+     return WeatherParams(
+-        longitude: longitude ?? this.longitude,
+-        latitude: latitude ?? this.latitude,
+-        numberOfDays: numberOfDays ?? this.numberOfDays,
+-        alert: alert,
+-        languageCode: languageCode,
+-        key: key ?? this.key);
++      longitude: longitude ?? this.longitude,
++      latitude: latitude ?? this.latitude,
++      numberOfDays: numberOfDays ?? this.numberOfDays,
++      alert: alert,
++      languageCode: languageCode,
++      domain: domain,
++    );
+   }
+ 
+-  // create toMap method
+-  Map<String, dynamic> toMap() {
+-    return {
+-      if (latitude != null && longitude != null) "q": "$latitude,$longitude",
+-      "days": '$numberOfDays',
+-      if (languageCode != null) "lang": '$languageCode',
+-      if (alert != null) "alerts": '$alert',
+-      if (key != null) "key": '$key',
+-    };
++  String? getVerifyingKey() {
++    String verifyingKey;
++    const weatherServices = 'v1/weather-services/forecast?';
++    final params = toMap();
++
++    String hashedUrl = proxy != null
++        ? "${EnvironmentConfig.momrahStaging().weatherApi}$weatherServices"
++        : "$domain$weatherServices";
++
++    params.forEach((key, value) => hashedUrl += "$key=$value&");
++    hashedUrl = hashedUrl.substring(0, hashedUrl.length - 1);
++    verifyingKey = hashRequest(hashedUrl, "GET");
++    return verifyingKey;
+   }
++
++  Map<String, dynamic> toMap() => {
++        if (latitude != null && longitude != null) "q": "$latitude,$longitude",
++        "days": '$numberOfDays',
++        if (languageCode != null) "lang": '$languageCode',
++        if (alert != null) "alerts": '$alert',
++      };
+ }
+diff --git a/mapness/lib/_features/weather/provider/current_weather_provider.dart b/mapness/lib/_features/weather/provider/current_weather_provider.dart
+index b50219b6..266e8b8d 100644
+--- a/mapness/lib/_features/weather/provider/current_weather_provider.dart
++++ b/mapness/lib/_features/weather/provider/current_weather_provider.dart
+@@ -1,6 +1,4 @@
+ import 'package:dio/dio.dart';
+-import 'package:mapness/_features/weather/data/datasources/weather_remote_datasource.dart';
+-import 'package:mapness/_features/weather/data/datasources/web_service_weather.dart';
+ import 'package:mapness/_features/weather/data/models/weather_model.dart';
+ import 'package:mapness/_features/weather/data/repository/weather_repository.dart';
+ import 'package:mapness/shared/providers/map/dgis_controller.dart';
+@@ -11,16 +9,10 @@ part 'current_weather_provider.g.dart';
+ 
+ @riverpod
+ class _CurrentWeather extends _$CurrentWeather {
+-  final weatherDataSource = WeatherRemoteDataSource(
+-    WebServiceWeather(
+-      dio: Dio(),
+-    ),
+-  );
+-
+   @override
+   AllWeatherInfoModel? build() {
+     final controller = ref.watch(dgisControllerProvider).value;
+-    var repository = ref.watch(weatherRepository.notifier);
++    final repository = ref.watch(weatherRepository.notifier);
+ 
+     final cancelToken = CancelToken();
+ 
+@@ -31,7 +23,7 @@ class _CurrentWeather extends _$CurrentWeather {
+       final longitude = event.point.longitude;
+ 
+       final result =
+-          await repository.getCurrentWeather(latitude, longitude, cancelToken);
++          await repository.getForecastWeather(latitude, longitude, 1, cancelToken);
+       _listener(result);
+     });
+ 
+diff --git a/mapness/lib/_features/weather/provider/forecast_weather_provider.dart b/mapness/lib/_features/weather/provider/forecast_weather_provider.dart
+index 5ea570fb..5e904d2d 100644
+--- a/mapness/lib/_features/weather/provider/forecast_weather_provider.dart
++++ b/mapness/lib/_features/weather/provider/forecast_weather_provider.dart
+@@ -48,6 +48,7 @@ class _ForecastWeather extends _$ForecastWeather {
+     final result = await repository.getForecastWeather(
+       latitude,
+       longitude,
++      5,
+       cancelToken,
+     );
+     _listener(result);
+diff --git a/mapness/lib/shared/config/environment_config.dart b/mapness/lib/shared/config/environment_config.dart
+index fae97f8c..0495d54d 100644
+--- a/mapness/lib/shared/config/environment_config.dart
++++ b/mapness/lib/shared/config/environment_config.dart
+@@ -28,25 +28,25 @@ class EnvironmentConfig {
+         proxy: 'https://sa1.ops.2gis.dev',
+         url: 'https://momrah-balady-dev.public-poc.urbi.ae/api/1.0/',
+         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
+-        weatherApi: 'https://api.weatherapi.com',
++        weatherApi: 'https://sa1.ops.2gis.dev/',
+       );
+ 
+   factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
+         url: 'https://apiservicesstg.balady.gov.sa/v1/urbi-services/',
+         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
+-        weatherApi: 'https://api.weatherapi.com',
++        weatherApi: 'https://apiservicesstg.balady.gov.sa/',
+       );
+ 
+   factory EnvironmentConfig.momrahProd() => EnvironmentConfig(
+-        url: 'https://apiservices.balady.gov.sa/v1/urbi-services/',///url for URBI backcend
++        url: 'https://apiservices.balady.gov.sa/v1/urbi-services/',
+         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
+-        weatherApi: 'https://api.weatherapi.com',
++        weatherApi: 'https://apiservices.balady.gov.sa/',
+       );
+ 
+   factory EnvironmentConfig.urbiPreProd() => EnvironmentConfig(
+         proxy: 'https://sa1.ops.2gis.dev',
+         url: 'https://momrah-balady.public-poc.urbi.ae/api/1.0/',
+         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
+-        weatherApi: 'https://api.weatherapi.com',
++        weatherApi: 'https://sa1.ops.2gis.dev/',
+       );
+ }
