@@ -56,7 +56,7 @@ class BoardWidget extends StatelessWidget {
                 children: [
                   Expanded(
                     child: DropDownWithTitle(
-                      title: "CleaningMechanisms".tr(),
+                      title: "boardsOptions".tr(),
                       selectedValue: type?.name,
                       height: 55,
                       onTap: () {

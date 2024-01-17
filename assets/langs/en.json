@@ -187,6 +187,7 @@
 "FillFields":"Fill the fields",
 "LicenseYears":"Number of years of licensing",
 "CleaningMechanisms":"Hygiene options",
+"boardsOptions":"Boards Options", 
 "AdvertisingOffices":"Billboards",
 "AddBoard":"Add board",
 "BoardType":"Type of board",

@@ -203,6 +203,7 @@
   "FillFields": "قم بتعبئة الحقول",
   "LicenseYears": "عدد سنوات الترخيص",
   "CleaningMechanisms": "خيارات النظافة",
+  "boardsOptions":"خيارات اللوحة", 
   "AdvertisingOffices": "اللوحات الإعلانية",
   "AddBoard": "+ إضافة لوحة",
   "BoardType": "نوع اللوحة",
