@@ -28,25 +28,25 @@ class EnvironmentConfig {
         proxy: 'https://sa1.ops.2gis.dev',
         url: 'https://momrah-balady-dev.public-poc.urbi.ae/api/1.0/',
         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
-        weatherApi: 'https://api.weatherapi.com',
+        weatherApi: 'https://momrah-balady-dev.public-poc.urbi.ae/api/1.0/',
       );
 
   factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
         url: 'https://apiservicesstg.balady.gov.sa/v1/urbi-services/',
         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
-        weatherApi: 'https://api.weatherapi.com',
+        weatherApi: 'https://apiservicesstg.balady.gov.sa/',
       );
 
   factory EnvironmentConfig.momrahProd() => EnvironmentConfig(
         url: 'https://apiservices.balady.gov.sa/v1/urbi-services/',///url for URBI backcend
         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
-        weatherApi: 'https://api.weatherapi.com',
+        weatherApi: 'https://apiservices.balady.gov.sa/',
       );
 
   factory EnvironmentConfig.urbiPreProd() => EnvironmentConfig(
         proxy: 'https://sa1.ops.2gis.dev',
         url: 'https://momrah-balady.public-poc.urbi.ae/api/1.0/',
         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
-        weatherApi: 'https://api.weatherapi.com',
+        weatherApi: 'https://sa1.ops.2gis.dev/',
       );
 }

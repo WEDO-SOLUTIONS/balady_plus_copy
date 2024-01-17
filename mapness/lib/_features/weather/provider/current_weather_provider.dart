@@ -1,6 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:mapness/_features/weather/data/datasources/weather_remote_datasource.dart';
-import 'package:mapness/_features/weather/data/datasources/web_service_weather.dart';
 import 'package:mapness/_features/weather/data/models/weather_model.dart';
 import 'package:mapness/_features/weather/data/repository/weather_repository.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -11,16 +9,10 @@ part 'current_weather_provider.g.dart';
 
 @riverpod
 class _CurrentWeather extends _$CurrentWeather {
-  final weatherDataSource = WeatherRemoteDataSource(
-    WebServiceWeather(
-      dio: Dio(),
-    ),
-  );
-
   @override
   AllWeatherInfoModel? build() {
     final controller = ref.watch(dgisControllerProvider).value;
-    var repository = ref.watch(weatherRepository.notifier);
+    final repository = ref.watch(weatherRepository.notifier);
 
     final cancelToken = CancelToken();
 
