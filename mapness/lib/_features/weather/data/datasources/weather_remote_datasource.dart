@@ -56,10 +56,10 @@ class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
       final response = await webServiceWeather.dio.get(weatherAPI,
           queryParameters: params.toMap(),
           options: Options(headers: {
-            "Accept-Language": "ar",
+            "Accept-Language": params.languageCode,
             ApiHeader.requiresToken.eName: false,
             ApiHeader.verifyingKEY.name: params.getVerifyingKey()
-          }));
+          }),cancelToken: cancelToken);
       mixpanel?.track("WebServiceWeather: getForecastData");
       return response.data;
     } on DioException catch (e) {
