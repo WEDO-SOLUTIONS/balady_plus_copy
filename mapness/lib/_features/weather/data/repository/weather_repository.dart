@@ -16,19 +16,19 @@ class WeatherRepository extends _$WeatherRepository {
   Future<AllWeatherInfoModel?> getForecastWeather(
     double latitude,
     double longitude,
+    int numberOfDays,
     CancelToken cancelToken,
   ) async {
     final locale = ref.read(appLanguageProvider).locale;
     final env = await ref.read(dgisEnvironmentProvider.future);
 
-
     final weatherParams = WeatherParams(
       latitude: latitude,
       longitude: longitude,
-      numberOfDays: 5,
+      numberOfDays: numberOfDays,
       alert: "yes",
       languageCode: locale.languageCode,
-      domain: env.url,
+      domain: env.weatherApi,
       proxy: env.proxy,
     );
     final data = await weatherDataSource.getForecastWeatherData(
@@ -36,40 +36,12 @@ class WeatherRepository extends _$WeatherRepository {
       cancelToken: cancelToken,
     );
     final result = mapper(data);
-    return result;
-  }
-
-  Future<AllWeatherInfoModel?> getCurrentWeather(
-    double latitude,
-    double longitude,
-    CancelToken cancelToken,
-  ) async {
-    final locale = ref.read(appLanguageProvider).locale;
-    final env = await ref.read(dgisEnvironmentProvider.future);
-
-    final weatherParams = WeatherParams(
-      latitude: latitude,
-      longitude: longitude,
-      numberOfDays: 1,
-      alert: "no",
-      languageCode: locale.languageCode,
-      proxy: env.proxy,
-      domain: env.url
-    );
-
-    final data = await weatherDataSource.getForecastWeatherData(
-      params: weatherParams,
-      cancelToken: cancelToken,
-    );
-    final result = mapper(data);
-
     return result;
   }
 
   @override
-  Future<void> build()async {
+  Future<void> build() async {
     final env = await ref.read(dgisEnvironmentProvider.future);
-    // "https://api.weatherapi.com"
     weatherDataSource = WeatherRemoteDataSource(
       WebServiceWeather(
         dio: Dio(),

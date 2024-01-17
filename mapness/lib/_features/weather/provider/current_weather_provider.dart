@@ -23,7 +23,7 @@ class _CurrentWeather extends _$CurrentWeather {
       final longitude = event.point.longitude;
 
       final result =
-          await repository.getCurrentWeather(latitude, longitude, cancelToken);
+          await repository.getForecastWeather(latitude, longitude, 1, cancelToken);
       _listener(result);
     });
 
