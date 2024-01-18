@@ -432,8 +432,9 @@ class LocationModel extends Location {
       );
 }
 
-AllWeatherInfoModel mapper(Map<String, dynamic>? data) {
+AllWeatherInfoModel mapper(Map<String, dynamic>? json) {
   try {
+    final data = json?["data"]?["result"];
     var alertModel;
     var alertsData = data?['alerts'];
     if (alertsData != null) {

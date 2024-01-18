@@ -91,7 +91,6 @@ class SettingsPage extends ConsumerWidget {
                   return ExpandableCell(
                     title: context.l10n.language,
                     subtitle: language.title,
-                    count: 2,
                     icon: "assets/icons/svg/ic_profile_lang.svg",
                     content: const LanguagePicker(),
                   );

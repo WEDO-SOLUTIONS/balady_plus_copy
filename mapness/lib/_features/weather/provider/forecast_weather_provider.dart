@@ -48,6 +48,7 @@ class _ForecastWeather extends _$ForecastWeather {
     final result = await repository.getForecastWeather(
       latitude,
       longitude,
+      5,
       cancelToken,
     );
     _listener(result);
