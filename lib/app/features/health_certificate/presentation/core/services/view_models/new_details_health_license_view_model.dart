@@ -59,11 +59,11 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
     if (data == "2" && showAreaNoLicencePermit()) areaNoLicencePermit = true;
   }
 
-  LicenseType? get selectedLicesnseType => dataModel.selectedLicesnseType;
+  /*LicenseType? get selectedLicesnseType => dataModel.selectedLicesnseType;
   set selectedLicesnseType(LicenseType? data) {
     dataModel.selectedLicesnseType = data;
     notifyListeners();
-  }
+  }*/
 
   bool isFormValid = false;
 
@@ -152,7 +152,7 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
               dataModel.healthCentres = [];
               dataModel.selectedCity = null;
               dataModel.selectedHealthCentres = null;
-              selectedLicesnseType = null;
+              // selectedLicesnseType = null;
 
               //address.add(getAddress());
               notifyListeners();
@@ -185,10 +185,8 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
     return isSucess;
   }
 
-  Future<bool> getHealthLicenseInfo(
-      String licenseId, String licenseType) async {
-    bool isSucess =
-        await dataModel.getHealthLicenseInfo(licenseId, licenseType);
+  Future<bool> getHealthLicenseInfo(String licenseId) async {
+    bool isSucess = await dataModel.getHealthLicenseInfo(licenseId);
     isLicenseVerified = isSucess;
     if (isLicenseVerified) licenseNumber = licenseId;
 
@@ -230,7 +228,7 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
       isLicenseVerified = false;
       licenseNumber = "";
       crNumber = "";
-      selectedLicesnseType = null;
+      // selectedLicesnseType = null;
       licenseForHealthInformationResponse = null;
       validateForm();
       notifyListeners();
