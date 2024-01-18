@@ -19,6 +19,7 @@ import '../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dar
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/details_header.dart';
 import '../../../new_appointment/presentation/core/models/appointment_details_model.dart';
+import '../../../new_appointment/presentation/core/services/view_models/new_appointment_view_model.dart';
 import '../../../vd/presentation/widgets/summery_widgets/field_data.dart';
 import '../core/models/appointment_details_screen_args.dart';
 import '../core/services/view_models/appontment_details_view_model.dart';
@@ -46,6 +47,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
   AppointmentItemInfo? appointmentItemInfo;
   bool? isCancelable;
   bool? isPrintable;
+  bool? isEditable;
   bool? fromHomePage = false;
 
   @override
@@ -68,6 +70,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
     appointmentItemInfo = args.appointmentItemInfo;
     isCancelable = args.isCancelable;
     isPrintable = args.isPrintable;
+    isEditable = args.isEditable;
     fromHomePage = args.fromHomePage;
 
     return BaseView<AppointmentDetailsViewModel>(onModelReady: (model) {
@@ -96,6 +99,29 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                   child: BottomSheetWithActions(
                     title: "actions".tr(),
                     body: Column(children: [
+                      if (isEditable == true) ...[
+                        GestureDetector(
+                          onTap: () async {
+                            bool isSuccess =
+                                await locator<NewAppointmentViewModel>()
+                                    .loadInitialData();
+                            locator<NewAppointmentViewModel>().init();
+
+                            await locator<NewAppointmentViewModel>()
+                                .setUpDraft(item: appointmentItemInfo);
+
+                            if (isSuccess) {
+                              Navigator.of(context).pushNamed(
+                                  RouteName.NewAppointmentPage,
+                                  arguments: appointmentItemInfo);
+                            }
+                          },
+                          child: FieldData(
+                            title: "appointment_edit".tr(),
+                          ),
+                        ),
+                        CustomVerticalSpace(height: 16),
+                      ],
                       if (appointmentItemInfoLocal?.confirmable ?? false)
                         GestureDetector(
                           onTap: () {

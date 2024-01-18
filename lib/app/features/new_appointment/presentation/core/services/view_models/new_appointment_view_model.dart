@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mime/mime.dart';
 import 'package:tuple/tuple.dart';
 
@@ -16,6 +17,9 @@ import '../../../../../../core/utils/constants/remote_config.dart';
 import '../../../../../../core/utils/enums/enums.dart';
 import '../../../../../_shared_feature_/data/entities/drop_down_item.dart';
 import '../../../../../_shared_feature_/data/entities/success_screen_args.dart';
+import '../../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
+import '../../../pages/new_appointment_screens/new_appointment_first_step_screen.dart';
+import '../../models/appointment_details_model.dart';
 import '../../models/attachment_item_model.dart';
 import '../../models/available_dates_response.dart';
 import '../../models/available_times_response.dart';
@@ -29,14 +33,20 @@ import '../../models/sub_class_response.dart';
 import '../../models/sub_municipalitiy_model.dart';
 import '../../models/upload_file_resepnse.dart';
 import '../repository/appointment_repository.dart';
+import 'new_appointment_first_step_view_model.dart';
 import 'new_appointment_view_model.dart';
 
 class NewAppointmentViewModel extends BaseViewModel {
   final _repository = locator<AppointmentRepository>();
+  final TextEditingController descController = TextEditingController();
+  final TextEditingController transactionNoController = TextEditingController();
+  final TextEditingController otherServiceNameController =
+      TextEditingController();
 
+  bool saveDate = false;
   bool withPreviousTransaction = false;
   bool fromHomePage = false;
-
+  AppointmentItemInfo? editedItem;
 // service Category
   LookUpList? categoryTypeResponse;
   List<DropDownItem> categoryList = [];
@@ -112,6 +122,9 @@ class NewAppointmentViewModel extends BaseViewModel {
   List<VisitType>? appointmentTypeList;
 
   init() {
+    editedItem = null;
+    descController.text = "";
+    transactionNoController.text = "";
     // municipalitiesResponse = null;
     municipalityType = null;
     selectedMunicipalityItem = null;
@@ -168,6 +181,7 @@ class NewAppointmentViewModel extends BaseViewModel {
     atttachmentItems = [];
     isSpecialConditionChecked = false;
     isUserOld = false;
+    notifyListeners();
   }
 
   Future<bool> getLookUpList(String type, {bool showLoad = false}) async {
@@ -291,16 +305,21 @@ class NewAppointmentViewModel extends BaseViewModel {
     return false;
   }
 
-  Future<bool> getAvailableDates(int serviceId) async {
+  Future<bool> getAvailableDates(int serviceId,
+      {String? currentDraftTime}) async {
     showLoading();
-    Tuple3<bool?, String?, AvailableDatesResponse?> response =
-        await _repository.getAppointmentDates(serviceId);
+    Tuple3<bool?, String?, AvailableDatesResponse?> response = await _repository
+        .getAppointmentDates(serviceId, currentDraftTime: currentDraftTime);
     hideLoading();
     if (response.item1 != null &&
         response.item1! &&
         response.item3?.data?.result != null) {
-      selectedDate = null;
-      selectedTime = null;
+      print("SAAAVED  $saveDate");
+      if (saveDate != true) {
+        selectedDate = null;
+        selectedTime = null;
+      }
+
       availableDatesResponse = response.item3;
       return true;
     } else {
@@ -422,6 +441,66 @@ class NewAppointmentViewModel extends BaseViewModel {
       showError(response.item2 ?? "");
     }
     return null;
+  }
+
+  Future<SaveAppointmentResponse?> updateAppointment() async {
+    /*  CommonFunctions.sendUXCamEvent(
+        UXCamEvents.Appointment_Booking_Send_Request_Event);
+*/
+
+    bool confirm = await showConfirmationUpdateMessages();
+
+    if (confirm == false) return null;
+
+    showLoading();
+    try {
+      Tuple3<bool?, String?, SaveAppointmentResponse?> response =
+          await _repository.updateAppointment({
+        "serviceCategoryId": selectedCategoryType?.id,
+        "appointmentDetails": appointmentDetails,
+        "departmentId": serviceConfigResponse!.data!.result![0].departmentId,
+        "notes": "",
+        "otherValueName": serviceName,
+        "prevTrnNo": transactionNo,
+        "serviceConfigId": serviceConfigResponse!.getServiceId(),
+        if (specialConditionItem?.id != null &&
+            (isSpecialConditionChecked ?? false))
+          "specialCondition": specialConditionItem?.id,
+        if ((specialConditionItemOld?.id != null &&
+            isSpecialConditionChecked == false &&
+            isUserOld))
+          "specialCondition": specialConditionItemOld?.id,
+        "subMunicipalityId": selectedSubMunicipalityItem!.id,
+        //"submitterType": submitterTypeItem!.id,
+        if (atttachmentItems != null && atttachmentItems.isNotEmpty)
+          "uuid": atttachmentItems.map((e) => e.attachmentUuid).toList(),
+        "visitDate": selectedDate!.date,
+        "visitLinked": withPreviousTransaction,
+        "visitTime": selectedTime!.timeKey,
+        "visitTopic": "",
+        "visitType": appointmentTypeItem!.id
+      }, editedItem!.id!);
+      hideLoading();
+      if (response.item1 == true) {
+        NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
+            RouteName.successRoute,
+            ModalRoute.withName(RouteName.bottomNavigation),
+            arguments: SuccessScreenArgs(
+                type: PAGE_TYPE.updateAppointment,
+                thanksMessage: "update_appointment_success_msg".tr(),
+                fromHomePage: true));
+        /* CommonFunctions.sendUXCamEvent(
+          UXCamEvents.Appointment_Booking_Open_Success_Page_Event);
+*/
+        return response.item3;
+      } else {
+        showError(response.item2 ?? "");
+      }
+      return null;
+    } catch (ex) {
+      print(ex);
+      hideLoading();
+    }
   }
 
   Future<bool> getServiceConfig(
@@ -593,5 +672,194 @@ class NewAppointmentViewModel extends BaseViewModel {
     hideLoading();
 
     return !response.contains(false) ? true : false;
+  }
+
+  Future<bool> setUpDraft({AppointmentItemInfo? item}) async {
+    editedItem = item;
+    // municipality
+    if (editedItem != null) {
+      municipalityType = DropDownItem(
+          id: editedItem?.municipalityId,
+          value: editedItem?.municipalityId,
+          code: editedItem?.municipalityId,
+          name: editedItem?.municipalityName.toString() ?? "");
+      selectedMunicipalityItem = MunicipalityItem(
+          id: editedItem?.municipalityId,
+          amanaId: editedItem?.municipalityId,
+          name: editedItem?.municipalityName.toString() ?? "");
+
+      // sub municipality
+      subMunicipalityType = DropDownItem(
+          code: editedItem?.subMunicipalityId,
+          value: editedItem?.subMunicipalityId,
+          id: editedItem?.subMunicipalityId,
+          name: editedItem?.subMunicipalityName ?? "");
+      selectedSubMunicipalityItem = SubMunicipalityItem(
+          id: editedItem?.subMunicipalityId,
+          amanaId: editedItem?.subMunicipalityId,
+          name: editedItem?.subMunicipalityName ?? "");
+
+      selectedMainClassItem = MainClassItem(
+          id: editedItem?.mainClassId, name: editedItem?.mainClassName);
+
+      mainClassType = DropDownItem(
+          value: editedItem?.mainClassId.toString(),
+          code: editedItem?.mainClassId.toString(),
+          id: editedItem?.mainClassId,
+          name: editedItem?.mainClassName ?? "");
+
+      selectedSubClassItem = SubClassItem(
+          id: editedItem?.subClassId, name: editedItem?.subClassName);
+
+      subClassType = DropDownItem(
+          value: editedItem?.subClassId.toString(),
+          code: editedItem?.subClassId.toString(),
+          id: editedItem?.subClassId,
+          name: editedItem?.subClassName ?? "");
+
+      selectedCategoryType = LookUpItem(
+          name: editedItem?.serviceCategoryName,
+          id: editedItem?.serviceCategoryId);
+      catetgoryType = DropDownItem(
+          name: editedItem?.serviceCategoryName ?? "",
+          id: editedItem?.serviceCategoryId,
+          code: editedItem?.serviceCategoryId.toString(),
+          value: editedItem?.serviceCategoryId.toString());
+
+      transactionNo = editedItem?.prevTrnNo;
+      appointmentDetails = editedItem?.appointmentDetails;
+
+      descController.text = appointmentDetails ?? "";
+      transactionNoController.text = transactionNo ?? "";
+
+      print("aaaaaaaaaa ${editedItem?.attachments?.length}");
+      atttachmentItems = editedItem?.attachments?.map((e) {
+            return AttachmentItemModel(
+                attachmentBase64: Uint8List(1),
+                attachmentFileName: e.name,
+                attachmentPath: e.attachUrl,
+                attachmentUuid: e.uuid,
+                updatable: e.updatable);
+          }).toList() ??
+          [];
+      print("aaaaaaaaaa dd ${editedItem?.attachments?.length}");
+
+      if (editedItem?.specialConditionId != null) {
+        if (editedItem?.specialConditionId.toString() ==
+            RemoteConfig.specialConditionId) {
+          specialConditionItem = LookUpItem(
+              id: editedItem?.specialConditionId,
+              name: editedItem?.specialConditionName);
+
+          isSpecialConditionChecked = true;
+        }
+
+        print("aaaaaaaaaa dd ff ${editedItem?.attachments?.length}");
+
+        if (editedItem?.specialConditionId.toString() ==
+            RemoteConfig.specialConditionOldId) {
+          specialConditionItemOld = LookUpItem(
+              id: editedItem?.specialConditionId,
+              name: editedItem?.specialConditionName);
+          isUserOld = true;
+        }
+        print("aaaaaaaaaa dd 66 ${editedItem?.attachments?.length}");
+      }
+      if (editedItem?.visitTypeId != null) {
+        appointmentTypeItem = VisitType(
+            id: editedItem?.visitTypeId, name: editedItem?.visitTypeName);
+      }
+
+      print("aaaaaaaaaa dd 11 ${appointmentTypeItem?.name}");
+
+      print("aaaaaaaaaa dd 99 ${editedItem?.attachments?.length}");
+
+      // otherServiceNameController.text = editedItem?.otherValueName;
+      serviceName = editedItem?.otherValueName;
+      print("aaaaaaaaaa dd 99 rr ${editedItem?.attachments?.length}");
+
+      notifyListeners();
+
+      print("GGGGGG");
+      print(subClassType);
+      showLoading();
+      await Future.wait([
+        getServiceConfig(editedItem?.subMunicipalityId ?? "",
+            editedItem?.subClassId.toString() ?? ""),
+        getSublassifications(editedItem?.subMunicipalityId ?? "",
+            editedItem?.mainClassId.toString() ?? ""),
+        getMainClassifications(editedItem?.subMunicipalityId ?? ""),
+        getSubMunicipalities(editedItem?.municipalityId ?? ""),
+      ]);
+      hideLoading();
+
+      int? serviceId = serviceConfigResponse?.getServiceId();
+      if (serviceId != null) {
+        await getAvailableDates(serviceId,
+            currentDraftTime: editedItem?.visitTime);
+
+        selectedDate = availableDatesResponse?.data?.result?.firstWhere(
+            (element) => element.date == editedItem?.getFormattedVisitDate());
+        selectedTime = TimeItem(
+            timeKey: editedItem?.visitTime,
+            timeValue: editedItem?.visitTime,
+            availableTime: true);
+        saveDate = true;
+      }
+
+      notifyListeners();
+
+      notifyListeners();
+    }
+    /* Future<bool> getServiceConfig(
+      String subMunicipalityId, String subClassId)
+
+
+  Future<bool> getSublassifications(
+      String subMunicipalityId, String mainClassId) async {
+
+
+  Future<bool> getMainClassifications(String subMunicipalityId) async {
+
+  Future<bool> getDepartments(String subMunicipalityId) async {
+ Future<bool> getSubMunicipalities(String municipalityId) async {
+
+
+*/
+    return Future.value(false);
+  }
+
+  Future<bool> showConfirmationUpdateMessages() async {
+    String message = "appointment_no_edits_confirm_msg".tr();
+
+    if (selectedDate?.date == editedItem?.getFormattedVisitDate() &&
+        selectedTime?.timeValue == editedItem?.visitTime &&
+        selectedMainClassItem?.id == editedItem?.mainClassId &&
+        selectedSubClassItem?.id == editedItem?.subClassId) {
+      message = "appointment_no_edits_confirm_msg".tr();
+    } else if (selectedDate?.date == editedItem?.getFormattedVisitDate() &&
+        selectedTime?.timeValue == editedItem?.visitTime &&
+        (selectedMainClassItem?.id != editedItem?.mainClassId ||
+            selectedSubClassItem?.id != editedItem?.subClassId)) {
+      message = "appointment_edit_service_confirm_msg".tr();
+    } else if (selectedDate?.date != editedItem?.getFormattedVisitDate() ||
+        selectedTime?.timeValue != editedItem?.visitTime) {
+      print(selectedDate?.date);
+      print(editedItem?.visitDate);
+
+      print(selectedTime?.timeValue);
+      print(editedItem?.visitTime);
+
+      message = "appointment_edit_time_confirm_msg"
+          .tr()
+          .replaceAll("day", selectedDate?.dayName ?? "")
+          .replaceAll("date", selectedDate?.date ?? "")
+          .replaceAll("hour", selectedTime?.timeValue ?? "");
+    }
+
+    return await CustomPopUpsWidgets.showConfirmMessageDialog(
+      NavigationService.navigatorKey.currentContext!,
+      message,
+    );
   }
 }

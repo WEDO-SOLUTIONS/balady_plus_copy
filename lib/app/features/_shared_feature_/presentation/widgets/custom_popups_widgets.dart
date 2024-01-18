@@ -119,6 +119,45 @@ class CustomPopUpsWidgets {
       )) ??
       false;
 
+  static Future<bool> showConfirmMessageDialog(
+    BuildContext context,
+    String text, {
+    VoidCallback? primaryBtn,
+    VoidCallback? secondaryBtn,
+  }) async =>
+      (await showGeneralDialog<bool>(
+        barrierColor: Colors.black.withOpacity(0.6),
+        transitionBuilder: (_, a1, a2, widget) {
+          return WillPopScope(
+            onWillPop: () async => false,
+            child: Transform.scale(
+              scale: a1.value,
+              child: Opacity(
+                opacity: a1.value,
+                child: CustomAlertDialogWidget(
+                  titleMessageType: MessageType.none,
+                  contentText: text,
+                  primaryBtnPressed:
+                      primaryBtn ?? () => Navigator.of(context).pop(true),
+                  primaryBtnText: ("confirm").tr(),
+                  secondaryBtnPressed:
+                      secondaryBtn ?? () => Navigator.of(context).pop(false),
+                  secondaryBtnText: ("cancel").tr(),
+                ),
+              ),
+            ),
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 300),
+        barrierDismissible: false,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {
+          return const SizedBox();
+        },
+      )) ??
+      false;
+
   static Future<bool> showSuccessMessageDialog(
     BuildContext context,
     String successText,

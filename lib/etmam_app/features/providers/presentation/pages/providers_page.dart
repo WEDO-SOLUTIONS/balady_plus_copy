@@ -40,7 +40,7 @@ class ProvidersPage extends StatefulWidget {
 
 class _ProvidersPageState extends State<ProvidersPage> {
   final ScrollController _scrollController = new ScrollController();
-  final _debouncer = Debouncer(milliseconds: 500);
+  final _debouncer = Debouncer(milliseconds: 1000);
 
   @override
   void initState() {

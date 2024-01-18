@@ -73,21 +73,6 @@ class _ProviderDetailsPageState extends State<ProviderDetailsPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // ProviderDetailsHeader(
-                            //   providerName: state.args.name ?? "",
-                            //   providerAdress: state.args.mainBranchAddress ?? "",
-                            // ),
-                            // const SizedBox(height: 8),
-                            // ProviderDetailsContentContainer(
-                            //   title: 'تقييم المكتب',
-                            //   content: EtmamRatingEvaluationWidget(
-                            //     rating: state.args.rating ?? 0,
-                            //     totalEvaluation: state.args.ratingsCount ?? 0,
-                            //     withDot: false,
-                            //     isCenter: true,
-                            //   ),
-                            //   isCenter: true,
-                            // ),
                             const EtmamProviderMainInfo(),
                             if ((state.args.projects?.length ?? 0) > 0) ...[
                               const SizedBox(height: 24),
@@ -107,58 +92,6 @@ class _ProviderDetailsPageState extends State<ProviderDetailsPage> {
                         ),
                       ),
                     ),
-
-                    // Positioned(
-                    //   left: 0,
-                    //   right: 0,
-                    //   child: Container(
-                    //     width: MediaQuery.of(context).size.width,
-                    //     height: MediaQuery.of(context).size.height * 0.275,
-                    //     decoration:
-                    //         const BoxDecoration(color: AppColor.secondary400Light),
-                    //   ),
-                    // ),
-                    // Positioned(
-                    //   top: MediaQuery.of(context).size.height * 0.06,
-                    //   right: 13,
-                    //   child: IconButton(
-                    //     onPressed: Navigator.of(context).pop,
-                    //     icon: const Icon(Icons.close, color: AppColor.white4),
-                    //   ),
-                    // ),
-                    // Positioned(
-                    //   top: MediaQuery.of(context).size.height * 0.08,
-                    //   right: 0,
-                    //   left: 0,
-                    //   child: const CustomSvgIconWidget(
-                    //     IconPath.bag,
-                    //   ),
-                    // ),
-
-                    // Column(
-                    //   children: [
-                    // ProviderDetailsHeader(
-                    //   imageUrl: state.args.logoUrl ?? "",
-                    //   providerName: state.args.name ?? "",
-                    // ),
-                    //     const Expanded(
-                    //       child: SingleChildScrollView(
-                    //         child: Column(
-                    //           children: [
-                    // EtmamProviderMainInfo(),
-                    //             CustomVerticalSpace(height: 12),
-                    //             AboutProviderOfficeWidget(),
-                    // ProviderBranchesWidget(),
-                    //             ProviderServicesSection(),
-                    //             ProviderPreviousWorksWidgets(),
-                    //             CustomVerticalSpace(height: 12),
-                    //           ],
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
-
                     if (state.status == BlocStatus.loading)
                       const CustomLoadingWidget()
                   ],

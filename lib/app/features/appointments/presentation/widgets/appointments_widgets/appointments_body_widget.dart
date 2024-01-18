@@ -91,7 +91,7 @@ class _AppointmentsBodyWidgetState extends State<AppointmentsBodyWidget> {
                                     }*/
                                     btnPressed: () => Navigator.of(context)
                                         .pushNamed(RouteName.NewAppointmentPage,
-                                            arguments: false),
+                                            arguments: null),
                                   )
                                 : Column(
                                     crossAxisAlignment:

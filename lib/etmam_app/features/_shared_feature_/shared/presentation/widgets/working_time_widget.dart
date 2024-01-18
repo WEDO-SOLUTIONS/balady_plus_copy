@@ -6,6 +6,8 @@ import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_fe
         CustomTextWidget,
         CustomVerticalSpace,
         DrawLineWidget;
+import 'package:collection/collection.dart';
+
 import 'package:balady_plus/etmam_app/features/services/services_exports.dart'
     show WorkDay;
 import 'package:flutter/material.dart';
@@ -70,8 +72,26 @@ class _WorkingDayListWidgetState extends State<WorkingDayListWidget> {
                 ),
               ],
             ),
-            if(showAll)const CustomVerticalSpace(height: 8),
-            MediaQuery.removePadding(
+            if (showAll) const CustomVerticalSpace(height: 8),
+            if (showAll)
+              Column(
+                children: widget.workingHours
+                        ?.mapIndexed((index, e) => WorkingTimeWidget(
+                              dayName: e.day ?? "",
+                              firstShiftFromTime: e.firstShift?.from ?? "",
+                              firstShiftToTime: e.firstShift?.to ?? "",
+                              secondShiftFromTime: e.secondShift?.from ?? "",
+                              secondShiftToTime: e.secondShift?.to ?? "",
+                              showAll: showAll &&
+                                  index !=
+                                      ((widget.workingHours?.length ?? 0) - 1),
+                              isClosed: e.closed ?? false,
+                              isOpen24Hours: e.fullTime ?? false,
+                            ))
+                        .toList() ??
+                    [],
+              ),
+            /*MediaQuery.removePadding(
               context: context,
               removeTop: true,
               removeBottom: true,
@@ -97,7 +117,7 @@ class _WorkingDayListWidgetState extends State<WorkingDayListWidget> {
                           widget.workingHours?[index].fullTime ?? false,
                     );
                   }),
-            ),
+            ),*/
             const CustomVerticalSpace(height: 24)
           ],
         ),

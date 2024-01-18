@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -152,6 +153,7 @@ class AppInterceptors extends Interceptor {
           .putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
     }
     options.headers.putIfAbsent("x-channel-id", () => "MOBILE");
+    options.headers.removeWhere((key, value) => key == "requiresToken");
     //if (options.headers['Authorization'] == null) {
 
     return handler.next(options);
@@ -180,6 +182,9 @@ class AppInterceptors extends Interceptor {
           case 202:
             throw BadRequestException(err.requestOptions, err.response);
           case 401:
+            if (err.requestOptions.uri.path.contains(ApiUrl.weatherAlerts)) {
+              break;
+            }
             sl<EntryPointCubit>().autoLogout();
             throw UnAuthorizedException(err.requestOptions, err.response);
           case 404:

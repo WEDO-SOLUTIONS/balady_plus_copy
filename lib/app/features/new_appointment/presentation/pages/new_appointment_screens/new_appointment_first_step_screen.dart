@@ -39,6 +39,7 @@ class _BaladyIncidentDetailsScreenState
       builder: (context, state) {
         return ChangeNotifierProvider<NewAppointmentFirstStepViewModel>(
             create: (context) => NewAppointmentFirstStepViewModel(
+                isDraft: state.editedItemInfo != null,
                 withPreviousTransaction:
                     state.withPreviousTransaction ?? false),
             builder: (context, child) {
@@ -52,7 +53,7 @@ class _BaladyIncidentDetailsScreenState
                   body: Column(
                     children: [
                       // appointment body
-                      Expanded(child: const NewAppointmentBody()),
+                      Expanded(child: NewAppointmentBody()),
                       // submit button
                       PreviousNextButtons(
                         isFormValid: model.isFormValid,

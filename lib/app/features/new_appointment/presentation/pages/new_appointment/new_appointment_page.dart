@@ -9,6 +9,7 @@ import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
+import '../../core/models/appointment_details_model.dart';
 import '../../widgets/details_app_bar.dart';
 
 class NewAppointmentPage extends StatefulWidget {
@@ -35,12 +36,12 @@ class _NewAppointmentPageState extends State<NewAppointmentPage> {
 
   @override
   Widget build(BuildContext context) {
-    bool withPreviousTransaction =
-        ModalRoute.of(context)!.settings.arguments as bool;
+    AppointmentItemInfo? editedItem =
+        ModalRoute.of(context)!.settings.arguments as AppointmentItemInfo?;
 
     return BlocProvider<NewAppointmentBloc>(
-      create: (context) =>
-          NewAppointmentBloc(withPreviousTransaction: withPreviousTransaction),
+      create: (context) => NewAppointmentBloc(
+          withPreviousTransaction: false, editedItem: editedItem),
       child: BlocConsumer<NewAppointmentBloc, NewAppointmentState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure) {

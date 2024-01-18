@@ -1,12 +1,17 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:tuple/tuple.dart';
 
 import '../../../../../../core/base/base_view_model.dart';
+import '../../../../../../core/dependency_injection/injection_container.dart';
+import '../../../../../../core/errors/exceptions.dart';
 import '../../../../../../core/remote_services/api_constants.dart';
 import '../../../../../../core/remote_services/web_service.dart';
+import '../../../../../../core/services/global/web_service.dart' as webService;
+
 import '../../../../../../core/services/local/helpers.dart';
 import '../../../../../../core/utils/common_functions.dart';
 import '../../models/appointment_details_model.dart';
@@ -223,7 +228,8 @@ class AppointmentRepository {
   }
 
   Future<Tuple3<bool?, String?, AvailableDatesResponse?>> getAppointmentDates(
-      int serviceId) async {
+      int serviceId,
+      {String? currentDraftTime}) async {
     String query = "${(serviceId)}";
     final body = await webServices.getApigeeRequest(
         ApiConstants.AppointmentAvailableDates,
@@ -233,8 +239,9 @@ class AppointmentRepository {
     AvailableDatesResponse? result;
     String error = body['error'] ?? ("errors_server_error_1").tr();
     try {
-      AvailableDatesResponse response =
-          AvailableDatesResponse.fromJson(json.decode(data));
+      AvailableDatesResponse response = AvailableDatesResponse.fromJson(
+          json.decode(data),
+          currentDraftTime: currentDraftTime);
       result = response;
       if (!state) {
         error = result.data?.responseMessage ?? error;
@@ -448,6 +455,34 @@ class AppointmentRepository {
     }
     return Tuple3<bool?, String?, ConfirmAppointmentResponse?>(
         state, error, result);
+  }
+
+  Future<Tuple3<bool?, String?, SaveAppointmentResponse?>> updateAppointment(
+      var reqBody, int id) async {
+    try {
+      final response = await sl<webService.WebService>()
+          .dio
+          .put(ApiConstants.AppointmentUpdate(id), data: reqBody);
+
+      return Tuple3<bool?, String?, SaveAppointmentResponse>(
+          true, "", SaveAppointmentResponse());
+    } on DioError catch (error) {
+      print(error);
+
+      try {
+        Helpers.sendLog(
+            url: ApiConstants.AppointmentUpdate(id),
+            body: reqBody,
+            data: error,
+            errorMsg: error.toString());
+      } catch (ex) {}
+
+      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
+          false, error.toString(), null);
+    } catch (ex) {
+      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
+          false, ex.toString(), null);
+    }
   }
 
   Future<Tuple3<bool?, String?, SaveAppointmentResponse?>> saveAppointment(

@@ -203,6 +203,7 @@
   "FillFields": "قم بتعبئة الحقول",
   "LicenseYears": "عدد سنوات الترخيص",
   "CleaningMechanisms": "خيارات النظافة",
+  "boardsOptions":"خيارات اللوحة", 
   "AdvertisingOffices": "اللوحات الإعلانية",
   "AddBoard": "+ إضافة لوحة",
   "BoardType": "نوع اللوحة",
@@ -3922,9 +3923,20 @@
 "chat_bot_hint": "اكتب استفسارك هنا...",
 "chat_bot_message_welcome": "أهلًا وسهلًا\n أنا المساعد الذكي لوزارة الشؤون البلدية والقروية والاسكان، تفضل باستفسارك وسأكون سعيدًا بالإجابة عليك", 
 
-"errors_phone_not_exists":"رقم الهاتف غير متوفر"
+"errors_phone_not_exists":"رقم الهاتف غير متوفر", 
+"appointment_edit":"تعديل الموعد" , 
+"update_appointment_success_msg": "تم تعديل وحفظ البيانات بنجاح", 
+"appointment_edit_time_confirm_msg":"هل أنت متأكد من حجز موعد يوم (day) الموافق (date) الساعة (hour)" , 
 
+"appointment_edit_service_confirm_msg":"سيتم جدولة الموعد على أقرب موعد للمنتج والخدمة الذي تم اختياره , هل انت متأكد من التغييرات", 
 
+"appointment_no_edits_confirm_msg":"هل أنت متأكد من حفظ التغييرات؟", 
+
+"health_license_type":"نوع الرخصة", 
+"health_license_type_error":"يجب إدخال بيانات الرخصة" ,
+"COMMERCIAL":"رخصة محل", 
+"STREET_VENDOR":"رخصة منفذ بيع", 
+"VEHICLE":"رخصة عربة متنقلة"
 
 
 
