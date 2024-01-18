@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'dart:math' as math; // import this
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
@@ -9,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/app/routes/esri_layers.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -89,9 +89,7 @@ class ComplianceCard extends ConsumerWidget {
                               'Compliance/open_compliance',
                               {'id': 'compliance'},
                             );
-                            ref
-                                .read(layersControlsProvider.notifier)
-                                .update(visible: true);
+                            EsriLayersRoute.open(context);
                             ref
                                 .read(layersControlsProvider.notifier)
                                 .handleTap(LayerType.buildings);
