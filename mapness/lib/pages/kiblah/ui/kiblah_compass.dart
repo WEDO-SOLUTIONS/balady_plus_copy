@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_bearing.dart';
 import 'package:mapness/pages/kiblah/ui/radar_widget.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 import 'package:mapness/shared/providers/compass.dart';
 import 'package:mapness/shared/ui/gradient_stroke.dart';
@@ -20,6 +21,8 @@ class KiblahCompass extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = context.l10n;
+
     return Center(
       child: AspectRatio(
         aspectRatio: 1,
@@ -143,7 +146,7 @@ class KiblahCompass extends StatelessWidget {
                   );
                 },
                 child: Text(
-                  "شمال",
+                  locale.north,
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
                       .textXS
@@ -166,7 +169,7 @@ class KiblahCompass extends StatelessWidget {
                   );
                 },
                 child: Text(
-                  "شرق",
+                  locale.east,
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
                       .textXS
@@ -188,7 +191,7 @@ class KiblahCompass extends StatelessWidget {
                       child: child!);
                 },
                 child: Text(
-                  "جنوب",
+                  locale.south,
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
                       .textXS
@@ -211,7 +214,7 @@ class KiblahCompass extends StatelessWidget {
                   );
                 },
                 child: Text(
-                  "غرب",
+                  locale.west,
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
                       .textXS

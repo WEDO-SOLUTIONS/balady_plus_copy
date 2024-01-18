@@ -7,6 +7,7 @@ import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_bearing.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_haptics.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/compass.dart';
 
 class KiblahHeader extends ConsumerWidget {
@@ -87,7 +88,8 @@ class KiblahHeader extends ConsumerWidget {
             ),
           ),
           Text(
-            "$bearingDiffº القبلة",
+            context.l10n.kiblahBearingDiff
+                .replaceFirst('%degrees', '$bearingDiff'),
             style: Theme.of(context)
                 .extension<ThemeTextStyles>()!
                 .textL
