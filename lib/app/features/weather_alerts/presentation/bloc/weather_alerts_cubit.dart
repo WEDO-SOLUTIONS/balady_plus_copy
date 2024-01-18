@@ -1,7 +1,13 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:background_location/background_location.dart';
+import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
@@ -18,46 +24,50 @@ class WeatherAlertsCubit extends Cubit<WeatherAlertsState> {
       : _getWeatherAlerts = GetWeatherAlerts(repository: sl()),
         super(WeatherAlertsState(updateTime: DateTime.now()));
 
+  Future getLocationOnlyOneTime() async {
+    Timer(const Duration(minutes: 1), () async {
+      LatLng? location = await Helpers.getCurrentLocation(
+          accuracy: LocationAccuracy.medium,
+          duration: const Duration(minutes: 1));
+
+      if (location != null) {
+        if (CommonProperties.fcmToken != null) {
+          _getWeatherAlerts(WeatherAlertRequestModel(
+              lat: location.latitude,
+              lon: location.longitude,
+              fcmToken: CommonProperties.fcmToken!));
+        }
+      }
+    });
+  }
+
   void startTracking() async {
     await BackgroundLocation.stopLocationService();
-    await BackgroundLocation.startLocationService(distanceFilter: 30);
-    BackgroundLocation.getLocationUpdates((location) async {
-      print("Location_Updates ${location.toMap()}");
-      if (location.latitude == null) return;
-      //   double prevLat = state.location?.latitude ?? location.latitude!;
-      //   double prevLon = state.location?.longitude ?? location.longitude!;
+    double distanceFilter = Platform.isAndroid ? 30.0 : 30.0;
+    await BackgroundLocation.startLocationService(
+        distanceFilter: distanceFilter);
 
-      //bool newUpdate = hasMoved(prevLat, prevLon, location.latitude!,
-      //     location.longitude!, location.accuracy ?? 1);
+    BackgroundLocation.getLocationUpdates((location) async {
+      if (location.latitude == null) return;
 
       bool newUpdate = checkDistance(location: location);
+
       DateTime now = DateTime.now();
       bool updateTime =
           now!.difference(state.updateTime!) >= const Duration(minutes: 1);
 
       if (newUpdate && updateTime) {
-        updateLastLocation(location: location);
         if (CommonProperties.fcmToken != null) {
+          updateLastLocation(location: location);
+
           _getWeatherAlerts(WeatherAlertRequestModel(
               lat: location.latitude!,
               lon: location.longitude!,
               fcmToken: CommonProperties.fcmToken!));
         }
-        SentryEvent event = SentryEvent(
-            user: SentryUser(id: "21116925921112"),
-            transaction: "Location_Updates_Test11",
-            message: SentryMessage("${location.toMap()}"),
-            exceptions: [
-              SentryException(
-                  type: "Location_Updates_Test", value: "Location_Updates_Test")
-            ]);
-        SentryId id = await Sentry.captureEvent(event, withScope: (p) {
-          //  p.addAttachment(attachment)
-        });
-
-        print(id);
       }
     });
+    getLocationOnlyOneTime();
   }
 
   void stopTracking() {

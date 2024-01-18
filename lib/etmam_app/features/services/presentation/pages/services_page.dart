@@ -64,7 +64,7 @@ class ServicesPage extends StatefulWidget {
 
 class _ServicesPageState extends State<ServicesPage> {
   final ScrollController _scrollController = new ScrollController();
-  final _debouncer = Debouncer(milliseconds: 500);
+  final _debouncer = Debouncer(milliseconds: 1000);
 
   @override
   void initState() {

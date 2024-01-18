@@ -12,6 +12,7 @@ import '../../models/cancel_health_certificate_response.dart';
 import '../../models/cr_information.dart';
 import '../../models/delete_request_response.dart';
 import '../../models/license_for_health_information_response.dart';
+import '../../models/licesnse_type.dart';
 import '../../models/list_response.dart';
 import '../../models/submit_new_request_response.dart';
 import '../../models/validate_health_certificate_response.dart';
@@ -34,6 +35,7 @@ class HealthLicenseViewModel extends BaseViewModel {
 
   String shopHasLicense = "0";
   String noLicenseReason = "0";
+  LicenseType? selectedLicesnseType = null;
 
   ValidateHealthCertificateResponse? validateHealthCertificateResponse;
 
@@ -65,6 +67,7 @@ class HealthLicenseViewModel extends BaseViewModel {
     selectedHealthCentres = null;
     healthCentres = [];
     cities = [];
+    selectedLicesnseType = null;
   }
 
   Future<Tuple3<bool?, String?, GisLocationResult?>> getGisInfo(
@@ -180,6 +183,7 @@ class HealthLicenseViewModel extends BaseViewModel {
             licenseNumber,
             areaNoLicencePermit,
             selectedHealthCentres?.idNumber,
+            selectedLicesnseType?.value,
             isRenew: isRenew);
     hideLoading();
     ApplyNewHealthRequest? applyNewHealthRequest;
@@ -326,17 +330,12 @@ class HealthLicenseViewModel extends BaseViewModel {
     return false;
   }
 
-  Future<bool> getHealthLicenseInfo(String licenseId) async {
-    String birthDate = CommonProperties.userInfo?.getHijriBirthDate() ?? "";
-    String municipalityId = gisLocationResult?.MUNICIPALITYUNIQUECODE ?? "";
-    bool isEmployeeCitizen =
-        validateHealthCertificateResponse?.data?.result?.isSaudi ?? false;
-
+  Future<bool> getHealthLicenseInfo(
+      String licenseId, String licenseType) async {
     showLoading();
-    int requestType = isRenew ? 1303 : 1301;
+    // int requestType = isRenew ? 1303 : 1301;
     Tuple3<bool?, String?, LicenseForHealthInformationResponse?> response =
-        await _rpository.getLicenseInformation(licenseId, municipalityId,
-            isEmployeeCitizen, requestType, birthDate);
+        await _rpository.getLicenseInformation(licenseId, licenseType);
     hideLoading();
     if (response.item1 != null &&
         response.item1! &&

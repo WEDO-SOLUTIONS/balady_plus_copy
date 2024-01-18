@@ -9,6 +9,7 @@ import 'package:balady_plus/app/features/violation_guide/domain/entites/regulati
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mime/mime.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/services/global/web_service.dart';
@@ -30,6 +31,20 @@ class WeatherAlertsRemoteDataSourceImpl extends WeatherAlertsRemoteDataSource {
   Future<bool> sendLocationToGetWeatherAlerts(
       WeatherAlertRequestModel params) async {
     var response;
+
+    SentryEvent event3 = SentryEvent(
+        user: SentryUser(id: "123123"),
+        transaction: "tracking",
+        message: SentryMessage(params.toMap().toString()),
+        exceptions: [
+          SentryException(
+              type: "Location_Updates_Tracking",
+              value: "Location_Updates_Tracking")
+        ]);
+    SentryId id3 = await Sentry.captureEvent(event3, withScope: (p) {
+      //  p.addAttachment(attachment)
+    });
+
     try {
       response = await webService.dio.put(ApiUrl.weatherAlerts,
           data: params.toMap(),

@@ -148,7 +148,10 @@ class MunicipalAdvisorBloc
                 message: event.message,
                 step: event.step,
                 data: event.data,
-                isResponse: false,
+                customWidget:
+                    event.step == MunicipalAdvisorSteps.start ? true : false,
+                isResponse:
+                    event.step == MunicipalAdvisorSteps.start ? true : false,
               )
             ],
           ),
@@ -1901,6 +1904,11 @@ class MunicipalAdvisorBloc
           selectedAdditionalActivities: event.list,
           status: BlocRequestStatus.submissionGetSuccess));
     });
+
+    add(MunicipalAdvisorAddMessageEvent(
+      message: 'municipalAdvisorWelcome'.tr(),
+      step: MunicipalAdvisorSteps.start,
+    ));
   }
 
   String get issueTradeLicenseUser {
@@ -1988,12 +1996,12 @@ class MunicipalAdvisorBloc
     switch (step) {
       case MunicipalAdvisorSteps.start:
         return [
-          ChatMessage(
+          /* ChatMessage(
             message: 'municipalAdvisorWelcome'.tr(),
             step: MunicipalAdvisorSteps.start,
             isResponse: true,
             customWidget: true,
-          ),
+          ),*/
           ChatMessage(
             message: 'municipalAdvisorHint'.tr(),
             step: MunicipalAdvisorSteps.start,

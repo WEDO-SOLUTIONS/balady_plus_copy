@@ -9,6 +9,7 @@ import '../../../../../transaction_inquiry/presentation/core/models/selected_loc
 import '../../../widgets/map_screen.dart';
 import '../../models/cr_information.dart';
 import '../../models/license_for_health_information_response.dart';
+import '../../models/licesnse_type.dart';
 import '../../models/validate_health_certificate_response.dart';
 import 'new_health_license_view_model.dart';
 
@@ -56,6 +57,12 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
     dataModel.noLicenseReason = data;
     if (data == "1") areaNoLicencePermit = false;
     if (data == "2" && showAreaNoLicencePermit()) areaNoLicencePermit = true;
+  }
+
+  LicenseType? get selectedLicesnseType => dataModel.selectedLicesnseType;
+  set selectedLicesnseType(LicenseType? data) {
+    dataModel.selectedLicesnseType = data;
+    notifyListeners();
   }
 
   bool isFormValid = false;
@@ -145,6 +152,7 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
               dataModel.healthCentres = [];
               dataModel.selectedCity = null;
               dataModel.selectedHealthCentres = null;
+              selectedLicesnseType = null;
 
               //address.add(getAddress());
               notifyListeners();
@@ -177,8 +185,10 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
     return isSucess;
   }
 
-  Future<bool> getHealthLicenseInfo(String licenseId) async {
-    bool isSucess = await dataModel.getHealthLicenseInfo(licenseId);
+  Future<bool> getHealthLicenseInfo(
+      String licenseId, String licenseType) async {
+    bool isSucess =
+        await dataModel.getHealthLicenseInfo(licenseId, licenseType);
     isLicenseVerified = isSucess;
     if (isLicenseVerified) licenseNumber = licenseId;
 
@@ -220,6 +230,7 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
       isLicenseVerified = false;
       licenseNumber = "";
       crNumber = "";
+      selectedLicesnseType = null;
       licenseForHealthInformationResponse = null;
       validateForm();
       notifyListeners();
