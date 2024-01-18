@@ -76,8 +76,6 @@ apply-patches:
     git apply .github/workflows/abi_filter.patch || print_style '' 'red' 'could not apply abi filter patch'
     print_style '' 'yellow' 'remove app version force update'
     git apply mapness/scripts/disable-force-update.patch || print_style '' 'red' 'could not remove app version force update'
-    print_style '' 'yellow' 'apply weather hotfix patch'
-    git apply mapness/scripts/v3.8.1-weather-hotfix.patch || print_style '' 'red' 'could not apply weather hotfix patch'
 
 unapply-patches:
     #!/usr/bin/env bash
@@ -87,8 +85,6 @@ unapply-patches:
     git apply -R mapness/scripts/disable-force-update.patch || print_style '' 'red' 'could not restore app version force update'
     print_style '' 'yellow' 'remove abi filter'
     git apply -R .github/workflows/abi_filter.patch || print_style '' 'red' 'could not unapply abi filter patch'
-    print_style '' 'yellow' 'unapply weather hotfix patch'
-    git apply -R mapness/scripts/v3.8.1-weather-hotfix.patch || print_style '' 'red' 'could not unapply weather hotfix patch'
 
 xcode:
     open ios/Runner.xcworkspace
