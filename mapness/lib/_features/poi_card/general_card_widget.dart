@@ -130,7 +130,7 @@ class _ContentState extends ConsumerState<_Content> {
                   final poiCardState = value.value;
                   final data = poiCardState?.gisObjectIdMessage;
 
-                  final qrTradeLicense = poiCardState?.qrTradeLicense;
+                  // final qrTradeLicense = poiCardState?.qrTradeLicense;
                   final tradeLicense = poiCardState?.tradeLicense;
 
                   final about = aboutMock(
@@ -209,8 +209,8 @@ class _ContentState extends ConsumerState<_Content> {
                                             viewModel: viewModel,
                                             data: data,
                                           ),
-                                          if (qrTradeLicense != null)
-                                            QrLicenseInfo(qrTradeLicense),
+                                          // if (qrTradeLicense != null)
+                                          //   QrLicenseInfo(qrTradeLicense),
                                           if (tradeLicense != null)
                                             TradeLicense(tradeLicense),
                                           const SafeArea(

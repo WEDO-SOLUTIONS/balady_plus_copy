@@ -12,10 +12,10 @@ class PoiCardState {
   bool showEntrances;
   final DirectoryObjectMessage? gisObjectIdMessage;
   final TradeLicenseMessage? tradeLicense;
-  final QrLicenseMessage? qrTradeLicense;
+  // final QrLicenseMessage? qrTradeLicense;
 
   PoiCardState({
-    this.qrTradeLicense,
+    // this.qrTradeLicense,
     this.tradeLicense,
     required this.showEntrances,
     required this.isLoading,
@@ -27,14 +27,14 @@ class PoiCardState {
     bool? isLoading,
     DirectoryObjectMessage? gisObjectIdMessage,
     TradeLicenseMessage? tradeLicense,
-    QrLicenseMessage? qrTradeLicense,
+    // QrLicenseMessage? qrTradeLicense,
   }) {
     return PoiCardState(
       tradeLicense: tradeLicense ?? this.tradeLicense,
       showEntrances: showEntrances ?? this.showEntrances,
       isLoading: isLoading ?? this.isLoading,
       gisObjectIdMessage: gisObjectIdMessage ?? this.gisObjectIdMessage,
-      qrTradeLicense: qrTradeLicense,
+      // qrTradeLicense: qrTradeLicense,
     );
   }
 }
@@ -45,7 +45,7 @@ class PoiCardProvider extends _$PoiCardProvider {
   Future<PoiCardState?> build(
     DgisObjectIdMessage objectId,
   ) async {
-    final qrLicenseRepository = ref.watch(qrLicenseRepositoryProvider.notifier);
+    // final qrLicenseRepository = ref.watch(qrLicenseRepositoryProvider.notifier);
     final result = await ref
         .watch(pointOfInterestProvider(objectId).future)
         .timeout(const Duration(minutes: 1), onTimeout: () {
@@ -55,20 +55,20 @@ class PoiCardProvider extends _$PoiCardProvider {
 
     var tradeLicense = result?.tradeLicense;
 
-    QrLicenseMessage? qrLicense;
-    if (tradeLicense != null) {
-      var license = tradeLicense.license;
-      if (license.isNotEmpty) {
-        qrLicense = await qrLicenseRepository.getLicenseInfo(license);
-      }
-    }
+    // QrLicenseMessage? qrLicense;
+    // if (tradeLicense != null) {
+    //   var license = tradeLicense.license;
+    //   if (license.isNotEmpty) {
+    //     qrLicense = await qrLicenseRepository.getLicenseInfo(license);
+    //   }
+    // }
 
     return PoiCardState(
       isLoading: true,
       showEntrances: false,
       gisObjectIdMessage: result,
       tradeLicense: tradeLicense,
-      qrTradeLicense: qrLicense,
+      // qrTradeLicense: qrLicense,
     );
   }
 }
