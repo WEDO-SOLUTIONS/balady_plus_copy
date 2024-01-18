@@ -9,6 +9,7 @@ import 'package:mapness/_features/profile/domain/user_profile_data.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,9 +29,7 @@ class ProfileImage extends _$ProfileImage {
   @override
   Future<UserProfileData> build() async {
     if (!_isUpdated) {
-      updateImageFromBackend().then((_) {
-        _isUpdated = true;
-      });
+      await updateImageFromBackend();
     }
 
     return UserProfileData(
@@ -42,19 +41,22 @@ class ProfileImage extends _$ProfileImage {
     final backendImage = await _downloadProfileImageToBytes();
 
     if (backendImage.isNotEmpty) {
-      await _saveImageBytes(backendImage);
+      final imgBase64 = await _saveImageBytes(backendImage);
+      if (imgBase64 != null) {
+        state = AsyncData(UserProfileData(imageBase64: imgBase64));
+      }
     }
-    ref.invalidateSelf();
+    _isUpdated = true;
   }
 
   Future<void> changeUserProfileImageByBytes(Uint8List bytes) async {
     try {
-      ref.invalidateSelf();
-
       await _uploadImage(bytes);
-      await _saveImageBytes(bytes);
+      final imgBase64 = await _saveImageBytes(bytes);
 
-      ref.invalidateSelf();
+      if (imgBase64 != null) {
+        state = AsyncData(UserProfileData(imageBase64: imgBase64));
+      }
     } catch (error, trace) {
       _log(error, trace);
     }
@@ -62,8 +64,11 @@ class ProfileImage extends _$ProfileImage {
 
   /// Сохраняет изображение локально в base64.
   /// Возвращает строку base64.
-  Future<String> _saveImageBytes(Uint8List bytes) async {
+  Future<String?> _saveImageBytes(Uint8List bytes) async {
     final imageBase64 = base64Encode(bytes);
+    if (_imageBase64OnDevice?.contains(imageBase64) == true) {
+      return null;
+    }
     await _prefs.setString(_imagePrefsKey, imageBase64);
     return imageBase64;
   }
@@ -108,6 +113,7 @@ class ProfileImage extends _$ProfileImage {
 
   Future<Uint8List> _downloadProfileImageToBytes({String url = ''}) async {
     final dio = await ref.read(dGisNetworkProvider.future);
+    final imageRequestDio = ref.watch(baseDioProvider);
     try {
       if (url.isEmpty) {
         final profileResponse = await dio.get('/profile');
@@ -120,7 +126,8 @@ class ProfileImage extends _$ProfileImage {
         return Uint8List(0);
       }
 
-      final response = await dio.get(
+      // start image with base dio
+      final response = await imageRequestDio.get(
         url,
         options: Options(
           responseType: ResponseType.bytes,
@@ -139,5 +146,11 @@ class ProfileImage extends _$ProfileImage {
     if (trace != null) {
       debugPrintStack(stackTrace: trace);
     }
+  }
+
+  void clear() {
+    _prefs.remove(_imagePrefsKey);
+    _isUpdated = false;
+    ref.invalidateSelf();
   }
 }

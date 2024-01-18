@@ -81,6 +81,13 @@ dependencies:
   custom_image_crop: ^0.0.13
   flutter_image_compress: ^2.1.0
   flutter_uxcam: ^2.4.7
+  dio_http_cache: ^0.3.0
+
+dependency_overrides:
+  geolocator_android: ^4.2.2
+  # for dio_http_cache
+  json_serializable: ^6.7.1
+  dio: ^5.0.0
 
 dev_dependencies:
   flutter_test:

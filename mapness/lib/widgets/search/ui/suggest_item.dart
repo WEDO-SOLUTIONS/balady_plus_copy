@@ -2,10 +2,8 @@ import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/config/package_config.dart';
-
-// import 'package:mapness/widgets/search/lib/build_suggest_title.dart';
+import 'package:mapness/shared/lib/make_address.dart';
 
 class SuggestItem extends StatelessWidget {
   const SuggestItem({
@@ -47,7 +45,9 @@ class SuggestItem extends StatelessWidget {
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
+                  padding: const EdgeInsetsDirectional.only(
+                    start: 16,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

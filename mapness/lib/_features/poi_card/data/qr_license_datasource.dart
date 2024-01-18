@@ -25,7 +25,6 @@ class _QrLicenseDataSource implements QrLicenseDataSource {
   }) async {
     Response result;
     try {
-
       const cookie =
           'BIGipServerapistg.app~apistg_pool=4000862218.10531.0000; BIGipServerstag_adf_pool=558934208.24862.0000';
 

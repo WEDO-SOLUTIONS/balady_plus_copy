@@ -150,7 +150,6 @@ class HelpCenterPage extends ConsumerWidget {
               ),
               ExpandableCell(
                 title: context.l10n.contactInformation,
-                count: 3,
                 icon: "assets/images_svg/help_contact.svg",
                 content: const ContactInfo(),
               ),

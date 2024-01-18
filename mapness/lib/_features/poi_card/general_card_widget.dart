@@ -14,6 +14,7 @@ import 'package:mapness/_features/poi_card/widgets/about.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/contacts_info.dart';
 import 'package:mapness/_features/poi_card/widgets/description.dart';
+import 'package:mapness/_features/poi_card/widgets/favourites.dart';
 import 'package:mapness/_features/poi_card/widgets/footer.dart';
 import 'package:mapness/_features/poi_card/widgets/header.dart';
 import 'package:mapness/_features/poi_card/widgets/opening_hours.dart';
@@ -129,7 +130,7 @@ class _ContentState extends ConsumerState<_Content> {
                   final poiCardState = value.value;
                   final data = poiCardState?.gisObjectIdMessage;
 
-                  final qrTradeLicense = poiCardState?.qrTradeLicense;
+                  // final qrTradeLicense = poiCardState?.qrTradeLicense;
                   final tradeLicense = poiCardState?.tradeLicense;
 
                   final about = aboutMock(
@@ -188,7 +189,7 @@ class _ContentState extends ConsumerState<_Content> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          // Favourites(data),
+                                          Favourites(data),
                                           About(
                                             data,
                                             onEntranceTap: () =>
@@ -208,8 +209,8 @@ class _ContentState extends ConsumerState<_Content> {
                                             viewModel: viewModel,
                                             data: data,
                                           ),
-                                          if (qrTradeLicense != null)
-                                            QrLicenseInfo(qrTradeLicense),
+                                          // if (qrTradeLicense != null)
+                                          //   QrLicenseInfo(qrTradeLicense),
                                           if (tradeLicense != null)
                                             TradeLicense(tradeLicense),
                                           const SafeArea(

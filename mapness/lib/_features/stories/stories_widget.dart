@@ -65,6 +65,7 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
             ref.read(storyServiceProvider.notifier).refresh();
           },
         ),
+        skipLoadingOnReload: true,
       ),
     );
   }

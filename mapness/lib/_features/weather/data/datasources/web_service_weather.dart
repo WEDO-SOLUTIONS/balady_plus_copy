@@ -7,7 +7,7 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 class WebServiceWeather {
   final Dio dio;
 
-  WebServiceWeather({required this.dio}) {
+  WebServiceWeather({required this.dio, required String baseUrl,}) {
 
     (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
@@ -16,7 +16,7 @@ class WebServiceWeather {
       return client;
     };
 
-    dio.options.baseUrl = "https://api.weatherapi.com";
+    dio.options.baseUrl = baseUrl;
     dio.options.connectTimeout = const Duration(milliseconds: 60000);
     dio.options.receiveTimeout = const Duration(milliseconds: 60000);
     dio.options.sendTimeout = const Duration(milliseconds: 60000);

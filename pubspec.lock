@@ -407,6 +407,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.4.0"
+  dio_http_cache:
+    dependency: transitive
+    description:
+      name: dio_http_cache
+      sha256: ced385a6fcf7f9fd238cc9b866a75583ee309d97bf1ceccaa00bb978b1d00db4
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.0"
   dotted_border:
     dependency: "direct main"
     description:
@@ -1794,6 +1802,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
+  quiver:
+    dependency: transitive
+    description:
+      name: quiver
+      sha256: b1c1ac5ce6688d77f65f3375a9abb9319b3cb32486bdc7a1e0fdf004d7ba4e47
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.1"
   rate_my_app:
     dependency: "direct main"
     description:
