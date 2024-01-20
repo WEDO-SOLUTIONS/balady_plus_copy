@@ -4,15 +4,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/features/jobs/models/job_model.dart';
 import 'package:mapness/features/jobs/providers/job_detail_provider.dart';
+import 'package:mapness/features/jobs/ui/widgets/ui/expandable_container.dart';
+import 'package:mapness/features/jobs/ui/widgets/ui/job_button.dart';
+import 'package:mapness/features/jobs/ui/widgets/ui/job_share_button.dart';
+import 'package:mapness/features/jobs/ui/widgets/ui/route_button.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/shared/providers/app_features.dart';
 
 class JobDetail extends ConsumerStatefulWidget {
   final String jobId;
   const JobDetail({
-    super.key,
     required this.jobId,
+    super.key,
   });
 
   @override
@@ -22,9 +27,11 @@ class JobDetail extends ConsumerStatefulWidget {
 class _JobDetailState extends ConsumerState<JobDetail> {
   @override
   Widget build(BuildContext context) {
-    final job = ref.watch(jobDetailResponseProvider(
-      id: widget.jobId,
-    ));
+    final job = ref.watch(
+      jobDetailProvider(
+        id: widget.jobId,
+      ),
+    );
 
     return Material(
       child: job.maybeWhen(
@@ -33,6 +40,10 @@ class _JobDetailState extends ConsumerState<JobDetail> {
             if (data == null) {
               return const SizedBox.shrink();
             }
+
+            final latitude = double.tryParse(data.location?.latitude ?? '');
+            final longitude = double.tryParse(data.location?.longitude ?? '');
+
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -41,363 +52,79 @@ class _JobDetailState extends ConsumerState<JobDetail> {
                       .copyWith(top: 16),
                   child: Column(
                     children: [
-                      _decoratedCard(
-                          context.l10n.jobDescription, data.description ?? ''),
-                      _decoratedCard(context.l10n.skills, data.skills ?? ''),
-                      _jobDetailCard(data),
+                      ExpandableContainer(
+                        title: context.l10n.jobDescription,
+                        data: data.description ?? '',
+                      ),
+                      ExpandableContainer(
+                        title: context.l10n.skills,
+                        data: data.skills ?? '',
+                      ),
+                      _JobDetailCard(model: data),
                       const SizedBox(height: 16),
-                      _jobContacts(data),
+                      _JobContactsWidget(model: data),
                       const SizedBox(height: 16),
-                      _jobInfo(context.l10n.published,
-                          _publishDate(data.publishDate ?? '')),
+                      _JobInfoWidget(
+                          title: context.l10n.published,
+                          data: _publishDate(data.publishDate ?? '')),
                       const SizedBox(height: 16),
-                      _jobInfo(context.l10n.coordinates,
-                          '${data.location?.latitude ?? ''}, ${data.location?.longitude ?? ''}'),
+                      _JobInfoWidget(
+                        title: context.l10n.coordinates,
+                        data:
+                            '${data.location?.latitude ?? ''}, ${data.location?.longitude ?? ''}',
+                      ),
                       const SizedBox(height: 16),
-                      _jobLicense(data),
+                      _JobLicenseWidget(job: data),
                       const SizedBox(height: 16),
                     ],
                   ),
                 ),
-                _buttonsRow(data),
+                Container(
+                  padding: const EdgeInsetsDirectional.only(
+                      top: 8, bottom: 16, start: 16, end: 16),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: Row(
+                    children: [
+                      JobButton(
+                        label: context.l10n.call,
+                        asset: 'assets/icons/svg/ic_phone.svg',
+                        backgroundColor: const Color(0xff4CA5B4),
+                        textColor: Colors.white,
+                        onPressed: () =>
+                            CommonFunctions.call(data.mobile ?? ''),
+                      ),
+                      if (ref.read(appFeaturesProvider).naviEnabled &&
+                          latitude != null &&
+                          longitude != null)
+                        Padding(
+                          padding:
+                              const EdgeInsetsDirectional.only(start: 16.0),
+                          child: JobShareButton(
+                            lat: latitude,
+                            lon: longitude,
+                          ),
+                        ),
+                      if (ref.read(appFeaturesProvider).naviEnabled &&
+                          latitude != null &&
+                          longitude != null)
+                        Padding(
+                          padding:
+                              const EdgeInsetsDirectional.only(start: 16.0),
+                          child: RouteButton(
+                            latitude: latitude,
+                            longitude: longitude,
+                            label: data.name ?? '',
+                          ),
+                        )
+                    ],
+                  ),
+                ),
                 const SizedBox(height: 16),
               ],
             );
           }),
-    );
-  }
-
-  Widget _buttonsRow(JobModel model) {
-    return Container(
-      padding: const EdgeInsets.only(top: 8, bottom: 24, left: 16, right: 16),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-      ),
-      child: Row(
-        children: [
-          _buildButton(
-            context.l10n.call,
-            'assets/icons/svg/ic_phone.svg',
-            backgroundColor: const Color(0xff4CA5B4),
-            textColor: Colors.white,
-            onPressed: () => CommonFunctions.call(model.mobile ?? ''),
-          ),
-          // const SizedBox(width: 12),
-          // if (ref.read(appFeaturesProvider).naviEnabled)
-          //   BriefRouteButton(
-          //     routeType: RouteSearchOptionsMessage.car,
-          //     onTap: () {
-          //       if (model.location?.latitude == null ||
-          //           model.location?.longitude == null) {
-          //         return;
-          //       }
-          //       RoutingRoutesRoute(
-          //         finishLabel: model.name ?? '',
-          //         finishLatitude: double.parse(model.location!.latitude!),
-          //         finishLongitude: double.parse(model.location!.latitude!),
-          //         startLabel: context.l10n.myLocation,
-          //         startLatitude: null,
-          //         startLongitude: null,
-          //       ).push(context);
-          //     },
-          //   ),
-          // if (ref.read(appFeaturesProvider).naviEnabled)
-          //   const SizedBox(width: 12),
-          // _buildButton(
-          //   context.l10n.share,
-          //   'assets/icons/svg/ic_share.svg',
-          //   backgroundColor: const Color(0xff1E2A36).withOpacity(0.05),
-          //   textColor: const Color(0xff1E2A36).withOpacity(.5),
-          //   onPressed: () {},
-          // ),
-        ],
-      ),
-    );
-  }
-
-  Widget _jobLicense(JobModel job) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16).copyWith(right: 0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              SvgPicture.asset(
-                'assets/icons/svg/ic_info_circle.svg',
-                package: PackageConfig.packageName,
-                height: 24,
-                width: 24,
-              ),
-              const SizedBox(
-                width: 8,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    job.commercialLicenseNumber?.toString() ?? '',
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .textM
-                        .apply(color: const Color(0xff1E2A36)),
-                  ),
-                  Text(
-                    context.l10n.commercialLicenseNumber,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .textS
-                        .apply(color: const Color(0xff1E2A36).withOpacity(.5)),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _jobInfo(String title, String data) {
-    return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16).copyWith(right: 0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(title,
-              style: Theme.of(context)
-                  .extension<ThemeTextStyles>()!
-                  .textM
-                  .apply(color: const Color(0xff1E2A36))),
-          const SizedBox(height: 12),
-          Text(data,
-              style: Theme.of(context)
-                  .extension<ThemeTextStyles>()!
-                  .textS
-                  .apply(color: const Color(0xff1E2A36).withOpacity(.5))),
-        ]));
-  }
-
-  Widget _jobContacts(JobModel model) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16).copyWith(right: 0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SvgPicture.asset(
-                'assets/icons/svg/ic_phone.svg',
-                width: 18,
-                height: 18,
-                package: 'mapness',
-                colorFilter:
-                    const ColorFilter.mode(Color(0xff4CA5B4), BlendMode.srcIn),
-              ),
-              const SizedBox(
-                width: 12,
-              ),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => CommonFunctions.call(model.mobile ?? ''),
-                  child: Text(
-                    model.mobile ?? '',
-                    textAlign: TextAlign.start,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .textM
-                        .apply(color: const Color(0xff1E2A36)),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Padding(
-              padding: const EdgeInsets.only(left: 36),
-              child: Divider(
-                color: const Color(0xff1E2A36).withOpacity(.15),
-              )),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SvgPicture.asset(
-                'assets/icons/svg/ic_email.svg',
-                width: 24,
-                height: 24,
-                package: 'mapness',
-                colorFilter:
-                    const ColorFilter.mode(Color(0xff4CA5B4), BlendMode.srcIn),
-              ),
-              const SizedBox(
-                width: 12,
-              ),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => CommonFunctions.email(model.email ?? ''),
-                  child: Text(
-                    model.email ?? '',
-                    textAlign: TextAlign.start,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .textM
-                        .apply(color: const Color(0xff1E2A36)),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildButton(String label, String asset,
-      {Color? backgroundColor,
-      Color? textColor,
-      bool enabled = true,
-      VoidCallback? onPressed}) {
-    return ElevatedButton(
-      onPressed: enabled ? onPressed : null,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: backgroundColor ?? const Color(0xff4CA5B4),
-        disabledBackgroundColor: const Color(0xffDDDFE1),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        elevation: 0,
-        padding: const EdgeInsets.all(10),
-      ),
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            asset,
-            height: 18,
-            width: 18,
-            color: textColor ?? Colors.white,
-            package: PackageConfig.packageName,
-          ),
-          const SizedBox(width: 8),
-          Text(
-            label,
-            style: Theme.of(context)
-                .extension<ThemeTextStyles>()
-                ?.textM
-                .copyWith(color: textColor ?? Colors.white),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _jobDetailCard(JobModel model) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            context.l10n.jobDetails,
-            style: Theme.of(context)
-                .extension<ThemeTextStyles>()!
-                .accentL
-                .apply(color: const Color(0xff1E2A36)),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  context.l10n.workHours,
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .textM
-                      .apply(color: const Color(0xff1E2A36)),
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  model.workHours?.toStringAsFixed(0) ?? '',
-                  textAlign: TextAlign.start,
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .textS
-                      .apply(color: const Color(0xff1E2A36).withOpacity(0.5)),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  context.l10n.employmentType,
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .textM
-                      .apply(color: const Color(0xff1E2A36)),
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  model.contractType?.name ?? '',
-                  textAlign: TextAlign.start,
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .textS
-                      .apply(color: const Color(0xff1E2A36).withOpacity(0.5)),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  context.l10n.nationality,
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .textM
-                      .apply(color: const Color(0xff1E2A36)),
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  model.saudi == true ? 'Saudi' : 'Non-Saudi',
-                  textAlign: TextAlign.start,
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .textS
-                      .apply(color: const Color(0xff1E2A36).withOpacity(0.5)),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 
@@ -419,88 +146,290 @@ class _JobDetailState extends ConsumerState<JobDetail> {
 
     return formattedDate;
   }
-
-  Widget _decoratedCard(String title, String data) {
-    return ExpandableContainer(
-      data: data,
-      title: title,
-    );
-  }
 }
 
-class ExpandableContainer extends StatefulWidget {
-  final String title;
-  final String data;
+class _JobDetailCard extends StatelessWidget {
+  final JobModel model;
 
-  const ExpandableContainer({
-    super.key,
-    required this.title,
-    required this.data,
-  });
+  const _JobDetailCard({required this.model});
 
   @override
-  ExpandableContainerState createState() => ExpandableContainerState();
+  Widget build(BuildContext context) => Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              context.l10n.jobDetails,
+              style: Theme.of(context)
+                  .extension<ThemeTextStyles>()!
+                  .accentL
+                  .apply(color: const Color(0xff1E2A36)),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    context.l10n.workHours,
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()!
+                        .textM
+                        .apply(color: const Color(0xff1E2A36)),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    model.workHours?.toStringAsFixed(0) ?? '',
+                    textAlign: TextAlign.start,
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()!
+                        .textS
+                        .apply(color: const Color(0xff1E2A36).withOpacity(0.5)),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    context.l10n.employmentType,
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()!
+                        .textM
+                        .apply(color: const Color(0xff1E2A36)),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    model.contractType?.name ?? '',
+                    textAlign: TextAlign.start,
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()!
+                        .textS
+                        .apply(color: const Color(0xff1E2A36).withOpacity(0.5)),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    context.l10n.nationality,
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()!
+                        .textM
+                        .apply(color: const Color(0xff1E2A36)),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    model.saudi == true ? 'Saudi' : 'Non-Saudi',
+                    textAlign: TextAlign.start,
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()!
+                        .textS
+                        .apply(color: const Color(0xff1E2A36).withOpacity(0.5)),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
 }
 
-class ExpandableContainerState extends State<ExpandableContainer> {
-  bool isExpanded = false;
+class _JobContactsWidget extends StatelessWidget {
+  final JobModel model;
+
+  const _JobContactsWidget({required this.model});
 
   @override
-  Widget build(BuildContext context) {
-    if (widget.data.isEmpty) return const SizedBox.shrink();
-    final dataSplits = widget.data.split('\n').where((e) => e.isNotEmpty).map(
-          (e) => Text(
-            '• $e\n',
-            style: Theme.of(context)
-                .extension<ThemeTextStyles>()!
-                .textM
-                .apply(color: const Color(0xff1E2A36)),
-          ),
-        );
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: GestureDetector(
-        onTap: () => setState(() {
-          isExpanded = !isExpanded;
-        }),
+  Widget build(BuildContext context) => Container(
+        width: double.infinity,
+        padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 0, 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  widget.title,
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .accentL
-                      .apply(color: const Color(0xff1E2A36)),
+                SvgPicture.asset(
+                  'assets/icons/svg/ic_phone.svg',
+                  width: 18,
+                  height: 18,
+                  package: 'mapness',
+                  colorFilter: const ColorFilter.mode(
+                      Color(0xff4CA5B4), BlendMode.srcIn),
                 ),
-                if (widget.data.split('\n').length > 5)
-                  Icon(
-                    isExpanded ? Icons.expand_less : Icons.expand_more,
+                const SizedBox(
+                  width: 12,
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => CommonFunctions.call(model.mobile ?? ''),
+                    child: Text(
+                      model.mobile ?? '',
+                      textAlign: TextAlign.start,
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .textM
+                          .apply(
+                            color: const Color(0xff1E2A36),
+                          ),
+                    ),
                   ),
+                ),
               ],
             ),
-            const SizedBox(height: 4),
-            if (isExpanded) ...dataSplits else ...dataSplits.take(5),
-            if (!isExpanded && widget.data.split('\n').length > 5)
-              Text(
-                '...',
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .textM
-                    .apply(color: const Color(0xff1E2A36)),
+            Padding(
+              padding: const EdgeInsetsDirectional.only(start: 36),
+              child: Divider(
+                color: const Color(0xff1E2A36).withOpacity(.15),
               ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SvgPicture.asset(
+                  'assets/icons/svg/ic_mail.svg',
+                  width: 24,
+                  height: 24,
+                  package: 'mapness',
+                  colorFilter: const ColorFilter.mode(
+                      Color(0xff4CA5B4), BlendMode.srcIn),
+                ),
+                const SizedBox(
+                  width: 12,
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => CommonFunctions.email(model.email ?? ''),
+                    child: Text(
+                      model.email ?? '',
+                      textAlign: TextAlign.start,
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .textM
+                          .apply(
+                            color: const Color(0xff1E2A36),
+                          ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
-      ),
-    );
-  }
+      );
+}
+
+class _JobInfoWidget extends StatelessWidget {
+  final String title;
+  final String data;
+
+  const _JobInfoWidget({
+    required this.title,
+    required this.data,
+  });
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: double.infinity,
+        padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 0, 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style:
+                  Theme.of(context).extension<ThemeTextStyles>()!.textM.apply(
+                        color: const Color(0xff1E2A36),
+                      ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              data,
+              style:
+                  Theme.of(context).extension<ThemeTextStyles>()!.textS.apply(
+                        color: const Color(0xff1E2A36).withOpacity(.5),
+                      ),
+            ),
+          ],
+        ),
+      );
+}
+
+class _JobLicenseWidget extends StatelessWidget {
+  final JobModel job;
+
+  const _JobLicenseWidget({required this.job});
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: double.infinity,
+        padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 0, 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                SvgPicture.asset(
+                  'assets/icons/svg/ic_info_circle.svg',
+                  package: PackageConfig.packageName,
+                  height: 24,
+                  width: 24,
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      job.commercialLicenseNumber?.toString() ?? '',
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .textM
+                          .apply(color: const Color(0xff1E2A36)),
+                    ),
+                    Text(
+                      context.l10n.commercialLicenseNumber,
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .textS
+                          .apply(
+                              color: const Color(0xff1E2A36).withOpacity(.5)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
 }

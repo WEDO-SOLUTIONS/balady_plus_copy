@@ -3,46 +3,20 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mapness/_features/poi_card/extensions/directory_object_ext.dart';
 import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
+import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/features/routing/ui/brief_route_widgets.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
-import 'package:mapness/_features/poi_card/widgets/style.dart';
-import 'package:mapness/_features/poi_card/extensions/directory_object_ext.dart';
 
 const mockArabickText =
     'الملك فهد، الرياضالملك فهد، الرياضالملك فهد، الرياض 12261، المملكة العربية السعودية الرياض';
 
-class PoiCardHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final DirectoryObjectMessage data;
-  final Function()? ontapClose;
-
-  PoiCardHeaderDelegate({
-    required this.data,
-    this.ontapClose,
-  });
-
-  @override
-  Widget build(context, double shrinkOffset, bool overlapsContent) {
-    return _Header(
-      data: data,
-      onTapClose: ontapClose,
-    );
-  }
-
-  @override
-  double get maxExtent => 150;
-
-  @override
-  double get minExtent => headerHeight;
-
-  @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;
-}
-
-class _Header extends ConsumerWidget {
+class PoiHeader extends ConsumerWidget {
   final Function()? onTapClose;
 
-  const _Header({
+  const PoiHeader({
+    super.key,
     required this.data,
     required this.onTapClose,
   });
@@ -66,14 +40,6 @@ class _Header extends ConsumerWidget {
             topRight: Radius.circular(16),
           ),
         ),
-        shadows: [
-          BoxShadow(
-            color: colorShadow,
-            blurRadius: 22,
-            offset: Offset(0, 4),
-            spreadRadius: 0,
-          )
-        ],
       ),
 
       child: _buildContent(context, model),
@@ -100,26 +66,20 @@ class _Header extends ConsumerWidget {
         address?.buildingName ?? data.directoryObjectMessage?.title ?? '';
     final titleAddition = data.directoryObjectMessage?.titleAddition ?? '';
 
-    return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const SizedBox(height: 6),
-                _scrollHandle(),
-                const SizedBox(height: 6),
-                _title(context, title),
-                _titleAddition(context, titleAddition),
-                const SizedBox(height: 2),
-                _subTitle(context, subTitle, data),
-              ],
-            ),
-          )
-        ]);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        const SizedBox(height: 6),
+        _scrollHandle(),
+        const SizedBox(height: 6),
+        _title(context, title),
+        _titleAddition(context, titleAddition),
+        const SizedBox(height: 2),
+        _subTitle(context, subTitle, data),
+        const SizedBox(height: 6),
+      ],
+    );
   }
 
   Widget _scrollHandle() {

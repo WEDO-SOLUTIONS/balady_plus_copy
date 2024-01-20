@@ -108,7 +108,7 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
   }
 
   Future<void> _onFavTap(bool isFavourite) async {
-    CommonFunctions.authOrOpen(ref, context, callback: () {
+    CommonFunctions.authOrOpen(context, callback: () {
       final favNotifier = ref.read(favouriteRepositoryProvider.notifier);
       _awaitPop(isFavourite
           ? favNotifier.delete(widget.favItem)

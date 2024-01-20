@@ -1,6 +1,5 @@
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
-import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -20,12 +19,12 @@ List<GeoPointMessage> saRestrictions = [
 @riverpod
 class SearchQuery extends _$SearchQuery {
   @override
-  String build(String scope) => "";
+  String build(String scope) => '';
 
   void update(String value) {
     ref.read(urbiMetricsProvider.notifier).logEvent(
-      "SearchQuery",
-      {"value": value},
+      'SearchQuery',
+      {'value': value},
     );
     mixpanel?.track('SearchQuery', properties: {'value': value});
     state = value;
@@ -46,9 +45,9 @@ class Search extends _$Search {
   CancelableOperation? _searchOperation;
 
   Future<void> fetchSuggest(String query) async {
-    ref.read(urbiMetricsProvider.notifier).logEvent("Search/fetchSuggest");
-    mixpanel?.timeEvent("Search: fetchSuggest");
-    _searchOperation?.cancel();
+    ref.read(urbiMetricsProvider.notifier).logEvent('Search/fetchSuggest');
+    mixpanel?.timeEvent('Search: fetchSuggest');
+    await _searchOperation?.cancel();
     if (query.isEmpty) {
       state = SearchStateHistory();
       return;
@@ -58,21 +57,20 @@ class Search extends _$Search {
     final searchOperation =
         CancelableOperation.fromFuture(dgisController.fetchSuggest(query));
     _searchOperation = searchOperation;
-    searchOperation.value.then(
-      (result) => state = result.suggests.isEmpty
-          ? SearchStateEmpty()
-          : SearchStateSuggest(result),
-    );
-    mixpanel?.track("Search: fetchSuggest");
+    final result = await searchOperation.value;
+    state = result.suggests.isEmpty
+        ? SearchStateEmpty()
+        : SearchStateSuggest(result);
+    mixpanel?.track('Search: fetchSuggest');
   }
 
   Future<void> searchByText(String query) async {
     ref.read(urbiMetricsProvider.notifier).logEvent(
-      "Search/searchByText",
-      {"query": query},
+      'Search/searchByText',
+      {'query': query},
     );
-    mixpanel?.timeEvent("Search: searchByText");
-    _searchOperation?.cancel();
+    mixpanel?.timeEvent('Search: searchByText');
+    await _searchOperation?.cancel();
     final dgisController = await ref.read(dgisControllerProvider.future);
 
     final searchOperation =
@@ -82,12 +80,11 @@ class Search extends _$Search {
       spatialRestriction: saRestrictions,
     ));
     _searchOperation = searchOperation;
-    searchOperation.value.then(
-      (results) => state = (results.firstPage?.items.isEmpty ?? true)
-          ? SearchStateEmpty()
-          : SearchStateResults(results),
-    );
-    mixpanel?.track("Search: fetchSuggest");
+    final results = await searchOperation.value;
+    state = (results.firstPage?.items.isEmpty ?? true)
+        ? SearchStateEmpty()
+        : SearchStateResults(results);
+    mixpanel?.track('Search: fetchSuggest');
   }
 
   Future<void> searchByQuery(SearchQueryMessage query) async {
@@ -95,8 +92,8 @@ class Search extends _$Search {
       'Search/searchByQuery',
       {'query_id': query.id},
     );
-    mixpanel?.timeEvent("Search: searchByQuery");
-    _searchOperation?.cancel();
+    mixpanel?.timeEvent('Search: searchByQuery');
+    await _searchOperation?.cancel();
     final dgisController = await ref.read(dgisControllerProvider.future);
 
     final searchOperation =
@@ -106,11 +103,10 @@ class Search extends _$Search {
       spatialRestriction: saRestrictions,
     ));
     _searchOperation = searchOperation;
-    searchOperation.value.then(
-      (results) => state = (results.firstPage?.items.isEmpty ?? true)
-          ? SearchStateEmpty()
-          : SearchStateResults(results),
-    );
-    mixpanel?.track("Search: searchByQuery");
+    final results = await searchOperation.value;
+    state = (results.firstPage?.items.isEmpty ?? true)
+        ? SearchStateEmpty()
+        : SearchStateResults(results);
+    mixpanel?.track('Search: searchByQuery');
   }
 }

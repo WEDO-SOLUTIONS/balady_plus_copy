@@ -224,6 +224,7 @@ class ObjectTapHandler {
                 LogicalPixel(value: $0.floatValue)
             } ?? LogicalPixel(value: 0),
             userData: MarkerId(marker.id),
+            zIndex: ZIndex(value: marker.options.zIndex?.uint32Value ?? 0),
             animatedAppearance: marker.options.animatedAppearance?.boolValue ?? false
         )
         

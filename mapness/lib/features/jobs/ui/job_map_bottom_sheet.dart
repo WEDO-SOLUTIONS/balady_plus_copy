@@ -1,21 +1,23 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar, ScrollPosition;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/weather/provider/weather_map_controls.dart';
 import 'package:mapness/app/routes/jobs_map.dart';
+import 'package:mapness/features/jobs/models/job_list_model.dart';
+import 'package:mapness/features/jobs/models/job_model.dart';
 import 'package:mapness/features/jobs/providers/job_list_provider.dart';
 import 'package:mapness/features/jobs/ui/widgets/job_card.dart';
 import 'package:mapness/features/jobs/ui/widgets/job_header.dart';
+import 'package:mapness/shared/extensions/scroll_controller_ext.dart';
+import 'package:mapness/shared/lib/geo/geo_utils.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
-
-const colorPrimary = Color(0xff1E2A36);
+import 'package:mapness/shared/routing/current_route_provider.dart';
 
 class JobMapBottomSheet extends ConsumerStatefulWidget {
   const JobMapBottomSheet({
-    super.key,
     required this.biggestHeight,
     required this.biggestWidth,
+    super.key,
   });
 
   final double biggestHeight;
@@ -31,104 +33,40 @@ class _JobMapBottomSheetState extends ConsumerState<JobMapBottomSheet> {
   double get _headerExtent => 100 / widget.biggestHeight;
   ScrollController? _scrollController;
 
+  void _handleScroll() {
+    if (_scrollController?.isCloseToEnd == true) {
+      ref.read(jobListProvider().notifier).loadNextPage();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
 
-    _draggableScrollableController = DraggableScrollableController()
-      ..addListener(() {
-        Future.delayed(Duration.zero, () {
-          var size = _draggableScrollableController.size;
-          var sizeFixed = double.parse(size.toStringAsFixed(2));
-          var headerExtentFixed =
-              double.parse(_headerExtent.toStringAsFixed(2));
-          final mapControls = ref.read(weatherMapControlsProvider.notifier);
-
-          if (sizeFixed > headerExtentFixed) {
-            mapControls.update(
-              controlsVisible: false,
-            );
-          } else if (sizeFixed == headerExtentFixed) {
-            var extent = widget.biggestHeight * sizeFixed;
-            mapControls.update(
-              extent: extent,
-              controlsVisible: true,
-            );
-          } else if (sizeFixed < headerExtentFixed && sizeFixed != .1) {
-            mapControls.update(controlsVisible: false);
-          } else if (sizeFixed == .1) {
-            var extent = widget.biggestHeight * sizeFixed;
-            mapControls.update(
-              controlsVisible: true,
-              extent: extent,
-            );
-          }
-        });
-      });
+    _draggableScrollableController = DraggableScrollableController();
   }
 
   @override
   void dispose() {
     _draggableScrollableController.dispose();
-    super.dispose();
-  }
+    _scrollController?.removeListener(_handleScroll);
 
-  bool _needLoadMore() {
-    final mEx = _scrollController?.position.maxScrollExtent;
-    final cEx = _scrollController?.position.pixels;
-    if (mEx == null || cEx == null) return false;
-    final d = mEx - cEx;
-    return d < 100;
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final jobsList = ref.watch(jobListProvider());
+
     final jobsObjectManager = ref.watch(
-      mapObjectManagerProvider(named: "jobs").notifier,
+      mapObjectManagerProvider(named: 'jobs').notifier,
     );
-    final jobsList = ref.watch(jobListResponseProvider(page: 1, size: 10));
-
     ref.listen(
-      jobListResponseProvider(page: 1, size: 10),
-      (previous, next) async {
-        await jobsObjectManager.removeAllMarkers();
-
-        final records = next.valueOrNull?.records;
-        if (records == null) return;
-
-        List<Marker> markers = [];
-        for (final record in records) {
-          if (record.location?.latitude == null ||
-              record.location?.longitude == null) {
-            continue;
-          }
-
-          markers.add(
-            Marker(
-              id: record.id!,
-              onTap: () {
-                JobsMapDetail(jobId: record.id!).push(context);
-              },
-              options: MarkerOptionsMessage(
-                position: GeoPointWithElevationMessage(
-                  longitude: double.parse(record.location!.latitude!),
-                  latitude: double.parse(record.location!.longitude!),
-                  elevation: 0,
-                ),
-                icon: MarkerIconMessage(
-                  path: "packages/mapness/assets/icons/svg/job_pin.svg",
-                  width: 24,
-                ),
-              ),
-            ),
-          );
-        }
-
-        await jobsObjectManager.addMarkers(markers);
-        await ref
-            .read(cameraPositionProvider.notifier)
-            .animateToMarkers(markers);
-      },
+      jobListProvider(),
+      (_, next) => _addMarkers(
+        jobsModel: next.unwrapPrevious().valueOrNull,
+        jobsObjectManager: jobsObjectManager,
+      ),
     );
 
     return DraggableScrollableSheet(
@@ -137,16 +75,14 @@ class _JobMapBottomSheetState extends ConsumerState<JobMapBottomSheet> {
       minChildSize: .1,
       maxChildSize: .9,
       snap: true,
-      snapSizes: [.1, _headerExtent, .9],
-      builder: (BuildContext context, ScrollController scrollController) {
+      snapSizes: const [.1, .5, .9],
+      builder: (context, scrollController) {
+        // scrooll controller disposed in DraggableScrollableSheet
         _scrollController = scrollController;
-        scrollController.addListener(() {
-          if (_needLoadMore()) {
-            ref
-                .read(jobListResponseProvider(page: 1, size: 10).notifier)
-                .loadNextPage();
-          }
-        });
+
+        scrollController
+          ..removeListener(_handleScroll)
+          ..addListener(_handleScroll);
 
         return Directionality(
           textDirection: Directionality.of(context),
@@ -160,33 +96,130 @@ class _JobMapBottomSheetState extends ConsumerState<JobMapBottomSheet> {
             ),
             child: jobsList.maybeWhen(
               orElse: () => const SizedBox.shrink(),
-              data: (data) {
-                return CustomScrollView(
-                  controller: scrollController,
-                  keyboardDismissBehavior:
-                      ScrollViewKeyboardDismissBehavior.onDrag,
-                  physics: const ClampingScrollPhysics(),
-                  slivers: [
-                    SliverPersistentHeader(
-                      delegate: JobHeaderDelegate(
-                        draggableScrollableController:
-                            _draggableScrollableController,
-                      ),
-                      pinned: false,
+              data: (data) => CustomScrollView(
+                controller: scrollController,
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                physics: const ClampingScrollPhysics(),
+                slivers: [
+                  SliverPersistentHeader(
+                    delegate: JobHeaderDelegate(
+                      draggableScrollableController:
+                          _draggableScrollableController,
                     ),
-                    SliverList.builder(
-                      itemCount: data?.records?.length ?? 0,
-                      itemBuilder: (BuildContext context, int index) => JobCard(
-                        jobModel: data!.records![index],
-                      ),
+                  ),
+                  SliverList.builder(
+                    itemCount: data?.records?.length ?? 0,
+                    itemBuilder: (context, index) => JobCard(
+                      jobModel: data!.records![index],
                     ),
-                  ],
-                );
-              },
+                  ),
+                ],
+              ),
             ),
           ),
         );
       },
     );
+  }
+
+  Future<void> _addMarkers({
+    required JobListModel? jobsModel,
+    required MapObjectManager jobsObjectManager,
+  }) async {
+    await jobsObjectManager.removeAllMarkers();
+
+    final records = jobsModel?.records;
+    if (records == null) {
+      return;
+    }
+
+    final List<Marker> markers = [];
+    for (final record in records) {
+      final lon = double.tryParse(record.location?.longitude ?? '');
+      final lat = double.tryParse(record.location?.latitude ?? '');
+
+      if (lon == null || lat == null || record.id == null) {
+        continue;
+      }
+
+      markers.add(
+        Marker(
+          id: record.id!,
+          onTap: () => _openMarker(record),
+          options: MarkerOptionsMessage(
+            position: GeoPointWithElevationMessage(
+              longitude: lon,
+              latitude: lat,
+              elevation: 0,
+            ),
+            icon: MarkerIconMessage(
+              path: 'packages/mapness/assets/icons/svg/job_pin.svg',
+              width: 24,
+            ),
+          ),
+        ),
+      );
+    }
+
+    await jobsObjectManager.addMarkers(markers);
+
+    // Move camera to markers or zoom by markers nearby
+    final cameraPosition = ref.read(cameraPositionProvider);
+    if (cameraPosition == null) {
+      await ref.read(cameraPositionProvider.notifier).animateToMarkers(markers);
+    } else {
+      final zoom = await GeoUtils.zoomByMarkersNearby(
+        markers: markers,
+        position: cameraPosition.point,
+      );
+      await ref.read(cameraPositionProvider.notifier).animateTo(
+            CameraPositionMessage(
+              zoom: zoom,
+              bearing: 0,
+              point: cameraPosition.point,
+              tilt: 0,
+            ),
+          );
+    }
+  }
+
+  void _openMarker(JobModel model) {
+    final lon = double.tryParse(model.location?.longitude ?? '');
+    final lat = double.tryParse(model.location!.latitude ?? '');
+
+    if (lon == null || lat == null) {
+      return;
+    }
+
+    ref.read(cameraPositionProvider.notifier).animateTo(
+          CameraPositionMessage(
+            zoom: 15,
+            bearing: 0,
+            point: GeoPointMessage(
+              longitude: lon,
+              latitude: lat,
+            ),
+            tilt: 0,
+          ),
+        );
+
+    final jobId = model.id;
+
+    if (jobId == null) {
+      return;
+    }
+
+    if (!mounted) {
+      return;
+    }
+
+    final currentRoute = ref.read(currentRouteProvider);
+    if (currentRoute != null &&
+        RegExp(r'/job/.*/detail').hasMatch(currentRoute)) {
+      JobsMapDetail(jobId: jobId).pushReplacement(context);
+      return;
+    }
+    JobsMapDetail(jobId: jobId).push(context);
   }
 }

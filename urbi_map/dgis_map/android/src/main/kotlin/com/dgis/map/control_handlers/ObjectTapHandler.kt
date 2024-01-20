@@ -198,6 +198,7 @@ class ObjectTapHandler(
             } ?: LogicalPixel(0f),
             userData = MarkerId(marker.id),
             animatedAppearance = marker.options.animatedAppearance ?: false,
+            zIndex = ZIndex(marker.options.zIndex?.toInt() ?: 0)
         )
 
         return Marker(options)

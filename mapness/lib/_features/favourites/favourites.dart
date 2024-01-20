@@ -106,7 +106,7 @@ class _FavouritesState extends ConsumerState<Favourites> {
                       if (!ref.context.mounted) {
                         return;
                       }
-                      ref
+                      await ref
                           .read(favouriteRepositoryProvider.notifier)
                           .deleteAll();
                     }

@@ -38,7 +38,10 @@ class PathNavSpeedInfoWidget extends StatelessWidget {
                   child: Center(
                     child: Baseline(
                       baselineType: TextBaseline.alphabetic,
-                      baseline: 32,
+                      baseline: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .headingL
+                          .fontSize!,
                       child: Text(
                         '${info.speed}',
                         style: Theme.of(context)
@@ -73,7 +76,10 @@ class PathNavSpeedInfoWidget extends StatelessWidget {
                   child: Center(
                     child: Baseline(
                       baselineType: TextBaseline.alphabetic,
-                      baseline: 28,
+                      baseline: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .headingM
+                          .fontSize!,
                       child: Text(
                         "${info.speedLimit ?? '--'}",
                         style: Theme.of(context)

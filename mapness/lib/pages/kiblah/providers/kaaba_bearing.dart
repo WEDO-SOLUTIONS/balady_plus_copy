@@ -1,6 +1,6 @@
 import 'package:dgis_map/library.dart';
-import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'kaaba_bearing.g.dart';

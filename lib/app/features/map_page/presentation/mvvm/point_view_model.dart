@@ -49,21 +49,8 @@ class PointViewModel extends BaseViewModel {
       isLoadingData.value = false;
       isLoadingData.notifyListeners();
       // dataPoint.value = await controller.(point);
-    } catch (e) {}
-  }
-
-  Future<void> getPhotos(DirectoryObjectMessage dataPoint) async {
-    try {
-      final data = await webService.dio.get(
-        'https://sandbox-api.photo.2gis.com/2.0/photo/get',
-        queryParameters: {
-          "key": "mobile_ios",
-          "object_id": dataPoint.id?.objectId.toString(),
-          "object_type": dataPoint.types[0]?.type.name,
-          "album_code": "common",
-          "preview_size": "100x100",
-        },
-      );
-    } catch (e) {}
+    } catch (e) {
+      ///
+    }
   }
 }

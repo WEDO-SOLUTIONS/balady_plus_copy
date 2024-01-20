@@ -7,7 +7,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'job_list_provider.g.dart';
 
 @riverpod
-class JobListResponse extends _$JobListResponse {
+class JobList extends _$JobList {
+  static const _jobPageSize = 10;
+  static const _jobStartPage = 1;
+
   int? _page;
   int? _size;
   bool _canLoadMore = true;
@@ -17,7 +20,7 @@ class JobListResponse extends _$JobListResponse {
   JobListModel? _allJobs;
 
   Future<JobListModel?> _load() async {
-    mixpanel?.timeEvent("JobList: _load");
+    mixpanel?.timeEvent('JobList: _load');
     try {
       _isLoading = true;
       final dio = await ref.read(dgisHmacNetwrokProvider.future);
@@ -43,17 +46,19 @@ class JobListResponse extends _$JobListResponse {
       } else {
         throw Exception(jobResponse.message);
       }
-    } catch (_) {
+    } on Exception catch (_) {
     } finally {
       _isLoading = false;
     }
-    mixpanel?.track("JobList: _load");
+    mixpanel?.track('JobList: _load');
     return _allJobs;
   }
 
   Future<void> loadNextPage() async {
     if (_page != null && _size != null && _canLoadMore) {
-      if (_isLoading) return;
+      if (_isLoading) {
+        return;
+      }
       _page = _page! + 1;
       await _load();
       ref.invalidateSelf();
@@ -61,10 +66,14 @@ class JobListResponse extends _$JobListResponse {
   }
 
   @override
-  Future<JobListModel?> build(
-      {required int page, required int size, String sort = 'desc'}) async {
-    _page ??= page;
-    _size ??= size;
+  Future<JobListModel?> build({
+    int? page,
+    int? size,
+    String sort = 'desc',
+  }) async {
+    // set default values
+    _page ??= page ?? _jobStartPage;
+    _size ??= size ?? _jobPageSize;
 
     return _allJobs ?? await _load();
   }

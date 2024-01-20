@@ -92,6 +92,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
         ),
         anchor: MarkerAnchorMessage(x: 0.5, y: 1),
         animatedAppearance: true,
+        zIndex: 50,
       ),
     ),
   );

@@ -26,6 +26,6 @@ Marker constructMarker(FavouriteItem item, String iconAsset, GoRouter router) =>
 
         /// TODO(someone): after router fixes use something less crunchy
         router.go(const LandingRoute().location);
-        router.push(PoiMapRoute(dgisObjectId: id).location);
+        await router.push(PoiMapRoute(dgisObjectId: id).location);
       }(item.entity?.id),
     );

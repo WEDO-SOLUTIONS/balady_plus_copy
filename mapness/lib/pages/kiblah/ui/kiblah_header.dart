@@ -31,7 +31,6 @@ class KiblahHeader extends ConsumerWidget {
       ),
       child: Stack(
         alignment: Alignment.center,
-        fit: StackFit.loose,
         children: [
           Align(
             alignment: Alignment.centerRight,
@@ -41,14 +40,11 @@ class KiblahHeader extends ConsumerWidget {
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.07),
-                    spreadRadius: 0,
                     blurRadius: 1,
-                    offset: const Offset(0, 0),
                   ),
                   BoxShadow(
                     color: Colors.black.withOpacity(0.05),
                     blurRadius: 4,
-                    spreadRadius: 0,
                     offset: const Offset(0, 2),
                   )
                 ],

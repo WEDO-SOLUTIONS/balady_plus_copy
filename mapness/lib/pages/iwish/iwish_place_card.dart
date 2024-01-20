@@ -117,7 +117,7 @@ class IwishPlaceCard extends ConsumerWidget {
                                     LabeledElevatedButton(
                                       enabled: !entity.feedbackSent,
                                       onPressed: () async {
-                                        CommonFunctions.authOrOpen(ref, context,
+                                        CommonFunctions.authOrOpen(context,
                                             callback: () {
                                           IwishFeedbackRoute(iwishId: iwishId)
                                               .replace(context);

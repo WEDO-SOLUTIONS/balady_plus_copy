@@ -292,6 +292,14 @@ class BuildingLevelsMessage {
   final List<LevelInfoMessage?> levels;
 }
 
+class BuildingInfoMessage {
+  BuildingInfoMessage(this.buildingName, this.purposeName, this.purposeCode);
+
+  final String? buildingName;
+  final String? purposeName;
+  final int? purposeCode;
+}
+
 class ApartmentRangeMessage {
   ApartmentRangeMessage(this.start, this.end);
 
@@ -376,6 +384,7 @@ class DirectoryObjectMessage {
     this.workStatus,
     this.levelId,
     this.buildingLevels,
+    this.buildingInfo,
     this.entrances,
     this.tradeLicense,
     this.externalIds,
@@ -400,6 +409,7 @@ class DirectoryObjectMessage {
   final WorkStatusMessage? workStatus;
   final int? levelId;
   final BuildingLevelsMessage? buildingLevels;
+  final BuildingInfoMessage buildingInfo;
   final List<EntranceInfoMessage?> entrances;
   final TradeLicenseMessage? tradeLicense;
   final List<String?>? externalIds;
@@ -611,6 +621,7 @@ class MarkerOptionsMessage {
     required this.text,
     this.textStyle,
     this.animatedAppearance,
+    this.zIndex,
   });
 
   final GeoPointWithElevationMessage position;
@@ -619,6 +630,7 @@ class MarkerOptionsMessage {
   final String? text;
   final MarkerTextStyleMessage? textStyle;
   final bool? animatedAppearance;
+  final int? zIndex;
 }
 
 class MarkerMessage {

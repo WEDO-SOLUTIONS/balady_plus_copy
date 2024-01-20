@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:dgis_map_platform_interface/src/events/navigation_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/home_shell.dart';
+import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
@@ -24,13 +26,16 @@ class PathNavPage extends ConsumerStatefulWidget {
 }
 
 class PathNavPageState extends ConsumerState<PathNavPage> {
-  bool isInRouteViewMode = false;
+  ValueNotifier<PathNavState> navigationState =
+      ValueNotifier(PathNavState.running);
+
+  late StreamSubscription? _naviEventsListener;
 
   final ValueNotifier<double> _bgOpacity = ValueNotifier(0.0);
 
-  void _setInRouteViewMode(bool value) {
+  void _setNavigationState(PathNavState value) {
     setState(() {
-      isInRouteViewMode = value;
+      navigationState.value = value;
       _bgOpacity.value = 0;
     });
   }
@@ -41,19 +46,34 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
     ref.read(dgisControllerProvider).value?.setNavigatorVoice(
           ref.read(navigatorVoiceProvider),
         );
+    _naviEventsListener = ref
+        .read(dgisControllerProvider)
+        .value
+        ?.navigationEvents
+        .listen(_naviEvent);
     unawaited(ref.read(dgisControllerProvider).value?.startNavigation());
   }
 
   @override
   void dispose() {
+    _naviEventsListener?.cancel();
     super.dispose();
   }
 
   Future<void> _endTrip() async {
-    await ref.read(dgisControllerProvider).value?.stopNavigation();
+    if (navigationState.value == PathNavState.finished) {
+      if (context.mounted) {
+        const RoutingRoute().go(context);
+      }
+    } else {
+      await ref.read(dgisControllerProvider).value?.stopNavigation();
+    }
+  }
 
-    if (context.mounted) {
-      const RoutingRoute().go(context);
+  void _naviEvent(NavigationEvent event) {
+    if (event == NavigationEvent.finished ||
+        event == NavigationEvent.disabled) {
+      _setNavigationState(PathNavState.finished);
     }
   }
 
@@ -126,9 +146,34 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
               ),
             ),
 
-            /// map overview
-            if (isInRouteViewMode)
-              Positioned(
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final maxExtent = 812 / constraints.maxHeight * 0.4;
+                  final minExtent =
+                      (75 + bottomPadding) / constraints.maxHeight;
+                  return EtaSheet(
+                    onEndTripPressed: _endTrip,
+                    onRoutePressed: () async {
+                      _setNavigationState(PathNavState.paused);
+                      // TODO(@alexstrnik): show route
+                    },
+                    onBgOpacityChanged: (opacity) => _bgOpacity.value = opacity,
+                    maxExtent: maxExtent,
+                    minExtent: minExtent,
+                    navigationState: navigationState,
+                  );
+                },
+              ),
+            ),
+
+            ValueListenableBuilder(
+              valueListenable: navigationState,
+              builder: (context, state, child) => state == PathNavState.paused
+                  ? child!
+                  : const SizedBox.shrink(),
+              child: Positioned(
                 bottom: 20 + MediaQuery.of(context).padding.bottom,
                 left: 8,
                 right: 8,
@@ -136,36 +181,14 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
                   builder: (context, ref, child) {
                     final eta = ref.watch(pathNavEtaProvider);
                     return PathNavContinueTrip(
-                      onPressed: () => _setInRouteViewMode(false),
+                      onPressed: () =>
+                          _setNavigationState(PathNavState.running),
                       eta: eta,
                     );
                   },
                 ),
-              )
-            else
-
-              /// eta sheet
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final maxExtent = 812 / constraints.maxHeight * 0.4;
-                    final minExtent =
-                        (75 + bottomPadding) / constraints.maxHeight;
-                    return EtaSheet(
-                      onEndTripPressed: _endTrip,
-                      onRoutePressed: () async {
-                        _setInRouteViewMode(true);
-                        // TODO(@alexstrnik): show route
-                      },
-                      onBgOpacityChanged: (opacity) =>
-                          _bgOpacity.value = opacity,
-                      maxExtent: maxExtent,
-                      minExtent: minExtent,
-                    );
-                  },
-                ),
-              )
+              ),
+            ),
           ],
         ),
       ),

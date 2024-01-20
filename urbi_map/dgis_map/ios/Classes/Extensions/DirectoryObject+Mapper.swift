@@ -28,7 +28,8 @@ extension DirectoryObject {
             levelId: self.levelId.map {
                 NSNumber(value: $0.value)
             },
-            buildingLevels: self.buildingLevels?.toMessage(),
+            buildingLevels: self.buildingLevels?.toMessage(), 
+            buildingInfo: self.buildingInfo.toMessage(),
             entrances: self.entrances.map {
                 $0.toMessage()
             },
@@ -84,6 +85,18 @@ extension DgisObjectId {
         DgisObjectIdMessage.make(
             withObjectId: NSNumber(value: self.objectId),
             entranceId: NSNumber(value: self.entranceId)
+        )
+    }
+}
+
+extension BuildingInfo {
+    func toMessage() -> BuildingInfoMessage {
+        BuildingInfoMessage.make(
+            withBuildingName: self.buildingName,
+            purposeName: self.purposeName,
+            purposeCode: self.purposeCode.map {
+                NSNumber(value: $0.value)
+            }
         )
     }
 }

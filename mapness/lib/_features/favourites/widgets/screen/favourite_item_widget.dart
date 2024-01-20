@@ -10,12 +10,14 @@ class FavouriteItemWidget extends StatefulWidget {
   final VoidCallback onTap;
   final FavouriteItem item;
   final bool isEditing;
+  final bool isDeletable;
 
   FavouriteItemWidget({
     required this.onDelete,
     required this.onTap,
     required this.item,
     required this.isEditing,
+    this.isDeletable = true,
   }) : super(key: Key(item.id));
 
   @override
@@ -36,6 +38,9 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
   Widget build(BuildContext context) {
     return Dismissible(
       onDismissed: (_) => onDelete(),
+      direction: widget.isDeletable
+          ? DismissDirection.horizontal
+          : DismissDirection.none,
       background: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(

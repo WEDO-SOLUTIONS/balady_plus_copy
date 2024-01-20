@@ -17,7 +17,7 @@ class SearchHistory extends _$SearchHistory {
 
   Future<void> _load() async {
     final searchHistoryBox =
-        await ref.read(hiveProvider("${_hiveBox}_$scope").future);
+        await ref.read(hiveProvider('${_hiveBox}_$scope').future);
 
     final history = searchHistoryBox.values
         .map((e) => e as SearchHistoryItem)
@@ -25,22 +25,33 @@ class SearchHistory extends _$SearchHistory {
         .reversed
         .toList();
     final ids = history.map((e) => e.objectId!).toSet();
-    history.retainWhere((e) => ids.remove(e.objectId!));
+    history.retainWhere((e) => ids.remove(e.objectId));
     state = history;
   }
 
-  Future<void> put(SearchHistoryItem result) async {
+  Future<void> put(SearchHistoryItem item) async {
     final searchHistoryBox =
-        await ref.read(hiveProvider("${_hiveBox}_$scope").future);
+        await ref.read(hiveProvider('${_hiveBox}_$scope').future);
 
-    searchHistoryBox.add(result);
+    await searchHistoryBox.put(item.key, item);
+
+    await _load();
+  }
+
+  Future<void> delete(SearchHistoryItem item) async {
+    final searchHistoryBox =
+        await ref.read(hiveProvider('${_hiveBox}_$scope').future);
+
+    await searchHistoryBox.delete(item.key);
+
+    await _load();
   }
 
   Future<void> clear() async {
     final searchHistoryBox =
-        await ref.read(hiveProvider("${_hiveBox}_$scope").future);
+        await ref.read(hiveProvider('${_hiveBox}_$scope').future);
 
-    searchHistoryBox.clear();
+    await searchHistoryBox.clear();
     state = [];
   }
 }

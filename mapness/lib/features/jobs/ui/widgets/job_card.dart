@@ -4,27 +4,39 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/jobs_map.dart';
 import 'package:mapness/features/jobs/models/job_model.dart';
-import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
+import 'package:mapness/features/jobs/ui/widgets/ui/time_distance_indicator.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 
 class JobCard extends ConsumerWidget {
   final JobModel jobModel;
 
   const JobCard({
-    Key? key,
     required this.jobModel,
+    Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final briefInfo = ref.watch(briefRouteInfoProvider(
-      finishPoint: null,
-      navType: RouteSearchOptionsMessage.car,
-    ));
-    print(briefInfo.toString());
+    final longitude = double.tryParse(jobModel.location?.longitude ?? '');
+    final latitude = double.tryParse(jobModel.location?.latitude ?? '');
+
     return Material(
       child: GestureDetector(
         onTap: () {
-          if (jobModel.id == null) return;
+          if (jobModel.id == null) {
+            return;
+          }
+          ref.read(cameraPositionProvider.notifier).animateTo(
+                CameraPositionMessage(
+                  zoom: 15,
+                  bearing: 0,
+                  point: GeoPointMessage(
+                    longitude: double.parse(jobModel.location!.longitude!),
+                    latitude: double.parse(jobModel.location!.latitude!),
+                  ),
+                  tilt: 0,
+                ),
+              );
           JobsMapDetail(jobId: jobModel.id!).push(context);
         },
         child: Container(
@@ -37,22 +49,47 @@ class JobCard extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(jobModel.name ?? '',
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .accentM
-                      .apply(color: const Color(0xff1E2A36))),
-              Text(jobModel.provider?.name ?? '',
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .textS
-                      .apply(color: const Color(0xff1E2A36).withOpacity(.5))),
-              const SizedBox(height: 4),
-              Text(jobModel.description ?? '',
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .textS
-                      .apply(color: const Color(0xff1E2A36))),
+              Text(
+                jobModel.name ?? '',
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .accentM
+                    .copyWith(
+                      color: const Color(0xff1E2A36),
+                    ),
+              ),
+              Text(
+                jobModel.provider?.name ?? '',
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .textS
+                    .copyWith(
+                      color: const Color(0xff1E2A36).withOpacity(.5),
+                    ),
+              ),
+              if (jobModel.description != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: Text(
+                    jobModel.description ?? '',
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()!
+                        .textS
+                        .copyWith(
+                          color: const Color(0xff1E2A36),
+                        ),
+                  ),
+                ),
+              if (longitude != null && latitude != null)
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 10,
+                  ),
+                  child: TimeDistanceIndicator(
+                    latitude: latitude,
+                    longitude: longitude,
+                  ),
+                )
             ],
           ),
         ),

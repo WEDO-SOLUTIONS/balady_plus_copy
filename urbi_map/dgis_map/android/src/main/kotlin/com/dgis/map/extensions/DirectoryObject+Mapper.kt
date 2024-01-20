@@ -35,6 +35,7 @@ fun DirectoryObject.toMessage(externalIds: List<String>?): DirectoryObjectMessag
         .setWorkStatus(this.workStatus?.toMessage())
         .setLevelId(this.levelId?.value)
         .setBuildingLevels(this.buildingLevels?.toMessage())
+        .setBuildingInfo(this.buildingInfo.toMessage())
         .setEntrances(this.entrances.map {
             it.toMessage()
         })
@@ -275,6 +276,16 @@ fun BuildingLevels.toMessage(): BuildingLevelsMessage {
             it.toMessage()
         })
         .build()
+}
+
+fun BuildingInfo.toMessage(): BuildingInfoMessage {
+    return BuildingInfoMessage.Builder()
+            .setBuildingName(this.buildingName)
+            .setPurposeName(this.purposeName)
+            .setPurposeCode(this.purposeCode?.let {
+                it.value
+            })
+            .build()
 }
 
 fun LevelInfo.toMessage(): LevelInfoMessage {
