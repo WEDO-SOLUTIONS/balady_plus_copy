@@ -45,12 +45,15 @@ class ChatBotProvider extends BaseViewModel {
       provider.addListener(() {
         if (!provider.isLoading) {
           isLoading = false;
-            scrollController.animateTo(
-              scrollController.position.maxScrollExtent + 900,
-              curve: Curves.easeOut,
-              duration: const Duration(milliseconds: 300),
-            );
           notifyListeners();
+        }
+
+        if(scrollController.position.maxScrollExtent >= scrollController.offset) {
+          scrollController.animateTo(
+            scrollController.position.maxScrollExtent + 900,
+            curve: Curves.easeOut,
+            duration: const Duration(milliseconds: 300),
+          );
         }
       });
 

@@ -6,7 +6,7 @@ class ChatBotMessageModel extends ChatBotMessageEntities {
 
   ChatBotMessageModel({
     required super.question,
-    super.answer = '',
+    required super.answer,
     // super.isResponse = false,
     super.haveError = false,
   });

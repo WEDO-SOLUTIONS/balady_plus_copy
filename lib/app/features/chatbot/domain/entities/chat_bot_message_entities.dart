@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class ChatBotMessageEntities extends Equatable {
   final String question;
+  // final List<String> answerList;
   final String answer;
 
   final bool haveError;
@@ -19,7 +20,7 @@ class ChatBotMessageEntities extends Equatable {
   @override
   List<Object?> get props => [
         question,
-        answer,
+        answer.length,
         haveError,
         timeStampSend,
         timeStampReceived,
@@ -27,6 +28,7 @@ class ChatBotMessageEntities extends Equatable {
 
   ChatBotMessageEntities copyWith({
     final String? question,
+    // final List<String>? answer,
     final String? answer,
     final bool? haveError,
     final DateTime? timeStampReceived,

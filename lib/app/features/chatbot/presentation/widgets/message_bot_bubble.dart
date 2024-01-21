@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
+import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/chatbot/domain/entities/chat_bot_message_entities.dart';
@@ -30,6 +32,7 @@ class MessageBotBubble extends StatelessWidget {
             ChatBotBubble(
               body: CustomTextWidget(
                 messageProvide.message.value.question,
+                // "\u0631,\u0631, \u0631,\u0631,\u0631, \u0631",
                 textStyle: AppStyle.textFieldTitleTextStyle.copyWith(
                   color: Colors.white,
                 ),
@@ -48,6 +51,35 @@ class MessageBotBubble extends StatelessWidget {
                   body: Wrap(
                     alignment: WrapAlignment.end,
                     children: [
+                      // ValueListenableBuilder<ChatBotMessageEntities>(
+                      //   valueListenable: messageProvide.message,
+                      //   builder: (_, listMessages, child) {
+                      //     return Wrap(
+                      //       children: messageProvide.message.value.answer
+                      //           .map((message) => AnimatedTextKit(
+                      //                 // key: Key(message),
+                      //                 animatedTexts: [
+                      //                   TypewriterAnimatedText(
+                      //                     message,
+                      //                     textStyle: AppStyle
+                      //                         .textFieldTitleTextStyle
+                      //                         .copyWith(
+                      //                       color: AppColor.blackModern700Light,
+                      //                       fontFamily: GeneralKey.appFontType,
+                      //                     ),
+                      //                     speed:
+                      //                         const Duration(milliseconds: 50),
+                      //                   ),
+                      //                 ],
+                      //                 pause: const Duration(milliseconds: 100),
+                      //                 repeatForever: false,
+                      //                 isRepeatingAnimation: false,
+                      //                 totalRepeatCount: 2,
+                      //               ))
+                      //           .toList(),
+                      //     );
+                      //   },
+                      // ),
                       ValueListenableBuilder<ChatBotMessageEntities>(
                         valueListenable: messageProvide.message,
                         builder: (_, listMessages, child) {
@@ -59,6 +91,7 @@ class MessageBotBubble extends StatelessWidget {
                           );
                         },
                       ),
+
                       Selector<MessageChatBotProvider, bool>(
                         selector: (_, provider) => provider.isLoading,
                         builder: (_, isLoading, __) {
