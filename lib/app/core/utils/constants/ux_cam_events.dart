@@ -33,6 +33,7 @@ class UXCamEvents {
 
 // ChatBot
   static String openChatBotScreen = "Open_Chat_Bot_Screen"; //Done
+  static String sendQuestionChatBot = "Send_Question_Chat_Bot"; //Done
   static String sendMessageChatBotScreen =
       "Send_Message_Chat_Bot_Screen"; //Done
   static String responseMessageChatBotScreen =

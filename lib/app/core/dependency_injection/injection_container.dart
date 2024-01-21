@@ -4,6 +4,10 @@ import 'package:balady_plus/app/core/dependency_injection/features/profile/crm_r
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_bloc.dart';
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart'
     as calendar;
+import 'package:balady_plus/app/features/chatbot/data/data_sources/chat_bot_data_sources.dart';
+import 'package:balady_plus/app/features/chatbot/data/repositories/chat_bot_repository_implementation.dart';
+import 'package:balady_plus/app/features/chatbot/domain/repositories/chat_bot_repository.dart';
+import 'package:balady_plus/app/features/chatbot/domain/use_cases/chat_bot_use_cases.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart'
     as events;
@@ -223,4 +227,13 @@ void initialize() {
   );
 
   sl.registerLazySingleton(() => ForceUpdateViewModel());
+
+
+
+  sl.registerLazySingleton<ChatBotDataSources>(() => ChatBotDataSourcesImplementation(webService: sl()));
+  sl.registerLazySingleton<ChatBotRepository>(() => ChatBotRepositoryImplementation(sl()));
+  sl.registerLazySingleton(() => SendQuestionMessageChatBot(sl()));
+  // sl.registerLazySingleton(() => SendQuestionMessageChatBot());
+  // sl.registerLazySingleton(() => SendQuestionMessageChatBot());
+
 }

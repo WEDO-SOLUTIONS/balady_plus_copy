@@ -764,8 +764,9 @@ class ApiUrl {
 
   static const paymentURL = 'v1/payment-gateway/payment';
 
-  static const chatBot = 'v1/chatbot-services/chat';
 
+  static const chatBot = 'v1/chatbot-services/chat'; // not use this now
+  static const chatBotStream = 'v1/chatbot-services/chat-stream';
   //! POST
 
   //! Delete

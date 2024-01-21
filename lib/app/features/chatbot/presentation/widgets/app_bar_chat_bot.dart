@@ -1,6 +1,5 @@
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/features/chatbot/data/models/chat_bot_message.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/mvvm/chatboot_provider.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/widgets/close_chat_bot_popup.dart';
 import 'package:flutter/material.dart';
@@ -32,77 +31,85 @@ class AppBarChatBot extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: MediaQuery.of(context).viewPadding.top),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              IconButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (_) => const CloseChatBotPopup(),
-                  );
-                },
-                icon: const Icon(Icons.close),
-              ),
-            ],
-          ),
           Padding(
-            padding: const EdgeInsets.only(
-              right: 16,
-              left: 16,
-              bottom: 16,
-            ),
-            child: ValueListenableBuilder<List<ChatBotMessage>>(
-              valueListenable: provider.chatBotMessage,
-              builder: (_, listMessages, child) {
-                List<Widget> list = [
-                  SizedBox(
-                    width: listMessages.isEmpty ? 100 : 50,
-                    height: listMessages.isEmpty ? 100 : 50,
-                    child: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: Padding(
-                        padding: EdgeInsets.all(
-                          listMessages.isEmpty ? 16 : 8,
+            padding: const EdgeInsets.only(bottom: 14, top: 8),
+            child: MediaQuery(
+              data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
+              child: ValueListenableBuilder<List>(
+                valueListenable: provider.chatBotMessage,
+                builder: (_, listMessages, child) {
+                  List<Widget> list = [
+                    SizedBox(
+                      width: listMessages.isEmpty ? 85 : 45,
+                      height: listMessages.isEmpty ? 85 : 45,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: Padding(
+                          padding: EdgeInsets.all(
+                            listMessages.isEmpty ? 14 : 7,
+                          ),
+                          child: Image.asset(IconPath.chatBot),
                         ),
-                        child: Image.asset(IconPath.chatBot),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 12, height: 12),
-                  Text(
-                    'municipal_advisor'.tr(),
-                    style: AppStyle.violationCreateTitle.copyWith(),
-                  ),
-                  listMessages.isEmpty
-                      ? Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                    const SizedBox(width: 12, height: 8),
+                    Text(
+                      'municipal_advisor'.tr(),
+                      style: AppStyle.countTextAthkarStyle.copyWith(),
+                    ),
+                    listMessages.isEmpty
+                        ? Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      margin: const EdgeInsets.all(12),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'chat_bot_message_welcome'.tr(),
+                          style: AppStyle
+                              .violationSelectOptionSubtitleStyle
+                              .copyWith(
+                            color: Colors.black,
                           ),
-                          margin: const EdgeInsets.all(16),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'chat_bot_message_welcome'.tr(),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                        : const SizedBox()
+                  ];
+                  return Stack(
+                    alignment: AlignmentDirectional.topEnd,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: listMessages.isEmpty ? 14 : 6,
+                        ),
+                        child: listMessages.isEmpty
+                            ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: list,
                         )
-                      : const SizedBox()
-                ];
-                return listMessages.isEmpty
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: list,
-                      )
-                    : Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: list,
-                      );
-              },
+                            : Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: list,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (_) => const CloseChatBotPopup(),
+                          );
+                        },
+                        icon: const Icon(Icons.close),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ],
