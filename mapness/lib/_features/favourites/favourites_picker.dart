@@ -96,7 +96,7 @@ class FavouritesPicker extends ConsumerWidget {
           Expanded(
             child: Container(
               color: const Color(0xffF4F4F5),
-              child: state.items.isEmpty
+              child: state?.items.isEmpty ?? false
                   ? Padding(
                       padding: const EdgeInsets.only(
                         left: 16,
@@ -117,10 +117,10 @@ class FavouritesPicker extends ConsumerWidget {
                         right: 16,
                         top: 16,
                       ),
-                      itemCount: state.items.length,
+                      itemCount: state?.items.length ?? 0,
                       separatorBuilder: (_, __) => const SizedBox(height: 8),
                       itemBuilder: (_, index) {
-                        final item = state.items[index];
+                        final item = state!.items[index];
 
                         /// item
                         return FavouriteItemWidget(

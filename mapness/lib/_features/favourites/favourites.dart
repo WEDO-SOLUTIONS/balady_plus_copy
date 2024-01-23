@@ -37,178 +37,182 @@ class _FavouritesState extends ConsumerState<Favourites> {
   @override
   Widget build(BuildContext context) {
     final asyncState = ref.watch(favouriteRepositoryProvider);
-
-    if (asyncState.isLoading) {
-      return const Material(
-        color: Color(0xffF4F4F5),
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
-    if (asyncState.hasError) {
-      return ErrorSheet(
+    return asyncState.map(
+      error: (error) => ErrorSheet(
         buttonLabel: 'Reload',
         onClose: () => context.pop(),
         onRetry: () {
           ref.invalidate(favouriteRepositoryProvider);
         },
-      );
-    }
-    final state = asyncState.requireValue;
-
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Directionality(
-        textDirection: TextDirection.rtl,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Container(
-              color: const Color(0x1242909B),
-              child: SafeArea(
-                bottom: false,
-                child: FavouritesHeader(
-                  isEditing: isEditing,
-                  onEditTap: toggleEditing,
-                  onDoneTap: toggleEditing,
-                  onDeleteAllTap: () async {
-                    // TODO(someone): rewrite with nav 2.0 when gorouter fix bug
-                    final result = await showDialog(
-                      barrierColor: Colors.transparent,
-                      useSafeArea: false,
-                      context: context,
-                      builder: (contextDialog) => ProviderScope(
-                        parent: ProviderScope.containerOf(context),
-                        child: Theme(
-                          data: Theme.of(context),
-                          child: MediaQuery(
-                            data: MediaQuery.of(context),
-                            child: Directionality(
-                              textDirection: Directionality.of(context),
-                              child: Localizations.override(
-                                context: context,
-                                child: DeleteAllContent(
-                                  onConfirm: () =>
-                                      Navigator.of(contextDialog).pop(true),
-                                  onCancel: () =>
-                                      Navigator.of(contextDialog).pop(false),
+      ),
+      loading: (_) => const Material(
+        color: Color(0xffF4F4F5),
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
+      data: (data) {
+        final state = data.value;
+        return Scaffold(
+          backgroundColor: Colors.white,
+          body: Directionality(
+            textDirection: TextDirection.rtl,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Container(
+                  color: const Color(0x1242909B),
+                  child: SafeArea(
+                    bottom: false,
+                    child: FavouritesHeader(
+                      isEditing: isEditing,
+                      onEditTap: toggleEditing,
+                      onDoneTap: toggleEditing,
+                      onDeleteAllTap: () async {
+                        // TODO(someone): rewrite with nav 2.0 when gorouter fix bug
+                        final result = await showDialog(
+                          barrierColor: Colors.transparent,
+                          useSafeArea: false,
+                          context: context,
+                          builder: (contextDialog) => ProviderScope(
+                            parent: ProviderScope.containerOf(context),
+                            child: Theme(
+                              data: Theme.of(context),
+                              child: MediaQuery(
+                                data: MediaQuery.of(context),
+                                child: Directionality(
+                                  textDirection: Directionality.of(context),
+                                  child: Localizations.override(
+                                    context: context,
+                                    child: DeleteAllContent(
+                                      onConfirm: () =>
+                                          Navigator.of(contextDialog).pop(true),
+                                      onCancel: () =>
+                                          Navigator.of(contextDialog)
+                                              .pop(false),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                    );
+                        );
 
-                    if (result == true) {
-                      if (!ref.context.mounted) {
-                        return;
-                      }
-                      await ref
-                          .read(favouriteRepositoryProvider.notifier)
-                          .deleteAll();
-                    }
-                  },
+                        if (result == true) {
+                          if (!ref.context.mounted) {
+                            return;
+                          }
+                          await ref
+                              .read(favouriteRepositoryProvider.notifier)
+                              .deleteAll();
+                        }
+                      },
+                    ),
+                  ),
                 ),
-              ),
-            ),
 
-            /// head items
-            Ink(
-              padding: const EdgeInsets.all(16),
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  FavouritesToggle(isEditing: isEditing),
-                  const SizedBox(height: 8),
-                  PinnedPlaceWidget(
-                    key: Key('home${state.home?.id}'),
-                    title: state.home?.title ?? context.l10n.home,
-                    address: state.home?.subtitle ?? context.l10n.addAddress,
-                    iconAsset: 'assets/icons/svg/ic_home.svg',
-                    isEditing: isEditing && state.home != null,
-                    isAdded: state.home != null,
-                    onDelete: () => _deleteItem(state.home!),
-                    onTap: state.home == null
-                        ? () => const FavouritesSearchRoute(
-                              markerType: FavouriteItemMarkerType.home,
-                            ).push(context)
-                        : () => PoiMapRoute(
-                              dgisObjectId: int.parse(state.home!.entity!.id),
-                            ).replace(context),
+                /// head items
+                Ink(
+                  padding: const EdgeInsets.all(16),
+                  decoration: ShapeDecoration(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)),
                   ),
-                  const SizedBox(height: 8),
-                  PinnedPlaceWidget(
-                    key: Key('work${state.work?.id}'),
-                    title: state.work?.title ?? context.l10n.work,
-                    address: state.work?.subtitle ?? context.l10n.addAddress,
-                    iconAsset: 'assets/icons/svg/ic_case.svg',
-                    isEditing: isEditing && state.work != null,
-                    isAdded: state.work != null,
-                    onDelete: () => _deleteItem(state.work!),
-                    onTap: state.work == null
-                        ? () => const FavouritesSearchRoute(
-                              markerType: FavouriteItemMarkerType.work,
-                            ).push(context)
-                        : () => PoiMapRoute(
-                              dgisObjectId: int.parse(state.work!.entity!.id),
-                            ).replace(context),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Container(
-                color: const Color(0xffF4F4F5),
-                child: state.items.isEmpty
-                    ? Padding(
-                        padding: const EdgeInsets.only(
-                          left: 16,
-                          right: 16,
-                          top: 63,
-                        ),
-                        child: EmptyResultWidget(
-                          text: context.l10n
-                              .toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon,
-                        ),
-                      )
-                    :
-
-                    /// items
-                    ListView.separated(
-                        padding: const EdgeInsets.only(
-                          left: 16,
-                          right: 16,
-                          top: 16,
-                        ),
-                        itemCount: state.items.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 8),
-                        itemBuilder: (_, index) {
-                          final item = state.items[index];
-
-                          /// item
-                          return FavouriteItemWidget(
-                            onDelete: () => _deleteItem(item),
-                            onTap: () => PoiMapRoute(
-                              dgisObjectId: int.parse(item.entity!.id),
-                            ).replace(context),
-                            isEditing: isEditing,
-                            item: item,
-                          );
-                        },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      FavouritesToggle(isEditing: isEditing),
+                      const SizedBox(height: 8),
+                      PinnedPlaceWidget(
+                        key: Key('home${state?.home?.id}'),
+                        title: state?.home?.title ?? context.l10n.home,
+                        address:
+                            state?.home?.subtitle ?? context.l10n.addAddress,
+                        iconAsset: 'assets/icons/svg/ic_home.svg',
+                        isEditing: isEditing && state?.home != null,
+                        isAdded: state?.home != null,
+                        onDelete: () => _deleteItem(state!.home!),
+                        onTap: state?.home == null
+                            ? () => const FavouritesSearchRoute(
+                                  markerType: FavouriteItemMarkerType.home,
+                                ).push(context)
+                            : () => PoiMapRoute(
+                                  dgisObjectId:
+                                      int.parse(state!.home!.entity!.id),
+                                ).replace(context),
                       ),
-              ),
+                      const SizedBox(height: 8),
+                      PinnedPlaceWidget(
+                        key: Key('work${state?.work?.id}'),
+                        title: state?.work?.title ?? context.l10n.work,
+                        address:
+                            state?.work?.subtitle ?? context.l10n.addAddress,
+                        iconAsset: 'assets/icons/svg/ic_case.svg',
+                        isEditing: isEditing && state?.work != null,
+                        isAdded: state?.work != null,
+                        onDelete: () => _deleteItem(state!.work!),
+                        onTap: state?.work == null
+                            ? () => const FavouritesSearchRoute(
+                                  markerType: FavouriteItemMarkerType.work,
+                                ).push(context)
+                            : () => PoiMapRoute(
+                                  dgisObjectId:
+                                      int.parse(state!.work!.entity!.id),
+                                ).replace(context),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    color: const Color(0xffF4F4F5),
+                    child: state?.items.isEmpty == true
+                        ? Padding(
+                            padding: const EdgeInsets.only(
+                              left: 16,
+                              right: 16,
+                              top: 63,
+                            ),
+                            child: EmptyResultWidget(
+                              text: context.l10n
+                                  .toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon,
+                            ),
+                          )
+                        :
+
+                        /// items
+                        ListView.separated(
+                            padding: const EdgeInsets.only(
+                              left: 16,
+                              right: 16,
+                              top: 16,
+                            ),
+                            itemCount: state?.items.length ?? 0,
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(height: 8),
+                            itemBuilder: (_, index) {
+                              final item = state!.items[index];
+
+                              /// item
+                              return FavouriteItemWidget(
+                                onDelete: () => _deleteItem(item),
+                                onTap: () => PoiMapRoute(
+                                  dgisObjectId: int.parse(item.entity!.id),
+                                ).replace(context),
+                                isEditing: isEditing,
+                                item: item,
+                              );
+                            },
+                          ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

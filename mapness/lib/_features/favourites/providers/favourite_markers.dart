@@ -77,7 +77,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
     final markers = <Marker>[];
     final favItems = favItemsAsync.requireValue;
 
-    for (var element in favItems.items) {
+    for (var element in favItems?.items ?? []) {
       markers.add(
         constructMarker(
           element,
@@ -88,10 +88,10 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
     }
 
     /// add home if exists
-    if (favItems.home != null) {
+    if (favItems?.home != null) {
       markers.add(
         constructMarker(
-          favItems.home!,
+          favItems!.home!,
           "packages/mapness/assets/icons/svg/ic_home_pin.svg",
           router,
         ),
@@ -99,10 +99,10 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
     }
 
     /// add work if exists
-    if (favItems.work != null) {
+    if (favItems?.work != null) {
       markers.add(
         constructMarker(
-          favItems.work!,
+          favItems!.work!,
           "packages/mapness/assets/icons/svg/ic_work_pin.svg",
           router,
         ),

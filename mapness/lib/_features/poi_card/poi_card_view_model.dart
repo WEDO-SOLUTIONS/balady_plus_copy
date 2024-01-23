@@ -3,12 +3,10 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
-import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/poi_card/enums/contacts_info_type.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -67,63 +65,28 @@ class PoiCardViewModel {
     }
   }
 
-  FavouriteItem? getFavouriteOrNull(PoiModel data) {
-    final favouritesState = ref.read(favouriteRepositoryProvider);
-    if (!favouritesState.hasValue) {
-      return null;
-    }
-    final objectId = data.directoryObjectMessage?.id?.objectId;
 
-    final requireValue = favouritesState.requireValue;
-
-    final isFavourite = [
-      ...requireValue.items,
-      requireValue.home,
-      requireValue.work,
-    ].nonNulls.firstWhereOrNull(
-          (element) => element.entity?.id == '$objectId',
-        );
-    return isFavourite;
-  }
-
-  bool isFavourite(PoiModel data) {
-    final favouritesState = ref.read(favouriteRepositoryProvider);
-    if (!favouritesState.hasValue) {
-      return false;
-    }
-    final objectId = data.directoryObjectMessage?.id?.objectId;
-
-    final requireValue = favouritesState.requireValue;
-    final isWork = requireValue.work?.id == '$objectId';
-    final isHome = requireValue.home?.id == '$objectId';
-
-    final isFavourite = requireValue.items.firstWhereOrNull(
-      (element) => element.entity?.id == '$objectId',
-    );
-    return isFavourite != null || isWork || isHome;
-  }
-
-  void removeFromFavourite(FavouriteItem data) {
-    ref.read(favouriteRepositoryProvider.notifier).delete(data);
-  }
-
-  void addToFavourites(DirectoryObjectMessage data) {
-    ref.read(favouriteRepositoryProvider.notifier).addItem(
-          FavouriteItem(
-            coordinates: Coordinates(
-              latitude: data.markerPosition?.latitude ?? 24.712301,
-              longitude: data.markerPosition?.longitude ?? 46.674175,
-            ),
-            id: '${data.id?.objectId ?? 'id'}',
-            subtitle: data.subtitle,
-            title: data.title,
-            entity: FavouriteItemEntity(
-              id: '${data.id?.objectId ?? '70030076201324251'}',
-              sourceType: EntitySourceType.urbi,
-            ),
-          ),
-        );
-  }
+  // void removeFromFavourite(FavouriteItem data) {
+  //   ref.read(favouriteRepositoryProvider.notifier).delete(data);
+  // }
+  //
+  // void addToFavourites(DirectoryObjectMessage data) {
+  //   ref.read(favouriteRepositoryProvider.notifier).addItem(
+  //         FavouriteItem(
+  //           coordinates: Coordinates(
+  //             latitude: data.markerPosition?.latitude ?? 24.712301,
+  //             longitude: data.markerPosition?.longitude ?? 46.674175,
+  //           ),
+  //           id: '${data.id?.objectId ?? 'id'}',
+  //           subtitle: data.subtitle,
+  //           title: data.title,
+  //           entity: FavouriteItemEntity(
+  //             id: '${data.id?.objectId ?? '70030076201324251'}',
+  //             sourceType: EntitySourceType.urbi,
+  //           ),
+  //         ),
+  //       );
+  // }
 
   void resetMapControlsState() {
     ref.read(mapControlsProvider.notifier).update(

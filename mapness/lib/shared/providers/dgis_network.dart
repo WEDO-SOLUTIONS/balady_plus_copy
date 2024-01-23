@@ -1,7 +1,9 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
+import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:mapness/shared/lib/auth/auth_token_interceptors.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
@@ -30,7 +32,7 @@ class _DGisNetwork extends _$DGisNetwork {
     final uuid = ref.watch(uuidProviderProvider);
     final version = ref.watch(packageInfoProvider).value?.version;
 
-    return Dio(BaseOptions(
+    final dio = Dio(BaseOptions(
       responseType: ResponseType.bytes,
       baseUrl: url,
       sendTimeout: timeout,
@@ -46,26 +48,38 @@ class _DGisNetwork extends _$DGisNetwork {
         "X-Language": appLanguage == Language.arabic ? "ar" : "en",
       },
       // validateStatus: (status) => status != null && status < 500,
-    ))
-      ..interceptors.addAll(
-        [
-          PrettyDioLogger(
-            /// Since protobufs are just binary files what a purpose to print it
-            responseBody: false,
+    ));
+    dio.interceptors.addAll(
+      [
+        PrettyDioLogger(
+          /// Since protobufs are just binary files what a purpose to print it
+          responseBody: false,
+        ),
+        AuthTokenInterceptor.tokenInterceptor(
+          ref,
+          BaseOptions(
+            responseType: ResponseType.bytes,
+            baseUrl: url,
+            sendTimeout: timeout,
+            receiveTimeout: timeout,
+            connectTimeout: timeout,
           ),
-          AuthTokenInterceptor.tokenInterceptor(
-            ref,
-            BaseOptions(
-              responseType: ResponseType.bytes,
-              baseUrl: url,
-              sendTimeout: timeout,
-              receiveTimeout: timeout,
-              connectTimeout: timeout,
-            ),
-          ),
-          _dioCacheManager.interceptor,
-        ],
-      );
+        ),
+        _dioCacheManager.interceptor,
+        RetryInterceptor(
+          dio: dio,
+          logPrint: (message) {
+            log('RETRY LOG: $message');
+          }, // specify log function (optional)
+          retries: 2, // retry count (optional)
+          retryDelays: const [
+            Duration(seconds: 1), // wait 1 sec before the first retry
+            Duration(seconds: 1), // wait 2 sec before the second retry
+          ],
+        ),
+      ],
+    );
+    return dio;
   }
 }
 
