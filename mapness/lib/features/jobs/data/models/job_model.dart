@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+//TODO(Scroollocker): change to equatable
 @immutable
 class JobModel {
   final String? id;
@@ -63,7 +64,9 @@ class JobModel {
 
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other is JobModel &&
         other.id == id &&
@@ -119,7 +122,9 @@ class LocationModel {
 
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other is LocationModel &&
         other.latitude == latitude &&
@@ -147,7 +152,9 @@ class ProviderModel {
 
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other is ProviderModel && other.id == id && other.name == name;
   }
@@ -174,7 +181,9 @@ class ContractTypeModel {
 
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other is ContractTypeModel && other.id == id && other.name == name;
   }

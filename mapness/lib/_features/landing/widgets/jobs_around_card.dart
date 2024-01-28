@@ -1,6 +1,7 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/app/routes/jobs_map.dart';
 import 'package:mapness/features/jobs/providers/jobs_statistic_provider.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
@@ -21,7 +22,7 @@ class JobsAroundCard extends ConsumerWidget {
     return authState.maybeWhen(
       orElse: () => const SizedBox.shrink(),
       data: (_) => GestureDetector(
-        onTap: () => _openJobs(context),
+        onTap: () => _openJobs(context, ref),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
@@ -48,7 +49,7 @@ class JobsAroundCard extends ConsumerWidget {
                         children: [
                           LabeledElevatedButton(
                             label: context.l10n.findJob,
-                            onPressed: () => _openJobs(context),
+                            onPressed: () => _openJobs(context, ref),
                             padding: const EdgeInsets.symmetric(
                               horizontal: 42,
                               vertical: 10,
@@ -87,7 +88,7 @@ class JobsAroundCard extends ConsumerWidget {
                           ),
                           LabeledElevatedButton(
                             label: context.l10n.findJob,
-                            onPressed: () => _openJobs(context),
+                            onPressed: () => _openJobs(context, ref),
                             padding: const EdgeInsets.symmetric(
                               horizontal: 42,
                               vertical: 10,
@@ -106,10 +107,14 @@ class JobsAroundCard extends ConsumerWidget {
     );
   }
 
-  void _openJobs(BuildContext context) {
+  void _openJobs(BuildContext context, WidgetRef ref) {
     if (!context.mounted) {
       return;
     }
+
+    //Hide all quick-filters
+    ref.read(searchByRubricsQueryProvider.notifier).update(null);
+
     CommonFunctions.authOrOpen(
       context,
       callback: () {

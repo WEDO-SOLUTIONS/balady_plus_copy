@@ -143,7 +143,8 @@ class DgisMapController {
       _instance.overrideLocales(locales);
 
   /// Changes state of location follow. Observe state listening to [locationFollowEvents].
-  Future<void> changeFollowState() => _instance.changeFollowState();
+  Future<void> setFollowState(FollowStateMessage state) =>
+      _instance.setFollowState(state);
 
   /// Changes selected indoor level. Observe state listening to [indoorActiveIndex].
   Future<void> selectIndoorLevel(IndoorLevel level) =>
@@ -337,12 +338,13 @@ class DgisMapController {
 
   /// Creates [MapObjectManagerMessage] with clustering.
   Future<MapObjectManagerMessage> createMapObjectManagerWithClustering(
-          ClusteringMapObjectManager manager) =>
-      _instance.createMapObjectManagerWithClustering(manager);
+          ClusteringMapObjectManager manager,
+          {String? layerId}) =>
+      _instance.createMapObjectManagerWithClustering(manager, layerId: layerId);
 
   /// Creates [MapObjectManagerMessage] without clustering.
-  Future<MapObjectManagerMessage> createMapObjectManager() =>
-      _instance.createMapObjectManager();
+  Future<MapObjectManagerMessage> createMapObjectManager({String? layerId}) =>
+      _instance.createMapObjectManager(layerId: layerId);
 
   /// Removes [MapObjectManagerMessage].
   Future<void> removeMapObjectManager(MapObjectManagerMessage manager) =>
@@ -530,7 +532,7 @@ class DgisMapController {
     );
   }
 
-  Future<bool> toggleHeatmap({required WeatherMapMessage message})=>
+  Future<bool> toggleHeatmap({required WeatherMapMessage message}) =>
       _instance.toggleHeatmap(message);
 
   Future<List<PackageMessage?>> listPackages() => _instance.listPackages();

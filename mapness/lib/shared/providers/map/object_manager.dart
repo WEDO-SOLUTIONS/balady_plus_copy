@@ -10,13 +10,19 @@ class MapObjectManager extends _$MapObjectManager {
   @override
   Future<MapObjectManagerMessage> build({
     required String named,
+    String? layerId = '920277',
     ClusteringMapObjectManager? clustering,
   }) async {
     final dgisController = await ref.watch(dgisControllerProvider.future);
 
     final manager = clustering != null
-        ? await dgisController.createMapObjectManagerWithClustering(clustering)
-        : await dgisController.createMapObjectManager();
+        ? await dgisController.createMapObjectManagerWithClustering(
+            clustering,
+            layerId: layerId,
+          )
+        : await dgisController.createMapObjectManager(
+            layerId: layerId,
+          );
 
     ref.onDispose(() async {
       await dgisController.removeAllMarkers(fromManager: manager);
@@ -56,15 +62,16 @@ class MapObjectManager extends _$MapObjectManager {
 
   Future<void> removeMarkerById(String markerId) async {
     await ref.read(dgisControllerProvider).value?.removeMarker(
-         markerId,
+          markerId,
           fromManager: await future,
         );
   }
 
-  Future<void>removeAllPolyLines()async {
+  Future<void> removeAllPolyLines() async {
     await ref.read(dgisControllerProvider).value?.removeAllPolylines();
   }
-  Future<void>removeAllPolygons()async {
+
+  Future<void> removeAllPolygons() async {
     await ref.read(dgisControllerProvider).value?.removeAllPolygons();
   }
 }

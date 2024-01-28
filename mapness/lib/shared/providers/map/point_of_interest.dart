@@ -1,5 +1,5 @@
 import 'package:dgis_map/library.dart';
-import 'package:mapness/_features/common/providers/map_viewport_changes.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
@@ -54,7 +54,12 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   );
 
   // get viewport
-  final viewPort = ref.read(mapViewportChangesProvider);
+  final visibleRect = ref
+      .read(dgisControllerProvider.notifier)
+      .visibleRectSubject
+      .value
+      .visibleRect;
+  final viewPort = CommonFunctions.getPolygonFromRect(visibleRect);
   final box = viewPort.getBounds();
 
   // Check if point is in viewport

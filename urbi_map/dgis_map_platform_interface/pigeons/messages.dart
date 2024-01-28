@@ -1016,6 +1016,12 @@ enum VendorConfigMessage {
   momrahStg,
 }
 
+enum FollowStateMessage {
+  off,
+  followPosition,
+  followDirection,
+}
+
 @ConfigurePigeon(
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
@@ -1040,7 +1046,7 @@ abstract class MapApi {
   void zoomUp(ZoomControlMessage type);
 
   @async
-  void changeFollowState();
+  void setFollowState(FollowStateMessage state);
 
   @async
   void selectIndoorLevel(int index);
@@ -1167,10 +1173,13 @@ abstract class MapApi {
   @async
   MapObjectManagerMessage createMapObjectManagerWithClustering(
     ClusteringMapObjectManagerOptionsMessage message,
+    String? layerId,
   );
 
   @async
-  MapObjectManagerMessage createMapObjectManager();
+  MapObjectManagerMessage createMapObjectManager(
+    String? layerId,
+  );
 
   @async
   void removeMapObjectManager(MapObjectManagerMessage id);

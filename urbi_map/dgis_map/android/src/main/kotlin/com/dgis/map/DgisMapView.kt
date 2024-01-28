@@ -123,8 +123,8 @@ class DgisMapView(
         result?.success(null)
     }
 
-    override fun changeFollowState(result: Messages.Result<Void>?) {
-        locationControlHandler?.onTap()
+    override fun setFollowState(state: FollowStateMessage, result: Messages.Result<Void>?) {
+        locationControlHandler?.setFollowState(state)
 
         result?.success(null)
     }
@@ -496,13 +496,17 @@ class DgisMapView(
 
     override fun createMapObjectManagerWithClustering(
             message: ClusteringMapObjectManagerOptionsMessage,
+            layerId: String?,
             result: Messages.Result<MapObjectManagerMessage>?
     ) {
-        objectTapHandler?.createClusteringMapObjectManager(message, result)
+        objectTapHandler?.createClusteringMapObjectManager(message, layerId, result)
     }
 
-    override fun createMapObjectManager(result: Messages.Result<MapObjectManagerMessage>?) {
-        objectTapHandler?.createMapObjectManager(result)
+    override fun createMapObjectManager(
+        layerId: String?,
+        result: Messages.Result<MapObjectManagerMessage>?
+    ) {
+        objectTapHandler?.createMapObjectManager(layerId, result)
     }
 
     override fun removeMapObjectManager(

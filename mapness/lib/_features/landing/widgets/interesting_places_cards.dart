@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/interesting_places.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
+import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/ui/sheets/error_sheet.dart';
+import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 
 import 'places_horizontal_list.dart';
 
@@ -10,16 +15,39 @@ class InterestingPlacesCardsList extends ConsumerWidget {
   const InterestingPlacesCardsList({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final places = ref.watch(interestingPlacesProvider).where((e) {
-      return e.tags.contains(
-        proto.InterestingPlaceTag.INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL,
-      );
-    }).toList();
+  Widget build(BuildContext context, WidgetRef ref) =>
+      ref.watch(interestingPlacesProvider).when(
+            data: (items) {
+              final places = items
+                  .where(
+                    (e) => e.tags.contains(
+                      proto.InterestingPlaceTag
+                          .INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL,
+                    ),
+                  )
+                  .toList();
 
-    return PlacesHorizontalList(
-      title: context.l10n.placesToVisit,
-      places: places,
-    );
-  }
+              return PlacesHorizontalList(
+                title: context.l10n.placesToVisit,
+                places: places,
+                onItemTap: (index) {
+                  final objectId = int.tryParse(places[index].entity.id) ?? 0;
+                  ref.read(urbiMetricsProvider.notifier).logEvent(
+                    'poi/open_interesting_place',
+                    {
+                      'id': objectId,
+                      'title': places[index].titleOrFallback(
+                        locale: AppLocalizationsEn(),
+                      ),
+                    },
+                  );
+                  PoiMapRoute.open(context, objectId);
+                },
+              );
+            },
+            error: (error, trace) => ErrorSheet(
+              onRetry: () => ref.invalidate(interestingPlacesProvider),
+            ),
+            loading: () => const LoadingSheet(),
+          );
 }

@@ -92,7 +92,7 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<void> onZoomAction(ZoomControlType btn, {required bool isPressed});
 
-  Future<void> changeFollowState();
+  Future<void> setFollowState(FollowStateMessage state);
 
   Future<void> selectIndoorLevel(int index);
 
@@ -206,10 +206,13 @@ abstract class DgisMapPlugin extends PlatformInterface {
   Future<void> removeAllMarkers(MapObjectManagerMessage? manager);
 
   Future<MapObjectManagerMessage> createMapObjectManagerWithClustering(
-    ClusteringMapObjectManager manager,
-  );
+    ClusteringMapObjectManager manager, {
+    String? layerId,
+  });
 
-  Future<MapObjectManagerMessage> createMapObjectManager();
+  Future<MapObjectManagerMessage> createMapObjectManager({
+    String? layerId,
+  });
 
   Future<void> removeMapObjectManager(MapObjectManagerMessage manager);
 

@@ -1,7 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entry_point.dart';
-import 'package:mapness/features/jobs/models/job_distance_info.dart';
+import 'package:mapness/features/jobs/data/models/job_distance_info.dart';
 import 'package:mapness/shared/lib/geo/geo_utils.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';

@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:mapness/_features/common/providers/map_viewport_changes.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart';
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:geobase/geobase.dart' as gb;
 
@@ -14,12 +15,17 @@ class StoriesRepo extends _$StoriesRepo {
   Future<StoriesResponse> build() async {
     final dio = await ref.watch(dGisNetworkProvider.future);
 
-    ref.listen(
-      mapViewportChangesProvider,
-      (_, next) async {
-        state = AsyncValue.data(await _fetch(dio, next));
-      },
-    );
+    final subscription = ref
+        .read(dgisControllerProvider.notifier)
+        .visibleRectSubject
+        .listen((event) async {
+      final polygon = CommonFunctions.getPolygonFromRect(event.visibleRect);
+      state = AsyncValue.data(await _fetch(dio, polygon));
+    });
+
+    ref.onDispose(() {
+      subscription.cancel();
+    });
 
     return await _fetch(dio);
   }

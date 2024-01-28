@@ -11,7 +11,7 @@ final GeoPointMessage kaabaLocation =
 @riverpod
 class KaabaBearing extends _$KaabaBearing {
   @override
-  double build() {
+  double? build() {
     final dgisController = ref.watch(dgisControllerProvider);
     ref.listen(
       locationProvider,
@@ -22,6 +22,6 @@ class KaabaBearing extends _$KaabaBearing {
       },
     );
 
-    return 0;
+    return null;
   }
 }

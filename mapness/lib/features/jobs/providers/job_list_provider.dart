@@ -1,6 +1,7 @@
 import 'package:mapness/entry_point.dart';
-import 'package:mapness/features/jobs/models/job_list_model.dart';
-import 'package:mapness/features/jobs/models/job_response_model.dart';
+import 'package:mapness/features/jobs/data/models/job_list_model.dart';
+import 'package:mapness/features/jobs/data/models/job_response_model.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/dgis_hmac_netwrok.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -25,7 +26,10 @@ class JobList extends _$JobList {
       _isLoading = true;
       final dio = await ref.read(dgisHmacNetwrokProvider.future);
 
-      final response = await dio.get('/published/jobs', queryParameters: {
+      final env = await ref.read(dgisEnvironmentProvider.future);
+      final jobsUrl = '${env.jobsApi}/published/jobs';
+
+      final response = await dio.get(jobsUrl, queryParameters: {
         'page-no': _page,
         'page-size': _size,
         'sort': sort,

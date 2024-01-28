@@ -3,7 +3,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/jobs_map.dart';
-import 'package:mapness/features/jobs/models/job_model.dart';
+import 'package:mapness/features/jobs/data/models/job_model.dart';
 import 'package:mapness/features/jobs/ui/widgets/ui/time_distance_indicator.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 

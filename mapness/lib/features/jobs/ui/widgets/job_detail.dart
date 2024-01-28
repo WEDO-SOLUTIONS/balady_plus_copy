@@ -2,7 +2,7 @@ import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/features/jobs/models/job_model.dart';
+import 'package:mapness/features/jobs/data/models/job_model.dart';
 import 'package:mapness/features/jobs/providers/job_detail_provider.dart';
 import 'package:mapness/features/jobs/ui/widgets/ui/expandable_container.dart';
 import 'package:mapness/features/jobs/ui/widgets/ui/job_button.dart';

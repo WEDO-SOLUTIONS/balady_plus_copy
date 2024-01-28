@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
+import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/_features/weather/domain/enum/weather_enum.dart';
 import 'package:mapness/_features/weather/provider/weather_map_controls.dart';
 import 'package:mapness/_features/weather/widgets/weather_state_icon.dart';
-import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 
 import 'provider/weather_map_controller.dart';
 
@@ -59,7 +59,9 @@ class WeatherControls extends ConsumerWidget {
                       SizedBox(
                         height: 8,
                       ),
-                      FollowControl(),
+                      FollowControl(
+                        onlyFollowDirection: false,
+                      ),
                     ],
                   ),
                 ],
@@ -79,9 +81,9 @@ class Legend extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final weatherMapState = ref.watch(weatherMapControllerProvider());
 
-    var measures = weatherMapState.type.measures();
-    var measureUnit = weatherMapState.type.measureUnit();
-    var style = Theme.of(context)
+    final measures = weatherMapState.type.measures();
+    final measureUnit = weatherMapState.type.measureUnit();
+    final style = Theme.of(context)
         .extension<ThemeTextStyles>()!
         .accentXS
         .copyWith(color: const Color(0xff1E2A36));
@@ -103,29 +105,31 @@ class Legend extends ConsumerWidget {
         Container(
           width: 30,
           decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(8.0),
-                bottomRight: Radius.circular(8.0),
-              ),
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xffAA354D),
-                    Color(0xffF546CD),
-                    Color(0xffF54681),
-                    Color(0xffF54832),
-                    Color(0xffFD7233),
-                    Color(0xffF9A432),
-                    Color(0xffFED43D),
-                    Color(0xffFFF832),
-                    Color(0xffA9F91D),
-                    Color(0xff94D959),
-                    Color(0xff34D36D),
-                    Color(0xff33F196),
-                    Color(0xff99E6F9),
-                    Color(0xff6AC1F8),
-                  ])),
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(8.0),
+              bottomRight: Radius.circular(8.0),
+            ),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xffAA354D),
+                Color(0xffF546CD),
+                Color(0xffF54681),
+                Color(0xffF54832),
+                Color(0xffFD7233),
+                Color(0xffF9A432),
+                Color(0xffFED43D),
+                Color(0xffFFF832),
+                Color(0xffA9F91D),
+                Color(0xff94D959),
+                Color(0xff34D36D),
+                Color(0xff33F196),
+                Color(0xff99E6F9),
+                Color(0xff6AC1F8),
+              ],
+            ),
+          ),
           child: Padding(
             padding: const EdgeInsets.only(bottom: 4, top: 4),
             child: Column(

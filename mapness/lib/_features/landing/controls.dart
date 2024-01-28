@@ -67,24 +67,13 @@ class MapControls extends ConsumerWidget {
                             const Spacer(),
                             const IndoorControl(),
                             const Spacer(),
-                            // MapButton(
-                            //   child: Image.asset(
-                            //     "assets/images/beta_icon.png",
-                            //     height: 44,
-                            //   ),
-                            //   onTap: () {
-                            //     Stories.showOnboarding(
-                            //         context, StoryTypes.route, 'route');
-                            //   },
-                            // ),
-                            // const SizedBox(height: 8),
                             Row(
                               children: [
                                 MapButton(
                                   child: SvgPicture.asset(
-                                    "assets/icons/svg/ic_controls_qibla.svg",
+                                    'assets/icons/svg/ic_controls_qibla.svg',
                                     semanticsLabel: 'MinApps Screen',
-                                    package: "mapness",
+                                    package: 'mapness',
                                   ),
                                   onTap: () async {
                                     final location =
@@ -122,7 +111,9 @@ class MapControls extends ConsumerWidget {
                             const SizedBox(height: 8),
                             ComplienceBuildingLegend(),
                             const SizedBox(height: 8),
-                            const FollowControl(),
+                            const FollowControl(
+                              onlyFollowDirection: false,
+                            ),
                           ],
                         ),
                       ],

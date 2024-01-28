@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:dgis_map/library.dart' show VisibleRect;
+import 'package:geobase/geobase.dart' as gb;
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/app/routes/signin.dart';
@@ -58,6 +60,27 @@ class CommonFunctions {
         cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2;
 
     return 2 * r * asin(sqrt(a));
+  }
+
+  static gb.Polygon getPolygonFromRect(VisibleRect rect) {
+    final box = gb.Box.create(
+      minX: rect.southWestLon,
+      minY: rect.southWestLat,
+      maxX: rect.northEastLon,
+      maxY: rect.northEastLat,
+    );
+
+    final corners = box.corners2D.toList();
+    final List<gb.Position> positions = [...corners, corners[0]]
+        .map((e) => gb.Position.create(x: e.x, y: e.y))
+        .toList();
+
+    final polygon = gb.Polygon.from(
+      [positions],
+      bounds: box,
+    );
+
+    return polygon;
   }
 }
 

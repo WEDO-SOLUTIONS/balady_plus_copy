@@ -1,8 +1,9 @@
 import 'package:mapness/entry_point.dart';
-import 'package:mapness/features/jobs/models/job_response_model.dart';
-import 'package:mapness/features/jobs/models/job_statistic_model.dart';
+import 'package:mapness/features/jobs/data/models/job_response_model.dart';
+import 'package:mapness/features/jobs/data/models/job_statistic_model.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/dgis_hmac_netwrok.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -23,7 +24,9 @@ class JobStatistic extends _$JobStatistic {
 
     final dio = await ref.read(dgisHmacNetwrokProvider.future);
 
-    final response = await dio.get('/jobs/statistics');
+    final env = await ref.read(dgisEnvironmentProvider.future);
+    final jobsUrl = '${env.jobsApi}/jobs/statistics';
+    final response = await dio.get(jobsUrl);
 
     final jobResponse = JobBaseResponse<JobStatisticModel>.fromJson(
         response.data, JobStatisticModel.fromJson);

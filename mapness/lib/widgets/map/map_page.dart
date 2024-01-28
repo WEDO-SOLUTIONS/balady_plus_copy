@@ -64,17 +64,6 @@ class _MapPageState extends ConsumerState<MapPage>
       androidUseExpensive: true,
       onMapCreated: (DgisMapController controller) async {
         await dgisController.onMapCreated(controller);
-        await controller.setCameraPosition(
-          CameraPositionMessage(
-            point: GeoPointMessage(
-              latitude: 24.774265,
-              longitude: 46.738586,
-            ),
-            zoom: 17,
-            tilt: 45,
-            bearing: 0,
-          ),
-        );
       },
     );
   }

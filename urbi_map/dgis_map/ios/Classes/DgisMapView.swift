@@ -3,7 +3,6 @@ import Flutter
 import DGis
 
 class DgisMapView: NSObject, FlutterPlatformView, MapApi {
-
     private class Events {
         static let zoomOutEvent = "zoomOutState"
         static let zoomInEvent = "zoomInState"
@@ -175,8 +174,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
     
-    func changeFollowState(completion: @escaping (FlutterError?) -> Void) {
-        self.locationControlHandler?.changeFollowState()
+    func setFollowStateState(_ state: FollowStateMessage, completion: @escaping (FlutterError?) -> Void) {
+        self.locationControlHandler?.setFollowState(state: state)
         completion(nil)
     }
     
@@ -611,12 +610,12 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.objectTapHandler?.removeMarker(id, from: manager, completion: completion)
     }
     
-    func createMapObjectManager(withClusteringMessage message: ClusteringMapObjectManagerOptionsMessage, completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
-        self.objectTapHandler?.createClusteringMapObjectManager(message, completion: completion)
+    func createMapObjectManager(withClusteringMessage message: ClusteringMapObjectManagerOptionsMessage, layerId: String?, completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
+        self.objectTapHandler?.createClusteringMapObjectManager(message, layerId, completion: completion)
     }
     
-    func createMapObjectManager(completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
-        self.objectTapHandler?.createMapObjectManager(completion: completion)
+    func createMapObjectManagerLayerId(_ layerId: String?, completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
+        self.objectTapHandler?.createMapObjectManager(layerId, completion: completion)
     }
     
     func removeMapObjectManagerId(_ id: MapObjectManagerMessage, completion: @escaping (FlutterError?) -> Void) {

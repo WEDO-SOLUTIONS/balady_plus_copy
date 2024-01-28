@@ -2,12 +2,18 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/shared/providers/map/bearing_state.dart';
 import 'package:mapness/shared/providers/map/follow_state.dart';
 
 import '../../../shared/ui/buttons/map_button.dart';
 
 class FollowControl extends ConsumerWidget {
-  const FollowControl({super.key});
+  const FollowControl({
+    required this.onlyFollowDirection,
+    super.key,
+  });
+
+  final bool onlyFollowDirection;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -21,11 +27,24 @@ class FollowControl extends ConsumerWidget {
       opacity: followState.enabled ? 1 : 1, // fix
       duration: const Duration(milliseconds: 250),
       child: MapButton(
-        onTap: followNotifier.onFollowTap,
+        onTap: () {
+          switch (followState.type) {
+            case LocationFollowType.followDirection:
+              ref.watch(bearingStateProvider.notifier).onCompassTap();
+            case LocationFollowType.followPosition:
+              followNotifier.setFollowState(FollowStateMessage.followDirection);
+            case LocationFollowType.off:
+              followNotifier.setFollowState(
+                onlyFollowDirection
+                    ? FollowStateMessage.followDirection
+                    : FollowStateMessage.followPosition,
+              );
+          }
+        },
         child: SvgPicture.asset(
-          "assets/icons/svg/ic_control_location.svg",
+          'assets/icons/svg/ic_control_location.svg',
           semanticsLabel: 'MinApps Screen',
-          package: "mapness",
+          package: 'mapness',
           colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
         ),
       ),

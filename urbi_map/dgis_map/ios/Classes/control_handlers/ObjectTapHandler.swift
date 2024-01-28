@@ -294,7 +294,7 @@ class ObjectTapHandler {
         }
     }
     
-    func createClusteringMapObjectManager(_ options: ClusteringMapObjectManagerOptionsMessage, completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
+    func createClusteringMapObjectManager(_ options: ClusteringMapObjectManagerOptionsMessage, _ layerId: String?, completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
         let managerId = UUID().uuidString
         let managerMessage = MapObjectManagerMessage.make(withId: managerId)
         
@@ -310,7 +310,8 @@ class ObjectTapHandler {
             ),
             minZoom: options.minZoom.map {
                 Zoom(value: $0.floatValue)
-            } ?? Zoom(value: 0)
+            } ?? Zoom(value: 0),
+            layerId: layerId
         )
         
         self.objectsQueue.sync {
@@ -319,14 +320,15 @@ class ObjectTapHandler {
         }
     }
     
-    func createMapObjectManager(completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
+    func createMapObjectManager(_ layerId: String?, completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
         let managerId = UUID().uuidString
         let managerMessage = MapObjectManagerMessage.make(withId: managerId)
         
         let manager = MapObjectManager.withGeneralization(
             map: self.map,
             logicalPixel: LogicalPixel(value: 40),
-            maxZoom: Zoom(value: 18)
+            maxZoom: Zoom(value: 18),
+            layerId: layerId
         )
         self.objectsQueue.sync {
             self.managers[managerId] = manager

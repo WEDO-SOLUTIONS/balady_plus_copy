@@ -1,8 +1,6 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart'
     as map_control_provider;
@@ -11,16 +9,14 @@ import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/about.dart';
-import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/contacts_info.dart';
 import 'package:mapness/_features/poi_card/widgets/description.dart';
 import 'package:mapness/_features/poi_card/widgets/favourites.dart';
 import 'package:mapness/_features/poi_card/widgets/header.dart';
 import 'package:mapness/_features/poi_card/widgets/opening_hours.dart';
-import 'package:mapness/_features/poi_card/widgets/poi_photos_row.dart';
+import 'package:mapness/_features/poi_card/widgets/qr_license_info.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/poi_card/widgets/trade_license.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -30,8 +26,8 @@ import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
-import 'provider/poi_photo_provider.dart';
 import 'widgets/footer.dart';
+import 'widgets/poi_photos_header.dart';
 
 class GeneralMapCardWidget extends StatelessWidget {
   final DgisObjectIdMessage objectId;
@@ -136,7 +132,7 @@ class _ContentState extends ConsumerState<_Content> {
     }
 
     /// has value
-    // final qrTradeLicense = poiCardState?.qrTradeLicense;
+    final qrTradeLicense = poiCardState?.qrTradeLicense;
     final tradeLicense = poiCardState?.tradeLicense;
 
     final about = aboutMock(
@@ -163,38 +159,9 @@ class _ContentState extends ConsumerState<_Content> {
         middleHeight: 600,
         onExpansionChanged: (expansion, {byUser = false}) =>
             _expansion.value = expansion,
-        scrollHeader: Consumer(
-          builder: (context, ref, child) {
-            final photos = ref.watch(poiPhotoProvider(objectId));
-
-            /// each item has not null image url, have at least one - show photos
-            if (photos.hasValue && photos.requireValue.items.isEmpty) {
-              /// if no photos - hide
-              return const SizedBox.shrink();
-            }
-
-            return child!;
-          },
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: ValueListenableBuilder(
-              valueListenable: _expansion,
-              builder: (context, value, child) => AnimatedSize(
-                duration: const Duration(milliseconds: 150),
-                curve: Curves.easeInOut,
-                child: SizedBox(
-                  height: switch (value) {
-                    Expansion.expanded => 0,
-                    Expansion.middle => 150,
-                    Expansion.collapsed => 100,
-                    Expansion.hidden => 0,
-                  },
-                  child: child,
-                ),
-              ),
-              child: PoiPhotosRow(objectId: objectId),
-            ),
-          ),
+        scrollHeader: PoiPhotosHeader(
+          objectId: objectId,
+          expansion: _expansion,
         ),
         actions: PoiCardFooter(
           data: data,
@@ -238,8 +205,7 @@ class _ContentState extends ConsumerState<_Content> {
                     viewModel: viewModel,
                     data: data,
                   ),
-                  // if (qrTradeLicense != null)
-                  //   QrLicenseInfo(qrTradeLicense),
+                  if (qrTradeLicense != null) QrLicenseInfo(qrTradeLicense),
                   if (tradeLicense != null) TradeLicense(tradeLicense),
                   const SafeArea(
                     top: false,
@@ -289,86 +255,5 @@ class _ContentState extends ConsumerState<_Content> {
         highlightController.removeHighlight(entrance!.id);
       }
     }
-  }
-}
-
-class _Parking extends StatelessWidget {
-  final ParkingInfoMessage? parkingInfo;
-
-  const _Parking(this.parkingInfo);
-
-  @override
-  // ignore: prefer_expression_function_bodies
-  Widget build(BuildContext context) {
-    return CardContent(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'موقف سيارات',
-            style: Theme.of(context)
-                .extension<ThemeTextStyles>()!
-                .accentM
-                .copyWith(color: colorPrimary),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              parkingIcon,
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _WorkStatus extends StatelessWidget {
-  final WorkStatusMessage? workStatus;
-
-  const _WorkStatus(this.workStatus);
-
-  @override
-  // ignore: prefer_expression_function_bodies
-  Widget build(BuildContext context) {
-    return CardContent(
-      child: Column(
-        children: [
-          Row(
-            children: [
-              SvgPicture.asset(
-                'assets/icons/svg/ic_time.svg',
-                package: PackageConfig.packageName,
-                height: 24,
-                width: 24,
-                color: colorIconError,
-              ),
-              const SizedBox(
-                width: 8,
-              ),
-              const Text(
-                'لا يعمل مؤقتًا',
-                style: TextStyle(
-                  color: colorPrimary,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-          const Text(
-            'هذا الفرع حاليًا مغلق مؤقتًا، ولكن سيعود للعمل بعد فترة التحقق من المعلومات من الشركة.',
-            style: TextStyle(
-              color: colorPrimary,
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

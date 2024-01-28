@@ -249,7 +249,11 @@ class ObjectTapHandler(
         }
     }
 
-    fun createClusteringMapObjectManager(message: ClusteringMapObjectManagerOptionsMessage, result: Result<MapObjectManagerMessage>?) {
+    fun createClusteringMapObjectManager(
+        message: ClusteringMapObjectManagerOptionsMessage,
+        layerId: String?,
+        result: Result<MapObjectManagerMessage>?
+    ) {
         val managerId = UUID.randomUUID().toString()
         val managerMessage = MapObjectManagerMessage.Builder()
             .setId(managerId)
@@ -260,6 +264,7 @@ class ObjectTapHandler(
             logicalPixel = LogicalPixel(value = message.logicalPixel.toFloat()),
             maxZoom = Zoom(value = message.maxZoom.toFloat()),
             minZoom = Zoom(value = message.minZoom?.toFloat() ?: 0f),
+            layerId = layerId,
             clusterRenderer = FlutterClusterRenderer(
                 sdkContext = sdkContext,
                 api = this.api,
@@ -273,7 +278,7 @@ class ObjectTapHandler(
         }
     }
 
-    fun createMapObjectManager(result: Result<MapObjectManagerMessage>?) {
+    fun createMapObjectManager(layerId: String?, result: Result<MapObjectManagerMessage>?) {
         val managerId = UUID.randomUUID().toString()
         val managerMessage = MapObjectManagerMessage.Builder()
                 .setId(managerId)
@@ -282,7 +287,8 @@ class ObjectTapHandler(
         val manager = MapObjectManager.withGeneralization(
             map = this.map,
             logicalPixel = LogicalPixel(value = 40f),
-            maxZoom = Zoom(value = 18f)
+            maxZoom = Zoom(value = 18f),
+            layerId = layerId,
         )
 
         mapObjectsExecutorService.submit {

@@ -10,136 +10,130 @@ import 'package:rxdart/rxdart.dart';
 
 part 'dgis_controller.g.dart';
 
-final GeoPointMessage kingdomTower =
+final GeoPointMessage _kingdomTower =
     GeoPointMessage(latitude: 24.712301, longitude: 46.674175);
-
-GeoRectMessage saRect = GeoRectMessage(
-  northEast: GeoPointMessage(latitude: 32.568765, longitude: 56.694472),
-  southWest: GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
-);
 
 @Riverpod(keepAlive: true)
 class DgisController extends _$DgisController {
-  // CameraPositionMessage? _lastCameraPosition;
-
-  // CameraPositionMessage? _lastRectPosition;
-
   late Completer<DgisMapController> _completer;
 
-  late final StreamController<VisibleRectEvent> _visibleRectStream =
-      StreamController.broadcast();
-
-  Stream<VisibleRectEvent> get visibleRectEvents => _visibleRectStream.stream
-      .debounceTime(const Duration(milliseconds: 2500));
-
-  final visibleRectSubject = BehaviorSubject<VisibleRectEvent>();
+  final _visibleRectSubject = BehaviorSubject<VisibleRectEvent>();
+  ValueStream<VisibleRectEvent> get visibleRectSubject => _visibleRectSubject;
 
   @override
   Future<DgisMapController> build() {
     _completer = Completer();
 
     ref.onDispose(() {
-      _visibleRectStream.close();
-      visibleRectSubject.close();
+      _visibleRectSubject.close();
     });
 
     return _completer.future;
   }
 
   Future<void> onMapCreated(DgisMapController controller) async {
-    await initialize(controller);
+    await _initialize(controller);
     _completer.complete(controller);
   }
 
-  Future<void> initialize(DgisMapController controller) async {
-    PermissionStatus locationPermission = await ref.read(
-      permissionsProvider(Permission.location).future,
-    );
-    final locationNotifier =
-        ref.read(permissionsProvider(Permission.location).notifier);
+  Future<void> _initialize(DgisMapController controller) async {
+    await _setupControllerItself(controller);
+    await _setupLocation(controller);
+    await _setupVisibleRectUpdates(controller);
+  }
 
-    if (!locationPermission.isGranted) {
-      locationPermission = await locationNotifier.request();
-    }
-
+  Future<void> _setupControllerItself(DgisMapController controller) async {
     await controller.initialize();
 
-    await controller.loadStyles("assets/maps/styles/common-styles.2gis");
+    // Styles
+    await controller.loadStyles('assets/maps/styles/common-styles.2gis');
+
+    // Appearance
+    await controller.setZoomRestrictions(
+      min: 5.5,
+    );
     await controller.overrideLocales(
-      ref.read(appLanguageProvider) == Language.arabic ? ["ar-SA"] : ["en-US"],
+      ref.read(appLanguageProvider) == Language.arabic ? ['ar-SA'] : ['en-US'],
     );
     await controller.setAppearance(
       ref.read(darkModeProvider)
           ? MapAppearanceMessage.night
           : MapAppearanceMessage.day,
     );
+    ref
+      ..listen(
+        darkModeProvider,
+        (previous, next) {
+          controller.setAppearance(
+            next ? MapAppearanceMessage.night : MapAppearanceMessage.day,
+          );
+        },
+      )
+      ..listen(
+        appLanguageProvider,
+        (previous, next) {
+          controller.overrideLocales(
+            next == Language.arabic ? ['ar-SA'] : ['en-US'],
+          );
+        },
+      );
+
+    // Voice
+    await controller.installVoice('voice-sara');
+    await controller.installVoice('voice-jennifer');
+  }
+
+  /// Setups initial camera location on map.
+  Future<void> _setupLocation(DgisMapController controller) async {
+    PermissionStatus locationPermission = await ref.read(
+      permissionsProvider(Permission.location).future,
+    );
+    final locationNotifier =
+        ref.read(permissionsProvider(Permission.location).notifier);
+
+    await _setDefaultLocation(controller);
+
+    if (!locationPermission.isGranted) {
+      locationPermission = await locationNotifier.request();
+    }
 
     if (locationPermission.isGranted) {
       await controller.onLocationPremissionGranted(
         desiredAccuracy: DesiredAccuracyMessage.high,
       );
-    } else {
-      await controller.setCameraPosition(
-        CameraPositionMessage(
-          point: kingdomTower,
-          zoom: 17,
-          tilt: 45,
-          bearing: 0,
-        ),
-      );
     }
 
-    final visibleRectSubscription =
-        controller.visibleRectEvents.listen(_visibleRectListener);
-    // final cameraPositionSubscription =
-    //     controller.cameraPositionEvents.listen(_cameraPositionListener);
-    ref.onDispose(
-      () {
-        visibleRectSubscription.cancel();
-        // cameraPositionSubscription.cancel();
-      },
-    );
-
-    await controller.setZoomRestrictions(min: 5.5);
-    Future.delayed(
+    await Future.delayed(
       const Duration(milliseconds: 100),
-      () => controller.changeFollowState(),
+      () => controller.setFollowState(FollowStateMessage.followDirection),
     );
-
-    ref.listen(darkModeProvider, (previous, next) {
-      controller.setAppearance(
-        next ? MapAppearanceMessage.night : MapAppearanceMessage.day,
-      );
-    });
-    ref.listen(appLanguageProvider, (previous, next) {
-      controller.overrideLocales(
-        next == Language.arabic ? ["ar-SA"] : ["en-US"],
-      );
-    });
-
-    controller.installVoice("voice-sara");
-    controller.installVoice("voice-jennifer");
   }
 
-  void _visibleRectListener(VisibleRectEvent event) async {
-    // if ((!await state.value!
-    //     .containsRect(saRect, event.visibleRect.geoRectMessage()))) {
-    //   if (_lastRectPosition != null) {
-    //     await state.value!.setCameraPosition(_lastRectPosition!);
-    //   }
-    // } else {
-    //   _lastRectPosition = _lastCameraPosition;
-    // }
-
-    if (!_visibleRectStream.isClosed) {
-      _visibleRectStream.sink.add(event);
-    }
-    if (!visibleRectSubject.isClosed) {
-      visibleRectSubject.add(event);
-    }
+  /// Moves camera on Riyadh Tower
+  Future<void> _setDefaultLocation(DgisMapController controller) async {
+    await controller.setCameraPosition(
+      CameraPositionMessage(
+        point: _kingdomTower,
+        zoom: 17,
+        tilt: 45,
+        bearing: 0,
+      ),
+    );
   }
 
-  // void _cameraPositionListener(CameraPositionMessage event) async {
-  //   _lastCameraPosition = event;
-  // }
+  Future<void> _setupVisibleRectUpdates(DgisMapController controller) async {
+    final visibleRectSubscription = controller.visibleRectEvents
+        .debounceTime(const Duration(seconds: 1))
+        .listen(_listenVisibleRectangle);
+
+    ref.onDispose(() {
+      visibleRectSubscription.cancel();
+    });
+  }
+
+  void _listenVisibleRectangle(VisibleRectEvent event) {
+    if (!_visibleRectSubject.isClosed) {
+      _visibleRectSubject.add(event);
+    }
+  }
 }

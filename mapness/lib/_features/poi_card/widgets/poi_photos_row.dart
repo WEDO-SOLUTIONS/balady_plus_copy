@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/image/loading_image/loading_shimmer_image.dart';
@@ -97,7 +99,7 @@ class PoiPhotosRow extends ConsumerWidget {
           ),
         ),
       ),
-      itemCount: photos.length,
+      itemCount: min(photos.length, 10),
       scrollDirection: Axis.horizontal,
       separatorBuilder: (context, index) => const SizedBox(width: 6),
     );

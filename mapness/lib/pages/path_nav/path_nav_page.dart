@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:dgis_map_platform_interface/src/events/navigation_event.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/home_shell.dart';
@@ -67,12 +67,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
       }
     } else {
       await ref.read(dgisControllerProvider).value?.stopNavigation();
+      _setNavigationState(PathNavState.finished);
     }
   }
 
   void _naviEvent(NavigationEvent event) {
-    if (event == NavigationEvent.finished ||
-        event == NavigationEvent.disabled) {
+    if (event == NavigationEvent.finished) {
       _setNavigationState(PathNavState.finished);
     }
   }
