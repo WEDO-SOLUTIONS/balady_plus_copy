@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
+import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/chatbot/domain/entities/chat_bot_message_entities.dart';
