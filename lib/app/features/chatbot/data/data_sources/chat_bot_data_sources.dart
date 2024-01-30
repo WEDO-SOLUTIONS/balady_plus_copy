@@ -4,9 +4,7 @@ import 'dart:typed_data';
 
 import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
-import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
-import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
 import 'package:balady_plus/app/features/chatbot/data/models/chat_bot_message_model.dart';
 import 'package:dio/dio.dart' show Options, ResponseType, Response, DioError;
@@ -47,10 +45,10 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
         "Duration_Milliseconds":
             dateGetData.difference(dateSendData).inMilliseconds,
       };
-      CommonFunctions.sendUXCamEventWithProperties(
-        UXCamEvents.sendQuestionChatBot,
-        dataEvent,
-      );
+      // CommonFunctions.sendUXCamEventWithProperties(
+      //   UXCamEvents.sendQuestionChatBot,
+      //   dataEvent,
+      // );
       return ChatBotMessageModel(
         answer: result['response'],
         question: question,

@@ -66,14 +66,14 @@ class ChatBotRepositoryImplementation implements ChatBotRepository {
     }
   }
 
-  void _sendEvent(DateTime dateSendData,Map<String,dynamic> dataEvent) {
-    Duration duration = DateTime.now().difference(dateSendData);
-    dataEvent["Answer_End_Duration"] = duration.inMilliseconds;
-    CommonFunctions.sendUXCamEventWithProperties(
-      UXCamEvents.sendQuestionChatBot,
-      dataEvent,
-    );
-  }
+  // void _sendEvent(DateTime dateSendData,Map<String,dynamic> dataEvent) {
+  //   Duration duration = DateTime.now().difference(dateSendData);
+  //   dataEvent["Answer_End_Duration"] = duration.inMilliseconds;
+  //   CommonFunctions.sendUXCamEventWithProperties(
+  //     UXCamEvents.sendQuestionChatBot,
+  //     dataEvent,
+  //   );
+  // }
 
 
 }

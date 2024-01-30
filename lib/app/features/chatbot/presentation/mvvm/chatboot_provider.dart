@@ -56,54 +56,6 @@ class ChatBotProvider extends BaseViewModel {
           );
         }
       });
-
-      // Either<Failure, Stream> response;
-      // response = await repository.repository.sendQuestionMessage(
-      //   question: question,
-      // );
-      // response.fold(
-      //   (error) {
-      //     setMessage(
-      //       ChatBotMessageModel(
-      //         message: error.toString(),
-      //         isResponse: true,
-      //         haveError: true,
-      //       ),
-      //     );
-      //   },
-      //   (stream) {
-      //
-      //     listen = stream.listen((message) {
-      //       setMessage(
-      //         ChatBotMessageModel(
-      //           message: message + " New Data Form Server",
-      //           isResponse: true,
-      //           haveError: true,
-      //         ),
-      //       );
-      //     });
-      //
-      //     listen!.onDone(() {
-      //       isLoading = false;
-      //       notifyListeners();
-      //       listen!.cancel();
-      //       listen= null;
-      //     });
-      //     listen!.onError((error) {
-      //       setMessage(
-      //         ChatBotMessageModel(
-      //           message: error.toString(),
-      //           isResponse: true,
-      //           haveError: true,
-      //         ),
-      //       );
-      //       isLoading = false;
-      //       notifyListeners();
-      //       listen!.cancel();
-      //       listen= null;
-      //     });
-      //   },
-      // );
       return chatBotMessage;
     } catch (exception) {
       CommonFunctions.sendEvent(
