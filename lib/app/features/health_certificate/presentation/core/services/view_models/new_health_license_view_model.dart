@@ -184,6 +184,7 @@ class HealthLicenseViewModel extends BaseViewModel {
             areaNoLicencePermit,
             selectedHealthCentres?.idNumber,
             selectedLicesnseType?.value,
+            gisLocationResult?.Balady_DistrictID,
             isRenew: isRenew);
     hideLoading();
     ApplyNewHealthRequest? applyNewHealthRequest;

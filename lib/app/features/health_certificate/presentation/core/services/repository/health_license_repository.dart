@@ -162,6 +162,7 @@ class HealthLicenseRepository {
       bool areaNoLicencePermit,
       int? healthCenterId,
       String? licenseType,
+      String? districtCode,
       {bool isRenew = false}) async {
     final String url = isRenew
         ? ApiConstants.ApplyRenewHelathCertificatesRequest
@@ -174,12 +175,14 @@ class HealthLicenseRepository {
       "crType": crType,
       "crNumber": crNumber,
       "licenseId": licenseId,
+      "districtCode": districtCode,
       if (licenseType != null) "licenseType": licenseType,
       "areaNoLicencePermit": areaNoLicencePermit,
       "employeeIdentityNumber": userId,
       "employeeIdentityType": idType,
       "employeeBirthDate": birthDate,
       "employeeMobileNumber": mobile,
+      "": "",
       if (healthCenterId != null) "healthCenterId": healthCenterId,
       "x": x.toString(),
       "y": y.toString(),
