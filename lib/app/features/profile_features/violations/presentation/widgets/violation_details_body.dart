@@ -4,16 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import '../../../../../core/services/services_exports.dart';
 import '../../../../../core/utils/constants/constants.dart';
 import '../../../../../core/utils/utils_exports.dart'
-    show
-        AppColor,
-        AppFontWeight,
-        BlocStatus,
-        CommonFunctions,
-        IconPath,
-        RouteName;
+    show AppColor, AppFontWeight, BlocStatus, CommonFunctions, IconPath;
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
@@ -27,21 +20,13 @@ import '../../../../_shared_feature_/shared_feature_exports.dart'
         ElevatedButtonWidget,
         MessageDialog,
         ShimmerEffectWidget;
-import '../../../../objectable_transactions/domain/entities/create_objection_page_params.dart';
-import '../../../../objectable_transactions/domain/entities/objectable_transaction_entity.dart';
 import '../../../../objectable_transactions/presentation/widgets/create_objection_page/objection_attachment_item.dart';
 import '../../../../objections/domain/entities/objection_details.dart';
 import '../../../../vd/presentation/widgets/summery_widgets/field_data.dart';
-import '../../domain/entities/create_violation_objection_page_params.dart';
 import '../../violations_exports.dart';
 
 class ViolationDetailBody extends StatefulWidget {
-  final ViolationsEntity violationsEntity;
-
-  const ViolationDetailBody({
-    super.key,
-    required this.violationsEntity,
-  });
+  const ViolationDetailBody({super.key});
 
   @override
   State<ViolationDetailBody> createState() => _ViolationDetailBodyState();
@@ -287,9 +272,7 @@ class _ViolationDetailBodyState extends State<ViolationDetailBody> {
                 (state.details?.objectionRequestNumber != null &&
                         state.details!.objectionRequestNumber!.isNotEmpty)
                     ? const ObjectionsData()
-                    : NoObjectionsData(
-                        violationsEntity: widget.violationsEntity,
-                      ),
+                    : const NoObjectionsData(),
                 Constants.verticalSpaceSmall,
 
                 BlocBuilder<ViolationDetailsBloc, ViolationDetailsState>(
@@ -390,29 +373,13 @@ class ViolationClauses extends StatelessWidget {
                                                   .nonComplianceSubClauses![i]
                                                   .attachments!
                                                   .length,
-                                              itemBuilder: (ctx, i) {
+                                              itemBuilder: (ctx, i2) {
                                                 return ObjectionAttachmentItem(
                                                     file: ReasonAttachment(
-                                                        contentLocation: state
-                                                                .details
-                                                                ?.nonComplianceClauses![
-                                                                    index]
-                                                                .nonComplianceSubClauses![
-                                                                    i]
-                                                                .attachments![
-                                                                    index]
-                                                                .contentLocation ??
-                                                            "",
-                                                        fileName: state
-                                                                .details
-                                                                ?.nonComplianceClauses![
-                                                                    index]
-                                                                .nonComplianceSubClauses![
-                                                                    i]
-                                                                .attachments![
-                                                                    index]
-                                                                .fileName ??
-                                                            ""));
+                                                        contentLocation: state.details?.nonComplianceClauses?[index].nonComplianceSubClauses?[i].attachments?[i2].contentLocation ?? "",
+                                                        fileName: state.details?.nonComplianceClauses?[index].nonComplianceSubClauses?[i].attachments?[i2].fileName ?? "",
+                                                    ),
+                                                );
                                               },
                                             ),
                                           ),
@@ -448,9 +415,9 @@ class ObjectionsData extends StatelessWidget {
                 onTap: () {
                   /* context.read<ViolationDetailsBloc>().add(
                       GetViolationDetailsEvent(
-                          id: state.details?.objectionRequestNumber ?? "", 
-                          applicationId: state.details., 
-                          
+                          id: state.details?.objectionRequestNumber ?? "",
+                          applicationId: state.details.,
+
                           ));*/
                 },
                 child: FieldData(
@@ -479,9 +446,9 @@ class ObjectionsData extends StatelessWidget {
 
 //MM
 class NoObjectionsData extends StatelessWidget {
-  final ViolationsEntity violationsEntity;
-  const NoObjectionsData({Key? key, required this.violationsEntity})
-      : super(key: key);
+  const NoObjectionsData({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -505,16 +472,7 @@ class NoObjectionsData extends StatelessWidget {
                 ElevatedButtonWidget.applyObjection(onPressed: () {
                   context
                       .read<ViolationDetailsBloc>()
-                      .add(ValidateObjectionDetailsTransactions());
-                  //Objection Before Validation
-
-/*
-                  NavigationService.navigatorKey.currentState!.pushNamed(
-                      RouteName.createObjectionDetails,
-                      arguments: CreateObjectionPageParams(
-                          details: state.details, 
-                          item: state.violationsEntity
-                              ?.getObjectableTransactionsEntity()));*/
+                      .add(const ValidateObjectionDetailsTransactions());
                 })
             ]);
       },

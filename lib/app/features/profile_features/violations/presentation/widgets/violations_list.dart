@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/routes_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -93,8 +94,11 @@ class _ViolationListState extends State<ViolationList> {
                     violations: state.violations[index],
                     onDetails: () {
                       context.pushNamedRoute(
-                        RouteName.violationDetailsPage,
-                        arguments: state.violations[index],
+                        getScreenName(ScreenTage.violations.name),
+                        arguments: {
+                          "hashingViolationNumber": state.violations[index].hashingViolationNumber ?? '',
+                          "applicationId": state.violations[index].applicationId ?? ""
+                        },
                       );
                     },
                     onApply: () {},
