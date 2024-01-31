@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/routes_type.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -7,10 +8,7 @@ import '../../../../core/base/base_view_model.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
-import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
-import '../../../new_appointment/presentation/core/models/appointment_details_model.dart';
 import '../../../new_appointment/presentation/core/models/my_appointments_response.dart';
-import '../core/models/appointment_details_screen_args.dart';
 import '../core/services/view_models/appontment_details_view_model.dart';
 import '../core/services/view_models/my_appointments_view_model.dart';
 import '../widgets/appointments_widgets/appointment_card.dart';
@@ -64,12 +62,13 @@ class _PreviousAppointmentsScreenState
                 itemBuilder: (context, index) {
                   if (index >= list.length) {
                     if (loadMore) {
-                      return Container(
+                      return const SizedBox(
                         height: 50,
-                        child: const Center(
-                            child: CircularProgressIndicator(
-                          color: AppColor.baladyDarkGreen2,
-                        )),
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: AppColor.baladyDarkGreen2,
+                          ),
+                        ),
                       );
                     } else {
                       return Container(height: 50);
@@ -79,25 +78,13 @@ class _PreviousAppointmentsScreenState
                     item: list[index].model,
                     onPress: () async {
                       if (list[index].id != null) {
-                        bool isSuccess = false;
-                        AppointmentItemInfo? appointmentItemInfo;
-                        isSuccess = await locator<AppointmentDetailsViewModel>()
-                            .getAppointmentDetails(list[index].id ?? -1);
-                        if (isSuccess) {
-                          appointmentItemInfo =
-                              locator<AppointmentDetailsViewModel>()
-                                  .getAppointmentsInfo();
-                        }
-                        if (isSuccess && appointmentItemInfo != null) {
-                          Navigator.of(context).pushNamed(
-                              RouteName.appointmentDetailsRoute,
-                              // arguments: appointmentData.id ?? 0
-                              arguments: AppointmentDetailsScreenArgs(
-                                  appointmentItemInfo: appointmentItemInfo,
-                                  isCancelable: list[index].cancelable,
-                                  isPrintable: list[index].printable,
-                                  fromHomePage: true));
-                        }
+                        locator<AppointmentDetailsViewModel>()
+                            .getAppointmentDetails(list[index].id!);
+                        Navigator.of(context).pushNamed(
+                            getScreenName(ScreenTage.appointment.name),
+                            arguments: {
+                              "appointmentId": list[index].id!,
+                            });
                       }
                     },
                   );

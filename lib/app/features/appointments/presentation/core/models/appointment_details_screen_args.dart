@@ -1,16 +1,17 @@
 import '../../../../new_appointment/presentation/core/models/appointment_details_model.dart';
 
 class AppointmentDetailsScreenArgs {
-  final AppointmentItemInfo? appointmentItemInfo;
+  final int appointmentId;
   final bool? isCancelable;
   final bool? isPrintable;
   final bool? fromHomePage;
   final bool? isEditable;
 
-  AppointmentDetailsScreenArgs(
-      {this.appointmentItemInfo,
-      this.isCancelable,
-      this.isPrintable,
-      this.isEditable,
-      this.fromHomePage = false});
+  AppointmentDetailsScreenArgs({
+    required this.appointmentId,
+    this.isCancelable,
+    this.isPrintable,
+    this.isEditable,
+    this.fromHomePage = false,
+  });
 }
