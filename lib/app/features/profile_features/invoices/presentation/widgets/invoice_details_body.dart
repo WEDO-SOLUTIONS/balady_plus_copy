@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
+import 'package:balady_plus/app/core/utils/routes_type.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
@@ -407,22 +408,14 @@ class InvoiceObjectionsList extends StatelessWidget {
                                   bottomRight: Radius.circular(8))),
                           child: ElevatedButtonWidget.custom(
                             onPressed: () async {
-                              EasyLoading.show();
-                              GetObjectionDetails getObjectionDetails =
-                                  GetObjectionDetails(repository: sl());
-                              var failureOrSuccess = await getObjectionDetails(
-                                  state.invoice?.objections?[index]
-                                          .requestNumberAsText ??
-                                      "");
-
-                              await failureOrSuccess.fold((failure) {
-                                EasyLoading.dismiss();
-                              }, (success) async {
-                                EasyLoading.dismiss();
-                                NavigationService.navigatorKey.currentState!
-                                    .pushNamed(RouteName.objectionsDetailsPage,
-                                        arguments: success);
-                              });
+                              Navigator.of(context).pushNamed(
+                                getScreenName(ScreenTage.objection.name),
+                                arguments: {
+                                  "objectionRequestNumber": state.invoice?.objections?[index]
+                                      .requestNumberAsText ??
+                                      "",
+                                },
+                              );
                               return;
                             },
                             text: "invoice_show_details".tr(),

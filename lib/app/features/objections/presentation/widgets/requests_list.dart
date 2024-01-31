@@ -1,4 +1,4 @@
-import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/loading_dialogs.dart';
+import 'package:balady_plus/app/core/utils/routes_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -8,10 +8,9 @@ import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_w
 import '../../../_shared_feature_/presentation/widgets/need_login_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
-    show MessageDialog, RetryWidget, ShimmerEffectWidget;
+    show MessageDialog, ShimmerEffectWidget;
 import '../../objections_exports.dart'
     show
-        GetObjectionDetailsEvent,
         GetRequestsEvent,
         ObjectionsBloc,
         RequestsListItem,
@@ -28,6 +27,7 @@ class RequestsList extends StatefulWidget {
 
 class _RequestsListState extends State<RequestsList> {
   final _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -95,21 +95,18 @@ class _RequestsListState extends State<RequestsList> {
                   return RequestsListItem(
                     request: state.requests[index],
                     onPress: () {
-                      context.read<ObjectionsBloc>().add(
-                          GetObjectionDetailsEvent(
-                              hashingRequestNumber:
-                                  state.requests[index].hashingRequestNumber,
-                              serviceTypeId:
-                                  state.requests[index].serviceTypeId,
-                              params: state
-                                      .requests[index].objectionRequestNumber ??
-                                  ""));
+                      Navigator.of(context).pushNamed(
+                        getScreenName(ScreenTage.objection.name),
+                        arguments: {
+                          "objectionRequestNumber": state.requests[index].objectionRequestNumber ?? "",
+                        },
+                      );
                     },
                   );
                 },
               ),
               if (state.detailsStatus == BlocRequestStatus.submissionGetLoading)
-                CustomCircularLoadingWidget(),
+                const CustomCircularLoadingWidget(),
             ],
           );
         }

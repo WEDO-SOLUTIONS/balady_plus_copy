@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/routes_type.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:balady_plus/app/features/request_commercial_license_details/data/data_sources/remote_data_source.dart';
 import 'package:balady_plus/app/features/request_commercial_license_details/data/repositories/repository_implementation.dart';
@@ -20,7 +21,6 @@ import '../../../../create_compliance/domain/use_cases/get_compliance_details.da
 import '../../../../health_certificate/presentation/core/models/health_request_details.dart';
 import '../../../../health_certificate/presentation/core/models/health_request_details_screen_args.dart';
 import '../../../../health_certificate/presentation/core/services/view_models/main_health_license_view_model.dart';
-import '../../../../objectable_transactions/domain/use_cases/get_objection_details.dart';
 import '../../requests_exports.dart' show RequestEntity, RequestParameter;
 
 class RequestsListItem extends StatelessWidget {
@@ -184,27 +184,18 @@ class RequestsListItem extends StatelessWidget {
               } else {
                 if (request.redirectUrl == null) {
                   if (request.requestTypeId == 50001) {
-                    EasyLoading.show();
-                    GetObjectionDetails getObjectionDetails =
-                        GetObjectionDetails(repository: sl());
-                    var failureOrSuccess =
-                        await getObjectionDetails(request.requestNumberAsText);
-
-                    await failureOrSuccess.fold((failure) {
-                      EasyLoading.dismiss();
-                    }, (success) async {
-                      success.serviceTypeId = request.serviceTypeId;
-
-                      EasyLoading.dismiss();
-                      NavigationService.navigatorKey.currentState!.pushNamed(
-                          RouteName.objectionsDetailsPage,
-                          arguments: success);
-                    });
+                    Navigator.of(context).pushNamed(
+                      getScreenName(ScreenTage.objection.name),
+                      arguments: {
+                        "objectionRequestNumber": request.requestNumberAsText,
+                      },
+                    );
                     return;
                   }
                 } else {
                   CommonFunctions.openBaldyWithRefreshCookie(
-                      request.redirectUrl);
+                      request.redirectUrl,
+                  );
                 }
               }
             },

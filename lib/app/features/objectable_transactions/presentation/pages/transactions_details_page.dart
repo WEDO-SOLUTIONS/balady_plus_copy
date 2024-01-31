@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/routes_type.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:flutter/material.dart';
@@ -443,9 +444,12 @@ class ObjectionsData extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () {
-                  context.read<TransactionDetailsBloc>().add(
-                      GetTransactionDetailsEvent(
-                          params: state.details?.objectionRequestNumber ?? ""));
+                  Navigator.of(context).pushNamed(
+                    getScreenName(ScreenTage.objection.name),
+                    arguments: {
+                      "objectionRequestNumber": state.details?.objectionRequestNumber ?? "",
+                    },
+                  );
                 },
                 child: FieldData(
                   title: ("transaction_details_objection_number").tr(),
