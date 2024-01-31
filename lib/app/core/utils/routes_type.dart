@@ -62,7 +62,7 @@ String getScreenName(String tag, {int? typeId}) {
     //////////////////////////////////////////////////////////////////////
   }
   // need Add Screen To When not find screen
-  return '';
+  return RouteName.inappWebview;
 }
 
 // Screen Tage

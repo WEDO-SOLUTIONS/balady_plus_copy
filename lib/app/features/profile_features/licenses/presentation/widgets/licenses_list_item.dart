@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/routes_type.dart';
 import 'package:balady_plus/app/features/commercial_license_details/data/data_sources/remote_data_source.dart';
 import 'package:balady_plus/app/features/commercial_license_details/data/repositories/repository_implementation.dart';
 import 'package:balady_plus/app/features/commercial_license_details/domain/use_cases/get_commercial_license_details.dart';
@@ -5,7 +6,6 @@ import 'package:balady_plus/app/features/commercial_license_details/presentation
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -103,35 +103,45 @@ class LicensesListItem extends StatelessWidget {
             ),
           ),
           ElevatedButtonWidget.details(onPressed: () async {
+
             if (license.requestMainTypeId == "1300") {
               final model = locator<MainHealthLicenseViewModel>();
-
-              HealthRequestDetails? details = await model
-                  .getHealthRequestDetails(license.requestNumber ?? 0);
+              HealthRequestDetails? details =
+                  await model.getHealthRequestDetails(
+                license.requestNumber ?? 0,
+              );
               if (details != null) {
                 NavigationService.navigatorKey.currentState!.pushNamed(
-                    RouteName.healthLicenseDetailsScreen,
-                    arguments: HealthRequestDetailsScreenArgs(
-                        healthRequestDetails: details,
-                        isDeletable: false,
-                        isPrintable: false));
+                  RouteName.healthLicenseDetailsScreen,
+                  arguments: HealthRequestDetailsScreenArgs(
+                    healthRequestDetails: details,
+                    isDeletable: false,
+                    isPrintable: false,
+                  ),
+                );
               }
+
+              NavigationService.navigatorKey.currentState!.pushNamed(
+                getScreenName(
+                  ScreenTage.license.name,
+                  typeId: int.parse(license.requestMainTypeId!),
+                ),
+                arguments: {
+                  "licenseNumber": license.licenseNumber,
+                },
+              );
             } else if (license.requestMainTypeId == "1003") {
               NavigationService.navigatorKey.currentState!.pushNamed(
-                RouteName.commercialLicenseDetails,
-                arguments: CommercialLicenseDetailsCubit(
-                  GetCommercialLicenseDetails(
-                    repository: CommercialLicenseDetailsRepositoryImplementation(
-                        remoteDataSource:
-                            CommercialLicenseDetailsRemoteDataSourceImplementation(
-                                webService: sl())),
-                  ),
-                  license.licenseNumber,
+                getScreenName(
+                  ScreenTage.license.name,
+                  typeId: int.parse(license.requestMainTypeId!),
                 ),
+                arguments: {
+                  "licenseNumber": license.licenseNumber,
+                },
               );
             } else {
               if (license.redirectUrl == null) return;
-
               EasyLoading.show();
               GetCookie getCookie = GetCookie(repository: sl());
               final failureOrSuccessForCookie = await getCookie(NoParams());
