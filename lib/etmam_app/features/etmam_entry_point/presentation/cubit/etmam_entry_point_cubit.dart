@@ -60,6 +60,8 @@ class EtmamEntryPointCubit extends Cubit<EtmamEntryPointState> {
     this.classificationId = classificationId;
   }
 
+  bool get isLifeStyle => classificationId == "life-style";
+
   Future<void> onLoadingApp() async {
     setTheme();
     emit(state.copyWith(blocStatus: BlocStatus.loading));

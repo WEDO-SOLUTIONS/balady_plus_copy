@@ -995,6 +995,7 @@
 "service_provider_desc":"Services providers list",
 "service_providers":"Service Providers",
 "delegate":"Authorization",
+"request_city_service": "Request Service", 
 "call":"Call",
 "banner_header":"Your services in one market",
 "banner_desc":"Connect with reliable and certified service providers through Etmam +",
