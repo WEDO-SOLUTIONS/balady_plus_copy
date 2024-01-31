@@ -86,7 +86,7 @@ class ThemeTextStyles extends ThemeExtension<ThemeTextStyles> {
     );
   }
 
-  static arabic({required bool isDark}) => ThemeTextStyles(
+  static ThemeTextStyles arabic({required bool isDark}) => ThemeTextStyles(
         headingXL: const TextStyle(
           color: Color(0xff000000),
           fontSize: 32,
@@ -173,7 +173,7 @@ class ThemeTextStyles extends ThemeExtension<ThemeTextStyles> {
         ),
       );
 
-  static english({required bool isDark}) => ThemeTextStyles(
+  static ThemeTextStyles english({required bool isDark}) => ThemeTextStyles(
         headingXL: GoogleFonts.inter(
           color: const Color(0xff000000),
           fontSize: 32,

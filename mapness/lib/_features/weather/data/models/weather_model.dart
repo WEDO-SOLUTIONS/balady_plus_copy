@@ -195,7 +195,7 @@ class ForecastModel extends Forecast {
 
   static ForecastModel fromJson(Map<String, dynamic> json) {
     final forecastDayData = json['forecastday'];
-    var decodedForecastDayResponse;
+    var decodedForecastDayResponse = null;
     if (forecastDayData != null) {
       decodedForecastDayResponse =
           forecastDayData.map<ForecastDay>((forecastDay) {
@@ -203,7 +203,7 @@ class ForecastModel extends Forecast {
         final astroData = forecastDay['astro'];
 
         var dayConditionData;
-        ConditionsModel decodedDayConditionResponse;
+        ConditionsModel? decodedDayConditionResponse = null;
         dayConditionData = dayData['condition'];
         if (dayConditionData != null) {
           decodedDayConditionResponse =
@@ -447,25 +447,25 @@ class LocationModel extends Location {
 AllWeatherInfoModel mapper(Map<String, dynamic>? json) {
   try {
     final data = json?['data']?['result'];
-    AlertsModel alertModel;
+    AlertsModel? alertModel = null;
     final alertsData = data?['alerts'];
     if (alertsData != null) {
       alertModel = AlertsModel.fromJson(alertsData);
     }
 
-    LocationModel locationModel;
+    LocationModel? locationModel = null;
     final locationData = data?['location'];
     if (locationData != null) {
       locationModel = LocationModel.fromJson(locationData);
     }
 
-    ForecastModel forecastModel;
+    ForecastModel? forecastModel = null;
     final forecastData = data?['forecast'];
     if (forecastData != null) {
       forecastModel = ForecastModel.fromJson(forecastData);
     }
 
-    CurrentModel conditionModel;
+    CurrentModel? conditionModel = null;
     final currentData = data?['current'];
     if (currentData != null) {
       final currentCondition = currentData['condition'];

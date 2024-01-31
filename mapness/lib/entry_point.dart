@@ -158,10 +158,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                   dividerColor: Colors.grey[400],
                   useMaterial3: false,
                   extensions: <ThemeExtension<dynamic>>[
-                    ThemeTextStyles.arabic(isDark: false)
-                        as ThemeExtension<dynamic>,
+                    ThemeTextStyles.arabic(isDark: false),
                     AppColorsThemeExt.palette(colorScheme, isDark: false)
-                        as ThemeExtension<dynamic>,
                   ],
                 ),
                 locale: language.locale,

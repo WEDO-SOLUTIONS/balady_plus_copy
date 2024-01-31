@@ -17,8 +17,8 @@ class Routes extends _$Routes {
   }) {
     final dgisController = ref.watch(dgisControllerProvider);
     final params = RouteEditorRouteParamsMessage(
-      startPoint: startPoint?.geoPoint,
-      finishPoint: finishPoint?.geoPoint,
+      startPoint: startPoint?.pointMessage,
+      finishPoint: finishPoint?.pointMessage,
       options: navType,
     );
 
