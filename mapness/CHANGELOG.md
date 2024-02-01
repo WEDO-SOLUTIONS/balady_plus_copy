@@ -6,6 +6,9 @@
 
 ## 3.8.2(4)
 
+- BALADY-552 bugfix(Navi) Bottom sheet on the route mode
+- BALADY-1083 [bottom-sheet] Navi. Swipe up and down doesn't work
+- BALADY-947 [Navi] Info about the trip in navi mod
 - BALADY-1127 [Marketing] [Navi] IOS - The app crashed if the user navigates in the map without entering a point
 - fix poi reload button
 - BALADY-552 bugfix(Navi) Bottom sheet on the route mode
