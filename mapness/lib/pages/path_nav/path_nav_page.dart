@@ -61,6 +61,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
         const RoutingRoute(collapseInitially: true).go(context);
       }
     } else {
+      ref.read(pathNavMessageProvider.notifier).stopNavigation();
       await ref.read(dgisControllerProvider).value?.stopNavigation();
       _setNavigationState(PathNavState.finished);
     }
