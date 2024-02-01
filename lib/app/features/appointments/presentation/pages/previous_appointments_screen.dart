@@ -81,10 +81,11 @@ class _PreviousAppointmentsScreenState
                         locator<AppointmentDetailsViewModel>()
                             .getAppointmentDetails(list[index].id!);
                         Navigator.of(context).pushNamed(
-                            getScreenName(ScreenTage.appointment.name),
+                            RouteName.appointmentDetailsRoute,
                             arguments: {
                               "appointmentId": list[index].id!,
-                            });
+                            },
+                        );
                       }
                     },
                   );

@@ -32,7 +32,7 @@ import 'constants/route_names.dart';
 String getScreenName(String tag, {int? typeId}) {
   switch (tag) {
     ////// This depand on mainTypeId or requestMainTypeId
-    case 'Request':
+    case 'request':
       switch (typeId) {
         case 1300:
           return RouteName.healthRequestDetailsScreen;

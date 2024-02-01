@@ -407,7 +407,7 @@ class InvoiceObjectionsList extends StatelessWidget {
                           child: ElevatedButtonWidget.custom(
                             onPressed: () async {
                               Navigator.of(context).pushNamed(
-                                getScreenName(ScreenTage.objection.name),
+                                RouteName.objectionsDetailsPage,
                                 arguments: {
                                   "objectionRequestNumber": state.invoice?.objections?[index]
                                       .requestNumberAsText ??

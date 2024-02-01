@@ -445,7 +445,7 @@ class ObjectionsData extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   Navigator.of(context).pushNamed(
-                    getScreenName(ScreenTage.objection.name),
+                    RouteName.objectionsDetailsPage,
                     arguments: {
                       "objectionRequestNumber": state.details?.objectionRequestNumber ?? "",
                     },

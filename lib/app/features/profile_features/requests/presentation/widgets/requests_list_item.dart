@@ -109,7 +109,7 @@ class RequestsListItem extends StatelessWidget {
                     // all Depend on requestNumber, but objection Request
                     // Depend on other filed -> requestNumberAsText
                     Navigator.of(context).pushNamed(
-                      getScreenName(ScreenTage.objection.name),
+                      RouteName.objectionsDetailsPage,
                       arguments: {
                         "objectionRequestNumber": request.requestNumberAsText,
                       },

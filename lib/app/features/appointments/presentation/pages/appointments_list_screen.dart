@@ -99,7 +99,7 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
                                         if (appointment.id != null) {
                                           detailsModel.getAppointmentDetails(appointment.id!);
                                           Navigator.of(context).pushNamed(
-                                            getScreenName(ScreenTage.appointment.name),
+                                            RouteName.appointmentDetailsRoute,
                                             arguments: {
                                               "appointmentId": appointment.id!,
                                             },

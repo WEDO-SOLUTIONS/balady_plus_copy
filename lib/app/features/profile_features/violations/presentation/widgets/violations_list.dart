@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/routes_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -94,7 +95,7 @@ class _ViolationListState extends State<ViolationList> {
                     violations: state.violations[index],
                     onDetails: () {
                       context.pushNamedRoute(
-                        getScreenName(ScreenTage.violations.name),
+                        RouteName.violationDetailsPage,
                         arguments: {
                           "hashingViolationNumber": state.violations[index].hashingViolationNumber ?? '',
                           "applicationId": state.violations[index].applicationId ?? ""

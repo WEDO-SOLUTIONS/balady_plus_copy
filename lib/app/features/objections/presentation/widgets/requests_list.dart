@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
+import '../../../../core/utils/utils_exports.dart' show BlocRequestStatus, RouteName;
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/need_login_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
@@ -96,7 +96,7 @@ class _RequestsListState extends State<RequestsList> {
                     request: state.requests[index],
                     onPress: () {
                       Navigator.of(context).pushNamed(
-                        getScreenName(ScreenTage.objection.name),
+                        RouteName.objectionsDetailsPage,
                         arguments: {
                           "objectionRequestNumber": state.requests[index].objectionRequestNumber ?? "",
                         },
