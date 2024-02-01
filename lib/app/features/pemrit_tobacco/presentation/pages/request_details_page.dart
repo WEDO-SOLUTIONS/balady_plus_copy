@@ -48,11 +48,11 @@ class _PermitsTobaccoReqeuestDetailsPageState extends State<PermitsTobaccoReqeue
 
   @override
   Widget build(BuildContext context) {
-    int? detailsRequestNumber =
-        ModalRoute.of(context)!.settings.arguments as int?;
+    Map data =
+        ModalRoute.of(context)!.settings.arguments as Map;
     return BlocProvider(
       create: (context) =>
-          PermitTobaccoLicenseBloc(requestId: detailsRequestNumber)
+          PermitTobaccoLicenseBloc(requestId: data['requestNumber'])
             ..add(GetPermitRequestDetailsEvent()),
       child: BlocListener<PermitTobaccoLicenseBloc, PermitTobaccoLicenseState>(
         listener: (context, state) {},

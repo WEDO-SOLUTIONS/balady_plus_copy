@@ -44,10 +44,10 @@ class _PermitsReqeuestDetailsPageState
 
   @override
   Widget build(BuildContext context) {
-    int? detailsRequestNumber =
-        ModalRoute.of(context)!.settings.arguments as int?;
+    Map data =
+        ModalRoute.of(context)!.settings.arguments as Map;
     return BlocProvider(
-      create: (context) => Permit24LicenseBloc(requestId: detailsRequestNumber)
+      create: (context) => Permit24LicenseBloc(requestId: data['requestNumber'])
         ..add(GetPermitRequestDetailsEvent()),
       child: BlocListener<Permit24LicenseBloc, Permit24LicenseState>(
         listener: (context, state) {},
