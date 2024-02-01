@@ -1,14 +1,13 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
-    show
-        AppColorsTheme,
-        AppFontWeight,
-        ButtonIconPosition,
-        IconPath,
-        trans;
+    show AppColorsTheme, AppFontWeight, ButtonIconPosition, IconPath, trans;
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
     show CustomHorizontalSpace, CustomElevatedButtonWidget, CustomSvgIconWidget;
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+
+import '../../../../../../app/core/dependency_injection/injection_container.dart';
+import '../../../../etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
 
 class ProviderButtons extends StatelessWidget {
   final Function onCallPressed;
@@ -16,12 +15,13 @@ class ProviderButtons extends StatelessWidget {
   final String? buttonTxt;
   final double? btnSize;
 
-  const ProviderButtons(
-      {Key? key,
-      required this.onCallPressed,
-      required this.onDelegatePress, this.btnSize,
-      this.buttonTxt,})
-      : super(key: key);
+  const ProviderButtons({
+    Key? key,
+    required this.onCallPressed,
+    required this.onDelegatePress,
+    this.btnSize,
+    this.buttonTxt,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -52,14 +52,17 @@ class SubmitButton extends StatelessWidget {
   String? btnTxt;
   double? btnSize;
 
-  SubmitButton({Key? key, required this.onPressed, this.btnTxt , this.btnSize})
+  SubmitButton({Key? key, required this.onPressed, this.btnTxt, this.btnSize})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    String delegate = sl<EtmamEntryPointCubit>().isLifeStyle
+        ? "request_city_service".tr()
+        : "delegate".tr();
     return CustomElevatedButtonWidget(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      btnText: btnTxt ?? trans("delegate"),
+      btnText: btnTxt ?? delegate,
       btnTextSize: 14,
       btnHeight: btnSize ?? 56,
       btnRadius: 6,
@@ -76,7 +79,8 @@ class CallButton extends StatelessWidget {
   Function onPressed;
   double? btnSize;
 
-  CallButton({Key? key, required this.onPressed , this.btnSize}) : super(key: key);
+  CallButton({Key? key, required this.onPressed, this.btnSize})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
