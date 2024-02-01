@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
+import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/pages/path_nav/ui/eta_sheet.dart';
 import 'package:mapness/pages/path_nav/ui/path_nav_map_controlls.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
