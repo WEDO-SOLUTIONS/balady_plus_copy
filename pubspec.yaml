@@ -16,7 +16,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 3.8.2+185
+version: 3.8.2+188
 
 environment:
   sdk: ">=3.0.1 <4.0.0"
@@ -196,6 +196,9 @@ dependencies:
 
 dependency_overrides:
   geolocator_android: ^4.2.2
+  # for dio_http_cache
+  json_serializable: ^6.7.1
+  dio: ^5.0.0
 
 dev_dependencies:
   flutter_lints: ^2.0.1

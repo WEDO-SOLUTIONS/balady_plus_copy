@@ -32,10 +32,13 @@ class WeatherAlertsCubit extends Cubit<WeatherAlertsState> {
 
       if (location != null) {
         if (CommonProperties.fcmToken != null) {
-          _getWeatherAlerts(WeatherAlertRequestModel(
+          WeatherAlertRequestModel model = WeatherAlertRequestModel(
               lat: location.latitude,
               lon: location.longitude,
-              fcmToken: CommonProperties.fcmToken!));
+              fcmToken: CommonProperties.fcmToken!);
+
+          _getWeatherAlerts(model);
+          sendEventToSentry(model);
         }
       }
     });
@@ -59,11 +62,12 @@ class WeatherAlertsCubit extends Cubit<WeatherAlertsState> {
       if (newUpdate && updateTime) {
         if (CommonProperties.fcmToken != null) {
           updateLastLocation(location: location);
-
-          _getWeatherAlerts(WeatherAlertRequestModel(
+          WeatherAlertRequestModel model = WeatherAlertRequestModel(
               lat: location.latitude!,
               lon: location.longitude!,
-              fcmToken: CommonProperties.fcmToken!));
+              fcmToken: CommonProperties.fcmToken!);
+          _getWeatherAlerts(model);
+          sendEventToSentry(model);
         }
       }
     });
@@ -130,5 +134,25 @@ class WeatherAlertsCubit extends Cubit<WeatherAlertsState> {
     // Check if the distance is greater than or equal to 30 meters considering accuracy
 
     return distance >= 30;
+  }
+
+  void sendEventToSentry(WeatherAlertRequestModel model) {
+    try {
+      SentryUser sentryUser = SentryUser(
+          id: CommonProperties.userInfo?.idNo,
+          name: CommonProperties.userInfo?.arName,
+          email: "");
+
+      SentryEvent event = SentryEvent(
+          user: sentryUser,
+          request: SentryRequest(data: model.toMap()),
+          message: SentryMessage(model.toMap().toString()),
+          transaction: ApiUrl.weatherAlerts,
+          environment: sl<EnvType>().name,
+          exceptions: [SentryException(type: "Log", value: "Log")]);
+      Sentry.captureEvent(event, withScope: (p) {
+        //  p.addAttachment(attachment)
+      });
+    } catch (ex) {}
   }
 }

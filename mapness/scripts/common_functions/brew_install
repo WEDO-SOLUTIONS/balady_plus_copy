@@ -1,0 +1,18 @@
+#!/bin/bash
+
+name=$1
+tap=$2
+
+if command -v "$name" &> /dev/null; then
+    print_style '' 'yellow' 'good! `'"$name"'` available'
+else
+    echo
+    print_style '' 'yellow' '> installing `'"$name"'`...'
+    # tap if link provided 
+    if [[ -n "$tap" ]]; then
+        brew tap "$tap"
+    fi
+    # install
+    brew install "$name"
+    print_style '' 'yellow' '< `'"$name"'` installed!'
+fi

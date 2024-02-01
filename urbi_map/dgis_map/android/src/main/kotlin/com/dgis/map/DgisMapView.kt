@@ -752,9 +752,9 @@ class DgisMapView(
 
     override fun setAppearance(appearance: MapAppearanceMessage, result: Messages.Result<Void>?) {
         when (appearance) {
-            MapAppearanceMessage.DAY -> mapView.setTheme("day")
-            MapAppearanceMessage.NIGHT -> mapView.setTheme("night")
-            MapAppearanceMessage.SYSTEM -> mapView.setTheme("day", "night")
+            MapAppearanceMessage.DAY -> mapView.setTheme(MapTheme.defaultTheme)
+            MapAppearanceMessage.NIGHT -> mapView.setTheme(MapTheme.defaultDarkTheme)
+            MapAppearanceMessage.SYSTEM -> print("todo") // mapView.setTheme("day", "night")
         }
 
         result?.success(null)

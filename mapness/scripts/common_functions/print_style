@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# Function to print styled text in different colors and styles
+style=$1
+color=$2
+text=$3
+reset="\033[0m"
+
+style_code=""
+case $style in
+    "bold")
+        style_code="\033[1m"
+        ;;
+    "italic")
+        style_code="\033[3m"
+        ;;
+    *)
+        style_code=""
+        ;;
+esac
+
+color_code=""
+case $color in
+    "black")
+        color_code="\033[30m"
+        ;;
+    "red")
+        color_code="\033[31m"
+        ;;
+    "green")
+        color_code="\033[32m"
+        ;;
+    "yellow")
+        color_code="\033[33m"
+        ;;
+    "blue")
+        color_code="\033[34m"
+        ;;
+    "magenta")
+        color_code="\033[35m"
+        ;;
+    "cyan")
+        color_code="\033[36m"
+        ;;
+    "white")
+        color_code="\033[37m"
+        ;;
+    *)
+        color_code=""
+        ;;
+esac
+
+echo -e "$style_code$color_code$text$reset"

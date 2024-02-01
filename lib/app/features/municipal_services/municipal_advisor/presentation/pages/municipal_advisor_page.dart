@@ -53,7 +53,10 @@ class _MunicipalAdvisorPageState extends State<MunicipalAdvisorPage> {
           children: [
             EmptyChat(),
             ChatList(),
-            SendMessageCard(),
+            SizedBox(
+              height: 30,
+            )
+            //    SendMessageCard(),
           ],
         ),
       ),

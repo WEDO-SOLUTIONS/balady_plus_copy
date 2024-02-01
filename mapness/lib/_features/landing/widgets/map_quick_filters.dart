@@ -83,11 +83,12 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
     ref.listen(searchByRubricsProvider, (previous, next) async {
       if (!widget.forMap) return;
       await searchObjectManager.removeAllMarkers();
+      final value = next.unwrapPrevious().value;
 
-      if (next != null) {
+      if (value != null) {
         List<Marker> markers = [];
         for (final markerInfo
-            in (next.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty())) {
+            in (value.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty())) {
           markers.add(
             Marker(
               id: markerInfo?.objectId?.objectId.toString() ??
@@ -171,10 +172,9 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
     isCoordComputed = false;
     final cameraPosition = ref.read(cameraPositionProvider);
 
-    if (isZoomInteracted && cameraPosition?.zoom != null) {
+    if (cameraPosition?.zoom != null) {
       zoom = cameraPosition!.zoom < zoom ? cameraPosition.zoom : zoom;
     }
-
     if (cameraPosition?.point == null) return;
 
     ref.read(cameraPositionProvider.notifier).animateTo(CameraPositionMessage(

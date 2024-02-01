@@ -60,12 +60,14 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   // Check if point is in viewport
   final bool isInViewPort = box != null
       ? await dgisController.value?.contains(
-              GeoRectMessage(
-                  northEast:
-                      GeoPointMessage(latitude: box.maxY, longitude: box.maxX),
-                  southWest:
-                      GeoPointMessage(latitude: box.minY, longitude: box.minX)),
-              markerPoint) ??
+            GeoRectMessage(
+              northEast:
+                  GeoPointMessage(latitude: box.maxY, longitude: box.maxX),
+              southWest:
+                  GeoPointMessage(latitude: box.minY, longitude: box.minX),
+            ),
+            markerPoint,
+          ) ??
           false
       : false;
 

@@ -18,7 +18,7 @@ extension SearchResult {
             },
             itemMarkerInfos: items?.toMessage(),
             searchResultType: self.searchResultType.toMessage(),
-            dynamicFilters: self.dynamicFilters.map {
+            dynamicFilters: self.dynamicFilters.compactMap {
                 $0.toMessage()
             },
             autoUseFirstResult: NSNumber(value: self.autoUseFirstResult)
@@ -59,7 +59,7 @@ extension FloorInfo {
 }
 
 extension DynamicFilter {
-    fileprivate func toMessage() -> DynamicFilterMessage {
+    fileprivate func toMessage() -> DynamicFilterMessage? {
         switch self {
         case .flagFilter(let flag):
             return DynamicFilterMessage.make(
@@ -71,6 +71,8 @@ extension DynamicFilter {
                 withFlagFilter: nil,
                 rangeFilter: range.toMessage()
             )
+        case .sortingFilter(_):
+            return nil
         }
     }
 }
