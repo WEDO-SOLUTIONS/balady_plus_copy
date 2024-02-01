@@ -98,8 +98,24 @@ class _QuranPageState extends State<QuranPage> {
                           onTap: () {
                             context.read<QuranBloc>().add(ToggleDetailsEvent());
                           },
+                          onPanEnd: (details) {
+                            print(details);
+                            // Swiping in right direction.
+                            if (details.velocity.pixelsPerSecond.dx > 0) {
+                              context
+                                  .read<QuranBloc>()
+                                  .add(GoToNextPageEvent());
+                            }
+
+                            // Swiping in left direction.
+                            if (details.velocity.pixelsPerSecond.dx < 0) {
+                              context
+                                  .read<QuranBloc>()
+                                  .add(GoToPreviousPageEvent());
+                            }
+                          },
                           child: PageView.builder(
-                            physics: AlwaysScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             controller: context.read<QuranBloc>().controller,
                             onPageChanged: (int page) {
                               context

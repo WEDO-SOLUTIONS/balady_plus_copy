@@ -177,16 +177,20 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
       GoToNextPageEvent e, Emitter emitter) async {
     if (state.status == BlocStatus.performing) return;
     int nextPage = state.currentPageValue + 1;
+    if (nextPage < 0 || nextPage > 604) return;
 
     emitter(state.copyWith(
       status: BlocStatus.performing,
     ));
 
+    //  controller.jumpToPage(nextPage);
+
     await controller.animateToPage(nextPage,
-        duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+        duration: Duration(milliseconds: 200), curve: Curves.easeIn);
 
     emitter(
         state.copyWith(status: BlocStatus.success, currentPageValue: nextPage));
+    ChangePageEvent(page: nextPage);
 
     hideKeyboard();
   }
@@ -194,14 +198,18 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
   Future<void> _goToPreviousPageHandler(
       GoToPreviousPageEvent e, Emitter emitter) async {
     int prvoiusPage = state.currentPageValue - 1;
+    if (prvoiusPage < 0 || prvoiusPage > 604) return;
     emitter(state.copyWith(
       status: BlocStatus.performing,
     ));
+
     await controller.animateToPage(prvoiusPage,
-        duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+        duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+
     emitter(state.copyWith(
         status: BlocStatus.success, currentPageValue: prvoiusPage));
 
+    ChangePageEvent(page: prvoiusPage);
     hideKeyboard();
   }
 
@@ -212,7 +220,6 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
   Future<void> _getTitle(ChangePageEvent e, Emitter emitter) async {
     try {
       int currentPage = e.page ?? 0;
-
       String suraName = "";
       state.suras?[currentPage + 1]?.values.forEachIndexed((index, element) {
         suraName =
