@@ -74,16 +74,7 @@ class HealthLicenseRepository {
       "isNotSaudi": !isSaudi,
       "borderIdentityInfo": null
     });
-    print({
-      "employeeIdentityNumber": userId,
-      "employeeIdentityType": idType,
-      "employeeBirthDate": birthDate,
-      "submitterBirthDate": birthDate,
-      "submitterType": "HIMSELF",
-      "municipalityId": municipalityId,
-      "isNotSaudi": !isSaudi,
-      "borderIdentityInfo": null
-    });
+
     bool state = body['state'];
     dynamic data = body['data'];
 
@@ -170,6 +161,8 @@ class HealthLicenseRepository {
       String? licenseId,
       bool areaNoLicencePermit,
       int? healthCenterId,
+      String? licenseType,
+      String? districtCode,
       {bool isRenew = false}) async {
     final String url = isRenew
         ? ApiConstants.ApplyRenewHelathCertificatesRequest
@@ -182,11 +175,14 @@ class HealthLicenseRepository {
       "crType": crType,
       "crNumber": crNumber,
       "licenseId": licenseId,
+      "districtCode": districtCode,
+      if (licenseType != null) "licenseType": licenseType,
       "areaNoLicencePermit": areaNoLicencePermit,
       "employeeIdentityNumber": userId,
       "employeeIdentityType": idType,
       "employeeBirthDate": birthDate,
       "employeeMobileNumber": mobile,
+      "": "",
       if (healthCenterId != null) "healthCenterId": healthCenterId,
       "x": x.toString(),
       "y": y.toString(),
@@ -201,7 +197,6 @@ class HealthLicenseRepository {
       ApplyNewHealthRequest response =
           ApplyNewHealthRequest.fromJson(json.decode(data));
       result = response;
-      print("HERRRTT");
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
@@ -320,20 +315,12 @@ class HealthLicenseRepository {
 
   Future<Tuple3<bool?, String?, LicenseForHealthInformationResponse?>>
       getLicenseInformation(
-          String licenseId,
-          String municipalityId,
-          bool isEmployeeCitizen,
-          int requestType,
-          String submitterBirthDate) async {
-    final body = await webServices
-        .postApigeeRequest(ApiConstants.LicenseInfoService, body: {
-      "licenseId": licenseId,
-      "municipalityId": municipalityId,
-      "isEmployeeCitizen": isEmployeeCitizen,
-      "requestType": requestType,
-      "submitterBirthDate": submitterBirthDate,
-      "submitterType": "HIMSELF"
-    });
+    String licenseId,
+    String licenseType,
+  ) async {
+    final body = await webServices.getApigeeRequest(
+      ApiConstants.LicenseInfoService(licenseType, licenseId),
+    );
     bool state = body['state'];
     dynamic data = body['data'];
     LicenseForHealthInformationResponse? result;
@@ -348,9 +335,10 @@ class HealthLicenseRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
+      print(ex);
       try {
         Helpers.sendLog(
-            url: ApiConstants.LicenseInfoService,
+            url: ApiConstants.LicenseInfoService(licenseType, licenseId),
             data: data,
             errorMsg: ex.toString());
       } catch (ex) {}
