@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_message.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -10,13 +8,11 @@ part 'path_nav_message.g.dart';
 
 @riverpod
 class _PathNavMessage extends _$PathNavMessage {
-  StreamSubscription<NaviMessageEvent>? subscription;
-
   @override
   PathNavMessage? build() {
     final mapController = ref.watch(dgisControllerProvider);
 
-    subscription =
+    final subscription =
         mapController.value?.naviMessageController.events.listen((event) {
       switch (event.state) {
         case NaviMessageEventState.gpsLost:
@@ -40,10 +36,6 @@ class _PathNavMessage extends _$PathNavMessage {
     });
 
     return null;
-  }
-
-  void stopNavigation() {
-    subscription?.cancel();
   }
 }
 
