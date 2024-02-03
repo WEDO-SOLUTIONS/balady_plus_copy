@@ -195,6 +195,10 @@ class SsoUserInfo extends Equatable {
     return sex == "1" ? "male".tr() : "female".tr();
   }
 
+  String? getFullName(){
+   return  CommonFunctions.isAppAR ? arName : enName; 
+  }
+
   @override
   List<Object?> get props => [idNo, name, mail, phone];
 }

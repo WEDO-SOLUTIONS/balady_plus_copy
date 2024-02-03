@@ -712,6 +712,7 @@ class BillInfo {
         billAmount: json["billAmount"],
         billCreationDate: json["billCreationDate"],
         billStatus: json["billStatus"],
+        billCreated: json["billCreated"],
         warnings: json["warnings"] != null
             ? List<String>.from(json["warnings"].map((x) => x))
             : null,

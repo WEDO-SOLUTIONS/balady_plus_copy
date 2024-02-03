@@ -84,7 +84,7 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
               width: 100,
               height: 50,
               child: Align(
-                alignment: Alignment.centerLeft,
+                alignment: AlignmentDirectional.centerEnd,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [

@@ -486,6 +486,7 @@ class _BillInfoDataWidget extends StatelessWidget {
     HealthRequestDetailsViewModel model =
         Provider.of<HealthRequestDetailsViewModel>(context);
     BillInfo? billingInfo = model.requestDetails?.data?.result?.billInfo;
+    print("billCreated ${billingInfo?.billCreated}");
     return CustomExpansionPanelWidget(
       title: Helpers.translatingWord("health_bill"),
       underline: false,

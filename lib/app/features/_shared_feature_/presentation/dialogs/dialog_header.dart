@@ -25,13 +25,16 @@ class DialogHeader extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomTextWidget(
-                title,
-                textAlign: TextAlign.center,
-                textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
-                    fontSize: 20.0,
-                    color: AppColor.black,
-                    fontWeight: FontWeight.bold),
+              Flexible(
+                child: CustomTextWidget(
+                  title,
+                  textAlign: TextAlign.start,
+                  maxLines: 3,
+                  textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
+                      fontSize: 20.0,
+                      color: AppColor.black,
+                      fontWeight: FontWeight.bold),
+                ),
               ),
               InkWell(
                 onTap: () => Navigator.pop(context),
