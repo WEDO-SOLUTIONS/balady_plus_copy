@@ -12,19 +12,19 @@ class SearchEventsItem {
   String? locationX;
   String? locationY;
   String? logoImage;
-  String? feesType; 
+  String? feesType;
 
-  SearchEventsItem({
-    this.id,
-    this.eventName,
-    this.category,
-    this.city,
-    this.startDate,
-    this.endDate,
-    this.locationX,
-    this.locationY,
-    this.logoImage, this.feesType
-  });
+  SearchEventsItem(
+      {this.id,
+      this.eventName,
+      this.category,
+      this.city,
+      this.startDate,
+      this.endDate,
+      this.locationX,
+      this.locationY,
+      this.logoImage,
+      this.feesType});
 
   String getStartDay() {
     if (startDate != null) {
@@ -86,5 +86,9 @@ class SearchEventsItem {
 
   String getEndDate() {
     return "${getEndDay()} ${getEndMonth()} ${getEndYear()}";
+  }
+
+  String getFormatDate() {
+    return " ${getStartDay()} ${getStartMonth()} ${getStartYear()}  |  ${getEndDay()} ${getEndMonth()} ${getEndYear()}";
   }
 }

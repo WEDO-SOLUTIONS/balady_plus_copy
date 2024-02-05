@@ -1,20 +1,21 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart'
-    show BlocStatus, IconPath;
+    show BlocStatus, IconPath, CommonFunctions;
 
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
     show
         CustomIndicatorWidget,
         CustomInkWellButtonWidget,
         CustomShimmerHorizontalListWidget,
-        CustomTextWidget,CustomSvgIconWidget,
+        CustomTextWidget,
+        CustomSvgIconWidget,
         CustomNetworkImageWidget,
         CustomVerticalSpace,
         ReloadWidget;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
-    show AppColor, AppFontWeight, CommonFunctions, CommonProperties, trans;
+    show AppColor, AppFontWeight, CommonProperties, trans;
 import 'package:balady_plus/etmam_app/features/home/home_exports.dart'
     show
         EtmamSubServicesPage,
@@ -242,11 +243,14 @@ class EtmamServiceCardWidget extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: CustomSvgIconWidget(
-                IconPath.arrowForward2,
-                iconColor: AppColor.black,
+            RotatedBox(
+              quarterTurns: CommonFunctions.isAppAR ? 0 : 2,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: CustomSvgIconWidget(
+                  IconPath.arrowForward2,
+                  iconColor: AppColor.black,
+                ),
               ),
             ),
           ],

@@ -1774,7 +1774,7 @@
 "lbl_cost_of_previous_license":"The cost of previous license",
 "lbl_SAR":"SAR",
 "lbl_previous_license_term":"The duration of previous license",
-"lbl_day":"One day",
+"lbl_day":"Day",
 "lbl_length_of_hole":"Drilling length in meters",
 "lbl_meter":"Meter",
 "lbl_length_previuos_of_hole":"Drilling length distance of the previous license",
@@ -4226,7 +4226,10 @@
 "health_license_type_error":"You must enter license information",
 "COMMERCIAL":"COMMERCIAL", 
 "STREET_VENDOR":"STREET VENDOR", 
-"VEHICLE":"VEHICLE"
+"VEHICLE":"VEHICLE", 
+
+"building_requirements_warning": "The images shown are illustrative and do not specifically specify the nature of the violation"
+
 
 
 

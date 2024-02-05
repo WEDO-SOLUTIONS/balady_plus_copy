@@ -56,7 +56,7 @@ class RadioCustomWidget extends StatelessWidget {
                 children: [
                   CustomTextWidget(
                     title,
-                    textAlign: TextAlign.right,
+                    textAlign: TextAlign.start,
                     textStyle: AppStyle.complianceFirstSubmitTitleRadioStyle,
                   ),
                   CustomVerticalSpace(
@@ -65,7 +65,7 @@ class RadioCustomWidget extends StatelessWidget {
                   CustomTextWidget(
                     subtitle,
                     maxLines: 4,
-                    textAlign: TextAlign.right,
+                    textAlign: TextAlign.start,
                     textStyle: AppStyle.complianceFirstSubmitSubtitleStyle,
                   ),
                 ],
@@ -129,13 +129,13 @@ class CustomRadio1 extends StatelessWidget {
             title: CustomTextWidget(
               title,
               maxLines: 10,
-              textAlign: TextAlign.right,
+              textAlign: TextAlign.start,
               textStyle: AppStyle.complianceFirstSubmitTitleRadioStyle,
             ),
             subtitle: CustomTextWidget(
               subtitle,
               maxLines: 2,
-              textAlign: TextAlign.right,
+              textAlign: TextAlign.start,
               height: 1.6,
               textStyle: AppStyle.complianceFirstSubmitSubtitleStyle,
             ),

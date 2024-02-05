@@ -23,12 +23,15 @@ class BuildingRequirementsDialog extends StatefulWidget {
 
 class _BuildingRequirementsDialogState
     extends State<BuildingRequirementsDialog> {
+  List<ConditionsModel> data2 = [];
+
   @override
   void initState() {
     super.initState();
     CommonFunctions.sendEventToAnalytics(AppEvents.buildingCompliance);
 
     CommonFunctions.sendUXCamEvent(UXCamEvents.complianceCondition);
+    readComplianceData();
   }
 
   @override
@@ -76,7 +79,7 @@ class _BuildingRequirementsDialogState
               ),
               child: Column(
                 children: [
-                  BuildingReqCard(
+                  /* BuildingReqCard(
                     title:
                         "تعديل استخدام المواقف المعتمدة في قبو  المبنى، وفق الترخيص الصادر له من الأمانة/البلدية",
                     imgPath: ImagePath.buildingReq4,
@@ -168,18 +171,30 @@ class _BuildingRequirementsDialogState
                     title:
                         "وجود مخلفات ومواد بناء تعيق الحركة على الرصيف الخاص بالمبنى",
                     imgPath: ImagePath.buildingReq18,
+                  ),*/
+
+                  ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: data2.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return BuildingReqCard(
+                        title: data2[index].desc,
+                        imgPath: data2[index].photo,
+                      );
+                    },
                   ),
-                  SizedBox(height: 32),
+                  const SizedBox(height: 32),
                   Container(
                     height: 60,
-                    padding: EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(12),
                     decoration: ShapeDecoration(
-                      color: Color(0x7FE6EFEF),
+                      color: const Color(0x7FE6EFEF),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
                     ),
                     child: CustomTextWidget(
-                      "الصور المعروضة توضيحية ولا تحدد شكل المخالفة بشكل خاص",
+                      "building_requirements_warning".tr(),
                       fontColor: Color(0xFF52525B),
                       fontSize: 14,
                       maxLines: 5,
@@ -195,21 +210,20 @@ class _BuildingRequirementsDialogState
       ),
     );
   }
-}
 
-/*Future<void> readComplianceData() async {
-  String qa =
-      await rootBundle.loadString("assets/compliance_pdf/text/conditions.json");
-  var r = json.decode(qa);
-  print(r);
-  {
-    List<ConditionsModel>? model = r != null
-        ? List<ConditionsModel>.from(r.map((x) => ConditionsModel.fromMap(x)))
-        : null;
-    data2 = model ?? [];
-    setState(() {});
+  Future<void> readComplianceData() async {
+    String qa = await rootBundle
+        .loadString("assets/compliance_pdf/text/conditions.json");
+    var r = json.decode(qa);
+    {
+      List<ConditionsModel>? model = r != null
+          ? List<ConditionsModel>.from(r.map((x) => ConditionsModel.fromMap(x)))
+          : null;
+      data2 = model ?? [];
+      setState(() {});
+    }
   }
-}*/
+}
 
 class BuildingReqCard extends StatelessWidget {
   const BuildingReqCard({

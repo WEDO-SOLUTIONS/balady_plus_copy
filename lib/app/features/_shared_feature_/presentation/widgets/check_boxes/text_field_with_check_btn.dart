@@ -54,7 +54,7 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      alignment: Alignment.centerLeft,
+      alignment: AlignmentDirectional.centerEnd,
       children: <Widget>[
         CustomTextFieldWidget(
           label: widget.title,
@@ -71,8 +71,8 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
           onChanged: (value) => {widget.onTextChanged(value)},
         ),
         Padding(
-          padding: EdgeInsets.only(
-              bottom: 0.0, left: 8, top: widget.maxLength == null ? 20 : 0),
+          padding: EdgeInsetsDirectional.only(
+              bottom: 0.0, end: 8, top: widget.maxLength == null ? 20 : 0),
           child: InkWell(
             onTap: widget.isValidate
                 ? null

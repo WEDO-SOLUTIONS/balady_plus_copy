@@ -3937,7 +3937,8 @@
 "health_license_type_error":"يجب إدخال بيانات الرخصة" ,
 "COMMERCIAL":"رخصة محل", 
 "STREET_VENDOR":"رخصة منفذ بيع", 
-"VEHICLE":"رخصة عربة متنقلة"
+"VEHICLE":"رخصة عربة متنقلة", 
+"building_requirements_warning":"الصور المعروضة توضيحية ولا تحدد شكل المخالفة بشكل خاص"
 
 
 

@@ -41,7 +41,7 @@ class SelfRatingSectionWidget extends StatelessWidget {
             CustomTextWidget(
               item.condition,
               maxLines: 5,
-              textAlign: TextAlign.right,
+              textAlign: TextAlign.start,
               textStyle: AppStyle.selfRatingSectionTextStyle,
             ),
             const SizedBox(

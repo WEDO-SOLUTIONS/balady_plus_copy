@@ -44,13 +44,14 @@ class RatingSingleRatioOption extends StatelessWidget {
               onChanged: (val) {
                 onChanged(val);
               },
-              activeColor: selectdValue == value ? AppColor.primary700Light : null,
+              activeColor:
+                  selectdValue == value ? AppColor.primary700Light : null,
             ),
             Flexible(
               child: CustomTextWidget(
                 title,
                 textStyle: titleStyle,
-                maxLines: 1,
+                maxLines: 2,
                 fontSize: 12,
                 fontWeight: AppFontWeight.medium,
               ),

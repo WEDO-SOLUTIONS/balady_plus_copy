@@ -52,12 +52,15 @@ class FormPledgesSummuryWidget extends StatelessWidget {
                     onChanged(newVal);
                   },
                 ),
-                CustomTextWidget(
-                  consentcheck,
-                  fontColor: AppColor.primary700Light,
-                  fontSize: 12,
-                  fontWeight: AppFontWeight.semiBold,
-                  height: 1.3,
+                Flexible(
+                  child: CustomTextWidget(
+                    consentcheck,
+                    fontColor: AppColor.primary700Light,
+                    fontSize: 12,
+                    maxLines: 10,
+                    fontWeight: AppFontWeight.semiBold,
+                    height: 1.3,
+                  ),
                 ),
               ],
             ))

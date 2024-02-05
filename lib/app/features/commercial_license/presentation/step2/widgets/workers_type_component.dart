@@ -79,6 +79,7 @@ class WorkerTypeItem extends StatelessWidget {
           ),
           child: CustomTextWidget(
             workersType.name.tr(),
+            maxLines: 3,
             textOverflow: TextOverflow.ellipsis,
             fontColor: workersType == selectedWorkersType
                 ? AppColor.blackModern50Light
