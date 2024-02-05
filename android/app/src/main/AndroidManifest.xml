@@ -129,7 +129,6 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" android:host="apps.balady.gov.sa" android:pathPrefix="/eservices/qrcode/qr"/>
                 <data android:scheme="https" android:host="balady.gov.sa" android:pathPrefix="/customervoice"/>
-                <data android:scheme="com.momra.balady" android:host="com.momra.balady"/>
             </intent-filter>
 
             <intent-filter android:autoVerify="true">
