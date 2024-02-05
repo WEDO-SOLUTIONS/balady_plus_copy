@@ -6,9 +6,11 @@ class CalculatorResultsPageParams {
   CalculateCostV03Response? calculateCostV03Response;
   CalculateCostResponse? calculateCostResponse;
   CalculateDiggingResponse? calculateDiggingResponse;
+  bool? hideNote;
 
   CalculatorResultsPageParams(
       {this.calculateCostResponse,
       this.calculateCostV03Response,
-      this.calculateDiggingResponse});
+      this.calculateDiggingResponse,
+      this.hideNote});
 }

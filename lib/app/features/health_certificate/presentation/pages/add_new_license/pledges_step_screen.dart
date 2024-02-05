@@ -112,11 +112,14 @@ class _PledgesStepScreenState extends State<PledgesStepScreen> {
                                   });
                                 },
                               ),
-                              CustomTextWidget(
-                                ("vd_consent_check").tr(),
-                                fontColor: AppColor.primary700Light,
-                                fontSize: 12,
-                                fontWeight: AppFontWeight.semiBold,
+                              Flexible(
+                                child: CustomTextWidget(
+                                  ("vd_consent_check").tr(),
+                                  fontColor: AppColor.primary700Light,
+                                  fontSize: 12,
+                                  maxLines: 10,
+                                  fontWeight: AppFontWeight.semiBold,
+                                ),
                               ),
                             ],
                           ))

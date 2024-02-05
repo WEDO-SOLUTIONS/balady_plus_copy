@@ -138,41 +138,43 @@ class _ServiceCalculatorResultScreenState
                         ),
                       ),
                       CustomVerticalSpace(height: 16),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SvgPicture.asset(IconPath.warningIcon),
-                          CustomHorizontalSpace(width: 8),
-                          Flexible(
-                            child: CustomTextWidget(
-                              "calculator_note1".tr(),
-                              fontWeight: AppFontWeight.bold,
-                              fontSize: 12,
-                              maxLines: 20,
-                              height: 1.6,
-                              fontColor: AppColor.blackModern500Light,
-                            ),
-                          )
-                        ],
-                      ),
-                      CustomVerticalSpace(height: 12),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SvgPicture.asset(IconPath.warningIcon),
-                          CustomHorizontalSpace(width: 8),
-                          Flexible(
-                            child: CustomTextWidget(
-                              "calculator_note2".tr(),
-                              fontWeight: AppFontWeight.bold,
-                              fontSize: 12,
-                              maxLines: 20,
-                              height: 1.6,
-                              fontColor: AppColor.blackModern500Light,
-                            ),
-                          )
-                        ],
-                      ),
+                      if (params.hideNote != true) ...[
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SvgPicture.asset(IconPath.warningIcon),
+                            CustomHorizontalSpace(width: 8),
+                            Flexible(
+                              child: CustomTextWidget(
+                                "calculator_note1".tr(),
+                                fontWeight: AppFontWeight.bold,
+                                fontSize: 12,
+                                maxLines: 20,
+                                height: 1.6,
+                                fontColor: AppColor.blackModern500Light,
+                              ),
+                            )
+                          ],
+                        ),
+                        CustomVerticalSpace(height: 12),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SvgPicture.asset(IconPath.warningIcon),
+                            CustomHorizontalSpace(width: 8),
+                            Flexible(
+                              child: CustomTextWidget(
+                                "calculator_note2".tr(),
+                                fontWeight: AppFontWeight.bold,
+                                fontSize: 12,
+                                maxLines: 20,
+                                height: 1.6,
+                                fontColor: AppColor.blackModern500Light,
+                              ),
+                            )
+                          ],
+                        )
+                      ],
                       CustomVerticalSpace(height: 32),
                       _CalcualateOtherFeesButton()
                     ]),

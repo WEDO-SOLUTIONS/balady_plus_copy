@@ -300,15 +300,15 @@ class ServiceIcon extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding:
-                    EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
+                padding: const EdgeInsets.only(
+                    left: 16, right: 16, top: 16, bottom: 16),
                 decoration: BoxDecoration(
                     color: backgroundColor ?? AppColor.white,
-                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                    borderRadius: const BorderRadius.all(Radius.circular(8))),
                 child: DrawIconBasedTypeWidget(
                   icon: IconPath.serviceIcon(service.iconName),
                   iconSize: 28,
-                  iconColor: Color(0xff1E928F),
+                  iconColor: const Color(0xff1E928F),
                 ),
               ),
               const SizedBox(

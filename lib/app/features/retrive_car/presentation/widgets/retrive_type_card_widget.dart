@@ -62,7 +62,7 @@ class RetriveTypeCardWidget extends StatelessWidget {
                 fontSize: 14,
                 fontWeight: AppFontWeight.bold,
                 fontColor: AppColor.black,
-                maxLines: 2,
+                maxLines: 3,
               ),
             ],
           ),

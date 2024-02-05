@@ -4763,6 +4763,10 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
     _numberOfDocumentsFocusNode.dispose();
   }
 
+  bool hideNotes() {
+    return currentActivityId == 10 || currentActivityId == 8;
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -4788,29 +4792,30 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
   @override
   void calculatRenewDiggingCostSuccess(CalculateDiggingResponse? result) {
     Navigator.pushNamed(context, RouteName.calculatorResultsScreen,
-        arguments:
-            CalculatorResultsPageParams(calculateDiggingResponse: result));
+        arguments: CalculatorResultsPageParams(
+            calculateDiggingResponse: result, hideNote: hideNotes()));
   }
 
   @override
   void calculateCostSuccess(CalculateCostResponse? result) {
     Navigator.pushNamed(context, RouteName.calculatorResultsScreen,
-        arguments: CalculatorResultsPageParams(calculateCostResponse: result));
+        arguments: CalculatorResultsPageParams(
+            calculateCostResponse: result, hideNote: hideNotes()));
   }
 
   @override
   void calculateDiggingCostSuccess(CalculateDiggingResponse? result) {
     Navigator.pushNamed(context, RouteName.calculatorResultsScreen,
-        arguments:
-            CalculatorResultsPageParams(calculateDiggingResponse: result));
+        arguments: CalculatorResultsPageParams(
+            calculateDiggingResponse: result, hideNote: hideNotes()));
   }
 
   @override
   void calculateV03Success(CalculateCostV03Response? result) {
     CalculateCostV03Response? response = result;
     Navigator.pushNamed(context, RouteName.calculatorResultsScreen,
-        arguments:
-            CalculatorResultsPageParams(calculateCostV03Response: response));
+        arguments: CalculatorResultsPageParams(
+            calculateCostV03Response: response, hideNote: hideNotes()));
   }
 
   @override

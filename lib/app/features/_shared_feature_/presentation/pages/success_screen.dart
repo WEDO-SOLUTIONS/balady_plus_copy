@@ -238,6 +238,7 @@ class SuccessBody extends StatelessWidget {
                 fontSize: 22,
                 fontWeight: AppFontWeight.bold,
                 fontColor: AppColor.black,
+                textAlign: TextAlign.center,
                 maxLines: 10,
               ),
               const CustomVerticalSpace(
@@ -410,7 +411,7 @@ class SuccessButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 35),
+        padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
