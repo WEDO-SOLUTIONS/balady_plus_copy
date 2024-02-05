@@ -12,6 +12,7 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_continue_trip.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class PathNavPage extends ConsumerStatefulWidget {
   const PathNavPage({Key? key}) : super(key: key);
@@ -47,11 +48,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
         ?.navigationEvents
         .listen(_naviEvent);
     unawaited(ref.read(dgisControllerProvider).value?.startNavigation());
+    WakelockPlus.enable();
   }
 
   @override
   void dispose() {
     _naviEventsListener?.cancel();
+    WakelockPlus.disable();
     super.dispose();
   }
 

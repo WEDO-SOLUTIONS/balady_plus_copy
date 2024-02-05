@@ -3,6 +3,7 @@
 - BALADY-1177: [Marketing] arabic text in poi card in english app
 - BALADY-1212: [Marketing] navigation is not enabled in all places to visit and places to shop
 - BALADY-1200: [Interesting Place] - tapping to interesting objects does not fly to it
+- BALADY-1216: [Navi] - wakelock device while navigator enabled
 
 ## 3.8.2(4)
 
