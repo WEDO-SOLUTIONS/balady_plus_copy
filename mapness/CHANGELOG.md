@@ -1,6 +1,7 @@
 ## 3.8.2(5) - Current
 
-BALADY-1177: [Marketing] arabic text in poi card in english app
+- BALADY-1177: [Marketing] arabic text in poi card in english app
+- BALADY-1212: [Marketing] navigation is not enabled in all places to visit and places to shop
 
 ## 3.8.2(4)
 
