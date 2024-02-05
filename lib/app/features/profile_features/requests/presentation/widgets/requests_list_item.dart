@@ -102,31 +102,12 @@ class RequestsListItem extends StatelessWidget {
                     : request.requestTypeId,
               );
               if (RouteName.inappWebview == routeName) {
-                // Some Request objection open in Web View.
-                // need confirm this from backend
-                if (request.redirectUrl == null) {
-                  if (request.requestTypeId == 50001) {
-                    // all Depend on requestNumber, but objection Request
-                    // Depend on other filed -> requestNumberAsText
-                    Navigator.of(context).pushNamed(
-                      RouteName.objectionsDetailsPage,
-                      arguments: {
-                        "objectionRequestNumber": request.requestNumberAsText,
-                      },
-                    );
-                    return;
-                  }
-                } else {
-                  CommonFunctions.openBaldyWithRefreshCookie(
-                    request.redirectUrl,
-                  );
-                }
+                CommonFunctions.openBaldyWithRefreshCookie(
+                  request.redirectUrl,
+                );
               } else {
                 NavigationService.navigatorKey.currentState!.pushNamed(
-                  getScreenName(
-                    ScreenTage.request.name,
-                    typeId: request.requestTypeId,
-                  ),
+                  routeName,
                   arguments: {
                     "requestNumber": request.requestNumber.toString(),
                     "redirectUrl": request.redirectUrl
@@ -135,19 +116,6 @@ class RequestsListItem extends StatelessWidget {
               }
               ///////////////////////////////////////////////
               if (request.requestMainTypeId == "1300") {
-                final model = locator<MainHealthLicenseViewModel>();
-                HealthRequestDetails? details =
-                    await model.getHealthRequestDetails(request.requestNumber);
-                if (details != null) {
-                  NavigationService.navigatorKey.currentState!.pushNamed(
-                    RouteName.healthRequestDetailsScreen,
-                    arguments: HealthRequestDetailsScreenArgs(
-                      healthRequestDetails: details,
-                      isDeletable: false,
-                      isPrintable: false,
-                    ),
-                  );
-                }
                 CommonFunctions.sendUXCamEvent(
                   UXCamEvents.detailsServiceHealthCertificate,
                 );

@@ -22,7 +22,7 @@
 // screenName: “My_Violations_View_Details_Page”
 // ____________________________
 
-// depaned on This get Screen by type (invoice,Appointment,objection,Violations)
+// depaned on This get Screen by type (invoice,appointment,objection,Violations)
 // and some time dpaind on mainTypeId or requestMainTypeId to selotion
 // string -> tag and return screen name  and some time send intgear -> id
 
