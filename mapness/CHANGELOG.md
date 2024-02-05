@@ -1,5 +1,7 @@
 ## 3.8.2(5) - Current
 
+BALADY-1177: [Marketing] arabic text in poi card in english app
+
 ## 3.8.2(4)
 
 - BALADY-1127 [Marketing] [Navi] IOS - The app crashed if the user navigates in the map without entering a point
