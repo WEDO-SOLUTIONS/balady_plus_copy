@@ -1,4 +1,6 @@
-## 3.8.2(4) - Current
+## 3.8.2(5) - Current
+
+## 3.8.2(4)
 
 - BALADY-1127 [Marketing] [Navi] IOS - The app crashed if the user navigates in the map without entering a point
 - fix poi reload button
