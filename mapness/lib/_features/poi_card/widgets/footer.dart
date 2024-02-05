@@ -83,18 +83,18 @@ class PoiCardFooter extends ConsumerWidget {
               viewModel.removeFromFavourite(favData);
             }
           },
-          desc: (hasContacts == false)
-              ? Text(
-                  context.l10n.favourites,
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .accentS
-                      .copyWith(color: colorPrimary.withOpacity(0.5)),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  textAlign: TextAlign.start,
-                )
-              : const SizedBox.shrink(),
+          // desc: (hasContacts == false)
+          //     ? Text(
+          //         context.l10n.favourites,
+          //         style: Theme.of(context)
+          //             .extension<ThemeTextStyles>()!
+          //             .accentS
+          //             .copyWith(color: colorPrimary.withOpacity(0.5)),
+          //         overflow: TextOverflow.ellipsis,
+          //         maxLines: 1,
+          //         textAlign: TextAlign.start,
+          //       )
+          //     : const SizedBox.shrink(),
         );
 
     Widget carItem({int flex = 1}) => Flexible(
@@ -124,18 +124,18 @@ class PoiCardFooter extends ConsumerWidget {
             assetName: 'assets/icons/svg/ic_entrance.svg',
             onTap: () => onEntranceTap(),
             // onTap: () => widget.viewModel.onEntranceTap(objectMessage),
-            desc: (hasContacts == false)
-                ? Text(
-                    context.l10n.exits,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .accentS
-                        .copyWith(color: colorPrimary.withOpacity(0.5)),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    textAlign: TextAlign.start,
-                  )
-                : const SizedBox.shrink(),
+            // desc: (hasContacts == false)
+            //     ? Text(
+            //         context.l10n.exits,
+            //         style: Theme.of(context)
+            //             .extension<ThemeTextStyles>()!
+            //             .accentS
+            //             .copyWith(color: colorPrimary.withOpacity(0.5)),
+            //         overflow: TextOverflow.ellipsis,
+            //         maxLines: 1,
+            //         textAlign: TextAlign.start,
+            //       )
+            //     : const SizedBox.shrink(),
           )
         : const SizedBox.shrink();
 

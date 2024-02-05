@@ -52,14 +52,16 @@ class HomeShellRoute extends StatefulShellRouteData {
   static final GlobalKey<NavigatorState> $navigatorKey = shellNavigatorKey;
 
   @override
-  Page<void> pageBuilder(BuildContext context, GoRouterState state,
-      StatefulNavigationShell navigationShell) {
-    return TransculentPage(
-      child: ScaffoldWithNestedNavigation(
-        navigationShell: navigationShell,
-      ),
-    );
-  }
+  Page<void> pageBuilder(
+    BuildContext context,
+    GoRouterState state,
+    StatefulNavigationShell navigationShell,
+  ) =>
+      TransculentPage(
+        child: ScaffoldWithNestedNavigation(
+          navigationShell: navigationShell,
+        ),
+      );
 }
 
 class LandingBranch extends StatefulShellBranchData {
@@ -72,7 +74,8 @@ class LandingRoute extends GoRouteData {
   const LandingRoute({this.focusMaker});
 
   @override
-  Page<void> buildPage(context, state) => TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) =>
+      TransculentPage(
         child: LandingPage(
           focusMaker: focusMaker ??
               LangingFocusMaker.values.firstWhereOrNull(
@@ -88,11 +91,17 @@ class RoutingBranch extends StatefulShellBranchData {
 }
 
 class RoutingRoute extends GoRouteData {
-  const RoutingRoute();
+  /// open page with collapsed bottom sheet
+  final bool collapseInitially;
+
+  const RoutingRoute({this.collapseInitially = false});
 
   @override
-  Page<void> buildPage(context, state) => const TransculentPage(
-        child: RoutingPointsPage(),
+  Page<void> buildPage(BuildContext context, GoRouterState state) =>
+      TransculentPage(
+        child: RoutingPointsPage(
+          collapseInitially: collapseInitially,
+        ),
       );
 }
 
@@ -104,20 +113,18 @@ class ServicesRoute extends GoRouteData {
   const ServicesRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return Consumer(
-      builder: (context, ref, child) {
-        final language = ref.watch(appLanguageProvider);
-        return Directionality(
-          textDirection: switch (language) {
-            Language.english => TextDirection.ltr,
-            Language.arabic => TextDirection.rtl,
-          },
-          child: const ServicesPage(),
-        );
-      },
-    );
-  }
+  Widget build(BuildContext context, GoRouterState state) => Consumer(
+        builder: (context, ref, child) {
+          final language = ref.watch(appLanguageProvider);
+          return Directionality(
+            textDirection: switch (language) {
+              Language.english => TextDirection.ltr,
+              Language.arabic => TextDirection.rtl,
+            },
+            child: const ServicesPage(),
+          );
+        },
+      );
 }
 
 class ProfilesBranch extends StatefulShellBranchData {

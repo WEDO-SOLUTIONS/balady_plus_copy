@@ -27,7 +27,7 @@ class InterestingPlaces extends _$InterestingPlaces {
         .read(dgisControllerProvider.notifier)
         .visibleRectSubject
         .listen((event) async {
-      await _update(event.visibleRect);
+      await _update(event?.visibleRect);
     });
 
     ref.onDispose(() {
@@ -58,6 +58,7 @@ class InterestingPlaces extends _$InterestingPlaces {
       final places = proto.InterestingPlacesResponse.fromBuffer(response.data)
           .interestingPlaces;
       return places;
+      // ignore: avoid_catches_without_on_clauses
     } catch (error) {
       return [];
     }

@@ -179,6 +179,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
     
+    func followNavigation(completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.followNavigation()
+        completion(nil)
+    }
+    
     func selectIndoorLevelIndex(_ index: NSNumber, completion: @escaping (FlutterError?) -> Void) {
         self.indoorControlHandler?.selectIndoorLevel(index: index.uint64Value)
         completion(nil)
@@ -294,6 +299,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             return
         })
         cancelable.append(moveCancelable)
+    }
+    
+    func calcPosition(forRouteOptions options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
+        self.navigationHandler?.calcPositionForRoute(options: options, completion: completion)
     }
     
     func calcPosition(forMarkersMarkers markers: [String], options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
@@ -909,9 +918,9 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.navigationHandler?.stopFreeRoam()
         completion(nil)
     }
-    
-    func toggleSound(completion: @escaping (FlutterError?) -> Void) {
-        self.navigationHandler?.toggleSounds()
+
+    func toggleSoundEnabled(_ enabled: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.toggleSounds(enabled: enabled.boolValue)
         completion(nil)
     }
     

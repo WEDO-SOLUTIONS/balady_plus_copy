@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/image/loading_image/loading_shimmer_image.dart';
+import 'package:mapness/shared/ui/photo_viewer/photo_viewer.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../provider/poi_photo_provider.dart';
@@ -68,6 +69,7 @@ class PoiPhotosRow extends ConsumerWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: LoadingShimmerImage(
+                        onImageTap: (name, isAsset) {},
                         imageUrl: photo,
                         fit: BoxFit.cover,
                       ),
@@ -82,23 +84,27 @@ class PoiPhotosRow extends ConsumerWidget {
 
     /// scrollable list of photos
     return ListView.separated(
-      itemBuilder: (context, index) => Padding(
-        padding: EdgeInsetsDirectional.only(
-          start: index == 0 ? 12 : 0,
-          end: index == photos.length ? 12 : 0,
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: AspectRatio(
-            key: ValueKey(photos[index]),
-            aspectRatio: 1,
-            child: LoadingShimmerImage(
-              imageUrl: photos[index],
-              fit: BoxFit.cover,
+      itemBuilder: (context, index) {
+        final loadingShimmerImage = LoadingShimmerImage(
+          onImageTap: (name, isAsset) => PhotoViewer.open(context,index, photos),
+          imageUrl: photos[index],
+          fit: BoxFit.fill,
+        );
+        return Padding(
+          padding: EdgeInsetsDirectional.only(
+            start: index == 0 ? 12 : 0,
+            end: index == photos.length ? 12 : 0,
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: AspectRatio(
+              key: ValueKey(photos[index]),
+              aspectRatio: 1,
+              child: loadingShimmerImage,
             ),
           ),
-        ),
-      ),
+        );
+      },
       itemCount: min(photos.length, 10),
       scrollDirection: Axis.horizontal,
       separatorBuilder: (context, index) => const SizedBox(width: 6),

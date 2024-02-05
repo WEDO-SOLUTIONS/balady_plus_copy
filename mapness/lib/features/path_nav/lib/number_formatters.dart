@@ -1,12 +1,14 @@
+import 'enums.dart';
+
 /// @nodoc
 extension FormattedDistance on double {
   /// @nodoc
-  ({String value, String unit}) formatDistance() {
+  ({String value, DistanceUnits unit}) formatDistance() {
     if (this >= 1000) {
       final kilometers = this / 1000.0;
-      return (value: kilometers.toStringAsFixed(1), unit: 'km');
+      return (value: kilometers.toStringAsFixed(1), unit: DistanceUnits.km);
     } else {
-      return (value: ((this / 10).round() * 10).toString(), unit: 'm');
+      return (value: ((this / 10).round() * 10).toString(), unit: DistanceUnits.m);
     }
   }
 }

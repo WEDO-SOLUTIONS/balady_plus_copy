@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
@@ -12,10 +13,10 @@ import 'package:mapness/widgets/quick_filters/ui/quick_filters.dart' as widgets;
 
 class QuickFilters extends ConsumerWidget {
   const QuickFilters({
-    super.key,
-    this.selectedIndex,
     required this.onFilterTap,
     required this.onFavouritesBookmarkTap,
+    super.key,
+    this.selectedIndex,
     this.padding = const EdgeInsets.symmetric(
       horizontal: 16,
     ),
@@ -28,7 +29,7 @@ class QuickFilters extends ConsumerWidget {
   final List<FilterItem>? customFilters;
   final void Function(models.QuickFilter, int index) onFilterTap;
   final void Function() onFavouritesBookmarkTap;
-  final void Function(int index)? onCustomTap;
+  final void Function(FilterItem)? onCustomTap;
   final EdgeInsets padding;
   final Color itemBackground;
 
@@ -40,17 +41,47 @@ class QuickFilters extends ConsumerWidget {
 
     final favourites = <FilterItem>[
       FilterItem(
+        filterType: FilterType.favourites,
         icon: 'assets/icons/svg/quick_filters/ic_quick_bookmark.svg',
+        onTap: () {
+          onFavouritesBookmarkTap();
+        },
       ),
       if (favouritesState.valueOrNull?.home != null && naviFeature.naviEnabled)
         FilterItem(
+          filterType: FilterType.home,
           title: context.l10n.home,
           icon: 'assets/icons/svg/quick_filters/ic_quick_home.svg',
+          onTap: () {
+            final FavouriteItem? point;
+            final home = favouritesState.valueOrNull?.home;
+            if (home != null) {
+              point = home;
+            } else {
+              return;
+            }
+
+            /// navigation to fav item when pressed
+            _showRouting(naviFeature, point, context);
+          },
         ),
       if (favouritesState.valueOrNull?.work != null && naviFeature.naviEnabled)
         FilterItem(
+          filterType: FilterType.work,
           title: context.l10n.work,
           icon: 'assets/icons/svg/quick_filters/ic_quick_work.svg',
+          onTap: () {
+            final FavouriteItem? point;
+            final work = favouritesState.valueOrNull?.work;
+            if (work != null) {
+              point = work;
+            } else {
+              return;
+            }
+
+            /// navigation to fav item when pressed
+            _showRouting(naviFeature, point, context);
+          },
         ),
     ];
 
@@ -59,68 +90,41 @@ class QuickFilters extends ConsumerWidget {
     final items = [
       ...customItems,
       ...favourites,
-      ...(quickFilters.valueOrNull ?? []).map(
-        (e) => FilterItem(
-          icon: e.uiIcon,
-          title: e.titleOrFailback(context.l10n),
+      ...(quickFilters.valueOrNull ?? []).mapIndexed(
+        (index, filter) => FilterItem(
+          index: index + customItems.length + favourites.length,
+          filterType: FilterType.quick,
+          icon: filter.uiIcon,
+          title: filter.titleOrFailback(context.l10n),
+          onTap: () {
+            onFilterTap(
+              filter,
+              index + customItems.length + favourites.length,
+            );
+          },
         ),
       ),
     ];
 
-    // TODO(AlexStrNik): refactor this
-    ///
     return widgets.QuickFilters(
       padding: padding,
       filters: items,
       selectedIndex: selectedIndex,
-      onTap: (index) {
-        /// elements before favourites
-        if (index < customItems.length) {
-          onCustomTap?.call(index);
-        } else
-
-        /// favourite bookmark (navigate to favourites)
-        if (index == customItems.length) {
-          onFavouritesBookmarkTap();
-        } else
-
-        /// favourites (home and work)
-        if (index > customItems.length &&
-            index < favourites.length + customItems.length) {
-          final filter = favourites[index - customItems.length];
-          final FavouriteItem? point;
-          final home = favouritesState.valueOrNull?.home;
-          final work = favouritesState.valueOrNull?.work;
-          if (filter.title == context.l10n.home && home != null) {
-            point = home;
-          } else if (filter.title == context.l10n.work && work != null) {
-            point = work;
-          } else {
-            return;
-          }
-
-          /// navigation to fav item when pressed
-          if (naviFeature.naviEnabled) {
-            RoutingRoutesRoute(
-              finishLabel: point.title,
-              finishLatitude: point.coordinates.latitude,
-              finishLongitude: point.coordinates.longitude,
-              startLabel: context.l10n.myLocation,
-              startLatitude: null,
-              startLongitude: null,
-            ).push(context);
-          }
-        } else
-
-        /// all other filters
-        if (index >= favourites.length + customItems.length) {
-          onFilterTap(
-            quickFilters.value![index - favourites.length - customItems.length],
-            index,
-          );
-        }
-      },
       itemBackground: itemBackground,
     );
+  }
+
+  void _showRouting(
+      AppFeatures naviFeature, FavouriteItem point, BuildContext context) {
+    if (naviFeature.naviEnabled) {
+      RoutingRoutesRoute(
+        finishLabel: point.title,
+        finishLatitude: point.coordinates.latitude,
+        finishLongitude: point.coordinates.longitude,
+        startLabel: context.l10n.myLocation,
+        startLatitude: null,
+        startLongitude: null,
+      ).push(context);
+    }
   }
 }

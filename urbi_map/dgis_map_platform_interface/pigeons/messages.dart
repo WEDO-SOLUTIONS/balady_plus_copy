@@ -1049,6 +1049,9 @@ abstract class MapApi {
   void setFollowState(FollowStateMessage state);
 
   @async
+  void followNavigation();
+
+  @async
   void selectIndoorLevel(int index);
 
   @async
@@ -1069,6 +1072,11 @@ abstract class MapApi {
 
   @async
   CameraPositionMessage getCameraPosition();
+
+  @async
+  CameraPositionMessage calcPositionForRoute(
+    CalcPositionOptionsMessage options,
+  );
 
   @async
   CameraPositionMessage calcPositionForMarkers(
@@ -1290,7 +1298,7 @@ abstract class MapApi {
   void setPublicTransportActiveRoute(int routeIndex);
 
   @async
-  void toggleSound();
+  void toggleSound(bool enabled);
 
   @async
   void onTrafficAndParkingAttached();

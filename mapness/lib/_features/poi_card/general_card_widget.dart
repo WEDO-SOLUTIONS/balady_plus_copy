@@ -21,12 +21,15 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
+import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_scrollable_content.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
+import 'enums/pot_tabs_type.dart';
 import 'widgets/footer.dart';
+import 'widgets/poi_photo_card.dart';
 import 'widgets/poi_photos_header.dart';
 
 class GeneralMapCardWidget extends StatelessWidget {
@@ -69,10 +72,45 @@ class _Content extends ConsumerStatefulWidget {
   ConsumerState<_Content> createState() => _ContentState();
 }
 
-class _ContentState extends ConsumerState<_Content> {
+class _ContentState extends ConsumerState<_Content>
+    with SingleTickerProviderStateMixin {
   bool showEntrances = false;
 
   final _expansion = ValueNotifier(Expansion.middle);
+  late final TabController _tabController;
+  late final ValueNotifier<PoiTabsType> _tabType;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+    );
+
+    _tabType = ValueNotifier(PoiTabsType.info);
+    _tabController.addListener(
+      () {
+        if (_tabController.indexIsChanging) {
+          switch (_tabController.index) {
+            case 0:
+              _tabType.value = PoiTabsType.info;
+              break;
+            case 1:
+              _tabType.value = PoiTabsType.photos;
+              break;
+          }
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _tabType.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +163,9 @@ class _ContentState extends ConsumerState<_Content> {
         children: [
           const Spacer(flex: 3),
           ErrorSheet(
-            onRetry: () => ref.invalidate(viewModelProvider),
+            onRetry: () => ref.invalidate(
+              pointOfInterestProvider(widget.objectId),
+            ),
           ),
         ],
       );
@@ -144,6 +184,41 @@ class _ContentState extends ConsumerState<_Content> {
       data.title = name;
     }
 
+    // TODO(scroollocker): move it to widget
+    final infoBody = Padding(
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Favourites(data),
+          About(
+            data,
+            onEntranceTap: () => showEntrance(data),
+          ),
+          if (about != null)
+            Description(
+              text: about,
+            ),
+          if (data.openingHours != null)
+            OpeningHours(
+              data.getOpeningHoursModel(
+                context.l10n,
+              ),
+            ),
+          ContactsInfo(
+            viewModel: viewModel,
+            data: data,
+          ),
+          if (qrTradeLicense != null) QrLicenseInfo(qrTradeLicense),
+          if (tradeLicense != null) TradeLicense(tradeLicense),
+          const SafeArea(
+            top: false,
+            child: SizedBox(height: footerHeight),
+          ),
+        ],
+      ),
+    );
+
     return Directionality(
       textDirection: switch (ref.watch(appLanguageProvider)) {
         Language.arabic => TextDirection.rtl,
@@ -157,6 +232,7 @@ class _ContentState extends ConsumerState<_Content> {
         initialExpansion: Expansion.middle,
         collapsedHeight: 300,
         middleHeight: 600,
+        hiddenHeight: 100,
         onExpansionChanged: (expansion, {byUser = false}) =>
             _expansion.value = expansion,
         scrollHeader: PoiPhotosHeader(
@@ -174,6 +250,7 @@ class _ContentState extends ConsumerState<_Content> {
             DgisBottomSheetScrollableContent(
           controller: controller,
           header: PoiHeader(
+            tabController: _tabController,
             data: data,
             onTapClose: () {
               // const LandingRoute().go(context);
@@ -181,38 +258,16 @@ class _ContentState extends ConsumerState<_Content> {
             },
           ),
           body: [
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Favourites(data),
-                  About(
-                    data,
-                    onEntranceTap: () => showEntrance(data),
-                  ),
-                  if (about != null)
-                    Description(
-                      text: about,
+            ValueListenableBuilder(
+              valueListenable: _tabType,
+              builder: (context, tabType, _) => switch (tabType) {
+                PoiTabsType.info => infoBody,
+                PoiTabsType.photos => PoiPhotoCard(
+                    model: PoiModel(
+                      directoryObjectMessage: data,
                     ),
-                  if (data.openingHours != null)
-                    OpeningHours(
-                      data.getOpeningHoursModel(
-                        context.l10n,
-                      ),
-                    ),
-                  ContactsInfo(
-                    viewModel: viewModel,
-                    data: data,
                   ),
-                  if (qrTradeLicense != null) QrLicenseInfo(qrTradeLicense),
-                  if (tradeLicense != null) TradeLicense(tradeLicense),
-                  const SafeArea(
-                    top: false,
-                    child: SizedBox(height: footerHeight),
-                  ),
-                ],
-              ),
+              },
             ),
           ],
         ),

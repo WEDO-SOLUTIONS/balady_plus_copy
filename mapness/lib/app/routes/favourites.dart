@@ -7,6 +7,8 @@ import 'package:mapness/_features/favourites/favourites_search.dart';
 import 'package:mapness/_features/favourites/widgets/delete_all/delete_all_content.dart';
 import 'package:mapness/app/routes/routes.dart';
 
+import '../../features/search/ui/search_scope.dart';
+
 part 'favourites.g.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -40,11 +42,14 @@ class FavouritesSearchRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Widget build(BuildContext context, GoRouterState state) => FavouritesSearch(
-          markerType: FavouriteItemMarkerType.values.firstWhere(
-        (element) => element.name == state.uri.queryParameters['marker-type'],
-        orElse: () => FavouriteItemMarkerType.place,
-      ));
+  Widget build(BuildContext context, GoRouterState state) => SearchScope(
+      named: 'MapSearch',
+      child: FavouritesSearch(
+            markerType: FavouriteItemMarkerType.values.firstWhere(
+          (element) => element.name == state.uri.queryParameters['marker-type'],
+          orElse: () => FavouriteItemMarkerType.place,
+        )),
+    );
 }
 
 class FavouritesDeleteAllRoute extends GoRouteData {

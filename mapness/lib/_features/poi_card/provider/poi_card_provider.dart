@@ -1,4 +1,5 @@
 import 'package:dgis_map/library.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/poi_card/data/qr_license_repository.dart';
 import 'package:mapness/_features/poi_card/domain/model/qr_trade_license.dart';
 import 'package:mapness/app/router.dart';
@@ -40,11 +41,19 @@ class PoiCardState {
 
 @riverpod
 class PoiCardProvider extends _$PoiCardProvider {
+  PoiCardState? poiCardState;
+
   @override
   Future<PoiCardState?> build(
     DgisObjectIdMessage objectId,
   ) async {
-    final qrLicenseRepository = ref.watch(qrLicenseRepositoryProvider.notifier);
+    if (poiCardState != null &&
+        poiCardState?.gisObjectIdMessage?.id == objectId) {
+      return poiCardState;
+    }
+
+    final qrLicenseRepository =  ref.watch(qrLicenseRepositoryProvider.notifier);
+
     final result = await ref
         .watch(pointOfInterestProvider(objectId).future)
         .timeout(const Duration(minutes: 1), onTimeout: () {
@@ -62,12 +71,15 @@ class PoiCardProvider extends _$PoiCardProvider {
       }
     }
 
-    return PoiCardState(
+    poiCardState = PoiCardState(
       isLoading: true,
       showEntrances: false,
       gisObjectIdMessage: result,
       tradeLicense: tradeLicense,
       qrTradeLicense: qrLicense,
     );
+
+
+    return poiCardState;
   }
 }

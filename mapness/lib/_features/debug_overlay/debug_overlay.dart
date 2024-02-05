@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/debug_overlay/widgets/bug_button.dart';
 import 'package:mapness/_features/debug_overlay/widgets/debug_sheet.dart';
@@ -20,10 +19,7 @@ class _DebugOverlayState extends State<DebugOverlay> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Visibility(
-      visible: kDebugMode,
-      child: Stack(
+  Widget build(BuildContext context) => Stack(
         children: [
           BugButton(
             onTap: () {
@@ -38,7 +34,5 @@ class _DebugOverlayState extends State<DebugOverlay> {
             draggableController: _draggableController,
           )
         ],
-      ),
-    );
-  }
+      );
 }

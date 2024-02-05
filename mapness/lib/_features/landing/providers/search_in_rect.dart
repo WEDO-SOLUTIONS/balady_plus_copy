@@ -11,7 +11,9 @@ class SearchInRect extends _$SearchInRect {
   @override
   (GeoRectMessage?, bool) build() {
     final filter = ref.watch(searchByRubricsQueryProvider);
-    if (filter == null) return (null, false);
+    if (filter == null) {
+      return (null, false);
+    }
 
     final dgisController = ref.watch(dgisControllerProvider).value;
 
@@ -31,7 +33,7 @@ class SearchInRect extends _$SearchInRect {
           .read(dgisControllerProvider.notifier)
           .visibleRectSubject
           .value
-          .visibleRect
+          ?.visibleRect
           .geoRectMessage(),
       false,
     );
@@ -41,7 +43,7 @@ class SearchInRect extends _$SearchInRect {
     final dgisController = ref.read(dgisControllerProvider.notifier);
 
     state = (
-      dgisController.visibleRectSubject.value.visibleRect.geoRectMessage(),
+      dgisController.visibleRectSubject.value?.visibleRect.geoRectMessage(),
       false
     );
   }
@@ -65,9 +67,11 @@ class SearchInRect extends _$SearchInRect {
           newRect.southWest.longitude,
         );
 
-    final contains =
-        ref.read(dgisControllerProvider).value!.containsRect(oldRect, newRect);
+    final contains = await ref
+        .read(dgisControllerProvider)
+        .value!
+        .containsRect(oldRect, newRect);
 
-    return distance > 5;
+    return distance > 5 && contains;
   }
 }

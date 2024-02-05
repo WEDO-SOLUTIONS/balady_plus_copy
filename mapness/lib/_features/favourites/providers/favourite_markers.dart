@@ -2,14 +2,15 @@ import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/favourites/lib/construct_marker.dart';
 import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/app/router.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'favourite_markers.g.dart';
 
 final favouriteMarkersProvider = _favouriteMarkersProvider;
-const _showFavouritesOnMapKey = "showFavouritesOnMap";
 const favouriteMarkersLayerName = 'favourite-markers';
 
 @riverpod
@@ -17,25 +18,41 @@ class FavouriteToggle extends _$FavouriteToggle {
   @override
   bool build() {
     final sharedPrefs = ref.watch(sharedPrefsProvider);
-    return sharedPrefs.getBool(_showFavouritesOnMapKey) ?? false;
+    final string = sharedPrefs.getString(MapnessConsts.activeLayerKey);
+    final bool = string ==
+        LayerType.favourites.name;
+    return bool;
   }
 
   Future<void> enable() async {
     final sharedPrefs = ref.read(sharedPrefsProvider);
-    await sharedPrefs.setBool(_showFavouritesOnMapKey, true);
+    await sharedPrefs.setString(
+        MapnessConsts.activeLayerKey, LayerType.favourites.name);
     ref.invalidateSelf();
   }
 
   Future<void> disable() async {
     final sharedPrefs = ref.read(sharedPrefsProvider);
-    await sharedPrefs.setBool(_showFavouritesOnMapKey, false);
+    await sharedPrefs.remove(
+      MapnessConsts.activeLayerKey,
+    );
     ref.invalidateSelf();
   }
 
   Future<void> toggle() async {
     final sharedPrefs = ref.read(sharedPrefsProvider);
-    final currentState = sharedPrefs.getBool(_showFavouritesOnMapKey) ?? false;
-    await sharedPrefs.setBool(_showFavouritesOnMapKey, !currentState);
+    final name = LayerType.favourites.name;
+    final currentState = sharedPrefs.getString(MapnessConsts.activeLayerKey) ==
+        name;
+    if (currentState) {
+      await sharedPrefs.remove(MapnessConsts.activeLayerKey);
+    } else {
+      await sharedPrefs.setString(
+        MapnessConsts.activeLayerKey,
+        name,
+      );
+    }
+
     ref.invalidateSelf();
   }
 }

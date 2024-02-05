@@ -6,15 +6,14 @@ import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/entities/iwish/models/iwish_feedback_entity.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/iwish/lib/iwish_object_mapper.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'iwish_entity.g.dart';
-
-const mapLayerName = 'iwish-entity-markers';
-const _markerPrefix = 'iwish-marker-';
 
 @riverpod
 class _IwishEntity extends _$IwishEntity {
@@ -25,12 +24,12 @@ class _IwishEntity extends _$IwishEntity {
   Future<bool> submitFeedback(IwishFeedbackEntity feedback) async {
     ref
         .read(urbiMetricsProvider.notifier)
-        .logEvent("IwishFeedbackEntity/submitFeedback", {
-      "feedback": feedback.mood.toString(),
-      "tags": feedback.tags.toString(),
-      "comment": feedback.comment,
+        .logEvent('IwishFeedbackEntity/submitFeedback', {
+      'feedback': feedback.mood.toString(),
+      'tags': feedback.tags.toString(),
+      'comment': feedback.comment,
     });
-    mixpanel?.timeEvent("IwishFeedbackEntity: submitFeedback");
+    mixpanel?.timeEvent('IwishFeedbackEntity: submitFeedback');
     final dio = await ref.read(dGisNetworkProvider.future);
     final request = pb.IWishFeedbackRequest(
       rating: feedback.mood?.index ?? -1 + 1,
@@ -52,7 +51,7 @@ class _IwishEntity extends _$IwishEntity {
         print(error.toDebugString());
       }
     }
-    mixpanel?.track("IwishFeedbackEntity: submitFeedback");
+    mixpanel?.track('IwishFeedbackEntity: submitFeedback');
     return false;
   }
 
@@ -63,11 +62,11 @@ class _IwishEntity extends _$IwishEntity {
     final raw = await dio.get('iwish/$iwishId');
 
     final response = pb.IWishItemResponse.fromBuffer(raw.data).object;
-    print(response.toProto3Json());
+    debugPrint('${response.toProto3Json()}');
 
     final mapObjectManager =
-        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
-    var point = response.location.point;
+        ref.watch(mapObjectManagerProvider(named: MapnessConsts.mapLayerName).notifier);
+    final point = response.location.point;
     // final cameraController = ref.watch(cameraPositionProvider.notifier);
     // await cameraController.animateTo(
     //   CameraPositionMessage(
@@ -80,22 +79,12 @@ class _IwishEntity extends _$IwishEntity {
     //     bearing: 0,
     //   ),
     // );
-    final markerId = '$_markerPrefix${response.id}';
     await mapObjectManager.addMarker(
-      Marker(
-        id: markerId,
-        options: MarkerOptionsMessage(
-          position: GeoPointWithElevationMessage(
-            latitude: point.latitude,
-            longitude: point.longitude,
-            elevation: 1,
-          ),
-          icon: MarkerIconMessage(
-            path: "packages/mapness/assets/icons/svg/ic_pin.svg",
-            width: 24,
-          ),
-          anchor: MarkerAnchorMessage(x: 0.5, y: 1.5),
-          animatedAppearance: true,
+      Markers.pinMarker(
+        GeoPointWithElevationMessage(
+          latitude: point.latitude,
+          longitude: point.longitude,
+          elevation: 1,
         ),
       ),
     );

@@ -9,12 +9,12 @@ class PathNavBottomSheet extends StatefulWidget {
   final DraggableScrollableController controller;
 
   const PathNavBottomSheet({
-    super.key,
     required this.header,
     required this.body,
     required this.maxSize,
     required this.minSize,
     required this.controller,
+    super.key,
   });
 
   @override
@@ -23,7 +23,7 @@ class PathNavBottomSheet extends StatefulWidget {
 
 class _PathNavBottomSheetState extends State<PathNavBottomSheet>
     with SingleTickerProviderStateMixin {
-  get _dragController => widget.controller;
+  DraggableScrollableController get _dragController => widget.controller;
   double get _minSize => widget.minSize;
   double get _maxSize => widget.maxSize;
 
@@ -58,8 +58,9 @@ class _PathNavBottomSheetState extends State<PathNavBottomSheet>
   @override
   void dispose() {
     super.dispose();
-    _dragController.removeListener(_onScroll);
-    _dragController.dispose();
+    _dragController
+      ..removeListener(_onScroll)
+      ..dispose();
   }
 
   @override
@@ -74,93 +75,89 @@ class _PathNavBottomSheetState extends State<PathNavBottomSheet>
       minChildSize: _minSize,
       maxChildSize: _maxSize,
       controller: _dragController,
-      builder: (context, scrollController) {
-        return ValueListenableBuilder(
-          valueListenable: _animation,
-          builder: (context, state, child) {
-            return Padding(
-              padding: EdgeInsets.only(
-                left: 12 * state,
-                right: 12 * state,
-              ),
+      builder: (context, scrollController) => ValueListenableBuilder(
+        valueListenable: _animation,
+        builder: (context, state, child) => Padding(
+          padding: EdgeInsets.only(
+            left: 12 * state,
+            right: 12 * state,
+          ),
 
-              /// bg
-              child: AnimatedContainer(
-                duration: duration,
-                curve: curve,
-                decoration: BoxDecoration(
-                  color: const Color(0xffF4F4F5).withOpacity(1 - state),
-                  borderRadius: BorderRadius.vertical(
-                    top: const Radius.circular(16),
-                    bottom: Radius.circular(16 * state),
-                  ),
-                ),
-                child: ScrollConfiguration(
-                  behavior: NoOverscrollBehavior(),
-                  child: ListView(
-                    shrinkWrap: true,
-                    controller: scrollController,
-                    padding: EdgeInsets.zero,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      /// header
-                      AnimatedContainer(
-                        curve: curve,
-                        duration: duration,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.vertical(
-                            top: const Radius.circular(16),
-                            bottom: Radius.circular(16 * state),
-                          ),
-                        ),
-                        padding: const EdgeInsets.only(
-                          top: 2,
-                          left: 8,
-                          right: 8,
-                          bottom: 8,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            /// handle
-                            Container(
-                              color: const Color(0xffE8EAEB),
-                              height: 4,
-                              width: 40,
-                            ),
-                            const SizedBox(height: 2),
-                            SafeArea(
-                              bottom: !_dragController.isAttached ||
-                                  _dragController.size <= 0.03,
-                              top: false,
-                              child: widget.header,
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      /// body
-                      AnimatedOpacity(
-                        opacity: 1 - state,
-                        curve: curve,
-                        duration: duration,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: SafeArea(
-                            top: false,
-                            child: widget.body,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+          /// bg
+          child: AnimatedContainer(
+            duration: duration,
+            curve: curve,
+            decoration: BoxDecoration(
+              color: const Color(0xffF4F4F5).withOpacity(1 - state),
+              borderRadius: BorderRadius.vertical(
+                top: const Radius.circular(16),
+                bottom: Radius.circular(16 * state),
               ),
-            );
-          },
-        );
-      },
+            ),
+            child: ScrollConfiguration(
+              behavior: NoOverscrollBehavior(),
+              child: ListView(
+                shrinkWrap: true,
+                controller: scrollController,
+                padding: EdgeInsets.zero,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  /// header
+                  AnimatedContainer(
+                    curve: curve,
+                    duration: duration,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.vertical(
+                        top: const Radius.circular(16),
+                        bottom: Radius.circular(16 * state),
+                      ),
+                    ),
+                    padding: const EdgeInsets.only(
+                      top: 4,
+                      left: 12,
+                      right: 12,
+                      bottom: 12,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        /// handle
+                        Container(
+                          color: const Color(0xffE8EAEB),
+                          height: 4,
+                          width: 40,
+                        ),
+                        const SizedBox(height: 4),
+                        SafeArea(
+                          bottom: !_dragController.isAttached ||
+                              _dragController.size <= 0.03,
+                          top: false,
+                          child: widget.header,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  /// body
+                  AnimatedOpacity(
+                    opacity: 1 - state,
+                    curve: curve,
+                    duration: duration,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: SafeArea(
+                        top: false,
+                        child: widget.body,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

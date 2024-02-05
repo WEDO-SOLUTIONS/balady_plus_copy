@@ -35,7 +35,7 @@ class MessageControlModel {
                 self?.prevState = state
             },
             model.locationAvailableChannel.sink { [weak self] locationAvailable in
-                if !locationAvailable {
+                if !locationAvailable && model.state != .finished && model.state != .disabled {
                     self?.eventChannel.success([
                         "event": Events.messageEvent,
                         "state": Events.stateGpsLost,

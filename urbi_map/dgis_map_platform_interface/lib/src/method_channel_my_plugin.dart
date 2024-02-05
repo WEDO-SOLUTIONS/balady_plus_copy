@@ -207,6 +207,11 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     return _locationEventHandler.setFollowState(state);
   }
 
+  @override
+  Future<void> followNavigation() {
+    return _api.followNavigation();
+  }
+
   StreamSubscription _initEventChannel() {
     return EventChannel('com.dgis.map_view_events_$_viewId')
         .receiveBroadcastStream()
@@ -319,6 +324,12 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   Future<void> moveCamera(CameraPositionMessage cameraPosition, double duration,
       CameraAnimationTypeMessage animationType) {
     return _api.moveCamera(cameraPosition, duration, animationType);
+  }
+
+  @override
+  Future<CameraPositionMessage> calcPositionForRoute(
+      CalcPositionOptionsMessage options) {
+    return _api.calcPositionForRoute(options);
   }
 
   @override
@@ -805,8 +816,8 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   }
 
   @override
-  Future<void> toggleSound() {
-    return _api.toggleSound();
+  Future<void> toggleSound({required bool enabled}) {
+    return _api.toggleSound(enabled);
   }
 
   @override

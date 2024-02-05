@@ -146,6 +146,9 @@ class DgisMapController {
   Future<void> setFollowState(FollowStateMessage state) =>
       _instance.setFollowState(state);
 
+  /// Changes state of location follow in navigation mode.
+  Future<void> followNavigation() => _instance.followNavigation();
+
   /// Changes selected indoor level. Observe state listening to [indoorActiveIndex].
   Future<void> selectIndoorLevel(IndoorLevel level) =>
       _instance.selectIndoorLevel(level.levelIndex);
@@ -162,6 +165,11 @@ class DgisMapController {
   Future<void> moveCamera(CameraPositionMessage cameraPosition, double duration,
           CameraAnimationTypeMessage animationType) =>
       _instance.moveCamera(cameraPosition, duration, animationType);
+
+  /// Calcluates camera position for rpute in navigation mode
+  Future<CameraPositionMessage> calcPositionForRoute(
+          CalcPositionOptionsMessage options) =>
+      _instance.calcPositionForRoute(options);
 
   /// Calcluates camera position for given list of markers to be visible
   Future<CameraPositionMessage> calcPositionForMarkers(
@@ -478,7 +486,9 @@ class DgisMapController {
   /// Stops navigation. To hide navigation overlay call [hideNativeNavigationOverlay].
   Future<void> stopNavigation() => _instance.stopNavigation();
 
-  Future<void> toggleSound() => _instance.toggleSound();
+  /// Controls sounds in navigation.
+  Future<void> toggleSound({required bool enabled}) =>
+      _instance.toggleSound(enabled: enabled);
 
   /// Used to setup platform. Should be called when permision was granted.
   /// Does not request permission by itself.

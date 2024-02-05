@@ -44,6 +44,13 @@ class SearchHandler: NSObject {
     private let jsonDecoder = JSONDecoder()
     
     private let vendorConfig: VendorConfig?
+    
+    private static let saRestrictions = [
+        GeoPoint(latitude: 32.568765, longitude: 56.694472),
+        GeoPoint(latitude: 32.568765, longitude: 32.61185),
+        GeoPoint(latitude: 15.506104, longitude: 32.61185),
+        GeoPoint(latitude: 15.506104, longitude: 56.694472),
+    ];
 
     init(
         searchManager: SearchManager,
@@ -142,6 +149,17 @@ class SearchHandler: NSObject {
         pageSize: Int32,
         completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
     ) {
+        guard queryText.count > 0 else {
+            completion(
+                nil,
+                FlutterError(
+                    code: "InvalidQuery",
+                    message: "Query text cannot be empty",
+                    details: nil
+                )
+            )
+            return
+        }
         
         var queryBuilder = categories != nil ?
             SearchQueryBuilder.fromQueryTextAndRubricIds(queryText: queryText, rubricIds: categories!) :
@@ -159,7 +177,7 @@ class SearchHandler: NSObject {
             .setAreaOfInterest(rect: searchGeoRect)
             .setSpatialRestriction(spatialRestriction: spatialRestriction?.map {
                 $0.geoPoint
-            })
+            } ?? Self.saRestrictions)
             .build()
         
         performSearch(query, completion: completion)
@@ -198,7 +216,7 @@ class SearchHandler: NSObject {
             .setAreaOfInterest(rect: searchGeoRect)
             .setSpatialRestriction(spatialRestriction: spatialRestriction?.map {
                 $0.geoPoint
-            })
+            } ?? Self.saRestrictions)
             .build()
         
         performSearch(query, completion: completion)
@@ -225,7 +243,7 @@ class SearchHandler: NSObject {
             .setAreaOfInterest(rect: searchGeoRect)
             .setSpatialRestriction(spatialRestriction: spatialRestriction?.map {
                 $0.geoPoint
-            })
+            } ?? Self.saRestrictions)
             .build()
         
         performSearch(query, completion: completion)
@@ -252,7 +270,7 @@ class SearchHandler: NSObject {
             .setAreaOfInterest(rect: searchGeoRect)
             .setSpatialRestriction(spatialRestriction: spatialRestriction?.map {
                 $0.geoPoint
-            })
+            } ?? Self.saRestrictions)
             .build()
 
         performSearch(query, completion: completion)
@@ -279,7 +297,7 @@ class SearchHandler: NSObject {
             .setAreaOfInterest(rect: searchGeoRect)
             .setSpatialRestriction(spatialRestriction: spatialRestriction?.map {
                 $0.geoPoint
-            })
+            } ?? Self.saRestrictions)
             .build()
 
         performSearch(query, completion: completion)
@@ -443,6 +461,7 @@ class SearchHandler: NSObject {
         var suggestQueryBuilder = SuggestQueryBuilder
             .fromQueryText(queryText: queryText)
             .setAreaOfInterest(rect: searchGeoRect)
+            .setSpatialRestriction(spatialRestriction: Self.saRestrictions)
         
         if let allowedResultTypes {
             suggestQueryBuilder = suggestQueryBuilder.setAllowedResultTypes(

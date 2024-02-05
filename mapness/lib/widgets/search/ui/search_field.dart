@@ -50,7 +50,7 @@ class _SearchFieldState extends State<SearchField> {
             },
             onSubmitted: widget.onSubmitted,
             controller: widget.controller,
-            maxLines: 1,
+            textInputAction: TextInputAction.search,
             textAlignVertical: TextAlignVertical.center,
             decoration: InputDecoration(
               filled: true,
@@ -59,8 +59,6 @@ class _SearchFieldState extends State<SearchField> {
               contentPadding: const EdgeInsetsDirectional.only(
                 start: 8,
                 end: 38,
-                top: 0,
-                bottom: 0,
               ),
               border: OutlineInputBorder(
                 borderSide: BorderSide.none,
@@ -76,7 +74,7 @@ class _SearchFieldState extends State<SearchField> {
               fontSize: 14,
               fontWeight: FontWeight.w400,
               height: 1.5,
-              fontFamily: "Frutiger",
+              fontFamily: 'Frutiger',
             ),
           ),
         ),
@@ -86,12 +84,12 @@ class _SearchFieldState extends State<SearchField> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: SvgPicture.asset(
-              "assets/icons/svg/ic_dashboard_search.svg",
+              'assets/icons/svg/ic_dashboard_search.svg',
               width: 24,
               height: 24,
               package: PackageConfig.packageName,
               colorFilter: ColorFilter.mode(
-                const Color(0xFFE2A3680).withOpacity(0.5),
+                const Color.fromARGB(253, 42, 54, 128).withOpacity(0.5),
                 BlendMode.srcIn,
               ),
             ),
@@ -106,14 +104,14 @@ class _SearchFieldState extends State<SearchField> {
                   _clearVisible.value = false;
                   widget.focusNode?.requestFocus();
                   widget.controller?.clear();
-                  widget.onChanged?.call("");
+                  widget.onChanged?.call('');
                 },
                 child: Align(
                   alignment: AlignmentDirectional.centerEnd,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SvgPicture.asset(
-                      "assets/icons/svg/ic_search_clear.svg",
+                      'assets/icons/svg/ic_search_clear.svg',
                       package: PackageConfig.packageName,
                     ),
                   ),

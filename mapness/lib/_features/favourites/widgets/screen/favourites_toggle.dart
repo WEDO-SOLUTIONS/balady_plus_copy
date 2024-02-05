@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class FavouritesToggle extends ConsumerWidget {
@@ -38,8 +39,10 @@ class FavouritesToggle extends ConsumerWidget {
             activeColor: const Color(0xFF42909B),
             onChanged: isEditing
                 ? null
-                : (_) async =>
-                    await ref.read(favouriteToggleProvider.notifier).toggle(),
+                : (_) async {
+                    await ref.read(favouriteToggleProvider.notifier).toggle();
+                    ref.read(layersControlsProvider.notifier).updateLayerInfo();
+                  },
           ),
         ],
       ),

@@ -10,7 +10,8 @@ import ru.dgis.sdk.routing.RouteDistance
 import ru.dgis.sdk.routing.meters
 import ru.dgis.sdk.routing.minus
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.EnumSet
 
 class DashboardControlModel(
     private val model: Model,
@@ -21,7 +22,7 @@ class DashboardControlModel(
     private var routeLength: RouteDistance = RouteDistance(0)
 
     companion object {
-        private val preferredInstructions = SoundCategory.INSTRUCTIONS
+        private val allSounds = SoundCategory.values()
         private val dateFormat = SimpleDateFormat("HH:mm")
     }
     
@@ -57,10 +58,11 @@ class DashboardControlModel(
         )
     }
     
-    fun toggleSounds() {
-        if (this.navigationManager.soundNotificationSettings.enabledSoundCategories.remove(
-                preferredInstructions)) {
-            this.navigationManager.soundNotificationSettings.enabledSoundCategories.add(preferredInstructions)
+    fun toggleSounds(enabled: Boolean) {
+        if (enabled) {
+            this.navigationManager.soundNotificationSettings.enabledSoundCategories = EnumSet.allOf(SoundCategory::class.java)
+        } else {
+            this.navigationManager.soundNotificationSettings.enabledSoundCategories = EnumSet.noneOf(SoundCategory::class.java);
         }
     }
 

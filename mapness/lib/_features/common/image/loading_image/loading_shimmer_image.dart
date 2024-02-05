@@ -6,17 +6,20 @@ class LoadingShimmerImage extends StatelessWidget {
   final String imageUrl;
   final VoidCallback? onImageReady;
   final BoxFit? fit;
+  final void Function(String name,bool? isAsset)? onImageTap;
 
   const LoadingShimmerImage({
     super.key,
     required this.imageUrl,
     this.onImageReady,
     this.fit,
+    this.onImageTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return LoadingImage(
+      onImageTap: onImageTap,
       fit: fit,
       imageUrl: imageUrl,
       loadingWidget: Shimmer.fromColors(

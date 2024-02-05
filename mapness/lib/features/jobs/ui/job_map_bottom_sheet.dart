@@ -30,7 +30,6 @@ class JobMapBottomSheet extends ConsumerStatefulWidget {
 class _JobMapBottomSheetState extends ConsumerState<JobMapBottomSheet> {
   late final DraggableScrollableController _draggableScrollableController;
 
-  double get _headerExtent => 100 / widget.biggestHeight;
   ScrollController? _scrollController;
 
   void _handleScroll() {
@@ -71,7 +70,6 @@ class _JobMapBottomSheetState extends ConsumerState<JobMapBottomSheet> {
 
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
-      initialChildSize: _headerExtent,
       minChildSize: .1,
       maxChildSize: .9,
       snap: true,

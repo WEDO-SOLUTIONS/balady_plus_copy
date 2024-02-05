@@ -14,6 +14,7 @@ class LoadingImage extends ConsumerStatefulWidget {
   final BoxFit? fit;
   final VoidCallback? onImageReady;
   final bool? isAssetImg;
+  final Function(String name, bool? isAsset)? onImageTap;
 
   const LoadingImage({
     Key? key,
@@ -21,6 +22,7 @@ class LoadingImage extends ConsumerStatefulWidget {
     this.onImageReady,
     required this.loadingWidget,
     this.fit,
+    this.onImageTap,
     this.isAssetImg = false,
   }) : super(key: key);
 
@@ -73,11 +75,14 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(networkStatusProvider, (previous, next) {
-      if (previous == ConnectivityResult.none && next != previous) {
-        unawaited(loadImage(context));
-      }
-    });
+    ref.listen(
+      networkStatusProvider,
+      (previous, next) {
+        if (previous == ConnectivityResult.none && next != previous) {
+          unawaited(loadImage(context));
+        }
+      },
+    );
 
     return switch (state) {
       ImageState.error => Container(
@@ -90,12 +95,20 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
             ),
           ),
         ),
-      ImageState.loaded => widget.isAssetImg == true
-          ? Image.asset(widget.imageUrl, fit: widget.fit)
-          : Image.network(
-              widget.imageUrl,
-              fit: widget.fit,
-            ),
+      ImageState.loaded => GestureDetector(
+          onTap: () {
+            widget.onImageTap?.call(widget.imageUrl, widget.isAssetImg);
+          },
+          child: widget.isAssetImg == true
+              ? Image.asset(
+                  widget.imageUrl,
+                  fit: widget.fit,
+                )
+              : Image.network(
+                  widget.imageUrl,
+                  fit: widget.fit,
+                ),
+        ),
       ImageState.loading => widget.loadingWidget,
     };
   }

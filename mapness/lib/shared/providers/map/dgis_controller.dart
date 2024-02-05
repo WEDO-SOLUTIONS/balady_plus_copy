@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:mapness/_features/common/providers/permissions.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
@@ -17,8 +19,8 @@ final GeoPointMessage _kingdomTower =
 class DgisController extends _$DgisController {
   late Completer<DgisMapController> _completer;
 
-  final _visibleRectSubject = BehaviorSubject<VisibleRectEvent>();
-  ValueStream<VisibleRectEvent> get visibleRectSubject => _visibleRectSubject;
+  final _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>();
+  ValueStream<VisibleRectEvent?> get visibleRectSubject => _visibleRectSubject;
 
   @override
   Future<DgisMapController> build() {
@@ -78,9 +80,13 @@ class DgisController extends _$DgisController {
         },
       );
 
-    // Voice
-    await controller.installVoice('voice-sara');
-    await controller.installVoice('voice-jennifer');
+    try {
+      // Voice
+      await controller.installVoice('voice-sara');
+      await controller.installVoice('voice-jennifer');
+    } on PlatformException catch (e) {
+      debugPrint('Voice installation error: $e');
+    }
   }
 
   /// Setups initial camera location on map.
@@ -93,14 +99,19 @@ class DgisController extends _$DgisController {
 
     await _setDefaultLocation(controller);
 
-    if (!locationPermission.isGranted) {
-      locationPermission = await locationNotifier.request();
-    }
+    try {
+      if (!locationPermission.isGranted) {
+        locationPermission = await locationNotifier.request();
+      }
 
-    if (locationPermission.isGranted) {
-      await controller.onLocationPremissionGranted(
-        desiredAccuracy: DesiredAccuracyMessage.high,
-      );
+      if (locationPermission.isGranted) {
+        await controller.onLocationPremissionGranted(
+          desiredAccuracy: DesiredAccuracyMessage.high,
+        );
+      }
+    } on Exception catch (e) {
+      // TODO: store it to analytics
+      debugPrint('Location permission error: $e');
     }
 
     await Future.delayed(
@@ -125,6 +136,7 @@ class DgisController extends _$DgisController {
     final visibleRectSubscription = controller.visibleRectEvents
         .debounceTime(const Duration(seconds: 1))
         .listen(_listenVisibleRectangle);
+    _visibleRectSubject.add(null);
 
     ref.onDispose(() {
       visibleRectSubscription.cancel();

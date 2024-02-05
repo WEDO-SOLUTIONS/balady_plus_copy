@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/image/loading_image/loading_shimmer_image.dart';
+import 'package:mapness/shared/ui/photo_viewer/photo_viewer.dart';
 
 class IwishPhotosRow extends StatelessWidget {
   final List<String> photos;
@@ -7,8 +8,7 @@ class IwishPhotosRow extends StatelessWidget {
   const IwishPhotosRow({super.key, required this.photos});
 
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
+  Widget build(BuildContext context) => SizedBox(
       height: 96,
       child: ListView.separated(
         itemBuilder: (context, index) {
@@ -38,6 +38,7 @@ class IwishPhotosRow extends StatelessWidget {
                 key: ValueKey(photos[index]),
                 aspectRatio: 1,
                 child: LoadingShimmerImage(
+                  onImageTap: (name, isAsset) => PhotoViewer.open(context,index, photos),
                   imageUrl: photos[index],
                   fit: BoxFit.cover,
                 ),
@@ -50,5 +51,4 @@ class IwishPhotosRow extends StatelessWidget {
         separatorBuilder: (context, index) => const SizedBox(width: 6),
       ),
     );
-  }
 }

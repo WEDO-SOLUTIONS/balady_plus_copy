@@ -9,15 +9,21 @@ import 'package:provider/provider.dart';
 class SearchHistory extends ConsumerWidget {
   const SearchHistory({
     required this.onTap,
+    this.skipEmptyObjects,
     super.key,
   });
 
+  final bool? skipEmptyObjects;
   final Function(SearchHistoryItem item) onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scope = context.read<SearchScope>();
     final history = ref.watch(searchHistoryProvider(scope.value));
+
+    if (skipEmptyObjects ?? false) {
+      history.retainWhere((e) => e.objectId != null);
+    }
 
     return widgets.SearchHistory(
       history: history,

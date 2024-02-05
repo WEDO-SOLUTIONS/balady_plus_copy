@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
+import 'package:geobase/geobase.dart' as gb;
 import 'package:mapness/_generated/protocol/protocol.pb.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:geobase/geobase.dart' as gb;
+import 'package:rxdart/rxdart.dart';
 
 part 'stories_repo.g.dart';
 
@@ -18,6 +19,7 @@ class StoriesRepo extends _$StoriesRepo {
     final subscription = ref
         .read(dgisControllerProvider.notifier)
         .visibleRectSubject
+        .whereNotNull()
         .listen((event) async {
       final polygon = CommonFunctions.getPolygonFromRect(event.visibleRect);
       state = AsyncValue.data(await _fetch(dio, polygon));
@@ -27,18 +29,18 @@ class StoriesRepo extends _$StoriesRepo {
       subscription.cancel();
     });
 
-    return await _fetch(dio);
+    return _fetch(dio);
   }
 
   Future<StoriesResponse> _fetch(Dio dio, [gb.Polygon? polygon]) async {
-    mixpanel?.timeEvent("StoriesRepo: _fetch");
+    mixpanel?.timeEvent('StoriesRepo: _fetch');
     final url = polygon != null
         ? 'stories?bound=${polygon.toText(format: gb.WKT.geometry)}'
         : 'stories';
 
     final rawResponse = await dio.get(url, options: defaultCacheOptions);
     final storiesResponse = StoriesResponse.fromBuffer(rawResponse.data);
-    mixpanel?.track("StoriesRepo: _fetch");
+    mixpanel?.track('StoriesRepo: _fetch');
     return storiesResponse;
   }
 }

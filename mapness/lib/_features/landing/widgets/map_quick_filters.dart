@@ -25,7 +25,7 @@ class MapQuickFilters extends ConsumerStatefulWidget {
   });
 
   final List<FilterItem>? customFilters;
-  final void Function(int)? onCustomTap;
+  final void Function(FilterItem)? onCustomTap;
   final bool forMap;
 
   @override
@@ -104,7 +104,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
         },
       ),
       onFilterTap: (filter, index) {
-        if (selectedFilter?.$2 == index) {
+        if (selectedFilter?.$1 == filter) {
           ref.read(searchByRubricsQueryProvider.notifier).update(null);
         } else {
           ref.read(layersControlsProvider.notifier).disable();

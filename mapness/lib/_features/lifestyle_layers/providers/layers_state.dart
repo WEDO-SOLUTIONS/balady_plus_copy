@@ -29,3 +29,14 @@ enum LayerType {
   fencing,
   joy,
 }
+
+extension LayerTypeEx on LayerType {
+  static LayerType? stringToType(String? str) => switch (str) {
+        'favourites' => LayerType.favourites,
+        'invest' => LayerType.invest,
+        'buildings' => LayerType.buildings,
+        'fencing' => LayerType.fencing,
+        'joy' => LayerType.joy,
+        _ => null,
+      };
+}

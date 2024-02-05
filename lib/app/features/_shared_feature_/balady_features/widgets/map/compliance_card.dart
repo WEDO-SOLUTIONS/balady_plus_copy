@@ -1,9 +1,7 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../../core/utils/constants/dialog_names.dart';
 import '../shared/circle_icon.dart';
@@ -26,6 +24,10 @@ class ComplainceMapCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // font scale factor for responsive
+    final fontScale =
+        MediaQuery.of(context).size.width / MediaQuery.of(context).size.height;
+
     return Container(
       height: 180,
       width: MediaQuery.of(context).size.width - 30,
@@ -35,7 +37,7 @@ class ComplainceMapCard extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        shadows: [
+        shadows: const [
           BoxShadow(
             color: Color(0x1C77758D),
             blurRadius: 22,
@@ -103,7 +105,7 @@ class ComplainceMapCard extends StatelessWidget {
                   Expanded(
                     child: ElevatedButtonWidget.primaryCustom(
                         text: "issue_complaince_certificate".tr(),
-                        fontSize: 13,
+                        fontSize: 13 * fontScale,
                         height: 40,
                         onPressed: () {
                           CommonFunctions.openCreateCompliance();
@@ -115,13 +117,13 @@ class ComplainceMapCard extends StatelessWidget {
                   Expanded(
                     child: ElevatedButtonWidget.primaryCustomBorder(
                       height: 40,
-                      fontSize: 13,
+                      fontSize: 13 * fontScale,
                       onPressed: () async {
                         await BottomSheetDialog.showDraggableSheet(
                           context,
                           dialogKeyName: DialogName.buildingComplianceDialog,
                           currentRouteName: "HomePage",
-                          child: BuildingRequirementsDialog(),
+                          child: const BuildingRequirementsDialog(),
                         );
                       },
                       text: "requirements_conditions".tr(),
@@ -132,7 +134,7 @@ class ComplainceMapCard extends StatelessWidget {
             ],
           ),
           Align(
-            alignment: Alignment.topLeft,
+            alignment: AlignmentDirectional.topEnd,
             child: GestureDetector(
               onTap: () {
                 onClose();

@@ -129,6 +129,12 @@ class DgisMapView(
         result?.success(null)
     }
 
+    override fun followNavigation(result: Messages.Result<Void>?) {
+        navigationHandler.followNavigation()
+
+        result?.success(null)
+    }
+
     override fun selectIndoorLevel(index: Long, result: Messages.Result<Void>?) {
         indoorControlHandler?.selectIndoorLevel(index)
 
@@ -251,6 +257,10 @@ class DgisMapView(
                         .setBearing(map.camera.position.bearing.value)
                         .build()
         )
+    }
+
+    override fun calcPositionForRoute(options: CalcPositionOptionsMessage, result: Messages.Result<CameraPositionMessage>?) {
+        navigationHandler.calcPositionForRoute(options, result)
     }
 
     override fun calcPositionForMarkers(
@@ -793,8 +803,8 @@ class DgisMapView(
         result?.success(null)
     }
 
-    override fun toggleSound(result: Messages.Result<Void>?) {
-        navigationHandler.toggleSounds()
+    override fun toggleSound(enabled: Boolean, result: Messages.Result<Void>?) {
+        navigationHandler.toggleSounds(enabled)
         result?.success(null)
     }
 

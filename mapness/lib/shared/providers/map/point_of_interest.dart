@@ -1,9 +1,11 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'point_of_interest.g.dart';
@@ -15,9 +17,6 @@ class PoiModel {
     required this.directoryObjectMessage,
   });
 }
-
-const poiMapLayer = 'point-of-interest';
-const _poiMarkerPrefix = 'poi-marker-';
 
 @riverpod
 Future<DirectoryObjectMessage?> pointOfInterest(
@@ -32,25 +31,24 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final highlightController = ref.watch(highlightProvider.notifier);
 
   final result = await dgisController.value?.searchByObjectId(objectId);
-  final mapObjectManager =
-      ref.watch(mapObjectManagerProvider(named: poiMapLayer).notifier);
+  final mapObjectManager = ref.watch(
+      mapObjectManagerProvider(named: MapnessConsts.mapLayerName).notifier);
 
   final cameraZoom = cameraData?.zoom;
   final point = cameraData?.point;
-
-  print(
-    'coordinates: ${result?.markerPosition?.latitude} ${result?.markerPosition?.longitude} zoom: $cameraZoom',
-  );
 
   await highlightController.addHighlight(objectId);
   ref.onDispose(() {
     highlightController.removeAll();
   });
-  if (result == null || result.markerPosition == null) return null;
+  if (result == null || result.markerPosition == null) {
+    return null;
+  }
 
+  final position = result.markerPosition!;
   final markerPoint = GeoPointMessage(
-    latitude: result.markerPosition!.latitude,
-    longitude: result.markerPosition!.longitude,
+    latitude: position.latitude,
+    longitude: position.longitude,
   );
 
   // get viewport
@@ -58,23 +56,21 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       .read(dgisControllerProvider.notifier)
       .visibleRectSubject
       .value
-      .visibleRect;
-  final viewPort = CommonFunctions.getPolygonFromRect(visibleRect);
-  final box = viewPort.getBounds();
+      ?.visibleRect;
+  final viewPort = visibleRect != null
+      ? CommonFunctions.getPolygonFromRect(visibleRect)
+      : null;
+  final box = viewPort?.getBounds();
 
   // Check if point is in viewport
-  final bool isInViewPort = box != null
-      ? await dgisController.value?.contains(
-            GeoRectMessage(
-              northEast:
-                  GeoPointMessage(latitude: box.maxY, longitude: box.maxX),
-              southWest:
-                  GeoPointMessage(latitude: box.minY, longitude: box.minX),
-            ),
-            markerPoint,
-          ) ??
-          false
-      : false;
+  final bool isInViewPort = box != null &&
+      await dgisController.value!.contains(
+        GeoRectMessage(
+          northEast: GeoPointMessage(latitude: box.maxY, longitude: box.maxX),
+          southWest: GeoPointMessage(latitude: box.minY, longitude: box.minX),
+        ),
+        markerPoint,
+      );
 
   await ref.read(cameraPositionProvider.notifier).animateTo(
         CameraPositionMessage(
@@ -84,22 +80,9 @@ Future<DirectoryObjectMessage?> pointOfInterest(
           bearing: 0,
         ),
       );
-  final markerId = '$_poiMarkerPrefix$objectId';
   await mapObjectManager.removeAllMarkers();
   await mapObjectManager.addMarker(
-    Marker(
-      id: markerId,
-      options: MarkerOptionsMessage(
-        position: result.markerPosition!,
-        icon: MarkerIconMessage(
-          path: "packages/mapness/assets/icons/svg/ic_pin.svg",
-          width: 24,
-        ),
-        anchor: MarkerAnchorMessage(x: 0.5, y: 1),
-        animatedAppearance: true,
-        zIndex: 50,
-      ),
-    ),
+    Markers.pinMarker(position),
   );
   ref.onDispose(() {
     mapObjectManager.removeAllMarkers();

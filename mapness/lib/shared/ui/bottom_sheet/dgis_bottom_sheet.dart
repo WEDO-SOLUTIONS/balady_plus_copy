@@ -1,5 +1,7 @@
 import 'dart:math';
+import 'dart:ui';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -14,15 +16,23 @@ import 'ui/vertival_scroll_listener.dart';
 
 // keep growable order
 enum Expansion {
+  /// does not visible at all
   hidden,
+
+  /// visible only small part
   collapsed,
+
+  /// visible middle part
   middle,
+
+  /// take all available space
   expanded,
 }
 
 class DgisBottomSheet extends StatefulWidget {
   final double? middleHeight;
   final double? collapsedHeight;
+  final double hiddenHeight;
   final WidgetBuilder? body;
 
   /// Appears when bottom sheet is expanded. Pin to the bottom when body scrolls.
@@ -63,6 +73,7 @@ class DgisBottomSheet extends StatefulWidget {
     this.showBarrier = true,
     Key? key,
     this.scrollHeader,
+    this.hiddenHeight = 0,
   })  : assert(
           !availableExpansions.contains(Expansion.collapsed) ||
               collapsedHeight != null && collapsedHeight > 0,
@@ -104,6 +115,9 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
 
   double _visibleHeight = 0;
 
+  /// used to make actions appear smooooothly
+  double _actionsVisibleHeight = 0;
+
   @override
   late DgisScrollPosition position;
 
@@ -129,8 +143,9 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
     } else {
       return 0;
     }
-    print(
-        'Calculating background opacity: _visibleHeight=$_visibleHeight, _maxVisibleHeight=$_maxVisibleHeight, preMaxVisibleHeight=$preMaxVisibleHeight');
+    _printDebugLog(
+      'Calculating background opacity: _visibleHeight=$_visibleHeight, _maxVisibleHeight=$_maxVisibleHeight, preMaxVisibleHeight=$preMaxVisibleHeight',
+    );
     return max(
             0, min(_visibleHeight, _maxVisibleHeight) - preMaxVisibleHeight) /
         (_maxVisibleHeight - preMaxVisibleHeight);
@@ -157,9 +172,39 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
     return min(maxVisibleHeight, _bottomSheetHeight);
   }
 
+  double get actionsHeight {
+    /// I guess that it is possible to find function avoid if's and just map double to proper
+    /// numbers. But I was a bit lazy for this
+    ///
+    /// if less than hidden always return zero
+    if (_visibleHeight <= widget.hiddenHeight) {
+      return _actionsVisibleHeight;
+    }
+
+    /// minimal height of sheet except hidden
+    final minStageHeigth = [
+      widget.collapsedHeight,
+      widget.middleHeight,
+      _maxVisibleHeight
+    ].whereNotNull().fold(double.infinity, min);
+
+    /// if greater then nearest available dimension return action height
+    if (_visibleHeight >= minStageHeigth) {
+      return 0;
+    }
+
+    /// if between hidden and min height - interpolate to get smooooothhhh appearance
+    return lerpDouble(
+          _actionsVisibleHeight,
+          0,
+          _visibleHeight / minStageHeigth,
+        ) ??
+        0;
+  }
+
   double get _minVisibleHeight {
     if (widget.availableExpansions.contains(Expansion.hidden)) {
-      return 0;
+      return widget.hiddenHeight;
     } else if (widget.availableExpansions.contains(Expansion.collapsed)) {
       return widget.collapsedHeight!;
     } else if (widget.availableExpansions.contains(Expansion.middle)) {
@@ -313,6 +358,26 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
                             child: _content(),
                           ),
                         ),
+                        if (widget.actions != null)
+                          Positioned(
+                            top: _initialized
+                                ? _maxVisibleHeight -
+                                    _visibleHeight +
+                                    actionsHeight
+                                : _screenHeight,
+                            height: _visibleHeight,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              height: _screenHeight,
+                              alignment: Alignment.bottomCenter,
+                              child: WidgetSizeNotifier(
+                                onSizeChanged: (value) =>
+                                    _actionsVisibleHeight = value.height,
+                                child: widget.actions!,
+                              ),
+                            ),
+                          ),
                       ],
                     );
                   },
@@ -371,7 +436,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
               ),
             ),
           ),
-          if (widget.actions != null) widget.actions!,
+          // if (widget.actions != null) widget.actions!,
         ],
       );
 
@@ -564,7 +629,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
         visibleHeight = widget.collapsedHeight!;
         break;
       case Expansion.hidden:
-        visibleHeight = 0;
+        visibleHeight = widget.hiddenHeight;
         break;
     }
 

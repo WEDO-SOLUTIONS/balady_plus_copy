@@ -3,15 +3,17 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/favourites/domain/extensions/extensions.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
 import 'package:mapness/_features/favourites/widgets/screen/search_screen.dart';
-import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/shared/lib/make_address.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/suggest.dart';
 
 class FavouritesSearch extends ConsumerStatefulWidget {
   final FavouriteItemMarkerType markerType;
+
   const FavouritesSearch({required this.markerType, super.key});
 
   @override
@@ -23,13 +25,13 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
-      ref.read(suggestQueryProvider.notifier).update("");
+      ref.read(suggestQueryProvider.notifier).update('');
     });
   }
 
   @override
   void dispose() {
-    ref.read(suggestQueryProvider.notifier).update("");
+    ref.read(suggestQueryProvider.notifier).update('');
     super.dispose();
   }
 
@@ -42,6 +44,18 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
         .toList();
 
     return SearchScreen(
+      hintText: widget.markerType.getHintText(context),
+      onHistoryItemTap: (item) async {
+        final dgisController = await ref.read(dgisControllerProvider.future);
+
+        final object = await dgisController.searchByObjectId(
+          DgisObjectIdMessage(
+            objectId: item?.objectId ?? 0,
+            entranceId: 0,
+          ),
+        );
+        await onSearchTap(context, object);
+      },
       onBackTap: () {
         context.pop();
       },
@@ -50,33 +64,10 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
         final item = searchResult[index];
 
         return InkWell(
-          onTap: () async {
-            final favItem = FavouriteItem(
-              coordinates: Coordinates(
-                latitude: item.markerPosition?.latitude ?? 0,
-                longitude: item.markerPosition?.longitude ?? 0,
-              ),
-              id: "${item.id!.objectId}", // -${item.id!.entranceId}",
-              subtitle: item.subtitle,
-              title: item.title,
-              entity: FavouriteItemEntity(
-                // id: item.id!.toString(),
-                id: "${item.id!.objectId}", // -${item.id!.entranceId}",
-                sourceType: EntitySourceType.urbi,
-              ),
-            );
-            final repo = ref.read(favouriteRepositoryProvider.notifier);
-            await switch (widget.markerType) {
-              FavouriteItemMarkerType.unknown ||
-              FavouriteItemMarkerType.place =>
-                repo.addItem(favItem),
-              FavouriteItemMarkerType.home => repo.setHome(favItem),
-              FavouriteItemMarkerType.work => repo.setWork(favItem),
-            };
-            if (context.mounted && context.canPop()) {
-              context.pop();
-            }
-          },
+          onTap: () async => onSearchTap(
+            context,
+            item,
+          ),
           child: Directionality(
             textDirection: TextDirection.rtl,
             child: Padding(
@@ -135,5 +126,23 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
         );
       },
     );
+  }
+
+  Future<void> onSearchTap(
+    BuildContext context,
+    DirectoryObjectMessage item,
+  ) async {
+    final favItem = item.mapToFavourite();
+    final repo = ref.watch(favouriteRepositoryProvider.notifier);
+    await switch (widget.markerType) {
+      FavouriteItemMarkerType.unknown ||
+      FavouriteItemMarkerType.place =>
+        repo.addItem(favItem),
+      FavouriteItemMarkerType.home => repo.setHome(favItem),
+      FavouriteItemMarkerType.work => repo.setWork(favItem),
+    };
+    if (context.mounted && context.canPop()) {
+      context.pop();
+    }
   }
 }

@@ -10,10 +10,7 @@ class RoutingHeaderDelegate extends SliverPersistentHeaderDelegate {
   RoutingHeaderDelegate({
     required this.points,
     required this.updatePoints,
-    required this.draggableScrollableController,
   });
-
-  final DraggableScrollableController draggableScrollableController;
 
   @override
   Widget build(
@@ -21,7 +18,6 @@ class RoutingHeaderDelegate extends SliverPersistentHeaderDelegate {
       RoutingHeader(
         points: points,
         updatePoints: updatePoints,
-        draggableScrollableController: draggableScrollableController,
       );
 
   final List<RoutePoint> points;
@@ -41,13 +37,11 @@ class RoutingHeader extends StatelessWidget {
   const RoutingHeader({
     required this.points,
     required this.updatePoints,
-    required this.draggableScrollableController,
     super.key,
   });
 
   final List<RoutePoint> points;
   final void Function(List<RoutePoint>) updatePoints;
-  final DraggableScrollableController draggableScrollableController;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -80,24 +74,18 @@ class RoutingHeader extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: RouteEditor(
                 points: points,
-                onTap: (index) {
-                  draggableScrollableController.animateTo(
-                    0.5,
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeInOut,
-                  );
-                  RoutingSearchRoute(
-                    placeholder:
-                        index == 0 ? context.l10n.from : context.l10n.to,
-                    showMyLocation:
-                        index == 0 && points[index] is! RoutePointMyLocation,
-                  ).push(context).then((value) {
+                onTap: (index) => RoutingSearchRoute(
+                  placeholder: index == 0 ? context.l10n.from : context.l10n.to,
+                  showMyLocation:
+                      index == 0 && points[index] is! RoutePointMyLocation,
+                ).push(context).then(
+                  (value) {
                     if (value != null && value is RoutePoint) {
                       points[index] = value;
                       updatePoints(points);
                     }
-                  });
-                },
+                  },
+                ),
                 onReorder: (oldIndex, newIndex) {
                   if (oldIndex < newIndex) {
                     newIndex -= 1;

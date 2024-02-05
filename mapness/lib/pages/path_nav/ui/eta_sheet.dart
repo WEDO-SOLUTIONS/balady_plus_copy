@@ -97,6 +97,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
           builder: (context, state, child) => state == PathNavState.paused
               ? const SizedBox.shrink()
               : Row(
+                  textDirection: TextDirection.rtl,
                   children: [
                     ///
                     PathNavIconButton(
@@ -134,9 +135,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                     else
                       PathNavIconButton(
                         onPressed: widget.onRoutePressed,
-                        iconPath: _isExpanded
-                            ? 'assets/icons/svg/ic_map.svg'
-                            : 'assets/icons/svg/ic_nav_route.svg',
+                        iconPath: 'assets/icons/svg/ic_nav_route.svg',
                       ),
                   ],
                 ),

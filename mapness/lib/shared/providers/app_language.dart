@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
@@ -7,31 +8,32 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_language.g.dart';
 
-const _prefsKey = "settings.language";
+const _prefsKey = 'settings.language';
 
 enum Language {
   english,
   arabic;
 
-  static Language fromString(String? s) {
-    return switch (s) {
-      "english" => Language.english,
-      "arabic" => Language.arabic,
-      _ => Language.arabic
-    };
-  }
+  static Language fromString(String? s) => switch (s) {
+        'english' => Language.english,
+        'arabic' => Language.arabic,
+        // default is arabic
+        _ => Platform.localeName.toLowerCase().contains('en')
+            ? Language.english
+            : Language.arabic,
+      };
 }
 
 ///TODO need to get from context.l10n
 extension LanguageData on Language {
   String get title => switch (this) {
-        Language.english => "English",
-        Language.arabic => "عربي",
+        Language.english => 'English',
+        Language.arabic => 'عربي',
       };
 
   String get icon => switch (this) {
-        Language.english => "assets/icons/svg/ic_lang_en.svg",
-        Language.arabic => "assets/icons/svg/ic_lang_ar.svg",
+        Language.english => 'assets/icons/svg/ic_lang_en.svg',
+        Language.arabic => 'assets/icons/svg/ic_lang_ar.svg',
       };
 
   Locale get locale => switch (this) {
@@ -40,13 +42,13 @@ extension LanguageData on Language {
       };
 
   String get navigatorVoice => switch (this) {
-        Language.english => "voice-jennifer",
-        Language.arabic => "voice-sara",
+        Language.english => 'voice-jennifer',
+        Language.arabic => 'voice-sara',
       };
 
   String get baladyCompat => switch (this) {
-        Language.english => "en",
-        Language.arabic => "ar",
+        Language.english => 'en',
+        Language.arabic => 'ar',
       };
 }
 

@@ -7,7 +7,8 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/suggest.dart';
 
 class FavouriteTextField extends ConsumerStatefulWidget {
-  const FavouriteTextField({Key? key}) : super(key: key);
+  final String? hintText;
+  const FavouriteTextField({Key? key,this.hintText}) : super(key: key);
 
   @override
   ConsumerState<FavouriteTextField> createState() => _FavouriteTextFieldState();
@@ -59,7 +60,7 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
               decoration: InputDecoration(
                 filled: true,
                 // isDense: true,
-                hintText: context.l10n.search,
+                hintText: widget.hintText??context.l10n.search,
                 fillColor: Colors.white,
                 contentPadding: const EdgeInsets.only(
                   //   // horizontal: 8,

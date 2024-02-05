@@ -181,6 +181,8 @@ class FilterRow extends StatelessWidget {
       Radius.circular(8),
     );
 
+    final textM = Theme.of(context).extension<ThemeTextStyles>()!.textM;
+
     return Material(
       color: Colors.white,
       borderRadius: borderRadius,
@@ -204,7 +206,9 @@ class FilterRow extends StatelessWidget {
               ),
               Text(
                 value.titleLocale(context.l10n),
-                style: Theme.of(context).extension<ThemeTextStyles>()!.textM,
+                style: textM.copyWith(
+                  color: isSelected ? const Color(0xff4CA5B4) : textM.color,
+                ),
               ),
             ],
           ),

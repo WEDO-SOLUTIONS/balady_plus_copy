@@ -12,25 +12,27 @@ import './env.dart';
 import 'app/core/dependency_injection/injection_container.dart';
 
 void main() async {
-  await AppEnv.setupEnv(EnvType.dev);
+  await runMapnessApp(() async {
+    await AppEnv.setupEnv(EnvType.dev);
 
-  // to observe all blocs movements
-  Bloc.observer = SimpleBlocObserver();
+    // to observe all blocs movements
+    Bloc.observer = SimpleBlocObserver();
 
-  await setupMapness(EnvType.dev);
+    await setupMapness(EnvType.dev);
 
-  await SentryFlutter.init(
-    (options) {
-      options.dsn =
-          'https://c9e9c70957e4433e99fb6be6fc1cafc8@sentry.42.solutions/24';
-      options.tracesSampleRate = 0.1;
-      options.profilesSampleRate = 0.1;
-      options.attachScreenshot = true;
-      options.enableUserInteractionTracing = true;
-      options.captureFailedRequests = true;
-      options.environment = sl<EnvType>().name;
-    },
-    appRunner: () =>
-        runApp(const MapnessProviderScope(child: LocalizedApp(child: App()))),
-  );
+    await SentryFlutter.init(
+      (options) {
+        options.dsn =
+            'https://c9e9c70957e4433e99fb6be6fc1cafc8@sentry.42.solutions/24';
+        options.tracesSampleRate = 0.1;
+        options.profilesSampleRate = 0.1;
+        options.attachScreenshot = true;
+        options.enableUserInteractionTracing = true;
+        options.captureFailedRequests = true;
+        options.environment = sl<EnvType>().name;
+      },
+      appRunner: () =>
+          runApp(const MapnessProviderScope(child: LocalizedApp(child: App()))),
+    );
+  });
 }

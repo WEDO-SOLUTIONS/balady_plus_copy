@@ -1,3 +1,4 @@
 library mapness;
 
-export 'entry_point.dart' show MapnessEntryPoint, MapnessProviderScope;
+export 'entry_point.dart'
+    show MapnessEntryPoint, MapnessProviderScope, runMapnessApp;

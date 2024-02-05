@@ -94,6 +94,8 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<void> setFollowState(FollowStateMessage state);
 
+  Future<void> followNavigation();
+
   Future<void> selectIndoorLevel(int index);
 
   Future<void> loadStyles(String asset);
@@ -111,6 +113,10 @@ abstract class DgisMapPlugin extends PlatformInterface {
   );
 
   Future<CameraPositionMessage> getCameraPosition();
+
+  Future<CameraPositionMessage> calcPositionForRoute(
+    CalcPositionOptionsMessage options,
+  );
 
   Future<CameraPositionMessage> calcPositionForMarkers(
     List<String> markers,
@@ -304,7 +310,7 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<void> stopFreeRoam();
 
-  Future<void> toggleSound();
+  Future<void> toggleSound({required bool enabled});
 
   Future<void> onTrafficAndParkingAttached();
 

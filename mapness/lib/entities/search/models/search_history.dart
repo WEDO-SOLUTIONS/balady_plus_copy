@@ -35,5 +35,9 @@ class SearchHistoryItem {
         entranceId: object.id?.entranceId,
       );
 
+  @Deprecated('use hashKey')
   String get key => 'history-${objectId ?? 0}-${entranceId ?? 0}';
+
+  String get hashKey =>
+      'history-${objectId ?? 0}-${entranceId ?? 0}-${title.hashCode}-${address.hashCode}';
 }

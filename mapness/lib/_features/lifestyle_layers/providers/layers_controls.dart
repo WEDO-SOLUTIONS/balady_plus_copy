@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_repository.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
@@ -17,9 +18,9 @@ import 'package:mapness/app/routes/layer_details.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/config/environment_config.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
-import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -66,18 +67,21 @@ const duration = Duration(milliseconds: 700);
 
 @riverpod
 class LayersControls extends _$LayersControls {
+  static const duration = Duration(milliseconds: 250);
   StreamSubscription? viewPortSubscription;
   CancelToken? cancelToken;
 
-  final tapSubject = BehaviorSubject<LayerType>();
+  final tapSubject = PublishSubject<LayerType>();
+  StreamSubscription? tapSubscription;
 
   @override
   LayersState build() {
     ref.onDispose(() {
       viewPortSubscription?.cancel();
+      tapSubscription?.cancel();
     });
 
-    tapSubject.debounceTime(const Duration(milliseconds: 250)).listen((value) {
+    tapSubscription = tapSubject.debounceTime(duration).listen((value) {
       final currentState = state.selectedType;
 
       cancelToken?.cancel();
@@ -97,17 +101,72 @@ class LayersControls extends _$LayersControls {
       }
     });
 
+    final selectedLayerState = _getLayerState();
+
     return LayersState(
       layersVisible: false,
-      selectedType:
-
-          /// since favorites state has external state (it is stored in shared prefs) => load
-          ref.read(favouriteToggleProvider) ? LayerType.favourites : null,
+      selectedType: selectedLayerState,
       isLoading: false,
       investmentsMarkers: {},
       polygons: {},
       polylines: {},
     );
+  }
+
+  void updateLayerInfo() {
+    final selectedLayerState = _getLayerState();
+    if (selectedLayerState != null) {
+      handleTap(selectedLayerState);
+    } else {
+      setSelection();
+    }
+  }
+
+  LayerType? _getLayerState() {
+    final sharedPrefs = ref.watch(sharedPrefsProvider);
+    final string = sharedPrefs.getString(MapnessConsts.activeLayerKey);
+
+    final layerState = LayerTypeEx.stringToType(string);
+    return layerState == LayerType.favourites ? layerState : null;
+  }
+
+  Future<void> _saveLayersState(LayerType type) async {
+    final sharedPrefs = ref.read(sharedPrefsProvider);
+    await sharedPrefs.setString(MapnessConsts.activeLayerKey, type.name);
+  }
+
+  Future<void> _removeLayersState() async {
+    final sharedPrefs = ref.read(sharedPrefsProvider);
+    await sharedPrefs.remove(
+      MapnessConsts.activeLayerKey,
+    );
+  }
+
+  Future<void> disable() async {
+    if (state.selectedType != null) {
+      handleTap(state.selectedType!);
+    }
+  }
+
+  Future<void> toggle(LayerType? type) async {
+    if (type == null) {
+      return;
+    }
+    final sharedPrefs = ref.read(sharedPrefsProvider);
+
+    final name = type.name;
+    final currentState =
+        sharedPrefs.getString(MapnessConsts.activeLayerKey) == name;
+    if (currentState) {
+      await sharedPrefs.remove(MapnessConsts.activeLayerKey);
+    } else {
+      await sharedPrefs.setString(
+        MapnessConsts.activeLayerKey,
+        name,
+      );
+    }
+
+    setSelection(selectedType: type);
   }
 
   Future<void> toggleFavourites(LayerType? currentState) async {
@@ -144,6 +203,7 @@ class LayersControls extends _$LayersControls {
     LayerType? selectedType,
   }) {
     if (selectedType != null) {
+      _saveLayersState(selectedType);
       ref.read(urbiMetricsProvider.notifier).logEvent(
         'Landing/selectLayer',
         {
@@ -152,7 +212,12 @@ class LayersControls extends _$LayersControls {
           ),
         },
       );
+    } else {
+      _removeLayersState();
     }
+
+    final read = ref.read(favouriteToggleProvider.notifier);
+    read.ref.invalidateSelf();
 
     state = LayersState(
       investmentsMarkers: state.investmentsMarkers,
@@ -162,28 +227,6 @@ class LayersControls extends _$LayersControls {
       polygons: state.polygons,
       polylines: state.polylines,
     );
-  }
-
-  Future<void> focusIwish() async {
-    final dgisController = await ref.read(dgisControllerProvider.future);
-    final markers = await ref.read(iwishMarkersProvider.future);
-    final markerIds = markers.map((e) => e.id).toList();
-
-    if (markerIds.isEmpty) {
-      return;
-    }
-
-    final cameraPosition = await dgisController.calcPositionForMarkers(
-      markerIds,
-      CalcPositionOptionsMessage(),
-    );
-    await ref.read(cameraPositionProvider.notifier).animateTo(cameraPosition);
-  }
-
-  Future<void> disable() async {
-    if (state.selectedType != null) {
-      handleTap(state.selectedType!);
-    }
   }
 
   void handleTap(LayerType value) {
@@ -283,6 +326,7 @@ class LayersControls extends _$LayersControls {
     viewPortSubscription = ref
         .watch(dgisControllerProvider.notifier)
         .visibleRectSubject
+        .whereNotNull()
         .map((event) => event.visibleRect)
         .debounceTime(duration)
         .asyncMap(
@@ -328,6 +372,7 @@ class LayersControls extends _$LayersControls {
     viewPortSubscription = ref
         .watch(dgisControllerProvider.notifier)
         .visibleRectSubject
+        .whereNotNull()
         .debounceTime(duration)
         .map((event) => event.visibleRect)
         .asyncMap((visibleRect) => controller.getWhiteLands(
@@ -372,6 +417,7 @@ class LayersControls extends _$LayersControls {
     viewPortSubscription = ref
         .watch(dgisControllerProvider.notifier)
         .visibleRectSubject
+        .whereNotNull()
         .debounceTime(duration)
         .map((event) => event.visibleRect)
         .asyncMap((visibleRect) => controller.buildingComplianceCertificate(
@@ -505,7 +551,7 @@ class LayersControls extends _$LayersControls {
   Future<void> _removeAll() async {
     update(polylines: {}, polygons: {}, investmentsMarkers: {});
     final map =
-        ref.read(mapObjectManagerProvider(named: mapLayerName).notifier);
+        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
     await map.removeAllMarkers();
     await map.removeAllPolygons();
     await map.removeAllPolyLines();

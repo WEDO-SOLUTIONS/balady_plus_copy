@@ -8,7 +8,6 @@ import 'package:mapness/_features/landing/widgets/compliance_card.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_header.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_profile.dart';
 import 'package:mapness/_features/landing/widgets/events_home_card_wrapper.dart';
-import 'package:mapness/_features/landing/widgets/jobs_around_card.dart';
 import 'package:mapness/_features/landing/widgets/snap_and_send_card.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/stories/stories.dart';
@@ -167,7 +166,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                             const SizedBox(
                               height: 20,
                             ),
-                            const JobsAroundCard(),
+                            // const JobsAroundCard(),
                             const SizedBox(
                               height: 20,
                             ),

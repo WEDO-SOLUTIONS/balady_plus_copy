@@ -20,60 +20,74 @@ class RoutingFavourites extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final favouritesState = ref.watch(favouriteRepositoryProvider);
-    final favItems = <FavouriteItem?>[
-      favouritesState.valueOrNull?.home,
-      favouritesState.valueOrNull?.work,
-    ];
     final favourites = [
       if (showBookmark)
         FilterItem(
-          icon: 'assets/icons/svg/quick_filters/ic_quick_bookmark.svg',
-        ),
+            filterType: FilterType.favourites,
+            icon: 'assets/icons/svg/quick_filters/ic_quick_bookmark.svg',
+            onTap: () async {
+              if (showBookmark) {
+                await CommonFunctions.authOrOpen(context, callback: () async {
+                  final result =
+                      await const FavouritesPickerRoute().push(context);
+
+                  if (result != null) {
+                    onFavouriteTap(result);
+                  }
+                  return;
+                });
+              }
+            }),
       FilterItem(
-        title: context.l10n.home,
-        icon: 'assets/icons/svg/quick_filters/ic_quick_home.svg',
-      ),
+          filterType: FilterType.home,
+          title: context.l10n.home,
+          icon: 'assets/icons/svg/quick_filters/ic_quick_home.svg',
+          onTap: () async {
+            final favouritesState = await ref.read(favouriteRepositoryProvider.future);
+            final home = favouritesState.home;
+            if (home == null) {
+              await CommonFunctions.authOrOpen(context, callback: () async {
+                await const FavouritesSearchRoute(
+                  markerType: FavouriteItemMarkerType.home,
+                ).push(context);
+
+                final favouritesState =
+                    await ref.read(favouriteRepositoryProvider.future);
+
+                onFavouriteTap(favouritesState.home!);
+              });
+            } else {
+              onFavouriteTap(home);
+            }
+          }),
       FilterItem(
-        title: context.l10n.work,
-        icon: 'assets/icons/svg/quick_filters/ic_quick_work.svg',
-      ),
+          filterType: FilterType.work,
+          title: context.l10n.work,
+          icon: 'assets/icons/svg/quick_filters/ic_quick_work.svg',
+          onTap: () async {
+            final favouritesState = await ref.read(favouriteRepositoryProvider.future);
+            final work = favouritesState.work;
+            if (work == null) {
+              await CommonFunctions.authOrOpen(context, callback: () async {
+                await const FavouritesSearchRoute(
+                  markerType: FavouriteItemMarkerType.work,
+                ).push(context);
+
+                final favouritesState =
+                    await ref.read(favouriteRepositoryProvider.future);
+
+                onFavouriteTap(
+                  favouritesState.work!,
+                );
+              });
+            } else {
+              onFavouriteTap(work);
+            }
+          }),
     ];
 
     return widgets.QuickFilters(
       filters: favourites,
-      onTap: (index) async {
-        // Bookmarks click
-        if (index == 0 && showBookmark) {
-          CommonFunctions.authOrOpen(context, callback: () async {
-            final result = await const FavouritesPickerRoute().push(context);
-
-            if (result != null) {
-              onFavouriteTap(result);
-            }
-            return;
-          });
-        }
-
-        // TODO(@alexstrnik) rewrite QuickFilters!!!
-        index = showBookmark ? index - 1 : index;
-        if (favItems[index] == null) {
-          CommonFunctions.authOrOpen(context, callback: () async {
-            await FavouritesSearchRoute(
-              markerType: index == 0
-                  ? FavouriteItemMarkerType.home
-                  : FavouriteItemMarkerType.work,
-            ).push(context);
-            final favouritesState =
-                await ref.read(favouriteRepositoryProvider.future);
-            onFavouriteTap(
-              index == 0 ? favouritesState.home! : favouritesState.work!,
-            );
-          });
-        } else {
-          onFavouriteTap(favItems[index]!);
-        }
-      },
     );
   }
 }
