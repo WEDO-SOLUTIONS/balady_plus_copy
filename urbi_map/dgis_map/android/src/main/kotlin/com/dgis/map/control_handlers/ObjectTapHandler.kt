@@ -67,6 +67,8 @@ class ObjectTapHandler(
 
     private val iconCache = mutableMapOf<String, Image>()
 
+    private var renderedObjectsCloseable: AutoCloseable? = null
+
     fun objectTapListener(roi: RenderedObjectInfo) {
 //        when (val tappedObject = roi.item.item) {
 //            is Marker -> {
@@ -790,6 +792,36 @@ class ObjectTapHandler(
             )
         )
     }
+
+    fun getNearestObjects(result: Result<List<RenderedObjectMessage>>) {
+        val cameraPosition = map.camera.position
+        val screenPoint = map.camera.projection.mapToScreen(cameraPosition.point)
+        if (screenPoint == null) {
+            result.error(IllegalArgumentException("Map has not been initialized"))
+        }
+
+        renderedObjectsCloseable = map.getRenderedObjects(screenPoint!!, ScreenDistance(1F)).apply {
+            onResult { objects ->
+                result.success(
+                    objects
+                        .filter {
+                            it.item.item is DgisMapObject
+                        }
+                        .map<RenderedObjectInfo, RenderedObjectMessage> {
+                            RenderedObjectMessage.Builder()
+                                .setObject((it.item.item as DgisMapObject).id.toMessage())
+                                .setClosestMapPoint(it.closestMapPoint.toMessage())
+                                .build()
+                        }
+                        .toList()
+                )
+            }
+            onError {
+                result.error(it)
+            }
+        }
+    }
+
 
     private class AddMarkersTask(
         private val mapObjectManager: MapObjectManager,

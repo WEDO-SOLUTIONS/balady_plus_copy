@@ -259,6 +259,10 @@ class DgisMapView(
         )
     }
 
+    override fun getNearestObjects(result: Messages.Result<List<RenderedObjectMessage>>) {
+        objectTapHandler?.getNearestObjects(result)
+    }
+
     override fun calcPositionForRoute(options: CalcPositionOptionsMessage, result: Messages.Result<CameraPositionMessage>?) {
         navigationHandler.calcPositionForRoute(options, result)
     }

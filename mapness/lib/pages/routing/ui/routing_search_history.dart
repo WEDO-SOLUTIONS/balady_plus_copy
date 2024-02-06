@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/favourites.dart';
+import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/pages/routing/ui/routing_favourites.dart';
 import 'package:mapness/pages/routing/ui/routing_history.dart';
@@ -51,16 +52,31 @@ class RoutingSearchHistory extends StatelessWidget {
                       ),
                     ),
                   ),
-                // SearchActionRow(
-                //   icon: 'assets/icons/svg/ic_actions_map.svg',
-                //   title: context.l10n.specifyOnTheMap,
-                // ),
                 Material(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
                   child: InkWell(
                     onTap: () async {
-                      CommonFunctions.authOrOpen(context, callback: () async {
+                      final result =
+                          await const RoutingMapRoute().push(context);
+
+                      if (result != null) {
+                        context.pop(result);
+                      }
+                    },
+                    child: SearchActionRow(
+                      icon: 'assets/icons/svg/ic_actions_map.svg',
+                      title: context.l10n.specifyOnTheMap,
+                    ),
+                  ),
+                ),
+                Material(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  child: InkWell(
+                    onTap: () async {
+                      await CommonFunctions.authOrOpen(context,
+                          callback: () async {
                         final result =
                             await const FavouritesPickerRoute().push(context);
 

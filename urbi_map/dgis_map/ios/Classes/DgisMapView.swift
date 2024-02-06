@@ -78,6 +78,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.compassControlHandler?.cancel()
         self.trafficAndParkingControlHandler?.cancel()
         self.packagesHandler?.cancel()
+        self.objectTapHandler?.cancel()
     }
     
     // MARK: - Controls initialize
@@ -315,6 +316,19 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func calcPosition(forPolylinesPolylines polylines: [String], options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
         self.objectTapHandler?.calcPosition(polylines: polylines, options: options, completion: completion)
+    }
+    
+    func getNearestObjects(completion: @escaping ([RenderedObjectMessage]?, FlutterError?) -> Void) {
+        guard let map = self.map else {
+            completion(nil, FlutterError(
+                code: "IllegalArgumentException",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+            return
+        }
+        
+        self.objectTapHandler?.getNearestObjects(completion: completion)
     }
     
     func getCameraPosition(completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
