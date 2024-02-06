@@ -9,6 +9,7 @@ import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/routing/providers/nearest_object.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/dgis_handle.dart';
@@ -148,7 +149,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Point to map',
+                                  context.l10n.pointToMap,
                                   style: Theme.of(context)
                                       .extension<ThemeTextStyles>()!
                                       .accentL
@@ -157,7 +158,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                                       ),
                                 ),
                                 Text(
-                                  'Move the map to choose a place',
+                                  context.l10n.moveMap,
                                   style: Theme.of(context)
                                       .extension<ThemeTextStyles>()!
                                       .textS
@@ -185,7 +186,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                           bottom: 8,
                         ),
                         child: LabeledElevatedButton(
-                          label: 'Done',
+                          label: context.l10n.done,
                           onPressed: () {
                             context.pop(RoutePointDirectoryObject(
                               nearestObject.value!.object,
@@ -262,7 +263,7 @@ class _NearestObject extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               error: (_, __) => Text(
-                'Move the map to choose a place',
+                context.l10n.moveMap,
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
                     .textM
@@ -272,7 +273,7 @@ class _NearestObject extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               loading: () => Text(
-                'Move the map to choose a place',
+                context.l10n.moveMap,
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
                     .textM
