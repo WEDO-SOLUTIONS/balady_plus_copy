@@ -1,53 +1,45 @@
 import 'package:equatable/equatable.dart';
 
-import 'data.dart';
+
+import 'calendar_event.dart';
+
 
 class Events extends Equatable {
-  final Data? data;
-  final List<String>? errorList;
-  final int? statusCode;
-  final String? statusName;
-  final int? itemsCount;
-  final String? httpRequestId;
+  final int? totalItemsCount;
+  final int? pageSize;
+  final int? totalPages;
+  final List<CalendarEvent>? calendarEvents;
 
   const Events({
-    this.data,
-    this.errorList,
-    this.statusCode,
-    this.statusName,
-    this.itemsCount,
-    this.httpRequestId,
+    this.totalItemsCount,
+    this.pageSize,
+    this.totalPages,
+    this.calendarEvents,
   });
 
   factory Events.fromJson(Map<String, dynamic> json) => Events(
-        data: json['data'] == null
-            ? null
-            : Data.fromJson(json['data'] as Map<String, dynamic>),
-        errorList: json['errorList'] as List<String>?,
-        statusCode: json['statusCode'] as int?,
-        statusName: json['statusName'] as String?,
-        itemsCount: json['itemsCount'] as int?,
-        httpRequestId: json['httpRequestId'] as String?,
-      );
+    totalItemsCount: json['totalItemsCount'] as int?,
+    pageSize: json['pageSize'] as int?,
+    totalPages: json['totalPages'] as int?,
+    calendarEvents: (json['calendarEvents'] as List<dynamic>?)
+        ?.map((e) => CalendarEvent.fromJson(e as Map<String, dynamic>))
+        .toList(),
+  );
 
   Map<String, dynamic> toJson() => {
-        'data': data?.toJson(),
-        'errorList': errorList,
-        'statusCode': statusCode,
-        'statusName': statusName,
-        'itemsCount': itemsCount,
-        'httpRequestId': httpRequestId,
-      };
+    'totalItemsCount': totalItemsCount,
+    'pageSize': pageSize,
+    'totalPages': totalPages,
+    'calendarEvents': calendarEvents?.map((e) => e.toJson()).toList(),
+  };
 
   @override
   List<Object?> get props {
     return [
-      data,
-      errorList,
-      statusCode,
-      statusName,
-      itemsCount,
-      httpRequestId,
+      totalItemsCount,
+      pageSize,
+      totalPages,
+      calendarEvents,
     ];
   }
 }

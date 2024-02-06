@@ -1,55 +1,22 @@
 import 'package:equatable/equatable.dart';
 
-import 'data.dart';
-
 class EventsCountInMonths extends Equatable {
-  final List<Data>? data;
-  final List<String>? errorList;
-  final int? statusCode;
-  final String? statusName;
-  final int? itemsCount;
-  final String? httpRequestId;
+  final List<EventsCountInMonths>? monthsEventsCount;
 
-  const EventsCountInMonths({
-    this.data,
-    this.errorList,
-    this.statusCode,
-    this.statusName,
-    this.itemsCount,
-    this.httpRequestId,
-  });
+  const EventsCountInMonths({this.monthsEventsCount});
 
-  factory EventsCountInMonths.fromJson(Map<String, dynamic> json) {
-    return EventsCountInMonths(
-      data: (json['data'] as List<dynamic>?)
-          ?.map((e) => Data.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      errorList: json['errorList'] as List<String>?,
-      statusCode: json['statusCode'] as int?,
-      statusName: json['statusName'] as String?,
-      itemsCount: json['itemsCount'] as int?,
-      httpRequestId: json['httpRequestId'] as String?,
-    );
-  }
+  factory EventsCountInMonths.fromJson(Map<String, dynamic> json) => EventsCountInMonths(
+    monthsEventsCount: (json['monthsEventsCount'] as List<dynamic>?)
+        ?.map(
+            (e) => EventsCountInMonths.fromJson(e as Map<String, dynamic>))
+        .toList(),
+  );
 
   Map<String, dynamic> toJson() => {
-        'data': data?.map((e) => e.toJson()).toList(),
-        'errorList': errorList,
-        'statusCode': statusCode,
-        'statusName': statusName,
-        'itemsCount': itemsCount,
-        'httpRequestId': httpRequestId,
-      };
+    'monthsEventsCount': monthsEventsCount?.map((e) => e.toJson()).toList(),
+  };
 
   @override
-  List<Object?> get props {
-    return [
-      data,
-      errorList,
-      statusCode,
-      statusName,
-      itemsCount,
-      httpRequestId,
-    ];
-  }
+  List<Object?> get props => [monthsEventsCount];
 }
+
