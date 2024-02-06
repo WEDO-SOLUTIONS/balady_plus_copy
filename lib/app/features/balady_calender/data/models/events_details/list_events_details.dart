@@ -5,31 +5,31 @@ import 'calendar_event_item.dart';
 
 
 class EventsDetails extends Equatable {
-  final int? totalItemsCount;
-  final int? pageSize;
-  final int? totalPages;
+  final int totalItemsCount;
+  // final int? pageSize;
+  final int totalPageCount;
   final List<CalendarEventItem>? calendarEvents;
 
   const EventsDetails({
-    this.totalItemsCount,
-    this.pageSize,
-    this.totalPages,
+    required this.totalItemsCount,
+    // this.pageSize,
+    required this.totalPageCount,
     this.calendarEvents,
   });
 
   factory EventsDetails.fromJson(Map<String, dynamic> json) => EventsDetails(
-    totalItemsCount: json['totalItemsCount'] as int?,
-    pageSize: json['pageSize'] as int?,
-    totalPages: json['totalPages'] as int?,
-    calendarEvents: (json['calendarEvents'] as List<dynamic>?)
+    totalItemsCount: json['totalItemCount']  ?? 0,
+    // pageSize: json['pageSize'] as int?,
+    totalPageCount: json['totalPageCount'] ?? 0,
+    calendarEvents: (json['items'] as List<dynamic>?)
         ?.map((e) => CalendarEventItem.fromJson(e as Map<String, dynamic>))
         .toList(),
   );
 
   Map<String, dynamic> toJson() => {
     'totalItemsCount': totalItemsCount,
-    'pageSize': pageSize,
-    'totalPages': totalPages,
+    // 'pageSize': pageSize,
+    'totalPages': totalPageCount,
     'calendarEvents': calendarEvents?.map((e) => e.toJson()).toList(),
   };
 
@@ -37,8 +37,8 @@ class EventsDetails extends Equatable {
   List<Object?> get props {
     return [
       totalItemsCount,
-      pageSize,
-      totalPages,
+      // pageSize,
+      totalPageCount,
       calendarEvents,
     ];
   }

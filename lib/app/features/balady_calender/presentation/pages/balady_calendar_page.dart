@@ -155,10 +155,10 @@ class _BaladyCalendarPageState extends State<BaladyCalendarPage> {
               Expanded(
                 child: BlocProvider<EventsListCubit>(
                   create: (BuildContext context) => EventsListCubit(
-                    baladyCalendarRepositoryImpl: sl(),
+                    baladyCalendarRepository: sl(),
                     listMonths: [
                       const MonthsEventsCount(
-                        month: 1,
+                        month: 6,
                         eventsCount: 1,
                       )
                     ],

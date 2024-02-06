@@ -21,7 +21,7 @@ class BaladyCalendarEventsWidget extends StatelessWidget {
         }
         if (state is FailureEventsListState) {
           return ReloadWidget(
-            onTab: () =>bloc.getCommercialLicenseDetailsById(bloc.params),
+            onTab: () => bloc.getCommercialLicenseDetailsById(bloc.params),
           );
         }
 
@@ -60,14 +60,14 @@ class BaladyCalendarEventsWidget extends StatelessWidget {
         }
 
         // View Loading In after list item in list
-        if (state is SucceedWithPaginationEventsListState ) {
+        if (state is SucceedWithPaginationEventsListState) {
           return Column(
             children: [
               Expanded(
                 child: ListView.builder(
                   itemBuilder: (BuildContext context, int index) {
                     List<CalendarEventItem>? listEvents =
-                    state.event[state.listMonths[index].month ?? 0];
+                        state.event[state.listMonths[index].month ?? 0];
                     return Column(
                       children: [
                         Padding(
@@ -77,10 +77,14 @@ class BaladyCalendarEventsWidget extends StatelessWidget {
                             children: [
                               Text(
                                 bloc.params.hijri
-                                    ? 'month_${state.listMonths[index].month}'.tr()
-                                    : 'month${state.listMonths[index].month}'.tr(),
+                                    ? 'month_${state.listMonths[index].month}'
+                                        .tr()
+                                    : 'month${state.listMonths[index].month}'
+                                        .tr(),
                               ),
-                              Text('(${state.listMonths[index].eventsCount ?? 0})')
+                              Text(
+                                '(${state.listMonths[index].eventsCount ?? 0})',
+                              )
                             ],
                           ),
                         ),

@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/features/balady_calender/data/models/events_details/calendar_event_item.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ListItemsEventsWidget extends StatelessWidget {
   final List<CalendarEventItem> listEvents;
@@ -35,18 +36,32 @@ class ListItemsEventsWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(event.metadata?.mainType?.name ?? ''),
-                  Text(
-                    event.eventDisplayMessage ?? '',
-                    overflow: TextOverflow.visible,
-                  )
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          fit: FlexFit.tight,
+                          child: Text(event.metadata?.mainType?.name ?? ''),
+                        ),
+                        Text(
+                          DateFormat('EEEE dd').format(event.eventDate!),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 6),
+                    Container(
+                      child: Text(
+                        event.eventDisplayMessage ?? 'Display Message Empty',
+                        overflow: TextOverflow.visible,
+                      ),
+                    )
+                  ],
+                ),
               ),
-              const Spacer(),
-              Text(event.eventDate.toString()),
               const SizedBox(width: 10)
             ],
           ),
