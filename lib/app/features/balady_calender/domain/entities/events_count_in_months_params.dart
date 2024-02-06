@@ -11,6 +11,9 @@ class EventsCountInMonthsParams {
     AgencyInRequestDto agencyInRequestDto;
     bool hijri;
     int year;
+    int page;
+    int size;
+
 
     EventsCountInMonthsParams({
         required this.loginIdentityId,
@@ -21,6 +24,8 @@ class EventsCountInMonthsParams {
         required this.agencyInRequestDto,
         required this.hijri,
         required this.year,
+        this.page = 0, // start page from 0
+        this.size = 12, // default items get from API 12
     });
 
     EventsCountInMonthsParams copyWith({
@@ -32,7 +37,9 @@ class EventsCountInMonthsParams {
         AgencyInRequestDto? agencyInRequestDto,
         bool? hijri,
         int? year,
-    }) => 
+        int? page,
+        int? size,
+    }) =>
         EventsCountInMonthsParams(
             loginIdentityId: loginIdentityId ?? this.loginIdentityId,
             loginIdentityType: loginIdentityType ?? this.loginIdentityType,
@@ -42,6 +49,8 @@ class EventsCountInMonthsParams {
             agencyInRequestDto: agencyInRequestDto ?? this.agencyInRequestDto,
             hijri: hijri ?? this.hijri,
             year: year ?? this.year,
+            page: page ?? this.page,
+            size: size ?? this.size,
         );
 
 
@@ -55,6 +64,8 @@ class EventsCountInMonthsParams {
         "agencyInRequestDto": agencyInRequestDto.toJson(),
         "hijri": hijri,
         "year": year,
+        "page": page,
+        "size": size,
     };
 }
 
