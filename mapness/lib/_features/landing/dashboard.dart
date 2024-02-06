@@ -10,6 +10,7 @@ import 'package:mapness/_features/landing/widgets/dashboard_profile.dart';
 import 'package:mapness/_features/landing/widgets/events_home_card_wrapper.dart';
 import 'package:mapness/_features/landing/widgets/snap_and_send_card.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/_features/stories/data/story_service.dart';
 import 'package:mapness/_features/stories/stories.dart';
 import 'package:mapness/_features/stories/stories_widget.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -94,6 +95,8 @@ class _DashboardState extends ConsumerState<Dashboard> {
           ref.read(urbiMetricsProvider.notifier).logEvent(
                 'Stories/close',
               );
+          //Resume the story update when viewport changed
+          ref.read(storyServiceProvider.notifier).resumeUpdate();
           Stories.hide();
           return false;
         }

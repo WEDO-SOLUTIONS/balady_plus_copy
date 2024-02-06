@@ -5,10 +5,10 @@
 - BALADY-1217: [Marketing] enabling navigation for Joy parks
 - BALADY-1200: [Interesting Place] - tapping to interesting objects does not fly to it
 - BALADY-903: [Navi] Specify on map with pin A or B
+- BALADY-1216: [Navi] - wakelock device while navigator enabled
 
 ## 3.8.2(4)
 
-- BALADY-1127 [Marketing] [Navi] IOS - The app crashed if the user navigates in the map without entering a point
 - fix poi reload button
 - BALADY-552 bugfix(Navi) Bottom sheet on the route mode
 - BALADY-1083 [bottom-sheet] Navi. Swipe up and down doesn't work

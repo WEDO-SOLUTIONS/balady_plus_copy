@@ -12,6 +12,16 @@ part 'stories_repo.g.dart';
 
 @riverpod
 class StoriesRepo extends _$StoriesRepo {
+  bool _isUpdatePaused = false;
+
+  void pauseUpdate() {
+    _isUpdatePaused = true;
+  }
+
+  void resumeUpdate() {
+    _isUpdatePaused = false;
+  }
+
   @override
   Future<StoriesResponse> build() async {
     final dio = await ref.watch(dGisNetworkProvider.future);
@@ -21,7 +31,11 @@ class StoriesRepo extends _$StoriesRepo {
         .visibleRectSubject
         .whereNotNull()
         .listen((event) async {
+      if (_isUpdatePaused) {
+        return;
+      }
       final polygon = CommonFunctions.getPolygonFromRect(event.visibleRect);
+
       state = AsyncValue.data(await _fetch(dio, polygon));
     });
 

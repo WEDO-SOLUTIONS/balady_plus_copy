@@ -3,6 +3,7 @@ import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/stories/data/story_service.dart';
 import 'package:mapness/_features/stories/domain/story_types.dart';
 import 'package:mapness/_features/stories/presentation/frame/dismissible_overlay.dart';
 import 'package:mapness/_features/stories/presentation/stories_fullscreen.dart';
@@ -21,7 +22,7 @@ class Stories {
     _transitionState.currentState?.dismiss();
   }
 
-  static get isShowing => _overlayEntry != null;
+  static bool get isShowing => _overlayEntry != null;
 
   static void hide() {
     _hide();
@@ -42,10 +43,15 @@ class Stories {
             parent: ProviderScope.containerOf(context),
             child: Theme(
               data: Theme.of(context),
-              child: DismissibleTransition(
-                key: _transitionState,
-                onDismiss: _hide,
-                child: storyWidget,
+              child: Consumer(
+                builder: (context, ref, child) => DismissibleTransition(
+                  key: _transitionState,
+                  onDismiss: () {
+                    ref.read(storyServiceProvider.notifier).resumeUpdate();
+                    _hide();
+                  },
+                  child: storyWidget,
+                ),
               ),
             ),
           ),

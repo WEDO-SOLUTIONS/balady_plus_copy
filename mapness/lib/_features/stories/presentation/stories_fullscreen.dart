@@ -30,15 +30,13 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
 
   void _onChangeStory(int pageIndex, int length) {
     if (pageIndex == 0 || pageIndex == length + 1) {
-      widget.onClose();
+      onClose();
     }
     _precacheStories();
   }
 
   Future<void> _precacheStories() async {
-    final storiesAsync = ref.read(storyServiceProvider);
-
-    storiesAsync.whenData((data) {
+    ref.read(storyServiceProvider).whenData((data) {
       final nearStories = data.skip(initialPage - 1).take(3);
 
       for (final story in nearStories) {
@@ -70,13 +68,8 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
     setState(() {
       initialPage = index;
     });
+    ref.read(storyServiceProvider.notifier).pauseUpdate();
   }
-
-  // @override
-  // void dispose() {
-  //   _storyController.dispose();
-  //   super.dispose();
-  // }
 
   void _nextStory() {
     _storyController.nextPage(
@@ -99,6 +92,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
   }
 
   Future<void> onClose() async {
+    ref.read(storyServiceProvider.notifier).resumeUpdate();
     widget.onClose();
   }
 
