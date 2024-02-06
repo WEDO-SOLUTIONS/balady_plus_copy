@@ -147,7 +147,7 @@ class _BaladyCalendarPageState extends State<BaladyCalendarPage> {
                   },
                 ),
               ),
-              const BaladyCalendarEventsWidget(),
+              const Expanded(child: BaladyCalendarEventsWidget()),
             ],
           ),
         ),
