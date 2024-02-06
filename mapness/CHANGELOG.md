@@ -6,6 +6,8 @@
 - BALADY-1200: [Interesting Place] - tapping to interesting objects does not fly to it
 - BALADY-903: [Navi] Specify on map with pin A or B
 - BALADY-1216: [Navi] - wakelock device while navigator enabled
+- BALADY-1168: [Marketing] the keyboard is overlapping the map in search
+- BALADY-1201: [Search] - keyboard fix. Bottom sheet is under the keyboard
 
 ## 3.8.2(4)
 
