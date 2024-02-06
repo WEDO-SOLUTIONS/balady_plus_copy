@@ -13,15 +13,21 @@ class BriefRouteButton extends ConsumerWidget {
   const BriefRouteButton({
     required this.routeType,
     required this.onTap,
-    super.key,
     this.startPoint,
     this.finishPoint,
+    this.padding,
+    this.foreground,
+    this.background,
+    super.key,
   });
 
   final VoidCallback onTap;
   final RouteSearchOptionsMessage routeType;
   final RouteSearchPointMessage? startPoint;
   final RouteSearchPointMessage? finishPoint;
+  final EdgeInsetsGeometry? padding;
+  final Color? foreground;
+  final Color? background;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,22 +39,25 @@ class BriefRouteButton extends ConsumerWidget {
     ));
 
     return appFeatures.naviEnabled
-        ? Material(
-            color: const Color(0xFF4CA5B4),
-            borderRadius: BorderRadius.circular(8),
-            child: InkWell(
-              onTap: onTap,
+        ? Padding(
+            padding: padding ?? const EdgeInsets.all(0),
+            child: Material(
+              color: background ?? const Color(0xFF4CA5B4),
               borderRadius: BorderRadius.circular(8),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 9,
-                ),
-                child: _BriefRouteInfo(
-                  iconSize: 24,
-                  iconColor: Colors.white,
-                  textColor: Colors.white,
-                  briefInfo: briefInfo,
+              child: InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 9,
+                  ),
+                  child: _BriefRouteInfo(
+                    iconSize: 24,
+                    iconColor: foreground ?? Colors.white,
+                    textColor: foreground ?? Colors.white,
+                    briefInfo: briefInfo,
+                  ),
                 ),
               ),
             ),
