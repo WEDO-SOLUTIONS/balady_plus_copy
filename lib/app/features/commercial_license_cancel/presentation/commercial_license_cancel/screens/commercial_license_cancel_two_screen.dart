@@ -94,8 +94,11 @@ class CommercialLicenseCancelTwoScreen extends StatelessWidget {
                                 },
                               ),
                               const SizedBox(width: 2),
-                              Text(
-                                'acknowledge_pledge'.tr(),
+                              Flexible(
+                                child: Text(
+                                  'acknowledge_pledge'.tr(),
+                                  overflow: TextOverflow.visible,
+                                ),
                               ),
                             ],
                           ),
