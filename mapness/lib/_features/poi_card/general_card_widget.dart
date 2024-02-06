@@ -27,6 +27,7 @@ import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
+import 'domain/model/poi_camera_config.dart';
 import 'enums/pot_tabs_type.dart';
 import 'widgets/footer.dart';
 import 'widgets/poi_photo_card.dart';
@@ -34,10 +35,12 @@ import 'widgets/poi_photos_header.dart';
 
 class GeneralMapCardWidget extends StatelessWidget {
   final DgisObjectIdMessage objectId;
+  final PoiCameraConfig? cameraConfig;
 
   const GeneralMapCardWidget(
     this.objectId, {
     super.key,
+    this.cameraConfig,
   });
 
   @override
@@ -48,6 +51,7 @@ class GeneralMapCardWidget extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) => _Content(
         objectId: objectId,
+        cameraConfig: cameraConfig,
         biggestHeight: constraints.biggest.height,
         biggestWidth: constraints.biggest.width,
         // directoryObject: result,
@@ -58,6 +62,7 @@ class GeneralMapCardWidget extends StatelessWidget {
 
 class _Content extends ConsumerStatefulWidget {
   final DgisObjectIdMessage objectId;
+  final PoiCameraConfig? cameraConfig;
 
   final double biggestHeight;
   final double biggestWidth;
@@ -66,6 +71,7 @@ class _Content extends ConsumerStatefulWidget {
     required this.biggestHeight,
     required this.biggestWidth,
     required this.objectId,
+    this.cameraConfig,
   });
 
   @override
@@ -115,7 +121,10 @@ class _ContentState extends ConsumerState<_Content>
   @override
   Widget build(BuildContext context) {
     final viewModel = PoiCardViewModel(ref: ref);
-    final viewModelProvider = poiCardProviderProvider(widget.objectId);
+    final viewModelProvider = poiCardProviderProvider(
+      widget.objectId,
+      cameraConfig: widget.cameraConfig,
+    );
     final state = ref.watch(viewModelProvider);
 
     final poiCardState = state.valueOrNull;

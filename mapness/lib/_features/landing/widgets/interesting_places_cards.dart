@@ -41,7 +41,8 @@ class InterestingPlacesCardsList extends ConsumerWidget {
                       ),
                     },
                   );
-                  PoiMapRoute.open(context, objectId);
+
+                  PoiMapRoute.open(context, objectId, zoom: 17);
                 },
               );
             },
