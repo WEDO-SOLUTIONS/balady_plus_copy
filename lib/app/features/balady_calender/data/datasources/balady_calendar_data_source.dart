@@ -171,13 +171,8 @@ class CalendarBaladyRemoteDataSourceImpl
 
     try {
       response = await webService.dio.post(
-        ApiUrl.baladyCalendarEventsCountInMonths,
+        ApiUrl.baladyCalendarEvents,
         queryParameters: params.toJson(),
-        options: Options(
-          headers: {
-            /*"Authorization": token*/
-          },
-        ),
       );
       final data = response.data;
 
