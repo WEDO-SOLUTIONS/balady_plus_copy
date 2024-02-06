@@ -1,10 +1,10 @@
-import 'package:balady_plus/app/features/balady_calender/data/models/events/events.dart';
 import 'package:balady_plus/app/features/balady_calender/data/models/events_count_in_months/events_count_in_months.dart';
 import 'package:balady_plus/app/features/balady_calender/data/models/events_count_in_years/events_count_in_years_response.dart';
+import 'package:balady_plus/app/features/balady_calender/data/models/events_details/events_details.dart';
 import 'package:balady_plus/app/features/balady_calender/data/models/filter/filter_response.dart';
 import 'package:balady_plus/app/features/balady_calender/domain/entities/events_count_in_months_params.dart';
 import 'package:balady_plus/app/features/balady_calender/domain/entities/events_count_in_years_params.dart';
-import 'package:balady_plus/app/features/balady_calender/domain/entities/events_params.dart';
+import 'package:balady_plus/app/features/balady_calender/domain/entities/events_details_params.dart';
 import '../../../../core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
@@ -23,7 +23,7 @@ abstract class BaladyCalendarRemoteDataSource {
     required EventsCountInMonthsParams params,
   });
 
-  Future<Events> getEvents({required EventsParams params});
+  Future<EventsDetails> getEventsDetails({required EventsDetailsParams params});
 }
 
 class CalendarBaladyRemoteDataSourceImpl
@@ -34,7 +34,7 @@ class CalendarBaladyRemoteDataSourceImpl
 
   @override
   Future<Filter> getFilteredEvents() async {
-    var response;
+    var response ;
 
     try {
       response = await webService.dio.get(
@@ -166,7 +166,8 @@ class CalendarBaladyRemoteDataSourceImpl
   }
 
   @override
-  Future<Events> getEvents({required EventsParams params}) async {
+  Future<EventsDetails> getEventsDetails(
+      {required EventsDetailsParams params}) async {
     var response;
 
     try {
@@ -178,7 +179,7 @@ class CalendarBaladyRemoteDataSourceImpl
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
-      return Events.fromJson(result);
+      return EventsDetails.fromJson(result);
     } on DioException catch (error) {
       if (error is NoDataFoundException) {
         rethrow;

@@ -2,11 +2,11 @@ import 'package:equatable/equatable.dart';
 
 import 'metadata.dart';
 
-class CalendarEvent extends Equatable {
-  final String? id;
+class Item extends Equatable {
+  final dynamic id;
   final String? entityId;
   final String? entityType;
-  final DateTime? eventDate;
+  final String? eventDate;
   final String? eventDateHijri;
   final int? year;
   final int? month;
@@ -16,11 +16,11 @@ class CalendarEvent extends Equatable {
   final String? ownerIdentityType;
   final String? ownerName;
   final Metadata? metadata;
-  final String? eventDisplayMessage;
-  final String? serviceUrl;
+  final dynamic eventDisplayMessage;
+  final dynamic serviceUrl;
   final String? hashingEntityId;
 
-  const CalendarEvent({
+  const Item({
     this.id,
     this.entityId,
     this.entityType,
@@ -39,13 +39,11 @@ class CalendarEvent extends Equatable {
     this.hashingEntityId,
   });
 
-  factory CalendarEvent.fromJson(Map<String, dynamic> json) => CalendarEvent(
-        id: json['id'] as String?,
+  factory Item.fromJson(Map<String, dynamic> json) => Item(
+        id: json['id'] as dynamic,
         entityId: json['entityId'] as String?,
         entityType: json['entityType'] as String?,
-        eventDate: json['eventDate'] == null
-            ? null
-            : DateTime.parse(json['eventDate'] as String),
+        eventDate: json['eventDate'] as String?,
         eventDateHijri: json['eventDateHijri'] as String?,
         year: json['year'] as int?,
         month: json['month'] as int?,
@@ -57,8 +55,8 @@ class CalendarEvent extends Equatable {
         metadata: json['metadata'] == null
             ? null
             : Metadata.fromJson(json['metadata'] as Map<String, dynamic>),
-        eventDisplayMessage: json['eventDisplayMessage'] as String?,
-        serviceUrl: json['serviceUrl'] as String?,
+        eventDisplayMessage: json['eventDisplayMessage'] as dynamic,
+        serviceUrl: json['serviceUrl'] as dynamic,
         hashingEntityId: json['hashingEntityId'] as String?,
       );
 
@@ -66,7 +64,7 @@ class CalendarEvent extends Equatable {
         'id': id,
         'entityId': entityId,
         'entityType': entityType,
-        'eventDate': eventDate?.toIso8601String(),
+        'eventDate': eventDate,
         'eventDateHijri': eventDateHijri,
         'year': year,
         'month': month,

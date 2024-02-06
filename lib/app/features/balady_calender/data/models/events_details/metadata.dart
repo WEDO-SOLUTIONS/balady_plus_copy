@@ -9,7 +9,7 @@ class Metadata extends Equatable {
   final Type? type;
   final Status? status;
   final String? licenseNumber;
-  final String? contentTypeId;
+  final dynamic contentTypeId;
 
   const Metadata({
     this.mainType,
@@ -30,7 +30,7 @@ class Metadata extends Equatable {
             ? null
             : Status.fromJson(json['status'] as Map<String, dynamic>),
         licenseNumber: json['licenseNumber'] as String?,
-        contentTypeId: json['contentTypeId'] as String?,
+        contentTypeId: json['contentTypeId'] as dynamic,
       );
 
   Map<String, dynamic> toJson() => {
