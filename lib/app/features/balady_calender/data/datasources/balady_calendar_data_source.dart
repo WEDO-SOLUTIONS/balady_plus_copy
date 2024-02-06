@@ -14,14 +14,22 @@ import '../../../_shared_feature_/data/models/response_body_model.dart';
 
 abstract class BaladyCalendarRemoteDataSource {
   Future<Filter> getFilteredEvents();
-  Future<EventsCountInYears> getEventsCountInYears( {required EventsCountInyearsParams params});
-  Future<EventsCountInMonths> getEventsCountInMonths({required EventsCountInMonthsParams params});
+
+  Future<EventsCountInYears> getEventsCountInYears({
+    required EventsCountInyearsParams params,
+  });
+
+  Future<EventsCountInMonths> getEventsCountInMonths({
+    required EventsCountInMonthsParams params,
+  });
+
   Future<Events> getEvents({required EventsParams params});
 }
 
 class CalendarBaladyRemoteDataSourceImpl
     extends BaladyCalendarRemoteDataSource {
   final WebService webService;
+
   CalendarBaladyRemoteDataSourceImpl({required this.webService});
 
   @override
@@ -29,10 +37,14 @@ class CalendarBaladyRemoteDataSourceImpl
     var response;
 
     try {
-      response = await webService.dio.get(ApiUrl.baladyCalendarFilter,
-          options: Options(headers: {
+      response = await webService.dio.get(
+        ApiUrl.baladyCalendarFilter,
+        options: Options(
+          headers: {
             /*"Authorization": token*/
-          }));
+          },
+        ),
+      );
       final data = response.data;
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
@@ -52,24 +64,32 @@ class CalendarBaladyRemoteDataSourceImpl
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr(),
-            exception: APIException(
-              errorMessage: ex.toString(),
-            ),
-            response: response);
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: ex.toString(),
+          ),
+          response: response,
+        );
       }
     }
   }
+
   @override
-  Future<EventsCountInYears> getEventsCountInYears({required EventsCountInyearsParams params}) async {
+  Future<EventsCountInYears> getEventsCountInYears(
+      {required EventsCountInyearsParams params}) async {
     var response;
 
     try {
-      response = await webService.dio.post(ApiUrl.baladyCalendarEventsCountInYears,
-      queryParameters: params.toJson(),
-          options: Options(headers: {
+      response = await webService.dio.post(
+        ApiUrl.baladyCalendarEventsCountInYears,
+        queryParameters: params.toJson(),
+        options: Options(
+          headers: {
             /*"Authorization": token*/
-          }));
+          },
+        ),
+      );
       final data = response.data;
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
@@ -89,26 +109,32 @@ class CalendarBaladyRemoteDataSourceImpl
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr(),
-            exception: APIException(
-              errorMessage: ex.toString(),
-            ),
-            response: response);
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: ex.toString(),
+          ),
+          response: response,
+        );
       }
     }
   }
 
-
   @override
-  Future<EventsCountInMonths> getEventsCountInMonths({required EventsCountInMonthsParams params}) async {
+  Future<EventsCountInMonths> getEventsCountInMonths(
+      {required EventsCountInMonthsParams params}) async {
     var response;
 
     try {
-      response = await webService.dio.post(ApiUrl.baladyCalendarEventsCountInMonths,
-      queryParameters: params.toJson(),
-          options: Options(headers: {
+      response = await webService.dio.post(
+        ApiUrl.baladyCalendarEventsCountInMonths,
+        queryParameters: params.toJson(),
+        options: Options(
+          headers: {
             /*"Authorization": token*/
-          }));
+          },
+        ),
+      );
       final data = response.data;
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
@@ -128,24 +154,31 @@ class CalendarBaladyRemoteDataSourceImpl
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr(),
-            exception: APIException(
-              errorMessage: ex.toString(),
-            ),
-            response: response);
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: ex.toString(),
+          ),
+          response: response,
+        );
       }
     }
   }
+
   @override
   Future<Events> getEvents({required EventsParams params}) async {
     var response;
 
     try {
-      response = await webService.dio.post(ApiUrl.baladyCalendarEventsCountInMonths,
-      queryParameters: params.toJson(),
-          options: Options(headers: {
+      response = await webService.dio.post(
+        ApiUrl.baladyCalendarEventsCountInMonths,
+        queryParameters: params.toJson(),
+        options: Options(
+          headers: {
             /*"Authorization": token*/
-          }));
+          },
+        ),
+      );
       final data = response.data;
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
@@ -165,11 +198,13 @@ class CalendarBaladyRemoteDataSourceImpl
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr(),
-            exception: APIException(
-              errorMessage: ex.toString(),
-            ),
-            response: response);
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: ex.toString(),
+          ),
+          response: response,
+        );
       }
     }
   }
