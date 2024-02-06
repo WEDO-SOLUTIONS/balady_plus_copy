@@ -1,7 +1,10 @@
+import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/features/balady_calender/data/models/events_count_in_months/months_events_count.dart';
 import 'package:balady_plus/app/features/balady_calender/data/models/events_details/calendar_event_item.dart';
+import 'package:balady_plus/app/features/balady_calender/data/models/events_details/list_events_details.dart';
 import 'package:balady_plus/app/features/balady_calender/domain/entities/events_details_params.dart';
 import 'package:balady_plus/app/features/balady_calender/domain/repositories/balady_calendar_repository.dart';
+import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -25,13 +28,16 @@ class EventsListCubit extends Cubit<EventsListState> {
   ) async {
     EventsListState stateType = state;
     if (stateType is InitialEventsListState ||
-        stateType is SucceedWithPaginationEventsListState || stateType is FailureEventsListState) {
+        stateType is SucceedWithPaginationEventsListState ||
+        stateType is FailureEventsListState) {
       if (stateType is! SucceedWithPaginationEventsListState) {
         emit(LoadingEventsListState());
       }
 
-      final failureOrSuccess =
-          await baladyCalendarRepository.getEventsDetails(params: params);
+      Either<Failure, EventsDetails> failureOrSuccess =
+          await baladyCalendarRepository.getEventsDetails(
+        params: params,
+      );
       failureOrSuccess.fold(
         (failure) {
           emit(FailureEventsListState(filerMessage: failure.toString()));
@@ -50,7 +56,7 @@ class EventsListCubit extends Cubit<EventsListState> {
               }
             },
           );
-          if ((newEvents.totalPageCount-1) == params.page) {
+          if ((newEvents.totalPageCount - 1) == params.page) {
             emit(
               SucceedEventsListState(
                 event: newMapEvents,
