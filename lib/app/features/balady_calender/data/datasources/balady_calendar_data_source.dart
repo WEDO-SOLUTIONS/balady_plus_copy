@@ -1,0 +1,176 @@
+import 'package:balady_plus/app/features/balady_calender/data/models/events/events.dart';
+import 'package:balady_plus/app/features/balady_calender/data/models/events_count_in_months/events_count_in_months.dart';
+import 'package:balady_plus/app/features/balady_calender/data/models/events_count_in_years/events_count_in_years_response.dart';
+import 'package:balady_plus/app/features/balady_calender/data/models/filter/filter_response.dart';
+import 'package:balady_plus/app/features/balady_calender/domain/entities/events_count_in_months_params.dart';
+import 'package:balady_plus/app/features/balady_calender/domain/entities/events_count_in_years_params.dart';
+import 'package:balady_plus/app/features/balady_calender/domain/entities/events_params.dart';
+import '../../../../core/services/global/web_service.dart';
+import 'package:balady_plus/app/core/errors/exceptions.dart';
+import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
+import 'package:dio/dio.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+import '../../../_shared_feature_/data/models/response_body_model.dart';
+
+abstract class BaladyCalendarRemoteDataSource {
+  Future<Filter> getFilteredEvents();
+  Future<EventsCountInYears> getEventsCountInYears( {required EventsCountInyearsParams params});
+  Future<EventsCountInMonths> getEventsCountInMonths({required EventsCountInMonthsParams params});
+  Future<Events> getEvents({required EventsParams params});
+}
+
+class CalendarBaladyRemoteDataSourceImpl
+    extends BaladyCalendarRemoteDataSource {
+  final WebService webService;
+  CalendarBaladyRemoteDataSourceImpl({required this.webService});
+
+  @override
+  Future<Filter> getFilteredEvents() async {
+    var response;
+
+    try {
+      response = await webService.dio.get(ApiUrl.baladyCalendarFilter,
+          options: Options(headers: {
+            /*"Authorization": token*/
+          }));
+      final data = response.data;
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return Filter.fromJson(result);
+    } on DioException catch (error) {
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+  @override
+  Future<EventsCountInYears> getEventsCountInYears({required EventsCountInyearsParams params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(ApiUrl.baladyCalendarEventsCountInYears,
+      queryParameters: params.toJson(),
+          options: Options(headers: {
+            /*"Authorization": token*/
+          }));
+      final data = response.data;
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return EventsCountInYears.fromJson(result);
+    } on DioException catch (error) {
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+
+  @override
+  Future<EventsCountInMonths> getEventsCountInMonths({required EventsCountInMonthsParams params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(ApiUrl.baladyCalendarEventsCountInMonths,
+      queryParameters: params.toJson(),
+          options: Options(headers: {
+            /*"Authorization": token*/
+          }));
+      final data = response.data;
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return EventsCountInMonths.fromJson(result);
+    } on DioException catch (error) {
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+  @override
+  Future<Events> getEvents({required EventsParams params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(ApiUrl.baladyCalendarEventsCountInMonths,
+      queryParameters: params.toJson(),
+          options: Options(headers: {
+            /*"Authorization": token*/
+          }));
+      final data = response.data;
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return Events.fromJson(result);
+    } on DioException catch (error) {
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+}
