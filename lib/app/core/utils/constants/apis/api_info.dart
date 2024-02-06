@@ -767,6 +767,21 @@ class ApiUrl {
   static const chatBot = 'v1/chatbot-services/chat';
 
   static const weatherAlerts = 'v1/mater-services/notifications/locations';
+
+  //! Balady Calednar
+
+  static const baladyCalendarFilter =
+      'v1/balady-calendar-services/main-filterations';
+
+  static const baladyCalendarEventsCountInYears =
+      'v1/balady-calendar-services/events/count-in-year';
+
+  static const baladyCalendarEventsCountInMonths =
+      'v1/balady-calendar-services/events/count-in-months-by-year';
+
+  static const baladyCalendarEvents =
+      'v1/balady-calendar-services/events/by-year';
+
   //! POST
 
   //! Delete
