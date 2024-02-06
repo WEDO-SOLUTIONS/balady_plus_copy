@@ -5,6 +5,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/t
 import 'package:balady_plus/app/features/balady_calender/data/models/events_count_in_months/months_events_count.dart';
 import 'package:balady_plus/app/features/balady_calender/domain/entities/events_details_params.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/bloc/events_list_cubit.dart';
+import 'package:balady_plus/app/features/balady_calender/presentation/mvvm/balady_calendar_years_list_view_model.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/widgets/balady_calendar_events_widget.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/widgets/calendar_filter_popup.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/widgets/calendar_type_popup.dart';
@@ -22,154 +23,114 @@ class BaladyCalendarPage extends StatefulWidget {
 }
 
 class _BaladyCalendarPageState extends State<BaladyCalendarPage> {
-  int selectedYearIndex = 0;
-
+BaladyCalendarYearsListViewModel baladyCalendarYearsListViewModel = BaladyCalendarYearsListViewModel(webService: sl()) ;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Column(
-            children: [
-              // AppBar
-              Row(
-                children: [
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: CircleIcon(
-                      icon: Icons.close,
-                      iconColor: AppColor.primary600Light,
-                      backgroundColor: AppColor.geyser.withOpacity(0.5),
-                      iconSize: 18,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  CustomTextWidget(
-                    "balady_calendar".tr(),
-                    textStyle: AppStyle.appBarTitleTextStyle,
-                  ),
-                  const Spacer(),
-                  GestureDetector(
-                    onTap: () async {
-                      await CustomPopUpsWidgets.showBottomSheet(context,
-                          child: const CalendarTypePopup(),
-                          height: 300,
-                          radius: 30);
-                    },
-                    child: Container(
-                      height: 60,
-                      width: 110,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: AppColor.white10,
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      child: Row(children: [
-                        SvgPicture.asset(
-                          ImagePath.baladyCalendar,
-                          width: 25,
-                          height: 25,
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        CustomTextWidget(
-                          "gregorian".tr(),
-                          textStyle: AppStyle.mainTextStyle,
-                        ),
-                      ]),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      await CustomPopUpsWidgets.showBottomSheet(context,
-                          child: const CalendarFilterPopup(),
-                          height: 550,
-                          radius: 30);
-                    },
-                    child: Container(
-                      height: 60,
-                      width: 60,
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: AppColor.white10,
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      child: SvgPicture.asset(
-                        ImagePath.filter,
+    return ChangeNotifierProvider(
+            create: (BuildContext context) => baladyCalendarYearsListViewModel,
+      child: Scaffold(
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Column(
+              children: [
+                // AppBar
+                Row(
+                  children: [
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: CircleIcon(
+                        icon: Icons.close,
+                        iconColor: AppColor.primary600Light,
+                        backgroundColor: AppColor.geyser.withOpacity(0.5),
+                        iconSize: 18,
                       ),
                     ),
-                  )
-                ],
-              ),
-              const SizedBox(height: 20),
-              // Years
-              SizedBox(
-                height: 85,
-                width: double.infinity,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 6,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedYearIndex = index;
-                        });
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    CustomTextWidget(
+                      "balady_calendar".tr(),
+                      textStyle: AppStyle.appBarTitleTextStyle,
+                    ),
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: () async {
+                        await CustomPopUpsWidgets.showBottomSheet(context,
+                            child: const CalendarTypePopup(),
+                            height: 300,
+                            radius: 30);
                       },
                       child: Container(
-                        margin: const EdgeInsets.all(8.0),
+                        height: 60,
+                        width: 110,
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15.0),
-                            color: selectedYearIndex == index
-                                ? AppColor.primary700Light
-                                : AppColor.white5),
-                        width: 80,
-                        child: Column(children: [
-                          Text(
-                            2023.toString(),
-                            style: TextStyle(
-                                color: selectedYearIndex == index
-                                    ? Colors.white
-                                    : Colors.black),
+                          color: AppColor.white10,
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        child: Row(children: [
+                          SvgPicture.asset(
+                            ImagePath.baladyCalendar,
+                            width: 25,
+                            height: 25,
                           ),
-                          Text(
-                            '(2)',
-                            style: TextStyle(
-                                color: selectedYearIndex == index
-                                    ? Colors.white
-                                    : Colors.black),
-                          )
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          CustomTextWidget(
+                            "gregorian".tr(),
+                            textStyle: AppStyle.mainTextStyle,
+                          ),
                         ]),
                       ),
-                    );
-                  },
-                ),
-              ),
-              Expanded(
-                child: BlocProvider<EventsListCubit>(
-                  create: (BuildContext context) => EventsListCubit(
-                    baladyCalendarRepository: sl(),
-                    listMonths: [
-                      const MonthsEventsCount(
-                        month: 6,
-                        eventsCount: 1,
-                      )
-                    ],
-                    params: EventsDetailsParams(
-                      year: 2026,
                     ),
-                  ),
-                  child: const BaladyCalendarEventsWidget(),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        await CustomPopUpsWidgets.showBottomSheet(context,
+                            child: const CalendarFilterPopup(),
+                            height: 550,
+                            radius: 30);
+                      },
+                      child: Container(
+                        height: 60,
+                        width: 60,
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: AppColor.white10,
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        child: SvgPicture.asset(
+                          ImagePath.filter,
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 20),
+                BaladyCalendarYearsList(),
+                Expanded(
+                  child: BlocProvider<EventsListCubit>(
+                    create: (BuildContext context) => EventsListCubit(
+                      baladyCalendarRepositoryImpl: sl(),
+                      listMonths: [
+                        const MonthsEventsCount(
+                          month: 1,
+                          eventsCount: 1,
+                        )
+                      ],
+                      params: EventsDetailsParams(
+                        year: 2026,
+                      ),
+                    ),
+                    child: const BaladyCalendarEventsWidget(),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
