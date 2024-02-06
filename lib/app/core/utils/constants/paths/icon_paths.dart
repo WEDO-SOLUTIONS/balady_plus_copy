@@ -407,9 +407,6 @@ class IconPath {
   static const downloadButton = '${_svgIconPath}download_button$_svg';
   static const linkSquare2 = '${_svgIconPath}link_square$_svg';
 
-
-
-
   static const servicesPageSearch = '${_svgIconPath}services/search$_svg';
   static const servicesPageArrow = '${_svgIconPath}services/arrow$_svg';
 
@@ -419,15 +416,9 @@ class IconPath {
   static const visaIcon = '${_svgIconPathJod}visa$_svg';
   static const sadaddIcon = '${_svgIconPathJod}sadadd$_svg';
 
-
-
   static const starNew = '${_svgIconPath}star_new$_svg';
 
-
-
   static const chatBot = '${_pngIconPath}chat_bot$_png';
-
-
-
 }
+
 ///Users/abdelrahmanismail/StudioProjects/balady-plus/assets/icons/svg/jod/apple_pay.svg
