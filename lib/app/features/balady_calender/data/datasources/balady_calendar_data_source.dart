@@ -26,8 +26,7 @@ abstract class BaladyCalendarRemoteDataSource {
   Future<EventsDetails> getEventsDetails({required EventsDetailsParams params});
 }
 
-class CalendarBaladyRemoteDataSourceImpl
-    extends BaladyCalendarRemoteDataSource {
+class CalendarBaladyRemoteDataSourceImpl extends BaladyCalendarRemoteDataSource {
   final WebService webService;
 
   CalendarBaladyRemoteDataSourceImpl({required this.webService});

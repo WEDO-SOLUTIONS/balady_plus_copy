@@ -1,11 +1,16 @@
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:balady_plus/app/features/balady_calender/data/models/events_count_in_months/months_events_count.dart';
+import 'package:balady_plus/app/features/balady_calender/domain/entities/events_details_params.dart';
+import 'package:balady_plus/app/features/balady_calender/presentation/bloc/events_list_cubit.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/widgets/balady_calendar_events_widget.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/widgets/calendar_filter_popup.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/widgets/calendar_type_popup.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -147,7 +152,23 @@ class _BaladyCalendarPageState extends State<BaladyCalendarPage> {
                   },
                 ),
               ),
-              const Expanded(child: BaladyCalendarEventsWidget()),
+              Expanded(
+                child: BlocProvider<EventsListCubit>(
+                  create: (BuildContext context) => EventsListCubit(
+                    baladyCalendarRepositoryImpl: sl(),
+                    listMonths: [
+                      const MonthsEventsCount(
+                        month: 1,
+                        eventsCount: 1,
+                      )
+                    ],
+                    params: EventsDetailsParams(
+                      year: 2026,
+                    ),
+                  ),
+                  child: const BaladyCalendarEventsWidget(),
+                ),
+              ),
             ],
           ),
         ),

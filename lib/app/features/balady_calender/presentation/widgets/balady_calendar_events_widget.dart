@@ -1,140 +1,105 @@
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
+import 'package:balady_plus/app/features/balady_calender/data/models/events_details/calendar_event_item.dart';
+import 'package:balady_plus/app/features/balady_calender/presentation/bloc/events_list_cubit.dart';
+import 'package:balady_plus/app/features/balady_calender/presentation/widgets/list_items_events_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class BaladyCalendarEventsWidget extends StatelessWidget {
   const BaladyCalendarEventsWidget({super.key});
 
-
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder(
+    EventsListCubit bloc = context.watch<EventsListCubit>();
+    return BlocBuilder<EventsListCubit, EventsListState>(
+      bloc: bloc,
       builder: (context, state) {
-        return Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [Text('سبتمبر'), Text('(1)')],
-              ),
-            ),
-            const SizedBox(height: 20),
-            Container(
-              height: 120,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: AppColor.white10,
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        if (state is InitialEventsListState ||
+            state is LoadingEventsListState) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (state is FailureEventsListState) {
+          return ReloadWidget(
+            onTab: () =>bloc.getCommercialLicenseDetailsById(bloc.params),
+          );
+        }
+
+        /////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////
+        if (state is SucceedEventsListState) {
+          return ListView.builder(
+            itemBuilder: (BuildContext context, int index) {
+              List<CalendarEventItem>? listEvents =
+                  state.event[state.listMonths[index].month ?? 0];
+              return Column(
                 children: [
-                  Container(
-                    width: 10,
-                    decoration: const BoxDecoration(
-                      color: AppColor.darkRed,
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(15),
-                        bottomRight: Radius.circular(15),
-                      ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          bloc.params.hijri
+                              ? 'month_${state.listMonths[index].month}'.tr()
+                              : 'month${state.listMonths[index].month}'.tr(),
+                        ),
+                        Text('(${state.listMonths[index].eventsCount ?? 0})')
+                      ],
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('رخصة تجارية'),
-                      Text('انتهاء صلاخية الفاتورة 45891562')
-                    ],
-                  ),
-                  const Spacer(),
-                  const Text('الثلاثاء 14'),
-                  const SizedBox(width: 10)
+                  listEvents != null
+                      ? ListItemsEventsWidget(listEvents: listEvents)
+                      : const SizedBox(),
                 ],
-              ),
-            ),
-            Column(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [Text('اكتوبر'), Text('(2)')],
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  height: 120,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: AppColor.white10,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 10,
-                        decoration: const BoxDecoration(
-                          color: AppColor.primary700Light,
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(15),
-                            bottomRight: Radius.circular(15),
+              );
+            },
+            // controller: ,
+            itemCount: state.listMonths.length,
+          );
+        }
+
+        // View Loading In after list item in list
+        if (state is SucceedWithPaginationEventsListState ) {
+          return Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemBuilder: (BuildContext context, int index) {
+                    List<CalendarEventItem>? listEvents =
+                    state.event[state.listMonths[index].month ?? 0];
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                bloc.params.hijri
+                                    ? 'month_${state.listMonths[index].month}'.tr()
+                                    : 'month${state.listMonths[index].month}'.tr(),
+                              ),
+                              Text('(${state.listMonths[index].eventsCount ?? 0})')
+                            ],
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('رخصة تجارية'),
-                          Text('انتهاء صلاخية الفاتورة 45891562')
-                        ],
-                      ),
-                      const Spacer(),
-                      const Text('الثلاثاء 14'),
-                      const SizedBox(width: 10)
-                    ],
-                  ),
+                        listEvents != null
+                            ? ListItemsEventsWidget(listEvents: listEvents)
+                            : const SizedBox(),
+                      ],
+                    );
+                  },
+                  // controller: ,
+                  itemCount: state.listMonths.length,
                 ),
-                const SizedBox(height: 15),
-                Container(
-                  height: 120,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: AppColor.white10,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 10,
-                        decoration: const BoxDecoration(
-                            color: AppColor.darkYellow,
-                            borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(15),
-                                bottomRight: Radius.circular(15))),
-                      ),
-                      const SizedBox(width: 10),
-                      const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('رخصة تجارية'),
-                          Text('انتهاء صلاخية الفاتورة 45891562')
-                        ],
-                      ),
-                      const Spacer(),
-                      const Text('الثلاثاء 14'),
-                      const SizedBox(width: 10)
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ],
-        );
+              ),
+              const Center(child: CircularProgressIndicator())
+            ],
+          );
+        }
+
+        return const SizedBox();
       },
     );
   }

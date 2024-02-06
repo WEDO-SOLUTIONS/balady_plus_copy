@@ -3,6 +3,7 @@ import 'package:balady_plus/app/core/dependency_injection/features/dc_injection.
 import 'package:balady_plus/app/core/dependency_injection/features/profile/crm_requests_injection.dart';
 import 'package:balady_plus/app/features/balady_calender/data/datasources/balady_calendar_data_source.dart';
 import 'package:balady_plus/app/features/balady_calender/data/repositories/balady_calendar_repository.dart';
+import 'package:balady_plus/app/features/balady_calender/domain/repositories/balady_calendar_repository.dart';
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_bloc.dart';
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart'
     as calendar;
@@ -230,8 +231,8 @@ void initialize() {
 
   sl.registerLazySingleton(() => ForceUpdateViewModel());
 
-  //Balady Calendar 
-  sl.registerLazySingleton(() => CalendarBaladyRemoteDataSourceImpl(webService: sl()));
-  sl.registerLazySingleton(() => BaladyCalendarRepositoryImpl(remoteDataSource: sl()));
+  //Balady Calendar
+  sl.registerLazySingleton<BaladyCalendarRemoteDataSource>(() => CalendarBaladyRemoteDataSourceImpl(webService: sl()));
+  sl.registerLazySingleton<BaladyCalendarRepository>(() => BaladyCalendarRepositoryImpl(remoteDataSource: sl()));
   
 }
