@@ -62,6 +62,7 @@ class ObjectTapHandler {
     private var iconWidth: LogicalPixel?
     
     var source: DgisSource?
+    private var cancelable: Array<Cancellable> = []
 
     private var markers: Dictionary<String, (Marker, String?)> = [:]
     private var managers: Dictionary<String, MapObjectManager> = [:]
@@ -98,6 +99,11 @@ class ObjectTapHandler {
         )
         self.registrar = registrar
         self.flutterApi = FlutterMapApi(binaryMessenger: registrar.messenger())
+    }
+    
+    func cancel() {
+        cancelable.forEach { $0.cancel() }
+        cancelable.removeAll()
     }
     
     func objectTapListener(_ objectInfo: DGis.RenderedObjectInfo) {
@@ -843,5 +849,39 @@ class ObjectTapHandler {
                 "longitude": position.longitude.value,
             ],
         ] as [String : Any?])
+    }
+    
+    func getNearestObjects(completion: @escaping ([RenderedObjectMessage]?, FlutterError?) -> Void) {
+        let cameraPosition = map.camera.position.point
+        guard let screenPoint = map.camera.projection.mapToScreen(point: cameraPosition) else {
+            completion(nil, FlutterError(
+                code: "IllegalArgumentException",
+                message: "Camera was not initialized properly",
+                details: nil
+            ))
+            return
+        }
+    
+        
+        self.cancelable.append(
+            map.getRenderedObjects(centerPoint: screenPoint, radius: ScreenDistance(value: 1)).sink { renderedObjects in
+                let objects = renderedObjects.filter {
+                    $0.item.item is DgisMapObject
+                }.map {
+                    RenderedObjectMessage.make(
+                        withObject: ($0.item.item as! DgisMapObject).id.toMessage(),
+                        closestMapPoint: $0.closestMapPoint.toMessage()
+                    )
+                }
+                
+                completion(objects, nil)
+            } failure: { _ in
+                completion(nil, FlutterError(
+                    code: "IllegalArgumentException",
+                    message: "Camera was not initialized properly",
+                    details: nil
+                ))
+            }
+        )
     }
 }

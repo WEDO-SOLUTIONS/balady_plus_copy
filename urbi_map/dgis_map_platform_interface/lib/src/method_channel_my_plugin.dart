@@ -356,6 +356,11 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   }
 
   @override
+  Future<List<RenderedObjectMessage>> getNearestObjects() async {
+    return (await _api.getNearestObjects()).whereType<RenderedObjectMessage>().toList();
+  }
+
+  @override
   Future<DirectoryObjectMessage> searchByObjectId(
       DgisObjectIdMessage objectId) {
     return _api.searchByObjectId(objectId);
