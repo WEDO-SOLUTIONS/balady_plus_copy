@@ -20,7 +20,7 @@ class ListItemsEventsWidget extends StatelessWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: AppColor.white10,
+            color: AppColor.black100,
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
