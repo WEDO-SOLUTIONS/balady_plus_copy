@@ -2,6 +2,8 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
 
 class MapPage extends ConsumerStatefulWidget {
   const MapPage({Key? key}) : super(key: key);
@@ -58,6 +60,9 @@ class _MapPageState extends ConsumerState<MapPage>
     super.build(context);
 
     final dgisController = ref.watch(dgisControllerProvider.notifier);
+    ref.watch(selectedMarkerProvider);
+    ref.watch(mapObjectManagerProvider(named: selectedMarkerManagerId));
+
 
     return DgisMap(
       key: ValueKey(_keyIndex),

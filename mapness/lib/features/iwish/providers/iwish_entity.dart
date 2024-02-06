@@ -6,14 +6,15 @@ import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/entities/iwish/models/iwish_feedback_entity.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/iwish/lib/iwish_object_mapper.dart';
-import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
-import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'iwish_entity.g.dart';
+
+const iwishPinId = 'iwish_pin_id';
 
 @riverpod
 class _IwishEntity extends _$IwishEntity {
@@ -62,32 +63,24 @@ class _IwishEntity extends _$IwishEntity {
     final raw = await dio.get('iwish/$iwishId');
 
     final response = pb.IWishItemResponse.fromBuffer(raw.data).object;
+    final point = response.location.point;
     debugPrint('${response.toProto3Json()}');
 
-    final mapObjectManager =
-        ref.watch(mapObjectManagerProvider(named: MapnessConsts.mapLayerName).notifier);
-    final point = response.location.point;
-    // final cameraController = ref.watch(cameraPositionProvider.notifier);
-    // await cameraController.animateTo(
-    //   CameraPositionMessage(
-    //     point: GeoPointMessage(
-    //       latitude: point.latitude,
-    //       longitude: point.longitude,
-    //     ),
-    //     zoom: 15,
-    //     tilt: 0,
-    //     bearing: 0,
-    //   ),
-    // );
-    await mapObjectManager.addMarker(
-      Markers.pinMarker(
-        GeoPointWithElevationMessage(
-          latitude: point.latitude,
-          longitude: point.longitude,
-          elevation: 1,
-        ),
-      ),
-    );
+    await ref.read(selectedMarkerProvider.notifier).showMarker(
+          Markers.pinMarker(
+            GeoPointWithElevationMessage(
+              latitude: point.latitude,
+              longitude: point.longitude,
+              elevation: 1,
+            ),
+            id: iwishPinId,
+          ),
+        );
+    ref.onDispose(() async {
+      final read = ref.read(selectedMarkerProvider.notifier);
+      await read.removeMarker(iwishPinId);
+    });
+
     return response.toDomain();
   }
 }
