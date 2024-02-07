@@ -317,7 +317,12 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
         isValid = false;
       }*/
 
-      if (!CommonFunctions.hasArabicCharacters(appointmentDetails)) {
+      if (!CommonFunctions.hasArabicCharacters(appointmentDetails) &&
+          CommonFunctions.isAppAR) {
+        isValid = false;
+      }
+      if (!CommonFunctions.hasArabicAndEnglishCharacters(appointmentDetails) &&
+          !CommonFunctions.isAppAR) {
         isValid = false;
       }
 

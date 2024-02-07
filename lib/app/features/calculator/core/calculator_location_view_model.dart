@@ -4,12 +4,10 @@ import 'package:balady_plus/app/features/calculator/data/model/IsicActivity.dart
 import 'package:balady_plus/app/features/calculator/data/model/Item.dart';
 import 'package:balady_plus/app/features/calculator/data/model/Municipality.dart';
 import 'package:balady_plus/app/features/calculator/presentation/pages/repository/ServiceCalculatorRepository.dart';
-import '../../../core/services/global/web_service.dart' as web;
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../core/base/base_view_model.dart';
-import '../../../core/dependency_injection/injection_container.dart';
 import '../../../core/remote_services/api_constants.dart';
 import '../../../core/remote_services/web_service.dart';
 import '../../../core/services/local/helpers.dart';
@@ -78,39 +76,31 @@ class CalculatorLocationViewModel extends BaseViewModel {
   }
 
   Future<GisLocationResult?> getGisLocation(LatLng location) async {
-    //   String query =
-    //    "?x=${location.longitude}&y=${location.latitude}&guid=ba2570d8-6778-4048-9916-e234fac1c04b";
-    /* final body = await webServices.getNewApigeeRequest(
+    String query =
+        "?x=${location.longitude}&y=${location.latitude}&guid=ba2570d8-6778-4048-9916-e234fac1c04b";
+
+    final body = await webServices.getRequest(
         RemoteConfig.gis + ApiConstants.GisGetLocation,
-        relativePath: query);*/
-
-    var res = await sl<web.WebService>().dio.get(ApiUrl.gis,
-        queryParameters: {"x": location.longitude, "y": location.latitude});
-
-    /* bool state = body['state'];
+        relativePath: query);
+    bool state = body['state'];
     dynamic data = body['data'];
     String error =
         body['error'] ?? Helpers.translatingWord("errors_server_error_2");
-*/
-
-    var data = res.data["data"]["result"];
-
-    final response = GisLocationResult.fromJson(data);
 
     try {
-      // GisLocationResult response =
-      //    GisLocationResult.fromJson(json.decode(data)["data"]["result"]);
+      GisLocationResult response =
+          GisLocationResult.fromJson(json.decode(data));
       if (response != null) {
         return response;
       } else {
-        showError(Helpers.translatingWord("errors_server_error_2"));
+        showError(error);
       }
     } catch (ex) {
       print(ex);
-      showError(Helpers.translatingWord("errors_server_error_2"));
+      showError(error);
       Helpers.sendLog(
           url: RemoteConfig.gis + ApiConstants.GisGetLocation,
-          qeuryParms: Helpers.translatingWord("errors_server_error_2"),
+          qeuryParms: query,
           data: data);
       return null;
     }

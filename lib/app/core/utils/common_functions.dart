@@ -547,6 +547,11 @@ class CommonFunctions {
     return r.allMatches(str).length == str.length;
   }
 
+  static bool hasArabicAndEnglishCharacters(String str) {
+    RegExp r = RegExp(r"[\u0621-\u064A0-9a-zA-Z\s*]");
+    return r.allMatches(str).length == str.length;
+  }
+
   static bool hasArabicOrEnglishCharacters(String str) {
     RegExp r = RegExp(r"[\u0621-\u064Aa-zA-Z\s]");
     return r.allMatches(str).length == str.length;

@@ -265,7 +265,13 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             if (text.toString().isEmpty) {
               return ('text_field_error').tr();
             } else {
-              if (!CommonFunctions.hasArabicCharacters(text.toString())) {
+              if (!CommonFunctions.hasArabicCharacters(text.toString()) &&
+                  CommonFunctions.isAppAR) {
+                return ("error_only_arabic").tr();
+              }
+              if (!CommonFunctions.hasArabicAndEnglishCharacters(
+                      text.toString()) &&
+                  !CommonFunctions.isAppAR) {
                 return ("error_only_arabic").tr();
               }
             }
