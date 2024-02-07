@@ -1,4 +1,6 @@
 ## 3.8.2(6) - Current
+
+- BALADY-1198: [Navi] add map controls
 - BALADY-1141: [Marketing] Multiple object selection fix
 
 - BALADY-1210: [Iwish] - minimize dashboard on show joyparks from story

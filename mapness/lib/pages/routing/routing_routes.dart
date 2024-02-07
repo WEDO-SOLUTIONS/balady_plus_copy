@@ -7,6 +7,7 @@ import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/ui/routes_carousel.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
 import 'package:mapness/pages/routing/lib/route_search_options_extension.dart';
+import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
@@ -65,22 +66,16 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   @override
   Widget build(BuildContext context) => Directionality(
         textDirection: TextDirection.rtl,
-        child: DraggableScrollableSheet(
-          controller: _controller,
-          initialChildSize: 0.35,
-          minChildSize: 0.35,
-          maxChildSize: 0.35,
-          builder: (context, scrollController) => Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(16.0),
-                topLeft: Radius.circular(16.0),
-              ),
-            ),
-            child: Material(
-              color: const Color(0x0D1E2A36),
-              child: Container(
+        child: Stack(
+          children: [
+            RoutingMapControls(
+                bottomExtent: MediaQuery.of(context).size.height * 0.35),
+            DraggableScrollableSheet(
+              controller: _controller,
+              initialChildSize: 0.35,
+              minChildSize: 0.35,
+              maxChildSize: 0.35,
+              builder: (context, scrollController) => Container(
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -88,97 +83,111 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                     topLeft: Radius.circular(16.0),
                   ),
                 ),
-                child: SafeArea(
-                  top: false,
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 8,
+                child: Material(
+                  color: const Color(0x0D1E2A36),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(16.0),
+                        topLeft: Radius.circular(16.0),
                       ),
-                      Center(
-                        child: Container(
-                          height: 4,
-                          width: 26,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFDDE4EE),
-                            borderRadius: BorderRadius.all(Radius.circular(24)),
+                    ),
+                    child: SafeArea(
+                      top: false,
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 8,
                           ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: RouteTimeline(
-                                labels: labels,
+                          Center(
+                            child: Container(
+                              height: 4,
+                              width: 26,
+                              decoration: const BoxDecoration(
+                                color: Color(0xFFDDE4EE),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(24)),
                               ),
                             ),
-                            NavButton(
-                              onTap: () {
-                                setState(() {
-                                  points = points.reversed.toList();
-                                  labels = labels.reversed.toList();
-                                  searchPoints = searchPoints.reversed.toList();
-                                });
-                              },
-                              icon: 'assets/icons/svg/ic_transition.svg',
-                            ),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            NavButton(
-                              onTap: () {
-                                const RoutingRoute().go(context);
-                              },
-                              icon: 'assets/icons/svg/ic_search_close.svg',
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      Expanded(
-                        child: RoutesCarousel(
-                          points: points,
-                          startNavigation: () {
-                            const PathNavRoute().go(context);
-                          },
-                          navType: navType,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          children: [
-                            RouteSearchOptionsMessage.pedestrian,
-                            RouteSearchOptionsMessage.car,
-                          ]
-                              .map(
-                                (e) => _RouteSwitch(
-                                  onTap: () => setState(
-                                    () => navType = e,
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: RouteTimeline(
+                                    labels: labels,
                                   ),
-                                  isChoosed: navType == e,
-                                  navType: e,
-                                  points: searchPoints,
                                 ),
-                              )
-                              .toList(),
-                        ),
+                                NavButton(
+                                  onTap: () {
+                                    setState(() {
+                                      points = points.reversed.toList();
+                                      labels = labels.reversed.toList();
+                                      searchPoints =
+                                          searchPoints.reversed.toList();
+                                    });
+                                  },
+                                  icon: 'assets/icons/svg/ic_transition.svg',
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                NavButton(
+                                  onTap: () {
+                                    const RoutingRoute().go(context);
+                                  },
+                                  icon: 'assets/icons/svg/ic_search_close.svg',
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Expanded(
+                            child: RoutesCarousel(
+                              points: points,
+                              startNavigation: () {
+                                const PathNavRoute().go(context);
+                              },
+                              navType: navType,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Row(
+                              children: [
+                                RouteSearchOptionsMessage.pedestrian,
+                                RouteSearchOptionsMessage.car,
+                              ]
+                                  .map(
+                                    (e) => _RouteSwitch(
+                                      onTap: () => setState(
+                                        () => navType = e,
+                                      ),
+                                      isChoosed: navType == e,
+                                      navType: e,
+                                      points: searchPoints,
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
                       ),
-                      const SizedBox(height: 16),
-                    ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
+          ],
         ),
       );
 }
