@@ -99,8 +99,10 @@ class _BaladyCalendarPageState extends State<BaladyCalendarPage> {
                     GestureDetector(
                       onTap: () async {
                         await CustomPopUpsWidgets.showBottomSheet(context,
-                            child: const CalendarFilterPopup(),
-                            height: 550,
+                            child: ChangeNotifierProvider.value(
+                                value: baladyCalendarYearsListViewModel,
+                                child: const CalendarFilterPopup()),
+                            height: MediaQuery.sizeOf(context).height * 0.60,
                             radius: 30);
                       },
                       child: Container(

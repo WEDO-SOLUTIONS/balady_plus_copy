@@ -9,9 +9,9 @@ class Filter extends Equatable {
     this.filterItem,
   });
 
-  factory Filter.fromJson(Map<String, dynamic> json) => Filter(
-        filterItem: (json['data'] as List<dynamic>?)
-            ?.map((e) => FilterItem.fromJson(e as Map<String, dynamic>))
+  factory Filter.fromJson(List json) => Filter(
+        filterItem: (json)
+            .map((e) => FilterItem.fromJson(e as Map<String, dynamic>))
             .toList(),
       );
 
