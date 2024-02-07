@@ -17,8 +17,6 @@ class RoutingMapControls extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const controlsHidden = false;
-
     return SafeArea(
       bottom: false,
       child: Column(
