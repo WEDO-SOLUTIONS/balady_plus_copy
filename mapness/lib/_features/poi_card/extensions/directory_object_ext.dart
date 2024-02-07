@@ -1,5 +1,5 @@
-import 'package:dgis_map/library.dart';
 import 'package:collection/collection.dart';
+import 'package:dgis_map/library.dart';
 
 extension DirectoryObjectAddr on DirectoryObjectMessage {
   String makeAddress() {
