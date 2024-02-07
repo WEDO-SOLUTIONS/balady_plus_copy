@@ -21,17 +21,17 @@ class Favourites extends ConsumerWidget {
 
     return favouritesState.map(
       data: (result) {
-        var value = result.value;
+        final value = result.value;
 
-        final isFavourite = value.items.firstWhereOrNull(
+        final isFavourite = value?.items.firstWhereOrNull(
           (element) {
-            var objectId = data?.id?.objectId;
+            final objectId = data?.id?.objectId;
             return element.entity?.id == '$objectId';
           },
         );
 
-        final showHome = value.home?.id == '${data?.id?.objectId}';
-        final showWork = value.work?.id == '${data?.id?.objectId}';
+        final showHome = value?.home?.id == '${data?.id?.objectId}';
+        final showWork = value?.work?.id == '${data?.id?.objectId}';
 
         return Column(
           children: [
@@ -51,68 +51,64 @@ class WorkCard extends StatelessWidget {
   const WorkCard({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return CardContent(
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            'assets/icons/svg/ic_work.svg',
-            package: PackageConfig.packageName,
-            height: 24,
-            width: 24,
-            colorFilter: ColorFilter.mode(
-              colorPrimary.withAlpha(125),
-              BlendMode.srcATop,
+  Widget build(BuildContext context) => CardContent(
+        child: Row(
+          children: [
+            SvgPicture.asset(
+              'assets/icons/svg/ic_work.svg',
+              package: PackageConfig.packageName,
+              height: 24,
+              width: 24,
+              colorFilter: ColorFilter.mode(
+                colorPrimary.withAlpha(125),
+                BlendMode.srcATop,
+              ),
             ),
-          ),
-          const SizedBox(
-            width: 8,
-          ),
-          Text(
-            context.l10n.work,
-            style: const TextStyle(
-              color: colorPrimary,
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
+            const SizedBox(
+              width: 8,
             ),
-          ),
-        ],
-      ),
-    );
-  }
+            Text(
+              context.l10n.work,
+              style: const TextStyle(
+                color: colorPrimary,
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+      );
 }
 
 class HomeCard extends StatelessWidget {
   const HomeCard({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return CardContent(
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            'assets/icons/svg/ic_home.svg',
-            package: PackageConfig.packageName,
-            height: 24,
-            width: 24,
-            colorFilter: ColorFilter.mode(
-              colorPrimary.withAlpha(125),
-              BlendMode.srcATop,
+  Widget build(BuildContext context) => CardContent(
+        child: Row(
+          children: [
+            SvgPicture.asset(
+              'assets/icons/svg/ic_home.svg',
+              package: PackageConfig.packageName,
+              height: 24,
+              width: 24,
+              colorFilter: ColorFilter.mode(
+                colorPrimary.withAlpha(125),
+                BlendMode.srcATop,
+              ),
             ),
-          ),
-          const SizedBox(
-            width: 8,
-          ),
-          Text(
-            context.l10n.home,
-            style: const TextStyle(
-              color: colorPrimary,
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
+            const SizedBox(
+              width: 8,
             ),
-          ),
-        ],
-      ),
-    );
-  }
+            Text(
+              context.l10n.home,
+              style: const TextStyle(
+                color: colorPrimary,
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+      );
 }

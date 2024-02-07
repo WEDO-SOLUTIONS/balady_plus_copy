@@ -1,6 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/favourites/domain/extensions/extensions.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
@@ -46,10 +47,10 @@ class PoiCardFooter extends ConsumerWidget {
 
     /// redraw footer if fav repo changes. Do not remove, entail bug with multi fav add!
     ref.watch(favouriteRepositoryProvider).valueOrNull;
+    final provider = ref.watch(favouriteRepositoryProvider.notifier);
 
-    // TODO(ForesThule): getters does not provide subscription this entail bugs. Please, move related things to provider instead of view model.
-    final isFav = viewModel.isFavourite(model);
-    final favData = viewModel.getFavouriteOrNull(model);
+    final isFav = provider.isFavourite(model.directoryObjectMessage?.id?.objectId);
+    final favData = provider.getFavouriteOrNull(model.directoryObjectMessage?.id?.objectId);
 
     Widget favItem({int flex = 1}) => buildIconButton(
           flex: flex,
@@ -180,6 +181,7 @@ class PoiCardFooter extends ConsumerWidget {
       context,
       callback: () {
         final favState = ref.read(favouriteRepositoryProvider).valueOrNull;
+        final favRepo = ref.read(favouriteRepositoryProvider.notifier);
         final objectMessage = data;
 
         final newFav = FavouriteItem(
@@ -198,13 +200,13 @@ class PoiCardFooter extends ConsumerWidget {
 
         /// if already in favourites - remove
         if (favouriteItem != null) {
-          viewModel.removeFromFavourite(favouriteItem);
+          favRepo.delete(favouriteItem);
           return;
         }
 
         /// do not show dialog if home and work are set
         if (favState?.home != null && favState?.work != null) {
-          viewModel.addToFavourites(objectMessage);
+          favRepo.addItem(objectMessage.mapToFavourite());
         } else {
           /// show dialog to choose home, work or regular
           showDialog(

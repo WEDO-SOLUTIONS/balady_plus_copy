@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/domain/favourites_state.dart';
@@ -21,8 +22,11 @@ class _FavouriteRepository extends _$FavouriteRepository {
   }
 
   Future<void> deleteAll() async {
-    if (!state.hasValue) return;
+    if (!state.hasValue) {
+      return;
+    }
     final data = state.requireValue;
+    if (data == null) return;
     final items = [
       if (data.home != null) data.home!,
       if (data.work != null) data.work!,
@@ -65,22 +69,26 @@ class _FavouriteRepository extends _$FavouriteRepository {
   }
 
   Future<void> setWork(FavouriteItem item) async {
-    if (state.asData?.value.work != null) return;
+    if (state.asData?.value.work != null) {
+      return;
+    }
     state = state.whenData((value) => value.copyWith(work: item));
     await addItems([item]);
   }
 
   Future<void> setHome(FavouriteItem item) async {
-    if (state.asData?.value.home != null) return;
+    if (state.asData?.value.home != null) {
+      return;
+    }
     state = state.whenData((value) => value.copyWith(home: item));
     await addItems([item]);
   }
 
   Future<void> addItems(List<FavouriteItem> items) async {
-    ref.read(urbiMetricsProvider.notifier).logEvent("Favorites/addItems", {
-      "items": items.map((e) => e.id).toList(),
+    ref.read(urbiMetricsProvider.notifier).logEvent('Favorites/addItems', {
+      'items': items.map((e) => e.id).toList(),
     });
-    mixpanel?.timeEvent("Favorites: addItems");
+    mixpanel?.timeEvent('Favorites: addItems');
     final dio = await ref.read(dGisNetworkProvider.future);
     final request = proto.AddFavouriteItemsRequest(items: items.map((e) {
       final FavouriteItemMarkerType itemType;
@@ -106,16 +114,80 @@ class _FavouriteRepository extends _$FavouriteRepository {
     } on DioException catch (e) {
       print(proto.ErrorResponse.fromBuffer(e.response!.data));
     }
-    mixpanel?.track("Favorites: addItems");
+    mixpanel?.track('Favorites: addItems');
+  }
+
+  Future<FavouritesState> fetchFavourites() async {
+    mixpanel?.timeEvent('Favorites: fetchFavourites');
+    final dio = await ref.watch(dGisNetworkProvider.future);
+    final raw = await dio.get('favourites');
+    final response = proto.FavouritesResponse.fromBuffer(raw.data);
+    mixpanel?.track('Favorites: fetchFavourites');
+    return response.toDomain();
+  }
+
+  bool checkIsFavourite(
+    int? objectId,
+  ) {
+    if (objectId == null) {
+      return false;
+    }
+    return state.maybeMap(
+      data: (value) {
+        final requireValue = value.value;
+        final id = '$objectId';
+        final isWork = requireValue.work?.id == id;
+        final isHome = requireValue.home?.id == id;
+        final isFavourite = requireValue.items.firstWhereOrNull(
+          (element) => element.entity?.id == id,
+        );
+        return isFavourite != null || isWork || isHome;
+      },
+      orElse: () => false,
+    );
+  }
+
+  FavouriteItem? getFavouriteOrNull(int? objectId) {
+    final favouritesState = ref.read(favouriteRepositoryProvider);
+    if (!favouritesState.hasValue) {
+      return null;
+    }
+
+    final requireValue = favouritesState.requireValue;
+
+    final isFavourite = [
+      ...requireValue.items,
+      requireValue.home,
+      requireValue.work,
+    ].nonNulls.firstWhereOrNull(
+          (element) => element.entity?.id == '$objectId',
+    );
+    return isFavourite;
+  }
+
+  bool isFavourite(int? objectId) {
+    if (!state.hasValue) {
+      return false;
+    }
+
+    final requireValue = state.requireValue;
+    final id = '$objectId';
+    final isWork = requireValue.work?.id == id;
+    final isHome = requireValue.home?.id == id;
+
+    final isFavourite = requireValue.items.firstWhereOrNull(
+      (element) => element.entity?.id == id,
+    );
+    return isFavourite != null || isWork || isHome;
   }
 
   @override
   Future<FavouritesState> build() async {
-    mixpanel?.timeEvent("Favorites: build");
+    mixpanel?.timeEvent('Favorites: build');
     final dio = await ref.watch(dGisNetworkProvider.future);
     final raw = await dio.get('favourites');
     final response = proto.FavouritesResponse.fromBuffer(raw.data);
-    mixpanel?.track("Favorites: build");
+    mixpanel?.track('Favorites: build');
     return response.toDomain();
   }
 }

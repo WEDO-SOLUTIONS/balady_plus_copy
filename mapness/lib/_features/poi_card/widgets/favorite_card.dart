@@ -11,8 +11,7 @@ class FavoriteCard extends StatelessWidget {
   const FavoriteCard({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return CardContent(
+  Widget build(BuildContext context) => CardContent(
       onTap: () => const FavouritesRoute().push(context),
       child: Row(
         children: [
@@ -50,5 +49,4 @@ class FavoriteCard extends StatelessWidget {
         ],
       ),
     );
-  }
 }

@@ -1,5 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/favourites/domain/favourite_item.dart';
+
+import '../../happiness_map/domain/happiness_feedback.dart';
 
 extension DirectoryObjectAddr on DirectoryObjectMessage {
   String makeAddress() {
@@ -18,4 +21,18 @@ extension DirectoryObjectAddr on DirectoryObjectMessage {
         .whereNotNull()
         .join(", ");
   }
+
+  FavouriteItem mapToFavourite() => FavouriteItem(
+        coordinates: Coordinates(
+          latitude: markerPosition?.latitude ?? 0,
+          longitude: markerPosition?.longitude ?? 0,
+        ),
+        id: 'overriden',
+        subtitle: subtitle,
+        title: title,
+        entity: FavouriteItemEntity(
+          sourceType: EntitySourceType.urbi,
+          id: id?.objectId.toString() ?? 'id',
+        ),
+      );
 }
