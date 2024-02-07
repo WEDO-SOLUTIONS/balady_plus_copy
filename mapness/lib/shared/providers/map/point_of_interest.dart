@@ -1,15 +1,16 @@
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
-import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
-import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'point_of_interest.g.dart';
+
+const poiPinId = 'poi_pin_id';
 
 class PoiModel {
   final DirectoryObjectMessage? directoryObjectMessage;
@@ -33,8 +34,6 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final highlightController = ref.watch(highlightProvider.notifier);
 
   final result = await dgisController.value?.searchByObjectId(objectId);
-  final mapObjectManager = ref.watch(
-      mapObjectManagerProvider(named: MapnessConsts.mapLayerName).notifier);
 
   final cameraZoom = cameraData?.zoom;
   final point = cameraData?.point;
@@ -91,13 +90,12 @@ Future<DirectoryObjectMessage?> pointOfInterest(
           ),
         );
   }
-
-  await mapObjectManager.removeAllMarkers();
-  await mapObjectManager.addMarker(
-    Markers.pinMarker(position),
-  );
-  ref.onDispose(() {
-    mapObjectManager.removeAllMarkers();
+  await ref.read(selectedMarkerProvider.notifier).showMarker(
+        Markers.pinMarker(position, id: poiPinId),
+      );
+  ref.onDispose(() async {
+    final read = ref.read(selectedMarkerProvider.notifier);
+    await read.removeMarker(poiPinId);
   });
 
   return result;

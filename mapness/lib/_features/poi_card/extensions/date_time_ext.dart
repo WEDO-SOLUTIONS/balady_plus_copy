@@ -16,13 +16,13 @@ extension DateTimeExt on DateTime {
 
   static List<String> getAllWeekDayNames(AppLocalizations locale) {
     return [
+      locale.sunday,
       locale.monday,
       locale.tuesday,
       locale.wednesday,
       locale.thursday,
       locale.friday,
       locale.saturday,
-      locale.sunday,
     ];
   }
 }
