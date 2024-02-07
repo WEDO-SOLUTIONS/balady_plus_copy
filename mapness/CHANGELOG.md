@@ -1,4 +1,7 @@
-## 3.8.2(5) - Current
+## 3.8.2(6) - Current
+- BALADY-1210: [Iwish] - minimize dashboard on show joyparks from story
+
+## 3.8.2(5)
 
 - BALADY-1177: [Marketing] arabic text in poi card in english app
 - BALADY-1212: [Marketing] navigation is not enabled in all places to visit and places to shop
