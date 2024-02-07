@@ -836,7 +836,7 @@ class DgisMapView(
             DgisMapPlugin.vendorConfig,
         )
         compassControlHandler = CompassControlHandler(map, eventSink)
-        trafficAndParkingControlHandler = TrafficAndParkingControlHandler(map, eventSink)
+        trafficAndParkingControlHandler = TrafficAndParkingControlHandler(sdkContext, map, eventSink)
         setupTapHandler()
         weatherHandler = WeatherHandler(sdkContext,map)
         result.success(

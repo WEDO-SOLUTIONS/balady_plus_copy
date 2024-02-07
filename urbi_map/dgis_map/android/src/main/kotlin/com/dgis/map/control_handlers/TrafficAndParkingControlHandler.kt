@@ -2,11 +2,17 @@ package com.dgis.map.control_handlers
 
 import com.dgis.map.extensions.unsafeLazy
 import io.flutter.plugin.common.EventChannel
+import ru.dgis.sdk.Context
 import ru.dgis.sdk.map.AttributeValue
 import ru.dgis.sdk.map.Map
+import ru.dgis.sdk.map.RoadEventDisplayCategory
+import ru.dgis.sdk.map.RoadEventSource
 import ru.dgis.sdk.traffic.TrafficControlModel
+import ru.dgis.sdk.traffic.TrafficControlStatus
+import java.util.EnumSet
 
 class TrafficAndParkingControlHandler(
+        private val sdk: Context,
         private val map: Map,
         private val eventSink: EventChannel.EventSink)
     : AutoCloseable {
@@ -16,6 +22,13 @@ class TrafficAndParkingControlHandler(
 
     private val trafficControlModel by unsafeLazy {
         TrafficControlModel(map = map)
+    }
+
+    private val roadEventsSource by unsafeLazy {
+        val source = RoadEventSource(sdk)
+        source.visibleEvents = EnumSet.of(RoadEventDisplayCategory.ROAD_RESTRICTION);
+
+        source
     }
 
     private var Map.isParkingOn: Boolean
@@ -38,6 +51,11 @@ class TrafficAndParkingControlHandler(
             }
         }
         closeables += trafficControlModel.stateChannel.connect {
+            when (it.status) {
+                TrafficControlStatus.ENABLED -> enableRoadEvents()
+                TrafficControlStatus.DISABLED -> disableRoadEvents()
+                else -> {}
+            }
             eventSink.success(
                     mapOf(
                         "event" to Companion.Events.trafficStateChanged.name,
@@ -46,6 +64,16 @@ class TrafficAndParkingControlHandler(
                     )
             )
         }
+    }
+
+    private fun enableRoadEvents() {
+        if (!map.sources.contains(roadEventsSource)) {
+            map.addSource(roadEventsSource)
+        }
+    }
+
+    private fun disableRoadEvents() {
+        map.removeSource(roadEventsSource)
     }
 
     fun onDetachFromMap() {

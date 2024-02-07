@@ -21,6 +21,7 @@ import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.geometry.GeoPointWithElevation
 import ru.dgis.sdk.map.*
+import ru.dgis.sdk.road_events.RoadEventType
 import java.io.FileNotFoundException
 import java.lang.IllegalArgumentException
 import java.util.*
@@ -130,6 +131,9 @@ class ObjectTapHandler(
                     onClusterTap(userData.id, tappedObject, clusterId)
                     return
                 }
+            }
+            is RoadEventMapObject -> {
+                onRoadEventTap(tappedObject)
             }
             else -> eventSink.error(
                 "ClassCastException",
@@ -716,6 +720,25 @@ class ObjectTapHandler(
         )
     }
 
+    private fun onRoadEventTap(event: RoadEventMapObject) {
+        when (event.event.type) {
+            RoadEventType.ROAD_WORKS -> {
+                eventSink.success(
+                    mapOf(
+                        "event" to Events.onRoadEventTap.name,
+                        "title" to event.event.name,
+                        "description" to event.event.description,
+                        "startTime" to event.event.schedule?.startTime?.timeFromEpoch?.inSeconds,
+                        "finishTime" to event.event.schedule?.finishTime?.timeFromEpoch?.inSeconds,
+                        "latitude" to event.event.location.latitude.value,
+                        "longitude" to event.event.location.longitude.value,
+                    )
+                )
+            }
+            else -> {}
+        }
+    }
+
     private fun onClusterTap(id: String, cluster: SimpleClusterObject, clusterId: String) {
         eventSink.success(
             mapOf(
@@ -858,6 +881,7 @@ private enum class Events {
     onIoTap,
     onIdleTap,
     onMarkerTap,
+    onRoadEventTap,
     onClusterTap,
     onPolygonTap,
     onPolylineTap,

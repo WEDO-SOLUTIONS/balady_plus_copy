@@ -12,13 +12,16 @@ class TrafficAndParkingControlHandler {
     private let map: Map
     private let eventChannel: DgisStreamHandler
     private let trafficControlModel: TrafficControlModel
+    private let roadEventsSource: RoadEventSource
 
     private var cancelable: Array<Cancellable> = []
     
-    init(map: Map, eventChannel: DgisStreamHandler) {
+    init(sdk: Context, map: Map, eventChannel: DgisStreamHandler) {
         self.map = map
         self.trafficControlModel = TrafficControlModel(map: map)
         self.eventChannel = eventChannel
+        self.roadEventsSource = RoadEventSource(context: sdk)
+        self.roadEventsSource.visibleEvents = .roadRestriction
     }
     
     func onAttachToMap() {
@@ -30,12 +33,31 @@ class TrafficAndParkingControlHandler {
         })
         
         self.cancelable.append(self.trafficControlModel.stateChannel.sink { trafficState in
+            switch trafficState.status {
+            case .enabled:
+                self.enableRoadEvents()
+            case .disabled:
+                self.disableRoadEvents()
+            default:
+                break
+            }
+            
             self.eventChannel.success([
                 "event": Events.trafficStateChanged,
                 "status":  trafficState.status.rawValue,
                 "score": trafficState.score ?? 0
             ])
         })
+    }
+    
+    func enableRoadEvents() {
+        if !self.map.sources.contains(roadEventsSource) {
+            self.map.addSource(source: roadEventsSource)
+        }
+    }
+    
+    func disableRoadEvents() {
+        self.map.removeSource(source: roadEventsSource)
     }
     
     func onDetachFromMap() {

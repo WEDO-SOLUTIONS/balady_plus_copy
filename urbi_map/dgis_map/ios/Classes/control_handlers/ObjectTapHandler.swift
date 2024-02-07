@@ -16,6 +16,7 @@ class ObjectTapHandler {
         static let onMarkerWithPhotoTap = "onMarkerWithPhotoTap"
         static let onIoTap = "onIoTap"
         static let onIdleTap = "onIdleTap"
+        static let onRoadEventTap = "onRoadEventTap"
         static let onMarkerTap = "onMarkerTap"
         static let onPolygonTap = "onPolygonTap"
         static let onPolylineTap = "onPolylineTap"
@@ -159,6 +160,9 @@ class ObjectTapHandler {
             return
         case is RouteMapObject:
             self.routeHandler?.onRouteTap(tappedObject as! RouteMapObject)
+            return
+        case is RoadEventMapObject:
+            self.onRoadEventTap(tappedObject as! RoadEventMapObject)
             return
         default:
             self.eventChannel.error(code: Events.objectTapError)
@@ -807,6 +811,27 @@ class ObjectTapHandler {
                 "event": Events.onMarkerTap,
                 "id": id.id,
             ] as [String : Any])
+        default:
+            return
+        }
+    }
+    
+    private func onRoadEventTap(_ event: RoadEventMapObject) {
+        switch event.event.type {
+        case .roadRestriction:
+            eventChannel.success([
+                "event": Events.onRoadEventTap,
+                "title": event.event.name,
+                "description": event.event.description,
+                "startTime": (event.event.schedule?.startTime?.timeIntervalSince1970).map {
+                    Int($0 * 1000)
+                },
+                "finishTime": (event.event.schedule?.finishTime?.timeIntervalSince1970).map {
+                    Int($0 * 1000)
+                },
+                "latitude": event.event.location.latitude.value,
+                "longitude": event.event.location.longitude.value,
+            ] as [String : Any?])
         default:
             return
         }

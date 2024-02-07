@@ -133,6 +133,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
         
         self.trafficAndParkingControlHandler = TrafficAndParkingControlHandler(
+            sdk: try! sdk.context,
             map: map,
             eventChannel: eventChannel
         )
