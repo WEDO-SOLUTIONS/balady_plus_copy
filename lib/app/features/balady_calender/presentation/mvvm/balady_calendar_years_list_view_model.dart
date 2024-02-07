@@ -19,7 +19,9 @@ import '../../../../core/errors/failures.dart';
 class BaladyCalendarYearsListViewModel extends BaseViewModel {
   final BaladyCalendarRepository webService;
 
-  BaladyCalendarYearsListViewModel({required this.webService});
+  BaladyCalendarYearsListViewModel({required this.webService}){
+    showEventsCountInYears();
+  }
   var yearList ;
 
   Future<int?> showEventsCountInYears(
@@ -34,7 +36,7 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
     try {
       isLoading = true;
       notifyListeners();
-      response = await webService.getEventsCountInYears(params:EventsCountInyearsParams(hijri: true));
+      response = await webService.getEventsCountInYears(params:EventsCountInyearsParams(hijri: false));
 response.fold(
         (failure) {
         },

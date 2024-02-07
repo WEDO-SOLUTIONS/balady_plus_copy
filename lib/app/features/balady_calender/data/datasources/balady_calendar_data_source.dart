@@ -80,7 +80,7 @@ class CalendarBaladyRemoteDataSourceImpl extends BaladyCalendarRemoteDataSource 
     var response;
 
     try {
-      response = await webService.dio.post(
+      response = await webService.dio.get(
         ApiUrl.baladyCalendarEventsCountInYears,
         queryParameters: params.toJson(),
         options: Options(

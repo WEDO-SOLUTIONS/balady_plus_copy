@@ -9,10 +9,9 @@ class EventsCountInYears extends Equatable {
     this.eventsCountInYearsItem,
   });
 
-  factory EventsCountInYears.fromJson(Map<String, dynamic> json) =>
-      EventsCountInYears(
-        eventsCountInYearsItem: (json['data'] as List<dynamic>?)
-            ?.map((e) =>
+  factory EventsCountInYears.fromJson(List<dynamic> json) => EventsCountInYears(
+        eventsCountInYearsItem: (json)
+            .map((e) =>
                 EventsCountInYearsItem.fromJson(e as Map<String, dynamic>))
             .toList(),
       );

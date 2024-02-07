@@ -7,6 +7,7 @@ import 'package:balady_plus/app/features/balady_calender/domain/entities/events_
 import 'package:balady_plus/app/features/balady_calender/presentation/bloc/events_list_cubit.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/mvvm/balady_calendar_years_list_view_model.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/widgets/balady_calendar_events_widget.dart';
+import 'package:balady_plus/app/features/balady_calender/presentation/widgets/balady_calendar_years_list.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/widgets/calendar_filter_popup.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/widgets/calendar_type_popup.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:provider/provider.dart';
 
 class BaladyCalendarPage extends StatefulWidget {
   const BaladyCalendarPage({super.key});
@@ -111,14 +113,14 @@ BaladyCalendarYearsListViewModel baladyCalendarYearsListViewModel = BaladyCalend
                   ],
                 ),
                 const SizedBox(height: 20),
-                BaladyCalendarYearsList(),
+                const BaladyCalendarYearsList(),
                 Expanded(
                   child: BlocProvider<EventsListCubit>(
                     create: (BuildContext context) => EventsListCubit(
-                      baladyCalendarRepositoryImpl: sl(),
+                      baladyCalendarRepository: sl(),
                       listMonths: [
                         const MonthsEventsCount(
-                          month: 1,
+                          month: 6,
                           eventsCount: 1,
                         )
                       ],
