@@ -22,7 +22,9 @@ import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 import '../weather/widgets/weather_control.dart';
 
 class MapControls extends ConsumerWidget {
+  final bool? hideControls;
   const MapControls({
+    this.hideControls,
     Key? key,
   }) : super(key: key);
 
@@ -31,8 +33,9 @@ class MapControls extends ConsumerWidget {
     final controlsState = ref.watch(mapControlsProvider);
     final currentRoute = ref.watch(currentRouteProvider);
 
-    final controlsHidden = controlsState.controlsVisible == false ||
-        (currentRoute != null && currentRoute != '/landing');
+    final controlsHidden = hideControls ??
+        controlsState.controlsVisible == false ||
+            (currentRoute != null && currentRoute != '/landing');
 
     return IgnorePointer(
       ignoring: controlsHidden,
@@ -67,24 +70,13 @@ class MapControls extends ConsumerWidget {
                             const Spacer(),
                             const IndoorControl(),
                             const Spacer(),
-                            // MapButton(
-                            //   child: Image.asset(
-                            //     "assets/images/beta_icon.png",
-                            //     height: 44,
-                            //   ),
-                            //   onTap: () {
-                            //     Stories.showOnboarding(
-                            //         context, StoryTypes.route, 'route');
-                            //   },
-                            // ),
-                            // const SizedBox(height: 8),
                             Row(
                               children: [
                                 MapButton(
                                   child: SvgPicture.asset(
-                                    "assets/icons/svg/ic_controls_qibla.svg",
+                                    'assets/icons/svg/ic_controls_qibla.svg',
                                     semanticsLabel: 'MinApps Screen',
-                                    package: "mapness",
+                                    package: 'mapness',
                                   ),
                                   onTap: () async {
                                     final location =
@@ -122,7 +114,9 @@ class MapControls extends ConsumerWidget {
                             const SizedBox(height: 8),
                             ComplienceBuildingLegend(),
                             const SizedBox(height: 8),
-                            const FollowControl(),
+                            const FollowControl(
+                              onlyFollowDirection: false,
+                            ),
                           ],
                         ),
                       ],

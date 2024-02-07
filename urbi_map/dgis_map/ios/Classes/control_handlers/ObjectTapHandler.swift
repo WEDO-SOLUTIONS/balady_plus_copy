@@ -16,6 +16,7 @@ class ObjectTapHandler {
         static let onMarkerWithPhotoTap = "onMarkerWithPhotoTap"
         static let onIoTap = "onIoTap"
         static let onIdleTap = "onIdleTap"
+        static let onRoadEventTap = "onRoadEventTap"
         static let onMarkerTap = "onMarkerTap"
         static let onPolygonTap = "onPolygonTap"
         static let onPolylineTap = "onPolylineTap"
@@ -62,6 +63,7 @@ class ObjectTapHandler {
     private var iconWidth: LogicalPixel?
     
     var source: DgisSource?
+    private var cancelable: Array<Cancellable> = []
 
     private var markers: Dictionary<String, (Marker, String?)> = [:]
     private var managers: Dictionary<String, MapObjectManager> = [:]
@@ -98,6 +100,11 @@ class ObjectTapHandler {
         )
         self.registrar = registrar
         self.flutterApi = FlutterMapApi(binaryMessenger: registrar.messenger())
+    }
+    
+    func cancel() {
+        cancelable.forEach { $0.cancel() }
+        cancelable.removeAll()
     }
     
     func objectTapListener(_ objectInfo: DGis.RenderedObjectInfo) {
@@ -153,6 +160,9 @@ class ObjectTapHandler {
             return
         case is RouteMapObject:
             self.routeHandler?.onRouteTap(tappedObject as! RouteMapObject)
+            return
+        case is RoadEventMapObject:
+            self.onRoadEventTap(tappedObject as! RoadEventMapObject)
             return
         default:
             self.eventChannel.error(code: Events.objectTapError)
@@ -224,6 +234,7 @@ class ObjectTapHandler {
                 LogicalPixel(value: $0.floatValue)
             } ?? LogicalPixel(value: 0),
             userData: MarkerId(marker.id),
+            zIndex: ZIndex(value: marker.options.zIndex?.uint32Value ?? 0),
             animatedAppearance: marker.options.animatedAppearance?.boolValue ?? false
         )
         
@@ -293,7 +304,7 @@ class ObjectTapHandler {
         }
     }
     
-    func createClusteringMapObjectManager(_ options: ClusteringMapObjectManagerOptionsMessage, completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
+    func createClusteringMapObjectManager(_ options: ClusteringMapObjectManagerOptionsMessage, _ layerId: String?, completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
         let managerId = UUID().uuidString
         let managerMessage = MapObjectManagerMessage.make(withId: managerId)
         
@@ -309,7 +320,8 @@ class ObjectTapHandler {
             ),
             minZoom: options.minZoom.map {
                 Zoom(value: $0.floatValue)
-            } ?? Zoom(value: 0)
+            } ?? Zoom(value: 0),
+            layerId: layerId
         )
         
         self.objectsQueue.sync {
@@ -318,14 +330,15 @@ class ObjectTapHandler {
         }
     }
     
-    func createMapObjectManager(completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
+    func createMapObjectManager(_ layerId: String?, completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
         let managerId = UUID().uuidString
         let managerMessage = MapObjectManagerMessage.make(withId: managerId)
         
         let manager = MapObjectManager.withGeneralization(
             map: self.map,
             logicalPixel: LogicalPixel(value: 40),
-            maxZoom: Zoom(value: 18)
+            maxZoom: Zoom(value: 18),
+            layerId: layerId
         )
         self.objectsQueue.sync {
             self.managers[managerId] = manager
@@ -803,6 +816,27 @@ class ObjectTapHandler {
         }
     }
     
+    private func onRoadEventTap(_ event: RoadEventMapObject) {
+        switch event.event.type {
+        case .roadRestriction:
+            eventChannel.success([
+                "event": Events.onRoadEventTap,
+                "title": event.event.name,
+                "description": event.event.description,
+                "startTime": (event.event.schedule?.startTime?.timeIntervalSince1970).map {
+                    Int($0 * 1000)
+                },
+                "finishTime": (event.event.schedule?.finishTime?.timeIntervalSince1970).map {
+                    Int($0 * 1000)
+                },
+                "latitude": event.event.location.latitude.value,
+                "longitude": event.event.location.longitude.value,
+            ] as [String : Any?])
+        default:
+            return
+        }
+    }
+    
     private func onSearchMarkerTap(_ marker: Marker, _ id: DgisObjectId) {
         self.lastTappedSearchMarker?.iconOpacity = Opacity(value: 1.0)
         marker.iconOpacity = Opacity(value: 0.0)
@@ -840,5 +874,39 @@ class ObjectTapHandler {
                 "longitude": position.longitude.value,
             ],
         ] as [String : Any?])
+    }
+    
+    func getNearestObjects(completion: @escaping ([RenderedObjectMessage]?, FlutterError?) -> Void) {
+        let cameraPosition = map.camera.position.point
+        guard let screenPoint = map.camera.projection.mapToScreen(point: cameraPosition) else {
+            completion(nil, FlutterError(
+                code: "IllegalArgumentException",
+                message: "Camera was not initialized properly",
+                details: nil
+            ))
+            return
+        }
+    
+        
+        self.cancelable.append(
+            map.getRenderedObjects(centerPoint: screenPoint, radius: ScreenDistance(value: 1)).sink { renderedObjects in
+                let objects = renderedObjects.filter {
+                    $0.item.item is DgisMapObject
+                }.map {
+                    RenderedObjectMessage.make(
+                        withObject: ($0.item.item as! DgisMapObject).id.toMessage(),
+                        closestMapPoint: $0.closestMapPoint.toMessage()
+                    )
+                }
+                
+                completion(objects, nil)
+            } failure: { _ in
+                completion(nil, FlutterError(
+                    code: "IllegalArgumentException",
+                    message: "Camera was not initialized properly",
+                    details: nil
+                ))
+            }
+        )
     }
 }

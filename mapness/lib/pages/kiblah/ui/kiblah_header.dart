@@ -5,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_bearing.dart';
-import 'package:mapness/pages/kiblah/providers/kaaba_haptics.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/compass.dart';
@@ -17,11 +16,13 @@ class KiblahHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(kaabaHapticsProvider);
-
     final kaabaBearing = ref.watch(kaabaBearingProvider);
     final userBearing = ref.watch(compassProvider);
-    final bearingDiff = kaabaBearing.floor() - userBearing.floor();
+
+    final isReady = userBearing != null && kaabaBearing != null;
+
+    final bearingDiff =
+        isReady ? (kaabaBearing.floor() - userBearing.floor()).abs() : 0;
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -31,7 +32,6 @@ class KiblahHeader extends ConsumerWidget {
       ),
       child: Stack(
         alignment: Alignment.center,
-        fit: StackFit.loose,
         children: [
           Align(
             alignment: Alignment.centerRight,
@@ -41,14 +41,11 @@ class KiblahHeader extends ConsumerWidget {
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.07),
-                    spreadRadius: 0,
                     blurRadius: 1,
-                    offset: const Offset(0, 0),
                   ),
                   BoxShadow(
                     color: Colors.black.withOpacity(0.05),
                     blurRadius: 4,
-                    spreadRadius: 0,
                     offset: const Offset(0, 2),
                   )
                 ],
@@ -88,8 +85,10 @@ class KiblahHeader extends ConsumerWidget {
             ),
           ),
           Text(
-            context.l10n.kiblahBearingDiff
-                .replaceFirst('%degrees', '$bearingDiff'),
+            isReady
+                ? context.l10n.kiblahBearingDiff
+                    .replaceFirst('%degrees', '$bearingDiff')
+                : context.l10n.calibrating,
             style: Theme.of(context)
                 .extension<ThemeTextStyles>()!
                 .textL

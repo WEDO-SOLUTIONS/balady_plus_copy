@@ -1,27 +1,35 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'dart:math';
 
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_bearing.dart';
+import 'package:mapness/pages/kiblah/providers/kaaba_haptics.dart';
 import 'package:mapness/pages/kiblah/ui/radar_widget.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-
 import 'package:mapness/shared/providers/compass.dart';
 import 'package:mapness/shared/ui/gradient_stroke.dart';
 
-class KiblahCompass extends StatelessWidget {
+import '../providers/fake_compass.dart';
+
+class KiblahCompass extends ConsumerWidget {
   const KiblahCompass({
     super.key,
   });
 
-  double _rad(double degree) => pi * (degree) / 180 - 0.5 * pi;
+  static double rad(double degree) => pi * degree / 180 - 0.5 * pi;
 
   @override
-  Widget build(BuildContext context) {
-    final locale = context.l10n;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final kaabaBearing = ref.watch(kaabaBearingProvider);
+    final userBearing = ref.watch(compassProvider);
+    final isKaabaDirection = ref.watch(kaabaHapticsProvider);
+
+    final isReady = kaabaBearing != null && userBearing != null;
+
+    final correct = isReady && isKaabaDirection;
 
     return Center(
       child: AspectRatio(
@@ -31,58 +39,41 @@ class KiblahCompass extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(37),
-              child: Consumer(
-                builder: (context, ref, child) {
-                  final kaabaBearing = ref.watch(kaabaBearingProvider);
-                  final userBearing = ref.watch(compassProvider);
-                  final correct =
-                      (kaabaBearing.floor() - userBearing.floor()).abs() <= 5;
-
-                  return CustomPaint(
-                    painter: GradientStroke(
-                      gradient: LinearGradient(
-                        begin: const Alignment(1.1, 0.06),
-                        end: const Alignment(-0.12, 1),
-                        colors: correct
-                            ? [
-                                const Color(0xFF52B374),
-                                const Color(0xFF52B374),
-                                const Color(0xFF52B374),
-                              ]
-                            : [
-                                const Color(0xFF4CA5B4),
-                                const Color(0xFFC1EBF2),
-                                const Color(0xFF4CA5B4),
-                              ],
-                        stops: const [0, 0.48, 1],
-                      ),
-                      strokeWidth: 2,
-                      borderRadius: 1000,
-                    ),
-                    size: Size.infinite,
-                  );
-                },
+              child: CustomPaint(
+                painter: GradientStroke(
+                  gradient: LinearGradient(
+                    begin: const Alignment(1.1, 0.06),
+                    end: const Alignment(-0.12, 1),
+                    //TODO(someone): move colors to constants
+                    colors: correct
+                        ? const [
+                            Color(0xFF52B374),
+                            Color(0xFF52B374),
+                            Color(0xFF52B374),
+                          ]
+                        : const [
+                            Color(0xFF4CA5B4),
+                            Color(0xFFC1EBF2),
+                            Color(0xFF4CA5B4),
+                          ],
+                    stops: const [0, 0.48, 1],
+                  ),
+                  strokeWidth: 2,
+                  borderRadius: 1000,
+                ),
+                size: Size.infinite,
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(67),
               child: Center(
-                child: Consumer(
-                  builder: (context, ref, child) {
-                    final kaabaBearing = ref.watch(kaabaBearingProvider);
-                    final userBearing = ref.watch(compassProvider);
-                    final correct =
-                        (kaabaBearing.floor() - userBearing.floor()).abs() <= 5;
-
-                    return RadarWidget(
-                      backgroundColor: correct
-                          ? const Color(0xFF52B374).withOpacity(0.2)
-                          : const Color(0xFF1E2A36).withOpacity(0.2),
-                      radarColor: correct
-                          ? const Color(0xFF52B374).withOpacity(0.7)
-                          : const Color(0xFF1E2A36).withOpacity(0.7),
-                    );
-                  },
+                child: RadarWidget(
+                  backgroundColor: correct
+                      ? const Color(0xFF52B374).withOpacity(0.2)
+                      : const Color(0xFF1E2A36).withOpacity(0.2),
+                  radarColor: correct
+                      ? const Color(0xFF52B374).withOpacity(0.7)
+                      : const Color(0xFF1E2A36).withOpacity(0.7),
                 ),
               ),
             ),
@@ -97,133 +88,126 @@ class KiblahCompass extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(22.5),
-              child: Consumer(
-                builder: (context, ref, child) {
-                  final kaabaBearing = ref.watch(kaabaBearingProvider);
-                  final userBearing = ref.watch(compassProvider);
-                  final correct =
-                      (kaabaBearing.floor() - userBearing.floor()).abs() <= 5;
-
-                  return Align(
-                    alignment: Alignment(
-                      cos(_rad(kaabaBearing - userBearing)),
-                      sin(_rad(kaabaBearing - userBearing)),
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: correct
-                            ? const Color(0xFF52B374)
-                            : const Color(0xFF4CA5B4),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      width: 32,
-                      height: 32,
-                      child: Center(
-                        child: SvgPicture.asset(
-                          'assets/icons/svg/ic_kiblah.svg',
-                          height: 16,
-                          width: 16,
-                          package: PackageConfig.packageName,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(7),
-              child: Consumer(
-                builder: (context, ref, child) {
-                  final userBearing = ref.watch(compassProvider);
-
-                  return Align(
-                    alignment: Alignment(
-                      cos(_rad(-userBearing)),
-                      sin(_rad(-userBearing)),
-                    ),
-                    child: child!,
-                  );
-                },
-                child: Text(
-                  locale.north,
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .textXS
-                      .copyWith(color: Colors.white),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(7),
-              child: Consumer(
-                builder: (context, ref, child) {
-                  final userBearing = ref.watch(compassProvider);
-
-                  return Align(
-                    alignment: Alignment(
-                      cos(_rad(90 - userBearing)),
-                      sin(_rad(90 - userBearing)),
-                    ),
-                    child: child!,
-                  );
-                },
-                child: Text(
-                  locale.east,
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .textXS
-                      .copyWith(color: Colors.white),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(7),
-              child: Consumer(
-                builder: (context, ref, child) {
-                  final userBearing = ref.watch(compassProvider);
-
-                  return Align(
+              child: isReady
+                  ? Align(
                       alignment: Alignment(
-                        cos(_rad(180 - userBearing)),
-                        sin(_rad(180 - userBearing)),
+                        cos(rad(kaabaBearing - userBearing)),
+                        sin(rad(kaabaBearing - userBearing)),
                       ),
-                      child: child!);
-                },
-                child: Text(
-                  locale.south,
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .textXS
-                      .copyWith(color: Colors.white),
+                      child: _KaabaIcon(
+                        isCorrect: correct,
+                      ),
+                    )
+                  : _FakeKaabIcon(),
+            ),
+            if (isReady) ...[
+              Padding(
+                padding: const EdgeInsets.all(7),
+                child: Align(
+                  alignment: Alignment(
+                    cos(rad(-userBearing)),
+                    sin(rad(-userBearing)),
+                  ),
+                  child: Text(
+                    context.l10n.north,
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()!
+                        .textXS
+                        .copyWith(color: Colors.white),
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(7),
-              child: Consumer(
-                builder: (context, ref, child) {
-                  final userBearing = ref.watch(compassProvider);
-
-                  return Align(
-                    alignment: Alignment(
-                      cos(_rad(270 - userBearing)),
-                      sin(_rad(270 - userBearing)),
-                    ),
-                    child: child!,
-                  );
-                },
-                child: Text(
-                  locale.west,
-                  style: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .textXS
-                      .copyWith(color: Colors.white),
+              Padding(
+                padding: const EdgeInsets.all(7),
+                child: Align(
+                  alignment: Alignment(
+                    cos(rad(90 - userBearing)),
+                    sin(rad(90 - userBearing)),
+                  ),
+                  child: Text(
+                    context.l10n.east,
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()!
+                        .textXS
+                        .copyWith(color: Colors.white),
+                  ),
                 ),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.all(7),
+                child: Align(
+                  alignment: Alignment(
+                    cos(rad(180 - userBearing)),
+                    sin(rad(180 - userBearing)),
+                  ),
+                  child: Text(
+                    context.l10n.south,
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()!
+                        .textXS
+                        .copyWith(color: Colors.white),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(7),
+                child: Align(
+                  alignment: Alignment(
+                    cos(rad(270 - userBearing)),
+                    sin(rad(270 - userBearing)),
+                  ),
+                  child: Text(
+                    context.l10n.west,
+                    style: Theme.of(context)
+                        .extension<ThemeTextStyles>()!
+                        .textXS
+                        .copyWith(color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _KaabaIcon extends StatelessWidget {
+  final bool isCorrect;
+  const _KaabaIcon({required this.isCorrect});
+
+  @override
+  Widget build(BuildContext context) => Container(
+        decoration: BoxDecoration(
+          color: isCorrect ? const Color(0xFF52B374) : const Color(0xFF4CA5B4),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        width: 32,
+        height: 32,
+        child: Center(
+          child: SvgPicture.asset(
+            'assets/icons/svg/ic_kiblah.svg',
+            height: 16,
+            width: 16,
+            package: PackageConfig.packageName,
+          ),
+        ),
+      );
+}
+
+class _FakeKaabIcon extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final fakeUserBearing = ref.watch(fakeCompassProvider);
+
+    return Align(
+      alignment: Alignment(
+        cos(KiblahCompass.rad(0 - fakeUserBearing)),
+        sin(KiblahCompass.rad(0 - fakeUserBearing)),
+      ),
+      child: const _KaabaIcon(
+        isCorrect: false,
       ),
     );
   }

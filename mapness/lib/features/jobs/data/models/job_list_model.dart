@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:mapness/features/jobs/models/job_model.dart';
+import 'package:mapness/features/jobs/data/models/job_model.dart';
 
+//TODO(Scroollocker): change to equatable
 @immutable
 class JobListModel {
   final List<JobModel>? records;
@@ -27,7 +28,9 @@ class JobListModel {
 
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other is JobListModel &&
         listEquals(other.records, records) &&
@@ -43,11 +46,10 @@ class JobListModel {
     List<JobModel>? records,
     int? totalRecordsCount,
     int? pagesCount,
-  }) {
-    return JobListModel(
-      records: records ?? this.records,
-      totalRecordsCount: totalRecordsCount ?? this.totalRecordsCount,
-      pagesCount: pagesCount ?? this.pagesCount,
-    );
-  }
+  }) =>
+      JobListModel(
+        records: records ?? this.records,
+        totalRecordsCount: totalRecordsCount ?? this.totalRecordsCount,
+        pagesCount: pagesCount ?? this.pagesCount,
+      );
 }

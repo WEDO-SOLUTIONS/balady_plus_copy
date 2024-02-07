@@ -11,15 +11,16 @@ const _searchScope = 'RoutingSearch';
 
 class RoutingHistory extends ConsumerWidget {
   const RoutingHistory({
-    super.key,
     required this.updatePoint,
+    super.key,
   });
 
   final void Function(RoutePoint point) updatePoint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final history = ref.watch(searchHistoryProvider(_searchScope));
+    final history = ref.watch(searchHistoryProvider(_searchScope))
+      ..retainWhere((e) => e.objectId != null);
 
     return history.isEmpty
         ? const RoutingHistoryEmpty()
@@ -28,21 +29,23 @@ class RoutingHistory extends ConsumerWidget {
             onClear: () {
               ref.read(searchHistoryProvider(_searchScope).notifier).clear();
             },
-            onTap: (item) {
+            onDelete: (item) {
               ref
-                  .read(dgisControllerProvider)
-                  .value
-                  ?.searchByObjectId(
-                    DgisObjectIdMessage(
-                        objectId: item.objectId ?? 0,
-                        entranceId: item.entranceId ?? 0),
-                  )
-                  .then(
-                (object) {
-                  final point = RoutePointDirectoryObject(object);
-                  updatePoint(point);
-                },
+                  .read(searchHistoryProvider(_searchScope).notifier)
+                  .delete(item);
+            },
+            onTap: (item) async {
+              final dgisController =
+                  await ref.read(dgisControllerProvider.future);
+              final object = await dgisController.searchByObjectId(
+                DgisObjectIdMessage(
+                  objectId: item.objectId ?? 0,
+                  entranceId: item.entranceId ?? 0,
+                ),
               );
+
+              final point = RoutePointDirectoryObject(object);
+              updatePoint(point);
             },
           );
   }

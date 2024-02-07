@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/shared/config/package_config.dart';
-
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class FavoriteCard extends StatelessWidget {

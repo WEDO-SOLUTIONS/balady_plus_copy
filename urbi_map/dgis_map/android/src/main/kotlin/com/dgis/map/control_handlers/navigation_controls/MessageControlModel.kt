@@ -1,5 +1,6 @@
 package com.dgis.map.control_handlers.navigation_controls
 
+import android.util.Log
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.navigation.Model
 import ru.dgis.sdk.navigation.State
@@ -35,7 +36,7 @@ class MessageControlModel(
         )
         closeables.add(
             model.locationAvailableChannel.connect {
-                if (!it) {
+                if (!it && model.state != State.FINISHED && model.state != State.DISABLED) {
                     eventSink.success(
                         mapOf(
                             "event" to Event.messageEvent.name,

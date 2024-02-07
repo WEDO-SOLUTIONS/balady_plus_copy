@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_repository.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
@@ -15,9 +16,11 @@ import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_ext
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/layer_details.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
+import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/config/environment_config.dart';
+import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
-import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -32,14 +35,13 @@ const mapLayerName = 'esri_markers';
 
 @riverpod
 class SelectedLayer extends _$SelectedLayer {
+  // ignore: use_setters_to_change_properties
   void setLayerType(LayerType? layerType) {
     state = layerType;
   }
 
   @override
-  LayerType? build(LayerType? layerType) {
-    return null;
-  }
+  LayerType? build(LayerType? layerType) => null;
 }
 
 class LayersState {
@@ -65,19 +67,22 @@ const duration = Duration(milliseconds: 700);
 
 @riverpod
 class LayersControls extends _$LayersControls {
+  static const duration = Duration(milliseconds: 250);
   StreamSubscription? viewPortSubscription;
   CancelToken? cancelToken;
 
-  final tapSubject = BehaviorSubject<LayerType>();
+  final tapSubject = PublishSubject<LayerType>();
+  StreamSubscription? tapSubscription;
 
   @override
   LayersState build() {
     ref.onDispose(() {
       viewPortSubscription?.cancel();
+      tapSubscription?.cancel();
     });
 
-    tapSubject.debounceTime(const Duration(milliseconds: 250)).listen((value) {
-      var currentState = state.selectedType;
+    tapSubscription = tapSubject.debounceTime(duration).listen((value) {
+      final currentState = state.selectedType;
 
       cancelToken?.cancel();
       viewPortSubscription?.cancel();
@@ -96,12 +101,11 @@ class LayersControls extends _$LayersControls {
       }
     });
 
+    final selectedLayerState = _getLayerState();
+
     return LayersState(
       layersVisible: false,
-      selectedType:
-
-          /// since favorites state has external state (it is stored in shared prefs) => load
-          ref.read(favouriteToggleProvider) ? LayerType.favourites : null,
+      selectedType: selectedLayerState,
       isLoading: false,
       investmentsMarkers: {},
       polygons: {},
@@ -109,13 +113,69 @@ class LayersControls extends _$LayersControls {
     );
   }
 
+  void updateLayerInfo() {
+    final selectedLayerState = _getLayerState();
+    if (selectedLayerState != null) {
+      handleTap(selectedLayerState);
+    } else {
+      setSelection();
+    }
+  }
+
+  LayerType? _getLayerState() {
+    final sharedPrefs = ref.watch(sharedPrefsProvider);
+    final string = sharedPrefs.getString(MapnessConsts.activeLayerKey);
+
+    final layerState = LayerTypeEx.stringToType(string);
+    return layerState == LayerType.favourites ? layerState : null;
+  }
+
+  Future<void> _saveLayersState(LayerType type) async {
+    final sharedPrefs = ref.read(sharedPrefsProvider);
+    await sharedPrefs.setString(MapnessConsts.activeLayerKey, type.name);
+  }
+
+  Future<void> _removeLayersState() async {
+    final sharedPrefs = ref.read(sharedPrefsProvider);
+    await sharedPrefs.remove(
+      MapnessConsts.activeLayerKey,
+    );
+  }
+
+  Future<void> disable() async {
+    if (state.selectedType != null) {
+      handleTap(state.selectedType!);
+    }
+  }
+
+  Future<void> toggle(LayerType? type) async {
+    if (type == null) {
+      return;
+    }
+    final sharedPrefs = ref.read(sharedPrefsProvider);
+
+    final name = type.name;
+    final currentState =
+        sharedPrefs.getString(MapnessConsts.activeLayerKey) == name;
+    if (currentState) {
+      await sharedPrefs.remove(MapnessConsts.activeLayerKey);
+    } else {
+      await sharedPrefs.setString(
+        MapnessConsts.activeLayerKey,
+        name,
+      );
+    }
+
+    setSelection(selectedType: type);
+  }
+
   Future<void> toggleFavourites(LayerType? currentState) async {
-    viewPortSubscription?.cancel();
+    await viewPortSubscription?.cancel();
     await _removeAll();
     cancelToken?.cancel();
     if (currentState == (LayerType.favourites)) {
       await ref.read(favouriteToggleProvider.notifier).disable();
-      setSelection(selectedType: null);
+      setSelection();
     } else {
       await ref.read(favouriteToggleProvider.notifier).enable();
       setSelection(selectedType: LayerType.favourites);
@@ -142,6 +202,23 @@ class LayersControls extends _$LayersControls {
   void setSelection({
     LayerType? selectedType,
   }) {
+    if (selectedType != null) {
+      _saveLayersState(selectedType);
+      ref.read(urbiMetricsProvider.notifier).logEvent(
+        'Landing/selectLayer',
+        {
+          'type': selectedType.titleLocale(
+            AppLocalizationsEn(),
+          ),
+        },
+      );
+    } else {
+      _removeLayersState();
+    }
+
+    final read = ref.read(favouriteToggleProvider.notifier);
+    read.ref.invalidateSelf();
+
     state = LayersState(
       investmentsMarkers: state.investmentsMarkers,
       layersVisible: state.layersVisible,
@@ -152,90 +229,75 @@ class LayersControls extends _$LayersControls {
     );
   }
 
-  Future<void> focusIwish() async {
-    final dgisController = await ref.read(dgisControllerProvider.future);
-    final markers = await ref.read(iwishMarkersProvider.future);
-    final markerIds = markers.map((e) => e.id).toList();
-
-    if (markerIds.isEmpty) return;
-
-    final cameraPosition = await dgisController.calcPositionForMarkers(
-      markerIds,
-      CalcPositionOptionsMessage(),
-    );
-    await ref.read(cameraPositionProvider.notifier).animateTo(cameraPosition);
+  void handleTap(LayerType value) {
+    tapSubject.add(value);
   }
-
-  Future<void> disable() async {
-    if (state.selectedType != null) {
-      handleTap(state.selectedType!);
-    }
-  }
-
-  void handleTap(LayerType value) => tapSubject.add(value);
 
   Future<void> toggleIwish(LayerType? currentState, LayerType value) async {
-    var layers = ref.watch(layersControlsProvider.notifier);
-    viewPortSubscription?.cancel();
+    final layers = ref.watch(layersControlsProvider.notifier);
+    await viewPortSubscription?.cancel();
 
     if (currentState == LayerType.joy) {
       await ref
           .read(mapObjectManagerProvider(named: mapLayerName).notifier)
           .removeAllMarkers();
-      layers.setSelection(selectedType: null);
-      layers.update(isLoading: false);
+      layers
+        ..setSelection()
+        ..update(isLoading: false);
     } else {
       setSelection(selectedType: LayerType.joy);
-      showIwish();
+      await showIwish();
     }
   }
 
   Future<void> toggleComplianceBuildings() async {
-    var currentState = state.selectedType;
+    final currentState = state.selectedType;
     if (currentState != (LayerType.buildings)) {
       setSelection(selectedType: LayerType.buildings);
       update(isLoading: true);
-      _showBuildingCompliance();
+      await _showBuildingCompliance();
     } else {
-      viewPortSubscription?.cancel();
+      await viewPortSubscription?.cancel();
       await _removeAll();
-      setSelection(selectedType: null);
+      setSelection();
       update(isLoading: false);
     }
   }
 
   Future<void> toggleInvestOpportunities() async {
-    var layersControls = ref.watch(layersControlsProvider.notifier);
-    var currentState = state.selectedType;
+    final layersControls = ref.watch(layersControlsProvider.notifier);
+    final currentState = state.selectedType;
     if (currentState != (LayerType.invest)) {
-      layersControls._showInvestmentOpportunities(LayerType.invest);
+      await layersControls._showInvestmentOpportunities(LayerType.invest);
     } else {
       await _removeAll();
 
-      layersControls.setSelection(selectedType: null);
-      layersControls.update(
-        isLoading: false,
-      );
+      layersControls
+        ..setSelection()
+        ..update(
+          isLoading: false,
+        );
     }
   }
 
   Future<void> toggleWhiteLands() async {
-    var layersControls = ref.watch(layersControlsProvider.notifier);
-    var currentState = state.selectedType;
+    final layersControls = ref.watch(layersControlsProvider.notifier);
+    final currentState = state.selectedType;
     if (currentState != (LayerType.fencing)) {
-      layersControls._showWhiteLands();
+      await layersControls._showWhiteLands();
     } else {
-      viewPortSubscription?.cancel();
+      await viewPortSubscription?.cancel();
       await _removeAll();
 
-      layersControls.setSelection(selectedType: null);
-      layersControls.update(
-        isLoading: false,
-      );
+      layersControls
+        ..setSelection()
+        ..update(
+          isLoading: false,
+        );
     }
   }
 
-  _createParams(
+  MapRequestParams _createParams(
           VisibleRect visibleRect, LayerType layer, EnvironmentConfig env) =>
       MapRequestParams(
         layer: layer.getGISLayerType(),
@@ -264,6 +326,7 @@ class LayersControls extends _$LayersControls {
     viewPortSubscription = ref
         .watch(dgisControllerProvider.notifier)
         .visibleRectSubject
+        .whereNotNull()
         .map((event) => event.visibleRect)
         .debounceTime(duration)
         .asyncMap(
@@ -278,9 +341,9 @@ class LayersControls extends _$LayersControls {
         update(isLoading: false);
         // await mapController.removeAllMarkers();
         if (state.selectedType == LayerType.invest) {
-          var stateMarkers = state.investmentsMarkers;
+          final stateMarkers = state.investmentsMarkers;
           markers.retainWhere((e) => !stateMarkers.containsKey(e.id));
-          for (var element in markers) {
+          for (final element in markers) {
             stateMarkers[element.id] = element;
           }
           update(investmentsMarkers: stateMarkers);
@@ -309,6 +372,7 @@ class LayersControls extends _$LayersControls {
     viewPortSubscription = ref
         .watch(dgisControllerProvider.notifier)
         .visibleRectSubject
+        .whereNotNull()
         .debounceTime(duration)
         .map((event) => event.visibleRect)
         .asyncMap((visibleRect) => controller.getWhiteLands(
@@ -327,9 +391,9 @@ class LayersControls extends _$LayersControls {
       update(isLoading: false);
       // await mapManager.removeAllPolygons();
       if (state.selectedType == LayerType.fencing) {
-        var statePolygons = state.polygons;
+        final statePolygons = state.polygons;
         data.retainWhere((e) => !statePolygons.containsKey(e.id));
-        for (var element in data) {
+        for (final element in data) {
           statePolygons[element.id] = element;
         }
         update(polygons: statePolygons);
@@ -353,6 +417,7 @@ class LayersControls extends _$LayersControls {
     viewPortSubscription = ref
         .watch(dgisControllerProvider.notifier)
         .visibleRectSubject
+        .whereNotNull()
         .debounceTime(duration)
         .map((event) => event.visibleRect)
         .asyncMap((visibleRect) => controller.buildingComplianceCertificate(
@@ -362,10 +427,10 @@ class LayersControls extends _$LayersControls {
         update(isLoading: false);
         // await mapObjectManager.removeAllPolyLines();
         if (state.selectedType == LayerType.buildings) {
-          var polylineList = _makePolylineWithPoint(data);
-          var statePolylines = state.polylines;
+          final polylineList = _makePolylineWithPoint(data);
+          final statePolylines = state.polylines;
           polylineList.retainWhere((e) => !statePolylines.containsKey(e.id));
-          for (var element in polylineList) {
+          for (final element in polylineList) {
             statePolylines[element.id] = element;
           }
           update(polylines: statePolylines);
@@ -380,12 +445,12 @@ class LayersControls extends _$LayersControls {
   ) {
     final polylines = <Polyline>[];
     if (pointList != null && pointList.isNotEmpty) {
-      for (var element in pointList) {
-        var pathsGoogle = element.pathsGoogle;
+      for (final element in pointList) {
+        final pathsGoogle = element.pathsGoogle;
         if (pathsGoogle != null) {
-          for (List<GeoPointMessage> i in pathsGoogle) {
-            int id = int.parse(element.id);
-            String idPolyline = "${id.toString()}+$i";
+          for (final List<GeoPointMessage> i in pathsGoogle) {
+            final int id = int.parse(element.id);
+            final String idPolyline = '${id.toString()}+$i';
             polylines.add(
               Polyline(
                 id: idPolyline,
@@ -404,7 +469,7 @@ class LayersControls extends _$LayersControls {
   List<Marker> _makeMarkers(
     List<InvestmentSites>? response,
   ) {
-    var markers = response
+    final markers = response
             ?.whereNotNull()
             .map<Marker>(
               (e) => Marker(
@@ -417,7 +482,7 @@ class LayersControls extends _$LayersControls {
                   ),
                   icon: MarkerIconMessage(
                     path:
-                        "packages/mapness/assets/icons/svg/layers/investment_opportunities.svg",
+                        'packages/mapness/assets/icons/svg/layers/investment_opportunities.svg',
                     width: 30,
                   ),
                   textStyle: MarkerTextStyleMessage(
@@ -425,7 +490,7 @@ class LayersControls extends _$LayersControls {
                     strokeColor: Colors.white.value,
                     strokeWidth: 1,
                     fontSize: 14,
-                    fontName: "Frutiger",
+                    fontName: 'Frutiger',
                     textPlacement: MarkerTextPlacementMessage(
                       placement: TextPlacementMessage.bottomCenter,
                     ),
@@ -439,25 +504,25 @@ class LayersControls extends _$LayersControls {
     return markers;
   }
 
-  List<Polygon> _makePolygons(List<WhiteLands>? list) {
-    return list
-            ?.map((e) => Polygon(
-                id: e.id,
-                options: PolygonOptionsMessage(
-                    strokeWidth: 2,
-                    strokeColor: e.strokeColor,
-                    color: e.color,
-                    contours: [e.paths]),
-                onTap: () => _showEsriCard(e)))
-            .toList() ??
-        [];
-  }
+  List<Polygon> _makePolygons(List<WhiteLands>? list) =>
+      list
+          ?.map((e) => Polygon(
+              id: e.id,
+              options: PolygonOptionsMessage(
+                  strokeWidth: 2,
+                  strokeColor: e.strokeColor,
+                  color: e.color,
+                  contours: [e.paths]),
+              onTap: () => _showEsriCard(e)))
+          .toList() ??
+      [];
 
   Future<void> showIwish() async {
     update(isLoading: true);
     await _removeAll();
     const duration = Duration(seconds: 10);
-    final markers = await (ref.read(iwishMarkersProvider.future))
+    final markers = await ref
+        .read(iwishMarkersProvider.future)
         .onError((error, stackTrace) {
       onError();
       return [];
@@ -474,19 +539,19 @@ class LayersControls extends _$LayersControls {
   }
 
   void onError() {
-    setSelection(selectedType: null);
+    setSelection();
     update(isLoading: false);
   }
 
   void _showEsriCard(PointLayersData e) {
-    var goRouter = ref.read(goRouterProvider);
+    final goRouter = ref.read(goRouterProvider);
     LayerDetailsRoute.open(goRouter, e);
   }
 
   Future<void> _removeAll() async {
     update(polylines: {}, polygons: {}, investmentsMarkers: {});
     final map =
-        ref.read(mapObjectManagerProvider(named: mapLayerName).notifier);
+        ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
     await map.removeAllMarkers();
     await map.removeAllPolygons();
     await map.removeAllPolyLines();

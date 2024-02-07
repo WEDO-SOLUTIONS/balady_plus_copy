@@ -5,24 +5,25 @@ import 'package:mapness/widgets/search/ui/search_history_empty.dart';
 
 class SearchHistory extends StatelessWidget {
   const SearchHistory({
-    super.key,
     required this.history,
     required this.onClear,
     required this.onTap,
+    required this.onDelete,
+    super.key,
   });
 
   final List<SearchHistoryItem> history;
   final Function() onClear;
   final Function(SearchHistoryItem item) onTap;
+  final Function(SearchHistoryItem item) onDelete;
 
   @override
-  Widget build(BuildContext context) {
-    return history.isEmpty
-        ? const SearchHistoryEmpty()
-        : SearchHistoryCollapsible(
-            history: history,
-            onClear: onClear,
-            onTap: onTap,
-          );
-  }
+  Widget build(BuildContext context) => history.isEmpty
+      ? const SearchHistoryEmpty()
+      : SearchHistoryCollapsible(
+          history: history,
+          onClear: onClear,
+          onTap: onTap,
+          onDelete: onDelete,
+        );
 }

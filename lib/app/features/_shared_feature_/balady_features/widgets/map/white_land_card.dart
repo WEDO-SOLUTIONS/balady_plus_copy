@@ -35,7 +35,7 @@ class WhiteLandMapCard extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
-            shadows: [
+            shadows: const [
               BoxShadow(
                 color: Color(0x1C77758D),
                 blurRadius: 22,
@@ -57,16 +57,16 @@ class WhiteLandMapCard extends StatelessWidget {
                     fontWeight: AppFontWeight.bold,
                     maxLines: 1,
                   ),
-                  CustomVerticalSpace(height: 8),
+                  const CustomVerticalSpace(height: 8),
                   CustomTextWidget(
-                    "${municipality},  ${streetName}",
+                    "$municipality,  $streetName",
                     fontColor: AppColor.blackModern500Light,
                     fontSize: 12,
                     fontWeight: AppFontWeight.semiBold,
                     height: 1.3,
                     maxLines: 3,
                   ),
-                  CustomVerticalSpace(height: 8),
+                  const CustomVerticalSpace(height: 8),
                   CustomTextWidget(
                     "parcel_no".tr().replaceAll("{}", parcelNo ?? ""),
                     fontColor: AppColor.blackModern500Light,
@@ -75,7 +75,7 @@ class WhiteLandMapCard extends StatelessWidget {
                     height: 1.3,
                     maxLines: 3,
                   ),
-                  CustomVerticalSpace(height: 8),
+                  const CustomVerticalSpace(height: 8),
                   CustomTextWidget(
                     "stage_no".tr().replaceAll("{}", stageNo ?? ""),
                     fontColor: AppColor.blackModern500Light,
@@ -87,7 +87,7 @@ class WhiteLandMapCard extends StatelessWidget {
                 ],
               ),
               Align(
-                alignment: Alignment.topLeft,
+                alignment: AlignmentDirectional.topEnd,
                 child: GestureDetector(
                   onTap: () {
                     onClose();

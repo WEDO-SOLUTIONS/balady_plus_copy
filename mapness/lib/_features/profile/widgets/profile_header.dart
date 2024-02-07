@@ -5,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/providers/app_features.dart';
 
 class ProfileHeader extends ConsumerStatefulWidget {
   final VoidCallback? onBackPress;
@@ -54,22 +53,12 @@ class _ProfileHeaderState extends ConsumerState<ProfileHeader> {
             ),
           ),
           const Spacer(),
-          InkWell(
-            onTap: () {
-              setState(() {
-                tapsToGo -= 1;
-              });
-              if (tapsToGo == 0) {
-                ref.read(appFeaturesProvider.notifier).enableNavi();
-              }
-            },
-            child: Text(
-              context.l10n.profile,
-              style: Theme.of(context)
-                  .extension<ThemeTextStyles>()!
-                  .textL
-                  .copyWith(color: const Color(0xFF1E2A36)),
-            ),
+          Text(
+            context.l10n.profile,
+            style: Theme.of(context)
+                .extension<ThemeTextStyles>()!
+                .textL
+                .copyWith(color: const Color(0xFF1E2A36)),
           ),
           const Spacer(),
           const SizedBox(

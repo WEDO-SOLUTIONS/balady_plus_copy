@@ -143,7 +143,11 @@ class DgisMapController {
       _instance.overrideLocales(locales);
 
   /// Changes state of location follow. Observe state listening to [locationFollowEvents].
-  Future<void> changeFollowState() => _instance.changeFollowState();
+  Future<void> setFollowState(FollowStateMessage state) =>
+      _instance.setFollowState(state);
+
+  /// Changes state of location follow in navigation mode.
+  Future<void> followNavigation() => _instance.followNavigation();
 
   /// Changes selected indoor level. Observe state listening to [indoorActiveIndex].
   Future<void> selectIndoorLevel(IndoorLevel level) =>
@@ -161,6 +165,11 @@ class DgisMapController {
   Future<void> moveCamera(CameraPositionMessage cameraPosition, double duration,
           CameraAnimationTypeMessage animationType) =>
       _instance.moveCamera(cameraPosition, duration, animationType);
+
+  /// Calcluates camera position for rpute in navigation mode
+  Future<CameraPositionMessage> calcPositionForRoute(
+          CalcPositionOptionsMessage options) =>
+      _instance.calcPositionForRoute(options);
 
   /// Calcluates camera position for given list of markers to be visible
   Future<CameraPositionMessage> calcPositionForMarkers(
@@ -180,6 +189,10 @@ class DgisMapController {
   /// Returns map camera position.
   Future<CameraPositionMessage> getCameraPosition() =>
       _instance.getCameraPosition();
+
+  /// Returns nearest objects to camera position.
+  Future<List<RenderedObjectMessage>> getNearestObjects() =>
+      _instance.getNearestObjects();
 
   Future<void> setPanoramasPaddings({
     int left = 0,
@@ -337,12 +350,13 @@ class DgisMapController {
 
   /// Creates [MapObjectManagerMessage] with clustering.
   Future<MapObjectManagerMessage> createMapObjectManagerWithClustering(
-          ClusteringMapObjectManager manager) =>
-      _instance.createMapObjectManagerWithClustering(manager);
+          ClusteringMapObjectManager manager,
+          {String? layerId}) =>
+      _instance.createMapObjectManagerWithClustering(manager, layerId: layerId);
 
   /// Creates [MapObjectManagerMessage] without clustering.
-  Future<MapObjectManagerMessage> createMapObjectManager() =>
-      _instance.createMapObjectManager();
+  Future<MapObjectManagerMessage> createMapObjectManager({String? layerId}) =>
+      _instance.createMapObjectManager(layerId: layerId);
 
   /// Removes [MapObjectManagerMessage].
   Future<void> removeMapObjectManager(MapObjectManagerMessage manager) =>
@@ -476,7 +490,9 @@ class DgisMapController {
   /// Stops navigation. To hide navigation overlay call [hideNativeNavigationOverlay].
   Future<void> stopNavigation() => _instance.stopNavigation();
 
-  Future<void> toggleSound() => _instance.toggleSound();
+  /// Controls sounds in navigation.
+  Future<void> toggleSound({required bool enabled}) =>
+      _instance.toggleSound(enabled: enabled);
 
   /// Used to setup platform. Should be called when permision was granted.
   /// Does not request permission by itself.
@@ -530,7 +546,7 @@ class DgisMapController {
     );
   }
 
-  Future<bool> toggleHeatmap({required WeatherMapMessage message})=>
+  Future<bool> toggleHeatmap({required WeatherMapMessage message}) =>
       _instance.toggleHeatmap(message);
 
   Future<List<PackageMessage?>> listPackages() => _instance.listPackages();

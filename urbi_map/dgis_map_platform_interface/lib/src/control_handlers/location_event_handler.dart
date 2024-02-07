@@ -31,7 +31,7 @@ class LocationEventHandler {
     );
   }
 
-  Future<void> changeFollowState() => _api.changeFollowState();
+  Future<void> setFollowState(FollowStateMessage state) => _api.setFollowState(state);
 
   Future<void> dispose() async {
     await _locationFollowController.close();

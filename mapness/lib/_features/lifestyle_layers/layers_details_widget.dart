@@ -32,65 +32,77 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidget> {
           child: Stack(
             alignment: Alignment.bottomCenter,
             children: [
-              ref.watch(layersDetailsProvider(widget.data!)).map(data: (data) {
-                switch (data.value) {
-                  case WhiteLands? selectedPoint:
-                    return WhiteLandMapCard(
-                      municipality: selectedPoint?.MUNNAME,
-                      streetName: selectedPoint?.STREETNAME,
-                      parcelNo: selectedPoint?.PARCELCODE,
-                      stageNo: selectedPoint?.PHASE,
-                      onClose: () => context.pop(),
-                    );
-                  case InvestmentSites? selectedPoint:
-                    return OpprtunityMapCard(
-                      description: selectedPoint.description,
-                      type: selectedPoint.type,
-                      bidEndDate: selectedPoint.BIDENDDATE,
-                      dailyCost: '${selectedPoint.DAILYLEASECOST}',
-                      documentValue: '${selectedPoint.DOCUMENTVALUE}',
-                      id: selectedPoint.ID,
-                      opprtunityNumber: selectedPoint.OPPORTUNITYNUMBER,
-                      subMunicipality: selectedPoint.SUBMUNICIPALITY_ID,
-                      mainActivcity: selectedPoint.MAIN_ACTIVITY_NAME,
-                      onClose: () => context.pop(),
-                    );
-                  case BuildingComplianceCertificate? selectedPoint:
-                    return ComplainceMapCard(
-                      amana: selectedPoint.AMANANAME,
-                      targetBuildingType: selectedPoint.TARGETBUILDINGTYPE,
-                      streetName: selectedPoint.STREETNAME,
-                      stageNo: selectedPoint.STAGENO,
-                      onClose: () => context.pop(),
-                    );
-                  default:
-                    return const SizedBox.shrink();
-                }
-              }, error: (error) {
-                context.pop();
-                return buildShimmer();
-              }, loading: (_) {
-                return buildShimmer();
-              }),
+              ref.watch(layersDetailsProvider(widget.data!)).map(
+                  data: (data) {
+                    switch (data.value) {
+                      case final WhiteLands? selectedPoint:
+                        return Material(
+                          color: Colors.transparent,
+                          type: MaterialType.transparency,
+                          child: WhiteLandMapCard(
+                            municipality: selectedPoint?.MUNNAME,
+                            streetName: selectedPoint?.STREETNAME,
+                            parcelNo: selectedPoint?.PARCELCODE,
+                            stageNo: selectedPoint?.PHASE,
+                            onClose: () => context.pop(),
+                          ),
+                        );
+                      case final InvestmentSites? selectedPoint:
+                        return Material(
+                          color: Colors.transparent,
+                          type: MaterialType.transparency,
+                          child: OpprtunityMapCard(
+                            description: selectedPoint?.description,
+                            type: selectedPoint?.TYPE ?? '',
+                            bidEndDate: selectedPoint?.BIDENDDATE,
+                            dailyCost: '${selectedPoint?.DAILYLEASECOST}',
+                            documentValue: '${selectedPoint?.DOCUMENTVALUE}',
+                            id: selectedPoint?.ID,
+                            opprtunityNumber: selectedPoint?.OPPORTUNITYNUMBER,
+                            subMunicipality: selectedPoint?.SUBMUNICIPALITY_ID,
+                            mainActivcity: selectedPoint?.MAIN_ACTIVITY_NAME,
+                            onClose: () => context.pop(),
+                          ),
+                        );
+                      case final BuildingComplianceCertificate? selectedPoint:
+                        return Material(
+                          color: Colors.transparent,
+                          type: MaterialType.transparency,
+                          child: ComplainceMapCard(
+                            amana: selectedPoint?.AMANANAME,
+                            targetBuildingType:
+                                selectedPoint?.TARGETBUILDINGTYPE,
+                            streetName: selectedPoint?.STREETNAME,
+                            stageNo: selectedPoint?.STAGENO,
+                            onClose: () => context.pop(),
+                          ),
+                        );
+                      default:
+                        return const SizedBox.shrink();
+                    }
+                  },
+                  error: (error) {
+                    context.pop();
+                    return buildShimmer();
+                  },
+                  loading: (_) => buildShimmer()),
             ],
           ),
         ),
       );
 
-  Widget buildShimmer() {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[200]!,
-      highlightColor: Colors.grey[100]!,
-      child: Container(
-        height: 200,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(16),
-            topLeft: Radius.circular(16),
+  Widget buildShimmer() => Shimmer.fromColors(
+        baseColor: Colors.grey[200]!,
+        highlightColor: Colors.grey[100]!,
+        child: Container(
+          height: 200,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(16),
+              topLeft: Radius.circular(16),
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }

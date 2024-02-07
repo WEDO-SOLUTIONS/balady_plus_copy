@@ -17,30 +17,47 @@ class SearchHistory extends _$SearchHistory {
 
   Future<void> _load() async {
     final searchHistoryBox =
-        await ref.read(hiveProvider("${_hiveBox}_$scope").future);
+        await ref.read(hiveProvider('${_hiveBox}_$scope').future);
 
     final history = searchHistoryBox.values
         .map((e) => e as SearchHistoryItem)
         .toList()
         .reversed
         .toList();
-    final ids = history.map((e) => e.objectId!).toSet();
-    history.retainWhere((e) => ids.remove(e.objectId!));
+    final ids = history
+        .where((e) => e.objectId != null)
+        .map((e) => e.objectId!)
+        .toSet();
+    history.retainWhere((e) => e.objectId == null || ids.remove(e.objectId));
     state = history;
   }
 
-  Future<void> put(SearchHistoryItem result) async {
+  Future<void> put(SearchHistoryItem item) async {
     final searchHistoryBox =
-        await ref.read(hiveProvider("${_hiveBox}_$scope").future);
+        await ref.read(hiveProvider('${_hiveBox}_$scope').future);
 
-    searchHistoryBox.add(result);
+    await searchHistoryBox.put(item.hashKey, item);
+
+    await _load();
+  }
+
+  Future<void> delete(SearchHistoryItem item) async {
+    final searchHistoryBox =
+        await ref.read(hiveProvider('${_hiveBox}_$scope').future);
+
+    //TODO(scroollocker): remove this after migration to hashKey
+    // ignore: deprecated_member_use_from_same_package
+    await searchHistoryBox.delete(item.key);
+    await searchHistoryBox.delete(item.hashKey);
+
+    await _load();
   }
 
   Future<void> clear() async {
     final searchHistoryBox =
-        await ref.read(hiveProvider("${_hiveBox}_$scope").future);
+        await ref.read(hiveProvider('${_hiveBox}_$scope').future);
 
-    searchHistoryBox.clear();
+    await searchHistoryBox.clear();
     state = [];
   }
 }

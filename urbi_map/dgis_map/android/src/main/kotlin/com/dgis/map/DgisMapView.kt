@@ -123,8 +123,14 @@ class DgisMapView(
         result?.success(null)
     }
 
-    override fun changeFollowState(result: Messages.Result<Void>?) {
-        locationControlHandler?.onTap()
+    override fun setFollowState(state: FollowStateMessage, result: Messages.Result<Void>?) {
+        locationControlHandler?.setFollowState(state)
+
+        result?.success(null)
+    }
+
+    override fun followNavigation(result: Messages.Result<Void>?) {
+        navigationHandler.followNavigation()
 
         result?.success(null)
     }
@@ -251,6 +257,14 @@ class DgisMapView(
                         .setBearing(map.camera.position.bearing.value)
                         .build()
         )
+    }
+
+    override fun getNearestObjects(result: Messages.Result<List<RenderedObjectMessage>>) {
+        objectTapHandler?.getNearestObjects(result)
+    }
+
+    override fun calcPositionForRoute(options: CalcPositionOptionsMessage, result: Messages.Result<CameraPositionMessage>?) {
+        navigationHandler.calcPositionForRoute(options, result)
     }
 
     override fun calcPositionForMarkers(
@@ -496,13 +510,17 @@ class DgisMapView(
 
     override fun createMapObjectManagerWithClustering(
             message: ClusteringMapObjectManagerOptionsMessage,
+            layerId: String?,
             result: Messages.Result<MapObjectManagerMessage>?
     ) {
-        objectTapHandler?.createClusteringMapObjectManager(message, result)
+        objectTapHandler?.createClusteringMapObjectManager(message, layerId, result)
     }
 
-    override fun createMapObjectManager(result: Messages.Result<MapObjectManagerMessage>?) {
-        objectTapHandler?.createMapObjectManager(result)
+    override fun createMapObjectManager(
+        layerId: String?,
+        result: Messages.Result<MapObjectManagerMessage>?
+    ) {
+        objectTapHandler?.createMapObjectManager(layerId, result)
     }
 
     override fun removeMapObjectManager(
@@ -789,8 +807,8 @@ class DgisMapView(
         result?.success(null)
     }
 
-    override fun toggleSound(result: Messages.Result<Void>?) {
-        navigationHandler.toggleSounds()
+    override fun toggleSound(enabled: Boolean, result: Messages.Result<Void>?) {
+        navigationHandler.toggleSounds(enabled)
         result?.success(null)
     }
 
@@ -818,7 +836,7 @@ class DgisMapView(
             DgisMapPlugin.vendorConfig,
         )
         compassControlHandler = CompassControlHandler(map, eventSink)
-        trafficAndParkingControlHandler = TrafficAndParkingControlHandler(map, eventSink)
+        trafficAndParkingControlHandler = TrafficAndParkingControlHandler(sdkContext, map, eventSink)
         setupTapHandler()
         weatherHandler = WeatherHandler(sdkContext,map)
         result.success(

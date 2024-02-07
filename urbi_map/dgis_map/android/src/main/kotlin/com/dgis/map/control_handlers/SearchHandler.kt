@@ -44,6 +44,15 @@ class SearchHandler(
         itemMarkerInfosFuture?.close()
     }
 
+    companion object {
+        private val saRestrictions: List<GeoPoint> = listOf(
+            GeoPoint(latitude = 32.568765, longitude = 56.694472),
+            GeoPoint(latitude = 32.568765, longitude = 32.61185),
+            GeoPoint(latitude = 15.506104, longitude = 32.61185),
+            GeoPoint(latitude = 15.506104, longitude = 56.694472),
+        )
+    }
+
     fun searchByDirectoryObjectId(
         objectId: DgisObjectId,
         result: Result<DirectoryObjectMessage>?
@@ -118,7 +127,7 @@ class SearchHandler(
             .setPageSize(pageSize)
             .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
             .setAreaOfInterest(searchGeoRect)
-            .setSpatialRestriction(spatialRestriction)
+            .setSpatialRestriction(spatialRestriction ?: saRestrictions)
             .build()
 
         performSearch(
@@ -149,7 +158,7 @@ class SearchHandler(
             .setPageSize(pageSize)
             .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
             .setAreaOfInterest(searchGeoRect)
-            .setSpatialRestriction(spatialRestriction)
+            .setSpatialRestriction(spatialRestriction ?: saRestrictions)
             .build()
 
         performSearch(
@@ -173,7 +182,7 @@ class SearchHandler(
             .setPageSize(pageSize)
             .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
             .setAreaOfInterest(searchGeoRect)
-            .setSpatialRestriction(spatialRestriction)
+            .setSpatialRestriction(spatialRestriction ?: saRestrictions)
             .build()
 
         performSearch(
@@ -196,7 +205,7 @@ class SearchHandler(
             .setPageSize(pageSize.toInt())
             .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
             .setAreaOfInterest(searchGeoRect)
-            .setSpatialRestriction(spatialRestriction)
+            .setSpatialRestriction(spatialRestriction ?: saRestrictions)
             .build()
 
         performSearch(
@@ -219,7 +228,7 @@ class SearchHandler(
             .setPageSize(pageSize.toInt())
             .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
             .setAreaOfInterest(searchGeoRect)
-            .setSpatialRestriction(spatialRestriction)
+            .setSpatialRestriction(spatialRestriction ?: saRestrictions)
             .build()
 
         performSearch(
@@ -324,6 +333,7 @@ class SearchHandler(
     ) {
         var suggestQueryBuilder = SuggestQueryBuilder.fromQueryText(queryText)
             .setAreaOfInterest(searchGeoRect)
+            .setSpatialRestriction(saRestrictions)
 
         if (allowedResultTypes != null) {
             suggestQueryBuilder = suggestQueryBuilder.setAllowedResultTypes(

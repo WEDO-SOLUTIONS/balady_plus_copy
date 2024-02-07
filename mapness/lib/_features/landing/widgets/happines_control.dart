@@ -22,7 +22,7 @@ class HappinesControl extends ConsumerWidget {
   }
 
   Future<void> _openHappiness(BuildContext context, WidgetRef ref) async {
-    CommonFunctions.authOrOpen(ref, context, callback: () {
+    CommonFunctions.authOrOpen(context, callback: () {
       const HappinessMapRoute(bottomSheetOpened: false).push(context);
     });
   }

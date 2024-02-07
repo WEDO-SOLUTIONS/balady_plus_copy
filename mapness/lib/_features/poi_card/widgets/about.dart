@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
-
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/make_address.dart';
 
 class About extends StatefulWidget {
   final DirectoryObjectMessage? data;
@@ -50,15 +48,15 @@ class _AboutState extends State<About> {
           const SizedBox(
             height: 8,
           ),
-          Text(
-            data!.makeAddress(),
-            style: Theme.of(context)
-                .extension<ThemeTextStyles>()!
-                .textS
-                .copyWith(color: colorPrimary),
-            maxLines: 5,
-            textAlign: TextAlign.start,
-          ),
+          // Text(
+          //   data!.makeAddress(),
+          //   style: Theme.of(context)
+          //       .extension<ThemeTextStyles>()!
+          //       .textS
+          //       .copyWith(color: colorPrimary),
+          //   maxLines: 5,
+          //   textAlign: TextAlign.start,
+          // ),
           if (entrances != null && entrances.isNotEmpty) ...[
             const SizedBox(
               height: 8,

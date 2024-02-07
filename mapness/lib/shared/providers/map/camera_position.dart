@@ -35,6 +35,22 @@ class CameraPosition extends _$CameraPosition {
     );
   }
 
+  Future<void> animateToRoute({
+    CalcPositionOptionsMessage? options,
+  }) async {
+    final dgisController = ref.read(dgisControllerProvider);
+
+    final position = await dgisController.value!.calcPositionForRoute(
+      options ?? CalcPositionOptionsMessage(),
+    );
+
+    await dgisController.value!.moveCamera(
+      position,
+      0.3,
+      CameraAnimationTypeMessage.linear,
+    );
+  }
+
   Future<void> animateToMarkers(
     List<Marker> markers, {
     CalcPositionOptionsMessage? options,
@@ -77,6 +93,7 @@ class CameraPosition extends _$CameraPosition {
     await dgisController.value!.setCameraPadding(padding);
   }
 
+  // ignore: use_setters_to_change_properties
   void _cameraPositionListener(CameraPositionMessage event) {
     state = event;
   }

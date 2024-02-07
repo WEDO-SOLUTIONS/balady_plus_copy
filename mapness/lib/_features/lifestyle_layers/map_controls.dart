@@ -18,7 +18,6 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
-
 class MapControls extends ConsumerWidget {
   const MapControls({
     Key? key,
@@ -49,8 +48,7 @@ class MapControls extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         WeatherControl(
-                            onTap: () =>
-                                const WeatherRoute().push(context)),
+                            onTap: () => const WeatherRoute().push(context)),
                         const SizedBox(height: 8),
                         const HappinesControl(),
                         const Spacer(),
@@ -58,9 +56,9 @@ class MapControls extends ConsumerWidget {
                         const Spacer(),
                         MapButton(
                           child: SvgPicture.asset(
-                            "assets/icons/svg/ic_controls_qibla.svg",
+                            'assets/icons/svg/ic_controls_qibla.svg',
                             semanticsLabel: 'MinApps Screen',
-                            package: "mapness",
+                            package: 'mapness',
                           ),
                           onTap: () async {
                             final location =
@@ -70,8 +68,7 @@ class MapControls extends ConsumerWidget {
                                 .checkLocationPermission()
                                 .then((allowed) {
                               if (allowed) {
-                                const KiblahRoute()
-                                    .pushReplacement(context);
+                                const KiblahRoute().pushReplacement(context);
                               }
                             });
                           },
@@ -92,7 +89,9 @@ class MapControls extends ConsumerWidget {
                         const SizedBox(height: 8),
                         ComplienceBuildingLegend(),
                         const SizedBox(height: 8),
-                        const FollowControl(),
+                        const FollowControl(
+                          onlyFollowDirection: false,
+                        ),
                       ],
                     ),
                   ],

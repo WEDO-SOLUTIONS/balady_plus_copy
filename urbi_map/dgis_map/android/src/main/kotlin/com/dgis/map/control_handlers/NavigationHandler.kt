@@ -1,14 +1,19 @@
 package com.dgis.map.control_handlers
 
+import android.content.res.Resources
 import android.view.View
 import com.dgis.map.control_handlers.navigation_controls.DashboardControlModel
 import com.dgis.map.control_handlers.navigation_controls.MessageControlModel
 import com.dgis.map.control_handlers.navigation_controls.ManeuverControlModel
 import com.dgis.map.control_handlers.navigation_controls.SpeedControlModel
+import com.dgis.map.extensions.toMessage
 import com.dgis.map.map_api.Messages
 import com.dgis.map.map_api.Messages.Result
 import io.flutter.plugin.common.EventChannel
+import ru.dgis.sdk.ScreenSize
 import ru.dgis.sdk.coordinates.Bearing
+import ru.dgis.sdk.geometry.ComplexGeometry
+import ru.dgis.sdk.geometry.PointGeometry
 import ru.dgis.sdk.map.CameraBehaviour
 import ru.dgis.sdk.map.CameraPosition
 import ru.dgis.sdk.map.FollowBearing
@@ -17,7 +22,11 @@ import ru.dgis.sdk.map.FollowStyleZoom
 import ru.dgis.sdk.map.Map
 import ru.dgis.sdk.map.MyLocationController
 import ru.dgis.sdk.map.MyLocationMapObjectSource
+import ru.dgis.sdk.map.Padding
+import ru.dgis.sdk.map.SimpleMapObject
 import ru.dgis.sdk.map.StyleZoom
+import ru.dgis.sdk.map.Tilt
+import ru.dgis.sdk.map.calcPosition
 import ru.dgis.sdk.map.styleZToProjectionZ
 import ru.dgis.sdk.navigation.*
 import ru.dgis.sdk.positioning.LocationSource
@@ -96,10 +105,16 @@ class NavigationHandler(
 
         prevCameraBehaviour = map.camera.behaviour.newBehaviour
         map.camera.setBehaviour(
-            behaviour = CameraBehaviour(
-                position = FollowPosition(bearing = FollowBearing.ON, styleZoom = FollowStyleZoom.ON)
-            )
+            behaviour = navigationManager.mapFollowController.cameraBehaviour
         )
+        navigationManager.mapFollowController.setFollow(true)
+    }
+
+    fun followNavigation() {
+        map.camera.setBehaviour(
+            behaviour = navigationManager.mapFollowController.cameraBehaviour
+        )
+        navigationManager.mapFollowController.setFollow(true)
     }
 
     fun resetCamera() {
@@ -122,8 +137,8 @@ class NavigationHandler(
         maneuverControlModel.close()
     }
 
-    fun toggleSounds() {
-        dashboardControlModel.toggleSounds()
+    fun toggleSounds(enabled: Boolean) {
+        dashboardControlModel.toggleSounds(enabled)
     }
 
     fun setNavigatorVoice(id: String, result: Messages.Result<Void>?) {
@@ -202,12 +217,15 @@ class NavigationHandler(
                 )
             )
 
-            State.FINISHED -> eventSink.success(
-                mapOf(
-                    "event" to Event.navigationEvent.name,
-                    "state" to Event.stateFinished
+            State.FINISHED -> {
+                eventSink.success(
+                        mapOf(
+                                "event" to Event.navigationEvent.name,
+                                "state" to Event.stateFinished
+                        )
                 )
-            )
+                stopNavigation()
+            }
 
             else -> {}
         }
@@ -220,7 +238,52 @@ class NavigationHandler(
                 "hasOptions" to (routeInfo.routeBuildOptions != null)
             )
         )
+    }
 
+    fun calcPositionForRoute(
+            options: Messages.CalcPositionOptionsMessage,
+            result: Result<Messages.CameraPositionMessage>?
+    ) {
+        val geometries = navigationManager.uiModel.route.route.geometry.entries
+                .map { entry ->
+                    PointGeometry(entry.value)
+                }
+        val geometry = ComplexGeometry(geometries)
+
+        val cameraPosition = calcPosition(
+                camera = map.camera,
+                geometry = geometry,
+                screenArea = options.screenArea?.let {
+                    Padding(
+                            left = it.leftPadding.toInt(),
+                            top = it.topPadding.toInt(),
+                            right = it.rightPadding.toInt(),
+                            bottom = it.bottomPadding.toInt()
+                    )
+                },
+                tilt = options.tilt?.let {
+                    Tilt(it.toFloat())
+                },
+                bearing = options.bearing?.let {
+                    Bearing(it)
+                },
+                size = options.size?.let {
+                    ScreenSize(
+                            width = it.width.toInt(),
+                            height = it.height.toInt()
+                    )
+                }
+        )
+
+        result?.success(
+                Messages.CameraPositionMessage
+                        .Builder()
+                        .setPoint(cameraPosition.point.toMessage())
+                        .setZoom(cameraPosition.zoom.value.toDouble())
+                        .setTilt(cameraPosition.tilt.value.toDouble())
+                        .setBearing(cameraPosition.bearing.value)
+                        .build()
+        )
     }
 }
 

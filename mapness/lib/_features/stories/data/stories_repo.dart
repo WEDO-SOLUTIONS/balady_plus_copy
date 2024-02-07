@@ -1,38 +1,60 @@
 import 'package:dio/dio.dart';
-import 'package:mapness/_features/common/providers/map_viewport_changes.dart';
+import 'package:geobase/geobase.dart' as gb;
 import 'package:mapness/_generated/protocol/protocol.pb.dart';
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:geobase/geobase.dart' as gb;
+import 'package:rxdart/rxdart.dart';
 
 part 'stories_repo.g.dart';
 
 @riverpod
 class StoriesRepo extends _$StoriesRepo {
+  bool _isUpdatePaused = false;
+
+  void pauseUpdate() {
+    _isUpdatePaused = true;
+  }
+
+  void resumeUpdate() {
+    _isUpdatePaused = false;
+  }
+
   @override
   Future<StoriesResponse> build() async {
     final dio = await ref.watch(dGisNetworkProvider.future);
 
-    ref.listen(
-      mapViewportChangesProvider,
-      (_, next) async {
-        state = AsyncValue.data(await _fetch(dio, next));
-      },
-    );
+    final subscription = ref
+        .read(dgisControllerProvider.notifier)
+        .visibleRectSubject
+        .whereNotNull()
+        .listen((event) async {
+      if (_isUpdatePaused) {
+        return;
+      }
+      final polygon = CommonFunctions.getPolygonFromRect(event.visibleRect);
 
-    return await _fetch(dio);
+      state = AsyncValue.data(await _fetch(dio, polygon));
+    });
+
+    ref.onDispose(() {
+      subscription.cancel();
+    });
+
+    return _fetch(dio);
   }
 
   Future<StoriesResponse> _fetch(Dio dio, [gb.Polygon? polygon]) async {
-    mixpanel?.timeEvent("StoriesRepo: _fetch");
+    mixpanel?.timeEvent('StoriesRepo: _fetch');
     final url = polygon != null
         ? 'stories?bound=${polygon.toText(format: gb.WKT.geometry)}'
         : 'stories';
 
     final rawResponse = await dio.get(url, options: defaultCacheOptions);
     final storiesResponse = StoriesResponse.fromBuffer(rawResponse.data);
-    mixpanel?.track("StoriesRepo: _fetch");
+    mixpanel?.track('StoriesRepo: _fetch');
     return storiesResponse;
   }
 }

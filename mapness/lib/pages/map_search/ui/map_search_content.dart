@@ -11,8 +11,8 @@ import 'package:provider/provider.dart';
 
 class MapSearchContent extends ConsumerWidget {
   const MapSearchContent({
-    super.key,
     required this.scrollController,
+    super.key,
   });
 
   final ScrollController scrollController;
@@ -27,6 +27,7 @@ class MapSearchContent extends ConsumerWidget {
 
     return searchState.map(
       empty: () => const SliverFillRemaining(
+        hasScrollBody: false,
         child: SafeArea(
           top: false,
           child: MapSearchEmpty(),

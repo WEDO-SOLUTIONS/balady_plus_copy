@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+//TODO(Scroollocker): change to equatable
 @immutable
 class JobStatisticModel {
   final int? jobsCount;
@@ -18,7 +19,9 @@ class JobStatisticModel {
 
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other is JobStatisticModel &&
         other.jobsCount == jobsCount &&

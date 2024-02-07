@@ -14,7 +14,13 @@ export 'src/events/indoor_events.dart'
     show IndoorLevelsEvent, IndoorActiveLevelEvent, IndoorLevel;
 
 export 'src/events/object_tap_events.dart'
-    show ObjectTapEvent, TapEvent, IdleTapEvent, IoTapEvent, DgisObjectId;
+    show
+        ObjectTapEvent,
+        TapEvent,
+        IdleTapEvent,
+        IoTapEvent,
+        DgisObjectId,
+        RoadEventTapEvent;
 
 export 'src/events/visible_rect_events.dart' show VisibleRectEvent, VisibleRect;
 
@@ -25,7 +31,7 @@ export 'src/events/route_changed_events.dart'
 
 export 'src/events/models/lat_lng.dart' show LatLng;
 
-export 'src/events/navigation_event.dart';
+export 'src/events/navigation_event.dart' show NavigationEvent;
 
 export 'src/events/navi_speed_event.dart';
 

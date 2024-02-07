@@ -1,14 +1,14 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
+import 'package:flutter_svg/svg.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/suggest.dart';
 
 class FavouriteTextField extends ConsumerStatefulWidget {
-  const FavouriteTextField({Key? key}) : super(key: key);
+  final String? hintText;
+  const FavouriteTextField({Key? key,this.hintText}) : super(key: key);
 
   @override
   ConsumerState<FavouriteTextField> createState() => _FavouriteTextFieldState();
@@ -49,26 +49,23 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
               focusNode: _searchFocus,
               onChanged: (value) {
                 if (value.isEmpty) {
-                  ref.read(suggestQueryProvider.notifier).update("");
+                  ref.read(suggestQueryProvider.notifier).update('');
                 } else {
                   ref.read(suggestQueryProvider.notifier).update(value);
                 }
                 setState(() {});
               },
               controller: _controller,
-              maxLines: 1,
               textAlignVertical: TextAlignVertical.center,
               decoration: InputDecoration(
                 filled: true,
                 // isDense: true,
-                hintText: context.l10n.search,
+                hintText: widget.hintText??context.l10n.search,
                 fillColor: Colors.white,
                 contentPadding: const EdgeInsets.only(
                   //   // horizontal: 8,
                   right: 8,
                   left: 38,
-                  top: 0,
-                  bottom: 0,
                 ),
                 border: OutlineInputBorder(
                   borderSide: BorderSide.none,
@@ -87,9 +84,9 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: SvgPicture.asset(
-                "assets/icons/svg/ic_dashboard_search.svg",
+                'assets/icons/svg/ic_dashboard_search.svg',
                 semanticsLabel: 'MinApps Screen',
-                package: "mapness",
+                package: 'mapness',
                 colorFilter: const ColorFilter.mode(
                   Color(0xFF4CA5B4),
                   BlendMode.srcIn,
@@ -109,9 +106,9 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SvgPicture.asset(
-                    "assets/icons/svg/ic_search_clear.svg",
+                    'assets/icons/svg/ic_search_clear.svg',
                     semanticsLabel: 'MinApps Screen',
-                    package: "mapness",
+                    package: 'mapness',
                   ),
                 ),
               ),

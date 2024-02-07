@@ -1,9 +1,9 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'dart:math';
+
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:expansion_widget/expansion_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:mapness/shared/config/package_config.dart';
 
 class ExpandableWidget extends StatelessWidget {

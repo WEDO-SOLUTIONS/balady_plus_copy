@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class JobBaseResponse<T> {
   final StatusModel? statusDetails;
   final JobResponseModel<T>? data;
@@ -24,6 +26,8 @@ class JobBaseResponse<T> {
   String? get message => statusDetails?.message;
 }
 
+//TODO(Scroollocker): change to equatable
+@immutable
 class StatusModel {
   final int? code;
   final String? message;
@@ -40,7 +44,9 @@ class StatusModel {
 
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other is StatusModel &&
         other.code == code &&
@@ -51,6 +57,7 @@ class StatusModel {
   int get hashCode => code.hashCode ^ message.hashCode;
 }
 
+@immutable
 class JobResponseModel<T> {
   final String? responseCode;
   final String? responseMessage;
@@ -77,7 +84,9 @@ class JobResponseModel<T> {
 
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other is JobResponseModel &&
         other.responseCode == responseCode &&

@@ -9,14 +9,14 @@ import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
-import 'package:mapness/shared/providers/map/point_of_interest.dart';
-import 'package:mapness/shared/routing/current_route_provider.dart';
 
 import 'controls.dart' as controls;
 import 'dashboard.dart';
@@ -44,10 +44,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     switch (widget.focusMaker) {
       case LangingFocusMaker.iwish:
         () async {
-          final layersControls = ref.read(layersControlsProvider.notifier);
-          layersControls.handleTap(LayerType.joy);
+          ref.read(layersControlsProvider.notifier).handleTap(LayerType.joy);
           try {
-            // await layersControls.focusIwish();
             await ref.read(cameraPositionProvider.notifier).animateTo(
                   CameraPositionMessage(
                     point: GeoPointMessage(
@@ -107,9 +105,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
     // ref.watch(iwishMarkersProvider.select((value) => null));
 
-    ref.watch(
-      mapObjectManagerProvider(named: poiMapLayer),
-    );
+    ref.watch(mapObjectManagerProvider(named: MapnessConsts.mapLayerName));
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -120,12 +116,11 @@ class _LandingPageState extends ConsumerState<LandingPage> {
           child: Stack(
             children: [
               const controls.MapControls(),
-              LayoutBuilder(builder: (context, constraints) {
-                return Dashboard(
-                  biggestHeight: constraints.biggest.height,
-                  biggestWidth: constraints.biggest.width,
-                );
-              }),
+              LayoutBuilder(
+                  builder: (context, constraints) => Dashboard(
+                        biggestHeight: constraints.biggest.height,
+                        biggestWidth: constraints.biggest.width,
+                      )),
               // if (isLayersVisible.layersVisible) const LayersSheet()
             ],
           ),
@@ -143,6 +138,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       if (context.mounted) {
         PoiMapRoute.open(context, event.dgisObjectId.objectId);
       }
+    } else if (event is RoadEventTapEvent) {
+      EventsRoute.open(context, event);
     }
   }
 }

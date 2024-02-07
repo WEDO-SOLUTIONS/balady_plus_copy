@@ -90,6 +90,7 @@ class NavigationHandler {
                 "event": Events.navigationEvent,
                 "state": Events.stateFinished
             ])
+            stopNavigation()
         default:
             return
         }
@@ -125,10 +126,16 @@ class NavigationHandler {
         
         self.prevCameraBehaviour = self.map.camera.behaviour.newBehaviour
         self.map.camera.setBehaviour(
-            behaviour: CameraBehaviour(
-                position: .init(bearing: .on, styleZoom: .on)
-            )
+            behaviour: self.navigationManager.mapFollowController.cameraBehaviour
         )
+        self.navigationManager.mapFollowController.setFollow(follow: true)
+    }
+    
+    func followNavigation() {
+        self.map.camera.setBehaviour(
+            behaviour: self.navigationManager.mapFollowController.cameraBehaviour
+        )
+        self.navigationManager.mapFollowController.setFollow(follow: true)
     }
     
     func resetCamera() {
@@ -219,7 +226,6 @@ class NavigationHandler {
     }
     
     func stopNavigation() {
-        print("navigationManager started")
         navigationManager.stop()
         resetCamera()
     }
@@ -243,7 +249,49 @@ class NavigationHandler {
         self.navigationManager.stop()
     }
 
-    func toggleSounds() {
-        self.dashboardControlModel.toggleSounds()
+    func toggleSounds(enabled: Bool) {
+        self.dashboardControlModel.toggleSounds(enabled: enabled)
+    }
+    
+    func calcPositionForRoute(options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
+        let geometries = navigationManager.uiModel.route.route.geometry.entries.map { entry in
+            PointGeometry(point: entry.value)
+        }
+        let geometry = ComplexGeometry(geometries: geometries)
+        
+        let cameraPosition = DGis.calcPosition(
+            camera: map.camera,
+            geometry: geometry,
+            screenArea: options.screenArea.map {
+                Padding(
+                    left: $0.leftPadding.uint32Value,
+                    top: $0.topPadding.uint32Value,
+                    right: $0.rightPadding.uint32Value,
+                    bottom: $0.bottomPadding.uint32Value
+                )
+            },
+            tilt: options.tilt.map {
+                Tilt(value: $0.floatValue)
+            },
+            bearing: options.bearing.map {
+                Bearing(value: $0.doubleValue)
+            },
+            size: options.size.map {
+                ScreenSize(
+                    width: $0.width.uint32Value,
+                    height: $0.height.uint32Value
+                )
+            }
+        )
+        
+        completion(
+            CameraPositionMessage.make(
+                withPoint: cameraPosition.point.toMessage(),
+                zoom: NSNumber(value: cameraPosition.zoom.value),
+                tilt: NSNumber(value: cameraPosition.tilt.value),
+                bearing: NSNumber(value: cameraPosition.bearing.value)
+            ),
+            nil
+        )
     }
 }

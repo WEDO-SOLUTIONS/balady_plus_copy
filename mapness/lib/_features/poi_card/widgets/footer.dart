@@ -3,7 +3,6 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
-import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
@@ -15,65 +14,30 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 
-class PoiCardFooter extends ConsumerStatefulWidget {
+import '../../favourites/providers/favourite_repository.dart';
+
+class PoiCardFooter extends ConsumerWidget {
   final DirectoryObjectMessage data;
   final PoiCardViewModel viewModel;
-  final DraggableScrollableController scrollController;
   final void Function() onEntranceTap;
+  late final RouteSearchPointMessage _finishPoint;
 
-  const PoiCardFooter({
-    super.key,
-    required this.scrollController,
+  PoiCardFooter({
     required this.data,
     required this.viewModel,
     required this.onEntranceTap,
-  });
-
-  @override
-  ConsumerState<PoiCardFooter> createState() => _PoiCardFooterState();
-}
-
-class _PoiCardFooterState extends ConsumerState<PoiCardFooter> {
-  bool isShow = true;
-
-  late RouteSearchPointMessage _finishPoint;
-
-  @override
-  void dispose() {
-    widget.scrollController.removeListener(listener);
-    super.dispose();
-  }
-
-  @override
-  void initState() {
+    super.key,
+  }) {
     _finishPoint = RouteSearchPointMessage(
-      coordinates: widget.data.markerPosition!.toGeoPointMessage(),
-      objectId: widget.data.id!,
+      coordinates: data.markerPosition!.toGeoPointMessage(),
+      objectId: data.id!,
     );
-    var scrollController = widget.scrollController;
-    scrollController.addListener(listener);
-
-    super.initState();
-  }
-
-  void listener() {
-    if (widget.scrollController.size < .2) {
-      setState(() {
-        isShow = false;
-      });
-    } else {
-      setState(() {
-        isShow = true;
-      });
-    }
   }
 
   @override
-  Widget build(BuildContext context) {
-    if (!isShow) return const SizedBox.shrink();
-
+  Widget build(BuildContext context, WidgetRef ref) {
     final model = PoiModel(
-      directoryObjectMessage: widget.data,
+      directoryObjectMessage: data,
     );
 
     final objectMessage = model.directoryObjectMessage;
@@ -81,35 +45,59 @@ class _PoiCardFooterState extends ConsumerState<PoiCardFooter> {
     final hasContacts = objectMessage?.contactInfos.isNotEmpty == true;
     final carIconFlex = (hasEntrances || hasContacts) ? 3 : 2;
 
-    /// костыль чтобы триггерить перерисовку иконки
-    ref.watch(favouriteRepositoryProvider);
-    final isFav = widget.viewModel.isFavourite(model);
+    final isFav = viewModel.isFavourite(model);
+    final favData = viewModel.getFavouriteOrNull(model);
 
-    final favouriteItem = widget.viewModel.getFavouriteOrNull(model);
+    final favouriteItem = favData ??
+        FavouriteItem(
+          coordinates: Coordinates(
+            latitude: objectMessage?.markerPosition?.latitude ?? 0,
+            longitude: objectMessage?.markerPosition?.longitude ?? 0,
+          ),
+          id: 'overriden',
+          subtitle: objectMessage?.subtitle ?? '',
+          title: objectMessage?.title ?? '',
+          entity: FavouriteItemEntity(
+            sourceType: EntitySourceType.urbi,
+            id: objectMessage?.id?.objectId.toString() ?? 'id',
+          ),
+        );
 
-    favItem({int flex = 1}) {
-      return buildIconButton(
-        flex: flex,
-        assetName: isFav
-            ? 'assets/icons/svg/ic_fav_solid.svg'
-            : 'assets/icons/svg/ic_fav_poi.svg',
-        onTap: () => _onFavTap(favouriteItem),
-        desc: (hasContacts == false)
-            ? Text(
-                context.l10n.favourites,
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .accentS
-                    .copyWith(color: colorPrimary.withOpacity(0.5)),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                textAlign: TextAlign.start,
-              )
-            : const SizedBox.shrink(),
-      );
-    }
+    Widget favItem({int flex = 1}) => buildIconButton(
+          flex: flex,
+          assetName: isFav
+              ? 'assets/icons/svg/ic_fav_solid.svg'
+              : 'assets/icons/svg/ic_fav_poi.svg',
+          onTap: () async {
+            await _onFavTap(
+              context: context,
+              favouriteItem: favouriteItem,
+              ref: ref,
+            );
+            if (favData == null) {
+              final directoryObjectMessage = objectMessage;
+              if (directoryObjectMessage != null) {
+                viewModel.addToFavourites(directoryObjectMessage);
+              }
+            } else {
+              viewModel.removeFromFavourite(favData);
+            }
+          },
+          // desc: (hasContacts == false)
+          //     ? Text(
+          //         context.l10n.favourites,
+          //         style: Theme.of(context)
+          //             .extension<ThemeTextStyles>()!
+          //             .accentS
+          //             .copyWith(color: colorPrimary.withOpacity(0.5)),
+          //         overflow: TextOverflow.ellipsis,
+          //         maxLines: 1,
+          //         textAlign: TextAlign.start,
+          //       )
+          //     : const SizedBox.shrink(),
+        );
 
-    carItem({int flex = 1}) => Flexible(
+    Widget carItem({int flex = 1}) => Flexible(
           flex: flex,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -130,24 +118,24 @@ class _PoiCardFooterState extends ConsumerState<PoiCardFooter> {
           ),
         );
 
-    entranceItem({int flex = 1}) => hasEntrances
+    Widget entranceItem({int flex = 1}) => hasEntrances
         ? buildIconButton(
             flex: flex,
             assetName: 'assets/icons/svg/ic_entrance.svg',
-            onTap: () => widget.onEntranceTap(),
+            onTap: () => onEntranceTap(),
             // onTap: () => widget.viewModel.onEntranceTap(objectMessage),
-            desc: (hasContacts == false)
-                ? Text(
-                    context.l10n.exits,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .accentS
-                        .copyWith(color: colorPrimary.withOpacity(0.5)),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    textAlign: TextAlign.start,
-                  )
-                : const SizedBox.shrink(),
+            // desc: (hasContacts == false)
+            //     ? Text(
+            //         context.l10n.exits,
+            //         style: Theme.of(context)
+            //             .extension<ThemeTextStyles>()!
+            //             .accentS
+            //             .copyWith(color: colorPrimary.withOpacity(0.5)),
+            //         overflow: TextOverflow.ellipsis,
+            //         maxLines: 1,
+            //         textAlign: TextAlign.start,
+            //       )
+            //     : const SizedBox.shrink(),
           )
         : const SizedBox.shrink();
 
@@ -166,11 +154,11 @@ class _PoiCardFooterState extends ConsumerState<PoiCardFooter> {
     //       onTap: () => viewModel.share(objectMessage),
     //     );
 
-    phoneItem({int flex = 1}) => hasContacts
+    Widget phoneItem({int flex = 1}) => hasContacts
         ? buildIconButton(
             flex: flex,
             assetName: 'assets/icons/svg/ic_phone_poi.svg',
-            onTap: () => widget.viewModel.callPhone(data: objectMessage),
+            onTap: () => viewModel.callPhone(data: objectMessage),
           )
         : const SizedBox.shrink();
 
@@ -197,7 +185,6 @@ class _PoiCardFooterState extends ConsumerState<PoiCardFooter> {
         child: SizedBox(
           height: footerHeight,
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
             children: childrenRtl,
           ),
@@ -206,67 +193,71 @@ class _PoiCardFooterState extends ConsumerState<PoiCardFooter> {
     );
   }
 
-  Future<void> _onFavTap(
+  Future<void> _onFavTap({
+    required BuildContext context,
+    required WidgetRef ref,
     FavouriteItem? favouriteItem,
-  ) async {
-    CommonFunctions.authOrOpen(ref, context, callback: () {
-      final favState = ref.read(favouriteRepositoryProvider);
-      final viewModel = widget.viewModel;
-      final objectMessage = widget.data;
+  }) async {
+    CommonFunctions.authOrOpen(
+      context,
+      callback: () {
+        final favState = ref.read(favouriteRepositoryProvider);
+        final objectMessage = data;
 
-      final newFav = FavouriteItem(
-        coordinates: Coordinates(
-          latitude: objectMessage.markerPosition?.latitude ?? 0,
-          longitude: objectMessage.markerPosition?.longitude ?? 0,
-        ),
-        id: 'overriden',
-        subtitle: objectMessage.subtitle,
-        title: objectMessage.title,
-        entity: FavouriteItemEntity(
-          sourceType: EntitySourceType.urbi,
-          id: objectMessage.id?.objectId.toString() ?? 'id',
-        ),
-      );
+        final newFav = FavouriteItem(
+          coordinates: Coordinates(
+            latitude: objectMessage.markerPosition?.latitude ?? 0,
+            longitude: objectMessage.markerPosition?.longitude ?? 0,
+          ),
+          id: 'overriden',
+          subtitle: objectMessage.subtitle,
+          title: objectMessage.title,
+          entity: FavouriteItemEntity(
+            sourceType: EntitySourceType.urbi,
+            id: objectMessage.id?.objectId.toString() ?? 'id',
+          ),
+        );
 
-      /// if already in favourites - remove
-      if (favouriteItem != null) {
-        viewModel.removeFromFavourite(favouriteItem);
-        return;
-      }
+        /// if already in favourites - remove
+        if (favouriteItem != null) {
+          viewModel.removeFromFavourite(favouriteItem);
+          return;
+        }
 
-      /// do not show dialog if home and work are set
-      if (favState.valueOrNull?.home != null &&
-          favState.valueOrNull?.work != null) {
-        viewModel.addToFavourites(objectMessage);
-      } else {
-        /// show dialog to choose home, work or regular
-        showDialog(
-          // barrierColor: Colors.transparent,
-          useSafeArea: false,
-          context: context,
-          builder: (contextDialog) => ProviderScope(
-            parent: ProviderScope.containerOf(context),
-            child: Theme(
-              data: Theme.of(context),
-              child: MediaQuery(
-                data: MediaQuery.of(context),
-                child: Directionality(
-                  textDirection: Directionality.of(context),
-                  child: Localizations.override(
-                    context: context,
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: PoiFavoriteDialog(
-                        favItem: newFav,
+        /// do not show dialog if home and work are set
+        if (favState.valueOrNull?.home != null &&
+            favState.valueOrNull?.work != null) {
+          viewModel.addToFavourites(objectMessage);
+        } else {
+          /// show dialog to choose home, work or regular
+          showDialog(
+            // barrierColor: Colors.transparent,
+            useSafeArea: false,
+            context: context,
+            builder: (contextDialog) => ProviderScope(
+              parent: ProviderScope.containerOf(context),
+              child: Theme(
+                data: Theme.of(context),
+                child: MediaQuery(
+                  data: MediaQuery.of(context),
+                  child: Directionality(
+                    textDirection: Directionality.of(context),
+                    child: Localizations.override(
+                      context: context,
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: PoiFavoriteDialog(
+                          favItem: newFav,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-        );
-      }
-    });
+          );
+        }
+      },
+    );
   }
 }

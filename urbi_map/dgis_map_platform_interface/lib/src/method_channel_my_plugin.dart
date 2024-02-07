@@ -203,8 +203,13 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   }
 
   @override
-  Future<void> changeFollowState() {
-    return _locationEventHandler.changeFollowState();
+  Future<void> setFollowState(FollowStateMessage state) {
+    return _locationEventHandler.setFollowState(state);
+  }
+
+  @override
+  Future<void> followNavigation() {
+    return _api.followNavigation();
   }
 
   StreamSubscription _initEventChannel() {
@@ -228,6 +233,8 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
             return _indoorEventHandler.activeLevelEvent(map);
           case ObjectTapEvent.name:
             return _objectTapEventHandler.objectTapEvent(map);
+          case RoadEventTapEvent.name:
+            return _objectTapEventHandler.roadEventTapEvent(map);
           case MarkerTapEvent.name:
             return _objectTapEventHandler.markerTapEvent(map);
           case ClusterTapEvent.name:
@@ -322,6 +329,12 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   }
 
   @override
+  Future<CameraPositionMessage> calcPositionForRoute(
+      CalcPositionOptionsMessage options) {
+    return _api.calcPositionForRoute(options);
+  }
+
+  @override
   Future<CameraPositionMessage> calcPositionForMarkers(
       List<String> markers, CalcPositionOptionsMessage options) {
     return _api.calcPositionForMarkers(markers, options);
@@ -342,6 +355,13 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   @override
   Future<CameraPositionMessage> getCameraPosition() {
     return _api.getCameraPosition();
+  }
+
+  @override
+  Future<List<RenderedObjectMessage>> getNearestObjects() async {
+    return (await _api.getNearestObjects())
+        .whereType<RenderedObjectMessage>()
+        .toList();
   }
 
   @override
@@ -525,10 +545,11 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
 
   @override
   Future<MapObjectManagerMessage> createMapObjectManagerWithClustering(
-    ClusteringMapObjectManager manager,
-  ) async {
-    final result =
-        await _api.createMapObjectManagerWithClustering(manager.options);
+    ClusteringMapObjectManager manager, {
+    String? layerId,
+  }) async {
+    final result = await _api.createMapObjectManagerWithClustering(
+        manager.options, layerId);
     _objectTapEventHandler.addClusterRenderer(result.id, manager.renderCluster);
     if (manager.onTap != null) {
       _objectTapEventHandler.addClusterHandler(result.id, manager.onTap!);
@@ -537,8 +558,10 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   }
 
   @override
-  Future<MapObjectManagerMessage> createMapObjectManager() async {
-    final result = await _api.createMapObjectManager();
+  Future<MapObjectManagerMessage> createMapObjectManager({
+    String? layerId,
+  }) async {
+    final result = await _api.createMapObjectManager(layerId);
     return result;
   }
 
@@ -802,8 +825,8 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   }
 
   @override
-  Future<void> toggleSound() {
-    return _api.toggleSound();
+  Future<void> toggleSound({required bool enabled}) {
+    return _api.toggleSound(enabled);
   }
 
   @override

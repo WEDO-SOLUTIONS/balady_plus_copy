@@ -42,6 +42,24 @@ class ObjectTapEvent extends TapEvent {
   final LatLng latLng;
 }
 
+class RoadEventTapEvent extends TapEvent {
+  RoadEventTapEvent(
+    this.title,
+    this.description,
+    this.startTime,
+    this.finishTime,
+    this.latLng,
+  );
+
+  static const name = "onRoadEventTap";
+
+  final String title;
+  final String description;
+  final DateTime? startTime;
+  final DateTime finishTime;
+  final LatLng latLng;
+}
+
 class DgisObjectId {
   const DgisObjectId({
     required this.objectId,

@@ -9,10 +9,9 @@ part 'search_by_rubrics.g.dart';
 @riverpod
 class SearchByRubricsQuery extends _$SearchByRubricsQuery {
   @override
-  (QuickFilter, int)? build() {
-    return null;
-  }
+  (QuickFilter, int)? build() => null;
 
+  // ignore: use_setters_to_change_properties
   void update((QuickFilter filter, int index)? newState) => state = newState;
 }
 
@@ -21,27 +20,31 @@ class SearchByRubrics extends _$SearchByRubrics {
   @override
   Future<SearchResultMessage?> build() async {
     final filter = ref.watch(searchByRubricsQueryProvider);
-    if (filter == null) return null;
+    if (filter == null) {
+      return null;
+    }
 
     final searchRect =
         ref.watch(searchInRectProvider.select((value) => value.$1));
     final dgisController = ref.read(dgisControllerProvider.notifier);
 
-    return await performSearch(
+    return performSearch(
       filter.$1,
       searchRect ??
-          dgisController.visibleRectSubject.value.visibleRect.geoRectMessage(),
+          dgisController.visibleRectSubject.value?.visibleRect.geoRectMessage(),
     );
   }
 
   Future<SearchResultMessage?> performSearch(
-      QuickFilter filter, GeoRectMessage searchRect) async {
+      QuickFilter filter, GeoRectMessage? searchRect) async {
     final dgisController = ref.watch(dgisControllerProvider).value;
 
     if (filter.rubrics.isEmpty && filter.query != null) {
       final category = getCategoryByTag(filter.query!);
-      if (category == null) return null;
-      dgisController
+      if (category == null) {
+        return null;
+      }
+      await dgisController
           ?.searchByCategory(
             category,
             sortingType: SortingTypeMessage.byRelevance,
@@ -52,7 +55,7 @@ class SearchByRubrics extends _$SearchByRubrics {
           );
       return null;
     }
-    dgisController
+    await dgisController
         ?.searchByRubrics(
           filter.rubrics,
           sortingType: SortingTypeMessage.byRelevance,
@@ -65,22 +68,20 @@ class SearchByRubrics extends _$SearchByRubrics {
     return null;
   }
 
-  SearchCategoryMessage? getCategoryByTag(String tag) {
-    return switch (tag) {
-      'beaches' => SearchCategoryMessage.beaches,
-      'mousques' => SearchCategoryMessage.mousques,
-      'gasStations' => SearchCategoryMessage.gasStations,
-      'cafe' => SearchCategoryMessage.cafe,
-      'restaurants' => SearchCategoryMessage.restaurants,
-      'parks' => SearchCategoryMessage.parks,
-      'hospitals' => SearchCategoryMessage.hospitals,
-      'schools' => SearchCategoryMessage.schools,
-      'pharmacies' => SearchCategoryMessage.pharmacies,
-      'dentalCenters' => SearchCategoryMessage.dentalCenters,
-      'hotels' => SearchCategoryMessage.hotels,
-      'beautyCenters' => SearchCategoryMessage.beautyCenters,
-      'recreationCenters' => SearchCategoryMessage.recreationCenters,
-      _ => null,
-    };
-  }
+  SearchCategoryMessage? getCategoryByTag(String tag) => switch (tag) {
+        'beaches' => SearchCategoryMessage.beaches,
+        'mousques' => SearchCategoryMessage.mousques,
+        'gasStations' => SearchCategoryMessage.gasStations,
+        'cafe' => SearchCategoryMessage.cafe,
+        'restaurants' => SearchCategoryMessage.restaurants,
+        'parks' => SearchCategoryMessage.parks,
+        'hospitals' => SearchCategoryMessage.hospitals,
+        'schools' => SearchCategoryMessage.schools,
+        'pharmacies' => SearchCategoryMessage.pharmacies,
+        'dentalCenters' => SearchCategoryMessage.dentalCenters,
+        'hotels' => SearchCategoryMessage.hotels,
+        'beautyCenters' => SearchCategoryMessage.beautyCenters,
+        'recreationCenters' => SearchCategoryMessage.recreationCenters,
+        _ => null,
+      };
 }

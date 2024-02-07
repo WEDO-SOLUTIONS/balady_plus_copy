@@ -25,12 +25,19 @@ class SearchHistoryItem {
     required this.entranceId,
   });
 
-  static SearchHistoryItem fromDirectoryObject(DirectoryObjectMessage object) {
-    return SearchHistoryItem(
-      title: object.title,
-      address: object.makeAddress(),
-      objectId: object.id?.objectId,
-      entranceId: object.id?.entranceId,
-    );
-  }
+  factory SearchHistoryItem.fromDirectoryObject(
+    DirectoryObjectMessage object,
+  ) =>
+      SearchHistoryItem(
+        title: object.title,
+        address: object.makeAddress(),
+        objectId: object.id?.objectId,
+        entranceId: object.id?.entranceId,
+      );
+
+  @Deprecated('use hashKey')
+  String get key => 'history-${objectId ?? 0}-${entranceId ?? 0}';
+
+  String get hashKey =>
+      'history-${objectId ?? 0}-${entranceId ?? 0}-${title.hashCode}-${address.hashCode}';
 }

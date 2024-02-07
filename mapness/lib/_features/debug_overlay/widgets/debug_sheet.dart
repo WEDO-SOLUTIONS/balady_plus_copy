@@ -6,6 +6,7 @@ import 'package:mapness/_features/debug_overlay/widgets/debug_navigation_control
 import 'package:mapness/_features/debug_overlay/widgets/debug_server_url.dart';
 import 'package:mapness/_features/debug_overlay/widgets/sso_credential_view.dart';
 import 'package:mapness/_features/debug_overlay/widgets/voice_picker.dart';
+import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/uuid_provider.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
@@ -13,8 +14,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 class DebugSheet extends ConsumerStatefulWidget {
   const DebugSheet({
-    super.key,
     required DraggableScrollableController draggableController,
+    super.key,
   }) : _draggableController = draggableController;
 
   final DraggableScrollableController _draggableController;
@@ -27,7 +28,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
   @override
   void initState() {
     super.initState();
-    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+    PackageInfo.fromPlatform().then((packageInfo) {
       setState(() {
         _packageInfo = packageInfo;
       });
@@ -37,15 +38,13 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
   PackageInfo? _packageInfo;
 
   @override
-  Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      minChildSize: 0,
-      maxChildSize: 0.9,
-      initialChildSize: 0,
-      snapSizes: const [0, 0.9],
-      controller: widget._draggableController,
-      builder: (context, scrollController) {
-        return Container(
+  Widget build(BuildContext context) => DraggableScrollableSheet(
+        minChildSize: 0,
+        maxChildSize: 0.9,
+        initialChildSize: 0,
+        snapSizes: const [0, 0.9],
+        controller: widget._draggableController,
+        builder: (context, scrollController) => Container(
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(24),
@@ -68,7 +67,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "development-menu",
+                            'development-menu',
                             style: Theme.of(context)
                                 .extension<ThemeTextStyles>()
                                 ?.headingS
@@ -78,7 +77,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: "App version: ",
+                                  text: 'App version: ',
                                   style: Theme.of(context)
                                       .extension<ThemeTextStyles>()
                                       ?.textS
@@ -86,7 +85,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                                 ),
                                 TextSpan(
                                   text:
-                                      "${_packageInfo?.version}(${_packageInfo?.buildNumber})",
+                                      '${_packageInfo?.version}(${_packageInfo?.buildNumber})',
                                   style: Theme.of(context)
                                       .extension<ThemeTextStyles>()
                                       ?.accentS
@@ -111,8 +110,12 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                       color: Colors.black54,
                     ),
                   ),
+                  LabeledElevatedButton(
+                    onPressed: () => MapnessLogger.share(),
+                    label: 'Export logs',
+                  ),
                   Text(
-                    "Git branch:",
+                    'Git branch:',
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()
                         ?.textS
@@ -129,7 +132,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                     height: 16,
                   ),
                   Text(
-                    "Git commit:",
+                    'Git commit:',
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()
                         ?.textS
@@ -146,7 +149,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                     height: 16,
                   ),
                   Text(
-                    "Vendor:",
+                    'Vendor:',
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()
                         ?.textS
@@ -163,7 +166,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                     height: 16,
                   ),
                   Text(
-                    "Uuid:",
+                    'Uuid:',
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()
                         ?.textS
@@ -191,8 +194,6 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
               ),
             ),
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
 }

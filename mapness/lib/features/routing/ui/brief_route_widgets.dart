@@ -11,17 +11,23 @@ import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 
 class BriefRouteButton extends ConsumerWidget {
   const BriefRouteButton({
-    super.key,
     required this.routeType,
     required this.onTap,
     this.startPoint,
     this.finishPoint,
+    this.padding,
+    this.foreground,
+    this.background,
+    super.key,
   });
 
   final VoidCallback onTap;
   final RouteSearchOptionsMessage routeType;
   final RouteSearchPointMessage? startPoint;
   final RouteSearchPointMessage? finishPoint;
+  final EdgeInsetsGeometry? padding;
+  final Color? foreground;
+  final Color? background;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,23 +38,26 @@ class BriefRouteButton extends ConsumerWidget {
       navType: routeType,
     ));
 
-    return (briefInfo != null && appFeatures.naviEnabled)
-        ? Material(
-            color: const Color(0xFF4CA5B4),
-            borderRadius: BorderRadius.circular(8),
-            child: InkWell(
-              onTap: onTap,
+    return appFeatures.naviEnabled
+        ? Padding(
+            padding: padding ?? const EdgeInsets.all(0),
+            child: Material(
+              color: background ?? const Color(0xFF4CA5B4),
               borderRadius: BorderRadius.circular(8),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 9,
-                ),
-                child: _BriefRouteInfo(
-                  iconSize: 24,
-                  iconColor: Colors.white,
-                  textColor: Colors.white,
-                  briefInfo: briefInfo,
+              child: InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 9,
+                  ),
+                  child: _BriefRouteInfo(
+                    iconSize: 24,
+                    iconColor: foreground ?? Colors.white,
+                    textColor: foreground ?? Colors.white,
+                    briefInfo: briefInfo,
+                  ),
                 ),
               ),
             ),
@@ -59,8 +68,8 @@ class BriefRouteButton extends ConsumerWidget {
 
 class BriefRouteInfo extends ConsumerWidget {
   const BriefRouteInfo({
-    super.key,
     required this.routeType,
+    super.key,
     this.startPoint,
     this.finishPoint,
   });
@@ -97,42 +106,46 @@ class _BriefRouteInfo extends StatelessWidget {
     required this.briefInfo,
   });
 
-  final List<BriefRouteInfoMessage> briefInfo;
+  final List<BriefRouteInfoMessage>? briefInfo;
 
   final Color iconColor;
   final Color textColor;
   final double iconSize;
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SvgPicture.asset(
-          'assets/icons/svg/ic_car_poi.svg',
-          height: iconSize,
-          width: iconSize,
-          color: iconColor,
-          package: PackageConfig.packageName,
-          matchTextDirection: true,
-        ),
-        const SizedBox(
-          width: 4,
-        ),
-        Text(
-          getBriefRouteDescription(briefInfo, context.l10n),
-          style:
-              Theme.of(context).extension<ThemeTextStyles>()!.accentS.copyWith(
+  Widget build(BuildContext context) => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            'assets/icons/svg/ic_car_poi.svg',
+            height: iconSize,
+            width: iconSize,
+            package: PackageConfig.packageName,
+            matchTextDirection: true,
+            colorFilter: ColorFilter.mode(
+              iconColor,
+              BlendMode.srcATop,
+            ),
+          ),
+          if (briefInfo != null) ...[
+            const SizedBox(
+              width: 4,
+            ),
+            Text(
+              getBriefRouteDescription(briefInfo!, context.l10n),
+              style: Theme.of(context)
+                  .extension<ThemeTextStyles>()!
+                  .accentS
+                  .copyWith(
                     color: textColor,
                   ),
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-          textAlign: TextAlign.right,
-        )
-      ],
-    );
-  }
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              textAlign: TextAlign.right,
+            ),
+          ],
+        ],
+      );
 
   String getBriefRouteDescription(
       List<BriefRouteInfoMessage> briefInfo, AppLocalizations l10n) {
@@ -142,7 +155,7 @@ class _BriefRouteInfo extends StatelessWidget {
     if (inMinutes < 60) {
       return '$inMinutes ${l10n.min}';
     } else {
-      var inHours = duration.inHours;
+      final inHours = duration.inHours;
       return '$inHours ${l10n.hrs}';
     }
   }

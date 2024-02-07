@@ -4,14 +4,15 @@ import 'package:go_router/go_router.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/routing/ui/routing_search_content.dart';
 import 'package:mapness/pages/routing/ui/routing_search_header_delegate.dart';
+import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
 const _searchScope = 'RoutingSearch';
 
 class RoutingSearchSheet extends ConsumerStatefulWidget {
   const RoutingSearchSheet({
-    super.key,
     required this.placeholder,
     required this.showMyLocation,
+    super.key,
   });
 
   final String placeholder;
@@ -35,7 +36,10 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheet> {
         context.pop(null);
       }
     });
-    Future.delayed(Duration.zero, () {
+    Future.delayed(
+        const Duration(
+          milliseconds: 100,
+        ), () {
       _controller.animateTo(
         0.9,
         duration: const Duration(milliseconds: 250),
@@ -51,46 +55,55 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheet> {
   }
 
   @override
+  // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: DraggableScrollableSheet(
-        controller: _controller,
-        initialChildSize: 0,
-        minChildSize: 0,
-        maxChildSize: 0.9,
-        snap: true,
-        snapSizes: const [0, 0.9],
-        builder: (context, scrollController) => Container(
-          decoration: const BoxDecoration(
-            color: Color(0xFFF1F4F8),
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(16.0),
-              topLeft: Radius.circular(16.0),
+      child: LayoutBuilder(
+        builder: (context, constraints) => DgisBottomSheet(
+          initialExpansion: Expansion.middle,
+          availableExpansions: const {
+            Expansion.hidden,
+            Expansion.middle,
+            Expansion.expanded
+          },
+          onExpansionChanged: (expansion, {byUser = false}) {
+            if (expansion == Expansion.hidden && context.mounted) {
+              context.pop();
+            }
+          },
+          middleHeight: constraints.maxHeight * 0.7,
+          scrollableBody: (context, scrollController) => Container(
+            decoration: const BoxDecoration(
+              color: Color(0xFFF1F4F8),
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(16.0),
+                topLeft: Radius.circular(16.0),
+              ),
             ),
-          ),
-          child: Material(
-            color: Colors.transparent,
-            child: SearchScope(
-              named: _searchScope,
-              child: CustomScrollView(
-                controller: scrollController,
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                physics: const ClampingScrollPhysics(),
-                slivers: [
-                  SliverPersistentHeader(
-                    delegate: RoutingSearchHeaderDelegate(
-                      placeholder: widget.placeholder,
-                      draggableScrollableController: _controller,
+            child: Material(
+              color: Colors.transparent,
+              child: SearchScope(
+                named: _searchScope,
+                child: CustomScrollView(
+                  controller: scrollController,
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  physics: const ClampingScrollPhysics(),
+                  slivers: [
+                    SliverPersistentHeader(
+                      delegate: RoutingSearchHeaderDelegate(
+                        placeholder: widget.placeholder,
+                        draggableScrollableController: _controller,
+                      ),
+                      pinned: true,
                     ),
-                    pinned: true,
-                  ),
-                  RoutingSearchContent(
-                    showMyLocation: widget.showMyLocation,
-                    scrollController: scrollController,
-                  ),
-                ],
+                    RoutingSearchContent(
+                      showMyLocation: widget.showMyLocation,
+                      scrollController: scrollController,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

@@ -9,23 +9,20 @@ class QuickFilter extends StatelessWidget {
     super.key,
     required this.item,
     required this.selected,
-    required this.onTap,
     this.background = const Color(0x0D1E2A36),
   });
 
   final FilterItem item;
   final bool selected;
-  final Function() onTap;
   final Color background;
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       color: selected ? const Color(0xFF1E2A36) : background,
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
-        onTap: onTap,
+        onTap: item.onTap,
         child: ConstrainedBox(
           constraints: const BoxConstraints(minWidth: 52),
           child: Padding(
@@ -68,5 +65,4 @@ class QuickFilter extends StatelessWidget {
         ),
       ),
     );
-  }
 }

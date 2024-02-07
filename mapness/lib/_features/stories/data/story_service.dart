@@ -15,7 +15,7 @@ part 'story_service.g.dart';
 class StoryService extends _$StoryService {
   late Box<dynamic> _viewedStories;
 
-  Future<void> markStoryReeded(final storyId, int frameIndex) async {
+  Future<void> markStoryReeded(final String storyId, int frameIndex) async {
     await _viewedStories.put(
       storyId,
       max(frameIndex, (_viewedStories.get(storyId) as int?) ?? 0),
@@ -53,6 +53,14 @@ class StoryService extends _$StoryService {
     ).toList();
 
     return updatedStories;
+  }
+
+  void pauseUpdate() {
+    ref.read(storiesRepoProvider.notifier).pauseUpdate();
+  }
+
+  void resumeUpdate() {
+    ref.read(storiesRepoProvider.notifier).resumeUpdate();
   }
 
   @override

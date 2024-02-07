@@ -7,11 +7,13 @@ class LocationControlHandler {
         static let locationFollowEvent = "locationFollowEvent"
     }
     
+    private let map: Map
     private let model: MyLocationControlModel
     private var cancelable: Array<Cancellable> = []
     
     init(map: Map, eventChannel: DgisStreamHandler) {
         self.model = MyLocationControlModel(map: map)
+        self.map = map
         
         cancelable.append(model.isEnabledChannel.sink {
             value in
@@ -29,8 +31,29 @@ class LocationControlHandler {
         })
     }
     
-    func changeFollowState() {
-        self.model.onClicked()
+    func setFollowState(state: FollowStateMessage) {
+        let prevBehaviour = map.camera.behaviour.newBehaviour
+
+        switch state {
+        case .off:
+            let behaviour = CameraBehaviour(
+                position: nil,
+                tilt: prevBehaviour.tilt
+            )
+            map.camera.setBehaviour(behaviour: behaviour)
+        case .followPosition:
+            let behaviour = CameraBehaviour(
+                position: FollowPosition(bearing: .off, styleZoom: prevBehaviour.position?.styleZoom ?? .off),
+                tilt: prevBehaviour.tilt
+            )
+            map.camera.setBehaviour(behaviour: behaviour)
+        case .followDirection:
+            let behaviour = CameraBehaviour(
+                position: FollowPosition(bearing: .on, styleZoom: prevBehaviour.position?.styleZoom ?? .off),
+                tilt: prevBehaviour.tilt
+            )
+            map.camera.setBehaviour(behaviour: behaviour)
+        }
     }
     
     func cancel() {

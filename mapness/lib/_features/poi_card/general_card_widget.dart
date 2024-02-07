@@ -1,8 +1,6 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart'
     as map_control_provider;
@@ -11,287 +9,287 @@ import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/about.dart';
-import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/contacts_info.dart';
 import 'package:mapness/_features/poi_card/widgets/description.dart';
 import 'package:mapness/_features/poi_card/widgets/favourites.dart';
-import 'package:mapness/_features/poi_card/widgets/footer.dart';
 import 'package:mapness/_features/poi_card/widgets/header.dart';
 import 'package:mapness/_features/poi_card/widgets/opening_hours.dart';
-import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
 import 'package:mapness/_features/poi_card/widgets/qr_license_info.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/poi_card/widgets/trade_license.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
+import 'package:mapness/shared/providers/map/point_of_interest.dart';
+import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_scrollable_content.dart';
+import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:shimmer/shimmer.dart';
 
-class GeneralMapCardWidget extends ConsumerWidget {
+import '../../shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
+import 'domain/model/poi_camera_config.dart';
+import 'enums/pot_tabs_type.dart';
+import 'widgets/footer.dart';
+import 'widgets/poi_photo_card.dart';
+import 'widgets/poi_photos_header.dart';
+
+class GeneralMapCardWidget extends StatelessWidget {
   final DgisObjectIdMessage objectId;
+  final PoiCameraConfig? cameraConfig;
 
   const GeneralMapCardWidget(
     this.objectId, {
     super.key,
+    this.cameraConfig,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(poiCardProviderProvider(objectId));
+  // ignore: prefer_expression_function_bodies
+  Widget build(BuildContext context) {
     // ref.read(poiCardProviderProvider.notifier).getDgisObject(objectId);
 
-    return LayoutBuilder(builder: (context, constraints) {
-      return _Content(
+    return LayoutBuilder(
+      builder: (context, constraints) => _Content(
         objectId: objectId,
+        cameraConfig: cameraConfig,
         biggestHeight: constraints.biggest.height,
         biggestWidth: constraints.biggest.width,
-        state: state,
         // directoryObject: result,
-      );
-    });
+      ),
+    );
   }
 }
 
 class _Content extends ConsumerStatefulWidget {
   final DgisObjectIdMessage objectId;
+  final PoiCameraConfig? cameraConfig;
 
   final double biggestHeight;
   final double biggestWidth;
-
-  final AsyncValue<PoiCardState?> state;
 
   const _Content({
     required this.biggestHeight,
     required this.biggestWidth,
     required this.objectId,
-    required this.state,
+    this.cameraConfig,
   });
 
   @override
   ConsumerState<_Content> createState() => _ContentState();
 }
 
-class _ContentState extends ConsumerState<_Content> {
-  late final DraggableScrollableController _draggableScrollableController;
-
+class _ContentState extends ConsumerState<_Content>
+    with SingleTickerProviderStateMixin {
   bool showEntrances = false;
 
-  double _headerExtent() {
-    // TODO: calculate based on bottom (safearea + footerHeight + headerHeight) / biggestHeight
-    return (footerHeight + headerHeight) / widget.biggestHeight;
+  final _expansion = ValueNotifier(Expansion.middle);
+  late final TabController _tabController;
+  late final ValueNotifier<PoiTabsType> _tabType;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+    );
+
+    _tabType = ValueNotifier(PoiTabsType.info);
+    _tabController.addListener(
+      () {
+        if (_tabController.indexIsChanging) {
+          switch (_tabController.index) {
+            case 0:
+              _tabType.value = PoiTabsType.info;
+              break;
+            case 1:
+              _tabType.value = PoiTabsType.photos;
+              break;
+          }
+        }
+      },
+    );
   }
 
   @override
   void dispose() {
-    _draggableScrollableController.removeListener(scrollListener);
-    _draggableScrollableController.dispose();
+    _tabController.dispose();
+    _tabType.dispose();
     super.dispose();
   }
 
   @override
-  void initState() {
-    _draggableScrollableController = DraggableScrollableController();
-    _draggableScrollableController.addListener(scrollListener);
-    super.initState();
-  }
-
-  void scrollListener() {}
-
-  @override
   Widget build(BuildContext context) {
+    final viewModel = PoiCardViewModel(ref: ref);
+    final viewModelProvider = poiCardProviderProvider(
+      widget.objectId,
+      cameraConfig: widget.cameraConfig,
+    );
+    final state = ref.watch(viewModelProvider);
+
+    final poiCardState = state.valueOrNull;
+    final data = poiCardState?.gisObjectIdMessage;
+    final objectId = data?.id?.objectId;
+
+    /// loading shimmer
+    if (state.isLoading) {
+      return Column(
+        children: [
+          const Spacer(flex: 3),
+          Expanded(
+            child: Shimmer.fromColors(
+              baseColor: Colors.grey[200]!,
+              highlightColor: Colors.grey[100]!,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(16),
+                    topLeft: Radius.circular(16),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    /// error handling or invalid data
+    if (state.hasError || objectId == null || data == null) {
+      // TODO(ForesThule): fix this
+      // чет очень не очень, что у нас логика внутри юай. И если будет стейт в ошибке и перерисовка, то
+      // то спамим обновление провайдера. Риверпод, не должен плодить обновление тк стейт идентичен,
+      // но класс не реализует сравнение и хеш, так что не гарантирую что все ок и это не приведет к проблемам.
+      // чем обусловлен этот вызов я не совсем понял, так что оставил.
+      // ps: коммент удалить после фикса
+      Future(
+        () => ref
+            .read(map_control_provider.mapControlsProvider.notifier)
+            .update(map_control_provider.MapControlsStateIdle()),
+      );
+      return Column(
+        children: [
+          const Spacer(flex: 3),
+          ErrorSheet(
+            onRetry: () => ref.invalidate(
+              pointOfInterestProvider(widget.objectId),
+            ),
+          ),
+        ],
+      );
+    }
+
+    /// has value
+    final qrTradeLicense = poiCardState?.qrTradeLicense;
+    final tradeLicense = poiCardState?.tradeLicense;
+
+    final about = aboutMock(
+      objectId,
+      ref.read(appLanguageProvider),
+    );
+    final name = data.buildingInfo.buildingName;
+    if (name != null) {
+      data.title = name;
+    }
+
+    // TODO(scroollocker): move it to widget
+    final infoBody = Padding(
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Favourites(data),
+          About(
+            data,
+            onEntranceTap: () => showEntrance(data),
+          ),
+          if (about != null)
+            Description(
+              text: about,
+            ),
+          if (data.openingHours != null)
+            OpeningHours(
+              data.getOpeningHoursModel(
+                context.l10n,
+              ),
+            ),
+          ContactsInfo(
+            viewModel: viewModel,
+            data: data,
+          ),
+          if (qrTradeLicense != null) QrLicenseInfo(qrTradeLicense),
+          if (tradeLicense != null) TradeLicense(tradeLicense),
+          const SafeArea(
+            top: false,
+            child: SizedBox(height: footerHeight),
+          ),
+        ],
+      ),
+    );
+
     return Directionality(
       textDirection: switch (ref.watch(appLanguageProvider)) {
         Language.arabic => TextDirection.rtl,
         Language.english => TextDirection.ltr,
       },
-      child: Stack(
-        children: [
-          PoiCardMapControls(
-            scrollController: _draggableScrollableController,
-            biggestHeight: widget.biggestHeight,
-          ),
-          DraggableScrollableSheet(
-            controller: _draggableScrollableController,
-            initialChildSize: _headerExtent(),
-            minChildSize: .1,
-            maxChildSize: .9,
-            snap: true,
-            snapSizes: [.1, _headerExtent(), .7, .9],
-            builder: (
-              BuildContext context,
-              ScrollController scrollController,
-            ) {
-              final viewModel = PoiCardViewModel(ref: ref);
 
-              return widget.state.map(
-                data: (value) {
-                  final poiCardState = value.value;
-                  final data = poiCardState?.gisObjectIdMessage;
-
-                  // final qrTradeLicense = poiCardState?.qrTradeLicense;
-                  final tradeLicense = poiCardState?.tradeLicense;
-
-                  final about = aboutMock(
-                    data!.id!.objectId,
-                    ref.read(appLanguageProvider),
-                  );
-                  final name = nameMock(
-                    data.id!.objectId,
-                    ref.read(appLanguageProvider),
-                  );
-                  if (name != null) {
-                    data.title = name;
-                  }
-
-                  return Material(
-                    color: Colors.transparent,
-                    child: DecoratedBox(
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(16.0),
-                          topLeft: Radius.circular(16.0),
-                        ),
-                      ),
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: colorPrimary.withOpacity(0.05),
-                          borderRadius: const BorderRadius.only(
-                            topRight: Radius.circular(16.0),
-                            topLeft: Radius.circular(16.0),
-                          ),
-                        ),
-                        child: Stack(
-                          children: [
-                            CustomScrollView(
-                              controller: scrollController,
-                              keyboardDismissBehavior:
-                                  ScrollViewKeyboardDismissBehavior.onDrag,
-                              physics: const ClampingScrollPhysics(),
-                              slivers: [
-                                SliverPersistentHeader(
-                                  delegate: PoiCardHeaderDelegate(
-                                    data: data,
-                                    ontapClose: () {
-                                      // const LandingRoute().go(context);
-                                      context.pop();
-                                    },
-                                  ),
-                                  pinned: true,
-                                ),
-                                SliverList.list(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Favourites(data),
-                                          About(
-                                            data,
-                                            onEntranceTap: () =>
-                                                showEntrance(data),
-                                          ),
-                                          if (about != null)
-                                            Description(
-                                              text: about,
-                                            ),
-                                          if (data.openingHours != null)
-                                            OpeningHours(
-                                              data.getOpeningHoursModel(
-                                                context.l10n,
-                                              ),
-                                            ),
-                                          ContactsInfo(
-                                            viewModel: viewModel,
-                                            data: data,
-                                          ),
-                                          // if (qrTradeLicense != null)
-                                          //   QrLicenseInfo(qrTradeLicense),
-                                          if (tradeLicense != null)
-                                            TradeLicense(tradeLicense),
-                                          const SafeArea(
-                                            top: false,
-                                            child:
-                                                SizedBox(height: footerHeight),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Align(
-                              alignment: Alignment.bottomCenter,
-                              child: PoiCardFooter(
-                                scrollController:
-                                    _draggableScrollableController,
-                                data: data,
-                                viewModel: viewModel,
-                                onEntranceTap: () {
-                                  showEntrance(data);
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                error: (_) {
-                  Future(
-                    () => ref
-                        .read(map_control_provider.mapControlsProvider.notifier)
-                        .update(map_control_provider.MapControlsStateIdle()),
-                  );
-                  return Shimmer.fromColors(
-                    baseColor: Colors.grey[200]!,
-                    highlightColor: Colors.grey[100]!,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(16),
-                          topLeft: Radius.circular(16),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                loading: (_) {
-                  return Shimmer.fromColors(
-                    baseColor: Colors.grey[200]!,
-                    highlightColor: Colors.grey[100]!,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(16),
-                          topLeft: Radius.circular(16),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              );
+      /// TODO(Demezy): add support for map controls in bottom sheet
+      child: DgisBottomSheet(
+        showBarrier: false,
+        availableExpansions: Expansion.values.toSet(),
+        initialExpansion: Expansion.middle,
+        collapsedHeight: 300,
+        middleHeight: 600,
+        hiddenHeight: 100,
+        onExpansionChanged: (expansion, {byUser = false}) =>
+            _expansion.value = expansion,
+        scrollHeader: PoiPhotosHeader(
+          objectId: objectId,
+          expansion: _expansion,
+        ),
+        actions: PoiCardFooter(
+          data: data,
+          viewModel: viewModel,
+          onEntranceTap: () {
+            showEntrance(data);
+          },
+        ),
+        scrollableBody: (context, controller) =>
+            DgisBottomSheetScrollableContent(
+          controller: controller,
+          header: PoiHeader(
+            tabController: _tabController,
+            data: data,
+            onTapClose: () {
+              // const LandingRoute().go(context);
+              context.pop();
             },
           ),
-        ],
+          body: [
+            ValueListenableBuilder(
+              valueListenable: _tabType,
+              builder: (context, tabType, _) => switch (tabType) {
+                PoiTabsType.info => infoBody,
+                PoiTabsType.photos => PoiPhotoCard(
+                    model: PoiModel(
+                      directoryObjectMessage: data,
+                    ),
+                  ),
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
 
   void showEntrance(DirectoryObjectMessage data) {
-    _draggableScrollableController.animateTo(
-      .3,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeIn,
-    );
+    // _draggableScrollableController.animateTo(
+    //   .3,
+    //   duration: const Duration(milliseconds: 300),
+    //   curve: Curves.easeIn,
+    // );
     setState(() {
       showEntrances = !showEntrances;
     });
@@ -301,7 +299,7 @@ class _ContentState extends ConsumerState<_Content> {
     final cameraPosition = ref.read(cameraPositionProvider);
 
     if (showEntrances) {
-      for (var entrance in data.entrances) {
+      for (final entrance in data.entrances) {
         highlightController.addHighlight(entrance!.id);
       }
       final firstEntrancePoint =
@@ -317,88 +315,9 @@ class _ContentState extends ConsumerState<_Content> {
         );
       }
     } else {
-      for (var entrance in data.entrances) {
+      for (final entrance in data.entrances) {
         highlightController.removeHighlight(entrance!.id);
       }
     }
-  }
-}
-
-class _Parking extends StatelessWidget {
-  final ParkingInfoMessage? parkingInfo;
-
-  const _Parking(this.parkingInfo);
-
-  @override
-  Widget build(BuildContext context) {
-    return CardContent(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'موقف سيارات',
-            style: Theme.of(context)
-                .extension<ThemeTextStyles>()!
-                .accentM
-                .copyWith(color: colorPrimary),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              parkingIcon,
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _WorkStatus extends StatelessWidget {
-  final WorkStatusMessage? workStatus;
-
-  const _WorkStatus(this.workStatus);
-
-  @override
-  Widget build(BuildContext context) {
-    return CardContent(
-      child: Column(
-        children: [
-          Row(
-            children: [
-              SvgPicture.asset(
-                'assets/icons/svg/ic_time.svg',
-                package: PackageConfig.packageName,
-                height: 24,
-                width: 24,
-                color: colorIconError,
-              ),
-              const SizedBox(
-                width: 8,
-              ),
-              const Text(
-                'لا يعمل مؤقتًا',
-                style: TextStyle(
-                  color: colorPrimary,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-          const Text(
-            'هذا الفرع حاليًا مغلق مؤقتًا، ولكن سيعود للعمل بعد فترة التحقق من المعلومات من الشركة.',
-            style: TextStyle(
-              color: colorPrimary,
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

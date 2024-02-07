@@ -13,7 +13,7 @@ class AppFeatures {
   });
 }
 
-const _prefsKey = "settings.features";
+const _prefsKey = 'settings.features';
 
 @Riverpod(keepAlive: true)
 class _AppFeatures extends _$AppFeatures {
@@ -22,14 +22,15 @@ class _AppFeatures extends _$AppFeatures {
     final sharedPrefs = ref.read(sharedPrefsProvider);
 
     return AppFeatures(
-      naviEnabled: sharedPrefs.getBool("$_prefsKey.navi") ?? false,
+      // by default navi is enabled
+      naviEnabled: sharedPrefs.getBool('$_prefsKey.navi') ?? true,
     );
   }
 
   void enableNavi() {
     mixpanel?.registerSuperPropertiesOnce({'AppFeatures': 'navi'});
     FlutterUxcam.setSessionProperty('AppFeatures', 'navi');
-    ref.read(sharedPrefsProvider).setBool("$_prefsKey.navi", true);
+    ref.read(sharedPrefsProvider).setBool('$_prefsKey.navi', true);
     ref.invalidateSelf();
   }
 }

@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/entities/routing/route_point.dart';
+import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/search/ui/suggest_item.dart';
 
 class RoutingSuggestList extends ConsumerWidget {
   const RoutingSuggestList({
-    super.key,
     required this.suggest,
+    super.key,
   });
 
   final SuggestResultMessage suggest;
@@ -19,29 +20,30 @@ class RoutingSuggestList extends ConsumerWidget {
 
     return ListView.separated(
       shrinkWrap: true,
-      scrollDirection: Axis.vertical,
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       padding: const EdgeInsetsDirectional.only(
         start: 16,
         bottom: 16,
       ),
       physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) {
-        return SuggestItem(
-          suggest: suggests[index],
-          onObjectTap: (object) {
-            context.pop(RoutePointDirectoryObject(object));
-          },
-        );
-      },
+      itemBuilder: (context, index) => SuggestItem(
+        suggest: suggests[index],
+        onObjectTap: (object) {
+          if (!context.mounted) {
+            mixpanel?.track('impossible-unounted-context');
+            return;
+          }
+
+          context.pop(RoutePointDirectoryObject(object));
+        },
+      ),
       itemCount: suggests.length,
-      separatorBuilder: (BuildContext context, int index) {
-        return const Padding(
-          padding: EdgeInsetsDirectional.only(
-            start: 52.0,
-          ),
-          child: Divider(),
-        );
-      },
+      separatorBuilder: (context, index) => const Padding(
+        padding: EdgeInsetsDirectional.only(
+          start: 52.0,
+        ),
+        child: Divider(),
+      ),
     );
   }
 }

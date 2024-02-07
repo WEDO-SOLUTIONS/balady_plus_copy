@@ -10,25 +10,27 @@ import './env.dart';
 import 'app/core/dependency_injection/injection_container.dart';
 
 void main() async {
-  await AppEnv.setupEnv(EnvType.urbiPre);
-  await setupMapness(EnvType.urbiPre);
+  await runMapnessApp(() async {
+    await AppEnv.setupEnv(EnvType.urbiPre);
+    await setupMapness(EnvType.urbiPre);
 
-  await SentryFlutter.init(
-    (options) {
-      options.dsn =
-          'https://c9e9c70957e4433e99fb6be6fc1cafc8@sentry.42.solutions/24';
-      // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
-      // We recommend adjusting this value in production.
-      options.tracesSampleRate = 1.0;
-      // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
-      // We recommend adjusting this value in production.
-      options.profilesSampleRate = 1.0;
-      options.attachScreenshot = true;
-      options.enableUserInteractionTracing = true;
-      options.captureFailedRequests = true;
-      options.environment = sl<EnvType>().name;
-    },
-    appRunner: () =>
-        runApp(const MapnessProviderScope(child: LocalizedApp(child: App()))),
-  );
+    await SentryFlutter.init(
+      (options) {
+        options.dsn =
+            'https://c9e9c70957e4433e99fb6be6fc1cafc8@sentry.42.solutions/24';
+        // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+        // We recommend adjusting this value in production.
+        options.tracesSampleRate = 1.0;
+        // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+        // We recommend adjusting this value in production.
+        options.profilesSampleRate = 1.0;
+        options.attachScreenshot = true;
+        options.enableUserInteractionTracing = true;
+        options.captureFailedRequests = true;
+        options.environment = sl<EnvType>().name;
+      },
+      appRunner: () =>
+          runApp(const MapnessProviderScope(child: LocalizedApp(child: App()))),
+    );
+  });
 }

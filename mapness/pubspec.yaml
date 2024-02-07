@@ -82,6 +82,12 @@ dependencies:
   flutter_image_compress: ^2.1.0
   flutter_uxcam: ^2.4.7
   dio_http_cache: ^0.3.0
+  sliver_tools: ^0.2.12
+  json_annotation: ^4.8.1
+  photo_view: ^0.14.0
+  flutter_staggered_grid_view: ^0.6.0
+  app_links: ^3.5.0
+  flutter_keyboard_visibility: ^6.0.0
 
 dependency_overrides:
   geolocator_android: ^4.2.2
@@ -100,10 +106,11 @@ dev_dependencies:
   # the code generator
   riverpod_generator: 2.3.3
   # riverpod_lint makes it easier to work with Riverpod
-  riverpod_lint: 2.1.1
+  riverpod_lint: ^2.1.1
   # import custom_lint too as riverpod_lint depends on it
-  custom_lint: 0.5.3
+  custom_lint: ^0.5.8
   go_router_builder: ^2.3.4
+  json_serializable: ^6.7.1
 
 flutter:
   assets:

@@ -292,6 +292,14 @@ class BuildingLevelsMessage {
   final List<LevelInfoMessage?> levels;
 }
 
+class BuildingInfoMessage {
+  BuildingInfoMessage(this.buildingName, this.purposeName, this.purposeCode);
+
+  final String? buildingName;
+  final String? purposeName;
+  final int? purposeCode;
+}
+
 class ApartmentRangeMessage {
   ApartmentRangeMessage(this.start, this.end);
 
@@ -376,6 +384,7 @@ class DirectoryObjectMessage {
     this.workStatus,
     this.levelId,
     this.buildingLevels,
+    this.buildingInfo,
     this.entrances,
     this.tradeLicense,
     this.externalIds,
@@ -400,6 +409,7 @@ class DirectoryObjectMessage {
   final WorkStatusMessage? workStatus;
   final int? levelId;
   final BuildingLevelsMessage? buildingLevels;
+  final BuildingInfoMessage buildingInfo;
   final List<EntranceInfoMessage?> entrances;
   final TradeLicenseMessage? tradeLicense;
   final List<String?>? externalIds;
@@ -611,6 +621,7 @@ class MarkerOptionsMessage {
     required this.text,
     this.textStyle,
     this.animatedAppearance,
+    this.zIndex,
   });
 
   final GeoPointWithElevationMessage position;
@@ -619,6 +630,7 @@ class MarkerOptionsMessage {
   final String? text;
   final MarkerTextStyleMessage? textStyle;
   final bool? animatedAppearance;
+  final int? zIndex;
 }
 
 class MarkerMessage {
@@ -998,10 +1010,23 @@ class WeatherMapMessage {
   final bool enabled;
 }
 
+class RenderedObjectMessage {
+  RenderedObjectMessage(this.object, this.closestMapPoint);
+
+  final DgisObjectIdMessage object;
+  final GeoPointWithElevationMessage closestMapPoint;
+}
+
 enum VendorConfigMessage {
   urbiPreProd,
   momrahProd,
   momrahStg,
+}
+
+enum FollowStateMessage {
+  off,
+  followPosition,
+  followDirection,
 }
 
 @ConfigurePigeon(
@@ -1028,7 +1053,10 @@ abstract class MapApi {
   void zoomUp(ZoomControlMessage type);
 
   @async
-  void changeFollowState();
+  void setFollowState(FollowStateMessage state);
+
+  @async
+  void followNavigation();
 
   @async
   void selectIndoorLevel(int index);
@@ -1050,7 +1078,15 @@ abstract class MapApi {
   );
 
   @async
+  List<RenderedObjectMessage> getNearestObjects();
+
+  @async
   CameraPositionMessage getCameraPosition();
+
+  @async
+  CameraPositionMessage calcPositionForRoute(
+    CalcPositionOptionsMessage options,
+  );
 
   @async
   CameraPositionMessage calcPositionForMarkers(
@@ -1155,10 +1191,13 @@ abstract class MapApi {
   @async
   MapObjectManagerMessage createMapObjectManagerWithClustering(
     ClusteringMapObjectManagerOptionsMessage message,
+    String? layerId,
   );
 
   @async
-  MapObjectManagerMessage createMapObjectManager();
+  MapObjectManagerMessage createMapObjectManager(
+    String? layerId,
+  );
 
   @async
   void removeMapObjectManager(MapObjectManagerMessage id);
@@ -1269,7 +1308,7 @@ abstract class MapApi {
   void setPublicTransportActiveRoute(int routeIndex);
 
   @async
-  void toggleSound();
+  void toggleSound(bool enabled);
 
   @async
   void onTrafficAndParkingAttached();

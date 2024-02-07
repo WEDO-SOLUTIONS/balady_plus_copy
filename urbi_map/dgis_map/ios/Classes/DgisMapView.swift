@@ -3,7 +3,6 @@ import Flutter
 import DGis
 
 class DgisMapView: NSObject, FlutterPlatformView, MapApi {
-
     private class Events {
         static let zoomOutEvent = "zoomOutState"
         static let zoomInEvent = "zoomInState"
@@ -79,6 +78,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.compassControlHandler?.cancel()
         self.trafficAndParkingControlHandler?.cancel()
         self.packagesHandler?.cancel()
+        self.objectTapHandler?.cancel()
     }
     
     // MARK: - Controls initialize
@@ -133,6 +133,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
         
         self.trafficAndParkingControlHandler = TrafficAndParkingControlHandler(
+            sdk: try! sdk.context,
             map: map,
             eventChannel: eventChannel
         )
@@ -175,8 +176,13 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
     
-    func changeFollowState(completion: @escaping (FlutterError?) -> Void) {
-        self.locationControlHandler?.changeFollowState()
+    func setFollowStateState(_ state: FollowStateMessage, completion: @escaping (FlutterError?) -> Void) {
+        self.locationControlHandler?.setFollowState(state: state)
+        completion(nil)
+    }
+    
+    func followNavigation(completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.followNavigation()
         completion(nil)
     }
     
@@ -297,6 +303,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         cancelable.append(moveCancelable)
     }
     
+    func calcPosition(forRouteOptions options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
+        self.navigationHandler?.calcPositionForRoute(options: options, completion: completion)
+    }
+    
     func calcPosition(forMarkersMarkers markers: [String], options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
         self.objectTapHandler?.calcPosition(markers: markers, options: options, completion: completion)
     }
@@ -307,6 +317,19 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func calcPosition(forPolylinesPolylines polylines: [String], options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
         self.objectTapHandler?.calcPosition(polylines: polylines, options: options, completion: completion)
+    }
+    
+    func getNearestObjects(completion: @escaping ([RenderedObjectMessage]?, FlutterError?) -> Void) {
+        guard let map = self.map else {
+            completion(nil, FlutterError(
+                code: "IllegalArgumentException",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+            return
+        }
+        
+        self.objectTapHandler?.getNearestObjects(completion: completion)
     }
     
     func getCameraPosition(completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
@@ -611,12 +634,12 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.objectTapHandler?.removeMarker(id, from: manager, completion: completion)
     }
     
-    func createMapObjectManager(withClusteringMessage message: ClusteringMapObjectManagerOptionsMessage, completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
-        self.objectTapHandler?.createClusteringMapObjectManager(message, completion: completion)
+    func createMapObjectManager(withClusteringMessage message: ClusteringMapObjectManagerOptionsMessage, layerId: String?, completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
+        self.objectTapHandler?.createClusteringMapObjectManager(message, layerId, completion: completion)
     }
     
-    func createMapObjectManager(completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
-        self.objectTapHandler?.createMapObjectManager(completion: completion)
+    func createMapObjectManagerLayerId(_ layerId: String?, completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
+        self.objectTapHandler?.createMapObjectManager(layerId, completion: completion)
     }
     
     func removeMapObjectManagerId(_ id: MapObjectManagerMessage, completion: @escaping (FlutterError?) -> Void) {
@@ -910,9 +933,9 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.navigationHandler?.stopFreeRoam()
         completion(nil)
     }
-    
-    func toggleSound(completion: @escaping (FlutterError?) -> Void) {
-        self.navigationHandler?.toggleSounds()
+
+    func toggleSoundEnabled(_ enabled: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.toggleSounds(enabled: enabled.boolValue)
         completion(nil)
     }
     

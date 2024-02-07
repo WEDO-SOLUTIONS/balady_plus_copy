@@ -147,6 +147,24 @@ class ObjectTapEventHandler {
     ));
   }
 
+  void roadEventTapEvent(Map<dynamic, dynamic> map) {
+    final startTime = DateTime.fromMillisecondsSinceEpoch(map["startTime"]);
+    final finishTime = DateTime.fromMillisecondsSinceEpoch(map["finishTime"]);
+
+    _objectTapController.sink.add(
+      RoadEventTapEvent(
+        map["title"],
+        map["description"],
+        startTime,
+        finishTime,
+        LatLng(
+          latitude: map["latitude"],
+          longitude: map["longitude"],
+        ),
+      ),
+    );
+  }
+
   Future<void> dispose() async {
     await _objectTapController.close();
   }

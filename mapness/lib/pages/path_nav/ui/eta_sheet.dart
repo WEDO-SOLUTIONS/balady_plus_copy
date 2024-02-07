@@ -1,5 +1,8 @@
+import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_sound_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -16,6 +19,8 @@ class EtaSheet extends ConsumerStatefulWidget {
   final double minExtent;
   final double maxExtent;
 
+  final ValueListenable<PathNavState> navigationState;
+
   final void Function(double opacity) onBgOpacityChanged;
 
   const EtaSheet({
@@ -24,6 +29,7 @@ class EtaSheet extends ConsumerStatefulWidget {
     required this.onBgOpacityChanged,
     required this.onEndTripPressed,
     required this.onRoutePressed,
+    required this.navigationState,
     super.key,
   });
 
@@ -41,6 +47,27 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
   void initState() {
     super.initState();
     _dragController.addListener(_onSizeChanged);
+    widget.navigationState.addListener(_onStateChanged);
+  }
+
+  @override
+  void dispose() {
+    widget.navigationState.removeListener(_onStateChanged);
+    super.dispose();
+  }
+
+  Future<void> _onStateChanged() async {
+    if (widget.navigationState.value == PathNavState.finished) {
+      await _dragController.animateTo(
+        _maxExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+      );
+    } else if (widget.navigationState.value == PathNavState.paused) {
+      _dragController.jumpTo(
+        _minExtent,
+      );
+    }
   }
 
   void _onSizeChanged() {
@@ -65,56 +92,80 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
       child: PathNavBottomSheet(
         maxSize: _maxExtent,
         minSize: _minExtent,
-        header: Row(
-          children: [
-            ///
-            PathNavIconButton(
-              onPressed: () async {
-                _dragController.animateTo(
-                  _isExpanded ? _minExtent : _maxExtent,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeIn,
-                );
-              },
-              iconPath: _isExpanded
-                  ? 'assets/icons/svg/ic_arrow_corner_down_l.svg'
-                  : 'assets/icons/svg/ic_dashboard_menu.svg',
-            ),
-            const Spacer(),
+        header: ValueListenableBuilder(
+          valueListenable: widget.navigationState,
+          builder: (context, state, child) => state == PathNavState.paused
+              ? const SizedBox.shrink()
+              : Row(
+                  textDirection: TextDirection.rtl,
+                  children: [
+                    ///
+                    PathNavIconButton(
+                      onPressed: () async {
+                        await _dragController.animateTo(
+                          _isExpanded ? _minExtent : _maxExtent,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeIn,
+                        );
+                      },
+                      iconPath: _isExpanded
+                          ? 'assets/icons/svg/ic_arrow_corner_down_l.svg'
+                          : 'assets/icons/svg/ic_dashboard_menu.svg',
+                    ),
+                    const Spacer(),
 
-            /// eta
-            PathNavEtaWidget(eta: eta),
-            const Spacer(),
+                    if (state == PathNavState.finished)
+                      Text(
+                        context.l10n.youArrived,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .extension<ThemeTextStyles>()!
+                            .headingS
+                            .copyWith(color: const Color(0xFF1D2A36)),
+                      )
+                    else
+                      PathNavEtaWidget(eta: eta),
 
-            ///
-            PathNavIconButton(
-              onPressed: widget.onRoutePressed,
-              iconPath: _isExpanded
-                  ? 'assets/icons/svg/ic_map.svg'
-                  : 'assets/icons/svg/ic_nav_route.svg',
-            ),
-          ],
+                    const Spacer(),
+
+                    if (state == PathNavState.finished)
+                      const SizedBox(
+                        width: 40,
+                      )
+                    else
+                      PathNavIconButton(
+                        onPressed: widget.onRoutePressed,
+                        iconPath: 'assets/icons/svg/ic_nav_route.svg',
+                      ),
+                  ],
+                ),
         ),
-        body: Column(
-          children: [
-            PathNavSettingToggle(
-              title: context.l10n.darkMap,
-              state: ref.watch(darkModeProvider),
-              onChanged: (_) => ref.read(darkModeProvider.notifier).toggle(),
-            ),
-            const SizedBox(height: 12),
-            PathNavSettingToggle(
-              title: context.l10n.soundSettings,
-              subtitle: context.l10n.maneuvers,
-              state: sound,
-              onChanged: (_) =>
-                  ref.read(pathNavSoundProviderProvider.notifier).toggle(),
-            ),
-            const SizedBox(height: 12),
+        body: ValueListenableBuilder(
+          valueListenable: widget.navigationState,
+          builder: (context, state, child) => Column(
+            children: [
+              if (state != PathNavState.finished) ...[
+                PathNavSettingToggle(
+                  title: context.l10n.darkMap,
+                  state: ref.watch(darkModeProvider),
+                  onChanged: (_) =>
+                      ref.read(darkModeProvider.notifier).toggle(),
+                ),
+                const SizedBox(height: 12),
+                PathNavSettingToggle(
+                  title: context.l10n.soundSettings,
+                  subtitle: context.l10n.maneuvers,
+                  state: sound,
+                  onChanged: (_) =>
+                      ref.read(pathNavSoundProviderProvider.notifier).toggle(),
+                ),
+                const SizedBox(height: 12),
+              ],
 
-            /// end trip button
-            PathNavEndTripButton(onPressed: widget.onEndTripPressed),
-          ],
+              /// end trip button
+              PathNavEndTripButton(onPressed: widget.onEndTripPressed),
+            ],
+          ),
         ),
         controller: _dragController,
       ),

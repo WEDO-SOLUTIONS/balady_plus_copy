@@ -10,7 +10,25 @@ class DashboardControlModel {
     private let navigationManager: NavigationManager
     private let eventChannel: DgisStreamHandler
     private var cancelable: Array<Cancellable> = []
-    private static let preferredInstructions: SoundCategoryOptionSet = [.instructions]
+    private static let allCategories: SoundCategoryOptionSet = [
+        .crossroadCameras,
+        .laneCameras,
+        .noStoppingControlCameras,
+        .roadMarkingCameras,
+        .averageSpeedCameras,
+        .maxSpeedCameras,
+        .accidents,
+        .roadWorks,
+        .tolls,
+        .exceedSpeedLimits,
+        .intermediatePoints,
+        .routeRebuild,
+        .instructions,
+        .obstacles,
+        .roadSubtypes,
+        .lostLocation,
+        .routeEnd
+    ]
     
     private static let dateFormatter = {
         let formatter = DateFormatter()
@@ -44,9 +62,11 @@ class DashboardControlModel {
         ])
     }
     
-    func toggleSounds() {
-        if self.navigationManager.soundNotificationSettings.enabledSoundCategories.remove(DashboardControlModel.preferredInstructions) == nil {
-            self.navigationManager.soundNotificationSettings.enabledSoundCategories.insert(DashboardControlModel.preferredInstructions)
+    func toggleSounds(enabled: Bool) {
+        if enabled {
+            self.navigationManager.soundNotificationSettings.enabledSoundCategories = Self.allCategories
+        } else {
+            self.navigationManager.soundNotificationSettings.enabledSoundCategories = []
         }
     }
     
