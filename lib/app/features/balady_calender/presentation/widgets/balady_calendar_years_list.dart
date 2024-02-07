@@ -24,7 +24,7 @@ class _BaladyCalendarYearsListState extends State<BaladyCalendarYearsList> {
       width: double.infinity,
       child: Selector<BaladyCalendarYearsListViewModel,
           List<EventsCountInYearsItem>?>(
-        selector: (p0, p1) => p1.yearList,
+        selector: (p0, p1) => p1.yearsList,
         builder: (context, value, child) => ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: value?.length ?? 0,

@@ -25,11 +25,12 @@ class BaladyCalendarPage extends StatefulWidget {
 }
 
 class _BaladyCalendarPageState extends State<BaladyCalendarPage> {
-BaladyCalendarYearsListViewModel baladyCalendarYearsListViewModel = BaladyCalendarYearsListViewModel(webService: sl()) ;
+  BaladyCalendarYearsListViewModel baladyCalendarYearsListViewModel =
+      BaladyCalendarYearsListViewModel(webService: sl());
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-            create: (BuildContext context) => baladyCalendarYearsListViewModel,
+      create: (BuildContext context) => baladyCalendarYearsListViewModel,
       child: Scaffold(
         body: SafeArea(
           child: Padding(
@@ -93,8 +94,10 @@ BaladyCalendarYearsListViewModel baladyCalendarYearsListViewModel = BaladyCalend
                     GestureDetector(
                       onTap: () async {
                         await CustomPopUpsWidgets.showBottomSheet(context,
-                            child: const CalendarFilterPopup(),
-                            height: 550,
+                            child: ChangeNotifierProvider.value(
+                                value: baladyCalendarYearsListViewModel,
+                                child: const CalendarFilterPopup()),
+                            height: MediaQuery.sizeOf(context).height * 0.60,
                             radius: 30);
                       },
                       child: Container(
