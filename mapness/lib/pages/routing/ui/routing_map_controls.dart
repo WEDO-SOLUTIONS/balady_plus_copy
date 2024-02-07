@@ -39,6 +39,7 @@ class RoutingMapControls extends ConsumerWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Spacer(),
                         IndoorControl(),
                         Spacer(),
                       ],
