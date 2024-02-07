@@ -5,6 +5,7 @@
 
 - BALADY-1210: [Iwish] - minimize dashboard on show joyparks from story
 - BALADY-722: [POI Card] week starts from sunday
+- BALADY-1249: [Navi] Change default voice to “Saud”
 
 ## 3.8.2(5)
 
