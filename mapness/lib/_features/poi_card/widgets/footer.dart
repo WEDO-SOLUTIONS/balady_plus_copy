@@ -1,4 +1,3 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -45,44 +44,23 @@ class PoiCardFooter extends ConsumerWidget {
     final hasContacts = objectMessage?.contactInfos.isNotEmpty == true;
     final carIconFlex = (hasEntrances || hasContacts) ? 3 : 2;
 
+    /// redraw footer if fav repo changes. Do not remove, entail bug with multi fav add!
+    ref.watch(favouriteRepositoryProvider).valueOrNull;
+
+    // TODO(ForesThule): getters does not provide subscription this entail bugs. Please, move related things to provider instead of view model.
     final isFav = viewModel.isFavourite(model);
     final favData = viewModel.getFavouriteOrNull(model);
-
-    final favouriteItem = favData ??
-        FavouriteItem(
-          coordinates: Coordinates(
-            latitude: objectMessage?.markerPosition?.latitude ?? 0,
-            longitude: objectMessage?.markerPosition?.longitude ?? 0,
-          ),
-          id: 'overriden',
-          subtitle: objectMessage?.subtitle ?? '',
-          title: objectMessage?.title ?? '',
-          entity: FavouriteItemEntity(
-            sourceType: EntitySourceType.urbi,
-            id: objectMessage?.id?.objectId.toString() ?? 'id',
-          ),
-        );
 
     Widget favItem({int flex = 1}) => buildIconButton(
           flex: flex,
           assetName: isFav
               ? 'assets/icons/svg/ic_fav_solid.svg'
               : 'assets/icons/svg/ic_fav_poi.svg',
-          onTap: () async {
-            await _onFavTap(
-              context: context,
-              favouriteItem: favouriteItem,
-              ref: ref,
-            );
-            if (favData == null) {
-              final directoryObjectMessage = objectMessage;
-              if (directoryObjectMessage != null) {
-                viewModel.addToFavourites(directoryObjectMessage);
-              }
-            } else {
-              viewModel.removeFromFavourite(favData);
-            }
-          },
+          onTap: () => _onFavTap(
+            context: context,
+            favouriteItem: favData,
+            ref: ref,
+          ),
           // desc: (hasContacts == false)
           //     ? Text(
           //         context.l10n.favourites,
@@ -198,10 +176,10 @@ class PoiCardFooter extends ConsumerWidget {
     required WidgetRef ref,
     FavouriteItem? favouriteItem,
   }) async {
-    CommonFunctions.authOrOpen(
+    await CommonFunctions.authOrOpen(
       context,
       callback: () {
-        final favState = ref.read(favouriteRepositoryProvider);
+        final favState = ref.read(favouriteRepositoryProvider).valueOrNull;
         final objectMessage = data;
 
         final newFav = FavouriteItem(
@@ -225,8 +203,7 @@ class PoiCardFooter extends ConsumerWidget {
         }
 
         /// do not show dialog if home and work are set
-        if (favState.valueOrNull?.home != null &&
-            favState.valueOrNull?.work != null) {
+        if (favState?.home != null && favState?.work != null) {
           viewModel.addToFavourites(objectMessage);
         } else {
           /// show dialog to choose home, work or regular

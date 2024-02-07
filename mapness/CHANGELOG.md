@@ -1,6 +1,7 @@
 ## 3.8.2(6) - Current
 
 - BALADY-1198: [Navi] add map controls
+- BALADY-1210: [Iwish] - minimize dashboard on show joyparks from story
 
 ## 3.8.2(5)
 

@@ -34,7 +34,7 @@ class KiblahHeader extends ConsumerWidget {
         alignment: Alignment.center,
         children: [
           Align(
-            alignment: Alignment.centerRight,
+            alignment: AlignmentDirectional.centerEnd,
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),

@@ -22,11 +22,13 @@ class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({
     required this.biggestHeight,
     required this.biggestWidth,
+    required this.initWithMinSize,
     super.key,
   });
 
   final double biggestHeight;
   final double biggestWidth;
+  final bool initWithMinSize;
 
   @override
   ConsumerState<Dashboard> createState() => _DashboardState();
@@ -104,7 +106,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
       },
       child: DraggableScrollableSheet(
         controller: _draggableScrollableController,
-        initialChildSize: .75,
+        initialChildSize: widget.initWithMinSize?_headerExtent:.75,
         minChildSize: _headerExtent,
         maxChildSize: .9,
         snap: true,
