@@ -3,7 +3,7 @@ import 'package:balady_plus/app/features/balady_calender/data/models/events_coun
 import 'package:balady_plus/app/features/balady_calender/data/models/events_details/list_events_details.dart';
 import 'package:balady_plus/app/features/balady_calender/data/models/filter/filter_response.dart';
 import 'package:balady_plus/app/features/balady_calender/domain/entities/events_count_in_months_params.dart';
-import 'package:balady_plus/app/features/balady_calender/domain/entities/events_count_in_years_params.dart';
+import 'package:balady_plus/app/features/balady_calender/domain/entities/events_common_params.dart';
 import 'package:balady_plus/app/features/balady_calender/domain/entities/events_details_params.dart';
 import '../../../../core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/errors/exceptions.dart';
@@ -16,7 +16,7 @@ abstract class BaladyCalendarRemoteDataSource {
   Future<Filter> getFilteredEvents();
 
   Future<EventsCountInYears> getEventsCountInYears({
-    required EventsCountInyearsParams params,
+    required EventsCommonParams params,
   });
 
   Future<EventsCountInMonths> getEventsCountInMonths({
@@ -76,7 +76,7 @@ class CalendarBaladyRemoteDataSourceImpl extends BaladyCalendarRemoteDataSource 
 
   @override
   Future<EventsCountInYears> getEventsCountInYears(
-      {required EventsCountInyearsParams params}) async {
+      {required EventsCommonParams params}) async {
     var response;
 
     try {
@@ -125,7 +125,7 @@ class CalendarBaladyRemoteDataSourceImpl extends BaladyCalendarRemoteDataSource 
     var response;
 
     try {
-      response = await webService.dio.post(
+      response = await webService.dio.get(
         ApiUrl.baladyCalendarEventsCountInMonths,
         queryParameters: params.toJson(),
         options: Options(

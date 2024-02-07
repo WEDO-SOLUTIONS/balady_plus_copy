@@ -4,7 +4,7 @@ import 'package:balady_plus/app/features/balady_calender/data/models/events_coun
 import 'package:balady_plus/app/features/balady_calender/data/models/events_details/list_events_details.dart';
 import 'package:balady_plus/app/features/balady_calender/data/models/filter/filter_response.dart';
 import 'package:balady_plus/app/features/balady_calender/domain/entities/events_count_in_months_params.dart';
-import 'package:balady_plus/app/features/balady_calender/domain/entities/events_count_in_years_params.dart';
+import 'package:balady_plus/app/features/balady_calender/domain/entities/events_common_params.dart';
 import 'package:balady_plus/app/features/balady_calender/domain/entities/events_details_params.dart';
 import 'package:balady_plus/app/features/balady_calender/domain/repositories/balady_calendar_repository.dart';
 import 'package:dartz/dartz.dart';
@@ -31,7 +31,7 @@ class BaladyCalendarRepositoryImpl implements BaladyCalendarRepository {
 
   @override
   Future<Either<Failure, EventsCountInYears>> getEventsCountInYears(
-      {required EventsCountInyearsParams params}) async {
+      {required EventsCommonParams params}) async {
     try {
       final data = await remoteDataSource.getEventsCountInYears(params: params);
       return Right(data);

@@ -2,19 +2,19 @@ import 'package:balady_plus/app/features/balady_calender/data/models/events_coun
 import 'package:equatable/equatable.dart';
 
 class EventsCountInMonths extends Equatable {
-  final List<MonthsEventsCount>? monthsEventsCount;
+  final List<MonthsEventsCount> monthsEventsCount;
 
-  const EventsCountInMonths({this.monthsEventsCount});
+  const EventsCountInMonths({required this.monthsEventsCount});
 
   factory EventsCountInMonths.fromJson(Map<String, dynamic> json) =>
       EventsCountInMonths(
         monthsEventsCount: (json['monthsEventsCount'] as List<dynamic>?)
             ?.map((e) => MonthsEventsCount.fromJson(e as Map<String, dynamic>))
-            .toList(),
+            .toList() ?? [],
       );
 
   Map<String, dynamic> toJson() => {
-        'monthsEventsCount': monthsEventsCount?.map((e) => e.toJson()).toList(),
+        'monthsEventsCount': monthsEventsCount.map((e) => e.toJson()).toList(),
       };
 
   @override

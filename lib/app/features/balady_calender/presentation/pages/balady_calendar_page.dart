@@ -3,6 +3,7 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/balady_calender/data/models/events_count_in_months/months_events_count.dart';
+import 'package:balady_plus/app/features/balady_calender/domain/entities/events_common_params.dart';
 import 'package:balady_plus/app/features/balady_calender/domain/entities/events_details_params.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/bloc/events_list_cubit.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/mvvm/balady_calendar_years_list_view_model.dart';
@@ -25,11 +26,16 @@ class BaladyCalendarPage extends StatefulWidget {
 }
 
 class _BaladyCalendarPageState extends State<BaladyCalendarPage> {
-BaladyCalendarYearsListViewModel baladyCalendarYearsListViewModel = BaladyCalendarYearsListViewModel(webService: sl()) ;
+  BaladyCalendarYearsListViewModel baladyCalendarYearsListViewModel =
+      BaladyCalendarYearsListViewModel(
+    repository: sl(),
+    params: EventsDetailsParams(year: DateTime.now().year),
+  );
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-            create: (BuildContext context) => baladyCalendarYearsListViewModel,
+      create: (BuildContext context) => baladyCalendarYearsListViewModel,
       child: Scaffold(
         body: SafeArea(
           child: Padding(
@@ -115,20 +121,27 @@ BaladyCalendarYearsListViewModel baladyCalendarYearsListViewModel = BaladyCalend
                 const SizedBox(height: 20),
                 const BaladyCalendarYearsList(),
                 Expanded(
-                  child: BlocProvider<EventsListCubit>(
-                    create: (BuildContext context) => EventsListCubit(
-                      baladyCalendarRepository: sl(),
-                      listMonths: [
-                        const MonthsEventsCount(
-                          month: 6,
-                          eventsCount: 1,
-                        )
-                      ],
-                      params: EventsDetailsParams(
-                        year: 2026,
-                      ),
-                    ),
-                    child: const BaladyCalendarEventsWidget(),
+                  child: Selector<BaladyCalendarYearsListViewModel, bool>(
+                    selector: (_, provider) => provider.isLoading,
+                    builder: (_, isLoading, child) {
+                      // if Loading
+                      if(isLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      // if have errors
+                      if(baladyCalendarYearsListViewModel.monthsList == null) {
+                        return const SizedBox();
+                      }
+                      // done get Data
+                      return BlocProvider<EventsListCubit>(
+                              create: (BuildContext context) => EventsListCubit(
+                                baladyCalendarRepository: sl(),
+                                listMonths: baladyCalendarYearsListViewModel.monthsList!,
+                                params: baladyCalendarYearsListViewModel.params,
+                              ),
+                              child: const BaladyCalendarEventsWidget(),
+                            );
+                    },
                   ),
                 ),
               ],

@@ -1,100 +1,47 @@
-import 'dart:convert';
+import 'package:balady_plus/app/features/balady_calender/domain/entities/events_common_params.dart';
 
-String eventsCountInMonthsParamsToJson(EventsCountInMonthsParams data) => json.encode(data.toJson());
+class EventsCountInMonthsParams extends EventsCommonParams {
+  //////////////////////////////////////
+  int year;
 
-class EventsCountInMonthsParams {
-    String loginIdentityId;
-    String loginIdentityType;
-    String unifiedNationalNumber;
-    int relationTypeeId;
-    List<String> filterationEntity;
-    AgencyInRequestDto agencyInRequestDto;
-    bool hijri;
-    int year;
-    int page;
-    int size;
+  EventsCountInMonthsParams({
+    super.loginIdentityId,
+    super.loginIdentityType,
+    super.unifiedNationalNumber,
+    super.relationTypeeId,
+    super.filterationEntity,
+    super.agencyInRequestDto,
+    super.hijri,
+    required this.year,
+  });
 
+  @override
+  EventsCountInMonthsParams copyWith({
+    String? loginIdentityId,
+    String? loginIdentityType,
+    String? unifiedNationalNumber,
+    int? relationTypeeId,
+    List<String>? filterationEntity,
+    AgencyInRequestDto? agencyInRequestDto,
+    bool? hijri,
+    int? year,
+  }) =>
+      EventsCountInMonthsParams(
+        loginIdentityId: loginIdentityId ?? super.loginIdentityId,
+        loginIdentityType: loginIdentityType ?? super.loginIdentityType,
+        unifiedNationalNumber:
+            unifiedNationalNumber ?? super.unifiedNationalNumber,
+        relationTypeeId: relationTypeeId ?? super.relationTypeeId,
+        filterationEntity: filterationEntity ?? super.filterationEntity,
+        agencyInRequestDto: agencyInRequestDto ?? super.agencyInRequestDto,
+        hijri: hijri ?? super.hijri,
+        year: year ?? this.year,
+      );
 
-    EventsCountInMonthsParams({
-        required this.loginIdentityId,
-        required this.loginIdentityType,
-        required this.unifiedNationalNumber,
-        required this.relationTypeeId,
-        required this.filterationEntity,
-        required this.agencyInRequestDto,
-        required this.hijri,
-        required this.year,
-        this.page = 0, // start page from 0
-        this.size = 12, // default items get from API 12
-    });
-
-    EventsCountInMonthsParams copyWith({
-        String? loginIdentityId,
-        String? loginIdentityType,
-        String? unifiedNationalNumber,
-        int? relationTypeeId,
-        List<String>? filterationEntity,
-        AgencyInRequestDto? agencyInRequestDto,
-        bool? hijri,
-        int? year,
-        int? page,
-        int? size,
-    }) =>
-        EventsCountInMonthsParams(
-            loginIdentityId: loginIdentityId ?? this.loginIdentityId,
-            loginIdentityType: loginIdentityType ?? this.loginIdentityType,
-            unifiedNationalNumber: unifiedNationalNumber ?? this.unifiedNationalNumber,
-            relationTypeeId: relationTypeeId ?? this.relationTypeeId,
-            filterationEntity: filterationEntity ?? this.filterationEntity,
-            agencyInRequestDto: agencyInRequestDto ?? this.agencyInRequestDto,
-            hijri: hijri ?? this.hijri,
-            year: year ?? this.year,
-            page: page ?? this.page,
-            size: size ?? this.size,
-        );
-
-
-
-    Map<String, dynamic> toJson() => {
-        "loginIdentityId": loginIdentityId,
-        "loginIdentityType": loginIdentityType,
-        "unifiedNationalNumber": unifiedNationalNumber,
-        "relationTypeeId": relationTypeeId,
-        "filterationEntity": List<dynamic>.from(filterationEntity.map((x) => x)),
-        "agencyInRequestDto": agencyInRequestDto.toJson(),
-        "hijri": hijri,
-        "year": year,
-        "page": page,
-        "size": size,
-    };
-}
-
-class AgencyInRequestDto {
-    String agencyNumber;
-    String ownerNumber;
-    String ownerTypeId;
-
-    AgencyInRequestDto({
-        required this.agencyNumber,
-        required this.ownerNumber,
-        required this.ownerTypeId,
-    });
-
-    AgencyInRequestDto copyWith({
-        String? agencyNumber,
-        String? ownerNumber,
-        String? ownerTypeId,
-    }) => 
-        AgencyInRequestDto(
-            agencyNumber: agencyNumber ?? this.agencyNumber,
-            ownerNumber: ownerNumber ?? this.ownerNumber,
-            ownerTypeId: ownerTypeId ?? this.ownerTypeId,
-        );
-
-
-    Map<String, dynamic> toJson() => {
-        "agencyNumber": agencyNumber,
-        "ownerNumber": ownerNumber,
-        "ownerTypeId": ownerTypeId,
-    };
+  @override
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> data = super.toJson();
+    data["years"] = year;
+    return data;
+  }
 }
