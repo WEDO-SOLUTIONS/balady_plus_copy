@@ -21,6 +21,7 @@ import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.geometry.GeoPointWithElevation
 import ru.dgis.sdk.map.*
+import ru.dgis.sdk.road_events.RoadEventType
 import java.io.FileNotFoundException
 import java.lang.IllegalArgumentException
 import java.util.*
@@ -66,6 +67,8 @@ class ObjectTapHandler(
     private val managers = mutableMapOf<String, MapObjectManager>()
 
     private val iconCache = mutableMapOf<String, Image>()
+
+    private var renderedObjectsCloseable: AutoCloseable? = null
 
     fun objectTapListener(roi: RenderedObjectInfo) {
 //        when (val tappedObject = roi.item.item) {
@@ -128,6 +131,9 @@ class ObjectTapHandler(
                     onClusterTap(userData.id, tappedObject, clusterId)
                     return
                 }
+            }
+            is RoadEventMapObject -> {
+                onRoadEventTap(tappedObject)
             }
             else -> eventSink.error(
                 "ClassCastException",
@@ -714,6 +720,25 @@ class ObjectTapHandler(
         )
     }
 
+    private fun onRoadEventTap(event: RoadEventMapObject) {
+        when (event.event.type) {
+            RoadEventType.ROAD_WORKS -> {
+                eventSink.success(
+                    mapOf(
+                        "event" to Events.onRoadEventTap.name,
+                        "title" to event.event.name,
+                        "description" to event.event.description,
+                        "startTime" to event.event.schedule?.startTime?.timeFromEpoch?.inSeconds,
+                        "finishTime" to event.event.schedule?.finishTime?.timeFromEpoch?.inSeconds,
+                        "latitude" to event.event.location.latitude.value,
+                        "longitude" to event.event.location.longitude.value,
+                    )
+                )
+            }
+            else -> {}
+        }
+    }
+
     private fun onClusterTap(id: String, cluster: SimpleClusterObject, clusterId: String) {
         eventSink.success(
             mapOf(
@@ -791,6 +816,36 @@ class ObjectTapHandler(
         )
     }
 
+    fun getNearestObjects(result: Result<List<RenderedObjectMessage>>) {
+        val cameraPosition = map.camera.position
+        val screenPoint = map.camera.projection.mapToScreen(cameraPosition.point)
+        if (screenPoint == null) {
+            result.error(IllegalArgumentException("Map has not been initialized"))
+        }
+
+        renderedObjectsCloseable = map.getRenderedObjects(screenPoint!!, ScreenDistance(1F)).apply {
+            onResult { objects ->
+                result.success(
+                    objects
+                        .filter {
+                            it.item.item is DgisMapObject
+                        }
+                        .map<RenderedObjectInfo, RenderedObjectMessage> {
+                            RenderedObjectMessage.Builder()
+                                .setObject((it.item.item as DgisMapObject).id.toMessage())
+                                .setClosestMapPoint(it.closestMapPoint.toMessage())
+                                .build()
+                        }
+                        .toList()
+                )
+            }
+            onError {
+                result.error(it)
+            }
+        }
+    }
+
+
     private class AddMarkersTask(
         private val mapObjectManager: MapObjectManager,
         private val message: AddMarkersWithPhotoMessage,
@@ -826,6 +881,7 @@ private enum class Events {
     onIoTap,
     onIdleTap,
     onMarkerTap,
+    onRoadEventTap,
     onClusterTap,
     onPolygonTap,
     onPolylineTap,

@@ -9,9 +9,9 @@ import 'package:provider/provider.dart';
 
 class MapSearchBar extends ConsumerStatefulWidget {
   const MapSearchBar({
-    super.key,
     required this.requestFocus,
     required this.onClose,
+    super.key,
   });
 
   final bool requestFocus;
@@ -30,6 +30,16 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     _focusNode = FocusNode();
     if (widget.requestFocus) {
       _focusNode.requestFocus();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (widget.requestFocus) {
+      _focusNode.requestFocus();
+    } else {
+      _focusNode.unfocus();
     }
   }
 
@@ -55,7 +65,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           ),
           child: NavButton(
             onTap: widget.onClose,
-            icon: "assets/icons/svg/ic_search_close.svg",
+            icon: 'assets/icons/svg/ic_search_close.svg',
           ),
         ),
       ],

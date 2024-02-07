@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/routes.dart' hide $appRoutes;
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/pages/routing/routing_favourites.dart';
+import 'package:mapness/pages/routing/routing_map_select.dart';
 import 'package:mapness/pages/routing/routing_routes.dart';
 import 'package:mapness/pages/routing/routing_search.dart';
 import 'package:mapness/shared/routing/transculent_page.dart';
@@ -24,14 +25,28 @@ class RoutingSearchRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return TransculentPage(
-      child: RoutingSearchSheet(
-        placeholder: placeholder,
-        showMyLocation: showMyLocation,
-      ),
-    );
-  }
+  Page<void> buildPage(BuildContext context, GoRouterState state) =>
+      TransculentPage(
+        child: RoutingSearchSheet(
+          placeholder: placeholder,
+          showMyLocation: showMyLocation,
+        ),
+      );
+}
+
+@TypedGoRoute<RoutingMapRoute>(
+  path: '/routingMap',
+)
+class RoutingMapRoute extends GoRouteData {
+  const RoutingMapRoute();
+
+  static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) =>
+      const TransculentPage(
+        child: RoutingMapSelect(),
+      );
 }
 
 @TypedGoRoute<RoutingFavouritesRoute>(
@@ -41,11 +56,10 @@ class RoutingFavouritesRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return const TransculentPage(
-      child: RoutingFavouritesPage(),
-    );
-  }
+  Page<void> buildPage(BuildContext context, GoRouterState state) =>
+      const TransculentPage(
+        child: RoutingFavouritesPage(),
+      );
 }
 
 @TypedGoRoute<RoutingRoutesRoute>(
@@ -93,20 +107,19 @@ class RoutingRoutesRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return TransculentPage(
-      child: RoutingRoutesPage(
-        points: [
-          startPoint,
-          finishPoint,
-        ],
-        labels: [
-          startLabel,
-          finishLabel,
-        ],
-      ),
-    );
-  }
+  Page<void> buildPage(BuildContext context, GoRouterState state) =>
+      TransculentPage(
+        child: RoutingRoutesPage(
+          points: [
+            startPoint,
+            finishPoint,
+          ],
+          labels: [
+            startLabel,
+            finishLabel,
+          ],
+        ),
+      );
 }
 
 final $routingRoutes = $appRoutes;

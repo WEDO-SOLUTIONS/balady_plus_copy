@@ -259,6 +259,10 @@ class DgisMapView(
         )
     }
 
+    override fun getNearestObjects(result: Messages.Result<List<RenderedObjectMessage>>) {
+        objectTapHandler?.getNearestObjects(result)
+    }
+
     override fun calcPositionForRoute(options: CalcPositionOptionsMessage, result: Messages.Result<CameraPositionMessage>?) {
         navigationHandler.calcPositionForRoute(options, result)
     }
@@ -832,7 +836,7 @@ class DgisMapView(
             DgisMapPlugin.vendorConfig,
         )
         compassControlHandler = CompassControlHandler(map, eventSink)
-        trafficAndParkingControlHandler = TrafficAndParkingControlHandler(map, eventSink)
+        trafficAndParkingControlHandler = TrafficAndParkingControlHandler(sdkContext, map, eventSink)
         setupTapHandler()
         weatherHandler = WeatherHandler(sdkContext,map)
         result.success(

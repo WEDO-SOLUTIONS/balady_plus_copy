@@ -114,6 +114,8 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<CameraPositionMessage> getCameraPosition();
 
+  Future<List<RenderedObjectMessage>> getNearestObjects();
+
   Future<CameraPositionMessage> calcPositionForRoute(
     CalcPositionOptionsMessage options,
   );

@@ -55,7 +55,7 @@ class DgisController extends _$DgisController {
       min: 5.5,
     );
     await controller.overrideLocales(
-      ref.read(appLanguageProvider) == Language.arabic ? ['ar-SA'] : ['en-US'],
+      ref.read(appLanguageProvider) == Language.arabic ? ['ar-SA'] : ['en-SA'],
     );
     await controller.setAppearance(
       ref.read(darkModeProvider)

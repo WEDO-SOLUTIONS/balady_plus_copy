@@ -34,6 +34,7 @@ class DgisBottomSheet extends StatefulWidget {
   final double? collapsedHeight;
   final double hiddenHeight;
   final WidgetBuilder? body;
+  final DgisBottomSheetController? controller;
 
   /// Appears when bottom sheet is expanded. Pin to the bottom when body scrolls.
   /// Usually contains buttons.
@@ -74,6 +75,7 @@ class DgisBottomSheet extends StatefulWidget {
     Key? key,
     this.scrollHeader,
     this.hiddenHeight = 0,
+    this.controller,
   })  : assert(
           !availableExpansions.contains(Expansion.collapsed) ||
               collapsedHeight != null && collapsedHeight > 0,
@@ -106,6 +108,32 @@ class DgisBottomSheet extends StatefulWidget {
 
   @override
   State<DgisBottomSheet> createState() => _DgisBottomSheetState();
+}
+
+class DgisBottomSheetController {
+  bool _isAttached = false;
+  Expansion? _currentExpansion;
+  Expansion? get currentExpansion => _currentExpansion;
+
+  Function(Expansion expansion)? _onAnimate;
+
+  /// for now only one field, so may be replaced with setter, but in future it is planned to add more
+  // ignore: use_setters_to_change_properties
+  void _link({
+    Function(Expansion expansion)? onAnimate,
+  }) {
+    _onAnimate = onAnimate;
+    _isAttached = true;
+  }
+
+  void animateTo(Expansion expansion) {
+    assert(_isAttached, 'Controller should be attached to any dgissheet');
+    _onAnimate?.call(expansion);
+  }
+
+  void dispose() {
+    _isAttached = false;
+  }
 }
 
 class _DgisBottomSheetState extends State<DgisBottomSheet>
@@ -246,6 +274,11 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
     _printDebugLog('didUpdateWidget');
     _printDebugLog(widget.availableExpansions.toString());
     _printDebugLog(_expansion.toString());
+
+    /// expose callbacks to controller
+    widget.controller?._link(
+      onAnimate: setExpansion,
+    );
 
     // Обновляем Expansion только если изменилось что-то связанное с ним
     if (widget.middleHeight == oldWidget.middleHeight &&
@@ -670,7 +703,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
         setState(() {
           _expansion = expansion;
         });
-        widget.onExpansionChanged?.call(expansion, byUser: byUser);
+        _notifyExpansion(expansion, byUser: byUser);
       }
       return;
     }
@@ -775,7 +808,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
     setState(() {
       _expansion = expansion;
     });
-    widget.onExpansionChanged?.call(expansion, byUser: byUser);
+    _notifyExpansion(expansion, byUser: byUser);
   }
 
   /// Если возможно - свернёт [DgisBottomSheet] до самого нижнего состояния и вернёт false
@@ -806,5 +839,10 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
       }
     }
     throw UnimplementedError('This line should be unreachable');
+  }
+
+  void _notifyExpansion(Expansion expansion, {required bool byUser}) {
+    widget.onExpansionChanged?.call(expansion, byUser: byUser);
+    widget.controller?._currentExpansion = expansion;
   }
 }

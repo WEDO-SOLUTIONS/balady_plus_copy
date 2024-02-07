@@ -1,6 +1,16 @@
-## 3.8.2(4) - Current
+## 3.8.2(5) - Current
 
-- BALADY-1127 [Marketing] [Navi] IOS - The app crashed if the user navigates in the map without entering a point
+- BALADY-1177: [Marketing] arabic text in poi card in english app
+- BALADY-1212: [Marketing] navigation is not enabled in all places to visit and places to shop
+- BALADY-1217: [Marketing] enabling navigation for Joy parks
+- BALADY-1200: [Interesting Place] - tapping to interesting objects does not fly to it
+- BALADY-903: [Navi] Specify on map with pin A or B
+- BALADY-1216: [Navi] - wakelock device while navigator enabled
+- BALADY-1168: [Marketing] the keyboard is overlapping the map in search
+- BALADY-1201: [Search] - keyboard fix. Bottom sheet is under the keyboard
+
+## 3.8.2(4)
+
 - fix poi reload button
 - BALADY-552 bugfix(Navi) Bottom sheet on the route mode
 - BALADY-1083 [bottom-sheet] Navi. Swipe up and down doesn't work

@@ -1010,6 +1010,13 @@ class WeatherMapMessage {
   final bool enabled;
 }
 
+class RenderedObjectMessage {
+  RenderedObjectMessage(this.object, this.closestMapPoint);
+
+  final DgisObjectIdMessage object;
+  final GeoPointWithElevationMessage closestMapPoint;
+}
+
 enum VendorConfigMessage {
   urbiPreProd,
   momrahProd,
@@ -1069,6 +1076,9 @@ abstract class MapApi {
     double duration,
     CameraAnimationTypeMessage animationType,
   );
+
+  @async
+  List<RenderedObjectMessage> getNearestObjects();
 
   @async
   CameraPositionMessage getCameraPosition();

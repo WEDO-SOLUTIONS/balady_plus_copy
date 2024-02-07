@@ -233,6 +233,8 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
             return _indoorEventHandler.activeLevelEvent(map);
           case ObjectTapEvent.name:
             return _objectTapEventHandler.objectTapEvent(map);
+          case RoadEventTapEvent.name:
+            return _objectTapEventHandler.roadEventTapEvent(map);
           case MarkerTapEvent.name:
             return _objectTapEventHandler.markerTapEvent(map);
           case ClusterTapEvent.name:
@@ -353,6 +355,13 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   @override
   Future<CameraPositionMessage> getCameraPosition() {
     return _api.getCameraPosition();
+  }
+
+  @override
+  Future<List<RenderedObjectMessage>> getNearestObjects() async {
+    return (await _api.getNearestObjects())
+        .whereType<RenderedObjectMessage>()
+        .toList();
   }
 
   @override

@@ -190,6 +190,10 @@ class DgisMapController {
   Future<CameraPositionMessage> getCameraPosition() =>
       _instance.getCameraPosition();
 
+  /// Returns nearest objects to camera position.
+  Future<List<RenderedObjectMessage>> getNearestObjects() =>
+      _instance.getNearestObjects();
+
   Future<void> setPanoramasPaddings({
     int left = 0,
     int top = 0,

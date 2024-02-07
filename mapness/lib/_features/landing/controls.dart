@@ -22,7 +22,9 @@ import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 import '../weather/widgets/weather_control.dart';
 
 class MapControls extends ConsumerWidget {
+  final bool? hideControls;
   const MapControls({
+    this.hideControls,
     Key? key,
   }) : super(key: key);
 
@@ -31,8 +33,9 @@ class MapControls extends ConsumerWidget {
     final controlsState = ref.watch(mapControlsProvider);
     final currentRoute = ref.watch(currentRouteProvider);
 
-    final controlsHidden = controlsState.controlsVisible == false ||
-        (currentRoute != null && currentRoute != '/landing');
+    final controlsHidden = hideControls ??
+        controlsState.controlsVisible == false ||
+            (currentRoute != null && currentRoute != '/landing');
 
     return IgnorePointer(
       ignoring: controlsHidden,
