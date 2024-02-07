@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:mapness/features/road_events/ui/widgets/closure_controls.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 
@@ -63,7 +64,8 @@ class _RoadClosurePageState extends ConsumerState<RoadClosurePage> {
           child: ClosureControls(),
         ),
         ClosureCard(
-          title: widget.title,
+          // TODO(@alexstrnik) switch back to widget.title after SDK fix
+          title: context.l10n.roadBlocking,
           description: widget.description,
           workDuration: _formatSchedule(widget.startTime, widget.finishTime),
         )
