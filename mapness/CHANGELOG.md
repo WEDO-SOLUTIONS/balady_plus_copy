@@ -7,6 +7,7 @@
 - BALADY-722: [POI Card] week starts from sunday
 - BALADY-1249: [Navi] Change default voice to “Saud”
 - BALADY-952: [Favourites] - fix error screen on favourites open
+- BALADY-1262: [Navi] Incorrect date type and translation in Road Closure (RoadEvent)
 
 ## 3.8.2(5)
 

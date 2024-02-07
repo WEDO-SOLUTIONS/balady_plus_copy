@@ -26,7 +26,9 @@ class _FavouriteRepository extends _$FavouriteRepository {
       return;
     }
     final data = state.requireValue;
-    if (data == null) return;
+    if (data == null) {
+      return;
+    }
     final items = [
       if (data.home != null) data.home!,
       if (data.work != null) data.work!,
@@ -148,12 +150,11 @@ class _FavouriteRepository extends _$FavouriteRepository {
   }
 
   FavouriteItem? getFavouriteOrNull(int? objectId) {
-    final favouritesState = ref.read(favouriteRepositoryProvider);
-    if (!favouritesState.hasValue) {
+    if (!state.hasValue) {
       return null;
     }
 
-    final requireValue = favouritesState.requireValue;
+    final requireValue = state.requireValue;
 
     final isFavourite = [
       ...requireValue.items,
@@ -161,7 +162,7 @@ class _FavouriteRepository extends _$FavouriteRepository {
       requireValue.work,
     ].nonNulls.firstWhereOrNull(
           (element) => element.entity?.id == '$objectId',
-    );
+        );
     return isFavourite;
   }
 
