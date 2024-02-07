@@ -7,6 +7,7 @@ part 'selected_marker.g.dart';
 
 const selectedMarkerManagerId = 'selected-marker';
 
+// TODO(@alexstrnik): переписать немного
 @riverpod
 class SelectedMarker extends _$SelectedMarker {
   @override
