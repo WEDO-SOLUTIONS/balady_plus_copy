@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/image/loading_image/loading_shimmer_image.dart';
@@ -62,14 +63,15 @@ class PoiPhotosRow extends ConsumerWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: photos
-              .map(
-                (photo) => Expanded(
+              .mapIndexed(
+                (index, photo) => Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 3),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: LoadingShimmerImage(
-                        onImageTap: (name, isAsset) {},
+                        onImageTap: (name, isAsset) =>
+                            PhotoViewer.open(context, index, photos),
                         imageUrl: photo,
                         fit: BoxFit.cover,
                       ),
@@ -86,9 +88,10 @@ class PoiPhotosRow extends ConsumerWidget {
     return ListView.separated(
       itemBuilder: (context, index) {
         final loadingShimmerImage = LoadingShimmerImage(
-          onImageTap: (name, isAsset) => PhotoViewer.open(context,index, photos),
+          onImageTap: (name, isAsset) =>
+              PhotoViewer.open(context, index, photos),
           imageUrl: photos[index],
-          fit: BoxFit.fill,
+          fit: BoxFit.cover,
         );
         return Padding(
           padding: EdgeInsetsDirectional.only(
