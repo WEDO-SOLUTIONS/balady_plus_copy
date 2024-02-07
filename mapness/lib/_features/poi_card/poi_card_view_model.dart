@@ -76,9 +76,13 @@ class PoiCardViewModel {
 
     final requireValue = favouritesState.requireValue;
 
-    final isFavourite = requireValue.items.firstWhereOrNull(
-      (element) => element.entity?.id == '$objectId',
-    );
+    final isFavourite = [
+      ...requireValue.items,
+      requireValue.home,
+      requireValue.work,
+    ].nonNulls.firstWhereOrNull(
+          (element) => element.entity?.id == '$objectId',
+        );
     return isFavourite;
   }
 
