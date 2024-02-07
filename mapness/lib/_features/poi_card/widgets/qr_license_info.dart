@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/poi_card/domain/model/qr_trade_license.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
+import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -13,8 +13,8 @@ class QrLicenseInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var hasDisabledPersonsInfo = licenseInfo?.serveDisabledPersons == true;
-    var hasDeliveryInfo = licenseInfo?.hasDelivery == true;
+    final hasDisabledPersonsInfo = licenseInfo?.serveDisabledPersons == true;
+    final hasDeliveryInfo = licenseInfo?.hasDelivery == true;
 
     if (!hasDeliveryInfo && !hasDisabledPersonsInfo) {
       return const SizedBox.shrink();
