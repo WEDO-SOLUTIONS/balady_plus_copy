@@ -6,6 +6,7 @@ import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Context
 import ru.dgis.sdk.navigation.VoiceManager
 import ru.dgis.sdk.navigation.getVoiceManager
+import ru.dgis.sdk.update.Package
 import ru.dgis.sdk.update.PackageInfo
 import ru.dgis.sdk.update.PackageManager
 import ru.dgis.sdk.update.PackageUpdateStatus
@@ -17,14 +18,38 @@ class PackagesHandler(
     private val packageManager: PackageManager = getPackageManager(sdkContext)
     private val voiceManager: VoiceManager = getVoiceManager(sdkContext)
     private val closeables = mutableListOf<AutoCloseable>()
+    private val installTasks = mutableListOf<InstallTask>()
 
     init {
         packageManager.checkForUpdates()
+        closeables.add(
+            packageManager.packagesChannel.connect { checkInstallTasks() }
+        )
+        closeables.add(
+            voiceManager.voicesChannel.connect { checkInstallTasks() }
+        )
     }
 
     private enum class Events {
         packageProgressEvent,
         packageInfoChangedEvent
+    }
+
+    sealed class InstallTask {
+        class Voice(val id: String) : InstallTask()
+        class Package(val id: String) : InstallTask()
+    }
+
+    private fun checkInstallTasks() {
+        val tasks = this.installTasks.toList()
+        installTasks.clear()
+
+        for (task in tasks) {
+            when (task) {
+                is InstallTask.Package -> installPackage(task.id, null)
+                is InstallTask.Voice -> installVoice(task.id, null)
+            }
+        }
     }
 
     private fun mapStatus(status: PackageUpdateStatus) = when (status) {
@@ -59,8 +84,9 @@ class PackagesHandler(
     }
 
     fun installPackage(id: String, result: Messages.Result<Void>?) {
-        packageManager.packages.first { it.id == id }.let {
-            closeables.add(it.progressChannel.connect { progress ->
+        val pakage = packageManager.packages.firstOrNull { it.id == id }
+        if (pakage != null) {
+            closeables.add(pakage.progressChannel.connect { progress ->
                 eventSink.success(
                     mapOf(
                         "event" to Events.packageProgressEvent.name,
@@ -69,41 +95,46 @@ class PackagesHandler(
                     )
                 )
             })
-            closeables.add(it.infoChannel.connect { info ->
+            closeables.add(pakage.infoChannel.connect { info ->
                 eventSink.success(
                     mapOf(
                         "event" to Events.packageInfoChangedEvent.name,
-                        "id" to it.id,
+                        "id" to pakage.id,
                         "info" to mapInfo(info)
                     )
                 )
             })
-            it.install()
+            pakage.install()
+        } else {
+            installTasks.add(InstallTask.Package(id))
         }
         result?.success(null)
     }
 
     fun installVoice(id: String, result: Messages.Result<Void>?) {
-        voiceManager.voices.first { it.id == id }.let {
-            closeables.add(it.progressChannel.connect { progress ->
+        val voice = voiceManager.voices.firstOrNull { it.id == id }
+        if (voice != null) {
+            closeables.add(voice.progressChannel.connect { progress ->
                 eventSink.success(
-                    mapOf(
-                        "event" to Events.packageProgressEvent.name,
-                        "packageId" to id,
-                        "progress" to progress
-                    )
+                        mapOf(
+                                "event" to Events.packageProgressEvent.name,
+                                "packageId" to id,
+                                "progress" to progress
+                        )
                 )
             })
-            closeables.add(it.infoChannel.connect { info ->
+            closeables.add(voice.infoChannel.connect { info ->
                 eventSink.success(
-                    mapOf(
-                        "event" to Events.packageInfoChangedEvent.name,
-                        "id" to it.id,
-                        "info" to mapInfo(info)
-                    )
+                        mapOf(
+                                "event" to Events.packageInfoChangedEvent.name,
+                                "id" to voice.id,
+                                "info" to mapInfo(info)
+                        )
                 )
             })
-            it.install()
+            voice.install()
+        } else {
+            installTasks.add(InstallTask.Voice(id))
         }
         result?.success(null)
     }
