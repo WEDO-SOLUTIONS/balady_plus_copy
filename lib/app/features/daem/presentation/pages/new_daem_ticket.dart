@@ -99,6 +99,7 @@ class _OrderInfoSectionState extends State<OrderInfoSection> {
             // Sub Muncipality
             if (model.showSubMunicipalityList())
               TapWidgetForLongDialog(
+                key: UniqueKey(),
                 onChangeType: (DaemItem? item) {
                   if (item != null) {
                     model.add(SetSubMunicipalityEvent(subMunicipality: item));
@@ -133,6 +134,7 @@ class _OrderInfoSectionState extends State<OrderInfoSection> {
             //  area category widget
             if (model.showAreaList())
               TapWidgetForLongDialog(
+                key: UniqueKey(),
                 onChangeType: (DaemItem? item) {
                   if (item != null) {
                     model.add(GetDaemIssueTypeEvent(
@@ -151,6 +153,7 @@ class _OrderInfoSectionState extends State<OrderInfoSection> {
             //  issuetype category widget
             if (model.showIssueTypeList())
               TapWidgetForLongDialog(
+                key: UniqueKey(),
                 onChangeType: (DaemItem? item) {
                   if (item != null) {
                     model.add(SetIssueTypeEvent(
