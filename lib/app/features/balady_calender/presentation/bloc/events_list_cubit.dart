@@ -49,10 +49,13 @@ class EventsListCubit extends Cubit<EventsListState> {
           }
           newEvents.calendarEvents?.forEach(
             (element) {
-              if (newMapEvents[element.month ?? 0] != null) {
-                newMapEvents[element.month]?.add(element);
+             int month = params.commonParams.commonParams.hijri
+                  ? element.monthHijri
+                  : element.month;
+              if (newMapEvents[month] != null) {
+                newMapEvents[month]?.add(element);
               } else {
-                newMapEvents[element.month ?? 0] = [element];
+                newMapEvents[month] = [element];
               }
             },
           );

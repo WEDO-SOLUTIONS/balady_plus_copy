@@ -3,15 +3,10 @@ import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 
-class CalendarTypePopup extends StatefulWidget {
-  const CalendarTypePopup({super.key});
+class CalendarTypePopup extends StatelessWidget {
 
-  @override
-  State<CalendarTypePopup> createState() => _CalendarTypePopupState();
-}
-
-class _CalendarTypePopupState extends State<CalendarTypePopup> {
-  int _selectedValue = 1;
+  final bool isHijri;
+  const CalendarTypePopup({super.key,required this.isHijri});
 
   @override
   Widget build(BuildContext context) {
@@ -45,21 +40,15 @@ class _CalendarTypePopupState extends State<CalendarTypePopup> {
             decoration: BoxDecoration(
                 color: AppColor.white,
                 borderRadius: BorderRadius.circular(20.0)),
-            child: RadioListTile<int>(
+            child: RadioListTile<bool>(
               activeColor: AppColor.primary600Light,
               controlAffinity: ListTileControlAffinity.trailing,
               title: const Text('ميلادي'),
-              value: 1,
-              groupValue: _selectedValue,
-              onChanged: (value) {
-                print(value);
-                if (value != null) {
-                  setState(() {
-                    _selectedValue = value;
-                  });
-                }
-              },
-            )),
+              value: false,
+              groupValue: isHijri,
+              onChanged: (value) => Navigator.of(context).pop(value),
+            ),
+        ),
         const SizedBox(
           height: 15,
         ),
@@ -71,20 +60,11 @@ class _CalendarTypePopupState extends State<CalendarTypePopup> {
           child: RadioListTile(
             activeColor: AppColor.primary600Light,
             controlAffinity: ListTileControlAffinity.trailing,
-            title: const Text('هجري'), // Display the title for option 2
-            // Display a subtitle for option 2
-            value: 2, // Assign a value of 2 to this option
-            groupValue:
-                _selectedValue, // Use _selectedValue to track the selected option
-            onChanged: (value) {
-              print(value);
-              if (value != null) {
-                setState(() {
-                  _selectedValue =
-                      value; // Update _selectedValue when option 2 is selected
-                });
-              }
-            },
+            title: const Text('هجري'), // Display the title for option true
+            // Display a subtitle for option true
+            value: true, // Assign a value of true to this option
+            groupValue: isHijri, // Use _selectedValue to track the selected option
+            onChanged: (value) => Navigator.of(context).pop(value),
           ),
         ),
       ]),

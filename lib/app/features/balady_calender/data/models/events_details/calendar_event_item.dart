@@ -9,9 +9,9 @@ class CalendarEventItem extends Equatable {
   final DateTime? eventDate;
   final String? eventDateHijri;
   final int? year;
-  final int? month;
+  final int month;
   final int? yearHijri;
-  final int? monthHijri;
+  final int monthHijri;
   final String? ownerIdentityNo;
   final String? ownerIdentityType;
   final String? ownerName;
@@ -27,9 +27,9 @@ class CalendarEventItem extends Equatable {
     this.eventDate,
     this.eventDateHijri,
     this.year,
-    this.month,
     this.yearHijri,
-    this.monthHijri,
+    required this.month,
+    required this.monthHijri,
     this.ownerIdentityNo,
     this.ownerIdentityType,
     this.ownerName,
@@ -48,9 +48,9 @@ class CalendarEventItem extends Equatable {
         : DateTime.parse(json['eventDate'] as String),
     eventDateHijri: json['eventDateHijri'] as String?,
     year: json['year'] as int?,
-    month: json['month'] as int?,
+    month: json['month'] ?? 0,
     yearHijri: json['yearHijri'] as int?,
-    monthHijri: json['monthHijri'] as int?,
+    monthHijri: json['monthHijri'] ?? 0,
     ownerIdentityNo: json['ownerIdentityNo'] as String?,
     ownerIdentityType: json['ownerIdentityType'] as String?,
     ownerName: json['ownerName'] as String?,

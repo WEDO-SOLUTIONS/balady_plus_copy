@@ -64,10 +64,22 @@ class _BaladyCalendarPageState extends State<BaladyCalendarPage> {
                     const Spacer(),
                     GestureDetector(
                       onTap: () async {
-                        await CustomPopUpsWidgets.showBottomSheet(context,
-                            child: const CalendarTypePopup(),
-                            height: 300,
-                            radius: 30);
+                        bool? isHijri =
+                            await CustomPopUpsWidgets.showBottomSheet(
+                          context,
+                          child: CalendarTypePopup(
+                              isHijri: baladyCalendarYearsListViewModel
+                                  .params.hijri),
+                          height: 300,
+                          radius: 30,
+                        );
+                        if (isHijri != null) {
+                          baladyCalendarYearsListViewModel.params.hijri =
+                              isHijri;
+                          baladyCalendarYearsListViewModel.selectedYear = null;
+                          baladyCalendarYearsListViewModel
+                              .getEventsCountInYears();
+                        }
                       },
                       child: Container(
                         height: 60,
@@ -98,12 +110,15 @@ class _BaladyCalendarPageState extends State<BaladyCalendarPage> {
                     ),
                     GestureDetector(
                       onTap: () async {
-                        await CustomPopUpsWidgets.showBottomSheet(context,
-                            child: ChangeNotifierProvider.value(
-                                value: baladyCalendarYearsListViewModel,
-                                child: const CalendarFilterPopup()),
-                            height: MediaQuery.sizeOf(context).height * 0.60,
-                            radius: 30);
+                        await CustomPopUpsWidgets.showBottomSheet(
+                          context,
+                          child: ChangeNotifierProvider.value(
+                            value: baladyCalendarYearsListViewModel,
+                            child: const CalendarFilterPopup(),
+                          ),
+                          height: MediaQuery.sizeOf(context).height * 0.60,
+                          radius: 30,
+                        );
                       },
                       child: Container(
                         height: 60,
@@ -143,6 +158,7 @@ class _BaladyCalendarPageState extends State<BaladyCalendarPage> {
                               ),
                             );
                           }
+
                           // done get Data
                           return BlocProvider<EventsListCubit>(
                             create: (BuildContext context) => EventsListCubit(

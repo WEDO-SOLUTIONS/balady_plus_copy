@@ -12,6 +12,7 @@ import 'package:balady_plus/app/features/balady_calender/domain/entities/events_
 import 'package:balady_plus/app/features/balady_calender/domain/repositories/balady_calendar_repository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:hijri/hijri_calendar.dart';
 import '../../../../core/errors/failures.dart';
 
 class BaladyCalendarYearsListViewModel extends BaseViewModel {
@@ -26,6 +27,7 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
       year: DateTime.now().year,
     );
     getEventsCountInYears();
+    fetchFilterList();
   }
 
   ////////////////////////// For Years
@@ -48,7 +50,11 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
           if (yearList.isNotEmpty && selectedYear == null) {
             // fund carent year in list and selected
             selectedYear = yearList.firstWhere(
-              (element) => element.year == DateTime.now().year,
+              (element) =>
+                  element.year ==
+                  (params.hijri
+                      ? HijriCalendar.fromDate(DateTime.now()).hYear
+                      : DateTime.now().year),
             );
           }
           if (selectedYear != null) {
@@ -135,13 +141,11 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
     return null;
   }
 
-
-
-
   // Filter
   var filterList;
 
   List<CheckboxListTileEntity> checkboListTileEntityList = [];
+
   Future fetchFilterList() async {
     Either<Failure, Filter> response;
     try {
@@ -149,11 +153,11 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
       notifyListeners();
       response = await repository.getFilteredEvents();
       response.fold(
-            (failure) {},
-            (filterList) {
+        (failure) {},
+        (filterList) {
           checkboListTileEntityList = List<CheckboxListTileEntity>.generate(
               filterList.filterItem!.length,
-                  (index) => CheckboxListTileEntity(
+              (index) => CheckboxListTileEntity(
                   id: filterList.filterItem![index].id!,
                   name: filterList.filterItem![index].name!,
                   isChecked: false));
