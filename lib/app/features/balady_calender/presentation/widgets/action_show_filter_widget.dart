@@ -10,7 +10,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ActionShowFilterWidget extends StatelessWidget {
-
   const ActionShowFilterWidget({super.key});
 
   @override
@@ -19,6 +18,8 @@ class ActionShowFilterWidget extends StatelessWidget {
         context.read<BaladyCalendarYearsListViewModel>();
     return GestureDetector(
       onTap: () async {
+        baladyCalendarYearsListViewModel.idsSelected =
+            baladyCalendarYearsListViewModel.params.filterationEntity ?? [];
         List<String>? idsSelected = await CustomPopUpsWidgets.showBottomSheet(
           context,
           child: ChangeNotifierProvider.value(

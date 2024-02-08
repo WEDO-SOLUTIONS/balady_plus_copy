@@ -55,20 +55,26 @@ class _CalendarFilterState extends State<CalendarFilterPopup> {
                 scrollDirection: Axis.vertical,
                 itemCount: value?.length ?? 0,
                 itemBuilder: (context, index) {
-                  return CheckboxListTile(
-                    contentPadding: EdgeInsets.zero,
-                    fillColor: const MaterialStatePropertyAll(
+                  return Selector<BaladyCalendarYearsListViewModel,
+                      List<String>>(
+                    selector: (p0, p1) => p1.idsSelected,
+                    builder: (context, idsSelected, child) => CheckboxListTile(
+                      contentPadding: EdgeInsets.zero,
+                      fillColor: const MaterialStatePropertyAll(
                         AppColor.primary600Light,
+                      ),
+                      controlAffinity: ListTileControlAffinity.leading,
+                      title: Text(value![index].name.toString()),
+                      value: idsSelected.contains(
+                        value[index].name,
+                      ),
+                      onChanged: (checkedValue) {
+                        baladyCalendarYearsListViewModel.selectFilterOption(
+                          index,
+                          checkedValue!,
+                        );
+                      },
                     ),
-                    controlAffinity: ListTileControlAffinity.leading,
-                    title: Text(value![index].name.toString()),
-                    value: value[index].isChecked,
-                    onChanged: (checkedValue) {
-                      baladyCalendarYearsListViewModel.selectFilterOption(
-                        index,
-                        checkedValue!,
-                      );
-                    },
                   );
                 },
               ),
@@ -77,13 +83,9 @@ class _CalendarFilterState extends State<CalendarFilterPopup> {
           const SizedBox(height: 25),
           ElevatedButtonWidget.primaryCustom(
             onPressed: () {
-              List<String> idsSelected= [];
-              for (var element in baladyCalendarYearsListViewModel.checkboListTileEntityList) {
-                if(element.isChecked) {
-                  idsSelected.add(element.id);
-                }
-              }
-              Navigator.of(context).pop(idsSelected);
+              Navigator.of(context).pop(
+                baladyCalendarYearsListViewModel.idsSelected,
+              );
             },
             text: 'تأكيد',
           ),

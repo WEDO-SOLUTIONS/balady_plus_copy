@@ -148,7 +148,7 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
   var filterList;
 
   List<CheckboxListTileEntity> checkboListTileEntityList = [];
-
+  List<String> idsSelected = [];
   Future fetchFilterList() async {
     Either<Failure, Filter> response;
     try {
@@ -159,11 +159,13 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
         (failure) {},
         (filterList) {
           checkboListTileEntityList = List<CheckboxListTileEntity>.generate(
-              filterList.filterItem!.length,
-              (index) => CheckboxListTileEntity(
-                  id: filterList.filterItem![index].id!,
-                  name: filterList.filterItem![index].name!,
-                  isChecked: false));
+            filterList.filterItem!.length,
+            (index) => CheckboxListTileEntity(
+              id: filterList.filterItem![index].id!,
+              name: filterList.filterItem![index].name!,
+              isChecked: false,
+            ),
+          );
           notifyListeners();
         },
       );
@@ -188,7 +190,11 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
   }
 
   selectFilterOption(int index, bool isChecked) {
-    checkboListTileEntityList[index].isChecked = isChecked;
+    if(isChecked) {
+      idsSelected.add(checkboListTileEntityList[index].name);
+    } else {
+      idsSelected.remove(checkboListTileEntityList[index].name);
+    }
     notifyListeners();
   }
 }
