@@ -112,11 +112,20 @@ ios_setup:
 dev-env-setup:
     ./mapness/scripts/dev-env-setup.sh
 
-apk-release version: prebuild
+ios-release: apply-patches prebuild ios_setup && unapply-patches
+    #!/usr/bin/env bash
+    momrahBundle='momra.balady.ios'
+    baladyBundle='xyz.amoriodi.balady'
+
+    set -euxo pipefail
+    sed -i '' "s/$momrahBundle/$baladyBundle/" ios/Runner.xcodeproj/project.pbxproj
+    fvm flutter build ipa --target lib/main_stg.dart --flavor stg
+    sed -i '' "s/$baladyBundle/$momrahBundle/" ios/Runner.xcodeproj/project.pbxproj
+    open build/ios/archive/Runner.xcarchive
+
+apk-release version: apply-patches prebuild && unapply-patches open_built 
     #!/usr/bin/env bash
     set -euo pipefail
-
-    just apply-patches
 
     print_style '' 'yellow' 'build urbi pre'
     VENDOR_CONFIG="urbi-pre-prod"
@@ -137,8 +146,6 @@ apk-release version: prebuild
     fvm flutter build apk --target lib/main_stg.dart {{ dart_define }}
     mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/momrah-stage-{{ version }}.apk
     print_style '' 'cyan' 'momrah stage ready!'
-
-    just unapply-patches
 
     print_style '' 'green' 'done, you may open build with:'
     print_style 'bold' 'yellow' 'just open_built'
