@@ -29,12 +29,14 @@ class ObjectionsDetailsBloc
   final CancelObjection cancelObjection;
   final GetObjectablePermit getObjectablePermit;
 
-  ObjectionsDetailsBloc({ObjectionDetails? details})
+  ObjectionsDetailsBloc()
       : _getObjectionDetails = GetObjectionDetails(repository: sl()),
         _getTransactionDetails = GetTransactionDetails(repository: sl()),
         cancelObjection = CancelObjection(repository: sl()),
         getObjectablePermit = GetObjectablePermit(repository: sl()),
-        super(ObjectionDetailsState(details: details)) {
+        super(ObjectionDetailsState()) {
+
+
     on<ObjectionDetailsEvent>((event, emit) {});
 
     on<GetObjectionDetailsEvent>(_getObjectionDetailsHandler);
@@ -105,8 +107,7 @@ class ObjectionsDetailsBloc
       ));
 
       CommonFunctions.showSuccess("objctions_cancelled");
-      add(GetObjectionDetailsEvent(
-          params: state.details?.objectionRequestNumber ?? "", refresh: true));
+      add(GetObjectionDetailsEvent(params: state.details?.objectionRequestNumber ?? ""));
     });
   }
 
@@ -150,13 +151,12 @@ class ObjectionsDetailsBloc
         details: success,
         errorMessage: "",
       ));
-      if (!e.refresh)
-        NavigationService.navigatorKey.currentState!
-            .pushNamed(RouteName.objectionsDetailsPage, arguments: success);
     });
   }
 
   hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();
   }
+
+
 }

@@ -8,9 +8,10 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/b
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/data/models/reason_cancel.dart';
-import 'package:balady_plus/app/features/commercial_license_details/presentation/bloc/commercial_license_details_cubit.dart';
-import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/commercial_license_action_sheet.dart';
 import 'package:balady_plus/app/features/home_page/presentation/widgets/home_app_bar/circle_icon.dart';
+import 'package:balady_plus/app/features/request_commercial_license_details/data/data_sources/remote_data_source.dart';
+import 'package:balady_plus/app/features/request_commercial_license_details/data/repositories/repository_implementation.dart';
+import 'package:balady_plus/app/features/request_commercial_license_details/domain/use_cases/get_request_commercial_license_details.dart';
 import 'package:balady_plus/app/features/request_commercial_license_details/presentation/bloc/request_commercial_license_details_cubit.dart';
 import 'package:balady_plus/app/features/request_commercial_license_details/presentation/mvvm/commercial_license_request_action_view_model.dart';
 import 'package:balady_plus/app/features/request_commercial_license_details/presentation/widgets/request_commercial_license_action_sheet.dart';
@@ -25,15 +26,23 @@ class RequestCommercialLicenseDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    RequestCommercialLicenseDetailsCubit bloc = ModalRoute.of(context)!
-        .settings
-        .arguments as RequestCommercialLicenseDetailsCubit;
+    Map data = ModalRoute.of(context)!.settings.arguments as Map;
 
     return BlocProvider(
-      create: (context) => bloc,
+      create: (context) => RequestCommercialLicenseDetailsCubit(
+        GetRequestCommercialLicenseDetails(
+          repository: RequestCommercialLicenseDetailsRepositoryImplementation(
+            remoteDataSource:
+                RequestCommercialLicenseDetailsRemoteDataSourceImplementation(
+              webService: sl(),
+            ),
+          ),
+        ),
+        data['requestNumber'],
+      ),
       child: Scaffold(
         appBar: DefaultAppBarWidget(
-          title: '${"request".tr()} #${bloc.requestId}',
+          title: '${"request".tr()} #${data['requestNumber']}',
           actions: [
             BlocBuilder<RequestCommercialLicenseDetailsCubit,
                 RequestCommercialLicenseDetailsState>(
@@ -62,25 +71,24 @@ class RequestCommercialLicenseDetailsPage extends StatelessWidget {
                         child: ChangeNotifierProvider(
                           create: (BuildContext context) =>
                               RequestCommercialLicenseActionViewModel(
-                                  webService: sl(),
-                                  requestId: bloc.requestId,
-                                  requestTypeId: bloc.requestTypeId,
-                                  reasonCancel: state
-                                              .requestCommercialLicenseDetails!
-                                              .cancellationReasonId !=
-                                          null
-                                      ? ReasonCancel(
-                                          id: state
-                                              .requestCommercialLicenseDetails!
-                                              .cancellationReasonId!,
-                                          text: state
-                                              .requestCommercialLicenseDetails!
-                                              .cancellationReasonName!,
-                                        )
-                                      : null,
-                                  availableCloseDate: state
-                                      .requestCommercialLicenseDetails!
-                                      .availableCloseDate),
+                            webService: sl(),
+                            requestId: data['requestNumber'],
+                            requestTypeId:
+                                state.requestCommercialLicenseDetails!.typeId,
+                            reasonCancel: state.requestCommercialLicenseDetails!
+                                        .cancellationReasonId !=
+                                    null
+                                ? ReasonCancel(
+                                    id: state.requestCommercialLicenseDetails!
+                                        .cancellationReasonId!,
+                                    text: state.requestCommercialLicenseDetails!
+                                        .cancellationReasonName!,
+                                  )
+                                : null,
+                            availableCloseDate: state
+                                .requestCommercialLicenseDetails!
+                                .availableCloseDate,
+                          ),
                           child: const RequestCommercialLicenseActionSheet(),
                         ),
                         isFullHeight: false,

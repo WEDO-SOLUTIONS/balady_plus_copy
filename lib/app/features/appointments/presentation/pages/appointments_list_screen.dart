@@ -1,9 +1,6 @@
-import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
-import 'package:balady_plus/app/features/appointments/presentation/core/models/appointment_card_item.dart';
-import 'package:balady_plus/app/features/vd/vd_exports.dart';
+import 'package:balady_plus/app/core/utils/routes_type.dart';
 import 'package:flutter/material.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/base/base_view.dart';
@@ -11,19 +8,14 @@ import '../../../../core/base/base_view_model.dart';
 import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../_shared_feature_/presentation/icons/general_icon.dart';
-import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/need_login_widget.dart';
-import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
-import '../../../new_appointment/presentation/core/models/appointment_details_model.dart';
 import '../../../new_appointment/presentation/core/models/my_appointments_response.dart';
-import '../core/models/appointment_details_screen_args.dart';
 import '../core/services/view_models/appontment_details_view_model.dart';
 import '../core/services/view_models/my_appointments_view_model.dart';
 
-import '../../../../core/utils/constants/app_colors.dart';
 import '../widgets/appointments_widgets/appointment_card.dart';
 
 class AppointmentsListScreen extends StatefulWidget {
@@ -35,6 +27,7 @@ class AppointmentsListScreen extends StatefulWidget {
 
 class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
   bool isSuccess = true;
+
   @override
   void initState() {
     super.initState();
@@ -56,8 +49,9 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
         actions: [
           GeneralIcon(
             onTap: () {
-              Navigator.of(context)
-                  .pushNamed(RouteName.previousAppointmentsRoute);
+              Navigator.of(context).pushNamed(
+                RouteName.previousAppointmentsRoute,
+              );
             },
             icon: IconPath.calenderTick,
           )
@@ -69,8 +63,6 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
         model.getMyPreviousAppointments(pageIndex: 0);
       }, builder: (context, model, child) {
         List<AppointmentItem> upcomingList = model.getMyAppointmentsList();
-        List<AppointmentItem> previousList =
-            model.getMyPreviousAppointmentsList();
         var detailsModel = locator<AppointmentDetailsViewModel>();
         return RefreshIndicator(
             color: const Color(0xff389492),
@@ -105,35 +97,13 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
                                       item: appointment.model,
                                       onPress: () async {
                                         if (appointment.id != null) {
-                                          bool isSuccess = false;
-                                          AppointmentItemInfo?
-                                              appointmentItemInfo;
-                                          isSuccess = await detailsModel
-                                              .getAppointmentDetails(
-                                                  appointment.id ?? -1);
-                                          if (isSuccess) {
-                                            appointmentItemInfo = detailsModel
-                                                .getAppointmentsInfo();
-                                          }
-                                          if (isSuccess &&
-                                              appointmentItemInfo != null) {
-                                            Navigator.of(context).pushNamed(
-                                                RouteName
-                                                    .appointmentDetailsRoute,
-                                                // arguments: appointmentData.id ?? 0
-                                                arguments:
-                                                    AppointmentDetailsScreenArgs(
-                                                        appointmentItemInfo:
-                                                            appointmentItemInfo,
-                                                        isCancelable:
-                                                            appointment
-                                                                .cancelable,
-                                                        isPrintable: appointment
-                                                            .printable,
-                                                        isEditable: appointment
-                                                            .editable,
-                                                        fromHomePage: true));
-                                          }
+                                          detailsModel.getAppointmentDetails(appointment.id!);
+                                          Navigator.of(context).pushNamed(
+                                            RouteName.appointmentDetailsRoute,
+                                            arguments: {
+                                              "appointmentId": appointment.id!,
+                                            },
+                                          );
                                         }
                                       },
                                     ))

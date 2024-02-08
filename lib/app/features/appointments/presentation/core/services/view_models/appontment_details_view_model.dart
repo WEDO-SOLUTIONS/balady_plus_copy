@@ -60,10 +60,8 @@ class AppointmentDetailsViewModel extends BaseViewModel {
   }
 
   Future<bool> getAppointmentDetails(int appointmentId) async {
-    showLoader();
     bool isSuccess = false;
     isSuccess = await getAppointmentDetailsResponse(appointmentId);
-    hideLoader();
     return isSuccess;
   }
 

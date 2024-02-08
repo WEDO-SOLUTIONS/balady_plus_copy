@@ -775,10 +775,10 @@ class CommonFunctions {
       var status = await Permission.location.request();
 
       if (status == PermissionStatus.permanentlyDenied) {
-        // showDialog(
-        //   context: context,
-        //   builder: (ctx) => const LocationPermissionDialog(),
-        // );
+        showDialog(
+          context: context,
+          builder: (ctx) => const LocationPermissionDialog(),
+        );
         return false;
       } else if (status != PermissionStatus.granted) {
         Permission.location.request();
@@ -787,10 +787,10 @@ class CommonFunctions {
         return true;
       }
     } else {
-      // showDialog(
-      //   context: context,
-      //   builder: (ctx) => const LocationServiceDialog(),
-      // );
+      showDialog(
+        context: context,
+        builder: (ctx) => const LocationServiceDialog(),
+      );
 
       return false;
     }
@@ -959,7 +959,7 @@ class CommonFunctions {
       throw 'Could not launch $convertUrl';
   }
 
-  static openBaldyWithRefreshCookie(String? redirectUrl) async {
+  static openBaldyWithRefreshCookie(String? redirectUrl,{bool pushReplacement = false}) async {
     if (redirectUrl == null) return;
     EasyLoading.show();
     GetCookie getCookie = GetCookie(repository: sl());
@@ -968,14 +968,25 @@ class CommonFunctions {
     failureOrSuccessForCookie.fold((l) {
       CommonFunctions.showError("server_error_1".tr());
     }, (r) async {
-      NavigationService.navigatorKey.currentState?.pushNamed(
-        RouteName.inappWebview,
-        arguments: (
+      if(!pushReplacement) {
+        NavigationService.navigatorKey.currentState?.pushNamed(
+          RouteName.inappWebview,
+          arguments: (
           requestNum: 'request'.tr(),
           url: redirectUrl,
           isObjections: false
-        ),
-      );
+          ),
+        );
+      } else {
+        NavigationService.navigatorKey.currentState?.pushReplacementNamed(
+          RouteName.inappWebview,
+          arguments: (
+          requestNum: 'request'.tr(),
+          url: redirectUrl,
+          isObjections: false
+          ),
+        );
+      }
     });
   }
 

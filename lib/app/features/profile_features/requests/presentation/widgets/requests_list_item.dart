@@ -1,35 +1,24 @@
+import 'package:balady_plus/app/core/utils/routes_type.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
-import 'package:balady_plus/app/features/request_commercial_license_details/data/data_sources/remote_data_source.dart';
-import 'package:balady_plus/app/features/request_commercial_license_details/data/repositories/repository_implementation.dart';
-import 'package:balady_plus/app/features/request_commercial_license_details/domain/use_cases/get_request_commercial_license_details.dart';
-import 'package:balady_plus/app/features/request_commercial_license_details/presentation/bloc/request_commercial_license_details_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/base/base_view_model.dart';
-import '../../../../../core/dependency_injection/injection_container.dart';
-import '../../../../../core/errors/failures.dart';
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, CommonFunctions, IconPath, RouteName;
 import '../../../../_shared_feature_/shared_feature_exports.dart';
-import '../../../../create_compliance/domain/use_cases/get_compliance_details.dart';
 import '../../../../health_certificate/presentation/core/models/health_request_details.dart';
 import '../../../../health_certificate/presentation/core/models/health_request_details_screen_args.dart';
 import '../../../../health_certificate/presentation/core/services/view_models/main_health_license_view_model.dart';
-import '../../../../objectable_transactions/domain/use_cases/get_objection_details.dart';
 import '../../requests_exports.dart' show RequestEntity, RequestParameter;
 
 class RequestsListItem extends StatelessWidget {
   final RequestEntity request;
 
-  const RequestsListItem({
-    super.key,
-    required this.request,
-  });
+  const RequestsListItem({super.key, required this.request});
 
   @override
   Widget build(BuildContext context) {
@@ -104,109 +93,46 @@ class RequestsListItem extends StatelessWidget {
           ),
           ElevatedButtonWidget.details(
             onPressed: () async {
-              if (request.requestMainTypeId == "1300") {
-                final model = locator<MainHealthLicenseViewModel>();
-
-                HealthRequestDetails? details =
-                    await model.getHealthRequestDetails(request.requestNumber);
-                if (details != null) {
-                  NavigationService.navigatorKey.currentState!.pushNamed(
-                      RouteName.healthRequestDetailsScreen,
-                      arguments: HealthRequestDetailsScreenArgs(
-                          healthRequestDetails: details,
-                          isDeletable: false,
-                          isPrintable: false));
-                }
-
-                CommonFunctions.sendUXCamEvent(
-                    UXCamEvents.detailsServiceHealthCertificate);
-              } else if (request.requestTypeId == 1130) {
-                /*  Navigator.pushNamed(context, RouteName.complianceDetailsPage,
-                    arguments: (
-                      request.requestNumber.toString(),
-                      request.redirectUrl
-                    ));*/
-                EasyLoading.show();
-                final getComplicanceDetails =
-                    GetComplianceByRequestId(repository: sl());
-
-                final details = await getComplicanceDetails(
-                    request.requestNumber.toString());
-                EasyLoading.dismiss();
-
-                details.fold((l) {
-                  CommonFunctions.showError((l as ServerFailure).errorMessage);
-                }, (r) {
-                  if (r.submitterThrough == "BENEFICARY") {
-                    NavigationService.navigatorKey.currentState!
-                        .pushNamed(RouteName.complianceDetailsPage, arguments: (
-                      request.requestNumber.toString(),
-                      request.redirectUrl
-                    ));
-                  } else {
-                    CommonFunctions.openBaldyWithRefreshCookie(
-                        request.redirectUrl);
-                  }
-                });
-
-                CommonFunctions.sendUXCamEvent(
-                    UXCamEvents.detailsServiceComplianceCertificate);
-              } else if (request.requestTypeId == 1008 ||
-                  request.requestTypeId == 1005 ||
-                  request.requestTypeId == 1004) {
-                //|| request.requestMainTypeId == '1003'
-                NavigationService.navigatorKey.currentState!.pushNamed(
-                  RouteName.requestCommercialLicenseDetails,
-                  arguments: RequestCommercialLicenseDetailsCubit(
-                      GetRequestCommercialLicenseDetails(
-                        repository:
-                            RequestCommercialLicenseDetailsRepositoryImplementation(
-                                remoteDataSource:
-                                    RequestCommercialLicenseDetailsRemoteDataSourceImplementation(
-                                        webService: sl())),
-                      ),
-                      request.requestNumber,
-                      requestTypeId: request.requestTypeId),
+              String routeName = getScreenName(
+                ScreenTage.request.name,
+                // all request of health license open in one screen this reason
+                // to send requestMainTypeId if 1300 -> health license
+                typeId: request.requestMainTypeId == "1300"
+                    ? int.parse(request.requestMainTypeId ?? '')
+                    : request.requestTypeId,
+              );
+              if (RouteName.inappWebview == routeName) {
+                CommonFunctions.openBaldyWithRefreshCookie(
+                  request.redirectUrl,
                 );
-              } else if (request.requestTypeId == 1042 ||
-                  request.requestTypeId == 1043) {
-                NavigationService.navigatorKey.currentState!.pushNamed(
-                    RouteName.posterReqeuestDetailsPage,
-                    arguments: request.requestNumber);
-              } else if (request.requestTypeId == 1028) {
-                NavigationService.navigatorKey.currentState!.pushNamed(
-                    RouteName.permitsRequestDetailsPage,
-                    arguments: request.requestNumber);
-              } else if (request.requestTypeId == 1026) {
-                NavigationService.navigatorKey.currentState!.pushNamed(
-                    RouteName.permitsTobaccoRequestDetailsPage,
-                    arguments: request.requestNumber);
               } else {
-                if (request.redirectUrl == null) {
-                  if (request.requestTypeId == 50001) {
-                    EasyLoading.show();
-                    GetObjectionDetails getObjectionDetails =
-                        GetObjectionDetails(repository: sl());
-                    var failureOrSuccess =
-                        await getObjectionDetails(request.requestNumberAsText);
-
-                    await failureOrSuccess.fold((failure) {
-                      EasyLoading.dismiss();
-                    }, (success) async {
-                      success.serviceTypeId = request.serviceTypeId;
-
-                      EasyLoading.dismiss();
-                      NavigationService.navigatorKey.currentState!.pushNamed(
-                          RouteName.objectionsDetailsPage,
-                          arguments: success);
-                    });
-                    return;
-                  }
-                } else {
-                  CommonFunctions.openBaldyWithRefreshCookie(
-                      request.redirectUrl);
-                }
+                NavigationService.navigatorKey.currentState!.pushNamed(
+                  routeName,
+                  arguments: {
+                    "requestNumber": request.requestNumber.toString(),
+                    "redirectUrl": request.redirectUrl
+                  },
+                );
               }
+              ///////////////////////////////////////////////
+              if (request.requestMainTypeId == "1300") {
+                CommonFunctions.sendUXCamEvent(
+                  UXCamEvents.detailsServiceHealthCertificate,
+                );
+              } else if (request.requestTypeId == 1130) {
+                CommonFunctions.sendUXCamEvent(
+                  UXCamEvents.detailsServiceComplianceCertificate,
+                );
+              }
+
+              // else if (request.requestTypeId == 1008 ||
+              //     request.requestTypeId == 1005 ||
+              //     request.requestTypeId == 1004) {
+              // } else if (request.requestTypeId == 1042 ||
+              //     request.requestTypeId == 1043) {
+              // } else if (request.requestTypeId == 1028) {
+              // } else if (request.requestTypeId == 1026) {
+              // } else {}
             },
           ),
         ],
