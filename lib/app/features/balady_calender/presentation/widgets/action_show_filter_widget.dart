@@ -9,10 +9,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class ListItemsEventsWidget extends StatelessWidget {
-  final List<CalendarEventItem> listEvents;
+class ActionShowFilterWidget extends StatelessWidget {
 
-  const ListItemsEventsWidget({super.key, required this.listEvents});
+  const ActionShowFilterWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
