@@ -1,3 +1,4 @@
+import 'package:dgis_map_platform_interface/src/pigeons/messages.g.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
@@ -14,7 +15,10 @@ import 'package:mapness/widgets/path_nav/ui/path_nav_message_widget.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_speed_info_widget.dart';
 
 class PathNavMapControlls extends StatelessWidget {
-  const PathNavMapControlls({Key? key}) : super(key: key);
+  final RouteSearchOptionsMessage navType;
+
+  const PathNavMapControlls({required this.navType, Key? key})
+      : super(key: key);
 
   @override
   // ignore: prefer_expression_function_bodies
@@ -32,12 +36,14 @@ class PathNavMapControlls extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 /// speed info
-                Consumer(
-                  builder: (context, ref, child) {
-                    final info = ref.watch(pathNavSpeedInfoProvider);
-                    return PathNavSpeedInfoWidget(info: info);
-                  },
-                ),
+                if (navType == RouteSearchOptionsMessage.pedestrian) Spacer(),
+                if (navType != RouteSearchOptionsMessage.pedestrian)
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final info = ref.watch(pathNavSpeedInfoProvider);
+                      return PathNavSpeedInfoWidget(info: info);
+                    },
+                  ),
 
                 /// maneuver or message
                 Consumer(
