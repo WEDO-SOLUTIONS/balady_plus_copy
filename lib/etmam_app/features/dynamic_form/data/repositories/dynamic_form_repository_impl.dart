@@ -52,8 +52,8 @@ class DynamicFormsRepositoryImpl implements DynamicFormsRepository {
       final data = await remoteDataSource.findByRequestType();
       return Right(data);
     } on ServerException catch (error) {
-      return Left(
-          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
     }
   }
 

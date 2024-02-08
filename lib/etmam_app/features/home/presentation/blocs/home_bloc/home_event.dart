@@ -48,3 +48,7 @@ class GetAdsEvent extends HomeEvent {
 class FindByRequestTypeEvent extends HomeEvent {
   const FindByRequestTypeEvent();
 }
+
+class FindByRequestTypeEventChangedCity extends HomeEvent {
+  const FindByRequestTypeEventChangedCity();
+}

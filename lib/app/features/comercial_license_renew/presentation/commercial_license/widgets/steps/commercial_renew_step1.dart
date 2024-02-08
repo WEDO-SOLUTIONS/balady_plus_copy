@@ -557,7 +557,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                             !state.showSalmaExists()) ||
                         (state.showSalamaReport() &&
                             state.salamaExists == false))
-                      NotesWidget(notes: [
+                      NotesWidget(showText: true, notes: [
                         (state.info?.salamaResponseDto
                                     ?.salamaReportInstructions ??
                                 "")
@@ -581,7 +581,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                       ),
                     if ((state.showSalamaBill() && !state.showSalmaExists()) ||
                         (state.showSalamaBill() && state.salamaExists == false))
-                      NotesWidget(notes: [
+                      NotesWidget(showText: true, notes: [
                         state.info?.salamaResponseDto?.salamaBillInstructions ??
                             ""
                       ]),

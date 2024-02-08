@@ -226,8 +226,18 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
 
       return decodedResponse.toFuture();
     } on DioError catch (error) {
+      var errorCode;
+      try {
+        final decodedResponse =
+            ApigeeResponseModel<List<BiddingTypeResponse>>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
       throw ServerException(
         error.toString(),
+        errorCode: errorCode,
         statusCode: error.response?.statusCode,
         dioError: error,
       );

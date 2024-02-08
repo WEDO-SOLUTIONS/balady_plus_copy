@@ -14,6 +14,7 @@ class HomeState extends Equatable {
   final SubServiceResponse? topOrderedsubServiceResponse;
   final AdsResponse? adsResponse;
   final String? errorMessage;
+  final bool? hideBidding;
 
   const HomeState(
       {this.errorMessage,
@@ -25,7 +26,8 @@ class HomeState extends Equatable {
       this.mainServiceResponse,
       this.topOrderedsubServiceResponse,
       this.topRatedProviderResponse,
-      this.adsResponse});
+      this.adsResponse,
+      this.hideBidding});
 
   HomeState copyWith(
       {final BlocStatus? status,
@@ -37,23 +39,24 @@ class HomeState extends Equatable {
       final MainServiceResponse? mainServiceResponse,
       final ProviderResponse? topRatedProviderResponse,
       final SubServiceResponse? topOrderedsubServiceResponse,
-      final AdsResponse? adsResponse}) {
+      final AdsResponse? adsResponse,
+      final bool? hideBidding}) {
     return HomeState(
-      status: status ?? this.status,
-      mainServiceStatus: mainServiceStatus ?? this.mainServiceStatus,
-      errorMessage: errorMessage ?? this.errorMessage,
-      topOrderedSubServiceStatus:
-          topOrderedSubServiceStatus ?? this.topOrderedSubServiceStatus,
-      topRatedProvidersStatus:
-          topRatedProvidersStatus ?? this.topRatedProvidersStatus,
-      mainServiceResponse: mainServiceResponse ?? this.mainServiceResponse,
-      topRatedProviderResponse:
-          topRatedProviderResponse ?? this.topRatedProviderResponse,
-      topOrderedsubServiceResponse:
-          topOrderedsubServiceResponse ?? this.topOrderedsubServiceResponse,
-      adsResponse: adsResponse ?? this.adsResponse,
-      adsResponseStatus: adsResponseStatus ?? this.adsResponseStatus,
-    );
+        status: status ?? this.status,
+        mainServiceStatus: mainServiceStatus ?? this.mainServiceStatus,
+        errorMessage: errorMessage ?? this.errorMessage,
+        topOrderedSubServiceStatus:
+            topOrderedSubServiceStatus ?? this.topOrderedSubServiceStatus,
+        topRatedProvidersStatus:
+            topRatedProvidersStatus ?? this.topRatedProvidersStatus,
+        mainServiceResponse: mainServiceResponse ?? this.mainServiceResponse,
+        topRatedProviderResponse:
+            topRatedProviderResponse ?? this.topRatedProviderResponse,
+        topOrderedsubServiceResponse:
+            topOrderedsubServiceResponse ?? this.topOrderedsubServiceResponse,
+        adsResponse: adsResponse ?? this.adsResponse,
+        adsResponseStatus: adsResponseStatus ?? this.adsResponseStatus,
+        hideBidding: hideBidding ?? this.hideBidding);
   }
 
   @override

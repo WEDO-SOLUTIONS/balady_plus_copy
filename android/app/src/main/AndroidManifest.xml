@@ -151,6 +151,7 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="com.balady"/>
+                 <data android:scheme="com.momra.balady"/>
     </intent-filter>
 </activity>
 

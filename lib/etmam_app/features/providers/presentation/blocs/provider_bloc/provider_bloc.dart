@@ -81,6 +81,7 @@ class ProvidersBloc extends Bloc<ProvidersEvent, ProviderState> {
   Future<void> _getGetTopRatedProvidersHandler(
       GetTopProvidersEvent e, Emitter emitter) async {
     emitter(state.copyWith(
+        name: e.params.name,
         status: e.params.name == null
             ? BlocStatus.loadingShimmer
             : BlocStatus.loading));
@@ -149,6 +150,7 @@ class ProvidersBloc extends Bloc<ProvidersEvent, ProviderState> {
 
     final failureOrSuccess = await _getTopRatedProviders(TopRatedProviderParams(
         pageSize: "10",
+        name: state.name,
         pageIndex: state.nextPageIndex.toString(),
         cityId: CommonProperties.cityId));
 

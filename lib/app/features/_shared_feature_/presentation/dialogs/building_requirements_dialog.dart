@@ -214,6 +214,11 @@ class _BuildingRequirementsDialogState
   Future<void> readComplianceData() async {
     String qa = await rootBundle
         .loadString("assets/compliance_pdf/text/conditions.json");
+    if (!CommonFunctions.isAppAR) {
+      String qa = await rootBundle
+          .loadString("assets/compliance_pdf/text/conditions_en.json");
+    }
+
     var r = json.decode(qa);
     {
       List<ConditionsModel>? model = r != null

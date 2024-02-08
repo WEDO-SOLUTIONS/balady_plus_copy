@@ -2504,7 +2504,7 @@
 "issueViolationDate":"The violation issuance date",
 "objectionLastApplyDate":"Objection deadline",
 "violationAmount":"Fine value",
-"clear":"Sunny",
+"clear":"Sunny", 
 "buildingRequirements_desc":"The building must be free of the following violations:",
 "buildingRequirements":"Building compliance certificate requirements",
 "buildingDesignElements":"Building design elements",

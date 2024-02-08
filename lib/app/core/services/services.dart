@@ -282,7 +282,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 1,
       "isNew": false,
       "isImportant": false,
-      "requireLogin": false,
+      "requireLogin": true,
       "action": {"type": "page", "value": RouteName.etmamMainPage},
       "ar": {"title": "balady_works", "description": null, "tag": null},
       "en": {"title": "balady_works", "description": null, "tag": null}

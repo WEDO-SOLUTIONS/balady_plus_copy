@@ -142,7 +142,7 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
   }
 
   Future<void> _getServicesHandler(GetServicesEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading));
+    emitter(state.copyWith(status: BlocStatus.loading, name: e.name));
     print("BBBBBBBB");
     final failureOrSuccess = await _getServicesProvidersByService(ServiceParams(
         cityId: CommonProperties.cityId,
@@ -190,6 +190,7 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
 
     final failureOrSuccess = await _getServicesProvidersByService(ServiceParams(
         cityId: CommonProperties.cityId,
+        name: state.name,
         subServiceId: state.subServiceId ?? "",
         subServiceName: state.subServiceName ?? "",
         pageIndex: state.nextPageIndex.toString()));
