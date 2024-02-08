@@ -5,13 +5,13 @@ import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/routing/ui/routes_carousel.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
 import 'package:mapness/pages/routing/lib/route_search_options_extension.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/shared/ui/buttons/nav_button.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/routing/ui/route_timeline.dart';
@@ -160,25 +160,14 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Row(
-                              children: [
-                                RouteSearchOptionsMessage.pedestrian,
-                                RouteSearchOptionsMessage.car,
-                              ]
-                                  .map(
-                                    (e) => _RouteSwitch(
-                                      onTap: () => setState(
-                                        () => navType = e,
-                                      ),
-                                      isChoosed: navType == e,
-                                      navType: e,
-                                      points: searchPoints,
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
+                          _RouteTabBar(
+                            active: navType,
+                            onChanged: (e) {
+                              setState(() {
+                                navType = e;
+                              });
+                            },
+                            points: points,
                           ),
                           const SizedBox(height: 16),
                         ],
@@ -193,32 +182,52 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       );
 }
 
-class _RouteSwitch extends ConsumerWidget {
-  final List<RouteSearchPointMessage?> points;
-  final RouteSearchOptionsMessage navType;
-  final bool isChoosed;
-  final Function() onTap;
+class _RouteTabBar extends ConsumerWidget {
+  final void Function(RouteSearchOptionsMessage) onChanged;
+  final RouteSearchOptionsMessage active;
+  final List<RouteParamsPoint?> points;
 
-  const _RouteSwitch({
-    required this.navType,
-    required this.isChoosed,
-    required this.onTap,
+  const _RouteTabBar({
+    required this.onChanged,
+    required this.active,
     required this.points,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final time = ref.watch(briefRouteInfoProvider(
-      startPoint: points[0],
-      finishPoint: points[1],
-      navType: navType,
-    ));
+    final routes = ref
+            .watch(
+              routesProvider(
+                startPoint: points[0],
+                finishPoint: points[1],
+                navType: active,
+              ),
+            )
+            .unwrapPrevious()
+            .valueOrNull ??
+        [];
+    final activeRoute = ref.watch(activeRouteProvider);
+    final routeDuration = routes.isEmpty ? null : routes[activeRoute].duration;
 
-    return RouteTypeSwitch(
-      iconAsset: navType.icon,
-      title: time?.first.duration.ceil().formatDuration(context.l10n) ?? '-',
-      onPressed: onTap,
-      isChoosed: isChoosed,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          RouteSearchOptionsMessage.pedestrian,
+          RouteSearchOptionsMessage.car,
+        ]
+            .map(
+              (e) => RouteTypeSwitch(
+                iconAsset: e.icon,
+                title: active == e
+                    ? routeDuration?.ceil().formatDuration(context.l10n)
+                    : null,
+                onPressed: () => onChanged(e),
+                isChoosed: active == e,
+              ),
+            )
+            .toList(),
+      ),
     );
   }
 }
