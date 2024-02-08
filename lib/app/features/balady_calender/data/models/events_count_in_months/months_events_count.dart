@@ -1,5 +1,9 @@
 import 'package:equatable/equatable.dart';
 
+List<MonthsEventsCount> monthsListFromMap(List data) => data
+    .map((e) => MonthsEventsCount.fromJson(e as Map<String, dynamic>))
+    .toList();
+
 class MonthsEventsCount extends Equatable {
   final int? month;
   final int? eventsCount;

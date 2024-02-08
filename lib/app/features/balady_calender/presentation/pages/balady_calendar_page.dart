@@ -29,7 +29,7 @@ class _BaladyCalendarPageState extends State<BaladyCalendarPage> {
   BaladyCalendarYearsListViewModel baladyCalendarYearsListViewModel =
       BaladyCalendarYearsListViewModel(
     repository: sl(),
-    params: EventsDetailsParams(year: DateTime.now().year),
+    params: EventsCommonParams(),
   );
 
   @override
@@ -127,22 +127,37 @@ class _BaladyCalendarPageState extends State<BaladyCalendarPage> {
                     selector: (_, provider) => provider.isLoading,
                     builder: (_, isLoading, child) {
                       // if Loading
-                      if(isLoading) {
+                      if (isLoading) {
                         return const Center(child: CircularProgressIndicator());
                       }
-                      // if have errors
-                      if(baladyCalendarYearsListViewModel.monthsList == null) {
-                        return const SizedBox();
-                      }
-                      // done get Data
-                      return BlocProvider<EventsListCubit>(
-                              create: (BuildContext context) => EventsListCubit(
-                                baladyCalendarRepository: sl(),
-                                listMonths: baladyCalendarYearsListViewModel.monthsList!,
-                                params: baladyCalendarYearsListViewModel.params,
+
+                      return Selector<BaladyCalendarYearsListViewModel,
+                          List<MonthsEventsCount>?>(
+                        selector: (_, provider) => provider.monthsList,
+                        builder: (_, monthsList, child) {
+                          // if have errors
+                          if (monthsList == null) {
+                            return const Center(
+                              child: Text(
+                                "Not Have Any Events In The Years !",
                               ),
-                              child: const BaladyCalendarEventsWidget(),
                             );
+                          }
+                          // done get Data
+                          return BlocProvider<EventsListCubit>(
+                            create: (BuildContext context) => EventsListCubit(
+                              baladyCalendarRepository: sl(),
+                              listMonths: monthsList,
+                              params: EventsDetailsParams(
+                                commonParams: baladyCalendarYearsListViewModel
+                                    .paramsMonths,
+                                size: 5,
+                              ),
+                            ),
+                            child: const BaladyCalendarEventsWidget(),
+                          );
+                        },
+                      );
                     },
                   ),
                 ),

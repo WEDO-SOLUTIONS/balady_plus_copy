@@ -71,6 +71,7 @@ class EventsListCubit extends Cubit<EventsListState> {
               ),
             );
           }
+          params.page++;
         },
       );
     }

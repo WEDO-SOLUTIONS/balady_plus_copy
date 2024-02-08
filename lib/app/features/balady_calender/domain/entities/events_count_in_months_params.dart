@@ -1,47 +1,27 @@
 import 'package:balady_plus/app/features/balady_calender/domain/entities/events_common_params.dart';
 
-class EventsCountInMonthsParams extends EventsCommonParams {
+class EventsCountInMonthsParams {
+  EventsCommonParams commonParams;
   //////////////////////////////////////
   int year;
 
   EventsCountInMonthsParams({
-    super.loginIdentityId,
-    super.loginIdentityType,
-    super.unifiedNationalNumber,
-    super.relationTypeeId,
-    super.filterationEntity,
-    super.agencyInRequestDto,
-    super.hijri,
+    required this.commonParams,
     required this.year,
   });
 
-  @override
   EventsCountInMonthsParams copyWith({
-    String? loginIdentityId,
-    String? loginIdentityType,
-    String? unifiedNationalNumber,
-    int? relationTypeeId,
-    List<String>? filterationEntity,
-    AgencyInRequestDto? agencyInRequestDto,
-    bool? hijri,
+    EventsCommonParams? commonParams,
     int? year,
   }) =>
       EventsCountInMonthsParams(
-        loginIdentityId: loginIdentityId ?? super.loginIdentityId,
-        loginIdentityType: loginIdentityType ?? super.loginIdentityType,
-        unifiedNationalNumber:
-            unifiedNationalNumber ?? super.unifiedNationalNumber,
-        relationTypeeId: relationTypeeId ?? super.relationTypeeId,
-        filterationEntity: filterationEntity ?? super.filterationEntity,
-        agencyInRequestDto: agencyInRequestDto ?? super.agencyInRequestDto,
-        hijri: hijri ?? super.hijri,
+        commonParams: commonParams ??  this.commonParams,
         year: year ?? this.year,
       );
 
-  @override
   Map<String, dynamic> toJson() {
-    Map<String, dynamic> data = super.toJson();
-    data["years"] = year;
+    Map<String, dynamic> data = commonParams.toJson();
+    data["year"] = year;
     return data;
   }
 }

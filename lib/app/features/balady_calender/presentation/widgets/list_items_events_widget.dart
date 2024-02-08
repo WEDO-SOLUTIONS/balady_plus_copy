@@ -22,6 +22,7 @@ class ListItemsEventsWidget extends StatelessWidget {
           child: Container(
             height: 120,
             width: double.infinity,
+            margin: const EdgeInsets.only(top: 16),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: AppColor.black100,
