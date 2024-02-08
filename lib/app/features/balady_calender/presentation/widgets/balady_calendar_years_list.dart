@@ -34,7 +34,7 @@ class BaladyCalendarYearsList extends StatelessWidget {
                       margin: const EdgeInsets.all(8.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15.0),
-                        color: selectedYear == yearsList![index]
+                        color: selectedYear?.year == yearsList![index].year
                             ? AppColor.primary700Light
                             : AppColor.white5,
                       ),
@@ -44,7 +44,7 @@ class BaladyCalendarYearsList extends StatelessWidget {
                           Text(
                             yearsList[index].year.toString(),
                             style: TextStyle(
-                              color: selectedYear == yearsList[index]
+                              color: selectedYear?.year == yearsList[index].year
                                   ? Colors.white
                                   : Colors.black,
                             ),
@@ -52,7 +52,7 @@ class BaladyCalendarYearsList extends StatelessWidget {
                           Text(
                             yearsList[index].eventsCount.toString(),
                             style: TextStyle(
-                              color: selectedYear == yearsList[index]
+                              color: selectedYear?.year == yearsList[index].year
                                   ? Colors.white
                                   : Colors.black,
                             ),

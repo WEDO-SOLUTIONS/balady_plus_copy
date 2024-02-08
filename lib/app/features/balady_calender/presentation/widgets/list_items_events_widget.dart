@@ -1,4 +1,7 @@
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/core/utils/routes_type.dart';
 import 'package:balady_plus/app/features/balady_calender/data/models/events_details/calendar_event_item.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -17,7 +20,24 @@ class ListItemsEventsWidget extends StatelessWidget {
         CalendarEventItem event = listEvents[index];
         return InkWell(
           onTap: () {
-
+            String screenName = getScreenName(
+              event.entityType ?? '',
+              typeId: int.parse(event.metadata?.mainType?.id ?? '0'),
+            );
+            if (screenName == RouteName.inappWebview) {
+              CommonFunctions.openBaldyWithRefreshCookie(
+                event.redirectUrl,
+              );
+            } else {
+              Navigator.of(context).pushNamed(
+                screenName,
+                arguments: {
+                  "licenseNumber": event.entityId,
+                  "requestNumber": event.entityId,
+                  "invoiceId": event.hashingEntityId,
+                },
+              );
+            }
           },
           child: Container(
             height: 120,

@@ -18,6 +18,7 @@ class CalendarEventItem extends Equatable {
   final Metadata? metadata;
   final String? eventDisplayMessage;
   final String? serviceUrl;
+  final String? redirectUrl;
   final String? hashingEntityId;
 
   const CalendarEventItem({
@@ -36,6 +37,7 @@ class CalendarEventItem extends Equatable {
     this.metadata,
     this.eventDisplayMessage,
     this.serviceUrl,
+    this.redirectUrl,
     this.hashingEntityId,
   });
 
@@ -59,6 +61,7 @@ class CalendarEventItem extends Equatable {
         : Metadata.fromJson(json['metadata'] as Map<String, dynamic>),
     eventDisplayMessage: json['eventDisplayMessage'] as String?,
     serviceUrl: json['serviceUrl'] as String?,
+    redirectUrl: json['redirectUrl'] as String?,
     hashingEntityId: json['hashingEntityId'] as String?,
   );
 
@@ -78,6 +81,7 @@ class CalendarEventItem extends Equatable {
     'metadata': metadata?.toJson(),
     'eventDisplayMessage': eventDisplayMessage,
     'serviceUrl': serviceUrl,
+    'redirectUrl': redirectUrl,
     'hashingEntityId': hashingEntityId,
   };
 
@@ -99,6 +103,7 @@ class CalendarEventItem extends Equatable {
       metadata,
       eventDisplayMessage,
       serviceUrl,
+      redirectUrl,
       hashingEntityId,
     ];
   }
