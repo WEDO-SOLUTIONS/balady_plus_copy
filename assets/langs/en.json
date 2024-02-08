@@ -4229,7 +4229,12 @@
 "STREET_VENDOR":"STREET VENDOR", 
 "VEHICLE":"VEHICLE", 
 
-"building_requirements_warning": "The images shown are illustrative and do not specifically specify the nature of the violation"
+"building_requirements_warning": "The images shown are illustrative and do not specifically specify the nature of the violation", 
+
+
+"backgournd_location_consent":"Balady App is seeking your permission to utilize background location services. This will help us accurately determine your location for various smart city services, including weather alerts that provide important information tailored to your geographical area.\n\n Would you like to activate this service?", 
+ "backgournd_location_consent_agree":"Agree" ,
+ "backgournd_location_consent_non_agree":"Disagree"
 
 
 

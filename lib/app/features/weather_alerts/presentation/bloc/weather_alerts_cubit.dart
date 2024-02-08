@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:background_location/background_location.dart';
 import 'package:balady_plus/app/core/services/local/helpers.dart';
+import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,6 +46,9 @@ class WeatherAlertsCubit extends Cubit<WeatherAlertsState> {
   }
 
   void startTracking() async {
+    bool? locationConsent = sharedPrefs.getLocationConsent();
+
+    if (locationConsent != true && Platform.isAndroid) return;
     await BackgroundLocation.stopLocationService();
     double distanceFilter = Platform.isAndroid ? 30.0 : 30.0;
     await BackgroundLocation.startLocationService(

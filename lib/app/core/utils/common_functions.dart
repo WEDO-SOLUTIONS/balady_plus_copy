@@ -3,6 +3,8 @@ import 'dart:io' show File;
 import 'dart:typed_data' show Uint8List;
 import 'dart:ui';
 import 'dart:math' show asin, cos, sqrt;
+import 'package:balady_plus/app/core/services/services_exports.dart';
+
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart'
     as calendar;
 import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
@@ -40,6 +42,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../app.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
+import '../../features/_shared_feature_/presentation/dialogs/location_backgorund_consent.dart';
 import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
 import '../../features/_shared_feature_/presentation/pages/pdf_view.dart';
 import '../../features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
@@ -1260,6 +1263,17 @@ class CommonFunctions {
     try {
       FlutterUxcam.logEventWithProperties(event, data);
     } catch (ex) {}
+  }
+
+  static showBackGroundLocationConsent() async {
+    bool? consetnt = sharedPrefs.getLocationConsent();
+    if (consetnt != null) return;
+    await Future.delayed(const Duration(seconds: 10));
+
+    showDialog(
+      context: NavigationService.navigatorKey.currentContext!,
+      builder: (ctx) => const LocationBackgroundConsentDialog(),
+    );
   }
 }
 
