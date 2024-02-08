@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/shared/providers/map/camera_state.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -14,19 +15,30 @@ class NearestObject {
 
 @riverpod
 class _NearestObject extends _$NearestObject {
+  CancelableOperation<AsyncValue<NearestObject>>? _loadOperation;
+
   @override
   Future<NearestObject> build() async {
-    ref.listen(cameraStateProvider, (prev, next) async {
+    ref.listen(cameraStateProvider, (prev, next) {
       if (next == CameraState.free) {
-        state = await _loadNearest();
+        _load().then((value) => state = value);
       } else {
+        _loadOperation?.cancel();
         state = const AsyncValue.loading();
       }
     });
 
-    final nearest = await _loadNearest();
+    final nearest = await _load();
 
     return nearest.value!;
+  }
+
+  Future<AsyncValue<NearestObject>> _load() {
+    _loadOperation?.cancel();
+    _loadOperation = CancelableOperation.fromFuture(
+      _loadNearest(),
+    );
+    return _loadOperation!.value;
   }
 
   Future<AsyncValue<NearestObject>> _loadNearest() async {
