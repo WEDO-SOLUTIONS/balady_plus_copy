@@ -1,7 +1,7 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
-import 'package:balady_plus/app/features/balady_calender/data/models/filter/filter_item.dart';
+import 'package:balady_plus/app/features/balady_calender/domain/entities/checkbox_entity.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/mvvm/balady_calendar_years_list_view_model.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
@@ -15,15 +15,13 @@ class CalendarFilterPopup extends StatefulWidget {
 }
 
 class _CalendarFilterState extends State<CalendarFilterPopup> {
-  bool municiplaityAppointmentsCheckValue = false;
   bool licenseExpiryCheckValue = false;
   bool healthLicenseCheckValue = false;
   bool billExpiryCheckValue = false;
 
   @override
   Widget build(BuildContext context) {
-    BaladyCalendarYearsListViewModel baladyCalendarYearsListViewModel =
-        context.watch<BaladyCalendarYearsListViewModel>();
+    BaladyCalendarYearsListViewModel baladyCalendarYearsListViewModel = context.watch<BaladyCalendarYearsListViewModel>();
     return Container(
       padding: const EdgeInsets.all(15.0),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -52,30 +50,28 @@ class _CalendarFilterState extends State<CalendarFilterPopup> {
         const SizedBox(
           height: 10,
         ),
-        Selector<BaladyCalendarYearsListViewModel, List<FilterItem>?>(
-            selector: (p0, p1) => p1.filterList,
+        Selector<BaladyCalendarYearsListViewModel,
+                List<CheckboxListTileEntity>?>(
+            selector: (p0, p1) => p1.checkboListTileEntityList,
             builder: (context, value, child) => SizedBox(
                   height: 300,
                   child: ListView.builder(
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
                       itemCount: value?.length ?? 0,
-                      itemBuilder: (context, index) => CheckboxListTile(
-                            contentPadding: EdgeInsets.zero,
-                            fillColor: const MaterialStatePropertyAll(
-                                AppColor.primary600Light),
-                            controlAffinity: ListTileControlAffinity.leading,
-                            title: Text(value![index].name.toString()),
-                            value: municiplaityAppointmentsCheckValue,
-                            onChanged: (value) {
-                              // print(value);
-                              // if (value != null) {
-                              //   setState(() {
-                              //     municiplaityAppointmentsCheckValue = value;
-                              //   });
-                              // }
-                            },
-                          )),
+                      itemBuilder: (context, index) {
+                        return CheckboxListTile(
+                          contentPadding: EdgeInsets.zero,
+                          fillColor: const MaterialStatePropertyAll(
+                              AppColor.primary600Light),
+                          controlAffinity: ListTileControlAffinity.leading,
+                          title: Text(value![index].name.toString()),
+                          value: value[index].isChecked,
+                          onChanged: (checkedValue) {
+                            baladyCalendarYearsListViewModel.selectFilterOption(index, checkedValue!);             
+                          },
+                        );
+                      }),
                 )),
         const SizedBox(
           height: 25,
