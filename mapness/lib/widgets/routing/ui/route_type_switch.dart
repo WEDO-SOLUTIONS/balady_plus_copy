@@ -5,16 +5,16 @@ import 'package:mapness/shared/config/package_config.dart';
 
 class RouteTypeSwitch extends StatelessWidget {
   final VoidCallback onPressed;
-  final String title;
+  final String? title;
   final String iconAsset;
   final bool isChoosed;
 
   const RouteTypeSwitch({
-    super.key,
     required this.onPressed,
     required this.title,
     required this.iconAsset,
     required this.isChoosed,
+    super.key,
   });
 
   @override
@@ -46,18 +46,20 @@ class RouteTypeSwitch extends StatelessWidget {
                   BlendMode.srcATop,
                 ),
               ),
-              const SizedBox(
-                width: 6,
-              ),
-              Text(
-                title,
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .accentS
-                    .copyWith(
-                      color: titleColor,
-                    ),
-              ),
+              if (title != null) ...[
+                const SizedBox(
+                  width: 6,
+                ),
+                Text(
+                  title!,
+                  style: Theme.of(context)
+                      .extension<ThemeTextStyles>()!
+                      .accentS
+                      .copyWith(
+                        color: titleColor,
+                      ),
+                ),
+              ],
             ],
           ),
         ),
