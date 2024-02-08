@@ -68,7 +68,7 @@ class PathNavMapControlls extends StatelessWidget {
           /// map controls
           Expanded(
             child: Directionality(
-              textDirection: Directionality.of(context),
+              textDirection: TextDirection.ltr,
               child: Padding(
                 padding: const EdgeInsets.only(
                   left: 12,

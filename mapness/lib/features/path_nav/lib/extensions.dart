@@ -12,5 +12,6 @@ extension DistanceUnitsExt on DistanceUnits {
 extension TimeunitsExt on TimeUnits {
   String getDescription(BuildContext context) => switch (this) {
         TimeUnits.min => context.l10n.min,
+        TimeUnits.hours => context.l10n.hours,
       };
 }

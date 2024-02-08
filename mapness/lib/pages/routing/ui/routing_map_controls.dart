@@ -16,8 +16,7 @@ class RoutingMapControls extends ConsumerWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return SafeArea(
+  Widget build(BuildContext context, WidgetRef ref) => SafeArea(
       bottom: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,5 +69,4 @@ class RoutingMapControls extends ConsumerWidget {
         ],
       ),
     );
-  }
 }

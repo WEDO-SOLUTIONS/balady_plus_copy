@@ -14,13 +14,17 @@ class _PathNavEta extends _$PathNavEta {
     final mapController = ref.read(dgisControllerProvider).value!;
     final subspcription = mapController.naviDashboardEvents.listen((event) {
       final distance = event.distance.formatDistance();
+      final duration = Duration(seconds: event.duration);
+
       state = PathNavEta(
         timeEta: event.duration.formatDuration(),
-        timeEtaUnits: TimeUnits.min,
+        timeEtaUnits: duration >= const Duration(hours: 1)
+            ? TimeUnits.hours
+            : TimeUnits.min,
         distanceEta: distance.value,
         distanceEtaUnits: distance.unit,
         arrivalTime: DateFormat.Hm().format(
-          DateTime.now().add(Duration(seconds: event.duration)),
+          DateTime.now().add(duration),
         ),
       );
     });
