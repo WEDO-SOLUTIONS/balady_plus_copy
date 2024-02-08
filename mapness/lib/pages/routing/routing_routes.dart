@@ -1,6 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
@@ -153,7 +154,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                             child: RoutesCarousel(
                               points: points,
                               startNavigation: () {
-                                const PathNavRoute().go(context);
+                                PathNavRoute.open(ref.watch(goRouterProvider), navType);
                               },
                               navType: navType,
                             ),

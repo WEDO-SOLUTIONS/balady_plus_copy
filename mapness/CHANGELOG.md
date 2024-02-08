@@ -9,6 +9,9 @@
 - BALADY-952: [Favourites] - fix error screen on favourites open
 - BALADY-1262: [Navi] Incorrect date type and translation in Road Closure (RoadEvent)
 - BALADY-1151: [Navi] After choosing (From - to ) point, sometimes the app get stuck without showing the route and showing button to start trip
+- BALADY-1267: [Marketing] “search in this area” button disappears randomly
+- BALADY-1261: [Navi] remove speed widget for pedestrian
+- BALADY-1216 [Marketing] The "Back" button is inappropriately positioned in the top right corner of the "Compass" screen
 
 ## 3.8.2(5)
 

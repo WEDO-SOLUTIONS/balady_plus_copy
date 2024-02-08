@@ -1,3 +1,4 @@
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/routes.dart';
@@ -17,7 +18,20 @@ class PathNavRoute extends GoRouteData {
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return _pathNavTransition(context: context, child: const PathNavPage());
+    final extra = state.extra as Map<String, dynamic>?;
+    final navType = extra?['data'] as RouteSearchOptionsMessage;
+    return _pathNavTransition(
+        context: context,
+        child: PathNavPage(
+          navType: navType,
+        ));
+  }
+
+  static void open(GoRouter router, RouteSearchOptionsMessage navType) {
+    const route = PathNavRoute();
+    final location = route.location;
+    final extra = {'data': navType};
+    router.go(location, extra: extra);
   }
 }
 
