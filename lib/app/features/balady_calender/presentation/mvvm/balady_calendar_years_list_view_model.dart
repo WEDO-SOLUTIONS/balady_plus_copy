@@ -40,9 +40,12 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
     try {
       isLoading = true;
       notifyListeners();
+      monthsList = null;
       response = await repository.getEventsCountInYears(params: params);
       response.fold(
-        (failure) {},
+        (failure) {
+          yearList = [];
+        },
         (yearsList) async {
           yearList = yearsList.eventsCountInYearsItem;
           // check if not have selected year and not list empty to select

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class CalendarTypePopup extends StatelessWidget {
 
-  final bool isHijri;
+  final int isHijri;
   const CalendarTypePopup({super.key,required this.isHijri});
 
   @override
@@ -40,11 +40,11 @@ class CalendarTypePopup extends StatelessWidget {
             decoration: BoxDecoration(
                 color: AppColor.white,
                 borderRadius: BorderRadius.circular(20.0)),
-            child: RadioListTile<bool>(
+            child: RadioListTile<int>(
               activeColor: AppColor.primary600Light,
               controlAffinity: ListTileControlAffinity.trailing,
               title: const Text('ميلادي'),
-              value: false,
+              value: 1,
               groupValue: isHijri,
               onChanged: (value) => Navigator.of(context).pop(value),
             ),
@@ -57,12 +57,12 @@ class CalendarTypePopup extends StatelessWidget {
           height: 60,
           decoration: BoxDecoration(
               color: AppColor.white, borderRadius: BorderRadius.circular(20.0)),
-          child: RadioListTile(
+          child: RadioListTile<int>(
             activeColor: AppColor.primary600Light,
             controlAffinity: ListTileControlAffinity.trailing,
             title: const Text('هجري'), // Display the title for option true
-            // Display a subtitle for option true
-            value: true, // Assign a value of true to this option
+            // Display a subtitle for option 2
+            value: 2, // Assign a value of 2 to this option
             groupValue: isHijri, // Use _selectedValue to track the selected option
             onChanged: (value) => Navigator.of(context).pop(value),
           ),

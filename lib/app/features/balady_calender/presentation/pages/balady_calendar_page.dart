@@ -54,9 +54,7 @@ class _BaladyCalendarPageState extends State<BaladyCalendarPage> {
                         iconSize: 18,
                       ),
                     ),
-                    const SizedBox(
-                      width: 15,
-                    ),
+                    const SizedBox(width: 15),
                     CustomTextWidget(
                       "balady_calendar".tr(),
                       textStyle: AppStyle.appBarTitleTextStyle,
@@ -64,21 +62,21 @@ class _BaladyCalendarPageState extends State<BaladyCalendarPage> {
                     const Spacer(),
                     GestureDetector(
                       onTap: () async {
-                        bool? isHijri =
-                            await CustomPopUpsWidgets.showBottomSheet(
+                        var isHijri = await CustomPopUpsWidgets.showBottomSheet(
                           context,
                           child: CalendarTypePopup(
-                              isHijri: baladyCalendarYearsListViewModel
-                                  .params.hijri),
+                            isHijri:
+                                baladyCalendarYearsListViewModel.params.hijri
+                                    ? 2
+                                    : 1,
+                          ),
                           height: 300,
                           radius: 30,
                         );
-                        if (isHijri != null) {
-                          baladyCalendarYearsListViewModel.params.hijri =
-                              isHijri;
+                        if (isHijri is int) {
+                          baladyCalendarYearsListViewModel.params.hijri = isHijri == 2;
                           baladyCalendarYearsListViewModel.selectedYear = null;
-                          baladyCalendarYearsListViewModel
-                              .getEventsCountInYears();
+                          baladyCalendarYearsListViewModel.getEventsCountInYears();
                         }
                       },
                       child: Container(
@@ -105,12 +103,11 @@ class _BaladyCalendarPageState extends State<BaladyCalendarPage> {
                         ]),
                       ),
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
+                    const SizedBox(width: 10),
                     GestureDetector(
                       onTap: () async {
-                        await CustomPopUpsWidgets.showBottomSheet(
+                        List<String>? idsSelected =
+                            await CustomPopUpsWidgets.showBottomSheet(
                           context,
                           child: ChangeNotifierProvider.value(
                             value: baladyCalendarYearsListViewModel,
@@ -119,6 +116,12 @@ class _BaladyCalendarPageState extends State<BaladyCalendarPage> {
                           height: MediaQuery.sizeOf(context).height * 0.60,
                           radius: 30,
                         );
+                        if (idsSelected != null) {
+                          baladyCalendarYearsListViewModel
+                              .params.filterationEntity = idsSelected;
+                          baladyCalendarYearsListViewModel
+                              .getEventsCountInYears();
+                        }
                       },
                       child: Container(
                         height: 60,

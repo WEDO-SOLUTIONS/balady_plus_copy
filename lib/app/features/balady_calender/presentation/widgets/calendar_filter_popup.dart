@@ -15,69 +15,80 @@ class CalendarFilterPopup extends StatefulWidget {
 }
 
 class _CalendarFilterState extends State<CalendarFilterPopup> {
-  bool licenseExpiryCheckValue = false;
-  bool healthLicenseCheckValue = false;
-  bool billExpiryCheckValue = false;
-
   @override
   Widget build(BuildContext context) {
-    BaladyCalendarYearsListViewModel baladyCalendarYearsListViewModel = context.watch<BaladyCalendarYearsListViewModel>();
+    BaladyCalendarYearsListViewModel baladyCalendarYearsListViewModel =
+        context.watch<BaladyCalendarYearsListViewModel>();
     return Container(
       padding: const EdgeInsets.all(15.0),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            CustomTextWidget(
-              'تصفية التقويم',
-              textStyle: AppStyle.sectionTitleStyle,
-            ),
-            InkWell(
-              onTap: () => Navigator.pop(context),
-              child: CircleIcon(
-                icon: Icons.close,
-                iconColor: AppColor.primary600Light,
-                backgroundColor: AppColor.geyser.withOpacity(0.5),
-                iconSize: 18,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CustomTextWidget(
+                'تصفية التقويم',
+                textStyle: AppStyle.sectionTitleStyle,
               ),
-            ),
-          ],
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        const Text('عرض'),
-        const SizedBox(
-          height: 10,
-        ),
-        Selector<BaladyCalendarYearsListViewModel,
-                List<CheckboxListTileEntity>?>(
+              InkWell(
+                onTap: () => Navigator.pop(context),
+                child: CircleIcon(
+                  icon: Icons.close,
+                  iconColor: AppColor.primary600Light,
+                  backgroundColor: AppColor.geyser.withOpacity(0.5),
+                  iconSize: 18,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          const Text('عرض'),
+          const SizedBox(height: 10),
+          Selector<BaladyCalendarYearsListViewModel,
+              List<CheckboxListTileEntity>?>(
             selector: (p0, p1) => p1.checkboListTileEntityList,
             builder: (context, value, child) => SizedBox(
-                  height: 300,
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      itemCount: value?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        return CheckboxListTile(
-                          contentPadding: EdgeInsets.zero,
-                          fillColor: const MaterialStatePropertyAll(
-                              AppColor.primary600Light),
-                          controlAffinity: ListTileControlAffinity.leading,
-                          title: Text(value![index].name.toString()),
-                          value: value[index].isChecked,
-                          onChanged: (checkedValue) {
-                            baladyCalendarYearsListViewModel.selectFilterOption(index, checkedValue!);             
-                          },
-                        );
-                      }),
-                )),
-        const SizedBox(
-          height: 25,
-        ),
-        ElevatedButtonWidget.primaryCustom(onPressed: () {}, text: 'تأكيد'),
-      ]),
+              height: 300,
+              child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                itemCount: value?.length ?? 0,
+                itemBuilder: (context, index) {
+                  return CheckboxListTile(
+                    contentPadding: EdgeInsets.zero,
+                    fillColor: const MaterialStatePropertyAll(
+                        AppColor.primary600Light,
+                    ),
+                    controlAffinity: ListTileControlAffinity.leading,
+                    title: Text(value![index].name.toString()),
+                    value: value[index].isChecked,
+                    onChanged: (checkedValue) {
+                      baladyCalendarYearsListViewModel.selectFilterOption(
+                        index,
+                        checkedValue!,
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+          const SizedBox(height: 25),
+          ElevatedButtonWidget.primaryCustom(
+            onPressed: () {
+              List<String> idsSelected= [];
+              for (var element in baladyCalendarYearsListViewModel.checkboListTileEntityList) {
+                if(element.isChecked) {
+                  idsSelected.add(element.id);
+                }
+              }
+              Navigator.of(context).pop(idsSelected);
+            },
+            text: 'تأكيد',
+          ),
+        ],
+      ),
     );
   }
 }

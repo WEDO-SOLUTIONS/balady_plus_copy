@@ -22,52 +22,34 @@ class ListItemsEventsWidget extends StatelessWidget {
           child: Container(
             height: 120,
             width: double.infinity,
-            margin: const EdgeInsets.only(top: 16),
+            margin: const EdgeInsets.only(top: 12),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: AppColor.black100,
             ),
-            child: Row(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 10,
-                  decoration: const BoxDecoration(
-                    color: AppColor.primary700Light,
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(15),
-                      bottomRight: Radius.circular(15),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Flexible(
+                      fit: FlexFit.tight,
+                      child: Text(event.metadata?.mainType?.name ?? ''),
                     ),
-                  ),
+                    Text(
+                      DateFormat('EEEE dd',).format(event.eventDate!),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Flexible(
-                            fit: FlexFit.tight,
-                            child: Text(event.metadata?.mainType?.name ?? ''),
-                          ),
-                          Text(
-                            DateFormat('EEEE dd').format(event.eventDate!),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(width: 6),
-                      Container(
-                        child: Text(
-                          event.eventDisplayMessage ?? 'Display Message Empty',
-                          overflow: TextOverflow.visible,
-                        ),
-                      )
-                    ],
+                const SizedBox(width: 6),
+                Container(
+                  child: Text(
+                    event.eventDisplayMessage ?? 'Display Message Empty',
+                    overflow: TextOverflow.visible,
                   ),
-                ),
-                const SizedBox(width: 10)
+                )
               ],
             ),
           ),
