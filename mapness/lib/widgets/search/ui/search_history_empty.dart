@@ -38,13 +38,6 @@ class SearchHistoryEmpty extends ConsumerWidget {
                     .copyWith(color: const Color(0xFF1E2A36)),
               ),
               TextSpan(
-                text: ' ',
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .textL
-                    .copyWith(color: const Color(0xFF1E2A36)),
-              ),
-              TextSpan(
                 text: context.l10n.mallNearby,
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
