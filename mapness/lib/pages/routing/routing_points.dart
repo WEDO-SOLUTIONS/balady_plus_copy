@@ -53,8 +53,9 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
       textDirection: TextDirection.rtl,
       child: Stack(
         children: [
-          RoutingMapControls(
-              bottomExtent: 136),
+          const RoutingMapControls(
+            bottomExtent: 136,
+          ),
           DgisBottomSheet(
             showBarrier: false,
             availableExpansions: const {
