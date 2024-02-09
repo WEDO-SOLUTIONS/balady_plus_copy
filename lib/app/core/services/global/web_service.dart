@@ -84,13 +84,14 @@ class AppInterceptors extends Interceptor {
   ) async {
     "On-Sending-Request ${options.uri}".actionLog();
     // Update language
-    options.headers[ApiHeader.language.eName] = languageCode;
+    /*options.headers[ApiHeader.language.eName] = languageCode;
 
-    if (!options.uri.toString().contains("objection-generic-services") &&
+      if (!options.uri.toString().contains("objection-generic-services") &&
         !options.uri.toString().contains("objection-services") &&
         !options.uri.toString().contains("PRRestService")) {
       options.headers["Accept-Language"] = languageCode;
-    }
+    }*/
+    options.headers["Accept-Language"] = languageCode;
 
     if (options.uri.toString().toLowerCase().contains("etmamplus-services") ||
         options.uri.toString().toLowerCase().contains("dashboard-services") ||

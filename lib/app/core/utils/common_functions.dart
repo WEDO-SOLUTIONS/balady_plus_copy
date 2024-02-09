@@ -117,6 +117,26 @@ var carPlateLettersList = [
   "ي",
 ];
 
+var carPlateLettersListEn = [
+  "A",
+  "B",
+  "J",
+  "D",
+  "R",
+  "S",
+  "X",
+  "T",
+  "E",
+  "G",
+  "K",
+  "L",
+  "Z",
+  "N",
+  "H",
+  "U",
+  "V",
+];
+
 Map<String, String> carPlateLetters = {
   "أ": "A",
   "ب": "B",

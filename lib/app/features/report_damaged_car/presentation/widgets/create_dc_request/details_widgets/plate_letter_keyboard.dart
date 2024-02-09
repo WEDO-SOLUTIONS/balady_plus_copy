@@ -11,6 +11,8 @@ class PlateNumberKeyBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var plates =
+        CommonFunctions.isAppAR ? carPlateLettersList : carPlateLettersListEn;
     return Container(
       color: Color(0xFFA0A5A9),
       padding: EdgeInsets.only(left: 16, right: 16, top: 16),
@@ -33,11 +35,11 @@ class PlateNumberKeyBoard extends StatelessWidget {
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
             ),
-            itemCount: carPlateLettersList.length,
+            itemCount: plates.length,
             itemBuilder: (BuildContext context, int index) {
               return InkWell(
                 onTap: () {
-                  onSelect(carPlateLettersList[index]);
+                  onSelect(plates[index]);
                   Navigator.of(context).pop();
                 },
                 child: Container(
@@ -48,7 +50,7 @@ class PlateNumberKeyBoard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(5),
                       color: AppColor.white),
                   child: CustomTextWidget(
-                    carPlateLettersList[index],
+                    plates[index],
                     fontColor: AppColor.blackModern700Light,
                     fontSize: 22,
                     fontWeight: AppFontWeight.bold,
