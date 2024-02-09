@@ -1,15 +1,17 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/routing/ui/routes_carousel.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
 import 'package:mapness/pages/routing/lib/route_search_options_extension.dart';
+import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/shared/ui/buttons/nav_button.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/routing/ui/route_timeline.dart';
@@ -65,22 +67,16 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   @override
   Widget build(BuildContext context) => Directionality(
         textDirection: TextDirection.rtl,
-        child: DraggableScrollableSheet(
-          controller: _controller,
-          initialChildSize: 0.35,
-          minChildSize: 0.35,
-          maxChildSize: 0.35,
-          builder: (context, scrollController) => Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(16.0),
-                topLeft: Radius.circular(16.0),
-              ),
-            ),
-            child: Material(
-              color: const Color(0x0D1E2A36),
-              child: Container(
+        child: Stack(
+          children: [
+            RoutingMapControls(
+                bottomExtent: MediaQuery.of(context).size.height * 0.35),
+            DraggableScrollableSheet(
+              controller: _controller,
+              initialChildSize: 0.35,
+              minChildSize: 0.35,
+              maxChildSize: 0.35,
+              builder: (context, scrollController) => Container(
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -88,127 +84,150 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                     topLeft: Radius.circular(16.0),
                   ),
                 ),
-                child: SafeArea(
-                  top: false,
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 8,
+                child: Material(
+                  color: const Color(0x0D1E2A36),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(16.0),
+                        topLeft: Radius.circular(16.0),
                       ),
-                      Center(
-                        child: Container(
-                          height: 4,
-                          width: 26,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFDDE4EE),
-                            borderRadius: BorderRadius.all(Radius.circular(24)),
+                    ),
+                    child: SafeArea(
+                      top: false,
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 8,
                           ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: RouteTimeline(
-                                labels: labels,
+                          Center(
+                            child: Container(
+                              height: 4,
+                              width: 26,
+                              decoration: const BoxDecoration(
+                                color: Color(0xFFDDE4EE),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(24)),
                               ),
                             ),
-                            NavButton(
-                              onTap: () {
-                                setState(() {
-                                  points = points.reversed.toList();
-                                  labels = labels.reversed.toList();
-                                  searchPoints = searchPoints.reversed.toList();
-                                });
-                              },
-                              icon: 'assets/icons/svg/ic_transition.svg',
-                            ),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            NavButton(
-                              onTap: () {
-                                const RoutingRoute().go(context);
-                              },
-                              icon: 'assets/icons/svg/ic_search_close.svg',
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      Expanded(
-                        child: RoutesCarousel(
-                          points: points,
-                          startNavigation: () {
-                            const PathNavRoute().go(context);
-                          },
-                          navType: navType,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          children: [
-                            RouteSearchOptionsMessage.pedestrian,
-                            RouteSearchOptionsMessage.car,
-                          ]
-                              .map(
-                                (e) => _RouteSwitch(
-                                  onTap: () => setState(
-                                    () => navType = e,
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: RouteTimeline(
+                                    labels: labels,
                                   ),
-                                  isChoosed: navType == e,
-                                  navType: e,
-                                  points: searchPoints,
                                 ),
-                              )
-                              .toList(),
-                        ),
+                                NavButton(
+                                  onTap: () {
+                                    setState(() {
+                                      points = points.reversed.toList();
+                                      labels = labels.reversed.toList();
+                                      searchPoints =
+                                          searchPoints.reversed.toList();
+                                    });
+                                  },
+                                  icon: 'assets/icons/svg/ic_transition.svg',
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                NavButton(
+                                  onTap: () {
+                                    const RoutingRoute().go(context);
+                                  },
+                                  icon: 'assets/icons/svg/ic_search_close.svg',
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Expanded(
+                            child: RoutesCarousel(
+                              points: points,
+                              startNavigation: () {
+                                PathNavRoute.open(ref.watch(goRouterProvider), navType);
+                              },
+                              navType: navType,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          _RouteTabBar(
+                            active: navType,
+                            onChanged: (e) {
+                              setState(() {
+                                navType = e;
+                              });
+                            },
+                            points: points,
+                          ),
+                          const SizedBox(height: 16),
+                        ],
                       ),
-                      const SizedBox(height: 16),
-                    ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
+          ],
         ),
       );
 }
 
-class _RouteSwitch extends ConsumerWidget {
-  final List<RouteSearchPointMessage?> points;
-  final RouteSearchOptionsMessage navType;
-  final bool isChoosed;
-  final Function() onTap;
+class _RouteTabBar extends ConsumerWidget {
+  final void Function(RouteSearchOptionsMessage) onChanged;
+  final RouteSearchOptionsMessage active;
+  final List<RouteParamsPoint?> points;
 
-  const _RouteSwitch({
-    required this.navType,
-    required this.isChoosed,
-    required this.onTap,
+  const _RouteTabBar({
+    required this.onChanged,
+    required this.active,
     required this.points,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final time = ref.watch(briefRouteInfoProvider(
-      startPoint: points[0],
-      finishPoint: points[1],
-      navType: navType,
-    ));
+    final routes = ref
+            .watch(
+              routesProvider(
+                startPoint: points[0],
+                finishPoint: points[1],
+                navType: active,
+              ),
+            )
+            .unwrapPrevious()
+            .valueOrNull ??
+        [];
+    final activeRoute = ref.watch(activeRouteProvider);
+    final routeDuration = routes.isEmpty ? null : routes[activeRoute].duration;
 
-    return RouteTypeSwitch(
-      iconAsset: navType.icon,
-      title: time?.first.duration.ceil().formatDuration(context.l10n) ?? '-',
-      onPressed: onTap,
-      isChoosed: isChoosed,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          RouteSearchOptionsMessage.pedestrian,
+          RouteSearchOptionsMessage.car,
+        ]
+            .map(
+              (e) => RouteTypeSwitch(
+                iconAsset: e.icon,
+                title: active == e
+                    ? routeDuration?.ceil().formatDuration(context.l10n)
+                    : null,
+                onPressed: () => onChanged(e),
+                isChoosed: active == e,
+              ),
+            )
+            .toList(),
+      ),
     );
   }
 }

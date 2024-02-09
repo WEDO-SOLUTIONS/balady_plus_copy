@@ -21,7 +21,10 @@ class SearchInRect extends _$SearchInRect {
         dgisController?.visibleRectEvents.listen((event) async {
       state = (
         state.$1,
-        await _buttonVisible(event.visibleRect.geoRectMessage(), state.$1)
+        _buttonVisible(
+          state.$1,
+          event.visibleRect.geoRectMessage(),
+        )
       );
     });
     ref.onDispose(() {
@@ -48,11 +51,17 @@ class SearchInRect extends _$SearchInRect {
     );
   }
 
-  Future<bool> _buttonVisible(
-      GeoRectMessage oldRect, GeoRectMessage? newRect) async {
-    if (newRect == null) {
+  bool _buttonVisible(GeoRectMessage? oldRect, GeoRectMessage newRect) {
+    if (oldRect == null) {
       return false;
     }
+
+    final diag = CommonFunctions.distance(
+      oldRect.northEast.latitude,
+      oldRect.northEast.longitude,
+      oldRect.southWest.latitude,
+      oldRect.southWest.longitude,
+    );
 
     final distance = CommonFunctions.distance(
           oldRect.northEast.latitude,
@@ -67,11 +76,6 @@ class SearchInRect extends _$SearchInRect {
           newRect.southWest.longitude,
         );
 
-    final contains = await ref
-        .read(dgisControllerProvider)
-        .value!
-        .containsRect(oldRect, newRect);
-
-    return distance > 5 && contains;
+    return distance > diag / 2;
   }
 }

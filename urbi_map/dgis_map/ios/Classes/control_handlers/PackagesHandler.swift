@@ -7,6 +7,11 @@ class PackagesHandler {
         static let packageInfoChangedEvent = "packageInfoChangedEvent"
     }
     
+    enum InstallTask {
+        case voice(String)
+        case package(String)
+    }
+    
     private let sdk: Context
     private let eventChannel: DgisStreamHandler
     
@@ -14,6 +19,7 @@ class PackagesHandler {
     private let voiceManager: VoiceManager
     
     private var cancelable: Array<Cancellable> = []
+    private var installTasks: Array<InstallTask> = []
     
     init(sdk: Context, eventChannel: DgisStreamHandler) {
         self.sdk = sdk
@@ -21,7 +27,30 @@ class PackagesHandler {
         self.packageManager = getPackageManager(context: sdk)
         self.voiceManager = getVoiceManager(context: sdk)
         
+        cancelable.append(
+            self.packageManager.packagesChannel.sink(receiveValue: checkInstallTasks)
+        )
+        cancelable.append(
+            self.voiceManager.voicesChannel.sink(receiveValue: checkInstallTasks)
+        )
+        
         self.packageManager.checkForUpdates()
+    }
+    
+    func noop(_: FlutterError?) -> Void {}
+    
+    func checkInstallTasks(_ packages: [Package]) {
+        let tasks = self.installTasks
+        self.installTasks.removeAll()
+        
+        for task in tasks {
+            switch task {
+            case .package(let id):
+                self.installPackage(id, completion: noop)
+            case .voice(let id):
+                self.installVoice(id, completion: noop)
+            }
+        }
     }
     
     func mapStatus(_ status: PackageUpdateStatus) -> String {
@@ -75,6 +104,8 @@ class PackagesHandler {
                 ])
             })
             package.install()
+        } else {
+            self.installTasks.append(.package(id))
         }
         completion(nil)
     }
@@ -101,6 +132,8 @@ class PackagesHandler {
                 ])
             })
             package.install()
+        } else {
+            self.installTasks.append(.voice(id))
         }
         completion(nil)
     }

@@ -1,3 +1,3 @@
 enum DistanceUnits { km, m }
 
-enum TimeUnits { min }
+enum TimeUnits { min, hours }

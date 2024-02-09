@@ -1,4 +1,19 @@
-## 3.8.2(5) - Current
+## 3.8.2(6) - Current
+
+- BALADY-1198: [Navi] add map controls
+- BALADY-1141: [Marketing] Multiple object selection fix
+
+- BALADY-1210: [Iwish] - minimize dashboard on show joyparks from story
+- BALADY-722: [POI Card] week starts from sunday
+- BALADY-1249: [Navi] Change default voice to “Saud”
+- BALADY-952: [Favourites] - fix error screen on favourites open
+- BALADY-1262: [Navi] Incorrect date type and translation in Road Closure (RoadEvent)
+- BALADY-1151: [Navi] After choosing (From - to ) point, sometimes the app get stuck without showing the route and showing button to start trip
+- BALADY-1267: [Marketing] “search in this area” button disappears randomly
+- BALADY-1261: [Navi] remove speed widget for pedestrian
+- BALADY-1216 [Marketing] The "Back" button is inappropriately positioned in the top right corner of the "Compass" screen
+
+## 3.8.2(5)
 
 - BALADY-1177: [Marketing] arabic text in poi card in english app
 - BALADY-1212: [Marketing] navigation is not enabled in all places to visit and places to shop

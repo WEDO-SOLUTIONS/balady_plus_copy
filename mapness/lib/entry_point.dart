@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:app_links/app_links.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
@@ -56,21 +55,11 @@ class MapnessEntryPoint extends ConsumerStatefulWidget {
 class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   // ignore: use_late_for_private_fields_and_variables
   OverlayEntry? _debugOverlay;
-  late AppLinks _appLinks;
-  StreamSubscription<Uri>? _linkSubscription;
 
   @override
   void initState() {
     super.initState();
     initMixpanel();
-    initDeepLinks();
-  }
-
-  @override
-  void dispose() {
-    _linkSubscription?.cancel();
-
-    super.dispose();
   }
 
   @override
@@ -156,23 +145,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       enableAutomaticScreenNameTagging: false,
     );
     await FlutterUxcam.startWithConfiguration(config);
-  }
-
-  Future<void> initDeepLinks() async {
-    _appLinks = AppLinks();
-
-    final appLink = await _appLinks.getInitialAppLink();
-    if (appLink != null) {
-      openAppLink(appLink);
-    }
-
-    _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
-      openAppLink(uri);
-    });
-  }
-
-  void openAppLink(Uri uri) {
-    ref.read(goRouterProvider).push(uri.fragment);
   }
 }
 

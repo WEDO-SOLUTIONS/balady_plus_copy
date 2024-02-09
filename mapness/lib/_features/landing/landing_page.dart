@@ -120,8 +120,10 @@ class _LandingPageState extends ConsumerState<LandingPage> {
                   builder: (context, constraints) => Dashboard(
                         biggestHeight: constraints.biggest.height,
                         biggestWidth: constraints.biggest.width,
+                        ///TODO: change while Dashboard refactoring
+                        initWithMinSize:
+                            widget.focusMaker == LangingFocusMaker.iwish,
                       )),
-              // if (isLayersVisible.layersVisible) const LayersSheet()
             ],
           ),
         ),
