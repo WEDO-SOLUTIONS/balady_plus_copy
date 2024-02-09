@@ -1,5 +1,5 @@
 import 'dart:convert' show base64Decode, base64Encode, utf8;
-import 'dart:io' show File;
+import 'dart:io' show File, Platform;
 import 'dart:typed_data' show Uint8List;
 import 'dart:ui';
 import 'dart:math' show asin, cos, sqrt;
@@ -1266,14 +1266,16 @@ class CommonFunctions {
   }
 
   static showBackGroundLocationConsent() async {
-    bool? consetnt = sharedPrefs.getLocationConsent();
-    if (consetnt != null) return;
-    await Future.delayed(const Duration(seconds: 10));
+    if (Platform.isAndroid) {
+      bool? consetnt = sharedPrefs.getLocationConsent();
+      if (consetnt != null) return;
+      await Future.delayed(const Duration(seconds: 10));
 
-    showDialog(
-      context: NavigationService.navigatorKey.currentContext!,
-      builder: (ctx) => const LocationBackgroundConsentDialog(),
-    );
+      showDialog(
+        context: NavigationService.navigatorKey.currentContext!,
+        builder: (ctx) => const LocationBackgroundConsentDialog(),
+      );
+    }
   }
 }
 
