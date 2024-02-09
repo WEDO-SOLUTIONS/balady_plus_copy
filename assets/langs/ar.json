@@ -3944,5 +3944,18 @@
 
 "backgournd_location_consent":"يستخدم تطبيق بلدي خدمة تحديد المواقع في خلفية التطبيق، ويساعدنا ذلك في تحديد موقعك لاستخدامه في خدمات المدن الذكية، بما في ذلك خدمة تنبيهات الطقس التي تقدم معلومات هامة بحسب موقعك الجغرافي.\n\n هل ترغب في تفعيل هذه الخدمة؟", 
  "backgournd_location_consent_agree":"موافق" ,
- "backgournd_location_consent_non_agree":"غير موافق"
+ "backgournd_location_consent_non_agree":"غير موافق", 
+
+ "Damaged":"تالفة", 
+ "BRoken":"آلية معطلة", 
+ "Abandoned":"مهملة", 
+
+ "Morning_Remembrances" :"اذكار الصباح",
+ "BedtimeـRemembrances":"اذكار النوم", 
+ "EveningـRemembrances":"اذكار المساء", 
+ "Post-PrayerـRemembrances":"اذكار بعد الصلاة", 
+ "Praises":"التسابيح", 
+ "Remembrance_of_waking_up":"اذكار الاستيقاظ من النوم", 
+ "Prayer_Remembrances":"اذكار الصلاة", 
+ "Comprehensive_Supplications":"جوامع الدعاء"
 }

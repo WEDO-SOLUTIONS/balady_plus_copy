@@ -4208,7 +4208,8 @@
   "choosePart": "اختر الجزء",
   "parts": "الأجزاء",
   "quranSearch": "بحث  باسم السورة ... ", 
-  "reset": "تصفية العداد", 
+
+  "reset": "Reset", 
   "is_license_inside_petrol_station":"Is Shop Inside Petrol Station", 
 
   "chat_bot_hint": "Please write your inquiry here....",
@@ -4234,7 +4235,20 @@
 
 "backgournd_location_consent":"Balady App is seeking your permission to utilize background location services. This will help us accurately determine your location for various smart city services, including weather alerts that provide important information tailored to your geographical area.\n\n Would you like to activate this service?", 
  "backgournd_location_consent_agree":"Agree" ,
- "backgournd_location_consent_non_agree":"Disagree"
+ "backgournd_location_consent_non_agree":"Disagree", 
+
+ "Damaged":"Damaged", 
+ "BRoken":"Broken", 
+ "Abandoned":"Abandoned", 
+
+ "Morning_Remembrances" :"Morning Remembrances",
+ "BedtimeـRemembrances":"Bedtime Remembrances", 
+ "EveningـRemembrances":"Evening Remembrances", 
+ "Post-PrayerـRemembrances": "Post-Prayer Remembrances",  
+ "Praises":"Praises", 
+ "Remembrance_of_waking_up":"Remembrance of waking up", 
+ "Prayer_Remembrances":"Prayer Remembrances", 
+ "Comprehensive_Supplications":"Comprehensive Supplications"
 
 
 

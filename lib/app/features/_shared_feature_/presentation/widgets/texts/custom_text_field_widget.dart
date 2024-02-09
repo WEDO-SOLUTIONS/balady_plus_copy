@@ -145,10 +145,12 @@ class CustomTextFieldWidget extends StatelessWidget {
         // if field is required, then show label beside asterisk e.g. *Username
         Row(
           children: [
-            WidgetLabel(
-              isRequired: isRequired,
-              label: label,
-              labelStyle: labelStyle,
+            Flexible(
+              child: WidgetLabel(
+                isRequired: isRequired,
+                label: label,
+                labelStyle: labelStyle,
+              ),
             ),
             if (showOptional == true)
               Text(
