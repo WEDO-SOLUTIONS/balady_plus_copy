@@ -1,13 +1,16 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:tuple/tuple.dart';
 
 import '../../../../../../core/base/base_view_model.dart';
+import '../../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../../core/remote_services/api_constants.dart';
 import '../../../../../../core/remote_services/web_service.dart';
 import '../../../../../../core/services/local/helpers.dart';
 import '../../../../../../core/utils/common_functions.dart';
+import '../../../../../../core/utils/constants/apis/api_info.dart';
 import '../../../../../../core/utils/constants/remote_config.dart';
 import '../../../../../transaction_inquiry/presentation/core/models/gis_location_result.dart';
 import '../../models/apply_new_health_request.dart';
@@ -24,17 +27,30 @@ import '../../models/submit_new_request_response.dart';
 import '../../models/update_photo_response.dart';
 import '../../models/validate_health_certificate_response.dart';
 import '../../models/verify_otp_certificate.dart';
+import '../../../../../../core/services/global/web_service.dart' as web;
 
 class HealthLicenseRepository {
   final webServices = locator<WebService>();
   Future<Tuple3<bool?, String?, GisLocationResult?>> getGisLocation(
       LatLng location) async {
-    String query =
-        "?x=${location.longitude}&y=${location.latitude}&guid=ba2570d8-6778-4048-9916-e234fac1c04b";
-    final body = await webServices.getRequest(
-        RemoteConfig.gis + ApiConstants.GisGetLocation,
-        relativePath: query);
-    bool state = body['state'];
+    var res = await sl<web.WebService>().dio.get(ApiUrl.gis,
+        queryParameters: {"x": location.longitude, "y": location.latitude});
+
+    try {
+      Map<String, dynamic> x = {};
+      var data = res.data["data"]["result"];
+
+      x["Contents"] = data;
+
+      GisLocationResult response = GisLocationResult.fromJson(x);
+      print("DONEE");
+      return Tuple3<bool?, String?, GisLocationResult?>(true, "", response);
+    } catch (ex) {
+      return Tuple3<bool?, String?, GisLocationResult?>(
+          false, ("errors_server_error_1").tr(), null);
+    }
+
+    /*bool state = body['state'];
     dynamic data = body['data'];
     GisLocationResult? result;
     String error =
@@ -53,8 +69,8 @@ class HealthLicenseRepository {
             data: data,
             errorMsg: ex.toString());
       } catch (ex) {}
-    }
-    return Tuple3<bool?, String?, GisLocationResult?>(state, error, result);
+    }*/
+    //  return Tuple3<bool?, String?, GisLocationResult?>(state, error, result);
   }
 
   Future<Tuple3<bool?, String?, ValidateHealthCertificateResponse?>>

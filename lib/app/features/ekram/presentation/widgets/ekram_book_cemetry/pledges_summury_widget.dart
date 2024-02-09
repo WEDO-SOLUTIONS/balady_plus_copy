@@ -23,9 +23,8 @@ class PledgesSummuryWidget extends StatelessWidget {
           isExpanded: true,
           children: [
             CustomTextWidget(
-              ("agreement_text")
-                  .tr()
-                  .replaceAll("{}", CommonProperties.userInfo?.arName ?? ""),
+              ("agreement_text").tr().replaceAll(
+                  "{}", CommonProperties.userInfo?.getFullName() ?? ""),
               fontColor: AppColor.blackModern700Light,
               maxLines: 90,
               height: 1.3,

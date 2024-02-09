@@ -197,7 +197,7 @@ class _JobLocationSectionState extends State<JobLocationSection> {
               Visibility(
                 visible: model.getAddress() != null,
                 child: LocationInfoSection(
-                  district: model.gisLocationResult?.districtName ?? "",
+                  district: model.gisLocationResult?.Balady_DistrictName ?? "",
                   municipality:
                       model.gisLocationResult?.adminMunicipalityName ?? "",
                   subMunicipality:

@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/remote_config.dart';
 
@@ -126,13 +127,13 @@ class TransactionDetails {
     String formattedNumber =
         NumberFormat('#,##0.########').format(totalViolationPenaltyAmount);
 
-    return "$formattedNumber ر.س.";
+    return "$formattedNumber ${"sar_text".tr()}";
   }
 
   String? get getSadadAmount {
     String formattedNumber = NumberFormat('#,##0.########').format(sadadAmount);
 
-    return "$formattedNumber ر.س.";
+    return "$formattedNumber ${"sar_text".tr()}";
   }
 }
 

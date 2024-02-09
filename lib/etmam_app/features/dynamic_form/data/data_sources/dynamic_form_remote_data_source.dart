@@ -750,7 +750,7 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
             /* "x-sso-session-id":
                 EtmamCommonProperties.CommonProperties.sessionId ??
                     CommonFunctions.generateGUID(),*/
-            "Accept-Language": "ar",
+            "Accept-Language": translator.activeLanguageCode,
             'Content-Type': 'multipart/form-data'
           }));
       print("HEREEE 3333");

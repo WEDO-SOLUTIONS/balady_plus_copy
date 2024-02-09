@@ -261,7 +261,7 @@ class _CalcualtorWidgetState extends State<CalcualtorWidget> {
                         ),
                         const SizedBox(width: 3),
                         CustomTextWidget(
-                          "ر.س",
+                          "sar_text".tr(),
                           textStyle: AppStyle.tagTextStyle,
                         ),
                       ],

@@ -48,7 +48,7 @@ class HealthLicenseViewModel extends BaseViewModel {
   //ApplyNewHealthRequest? applyNewHealthRequest;
   bool areaNoLicencePermit = false;
   init({bool isRenew = false}) {
-    userFullName = CommonProperties.userInfo?.arName ?? "";
+    userFullName = CommonProperties.userInfo?.getFullName() ?? "";
     userMobile = CommonProperties.userInfo?.phone ?? "";
     selectedLocation = null;
     gisLocationResult = null;

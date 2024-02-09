@@ -31,7 +31,7 @@ class UserDataSummuryWidget extends StatelessWidget {
             CustomVerticalSpace(height: 8),
             FieldData(
               title: ("user_data_applicant_name").tr(),
-              subTitle: CommonProperties.userInfo?.arName,
+              subTitle: CommonProperties.userInfo?.getFullName(),
             ),
             CustomVerticalSpace(height: 8),
             FieldData(

@@ -720,7 +720,7 @@ class CreateComplianceRemoteDataSourceImpl
               EtmamCommonProperties.CommonProperties.sessionId,
           "x-fe-deployment-id":
               EtmamCommonProperties.CommonProperties.appVersion,
-          "Accept-Language": "ar",
+          "Accept-Language": translator.activeLanguageCode,
           "x-fe-service-id": "compliance",
           "Content-Type": "application/json",
         }),
@@ -773,7 +773,7 @@ class CreateComplianceRemoteDataSourceImpl
                 EtmamCommonProperties.CommonProperties.sessionId,
             "x-fe-deployment-id":
                 EtmamCommonProperties.CommonProperties.appVersion,
-            "Accept-Language": "ar",
+            "Accept-Language": translator.activeLanguageCode,
             "x-fe-service-id": "compliance",
             "Content-Type": "application/json",
           }),

@@ -48,6 +48,6 @@ class Step2SummeryWidget extends StatelessWidget {
     );
   }
 
-  String? get fullName => CommonProperties.userInfo?.arName;
+  String? get fullName => CommonProperties.userInfo?.getFullName();
   String? get mobileNumber => CommonProperties.userInfo?.getPhone();
 }

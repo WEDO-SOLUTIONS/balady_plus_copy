@@ -106,7 +106,7 @@ class Permit24LicenseState extends Equatable {
       ?.firstWhereOrNull(
           (element) => element.id == "TWENTY_FOUR_PERMIT_ENDORSEMENT")
       ?.name
-      ?.replaceAll("{0}", CommonProperties.userInfo?.arName ?? "");
+      ?.replaceAll("{0}", CommonProperties.userInfo?.getFullName() ?? "");
 
   String? ALERTS() => alerts
       ?.firstWhereOrNull((element) =>

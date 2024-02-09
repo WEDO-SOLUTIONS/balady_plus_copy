@@ -233,7 +233,7 @@ class _MapViewState extends State<MapView> {
       selectedLocation?.selectedLocation = movedPosition;
       if (isFirstLoad) EasyLoading.show();
       gisLocationResult = await locator<CustomerVoiceRepository>()
-          .getGisLocation(movedPosition!);
+          .getApigeeGisLocation(movedPosition!);
       if (isFirstLoad) EasyLoading.dismiss();
       setState(() {
         gisAddress = null;
