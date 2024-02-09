@@ -22,6 +22,7 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_scrollable_content.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:shimmer/shimmer.dart';
@@ -33,11 +34,11 @@ import 'widgets/footer.dart';
 import 'widgets/poi_photo_card.dart';
 import 'widgets/poi_photos_header.dart';
 
-class GeneralMapCardWidget extends StatelessWidget {
+class PoiCardWidget extends StatelessWidget {
   final DgisObjectIdMessage objectId;
   final PoiCameraConfig? cameraConfig;
 
-  const GeneralMapCardWidget(
+  const PoiCardWidget(
     this.objectId, {
     super.key,
     this.cameraConfig,
@@ -261,10 +262,7 @@ class _ContentState extends ConsumerState<_Content>
           header: PoiHeader(
             tabController: _tabController,
             data: data,
-            onTapClose: () {
-              // const LandingRoute().go(context);
-              context.pop();
-            },
+            onTapClose: () => context.pop(),
           ),
           body: [
             ValueListenableBuilder(

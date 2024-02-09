@@ -45,9 +45,9 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
     }
 
     final fav = favState.requireValue;
-    final showHome = fav.home == null;
-    final showWork = fav.work == null;
-    final isFavourite = fav.items.firstWhereOrNull(
+    final showHome = fav?.home == null;
+    final showWork = fav?.work == null;
+    final isFavourite = fav?.items.firstWhereOrNull(
           (element) =>
               element.entity?.id == widget.favItem.entity?.id &&
               widget.favItem.entity?.id != null,
@@ -108,7 +108,7 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
   }
 
   Future<void> _onFavTap(bool isFavourite) async {
-    CommonFunctions.authOrOpen(context, callback: () {
+    await CommonFunctions.authOrOpen(context, callback: () {
       final favNotifier = ref.read(favouriteRepositoryProvider.notifier);
       _awaitPop(isFavourite
           ? favNotifier.delete(widget.favItem)

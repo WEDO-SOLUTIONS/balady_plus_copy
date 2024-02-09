@@ -2,9 +2,11 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
-import 'package:mapness/_features/poi_card/general_card_widget.dart';
+import 'package:mapness/_features/poi_card/poi_card_widget.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/shared/routing/transculent_page.dart';
+
+import 'iwish.dart';
 
 part 'poi_map.g.dart';
 
@@ -34,7 +36,9 @@ class PoiMapRoute extends GoRouteData {
         dgisObjectId: dgisObjectId, zoom: zoom, bearing: bearing, tilt: tilt);
     final router = GoRouter.of(context);
     final matches = router.routerDelegate.currentConfiguration.matches;
-    if (matches.last.matchedLocation == '/poi-map') {
+    if(matches.last.matchedLocation.contains(IwishCardRoute.path) ||
+        matches.last.matchedLocation  == (PoiMapRoute.path))
+    {
       poiMapRoute.pushReplacement(context);
     } else {
       poiMapRoute.push(context);
@@ -53,7 +57,7 @@ class PoiMapRoute extends GoRouteData {
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) =>
       TransculentPage(
-        child: GeneralMapCardWidget(
+        child: PoiCardWidget(
           key: const Key('POI CARD WIDGET'),
           cameraConfig: cameraConfig,
           DgisObjectIdMessage(

@@ -1,34 +1,93 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
+import 'package:shimmer/shimmer.dart';
 
-class RoutesCarousel extends StatelessWidget {
+class RoutesCarousel extends ConsumerWidget {
   const RoutesCarousel({
     required this.pageController,
     required this.routes,
     required this.onActiveChanged,
     required this.startNavigation,
+    required this.refresh,
     super.key,
   });
 
   final PageController pageController;
-  final List<RouteInfo> routes;
+  final AsyncValue<List<RouteInfo>> routes;
   final Function(int) onActiveChanged;
   final Function() startNavigation;
+  final Function() refresh;
 
   @override
-  Widget build(BuildContext context) => PageView.builder(
-        controller: pageController,
-        onPageChanged: onActiveChanged,
-        itemBuilder: (context, index) => RouteCell(
-          route: routes[index],
-          // Assuming that onChanged event always fired before
-          startNavigation: startNavigation,
+  Widget build(BuildContext context, WidgetRef ref) => routes.when(
+        data: (routes) => PageView.builder(
+          controller: pageController,
+          onPageChanged: onActiveChanged,
+          itemBuilder: (context, index) => RouteCell(
+            route: routes[index],
+            // Assuming that onChanged event always fired before
+            startNavigation: startNavigation,
+          ),
+          itemCount: routes.length,
         ),
-        itemCount: routes.length,
+        error: (_, __) => Directionality(
+          textDirection: ref.watch(uiDirectionProvider),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  context.l10n.routeNotFound,
+                  style: Theme.of(context)
+                      .extension<ThemeTextStyles>()!
+                      .textM
+                      .copyWith(color: const Color(0xFF1E2A36)),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                LabeledElevatedButton(
+                  label: context.l10n.reload,
+                  onPressed: refresh,
+                )
+              ],
+            ),
+          ),
+        ),
+        loading: () => IgnorePointer(
+          child: PageView.builder(
+            controller: pageController,
+            onPageChanged: onActiveChanged,
+            itemBuilder: (context, index) => Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 4,
+              ),
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+            ),
+            itemCount: 3,
+          ),
+        ),
+        skipLoadingOnRefresh: false,
+        skipLoadingOnReload: false,
       );
 }
 

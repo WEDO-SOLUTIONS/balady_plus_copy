@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
-import 'package:mapness/_features/lifestyle_layers/data/common_function.dart';
 import 'package:mapness/_features/poi_card/data/qr_license_service.dart';
 
 abstract class QrLicenseDataSource {

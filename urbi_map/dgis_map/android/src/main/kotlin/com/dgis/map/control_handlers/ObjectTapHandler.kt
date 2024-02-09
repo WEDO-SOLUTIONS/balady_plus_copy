@@ -722,14 +722,14 @@ class ObjectTapHandler(
 
     private fun onRoadEventTap(event: RoadEventMapObject) {
         when (event.event.type) {
-            RoadEventType.ROAD_WORKS -> {
+            RoadEventType.ROAD_RESTRICTION -> {
                 eventSink.success(
                     mapOf(
                         "event" to Events.onRoadEventTap.name,
                         "title" to event.event.name,
                         "description" to event.event.description,
-                        "startTime" to event.event.schedule?.startTime?.timeFromEpoch?.inSeconds,
-                        "finishTime" to event.event.schedule?.finishTime?.timeFromEpoch?.inSeconds,
+                        "startTime" to event.event.schedule?.startTime?.timeFromEpoch?.inMilliseconds,
+                        "finishTime" to event.event.schedule?.finishTime?.timeFromEpoch?.inMilliseconds,
                         "latitude" to event.event.location.latitude.value,
                         "longitude" to event.event.location.longitude.value,
                     )

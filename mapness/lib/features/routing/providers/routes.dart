@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -8,7 +10,7 @@ part 'routes.g.dart';
 @riverpod
 class Routes extends _$Routes {
   @override
-  List<RouteInfo> build({
+  Future<List<RouteInfo>> build({
     required RouteParamsPoint? startPoint,
     required RouteParamsPoint? finishPoint,
     required RouteSearchOptionsMessage navType,
@@ -20,16 +22,23 @@ class Routes extends _$Routes {
       options: navType,
     );
 
+    final routesCompleter = Completer<List<RouteInfo>>();
     final routesInfoChangedSubscription =
         dgisController.value?.routesInfoChangedEvents.listen((event) {
-      state = event.routes;
+      routesCompleter.complete(event.routes);
+    });
+    Timer(const Duration(seconds: 5), () {
+      if (routesCompleter.isCompleted) {
+        return;
+      }
+      routesCompleter.completeError(TimeoutException('no routes fond in time'));
     });
     ref.onDispose(() {
       routesInfoChangedSubscription?.cancel();
     });
 
     dgisController.value?.setRouteParams(params);
-    return [];
+    return routesCompleter.future;
   }
 }
 

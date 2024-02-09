@@ -10,6 +10,7 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
@@ -63,100 +64,98 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
           maxChildSize: .6,
           snapSizes: const [.0, .3, .6],
           snap: true,
-          builder: (BuildContext context, ScrollController scrollController) {
-            return Directionality(
-              textDirection: switch (lang) {
-                Language.english => TextDirection.ltr,
-                Language.arabic => TextDirection.rtl,
-              },
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(16.0),
-                    topLeft: Radius.circular(16.0),
-                  ),
-                ),
-                child: Stack(
-                  children: [
-                    CustomScrollView(
-                      controller: scrollController,
-                      primary: false,
-                      physics: const ClampingScrollPhysics(),
-                      slivers: [
-                        SliverToBoxAdapter(
-                          child: Material(
-                            color: Colors.transparent,
-                            child: Column(children: [
-                              Container(
-                                height: 4,
-                                width: 40,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFFDDE4EE),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(24)),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 16,
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    context.l10n.layersOnTheMap,
-                                    style: Theme.of(context)
-                                        .extension<ThemeTextStyles>()!
-                                        .headingS,
-                                  ),
-                                  const Spacer(),
-                                  CustomCloseButton(
-                                    onClose: () async {
-                                      // ref
-                                      //     .watch(layersControlsProvider.notifier)
-                                      //     .update(visible: false);
-                                      // ref
-                                      //     .watch(mapControlsProvider.notifier)
-                                      //     .update(MapControlsStateIdle());
-                                      context.pop();
-                                    },
-                                  )
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 16,
-                              ),
-                            ]),
-                          ),
-                        ),
-                        SliverList.separated(
-                          separatorBuilder: (_, __) =>
-                              const SizedBox(height: 16),
-                          itemCount: LayerType.values.length,
-                          itemBuilder: (_, int index) {
-                            var value = LayerType.values[index];
-
-                            return FilterRow(
-                              value: value,
-                              onTap: () {
-                                ref
-                                    .read(searchByRubricsQueryProvider.notifier)
-                                    .update(null);
-                                watch.handleTap(value);
-                              },
-                              isSelected: state.selectedType == (value),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                    if (state.isLoading)
-                      const Center(child: CircularProgressIndicator()),
-                  ],
+          builder: (context, scrollController) => Directionality(
+            textDirection: switch (lang) {
+              Language.english => TextDirection.ltr,
+              Language.arabic => TextDirection.rtl,
+            },
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(16.0),
                 ),
               ),
-            );
-          },
+              child: Stack(
+                children: [
+                  CustomScrollView(
+                    controller: scrollController,
+                    primary: false,
+                    physics: const ClampingScrollPhysics(),
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: Material(
+                          color: Colors.transparent,
+                          child: Column(children: [
+                            Container(
+                              height: 4,
+                              width: 40,
+                              decoration: const BoxDecoration(
+                                color: Color(0xFFDDE4EE),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(24)),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  context.l10n.layersOnTheMap,
+                                  style: Theme.of(context)
+                                      .extension<ThemeTextStyles>()!
+                                      .headingS,
+                                ),
+                                const Spacer(),
+                                CustomCloseButton(
+                                  onClose: () => context.pop(),
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                          ]),
+                        ),
+                      ),
+                      SliverList.separated(
+                        separatorBuilder: (_, __) => const SizedBox(height: 16),
+                        itemCount: LayerType.values.length,
+                        itemBuilder: (_, index) {
+                          var value = LayerType.values[index];
+
+                          return FilterRow(
+                            value: value,
+                            onTap: () async {
+                              ref
+                                  .read(searchByRubricsQueryProvider.notifier)
+                                  .update(null);
+
+                              if (value == LayerType.favourites) {
+                                await CommonFunctions.authOrOpen(
+                                  context,
+                                  callback: () async {
+                                    watch.handleTap(value);
+                                  },
+                                );
+                              } else {
+                                watch.handleTap(value);
+                              }
+                            },
+                            isSelected: state.selectedType == (value),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  if (state.isLoading)
+                    const Center(child: CircularProgressIndicator()),
+                ],
+              ),
+            ),
+          ),
         ),
       ],
     );
