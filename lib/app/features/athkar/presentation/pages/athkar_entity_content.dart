@@ -43,59 +43,56 @@ class _AthkarEntityContentState extends State<AthkarEntityContent> {
         ModalRoute.of(context)!.settings.arguments as AthkarEntityContentParams;
     athkarEntitiesList = params.athkarEntitiesList;
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: const AthkarAppBar(title: ''),
-        body: Column(
-          children: [
-            Expanded(
-              child: PageView.builder(
-                  itemCount: athkarEntitiesList.length,
-                  controller: _controller,
-                  onPageChanged: (int index) {
-                    setState(() {
-                      _currentIndex = index;
-                    });
-                    _resetCounter();
-                  },
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(25.0),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            CustomTextWidget(
-                              params.athkarEntitiesList[index].content ??
-                                  params.athkarEntitiesList[index].name,
-                              fontColor: Colors.black,
-                              maxLines: 2000,
-                              height: 1.6,
-                            ),
-                            SizedBox(
-                              height: 32,
-                            ),
-                            CustomTextWidget(
-                              params.athkarEntitiesList[index].description,
-                              textStyle: AppStyle.serviceDescriptionStyle
-                                  .copyWith(color: AppColor.primary800Light),
-                              maxLines: 100,
-                            ),
-                          ],
-                        ),
+    return Scaffold(
+      appBar: const AthkarAppBar(title: ''),
+      body: Column(
+        children: [
+          Expanded(
+            child: PageView.builder(
+                itemCount: athkarEntitiesList.length,
+                controller: _controller,
+                onPageChanged: (int index) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                  _resetCounter();
+                },
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(25.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          CustomTextWidget(
+                            params.athkarEntitiesList[index].content ??
+                                params.athkarEntitiesList[index].name,
+                            fontColor: Colors.black,
+                            maxLines: 2000,
+                            height: 1.6,
+                          ),
+                          SizedBox(
+                            height: 32,
+                          ),
+                          CustomTextWidget(
+                            params.athkarEntitiesList[index].description,
+                            textStyle: AppStyle.serviceDescriptionStyle
+                                .copyWith(color: AppColor.primary800Light),
+                            maxLines: 100,
+                          ),
+                        ],
                       ),
-                    );
-                  }),
-            ),
-            CounterAthkarWidget(
-              counter: counter,
-              reset: _resetCounter,
-              incrementCounter: _incrementCounter,
-              countText: params.athkarEntitiesList[_currentIndex].quantityText,
-              count: params.athkarEntitiesList[_currentIndex].quantity,
-            ),
-          ],
-        ),
+                    ),
+                  );
+                }),
+          ),
+          CounterAthkarWidget(
+            counter: counter,
+            reset: _resetCounter,
+            incrementCounter: _incrementCounter,
+            countText: params.athkarEntitiesList[_currentIndex].quantityText,
+            count: params.athkarEntitiesList[_currentIndex].quantity,
+          ),
+        ],
       ),
     );
   }

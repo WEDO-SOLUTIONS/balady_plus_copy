@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/athkar/athkar_exports.dart'
     show AthkarCard, StaticAthkarData;
 import 'package:flutter/material.dart';
@@ -15,7 +16,8 @@ class AthkarListView extends StatelessWidget {
         horizontal: 16,
         vertical: 24,
       ),
-      itemCount: athkarList.length,
+      itemCount:
+          CommonFunctions.isAppAR ? athkarList.length : athkarList.length - 2,
       itemBuilder: (context, index) {
         return AthkarCard(athkarCategory: athkarList[index]);
       },

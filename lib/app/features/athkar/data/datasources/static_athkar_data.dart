@@ -23,7 +23,7 @@ class StaticAthkarData {
         icon: IconPath.eveningAthkarIcon),
     AthkarCategory(
         id: 4,
-        name: "PrayerـRemembrances",
+        name: "Post-PrayerـRemembrances",
         // athkarEntities: afterPrayerAthkarEntites,
         icon: IconPath.afterPrayerIcon),
     AthkarCategory(

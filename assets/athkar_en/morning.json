@@ -9,19 +9,19 @@
     "name": "In the name of Allah, the Compassionate, the Merciful\n, \n Say He is Allah, the One. Allah, the Eternal. He begets not, nor was He begotten. And there is none comparable to Him.\n",
     "quantityText": "three times",
     "quantity": 3,
-    "description": "من قالها حين يصبح وحين يمسى كفته من كل شىء (الإخلاص والمعوذتين)."
+    "description": ""
   },
   {
     "name": "In the name of Allah, the Compassionate, the Merciful.\nSay, I seek refuge in the Lord of Daybreak. From the evil of what He created. And from the evil of the darkness as it gathers. And from the evil of those who practice sorcery. And from the evil of an envier when he envies.\n",
     "quantityText": "three times",
     "quantity": 3,
-    "description": "من قالها حين يصبح وحين يمسى كفته من كل شىء (الإخلاص والمعوذتين)."
+    "description": ""
   },
   {
     "name": "In the name of Allah, the Compassionate, the Merciful.\n Say, “I seek refuge in the Lord of humankind. The King of humankind. The God of humankind. From the evil of the sneaky whisperer. Who whispers into the hearts of people. From among the jinn and among humankind.\n",
     "quantityText": "three times",
     "quantity": 3,
-    "description": "من قالها حين يصبح وحين يمسى كفته من كل شىء (الإخلاص والمعوذتين)."
+    "description": ""
   },
   {
     "name": "We have reached the morning and at this very time unto Allah belongs all sovereignty, and all praise is for Allah. None has the right to be worshipped except Allah, alone, without partner, to Him belongs all sovereignty and praise and He is over all things omnipotent. My Lord, I ask You for the good of this day and the good of what follows it and I take refuge in You from the evil of this day and the evil of what follows it. My Lord, I take refuge in You from laziness and senility. My Lord, I take refuge in You from torment in the Fire and punishment in the grave.\n",
@@ -33,37 +33,37 @@
     "name": "O Allah, You are my Lord, none has the right to be worshipped except You, You created me and I am Your servant and I abide to Your covenant and promise as best I can, I take refuge in You from the evil of which I have committed. I acknowledge Your favour upon me and I acknowledge my sin, so forgive me, for verily none can forgive sin except You.",
     "quantityText": "One time",
     "quantity": 1,
-    "description": "من قالها موقنا بها حين يمسى ومات من ليلته دخل الجنة وكذلك حين يصبح."
+    "description": ""
   },
   {
     "name": "I am pleased with Allah as a Lord, and Islam as a religion and Muhammad peace be upon to him as a Prophet.",
     "quantityText": "three times",
     "quantity": 3,
-    "description": "من قالها حين يصبح وحين يمسى كان حقا على الله أن يرضيه يوم القيامة."
+    "description": ""
   },
   {
     "name": "O Allah, verily I have reached the morning and call on You, the bearers of Your throne, Your angles, and all of Your creation to witness that You are Allah, none has the right to be worshipped except You, alone, without partner and that Muhammad is Your Servant and Messenger",
     "quantityText": "four times",
     "quantity": 4,
-    "description": "من قالها أعتقه الله من النار."
+    "description": ""
   },
   {
     "name": "O Allah, what blessing I or any of Your creation have risen upon, is from You alone, without partner, so for You is all praise and unto You all thanks.",
     "quantityText": "One time",
     "quantity": 1,
-    "description": "من قالها حين يصبح أدى شكر يومه."
+    "description": ""
   },
   {
     "name": "Allah is Sufficient for me, none has the right to be worshipped except Him, upon Him I rely and He is Lord of the exalted throne.",
     "quantityText": "seven times",
     "quantity": 7,
-    "description": "In the name of Allah with whose name nothing is harmed on earth nor in the heavens and He is The All-Seeing, The All-Knowing."
+    "description": "-"
   },
   {
     "name": "In the name of Allah with whose name nothing is harmed on earth nor in the heavens and He is The All-Seeing, The All-Knowing.",
     "quantityText": "three times",
     "quantity": 3,
-    "description": "لم يضره من الله شيء."
+    "description": "-"
   },
   {
     "name": "O Allah, by your leave we have reached the morning and by Your leave we have reached the evening, by Your leave we live and die and unto You is our resurrection.",
@@ -129,7 +129,7 @@
     "name": "O Allah, let Your Blessings come upon our Prophet Muhammad.",
     "quantityText": "Ten times",
     "quantity": 10,
-    "description": "من صلى على حين يصبح وحين يمسى ادركته شفاعتى يوم القيامة."
+    "description": "-"
   },
   {
     "name": "`O Allah! I seek refuge in you lest I associate anything with you while I know it, and I seek your forgiveness for what I do not know.",
@@ -165,24 +165,20 @@
     "name": "Oh God, You are my Lord, there is no god but You, I put my trust in You, and You are the Lord of the Great Throne. Whatever God willed happened, and what He did not will did not happen, and there is no power or strength except in God the Most High, the Great. I know that God is capable of all things, and that God encompasses all things. Oh God, I seek refuge in You from the evil of myself, and from the evil of every creature whose forelock You hold. Indeed, my Lord is on a straight path.",
     "quantityText": "One time",
     "quantity": 1,
-    "description": "ذكر طيب. "
-  },
+    "description": "-"  },
   {
     "name": "None has the right to be worshipped except Allah, alone, without partner, to Him belongs all sovereignty and praise, and He is over all things omnipotent.",
     "quantityText": "one hundred times",
     "quantity": 100,
-    "description": "كانت له عدل عشر رقاب، وكتبت له مئة حسنة، ومحيت عنه مئة سيئة، وكانت له حرزا من الشيطان. \n"
-  },
+    "description": "-"  },
   {
     "name": "How perfect Allah is and I praise Him.",
     "quantityText": "one hundred times",
     "quantity": 100,
-    "description": "حطت خطاياه وإن كانت مثل زبد البحر. لم يأت أحد يوم القيامة بأفضل مما جاء به إلا أحد قال مثل ما قال أو زاد عليه."
-  },
+    "description": "-"  },
   {
     "name": "I seek the forgiveness of Allah and repent to him.",
     "quantityText": "one hundred times",
     "quantity": 100,
-    "description": "مائة حسنة، ومحيت عنه مائة سيئة، وكانت له حرزا من الشيطان حتى يمسى."
-  }
+    "description": "-"  }
  ]

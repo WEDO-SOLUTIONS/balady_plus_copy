@@ -29,7 +29,7 @@ class _AthkarState extends State<Athkar> {
     return Scaffold(
       // backgroundColor: AppColor.scaffoldBackground,
       appBar: AthkarAppBar(
-        title: "Azkar".tr(),
+        title: "azkar".tr(),
       ),
       body: AthkarListView(),
     );
