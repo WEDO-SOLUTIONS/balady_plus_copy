@@ -10,6 +10,7 @@ DirectoryObjectMessage getMockPoiCardData() {
         'Additional Mock Title.Additional Mock Title.Additional Mock Title.Additional Mock Title.Additional Mock Title.',
     subtitle:
         'Mock Subtitle.Mock Subtitle.Mock Subtitle.Mock Subtitle.Mock Subtitle.Mock Subtitle.Mock Subtitle.Mock Subtitle.',
+    about: '',
     id: DgisObjectIdMessage(objectId: 70030076560519845, entranceId: 0),
     markerPosition: GeoPointWithElevationMessage(
       latitude: 24.715817,

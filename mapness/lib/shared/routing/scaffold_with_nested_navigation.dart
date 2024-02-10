@@ -1,4 +1,5 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_positional_boolean_parameters
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -10,6 +11,7 @@ import 'package:mapness/_features/stories/domain/story_types.dart';
 import 'package:mapness/_features/stories/stories.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_features.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 
 // Stateful navigation based on:
 // https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/stateful_shell_route.dart
@@ -44,34 +46,39 @@ class _ScaffoldWithNestedNavigationState
   }
 
   @override
-  Widget build(BuildContext context) {
-    return ScaffoldWithNavigationBar(
-      body: widget.navigationShell,
-      currentIndex: currentTab,
-      onDestinationSelected: (int selected) async {
-        if (selected == 2 && ref.read(appFeaturesProvider).naviEnabled) {
-          final isShowRoute = await ref.read(routeOnboardingProvider.future);
-          if (isShowRoute) {
-            _goToPage(selected);
-          } else {
-            if (!mounted) return;
-            Stories.showOnboarding(
-              context,
-              StoryTypes.route,
-              'route',
-              onClose: () async {
-                await ref.read(routeOnboardingProvider.notifier).setShown(true);
-                _goToPage(selected);
-              },
-            );
+  Widget build(BuildContext context) => ScaffoldWithNavigationBar(
+        body: widget.navigationShell,
+        currentIndex: currentTab,
+        onDestinationSelected: (int selected) async {
+          if (selected == 2 && ref.read(appFeaturesProvider).naviEnabled) {
+            final isShowRoute = await ref.read(routeOnboardingProvider.future);
+            if (isShowRoute) {
+              _goToPage(selected);
+            } else {
+              if (!mounted) {
+                return;
+              }
+              Stories.showOnboarding(
+                context,
+                StoryTypes.route,
+                'route',
+                onClose: () async {
+                  await ref
+                      .read(routeOnboardingProvider.notifier)
+                      .setShown(true);
+                  _goToPage(selected);
+                },
+              );
+            }
+            return;
           }
-          return;
-        }
-        _goToPage(selected);
-      },
-    );
-  }
+          _goToPage(selected);
+        },
+      );
 }
+
+const _selectedColor = Color(0xFF4CA5B4);
+const _unselectedColor = Color(0x801E2A36);
 
 class ScaffoldWithNavigationBar extends ConsumerWidget {
   const ScaffoldWithNavigationBar({
@@ -90,15 +97,12 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
     final appFeatures = ref.watch(appFeaturesProvider);
     final direction = ref.watch(uiDirectionProvider);
 
-    const activeColor = Color(0xFF4CA5B4);
-    const inactiveColor = Color(0x801E2A36);
-
     final landingIndex = appFeatures.naviEnabled ? 3 : 2;
     final bottomNavigationDirection =
         direction == TextDirection.ltr ? TextDirection.rtl : TextDirection.ltr;
 
     return Directionality(
-      textDirection: Directionality.of(context),
+      textDirection: direction,
       child: Material(
         type: MaterialType.transparency,
         child: Column(
@@ -110,69 +114,77 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
                 type: BottomNavigationBarType.fixed,
                 selectedLabelStyle: const TextStyle(
                   color: Color(0xFF4CA5B4),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  height: 1.5,
-                  fontFamily: "Frutiger",
+                  fontSize: 0,
+                  height: 0,
                 ),
                 unselectedLabelStyle: const TextStyle(
                   color: Color(0xFF1E2A36),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  height: 1.5,
-                  fontFamily: "Frutiger",
+                  fontSize: 0,
+                  height: 0,
                 ),
                 items: [
                   BottomNavigationBarItem(
-                    icon: const ProfileImageWidget(
-                      dimension: 28,
+                    icon: _BottomNavigationBarItem(
+                      selected: currentIndex == 0,
+                      iconBuilder: (context, selected) =>
+                          const ProfileImageWidget(
+                        dimension: 28,
+                      ),
+                      label: context.l10n.nav_profile,
                     ),
-                    label: context.l10n.nav_profile,
+                    label: '',
                   ),
                   BottomNavigationBarItem(
-                    icon: SvgPicture.asset(
-                      "assets/icons/svg/ic_nav_landing.svg",
-                      height: 28,
-                      width: 28,
-                      semanticsLabel: 'MinApps Screen',
-                      package: "mapness",
-                      colorFilter: ColorFilter.mode(
-                        currentIndex == 1 ? activeColor : inactiveColor,
-                        BlendMode.srcIn,
-                      ),
+                    icon: _BottomNavigationBarItem(
+                      selected: currentIndex == 1,
+                      icon: 'assets/icons/svg/ic_nav_landing.svg',
+                      label: context.l10n.nav_landing,
                     ),
-                    label: context.l10n.nav_landing,
+                    label: '',
                   ),
                   if (appFeatures.naviEnabled)
                     BottomNavigationBarItem(
-                      icon: SvgPicture.asset(
-                        "assets/icons/svg/ic_nav_route.svg",
-                        height: 28,
-                        width: 28,
-                        semanticsLabel: 'Routing Screen',
-                        package: "mapness",
-                        colorFilter: ColorFilter.mode(
-                          currentIndex == 2 ? activeColor : inactiveColor,
-                          BlendMode.srcIn,
+                      icon: _BottomNavigationBarItem(
+                        selected: currentIndex == 2,
+                        icon: 'assets/icons/svg/ic_nav_route.svg',
+                        labelBuilder: (context, selected) => Directionality(
+                          textDirection: direction,
+                          child: Center(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  '${context.l10n.nav_route} ',
+                                  style: Theme.of(context)
+                                      .extension<ThemeTextStyles>()!
+                                      .textXS
+                                      .copyWith(
+                                        color: selected
+                                            ? _selectedColor
+                                            : _unselectedColor,
+                                      ),
+                                ),
+                                SvgPicture.asset(
+                                  ref.read(appLanguageProvider) ==
+                                          Language.arabic
+                                      ? 'assets/icons/svg/beta_ar.svg'
+                                      : 'assets/icons/svg/beta_en.svg',
+                                  package: 'mapness',
+                                )
+                              ],
+                            ),
+                          ),
                         ),
                       ),
-                      label: context.l10n.nav_route,
+                      label: '',
                     ),
                   BottomNavigationBarItem(
-                    icon: SvgPicture.asset(
-                      "assets/icons/svg/ic_nav_general.svg",
-                      height: 28,
-                      width: 28,
-                      semanticsLabel: 'General Screen',
-                      package: "mapness",
-                      colorFilter: ColorFilter.mode(
-                        currentIndex == landingIndex
-                            ? activeColor
-                            : inactiveColor,
-                        BlendMode.srcIn,
-                      ),
+                    icon: _BottomNavigationBarItem(
+                      selected: currentIndex == landingIndex,
+                      icon: 'assets/icons/svg/ic_nav_general.svg',
+                      label: context.l10n.nav_general,
                     ),
-                    label: context.l10n.nav_general,
+                    label: '', //context.l10n.nav_general,
                   ),
                 ],
                 currentIndex: currentIndex,
@@ -184,4 +196,50 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
       ),
     );
   }
+}
+
+class _BottomNavigationBarItem extends StatelessWidget {
+  final bool selected;
+  final String? icon;
+  final Function(BuildContext, bool)? iconBuilder;
+  final String? label;
+  final Function(BuildContext, bool)? labelBuilder;
+
+  const _BottomNavigationBarItem({
+    required this.selected,
+    this.icon,
+    this.iconBuilder,
+    this.label,
+    this.labelBuilder,
+  });
+
+  Widget _defaultLabelBuilder(BuildContext context, bool selected) => Text(
+        label!,
+        style: Theme.of(context).extension<ThemeTextStyles>()!.textXS.copyWith(
+              color: selected ? _selectedColor : _unselectedColor,
+            ),
+      );
+
+  Widget _defaultIconBuilder(BuildContext context, bool selected) =>
+      SvgPicture.asset(
+        icon!,
+        height: 28,
+        width: 28,
+        package: 'mapness',
+        colorFilter: ColorFilter.mode(
+          selected ? _selectedColor : _unselectedColor,
+          BlendMode.srcIn,
+        ),
+      );
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(top: 6),
+        child: Column(
+          children: [
+            (iconBuilder ?? _defaultIconBuilder)(context, selected),
+            (labelBuilder ?? _defaultLabelBuilder)(context, selected),
+          ],
+        ),
+      );
 }
