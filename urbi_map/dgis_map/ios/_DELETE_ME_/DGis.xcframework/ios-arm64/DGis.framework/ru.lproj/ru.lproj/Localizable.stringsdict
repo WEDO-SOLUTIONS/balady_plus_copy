@@ -1,0 +1,63 @@
+{
+	"%d minutes ago" = {
+		"NSStringLocalizedFormatKey" = "%#@values@";
+		values = {
+			"NSStringFormatSpecTypeKey" = "NSStringPluralRuleType";
+			"NSStringFormatValueTypeKey" = d;
+			two = "%d \U043c\U0438\U043d\U0443\U0442\U044b \U043d\U0430\U0437\U0430\U0434";
+			few = "%d \U043c\U0438\U043d\U0443\U0442\U044b \U043d\U0430\U0437\U0430\U0434";
+			many = "%d \U043c\U0438\U043d\U0443\U0442 \U043d\U0430\U0437\U0430\U0434";
+			one = "%d \U043c\U0438\U043d\U0443\U0442\U0443 \U043d\U0430\U0437\U0430\U0434";
+			other = "%d \U043c\U0438\U043d\U0443\U0442 \U043d\U0430\U0437\U0430\U0434";
+		};
+	};
+	"%d hours ago" = {
+		"NSStringLocalizedFormatKey" = "%#@values@";
+		values = {
+			"NSStringFormatSpecTypeKey" = "NSStringPluralRuleType";
+			"NSStringFormatValueTypeKey" = d;
+			one = "%d \U0447\U0430\U0441 \U043d\U0430\U0437\U0430\U0434";
+			two = "%d \U0447\U0430\U0441\U0430 \U043d\U0430\U0437\U0430\U0434";
+			few = "%d \U0447\U0430\U0441\U0430 \U043d\U0430\U0437\U0430\U0434";
+			many = "%d \U0447\U0430\U0441\U043e\U0432 \U043d\U0430\U0437\U0430\U0434";
+			other = "%d \U0447\U0430\U0441\U043e\U0432 \U043d\U0430\U0437\U0430\U0434";
+		};
+	};
+	"%d transfers" = {
+		"NSStringLocalizedFormatKey" = "%#@values@";
+		values = {
+			"NSStringFormatSpecTypeKey" = "NSStringPluralRuleType";
+			"NSStringFormatValueTypeKey" = d;
+			zero = "без пересадок";
+			one = "%d пересадка";
+			two = "%d пересадки";
+			few = "%d пересадки";
+			many = "%d пересадок";
+			other = "%d пересадки";
+		};
+	};
+	"%d stops" = {
+		"NSStringLocalizedFormatKey" = "%#@values@";
+		values = {
+			"NSStringFormatSpecTypeKey" = "NSStringPluralRuleType";
+			"NSStringFormatValueTypeKey" = d;
+			one = "%d остановка";
+			two = "%d остановки";
+			few = "%d остановки";
+			many = "%d остановок";
+			other = "%d остановок";
+		};
+	};
+	"%d stations" = {
+		"NSStringLocalizedFormatKey" = "%#@values@";
+		values = {
+			"NSStringFormatSpecTypeKey" = "NSStringPluralRuleType";
+			"NSStringFormatValueTypeKey" = d;
+			one = "%d станция";
+			two = "%d станции";
+			few = "%d станции";
+			many = "%d станций";
+			other = "%d станций";
+		};
+	};
+}

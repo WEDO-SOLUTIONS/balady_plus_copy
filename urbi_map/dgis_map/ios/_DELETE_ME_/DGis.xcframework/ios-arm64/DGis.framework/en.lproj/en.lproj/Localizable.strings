@@ -1,0 +1,57 @@
+"road.event.card.date.just_now" = "Just now";
+
+"road.event.card.date.from" = "From %@";
+
+"road.event.card.date.to" = "Until %@";
+
+"road.event.card.row.all" = "Left, middle, right lane";
+
+"road.event.card.row.center" = "Middle lane";
+
+"road.event.card.row.center_right" = "Right and middle lane";
+
+"road.event.card.row.left" = "Left lane";
+
+"road.event.card.row.left_center" = "Left and middle lane";
+
+"road.event.card.row.left_right" = "Left and right lane";
+
+"road.event.card.row.right" = "Right lane";
+
+"road.event.card.action.delete" = "Delete alert";
+
+"road.event.creation.header.cancel" = "Cancel";
+
+"road.event.creation.header.submit" = "Send";
+
+"road.event.creation.header.title" = "Alert";
+
+"road.event.creation.comment.cell.placeholder" = "Comment to alert";
+
+"road.event.creation.event.title.carAccident" = "Road accident";
+
+"road.event.creation.event.title.emergencyWork" = "Road works";
+
+"road.event.creation.event.title.cameras" = "Cameras";
+
+"road.event.creation.event.title.comment" = "Messages on the map";
+
+"road.event.creation.event.title.roadOverlapping" = "Blocking";
+
+"road.event.creation.event.title.other" = "Other";
+
+"road.event.creation.lanes.which_lane" = "Which lane?";
+
+"road.event.card.action.result.success" = "Thank you!";
+
+"road.event.card.action.result.failed" = "Something went wrong.";
+
+"road.event.creation.result.success" = "Alert has been added";
+
+"road.event.creation.result.failed" = "Failed to add alert, please try again later";
+
+"road.event.creation.result.banned" = "You are temporarily blocked due to suspicious activity";
+
+"road.event.creation.result.unauthorized" = "Failed to add alert, please sign in";
+
+"road.event.creation.result.forbiddenByUserLocation" = "You are located too far away";
