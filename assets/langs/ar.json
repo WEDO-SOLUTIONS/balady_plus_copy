@@ -3964,5 +3964,8 @@
  "BuildingNature": "طبيعة الموقع", 
 "edit_owner_data":"تعديل بيانات المالك", 
 "reason_text":"سبب", 
-"attachment_text":"مرفق"
+"attachment_text":"مرفق", 
+"National_ID":"هوية وطنية", 
+"Iqama_ID":"هوية مقيم"
+
 }
