@@ -4255,7 +4255,10 @@
  "BuildingNature": "Building Nature", 
  "edit_owner_data":"Edit Owner Data", 
  "reason_text":"reason", 
- "attachment_text":"attachment"
+ "attachment_text":"attachment", 
+
+ "National_ID":"National ID", 
+"Iqama_ID":"Resident ID"
 
 
 
