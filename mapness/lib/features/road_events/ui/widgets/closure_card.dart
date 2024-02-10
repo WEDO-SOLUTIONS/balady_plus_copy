@@ -20,9 +20,9 @@ class ClosureCard extends StatelessWidget {
         top: false,
         child: Container(
           margin: const EdgeInsets.all(12),
-          decoration: const BoxDecoration(
-            color: Color(0xffF4F4F5),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+          decoration: BoxDecoration(
+            color: const Color(0xffF4F4F5),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Container(
             padding: const EdgeInsets.all(16),

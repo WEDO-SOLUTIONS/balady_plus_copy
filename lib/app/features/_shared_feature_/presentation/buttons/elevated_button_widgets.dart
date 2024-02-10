@@ -1,6 +1,5 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
-import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
@@ -325,6 +324,7 @@ class ElevatedButtonWidget extends _ElevatedButton {
       {required VoidCallback onPressed,
       required String text,
       double? height,
+      int? maxLines,
       double? fontSize})
       : super(CustomElevatedButtonWidget(
           btnColor: AppColor.primary800Light,
@@ -335,6 +335,7 @@ class ElevatedButtonWidget extends _ElevatedButton {
           ),
           btnHeight: height ?? 56,
           text: text,
+          maxLines: maxLines,
           onPressed: onPressed,
         ));
 
@@ -343,11 +344,13 @@ class ElevatedButtonWidget extends _ElevatedButton {
       required String text,
       double? height,
       double? fontSize,
+      int? maxLines,
       double? width})
       : super(CustomElevatedButtonWidget(
           btnColor: Colors.white,
           btnBorderColor: AppColor.primary800Light,
           btnWidth: width,
+          maxLines: maxLines,
           textStyle: AppStyle.elevatedButtonStyle.copyWith(
             color: AppColor.primary800Light,
             fontWeight: FontWeight.w700,

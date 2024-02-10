@@ -52,6 +52,7 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidget> {
                           color: Colors.transparent,
                           type: MaterialType.transparency,
                           child: OpprtunityMapCard(
+                            area: '${selectedPoint?.SITEAREA}',
                             description: selectedPoint?.description,
                             type: selectedPoint?.TYPE ?? '',
                             bidEndDate: selectedPoint?.BIDENDDATE,

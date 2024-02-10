@@ -14,6 +14,14 @@ import 'package:mapness/shared/ui/bottom_sheet/ui/widget_size_notifier.dart';
 import 'ui/disable_overscroll_behavior.dart';
 import 'ui/vertival_scroll_listener.dart';
 
+// Map controls builder type
+typedef MapControlsBuilder = Widget Function(
+  BuildContext context,
+  ScrollController scrollController,
+  double biggestHeight,
+  double smallestHeight,
+);
+
 // keep growable order
 enum Expansion {
   /// does not visible at all
@@ -35,6 +43,7 @@ class DgisBottomSheet extends StatefulWidget {
   final double hiddenHeight;
   final WidgetBuilder? body;
   final DgisBottomSheetController? controller;
+  final MapControlsBuilder? mapControlsBuilder;
 
   /// Appears when bottom sheet is expanded. Pin to the bottom when body scrolls.
   /// Usually contains buttons.
@@ -76,6 +85,7 @@ class DgisBottomSheet extends StatefulWidget {
     this.scrollHeader,
     this.hiddenHeight = 0,
     this.controller,
+    this.mapControlsBuilder,
   })  : assert(
           !availableExpansions.contains(Expansion.collapsed) ||
               collapsedHeight != null && collapsedHeight > 0,
@@ -325,101 +335,114 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
       'Visible height=$_visibleHeight should be between 0 and _maxVisibleHeight=$_maxVisibleHeight',
     );
 
-    return Material(
-      type: MaterialType.transparency,
-      child: ScrollConfiguration(
-        behavior: DisabledOverscrollScrollBehavior(),
-        child:
-            // todo(somebody): provide theme when ready
-            WillPopScope(
-          onWillPop: onWillPop,
-          child: Stack(
-            children: [
-              if (widget.showBarrier)
-                IgnorePointer(
-                  ignoring: _backgroundOpacity == 0,
-                  child: GestureDetector(
-                    onTap: () {
-                      if (widget.availableExpansions
-                          .contains(Expansion.hidden)) {
-                        // logger.info(
-                        //   'On barrier tapped -> hide bottom sheet',
-                        //   tags: [LogTag.bottomSheet],
-                        // );
-                        setExpansion(Expansion.hidden, byUser: true);
-                      }
-                    },
-                    child: Opacity(
-                      opacity: _backgroundOpacity,
-                      child: Container(
-                        color: theme.expandedBackgroundColor,
-                      ),
-                    ),
-                  ),
-                ),
-              SafeArea(
-                bottom: false,
-                child: LayoutBuilder(
-                  builder: (_, constrains) {
-                    final newScreenHeight = constrains.maxHeight;
-                    if (newScreenHeight != _screenHeight) {
-                      _screenHeight = newScreenHeight;
-                      _printDebugLog('_screenHeight=$_screenHeight');
-                      _printDebugLog('_maxVisibleHeight=$_maxVisibleHeight');
-
-                      _visibleHeight = min(_visibleHeight, _maxVisibleHeight);
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        widget.onVisibleHeightChanged?.call(_visibleHeight);
-                      });
-                      if (_hasActiveAnimation) {
-                        _animationController!.stop();
-                        _hasActiveAnimation = false;
-                      }
-                    }
-
-                    return Stack(
-                      children: [
-                        Positioned(
-                          top: _initialized
-                              ? _maxVisibleHeight - _visibleHeight
-                              : _screenHeight,
-                          left: 0,
-                          right: 0,
+    return Stack(
+      children: [
+        if (widget.mapControlsBuilder != null)
+          widget.mapControlsBuilder!.call(
+            context,
+            _scrollController,
+            _maxVisibleHeight,
+            _minVisibleHeight,
+          ),
+        Material(
+          type: MaterialType.transparency,
+          child: ScrollConfiguration(
+            behavior: DisabledOverscrollScrollBehavior(),
+            child:
+                // todo(somebody): provide theme when ready
+                WillPopScope(
+              onWillPop: onWillPop,
+              child: Stack(
+                children: [
+                  if (widget.showBarrier)
+                    IgnorePointer(
+                      ignoring: _backgroundOpacity == 0,
+                      child: GestureDetector(
+                        onTap: () {
+                          if (widget.availableExpansions
+                              .contains(Expansion.hidden)) {
+                            // logger.info(
+                            //   'On barrier tapped -> hide bottom sheet',
+                            //   tags: [LogTag.bottomSheet],
+                            // );
+                            setExpansion(Expansion.hidden, byUser: true);
+                          }
+                        },
+                        child: Opacity(
+                          opacity: _backgroundOpacity,
                           child: Container(
-                            height: _screenHeight,
-                            alignment: Alignment.bottomCenter,
-                            child: _content(),
+                            color: theme.expandedBackgroundColor,
                           ),
                         ),
-                        if (widget.actions != null)
-                          Positioned(
-                            top: _initialized
-                                ? _maxVisibleHeight -
-                                    _visibleHeight +
-                                    actionsHeight
-                                : _screenHeight,
-                            height: _visibleHeight,
-                            left: 0,
-                            right: 0,
-                            child: Container(
-                              height: _screenHeight,
-                              alignment: Alignment.bottomCenter,
-                              child: WidgetSizeNotifier(
-                                onSizeChanged: (value) =>
-                                    _actionsVisibleHeight = value.height,
-                                child: widget.actions!,
+                      ),
+                    ),
+                  SafeArea(
+                    bottom: false,
+                    child: LayoutBuilder(
+                      builder: (_, constrains) {
+                        final newScreenHeight = constrains.maxHeight;
+                        if (newScreenHeight != _screenHeight) {
+                          _screenHeight = newScreenHeight;
+                          _printDebugLog('_screenHeight=$_screenHeight');
+                          _printDebugLog(
+                              '_maxVisibleHeight=$_maxVisibleHeight');
+
+                          _visibleHeight =
+                              min(_visibleHeight, _maxVisibleHeight);
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            widget.onVisibleHeightChanged?.call(_visibleHeight);
+                          });
+                          if (_hasActiveAnimation) {
+                            _animationController!.stop();
+                            _hasActiveAnimation = false;
+                          }
+                        }
+
+                        return Stack(
+                          children: [
+                            Positioned(
+                              top: _initialized
+                                  ? _maxVisibleHeight - _visibleHeight
+                                  : _screenHeight,
+                              left: 0,
+                              right: 0,
+                              child: Container(
+                                height: _screenHeight,
+                                alignment: Alignment.bottomCenter,
+                                child: _content(),
                               ),
                             ),
-                          ),
-                      ],
-                    );
-                  },
-                ),
+                            if (widget.actions != null)
+                              Positioned(
+                                top: _initialized
+                                    ? _maxVisibleHeight -
+                                        _visibleHeight +
+                                        actionsHeight
+                                    : _screenHeight,
+                                height: _visibleHeight,
+                                left: 0,
+                                right: 0,
+                                child: Container(
+                                  height: _screenHeight,
+                                  alignment: Alignment.bottomCenter,
+                                  child: WidgetSizeNotifier(
+                                    onSizeChanged: (value) =>
+                                        _actionsVisibleHeight = value.height,
+                                    child: widget.actions!,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 

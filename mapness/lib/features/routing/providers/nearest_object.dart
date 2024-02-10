@@ -1,16 +1,25 @@
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/camera_state.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'nearest_object.g.dart';
 
-class NearestObject {
-  NearestObject(this.nearestPoint, this.object);
+sealed class NearestObject {}
+
+class DGisNearestObject extends NearestObject {
+  DGisNearestObject(this.nearestPoint, this.object);
 
   final GeoPointWithElevationMessage nearestPoint;
   final DirectoryObjectMessage object;
+}
+
+class CooridnatesNearestObject extends NearestObject {
+  CooridnatesNearestObject(this.geoPoint);
+
+  final GeoPointMessage geoPoint;
 }
 
 @riverpod
@@ -54,13 +63,22 @@ class _NearestObject extends _$NearestObject {
             element.$2.types.firstOrNull?.type != ObjectTypeMessage.admDiv)
         .toList();
     if (filteredObjects.isEmpty) {
-      return AsyncValue.error('No suitable objects found', StackTrace.current);
+      if (ref.read(cameraPositionProvider) == null) {
+        return AsyncValue.error(
+            'No suitable objects found', StackTrace.current);
+      }
+
+      return AsyncValue.data(
+        CooridnatesNearestObject(
+          ref.read(cameraPositionProvider)!.point,
+        ),
+      );
     }
 
     final nearest = filteredObjects.first;
 
     return AsyncValue.data(
-      NearestObject(nearest.$1.closestMapPoint, nearest.$2),
+      DGisNearestObject(nearest.$1.closestMapPoint, nearest.$2),
     );
   }
 }

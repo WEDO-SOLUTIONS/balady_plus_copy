@@ -17,12 +17,12 @@ import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 class PoiCardMapControls extends ConsumerStatefulWidget {
   final double biggestHeight;
-  final DraggableScrollableController scrollController;
+  final ScrollController scrollController;
 
   const PoiCardMapControls({
     required this.biggestHeight,
-    Key? key,
     required this.scrollController,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -41,11 +41,12 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
 
   void _scrollListener() {
     Future.delayed(Duration.zero, () {
-      var size = widget.scrollController.size;
-      var sizeFixed = double.parse(size.toStringAsFixed(2));
+      final size = widget.scrollController.position.maxScrollExtent -
+          widget.scrollController.position.pixels;
+      final sizeFixed = double.parse(size.toStringAsFixed(2));
 
       if (sizeFixed == .1) {
-        var extent = widget.biggestHeight * sizeFixed;
+        final extent = widget.biggestHeight * sizeFixed;
         setState(() {
           bottomExtent = extent;
         });
@@ -58,97 +59,98 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: SafeArea(
-        bottom: false,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  left: 12,
-                  top: 12,
-                  right: 12,
-                  bottom: 16,
-                ),
-                child: Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        WeatherControl(
-                            onTap: () => const WeatherRoute().push(context)),
-                        const SizedBox(height: 8),
-                        const HappinesControl(),
-                        const Spacer(),
-                        const IndoorControl(),
-                        const Spacer(),
-                        // MapButton(
-                        //   child: Image.asset(
-                        //     "assets/images/beta_icon.png",
-                        //     height: 44,
-                        //   ),
-                        //   onTap: () {
-                        //     Stories.showOnboarding(
-                        //         context, StoryTypes.route, 'route');
-                        //   },
-                        // ),
-                        // const SizedBox(height: 8),
-                        MapButton(
-                          child: SvgPicture.asset(
-                            "assets/icons/svg/ic_controls_qibla.svg",
-                            semanticsLabel: 'MinApps Screen',
-                            package: "mapness",
+  Widget build(BuildContext context) => Directionality(
+        textDirection: TextDirection.ltr,
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 12,
+                    top: 12,
+                    right: 12,
+                    bottom: 16,
+                  ),
+                  child: Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          WeatherControl(
+                              onTap: () => const WeatherRoute().push(context)),
+                          const SizedBox(height: 8),
+                          const HappinesControl(),
+                          const Spacer(),
+                          const IndoorControl(),
+                          const Spacer(),
+                          // MapButton(
+                          //   child: Image.asset(
+                          //     "assets/images/beta_icon.png",
+                          //     height: 44,
+                          //   ),
+                          //   onTap: () {
+                          //     Stories.showOnboarding(
+                          //         context, StoryTypes.route, 'route');
+                          //   },
+                          // ),
+                          // const SizedBox(height: 8),
+                          MapButton(
+                            child: SvgPicture.asset(
+                              'assets/icons/svg/ic_controls_qibla.svg',
+                              semanticsLabel: 'MinApps Screen',
+                              package: 'mapness',
+                            ),
+                            onTap: () {
+                              const KiblahRoute().pushReplacement(context);
+                            },
                           ),
-                          onTap: () {
-                            const KiblahRoute().pushReplacement(context);
-                          },
-                        ),
-                      ],
-                    ),
-                    const Spacer(),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const LayersControl(),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        Consumer(
-                          builder: (context, ref, _) {
-                            final navi = ref.watch(appFeaturesProvider);
-                            return Visibility(
-                              visible: navi.naviEnabled,
-                              replacement: const SizedBox.square(
-                                dimension: 28,
-                              ),
-                              child: const TrafficControl(),
-                            );
-                          },
-                        ),
-                        const Spacer(),
-                        const ZoomControl(),
-                        const Spacer(),
-                        const CompassControl(),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        const FollowControl(),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                      const Spacer(),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const LayersControl(),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Consumer(
+                            builder: (context, ref, _) {
+                              final navi = ref.watch(appFeaturesProvider);
+                              return Visibility(
+                                visible: navi.naviEnabled,
+                                replacement: const SizedBox.square(
+                                  dimension: 28,
+                                ),
+                                child: const TrafficControl(),
+                              );
+                            },
+                          ),
+                          const Spacer(),
+                          const ZoomControl(),
+                          const Spacer(),
+                          const CompassControl(),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          const FollowControl(
+                            //TODO(scroollocker): Double check this
+                            onlyFollowDirection: true,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: bottomExtent,
-            ),
-          ],
+              SizedBox(
+                height: bottomExtent,
+              ),
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 }

@@ -6,7 +6,7 @@ import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_bearing.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/compass.dart';
-import 'package:mapness/shared/ui/buttons/transparent_back_button.dart';
+import 'package:mapness/shared/ui/buttons/filled_back_button.dart';
 
 class KiblahHeader extends ConsumerWidget {
   const KiblahHeader({
@@ -34,7 +34,7 @@ class KiblahHeader extends ConsumerWidget {
         children: [
           Align(
             alignment: AlignmentDirectional.centerStart,
-            child: TransparentBackButton(
+            child: FilledBackButton(
               onClose: () {
                 ref.read(mapControlsProvider.notifier).update(
                       MapControlsStateDashboard(),

@@ -22,7 +22,6 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
-import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_scrollable_content.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:shimmer/shimmer.dart';
@@ -31,6 +30,7 @@ import '../../shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'domain/model/poi_camera_config.dart';
 import 'enums/pot_tabs_type.dart';
 import 'widgets/footer.dart';
+import 'widgets/poi_card_map_controls.dart';
 import 'widgets/poi_photo_card.dart';
 import 'widgets/poi_photos_header.dart';
 
@@ -243,6 +243,12 @@ class _ContentState extends ConsumerState<_Content>
         collapsedHeight: 300,
         middleHeight: 600,
         hiddenHeight: 100,
+        mapControlsBuilder:
+            (context, scrollController, biggestHeight, smallestHeight) =>
+                PoiCardMapControls(
+          scrollController: scrollController,
+          biggestHeight: biggestHeight,
+        ),
         onExpansionChanged: (expansion, {byUser = false}) =>
             _expansion.value = expansion,
         scrollHeader: PoiPhotosHeader(

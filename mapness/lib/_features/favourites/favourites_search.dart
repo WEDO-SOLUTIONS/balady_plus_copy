@@ -50,8 +50,8 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
 
         final object = await dgisController.searchByObjectId(
           DgisObjectIdMessage(
-            objectId: item?.objectId ?? 0,
-            entranceId: 0,
+            objectId: int.tryParse(item?.objectId ?? '') ?? 0,
+            entranceId: int.tryParse(item?.objectId ?? '') ?? 0,
           ),
         );
         await onSearchTap(context, object);

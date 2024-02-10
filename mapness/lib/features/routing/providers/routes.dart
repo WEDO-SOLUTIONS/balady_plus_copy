@@ -27,7 +27,7 @@ class Routes extends _$Routes {
         dgisController.value?.routesInfoChangedEvents.listen((event) {
       routesCompleter.complete(event.routes);
     });
-    Timer(const Duration(seconds: 5), () {
+    Timer(const Duration(minutes: 2), () {
       if (routesCompleter.isCompleted) {
         return;
       }

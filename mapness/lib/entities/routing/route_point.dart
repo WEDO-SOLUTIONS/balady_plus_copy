@@ -22,7 +22,7 @@ sealed class RoutePoint {
 
 class RoutePointMyLocation extends RoutePoint {
   @override
-  String get icon => "assets/icons/svg/ic_routing_location.svg";
+  String get icon => 'assets/icons/svg/ic_routing_location.svg';
 
   @override
   bool get isNotEmpty => true;
@@ -34,9 +34,32 @@ class RoutePointMyLocation extends RoutePoint {
   double? get longitude => null;
 
   @override
-  String? title(AppLocalizations locale) {
-    return locale.myLocation;
-  }
+  String? title(AppLocalizations locale) => locale.myLocation;
+
+  @override
+  Color get titleColor => const Color(0xFF1E2A36);
+}
+
+class RoutePointCoordinates extends RoutePoint {
+  final GeoPointMessage coords;
+
+  RoutePointCoordinates(this.coords);
+
+  @override
+  String get icon => 'assets/icons/svg/ic_routing_circle.svg';
+
+  @override
+  bool get isNotEmpty => true;
+
+  @override
+  double? get latitude => coords.latitude;
+
+  @override
+  double? get longitude => coords.longitude;
+
+  @override
+  String? title(AppLocalizations locale) =>
+      '${coords.latitude.toStringAsFixed(5)}, ${coords.longitude.toStringAsFixed(5)}';
 
   @override
   Color get titleColor => const Color(0xFF1E2A36);
@@ -48,7 +71,7 @@ class RoutePointDirectoryObject extends RoutePoint {
   RoutePointDirectoryObject(this.object);
 
   @override
-  String get icon => "assets/icons/svg/ic_routing_circle.svg";
+  String get icon => 'assets/icons/svg/ic_routing_circle.svg';
 
   @override
   bool get isNotEmpty => object != null;
@@ -60,9 +83,7 @@ class RoutePointDirectoryObject extends RoutePoint {
   double? get longitude => object?.markerPosition?.longitude;
 
   @override
-  String? title(AppLocalizations locale) {
-    return object?.title;
-  }
+  String? title(AppLocalizations locale) => object?.title;
 
   @override
   Color get titleColor =>
@@ -75,7 +96,7 @@ class RoutePointFavouriteItem extends RoutePoint {
   RoutePointFavouriteItem(this.item);
 
   @override
-  String get icon => "assets/icons/svg/ic_routing_circle.svg";
+  String get icon => 'assets/icons/svg/ic_routing_circle.svg';
 
   @override
   bool get isNotEmpty => item != null;
@@ -87,9 +108,7 @@ class RoutePointFavouriteItem extends RoutePoint {
   double? get longitude => item?.coordinates.longitude;
 
   @override
-  String? title(AppLocalizations locale) {
-    return item?.title;
-  }
+  String? title(AppLocalizations locale) => item?.title;
 
   @override
   Color get titleColor =>

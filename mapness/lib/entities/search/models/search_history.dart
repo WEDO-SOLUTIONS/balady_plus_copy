@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
 import 'package:dgis_map/library.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mapness/shared/lib/make_address.dart';
@@ -12,11 +15,12 @@ class SearchHistoryItem {
   @HiveField(1)
   final String address;
 
+  /// String because Hive have problems with int
   @HiveField(2)
-  final int? objectId;
+  final String? objectId;
 
   @HiveField(3)
-  final int? entranceId;
+  final String? entranceId;
 
   SearchHistoryItem({
     required this.title,
@@ -31,13 +35,10 @@ class SearchHistoryItem {
       SearchHistoryItem(
         title: object.title,
         address: object.makeAddress(),
-        objectId: object.id?.objectId,
-        entranceId: object.id?.entranceId,
+        objectId: object.id?.objectId.toString(),
+        entranceId: object.id?.entranceId.toString(),
       );
 
-  @Deprecated('use hashKey')
-  String get key => 'history-${objectId ?? 0}-${entranceId ?? 0}';
-
   String get hashKey =>
-      'history-${objectId ?? 0}-${entranceId ?? 0}-${title.hashCode}-${address.hashCode}';
+      'history-${objectId ?? 0}-${entranceId ?? 0}-${sha1.convert(utf8.encode(title))}-${sha1.convert(utf8.encode(address))}';
 }
