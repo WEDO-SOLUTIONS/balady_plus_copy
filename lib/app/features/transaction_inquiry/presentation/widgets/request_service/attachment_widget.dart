@@ -61,6 +61,7 @@ class AttachmentWidget extends StatelessWidget {
                   title,
                   fontColor: const Color(0xff006665),
                   fontSize: 13,
+                  maxLines: 2,
                 ),
                 // required attachment
 /*            if (widget.isRequired)

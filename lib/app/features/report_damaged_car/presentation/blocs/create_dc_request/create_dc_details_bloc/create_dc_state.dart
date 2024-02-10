@@ -288,8 +288,8 @@ class CreateDCState extends Equatable {
     ];
   }
 
-  String get arLetters =>
-      "${middleLetter ?? ""} ${rightLetter ?? ""} ${leftLetter ?? ""}";
+  String get arLetters => CommonFunctions.getCarPlateArabicLetters(
+      "${rightLetter ?? ""} ${middleLetter ?? ""} ${leftLetter ?? ""}");
   String get arNumbers =>
       CommonFunctions.replaceEnglishNumberWithArabic(plateDigit ?? "");
   String get enNumbers => plateDigit ?? "";

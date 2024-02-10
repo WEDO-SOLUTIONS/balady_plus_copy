@@ -335,7 +335,7 @@ class ObjectionReaason extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         FieldData(
-                          title: " سبب ${index + 1}",
+                          title: " ${"reason_text".tr()} ${index + 1}",
                           subTitle: state.details?.objectionReasonsList?[index]
                                   .reason ??
                               "",
@@ -344,7 +344,7 @@ class ObjectionReaason extends StatelessWidget {
                               topRight: Radius.circular(8)),
                         ),
                         FieldData(
-                          title: "المرفق",
+                          title: "attachment_text".tr(),
                           radius: BorderRadius.zero,
                         ),
                         Container(

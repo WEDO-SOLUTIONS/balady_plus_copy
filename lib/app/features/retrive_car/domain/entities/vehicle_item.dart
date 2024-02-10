@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/retrive_car/domain/entities/veichle_card_model.dart';
 import 'package:equatable/equatable.dart';
 
@@ -35,7 +36,7 @@ class VehicleItem extends Equatable {
   VehicleCard get cardItem => VehicleCard(
       carModel:
           "${vehicleDetails?.vehicleModel} ${vehicleDetails?.vehicleType}",
-      carStatus: statusAr ?? "",
+      carStatus: (CommonFunctions.isAppAR ? statusAr : pyStatusWork) ?? "",
       id: pyId ?? "",
       cayYear: "",
       ownerShip: "",

@@ -4253,8 +4253,9 @@
  "Directional":"Directional", 
  "Advertising":"Advertising", 
  "BuildingNature": "Building Nature", 
- "edit_owner_data":"Edit Owner Data"
-
+ "edit_owner_data":"Edit Owner Data", 
+ "reason_text":"reason", 
+ "attachment_text":"attachment"
 
 
 

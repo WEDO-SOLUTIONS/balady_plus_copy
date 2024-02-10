@@ -3962,5 +3962,7 @@
  "Directional":"إرشادية", 
  "Advertising":"إعلانية", 
  "BuildingNature": "طبيعة الموقع", 
-"edit_owner_data":"تعديل بيانات المالك"
+"edit_owner_data":"تعديل بيانات المالك", 
+"reason_text":"سبب", 
+"attachment_text":"مرفق"
 }
