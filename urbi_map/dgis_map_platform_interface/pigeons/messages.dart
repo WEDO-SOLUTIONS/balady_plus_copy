@@ -368,6 +368,7 @@ class DirectoryObjectMessage {
     this.types,
     this.title,
     this.titleAddition,
+    this.about,
     this.subtitle,
     this.id,
     this.markerPosition,
@@ -394,6 +395,7 @@ class DirectoryObjectMessage {
   final String title;
   final String titleAddition;
   final String subtitle;
+  final String about;
   final DgisObjectIdMessage? id;
   final GeoPointWithElevationMessage? markerPosition;
   final AddressMessage? address;
