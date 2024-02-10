@@ -172,9 +172,7 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                           ),
                           const CustomVerticalSpace(height: 16),
                           NotesWidget(
-                            notes: [
-                              '<blockquote >عزيزي المستفيد.. يرجى اختيار النشاط المطابق للنشاط الفعلي للمحل حيث أنه لا يمكن تعديل نشاط الرخصة بعد إصدارها</p><p >عزيزي المستفيد... يمكنك الاستعلام عن تفاصيل الأنشطة واشتراطاتها من خلال زيارتك للرابط التالي: <a href="https://apps.balady.gov.sa//LicenseStandard/Default" target="_blank">الأنشطة التجارية واشتراطاتها</a></p></blockquote>'
-                            ],
+                            notes: [CommonFunctions.getIssueCrWarning1()],
                           ),
                           if (state.showAtm()) ...[
                             CustomTextWidget(

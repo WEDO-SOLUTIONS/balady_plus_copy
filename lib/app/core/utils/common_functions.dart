@@ -1297,6 +1297,30 @@ class CommonFunctions {
       );
     }
   }
+
+  static String getIssueCrWarning1() {
+    if (CommonFunctions.isAppAR) {
+      return '<blockquote >عزيزي المستفيد.. يرجى اختيار النشاط المطابق للنشاط الفعلي للمحل حيث أنه لا يمكن تعديل نشاط الرخصة بعد إصدارها</p><p >عزيزي المستفيد... يمكنك الاستعلام عن تفاصيل الأنشطة واشتراطاتها من خلال زيارتك للرابط التالي: <a href="https://apps.balady.gov.sa//LicenseStandard/Default" target="_blank">الأنشطة التجارية واشتراطاتها</a></p></blockquote>';
+    } else {
+      return '<blockquote >Dear beneficiary, please select the activity corresponding to the actual activity of the store, as the license activity cannot be modified after issuance.</p><p >Dear beneficiary, you can inquire about the details of the activities and their requirements by visiting the following link: <a href="https://apps.balady.gov.sa//LicenseStandard/Default" target="_blank"> Details </a></p></blockquote>';
+    }
+  }
+
+  static String getIssueCrWarning2() {
+    if (CommonFunctions.isAppAR) {
+      return '<span class="ui-messages-detail ng-tns-c1-19 ng-star-inserted">عزيزي المستفيد.. يمكنك معرفة الوسطاء العقاريون المعتمدين في شبكة ايجار من خلال الرابط <a target="_balnk" href="https://www.ejar.sa/ar/certified-offices"> اضغط هنا</a> أو تحميل تطبيق وسطاء عقاريون <a target="_balnk" href="https://apps.apple.com/us/app/%D9%88%D8%B3%D8%B7%D8%A7%D8%A1-%D8%B9%D9%82%D8%A7%D8%B1%D9%8A%D9%88%D9%86/id1306579731"> IOS </a> أو <a target="_balnk" href="https://play.google.com/store/apps/details?id=sa.ejar.waset"> Android </a></span>';
+    } else {
+      return '<span class="ui-messages-detail ng-tns-c1-19 ng-star-inserted">Dear beneficiary, you can find out the accredited real estate brokers in the Ejar network through the following link <a target="_balnk" href="https://www.ejar.sa/ar/certified-offices"> Click Here </a> Or download the Real Estate Brokers application<a target="_balnk" href="https://apps.apple.com/us/app/%D9%88%D8%B3%D8%B7%D8%A7%D8%A1-%D8%B9%D9%82%D8%A7%D8%B1%D9%8A%D9%88%D9%86/id1306579731"> IOS </a> Or <a target="_balnk" href="https://play.google.com/store/apps/details?id=sa.ejar.waset"> Android </a></span>';
+    }
+  }
+
+  static String getIssueCrWarning3() {
+    if (CommonFunctions.isAppAR) {
+      return '<p class="m-0 ng-star-inserted">عزيزي المستفيد... يمكنك الاطلاع على لائحة استيفاء اشتراطات اللوحات التجارية من خلال زيارة الرابط التالي: <a target="_balnk" href="https://balady.gov.sa/Services/DownloadUserGuide/218">لائحة استيفاء اشتراطات اللوحات التجارية</a></p>';
+    } else {
+      return '<p class="m-0 ng-star-inserted">Dear beneficiary, you can review the compliance requirements list for commercial signs by visiting the following link<a target="_balnk" href="https://balady.gov.sa/Services/DownloadUserGuide/218"> Compliance requirements list for commercial signs</a></p>';
+    }
+  }
 }
 
 class CommonProperties {

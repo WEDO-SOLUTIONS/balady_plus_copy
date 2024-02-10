@@ -356,10 +356,8 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           if (state.crContractType == CRContractType.ejar &&
                               state.crContractOption ==
                                   CRContractOption.service)
-                            const NotesWidget(
-                              notes: [
-                                '<span class="ui-messages-detail ng-tns-c1-19 ng-star-inserted">عزيزي المستفيد.. يمكنك معرفة الوسطاء العقاريون المعتمدين في شبكة ايجار من خلال الرابط <a target="_balnk" href="https://www.ejar.sa/ar/certified-offices"> اضغط هنا</a> أو تحميل تطبيق وسطاء عقاريون <a target="_balnk" href="https://apps.apple.com/us/app/%D9%88%D8%B3%D8%B7%D8%A7%D8%A1-%D8%B9%D9%82%D8%A7%D8%B1%D9%8A%D9%88%D9%86/id1306579731"> IOS </a> أو <a target="_balnk" href="https://play.google.com/store/apps/details?id=sa.ejar.waset"> Android </a></span>'
-                              ],
+                            NotesWidget(
+                              notes: [CommonFunctions.getIssueCrWarning2()],
                             ),
                           HorizontalRadioGroup<CRSubmitterType>(
                             groupName: "ekramApplicantType".tr(),
@@ -711,10 +709,8 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           ],
                           if (state.boardContractSetting == "MANUAL") ...[
                             const BillboardComponent(),
-                            const NotesWidget(
-                              notes: [
-                                '<p class="m-0 ng-star-inserted">عزيزي المستفيد... يمكنك الاطلاع على لائحة استيفاء اشتراطات اللوحات التجارية من خلال زيارة الرابط التالي: <a target="_balnk" href="https://balady.gov.sa/Services/DownloadUserGuide/218">لائحة استيفاء اشتراطات اللوحات التجارية</a></p>'
-                              ],
+                            NotesWidget(
+                              notes: [CommonFunctions.getIssueCrWarning3()],
                             ),
                           ]
                         ],
