@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart'
     as map_control_provider;
-import 'package:mapness/_features/poi_card/constants/info_mock.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
@@ -185,10 +184,7 @@ class _ContentState extends ConsumerState<_Content>
     final qrTradeLicense = poiCardState?.qrTradeLicense;
     final tradeLicense = poiCardState?.tradeLicense;
 
-    final about = aboutMock(
-      objectId,
-      ref.read(appLanguageProvider),
-    );
+    final about = data.about;
     final name = data.buildingInfo.buildingName;
     if (name != null) {
       data.title = name;
@@ -205,7 +201,7 @@ class _ContentState extends ConsumerState<_Content>
             data,
             onEntranceTap: () => showEntrance(data),
           ),
-          if (about != null)
+          if (about.isNotEmpty)
             Description(
               text: about,
             ),
