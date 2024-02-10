@@ -14,6 +14,7 @@ fun DirectoryObject.toMessage(externalIds: List<String>?): DirectoryObjectMessag
         .setTitle(this.title)
         .setTitleAddition(this.titleAddition)
         .setSubtitle(this.subtitle)
+        .setAbout(this.description)
         .setId(this.id?.toMessage())
         .setMarkerPosition(this.markerPosition?.toMessage())
         .setAddress(this.address?.toMessage())
