@@ -20,6 +20,7 @@ class TextWithCheckBtn extends StatefulWidget {
   final int? maxLength;
   final bool enabled;
   final TextInputType? textInputType;
+  final double? topPadding;
 
   TextWithCheckBtn(
       {required this.title,
@@ -36,7 +37,8 @@ class TextWithCheckBtn extends StatefulWidget {
       this.maxLength,
       required this.validate,
       this.enabled = true,
-      this.textInputType});
+      this.textInputType,
+      this.topPadding});
   @override
   _TextWithCheckBtnState createState() => _TextWithCheckBtnState();
 }
@@ -72,7 +74,13 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
         ),
         Padding(
           padding: EdgeInsetsDirectional.only(
-              bottom: 0.0, end: 8, top: widget.maxLength == null ? 20 : 0),
+              bottom: 0.0,
+              end: 8,
+              top: widget.maxLength == null
+                  ? widget.topPadding != null
+                      ? widget.topPadding!
+                      : 20
+                  : 0),
           child: InkWell(
             onTap: widget.isValidate
                 ? null

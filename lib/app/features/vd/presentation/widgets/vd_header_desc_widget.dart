@@ -36,6 +36,7 @@ class VdHeaderDesc extends StatelessWidget {
             fontSize: 14.0,
             fontWeight: AppFontWeight.medium,
             textAlign: TextAlign.start,
+            maxLines: 2,
           ),
         ],
         CustomVerticalSpace(height: verticalSpace),

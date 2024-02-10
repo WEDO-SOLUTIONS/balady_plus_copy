@@ -311,10 +311,11 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                 state.salamaPermitExist == false)
                               TextWithCheckBtn(
                                 title: "bill_number_name".tr(),
-                                hint: "bill_number_name".tr(),
+                                hint: "write_hint".tr(),
                                 validate: (String? t) {},
                                 isValidate: state.isSalamaBillVerified ?? false,
                                 currentValue: state.slamaBillNumber,
+                                topPadding: CommonFunctions.isAppAR ? 0 : 60,
                                 verify: () {
                                   context
                                       .read<CrStep4ShopDataCubit>()

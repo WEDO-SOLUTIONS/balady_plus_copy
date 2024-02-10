@@ -36,7 +36,7 @@ class OwnerInfoCard extends StatelessWidget {
                     const SizedBox(width: 4),
                     Flexible(
                       child: CustomTextWidget(
-                        "مالك ${index + 1}",
+                        "${"owner_card".tr()} ${index + 1}",
                         fontColor: AppColor.blackModern600Light,
                         fontSize: 18,
                         fontWeight: AppFontWeight.bold,
@@ -65,7 +65,7 @@ class OwnerInfoCard extends StatelessWidget {
                           //   dialogKeyName: DialogName.calculatorEditBoardDialog,
                           //  currentRouteName: RouteName.calculatorRoute,
                           child: BottomSheetWithActions(
-                            title: "تعديل بيانات المالك".tr(),
+                            title: "edit_owner_data".tr(),
                             body: EditCrOwnerDataDialog(
                               item: item,
                             ),
@@ -83,8 +83,8 @@ class OwnerInfoCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const CustomTextWidget(
-                      "اسم المالك",
+                    CustomTextWidget(
+                      "owner_name".tr(),
                       fontColor: AppColor.primary700Light,
                       fontSize: 10,
                       fontWeight: AppFontWeight.semiBold,

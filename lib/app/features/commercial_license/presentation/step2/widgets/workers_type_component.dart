@@ -19,7 +19,7 @@ class WorkerTypeComponent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "نوع العاملين",
+          "step2WorkerType".tr(),
           style: AppStyle.mainTextSecondaryStyle.copyWith(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,

@@ -93,7 +93,7 @@ class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
                                                 Expanded(
                                                   child: ElevatedButtonWidget
                                                       .primaryCustom(
-                                                          text: "موافق",
+                                                          text: "agree".tr(),
                                                           onPressed: () {
                                                             NavigationService
                                                                 .goBack();
@@ -111,7 +111,8 @@ class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
                                                 Expanded(
                                                   child: ElevatedButtonWidget
                                                       .primaryCustomBorder(
-                                                          text: "الغاء",
+                                                          text: "cancelButton"
+                                                              .tr(),
                                                           onPressed: () {
                                                             NavigationService
                                                                 .goBack();

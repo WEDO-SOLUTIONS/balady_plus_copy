@@ -38,7 +38,7 @@ class InvoicesStatusFilter extends StatelessWidget {
               dialogKeyName: DialogName.invoicesStatusFilters,
               currentRouteName: RouteName.invoices,
               child: BottomSheetList(
-                title: "product".tr(),
+                title: "invoice_status".tr(),
                 items: items,
                 selectedValue: state.selectedInvoiceStatus?.name,
                 onTap: (item) {

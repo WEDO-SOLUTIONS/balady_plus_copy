@@ -3958,5 +3958,9 @@
  "Remembrance_of_waking_up":"اذكار الاستيقاظ من النوم", 
  "Prayer_Remembrances":"اذكار الصلاة", 
  "Comprehensive_Supplications":"جوامع الدعاء", 
- "sar_text":"ر.س"
+ "sar_text":"ر.س", 
+ "Directional":"إرشادية", 
+ "Advertising":"إعلانية", 
+ "BuildingNature": "طبيعة الموقع", 
+"edit_owner_data":"تعديل بيانات المالك"
 }

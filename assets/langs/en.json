@@ -363,7 +363,7 @@
 "objection_sub_municipality":"SubMunicipality",
 "user_data_applicant":"Applicant data",
 "user_data_applicant_id":"ID No.",
-"user_data_applicant_type":"Kind of ID",
+"user_data_applicant_type":"ID Type",
 "user_data_applicant_name":"Name",
 "user_data_applicant_role":"Capacity",
 "user_data_applicant_mobile":"Phone No.",
@@ -3013,7 +3013,7 @@
 "representation_subtitle":"There is a long-established fact that content.",
 "representation_radio_option1":"Applying myself",
 "representation_option1_subtitle":"Completing the phases of issuing a compliance certificate",
-"representation_radio_option2":"Submission through an engineering office",
+"representation_radio_option2":"Submit via Engineer Office",
 "representation_option2_subtitle":"Contracting with an engineering office to examine compliance items and issue a certificate",
 "fees":"Fees",
 "free":"Free",
@@ -4249,7 +4249,13 @@
  "Remembrance_of_waking_up":"Remembrance of waking up", 
  "Prayer_Remembrances":"Prayer Remembrances", 
  "Comprehensive_Supplications":"Comprehensive Supplications", 
- "sar_text":"SAR"
+ "sar_text":"SAR",
+ "Directional":"Directional", 
+ "Advertising":"Advertising", 
+ "BuildingNature": "Building Nature", 
+ "edit_owner_data":"Edit Owner Data"
+
+
 
 
 
