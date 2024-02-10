@@ -21,6 +21,9 @@ rootProject.allprojects {
         maven {
             url "https://artifactory.2gis.dev/sdk-maven-release"
         }
+        flatDir {
+            dirs project(':dgis_map').file('_delete_me_')
+        }
     }
 }
 
@@ -56,7 +59,8 @@ android {
 dependencies {
     implementation"com.google.android.gms:play-services-location:21.0.1"
     // Dgis sdk
-    implementation "ru.dgis.sdk:sdk-full:10.1.0"
+    // implementation "ru.dgis.sdk:sdk-full:10.1.0"
+    implementation (name: 'sdk-full-10.1.1', ext: 'aar')
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.android.material:material:1.8.0'
 }

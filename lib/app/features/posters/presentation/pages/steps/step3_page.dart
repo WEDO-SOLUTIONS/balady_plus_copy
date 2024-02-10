@@ -326,15 +326,6 @@ class _CalcualtorWidgetState extends State<CalcualtorWidget> {
                           maxLines: 10,
                         ),
                       ),
-
-                      /* Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: WidgetTitleInvoice(
-                              money:
-                                  '${state.requestDetails?.costCalculationInfo?.durationInDays} ر.س',
-                              title: "عدد الرخص",
-                            ),
-                          )*/
                     ],
                     /* */
                   ],

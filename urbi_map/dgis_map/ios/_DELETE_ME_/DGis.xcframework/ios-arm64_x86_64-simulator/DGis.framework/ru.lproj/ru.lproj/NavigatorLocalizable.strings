@@ -1,0 +1,107 @@
+"navi.better_route_bar.caption" = "Есть маршрут лучше";
+
+"navi.better_route_bar.title_faster" = "Найден маршрут на\U00A0%d\U00A0мин быстрее";
+
+"navi.better_route_bar.title_longer" = "Найден маршрут на\U00A0%d\U00A0мин дольше";
+
+"navi.better_route_bar.title_same" = "Найден маршрут. То же время";
+
+"navi.better_route_bar.cancel" = "Отмена";
+
+"navi.message.update_route" = "Перестроение маршрута";
+
+"navi.message.lost_gps" = "Потерян сигнал GPS";
+
+"navi.message.finish" = "Вы на месте!";
+
+"navi.eta.arrival" = "прибытие";
+
+"navi.eta.free_roam_title" = "Управление поездкой";
+
+"navi.exit" = "Завершить поездку";
+
+"navi.road.exit" = "Съезд";
+
+"navi.additional.maneuver.then" = "Затем";
+
+"navi.dashboard.action.view_route" = "Просмотр маршрута";
+
+"navi.dashboard.voice_settings_title" = "Настройка звука";
+
+"navi.dashboard.voice_settings_subtitle_on" = "Манёвры включены";
+
+"navi.dashboard.voice_settings_subtitle_off" = "Манёвры выключены";
+
+"navi.dashboard.floor_name" = "%@ этаж";
+
+"navi.dashboard.indoor_navigation_title" = "Навигация внутри здания";
+
+"navi.finish.dashboard.parking_action_title" = "Парковки";
+
+"navi.route_overview.title" = "Продолжить поездку";
+
+"timeinterval.min" = "мин";
+
+"timeinterval.m" = "м";
+
+"timeinterval.hour" = "ч";
+
+"distance.m" = "м";
+
+"distance.km" = "км";
+
+"speed.kmph" = "км/ч";
+
+"route.search.result.notfound.title" = "Проезд не найден.\nПопробуйте изменить начальную\nили конечную точку маршрута.";
+
+"route.preview.pedestrian_path_comment" = "пешком";
+
+"route.details.start_point_name" = "Начало маршрута";
+
+"route.details.start_point_image_name" = "card_ppnot_point_a";
+
+"route.details.finish_point_name" = "Конец маршрута";
+
+"route.details.finish_point_image_name" = "card_ppnot_point_russian_b";
+
+"route.details.finish_point_subtitle" = "Вы на месте!";
+
+"route.details.get_off_after" = "Выходите после";
+
+"route.details.public_transport_type_bus" = "Автобус";
+
+"route.details.public_transport_type_trolleybus" = "Троллейбус";
+
+"route.details.public_transport_type_tram" = "Трамвай";
+
+"route.details.public_transport_type_shuttle_bus" = "Маршрутка";
+
+"route.details.public_transport_type_metro" = "Метро";
+
+"route.details.public_transport_type_suburban_train" = "Электричка";
+
+"route.details.public_transport_type_funicular_railway" = "Фуникулёр";
+
+"route.details.public_transport_type_monorail" = "Монорельс";
+
+"route.details.public_transport_type_waterway" = "Водный транспорт";
+
+"route.details.public_transport_type_cable_car" = "Канатная дорога";
+
+"route.details.public_transport_type_speed_tram" = "Скоростной трамвай";
+
+"route.details.public_transport_type_premetro" = "Метротрам";
+
+"route.details.public_transport_type_light_metro" = "Лёгкое метро";
+
+"route.details.public_transport_type_aeroexpress" = "Аэроэкспресс";
+
+"route.details.public_transport_type_mcc" = "МЦК";
+
+"route.details.public_transport_type_mcd" = "МЦД";
+
+"route.details.station.entrance_number_title_format" = "Выход №%@";
+
+"route.details.station.entrance_title" = "Выход";
+
+"route.details.empty.view.title" = "Попробуйте посчитать шаги —\nврачи рекомендуют\nделать не менее 10000 в день!";
