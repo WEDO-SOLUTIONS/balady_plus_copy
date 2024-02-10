@@ -178,6 +178,7 @@ class CustomElevatedButtonWidget extends StatelessWidget {
   final AlignmentGeometry? btnAlignment;
   final EdgeInsetsGeometry? btnPadding;
   final EdgeInsetsGeometry? btnMargin;
+  final int? maxLines;
   final bool loading;
 
   /// It can be Widget or String
@@ -202,6 +203,7 @@ class CustomElevatedButtonWidget extends StatelessWidget {
     this.textStyle,
     this.onPressed,
     this.loading = false,
+    this.maxLines = 1,
   });
 
   @override
@@ -239,6 +241,7 @@ class CustomElevatedButtonWidget extends StatelessWidget {
                     ? CustomTextWidget(
                         text as String,
                         textAlign: TextAlign.center,
+                        maxLines: maxLines,
                         textStyle: textStyle ?? AppStyle.elevatedButtonStyle,
                       )
                     : const SizedBox(),

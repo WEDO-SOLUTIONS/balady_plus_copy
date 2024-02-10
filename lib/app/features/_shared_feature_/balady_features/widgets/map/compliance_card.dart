@@ -24,10 +24,6 @@ class ComplainceMapCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // font scale factor for responsive
-    final fontScale =
-        MediaQuery.of(context).size.width / MediaQuery.of(context).size.height;
-
     return Container(
       height: 180,
       width: MediaQuery.of(context).size.width - 30,
@@ -105,7 +101,8 @@ class ComplainceMapCard extends StatelessWidget {
                   Expanded(
                     child: ElevatedButtonWidget.primaryCustom(
                         text: "issue_complaince_certificate".tr(),
-                        fontSize: 13 * fontScale,
+                        fontSize: 13,
+                        maxLines: 2,
                         height: 40,
                         onPressed: () {
                           CommonFunctions.openCreateCompliance();
@@ -117,7 +114,8 @@ class ComplainceMapCard extends StatelessWidget {
                   Expanded(
                     child: ElevatedButtonWidget.primaryCustomBorder(
                       height: 40,
-                      fontSize: 13 * fontScale,
+                      fontSize: 13,
+                      maxLines: 2,
                       onPressed: () async {
                         await BottomSheetDialog.showDraggableSheet(
                           context,

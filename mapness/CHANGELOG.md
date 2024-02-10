@@ -1,8 +1,21 @@
-## 3.8.2(6) - Current
+## 3.8.2(7) - Current
+
+- BALADY-1293: [Marketing][POI card] title text is truncated
+- BALADY-1313: [Marketing] Compliance buildings layer - The label is unclear and very small
+- BALADY-1309: [Marketing] Remove “Mall nearby” link, as its leading to wrong location
+- BALADY-1241: Update Map Styles MSDK
+- BALADY-1276: [Navi] Restriction UI fixes
+- BALADY-1302: [ESRI Layer] Opportunity Layer add area
+- BALADY-1303: [Navi] show routes between towns
+- BALADY-11274 [Marketing][Quick Filters] poi icons random bug
+- BALADY-1215: [Marketing] The "Back" button is inappropriately positioned in the top right corner of the "Compass" screen
+- BALADY-1265: [Marketing] Search history cannot be deleted
+
+
+## 3.8.2(6)
 
 - BALADY-1198: [Navi] add map controls
 - BALADY-1141: [Marketing] Multiple object selection fix
-
 - BALADY-1210: [Iwish] - minimize dashboard on show joyparks from story
 - BALADY-722: [POI Card] week starts from sunday
 - BALADY-1249: [Navi] Change default voice to “Saud”
@@ -23,6 +36,7 @@
 - BALADY-1216: [Navi] - wakelock device while navigator enabled
 - BALADY-1168: [Marketing] the keyboard is overlapping the map in search
 - BALADY-1201: [Search] - keyboard fix. Bottom sheet is under the keyboard
+- BALADY-1221: [SDK] Update v10.1.0 to v10.1.1
 
 ## 3.8.2(4)
 

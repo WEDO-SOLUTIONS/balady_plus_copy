@@ -42,7 +42,7 @@ class _MapSearchHistoryCollapsibleState
               padding: EdgeInsets.zero,
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) => Dismissible(
-                key: ValueKey(widget.history[index].key),
+                key: ValueKey(widget.history[index].hashKey),
                 onDismissed: (direction) {
                   widget.onDelete(widget.history[index]);
                 },

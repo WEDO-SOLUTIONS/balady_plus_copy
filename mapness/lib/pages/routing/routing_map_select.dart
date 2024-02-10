@@ -45,17 +45,22 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
     ref.listen(
       nearestObjectProvider,
       (prev, next) {
-        if (next.value != null &&
-            prev?.valueOrNull?.object.id?.objectId !=
-                next.valueOrNull?.object.id?.objectId) {
-          ref
-              .read(cameraPositionProvider.notifier)
-              .animateTo(CameraPositionMessage(
-                point: next.value!.nearestPoint.geoPoint,
-                zoom: 17,
-                tilt: 0,
-                bearing: 0,
-              ));
+        final prevValue = prev?.valueOrNull;
+        final nextValue = next.valueOrNull;
+
+        if (nextValue is DGisNearestObject) {
+          final notEqual = prevValue is DGisNearestObject &&
+              prevValue.object.id?.objectId != nextValue.object.id?.objectId;
+          if (prevValue == null || notEqual) {
+            ref
+                .read(cameraPositionProvider.notifier)
+                .animateTo(CameraPositionMessage(
+                  point: nextValue.nearestPoint.geoPoint,
+                  zoom: 17,
+                  tilt: 0,
+                  bearing: 0,
+                ));
+          }
         }
       },
     );
@@ -188,9 +193,18 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                         child: LabeledElevatedButton(
                           label: context.l10n.done,
                           onPressed: () {
-                            context.pop(RoutePointDirectoryObject(
-                              nearestObject.value!.object,
-                            ));
+                            switch (nearestObject.value!) {
+                              case DGisNearestObject(object: final object):
+                                context.pop(RoutePointDirectoryObject(
+                                  object,
+                                ));
+                              case CooridnatesNearestObject(
+                                  geoPoint: final geoPoint
+                                ):
+                                context.pop(
+                                  RoutePointCoordinates(geoPoint),
+                                );
+                            }
                           },
                           enabled: nearestObject.unwrapPrevious().hasValue,
                         ),
@@ -253,7 +267,7 @@ class _NearestObject extends StatelessWidget {
           Expanded(
             child: nearestObject.when(
               data: (object) => Text(
-                object.object.title,
+                _buildTitle(object),
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
                     .textM
@@ -288,4 +302,10 @@ class _NearestObject extends StatelessWidget {
           ),
         ],
       );
+
+  String _buildTitle(NearestObject object) => switch (object) {
+        DGisNearestObject() => object.object.title,
+        CooridnatesNearestObject() =>
+          '${object.geoPoint.latitude.toStringAsFixed(5)}, ${object.geoPoint.longitude.toStringAsFixed(5)}'
+      };
 }

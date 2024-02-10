@@ -36,12 +36,22 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
   bool isZoomInteracted = false;
   bool isCoordComputed = false;
 
+  bool _isFilterSelected = false;
+
+  late final Debouncer _debouncer = Debouncer(milliseconds: 400);
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       isZoomInteracted = false;
     });
+  }
+
+  @override
+  void dispose() {
+    _debouncer.dispose();
+    super.dispose();
   }
 
   @override
@@ -55,6 +65,10 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
     );
     ref.listen(searchByRubricsProvider, (previous, next) async {
       if (!widget.forMap) {
+        return;
+      }
+      if (!_isFilterSelected) {
+        await searchObjectManager.removeAllMarkers();
         return;
       }
       await searchObjectManager.removeAllMarkers();
@@ -104,14 +118,18 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
         },
       ),
       onFilterTap: (filter, index) {
-        if (selectedFilter?.$1 == filter) {
-          ref.read(searchByRubricsQueryProvider.notifier).update(null);
-        } else {
-          ref.read(layersControlsProvider.notifier).disable();
-          ref
-              .read(searchByRubricsQueryProvider.notifier)
-              .update((filter, index));
-        }
+        _debouncer.run(() {
+          if (selectedFilter?.$1 == filter) {
+            _isFilterSelected = false;
+            ref.read(searchByRubricsQueryProvider.notifier).update(null);
+          } else {
+            _isFilterSelected = true;
+            ref.read(layersControlsProvider.notifier).disable();
+            ref
+                .read(searchByRubricsQueryProvider.notifier)
+                .update((filter, index));
+          }
+        });
       },
       selectedIndex: selectedFilter?.$2,
       itemBackground: widget.forMap ? Colors.white : const Color(0x0D1E2A36),

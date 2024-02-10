@@ -16,7 +16,7 @@ class MapSearchHistory extends ConsumerWidget {
     return SearchHistory(
       onTap: (item) {
         if (item.objectId != null) {
-          PoiMapRoute.open(context, item.objectId!);
+          PoiMapRoute.open(context, int.parse(item.objectId!));
         } else {
           ref
               .read(searchQueryProvider(scope.value).notifier)

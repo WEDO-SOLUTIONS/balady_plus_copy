@@ -39,8 +39,8 @@ class RoutingHistory extends ConsumerWidget {
                   await ref.read(dgisControllerProvider.future);
               final object = await dgisController.searchByObjectId(
                 DgisObjectIdMessage(
-                  objectId: item.objectId ?? 0,
-                  entranceId: item.entranceId ?? 0,
+                  objectId: int.tryParse(item.objectId ?? '') ?? 0,
+                  entranceId: int.tryParse(item.entranceId ?? '') ?? 0,
                 ),
               );
 

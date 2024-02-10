@@ -4,7 +4,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search_history.g.dart';
 
-const _hiveBox = 'searchHistory';
+/// change number to discard old data on all devices
+/// Storage cost is low since items are small
+const _hiveBox = 'searchHistory2';
 
 @riverpod
 class SearchHistory extends _$SearchHistory {
@@ -45,9 +47,6 @@ class SearchHistory extends _$SearchHistory {
     final searchHistoryBox =
         await ref.read(hiveProvider('${_hiveBox}_$scope').future);
 
-    //TODO(scroollocker): remove this after migration to hashKey
-    // ignore: deprecated_member_use_from_same_package
-    await searchHistoryBox.delete(item.key);
     await searchHistoryBox.delete(item.hashKey);
 
     await _load();
