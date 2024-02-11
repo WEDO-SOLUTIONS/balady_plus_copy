@@ -193,9 +193,9 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
 
   selectFilterOption(int index, bool isChecked) {
     if(isChecked) {
-      idsSelected.add(checkboListTileEntityList[index].name);
+      idsSelected.add(checkboListTileEntityList[index].id);
     } else {
-      idsSelected.remove(checkboListTileEntityList[index].name);
+      idsSelected.remove(checkboListTileEntityList[index].id);
     }
     notifyListeners();
   }

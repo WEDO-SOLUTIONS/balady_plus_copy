@@ -67,7 +67,7 @@ class _CalendarFilterState extends State<CalendarFilterPopup> {
                       controlAffinity: ListTileControlAffinity.leading,
                       title: Text(value![index].name.toString()),
                       value: idsSelected.contains(
-                        value[index].name,
+                        value[index].id,
                       ),
                       onChanged: (checkedValue) {
                         baladyCalendarYearsListViewModel.selectFilterOption(
