@@ -11,7 +11,6 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
 class ActionShowTypeDateWidget extends StatelessWidget {
-
   const ActionShowTypeDateWidget({super.key});
 
   @override
@@ -23,10 +22,7 @@ class ActionShowTypeDateWidget extends StatelessWidget {
         var isHijri = await CustomPopUpsWidgets.showBottomSheet(
           context,
           child: CalendarTypePopup(
-            isHijri:
-            baladyCalendarYearsListViewModel.params.hijri
-                ? 2
-                : 1,
+            isHijri: baladyCalendarYearsListViewModel.params.hijri ? 2 : 1,
           ),
           height: 300,
           radius: 30,
@@ -51,14 +47,20 @@ class ActionShowTypeDateWidget extends StatelessWidget {
             width: 25,
             height: 25,
           ),
-          const SizedBox(
-            width: 10,
+          const SizedBox(width: 10),
+          Selector<BaladyCalendarYearsListViewModel,bool>(
+            selector: (_,provider) => provider.params.hijri,
+            builder: (BuildContext context, hijri, Widget? child) {
+              return CustomTextWidget(
+                hijri
+                    ? "hijri".tr()
+                    : "gregorian".tr(),
+                textStyle: AppStyle.mainTextStyle,
+              );
+            },
           ),
-          CustomTextWidget(
-            "gregorian".tr(),
-            textStyle: AppStyle.mainTextStyle,
-          ),
-        ]),
+        ],
+        ),
       ),
     );
   }
