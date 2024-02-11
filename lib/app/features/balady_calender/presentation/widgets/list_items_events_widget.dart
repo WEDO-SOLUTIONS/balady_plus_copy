@@ -1,10 +1,8 @@
-import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/routes_type.dart';
 import 'package:balady_plus/app/features/balady_calender/data/models/events_details/calendar_event_item.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 
 class ListItemsEventsWidget extends StatelessWidget {
   final List<CalendarEventItem> listEvents;
@@ -56,18 +54,35 @@ class ListItemsEventsWidget extends StatelessWidget {
                   children: [
                     Flexible(
                       fit: FlexFit.tight,
-                      child: Text(event.metadata?.mainType?.name ?? ''),
+                      child: Text(
+                        event.metadata?.mainType?.name ?? '',
+                        style: const TextStyle(
+                            color: Color(0xFF6B6B6B),
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
                     Text(
-                      DateFormat('EEEE dd',).format(event.eventDate!),
+                      DateFormat(
+                        'EEEE dd',
+                      ).format(event.eventDate!),
+                      style: const TextStyle(
+                        color: Color(0xFF6B6B6B),
+                        fontSize: 14.0,
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(width: 6),
-                Container(
-                  child: Text(
-                    event.eventDisplayMessage ?? 'Display Message Empty',
-                    overflow: TextOverflow.visible,
+                SingleChildScrollView(
+                  child: SizedBox(
+                    height: 20,
+                    child: Text(
+                      event.eventDisplayMessage ?? 'Display Message Empty',
+                      overflow: TextOverflow.visible,
+                      style: const TextStyle(
+                          fontSize: 14.0, color: Color(0xFF292929)),
+                    ),
                   ),
                 )
               ],

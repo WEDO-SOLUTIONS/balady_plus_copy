@@ -6,6 +6,7 @@ import 'package:balady_plus/app/features/balady_calender/presentation/mvvm/balad
 import 'package:balady_plus/app/features/balady_calender/presentation/widgets/balady_calendar_month_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
 class BaladyCalendarEventsWidget extends StatelessWidget {
@@ -35,9 +36,9 @@ class BaladyCalendarEventsWidget extends StatelessWidget {
 
         // if not have Events
         if (monthsListViewModel.monthsList!.isEmpty) {
-          return const Center(
+          return  Center(
             child: Text(
-              "Not Have Any Events In The Years !",
+              "no_events".tr(),
             ),
           );
         }

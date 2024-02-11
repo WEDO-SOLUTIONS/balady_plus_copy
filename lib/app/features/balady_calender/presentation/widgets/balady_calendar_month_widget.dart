@@ -30,8 +30,18 @@ class BaladyCalendarMonthWidget extends StatelessWidget {
                 bloc.params.commonParams.commonParams.hijri
                     ? 'month_${month.month}'.tr()
                     : 'month${month.month}'.tr(),
+                style: const TextStyle(
+                    fontSize: 16.0,
+                    color: Color(0xFF292929),
+                    fontWeight: FontWeight.bold),
               ),
-              Text('(${month.eventsCount ?? 0})')
+              Text(
+                '(${month.eventsCount ?? 0})',
+                style: const TextStyle(
+                    fontSize: 16.0,
+                    color: Color(0xFF292929),
+                    fontWeight: FontWeight.bold),
+              )
             ],
           ),
         ),

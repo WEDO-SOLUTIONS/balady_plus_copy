@@ -573,7 +573,7 @@ Map<String, dynamic> servicesConfig = {
     },
     {
       "id": 499,
-      "icon": "balady_calendar_service",
+      "icon": "calender",
       "3d_icon": null,
       "order": 13,
       "isNew": false,

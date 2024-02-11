@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class CalendarTypePopup extends StatelessWidget {
 
@@ -16,8 +17,7 @@ class CalendarTypePopup extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            CustomTextWidget(
-              'نوع التقويم',
+            CustomTextWidget('calendar_type'.tr(),
               textStyle: AppStyle.sectionTitleStyle,
             ),
             InkWell(
@@ -43,7 +43,7 @@ class CalendarTypePopup extends StatelessWidget {
             child: RadioListTile<int>(
               activeColor: AppColor.primary600Light,
               controlAffinity: ListTileControlAffinity.trailing,
-              title: const Text('ميلادي'),
+              title:  Text('gregorian'.tr()),
               value: 1,
               groupValue: isHijri,
               onChanged: (value) => Navigator.of(context).pop(value),
@@ -60,7 +60,7 @@ class CalendarTypePopup extends StatelessWidget {
           child: RadioListTile<int>(
             activeColor: AppColor.primary600Light,
             controlAffinity: ListTileControlAffinity.trailing,
-            title: const Text('هجري'), // Display the title for option true
+            title:  Text('hijri'.tr()), // Display the title for option true
             // Display a subtitle for option 2
             value: 2, // Assign a value of 2 to this option
             groupValue: isHijri, // Use _selectedValue to track the selected option

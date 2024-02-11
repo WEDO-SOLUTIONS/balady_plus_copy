@@ -5,6 +5,7 @@ import 'package:balady_plus/app/features/balady_calender/domain/entities/checkbo
 import 'package:balady_plus/app/features/balady_calender/presentation/mvvm/balady_calendar_years_list_view_model.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
 class CalendarFilterPopup extends StatefulWidget {
@@ -28,7 +29,7 @@ class _CalendarFilterState extends State<CalendarFilterPopup> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CustomTextWidget(
-                'تصفية التقويم',
+                'تصفية التقويم'.tr(),
                 textStyle: AppStyle.sectionTitleStyle,
               ),
               InkWell(
@@ -43,7 +44,7 @@ class _CalendarFilterState extends State<CalendarFilterPopup> {
             ],
           ),
           const SizedBox(height: 20),
-          const Text('عرض'),
+          Text('show'.tr()),
           const SizedBox(height: 10),
           Selector<BaladyCalendarYearsListViewModel,
               List<CheckboxListTileEntity>?>(
@@ -87,7 +88,7 @@ class _CalendarFilterState extends State<CalendarFilterPopup> {
                 baladyCalendarYearsListViewModel.idsSelected,
               );
             },
-            text: 'تأكيد',
+            text: 'confirm'.tr(),
           ),
         ],
       ),

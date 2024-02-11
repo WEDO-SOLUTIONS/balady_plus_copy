@@ -3939,8 +3939,10 @@
 "STREET_VENDOR":"رخصة منفذ بيع", 
 "VEHICLE":"رخصة عربة متنقلة",
 
-"balady_calendar":"تقويم بلدي"
+"balady_calendar":"تقويم بلدي",
+"show":"عرض",
+"filter_calendar":"تصفية التقويم",
+"calendar_type":"نوع التقويم",
+"no_events":"عذرا لا يوجد فعاليات حاليا"
 
-
- 
 }

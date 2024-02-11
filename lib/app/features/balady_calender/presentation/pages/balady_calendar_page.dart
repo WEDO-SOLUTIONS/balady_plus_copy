@@ -1,12 +1,9 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
-import 'package:balady_plus/app/features/balady_calender/data/models/events_count_in_months/months_events_count.dart';
 import 'package:balady_plus/app/features/balady_calender/data/models/events_count_in_years/events_count_in_years_item.dart';
 import 'package:balady_plus/app/features/balady_calender/domain/entities/events_common_params.dart';
 import 'package:balady_plus/app/features/balady_calender/domain/entities/events_count_in_months_params.dart';
-import 'package:balady_plus/app/features/balady_calender/domain/entities/events_details_params.dart';
-import 'package:balady_plus/app/features/balady_calender/presentation/bloc/events_list_cubit.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/mvvm/balady_calendar_months_list_view_model.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/mvvm/balady_calendar_years_list_view_model.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/widgets/action_show_filter_widget.dart';
@@ -15,7 +12,6 @@ import 'package:balady_plus/app/features/balady_calender/presentation/widgets/ba
 import 'package:balady_plus/app/features/balady_calender/presentation/widgets/balady_calendar_years_list.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
@@ -94,9 +90,9 @@ class BaladyCalendarPage extends StatelessWidget {
 
                           // if have errors
                           if (selectedYear.eventsCount == 0) {
-                            return const Center(
+                            return Center(
                               child: Text(
-                                "Not Have Any Events In The Years !",
+                                "no_events".tr(),
                               ),
                             );
                           }
