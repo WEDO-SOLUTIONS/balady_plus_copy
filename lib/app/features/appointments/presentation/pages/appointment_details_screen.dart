@@ -20,7 +20,6 @@ import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dar
 import '../../../_shared_feature_/presentation/widgets/details_header.dart';
 import '../../../new_appointment/presentation/core/models/appointment_details_model.dart';
 import '../../../vd/presentation/widgets/summery_widgets/field_data.dart';
-import '../core/models/appointment_details_screen_args.dart';
 import '../core/services/view_models/appontment_details_view_model.dart';
 import '../dialogs/confirm_cancel_appointment_dialog.dart';
 
@@ -52,15 +51,11 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    AppointmentDetailsScreenArgs args = ModalRoute.of(context)!
-        .settings
-        .arguments as AppointmentDetailsScreenArgs;
-
-    appointmentId = args.appointmentId;
-    fromHomePage = args.fromHomePage;
-
+    Map data = ModalRoute.of(context)!.settings.arguments as Map;
+    appointmentId = data['appointmentId'];
     return BaseView<AppointmentDetailsViewModel>(
       onModelReady: (model) {
+        model.getAppointmentDetails(appointmentId);
         model.fromHomePage = fromHomePage ?? false;
       },
       builder: (context, model, child) {
@@ -83,60 +78,66 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                 currentRouteName: RouteName.appointmentDetailsRoute,
                 child: BottomSheetWithActions(
                   title: "actions".tr(),
-                  body: Column(children: [
-                    if (appointmentItemInfo?.editable == true) ...[
-                      GestureDetector(
-                        onTap: () async {
-                          bool isSuccess =
-                              await locator<NewAppointmentViewModel>()
-                                  .loadInitialData();
-                          locator<NewAppointmentViewModel>().init();
-                          await locator<NewAppointmentViewModel>().setUpDraft(item: appointmentItemInfo);
-                          if (isSuccess) {
-                            Navigator.of(context).pushNamed(
-                              RouteName.NewAppointmentPage,
-                              arguments: appointmentItemInfo,
-                            );
-                          }
-                        },
-                        child: FieldData(
-                          title: "appointment_edit".tr(),
+                  body: Column(
+                    children: [
+                      if (appointmentItemInfo?.editable == true) ...[
+                        GestureDetector(
+                          onTap: () async {
+                            bool isSuccess =
+                                await locator<NewAppointmentViewModel>()
+                                    .loadInitialData();
+                            locator<NewAppointmentViewModel>().init();
+                            await locator<NewAppointmentViewModel>()
+                                .setUpDraft(item: appointmentItemInfo);
+                            if (isSuccess) {
+                              Navigator.of(context).pushNamed(
+                                RouteName.NewAppointmentPage,
+                                arguments: appointmentItemInfo,
+                              );
+                            }
+                          },
+                          child: FieldData(
+                            title: "appointment_edit".tr(),
+                          ),
                         ),
-                      ),
+                        const CustomVerticalSpace(height: 16),
+                      ],
+                      if (appointmentItemInfo?.confirmable ?? false)
+                        GestureDetector(
+                          onTap: () {
+                            model.confirmAppointment();
+                          },
+                          child: FieldData(
+                            title:
+                                "appointmentDetailsConfirmAppointmentWord".tr(),
+                          ),
+                        ),
                       const CustomVerticalSpace(height: 16),
+                      if (appointmentItemInfo!.cancelable ?? false)
+                        GestureDetector(
+                          onTap: () async {
+                            final model =
+                                locator<AppointmentDetailsViewModel>();
+                            await model.getLookUpList();
+                            if (model.cancelReasonsList != null) {
+                              await BottomSheetDialog.showDraggableSheet(
+                                context,
+                                dialogKeyName:
+                                    DialogName.appointmentsActionsCancelDialog,
+                                currentRouteName:
+                                    RouteName.appointmentDetailsRoute,
+                                child: const ConfirmCancelAppointmentDialog(),
+                                isFullHeight: false,
+                              );
+                            }
+                          },
+                          child: FieldData(
+                            title:
+                                "appointmentDetailsCancelAppointmentWord".tr(),
+                          ),
+                        )
                     ],
-                    if (appointmentItemInfo?.confirmable ?? false)
-                      GestureDetector(
-                        onTap: () {
-                          model.confirmAppointment();
-                        },
-                        child: FieldData(
-                          title:
-                              "appointmentDetailsConfirmAppointmentWord".tr(),
-                        ),
-                      ),
-                    const CustomVerticalSpace(height: 16),
-                    if (appointmentItemInfo!.cancelable ?? false)
-                      GestureDetector(
-                        onTap: () async {
-                          final model = locator<AppointmentDetailsViewModel>();
-                          await model.getLookUpList();
-                          if (model.cancelReasonsList != null)
-                            await BottomSheetDialog.showDraggableSheet(
-                              context,
-                              dialogKeyName:
-                                  DialogName.appointmentsActionsCancelDialog,
-                              currentRouteName:
-                                  RouteName.appointmentDetailsRoute,
-                              child: const ConfirmCancelAppointmentDialog(),
-                              isFullHeight: false,
-                            );
-                        },
-                        child: FieldData(
-                          title: "appointmentDetailsCancelAppointmentWord".tr(),
-                        ),
-                      )
-                  ],),
+                  ),
                 ),
               );
             },
@@ -182,41 +183,41 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                     ),
                     const CustomVerticalSpace(height: 16),
                     CustomExpansionPanelWidget(
-                        title: ("time_date_appointment").tr(),
-                        leading: SvgPicture.asset(IconPath.vdSummuryDesc),
-                        children: [
-                          FieldData(
-                            title: ("appointmentsAppointmentDateWord").tr(),
-                            subTitle: CommonFunctions.getFormattedDate(
-                                appointmentItemInfo?.visitDate),
-                          ),
-                          const CustomVerticalSpace(height: 8),
-                          FieldData(
-                            title: ("appointmentsAppointmentTimeWord").tr(),
-                            subTitle: appointmentItemInfo?.visitTime,
-                          ),
-                        ],
+                      title: ("time_date_appointment").tr(),
+                      leading: SvgPicture.asset(IconPath.vdSummuryDesc),
+                      children: [
+                        FieldData(
+                          title: ("appointmentsAppointmentDateWord").tr(),
+                          subTitle: CommonFunctions.getFormattedDate(
+                              appointmentItemInfo?.visitDate),
+                        ),
+                        const CustomVerticalSpace(height: 8),
+                        FieldData(
+                          title: ("appointmentsAppointmentTimeWord").tr(),
+                          subTitle: appointmentItemInfo?.visitTime,
+                        ),
+                      ],
                     ),
                     const CustomVerticalSpace(height: 16),
                     CustomExpansionPanelWidget(
-                        title: ("appointmentsGoToAppointmentDetailsWord").tr(),
-                        leading: SvgPicture.asset(IconPath.vdSummuryDesc),
-                        children: [
-                          FieldData(
-                            title: ("appointmentDetailsEntityNameWord").tr(),
-                            subTitle: appointmentItemInfo?.subMunicipalityName,
-                          ),
-                          const CustomVerticalSpace(height: 8),
-                          FieldData(
-                            title: ("appointmentDetailsServiceWord").tr(),
-                            subTitle: appointmentItemInfo?.subClassName,
-                          ),
-                          const CustomVerticalSpace(height: 8),
-                          FieldData(
-                            title: ("visit_purpose").tr(),
-                            subTitle: appointmentItemInfo?.appointmentDetails,
-                          ),
-                        ],
+                      title: ("appointmentsGoToAppointmentDetailsWord").tr(),
+                      leading: SvgPicture.asset(IconPath.vdSummuryDesc),
+                      children: [
+                        FieldData(
+                          title: ("appointmentDetailsEntityNameWord").tr(),
+                          subTitle: appointmentItemInfo?.subMunicipalityName,
+                        ),
+                        const CustomVerticalSpace(height: 8),
+                        FieldData(
+                          title: ("appointmentDetailsServiceWord").tr(),
+                          subTitle: appointmentItemInfo?.subClassName,
+                        ),
+                        const CustomVerticalSpace(height: 8),
+                        FieldData(
+                          title: ("visit_purpose").tr(),
+                          subTitle: appointmentItemInfo?.appointmentDetails,
+                        ),
+                      ],
                     ),
                     const CustomVerticalSpace(height: 16),
                     if (appointmentItemInfo?.uuid != null)
@@ -250,66 +251,3 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
     );
   }
 }
-
-// class _AppBarActionsShareIconWidget extends StatelessWidget {
-//   int appointmentID;
-//
-//   _AppBarActionsShareIconWidget({Key? key, required this.appointmentID})
-//       : super(key: key);
-//   final model = locator<AppointmentDetailsViewModel>();
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(
-//         horizontal: Constants.smallPadding,
-//       ),
-//       child: CustomIconButtonWidget(
-//         icon: Constants.shareIcon,
-//         onPressed: () => model.shareAppointmentFunction(appointmentID),
-//       ),
-//     );
-//   }
-// }
-//
-// class _CancelAppointmentWidget extends StatelessWidget {
-//   const _CancelAppointmentWidget({Key? key}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return EnhancedCustomElevatedButtonWidget(
-//       btnPressed: () async => await CustomPopUpsWidgets.showBottomSheet(
-//         context,
-//         child: const ConfirmCancelAppointmentDialog(),
-//         isFullHeight: false,
-//       ),
-//       btnBorderColor: AppColor.redBrown,
-//       btnColor: AppColor.white2,
-//       btnBorderWidth: 2.0,
-//       btnText: ("appointmentDetailsCancelAppointmentWord").tr(),
-//       btnTextColor: AppColor.redBrown,
-//       btnTextWeight: AppFontWeight.medium,
-//     );
-//   }
-// }
-//
-// class _ConfirmAppointmentWidget extends StatelessWidget {
-//   final Function onConfirm;
-//
-//   const _ConfirmAppointmentWidget({Key? key, required this.onConfirm})
-//       : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return EnhancedCustomElevatedButtonWidget(
-//       btnPressed: () async => onConfirm(),
-//       btnBorderColor: AppColor.primary900Light,
-//       btnColor: AppColor.white2,
-//       btnBorderWidth: 2.0,
-//       btnText: ("appointmentDetailsConfirmAppointmentWord").tr(),
-//       btnTextColor: AppColor.primary900Light,
-//       btnTextWeight: AppFontWeight.medium,
-//     );
-//   }
-// }
-

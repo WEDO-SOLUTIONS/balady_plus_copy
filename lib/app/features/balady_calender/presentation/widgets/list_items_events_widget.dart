@@ -20,8 +20,11 @@ class ListItemsEventsWidget extends StatelessWidget {
           onTap: () {
             String screenName = getScreenName(
               event.entityType ?? '',
-              typeId: int.parse(event.metadata?.mainType?.id ?? '0'),
+              typeId: event.entityType == ScreenTage.license.name
+                  ? int.parse(event.metadata?.mainType?.id ?? '0')
+                  : int.parse(event.metadata?.type?.id ?? '0'),
             );
+
             if (screenName == RouteName.inappWebview) {
               CommonFunctions.openBaldyWithRefreshCookie(
                 event.redirectUrl,
@@ -30,9 +33,17 @@ class ListItemsEventsWidget extends StatelessWidget {
               Navigator.of(context).pushNamed(
                 screenName,
                 arguments: {
-                  "licenseNumber": event.entityId,
-                  "requestNumber": event.entityId,
+                  "licenseNumber": int.parse(event.entityId ?? '0'),
+                  "requestNumber": int.parse(event.entityId ?? '0'),
+                  // for appointment
+                  "appointmentId": int.parse(event.entityId ?? '0'),
+                  // for invoices
                   "invoiceId": event.hashingEntityId,
+                  // for Violation
+                  "hashingViolationNumber": event.hashingEntityId,
+                  "applicationId": event.metadata?.mainType?.id,
+                  // for objection
+                  "objectionRequestNumber": event.entityId,
                 },
               );
             }

@@ -44,18 +44,22 @@ class AppointmentDetailsViewModel extends BaseViewModel {
   bool fromHomePage = false;
 
   Future<bool> getAppointmentDetailsResponse(int appointmentId) async {
-    showLoading();
+    isLoading = true;
+    notifyListeners();
     Tuple3<bool?, String?, AppointmentDetails?> response =
         await _repository.getAppointmentDetails(appointmentId);
-    hideLoading();
     if (response.item1 != null &&
         response.item1! &&
         response.item3?.data?.result != null) {
       appointmentDetailsResponse = response.item3;
+      isLoading = false;
+      notifyListeners();
       return true;
     } else {
       showError(response.item2 ?? "");
     }
+    isLoading = false;
+    notifyListeners();
     return false;
   }
 
