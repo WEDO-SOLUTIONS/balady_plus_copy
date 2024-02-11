@@ -33,7 +33,8 @@ class BaladyCalendarMonthsListViewModel extends BaseViewModel {
         );
         response.fold(
           (failure) {
-            showError(failure.toString());
+            errorMessage = failure.toString();
+            // showError(failure.toString());
           },
           (monthsList) {
             this.monthsList = monthsList;
@@ -46,14 +47,16 @@ class BaladyCalendarMonthsListViewModel extends BaseViewModel {
           // response: response,
           ex: exception,
         );
-        showError(exception.toString());
+        errorMessage = exception.toString();
+        // showError(exception.toString());
       } catch (exception) {
         CommonFunctions.sendEvent(
           dioError: null,
           // response: response,
           ex: Exception(exception.toString()),
         );
-        showError(exception.toString());
+        errorMessage = exception.toString();
+        // showError(exception.toString());
       }
       isLoading = false;
       notifyListeners();

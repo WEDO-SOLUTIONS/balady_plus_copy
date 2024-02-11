@@ -41,9 +41,11 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
       isLoading = true;
       notifyListeners();
       monthsList = null;
+      errorMessage = null;
       response = await repository.getEventsCountInYears(params: params);
       response.fold(
         (failure) {
+          errorMessage = failure.toString();
           yearList = [];
         },
         (yearsList) async {
@@ -72,14 +74,14 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
         // response: response,
         ex: exception,
       );
-      showError(exception.toString());
+      errorMessage = exception.toString();
     } catch (exception) {
       CommonFunctions.sendEvent(
         dioError: null,
         // response: response,
         ex: Exception(exception.toString()),
       );
-      showError(exception.toString());
+      errorMessage = exception.toString();
     }
     isLoading = false;
     notifyListeners();

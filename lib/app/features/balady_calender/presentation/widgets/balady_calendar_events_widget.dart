@@ -25,11 +25,15 @@ class BaladyCalendarEventsWidget extends StatelessWidget {
         }
 
         // if have errors
-        if (monthsListViewModel.monthsList == null) {
-          return const SizedBox();
+        if (monthsListViewModel.errorMessage != null) {
+          return  Center(
+            child: Text(
+              monthsListViewModel.errorMessage!,
+            ),
+          );
         }
 
-        // if have errors
+        // if not have Events
         if (monthsListViewModel.monthsList!.isEmpty) {
           return const Center(
             child: Text(

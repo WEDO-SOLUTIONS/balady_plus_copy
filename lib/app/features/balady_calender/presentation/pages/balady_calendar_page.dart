@@ -69,8 +69,22 @@ class BaladyCalendarPage extends StatelessWidget {
                         return const Center(child: CircularProgressIndicator());
                       }
 
+                      // if have error
+                      if (contextYearsSelector
+                              .watch<BaladyCalendarYearsListViewModel>()
+                              .errorMessage !=
+                          null) {
+                        return Center(
+                          child: Text(
+                            contextYearsSelector
+                                .watch<BaladyCalendarYearsListViewModel>()
+                                .errorMessage!,
+                          ),
+                        );
+                      }
 
-                      return Selector<BaladyCalendarYearsListViewModel, EventsCountInYearsItem?>(
+                      return Selector<BaladyCalendarYearsListViewModel,
+                          EventsCountInYearsItem?>(
                         selector: (_, provider) => provider.selectedYear,
                         builder: (_, selectedYear, child) {
                           // if have errors
@@ -87,13 +101,21 @@ class BaladyCalendarPage extends StatelessWidget {
                             );
                           }
 
-                          return ChangeNotifierProvider<BaladyCalendarMonthsListViewModel>(
+                          return ChangeNotifierProvider<
+                              BaladyCalendarMonthsListViewModel>(
                             create: (_) => BaladyCalendarMonthsListViewModel(
-                                repository: contextYearsSelector.read<BaladyCalendarYearsListViewModel>().repository,
-                                paramsMonths: EventsCountInMonthsParams(
-                                  commonParams: contextYearsSelector.read<BaladyCalendarYearsListViewModel>().params,
-                                  year: contextYearsSelector.read<BaladyCalendarYearsListViewModel>().selectedYear!.year,
-                                )
+                              repository: contextYearsSelector
+                                  .read<BaladyCalendarYearsListViewModel>()
+                                  .repository,
+                              paramsMonths: EventsCountInMonthsParams(
+                                commonParams: contextYearsSelector
+                                    .read<BaladyCalendarYearsListViewModel>()
+                                    .params,
+                                year: contextYearsSelector
+                                    .read<BaladyCalendarYearsListViewModel>()
+                                    .selectedYear!
+                                    .year,
+                              ),
                             ),
                             child: const BaladyCalendarEventsWidget(),
                           );
