@@ -29,7 +29,7 @@ class _CalendarFilterState extends State<CalendarFilterPopup> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CustomTextWidget(
-                'تصفية التقويم'.tr(),
+                'filter_calendar'.tr(),
                 textStyle: AppStyle.sectionTitleStyle,
               ),
               InkWell(
@@ -44,7 +44,11 @@ class _CalendarFilterState extends State<CalendarFilterPopup> {
             ],
           ),
           const SizedBox(height: 20),
-          Text('show'.tr()),
+          Text(
+            'show'.tr(),
+            style: AppStyle.serviceCardParameterTitleTextStyle
+                .copyWith(fontWeight: FontWeight.w600),
+          ),
           const SizedBox(height: 10),
           Selector<BaladyCalendarYearsListViewModel,
               List<CheckboxListTileEntity>?>(
@@ -65,7 +69,11 @@ class _CalendarFilterState extends State<CalendarFilterPopup> {
                         AppColor.primary600Light,
                       ),
                       controlAffinity: ListTileControlAffinity.leading,
-                      title: Text(value![index].name.toString()),
+                      title: Text(
+                        value![index].name.toString(),
+                        style: AppStyle.pickerStyle
+                            .copyWith(fontWeight: FontWeight.w600),
+                      ),
                       value: idsSelected.contains(
                         value[index].id,
                       ),
