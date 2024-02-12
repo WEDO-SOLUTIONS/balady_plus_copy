@@ -102,4 +102,12 @@ class BaladyServices {
           .tr()
           .replaceAll("{}", CommonProperties.userLocationGIS!.cityName!)
       : "search_map_text".tr();
+
+  static enableWeatherAlerts(bool check) {
+    sharedPrefs.setLocationConsent(check);
+  }
+
+  static bool getWeatherAlerts() {
+    return sharedPrefs.getLocationConsent() ?? false;
+  }
 }
