@@ -4,6 +4,7 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
+import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
 import 'package:mapness/_features/profile/providers/profile_image_provider.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -18,6 +19,7 @@ class Auth extends _$Auth {
     mixpanel?.timeEvent("Auth: doAuth");
     await CommonFunctions.onLogin();
     ref.invalidateSelf();
+    ref.read(favouriteRepositoryProvider.notifier).ref.invalidateSelf();
     mixpanel?.track("Auth: doAuth");
   }
 
