@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/balady_calender/data/models/events_count_in_months/months_events_count.dart';
 import 'package:balady_plus/app/features/balady_calender/data/models/events_details/calendar_event_item.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/bloc/events_list_cubit.dart';
@@ -21,6 +22,7 @@ class BaladyCalendarMonthWidget extends StatelessWidget {
     EventsListCubit bloc = context.watch<EventsListCubit>();
     return Column(
       children: [
+        const SizedBox(height: 8),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -30,17 +32,11 @@ class BaladyCalendarMonthWidget extends StatelessWidget {
                 bloc.params.commonParams.commonParams.hijri
                     ? 'month_${month.month}'.tr()
                     : 'month${month.month}'.tr(),
-                style: const TextStyle(
-                    fontSize: 16.0,
-                    color: Color(0xFF292929),
-                    fontWeight: FontWeight.bold),
+                style: AppStyle.blackTextStyle,
               ),
               Text(
                 '(${month.eventsCount ?? 0})',
-                style: const TextStyle(
-                    fontSize: 16.0,
-                    color: Color(0xFF292929),
-                    fontWeight: FontWeight.bold),
+                style: AppStyle.blackTextStyle,
               )
             ],
           ),

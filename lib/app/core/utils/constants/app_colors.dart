@@ -39,6 +39,7 @@ class AppColor {
   static const Color warmGrey3 = Color(0xFFbababa);
   static const Color spruce = Color(0xFF0a4d4a);
   static const Color baladyDarkGreen2 = Color(0xFF389492);
+  static const Color lightGreen2 = Color(0xFF91C5C3);
   static const Color duckEggBlue = Color(0xFFf6fdfd);
   static const Color algae = Color(0xFF4dac5f);
   static const Color algaea = Color(0xFFF9FAFB);

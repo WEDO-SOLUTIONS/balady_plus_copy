@@ -10,6 +10,7 @@ import 'package:balady_plus/app/features/balady_calender/presentation/widgets/ac
 import 'package:balady_plus/app/features/balady_calender/presentation/widgets/action_show_type_date_widget.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/widgets/balady_calendar_events_widget.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/widgets/balady_calendar_years_list.dart';
+import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -21,10 +22,32 @@ class BaladyCalendarPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (BuildContext context) => BaladyCalendarYearsListViewModel(
-        repository: sl(),
-        params: EventsCommonParams(),
-      ),
+      create: (BuildContext context) {
+        EntryPointCubit auth = context.read<EntryPointCubit>();
+        final selectedAgent = auth.state.selectedAgent;
+        final selectedDelegator = auth.state.selectedDelegator;
+
+        return BaladyCalendarYearsListViewModel(
+          repository: sl(),
+          params: EventsCommonParams(
+            agencyInRequestDto: selectedAgent != null
+                ? AgencyInRequestDto(
+                    agencyNumber: selectedAgent.agencyNumber!,
+                    ownerNumber: selectedAgent.ownerNumber!,
+                    ownerTypeId: selectedAgent.ownerTypeId!)
+                : null,
+            loginIdentityId:
+                selectedDelegator != null ? selectedDelegator.crNumber! : null,
+            loginIdentityType: selectedDelegator?.crType,
+            unifiedNationalNumber: selectedDelegator != null
+                ? selectedDelegator.unifiedNationalNumber!
+                : null,
+            relationTypeeId: selectedDelegator != null
+                ? int.parse(selectedDelegator.relationTypeId)
+                : null,
+          ),
+        );
+      },
       child: Scaffold(
         body: SafeArea(
           child: Padding(
@@ -46,7 +69,8 @@ class BaladyCalendarPage extends StatelessWidget {
                     const SizedBox(width: 15),
                     CustomTextWidget(
                       "balady_calendar".tr(),
-                      textStyle: AppStyle.appBarTitleTextStyle,
+                      textStyle: AppStyle.appBarTitleTextStyle
+                          .copyWith(fontWeight: FontWeight.w900),
                     ),
                     const Spacer(),
                     const ActionShowTypeDateWidget(),

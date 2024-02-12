@@ -55,7 +55,7 @@ class ListItemsEventsWidget extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
-              color: AppColor.black100,
+              color: AppColor.black200,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,32 +67,28 @@ class ListItemsEventsWidget extends StatelessWidget {
                       fit: FlexFit.tight,
                       child: Text(
                         event.metadata?.mainType?.name ?? '',
-                        style: const TextStyle(
-                            color: Color(0xFF6B6B6B),
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.bold),
+                        style: AppStyle.signInFullTextStyle
+                            .copyWith(fontWeight: FontWeight.w600),
                       ),
                     ),
                     Text(
                       DateFormat(
                         'EEEE dd',
                       ).format(event.eventDate!),
-                      style: const TextStyle(
-                        color: Color(0xFF6B6B6B),
-                        fontSize: 14.0,
-                      ),
+                      style: AppStyle.signInFullTextStyle
+                          .copyWith(fontWeight: FontWeight.w600),
                     ),
                   ],
                 ),
-                const SizedBox(width: 6),
+                const SizedBox(height: 6),
                 SingleChildScrollView(
                   child: SizedBox(
                     height: 20,
                     child: Text(
                       event.eventDisplayMessage ?? 'Display Message Empty',
                       overflow: TextOverflow.visible,
-                      style: const TextStyle(
-                          fontSize: 14.0, color: Color(0xFF292929)),
+                      style: AppStyle.serviceTitleStyle
+                          .copyWith(fontWeight: FontWeight.w500),
                     ),
                   ),
                 )

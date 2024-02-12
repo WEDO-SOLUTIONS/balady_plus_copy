@@ -28,7 +28,8 @@ class BaladyCalendarYearsList extends StatelessWidget {
                 builder: (context, selectedYear, child) {
                   return GestureDetector(
                     onTap: () {
-                      baladyCalendarYearsListViewModel.selectYear(yearsList[index]);
+                      baladyCalendarYearsListViewModel
+                          .selectYear(yearsList[index]);
                     },
                     child: Container(
                       margin: const EdgeInsets.all(8.0),
@@ -40,23 +41,27 @@ class BaladyCalendarYearsList extends StatelessWidget {
                       ),
                       width: 80,
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            yearsList[index].year.toString(),
-                            style: TextStyle(
-                              color: selectedYear?.year == yearsList[index].year
-                                  ? Colors.white
-                                  : Colors.black,
-                            ),
+                          Text(yearsList[index].year.toString(),
+                              style: AppStyle.blackTextStyle.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color:
+                                    selectedYear?.year == yearsList[index].year
+                                        ? Colors.white
+                                        : Colors.black,
+                              )),
+                          const SizedBox(
+                            height: 5,
                           ),
-                          Text(
-                            yearsList[index].eventsCount.toString(),
-                            style: TextStyle(
-                              color: selectedYear?.year == yearsList[index].year
-                                  ? Colors.white
-                                  : Colors.black,
-                            ),
-                          )
+                          Text('(${yearsList[index].eventsCount.toString()})',
+                              style: AppStyle.serviceTitleStyle.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color:
+                                    selectedYear?.year == yearsList[index].year
+                                        ? Colors.white
+                                        : Colors.black,
+                              ))
                         ],
                       ),
                     ),
