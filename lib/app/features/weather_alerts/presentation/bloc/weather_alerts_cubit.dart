@@ -49,33 +49,35 @@ class WeatherAlertsCubit extends Cubit<WeatherAlertsState> {
     bool? locationConsent = sharedPrefs.getLocationConsent();
 
     if (locationConsent != true && Platform.isAndroid) return;
-    await BackgroundLocation.stopLocationService();
-    double distanceFilter = Platform.isAndroid ? 30.0 : 30.0;
-    await BackgroundLocation.startLocationService(
-        distanceFilter: distanceFilter);
+    if (locationConsent == true) {
+      await BackgroundLocation.stopLocationService();
+      double distanceFilter = Platform.isAndroid ? 30.0 : 30.0;
+      await BackgroundLocation.startLocationService(
+          distanceFilter: distanceFilter);
 
-    BackgroundLocation.getLocationUpdates((location) async {
-      if (location.latitude == null) return;
+      BackgroundLocation.getLocationUpdates((location) async {
+        if (location.latitude == null) return;
 
-      bool newUpdate = checkDistance(location: location);
+        bool newUpdate = checkDistance(location: location);
 
-      DateTime now = DateTime.now();
-      bool updateTime =
-          now!.difference(state.updateTime!) >= const Duration(minutes: 1);
+        DateTime now = DateTime.now();
+        bool updateTime =
+            now!.difference(state.updateTime!) >= const Duration(minutes: 1);
 
-      if (newUpdate && updateTime) {
-        if (CommonProperties.fcmToken != null) {
-          updateLastLocation(location: location);
-          WeatherAlertRequestModel model = WeatherAlertRequestModel(
-              lat: location.latitude!,
-              lon: location.longitude!,
-              fcmToken: CommonProperties.fcmToken!);
-          _getWeatherAlerts(model);
-          sendEventToSentry(model);
+        if (newUpdate && updateTime) {
+          if (CommonProperties.fcmToken != null) {
+            updateLastLocation(location: location);
+            WeatherAlertRequestModel model = WeatherAlertRequestModel(
+                lat: location.latitude!,
+                lon: location.longitude!,
+                fcmToken: CommonProperties.fcmToken!);
+            _getWeatherAlerts(model);
+            sendEventToSentry(model);
+          }
         }
-      }
-    });
-    getLocationOnlyOneTime();
+      });
+      getLocationOnlyOneTime();
+    }
   }
 
   void stopTracking() {
