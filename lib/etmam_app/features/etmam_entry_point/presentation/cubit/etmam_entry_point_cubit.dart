@@ -89,6 +89,7 @@ class EtmamEntryPointCubit extends Cubit<EtmamEntryPointState> {
 
       final failureOrSuccessForProfile =
           await _createProfile(CraeteProfileParams());
+
       failureOrSuccessForProfile.fold((failure) async {
         ServerFailure serverFailure = (failure as ServerFailure);
         sl<EntryPointCubit>().autoLogout();

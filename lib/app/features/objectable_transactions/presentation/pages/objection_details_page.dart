@@ -418,3 +418,72 @@ class AttachmentWidget extends StatelessWidget {
         ));
   }
 }
+
+class ObjectionFeedBack extends StatelessWidget {
+  const ObjectionFeedBack({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ObjectionsDetailsBloc, ObjectionDetailsState>(
+      builder: (context, state) {
+        return CustomExpansionPanelWidget(
+          underline: false,
+          title: ("objection_details_objections_list").tr(),
+          leading: SvgPicture.asset(IconPath.vdSummuryDesc),
+          children: [
+            MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: state.details?.objectionReasonsList?.length ?? 0,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (ctx, index) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        FieldData(
+                          title: " ${"reason_text".tr()} ${index + 1}",
+                          subTitle: state.details?.objectionReasonsList?[index]
+                                  .reason ??
+                              "",
+                          radius: BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              topRight: Radius.circular(8)),
+                        ),
+                        FieldData(
+                          title: "attachment_text".tr(),
+                          radius: BorderRadius.zero,
+                        ),
+                        Container(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            scrollDirection: Axis.vertical,
+                            itemCount: state
+                                    .details
+                                    ?.objectionReasonsList![index]
+                                    .reasonAttachment
+                                    ?.length ??
+                                0,
+                            itemBuilder: (ctx, i) {
+                              return ObjectionAttachmentItem(
+                                  file: state
+                                      .details!
+                                      .objectionReasonsList![index]
+                                      .reasonAttachment![i]);
+                            },
+                          ),
+                        ),
+                        CustomVerticalSpace(height: 8)
+                      ],
+                    );
+                  }),
+            )
+          ],
+        );
+      },
+    );
+  }
+}

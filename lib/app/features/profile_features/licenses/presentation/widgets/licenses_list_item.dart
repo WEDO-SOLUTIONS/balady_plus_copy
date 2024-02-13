@@ -42,21 +42,25 @@ class LicensesListItem extends StatelessWidget {
       child: Column(
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const DrawIconBasedTypeWidget(icon: IconPath.licenses),
-              const SizedBox(width: 4),
-              CustomTextWidget(
-                'license'.tr(),
-                textStyle: AppStyle.cardTitleTextStle,
+              Row(
+                children: [
+                  const DrawIconBasedTypeWidget(icon: IconPath.licenses),
+                  const SizedBox(width: 4),
+                  CustomTextWidget(
+                    'license'.tr(),
+                    textStyle: AppStyle.cardTitleTextStle,
+                  ),
+                  const SizedBox(width: 4),
+                  CustomTextWidget(
+                    '#${license.licenseNumber}'.tr(),
+                    textStyle: AppStyle.requestNumberTextStle,
+                  ),
+                ],
               ),
-              const SizedBox(width: 4),
-              Expanded(
-                child: CustomTextWidget(
-                  '#${license.licenseNumber}'.tr(),
-                  textStyle: AppStyle.requestNumberTextStle,
-                ),
-              ),
-              HomeTag(
+              const SizedBox(width: 8),
+              StatusTag(
                 title: license.licenseStatusName,
                 backgroundColor: AppColor.secondary100Light,
               ),
@@ -151,6 +155,60 @@ class LicensesListItem extends StatelessWidget {
             }
           }),
         ],
+      ),
+    );
+  }
+}
+
+class StatusTag extends StatelessWidget {
+  final String title;
+  final Color? color;
+  final Color? backgroundColor;
+  final Color? textColor;
+  final double? fontSize;
+  final double? height;
+  final bool selected;
+
+  const StatusTag({
+    super.key,
+    required this.title,
+    this.color,
+    this.backgroundColor,
+    this.textColor,
+    this.fontSize,
+    this.height,
+    this.selected = false,
+  }) : assert(
+            (color == null && backgroundColor != null) ||
+                (color != null && backgroundColor == null),
+            "can't choose color and backgroundColor at the same time");
+  @override
+  Widget build(BuildContext context) {
+    final backgroundColor = this.backgroundColor ??
+        (selected ? color : AppColor.blackModern50Light);
+    final textColor = this.textColor ??
+        (selected ? AppColor.blackModern50Light : AppColor.blackModern600Light);
+
+    return Flexible(
+      child: Container(
+        height: height,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16.0,
+          vertical: 4.0,
+        ),
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: CustomTextWidget(
+          title,
+          maxLines: 3,
+          textStyle: AppStyle.tagStyle.copyWith(
+            color: textColor,
+            fontWeight: FontWeight.w700,
+            fontSize: fontSize,
+          ),
+        ),
       ),
     );
   }
