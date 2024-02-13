@@ -69,9 +69,9 @@ class LocationBackgroundConsentDialog extends StatelessWidget {
                     btnPressed: () {
                       Navigator.of(context).pop();
 
-                      sharedPrefs.setLocationConsent(true);
+                      //  sharedPrefs.setLocationConsent(true);
 
-                      sl<WeatherAlertsCubit>().startTracking();
+                      //    sl<WeatherAlertsCubit>().startTracking();
                     },
                     btnText: ("backgournd_location_consent_agree").tr(),
                     btnTextSize: 18,
