@@ -68,7 +68,7 @@ class _ChangeCityDialogState extends State<ChangeCityDialog> {
               const CustomVerticalSpace(height: 20),
               // search
               SearchWidget(
-                hint: trans('city_search_hint'),
+                hint: trans('search'),
                 onChange: /* () {},*/
                     (text) {
                   sl<CityBloc>().add(SearchForCityEvent(text: text));
