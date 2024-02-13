@@ -263,7 +263,9 @@ class _CalcualtorWidgetState extends State<CalcualtorWidget> {
                                   (costsInfo) => Padding(
                                     padding: const EdgeInsets.only(top: 8.0),
                                     child: WidgetTitleInvoice(
-                                      money: '${costsInfo.costItemValue} ر.س',
+                                     money:
+                                      '${costsInfo.costItemValue} ${"sar_text".tr()}',
+                                  
                                       title:
                                           costsInfo.costItemDescription ?? "",
                                     ),
