@@ -13,6 +13,7 @@ import '../../../events/domain/entities/search_events/search_events_params.dart'
 import '../../../events/domain/usecase/get_search_events.dart';
 import '../../../map_page/data/model/investment_details_response.dart';
 import '../../../map_page/data/model/rental_details_response.dart';
+import '../../../weather_alerts/presentation/bloc/weather_alerts_cubit.dart';
 
 class BaladyServices {
   final WebService webService;
@@ -103,11 +104,17 @@ class BaladyServices {
           .replaceAll("{}", CommonProperties.userLocationGIS!.cityName!)
       : "search_map_text".tr();
 
-  static enableWeatherAlerts(bool check) {
+  static enableLocationTracking(bool check) {
     sharedPrefs.setLocationConsent(check);
+
+    if (check == true) {
+      sl<WeatherAlertsCubit>().startTracking();
+    } else {
+      sl<WeatherAlertsCubit>().stopTracking();
+    }
   }
 
-  static bool getWeatherAlerts() {
+  static bool getLocationTrackingStatus() {
     return sharedPrefs.getLocationConsent() ?? false;
   }
 }
