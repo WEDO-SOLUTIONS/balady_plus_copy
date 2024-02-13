@@ -16,7 +16,7 @@ class QrBuildingNatureDropDown extends StatelessWidget {
     return BlocBuilder<CRStep6EstablishmentCubit, CRStep6EstablishmentState>(
         builder: (context, state) {
       return DropDownWithTitle(
-        title: "طبيعة المبنى".tr(),
+        title: "BuildingNature".tr(),
         selectedValue: state.selectedBuildingNature?.name,
         blocStatus: state.buildingNatureStatus,
         onRetry: () {

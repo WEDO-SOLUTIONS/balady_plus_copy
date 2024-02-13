@@ -24,6 +24,7 @@ class RequestParameter extends StatelessWidget {
         const SizedBox(height: 4),
         CustomTextWidget(
           value,
+          maxLines: 3,
           textStyle: AppStyle.requestParamterValueTextStle,
         ),
       ],

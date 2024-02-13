@@ -69,19 +69,20 @@ class CustomAutoSizeTextWidget extends StatelessWidget {
   final AppFontWeight? fontWeight;
   final double maxFontSize;
   final double minFontSize;
+  final Color? fontColor;
 
-  const CustomAutoSizeTextWidget(
-    this.text, {
-    Key? key,
-    this.textAlign,
-    this.textOverflow,
-    this.textDirection,
-    this.maxLines,
-    this.textStyle,
-    this.fontWeight,
-    this.maxFontSize = 16.0,
-    this.minFontSize = 10.0,
-  }) : super(key: key);
+  const CustomAutoSizeTextWidget(this.text,
+      {Key? key,
+      this.textAlign,
+      this.textOverflow,
+      this.textDirection,
+      this.maxLines,
+      this.textStyle,
+      this.fontWeight,
+      this.maxFontSize = 16.0,
+      this.minFontSize = 10.0,
+      this.fontColor})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -95,9 +96,9 @@ class CustomAutoSizeTextWidget extends StatelessWidget {
       maxLines: maxLines,
       style: textStyle ??
           AppStyle.mainTextSecondaryStyle.copyWith(
-            fontSize: maxFontSize,
-            fontWeight: fontWeight?.fontWeight,
-          ),
+              fontSize: maxFontSize,
+              fontWeight: fontWeight?.fontWeight,
+              color: fontColor),
     );
   }
 }

@@ -1034,7 +1034,8 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       emitter(state.copyWith(
         status: BlocStatus.success,
       ));
-      sl<EtmamEntryPointCubit>().onLogin();
+      // await sl<EtmamEntryPointCubit>().onLogin();
+
       bool Function(Route<dynamic>) predicate =
           ModalRoute.withName(RouteName.bottomNavigation);
       NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
