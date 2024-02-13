@@ -2,9 +2,7 @@ import 'dart:async';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/core/errors/failures.dart';
-import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:balady_plus/app/features/chatbot/data/models/chat_bot_message_model.dart';
 import 'package:balady_plus/app/features/chatbot/domain/entities/chat_bot_message_entities.dart';
 import 'package:balady_plus/app/features/chatbot/domain/use_cases/chat_bot_use_cases.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/mvvm/message_chatboot_provider.dart';
@@ -13,18 +11,20 @@ import 'package:flutter/widgets.dart';
 
 class ChatBotProvider extends BaseViewModel {
   final SendQuestionMessageChatBot repository;
+  final int sectionId;
 
   ScrollController scrollController = ScrollController();
 
-  // ValueNotifier<List<ChatBotMessageEntities>> chatBotMessage =
-  //     ValueNotifier<List<ChatBotMessageEntities>>([]);
 
-  ValueNotifier<List<MessageChatBotProvider>> chatBotMessage = ValueNotifier<
-      List<MessageChatBotProvider>>([]);
+  ValueNotifier<List<MessageChatBotProvider>> chatBotMessage =
+      ValueNotifier<List<MessageChatBotProvider>>([]);
 
-  // StreamSubscription? listen;
+  bool isEnabled = false;
+  bool isLoadingEnabled = false;
 
-  ChatBotProvider(this.repository);
+  ChatBotProvider(this.repository, {required  this.sectionId}) {
+    chatBotIsEnabled();
+  }
 
   Future sendQuestion(String question) async {
     isLoading = true;
@@ -37,6 +37,7 @@ class ChatBotProvider extends BaseViewModel {
             question: question,
             answer: '',
             haveError: false,
+            sectionId: sectionId,
           ),
         ),
       );
@@ -48,7 +49,8 @@ class ChatBotProvider extends BaseViewModel {
           notifyListeners();
         }
 
-        if(scrollController.position.maxScrollExtent >= scrollController.offset) {
+        if (scrollController.position.maxScrollExtent >=
+            scrollController.offset) {
           scrollController.animateTo(
             scrollController.position.maxScrollExtent + 200,
             curve: Curves.easeOut,
@@ -76,15 +78,44 @@ class ChatBotProvider extends BaseViewModel {
     return chatBotMessage;
   }
 
+  Future chatBotIsEnabled() async {
+    isLoadingEnabled = true;
+    notifyListeners();
+    try {
+      Either<Failure, bool> response = await repository.repository.chatBotIsEnabled();
+      response.fold(
+        (error) {
+          isLoadingEnabled = false;
+          isEnabled = false;
+          notifyListeners();
+        },
+        (isEnabled) {
+          isLoadingEnabled = false;
+          this.isEnabled = isEnabled;
+          notifyListeners();
+          },
+      );
+      return;
+    } catch (exception) {
+      CommonFunctions.sendEvent(
+        dioError: null,
+        response: null,
+        ex: Exception(exception.toString()),
+      );
+      errorMessage = exception.toString();
+    }
+    isLoadingEnabled = false;
+    notifyListeners();
+    return;
+  }
 
-
-  // void setMessage(ChatBotMessageEntities message) {
-  //   chatBotMessage.value.add(message);
-  //   chatBotMessage.notifyListeners();
-  //   scrollController.animateTo(
-  //     scrollController.position.maxScrollExtent + 150,
-  //     curve: Curves.easeOut,
-  //     duration: const Duration(milliseconds: 300),
-  //   );
-  // }
+// void setMessage(ChatBotMessageEntities message) {
+//   chatBotMessage.value.add(message);
+//   chatBotMessage.notifyListeners();
+//   scrollController.animateTo(
+//     scrollController.position.maxScrollExtent + 150,
+//     curve: Curves.easeOut,
+//     duration: const Duration(milliseconds: 300),
+//   );
+// }
 }

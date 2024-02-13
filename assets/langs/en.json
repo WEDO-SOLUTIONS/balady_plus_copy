@@ -4210,7 +4210,16 @@
 
   "chat_bot_hint": "Please write your inquiry here....",
   "chat_bot_message_welcome": "Hello and welcome. \nI am the smart assistant for the Ministry of Municipal and Rural Affairs and Housing. Please proceed with your inquiry, and I will be happy to answer you.",
-  "errors_phone_not_exists":"Phone Not Exists"
+  "errors_phone_not_exists":"Phone Not Exists",
+
+
+
+
+
+
+  "rating_chat_bot_title": "How do you evaluate the smart assistant?",
+  "chat_bot_not_working_title": "Sorry, the service is currently unavailableً",
+  "chat_bot_not_working_message": "We apologize for the inconvenience. The current service is experiencing technical difficulties, and we are working diligently to resolve the issue. Please try again later. Thank you for your understanding."
 
 
 

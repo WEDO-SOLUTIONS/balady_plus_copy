@@ -1,5 +1,9 @@
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
+import 'package:balady_plus/app/features/_shared_features/rating_feature/models/rating_request.dart';
+import 'package:balady_plus/app/features/_shared_features/rating_feature/models/services_types.dart';
+import 'package:balady_plus/app/features/_shared_features/rating_feature/widgets/submit_rating_widget.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/mvvm/chatboot_provider.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/widgets/close_chat_bot_popup.dart';
 import 'package:flutter/material.dart';
@@ -59,23 +63,23 @@ class AppBarChatBot extends StatelessWidget {
                     ),
                     listMessages.isEmpty
                         ? Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      margin: const EdgeInsets.all(12),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          'chat_bot_message_welcome'.tr(),
-                          style: AppStyle
-                              .violationSelectOptionSubtitleStyle
-                              .copyWith(
-                            color: Colors.black,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    )
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            margin: const EdgeInsets.all(12),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'chat_bot_message_welcome'.tr(),
+                                style: AppStyle
+                                    .violationSelectOptionSubtitleStyle
+                                    .copyWith(
+                                  color: Colors.black,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          )
                         : const SizedBox()
                   ];
                   return Stack(
@@ -87,23 +91,18 @@ class AppBarChatBot extends StatelessWidget {
                         ),
                         child: listMessages.isEmpty
                             ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: list,
-                        )
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: list,
+                              )
                             : Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: list,
-                        ),
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: list,
+                              ),
                       ),
                       IconButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (_) => const CloseChatBotPopup(),
-                          );
-                        },
+                        onPressed: () => closeScreen(context),
                         icon: const Icon(Icons.close),
                       ),
                     ],
@@ -115,5 +114,29 @@ class AppBarChatBot extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void closeScreen(context) {
+    showDialog(
+      context: context,
+      builder: (_) => const CloseChatBotPopup(),
+    ).then((value) {
+      if(value) {
+        BottomSheetDialog.showSheet(
+          context,
+          child: SubmitRatingSheet(
+            title: 'rating_chat_bot_title'.tr(),
+            ratingRequest: RatingRequest(
+              requestId: context.watch<ChatBotProvider>().sectionId,
+              servicesTypeId: ServicesRatingType.chatBot,
+            ),
+          ),
+          isFullHeight: false,
+          isScrollControlled: true,
+          backgroundColor: Colors.white,
+          height: MediaQuery.of(context).size.height * 0.6,
+        );
+      }
+    });
   }
 }

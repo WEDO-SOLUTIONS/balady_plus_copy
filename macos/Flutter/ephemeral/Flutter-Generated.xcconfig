@@ -1,6 +1,6 @@
 // This is a generated file; do not edit or check into version control.
-FLUTTER_ROOT=/Users/mahmoud/Downloads/flutter
-FLUTTER_APPLICATION_PATH=/Users/mahmoud/Documents/balady_plus
+FLUTTER_ROOT=/Users/abdelrahmanismail/Dev/flutter_3_13_3/flutter
+FLUTTER_APPLICATION_PATH=/Users/abdelrahmanismail/StudioProjects/balady-plus
 COCOAPODS_PARALLEL_CODE_SIGN=true
 FLUTTER_BUILD_DIR=build
 FLUTTER_BUILD_NAME=3.8.1

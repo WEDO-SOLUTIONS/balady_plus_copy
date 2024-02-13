@@ -14,12 +14,46 @@ abstract class ChatBotDataSources {
   Future<Stream> sendQuestionMessageSSE({required String question});
 
   Future<ChatBotMessageModel> sendQuestionMessage({required String question});
+
+  Future<bool> chatBotIsEnabled();
 }
 
 class ChatBotDataSourcesImplementation extends ChatBotDataSources {
   final WebService webService;
 
   ChatBotDataSourcesImplementation({required this.webService});
+
+  @override
+  Future<bool> chatBotIsEnabled() async {
+    Response? response;
+    try {
+      response = await webService.dio.get(ApiUrl.chatBotEnabled);
+      final data = response.data;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+      return result['isEnabled'];
+    } on DioError catch (error) {
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: ex.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+  }
 
   @override
   Future<ChatBotMessageModel> sendQuestionMessage(
@@ -52,6 +86,7 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
       return ChatBotMessageModel(
         answer: result['response'],
         question: question,
+        sectionId: 1000000000000,
       );
     } on DioError catch (error) {
       if (error is NoDataFoundException) {
@@ -98,32 +133,35 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
       );
 
       StreamTransformer<String, String> stringTransformer =
-      StreamTransformer.fromHandlers(
+          StreamTransformer.fromHandlers(
         handleData: (data, sink) {
-            // String sOne = data.substring(7);
-            // String sOne = data.replaceAll("u","");
-            String sOne = data.replaceAll("\"","");
-            sOne = sOne.replaceAll("\\","");
-            // var s = utf8.encode(sOne);
-            // var y = utf8.decode(sOne.codeUnits);
-            // var t = utf8.decode(sOne.runes.toList());
-            // String data = String.fromCharCodes(dataUint8List);
+          // String sOne = data.substring(7);
+          // String sOne = data.replaceAll("u","");
+          String sOne = data.replaceAll("\"", "");
+          sOne = sOne.replaceAll("\\", "");
+          // var s = utf8.encode(sOne);
+          // var y = utf8.decode(sOne.codeUnits);
+          // var t = utf8.decode(sOne.runes.toList());
+          // String data = String.fromCharCodes(dataUint8List);
 
-            if(sOne != "\\" && sOne != "end" && sOne != "start" && sOne.isNotEmpty) {
-              // var re = RegExp(r'u(?<codePoint>[0-9A-Fa-f\u0621-\u064A]{4})');
-              // var matches = re.allMatches(sOne);
-              // var matches = sOne.split("u");
-              // var codePoints = [
-              //   for (var match in matches)
-              //     int.parse(match.namedGroup('codePoint')!, radix: 16),
-              // ];
-              // var codepoint = int.parse(sOne, radix: 16);
-              // String unicodeString = String.fromCharCode(codepoint);
-              // print(unicodeString);
-              // sink.add(String.fromCharCodes(codePoints));
-              sink.add(sOne);
-            }
-            sink.add("");
+          if (sOne != "\\" &&
+              sOne != "end" &&
+              sOne != "start" &&
+              sOne.isNotEmpty) {
+            // var re = RegExp(r'u(?<codePoint>[0-9A-Fa-f\u0621-\u064A]{4})');
+            // var matches = re.allMatches(sOne);
+            // var matches = sOne.split("u");
+            // var codePoints = [
+            //   for (var match in matches)
+            //     int.parse(match.namedGroup('codePoint')!, radix: 16),
+            // ];
+            // var codepoint = int.parse(sOne, radix: 16);
+            // String unicodeString = String.fromCharCode(codepoint);
+            // print(unicodeString);
+            // sink.add(String.fromCharCodes(codePoints));
+            sink.add(sOne);
+          }
+          sink.add("");
         },
       );
       Stream stream = response.data?.stream

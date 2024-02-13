@@ -9,4 +9,6 @@ abstract class ChatBotRepository {
 
   Future<Either<Failure, Stream>> sendQuestionMessageSSE( {required String question});
 
-}
+  Future<Either<Failure, bool>> chatBotIsEnabled();
+
+  }

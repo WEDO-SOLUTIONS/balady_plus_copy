@@ -767,6 +767,12 @@ class ApiUrl {
 
   static const chatBot = 'v1/chatbot-services/chat'; // not use this now
   static const chatBotStream = 'v1/chatbot-services/chat-stream';
+  static const chatBotEnabled = 'v1/chatbot-services/service-enabled';
+
+
+  static const String submitRating =
+      '/v1/balady-commercial-services/rating/submit';
+
   //! POST
 
   //! Delete

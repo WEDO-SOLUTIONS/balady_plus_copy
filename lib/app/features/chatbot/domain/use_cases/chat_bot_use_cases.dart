@@ -29,3 +29,16 @@ class SendQuestionMessageChatBotSSE extends UseCase<Stream, String> {
     return await repository.sendQuestionMessageSSE(question: params);
   }
 }
+
+
+// class SendQuestionMessageChatBot extends UseCase<ChatBotMessageModel, String> {
+//   final ChatBotRepository repository;
+//
+//   SendQuestionMessageChatBot(this.repository);
+//
+//   @override
+//   Future<Either<Failure, ChatBotMessageModel>> call(String params) async {
+//     return await repository.sendQuestionMessage(question: params);
+//   }
+//
+// }

@@ -2,8 +2,11 @@ import 'package:equatable/equatable.dart';
 
 class ChatBotMessageEntities extends Equatable {
   final String question;
+
   // final List<String> answerList;
   final String answer;
+
+  final int sectionId;
 
   final bool haveError;
   final DateTime timeStampSend;
@@ -13,15 +16,18 @@ class ChatBotMessageEntities extends Equatable {
     required this.question,
     required this.answer,
     required this.haveError,
+    required this.sectionId,
     this.timeStampReceived,
     timeStampSend,
   }) : timeStampSend = timeStampSend ?? DateTime.now();
 
   @override
-  List<Object?> get props => [
+  List<Object?> get props =>
+      [
         question,
         answer.length,
         haveError,
+        sectionId,
         timeStampSend,
         timeStampReceived,
       ];
@@ -34,11 +40,12 @@ class ChatBotMessageEntities extends Equatable {
     final DateTime? timeStampReceived,
   }) {
     return ChatBotMessageEntities(
-      question: question ?? this.question,
-      answer: answer ?? this.answer,
-      haveError: haveError ?? this.haveError,
-      timeStampReceived: timeStampReceived ?? this.timeStampReceived,
-      timeStampSend: timeStampSend
+        question: question ?? this.question,
+        answer: answer ?? this.answer,
+        haveError: haveError ?? this.haveError,
+        timeStampReceived: timeStampReceived ?? this.timeStampReceived,
+        timeStampSend: timeStampSend,
+        sectionId: sectionId
     );
   }
 }

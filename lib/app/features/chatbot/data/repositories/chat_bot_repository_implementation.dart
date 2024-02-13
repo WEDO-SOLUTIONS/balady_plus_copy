@@ -8,8 +8,6 @@ import 'package:balady_plus/app/features/chatbot/domain/repositories/chat_bot_re
 import 'package:dartz/dartz.dart';
 
 ///////////////////////////////////////////////////
-import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 
 
 class ChatBotRepositoryImplementation implements ChatBotRepository {
@@ -21,7 +19,7 @@ class ChatBotRepositoryImplementation implements ChatBotRepository {
   Future<Either<Failure, ChatBotMessageModel>> sendQuestionMessage(
       {required String question}) async {
     try {
-      DateTime dateSendData = DateTime.now();
+      // DateTime dateSendData = DateTime.now();
       final stream = await remoteDataSource.sendQuestionMessage(
         question: question,
       );
@@ -65,6 +63,18 @@ class ChatBotRepositoryImplementation implements ChatBotRepository {
       return Left(ServerFailure(error.errorMessage));
     }
   }
+
+
+  @override
+  Future<Either<Failure, bool>> chatBotIsEnabled() async {
+    try {
+      final isEnabled = await remoteDataSource.chatBotIsEnabled();
+      return Right(isEnabled);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
 
   // void _sendEvent(DateTime dateSendData,Map<String,dynamic> dataEvent) {
   //   Duration duration = DateTime.now().difference(dateSendData);

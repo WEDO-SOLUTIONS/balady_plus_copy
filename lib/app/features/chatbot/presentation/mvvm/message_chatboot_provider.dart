@@ -11,7 +11,6 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 class MessageChatBotProvider extends BaseViewModel {
   final SendQuestionMessageChatBot repository;
-
   final ValueNotifier<ChatBotMessageEntities> message;
   StreamSubscription? listen;
 
