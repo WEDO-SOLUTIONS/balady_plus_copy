@@ -48,7 +48,7 @@ class WeatherAlertsCubit extends Cubit<WeatherAlertsState> {
   void startTracking() async {
     bool? locationConsent = sharedPrefs.getLocationConsent();
 
-    if (locationConsent != true && Platform.isAndroid) return;
+    //if (locationConsent != true && Platform.isAndroid) return;
     if (locationConsent == true) {
       await BackgroundLocation.stopLocationService();
       double distanceFilter = Platform.isAndroid ? 30.0 : 30.0;

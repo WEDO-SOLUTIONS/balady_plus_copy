@@ -1286,19 +1286,17 @@ class CommonFunctions {
   }
 
   static showBackGroundLocationConsent() async {
-    if (Platform.isAndroid) {
-      bool? consetnt = sharedPrefs.getLocationConsent();
-      if (consetnt != null) return;
-      await Future.delayed(const Duration(seconds: 10));
+    //if (Platform.isAndroid) {
+    bool? consetnt = sharedPrefs.getLocationConsent();
+    if (consetnt != null) return;
+    await Future.delayed(const Duration(seconds: 10));
 
-      showDialog(
-        context: NavigationService.navigatorKey.currentContext!,
-        builder: (ctx) => const LocationBackgroundConsentDialog(),
-      );
-    }
+    showDialog(
+      context: NavigationService.navigatorKey.currentContext!,
+      builder: (ctx) => const LocationBackgroundConsentDialog(),
+    );
+    //  }
   }
-
- 
 
   static String getIssueCrWarning1() {
     if (CommonFunctions.isAppAR) {
