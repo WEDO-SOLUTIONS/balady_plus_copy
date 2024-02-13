@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
-
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -91,7 +90,7 @@ class RoutesCarousel extends ConsumerWidget {
       );
 }
 
-class RouteCell extends StatelessWidget {
+class RouteCell extends ConsumerWidget {
   const RouteCell({
     required this.route,
     required this.startNavigation,
@@ -102,68 +101,72 @@ class RouteCell extends StatelessWidget {
   final Function() startNavigation;
 
   @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 4,
-        ),
-        child: Material(
-          color: const Color(0x0D1E2A36),
-          borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Directionality(
-                  textDirection: TextDirection.ltr,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        route.duration.formatDuration(context.l10n),
-                        style: Theme.of(context)
-                            .extension<ThemeTextStyles>()!
-                            .accentM
-                            .copyWith(color: const Color(0xFF1E2A36)),
-                      ),
-                      Text(
-                        route.distance.formatDistance(context.l10n),
-                        style: Theme.of(context)
-                            .extension<ThemeTextStyles>()!
-                            .textS
-                            .copyWith(color: const Color(0xFF1E2A36)),
-                      )
-                    ],
-                  ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final direction = ref.watch(uiDirectionProvider);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 4,
+      ),
+      child: Material(
+        color: const Color(0x0D1E2A36),
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Directionality(
+                textDirection: direction,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      route.duration.formatDuration(context.l10n),
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .accentM
+                          .copyWith(color: const Color(0xFF1E2A36)),
+                    ),
+                    Text(
+                      route.distance.formatDistance(context.l10n),
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .textS
+                          .copyWith(color: const Color(0xFF1E2A36)),
+                    )
+                  ],
                 ),
-                const Spacer(),
-                Material(
-                  color: const Color(0xFF4CA5B4),
-                  borderRadius: BorderRadius.circular(8),
-                  child: InkWell(
-                    onTap: startNavigation,
-                    child: SizedBox(
-                      width: 70,
-                      height: 40,
-                      child: Align(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 14),
-                          child: Text(
-                            context.l10n.go,
-                            style: Theme.of(context)
-                                .extension<ThemeTextStyles>()!
-                                .accentXS
-                                .copyWith(color: Colors.white),
-                          ),
+              ),
+              const Spacer(),
+              Material(
+                color: const Color(0xFF4CA5B4),
+                borderRadius: BorderRadius.circular(8),
+                child: InkWell(
+                  onTap: startNavigation,
+                  child: SizedBox(
+                    width: 70,
+                    height: 40,
+                    child: Align(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 14),
+                        child: Text(
+                          context.l10n.go,
+                          style: Theme.of(context)
+                              .extension<ThemeTextStyles>()!
+                              .accentXS
+                              .copyWith(color: Colors.white),
                         ),
                       ),
                     ),
                   ),
-                )
-              ],
-            ),
+                ),
+              )
+            ],
           ),
         ),
-      );
+      ),
+    );
+  }
 }
