@@ -56,13 +56,12 @@ class EtmamCityNameWidget extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6),
-          border: Border.all(
-            color: AppColor.primary900,
-            width: 1,
-          ),
-          color: Colors.transparent
-        ),
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(
+              color: AppColor.primary900,
+              width: 1,
+            ),
+            color: Colors.transparent),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child:

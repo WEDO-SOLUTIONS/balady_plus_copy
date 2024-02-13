@@ -46,7 +46,7 @@ class ManagerInfoCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomTextWidget(
-                          "الاسم",
+                          "name".tr(),
                           fontColor: AppColor.primary700Light,
                           fontSize: 10,
                           fontWeight: AppFontWeight.semiBold,
