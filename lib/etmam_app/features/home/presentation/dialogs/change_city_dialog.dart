@@ -102,7 +102,7 @@ class _CityListState extends State<CityList> {
                   state.status == BlocStatus.loadMore ||
                   state.status == BlocStatus.loadingShimmer) ...[
                 SearchWidget(
-                  hint: trans('city_search_hint'),
+                  hint: trans('search'),
                   onChange: /* () {},*/
                       (text) {
                     sl<CityBloc>().add(SearchForCityEvent(text: text));
