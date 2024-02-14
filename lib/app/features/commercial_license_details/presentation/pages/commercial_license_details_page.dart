@@ -45,7 +45,7 @@ class _CommercialLicenseDetailsPageState
   @override
   Widget build(BuildContext context) {
     Map data = ModalRoute.of(context)!.settings.arguments as Map;
-    int commercialLicenseId = data['licenseNumber'];
+    int commercialLicenseId = int.parse(data['licenseNumber']);
     return BlocProvider(
       create: (context) =>
         CommercialLicenseDetailsCubit(

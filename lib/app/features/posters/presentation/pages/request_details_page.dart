@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:collection/collection.dart';
 
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
@@ -34,7 +33,7 @@ class PostersReqeuestDetailsPage extends StatelessWidget {
     Map data =
         ModalRoute.of(context)!.settings.arguments as Map;
     return BlocProvider(
-      create: (context) => PostersLicenseBloc(requestId: data['requestNumber'])
+      create: (context) => PostersLicenseBloc(requestId: int.tryParse(data['requestNumber']))
         ..add(GetPosterRequestDetailsEvent()),
       child: BlocListener<PostersLicenseBloc, PostersLicenseState>(
         listener: (context, state) {},
