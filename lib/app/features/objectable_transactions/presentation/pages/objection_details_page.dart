@@ -31,6 +31,7 @@ import '../../domain/entities/transaction_details_params.dart';
 
 import '../objections_details_bloc/objection_details_bloc.dart';
 import '../widgets/create_objection_page/objection_attachment_item.dart';
+import '../widgets/objection_feedback_widget.dart';
 
 class ObjectionsDetailsPage extends StatefulWidget {
   const ObjectionsDetailsPage({
@@ -167,7 +168,9 @@ class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
                       Constants.verticalSpaceSmall,
 
                       const ObjectionReaason(),
+                      Constants.verticalSpaceSmall,
 
+                      const ObjectionFeedBack(),
                       Constants.verticalSpaceSmall,
                     ]),
                   ),
@@ -419,70 +422,51 @@ class AttachmentWidget extends StatelessWidget {
   }
 }
 
-class ObjectionFeedBack extends StatelessWidget {
+class ObjectionFeedBack extends StatefulWidget {
   const ObjectionFeedBack({Key? key}) : super(key: key);
+
+  @override
+  State<ObjectionFeedBack> createState() => _ObjectionFeedBackState();
+}
+
+class _ObjectionFeedBackState extends State<ObjectionFeedBack> {
+  int expandedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ObjectionsDetailsBloc, ObjectionDetailsState>(
       builder: (context, state) {
-        return CustomExpansionPanelWidget(
-          underline: false,
-          title: ("objection_details_objections_list").tr(),
-          leading: SvgPicture.asset(IconPath.vdSummuryDesc),
-          children: [
-            MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: state.details?.objectionReasonsList?.length ?? 0,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (ctx, index) {
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        FieldData(
-                          title: " ${"reason_text".tr()} ${index + 1}",
-                          subTitle: state.details?.objectionReasonsList?[index]
-                                  .reason ??
-                              "",
-                          radius: BorderRadius.only(
-                              topLeft: Radius.circular(8),
-                              topRight: Radius.circular(8)),
-                        ),
-                        FieldData(
-                          title: "attachment_text".tr(),
-                          radius: BorderRadius.zero,
-                        ),
-                        Container(
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            scrollDirection: Axis.vertical,
-                            itemCount: state
-                                    .details
-                                    ?.objectionReasonsList![index]
-                                    .reasonAttachment
-                                    ?.length ??
-                                0,
-                            itemBuilder: (ctx, i) {
-                              return ObjectionAttachmentItem(
-                                  file: state
-                                      .details!
-                                      .objectionReasonsList![index]
-                                      .reasonAttachment![i]);
+        return (state.details?.enquiryList?.isNotEmpty ?? false)
+            ? CustomExpansionPanelWidget(
+                underline: false,
+                title: ("طلبات الإفادة").tr(),
+                leading: SvgPicture.asset(IconPath.vdSummuryDesc),
+                children: [
+                  MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: state.details?.enquiryList?.length,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (ctx, index) {
+                          return ObjectionFeedBackWidget(
+                            index: index,
+                            item: state.details!.enquiryList![index],
+                            isExpanded: index == expandedIndex,
+                            onExpand: () {
+                              setState(() {
+                                expandedIndex = index;
+                              });
                             },
-                          ),
-                        ),
-                        CustomVerticalSpace(height: 8)
-                      ],
-                    );
-                  }),
-            )
-          ],
-        );
+                          );
+
+                          ;
+                        }),
+                  )
+                ],
+              )
+            : Container();
       },
     );
   }

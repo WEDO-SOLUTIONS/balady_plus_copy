@@ -159,3 +159,32 @@ class ReasonAttachmentModel extends ReasonAttachment {
         fileName: json["FileName"],
       );
 }
+
+class EnquiryItemModel extends EnquiryItem {
+  EnquiryItemModel({
+    super.enquiryRequestedFromId,
+    super.enquiryStatusName,
+    super.enquiryStatusId,
+    super.enquiryRequestNumber,
+    super.enquiryDate,
+    super.enquiryDueDate,
+    super.hashingRequestNumber,
+    super.isApplyEfadat,
+  });
+
+  factory EnquiryItemModel.fromJson(Map<String, dynamic> json) =>
+      EnquiryItemModel(
+        enquiryRequestedFromId: json["enquiryRequestedFromId"],
+        enquiryStatusName: json["enquiryStatusName"],
+        enquiryStatusId: json["enquiryStatusId"],
+        enquiryRequestNumber: json["enquiryRequestNumber"],
+        enquiryDate: json["enquiryDate"] == null
+            ? null
+            : DateTime.parse(json["enquiryDate"]),
+        enquiryDueDate: json["enquiryDueDate"] == null
+            ? null
+            : DateTime.parse(json["enquiryDueDate"]),
+        hashingRequestNumber: json["hashingRequestNumber"],
+        isApplyEfadat: json["isApplyEfadat"],
+      );
+}
