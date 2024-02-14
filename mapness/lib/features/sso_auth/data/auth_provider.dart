@@ -19,7 +19,7 @@ class Auth extends _$Auth {
     mixpanel?.timeEvent("Auth: doAuth");
     await CommonFunctions.onLogin();
     ref.invalidateSelf();
-    ref.read(favouriteRepositoryProvider.notifier).ref.invalidateSelf();
+    ref.invalidate(favouriteRepositoryProvider);
     mixpanel?.track("Auth: doAuth");
   }
 
