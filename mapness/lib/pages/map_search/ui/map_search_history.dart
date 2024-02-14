@@ -6,6 +6,7 @@ import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_history.dart' as ui;
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:provider/provider.dart';
@@ -52,8 +53,8 @@ class MapSearchHistory extends ConsumerWidget {
                             children: [
                               const Spacer(),
                               ErrorSheet(
-                                buttonLabel: 'Try again',
-                                errorLabel: 'Place was not found',
+                                buttonLabel: context.l10n.tryAgain,
+                                errorLabel: context.l10n.placeWasNotFound,
                                 onClose: () =>
                                     Navigator.of(contextDialog).pop(false),
                                 onRetry: () =>

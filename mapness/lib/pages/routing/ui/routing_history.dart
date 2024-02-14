@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/pages/routing/ui/routing_history_empty.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/widgets/search/ui/search_history_collapsible.dart';
@@ -72,8 +73,8 @@ class RoutingHistory extends ConsumerWidget {
                                 children: [
                                   const Spacer(),
                                   ErrorSheet(
-                                    buttonLabel: 'Try again',
-                                    errorLabel: 'Place was not found',
+                                    buttonLabel: context.l10n.tryAgain,
+                                    errorLabel: context.l10n.placeWasNotFound,
                                     onClose: () =>
                                         Navigator.of(contextDialog).pop(false),
                                     onRetry: () =>
