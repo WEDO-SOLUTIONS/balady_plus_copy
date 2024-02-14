@@ -118,7 +118,8 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
         );
         response.fold(
           (failure) {
-            showError(failure.toString());
+            errorMessage = failure.toString();
+            notifyListeners();
           },
           (monthsList) {
             this.monthsList = monthsList;
@@ -131,14 +132,14 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
           // response: response,
           ex: exception,
         );
-        showError(exception.toString());
+        errorMessage = exception.toString();
       } catch (exception) {
         CommonFunctions.sendEvent(
           dioError: null,
           // response: response,
           ex: Exception(exception.toString()),
         );
-        showError(exception.toString());
+        errorMessage = exception.toString();
       }
       isLoading = false;
       notifyListeners();
@@ -158,7 +159,10 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
       notifyListeners();
       response = await repository.getFilteredEvents();
       response.fold(
-        (failure) {},
+        (failure) {
+          errorMessage = failure.toString();
+          notifyListeners();
+        },
         (filterList) {
           checkboListTileEntityList = List<CheckboxListTileEntity>.generate(
             filterList.filterItem!.length,
@@ -177,14 +181,14 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
         // response: response,
         ex: exception,
       );
-      showError(exception.toString());
+      errorMessage = exception.toString();
     } catch (exception) {
       CommonFunctions.sendEvent(
         dioError: null,
         // response: response,
         ex: Exception(exception.toString()),
       );
-      showError(exception.toString());
+      errorMessage = exception.toString();
     }
     isLoading = false;
     notifyListeners();

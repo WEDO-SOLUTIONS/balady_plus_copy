@@ -27,7 +27,7 @@ class ListItemsEventsWidget extends StatelessWidget {
 
             if (screenName == RouteName.inappWebview) {
               CommonFunctions.openBaldyWithRefreshCookie(
-                event.redirectUrl,
+                event.redirectUrl ?? event.appRedirectUrl,
               );
             } else {
               Navigator.of(context).pushNamed(

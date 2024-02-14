@@ -19,27 +19,8 @@ class CalendarEventItem extends Equatable {
   final String? eventDisplayMessage;
   final String? serviceUrl;
   final String? redirectUrl;
+  final String? appRedirectUrl;
   final String? hashingEntityId;
-
-  const CalendarEventItem({
-    this.id,
-    this.entityId,
-    this.entityType,
-    this.eventDate,
-    this.eventDateHijri,
-    this.year,
-    this.yearHijri,
-    required this.month,
-    required this.monthHijri,
-    this.ownerIdentityNo,
-    this.ownerIdentityType,
-    this.ownerName,
-    this.metadata,
-    this.eventDisplayMessage,
-    this.serviceUrl,
-    this.redirectUrl,
-    this.hashingEntityId,
-  });
 
   factory CalendarEventItem.fromJson(Map<String, dynamic> json) => CalendarEventItem(
     id: json['id'] as String?,
@@ -62,8 +43,30 @@ class CalendarEventItem extends Equatable {
     eventDisplayMessage: json['eventDisplayMessage'] as String?,
     serviceUrl: json['serviceUrl'] as String?,
     redirectUrl: json['redirectUrl'] as String?,
+    appRedirectUrl: json['appRedirectUrl'] as String?,
     hashingEntityId: json['hashingEntityId'] as String?,
   );
+
+  const CalendarEventItem({
+    this.id,
+    this.entityId,
+    this.entityType,
+    this.eventDate,
+    this.eventDateHijri,
+    this.year,
+    this.yearHijri,
+    required this.month,
+    required this.monthHijri,
+    this.ownerIdentityNo,
+    this.ownerIdentityType,
+    this.ownerName,
+    this.metadata,
+    this.eventDisplayMessage,
+    this.serviceUrl,
+    this.redirectUrl,
+    this.appRedirectUrl,
+    this.hashingEntityId,
+  });
 
   Map<String, dynamic> toJson() => {
     'id': id,
