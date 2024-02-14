@@ -1,17 +1,13 @@
 import 'package:balady_plus/app/core/utils/routes_type.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/services/local/navigation_services.dart';
-import '../../../../../core/services/local/use_case.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, CommonFunctions, IconPath, RouteName;
 import '../../../../_shared_feature_/shared_feature_exports.dart';
-import '../../../../entry_point/domain/use_cases/get_cookie.dart';
 import '../../licenses_exports.dart' show LicenseEntity, LicenseParameter;
 
 class LicensesListItem extends StatelessWidget {
@@ -100,25 +96,10 @@ class LicensesListItem extends StatelessWidget {
                 ScreenTage.license.name,
                 typeId: int.parse(license.requestMainTypeId!),
               );
-
               if (screenName == RouteName.inappWebview) {
-                if (license.redirectUrl == null) return;
-                EasyLoading.show();
-                GetCookie getCookie = GetCookie(repository: sl());
-                final failureOrSuccessForCookie = await getCookie(NoParams());
-                EasyLoading.dismiss();
-                failureOrSuccessForCookie.fold((l) {
-                  CommonFunctions.showError("server_error_1".tr());
-                }, (r) async {
-                  Navigator.of(context).pushNamed(
-                    RouteName.inappWebview,
-                    arguments: (
-                      requestNum: ''.tr(),
-                      url: license.redirectUrl,
-                      isObjections: false
-                    ),
-                  );
-                });
+                CommonFunctions.openBaldyWithRefreshCookie(
+                  license.redirectUrl,
+                );
               } else {
                 NavigationService.navigatorKey.currentState!.pushNamed(
                   screenName,
