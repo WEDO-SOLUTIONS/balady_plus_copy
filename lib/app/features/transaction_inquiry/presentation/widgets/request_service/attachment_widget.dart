@@ -53,30 +53,21 @@ class AttachmentWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                CustomTextWidget(
-                  title,
-                  fontColor: const Color(0xff006665),
-                  fontSize: 13,
-                  maxLines: 2,
-                ),
-                // required attachment
-/*            if (widget.isRequired)
-              Text(" * ",
-                  style: appBarTextStyle.copyWith(
-                      color: Colors.red, fontSize: 13)),*/
-                // optional attachment
-                if (!isRequired)
-                  CustomTextWidget(
-                    ('optional').tr(),
-                    fontColor: const Color(0xffbabbbb),
-                    fontSize: 13,
-                  ),
-              ],
+            Flexible(
+              child: CustomTextWidget(
+                title,
+                fontColor: const Color(0xff006665),
+                fontSize: 13,
+                maxLines: 4,
+              ),
             ),
+            if (!isRequired)
+              CustomTextWidget(
+                ('optional').tr(),
+                fontColor: const Color(0xffbabbbb),
+                fontSize: 13,
+              ),
           ],
         ),
         const CustomVerticalSpace(height: 20),
