@@ -767,6 +767,11 @@ class ApiUrl {
   static const chatBot = 'v1/chatbot-services/chat';
 
   static const weatherAlerts = 'v1/mater-services/notifications/locations';
+
+
+//commercial license query
+  static String getCommercialLicenseData(int licenseNumber,unifiedFacilityNumber) =>
+      '/v1/balady-commercial-services/licenses/$licenseNumber';
   //! POST
 
   //! Delete
