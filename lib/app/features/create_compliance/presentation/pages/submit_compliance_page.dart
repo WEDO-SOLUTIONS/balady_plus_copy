@@ -51,7 +51,7 @@ class _SubmitCompliancePageState extends State<SubmitCompliancePage> {
         ..add(const GetMainUsagesEvent())
         ..add(const GetOwnerShipTypesEvent())
         ..add(const GetReciptTypesEvent())
-        // ..add(const GetEngOfficesListEvent())
+        ..add(const GetEngOfficesListEvent())
         ..add(GetLicensesEvent()),
       child: BlocListener<ComplianceBloc, ComplianceState>(
         listener: (context, state) {

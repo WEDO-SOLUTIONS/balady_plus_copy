@@ -153,6 +153,12 @@ class ApiUrl {
   static String objectionPermitUrl(String transactionId) =>
       '/v1/balady-dashboard/permit-detail-url-transaction-number/$transactionId';
 
+  static String objectionEnquiryDetails(String enquiryId) =>
+      '/v1/objection-services/feedbacks/$enquiryId';
+
+  static String createEnquiryDetails(String qId) =>
+      '/v1/objection-services/feedbacks/$qId';
+
 //! VD
   static const gis = '/v1/crm/bcg/gis-info';
   static const vdCategories = '/v1/crm/bcg/categories';

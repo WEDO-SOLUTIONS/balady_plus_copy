@@ -21,7 +21,7 @@ class ObjectionDetails {
   final RequestSubmitterData? requestSubmitterData;
   final String? objectionTypeId;
   final List<ObjectionReason>? objectionReasonsList;
-
+final List<EnquiryItem>? enquiryList; 
   final String? requestStatusId;
   final String? objectionServiceName;
   String? hashingRequestNumber;
@@ -49,7 +49,9 @@ class ObjectionDetails {
       this.requestStatusId,
       this.objectionServiceName,
       this.hashingRequestNumber,
-      this.serviceTypeId});
+      this.serviceTypeId, this.enquiryList
+      
+      });
 
   String get getLastUpdatedDate =>
       lastUpdatedDate != null ? DateFormat.yMd().format(lastUpdatedDate!) : "";
@@ -120,4 +122,26 @@ class ReasonAttachment {
     return RemoteConfig.apigeeURL +
         "/v1/dms-mobile/files/${contentLocation?.split("/").last}";
   }
+}
+
+class EnquiryItem {
+  final String? enquiryRequestedFromId;
+  final String? enquiryStatusName;
+  final String? enquiryStatusId;
+  final String? enquiryRequestNumber;
+  final DateTime? enquiryDate;
+  final DateTime? enquiryDueDate;
+  final String? hashingRequestNumber;
+  final bool? isApplyEfadat;
+
+  EnquiryItem({
+    this.enquiryRequestedFromId,
+    this.enquiryStatusName,
+    this.enquiryStatusId,
+    this.enquiryRequestNumber,
+    this.enquiryDate,
+    this.enquiryDueDate,
+    this.hashingRequestNumber,
+    this.isApplyEfadat,
+  });
 }
