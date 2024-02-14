@@ -51,11 +51,13 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheet> {
       );
     });
     if (widget.initialQuery != null) {
-      Future.delayed(Duration.zero, () {
-        ref.read(searchQueryProvider(_searchScope).notifier).update(
-              widget.initialQuery!,
-            );
-      });
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) {
+          ref.read(searchQueryProvider(_searchScope).notifier).update(
+                widget.initialQuery!,
+              );
+        },
+      );
     }
   }
 
