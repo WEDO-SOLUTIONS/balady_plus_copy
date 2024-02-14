@@ -35,14 +35,15 @@ class ServiceCardDescWidget extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: SizedBox.expand(
-            child: Selector<ServiceDataViewModel, bool>(
-              selector: (_, provider) => provider.isLoading,
-              builder: (context, isLoading, child) {
-                return isLoading
-                    ? const CustomLoadingWidget()
-                    : viewModel.servicesCardsDetails != null
-                        ? Column(
+          child: Selector<ServiceDataViewModel, bool>(
+            selector: (_, provider) => provider.isLoading,
+            builder: (context, isLoading, child) {
+              return isLoading
+                  ? const CustomLoadingWidget()
+                  : viewModel.servicesCardsDetails != null
+                      ?
+                      SizedBox.expand(
+                child: Column(
                             children: [
                               Expanded(
                                 flex: 47,
@@ -528,14 +529,19 @@ class ServiceCardDescWidget extends StatelessWidget {
                                 ),
                               ),
                             ],
-                          )
-                        : ReloadWidget(
+                          ),
+              )
+                      :
+
+              Center(
+                child: ReloadWidget(
+
                             onTab: () {
                               viewModel.getServicesCards();
                             },
-                          );
-              },
-            ),
+                          ),
+              );
+            },
           ),
         ),
       ],

@@ -78,6 +78,8 @@ import '../../features/commercial_license/presentation/issue_start_service_scree
 import '../../features/commercial_license/presentation/step3/page/cr_map_page.dart';
 import '../../features/commercial_license/presentation/step6/page/commercial_otp_screen.dart';
 import '../../features/commercial_license/presentation/submit_application_successfully_new.dart';
+import '../../features/commercial_license_inquery/persentation/commercial_license_overview/commercial_license_overview_screen.dart';
+import '../../features/commercial_license_inquery/persentation/commercial_license_query/commercial_license_query_screen.dart';
 import '../../features/create_compliance/presentation/pages/compliance_details_page.dart';
 import '../../features/create_compliance/presentation/pages/map_page/complinace_map_page.dart';
 import '../../features/create_compliance/presentation/pages/non_compliance_screen.dart';
@@ -749,6 +751,9 @@ class Routes {
         RouteName.jodDonationPage: (context) => const JodDonationPage(),
 
         RouteName.chatbot: (context) => const ChatBotScreen(),
+
+        RouteName.commercialLicenseOverView: (context) => const CommercialLicenseOverviewScreen(),
+        RouteName.commercialLicenseQuery: (context) => const CommercialLicenseQueryScreen(),
       };
 }
 

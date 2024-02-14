@@ -119,6 +119,20 @@ Map<String, dynamic> servicesConfig = {
     },*/
   ],
   "municipal_services": [
+
+
+    {
+      "id":  11134,
+      "icon": "license_query",
+      "3d_icon": null,
+      "order": 6,
+      "isNew": false,
+      "requireLogin": true,
+      "isImportant": false,
+      "action": {"type": "page", "value": RouteName.commercialLicenseOverView},
+      "ar": {"title": "CommerciallicenseQuery", "description": null, "tag": null},
+      "en": {"title": "CommerciallicenseQuery", "description": null, "tag": null}
+    },
     {
       "id": 201,
       "icon": "send_image",
