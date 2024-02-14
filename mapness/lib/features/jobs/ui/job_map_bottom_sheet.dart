@@ -213,8 +213,8 @@ class _JobMapBottomSheetState extends ConsumerState<JobMapBottomSheet> {
     }
 
     final currentRoute = ref.read(currentRouteProvider);
-    if (currentRoute != null &&
-        RegExp(r'/job/.*/detail').hasMatch(currentRoute)) {
+    if (currentRoute?.currentPath != null &&
+        RegExp(r'/job/.*/detail').hasMatch(currentRoute!.currentPath!)) {
       JobsMapDetail(jobId: jobId).pushReplacement(context);
       return;
     }
