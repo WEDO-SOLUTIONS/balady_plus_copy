@@ -3969,5 +3969,8 @@
 "Iqama_ID":"هوية مقيم",
   "CommerciallicenseQuery": "الاستعلام عن رخصة تجارية",
   "agentNumber": "الرقم الموحد للمنشآة",
-  "query": "استعلام"
+  "query": "استعلام",
+  "agentNumberError":"يرجي ادخال رقم السجل التجاري المالك للرخصة",
+  "commercial_license_error":"يرجي ادخال رقم رخصة تجارية",
+  "license_nubmer": "رقم الرخصة التجارية"
 }

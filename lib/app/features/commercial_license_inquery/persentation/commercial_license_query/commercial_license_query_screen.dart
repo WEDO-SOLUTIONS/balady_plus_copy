@@ -1,8 +1,10 @@
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
+import '../../../../core/utils/constants/app_style.dart';
 import '../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
@@ -20,104 +22,148 @@ class _CommercialLicenseQueryScreenState extends State<CommercialLicenseQueryScr
   final TextEditingController _licenseNumberController = TextEditingController();
   final TextEditingController _agentNumberController = TextEditingController();
   final FocusNode _licenseNumberDescFocusNode = FocusNode();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
   }
 
   @override
   Widget build(BuildContext context) {
-
-
-    return  Scaffold(
+    return Scaffold(
+      backgroundColor: AppColor.scaffoldBackground,
+      resizeToAvoidBottomInset: true,
       appBar: DefaultAppBarWidget(
         title: "back".tr(),
         showBack: true,
 
       ),
       body: getBody(),
+
+
     );
   }
 
 
-  Widget getBody(){
+  Widget getBody() {
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
 
-    return Padding(
-      padding:  const EdgeInsets.only(bottom: 30, right: 30, left: 30, top: 32),
-      child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(
+                      bottom: 30, right: 30, left: 30, top: 32),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
 
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
 
+                      children: [
+                        CustomTextWidget(
+                          "user_data_applicant".tr(),
+                          textStyle: AppStyle.complianceTitleStyle,
+                          maxLines: 4,
 
-          CustomTextWidget(
-            "user_data_applicant".tr(),
-            fontColor: AppColor.blackModern700Light,
-            maxLines: 4,
+                        ),
 
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        CustomTextWidget(
+                          "commercial_desc".tr(),
+                          textStyle: AppStyle.serviceListTitleTextStyle,
+                          maxLines: 4,
+
+                        ),
+
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        CustomTextFieldWidget(
+                          label: "${"license_nubmer".tr()} *",
+                          controller: _licenseNumberController,
+                          focusNode: _licenseNumberDescFocusNode,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          fillColor: Colors.transparent,
+                          onValidate: (text) {
+                            if (text
+                                .toString()
+                                .isEmpty) {
+                              return ("commercial_license_error").tr();
+                            }
+                            return null;
+                          },
+
+                          textInputAction: TextInputAction.done,
+                          spacerSize: 10,
+                        ),
+
+                        CustomTextFieldWidget(
+                          label: "${"agentNumber".tr()} *",
+                          controller: _agentNumberController,
+                          keyboardType: TextInputType.number,
+                          fillColor: Colors.transparent,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          onValidate: (text) {
+                            if (text
+                                .toString()
+                                .isEmpty) {
+                              return ("agentNumberError").tr();
+                            }
+                            return null;
+                          },
+
+                          textInputAction: TextInputAction.done,
+                          spacerSize: 10,
+                        ),
+
+                      ],
+                    ),
+                  ),
+                ),
+
+              ],
+            ),
           ),
+        ),
+        Container(
+          decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(36),
+                topRight: Radius.circular(36),
+              ),
+              color: Colors.white),
+          padding: const EdgeInsets.symmetric(
+              horizontal: 18, vertical: 26),
+          child: CustomElevatedButtonWidget(
+            btnColor: AppColor.primary800Light,
+            textStyle: AppStyle.elevatedButtonStyle.copyWith(
+              color: AppColor.white,
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+            ),
+            btnHeight: 56,
+            text: "query".tr(),
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
 
-          const SizedBox(
-            height: 10,
-          ),
-          CustomTextWidget(
-            "commercial_desc".tr(),
-            fontColor: AppColor.blackModern700Light,
-            maxLines: 4,
-
-          ),
-
-          const SizedBox(
-            height: 20,
-          ),
-          CustomTextFieldWidget(
-            label: "license_no".tr(),
-            controller: _licenseNumberController,
-            focusNode: _licenseNumberDescFocusNode,
-            keyboardType: TextInputType.number,
-            fillColor: Colors.transparent,
-            onChanged: (txt) {
-             // changeBtnColor(_selectedServiceId, _selectedActionId);
-            },
-            onValidate: (text) {
-              if (!CommonFunctions.doesContainsLettrs(text.toString())) {
-                return ("health_license_type_error").tr();
               }
-              return null;
             },
-
-            textInputAction: TextInputAction.done,
-            spacerSize: 20,
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          CustomTextFieldWidget(
-            label: "agentNumber".tr(),
-            controller: _agentNumberController,
-
-            keyboardType: TextInputType.number,
-            fillColor: Colors.transparent,
-            onChanged: (txt) {
-              // changeBtnColor(_selectedServiceId, _selectedActionId);
-            },
-            onValidate: (text) {
-              if (!CommonFunctions.doesContainsLettrs(text.toString())) {
-                return ("health_license_type_error").tr();
-              }
-              return null;
-            },
-
-            textInputAction: TextInputAction.done,
-            spacerSize: 20,
-          ),
-          CustomElevatedButtonWidget(text: "query".tr()),
-
-        ],
-      ),
+        )
+      ],
     );
   }
 }
