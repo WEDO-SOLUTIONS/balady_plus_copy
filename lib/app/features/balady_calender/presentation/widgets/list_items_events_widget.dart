@@ -33,8 +33,8 @@ class ListItemsEventsWidget extends StatelessWidget {
               Navigator.of(context).pushNamed(
                 screenName,
                 arguments: {
-                  "licenseNumber": int.tryParse(event.entityId ?? '0'),
-                  "requestNumber": int.tryParse(event.entityId ?? '0'),
+                  "licenseNumber": event.entityId,
+                  "requestNumber": event.entityId,
                   // for appointment
                   "appointmentId": int.tryParse(event.entityId ?? '0'),
                   // for invoices

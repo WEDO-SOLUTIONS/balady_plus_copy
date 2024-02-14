@@ -123,7 +123,7 @@ class LicensesListItem extends StatelessWidget {
                 NavigationService.navigatorKey.currentState!.pushNamed(
                   screenName,
                   arguments: {
-                    "licenseNumber": license.licenseNumber,
+                    "licenseNumber": license.licenseNumber.toString(),
                     // Send requestNumber when go to HealthLicenseDetailsScreen
                     "requestNumber": license.requestNumber.toString(),
                   },
