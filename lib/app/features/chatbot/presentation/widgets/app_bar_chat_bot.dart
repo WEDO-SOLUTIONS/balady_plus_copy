@@ -16,126 +16,135 @@ class AppBarChatBot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ChatBotProvider provider = context.watch<ChatBotProvider>();
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            const Color(0xff78EA06).withOpacity(.13),
-            const Color(0xff78EA06).withOpacity(.10),
-            const Color(0xff78EA06).withOpacity(.05),
-            const Color(0xff78EA06).withOpacity(.03),
-          ],
-          begin: AlignmentDirectional.centerStart,
-          end: AlignmentDirectional.bottomEnd,
-          tileMode: TileMode.clamp,
+    return WillPopScope(
+      onWillPop: () async {
+        closeScreen(context,provider);
+        return false;
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              const Color(0xff78EA06).withOpacity(.13),
+              const Color(0xff78EA06).withOpacity(.10),
+              const Color(0xff78EA06).withOpacity(.05),
+              const Color(0xff78EA06).withOpacity(.03),
+            ],
+            begin: AlignmentDirectional.centerStart,
+            end: AlignmentDirectional.bottomEnd,
+            tileMode: TileMode.clamp,
+          ),
         ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: MediaQuery.of(context).viewPadding.top),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 14, top: 8),
-            child: MediaQuery(
-              data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
-              child: ValueListenableBuilder<List>(
-                valueListenable: provider.chatBotMessage,
-                builder: (_, listMessages, child) {
-                  List<Widget> list = [
-                    SizedBox(
-                      width: listMessages.isEmpty ? 85 : 45,
-                      height: listMessages.isEmpty ? 85 : 45,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: Padding(
-                          padding: EdgeInsets.all(
-                            listMessages.isEmpty ? 14 : 7,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: MediaQuery.of(context).viewPadding.top),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 14, top: 8),
+              child: MediaQuery(
+                data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
+                child: ValueListenableBuilder<List>(
+                  valueListenable: provider.chatBotMessage,
+                  builder: (_, listMessages, child) {
+                    List<Widget> list = [
+                      SizedBox(
+                        width: listMessages.isEmpty ? 85 : 45,
+                        height: listMessages.isEmpty ? 85 : 45,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: Padding(
+                            padding: EdgeInsets.all(
+                              listMessages.isEmpty ? 14 : 7,
+                            ),
+                            child: Image.asset(IconPath.chatBot),
                           ),
-                          child: Image.asset(IconPath.chatBot),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 12, height: 8),
-                    Text(
-                      'municipal_advisor'.tr(),
-                      style: AppStyle.countTextAthkarStyle.copyWith(),
-                    ),
-                    listMessages.isEmpty
-                        ? Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            margin: const EdgeInsets.all(12),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'chat_bot_message_welcome'.tr(),
-                                style: AppStyle
-                                    .violationSelectOptionSubtitleStyle
-                                    .copyWith(
-                                  color: Colors.black,
+                      const SizedBox(width: 12, height: 8),
+                      Text(
+                        'municipal_advisor'.tr(),
+                        style: AppStyle.countTextAthkarStyle.copyWith(),
+                      ),
+                      listMessages.isEmpty
+                          ? Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              margin: const EdgeInsets.all(12),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'chat_bot_message_welcome'.tr(),
+                                  style: AppStyle
+                                      .violationSelectOptionSubtitleStyle
+                                      .copyWith(
+                                    color: Colors.black,
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
-                                textAlign: TextAlign.center,
                               ),
-                            ),
-                          )
-                        : const SizedBox()
-                  ];
-                  return Stack(
-                    alignment: AlignmentDirectional.topEnd,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: listMessages.isEmpty ? 14 : 6,
+                            )
+                          : const SizedBox()
+                    ];
+                    return Stack(
+                      alignment: AlignmentDirectional.topEnd,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: listMessages.isEmpty ? 14 : 6,
+                          ),
+                          child: listMessages.isEmpty
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: list,
+                                )
+                              : Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: list,
+                                ),
                         ),
-                        child: listMessages.isEmpty
-                            ? Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: list,
-                              )
-                            : Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: list,
-                              ),
-                      ),
-                      IconButton(
-                        onPressed: () => closeScreen(context),
-                        icon: const Icon(Icons.close),
-                      ),
-                    ],
-                  );
-                },
+                        IconButton(
+                          onPressed: () => closeScreen(context,provider),
+                          icon: const Icon(Icons.close),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  void closeScreen(context) {
+  void closeScreen(BuildContext context,ChatBotProvider provider) {
     showDialog(
       context: context,
       builder: (_) => const CloseChatBotPopup(),
     ).then((value) {
-      if(value) {
-        BottomSheetDialog.showSheet(
-          context,
-          child: SubmitRatingSheet(
-            title: 'rating_chat_bot_title'.tr(),
-            ratingRequest: RatingRequest(
-              requestId: context.watch<ChatBotProvider>().sectionId,
-              servicesTypeId: ServicesRatingType.chatBot,
+      if(value == true) {
+        Navigator.of(context).popUntil((route) => route.isFirst);
+        if(provider.chatBotMessage.value.isNotEmpty) {
+          BottomSheetDialog.showSheet(
+            context,
+            child: SubmitRatingSheet(
+              title: 'rating_chat_bot_title'.tr(),
+              ratingRequest: RatingRequest(
+                requestId: provider.sectionId,
+                servicesTypeId: ServicesRatingType.chatBot,
+              ),
             ),
-          ),
-          isFullHeight: false,
-          isScrollControlled: true,
-          backgroundColor: Colors.white,
-          height: MediaQuery.of(context).size.height * 0.6,
-        );
+            isFullHeight: false,
+            isScrollControlled: true,
+            backgroundColor: Colors.white,
+            height: MediaQuery.of(context).size.height * 0.6,
+          );
+        }
       }
     });
   }

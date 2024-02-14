@@ -124,11 +124,11 @@ class SubmitRatingSheet extends StatelessWidget {
                                     Navigator.of(context);
                                 int? id = await provider.submitRating();
                                 if (id != null) {
-                                  CommonFunctions.showSuccess("done_send_rating");
                                   navigator.pop(true);
+                                  CommonFunctions.showSuccess("done_send_rating".tr());
                                 }
                               } else {
-                                CommonFunctions.showError('select_rating');
+                                CommonFunctions.showError('select_rating'.tr());
                               }
                             },
                           );
