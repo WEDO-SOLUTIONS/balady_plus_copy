@@ -11,6 +11,7 @@ class ContentRow extends StatelessWidget {
   final String? subtitleExtra;
   final String? actionText;
   final Widget? actionIcon;
+  final BoxDecoration? decoration;
   final void Function()? onTap;
 
   const ContentRow({
@@ -23,6 +24,7 @@ class ContentRow extends StatelessWidget {
     this.subtitleExtra,
     this.actionText,
     this.actionIcon,
+    this.decoration,
     this.onTap,
   });
 
@@ -34,6 +36,7 @@ class ContentRow extends StatelessWidget {
         // borderRadius: borderRadius,
         onTap: onTap,
         child: Container(
+          decoration: decoration,
           width: double.infinity,
           padding: const EdgeInsets.symmetric(
             vertical: Spacing.verticalPaddingInsideCell,

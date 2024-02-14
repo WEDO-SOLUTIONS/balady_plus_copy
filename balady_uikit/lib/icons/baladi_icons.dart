@@ -39,9 +39,9 @@ class BaladyIcons {
   static const IconData Chevron_Right = IconData(0x39, fontFamily: _fontFamily);
   static const IconData Chevron_Left = IconData(0x3a, fontFamily: _fontFamily);
   static const IconData Chevron_Downward = IconData(0x3b, fontFamily: _fontFamily);
-  static const IconData Drag_indicator_2 = IconData(0x3c, fontFamily: _fontFamily);
-  static const IconData Arrow_Corner_Left_S = IconData(0x3d, fontFamily: _fontFamily);
-  static const IconData Arrow_Corner_Right_S = IconData(0x3e, fontFamily: _fontFamily);
+  static const IconData Drag_indicator_2 = IconData(0x3e, fontFamily: _fontFamily);
+  static const IconData Arrow_Corner_Left_S = IconData(0x3c, fontFamily: _fontFamily);
+  static const IconData Arrow_Corner_Right_S = IconData(0x3d, fontFamily: _fontFamily);
   static const IconData Arrow_Corner_Up_S = IconData(0x3f, fontFamily: _fontFamily);
   static const IconData Arrow_Corner_Down_S = IconData(0x40, fontFamily: _fontFamily);
   static const IconData Applications = IconData(0x41, fontFamily: _fontFamily);
