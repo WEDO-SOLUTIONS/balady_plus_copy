@@ -339,6 +339,16 @@ class RouteName {
   static const SpecificServicePage = 'SpecificServicePage';
   static const jodDonationPage = 'JodDonationPage';
   static const chatbot = '/chatbot';
+
+
+
+
+
+  static const commercialLicenseOverView =
+      'OverviewCommercialLicense_Screen';
+  static const commercialLicenseQuery =
+      'QueryCommercialLicense_Screen';
+
 }
 
 class EtmamRoutesNames {
@@ -407,4 +417,7 @@ class EtmamRoutesNames {
   static const editBiddingForm = '/EditBiddingForm';
 
   static const biddingReleationTypes = '/biddingReleationTypes';
+
+
+
 }

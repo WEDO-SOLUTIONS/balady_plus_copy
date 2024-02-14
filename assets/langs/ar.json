@@ -3966,6 +3966,8 @@
 "reason_text":"سبب", 
 "attachment_text":"مرفق", 
 "National_ID":"هوية وطنية", 
-"Iqama_ID":"هوية مقيم"
-
+"Iqama_ID":"هوية مقيم",
+  "CommerciallicenseQuery": "الاستعلام عن رخصة تجارية",
+  "agentNumber": "الرقم الموحد للمنشآة",
+  "query": "استعلام"
 }

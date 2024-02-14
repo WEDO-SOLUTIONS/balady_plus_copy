@@ -4258,9 +4258,10 @@
  "attachment_text":"attachment", 
 
  "National_ID":"National ID", 
-"Iqama_ID":"Resident ID"
-
-
+"Iqama_ID":"Resident ID",
+  "CommerciallicenseQuery": "Commercial License Query",
+  "agentNumber":  "Agent Number",
+  "query": "َQuery"
 
 
 
