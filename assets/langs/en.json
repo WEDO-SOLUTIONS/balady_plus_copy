@@ -4261,7 +4261,10 @@
 "Iqama_ID":"Resident ID",
   "CommerciallicenseQuery": "Commercial License Query",
   "agentNumber":  "Agent Number",
-  "query": "َQuery"
+  "query": "Search",
+  "agentNumberError":"Please Enter Agent Number",
+  "commercial_license_error":"Please Enter License No",
+  "license_nubmer": "License NUmber"
 
 
 
