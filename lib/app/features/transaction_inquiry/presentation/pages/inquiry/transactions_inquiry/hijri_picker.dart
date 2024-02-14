@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as dialog;
 import 'package:hijri/hijri_calendar.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'dart:async';
 import 'picker_localizations.dart';
 
@@ -1093,18 +1094,18 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
   ];
 
   static const List<String> monthsListENL = [
-    "محرم",
-    "صفر",
-    "ربيع الأول",
-    "ربيع الثاني",
-    "جمادي الأول",
-    "جمادي الثاني",
-    "رجب",
-    "شعبان",
-    " رمضان",
-    "شوال",
-    "ذو القعدة",
-    "ذو الحجة"
+    "month_1",
+    "month_2",
+    "month_3",
+    "month_4",
+    "month_5",
+    "month_6",
+    "month_7",
+    "month_8",
+    "month_9",
+    "month_10",
+    "month_11",
+    "month_12"
   ];
 
   DateTimePickerAdapter({
@@ -1336,7 +1337,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
           _text = "${index + 1}${_checkStr(monthSuffix!)}";
         } else {
           if (months != null) {
-            _text = months![index];
+            _text = months![index].tr();
           } else {
             List _months = PickerLocalizations.of(context).months;
             _text = "${_months[index]}";

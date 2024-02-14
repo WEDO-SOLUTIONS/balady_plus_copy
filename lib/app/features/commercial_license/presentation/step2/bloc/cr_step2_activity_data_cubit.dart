@@ -306,7 +306,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
                   children: [
                     Expanded(
                       child: ElevatedButtonWidget.primaryCustom(
-                          text: "موافق",
+                          text: "agree".tr(),
                           onPressed: () {
                             NavigationService.goBack();
 
@@ -316,7 +316,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
                     const CustomHorizontalSpace(width: 32),
                     Expanded(
                       child: ElevatedButtonWidget.primaryCustomBorder(
-                          text: "الغاء",
+                          text: "cancelButton".tr(),
                           onPressed: () {
                             NavigationService.goBack();
                           }),

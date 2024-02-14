@@ -29,9 +29,8 @@ class NewAppointmentDialog extends StatelessWidget {
           itemCount: appointmnetTypes.length,
           itemBuilder: (context, index) => GestureDetector(
                 onTap: () {
-                  NavigationService.navigatorKey.currentState!.pushNamed(
-                      RouteName.NewAppointmentPage,
-                      arguments: index == 1);
+                  NavigationService.navigatorKey.currentState!
+                      .pushNamed(RouteName.NewAppointmentPage, arguments: null);
                 },
                 child: ImageTextContainer(
                     icon: appointmnetTypes[index].icon,

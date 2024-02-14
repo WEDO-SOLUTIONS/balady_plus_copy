@@ -61,8 +61,16 @@ class ProvidersRemoteDataSourceImpl extends ProvidersRemoteDataSource {
 
       return decodedResponse.toFuture();
     } on DioError catch (error) {
+      final decodedResponse =
+          ApigeeResponseModel<ProvidersResponseModel>.fromMap(
+              error.response?.data,
+              parsedResult: null);
+
+      String? errorMessage =
+          decodedResponse.data?.responseCode == "2" ? "no_data".tr() : null;
+      print("HEREEEEEEEE11111");
       throw ServerException(
-        error.toString(),
+        errorMessage ?? error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );

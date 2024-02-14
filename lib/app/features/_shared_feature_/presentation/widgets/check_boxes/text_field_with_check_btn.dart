@@ -20,6 +20,7 @@ class TextWithCheckBtn extends StatefulWidget {
   final int? maxLength;
   final bool enabled;
   final TextInputType? textInputType;
+  final double? topPadding;
 
   TextWithCheckBtn(
       {required this.title,
@@ -36,7 +37,8 @@ class TextWithCheckBtn extends StatefulWidget {
       this.maxLength,
       required this.validate,
       this.enabled = true,
-      this.textInputType});
+      this.textInputType,
+      this.topPadding});
   @override
   _TextWithCheckBtnState createState() => _TextWithCheckBtnState();
 }
@@ -54,7 +56,7 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      alignment: Alignment.centerLeft,
+      alignment: AlignmentDirectional.centerEnd,
       children: <Widget>[
         CustomTextFieldWidget(
           label: widget.title,
@@ -71,8 +73,14 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
           onChanged: (value) => {widget.onTextChanged(value)},
         ),
         Padding(
-          padding: EdgeInsets.only(
-              bottom: 0.0, left: 8, top: widget.maxLength == null ? 20 : 0),
+          padding: EdgeInsetsDirectional.only(
+              bottom: 0.0,
+              end: 8,
+              top: widget.maxLength == null
+                  ? widget.topPadding != null
+                      ? widget.topPadding!
+                      : 20
+                  : 0),
           child: InkWell(
             onTap: widget.isValidate
                 ? null
@@ -84,7 +92,7 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
               width: 100,
               height: 50,
               child: Align(
-                alignment: Alignment.centerLeft,
+                alignment: AlignmentDirectional.centerEnd,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [

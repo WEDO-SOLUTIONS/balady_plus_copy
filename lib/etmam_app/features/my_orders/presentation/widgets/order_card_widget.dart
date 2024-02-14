@@ -50,7 +50,7 @@ class OrderCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 320,
+        height: 342,
         margin: const EdgeInsets.symmetric(vertical: 6),
         decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(Radius.circular(12)),
@@ -65,7 +65,8 @@ class OrderCardWidget extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              padding: EdgeInsetsDirectional.only(top: 9, start: 16, end: 8),
+              padding:
+                  const EdgeInsetsDirectional.only(top: 9, start: 16, end: 8),
               child: Column(
                 children: [
                   Row(
@@ -77,7 +78,7 @@ class OrderCardWidget extends StatelessWidget {
                               orderId: orderId,
                               //   refresh: refresh,
                               onPress: onSelectMore)
-                          : SizedBox(
+                          : const SizedBox(
                               height: 20,
                             )
                     ],
@@ -90,16 +91,16 @@ class OrderCardWidget extends StatelessWidget {
                           header: trans("request_no"),
                         ),
                       ),
-                      CustomHorizontalSpace(width: 2),
+                      const CustomHorizontalSpace(width: 2),
                       Expanded(
                         child: HeaderWithDescription(
-                          details: statusText ?? '',
+                          details: ((statusText ?? "")),
                           header: trans("request_status"),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                   Row(
                     children: [
                       Expanded(
@@ -108,7 +109,7 @@ class OrderCardWidget extends StatelessWidget {
                           header: trans('etmam_order_type'),
                         ),
                       ),
-                      CustomHorizontalSpace(width: 2),
+                      const CustomHorizontalSpace(width: 2),
                       Expanded(
                         child: HeaderWithDescription(
                           details: orderServices ?? "",
@@ -117,7 +118,7 @@ class OrderCardWidget extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                   Row(
                     children: [
                       Expanded(
@@ -128,7 +129,7 @@ class OrderCardWidget extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                   if (tag != null && tag?.value != null)
                     TagWidget(
                       text: tag!.value!,

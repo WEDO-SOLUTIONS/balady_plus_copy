@@ -79,7 +79,7 @@ class ServicesRemoteDataSourceImpl extends ServicesRemoteDataSource {
       } catch (ex) {}
 
       throw ServerException(
-        error.toString(),
+        errorCode == "2" ? "no_data".tr() : error.toString(),
         errorCode: errorCode,
         statusCode: error.response?.statusCode,
         dioError: error,

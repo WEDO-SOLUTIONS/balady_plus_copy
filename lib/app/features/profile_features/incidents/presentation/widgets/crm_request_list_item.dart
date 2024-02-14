@@ -1,5 +1,4 @@
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
-import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:balady_plus/app/features/profile_features/requests/domain/entities/crm_request_item.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -32,21 +31,24 @@ class CRMRequestsListItem extends StatelessWidget {
       child: Column(
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const DrawIconBasedTypeWidget(icon: IconPath.requests),
-              const SizedBox(width: 4),
-              /* CustomTextWidget(
+              Row(
+                children: [
+                  const DrawIconBasedTypeWidget(icon: IconPath.requests),
+                  const SizedBox(width: 4),
+                  /* CustomTextWidget(
                 'request'.tr(),
                 textStyle: AppStyle.cardTitleTextStle,
               ),
               const SizedBox(width: 4),*/
-              Expanded(
-                child: CustomTextWidget(
-                  '#${request.getId()}',
-                  textStyle: AppStyle.requestNumberTextStle,
-                ),
+                  CustomTextWidget(
+                    '#${request.getId()}',
+                    textStyle: AppStyle.requestNumberTextStle,
+                  ),
+                ],
               ),
-              HomeTag(
+              StatusTag(
                 title: request.getStatusSTR(),
                 backgroundColor: AppColor.secondary100Light,
               ),
@@ -123,6 +125,60 @@ class CRMRequestsListItem extends StatelessWidget {
             },
           ),
         ],
+      ),
+    );
+  }
+}
+
+class StatusTag extends StatelessWidget {
+  final String title;
+  final Color? color;
+  final Color? backgroundColor;
+  final Color? textColor;
+  final double? fontSize;
+  final double? height;
+  final bool selected;
+
+  const StatusTag({
+    super.key,
+    required this.title,
+    this.color,
+    this.backgroundColor,
+    this.textColor,
+    this.fontSize,
+    this.height,
+    this.selected = false,
+  }) : assert(
+            (color == null && backgroundColor != null) ||
+                (color != null && backgroundColor == null),
+            "can't choose color and backgroundColor at the same time");
+  @override
+  Widget build(BuildContext context) {
+    final backgroundColor = this.backgroundColor ??
+        (selected ? color : AppColor.blackModern50Light);
+    final textColor = this.textColor ??
+        (selected ? AppColor.blackModern50Light : AppColor.blackModern600Light);
+
+    return Flexible(
+      child: Container(
+        height: height,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16.0,
+          vertical: 4.0,
+        ),
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: CustomTextWidget(
+          title,
+          maxLines: 3,
+          textStyle: AppStyle.tagStyle.copyWith(
+            color: textColor,
+            fontWeight: FontWeight.w700,
+            fontSize: fontSize,
+          ),
+        ),
       ),
     );
   }

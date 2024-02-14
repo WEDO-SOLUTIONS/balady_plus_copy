@@ -45,6 +45,7 @@ import '../../features/map_page/data/repositories/layers_repositories.dart';
 import '../../features/unknow/data/repositories/repository_implementation.dart';
 import '../../features/unknow/domain/repositories/repository.dart';
 import '../../features/weather/presentation/bloc/weather_bloc.dart';
+import '../../features/weather_alerts/presentation/bloc/weather_alerts_cubit.dart';
 import '../dependency_injection/dependency_injection_exports.dart'
     show
         CrInjection,
@@ -81,6 +82,7 @@ import 'features/objections_injection.dart';
 import 'features/renew_commercial_injection.dart';
 import 'features/retrive_dc_injection.dart';
 import 'features/violation_guide_injection.dart';
+import 'features/weather_alerts_injection.dart';
 
 /// sl -> Service Locator
 final sl = GetIt.instance;
@@ -153,11 +155,16 @@ void initialize() {
   //? Ekram
   EkramInjection.init();
 
+  //? Wather Alerts
+  WeatherAlertsInjection.init();
+
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));
   sl.registerLazySingleton(() => CRMWebService(dio: Dio()));
   sl.registerLazySingleton(
       () => BottomNavBarCubit(initialNavBar: BottomNavBar.home));
+
+  sl.registerLazySingleton(() => WeatherAlertsCubit());
 
 // Weather
   //Blocs

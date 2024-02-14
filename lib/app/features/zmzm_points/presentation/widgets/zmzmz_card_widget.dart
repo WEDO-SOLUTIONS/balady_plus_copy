@@ -15,7 +15,6 @@ class ZMZMCardWidget extends StatelessWidget {
     return Container(
         padding: EdgeInsets.all(16),
         margin: EdgeInsets.only(top: 16, bottom: 16),
-        height: 100,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16), color: AppColor.white),
         child: Row(

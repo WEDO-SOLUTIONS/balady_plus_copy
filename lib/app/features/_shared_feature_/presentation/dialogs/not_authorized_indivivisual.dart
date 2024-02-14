@@ -81,13 +81,13 @@ class NotAuthorizedIndivisualDialog extends StatelessWidget {
           const SizedBox(
             height: 64,
           ),
-          ElevatedButtonWidget.primaryCustom(
+          /* ElevatedButtonWidget.primaryCustom(
               onPressed: () => Navigator.pop(context),
               text: "contino_as_indiviusal".tr()),
           const SizedBox(
             height: 16,
-          ),
-          ElevatedButtonWidget.primaryCustomBorder(
+          ),*/
+          ElevatedButtonWidget.primaryCustom(
               onPressed: () async {
                 try {
                   sl<DelegatorsCubit>().getDelegators();

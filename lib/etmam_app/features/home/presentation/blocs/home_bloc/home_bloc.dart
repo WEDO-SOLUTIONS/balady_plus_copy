@@ -83,6 +83,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<GetAdsEvent>(_getAdsDetailsHandler);
     on<FindByRequestTypeEvent>(_findByRequestTypeEventHandler);
 
+    on<FindByRequestTypeEventChangedCity>(
+        _findByRequestTypeEventChangedCityHandler);
     add(
       GetMainServicesEvent(
         params: MainServiceParams(
@@ -103,6 +105,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       ),
     );
 
+    add(FindByRequestTypeEventChangedCity());
     add(GetAdsEvent());
   }
 
@@ -120,6 +123,26 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           .pushNamed(EtmamRoutesNames.biddingReleationTypes);
       emitter(state.copyWith(
         status: BlocStatus.success,
+        hideBidding: false,
+        errorMessage: "",
+      ));
+    });
+  }
+
+  Future<void> _findByRequestTypeEventChangedCityHandler(
+      FindByRequestTypeEventChangedCity e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loading));
+    final failureOrSuccess = await _findByRequestType(NoParams());
+    failureOrSuccess.fold((failure) {
+      var errorCode = (failure as ServerFailure).errorCode;
+      emitter(state.copyWith(
+          status: BlocStatus.failure,
+          hideBidding: errorCode ==
+              "baladystore-service-catalog.errors.request-type-has-no-relations"));
+    }, (success) {
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+        hideBidding: false,
         errorMessage: "",
       ));
     });
@@ -309,6 +332,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             cityId: CommonProperties.cityId, pageSize: "4", pageIndex: "1"),
       ),
     );
+
+    add(FindByRequestTypeEventChangedCity());
   }
 
   Future<void> _getAdsDetailsHandler(GetAdsEvent e, Emitter emitter) async {

@@ -88,8 +88,8 @@ class CommercialBoardDialog extends StatefulWidget {
 
 class _CommercialBoardDialogState extends State<CommercialBoardDialog> {
   List<DropDownItem> items = [
-    DropDownItem(name: "إرشادية", id: "1"),
-    DropDownItem(name: "إعلانية", id: "2"),
+    DropDownItem(name: "Directional".tr(), id: "1"),
+    DropDownItem(name: "Advertising".tr(), id: "2"),
   ];
   DropDownItem? selectedItem;
   double? area;
@@ -157,8 +157,8 @@ class _CommercialBoardDialogState extends State<CommercialBoardDialog> {
             isDigitsOnly: true,
             initialValue: area != null ? area.toString() : null,
             keyboardType: TextInputType.number,
-            suffixIcon: const CustomTextWidget(
-              "متر  مربع",
+            suffixIcon: CustomTextWidget(
+              "m2".tr(),
               fontSize: 12,
               fontWeight: AppFontWeight.semiBold,
               fontColor: AppColor.blackModern400Light,

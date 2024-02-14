@@ -62,7 +62,7 @@ class ServiceCardDescWidget extends StatelessWidget {
                 CustomTextWidget(
                   card.description.tr(),
                   textStyle: AppStyle.serviceCardDescriptionTextStyle,
-                  maxLines: 6,
+                  maxLines: 50,
                 ),
                 const SizedBox(height: 16),
                 (card.fees ?? 1) == -1

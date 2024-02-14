@@ -117,16 +117,18 @@ class CustomAlertDialogWidget extends StatelessWidget {
                   color: titleMessageType.color,
                   size: 25.0,
                 ),
-                if (titleMessageType != MessageType.none)
+                if (titleMessageType != MessageType.none) ...[
                   UIHelper.horizontalSmallSpace,
-                CustomTextWidget(
-                  titleMessageType.message.tr(),
-                  textStyle: AppStyle.mainTextStyle.copyWith(
-                    color: titleTextColor,
-                    fontSize: titleTextSize,
-                    fontWeight: titleTextWeight.fontWeight,
-                  ),
-                ),
+                  CustomTextWidget(
+                    titleMessageType.message.tr(),
+                    maxLines: 20,
+                    textStyle: AppStyle.mainTextStyle.copyWith(
+                      color: titleTextColor,
+                      fontSize: titleTextSize,
+                      fontWeight: titleTextWeight.fontWeight,
+                    ),
+                  )
+                ],
                 if (titleMessageType != MessageType.none)
                   UIHelper.horizontalSmallSpace,
                 Icon(
@@ -140,6 +142,7 @@ class CustomAlertDialogWidget extends StatelessWidget {
       content: content ??
           CustomTextWidget(
             contentText ?? "popUpNoMessage".tr(),
+            maxLines: 10,
             textAlign: TextAlign.center,
             textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
               color: contentTextColor,

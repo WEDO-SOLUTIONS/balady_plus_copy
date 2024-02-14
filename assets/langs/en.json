@@ -187,6 +187,7 @@
 "FillFields":"Fill the fields",
 "LicenseYears":"Number of years of licensing",
 "CleaningMechanisms":"Hygiene options",
+"boardsOptions":"Boards Options", 
 "AdvertisingOffices":"Billboards",
 "AddBoard":"Add board",
 "BoardType":"Type of board",
@@ -362,7 +363,7 @@
 "objection_sub_municipality":"SubMunicipality",
 "user_data_applicant":"Applicant data",
 "user_data_applicant_id":"ID No.",
-"user_data_applicant_type":"Kind of ID",
+"user_data_applicant_type":"ID Type",
 "user_data_applicant_name":"Name",
 "user_data_applicant_role":"Capacity",
 "user_data_applicant_mobile":"Phone No.",
@@ -728,7 +729,7 @@
 "inquiry_type1":"Type of inquiry",
 "inquiry_type1_desc":"Please select the type of inquiry you would like to provide",
 "inq_wait_response":"The reply will appear here when the inquiry is answered by the Balady technical support team. Thank you for your patience.",
-"error_only_arabic":"The reason for the date must have only Arabic letters.",
+"error_only_arabic":"The reason for the date must have only Arabic or English letters.",
 "inc_label":"Reports",
 "req_label":"Request a service",
 "inq_label":"Inquiries",
@@ -994,6 +995,7 @@
 "service_provider_desc":"Services providers list",
 "service_providers":"Service Providers",
 "delegate":"Authorization",
+"request_city_service": "Request Service", 
 "call":"Call",
 "banner_header":"Your services in one market",
 "banner_desc":"Connect with reliable and certified service providers through Etmam +",
@@ -1050,9 +1052,9 @@
 "choose_provider":"Select the service provider",
 "add":"Add",
 "etmam_order_info":"Request data",
-"order_info_provider_office":"Delegated Office",
+"order_info_provider_office":"Service Provider Office",
 "order_info_provider_office_desc":"There is a long-established fact that readable content",
-"order_info_office_name":"Office name",
+"order_info_office_name":"Service Provider name",
 "order_info_service":"Service",
 "order_info_personal_info":"Personal information",
 "order_info_personal_info_desc":"There is a long-established fact that readable content",
@@ -1772,7 +1774,7 @@
 "lbl_cost_of_previous_license":"The cost of previous license",
 "lbl_SAR":"SAR",
 "lbl_previous_license_term":"The duration of previous license",
-"lbl_day":"One day",
+"lbl_day":"Day",
 "lbl_length_of_hole":"Drilling length in meters",
 "lbl_meter":"Meter",
 "lbl_length_previuos_of_hole":"Drilling length distance of the previous license",
@@ -2502,7 +2504,7 @@
 "issueViolationDate":"The violation issuance date",
 "objectionLastApplyDate":"Objection deadline",
 "violationAmount":"Fine value",
-"clear":"Sunny",
+"clear":"Sunny", 
 "buildingRequirements_desc":"The building must be free of the following violations:",
 "buildingRequirements":"Building compliance certificate requirements",
 "buildingDesignElements":"Building design elements",
@@ -2896,7 +2898,7 @@
 "releaseText":"Issuing a tobacco activity permit",
 "eastern":"Eastern Region",
 "makkah":"Makkah",
-"madina":"City",
+"madina":"Madinah",
 "zmzm_name":"The Custodian of the Two Holy Mosques project for Zamzam water (all places included with the project)",
 "jeddah":"Jeddah",
 "park_subtitle":"Garden type",
@@ -3011,7 +3013,7 @@
 "representation_subtitle":"There is a long-established fact that content.",
 "representation_radio_option1":"Applying myself",
 "representation_option1_subtitle":"Completing the phases of issuing a compliance certificate",
-"representation_radio_option2":"Submission through an engineering office",
+"representation_radio_option2":"Submit via Engineer Office",
 "representation_option2_subtitle":"Contracting with an engineering office to examine compliance items and issue a certificate",
 "fees":"Fees",
 "free":"Free",
@@ -3858,7 +3860,8 @@
 "ekram_death_country":"Country of death",
 "ekram_death_city":"City of death",
 "ekram_baquie_approval_status":"Status of approval by the Emirate of Medina",
-"ekram_condolence_msg":"MoMRAH shares your sorrow over the death of your deceased, and expresses its sincere condolences and sympathy to his honorable family, wishing you patience and solace.",
+"ekram_condolence_msg_title":"Condolence Message", 
+"ekram_condolence_msg":"Momra shares your sorrow over the death of your deceased, and expresses its sincere condolences and sympathy to his honorable family, wishing you patience and solace.",
 "ekram_org_note":"Transportations are shown according to the chosen cemetery and the daily capacity of the transportation",
 "ekram_cemetry_note":"Cemeteries are displayed based on the daily capacity of the cemetery",
 "ekram_retrive_data_success_msg":"You can complete the application information",
@@ -4157,7 +4160,7 @@
 "violation_title_2":"Non-serious violation", 
 
 "ekram_services":"Ekram", 
-"service_provide_services":"Services Providers", 
+"service_provide_services":"City Services", 
 
 
 "submission_channels": "Service Channels",
@@ -4169,10 +4172,10 @@
 "requirements_fines": "Requirements and fines",
 
 
-"government_requirements_approvals": "تعرف على قائمة الاشتراطات والموافقات الحكومية المطلوبة بحسب نوع النشاط.",
-"service_requirements_conditions" : "متطلبات واشتراطات الخدمة",
-"fines_penalties_title": "قم بالاطلاع على التعليمات التنفيذية بلائحة الغرامات والجزاءات عن المخالفة البلدية.",
-"list_penalties_municipal_violations": "لائحة الجزاءات عن المخالفات البلدية", 
+"government_requirements_approvals": "Find out the list of requirements and government approvals required by type of activity.",
+"service_requirements_conditions" : "Service requirements and conditions",
+"fines_penalties_title": "Read the executive instructions of the list of fines and penalties for municipal violations.",
+"list_penalties_municipal_violations": " List of fines and penalties for municipal violations", 
 
 "update_photo":"Update Photo" ,
 
@@ -4205,7 +4208,62 @@
   "choosePart": "اختر الجزء",
   "parts": "الأجزاء",
   "quranSearch": "بحث  باسم السورة ... ", 
-  "reset": "تصفية العداد"
+
+  "reset": "Reset", 
+  "is_license_inside_petrol_station":"Is Shop Inside Petrol Station", 
+
+  "chat_bot_hint": "Please write your inquiry here....",
+  "chat_bot_message_welcome": "Hello and welcome. \nI am the smart assistant for the Ministry of Municipal and Rural Affairs and Housing. Please proceed with your inquiry, and I will be happy to answer you.",
+  "errors_phone_not_exists":"Phone Not Exists", 
+
+  "appointment_edit":"Edit Appointment" , 
+"update_appointment_success_msg": "The data has been successfully modified and saved", 
+"appointment_edit_time_confirm_msg":"هل أنت متأكد من حجز موعد يوم (day) الموافق (date) الساعة (hour)" , 
+
+"appointment_edit_service_confirm_msg":"The appointment will be scheduled for the closest date for the product and service you have chosen. Are you sure about the changes?", 
+
+"appointment_no_edits_confirm_msg":"Are you sure you save the changes?", 
+
+"health_license_type":"License Type", 
+"health_license_type_error":"You must enter license information",
+"COMMERCIAL":"COMMERCIAL", 
+"STREET_VENDOR":"STREET VENDOR", 
+"VEHICLE":"VEHICLE", 
+
+"building_requirements_warning": "The images shown are illustrative and do not specifically specify the nature of the violation", 
+
+
+"backgournd_location_consent":"Balady App is seeking your permission to utilize background location services. This will help us accurately determine your location for various smart city services, including weather alerts that provide important information tailored to your geographical area.\n\n Would you like to activate this service?", 
+ "backgournd_location_consent_agree":"Agree" ,
+ "backgournd_location_consent_non_agree":"Disagree", 
+
+ "Damaged":"Damaged", 
+ "BRoken":"Broken", 
+ "Abandoned":"Abandoned", 
+
+ "Morning_Remembrances" :"Morning Remembrances",
+ "BedtimeـRemembrances":"Bedtime Remembrances", 
+ "EveningـRemembrances":"Evening Remembrances", 
+ "Post-PrayerـRemembrances": "Post-Prayer Remembrances",  
+ "Praises":"Praises", 
+ "Remembrance_of_waking_up":"Remembrance of waking up", 
+ "Prayer_Remembrances":"Prayer Remembrances", 
+ "Comprehensive_Supplications":"Comprehensive Supplications", 
+ "sar_text":"SAR",
+ "Directional":"Directional", 
+ "Advertising":"Advertising", 
+ "BuildingNature": "Building Nature", 
+ "edit_owner_data":"Edit Owner Data", 
+ "reason_text":"reason", 
+ "attachment_text":"attachment", 
+
+ "National_ID":"National ID", 
+"Iqama_ID":"Resident ID"
+
+
+
+
+
 
 
 

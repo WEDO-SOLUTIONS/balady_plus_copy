@@ -64,26 +64,26 @@ class Data {
 }
 
 class AppointmentItem {
-  AppointmentItem({
-    this.id,
-    this.municipalityId,
-    this.municipalityName,
-    this.subMunicipalityId,
-    this.subMunicipalityName,
-    this.visitDate,
-    this.visitTime,
-    this.serviceConfigId,
-    this.serviceName,
-    this.statusId,
-    this.statusName,
-    this.cancelable,
-    this.printable,
-    this.printUrl,
-    this.mainClassName,
-    this.subClassName,
-    this.appointmentDetails,
-    this.otherValueName,
-  });
+  AppointmentItem(
+      {this.id,
+      this.municipalityId,
+      this.municipalityName,
+      this.subMunicipalityId,
+      this.subMunicipalityName,
+      this.visitDate,
+      this.visitTime,
+      this.serviceConfigId,
+      this.serviceName,
+      this.statusId,
+      this.statusName,
+      this.cancelable,
+      this.printable,
+      this.printUrl,
+      this.mainClassName,
+      this.subClassName,
+      this.appointmentDetails,
+      this.otherValueName,
+      this.editable});
 
   int? id;
   String? municipalityId;
@@ -97,6 +97,7 @@ class AppointmentItem {
   int? statusId;
   String? statusName;
   bool? cancelable;
+  bool? editable;
   bool? printable;
   dynamic printUrl;
   String? mainClassName;
@@ -107,6 +108,7 @@ class AppointmentItem {
   factory AppointmentItem.fromJson(Map<String, dynamic> json) =>
       AppointmentItem(
         id: json["id"],
+        editable: json["editable"],
         municipalityId: json["municipalityId"],
         municipalityName: json["municipalityName"],
         subMunicipalityId: json["subMunicipalityId"],

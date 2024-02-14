@@ -232,10 +232,10 @@ class CreateDCState extends Equatable {
     return [
       DropDownItem(
         id: "Damaged",
-        name: "تالفة",
+        name: "Damaged".tr(),
       ),
-      DropDownItem(id: "BRoken", name: "آلية معطلة"),
-      DropDownItem(id: "Abandoned", name: "مهملة"),
+      DropDownItem(id: "BRoken", name: "BRoken".tr()),
+      DropDownItem(id: "Abandoned", name: "Abandoned".tr()),
     ];
   }
 
@@ -288,8 +288,8 @@ class CreateDCState extends Equatable {
     ];
   }
 
-  String get arLetters =>
-      "${middleLetter ?? ""} ${rightLetter ?? ""} ${leftLetter ?? ""}";
+  String get arLetters => CommonFunctions.getCarPlateArabicLetters(
+      "${rightLetter ?? ""} ${middleLetter ?? ""} ${leftLetter ?? ""}");
   String get arNumbers =>
       CommonFunctions.replaceEnglishNumberWithArabic(plateDigit ?? "");
   String get enNumbers => plateDigit ?? "";

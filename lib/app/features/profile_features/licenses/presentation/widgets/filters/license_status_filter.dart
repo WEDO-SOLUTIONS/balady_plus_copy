@@ -38,7 +38,7 @@ class LicensesStatusFilter extends StatelessWidget {
               dialogKeyName: DialogName.licensesProductsFilters,
               currentRouteName: RouteName.licenses,
               child: BottomSheetList(
-                title: "product".tr(),
+                title: "license_status".tr(),
                 items: items,
                 selectedValue: state.selectedLicenseStatus?.name,
                 onTap: (item) {

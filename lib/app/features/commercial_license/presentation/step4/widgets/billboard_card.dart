@@ -57,7 +57,7 @@ class BillboardCard extends StatelessWidget {
           ),
           SizedBox(height: 4),
           CustomTextWidget(
-            "${type.area} متر مربع",
+            "${type.area}  ${"m2".tr()}",
             fontColor: AppColor.blackModern600Light,
             fontSize: 16,
             fontWeight: AppFontWeight.semiBold,

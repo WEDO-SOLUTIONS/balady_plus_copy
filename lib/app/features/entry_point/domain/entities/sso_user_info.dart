@@ -126,9 +126,9 @@ class SsoUserInfo extends Equatable {
   String getIdTypeName() {
     if (idType != null) {
       if (idType?.startsWith("1") ?? false) {
-        return "هوية وطنية";
+        return "National_ID".tr();
       } else {
-        return "هوية مقيم";
+        return "Iqama_ID".tr();
       }
 
 // هوية وطنيه ١
@@ -193,6 +193,10 @@ class SsoUserInfo extends Equatable {
 
   String getGender() {
     return sex == "1" ? "male".tr() : "female".tr();
+  }
+
+  String? getFullName() {
+    return CommonFunctions.isAppAR ? arName : enName;
   }
 
   @override

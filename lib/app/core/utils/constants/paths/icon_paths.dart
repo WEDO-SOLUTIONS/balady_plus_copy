@@ -425,5 +425,9 @@ class IconPath {
 
 
 
+  static const chatBot = '${_pngIconPath}chat_bot$_png';
+
+
+
 }
 ///Users/abdelrahmanismail/StudioProjects/balady-plus/assets/icons/svg/jod/apple_pay.svg

@@ -30,7 +30,7 @@ class ManagerInfoCard extends StatelessWidget {
                   SizedBox(width: 4),
                   Flexible(
                     child: CustomTextWidget(
-                      "مدير الموقع",
+                      "managerLocation".tr(),
                       fontColor: AppColor.blackModern600Light,
                       fontSize: 18,
                       fontWeight: AppFontWeight.bold,
@@ -67,7 +67,7 @@ class ManagerInfoCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomTextWidget(
-                          "الحنس",
+                          "personal_gender".tr(),
                           fontColor: AppColor.primary700Light,
                           fontSize: 10,
                           fontWeight: AppFontWeight.semiBold,

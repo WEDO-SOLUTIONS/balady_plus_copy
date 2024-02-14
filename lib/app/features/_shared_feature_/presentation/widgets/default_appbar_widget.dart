@@ -49,7 +49,7 @@ class DefaultAppBarWidget extends StatelessWidget
       title: CustomTextWidget(
         title ?? "",
         fontSize: 20,
-        maxLines: 1,
+        maxLines: 3,
         textOverflow: TextOverflow.ellipsis,
         fontWeight: AppFontWeight.bold,
         fontColor: AppColor.blackModern700Light,

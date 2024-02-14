@@ -1,6 +1,8 @@
 import 'package:balady_plus/app/core/utils/constants/apis/api_headers.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_plus/app/features/municipal_services/municipal_advisor/data/models/building_compliance_model.dart';
+import 'package:balady_plus/app/features/municipal_services/municipal_advisor/data/models/civil_defence_model.dart';
+import 'package:balady_plus/app/features/municipal_services/municipal_advisor/domain/entities/validate_additional_activities_params.dart';
 import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:dio/dio.dart' show DioError, Options;
 import 'package:localize_and_translate/localize_and_translate.dart'
@@ -80,6 +82,11 @@ abstract class MunicipalAdvisorRemoteDataSource {
   Future<List<String>> getCivilDefensePredefinedConditions(
     KeyParamsModel params,
   );
+
+  Future<List<CivilDefenceModel>> getCivilDefenseConditions(
+    KeyParamsModel params,
+  );
+
   Future<List<CleaningEntity>> getCleaningMechanisms(
     KeyParamsModel params,
   );
@@ -137,6 +144,9 @@ abstract class MunicipalAdvisorRemoteDataSource {
   Future<List<BuildingComplianceModel>> getBuildingCompliance(GISParams params);
 
   Future<String> getImageUrl(GISParams params);
+
+  Future<bool> validateAdditionalActivities(
+      ValidateAdditionalActivitiesParams params);
 }
 
 class MunicipalAdvisorRemoteDataSourceImplementation
@@ -478,18 +488,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
 
       predefinedConditionsResult.map<String>((e) => e as String).toList();
 
-      response = await webService.dio.get(
-        '${ApiUrl.civilDefense}/${params.key}',
-      );
-
-      final data = response.data;
-      data.toString().successLog();
-
-      final result = ResponseBodyModel.fromMap(data).data?.result;
-
-      final namesList = result.map((e) => e['name'] as String).toList();
-
-      return [...predefinedConditionsResult, ...namesList];
+      return [
+        ...predefinedConditionsResult,
+      ];
     } on DioError catch (error) {
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {
@@ -1164,10 +1165,15 @@ class MunicipalAdvisorRemoteDataSourceImplementation
   Future<bool> saveAdditionalActivities(
       AdditionalActivitiesParamsModel params) async {
     try {
-      final response = await webService.dio.post(
-          '${ApiUrl.additionalActivity}/${params.consultationKey}',
-          data: params.ids.toList(),
-          options: Options(headers: {"Content-Type": "application/json"}));
+      final response = await webService.dio
+          .post('${ApiUrl.additionalActivity}/${params.consultationKey}',
+              data: {
+                "additionalActivities": params.ids
+                    .map((e) => {"activityId": e.$1, "area": e.$2})
+                    .toList(),
+                "hasSalamaPermit": params.hasSalamaPermit
+              },
+              options: Options(headers: {"Content-Type": "application/json"}));
 
       final data = response.data;
       data.toString().successLog();
@@ -1177,9 +1183,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       return true;
     } on DioError catch (error) {
       "DioError $error".errorLog();
-      if (error is NoDataFoundException) {
+      /* if (error is NoDataFoundException) {
         return false;
-      }
+      }*/
 
       throw ServerException(
         error.toString(),
@@ -1293,6 +1299,80 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       );
     } catch (ex) {
       "Catched $ex".errorLog();
+      throw ServerException("errors_server_error_2".tr());
+    }
+  }
+
+  @override
+  Future<List<CivilDefenceModel>> getCivilDefenseConditions(
+      KeyParamsModel params) async {
+    var response;
+    try {
+      response = await webService.dio
+          .post('${ApiUrl.civilDefense}/${params.key}', data: {
+        "civilDefenseActivityRequestDtoList":
+            params.civilDefenseActivityRequestDtoList?.map((e) {
+                  return {"activityId": e.$1, "area": e.$2};
+                }).toList() ??
+                []
+      });
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return result
+          .map<CivilDefenceModel>(
+              (e) => CivilDefenceModel.fromMap(e as Map<String, dynamic>))
+          .toList();
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return [];
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<bool> validateAdditionalActivities(
+      ValidateAdditionalActivitiesParams params) async {
+    try {
+      final response = await webService.dio
+          .post(ApiUrl.validActivitiesAreasUrl, data: params.toMap());
+
+      final data = response.data;
+      data.toString().successLog();
+
+      ResponseBodyModel.fromMap(data).data;
+
+      return true;
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      "Catched $ex".successLog();
       throw ServerException("errors_server_error_2".tr());
     }
   }

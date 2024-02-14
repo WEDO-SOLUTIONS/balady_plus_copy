@@ -39,6 +39,8 @@ class WebService {
       var headers = {
         'Authorization': 'Bearer ${CommonProperties.token}',
         "x-channel-id": "MOBILE",
+        "lang": translator.activeLanguageCode,
+        "Accept-Language": translator.activeLanguageCode,
       };
 
       if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
@@ -122,6 +124,8 @@ class WebService {
       var headers = {
         'Authorization': 'Bearer ${CommonProperties.token}',
         "x-channel-id": "MOBILE",
+        "lang": translator.activeLanguageCode,
+        "Accept-Language": translator.activeLanguageCode,
       };
 
       if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
@@ -222,6 +226,8 @@ class WebService {
           "verifyingKEY": verifyingKEY,
           "SSOToken": CommonProperties.token ?? "",
           "x-channel-id": "MOBILE",
+          "lang": translator.activeLanguageCode,
+          "Accept-Language": translator.activeLanguageCode,
         };
 
         print(headers);
@@ -306,7 +312,7 @@ class WebService {
 
     String queryString = "";
     var data = body != null ? json.encode(body) : null;
-
+    print(data);
     if (relativePath != null) {
       queryString = relativePath;
     }
@@ -336,6 +342,8 @@ class WebService {
         "verifyingKEY": verifyingKEY,
         "SSOToken": CommonProperties.token ?? "",
         "x-channel-id": "MOBILE",
+        "lang": translator.activeLanguageCode,
+        "Accept-Language": translator.activeLanguageCode,
       };
 
       if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
@@ -623,7 +631,7 @@ class WebService {
     }
 
     var requestUrl = pegaBaseURL + url + queryString;
-
+    print(requestUrl);
     Map<String, dynamic> result = {};
     try {
       String basicAuthForGuest = "";
@@ -637,6 +645,7 @@ class WebService {
       var headers = {
         'Content-type': 'application/json',
         "x-channel-id": "MOBILE",
+        "lang": translator.activeLanguageCode,
         if (CommonProperties.isLoggedIn)
           'Authorization': 'Bearer ${sl<EntryPointCubit>().state.token?.token}'
         else
@@ -739,6 +748,7 @@ class WebService {
           await http.post(Uri.parse(requestUrl), body: data, headers: {
         'Content-type': 'application/json',
         "x-channel-id": "MOBILE",
+        "lang": translator.activeLanguageCode,
         if (CommonProperties.isLoggedIn)
           'Authorization': 'Bearer ${sl<EntryPointCubit>().state.token?.token}'
         else
@@ -818,6 +828,8 @@ class WebService {
             {
               "Content-Type": "application/json",
               "x-channel-id": "MOBILE",
+              "lang": translator.activeLanguageCode,
+              "Accept-Language": translator.activeLanguageCode,
             },
       );
 
@@ -887,6 +899,8 @@ class WebService {
               {
                 "Content-Type": "application/json",
                 "x-channel-id": "MOBILE",
+                "lang": translator.activeLanguageCode,
+                "Accept-Language": translator.activeLanguageCode,
               },
         );
       } else {
@@ -972,6 +986,7 @@ class WebService {
           "verifyingKEY": verifyingKEY,
           "SSOToken": CommonProperties.token ?? "",
           "x-channel-id": "MOBILE",
+          "lang": translator.activeLanguageCode,
         },
       );
       //print("response: " + response.headers.toString());
@@ -1035,6 +1050,7 @@ class WebService {
       var headers = {
         'Authorization': 'Bearer ${CommonProperties.token}',
         "x-channel-id": "MOBILE",
+        "lang": translator.activeLanguageCode,
       };
 
       if (extraHeadersParams != null) headers.addAll(extraHeadersParams);

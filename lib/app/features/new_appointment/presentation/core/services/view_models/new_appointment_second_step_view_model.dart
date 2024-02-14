@@ -90,4 +90,11 @@ class NewAppointmentSecondStepViewModel extends BaseViewModel {
 
     return response != null;
   }
+
+  Future<bool> updateAppointment() async {
+    SaveAppointmentResponse? response = await dataModel.updateAppointment();
+    notifyListeners();
+
+    return response != null;
+  }
 }

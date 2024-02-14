@@ -139,8 +139,9 @@ class ApiConstants {
   static const String CrInfoService = '$HelathCertificatesURL/cr-info/';
 
 // License Info Service
-  static const String LicenseInfoService =
-      '$HelathCertificatesURL/license-for-health-certifictes';
+
+  static String LicenseInfoService(String type, String licenseNo) =>
+      '/v2/mobile-health-certificates/certificate-info/$type/$licenseNo';
 
 // Service Rating Info URL
   static const String RatingInfo = '$HelathCertificatesURL/ratings/';
@@ -176,6 +177,8 @@ class ApiConstants {
   static const String AppointmentServiceConfig =
       '$AppointmentURL/service-config/';
   static const String AppointmentSave = '$AppointmentURL/save-appointment';
+  static String AppointmentUpdate(int id) =>
+      '/v1/appointments-mobile-services/appoinments/$id';
 
   static const String AppointmentUploadFile =
       '$AppointmentURL/appointment-upload-attachment/1091';

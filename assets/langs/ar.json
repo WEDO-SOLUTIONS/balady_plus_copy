@@ -124,7 +124,7 @@
   "issue_health_certificate": "إصدار شهادة صحية",
   "issue_trade_license": "إصدار رخصة تجارية",
   "move_diseased": "نقل وتجهيز الموتى",
-  "municipal_advisor": "المساعد الذكي",
+  "municipal_advisor": "مستشار بلدي",
   "prayer_times": "أوقات الصلاة",
   "request_service": "طلب خدمة بلدية",
   "scanner": "ماسح الرمز السريع",
@@ -143,7 +143,7 @@
   "_municipalAdvisorComments": "أي شيء يخص المستشار الذكي",
   "startChatting": "ابدأ المحادثة بكتابة رسالة",
   "chatHint": "اكتب إجابتك هنا... ",
-  "municipalAdvisorWelcome": "أهلا بك في المستشار الذكي!",
+  "municipalAdvisorWelcome": "أهلا بك في مستشار بلدي!",
   "municipalAdvisorHint": "يقدم لك المستشار دراسة شاملة تتطلب الإجابة على 10 أسئلة، مدة المحادثة 15 دقيقة.\r\n\r\nتتكون النتيجة النهائية للدراسة من:   \r\nمتطلبات الترخيص\r\nدراسة مالية\r\nالمرفقات المطلوبة للتقديم \r\n\r\nيمكنك أيضا الحصول على كل قسم من الدراسة بشكل منفصل.\r\n\r\nملاحظة: في حال إنهاء المحادثة قبل النتيجة الأخيرة سيتم إعادة المحادثة.",
   "municipalAdvisorTopic": "ما الذي تريد معرفته اليوم ؟",
   "municipalAdvisorChooseHint": "اختر من القائمة التالية",
@@ -203,6 +203,7 @@
   "FillFields": "قم بتعبئة الحقول",
   "LicenseYears": "عدد سنوات الترخيص",
   "CleaningMechanisms": "خيارات النظافة",
+  "boardsOptions":"خيارات اللوحة", 
   "AdvertisingOffices": "اللوحات الإعلانية",
   "AddBoard": "+ إضافة لوحة",
   "BoardType": "نوع اللوحة",
@@ -1019,7 +1020,7 @@
   "call": "اتصال",
   "banner_header": "خدماتك في سوق واحد",
   "banner_desc": "تواصل مع مزودي خدمات موثوقين\r\nومعتمدين من خلال اتمام+",
-  "change_city_dialog_header": "اختر المتجر",
+  "change_city_dialog_header": "اختر المدينة",
   "choose_city": "تأكيد",
   "_favoritePageComment": "أي شيء يخص صفحة المفضلة",
   "favorite": "المفضلة",
@@ -1121,7 +1122,7 @@
   "evaluate_office": "تقييم مقدم الخدمة",
   "_onBoardingComments": "_onBoardingComments",
   "on_boarding_header": "خصص تجربتك حسب مدينتك",
-  "choose_your_city": "اختر المتجر",
+  "choose_your_city": "اختر المدينة",
   "city_search_hint": "مثال: الرياض",
   "etmam_log_in_first": "أنت لم تسجل الدخول",
   "log_in_first_desc": "يرجى تسجيل الدخول عن طريق بوابة بلدي حتى تستطيع استخدام التطبيق بشكل كامل.",
@@ -1191,6 +1192,7 @@
   "no_offers": "لا توجد عروض",
   "manadatory": "(الزامي) ",
   "office_delegated": "تم تفويض هذا المكتب",
+  "request_city_service": "طلب الخدمة", 
   "bidding_warning_msg": "عزيزي المستفيد،، سوف يتم ارسال طلب عرض أسعار للخدمة المختارة من قبلكم لمزودي الخدمة ويمكنكم استقبال العروض من قبل مزودي الخدمة والمفاضلة بينها واختيار الأنسب",
   "financialAttachmentId": "العرض المالي",
   "technicalAttachmentId": "العرض الفني",
@@ -2925,7 +2927,7 @@
   "daily_rent": "القيمة الإيجارية اليومية",
   "new_update": "تحديث جديد!",
   "boardSpaceEntry": "ادخل مساحة اللوحة",
-  "start_from": "يبدأ من ",
+  "start_from": "يبدأ من ", 
   "space_label_shop": "المساحة الكليه للمحل",
   "space_label_shop_hint": "ادخل المساحة الكليه للمحل",
   "balady_works": "خدمات الترخيص والمخططات",
@@ -3111,7 +3113,7 @@
 "review1_section_2":"وجود ملصقات إعلانية قديمة أو متهالكة على واجهة المبنى",
 "review1_section3":" وجود وجود لوحات إعلانية لمحلات تجارية مغلقة بتراخيص غير سارية أو منتهية، أو وجود الأساسات الحديدية لتثبيت اللوحات المزالة.",
 "review2_section1":"وجود حواجز مشوهه (أشاير حديد / شينكو) على    سور الارتداد أو السطح",
-"review2_section2":"وجود وحدات تكييف منفصلة في كامل واجهة المبنى المطل على الشارع التجاري",
+"review2_section2":"وجود وحدات تكييف منفصلة في كامل واجهة المبنى المطل على الشارع التجاري", 
 "review2_section3":"وجود تمديدات (كهربائية – صحية - ميكانيكية) ظاهرة في كامل واجهة المبنى المطل على الشارع التجاري",
 "review2_section4":"وجود تشققات أو تلف (دهانات، تكسيات) أو صدأ على المواد المعدنية في كامل واجهة المبنى بإجمالي مساحة تزيد عن متر مربع",
 "review3_section1":"عدم تنفيذ منحدر للأشخاص ذوي الإعاقة وفق (الدليل المبسط لمعايير الوصول الشامل للمنشآت)",
@@ -3444,7 +3446,7 @@
   "ekram_fourth_name":"الاسم الرابع", 
   "ekram_death_country":"دولة الوفاة",
   "ekram_death_city":"مدينة الوفاة", 
-  "ekram_condolence_msg_title":"رسالة تعزية", 
+  "ekram_condolence_msg_title":"رسالة تعزية",  
   "ekram_condolence_msg":"تشارككم وزارة الشؤون البلدية والقروية والإسكان أحزانكم في وفاة فقيدكم، وتتقدم بخالص التعازي والمواساة لأسرته الكريمة، راجين لكم الصبر والسلوان",
   "ekram_org_note":"تعرض جهات النقل بناء على المقبرة التي تم اختيارها والسعة اليومية للجهة", 
   "ekram_cemetry_note":"تعرض المقابر بناء على السعة اليومية للمقبرة", 
@@ -3899,7 +3901,7 @@
 "violation_title_2":"مخالفة غير جسيمة", 
 
 "ekram_services":"إكرام", 
-"service_provide_services":"خدمات مقدمي الخدمات", 
+"service_provide_services":"خدمات المدن", 
 
 
 "submission_channels": "قنوات التقديم",
@@ -3916,8 +3918,54 @@
 "fines_penalties_title": "قم بالاطلاع على التعليمات التنفيذية بلائحة الغرامات والجزاءات عن المخالفة البلدية.",
 "list_penalties_municipal_violations": "لائحة الجزاءات عن المخالفات البلدية", 
 
-"update_photo":"تحديث الصورة"
+"update_photo":"تحديث الصورة", 
+"is_license_inside_petrol_station":"هل المحل داخل محطة وقود ؟", 
+
+"chat_bot_hint": "اكتب استفسارك هنا...",
+"chat_bot_message_welcome": "أهلًا وسهلًا\n أنا المساعد الذكي لوزارة الشؤون البلدية والقروية والاسكان، تفضل باستفسارك وسأكون سعيدًا بالإجابة عليك", 
+
+"errors_phone_not_exists":"رقم الهاتف غير متوفر", 
+"appointment_edit":"تعديل الموعد" , 
+"update_appointment_success_msg": "تم تعديل وحفظ البيانات بنجاح", 
+"appointment_edit_time_confirm_msg":"هل أنت متأكد من حجز موعد يوم (day) الموافق (date) الساعة (hour)" , 
+
+"appointment_edit_service_confirm_msg":"سيتم جدولة الموعد على أقرب موعد للمنتج والخدمة الذي تم اختياره , هل انت متأكد من التغييرات", 
+
+"appointment_no_edits_confirm_msg":"هل أنت متأكد من حفظ التغييرات؟", 
+
+"health_license_type":"نوع الرخصة", 
+"health_license_type_error":"يجب إدخال بيانات الرخصة" ,
+"COMMERCIAL":"رخصة محل", 
+"STREET_VENDOR":"رخصة منفذ بيع", 
+"VEHICLE":"رخصة عربة متنقلة", 
+"building_requirements_warning":"الصور المعروضة توضيحية ولا تحدد شكل المخالفة بشكل خاص", 
 
 
- 
+
+"backgournd_location_consent":"يستخدم تطبيق بلدي خدمة تحديد المواقع في خلفية التطبيق، ويساعدنا ذلك في تحديد موقعك لاستخدامه في خدمات المدن الذكية، بما في ذلك خدمة تنبيهات الطقس التي تقدم معلومات هامة بحسب موقعك الجغرافي.\n\n هل ترغب في تفعيل هذه الخدمة؟", 
+ "backgournd_location_consent_agree":"موافق" ,
+ "backgournd_location_consent_non_agree":"غير موافق", 
+
+ "Damaged":"تالفة", 
+ "BRoken":"آلية معطلة", 
+ "Abandoned":"مهملة", 
+
+ "Morning_Remembrances" :"اذكار الصباح",
+ "BedtimeـRemembrances":"اذكار النوم", 
+ "EveningـRemembrances":"اذكار المساء", 
+ "Post-PrayerـRemembrances":"اذكار بعد الصلاة", 
+ "Praises":"التسابيح", 
+ "Remembrance_of_waking_up":"اذكار الاستيقاظ من النوم", 
+ "Prayer_Remembrances":"اذكار الصلاة", 
+ "Comprehensive_Supplications":"جوامع الدعاء", 
+ "sar_text":"ر.س", 
+ "Directional":"إرشادية", 
+ "Advertising":"إعلانية", 
+ "BuildingNature": "طبيعة الموقع", 
+"edit_owner_data":"تعديل بيانات المالك", 
+"reason_text":"سبب", 
+"attachment_text":"مرفق", 
+"National_ID":"هوية وطنية", 
+"Iqama_ID":"هوية مقيم"
+
 }

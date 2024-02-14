@@ -85,8 +85,8 @@ class _VHRDetailsPageState extends State<VHRDetailsPage> {
                                 ],
                               ),
                               StatusTag(
-                                  name:
-                                      state.pageParams?.details.statusAr ?? "",
+                                  name: state.pageParams?.details.getStatus() ??
+                                      "",
                                   onTap: () async {
                                     await BottomSheetDialog.showDraggableSheet(
                                         context,
@@ -107,8 +107,8 @@ class _VHRDetailsPageState extends State<VHRDetailsPage> {
                                               .requestDetails
                                               ?.incidentInformation
                                               ?.visibleFlag,
-                                          status: state
-                                              .pageParams?.details.statusAr,
+                                          status: state.pageParams?.details
+                                              .getStatus(),
                                           bloc: context.read<CrmDetailsBloc>(),
                                           pzInsKey: state.pageParams?.details
                                                   ?.pzInsKey ??

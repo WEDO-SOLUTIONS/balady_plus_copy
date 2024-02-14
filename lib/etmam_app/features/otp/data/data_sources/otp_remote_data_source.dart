@@ -50,7 +50,7 @@ class OTPRemoteDataSourceImpl extends OTPRemoteDataSource {
               ApiHeaders.xSessionId: CommonProperties.sessionId,
               "x-fe-client-ip": CommonProperties.clientIP,
               "x-fe-deployment-id": CommonProperties.appVersion,
-              "Accept-Language": "ar",
+              "Accept-Language": translator.activeLanguageCode,
               "x-fe-service-id": "submit",
               "Content-Type": "application/json",
             },
@@ -112,7 +112,7 @@ class OTPRemoteDataSourceImpl extends OTPRemoteDataSource {
             ApiHeaders.xSessionId: CommonProperties.sessionId,
             "x-fe-client-ip": CommonProperties.clientIP,
             "x-fe-deployment-id": CommonProperties.appVersion,
-            "Accept-Language": "ar",
+            "Accept-Language": translator.activeLanguageCode,
             "x-fe-service-id": "submit",
             "Content-Type": "application/json",
           }));

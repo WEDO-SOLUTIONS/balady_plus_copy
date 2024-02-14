@@ -11,6 +11,7 @@ enum MunicipalAdvisorSteps {
   atm,
   area,
   inputSummary,
+  salamaPermitQuestion,
   confirmInformation,
   changeInformation,
   requirements,

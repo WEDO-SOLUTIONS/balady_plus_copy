@@ -19,7 +19,7 @@ class WorkerTypeComponent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "نوع العاملين",
+          "step2WorkerType".tr(),
           style: AppStyle.mainTextSecondaryStyle.copyWith(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
@@ -79,6 +79,7 @@ class WorkerTypeItem extends StatelessWidget {
           ),
           child: CustomTextWidget(
             workersType.name.tr(),
+            maxLines: 3,
             textOverflow: TextOverflow.ellipsis,
             fontColor: workersType == selectedWorkersType
                 ? AppColor.blackModern50Light

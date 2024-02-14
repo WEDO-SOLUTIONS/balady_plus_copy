@@ -118,14 +118,13 @@ class _AllServicesPageState extends State<AllServicesPage> {
                 itemCount: searchedServices.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 4,
-                  mainAxisSpacing: 30.0,
+                  mainAxisSpacing: 40.0,
                   crossAxisSpacing: 5.0,
                 ),
                 itemBuilder: (_, index) {
                   return ServiceIcon(
                     service: searchedServices[index],
                     width: 72,
-                    height: 112,
                     backgroundColor: Color(0xffF5F7FA),
                   );
                 },

@@ -357,17 +357,20 @@ class Helpers {
         String queryString = qeuryParms ?? "";
 
         String message = data != null ? data.toString() : "";
-        String URL = url ?? "";
-        FlutterUxcam.logEventWithProperties(url ?? "Error", {
-          "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
-          "Data": data.length <= 1024 ? data : data.substring(0, 1023),
-          "QueryString": queryString.length <= 1024
-              ? queryString
-              : queryString.substring(0, 1023),
-          "Message":
-              message.length <= 1024 ? message : message.substring(0, 1023),
-          "Environment": sl<EnvType>().name
-        });
+        String? URL = url;
+
+        if (URL != null) {
+          FlutterUxcam.logEventWithProperties(url ?? "Error", {
+            "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
+            "Data": data.length <= 1024 ? data : data.substring(0, 1023),
+            "QueryString": queryString.length <= 1024
+                ? queryString
+                : queryString.substring(0, 1023),
+            "Message":
+                message.length <= 1024 ? message : message.substring(0, 1023),
+            "Environment": sl<EnvType>().name
+          });
+        }
       }
     } catch (ex) {}
   }

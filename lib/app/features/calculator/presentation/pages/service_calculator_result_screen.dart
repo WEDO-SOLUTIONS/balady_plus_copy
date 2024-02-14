@@ -20,18 +20,12 @@ import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_w
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../data/model/calculator_results_page_params.dart';
 
 class ServiceCalculatorResultScreen extends StatefulWidget {
-  CalculateCostV03Response? calculateCostV03Response;
-  CalculateCostResponse? calculateCostResponse;
-  CalculateDiggingResponse? calculateDiggingResponse;
-
-  ServiceCalculatorResultScreen(
-      {Key? key,
-      this.calculateCostV03Response,
-      this.calculateCostResponse,
-      this.calculateDiggingResponse})
-      : super(key: key);
+  ServiceCalculatorResultScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   _ServiceCalculatorResultScreenState createState() =>
@@ -46,27 +40,33 @@ class _ServiceCalculatorResultScreenState
   @override
   void initState() {
     super.initState();
-    if (widget.calculateCostV03Response != null) {
-      totalCost = widget.calculateCostV03Response?.totalCost;
-    } else if (widget.calculateCostResponse != null) {
-      totalCost = widget.calculateCostResponse?.totalCost;
-    } else if (widget.calculateDiggingResponse != null) {
-      totalCost = widget.calculateDiggingResponse?.totalCost;
-    }
+
     CommonFunctions.sendEventToAnalytics(AppEvents.calculatorSuccess);
     CommonFunctions.sendUXCamEvent(UXCamEvents.finishServiceFeesCalculator);
   }
 
   @override
   Widget build(BuildContext context) {
+    CalculatorResultsPageParams params = ModalRoute.of(context)
+        ?.settings
+        .arguments as CalculatorResultsPageParams;
+
+    if (params.calculateCostV03Response != null) {
+      totalCost = params.calculateCostV03Response?.totalCost;
+    } else if (params.calculateCostResponse != null) {
+      totalCost = params.calculateCostResponse?.totalCost;
+    } else if (params.calculateDiggingResponse != null) {
+      totalCost = params.calculateDiggingResponse?.totalCost;
+    }
+
     return Scaffold(
         appBar: DefaultAppBarWidget(
           title: Helpers.translatingWord('lbl_final_cost'),
         ),
-        body: body());
+        body: body(params));
   }
 
-  Widget body() {
+  Widget body(CalculatorResultsPageParams params) {
     if (isLoading) {
       return const Center(child: CustomCircularLoadingWidget());
     } else {
@@ -126,53 +126,55 @@ class _ServiceCalculatorResultScreenState
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
                           children: <Widget>[
-                            if (widget.calculateCostV03Response != null)
-                              ...?widget.calculateCostV03Response?.costsInfo
+                            if (params.calculateCostV03Response != null)
+                              ...?params.calculateCostV03Response?.costsInfo
                                   ?.map((title) => FeeWidget(info: title))
                                   .toList(),
-                            if (widget.calculateCostResponse != null)
-                              ...othersFee(),
-                            if (widget.calculateDiggingResponse != null)
-                              ...diggingFees()
+                            if (params.calculateCostResponse != null)
+                              ...othersFee(params),
+                            if (params.calculateDiggingResponse != null)
+                              ...diggingFees(params)
                           ],
                         ),
                       ),
                       CustomVerticalSpace(height: 16),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SvgPicture.asset(IconPath.warningIcon),
-                          CustomHorizontalSpace(width: 8),
-                          Flexible(
-                            child: CustomTextWidget(
-                              "calculator_note1".tr(),
-                              fontWeight: AppFontWeight.bold,
-                              fontSize: 12,
-                              maxLines: 20,
-                              height: 1.6,
-                              fontColor: AppColor.blackModern500Light,
-                            ),
-                          )
-                        ],
-                      ),
-                      CustomVerticalSpace(height: 12),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SvgPicture.asset(IconPath.warningIcon),
-                          CustomHorizontalSpace(width: 8),
-                          Flexible(
-                            child: CustomTextWidget(
-                              "calculator_note2".tr(),
-                              fontWeight: AppFontWeight.bold,
-                              fontSize: 12,
-                              maxLines: 20,
-                              height: 1.6,
-                              fontColor: AppColor.blackModern500Light,
-                            ),
-                          )
-                        ],
-                      ),
+                      if (params.hideNote != true) ...[
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SvgPicture.asset(IconPath.warningIcon),
+                            CustomHorizontalSpace(width: 8),
+                            Flexible(
+                              child: CustomTextWidget(
+                                "calculator_note1".tr(),
+                                fontWeight: AppFontWeight.bold,
+                                fontSize: 12,
+                                maxLines: 20,
+                                height: 1.6,
+                                fontColor: AppColor.blackModern500Light,
+                              ),
+                            )
+                          ],
+                        ),
+                        CustomVerticalSpace(height: 12),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SvgPicture.asset(IconPath.warningIcon),
+                            CustomHorizontalSpace(width: 8),
+                            Flexible(
+                              child: CustomTextWidget(
+                                "calculator_note2".tr(),
+                                fontWeight: AppFontWeight.bold,
+                                fontSize: 12,
+                                maxLines: 20,
+                                height: 1.6,
+                                fontColor: AppColor.blackModern500Light,
+                              ),
+                            )
+                          ],
+                        )
+                      ],
                       CustomVerticalSpace(height: 32),
                       _CalcualateOtherFeesButton()
                     ]),
@@ -204,20 +206,20 @@ class _ServiceCalculatorResultScreenState
             )));
   }
 
-  List<Widget> othersFee() {
+  List<Widget> othersFee(CalculatorResultsPageParams params) {
     CostsInfo info1 = CostsInfo();
-    info1.costItemValue = widget.calculateCostResponse?.activtyCost;
+    info1.costItemValue = params.calculateCostResponse?.activtyCost;
     info1.costItemDescription = Helpers.translatingWord('activity_cost');
     CostsInfo info2 = CostsInfo();
-    info2.costItemValue = widget.calculateCostResponse?.visitFee;
+    info2.costItemValue = params.calculateCostResponse?.visitFee;
     info2.costItemDescription = Helpers.translatingWord('visit_cost');
     List<Widget> children = [FeeWidget(info: info1), FeeWidget(info: info2)];
     return children;
   }
 
-  List<Widget> diggingFees() {
+  List<Widget> diggingFees(CalculatorResultsPageParams params) {
     CostsInfo info1 = CostsInfo();
-    info1.costItemValue = widget.calculateDiggingResponse?.totalCost;
+    info1.costItemValue = params.calculateDiggingResponse?.totalCost;
     info1.costItemDescription = Helpers.translatingWord('activity_cost');
     CostsInfo info2 = CostsInfo();
     info2.costItemValue = 0.0;

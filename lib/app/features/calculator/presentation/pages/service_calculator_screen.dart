@@ -53,6 +53,7 @@ import '../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dar
 import '../../../_shared_feature_/presentation/widgets/custom_tooltip_widget.dart';
 import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../transaction_inquiry/presentation/core/models/gis_location_result.dart';
+import '../../data/model/calculator_results_page_params.dart';
 import 'add_board_screen.dart';
 
 enum ActivityIsicListDetailType { Normal, Current, New }
@@ -333,7 +334,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
                   width: MediaQuery.of(context).size.width - 32,
                   addAutomaticKeepAlive: false,
                   lineHeight: 6.7,
-                  isRTL: true,
+                  isRTL: CommonFunctions.isAppAR ? true : false,
                   animationDuration: 0,
                   restartAnimation: false,
                   percent: 1 / (1),
@@ -4762,6 +4763,10 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
     _numberOfDocumentsFocusNode.dispose();
   }
 
+  bool hideNotes() {
+    return currentActivityId == 10 || currentActivityId == 8;
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -4786,43 +4791,31 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
 
   @override
   void calculatRenewDiggingCostSuccess(CalculateDiggingResponse? result) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              ServiceCalculatorResultScreen(calculateDiggingResponse: result),
-        ));
+    Navigator.pushNamed(context, RouteName.calculatorResultsScreen,
+        arguments: CalculatorResultsPageParams(
+            calculateDiggingResponse: result, hideNote: hideNotes()));
   }
 
   @override
   void calculateCostSuccess(CalculateCostResponse? result) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              ServiceCalculatorResultScreen(calculateCostResponse: result),
-        ));
+    Navigator.pushNamed(context, RouteName.calculatorResultsScreen,
+        arguments: CalculatorResultsPageParams(
+            calculateCostResponse: result, hideNote: hideNotes()));
   }
 
   @override
   void calculateDiggingCostSuccess(CalculateDiggingResponse? result) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              ServiceCalculatorResultScreen(calculateDiggingResponse: result),
-        ));
+    Navigator.pushNamed(context, RouteName.calculatorResultsScreen,
+        arguments: CalculatorResultsPageParams(
+            calculateDiggingResponse: result, hideNote: hideNotes()));
   }
 
   @override
   void calculateV03Success(CalculateCostV03Response? result) {
     CalculateCostV03Response? response = result;
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              ServiceCalculatorResultScreen(calculateCostV03Response: response),
-        ));
+    Navigator.pushNamed(context, RouteName.calculatorResultsScreen,
+        arguments: CalculatorResultsPageParams(
+            calculateCostV03Response: response, hideNote: hideNotes()));
   }
 
   @override

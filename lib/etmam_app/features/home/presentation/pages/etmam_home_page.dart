@@ -80,7 +80,8 @@ class _EtmamHomePage extends State<EtmamHomePage> {
                         if (context.read<HomeBloc>().isMunicipalService ==
                             true) ...[
                           const EtmamBannerSlider(),
-                          const EtmamBiddingWidget(),
+                          if (!(state.hideBidding ?? false))
+                            const EtmamBiddingWidget(),
                         ],
                         // EtmamSubServicesWidget(),
                         const EtmamTopRatedProvidersWidget(),

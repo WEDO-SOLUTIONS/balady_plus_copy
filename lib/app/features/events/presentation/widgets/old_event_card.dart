@@ -46,7 +46,7 @@ class OldEventHomeCard extends StatelessWidget {
                       colors: [Color(0x0000394A), AppColor.primary900Light])),
             ),
             Align(
-              alignment: Alignment.bottomRight,
+              alignment: AlignmentDirectional.bottomStart,
               child: Container(
                 padding: EdgeInsetsDirectional.only(start: 8, bottom: 16),
                 child: Row(
@@ -54,11 +54,11 @@ class OldEventHomeCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Date(
+                    /* Date(
                       day: item.getStartDay(),
                       month: item.getStartMonth(),
-                    ),
-                    CustomHorizontalSpace(width: 10),
+                    ),*/
+                    // CustomHorizontalSpace(width: 10),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,6 +106,26 @@ class OldEventHomeCard extends StatelessWidget {
                 ),
               ),
             ),
+            Align(
+              alignment: AlignmentDirectional.topEnd,
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                margin: const EdgeInsets.all(16),
+                decoration: const BoxDecoration(
+                    color: Color(0xff4CA5B4),
+                    borderRadius: BorderRadius.all(Radius.circular(4))),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CustomTextWidget(
+                      item.getFormatDate(),
+                      fontSize: 12,
+                      fontWeight: AppFontWeight.medium,
+                    )
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),

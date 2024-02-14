@@ -10,6 +10,7 @@ import '../../../../../_shared_feature_/presentation/widgets/custom_spaces_widge
 import '../../../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../../vd/presentation/widgets/details_widgets/location_warning_widget.dart';
+import '../../../../../../core/utils/common_functions.dart';
 
 import '../../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 import '../../../../damaged_cars_exports.dart';
@@ -103,7 +104,10 @@ class LocationSection extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if (!showOnly) CustomSvgIconWidget(IconPath.arrowLeft),
+                  if (!showOnly)
+                    RotatedBox(
+                        quarterTurns: CommonFunctions.isAppAR ? 0 : 2,
+                        child: CustomSvgIconWidget(IconPath.arrowLeft)),
                 ]),
           ),
         );

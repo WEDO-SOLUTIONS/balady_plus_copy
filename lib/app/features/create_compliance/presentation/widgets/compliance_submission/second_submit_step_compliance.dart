@@ -38,7 +38,7 @@ class SecondSubmissonCompliance extends StatelessWidget {
               fillColor: AppColor.scaffoldBackground,
               label: 'user_name_label'.tr(),
               labelStyle: AppStyle.complianceLabelStyle,
-              hintText: CommonProperties.userInfo?.arName ?? "",
+              hintText: CommonProperties.userInfo?.getFullName() ?? "",
               hintStyle: AppStyle.complianceSubtitleStyle,
               borderRadius: 6,
               borderColor: const Color(0xffD4D4D8),

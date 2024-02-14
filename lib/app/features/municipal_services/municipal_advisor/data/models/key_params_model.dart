@@ -2,11 +2,12 @@ import 'package:equatable/equatable.dart';
 
 class KeyParamsModel extends Equatable {
   final String key;
-  final int? activityId;
-  final double? area;
 
-  const KeyParamsModel({required this.key, this.activityId, this.area});
+  final List<(int, double?)>? civilDefenseActivityRequestDtoList;
+
+  const KeyParamsModel(
+      {required this.key, this.civilDefenseActivityRequestDtoList});
 
   @override
-  List<Object?> get props => [key, area, activityId];
+  List<Object?> get props => [key, civilDefenseActivityRequestDtoList];
 }

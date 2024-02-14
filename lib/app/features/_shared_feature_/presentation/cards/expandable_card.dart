@@ -43,6 +43,7 @@ class _ExpandableCardState extends State<ExpandableCard> {
         color: AppColor.white,
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           InkWell(
             onTap: () {
@@ -51,34 +52,46 @@ class _ExpandableCardState extends State<ExpandableCard> {
               });
             },
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                widget.icon != null
-                    ? DrawIconBasedTypeWidget(
-                        icon: widget.icon!,
-                        iconSize: 20,
-                      )
-                    : const SizedBox(),
-                const SizedBox(width: 4),
-                CustomTextWidget(
-                  widget.title,
-                  textStyle: AppStyle.cardTitleTextStle,
+                Expanded(
+                  child: Row(
+                    children: [
+                      widget.icon != null
+                          ? DrawIconBasedTypeWidget(
+                              icon: widget.icon!,
+                              iconSize: 20,
+                            )
+                          : const SizedBox(),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: CustomTextWidget(
+                          widget.title,
+                          textStyle: AppStyle.cardTitleTextStle,
+                          maxLines: 2,
+                        ),
+                      ),
+                      widget.badgeTitle != null
+                          ? Chip(
+                              label: Text(
+                                widget.badgeTitle!,
+                                style: AppStyle.requestParamterTitleTextStle
+                                    .copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              backgroundColor: const Color(0xfff1b074),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 2,
+                                vertical: 0,
+                              ),
+                            )
+                          : const SizedBox(),
+                    ],
+                  ),
                 ),
-                widget.badgeTitle != null
-                    ? Chip(
-                        label: Text(
-                          widget.badgeTitle!,
-                          style: AppStyle.requestParamterTitleTextStle.copyWith(
-                            color: Colors.white,
-                          ),
-                        ),
-                        backgroundColor: const Color(0xfff1b074),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 2,
-                          vertical: 0,
-                        ),
-                      )
-                    : const SizedBox(),
-                const Spacer(),
+
+                // const Spacer(),
                 Container(
                   decoration: const BoxDecoration(
                     color: AppColor.primary300Light,

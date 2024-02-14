@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
 
@@ -23,33 +24,49 @@ class AthkarCategory extends Equatable {
 
     switch (id) {
       case 1:
-        path = "assets/athkar/morning.json";
+        path = CommonFunctions.isAppAR
+            ? "assets/athkar/morning.json"
+            : "assets/athkar_en/morning.json";
         break;
       case 2:
-        path = "assets/athkar/before_sleep.json";
+        path = CommonFunctions.isAppAR
+            ? "assets/athkar/before_sleep.json"
+            : "assets/athkar_en/before_sleep.json";
         break;
 
       case 3:
-        path = "assets/athkar/evening.json";
+        path = CommonFunctions.isAppAR
+            ? "assets/athkar/evening.json"
+            : "assets/athkar_en/evening.json";
         break;
       case 4:
-        path = "assets/athkar/after_pray.json";
+        path = CommonFunctions.isAppAR
+            ? "assets/athkar/after_pray.json"
+            : "assets/athkar_en/after_pray.json";
         break;
 
       case 5:
-        path = "assets/athkar/praise.json";
+        path = CommonFunctions.isAppAR
+            ? "assets/athkar/praise.json"
+            : "assets/athkar_en/praise.json";
         break;
 
       case 6:
-        path = "assets/athkar/after_sleep.json";
+        path = CommonFunctions.isAppAR
+            ? "assets/athkar/after_sleep.json"
+            : "assets/athkar_en/after_sleep.json";
         break;
 
       case 7:
-        path = "assets/athkar/prayer.json";
+        path = CommonFunctions.isAppAR
+            ? "assets/athkar/prayer.json"
+            : "assets/athkar_en/prayer.json";
         break;
 
       case 8:
-        path = "assets/athkar/doaa.json";
+        path = CommonFunctions.isAppAR
+            ? "assets/athkar/doaa.json"
+            : "assets/athkar_en/doaa.json";
         break;
     }
     String qa = await rootBundle.loadString(path);

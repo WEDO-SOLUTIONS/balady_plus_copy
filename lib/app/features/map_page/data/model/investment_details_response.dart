@@ -341,12 +341,10 @@ class Result {
   }
 
   bool saddadPaied() {
-   
     return purchaseDocumentStatus == "Resolved-Completed";
   }
 
   bool saddadExpired() {
-
     return purchaseDocumentStatus == "Resolved-Expired";
   }
 
@@ -772,9 +770,7 @@ String getFormattedDateAndTimeV2(String dateStr) {
           .replaceAll("م", ("pm_full").tr());
     }
     formmatedDateAndTime = date + "  |  " + time;
-  } catch (ex) {
-   
-  }
+  } catch (ex) {}
   if (CommonFunctions.isAppAR)
     formmatedDateAndTime =
         CommonFunctions.replaceArabicNumberWithEnglish(formmatedDateAndTime);

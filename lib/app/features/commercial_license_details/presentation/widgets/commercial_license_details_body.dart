@@ -526,17 +526,26 @@ class _CommercialLicenseDetailsBodyState
                   /////////////////////////////////////////////////
                   const CommercialLicensePermitsWidget(),
                   /////////////////////////////////////////////////
-                  commercialLicenceDetails.licenseInfo != null
+                  commercialLicenceDetails.licenseInfo != null &&
+                          (state.commercialLicenceDetails!.licenseInfo!
+                                      .qrCodeUrl ??
+                                  "") !=
+                              ""
                       ? ExpandableCard(
                           title: 'quick_code'.tr(),
                           icon: IconPath.scannerIcon,
                           children: [
-                            QrImageView(
-                              data: state.commercialLicenceDetails!.licenseInfo!
+                            Image.network(
+                              state.commercialLicenceDetails!.licenseInfo!
                                       .qrCodeUrl ??
                                   "",
-                              size: 240,
+                              fit: BoxFit.fill,
+                              headers: {
+                                "Authorization":
+                                    "Bearer " + (CommonProperties.token ?? "")
+                              },
                             ),
+
                             const SizedBox(height: 16),
                             Row(
                               children: [

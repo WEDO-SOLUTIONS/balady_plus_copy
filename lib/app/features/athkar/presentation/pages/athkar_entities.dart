@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/features/athkar/athkar_exports.dart'
     show AthkarAppBar, AthkarEntitiesListView, AthkarEntitiesParams;
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/ux_cam_events.dart';
@@ -25,14 +26,11 @@ class _AthkarEntitiesState extends State<AthkarEntities> {
   Widget build(BuildContext context) {
     AthkarEntitiesParams params =
         ModalRoute.of(context)!.settings.arguments as AthkarEntitiesParams;
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        // backgroundColor: AppColor.scaffoldBackground,
-        appBar: AthkarAppBar(title: "الأذكار"),
-        body: AthkarEntitiesListView(
-            athkarEntitiesList: params.athkarEntitiesList),
-      ),
+    return Scaffold(
+      // backgroundColor: AppColor.scaffoldBackground,
+      appBar: AthkarAppBar(title: "azkar".tr()),
+      body:
+          AthkarEntitiesListView(athkarEntitiesList: params.athkarEntitiesList),
     );
   }
 }

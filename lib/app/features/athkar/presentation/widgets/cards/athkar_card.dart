@@ -4,6 +4,7 @@ import 'package:balady_plus/app/features/athkar/data/models/athkar_entites_param
 import 'package:flutter/material.dart';
 import 'package:balady_plus/app/features/athkar/domain/entities/athkar_category.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppFontWeight, RouteName;
@@ -61,7 +62,7 @@ class AthkarCard extends StatelessWidget {
                           width: 6,
                         ),
                         Text(
-                          athkarCategory.name,
+                          athkarCategory.name.tr(),
                           style: AppStyle.athkarNameStyle,
                         ),
                       ],

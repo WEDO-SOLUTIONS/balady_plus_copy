@@ -55,6 +55,8 @@
   <!-- Always include this permission -->
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
    <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
+<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/> 
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <queries>
         <intent>
@@ -146,6 +148,7 @@
         <category android:name="android.intent.category.BROWSABLE"/>
                   <data android:scheme="com.momra.balady"/>
                 <data android:scheme="com.balady"/>
+                 <data android:scheme="com.momra.balady"/>
     </intent-filter>
 </activity>
 

@@ -282,7 +282,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 1,
       "isNew": false,
       "isImportant": false,
-      "requireLogin": false,
+      "requireLogin": true,
       "action": {"type": "page", "value": RouteName.etmamMainPage},
       "ar": {"title": "balady_works", "description": null, "tag": null},
       "en": {"title": "balady_works", "description": null, "tag": null}
@@ -397,7 +397,7 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "tobaccoServices", "description": null, "tag": null},
       "en": {"title": "tobaccoServices", "description": null, "tag": null}
     },
-    {
+    /*  {
       "id": 304,
       "icon": "municipal_health",
       "3d_icon": null,
@@ -408,7 +408,7 @@ Map<String, dynamic> servicesConfig = {
       "action": {"type": "page", "value": RouteName.newHealthCertificatePage},
       "ar": {"title": "municipal_health", "description": null, "tag": null},
       "en": {"title": "municipal_health", "description": null, "tag": null}
-    },
+    },*/
     {
       "id": 305,
       "icon": "municpal_housing",
@@ -495,7 +495,7 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "submit_objections", "description": null, "tag": null},
       "en": {"title": "submit_objections", "description": null, "tag": null}
     },
-    {
+    /*{
       "id": 312,
       "icon": "schedule_date",
       "3d_icon": null,
@@ -506,7 +506,7 @@ Map<String, dynamic> servicesConfig = {
       "action": {"type": "dialog", "value": ""},
       "ar": {"title": "schedule_date", "description": null, "tag": null},
       "en": {"title": "schedule_date", "description": null, "tag": null}
-    },
+    },*/
     {
       "id": 313,
       "icon": "general_inquiries",
@@ -659,7 +659,18 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "supporter", "description": null, "tag": null},
       "en": {"title": "supporter", "description": null, "tag": null}
     },
-
+    /* {
+      "id": 407,
+      "icon": "chat_bot",
+      "3d_icon": null,
+      "order": 13,
+      "isNew": false,
+      "isImportant": false,
+      "requireLogin": true,
+      "action": {"type": "page", "value": RouteName.chatbot},
+      "ar": {"title": "municipal_advisor", "description": null, "tag": null},
+      "en": {"title": "municipal_advisor", "description": null, "tag": null}
+    },*/
     /*{
       "id": 7,
       "icon": "municpal_toppaco",

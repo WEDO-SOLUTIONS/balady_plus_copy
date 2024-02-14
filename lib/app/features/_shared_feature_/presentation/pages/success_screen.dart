@@ -102,6 +102,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
         break;
 
+      case PAGE_TYPE.updateAppointment:
+        break;
       case PAGE_TYPE.cancelAppointment:
         CommonFunctions.sendEventToAnalytics(
             AppEvents.cancelAppointmentSuccess);
@@ -236,6 +238,7 @@ class SuccessBody extends StatelessWidget {
                 fontSize: 22,
                 fontWeight: AppFontWeight.bold,
                 fontColor: AppColor.black,
+                textAlign: TextAlign.center,
                 maxLines: 10,
               ),
               const CustomVerticalSpace(
@@ -247,7 +250,7 @@ class SuccessBody extends StatelessWidget {
                 fontWeight: AppFontWeight.medium,
                 fontColor: AppColor.black500,
                 height: 1.6,
-                maxLines: 10,
+                maxLines: 20,
                 textAlign: TextAlign.center,
               ),
               const CustomVerticalSpace(
@@ -295,6 +298,7 @@ class SuccessBody extends StatelessWidget {
       case PAGE_TYPE.deleteEmtethal:
       case PAGE_TYPE.renewCommercial:
       case PAGE_TYPE.ekramCemetry:
+      case PAGE_TYPE.updateAppointment:
         return "vd_request_submit".tr();
         return ('lbl_thank_you').tr();
       default:
@@ -377,6 +381,7 @@ class SuccessBody extends StatelessWidget {
       case PAGE_TYPE.emtethal:
       case PAGE_TYPE.renewCommercial:
       case PAGE_TYPE.ekramCemetry:
+      case PAGE_TYPE.updateAppointment:
         return successScreenArgs?.thanksMessage ?? "";
 
       case PAGE_TYPE.other:
@@ -406,7 +411,7 @@ class SuccessButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 35),
+        padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -456,6 +461,7 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.deleteEmtethal:
       case PAGE_TYPE.renewCommercial:
       case PAGE_TYPE.ekramCemetry:
+      case PAGE_TYPE.updateAppointment:
         return ('go_to_home').tr();
       //   return Helpers.translatingWord('go_back_to_customer_voice_page');
       // case PAGE_TYPE.licenseScreen:
@@ -497,6 +503,7 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.deleteRequestScreen:
       case PAGE_TYPE.renewCommercial:
       case PAGE_TYPE.ekramCemetry:
+      case PAGE_TYPE.updateAppointment:
         {
           Helpers.backNavigationToHomeScreen();
         }

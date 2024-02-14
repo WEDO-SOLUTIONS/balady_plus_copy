@@ -77,7 +77,8 @@ class _PostersStep3PageState extends State<PostersStep3Page> {
             ),
             const Align(
                 alignment: Alignment.bottomCenter, child: CalcualtorWidget()),
-            if (state.status.isSubmissionLoading)
+            if (state.status.isSubmissionLoading ||
+                state.detailsStatus == BlocStatus.loading)
               const CustomCircularLoadingWidget(),
           ],
         );
@@ -260,7 +261,7 @@ class _CalcualtorWidgetState extends State<CalcualtorWidget> {
                         ),
                         const SizedBox(width: 3),
                         CustomTextWidget(
-                          "ر.س",
+                          "sar_text".tr(),
                           textStyle: AppStyle.tagTextStyle,
                         ),
                       ],
@@ -325,15 +326,6 @@ class _CalcualtorWidgetState extends State<CalcualtorWidget> {
                           maxLines: 10,
                         ),
                       ),
-
-                      /* Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: WidgetTitleInvoice(
-                              money:
-                                  '${state.requestDetails?.costCalculationInfo?.durationInDays} ر.س',
-                              title: "عدد الرخص",
-                            ),
-                          )*/
                     ],
                     /* */
                   ],

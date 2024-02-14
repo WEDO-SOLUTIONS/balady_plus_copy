@@ -223,9 +223,8 @@ class PledgesSummuryWidget extends StatelessWidget {
           isExpanded: true,
           children: [
             CustomTextWidget(
-              ("agreement_text")
-                  .tr()
-                  .replaceAll("{}", CommonProperties.userInfo?.arName ?? ""),
+              ("agreement_text").tr().replaceAll(
+                  "{}", CommonProperties.userInfo?.getFullName() ?? ""),
               fontColor: AppColor.blackModern700Light,
               maxLines: 90,
               height: 1.3,
@@ -248,12 +247,15 @@ class PledgesSummuryWidget extends StatelessWidget {
                             .add(ChangeAgreementEvent(isagree: newVal));
                       },
                     ),
-                    CustomTextWidget(
-                      ("vd_consent_check").tr(),
-                      fontColor: AppColor.primary700Light,
-                      fontSize: 12,
-                      fontWeight: AppFontWeight.semiBold,
-                      height: 1.3,
+                    Flexible(
+                      child: CustomTextWidget(
+                        ("vd_consent_check").tr(),
+                        fontColor: AppColor.primary700Light,
+                        fontSize: 12,
+                        maxLines: 10,
+                        fontWeight: AppFontWeight.semiBold,
+                        height: 1.3,
+                      ),
                     ),
                   ],
                 ))

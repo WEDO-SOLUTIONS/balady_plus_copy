@@ -1,8 +1,10 @@
 import 'dart:convert' show base64Decode, base64Encode, utf8;
-import 'dart:io' show File;
+import 'dart:io' show File, Platform;
 import 'dart:typed_data' show Uint8List;
 import 'dart:ui';
 import 'dart:math' show asin, cos, sqrt;
+import 'package:balady_plus/app/core/services/services_exports.dart';
+
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart'
     as calendar;
 import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
@@ -40,6 +42,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../app.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
+import '../../features/_shared_feature_/presentation/dialogs/location_backgorund_consent.dart';
 import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
 import '../../features/_shared_feature_/presentation/pages/pdf_view.dart';
 import '../../features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
@@ -112,6 +115,26 @@ var carPlateLettersList = [
   "هـ",
   "و",
   "ي",
+];
+
+var carPlateLettersListEn = [
+  "A",
+  "B",
+  "J",
+  "D",
+  "R",
+  "S",
+  "X",
+  "T",
+  "E",
+  "G",
+  "K",
+  "L",
+  "Z",
+  "N",
+  "H",
+  "U",
+  "V",
 ];
 
 Map<String, String> carPlateLetters = {
@@ -544,6 +567,11 @@ class CommonFunctions {
 
   static bool hasArabicCharacters(String str) {
     RegExp r = RegExp(r"[\u0621-\u064A0-9\s*]");
+    return r.allMatches(str).length == str.length;
+  }
+
+  static bool hasArabicAndEnglishCharacters(String str) {
+    RegExp r = RegExp(r"[\u0621-\u064A0-9a-zA-Z\s*]");
     return r.allMatches(str).length == str.length;
   }
 
@@ -1060,22 +1088,22 @@ class CommonFunctions {
                 response?.data.toString()) ??
             "";
 
-        String URL =
-            (dioError?.requestOptions.path ?? response?.realUri.path) ??
-                "Error";
+        String? URL = (dioError?.requestOptions.path ?? response?.realUri.path);
 
-        FlutterUxcam.logEventWithProperties("APIError", {
-          "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
-          "Data": data.length <= 1024 ? data : data.substring(0, 1023),
-          "QueryString": queryString.length <= 1024
-              ? queryString
-              : queryString.substring(0, 1023),
-          "Headers":
-              headers.length <= 1024 ? headers : headers.substring(0, 1023),
-          "Message":
-              message.length <= 1024 ? message : message.substring(0, 1023),
-          "Environment": sl<EnvType>().name
-        });
+        if (URL != null) {
+          FlutterUxcam.logEventWithProperties("APIError", {
+            "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
+            "Data": data.length <= 1024 ? data : data.substring(0, 1023),
+            "QueryString": queryString.length <= 1024
+                ? queryString
+                : queryString.substring(0, 1023),
+            "Headers":
+                headers.length <= 1024 ? headers : headers.substring(0, 1023),
+            "Message":
+                message.length <= 1024 ? message : message.substring(0, 1023),
+            "Environment": sl<EnvType>().name
+          });
+        }
       }
     } catch (ex) {
       print(ex);
@@ -1255,6 +1283,43 @@ class CommonFunctions {
     try {
       FlutterUxcam.logEventWithProperties(event, data);
     } catch (ex) {}
+  }
+
+  static showBackGroundLocationConsent() async {
+    if (Platform.isAndroid) {
+      bool? consetnt = sharedPrefs.getLocationConsent();
+      if (consetnt != null) return;
+      await Future.delayed(const Duration(seconds: 10));
+
+      showDialog(
+        context: NavigationService.navigatorKey.currentContext!,
+        builder: (ctx) => const LocationBackgroundConsentDialog(),
+      );
+    }
+  }
+
+  static String getIssueCrWarning1() {
+    if (CommonFunctions.isAppAR) {
+      return '<blockquote >عزيزي المستفيد.. يرجى اختيار النشاط المطابق للنشاط الفعلي للمحل حيث أنه لا يمكن تعديل نشاط الرخصة بعد إصدارها</p><p >عزيزي المستفيد... يمكنك الاستعلام عن تفاصيل الأنشطة واشتراطاتها من خلال زيارتك للرابط التالي: <a href="https://apps.balady.gov.sa//LicenseStandard/Default" target="_blank">الأنشطة التجارية واشتراطاتها</a></p></blockquote>';
+    } else {
+      return '<blockquote >Dear beneficiary, please select the activity corresponding to the actual activity of the store, as the license activity cannot be modified after issuance.</p><p >Dear beneficiary, you can inquire about the details of the activities and their requirements by visiting the following link: <a href="https://apps.balady.gov.sa//LicenseStandard/Default" target="_blank"> Details </a></p></blockquote>';
+    }
+  }
+
+  static String getIssueCrWarning2() {
+    if (CommonFunctions.isAppAR) {
+      return '<span class="ui-messages-detail ng-tns-c1-19 ng-star-inserted">عزيزي المستفيد.. يمكنك معرفة الوسطاء العقاريون المعتمدين في شبكة ايجار من خلال الرابط <a target="_balnk" href="https://www.ejar.sa/ar/certified-offices"> اضغط هنا</a> أو تحميل تطبيق وسطاء عقاريون <a target="_balnk" href="https://apps.apple.com/us/app/%D9%88%D8%B3%D8%B7%D8%A7%D8%A1-%D8%B9%D9%82%D8%A7%D8%B1%D9%8A%D9%88%D9%86/id1306579731"> IOS </a> أو <a target="_balnk" href="https://play.google.com/store/apps/details?id=sa.ejar.waset"> Android </a></span>';
+    } else {
+      return '<span class="ui-messages-detail ng-tns-c1-19 ng-star-inserted">Dear beneficiary, you can find out the accredited real estate brokers in the Ejar network through the following link <a target="_balnk" href="https://www.ejar.sa/ar/certified-offices"> Click Here </a> Or download the Real Estate Brokers application<a target="_balnk" href="https://apps.apple.com/us/app/%D9%88%D8%B3%D8%B7%D8%A7%D8%A1-%D8%B9%D9%82%D8%A7%D8%B1%D9%8A%D9%88%D9%86/id1306579731"> IOS </a> Or <a target="_balnk" href="https://play.google.com/store/apps/details?id=sa.ejar.waset"> Android </a></span>';
+    }
+  }
+
+  static String getIssueCrWarning3() {
+    if (CommonFunctions.isAppAR) {
+      return '<p class="m-0 ng-star-inserted">عزيزي المستفيد... يمكنك الاطلاع على لائحة استيفاء اشتراطات اللوحات التجارية من خلال زيارة الرابط التالي: <a target="_balnk" href="https://balady.gov.sa/Services/DownloadUserGuide/218">لائحة استيفاء اشتراطات اللوحات التجارية</a></p>';
+    } else {
+      return '<p class="m-0 ng-star-inserted">Dear beneficiary, you can review the compliance requirements list for commercial signs by visiting the following link<a target="_balnk" href="https://balady.gov.sa/Services/DownloadUserGuide/218"> Compliance requirements list for commercial signs</a></p>';
+    }
   }
 }
 

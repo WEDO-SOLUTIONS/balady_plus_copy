@@ -68,7 +68,7 @@ class PlateNumberWidget extends StatelessWidget {
                         ),
                         child: Stack(children: [
                           Align(
-                            alignment: Alignment.centerRight,
+                            alignment: AlignmentDirectional.centerStart,
                             child: Padding(
                               padding: EdgeInsetsDirectional.only(start: 10),
                               child: CustomTextWidget(
@@ -81,7 +81,7 @@ class PlateNumberWidget extends StatelessWidget {
                             ),
                           ),
                           Align(
-                              alignment: Alignment.centerLeft,
+                              alignment: AlignmentDirectional.centerEnd,
                               child: FittedBox(
                                   child: Icon(Icons.arrow_drop_down))),
                         ]),
@@ -104,7 +104,7 @@ class PlateNumberWidget extends StatelessWidget {
                           ),
                           child: Stack(children: [
                             Align(
-                              alignment: Alignment.centerRight,
+                              alignment: AlignmentDirectional.centerStart,
                               child: Padding(
                                 padding: EdgeInsetsDirectional.only(start: 10),
                                 child: CustomTextWidget(
@@ -117,7 +117,7 @@ class PlateNumberWidget extends StatelessWidget {
                               ),
                             ),
                             Align(
-                                alignment: Alignment.centerLeft,
+                                alignment: AlignmentDirectional.centerEnd,
                                 child: FittedBox(
                                     child: Icon(Icons.arrow_drop_down))),
                           ]),
@@ -139,7 +139,7 @@ class PlateNumberWidget extends StatelessWidget {
                           ),
                           child: Stack(children: [
                             Align(
-                              alignment: Alignment.centerRight,
+                              alignment: AlignmentDirectional.centerStart,
                               child: Padding(
                                 padding: EdgeInsetsDirectional.only(start: 10),
                                 child: CustomTextWidget(
@@ -152,7 +152,7 @@ class PlateNumberWidget extends StatelessWidget {
                               ),
                             ),
                             Align(
-                                alignment: Alignment.centerLeft,
+                                alignment: AlignmentDirectional.centerEnd,
                                 child: FittedBox(
                                     child: Icon(Icons.arrow_drop_down))),
                           ]),

@@ -71,6 +71,7 @@ class RenewCommercialLicenseBloc
     on<GetRenewYearsEvent>(_getRenewYearsHandler);
     on<GetRequestInfoEvent>(_getRequestInfoHandler);
     on<UpdateRenewYearsEvent>(_updateRenewYears);
+    on<ChangeInsidePetrolStationEvent>(_changeInsidePetrolStationHandler);
     add(GetRequestInfoEvent());
   }
 
@@ -410,6 +411,7 @@ class RenewCommercialLicenseBloc
         salamaBillNumber: state.salamaBillNumber,
         salamaPermitNumber: state.salamaPermitNumber,
         salamaReportNumber: state.salamaReportNumber,
+        insidePetrolStation: state.insidePetrolStation,
         salamaPermitExist: state.salamaExists == true || state.isOnlyPermit()));
     response.fold((failure) {
       print(failure);
@@ -567,6 +569,14 @@ class RenewCommercialLicenseBloc
             ?.tenancyContractInfo?.tenancyContractNumber,
         versionNumber: state
             .info?.ownershipResponseDto?.tenancyContractInfo?.versionNumber);
+
+    final bool? insidePetrolStation = state.info?.insidePetrolStation;
+
+    insidePetrolStation != null;
+
+    emit(state.copyWith(
+        insidePetrolStation: insidePetrolStation,
+        disableInsidePetrolStation: insidePetrolStation != null));
   }
 
   void submitRenew() async {
@@ -625,6 +635,12 @@ class RenewCommercialLicenseBloc
       });
     }
   }*/
+
+  Future<void> _changeInsidePetrolStationHandler(
+      ChangeInsidePetrolStationEvent e, Emitter emitter) async {
+    if (state.disableInsidePetrolStation == false)
+      emitter(state.copyWith(insidePetrolStation: e.value, errorMessage: ""));
+  }
 
   void sendStepEvent(int stepNo) {
     if (stepNo == 0) {

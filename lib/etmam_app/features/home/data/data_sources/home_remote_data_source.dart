@@ -244,8 +244,16 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
       }
       return decodedResponse.toFuture();
     } on DioError catch (error) {
+      final decodedResponse =
+          ApigeeResponseModel<SubServicesResponseModel>.fromMap(
+              error.response?.data,
+              parsedResult: null);
+
+      String? errorMessage =
+          decodedResponse.data?.responseCode == "2" ? "no_data".tr() : null;
+
       throw ServerException(
-        error.toString(),
+        errorMessage ?? error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );

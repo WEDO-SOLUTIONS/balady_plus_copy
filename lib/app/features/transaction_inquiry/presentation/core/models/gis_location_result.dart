@@ -20,6 +20,8 @@ class GisLocationResult {
   dynamic ErrorCode;
   bool? vdExcepted;
   bool? vdPriority;
+  String? Balady_DistrictID;
+  String? Balady_DistrictName;
 
   GisLocationResult(
       {this.adminMunicipalityId,
@@ -42,13 +44,16 @@ class GisLocationResult {
       this.MUNICIPALITYUNIQUECODE,
       this.ErrorCode,
       this.vdExcepted,
-      this.vdPriority});
+      this.vdPriority,
+      this.Balady_DistrictID,
+      this.Balady_DistrictName});
 
   factory GisLocationResult.fromJson(Map<String, dynamic> json) {
-    bool isSucessful = json['IsSuccessfull'];
+    bool isSucessful = json['IsSuccessfull'] ?? true;
 
     if (isSucessful) {
       return GisLocationResult(
+          Balady_DistrictName: json['Contents']["Balady_DistrictName"],
           adminMunicipalityId: json['Contents']["Admin_MunicipalityID"],
           adminMunicipalityName: json['Contents']["Admin_MunicipalityName"],
           // cleanInfo: json['Contents']["CleanInfo"],
@@ -68,7 +73,8 @@ class GisLocationResult {
           MUNICIPALITYUNIQUECODE: json['Contents']["MUNICIPALITYUNIQUECODE"],
           vdExcepted: json['Contents']["vdExcepted"],
           vdPriority: json['Contents']["vdPriority"],
-          isSuccessfull: json["IsSuccessfull"]);
+          Balady_DistrictID: json['Contents']["Balady_DistrictID"],
+          isSuccessfull: json["IsSuccessfull"] ?? true);
     } else {
       return GisLocationResult(
           isSuccessfull: json["IsSuccessfull"], ErrorCode: json["ErrorCode"]);

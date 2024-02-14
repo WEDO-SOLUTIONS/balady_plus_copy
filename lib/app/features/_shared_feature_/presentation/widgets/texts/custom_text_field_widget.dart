@@ -145,10 +145,12 @@ class CustomTextFieldWidget extends StatelessWidget {
         // if field is required, then show label beside asterisk e.g. *Username
         Row(
           children: [
-            WidgetLabel(
-              isRequired: isRequired,
-              label: label,
-              labelStyle: labelStyle,
+            Flexible(
+              child: WidgetLabel(
+                isRequired: isRequired,
+                label: label,
+                labelStyle: labelStyle,
+              ),
             ),
             if (showOptional == true)
               Text(
@@ -200,17 +202,17 @@ class CustomTextFieldWidget extends StatelessWidget {
                 color: AppColor.black,
               ),
           decoration: InputDecoration(
-            constraints: BoxConstraints(
-              maxWidth: textFieldWidth ?? double.infinity,
-              maxHeight: textFieldHeight ?? double.infinity,
-            ),
-            hintText: hintText,
-            hintStyle: hintStyle,
-            filled: filled,
-            fillColor: readOnly
-                ? disabledColor ?? AppColor.gray
-                : fillColor ?? AppColor.white,
-            /*
+              constraints: BoxConstraints(
+                maxWidth: textFieldWidth ?? double.infinity,
+                maxHeight: textFieldHeight ?? double.infinity,
+              ),
+              hintText: hintText,
+              hintStyle: hintStyle,
+              filled: filled,
+              fillColor: readOnly
+                  ? disabledColor ?? AppColor.gray
+                  : fillColor ?? AppColor.white,
+              /*
             **First scenario:
             contentPadding: add padding before prefix-icon and after suffix-icon
             imagine: S T P (S: Suffix, T: Text, P: Prefix)
@@ -230,17 +232,17 @@ class CustomTextFieldWidget extends StatelessWidget {
             contentPadding: add padding vertically only,
                             and remove any padding about suffix and prefix
             */
-            // contentPadding: EdgeInsets.symmetric(
-            //   vertical: textFieldVerticalPadding,
-            // ),
-            contentPadding: EdgeInsetsDirectional.fromSTEB(
-              prefixIcon == null ? startPadding : 0.0,
-              textFieldVerticalPadding,
-              suffixIcon == null ? endPadding : 0.0,
-              textFieldVerticalPadding,
-            ),
+              // contentPadding: EdgeInsets.symmetric(
+              //   vertical: textFieldVerticalPadding,
+              // ),
+              contentPadding: EdgeInsetsDirectional.fromSTEB(
+                prefixIcon == null ? startPadding : 0.0,
+                textFieldVerticalPadding,
+                suffixIcon == null ? endPadding : 0.0,
+                textFieldVerticalPadding,
+              ),
 
-            /*
+              /*
             **First scenario: if we follow the first scenario of contentPadding
             we before added padding between prefix and start-of-textfield
             so padding added here to add space between prefix and text
@@ -254,21 +256,21 @@ class CustomTextFieldWidget extends StatelessWidget {
             if app LTR Imagine: b P a (b: before-prefix, P: Prefix, a: after-prefix)
             it will be the same thing cause we specify start and end properties
             */
-            prefixIcon: prefixIcon != null
-                ? Padding(
-                    // color: Colors.red,
-                    padding: EdgeInsetsDirectional.only(
-                      start: spaceBeforePrefix,
-                      end: spaceAfterPrefix,
-                    ),
-                    child: prefixIcon,
-                  )
-                : null,
-            prefixIconConstraints: BoxConstraints(
-              minHeight: prefixSize,
-              minWidth: prefixSize,
-            ),
-            /* 
+              prefixIcon: prefixIcon != null
+                  ? Padding(
+                      // color: Colors.red,
+                      padding: EdgeInsetsDirectional.only(
+                        start: spaceBeforePrefix,
+                        end: spaceAfterPrefix,
+                      ),
+                      child: prefixIcon,
+                    )
+                  : null,
+              prefixIconConstraints: BoxConstraints(
+                minHeight: prefixSize,
+                minWidth: prefixSize,
+              ),
+              /* 
             **First scenario:
             we before added padding between suffix and text
             so padding added here to add space between suffix and end-of-textfield
@@ -282,39 +284,39 @@ class CustomTextFieldWidget extends StatelessWidget {
             if app LTR Imagine: b S a (b: before-suffix, S: Suffix, a: after-suffix)
             it will be the same thing cause we specify start and end properties
             */
-            suffixIcon: suffixIcon != null
-                ? Padding(
-                    // color: Colors.red,
-                    padding: EdgeInsetsDirectional.only(
-                      start: spaceBeforeSuffix,
-                      end: spaceAfterSuffix,
-                    ),
-                    child: suffixIcon,
-                  )
-                : null,
-            suffixIconConstraints: BoxConstraints(
-              minHeight: suffixSize,
-              minWidth: suffixSize,
-            ),
-            border: fieldBorderType.inputBorder(
-              color: fieldBorderColor,
-              radius: borderRadius,
-            ),
-            enabledBorder: fieldBorderType.inputBorder(
-              color: fieldBorderColor,
-              radius: borderRadius,
-            ),
-            focusedBorder: fieldBorderType.inputBorder(
-              color: fieldBorderFocusedColor,
-              radius: borderRadius,
-            ),
-            errorBorder: fieldBorderType.inputBorder(
-              color: AppColor.error,
-              radius: borderRadius,
-            ),
-            errorStyle: const TextStyle(color: AppColor.error),
-            errorText: errorText,
-          ),
+              suffixIcon: suffixIcon != null
+                  ? Padding(
+                      // color: Colors.red,
+                      padding: EdgeInsetsDirectional.only(
+                        start: spaceBeforeSuffix,
+                        end: spaceAfterSuffix,
+                      ),
+                      child: suffixIcon,
+                    )
+                  : null,
+              suffixIconConstraints: BoxConstraints(
+                minHeight: suffixSize,
+                minWidth: suffixSize,
+              ),
+              border: fieldBorderType.inputBorder(
+                color: fieldBorderColor,
+                radius: borderRadius,
+              ),
+              enabledBorder: fieldBorderType.inputBorder(
+                color: fieldBorderColor,
+                radius: borderRadius,
+              ),
+              focusedBorder: fieldBorderType.inputBorder(
+                color: fieldBorderFocusedColor,
+                radius: borderRadius,
+              ),
+              errorBorder: fieldBorderType.inputBorder(
+                color: AppColor.error,
+                radius: borderRadius,
+              ),
+              errorStyle: const TextStyle(color: AppColor.error),
+              errorText: errorText,
+              errorMaxLines: 5),
           onTap: onTap,
           onChanged: onChanged,
           onFieldSubmitted: onSubmitted,

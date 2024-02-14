@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../objectable_transactions/domain/entities/transaction_details.dart';
 
 class ViolationDetailsEntity extends TransactionDetails {
@@ -76,12 +77,12 @@ class ViolationDetailsEntity extends TransactionDetails {
     String formattedNumber =
         NumberFormat('#,##0.########').format(totalViolationPenaltyAmount);
 
-    return "$formattedNumber ر.س.";
+    return "$formattedNumber ${"sar_text".tr()}";
   }
 
   String? get getSadadAmount {
     String formattedNumber = NumberFormat('#,##0.########').format(sadadAmount);
 
-    return "$formattedNumber ر.س.";
+    return "$formattedNumber ${"sar_text".tr()}";
   }
 }

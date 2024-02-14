@@ -21,6 +21,7 @@ import '../../../municipal_advisor_exports.dart'
         SubActivitySelector,
         TopicSelector,
         UnitCountSelector;
+import 'salama_selector.dart';
 
 class ChatBubbleCurrentStep extends StatelessWidget {
   final MunicipalAdvisorSteps step;
@@ -59,6 +60,8 @@ class ChatBubbleCurrentStep extends StatelessWidget {
         return const AreaSelector();
       case MunicipalAdvisorSteps.atm:
         return const ATMSelectorSummary();
+      case MunicipalAdvisorSteps.salamaPermitQuestion:
+        return const SalamaSelectorSummary();
       case MunicipalAdvisorSteps.inputSummary:
         return const SizedBox.shrink();
       case MunicipalAdvisorSteps.confirmInformation:

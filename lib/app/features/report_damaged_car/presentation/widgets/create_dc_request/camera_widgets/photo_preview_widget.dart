@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../../core/utils/common_functions.dart';
 import '../../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../../../core/utils/enums/bloc_status.dart';
@@ -52,11 +53,14 @@ class _photoPreviewWidgetState extends State<photoPreviewWidgetNew> {
                   btnTextWeight: AppFontWeight.bold,
                   btnWidth: 105,
                   btnRadius: 8,
-                  icon: Image.asset(
-                    IconPath.vdarrowLeftIcon,
-                    height: 16,
-                    width: 16,
-                    color: AppColor.white,
+                  icon: RotatedBox(
+                    quarterTurns: CommonFunctions.isAppAR ? 0 : 2,
+                    child: Image.asset(
+                      IconPath.vdarrowLeftIcon,
+                      height: 16,
+                      width: 16,
+                      color: AppColor.white,
+                    ),
                   ),
                   buttonIconPosition: BUTTON_ICON_POSITION.left,
                 ),

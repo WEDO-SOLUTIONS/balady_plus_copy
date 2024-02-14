@@ -38,6 +38,7 @@ import '../contracts_widgets/ejar_attachment_contract.dart';
 import '../contracts_widgets/ejar_service_contract.dart';
 import '../contracts_widgets/investment_service_contract.dart';
 import '../investment_contract_card.dart';
+import 'is_shop_inside_petorl.dart';
 
 class CommercialRenewStep1 extends StatefulWidget {
   const CommercialRenewStep1({super.key});
@@ -556,7 +557,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                             !state.showSalmaExists()) ||
                         (state.showSalamaReport() &&
                             state.salamaExists == false))
-                      NotesWidget(notes: [
+                      NotesWidget(showText: true, notes: [
                         (state.info?.salamaResponseDto
                                     ?.salamaReportInstructions ??
                                 "")
@@ -580,7 +581,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                       ),
                     if ((state.showSalamaBill() && !state.showSalmaExists()) ||
                         (state.showSalamaBill() && state.salamaExists == false))
-                      NotesWidget(notes: [
+                      NotesWidget(showText: true, notes: [
                         state.info?.salamaResponseDto?.salamaBillInstructions ??
                             ""
                       ]),
@@ -599,6 +600,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                               .updateSalama(salamaPermit: value);
                         },
                       ),
+                    IsShopInsidePetroStationWidget(),
                     CRPreviousNextButtons(
                       isBtnDisabled: !state.isFormValid(),
                       onPressed: () {

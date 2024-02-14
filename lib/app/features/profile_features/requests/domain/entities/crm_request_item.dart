@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 
@@ -189,7 +190,7 @@ class CRMRequestItem extends Equatable {
   }
 
   String getStatusSTR() {
-    if (getRequestType() == RequestsType.VHR) return statusAr ?? "";
+    if (getRequestType() == RequestsType.VHR) return getStatus() ?? "";
     if (closureFlag == "Yes") return Helpers.translatingWord("solved");
 
     return Helpers.translatingWord("in_progress");
@@ -210,6 +211,10 @@ class CRMRequestItem extends Equatable {
       dateTime = DateTime.parse(dateWithT);
     }
     return dateTime != null ? DateFormat.yMd().format(dateTime) : "";
+  }
+
+  String getStatus() {
+    return (CommonFunctions.isAppAR ? statusAr : pyStatusWork) ?? "";
   }
 
   @override

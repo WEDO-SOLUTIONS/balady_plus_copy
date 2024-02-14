@@ -695,11 +695,15 @@ class BillInfo {
     this.billCreationDate,
     this.billStatus,
     this.billFees,
+    this.billCreated,
+    this.warnings,
   });
 
   String? billNumber;
   dynamic billAmount;
   String? billCreationDate;
+  bool? billCreated;
+  List<String>? warnings;
   String? billStatus;
   List<BillFee>? billFees;
 
@@ -708,6 +712,10 @@ class BillInfo {
         billAmount: json["billAmount"],
         billCreationDate: json["billCreationDate"],
         billStatus: json["billStatus"],
+        billCreated: json["billCreated"],
+        warnings: json["warnings"] != null
+            ? List<String>.from(json["warnings"].map((x) => x))
+            : null,
         billFees: json["billFees"] != null
             ? List<BillFee>.from(
                 json["billFees"].map((x) => BillFee.fromJson(x)))

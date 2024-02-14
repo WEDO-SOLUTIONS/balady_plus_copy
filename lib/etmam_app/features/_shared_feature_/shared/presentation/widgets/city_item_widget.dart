@@ -6,7 +6,6 @@ import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_fe
         CustomTextWidget,
         CustomVerticalSpace;
 import 'package:flutter/material.dart';
-import '../../../../../../app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppColorsTheme, AppFontWeight, IconPath;
 
@@ -58,7 +57,7 @@ class CityWidget extends StatelessWidget {
                     child: SizedBox(
                   height: 45,
                   width: 45,
-                  child: CustomCachedNetworkImage(
+                  child: CustomNetworkImageWidget(
                     cityIcon,
                     imageHeight: 45,
                     imageWidth: 45,

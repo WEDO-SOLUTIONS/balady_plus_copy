@@ -51,6 +51,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../app/features/_shared_feature_/presentation/widgets/search_text_field_widget.dart';
 import '../../../_shared_feature_/shared/presentation/widgets/custom_appbar_providers.dart';
+import '../../../etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
 import '../../../providers/presentation/widgets/provider_item.dart';
 
 class ServicesPage extends StatefulWidget {
@@ -64,7 +65,7 @@ class ServicesPage extends StatefulWidget {
 
 class _ServicesPageState extends State<ServicesPage> {
   final ScrollController _scrollController = new ScrollController();
-  final _debouncer = Debouncer(milliseconds: 500);
+  final _debouncer = Debouncer(milliseconds: 1000);
 
   @override
   void initState() {
@@ -76,7 +77,9 @@ class _ServicesPageState extends State<ServicesPage> {
   Widget build(BuildContext context) {
     ServicePageParams args =
         ModalRoute.of(context)!.settings.arguments as ServicePageParams;
-
+    String delegate = sl<EtmamEntryPointCubit>().isLifeStyle
+        ? "request_city_service".tr()
+        : "delegate".tr();
     return BlocProvider(
       create: (context) => ServicesBloc(
           getServicesProvidersByService: sl(),
@@ -150,7 +153,7 @@ class _ServicesPageState extends State<ServicesPage> {
                           return ProviderItemWidget(
                             buttonTxt: args.changeProvider == true
                                 ? trans('choose_office')
-                                : trans("delegate"),
+                                : delegate,
                             providerTotalEvaluation:
                                 state.items![index].ratingsCount,
                             providerRating: state.items![index].ratingAverage,

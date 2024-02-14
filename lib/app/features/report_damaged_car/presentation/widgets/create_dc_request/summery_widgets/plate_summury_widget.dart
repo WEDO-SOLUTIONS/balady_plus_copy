@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,7 +24,8 @@ class PlateSummuryWidget extends StatelessWidget {
           children: [
             FieldData(
               title: ("dc_vc_plate_letters").tr(),
-              subTitle: state.arLetters,
+              subTitle:
+                  CommonFunctions.isAppAR ? state.arLetters : state.enLetters,
             ),
             CustomVerticalSpace(height: 8),
             FieldData(

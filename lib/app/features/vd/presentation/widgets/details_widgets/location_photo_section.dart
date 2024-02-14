@@ -100,7 +100,9 @@ class LocationSection extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if (!showOnly) CustomSvgIconWidget(IconPath.arrowLeft),
+                  RotatedBox(
+                      quarterTurns: CommonFunctions.isAppAR ? 0 : 2,
+                      child: CustomSvgIconWidget(IconPath.arrowLeft)),
                 ]),
           ),
         );

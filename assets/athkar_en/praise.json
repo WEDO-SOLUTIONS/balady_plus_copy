@@ -1,104 +1,104 @@
 [
     {
-      "name": "سبحان الله",
+      "name": "Glory is to Allah",
       "quantityText": "",
       "quantity": 100,
-      "description": "يكتب له ألف حسنة أو يحط عنه ألف خطيئة."
+      "description": "A thousand Hasanah will be written for you, or a thousand sins will be wiped away"
     },
     {
-      "name": "سبحان الله وبحمده ",
+      "name": "Glory is to Allah and praise is to Him. ",
       "quantityText": "",
       "quantity": 100,
-      "description": "حطت خطاياه وإن كانت مثل زبد البحر. لم يأت أحد يوم القيامة بأفضل مما جاء به إلا أحد قال مثل ما قال أو زاد عليه."
+      "description": "Will have his sins forgiven even if they are like the foam of the sea.will not be surpassed on the Day of Resurrection by anyone with better deeds than one who utters the same words or utters more of these words."
     },
     {
-      "name": "سبحان الله والحمد لله",
+      "name": "Glorified is Allah, and The praise is for Allah ",
       "quantityText": "",
       "quantity": 100,
-      "description": "تملآن ما بين السماوات والأرض."
+      "description": "fill that which is between heaven and earth"
     },
     {
-      "name": "سبحان الله العظيم وبحمده",
+      "name": "Glorified is Allah the Most Great and praised is He.",
       "quantityText": "",
       "quantity": 100,
-      "description": "غرست له نخلة في الجنة (أى عدد)."
+      "description": "will have a date palm planted for him in Paradise."
     },
     {
-      "name": "سبحان الله وبحمده ، سبحان الله العظيم",
+      "name": "Glorified is Allah and praised is He, Glorified is Allah the Most Great.",
       "quantityText": "",
       "quantity": 100,
-      "description": "ثقيلتان في الميزان حبيبتان إلى الرحمن (أى عدد)."
+      "description": "Two words are light on the tongue, weigh heavily in the balance, and are loved by the Most Merciful One"
     },
     {
-      "name": "لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير.",
+      "name": "None has the right to be worshipped but Allah Alone, Who has no partner. His is the dominion and His is the praise, and He is Able to do all things.",
       "quantityText": "",
       "quantity": 100,
-      "description": "كانت له عدل عشر رقاب، وكتبت له مئة حسنة، ومحيت عنه مئة سيئة، وكانت له حرزا من الشيطان."
+      "description": "he will have a reward equivalent to that for emancipating ten slaves, a hundred good deeds will be recorded to his credit, hundred of his sins will be blotted out from his scroll, and he will be safeguarded against the devil on that day till the evening"
     },
     {
-      "name": "لا حول ولا قوة إلا بالله",
+      "name": "There is no power and no might except by Allah.",
       "quantityText": "",
       "quantity": 100,
-      "description": "كنز من كنوز الجنة (أى عدد)."
+      "description": "a treasure from the treasures of Paradise"
     },
     {
-      "name": "الحمد لله رب العالمين",
+      "name": "Praise be to God the Lord of the universe",
       "quantityText": "",
       "quantity": 100,
-      "description": "تملأ ميزان العبد بالحسنات."
+      "description": "It fills the servant’s balance with good deeds."
     },
     {
-      "name": "اللهم صل وسلم وبارك على سيدنا محمد",
-      "quantityText": "مئة مرة",
+      "name": "O Allah, exalt the mention of Muhammad",
+      "quantityText": "one hundred times",
       "quantity": 100,
-      "description": "من صلى على حين يصبح وحين يمسى ادركته شفاعتى يوم القيامة."
+      "description": "Whoever prays for Allah's blessings upon me, In the morning and in the evening, my intercession will reach him on the Day of Resurrection."
     },
     {
-      "name": "أستغفر الله",
-      "quantityText": "مئة مرة",
+      "name": "I seek the forgiveness of Allah",
+      "quantityText": "one hundred times",
       "quantity": 100,
-      "description": "لفعل الرسول صلى الله عليه وسلم."
+      "description": "The prophet used to do it"
     },
     {
-      "name": "سبحان الله، والحمد لله، ولا إله إلا الله، والله أكبر",
-      "quantityText": "مئة مرة",
+      "name": "Glorified is Allah, and The praise is for Allah, and There is none worthy of worship but Allah, and Allah is the Most Great,",
+      "quantityText": "one hundred times",
       "quantity": 100,
       "description": "أنهن أحب الكلام الى الله، ومكفرات للذنوب، وغرس الجنة، وجنة لقائلهن من النار، وأحب الى النبي عليه السلام مما طلعت عليه الشمس، والباقيات الصالحات."
     },
     {
-      "name": "لا إله إلا الله",
-      "quantityText": "مئة مرة",
+      "name": "There is none worthy of worship but Allah!",
+      "quantityText": "one hundred times",
       "quantity": 100,
-      "description": "أفضل الذكر لا إله إلا الله."
+      "description": "The most excellent words of remembrance are: There is none worthy of worship but Allah."
     },
     {
-      "name": "الله أكبر",
-      "quantityText": "مئة مرة",
+      "name": "Allah is the Most Great",
+      "quantityText": "one hundred times",
       "quantity": 100,
-      "description": "من قال الله أكبر كتبت له عشرون حسنة وحطت عنه عشرون سيئة. الله أكبر من كل شيء."
+      "description": "Whoever says Allah is the Most Great, twenty good deeds are recorded for him and twenty bad deeds are removed from him"
     },
     {
-      "name": "سبحان الله ، والحمد لله ، ولا إله إلا الله ، والله أكبر ، اللهم اغفر لي ، اللهم ارحمني ، اللهم ارزقني. ",
-      "quantityText": "مئة مرة",
+      "name": "Glory be to Allah, praise be to Allah, There's no God but Allah, Allah is the greatest, O Allah forgive me, have mercy on me and provide for me ",
+      "quantityText": "one hundred times",
       "quantity": 100,
-      "description": "خير الدنيا والآخرة"
+      "description": "you have been given the good of this world and the Next."
     },
     {
-      "name": "الحمد لله حمدا كثيرا طيبا مباركا فيه.",
-      "quantityText": "مئة مرة",
+      "name": "All praise is to Allah, praise in abundance, good and blessed.",
+      "quantityText": "one hundred times",
       "quantity": 100,
-      "description": "قال النبي صلى الله عليه وسلم ‏\"‏لقد رأيت اثني عشر ملكا يبتدرونها، أيهم يرفعها\"‏."
+      "description": "The Messenger of Allah (ﷺ); said: \nI saw twelve angels racing against one another to be the one to take them to Allah."
     },
     {
-      "name": "الله أكبر كبيرا ، والحمد لله كثيرا ، وسبحان الله بكرة وأصيلا.",
-      "quantityText": "مئة مرة",
+      "name": "Allah is truly Great, praise be to Allah in abundance. Glory be to Allah in the morning and the evening.",
+      "quantityText": "one hundred times",
       "quantity": 100,
-      "description": "قال النبي صلى الله عليه وسلم \"عجبت لها ، فتحت لها أبواب السماء\"."
+      "description": "He (the Holy Prophet) said: It (its utterance) surprised me, for the doors of heaven were opened for It."
     },
     {
-      "name": "اللهم صل على محمد وعلى آل محمد كما صليت على إبراهيم , وعلى آل إبراهيم إنك حميد مجيد , اللهم بارك على محمد وعلى آل محمد كما باركت على إبراهيم وعلى آل إبراهيم إنك حميد مجيد. ",
-      "quantityText": "مئة مرة",
+      "name": "O Allah, bestow Your favor on Muhammad and on the family of Muhammad as You have bestowed Your favor on Ibrahim and on the family of Ibrahim, You are Praiseworthy, Most Glorious. O Allah, bless Muhammad and the family of Muhammad as You have blessed Ibrahim and the family of Ibrahim, You are Praiseworthy, Most Glorious.",
+      "quantityText": "one hundred times",
       "quantity": 100,
-      "description": "في كل مره تحط عنه عشر خطايا ويرفع له عشر درجات ويصلي الله عليه عشرا وتعرض على الرسول صلى الله عليه وسلم (أى عدد)."
+      "description": "Every time, ten sins are removed from him, he is raised ten degrees, God blesses him ten times, and they are presented to the Messenger, may God bless him and grant him peace (any number)."
     }
    ]

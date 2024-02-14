@@ -26,15 +26,12 @@ class _AthkarState extends State<Athkar> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        // backgroundColor: AppColor.scaffoldBackground,
-        appBar: AthkarAppBar(
-          title: "الأذكار",
-        ),
-        body: AthkarListView(),
+    return Scaffold(
+      // backgroundColor: AppColor.scaffoldBackground,
+      appBar: AthkarAppBar(
+        title: "azkar".tr(),
       ),
+      body: AthkarListView(),
     );
   }
 }

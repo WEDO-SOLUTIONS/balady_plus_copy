@@ -390,6 +390,19 @@ class SharedPrefs {
   bool? isEkramDriver() {
     return _sharedPreferences?.getBool('isEkramDriver');
   }
+
+
+   setLocationConsent(bool? value) async {
+    if (value != null) {
+      await _sharedPreferences?.setBool('locationConsent', value);
+    } else {
+      _sharedPreferences?.remove("locationConsent");
+    }
+  }
+
+  bool? getLocationConsent() {
+    return _sharedPreferences?.getBool('locationConsent');
+  }
 }
 
 final sharedPrefs = SharedPrefs();

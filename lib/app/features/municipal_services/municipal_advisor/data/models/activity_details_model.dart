@@ -1,7 +1,7 @@
 import '../../municipal_advisor_exports.dart' show ActivityDetailsEntity;
 
 class ActivityDetailsModel extends ActivityDetailsEntity {
-  const ActivityDetailsModel({
+  ActivityDetailsModel({
     required super.activityId,
     required super.activityName,
     required super.isicNumber,

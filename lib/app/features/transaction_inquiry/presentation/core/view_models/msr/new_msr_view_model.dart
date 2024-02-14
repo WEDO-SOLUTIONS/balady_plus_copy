@@ -66,7 +66,7 @@ class NewMSRViewModel extends BaseViewModel {
   Future<bool> getMapGISInfo({required LatLng mapLocaton, bool? select}) async {
     showLoading();
     final GisLocationResult? response =
-        await _repositry.getGisLocation(mapLocaton);
+        await _repositry.getApigeeGisLocation(mapLocaton);
     hideLoading();
     if (response != null &&
         response.isSuccessfull != null &&

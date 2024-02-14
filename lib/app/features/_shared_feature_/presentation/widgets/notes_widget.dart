@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/utils_exports.dart';
@@ -6,12 +7,10 @@ import '../../shared_feature_exports.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 class NotesWidget extends StatelessWidget {
-  const NotesWidget({
-    super.key,
-    required this.notes,
-  });
+  const NotesWidget({super.key, required this.notes, this.showText});
 
   final List<String> notes;
+  final bool? showText;
 
   @override
   Widget build(BuildContext context) {
@@ -38,23 +37,39 @@ class NotesWidget extends StatelessWidget {
                       size: 5, color: AppColor.primary500Light),
                 ),
                 const SizedBox(width: 6),
-                Flexible(
-                  child: Html(
-                    data: notes[index],
-                    onLinkTap: (url, attributes, element) {
-                      CommonFunctions.openBaladyWebView(url);
-                    },
-                    style: {
-                      "body": Style(
-                          fontSize: FontSize(14.0),
-                          fontWeight: FontWeight.w600,
-                          lineHeight: const LineHeight(1.4),
-                          textAlign: TextAlign.start,
-                          color: AppColor.primary500Light,
-                          fontFamily: Constants.appFontType),
-                    },
+                if (showText == true)
+                  Flexible(
+                    child: Linkify(
+                        onOpen: (link) =>
+                            CommonFunctions.openBaladyWebView(link.url),
+                        text: notes[index],
+                        softWrap: true,
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w600,
+                            height: 1.4,
+                            color: AppColor.primary500Light,
+                            fontFamily: Constants.appFontType)),
                   ),
-                ),
+                if (showText != true)
+                  Flexible(
+                    child: Html(
+                      data: notes[index],
+                      onLinkTap: (url, attributes, element) {
+                        CommonFunctions.openBaladyWebView(url);
+                      },
+                      style: {
+                        "body": Style(
+                            fontSize: FontSize(14.0),
+                            fontWeight: FontWeight.w600,
+                            lineHeight: const LineHeight(1.4),
+                            textAlign: TextAlign.start,
+                            color: AppColor.primary500Light,
+                            fontFamily: Constants.appFontType),
+                      },
+                    ),
+                  ),
               ],
             ),
           ),

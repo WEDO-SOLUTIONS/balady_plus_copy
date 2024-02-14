@@ -179,7 +179,7 @@ class HeaderWithDescription extends StatelessWidget {
           fontSize: 12,
           fontWeight: AppFontWeight.bold,
           fontColor: detailsColor,
-          maxLines: 1,
+          maxLines: 3,
           textOverflow: TextOverflow.ellipsis,
           textAlign: TextAlign.start,
         ),

@@ -10,9 +10,8 @@ class LocationWarningWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 48,
-      padding: EdgeInsetsDirectional.only(start: 16),
-      alignment: Alignment.centerRight,
+      padding: const EdgeInsetsDirectional.only(start: 16, top: 16, bottom: 16),
+      alignment: AlignmentDirectional.centerStart,
       decoration: BoxDecoration(
           color: Color(0xFFFFF2EB),
           // borderRadius: BorderRadius.circular(radius),
@@ -27,6 +26,7 @@ class LocationWarningWidget extends StatelessWidget {
           0xFFC74B00,
         ),
         fontSize: 13,
+        maxLines: 3,
         fontWeight: AppFontWeight.bold,
       ),
     );

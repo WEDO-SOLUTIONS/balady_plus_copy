@@ -13,6 +13,8 @@ import '../../../../../core/services/local/helpers.dart';
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/constants/constants.dart';
 import '../../../../../core/utils/enums/enums.dart';
+import '../../../../../core/utils/enums/license_types.dart';
+import '../../../../_shared_feature_/presentation/components/bottom_sheets/generic_bottom_sheet_list.dart';
 import '../../../../_shared_feature_/presentation/dialogs/incident_type_with_search_dialog.dart';
 import '../../../../_shared_feature_/presentation/fields/read_only_field.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
@@ -21,6 +23,7 @@ import '../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.
 import '../../../../_shared_feature_/presentation/widgets/radio_buttons/custom_radio_button_widget copy.dart';
 import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 import '../../core/models/license_for_health_information_response.dart';
+import '../../core/models/licesnse_type.dart';
 import '../../core/models/list_response.dart';
 import '../../core/services/view_models/new_details_health_license_view_model.dart';
 import '../../widgets/new_health_certificate_widgets/previous_next_buttons.dart';
@@ -194,7 +197,7 @@ class _JobLocationSectionState extends State<JobLocationSection> {
               Visibility(
                 visible: model.getAddress() != null,
                 child: LocationInfoSection(
-                  district: model.gisLocationResult?.districtName ?? "",
+                  district: model.gisLocationResult?.Balady_DistrictName ?? "",
                   municipality:
                       model.gisLocationResult?.adminMunicipalityName ?? "",
                   subMunicipality:
@@ -588,6 +591,32 @@ class _LicenseNumberSection extends State<LicenseNumberSection> {
     return Column(
       children: <Widget>[
         const CustomVerticalSpace(height: 14),
+        DropDownWithTitle(
+          title: "health_license_type".tr(),
+          selectedValue: model.selectedLicesnseType?.text,
+          onRetry: () {},
+          onTap: () {
+            // if (state.requestDetails?.usageDisable == true) return;
+            BottomSheetDialog.showDraggableSheet(
+              context,
+              child: GenericBottomSheetList<LicenseType>(
+                title: "health_license_type".tr(),
+                items: [
+                  LicenseType(value: "COMMERCIAL"),
+                  LicenseType(value: "STREET_VENDOR"),
+                  LicenseType(value: "VEHICLE"),
+                ],
+                selectedValue: model.selectedLicesnseType,
+                onTap: (item) {
+                  model.selectedLicesnseType = item;
+
+                  Navigator.pop(context);
+                },
+              ),
+            );
+          },
+        ),
+        const CustomVerticalSpace(height: 16),
         CustomTextFieldWidget(
           controller: _licenseNoController,
           focusNode: _licenseNoFocusNode,
@@ -620,17 +649,24 @@ class _LicenseNumberSection extends State<LicenseNumberSection> {
               CustomTextButtonWidget(
                   onPressed: !model.isLicenseVerified
                       ? () {
-                          model
-                              .getHealthLicenseInfo(_licenseNoController.text)
-                              .then((value) {
-                            if (value) {
-                              FocusScope.of(context).unfocus();
-                              WidgetsBinding.instance
-                                  ?.addPostFrameCallback((_) => _scrollToEnd());
-                              setState(() {});
-                              model.validateForm();
-                            }
-                          });
+                          if (model.selectedLicesnseType != null &&
+                              _licenseNoController.text.isNotEmpty) {
+                            model
+                                .getHealthLicenseInfo(_licenseNoController.text,
+                                    model.selectedLicesnseType?.value ?? "")
+                                .then((value) {
+                              if (value) {
+                                FocusScope.of(context).unfocus();
+                                WidgetsBinding.instance?.addPostFrameCallback(
+                                    (_) => _scrollToEnd());
+                                setState(() {});
+                                model.validateForm();
+                              }
+                            });
+                          } else {
+                            CommonFunctions.showError(
+                                "health_license_type_error".tr());
+                          }
                         }
                       : () {},
                   text: model.isLicenseVerified
