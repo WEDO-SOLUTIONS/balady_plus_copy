@@ -143,8 +143,8 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
     }
   }
 
-  void _currentRouteListener(String? previous, String? next) {
-    if (next != null && next.startsWith('/search')) {
+  void _currentRouteListener(RouteState? previous, RouteState? next) {
+    if (next?.currentPath != null && next!.currentPath!.startsWith('/search')) {
       _dgisSheetController.animateTo(Expansion.middle);
     } else {
       _dgisSheetController.animateTo(Expansion.hidden);
@@ -179,7 +179,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
         searchProvider(searchScope),
         (previous, next) => _drawSearchMarkers(next),
       )
-      ..listen<String?>(currentRouteProvider, _currentRouteListener);
+      ..listen<RouteState?>(currentRouteProvider, _currentRouteListener);
 
     final closable = ref.watch(searchProvider(searchScope)
             .select((value) => value is! SearchStateResults)) ||

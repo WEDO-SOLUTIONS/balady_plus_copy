@@ -129,13 +129,10 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="apps.balady.gov.sa" android:pathPrefix="/eservices/qrcode/qr"/>
-                <data android:scheme="https" android:host="balady.gov.sa" android:pathPrefix="/customervoice"/>
-  
-
+                <data android:scheme="https"/>
+                <data android:host="balady.gov.sa"/>
+                <data android:scheme="apps.balady.gov.sa" android:host="apps.balady.gov.sa"/>
             </intent-filter>
-
-
         </activity>
 
         <activity

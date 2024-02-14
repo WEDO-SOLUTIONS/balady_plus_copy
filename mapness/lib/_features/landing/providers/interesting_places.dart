@@ -17,39 +17,39 @@ part 'interesting_places.g.dart';
 
 @riverpod
 class InterestingPlaces extends _$InterestingPlaces {
-  Future<Dio> get _dio => ref.read(dGisNetworkProvider.future);
-
   @override
   Future<List<InterestingPlace>> build() async {
     state = const AsyncValue.loading();
+
+    final dio = await ref.watch(dGisNetworkProvider.future);
 
     final subscription = ref
         .read(dgisControllerProvider.notifier)
         .visibleRectSubject
         .listen((event) async {
-      await _update(event?.visibleRect);
+      await _update(dio, event?.visibleRect);
     });
 
     ref.onDispose(() {
       subscription.cancel();
     });
 
-    await _update();
+    await _update(dio);
     return state.value ?? [];
   }
 
-  Future<void> _update([VisibleRect? rect]) async {
+  Future<void> _update(Dio dio, [VisibleRect? rect]) async {
     final polygon =
         rect != null ? CommonFunctions.getPolygonFromRect(rect) : null;
-    final data = await _fetch(polygon);
+    final data = await _fetch(dio, polygon);
     state = AsyncValue.data(data);
   }
 
-  Future<List<InterestingPlace>> _fetch([gb.Polygon? polygon]) async {
+  Future<List<InterestingPlace>> _fetch(Dio dio, [gb.Polygon? polygon]) async {
     final wkt = polygon != null ? polygon.toText(format: gb.WKT.geometry) : '';
 
     try {
-      final response = await (await _dio).get(
+      final response = await dio.get(
         wkt.isNotEmpty
             ? '/interesting-places?bound=$wkt'
             : '/interesting-places',

@@ -340,6 +340,7 @@ class LayersControls extends _$LayersControls {
       (markers) async {
         update(isLoading: false);
         // await mapController.removeAllMarkers();
+        await _removeAll();
         if (state.selectedType == LayerType.invest) {
           final stateMarkers = state.investmentsMarkers;
           markers.retainWhere((e) => !stateMarkers.containsKey(e.id));
@@ -390,6 +391,7 @@ class LayersControls extends _$LayersControls {
         .listen((data) async {
       update(isLoading: false);
       // await mapManager.removeAllPolygons();
+      await _removeAll();
       if (state.selectedType == LayerType.fencing) {
         final statePolygons = state.polygons;
         data.retainWhere((e) => !statePolygons.containsKey(e.id));
@@ -426,6 +428,7 @@ class LayersControls extends _$LayersControls {
       (data) async {
         update(isLoading: false);
         // await mapObjectManager.removeAllPolyLines();
+        await _removeAll();
         if (state.selectedType == LayerType.buildings) {
           final polylineList = _makePolylineWithPoint(data);
           final statePolylines = state.polylines;
@@ -519,7 +522,7 @@ class LayersControls extends _$LayersControls {
 
   Future<void> showIwish() async {
     update(isLoading: true);
-    await _removeAll();
+    // await _removeAll();
     const duration = Duration(seconds: 10);
     final markers = await ref
         .read(iwishMarkersProvider.future)
@@ -530,6 +533,7 @@ class LayersControls extends _$LayersControls {
       onError();
       return [];
     });
+    await _removeAll();
     await ref
         .read(mapObjectManagerProvider(named: mapLayerName).notifier)
         .addMarkers(markers)
