@@ -26,26 +26,27 @@ class BaladyCalendarPage extends StatelessWidget {
         EntryPointCubit auth = context.read<EntryPointCubit>();
         final selectedAgent = auth.state.selectedAgent;
         final selectedDelegator = auth.state.selectedDelegator;
+        EventsCommonParams eventsCommonParams() {
+          if (selectedAgent != null) {
+            return EventsCommonParams(
+                agencyInRequestDto: AgencyInRequestDto(
+                    agencyNumber: selectedAgent.agencyNumber!,
+                    ownerNumber: selectedAgent.ownerNumber!,
+                    ownerTypeId: selectedAgent.ownerTypeId!));
+          } else if (selectedDelegator != null) {
+            return EventsCommonParams(
+                unifiedNationalNumber: selectedDelegator.unifiedNationalNumber!,
+                relationTypeeId: int.tryParse(selectedDelegator.relationTypeId));
+          } else {
+            return EventsCommonParams(
+                loginIdentityId: selectedDelegator?.crNumber,
+                loginIdentityType: selectedDelegator?.crType);
+          }
+        }
 
         return BaladyCalendarYearsListViewModel(
           repository: sl(),
-          params: EventsCommonParams(
-            agencyInRequestDto: selectedAgent != null
-                ? AgencyInRequestDto(
-                    agencyNumber: selectedAgent.agencyNumber!,
-                    ownerNumber: selectedAgent.ownerNumber!,
-                    ownerTypeId: selectedAgent.ownerTypeId!)
-                : null,
-            loginIdentityId:
-                selectedDelegator != null ? selectedDelegator.crNumber! : null,
-            loginIdentityType: selectedDelegator?.crType,
-            unifiedNationalNumber: selectedDelegator != null
-                ? selectedDelegator.unifiedNationalNumber!
-                : null,
-            relationTypeeId: selectedDelegator != null
-                ? int.parse(selectedDelegator.relationTypeId)
-                : null,
-          ),
+          params: eventsCommonParams()
         );
       },
       child: Scaffold(

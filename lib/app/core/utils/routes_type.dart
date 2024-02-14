@@ -58,11 +58,11 @@ String getScreenName(String tag, {int? typeId}) {
     //////////////////////////////////////////////////////////////////////
     case 'invoice':
       return RouteName.invoiceDetails;
-    case 'appointment':
+    case 'appmt':
       return RouteName.appointmentDetailsRoute;
     case 'objection':
       return RouteName.objectionsDetailsPage;
-    case 'violations':
+    case 'violation':
       return RouteName.violationDetailsPage;
     //////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////
@@ -76,7 +76,7 @@ enum ScreenTage {
   request,
   license,
   invoice,
-  appointment,
+  appmt,
   objection,
-  violations,
+  violation,
 }

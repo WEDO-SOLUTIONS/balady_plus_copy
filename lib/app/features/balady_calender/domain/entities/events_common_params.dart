@@ -5,9 +5,11 @@ String eventsCountInyearsParamsToJson(EventsCommonParams data) =>
 
 class EventsCommonParams {
   //////////////////////////////////////
-  // Use This When User Delegators Selected
+  // Use This When User Selected
   String? loginIdentityId;
   String? loginIdentityType;
+
+  // Use This When Selecteded Delegator
   String? unifiedNationalNumber;
   int? relationTypeeId;
 
