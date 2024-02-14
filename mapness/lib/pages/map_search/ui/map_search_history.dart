@@ -1,9 +1,13 @@
-import 'package:flutter/widgets.dart';
+import 'package:dgis_map/library.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
-import 'package:mapness/features/search/ui/search_history.dart';
+import 'package:mapness/features/search/providers/search_history.dart';
+import 'package:mapness/features/search/ui/search_history.dart' as ui;
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:provider/provider.dart';
 
 class MapSearchHistory extends ConsumerWidget {
@@ -13,15 +17,72 @@ class MapSearchHistory extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final scope = context.read<SearchScope>();
 
-    return SearchHistory(
-      onTap: (item) {
+    return ui.SearchHistory(
+      onTap: (item) async {
         if (item.objectId != null) {
-          PoiMapRoute.open(context, int.parse(item.objectId!));
+          final dgisController = await ref.read(dgisControllerProvider.future);
+          try {
+            await dgisController.searchByObjectId(
+              DgisObjectIdMessage(
+                objectId: int.tryParse(item.objectId ?? '') ?? 0,
+                entranceId: int.tryParse(item.entranceId ?? '') ?? 0,
+              ),
+            );
+
+            PoiMapRoute.open(context, int.parse(item.objectId!));
+            // ignore: avoid_catches_without_on_clauses
+          } catch (e) {
+            final result = await showDialog(
+              barrierColor: Colors.transparent,
+              useSafeArea: false,
+              context: context,
+              builder: (contextDialog) => ProviderScope(
+                parent: ProviderScope.containerOf(context),
+                child: Theme(
+                  data: Theme.of(context),
+                  child: MediaQuery(
+                    data: MediaQuery.of(context),
+                    child: Directionality(
+                      textDirection: Directionality.of(context),
+                      child: Localizations.override(
+                        context: context,
+                        child: ColoredBox(
+                          color: Colors.black45,
+                          child: Column(
+                            children: [
+                              const Spacer(),
+                              ErrorSheet(
+                                buttonLabel: 'Try again',
+                                errorLabel: 'Place was not found',
+                                onClose: () =>
+                                    Navigator.of(contextDialog).pop(false),
+                                onRetry: () =>
+                                    Navigator.of(contextDialog).pop(true),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+            await ref
+                .read(searchHistoryProvider(scope.value).notifier)
+                .delete(item);
+
+            if (result) {
+              ref
+                  .read(searchQueryProvider(scope.value).notifier)
+                  .update(item.title);
+            }
+          }
         } else {
           ref
               .read(searchQueryProvider(scope.value).notifier)
               .update(item.title);
-          ref
+          await ref
               .read(searchProvider(scope.value).notifier)
               .searchByText(item.title);
         }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/pages/routing/ui/routing_search_content.dart';
@@ -13,10 +14,12 @@ class RoutingSearchSheet extends ConsumerStatefulWidget {
   const RoutingSearchSheet({
     required this.placeholder,
     required this.showMyLocation,
+    this.initialQuery,
     super.key,
   });
 
   final String placeholder;
+  final String? initialQuery;
   final bool showMyLocation;
 
   @override
@@ -47,6 +50,13 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheet> {
         curve: Curves.easeInOut,
       );
     });
+    if (widget.initialQuery != null) {
+      Future.delayed(Duration.zero, () {
+        ref.read(searchQueryProvider(_searchScope).notifier).update(
+              widget.initialQuery!,
+            );
+      });
+    }
   }
 
   @override

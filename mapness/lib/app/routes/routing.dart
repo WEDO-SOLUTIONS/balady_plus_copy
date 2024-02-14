@@ -17,8 +17,10 @@ class RoutingSearchRoute extends GoRouteData {
   const RoutingSearchRoute({
     required this.placeholder,
     required this.showMyLocation,
+    this.initialQuery,
   });
 
+  final String? initialQuery;
   final String placeholder;
   final bool showMyLocation;
 
@@ -30,6 +32,7 @@ class RoutingSearchRoute extends GoRouteData {
         child: RoutingSearchSheet(
           placeholder: placeholder,
           showMyLocation: showMyLocation,
+          initialQuery: initialQuery,
         ),
       );
 }

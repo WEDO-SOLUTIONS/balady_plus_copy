@@ -5,6 +5,7 @@ import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/pages/routing/ui/routing_history_empty.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/widgets/search/ui/search_history_collapsible.dart';
 
 const _searchScope = 'RoutingSearch';
@@ -12,10 +13,12 @@ const _searchScope = 'RoutingSearch';
 class RoutingHistory extends ConsumerWidget {
   const RoutingHistory({
     required this.updatePoint,
+    required this.searchByQuery,
     super.key,
   });
 
   final void Function(RoutePoint point) updatePoint;
+  final void Function(String query) searchByQuery;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,15 +40,61 @@ class RoutingHistory extends ConsumerWidget {
             onTap: (item) async {
               final dgisController =
                   await ref.read(dgisControllerProvider.future);
-              final object = await dgisController.searchByObjectId(
-                DgisObjectIdMessage(
-                  objectId: int.tryParse(item.objectId ?? '') ?? 0,
-                  entranceId: int.tryParse(item.entranceId ?? '') ?? 0,
-                ),
-              );
+              try {
+                final object = await dgisController.searchByObjectId(
+                  DgisObjectIdMessage(
+                    objectId: int.tryParse(item.objectId ?? '') ?? 0,
+                    entranceId: int.tryParse(item.entranceId ?? '') ?? 0,
+                  ),
+                );
 
-              final point = RoutePointDirectoryObject(object);
-              updatePoint(point);
+                final point = RoutePointDirectoryObject(object);
+                updatePoint(point);
+                // ignore: avoid_catches_without_on_clauses
+              } catch (e) {
+                final result = await showDialog(
+                  barrierColor: Colors.transparent,
+                  useSafeArea: false,
+                  context: context,
+                  builder: (contextDialog) => ProviderScope(
+                    parent: ProviderScope.containerOf(context),
+                    child: Theme(
+                      data: Theme.of(context),
+                      child: MediaQuery(
+                        data: MediaQuery.of(context),
+                        child: Directionality(
+                          textDirection: Directionality.of(context),
+                          child: Localizations.override(
+                            context: context,
+                            child: ColoredBox(
+                              color: Colors.black45,
+                              child: Column(
+                                children: [
+                                  const Spacer(),
+                                  ErrorSheet(
+                                    buttonLabel: 'Try again',
+                                    errorLabel: 'Place was not found',
+                                    onClose: () =>
+                                        Navigator.of(contextDialog).pop(false),
+                                    onRetry: () =>
+                                        Navigator.of(contextDialog).pop(true),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+                await ref
+                    .read(searchHistoryProvider(_searchScope).notifier)
+                    .delete(item);
+                if (result) {
+                  searchByQuery(item.title);
+                }
+              }
             },
           );
   }
