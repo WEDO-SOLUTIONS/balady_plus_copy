@@ -42,13 +42,6 @@ class HappinessTagsGrid extends ConsumerWidget {
             );
           },
         ),
-        HappinessTagWidget(
-          title: context.l10n.showMore,
-          iconAsset: 'assets/icons/svg/ic_ellipsis.svg',
-          onPressed: () {},
-          isSelected: false,
-          tagSizeGroup: sizeGroup,
-        ),
       ],
     );
   }
