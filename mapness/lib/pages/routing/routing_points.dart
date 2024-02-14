@@ -92,19 +92,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
                       delegate: RoutingHeaderDelegate(
                         points: points,
                         updatePoints: (newPoitns) {
-                          setState(() {
-                            points = newPoitns;
-                          });
-                          if (points.every((element) => element.isNotEmpty)) {
-                            RoutingRoutesRoute(
-                              startLatitude: points[0].latitude,
-                              startLongitude: points[0].longitude,
-                              startLabel: points[0].title(context.l10n) ?? '',
-                              finishLatitude: points[1].latitude,
-                              finishLongitude: points[1].longitude,
-                              finishLabel: points[1].title(context.l10n) ?? '',
-                            ).go(context);
-                          }
+                          _updatePoints(newPoitns);
                         },
                       ),
                       pinned: true,
@@ -130,6 +118,24 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
                             ).go(context);
                           }
                         },
+                        searchByQuery: (query) {
+                          final index = points[0].isNotEmpty ? 1 : 0;
+                          RoutingSearchRoute(
+                            placeholder: index == 0
+                                ? context.l10n.from
+                                : context.l10n.to,
+                            showMyLocation: index == 0 &&
+                                points[index] is! RoutePointMyLocation,
+                            initialQuery: query,
+                          ).push(context).then(
+                            (value) {
+                              if (value != null && value is RoutePoint) {
+                                points[index] = value;
+                                _updatePoints(points);
+                              }
+                            },
+                          );
+                        },
                       ),
                     )
                   ],
@@ -140,5 +146,21 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
         ],
       ),
     );
+  }
+
+  void _updatePoints(List<RoutePoint> newPoitns) {
+    setState(() {
+      points = newPoitns;
+    });
+    if (points.every((element) => element.isNotEmpty)) {
+      RoutingRoutesRoute(
+        startLatitude: points[0].latitude,
+        startLongitude: points[0].longitude,
+        startLabel: points[0].title(context.l10n) ?? '',
+        finishLatitude: points[1].latitude,
+        finishLongitude: points[1].longitude,
+        finishLabel: points[1].title(context.l10n) ?? '',
+      ).go(context);
+    }
   }
 }
