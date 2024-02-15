@@ -31,10 +31,10 @@ class PostersReqeuestDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int? detailsRequestNumber =
-        ModalRoute.of(context)!.settings.arguments as int?;
+    Map data =
+        ModalRoute.of(context)!.settings.arguments as Map;
     return BlocProvider(
-      create: (context) => PostersLicenseBloc(requestId: detailsRequestNumber)
+      create: (context) => PostersLicenseBloc(requestId: int.tryParse(data['requestNumber']))
         ..add(GetPosterRequestDetailsEvent()),
       child: BlocListener<PostersLicenseBloc, PostersLicenseState>(
         listener: (context, state) {},

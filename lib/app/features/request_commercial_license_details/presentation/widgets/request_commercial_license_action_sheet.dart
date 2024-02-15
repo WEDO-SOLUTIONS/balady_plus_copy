@@ -1,19 +1,9 @@
-import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
-import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
-import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
-import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/blocs/commercial_license_cancel/commercial_license_cancel_bloc.dart';
-import 'package:balady_plus/app/features/commercial_license_details/data/models/reason_cancel.dart';
-import 'package:balady_plus/app/features/commercial_license_details/presentation/mvvm/commercial_license_action_view_model.dart';
-import 'package:balady_plus/app/features/commercial_license_details/presentation/mvvm/commercial_license_reason_cancel_view_model.dart';
-import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/commercial_license_reason_cancel_sheet.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/loading_list_widget.dart';
 import 'package:balady_plus/app/features/request_commercial_license_details/presentation/mvvm/commercial_license_request_action_view_model.dart';
 import 'package:flutter/material.dart';
@@ -47,38 +37,28 @@ class RequestCommercialLicenseActionSheet extends StatelessWidget {
                                       case "cancel":
                                         break;
                                       case "edit":
-                                        print(provider.requestTypeId);
                                         if (provider.requestTypeId == 1005) {
                                           Navigator.of(context).pushNamed(
-                                              RouteName
-                                                  .renewCommercialLicenseSubmitForm,
-                                              arguments: provider.requestId);
+                                            RouteName
+                                                .renewCommercialLicenseSubmitForm,
+                                            arguments: provider.requestId,
+                                          );
                                         } else if (provider.requestTypeId ==
                                             1004) {
                                           Navigator.of(context).pushNamed(
-                                              RouteName.commercialLicensePage,
-                                              arguments: provider.requestId);
+                                            RouteName.commercialLicensePage,
+                                            arguments: provider.requestId,
+                                          );
                                         } else {
                                           try {
-                                            Navigator.of(context)
-                                                .popAndPushNamed(
+                                            Navigator.of(context).popAndPushNamed(
                                               RouteName.commercialLicenseCancel,
-                                              arguments:
-                                                  CommercialLicenseCancelBloc(
-                                                webService: sl(),
-                                                from: "request",
-                                                // cancellationRequestResponse: cancellationRequest,
-                                                crNumber: CommonProperties
-                                                    .selectedDelegator!
-                                                    .crNumber!,
-                                                crType: CommonProperties
-                                                    .selectedDelegator!.crType,
-                                                reasonCancel:
-                                                    provider.reasonCancel,
-                                                requestId: provider.requestId,
-                                                availableCloseDate:
-                                                    provider.availableCloseDate,
-                                              ),
+                                              arguments: {
+                                                "from": "request",
+                                                "requestId": provider.requestId,
+                                                "reasonCancel": provider.reasonCancel,
+                                                "availableCloseDate": provider.availableCloseDate,
+                                              },
                                             );
                                           } catch (e) {}
                                         }
