@@ -1,4 +1,12 @@
-## 3.8.2(7) - Current
+## 3.9.0(1) - Current
+
+- BALADY-1325 [Marketing] no action happen when click on show more in feedback for a location
+- BALADY-1294 [Marketing] wrong switching between layers behavior
+- BALADY-1314 [Marketing] Navigation panel is showing while explore tab is active
+- BALADY-1340 [Marketing] navigation ETA alignment
+- BALADY-1328 [Landing Page] Bottom bar icons and text is too big (Android)
+- BALADY-1331 [Marketing] place marker on closest point
+## 3.8.2(7)
 
 - BALADY-1293: [Marketing][POI card] title text is truncated
 - BALADY-1313: [Marketing] Compliance buildings layer - The label is unclear and very small
