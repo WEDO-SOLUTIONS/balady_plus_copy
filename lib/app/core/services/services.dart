@@ -659,7 +659,7 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "supporter", "description": null, "tag": null},
       "en": {"title": "supporter", "description": null, "tag": null}
     },
-    /* {
+     {
       "id": 407,
       "icon": "chat_bot",
       "3d_icon": null,
@@ -670,7 +670,7 @@ Map<String, dynamic> servicesConfig = {
       "action": {"type": "page", "value": RouteName.chatbot},
       "ar": {"title": "municipal_advisor", "description": null, "tag": null},
       "en": {"title": "municipal_advisor", "description": null, "tag": null}
-    },*/
+    },
     /*{
       "id": 7,
       "icon": "municpal_toppaco",
