@@ -226,16 +226,12 @@ class _BottomNavigationBarItem extends StatelessWidget {
                 _DefaultIcon(
                   icon: icon!,
                   selected: selected,
-                  selectedColor: _selectedColor,
-                  unselectedColor: _unselectedColor,
                 ),
             const SizedBox(height: 2),
             labelBuilder?.call(context, selected) ??
                 _DefaultLabel(
                   label: label!,
                   selected: selected,
-                  selectedColor: _selectedColor,
-                  unselectedColor: _unselectedColor,
                 ),
           ],
         ),
@@ -243,14 +239,10 @@ class _BottomNavigationBarItem extends StatelessWidget {
 }
 
 class _DefaultIcon extends StatelessWidget {
-  final Color selectedColor;
-  final Color unselectedColor;
   final String icon;
   final bool selected;
 
   const _DefaultIcon({
-    required this.selectedColor,
-    required this.unselectedColor,
     required this.icon,
     required this.selected,
   });
@@ -269,14 +261,10 @@ class _DefaultIcon extends StatelessWidget {
 }
 
 class _DefaultLabel extends StatelessWidget {
-  final Color selectedColor;
-  final Color unselectedColor;
   final String label;
   final bool selected;
 
   const _DefaultLabel({
-    required this.selectedColor,
-    required this.unselectedColor,
     required this.label,
     required this.selected,
   });
