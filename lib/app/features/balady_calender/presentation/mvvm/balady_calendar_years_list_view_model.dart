@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
+import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/balady_calender/data/models/events_count_in_years/events_count_in_years_item.dart';
 import 'package:balady_plus/app/features/balady_calender/data/models/events_count_in_months/months_events_count.dart';
@@ -13,6 +14,7 @@ import 'package:balady_plus/app/features/balady_calender/domain/repositories/bal
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:hijri/hijri_calendar.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/errors/failures.dart';
 
 class BaladyCalendarYearsListViewModel extends BaseViewModel {
@@ -45,8 +47,13 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
       response = await repository.getEventsCountInYears(params: params);
       response.fold(
         (failure) {
-          errorMessage = failure.toString();
           yearList = [];
+          if (failure is NoDataFoundException) {
+            errorMessage = "no_data_shown".tr();
+          } else if (failure is ServerFailure) {
+            errorMessage = failure.errorMessage;
+          }
+          notifyListeners();
         },
         (yearsList) async {
           yearList = yearsList.eventsCountInYearsItem;
@@ -160,7 +167,11 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
       response = await repository.getFilteredEvents();
       response.fold(
         (failure) {
-          errorMessage = failure.toString();
+          if (failure is NoDataFoundException) {
+            errorMessage = "no_data_shown".tr();
+          } else if (failure is ServerFailure) {
+            errorMessage = failure.errorMessage;
+          }
           notifyListeners();
         },
         (filterList) {
@@ -196,7 +207,7 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
   }
 
   selectFilterOption(int index, bool isChecked) {
-    if(isChecked) {
+    if (isChecked) {
       idsSelected.add(checkboListTileEntityList[index].id);
     } else {
       idsSelected.remove(checkboListTileEntityList[index].id);

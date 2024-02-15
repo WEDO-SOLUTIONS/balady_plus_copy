@@ -16,7 +16,8 @@ class BaladyCalendarEventsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     ScrollController scrollController = ScrollController();
 
-    BaladyCalendarMonthsListViewModel monthsListViewModel = context.read<BaladyCalendarMonthsListViewModel>();
+    BaladyCalendarMonthsListViewModel monthsListViewModel =
+        context.read<BaladyCalendarMonthsListViewModel>();
     return Selector<BaladyCalendarMonthsListViewModel, bool>(
       selector: (_, provider) => provider.isLoading,
       builder: (_, isLoading, child) {
@@ -27,7 +28,7 @@ class BaladyCalendarEventsWidget extends StatelessWidget {
 
         // if have errors
         if (monthsListViewModel.errorMessage != null) {
-          return  Center(
+          return Center(
             child: Text(
               monthsListViewModel.errorMessage!,
             ),
@@ -35,8 +36,8 @@ class BaladyCalendarEventsWidget extends StatelessWidget {
         }
 
         // if not have Events
-        if (monthsListViewModel.monthsList!.isEmpty) {
-          return  Center(
+        if (monthsListViewModel.monthsList?.isEmpty ?? true) {
+          return Center(
             child: Text(
               "no_events".tr(),
             ),
@@ -52,74 +53,73 @@ class BaladyCalendarEventsWidget extends StatelessWidget {
               size: 5,
             ),
           ),
-          child: Builder(
-            builder: (contextBloc) {
-              return BlocBuilder<EventsListCubit, EventsListState>(
-                bloc: contextBloc.watch<EventsListCubit>(),
-                builder: (_, state) {
-                  if (state is InitialEventsListState ||
-                      state is LoadingEventsListState) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (state is FailureEventsListState) {
-                    return ReloadWidget(
-                      onTab: () => contextBloc
-                          .read<EventsListCubit>()
-                          .getCommercialLicenseDetailsById(
-                        contextBloc.read<EventsListCubit>().params,
-                          ),
-                    );
-                  }
-
-                  /////////////////////////////////////////////////////////////////
-                  /////////////////////////////////////////////////////////////////
-
-                  // View Loading In after list item in list
-                  if (state is SucceedWithPaginationEventsListState) {
-                    return ListView.builder(
-                      itemBuilder: (BuildContext context, int index) {
-                        return index == state.listMonths.length
-                            ? const Center(child: CircularProgressIndicator())
-                            : BaladyCalendarMonthWidget(
-                                month: state.listMonths[index],
-                                eventOfMonth:
-                                    state.event[state.listMonths[index].month],
-                              );
-                      },
-                      controller: scrollController
-                        ..addListener(
-                          () {
-                            if (scrollController.position.pixels ==
-                                scrollController.position.maxScrollExtent) {
-                              contextBloc
-                                  .read<EventsListCubit>()
-                                  .getCommercialLicenseDetailsById(
-                                contextBloc.read<EventsListCubit>().params,
-                                  );
-                            }
-                          },
+          child: Builder(builder: (contextBloc) {
+            return BlocBuilder<EventsListCubit, EventsListState>(
+              bloc: contextBloc.watch<EventsListCubit>(),
+              builder: (_, state) {
+                if (state is InitialEventsListState ||
+                    state is LoadingEventsListState) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state is FailureEventsListState) {
+                  return ReloadWidget(
+                    onTab: () => contextBloc
+                        .read<EventsListCubit>()
+                        .getCommercialLicenseDetailsById(
+                          contextBloc.read<EventsListCubit>().params,
                         ),
-                      itemCount: state.listMonths.length + 1,
-                    );
-                  }
+                  );
+                }
 
-                  if (state is SucceedEventsListState) {
-                    return ListView.builder(
-                      itemBuilder: (BuildContext context, int index) {
-                        return BaladyCalendarMonthWidget(
-                          month: state.listMonths[index],
-                          eventOfMonth: state.event[state.listMonths[index].month],
-                        );
-                      },
-                      itemCount: state.listMonths.length,
-                    );
-                  }
+                /////////////////////////////////////////////////////////////////
+                /////////////////////////////////////////////////////////////////
 
-                  return const SizedBox();
-                },
-              );
-            }
-          ),
+                // View Loading In after list item in list
+                if (state is SucceedWithPaginationEventsListState) {
+                  return ListView.builder(
+                    itemBuilder: (BuildContext context, int index) {
+                      return index == state.listMonths.length
+                          ? const Center(child: CircularProgressIndicator())
+                          : BaladyCalendarMonthWidget(
+                              month: state.listMonths[index],
+                              eventOfMonth:
+                                  state.event[state.listMonths[index].month],
+                            );
+                    },
+                    controller: scrollController
+                      ..addListener(
+                        () {
+                          if (scrollController.position.pixels ==
+                              scrollController.position.maxScrollExtent) {
+                            contextBloc
+                                .read<EventsListCubit>()
+                                .getCommercialLicenseDetailsById(
+                                  contextBloc.read<EventsListCubit>().params,
+                                );
+                          }
+                        },
+                      ),
+                    itemCount: state.listMonths.length + 1,
+                  );
+                }
+
+                if (state is SucceedEventsListState) {
+                  return ListView.builder(
+                    itemBuilder: (BuildContext context, int index) {
+                      return BaladyCalendarMonthWidget(
+                        month: state.listMonths[index],
+                        eventOfMonth:
+                            state.event[state.listMonths[index].month],
+                      );
+                    },
+                    itemCount: state.listMonths.length,
+                  );
+                }
+
+                return const SizedBox();
+              },
+            );
+          }),
         );
       },
     );

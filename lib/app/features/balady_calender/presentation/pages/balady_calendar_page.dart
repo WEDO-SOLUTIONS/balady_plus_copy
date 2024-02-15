@@ -36,7 +36,8 @@ class BaladyCalendarPage extends StatelessWidget {
           } else if (selectedDelegator != null) {
             return EventsCommonParams(
                 unifiedNationalNumber: selectedDelegator.unifiedNationalNumber!,
-                relationTypeeId: int.tryParse(selectedDelegator.relationTypeId));
+                relationTypeeId:
+                    int.tryParse(selectedDelegator.relationTypeId));
           } else {
             return EventsCommonParams(
                 loginIdentityId: selectedDelegator?.crNumber,
@@ -45,9 +46,7 @@ class BaladyCalendarPage extends StatelessWidget {
         }
 
         return BaladyCalendarYearsListViewModel(
-          repository: sl(),
-          params: eventsCommonParams()
-        );
+            repository: sl(), params: eventsCommonParams());
       },
       child: Scaffold(
         body: SafeArea(
@@ -91,15 +90,22 @@ class BaladyCalendarPage extends StatelessWidget {
                       }
 
                       // if have error
+                      String? t = contextYearsSelector
+                          .watch<BaladyCalendarYearsListViewModel>()
+                          .errorMessage;
                       if (contextYearsSelector
                               .watch<BaladyCalendarYearsListViewModel>()
                               .errorMessage !=
                           null) {
-                        return Center(
-                          child: Text(
-                            contextYearsSelector
-                                .watch<BaladyCalendarYearsListViewModel>()
-                                .errorMessage!,
+                        return Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Center(
+                            child: Text(
+                              contextYearsSelector
+                                  .watch<BaladyCalendarYearsListViewModel>()
+                                  .errorMessage!,
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                         );
                       }
