@@ -297,10 +297,12 @@ class InquiryRepository {
     var body,
   ) async {
     String url = ApiUrl.INQCreate;
-
+    print(body);
     final res = await webServices.postPegaRequest(url, body: body);
+
     bool? state = res['state'];
     dynamic data = res['data'];
+    print(data);
     String? error = res['error'];
     CreateIncidentResult? response;
     try {

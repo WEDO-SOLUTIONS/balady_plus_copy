@@ -53,6 +53,8 @@ class EtmamCityNameWidget extends StatelessWidget {
             dialogBody: ChangeCityDialog(
               onSelect: onChanged,
             ));
+
+        sl<CityBloc>().add(GetCitiesEvent());
       },
       child: Container(
         decoration: BoxDecoration(
