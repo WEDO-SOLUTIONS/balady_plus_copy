@@ -3967,10 +3967,23 @@
 "attachment_text":"مرفق", 
 "National_ID":"هوية وطنية", 
 "Iqama_ID":"هوية مقيم",
+
+
+
+
   "CommerciallicenseQuery": "الاستعلام عن رخصة تجارية",
   "agentNumber": "الرقم الموحد للمنشآة",
   "query": "استعلام",
   "agentNumberError":"يرجي ادخال رقم السجل التجاري المالك للرخصة",
   "commercial_license_error":"يرجي ادخال رقم رخصة تجارية",
-  "license_nubmer": "رقم الرخصة التجارية"
+  "license_nubmer": "رقم الرخصة التجارية",
+  "employee_type": "نوع العمالة",
+  "license_shop_name_ar": "اسم المحل باللغة العربية",
+  "license_shop_name_en": "اسم المحل باللغة الإنجليزية",
+  "activity_info": "بيانات الأنشطة",
+  "additional_activity_info": "قائمة الأنشطة الإضافية للرخصة",
+  "isicNumber": "رمز النشاط الآيزيك الأساسي للرخصة",
+  "isicName": "اسم النشاط الآيزيك الأساسي للرخصة",
+  "extra_isicNumber": "رمز النشاط الآيزيك الإضافي",
+  "extra_isicName": "اسم النشاط الآيزيك الإضافي"
 }

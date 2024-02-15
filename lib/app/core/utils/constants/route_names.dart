@@ -348,6 +348,8 @@ class RouteName {
       'OverviewCommercialLicense_Screen';
   static const commercialLicenseQuery =
       'QueryCommercialLicense_Screen';
+  static const commercialLicenseQueryDetails =
+      'QueryCommercialLicense_query_details_Screen';
 
 }
 

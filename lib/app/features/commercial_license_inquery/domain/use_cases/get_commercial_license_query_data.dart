@@ -6,11 +6,11 @@ import '../../../_shared_feature_/shared_feature_exports.dart';
 import '../entity/commercial_license_data_entity.dart';
 import '../repository/repository.dart';
 
-class GetCommercialLicenseData
+class GetCommercialLicenseQueryData
     extends UseCase<ResponseBodyModel<CommercialLicenseData>, (int, int)> {
   final CommercialLicenseQueryRepository repository;
 
-  GetCommercialLicenseData({required this.repository});
+  GetCommercialLicenseQueryData({required this.repository});
   @override
   Future<Either<Failure, ResponseBodyModel<CommercialLicenseData>>> call(
       (int, int) params) async {
