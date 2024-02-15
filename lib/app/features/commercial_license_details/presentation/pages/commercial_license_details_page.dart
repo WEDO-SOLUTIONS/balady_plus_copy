@@ -6,9 +6,11 @@ import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:balady_plus/app/features/commercial_license_cancel/data/repositories/repository_implementation.dart';
+import 'package:balady_plus/app/features/commercial_license_details/data/data_sources/remote_data_source.dart';
+import 'package:balady_plus/app/features/commercial_license_details/domain/use_cases/get_commercial_license_details.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/bloc/commercial_license_details_cubit.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/mvvm/commercial_license_action_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/commercial_license_action_sheet.dart';
@@ -42,12 +44,22 @@ class _CommercialLicenseDetailsPageState
 
   @override
   Widget build(BuildContext context) {
-    CommercialLicenseDetailsCubit bloc = ModalRoute.of(context)!
-        .settings
-        .arguments as CommercialLicenseDetailsCubit;
-
+    Map data = ModalRoute.of(context)!.settings.arguments as Map;
+    int commercialLicenseId = int.parse(data['licenseNumber']);
     return BlocProvider(
-      create: (context) => bloc,
+      create: (context) =>
+        CommercialLicenseDetailsCubit(
+          GetCommercialLicenseDetails(
+            repository:
+            CommercialLicenseDetailsRepositoryImplementation(
+              remoteDataSource:
+              CommercialLicenseDetailsRemoteDataSourceImplementation(
+                webService: sl(),
+              ),
+            ),
+          ),
+          commercialLicenseId,
+        ),
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: AppColor.scaffoldBackground,
@@ -67,7 +79,7 @@ class _CommercialLicenseDetailsPageState
                 fontColor: AppColor.blackModern700Light,
               ),
               CustomTextWidget(
-                "#${bloc.commercialLicenseId}",
+                "#${commercialLicenseId}",
                 fontSize: 14,
                 maxLines: 1,
                 textOverflow: TextOverflow.ellipsis,
@@ -102,9 +114,9 @@ class _CommercialLicenseDetailsPageState
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   child: InkWell(
                     onTap: () {
-                      if (bloc.state.commercialLicenceDetails!.submitterInfo !=
+                      if (state.commercialLicenceDetails!.submitterInfo !=
                               null &&
-                          bloc.state.commercialLicenceDetails!.licenseInfo !=
+                          state.commercialLicenceDetails!.licenseInfo !=
                               null) {
                         BottomSheetDialog.showDraggableSheet(
                           context,
@@ -115,13 +127,12 @@ class _CommercialLicenseDetailsPageState
                             create: (BuildContext context) =>
                                 CommercialLicenseActionViewModel(
                                     webService: sl(),
-                                    licenseId: bloc.commercialLicenseId,
-                                    submitterInfo: bloc
-                                        .state
+                                    licenseId: commercialLicenseId,
+                                    submitterInfo: state
                                         .commercialLicenceDetails!
                                         .submitterInfo!,
                                     commercialLicenceDetails:
-                                        bloc.state.commercialLicenceDetails!),
+                                        state.commercialLicenceDetails!),
                             child: const CommercialLicenseActionSheet(),
                           ),
                           isFullHeight: false,
