@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
@@ -177,7 +176,7 @@ class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
                 ),
               ),
               if (state.status == BlocStatus.loading)
-                CustomCircularLoadingWidget(),
+                const CustomCircularLoadingWidget(),
             ],
           );
         },
@@ -439,7 +438,7 @@ class _ObjectionFeedBackState extends State<ObjectionFeedBack> {
         return (state.details?.enquiryList?.isNotEmpty ?? false)
             ? CustomExpansionPanelWidget(
                 underline: false,
-                title: ("طلبات الإفادة").tr(),
+                title: ("objection_enquiry_requests").tr(),
                 leading: SvgPicture.asset(IconPath.vdSummuryDesc),
                 children: [
                   MediaQuery.removePadding(
@@ -448,7 +447,7 @@ class _ObjectionFeedBackState extends State<ObjectionFeedBack> {
                     child: ListView.builder(
                         shrinkWrap: true,
                         itemCount: state.details?.enquiryList?.length,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (ctx, index) {
                           return ObjectionFeedBackWidget(
                             index: index,
@@ -458,6 +457,14 @@ class _ObjectionFeedBackState extends State<ObjectionFeedBack> {
                               setState(() {
                                 expandedIndex = index;
                               });
+                            },
+                            onRefresh: () {
+                              context.read<ObjectionsDetailsBloc>().add(
+                                  GetObjectionDetailsEvent(
+                                      params: state.details
+                                              ?.objectionRequestNumber ??
+                                          "",
+                                      refresh: true));
                             },
                           );
 

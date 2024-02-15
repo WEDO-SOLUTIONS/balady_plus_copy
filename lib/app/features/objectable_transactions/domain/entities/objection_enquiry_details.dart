@@ -55,7 +55,7 @@ class ObjectionEnquiryDetails {
         enquiryRequestedFromId: json["EnquiryRequestedFromId"],
         enquiryResponseDate: json["EnquiryResponseDate"] == null
             ? null
-            : DateTime.parse(json["EnquiryResponseDate"]),
+            : DateTime.tryParse(json["EnquiryResponseDate"]),
       );
 
   Map<String, dynamic> toJson() => {

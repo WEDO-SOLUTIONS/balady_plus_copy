@@ -4258,7 +4258,18 @@
  "attachment_text":"attachment", 
 
  "National_ID":"National ID", 
-"Iqama_ID":"Resident ID"
+"Iqama_ID":"Resident ID" ,
+"objection_enquiry_requests":"طلبات الإفادة", 
+"objection_enquiry_item":"افادة", 
+"objection_enquiry_item_number":"رقم الإفادة", 
+"objection_enquiry_item_date":"تاريخ الإفادة", 
+"objection_enquiry_item_status":"حالة الإفادة", 
+"objection_enquiry_item_last_reply":"اخر تاريخ رد" , 
+"objection_enquiry_question":"السؤال", 
+"objection_enquiry_reply":"الرد", 
+"obkection_enquiry_show_file":"إستعراض الملف", 
+"objection_qnuiry_send": "إرسال الرد", 
+"objection_enquiry_warning":"عفوا تم إنتهاء مهلة الرد"
 
 
 

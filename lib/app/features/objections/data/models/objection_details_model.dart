@@ -20,6 +20,7 @@ class ObjectionDetailsModel extends ObjectionDetails {
       super.requestSubmitterData,
       super.objectionTypeId,
       super.objectionReasonsList,
+      super.enquiryList,
       super.requestStatusId,
       super.objectionServiceName});
 
@@ -57,6 +58,10 @@ class ObjectionDetailsModel extends ObjectionDetails {
               ? []
               : List<ObjectionReasonModel>.from(json["ObjectionReasonsList"]!
                   .map((x) => ObjectionReasonModel.fromJson(x))),
+          enquiryList: json["EnquiryList"] == null
+              ? []
+              : List<EnquiryItemModel>.from(json["EnquiryList"]!
+                  .map((x) => EnquiryItemModel.fromJson(x))),
           requestStatusId: json["RequestStatusId"],
           objectionServiceName: json["ObjectionServiceName"]);
 
@@ -174,16 +179,16 @@ class EnquiryItemModel extends EnquiryItem {
 
   factory EnquiryItemModel.fromJson(Map<String, dynamic> json) =>
       EnquiryItemModel(
-        enquiryRequestedFromId: json["enquiryRequestedFromId"],
-        enquiryStatusName: json["enquiryStatusName"],
-        enquiryStatusId: json["enquiryStatusId"],
-        enquiryRequestNumber: json["enquiryRequestNumber"],
-        enquiryDate: json["enquiryDate"] == null
+        enquiryRequestedFromId: json["EnquiryRequestedFromId"],
+        enquiryStatusName: json["EnquiryStatusName"],
+        enquiryStatusId: json["EnquiryStatusId"],
+        enquiryRequestNumber: json["EnquiryRequestNumber"],
+        enquiryDate: json["EnquiryDate"] == null
             ? null
-            : DateTime.parse(json["enquiryDate"]),
-        enquiryDueDate: json["enquiryDueDate"] == null
+            : DateTime.parse(json["EnquiryDate"]),
+        enquiryDueDate: json["EnquiryDueDate"] == null
             ? null
-            : DateTime.parse(json["enquiryDueDate"]),
+            : DateTime.parse(json["EnquiryDueDate"]),
         hashingRequestNumber: json["hashingRequestNumber"],
         isApplyEfadat: json["isApplyEfadat"],
       );
