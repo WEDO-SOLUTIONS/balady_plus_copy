@@ -773,11 +773,19 @@
   "tabuk_municipality": "أمانة منطقة تبوك",
   "hail_municipality": "أمانة منطقة حائل",
   "Alshmmalya_municipality": "أمانة منطقة الحدود الشمالية",
+  "Alshmmalya_municipality_1": "أمانة الحدود الشمالية",
+
   "baha_municipality": "أمانة منطقة الباحة",
   "njran_municipality": "أمانة منطقة نجران",
   "taif_municipality": "أمانة محافظة الطائف",
+  "taif_municipality_1": "أمانة الطائف",
+
   "alhasa_municipality": "أمانة محافظة الاحساء",
+  "alhasa_municipality_1": "أمانة منطقة الاحساء",
+
   "hafr_municipality": "أمانة محافظة حفر الباطن",
+  "hafr_municipality_1": "أمانة حفر الباطن",
+
   "service_not_available": "هذه الخدمة غير متاحة حالياً في هذه المنطقة ",
   "_popUpButtonsComment": "أي شيء يخص ال popUp Buttons",
   "popUpCloseBottomSheetButton": "إغلاق",

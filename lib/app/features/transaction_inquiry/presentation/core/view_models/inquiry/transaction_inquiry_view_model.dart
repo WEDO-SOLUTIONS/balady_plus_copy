@@ -19,28 +19,27 @@ class TransactionInquiryViewModel extends BaseViewModel {
   String refrenceNumber = "";
   String? year;
   DropDownItem? municipality;
-  // Item municipality = Item(id: "2", name: "أمانة حفر الباطن");
 
   List<DropDownItem> types = [DropDownItem(id: "1", name: "inq_incoming".tr())];
   List<DropDownItem> municipalities = [
-    DropDownItem(id: "1", name: "وزارة الشؤون البلدية والقروية والإسكان"),
-    DropDownItem(id: "2", name: "أمانة حفر الباطن"),
-    DropDownItem(id: "3", name: "أمانة منطقة تبوك"),
-    DropDownItem(id: "4", name: "أمانة منطقة حائل"),
-    DropDownItem(id: "5", name: "أمانة الحدود الشمالية"),
-    DropDownItem(id: "6", name: "أمانة منطقة جازان"),
-    DropDownItem(id: "7", name: "أمانة منطقة الجوف"),
-    DropDownItem(id: "8", name: "أمانة الطائف"),
-    DropDownItem(id: "9", name: "أمانة منطقة القصيم"),
-    DropDownItem(id: "10", name: "أمانة منطقة عسير"),
-    DropDownItem(id: "11", name: "أمانة منطقة الرياض"),
-    DropDownItem(id: "12", name: "أمانة العاصمة المقدسة"),
-    DropDownItem(id: "13", name: "أمانة منطقة المدينة المنورة"),
-    DropDownItem(id: "14", name: "أمانة منطقة الشرقية"),
-    DropDownItem(id: "15", name: "أمانة منطقة الإحساء"),
-    DropDownItem(id: "16", name: "أمانة محافظة جدة"),
-    DropDownItem(id: "17", name: "أمانة منطقة الباحة"),
-    DropDownItem(id: "18", name: "أمانة منطقة نجران"),
+    DropDownItem(id: "1", name: "transation_inquiry_1".tr()),
+    DropDownItem(id: "2", name: "hafr_municipality_1".tr()),
+    DropDownItem(id: "3", name: "tabuk_municipality".tr()),
+    DropDownItem(id: "4", name: "hail_municipality".tr()),
+    DropDownItem(id: "5", name: "Alshmmalya_municipality_1".tr()),
+    DropDownItem(id: "6", name: "jizan_municipality".tr()),
+    DropDownItem(id: "7", name: "jouf_municipality".tr()),
+    DropDownItem(id: "8", name: "taif_municipality_1".tr()),
+    DropDownItem(id: "9", name: "qassim_municipality".tr()),
+    DropDownItem(id: "10", name: "asir_municipality".tr()),
+    DropDownItem(id: "11", name: "riyadh_municipality".tr()),
+    DropDownItem(id: "12", name: "makkah_municipality".tr()),
+    DropDownItem(id: "13", name: "madinah_municipality".tr()),
+    DropDownItem(id: "14", name: "eastern_municipality".tr()),
+    DropDownItem(id: "15", name: "alhasa_municipality_1".tr()),
+    DropDownItem(id: "16", name: "jeddah_municipality".tr()),
+    DropDownItem(id: "17", name: "baha_municipality".tr()),
+    DropDownItem(id: "18", name: "njran_municipality".tr()),
   ];
   final webServices = locator<WebService>();
   InquiryTransactionResponse? response;

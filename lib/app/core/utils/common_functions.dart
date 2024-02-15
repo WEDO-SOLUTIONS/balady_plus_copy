@@ -861,10 +861,11 @@ class CommonFunctions {
         hoursFromAS12 = hoursFromAS12 - 12;
       }
 
-      if (fromTime.period == DayPeriod.pm) return "$hoursFromAS12:$minuteStr م";
+      if (fromTime.period == DayPeriod.pm)
+        return "$hoursFromAS12:$minuteStr " + "pm".tr();
 
       if (fromTime.period == DayPeriod.am) {
-        return "$hoursFromAS12:$minuteStr ص";
+        return "$hoursFromAS12:$minuteStr " + "am".tr();
       }
     }
     return "";
