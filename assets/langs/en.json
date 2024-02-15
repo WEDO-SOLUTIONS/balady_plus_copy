@@ -4197,4 +4197,13 @@
   "chat_bot_not_working_message": "We apologize for the inconvenience. The current service is experiencing technical difficulties, and we are working diligently to resolve the issue. Please try again later. Thank you for your understanding.",
 
 
+  "balady_calendar": "Balady Calendar",
+  "show": "show",
+  "filter_calendar": "Calendar filter",
+  "calendar_type": "Calendar type",
+  "no_events": "Sorry, there are no events now",
+  "calendar_type_appmt":"Appointment",
+  "calendar_type_invoice":"Invoice not paid"
+
+
 }
