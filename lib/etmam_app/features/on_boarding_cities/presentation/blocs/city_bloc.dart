@@ -120,6 +120,7 @@ class CityBloc extends Bloc<CityEvent, CityState> {
       CommonProperties.cityId = e.item?.id ?? "";
       sl<EtmamEntryPointCubit>().setTheme();
       if (e.subServiceid != null) {
+        await sl<EtmamEntryPointCubit>().onLogin();
         add(GetProvidersForASubServiceEvent(subServiceId: e.subServiceid));
       }
     }
