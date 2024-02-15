@@ -50,6 +50,7 @@ class _CityContainerWidgetState extends State<CitiesContainerWidget> {
   @override
   void initState() {
     super.initState();
+
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
