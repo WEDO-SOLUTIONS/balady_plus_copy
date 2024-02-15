@@ -19,9 +19,8 @@ class CancelObjectionEvent extends ObjectionDetailsEvent {}
 
 class GetObjectionDetailsEvent extends ObjectionDetailsEvent {
   final String params;
-  final bool refresh;
 
-  GetObjectionDetailsEvent({required this.params, this.refresh = false});
+  GetObjectionDetailsEvent({required this.params});
 }
 
 class OpenObjectableDetails extends ObjectionDetailsEvent {

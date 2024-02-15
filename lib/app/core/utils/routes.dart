@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/balady_calender/presentation/pages/balady_calendar_page.dart';
 import 'package:balady_plus/app/features/comercial_license_renew/presentation/commercial_license/screens/submit_application_successfully_renew.dart';
 import 'package:balady_plus/app/features/comercial_license_renew/renew_commercial_license_exports.dart'
     show RenewStartService, RenewCommercialLicenseScreen;
@@ -356,6 +357,7 @@ class Routes {
         RouteName.AppointmentsListScreen: (context) =>
             const AppointmentsListScreen(),
 
+        RouteName.baladyCalendarPage: (context) => const BaladyCalendarPage(),
         RouteName.splash: (context) => const SplashPage(),
         RouteName.etmamMainPage: (context) => const EtmamMainPage(),
         RouteName.etmamMainPageCitySelector: (context) =>
@@ -409,39 +411,40 @@ class Routes {
 
         RouteName.qrFacilityRatingRoute: (context) => FacilityRatingScreen(),
 
-        RouteName.qrFacilityScreenRoute: (context) => FacilityScreen(),
+        RouteName.qrFacilityScreenRoute: (context) => const FacilityScreen(),
 
-        RouteName.qrScreenRoute: (context) => QrScreen(),
+        RouteName.qrScreenRoute: (context) => const QrScreen(),
 
-        RouteName.qrPhotosRoute: (context) => FacilityPhotosScreen(),
+        RouteName.qrPhotosRoute: (context) => const FacilityPhotosScreen(),
 
         RouteName.forceUpdateRoute: (context) => ForceUpdatePage(),
 
-        RouteName.QAPage: (context) => QAPage(),
+        RouteName.QAPage: (context) => const QAPage(),
 
 //? Quran
-        RouteName.quranScreen: (context) => QuranPage(),
-        RouteName.menuQuranPage: (context) => MenuQuranPage(),
-        RouteName.quranBookMarkPage: (context) => QuranBookMarkPage(),
+        RouteName.quranScreen: (context) => const QuranPage(),
+        RouteName.menuQuranPage: (context) => const MenuQuranPage(),
+        RouteName.quranBookMarkPage: (context) => const QuranBookMarkPage(),
 
-        RouteName.quranDoaaPage: (context) => QuranDoaaPage(),
+        RouteName.quranDoaaPage: (context) => const QuranDoaaPage(),
 
-        RouteName.quranSearchPage: (context) => QuranSearchPage(),
+        RouteName.quranSearchPage: (context) => const QuranSearchPage(),
 
-        RouteName.ZmZmPointsPage: (context) => ZmZmPointsPage(),
+        RouteName.ZmZmPointsPage: (context) => const ZmZmPointsPage(),
         RouteName.createCompliancePage: (context) =>
-            CreateComplianceLocationPage(),
+            const CreateComplianceLocationPage(),
 
-        RouteName.inappWebview: (context) => InAppWebViewPage(),
+        RouteName.inappWebview: (context) => const InAppWebViewPage(),
 
-        RouteName.dmsImageFullScreen: (context) => ViewDMSImageScreen(),
-        RouteName.apigeeImageFullScreen: (context) => ViewAPIGEEImageScreen(),
+        RouteName.dmsImageFullScreen: (context) => const ViewDMSImageScreen(),
+        RouteName.apigeeImageFullScreen: (context) =>
+            const ViewAPIGEEImageScreen(),
 
-        RouteName.serviceCards: (context) => ServiceCardsPage(),
+        RouteName.serviceCards: (context) => const ServiceCardsPage(),
 
         //? General Services
 
-        RouteName.prayerTimes: (context) => PrayerTimesPage(),
+        RouteName.prayerTimes: (context) => const PrayerTimesPage(),
 
         RouteName.qiblahCompass: (context) => const QiblahWebViewPage(),
 
@@ -450,39 +453,44 @@ class Routes {
         //! Setting
         //? personalInformation page
 
-        RouteName.personalInformation: (context) => PersonalInformationPage(),
+        RouteName.personalInformation: (context) =>
+            const PersonalInformationPage(),
 
         RouteName.invoiceDetails: (context) => InvoiceDetailsPage(),
 
-        RouteName.createObjectionDetails: (context) => CreateObjectionPage(),
+        RouteName.createObjectionDetails: (context) =>
+            const CreateObjectionPage(),
 
         // -------  VD ---------
 
         RouteName.vdCameraPage: (context) => VDCameraPage(),
 
-        RouteName.vdCreateVDDetailsPage: (context) => CreateVDDetailsPage(),
+        RouteName.vdCreateVDDetailsPage: (context) =>
+            const CreateVDDetailsPage(),
 
         RouteName.vdMapRoute: (context) => VDMapScreen(),
 
         RouteName.vdGuestOtpScreen: (context) => VDGuestOtpScreen(),
 
-        RouteName.successRoute: (context) => SuccessScreen(),
+        RouteName.successRoute: (context) => const SuccessScreen(),
         // ------ Commercial License -----
 
-        RouteName.commercialLicensePage: (context) => CommercialLicenseScreen(),
+        RouteName.commercialLicensePage: (context) =>
+            const CommercialLicenseScreen(),
         RouteName.commercialLicenseServicePage: (context) =>
-            IssueStartService(),
+            const IssueStartService(),
 
         // ------ Wallet -----
 
-        RouteName.walletPage: (context) => WalletScreen(),
+        RouteName.walletPage: (context) => const WalletScreen(),
 
         RouteName.businessLicensePage: (context) => BusinessLicenseScreen(),
 
         // ------ Violations -------
-        RouteName.violationsPage: (context) => ViolationsPage(),
+        RouteName.violationsPage: (context) => const ViolationsPage(),
 
-        RouteName.violationDetailsPage: (context) => ViolationsDetailsPage(),
+        RouteName.violationDetailsPage: (context) =>
+            const ViolationsDetailsPage(),
 
         RouteName.transactionDetailsPage: (context) =>
             const TransactionsDetailsPage(),
@@ -576,19 +584,24 @@ class Routes {
             const AthkarEntityContent(),
 
         RouteName.complinaceMapView: (context) => ComplinaceMapScreen(),
-        RouteName.selfRatingMainPage: (context) => SelfRatingMainPage(),
-        RouteName.SelfRatingSectionPage: (context) => SelfRatingSectionPage(),
-        RouteName.selfRatingResultPage: (context) => SelfRatingResultPage(),
+        RouteName.selfRatingMainPage: (context) => const SelfRatingMainPage(),
+        RouteName.SelfRatingSectionPage: (context) =>
+            const SelfRatingSectionPage(),
+        RouteName.selfRatingResultPage: (context) =>
+            const SelfRatingResultPage(),
 
-        RouteName.complianceDetailsPage: (context) => ComplianceDetailsPage(),
-        RouteName.nonComplianceScreen: (context) => NonComplianceScreen(),
+        RouteName.complianceDetailsPage: (context) =>
+            const ComplianceDetailsPage(),
+        RouteName.nonComplianceScreen: (context) => const NonComplianceScreen(),
 
-        RouteName.submitCompliancePage: (context) => SubmitCompliancePage(),
+        RouteName.submitCompliancePage: (context) =>
+            const SubmitCompliancePage(),
         RouteName.submitComplianceOTPPage: (context) => ComplianceOtpScreen(),
 
-        RouteName.eventsMainPage: (context) => EventsMainPage(),
+        RouteName.eventsMainPage: (context) => const EventsMainPage(),
 
-        RouteName.eventsDetailsPage: (context) => SingleEventDescriptionPage(),
+        RouteName.eventsDetailsPage: (context) =>
+            const SingleEventDescriptionPage(),
         RouteName.calendarMainPage: (context) => const MainPageCalendar(),
         RouteName.calendarDetailsPage: (context) => const CalendarDetailsPage(),
 
