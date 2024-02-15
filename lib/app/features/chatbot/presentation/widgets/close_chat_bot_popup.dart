@@ -45,7 +45,7 @@ class CloseChatBotPopup extends StatelessWidget {
             const SizedBox(height: 16),
             ElevatedButtonWidget.endChat(
               onPressed: () {
-                Navigator.of(context).popUntil((route) => route.isFirst);
+                Navigator.of(context).pop(true);
               },
             ),
             const SizedBox(height: 8),
