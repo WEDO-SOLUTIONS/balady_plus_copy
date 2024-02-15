@@ -21,10 +21,13 @@ import '../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../../_shared_feature_/data/entities/validators/incident_desc_validation.dart';
 import '../../../objectable_transactions/domain/use_cases/upload_file.dart';
 import '../../../objections/domain/entities/objection_details.dart';
+import '../../domain/entities/attachment_item.dart';
 import '../../domain/entities/enquiry_objection_reply_params.dart' as request;
 import '../../domain/entities/enquiry_objection_reply_params.dart';
 import '../../domain/entities/objection_enquiry_details.dart';
+import '../../domain/entities/upload_file_response.dart';
 import '../../domain/use_cases/get_enquiry_objection_details.dart';
+import '../../domain/use_cases/reply_enquiry_objection.dart';
 
 part 'enquiry_objection_event.dart';
 
@@ -34,6 +37,8 @@ class EnquiryObjectionBloc
     extends Bloc<EnquiryObjectionEvent, EnquiryObjectionState> {
   final EnquiryItem item;
   final GetEnquiryObjectionDetails _getEnquiryObjection;
+  final ReplyEnquiryObjectionDetails _replyEnquiryObjectionDetails;
+
   final UploadFile _uploadFile;
   PageController controller = PageController();
 
@@ -41,9 +46,24 @@ class EnquiryObjectionBloc
     required this.item,
   })  : _getEnquiryObjection = GetEnquiryObjectionDetails(repository: sl()),
         _uploadFile = UploadFile(repository: sl()),
+        _replyEnquiryObjectionDetails =
+            ReplyEnquiryObjectionDetails(repository: sl()),
         super(EnquiryObjectionState(item: item)) {
     //on<UploadFileEvent>(_uploadFileHandler);
     on<GetEnquiryObjectionEvent>(_getEnquiryObjectionHandler);
+    add(const GetEnquiryObjectionEvent());
+
+    /*--- Form Fields  Events --- */
+
+    on<ChangeIssueDescEvent>(_changeIssueDescHandler);
+
+    /*--- Submissions  Events --- */
+    on<SubmitIncidentEvent>(_submitIncidentHandler);
+    on<CreateIncidentRegisteredEvent>(_createIncidentRegisteredHandler);
+
+    on<UploadFileEvent>(_uploadFileHandler);
+
+    on<RemoveFileEvent>(_removeFileHandler);
   }
 
   Future<void> _getEnquiryObjectionHandler(
@@ -54,6 +74,7 @@ class EnquiryObjectionBloc
         await _getEnquiryObjection(state.item.enquiryRequestNumber ?? "");
 
     failOrSuccess.fold((l) {
+      print(l);
       emitter(state.copyWith(
           errorMessage: (l as ServerFailure).errorMessage,
           status: BlocStatus.failure));
@@ -64,11 +85,16 @@ class EnquiryObjectionBloc
       request.EnquiryObjectionReplyDetails details =
           state.requestDetails ?? request.EnquiryObjectionReplyDetails();
 
-      details.objectionRequestNumber = r.enquiryRequestNumber;
+      details.enquiryRequestNumber = r.enquiryRequestNumber;
       details.objectionRequestNumber = r.objectionRequestNumber;
-      details.enquiryQuestionList = [];
+      details.enquiryQuestionList = List.generate(
+          r.enquiryQuestionList?.length ?? 0,
+          (index) => request.EnquiryQuestionList());
+
       r.enquiryQuestionList?.forEachIndexed((index, element) {
         details.enquiryQuestionList?[index].questionId = element.questionId;
+        details.enquiryQuestionList?[index].question = element.question;
+
         details.enquiryQuestionList?[index].questionAttachmentList =
             (r.enquiryQuestionList?[index].questionAttachmentList ?? [])
                 .map((e) => request.QuestionAttachmentList(
@@ -76,36 +102,82 @@ class EnquiryObjectionBloc
                     questionAttachmentName: e.questionAttachmentName))
                 .toList();
       });
+
+      emitter(state.copyWith(
+          errorMessage: "",
+          status: BlocStatus.success,
+          requestDetails: details));
     });
   }
-/*
+
+  Future<void> _uploadFileHandler(UploadFileEvent e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loading));
+
+    EnquiryObjectionReplyDetails? requestDetails = state.requestDetails;
+
+    requestDetails?.enquiryQuestionList?[e.index].answerAttachmentList = [
+      request.AnswerAttachmentList(file: e.params)
+    ];
+
+    emitter(state.copyWith(
+        status: BlocStatus.success,
+        errorMessage: "",
+        requestDetails: requestDetails));
+  }
+
+  Future<void> _changeIssueDescHandler(
+      ChangeIssueDescEvent e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loading));
+
+    EnquiryObjectionReplyDetails? requestDetails = state.requestDetails;
+
+    requestDetails?.enquiryQuestionList?[e.index].answer = e.text;
+
+    emitter(state.copyWith(
+        status: BlocStatus.success,
+        errorMessage: "",
+        requestDetails: requestDetails));
+  }
+
+  Future<void> _removeFileHandler(RemoveFileEvent e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loading));
+
+    EnquiryObjectionReplyDetails? requestDetails = state.requestDetails;
+
+    requestDetails
+        ?.enquiryQuestionList?[e.index].answerAttachmentList?[0].file = null;
+
+    emitter(state.copyWith(
+        status: BlocStatus.success,
+        errorMessage: "",
+        requestDetails: requestDetails));
+  }
+
   Future<void> _submitIncidentHandler(
       SubmitIncidentEvent e, Emitter emitter) async {
     if (state.status == BlocStatus.loading) return;
     hideKeyboard();
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    List<ReasonModel> reasons = state.reasons ?? [];
+    EnquiryObjectionReplyDetails? requestDetails = state.requestDetails;
     dynamic features = [];
 
-    List<
-        Either<Failure,
-            UploadFileResponse>> failureOrSuccess = await Future.wait<
-        Either<Failure,
-            UploadFileResponse>>(reasons
-        .mapIndexed((index, e) => e
-                        .file?.id ==
-                    null &&
-                e.file?.filePath != null
-            ? _uploadFile(AttachmentItem(
-                base64: e.file?.fileBase64,
-                filePath: e.file?.filePath,
-                caseId:
-                    "${state.item?.transactionId ?? state.details?.violationId}-${CommonFunctions.generateGUID()}",
-                categoryId: "Objections",
-                index: index))
-            : null)
-        .whereNotNull());
+    List<Either<Failure, UploadFileResponse>> failureOrSuccess =
+        await Future.wait<Either<Failure, UploadFileResponse>>(requestDetails!
+            .enquiryQuestionList!
+            .mapIndexed((index, e) => e
+                            .answerAttachmentList?.firstOrNull?.file?.id ==
+                        null &&
+                    e.answerAttachmentList?.firstOrNull?.file?.filePath != null
+                ? _uploadFile(AttachmentItem(
+                    base64:
+                        e.answerAttachmentList?.firstOrNull?.file?.fileBase64,
+                    filePath: e.answerAttachmentList?.firstOrNull?.file?.filePath,
+                    caseId: "${state.item?.enquiryRequestNumber}-${e.questionId}-${CommonFunctions.generateGUID()}",
+                    categoryId: "Objections",
+                    index: index))
+                : null)
+            .whereNotNull());
 
     failureOrSuccess.forEach((element) {
       element.fold((failure) {
@@ -116,23 +188,30 @@ class EnquiryObjectionBloc
       }, (success) {
         int? index = success.index;
         if (index != null) {
-          reasons[index] = ReasonModel(
-              notes: reasons[index].notes,
-              file: reasons[index]
-                  .file
-                  ?.copyWith(isUploaded: true, id: success.id));
+          FileDataItem? file = requestDetails
+              .enquiryQuestionList?[index].answerAttachmentList?[0].file;
+
+          file = file?.copyWith(isUploaded: true, id: success.id);
+          requestDetails
+              .enquiryQuestionList?[index].answerAttachmentList?[0].file = file;
+          requestDetails.enquiryQuestionList?[index].answerAttachmentList?[0]
+              .answerAttachmentLocation = file?.id;
+          requestDetails.enquiryQuestionList?[index].answerAttachmentList?[0]
+              .answerAttachmentName = file?.fileName;
+
+          ;
         }
       });
     });
 
     emitter(state.copyWith(
-      status: BlocStatus.success,
-      errorMessage: "",
-    ));
+        status: BlocStatus.success,
+        errorMessage: "",
+        requestDetails: requestDetails));
 
-    List<bool> r = reasons.map((e) {
-      if (e.file?.filePath != null) {
-        if (e.file?.id != null)
+    List<bool> r = requestDetails.enquiryQuestionList!.map((e) {
+      if (e.answerAttachmentList?[0].file?.filePath != null) {
+        if (e.answerAttachmentList?[0].file?.id != null)
           return true;
         else
           return false;
@@ -140,125 +219,56 @@ class EnquiryObjectionBloc
         return true;
       }
     }).toList();
-
+    print("here $r");
     if (!r.contains(false)) {
+      print("G");
       add(CreateIncidentRegisteredEvent());
     }
   }
 
   Future<void> _createIncidentRegisteredHandler(
       CreateIncidentRegisteredEvent e, Emitter emitter) async {
-    CommonFunctions.sendUXCamEvent(
-        UXCamEvents.Objectable_Transaction_Send_Request_Event);
+    // CommonFunctions.sendUXCamEvent(
+    //     UXCamEvents.Objectable_Transaction_Send_Request_Event);
+    try {
+      hideKeyboard();
+      emitter(state.copyWith(status: BlocStatus.loading));
 
-    hideKeyboard();
-    emitter(state.copyWith(status: BlocStatus.loading));
+      final failureOrSuccess =
+          await _replyEnquiryObjectionDetails(state.requestDetails!);
 
-    CreateObjectionParams params = CreateObjectionParams();
-    if (item != null)
-      params = CreateObjectionParams(
-          municipalityID: item?.originalMunicipalityId,
-          subMunicipalityID: item?.originalSubMunicipalityId,
-          serviceGroupId: item?.applicationId,
-          serviceId: item?.serviceId,
-          objectionTypeId: item?.objectionTypeId,
-          objectedTransactionId: item?.transactionId,
-          serviceTypeId: item?.serviceTypeId,
-          objectedTransactionDisplayNumber: item?.transactionNumber, //
-          submitterRole: CommonProperties.selectedDelegator != null
-              ? CommonProperties.selectedDelegator?.roleId
-              : "001",
-          facilityUniqueID:
-              CommonProperties.selectedDelegator?.unifiedNationalNumber,
-          commercialRecord: CommonProperties.selectedDelegator?.crNumber,
-          reasons: state.reasons!
-              .map((e) => CreateObjectionReasonsParams(
-                    fileId: e.file?.id,
-                    fileName: e.file?.fileName,
-                    fileType: lookupMimeType(e.file?.filePath ?? ""),
-                    reason: e.notes,
-                  ))
-              .toList());
-    else {
-      params = CreateObjectionParams(
-          municipalityID: details?.municipalityId,
-          subMunicipalityID: details?.subMunicipalityId,
-          serviceGroupId: details?.serviceGroupId,
-          serviceId: details?.serviceId,
-          serviceTypeId: details?.serviceTypeId,
-          objectionTypeId: details?.objectionTypeId,
-          objectedTransactionId: details?.violationId,
-          submitterRole: CommonProperties.selectedDelegator != null
-              ? CommonProperties.selectedDelegator?.roleId
-              : "001",
-          facilityUniqueID:
-              CommonProperties.selectedDelegator?.unifiedNationalNumber,
-          commercialRecord: CommonProperties.selectedDelegator?.crNumber,
-          reasons: state.reasons!
-              .map((e) => CreateObjectionReasonsParams(
-                    fileId: e.file?.id,
-                    fileName: e.file?.fileName,
-                    fileType: lookupMimeType(e.file?.filePath ?? ""),
-                    reason: e.notes,
-                  ))
-              .toList());
+      failureOrSuccess.fold((failure) {
+        print(failure);
+        ServerFailure serverFailure = (failure as ServerFailure);
+
+        emitter(state.copyWith(
+          status: BlocStatus.failure,
+          errorMessage: serverFailure.errorMessage,
+        ));
+      }, (success) {
+        emitter(state.copyWith(
+          status: BlocStatus.success,
+        ));
+
+        //bool Function(Route<dynamic>) predicate =
+        //    ModalRoute.withName(RouteName.bottomNavigation);
+
+        //CommonFunctions.sendUXCamEvent(
+        //    UXCamEvents.Objectable_Transaction_Open_Success_Page_Event);
+        /* NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
+            RouteName.successRoute, predicate,
+            arguments: SuccessScreenArgs(
+                type: PAGE_TYPE.objction,
+                idNumber: success.objectionRequestNumber));*/
+
+        NavigationService.navigatorKey.currentState!.pop(true);
+      });
+    } catch (ex) {
+      print(ex);
     }
-
-    final failureOrSuccess = await _createObjection(params);
-
-    failureOrSuccess.fold((failure) {
-      ServerFailure serverFailure = (failure as ServerFailure);
-
-      emitter(state.copyWith(
-        status: BlocStatus.failure,
-        errorMessage: serverFailure.errorMessage,
-      ));
-    }, (success) {
-      emitter(state.copyWith(
-        status: BlocStatus.success,
-      ));
-
-      bool Function(Route<dynamic>) predicate =
-          ModalRoute.withName(RouteName.bottomNavigation);
-
-      CommonFunctions.sendUXCamEvent(
-          UXCamEvents.Objectable_Transaction_Open_Success_Page_Event);
-      NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
-          RouteName.successRoute, predicate,
-          arguments: SuccessScreenArgs(
-              type: PAGE_TYPE.objction,
-              idNumber: success.objectionRequestNumber));
-    });
-  }
-
-  Future<void> _uploadFileHandler(UploadFileEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading));
-
-    List<ReasonModel> reasons = state.reasons ?? [];
-
-    reasons[e.index].file = e.params;
-
-    emitter(state.copyWith(
-      status: BlocStatus.success,
-      errorMessage: "",
-    ));
-  }
-
-  Future<void> _removeFileHandler(RemoveFileEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading));
-
-    List<ReasonModel> reasons = state.reasons ?? [];
-
-    reasons[e.index].file = null;
-
-    emitter(state.copyWith(
-      status: BlocStatus.success,
-      errorMessage: "",
-    ));
   }
 
   hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();
   }
-*/
 }

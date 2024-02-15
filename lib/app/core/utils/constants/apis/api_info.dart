@@ -156,8 +156,7 @@ class ApiUrl {
   static String objectionEnquiryDetails(String enquiryId) =>
       '/v1/objection-services/feedbacks/$enquiryId';
 
-  static String createEnquiryDetails(String qId) =>
-      '/v1/objection-services/feedbacks/$qId';
+  static String createEnquiryDetails = '/v1/objection-services/feedbacks';
 
 //! VD
   static const gis = '/v1/crm/bcg/gis-info';

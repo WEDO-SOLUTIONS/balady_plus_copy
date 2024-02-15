@@ -91,6 +91,7 @@ import '../services/services_exports.dart'
         NavigationService,
         NoParams,
         WebService;
+import 'constants/apis/api_headers.dart';
 import 'constants/dialog_names.dart';
 import 'constants/ux_cam_events.dart';
 import 'enums/enums.dart';
@@ -1147,20 +1148,25 @@ class CommonFunctions {
     } catch (ex) {}
   }
 
-  static void showApigeeFile(String fileUrl, String fileName) async {
+  static void showApigeeFile(String fileUrl, String fileName,
+      {int? serviceId}) async {
     print(fileName);
     try {
       if (fileName.toLowerCase().contains(".png") ||
           fileName.toLowerCase().contains(".jpeg") ||
           fileName.toLowerCase().contains(".jpg")) {
-        //MM
-        print("HEETT");
-        NavigationService.navigatorKey.currentState!
-            .pushNamed(RouteName.apigeeImageFullScreen, arguments: fileUrl);
+        if (serviceId == 2) {
+          NavigationService.navigatorKey.currentState!
+              .pushNamed(RouteName.dmsImageFullScreen, arguments: fileUrl);
+        } else {
+          NavigationService.navigatorKey.currentState!
+              .pushNamed(RouteName.apigeeImageFullScreen, arguments: fileUrl);
+        }
       } else {
         try {
           EasyLoading.show();
-          File fileDownloaded = await createFileOfPdfUrl(fileUrl, fileName);
+          File fileDownloaded =
+              await createFileOfPdfUrl(fileUrl, fileName, serviceId: serviceId);
           EasyLoading.dismiss();
 
           /*  if (fileName.toLowerCase().contains(".pdf")) {
@@ -1187,8 +1193,8 @@ class CommonFunctions {
     }
   }
 
-  static Future<File> createFileOfPdfUrl(
-      String fileUrl, String fileName) async {
+  static Future<File> createFileOfPdfUrl(String fileUrl, String fileName,
+      {int? serviceId}) async {
     final url = fileUrl;
     Dio dio = Dio();
     dio.options.baseUrl = RemoteConfig.apigeeURL;
@@ -1199,16 +1205,19 @@ class CommonFunctions {
     dio.options.sendTimeout = const Duration(milliseconds: 60000);
     dio.addSentry();
 
-    dio.options.responseType = ResponseType.bytes;
     dio.interceptors.add(AppInterceptors());
     ;
-    Response r = await WebService(dio: dio).dio.getUri(Uri.parse(url));
+    print("SERVCE $serviceId");
+
+    Response r = await WebService(dio: dio).dio.getUri(Uri.parse(url),
+        options: Options(
+            headers: {if (serviceId != null) "X-Service-Id": serviceId}));
     String extension =
         r.headers["Content-Type"].toString().split("/")[1].replaceAll("]", "");
     print(r.headers["Content-Type"]);
     String dir = (await getTemporaryDirectory()).path;
     File file = new File('$dir/$fileName.$extension');
-    await file.writeAsBytes(r.data);
+    await file.writeAsString(r.data);
     return file;
   }
 
@@ -1320,6 +1329,10 @@ class CommonFunctions {
     } else {
       return '<p class="m-0 ng-star-inserted">Dear beneficiary, you can review the compliance requirements list for commercial signs by visiting the following link<a target="_balnk" href="https://balady.gov.sa/Services/DownloadUserGuide/218"> Compliance requirements list for commercial signs</a></p>';
     }
+  }
+
+  static String getDMSUrl(String id) {
+    return RemoteConfig.apigeeURL + "/v1/dms-mobile/files/$id";
   }
 }
 
