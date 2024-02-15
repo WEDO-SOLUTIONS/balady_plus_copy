@@ -123,20 +123,14 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
                   backgroundColor: Colors.white,
                   elevation: 0,
                   type: BottomNavigationBarType.fixed,
-                  selectedLabelStyle: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .textXS
-                      .copyWith(color: _selectedColor),
-                  unselectedLabelStyle: Theme.of(context)
-                      .extension<ThemeTextStyles>()!
-                      .textXS
-                      .copyWith(color: _unselectedColor),
+                  selectedLabelStyle: const TextStyle(fontSize: 0, height: 0),
+                  unselectedLabelStyle: const TextStyle(fontSize: 0, height: 0),
                   items: [
                     BottomNavigationBarItem(
                       icon: _BottomNavigationBarItem(
                         selected: currentIndex == 0,
                         iconBuilder: (context, selected) => ProfileImageWidget(
-                          dimension: 28,
+                          dimension: 24,
                           color: selected ? _selectedColor : _unselectedColor,
                         ),
                         label: context.l10n.nav_profile,
