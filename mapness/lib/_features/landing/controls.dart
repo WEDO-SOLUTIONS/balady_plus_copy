@@ -35,7 +35,8 @@ class MapControls extends ConsumerWidget {
 
     final controlsHidden = hideControls ??
         controlsState.controlsVisible == false ||
-            (currentRoute != null && currentRoute != '/landing');
+            (currentRoute?.currentPath != null &&
+                currentRoute!.currentPath != '/landing');
 
     return IgnorePointer(
       ignoring: controlsHidden,
