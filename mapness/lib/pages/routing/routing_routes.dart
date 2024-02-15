@@ -12,6 +12,7 @@ import 'package:mapness/pages/routing/lib/route_search_options_extension.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/buttons/nav_button.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/routing/ui/route_timeline.dart';
@@ -140,7 +141,19 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                                 ),
                                 NavButton(
                                   onTap: () {
-                                    const RoutingRoute().go(context);
+                                    final routes =
+                                        ref.read(currentRouteProvider);
+
+                                    if ((routes?.previousPath
+                                                ?.contains('/poi-map') ??
+                                            false) ||
+                                        (routes?.previousPath
+                                                ?.startsWith('/iwish') ??
+                                            false)) {
+                                      const LandingRoute().go(context);
+                                    } else {
+                                      const RoutingRoute().go(context);
+                                    }
                                   },
                                   icon: 'assets/icons/svg/ic_search_close.svg',
                                 ),
@@ -154,7 +167,8 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                             child: RoutesCarousel(
                               points: points,
                               startNavigation: () {
-                                PathNavRoute.open(ref.watch(goRouterProvider), navType);
+                                PathNavRoute.open(
+                                    ref.watch(goRouterProvider), navType);
                               },
                               navType: navType,
                             ),

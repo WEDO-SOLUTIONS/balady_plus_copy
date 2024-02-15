@@ -76,7 +76,7 @@ class DgisController extends _$DgisController {
         appLanguageProvider,
         (previous, next) {
           controller.overrideLocales(
-            next == Language.arabic ? ['ar-SA'] : ['en-US'],
+            next == Language.arabic ? ['ar-SA'] : ['en-SA'],
           );
         },
       );
