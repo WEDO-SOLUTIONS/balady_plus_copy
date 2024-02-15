@@ -1,11 +1,18 @@
+import 'dart:async';
+
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/routes/events.dart';
+import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/pages/routing/ui/routing_header_delegate.dart';
 import 'package:mapness/pages/routing/ui/routing_history.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
 class RoutingPointsPage extends StatelessWidget {
@@ -41,10 +48,44 @@ class RoutingPointsSheet extends ConsumerStatefulWidget {
 }
 
 class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
+  StreamSubscription<TapEvent>? _streamSubscription;
+
   List<RoutePoint> points = [
     RoutePointMyLocation(),
     RoutePointDirectoryObject(null),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _setupTapListener();
+  }
+
+  @override
+  void deactivate() {
+    _streamSubscription?.cancel();
+    super.deactivate();
+  }
+
+  Future<void> _setupTapListener() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    _streamSubscription =
+        dgisController.objectTapEvents.listen(_objectTapListener);
+  }
+
+  void _objectTapListener(TapEvent event) {
+    if (event is ObjectTapEvent) {
+      ref.read(urbiMetricsProvider.notifier).logEvent(
+        'Landing/objectTap',
+        {'objectId': event.dgisObjectId.objectId},
+      );
+      if (context.mounted) {
+        PoiMapRoute.open(context, event.dgisObjectId.objectId);
+      }
+    } else if (event is RoadEventTapEvent) {
+      EventsRoute.open(context, event);
+    }
+  }
 
   @override
   // ignore: prefer_expression_function_bodies
