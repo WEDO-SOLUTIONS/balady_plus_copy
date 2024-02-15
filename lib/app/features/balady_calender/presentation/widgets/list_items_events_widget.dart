@@ -79,16 +79,12 @@ class ListItemsEventsWidget extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 6),
-                SingleChildScrollView(
-                  child: SizedBox(
-                    height: 20,
-                    child: Text(
-                      event.eventDisplayMessage ?? 'Display Message Empty',
-                      overflow: TextOverflow.visible,
-                      style: AppStyle.serviceTitleStyle
-                          .copyWith(fontWeight: FontWeight.w500),
-                    ),
-                  ),
+                Text(
+                  event.eventDisplayMessage ?? 'Display Message Empty',
+                  overflow: TextOverflow.visible,
+                  maxLines: 3,
+                  style: AppStyle.serviceTitleStyle
+                      .copyWith(fontWeight: FontWeight.w500),
                 )
               ],
             ),
