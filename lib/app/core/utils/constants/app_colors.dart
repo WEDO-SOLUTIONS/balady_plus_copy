@@ -9,8 +9,8 @@ class AppColor {
   static const error = Color(0xFF9a1111);
   static const warning = Colors.yellow;
   static const success = Color(0xFF09B56D);
-
   static const Color white2 = Color(0xFFFAFAFA);
+  static const Color lightGray = Color(0xFFF3F7F7);
   static const Color white3 = Color(0xFFF2F2F2);
   static const Color white4 = Color(0xFFf7f7f7);
   static const Color white5 = Color(0xFFe8e8e8);

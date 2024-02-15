@@ -2,13 +2,19 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/b
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/app_style.dart';
+import '../../../../core/utils/constants/route_names.dart';
 import '../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../create_compliance/presentation/widgets/summery_widgets/field_data.dart';
+import '../../data/data_source/remote_data_source.dart';
+import '../../data/repositories/repository_implementation.dart';
+import '../../domain/use_cases/get_commercial_license_query_data.dart';
+import '../bloc/commercial_license_query_details_cubit.dart';
 
 class CommercialLicenseQueryScreen extends StatefulWidget {
   const CommercialLicenseQueryScreen({Key? key}) : super(key: key);
@@ -158,6 +164,24 @@ class _CommercialLicenseQueryScreenState extends State<CommercialLicenseQueryScr
             text: "query".tr(),
             onPressed: () {
               if (_formKey.currentState!.validate()) {
+
+                NavigatorState navigator = Navigator.of(context);
+
+
+                navigator.pushNamed(
+                  RouteName.commercialLicenseQueryDetails,
+                  arguments: CommercialLicenseQueryDetailsCubit(
+                    GetCommercialLicenseQueryData(
+                      repository: CommercialLicenseQueryRepositoryImplementation(
+                          remoteDataSource:
+                          CommercialLicenseQueryRemoteDataSourceImplementation(
+                              webService: sl())),
+                    ),
+                      int.parse(_licenseNumberController.text),
+                      int.parse(_agentNumberController.text)
+                  ),
+                );
+
 
               }
             },
