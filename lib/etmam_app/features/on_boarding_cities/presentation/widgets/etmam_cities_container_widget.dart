@@ -84,7 +84,7 @@ class _CityContainerWidgetState extends State<EtmamCitiesContainerWidget> {
                   const CustomVerticalSpace(height: 24),
                   CustomTextFieldWidget(
                     label: "",
-                    hintText: trans('city_search_hint'),
+                    hintText: trans('search'),
                     controller: _controller,
                     maxLines: 1,
                     borderType: BorderType.outline,
