@@ -3945,6 +3945,7 @@
 "calendar_type":"نوع التقويم",
 "no_events":"عذرا لا يوجد معاملات حاليا",
 
-"calendar_type_appmt":"موعد"
+"calendar_type_appmt":"موعد",
+"calendar_type_invoice":"فاتورة غير مدفوعة"
 
 }
