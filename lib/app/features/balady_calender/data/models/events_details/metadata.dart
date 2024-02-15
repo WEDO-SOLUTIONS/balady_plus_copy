@@ -9,12 +9,14 @@ class Metadata extends Equatable {
   final Type? type;
   final Status? status;
   final String? licenseNumber;
+  final String? time;
   final dynamic contentTypeId;
 
   const Metadata({
     this.mainType,
     this.type,
     this.status,
+    this.time,
     this.licenseNumber,
     this.contentTypeId,
   });
@@ -31,6 +33,7 @@ class Metadata extends Equatable {
             : Status.fromJson(json['status'] as Map<String, dynamic>),
         licenseNumber: json['licenseNumber'] as String?,
         contentTypeId: json['contentTypeId'] as dynamic,
+        time: json['time'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -38,6 +41,7 @@ class Metadata extends Equatable {
         'type': type?.toJson(),
         'status': status?.toJson(),
         'licenseNumber': licenseNumber,
+        'time': time,
         'contentTypeId': contentTypeId,
       };
 

@@ -73,8 +73,12 @@ class ListItemsEventsWidget extends StatelessWidget {
                     ),
                     Text(
                       DateFormat(
-                        'EEEE dd${event.entityType == ScreenTage.appmt.name ? ' HH:mm' : ''}',
-                      ).format(event.eventDate!),
+                                    'EEEE dd',
+                                  ).format(event.eventDate!) +
+                                  (event.entityType ?? '') ==
+                              ScreenTage.appmt.name
+                          ? event.metadata?.time ?? ''
+                          : '',
                       style: AppStyle.signInFullTextStyle
                           .copyWith(fontWeight: FontWeight.w600),
                     ),
@@ -82,7 +86,7 @@ class ListItemsEventsWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  event.eventDisplayMessage ?? 'Display Message Empty',
+                  event.eventDisplayMessage ?? '',
                   overflow: TextOverflow.visible,
                   maxLines: 3,
                   style: AppStyle.serviceTitleStyle
@@ -97,5 +101,4 @@ class ListItemsEventsWidget extends StatelessWidget {
     );
   }
 
-  getTypeByEntityType(String entityType) {}
 }
