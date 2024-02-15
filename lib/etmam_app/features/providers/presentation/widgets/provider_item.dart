@@ -83,11 +83,7 @@ class ProviderItemWidget extends StatelessWidget {
               onCallPressed: () {
                 CommonFunctions.call(contact);
               },
-              onDelegatePress: () {
-                if (onDelegate != null) {
-                  onDelegate!();
-                }
-              },
+              onDelegatePress: onDelegate,
             ),
           ],
         ),

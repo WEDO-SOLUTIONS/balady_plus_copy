@@ -11,14 +11,14 @@ import '../../../../etmam_entry_point/presentation/cubit/etmam_entry_point_cubit
 
 class ProviderButtons extends StatelessWidget {
   final Function onCallPressed;
-  final Function onDelegatePress;
+  final Function? onDelegatePress;
   final String? buttonTxt;
   final double? btnSize;
 
   const ProviderButtons({
     Key? key,
     required this.onCallPressed,
-    required this.onDelegatePress,
+    this.onDelegatePress,
     this.btnSize,
     this.buttonTxt,
   }) : super(key: key);
@@ -28,14 +28,16 @@ class ProviderButtons extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
-        Expanded(
-          child: SubmitButton(
-            btnTxt: buttonTxt,
-            btnSize: btnSize,
-            onPressed: onDelegatePress,
+        if (onDelegatePress != null) ...[
+          Expanded(
+            child: SubmitButton(
+              btnTxt: buttonTxt,
+              btnSize: btnSize,
+              onPressed: onDelegatePress!,
+            ),
           ),
-        ),
-        const CustomHorizontalSpace(width: 16),
+          const CustomHorizontalSpace(width: 16),
+        ],
         Expanded(
           child: CallButton(
             onPressed: onCallPressed,
