@@ -17,8 +17,8 @@ import 'package:mapness/shared/providers/app_language.dart';
 // https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/stateful_shell_route.dart
 class ScaffoldWithNestedNavigation extends ConsumerStatefulWidget {
   const ScaffoldWithNestedNavigation({
-    Key? key,
     required this.navigationShell,
+    Key? key,
   }) : super(key: key ?? const ValueKey('ScaffoldWithNestedNavigation'));
   final StatefulNavigationShell navigationShell;
 
@@ -49,7 +49,7 @@ class _ScaffoldWithNestedNavigationState
   Widget build(BuildContext context) => ScaffoldWithNavigationBar(
         body: widget.navigationShell,
         currentIndex: currentTab,
-        onDestinationSelected: (int selected) async {
+        onDestinationSelected: (selected) async {
           if (selected == 2 && ref.read(appFeaturesProvider).naviEnabled) {
             final isShowRoute = await ref.read(routeOnboardingProvider.future);
             if (isShowRoute) {
@@ -77,15 +77,15 @@ class _ScaffoldWithNestedNavigationState
       );
 }
 
-const _selectedColor = Color(0xFF4CA5B4);
-const _unselectedColor = Color(0x801E2A36);
+const _selectedColor = Color(0xFF1E928F);
+final _unselectedColor = const Color(0xff1E2A36).withOpacity(0.36);
 
 class ScaffoldWithNavigationBar extends ConsumerWidget {
   const ScaffoldWithNavigationBar({
-    super.key,
     required this.body,
     required this.currentIndex,
     required this.onDestinationSelected,
+    super.key,
   });
 
   final Widget body;
@@ -105,90 +105,94 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
       textDirection: direction,
       child: Material(
         type: MaterialType.transparency,
+        color: Colors.transparent,
         child: Column(
           children: [
             Expanded(child: body),
             Directionality(
               textDirection: bottomNavigationDirection,
-              child: BottomNavigationBar(
-                type: BottomNavigationBarType.fixed,
-                selectedLabelStyle: const TextStyle(
-                  color: Color(0xFF4CA5B4),
-                  fontSize: 0,
-                  height: 0,
-                ),
-                unselectedLabelStyle: const TextStyle(
-                  color: Color(0xFF1E2A36),
-                  fontSize: 0,
-                  height: 0,
-                ),
-                items: [
-                  BottomNavigationBarItem(
-                    icon: _BottomNavigationBarItem(
-                      selected: currentIndex == 0,
-                      iconBuilder: (context, selected) =>
-                          const ProfileImageWidget(
-                        dimension: 28,
-                      ),
-                      label: context.l10n.nav_profile,
-                    ),
-                    label: '',
+              child: DecoratedBox(
+                decoration: BoxDecoration(boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF000000).withOpacity(0.05),
+                    offset: const Offset(0, -2),
+                    blurRadius: 8,
                   ),
-                  BottomNavigationBarItem(
-                    icon: _BottomNavigationBarItem(
-                      selected: currentIndex == 1,
-                      icon: 'assets/icons/svg/ic_nav_landing.svg',
-                      label: context.l10n.nav_landing,
-                    ),
-                    label: '',
-                  ),
-                  if (appFeatures.naviEnabled)
+                ]),
+                child: BottomNavigationBar(
+                  backgroundColor: Colors.white,
+                  elevation: 0,
+                  type: BottomNavigationBarType.fixed,
+                  selectedLabelStyle: const TextStyle(fontSize: 0, height: 0),
+                  unselectedLabelStyle: const TextStyle(fontSize: 0, height: 0),
+                  items: [
                     BottomNavigationBarItem(
                       icon: _BottomNavigationBarItem(
-                        selected: currentIndex == 2,
-                        icon: 'assets/icons/svg/ic_nav_route.svg',
-                        labelBuilder: (context, selected) => Directionality(
-                          textDirection: direction,
-                          child: Center(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  '${context.l10n.nav_route} ',
-                                  style: Theme.of(context)
-                                      .extension<ThemeTextStyles>()!
-                                      .textXS
-                                      .copyWith(
-                                        color: selected
-                                            ? _selectedColor
-                                            : _unselectedColor,
-                                      ),
-                                ),
-                                SvgPicture.asset(
-                                  ref.read(appLanguageProvider) ==
-                                          Language.arabic
-                                      ? 'assets/icons/svg/beta_ar.svg'
-                                      : 'assets/icons/svg/beta_en.svg',
-                                  package: 'mapness',
-                                )
-                              ],
-                            ),
-                          ),
+                        selected: currentIndex == 0,
+                        iconBuilder: (context, selected) => ProfileImageWidget(
+                          dimension: 24,
+                          color: selected ? _selectedColor : _unselectedColor,
                         ),
+                        label: context.l10n.nav_profile,
                       ),
                       label: '',
                     ),
-                  BottomNavigationBarItem(
-                    icon: _BottomNavigationBarItem(
-                      selected: currentIndex == landingIndex,
-                      icon: 'assets/icons/svg/ic_nav_general.svg',
-                      label: context.l10n.nav_general,
+                    BottomNavigationBarItem(
+                      icon: _BottomNavigationBarItem(
+                        selected: currentIndex == 1,
+                        icon: 'assets/icons/svg/ic_nav_landing.svg',
+                        label: context.l10n.nav_landing,
+                      ),
+                      label: '',
                     ),
-                    label: '', //context.l10n.nav_general,
-                  ),
-                ],
-                currentIndex: currentIndex,
-                onTap: onDestinationSelected,
+                    if (appFeatures.naviEnabled)
+                      BottomNavigationBarItem(
+                        icon: _BottomNavigationBarItem(
+                          selected: currentIndex == 2,
+                          icon: 'assets/icons/svg/ic_nav_route.svg',
+                          labelBuilder: (context, selected) => Directionality(
+                            textDirection: direction,
+                            child: Center(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    '${context.l10n.nav_route} ',
+                                    style: Theme.of(context)
+                                        .extension<ThemeTextStyles>()!
+                                        .textXS
+                                        .copyWith(
+                                          color: selected
+                                              ? _selectedColor
+                                              : _unselectedColor,
+                                        ),
+                                  ),
+                                  SvgPicture.asset(
+                                    ref.read(appLanguageProvider) ==
+                                            Language.arabic
+                                        ? 'assets/icons/svg/beta_ar.svg'
+                                        : 'assets/icons/svg/beta_en.svg',
+                                    package: 'mapness',
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        label: '',
+                      ),
+                    BottomNavigationBarItem(
+                      icon: _BottomNavigationBarItem(
+                        selected: currentIndex == landingIndex,
+                        icon: 'assets/icons/svg/ic_nav_general.svg',
+                        label: context.l10n.nav_general,
+                      ),
+                      label: '', //context.l10n.nav_general,
+                    ),
+                  ],
+                  currentIndex: currentIndex,
+                  onTap: onDestinationSelected,
+                ),
               ),
             ),
           ],
@@ -201,9 +205,9 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
 class _BottomNavigationBarItem extends StatelessWidget {
   final bool selected;
   final String? icon;
-  final Function(BuildContext, bool)? iconBuilder;
+  final Widget Function(BuildContext, bool)? iconBuilder;
   final String? label;
-  final Function(BuildContext, bool)? labelBuilder;
+  final Widget Function(BuildContext, bool)? labelBuilder;
 
   const _BottomNavigationBarItem({
     required this.selected,
@@ -213,33 +217,63 @@ class _BottomNavigationBarItem extends StatelessWidget {
     this.labelBuilder,
   });
 
-  Widget _defaultLabelBuilder(BuildContext context, bool selected) => Text(
-        label!,
-        style: Theme.of(context).extension<ThemeTextStyles>()!.textXS.copyWith(
-              color: selected ? _selectedColor : _unselectedColor,
-            ),
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(top: 2.0),
+        child: Column(
+          children: [
+            iconBuilder?.call(context, selected) ??
+                _DefaultIcon(
+                  icon: icon!,
+                  selected: selected,
+                ),
+            const SizedBox(height: 2),
+            labelBuilder?.call(context, selected) ??
+                _DefaultLabel(
+                  label: label!,
+                  selected: selected,
+                ),
+          ],
+        ),
       );
+}
 
-  Widget _defaultIconBuilder(BuildContext context, bool selected) =>
-      SvgPicture.asset(
-        icon!,
-        height: 28,
-        width: 28,
+class _DefaultIcon extends StatelessWidget {
+  final String icon;
+  final bool selected;
+
+  const _DefaultIcon({
+    required this.icon,
+    required this.selected,
+  });
+
+  @override
+  Widget build(BuildContext context) => SvgPicture.asset(
+        icon,
+        height: 24,
+        width: 24,
         package: 'mapness',
         colorFilter: ColorFilter.mode(
           selected ? _selectedColor : _unselectedColor,
           BlendMode.srcIn,
         ),
       );
+}
+
+class _DefaultLabel extends StatelessWidget {
+  final String label;
+  final bool selected;
+
+  const _DefaultLabel({
+    required this.label,
+    required this.selected,
+  });
 
   @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(top: 6),
-        child: Column(
-          children: [
-            (iconBuilder ?? _defaultIconBuilder)(context, selected),
-            (labelBuilder ?? _defaultLabelBuilder)(context, selected),
-          ],
-        ),
+  Widget build(BuildContext context) => Text(
+        label,
+        style: Theme.of(context).extension<ThemeTextStyles>()!.textXS.copyWith(
+              color: selected ? _selectedColor : _unselectedColor,
+            ),
       );
 }
