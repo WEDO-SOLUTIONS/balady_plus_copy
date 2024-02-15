@@ -11,6 +11,7 @@ import 'package:balady_plus/app/features/balady_calender/presentation/widgets/ba
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
@@ -120,7 +121,16 @@ class BaladyCalendarPage extends StatelessWidget {
                           // if have errors
                           if (selectedYear.eventsCount == 0) {
                             return Center(
-                              child: Text("no_events".tr()),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    IconPath.noEvents,
+                                  ),
+                                  SizedBox(height: 10,),
+                                  Text('no_events'.tr())
+                                ],
+                              ),
                             );
                           }
 

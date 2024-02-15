@@ -135,6 +135,5 @@ class ImagePath {
 
   static const backgroundServiceCard =
       '${_imagePath}background_service_card$_png';
-  static const baladyCalendar = '${_imagePath}balady_calendar$_svg';
-  static const filter = '${_imagePath}filter$_svg';
+
 }

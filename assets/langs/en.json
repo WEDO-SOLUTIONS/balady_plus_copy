@@ -4156,5 +4156,7 @@
   "show": "show",
   "filter_calendar": "Calendar filter",
   "calendar_type": "Calendar type",
-  "no_events": "Sorry, there are no events now"
+  "no_events": "Sorry, there are no events now",
+  "calendar_type_appmt":"Appointment"
+
 }

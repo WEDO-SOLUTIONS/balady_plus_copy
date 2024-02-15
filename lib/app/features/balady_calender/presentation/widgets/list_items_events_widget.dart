@@ -65,14 +65,15 @@ class ListItemsEventsWidget extends StatelessWidget {
                     Flexible(
                       fit: FlexFit.tight,
                       child: Text(
-                        event.metadata?.mainType?.name ?? event.entityType?.tr() ?? '',
+                        event.metadata?.mainType?.name ??
+                            "calendar_type_${event.entityType ?? ''}".tr(),
                         style: AppStyle.signInFullTextStyle
                             .copyWith(fontWeight: FontWeight.w600),
                       ),
                     ),
                     Text(
                       DateFormat(
-                        'EEEE dd',
+                        'EEEE dd${event.entityType == ScreenTage.appmt.name ? ' HH:mm' : ''}',
                       ).format(event.eventDate!),
                       style: AppStyle.signInFullTextStyle
                           .copyWith(fontWeight: FontWeight.w600),
@@ -96,8 +97,5 @@ class ListItemsEventsWidget extends StatelessWidget {
     );
   }
 
-  getTypeByEntityType(String entityType) {
-
-  }
-
+  getTypeByEntityType(String entityType) {}
 }

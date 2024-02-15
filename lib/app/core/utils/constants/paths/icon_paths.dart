@@ -419,6 +419,10 @@ class IconPath {
   static const starNew = '${_svgIconPath}star_new$_svg';
 
   static const chatBot = '${_pngIconPath}chat_bot$_png';
+
+  static const baladyCalendar = '${_svgIconPath}balady_calendar$_svg';
+  static const filterCalendar = '${_svgIconPath}filter_calendar$_svg';
+  static const noEvents = '${_svgIconPath}no_events$_svg';
 }
 
 ///Users/abdelrahmanismail/StudioProjects/balady-plus/assets/icons/svg/jod/apple_pay.svg

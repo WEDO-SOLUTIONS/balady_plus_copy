@@ -3943,6 +3943,8 @@
 "show":"عرض",
 "filter_calendar":"تصفية التقويم",
 "calendar_type":"نوع التقويم",
-"no_events":"عذرا لا يوجد معاملات حاليا"
+"no_events":"عذرا لا يوجد معاملات حاليا",
+
+"calendar_type_appmt":"موعد"
 
 }
