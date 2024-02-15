@@ -34,7 +34,8 @@ class GetLicensesEvent extends ComplianceEvent {
 
 class GetRequestDetails extends ComplianceEvent {
   final String? requestId;
-  const GetRequestDetails({this.requestId});
+  final String? redirectUrl;
+  const GetRequestDetails({this.requestId,this.redirectUrl});
 }
 
 class GetMainUsagesEvent extends ComplianceEvent {
