@@ -42,7 +42,7 @@ class TransactionDetailsBloc
         super(
             TransactionDetailsState(details: transactionDetails, item: item)) {
     on<TransactionDetailsEvent>((event, emit) {});
-    on<GetTransactionDetailsEvent>(_getObjectionDetailsHandler);
+    // on<GetTransactionDetailsEvent>(_getObjectionDetailsHandler);
     on<GetGisLocationInfoEvent>(_getGisDataInfoHandler);
     on<ValidateObjectionDetailsTransactions>(_validateObjectableTransaction);
     add(GetGisLocationInfoEvent());
@@ -72,29 +72,6 @@ class TransactionDetailsBloc
     });
   }
 
-  Future<void> _getObjectionDetailsHandler(
-      GetTransactionDetailsEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading));
-
-    var failureOrSuccess = await _getObjectionDetails(e.params);
-
-    await failureOrSuccess.fold((failure) {
-      emitter(state.copyWith(
-        status: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-    }, (success) async {
-      emitter(state.copyWith(
-        status: BlocStatus.success,
-        errorMessage: "",
-      ));
-
-      NavigationService.navigatorKey.currentState!.pushNamed(
-        RouteName.objectionsDetailsPage,
-        arguments: success,
-      );
-    });
-  }
 
   Future<void> _validateObjectableTransaction(
       ValidateObjectionDetailsTransactions e, Emitter emitter) async {

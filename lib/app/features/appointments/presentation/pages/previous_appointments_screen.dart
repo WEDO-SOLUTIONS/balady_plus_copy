@@ -4,14 +4,9 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/base/base_view.dart';
 import '../../../../core/base/base_view_model.dart';
-import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
-import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
-import '../../../new_appointment/presentation/core/models/appointment_details_model.dart';
 import '../../../new_appointment/presentation/core/models/my_appointments_response.dart';
-import '../core/models/appointment_details_screen_args.dart';
-import '../core/services/view_models/appontment_details_view_model.dart';
 import '../core/services/view_models/my_appointments_view_model.dart';
 import '../widgets/appointments_widgets/appointment_card.dart';
 
@@ -39,72 +34,61 @@ class _PreviousAppointmentsScreenState
   @override
   Widget build(BuildContext context) {
     return BaseView<MyAppointmentsViewModel>(
-        onModelReady: (model) {},
-        builder: (context, model, child) {
-          List<AppointmentItem> list = model.getMyPreviousAppointmentsList();
-          return Scaffold(
-            backgroundColor: AppColor.white2,
-            appBar: DefaultAppBarWidget(
-              title: "previousAppointmentHeaderTitleWord".tr(),
-            ),
-            body: RefreshIndicator(
-              color: const Color(0xff389492),
-              onRefresh: () {
-                return model.getMyPreviousAppointments(
-                    pageIndex: 0, showErrorMsg: true);
-              },
-              child: ListView.builder(
-                controller: _scrollController,
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(
-                  vertical: Constants.semiLargePadding,
-                  horizontal: Constants.semiMediumPadding,
-                ),
-                itemCount: list.length + 1,
-                itemBuilder: (context, index) {
-                  if (index >= list.length) {
-                    if (loadMore) {
-                      return Container(
-                        height: 50,
-                        child: const Center(
-                            child: CircularProgressIndicator(
-                          color: AppColor.baladyDarkGreen2,
-                        )),
-                      );
-                    } else {
-                      return Container(height: 50);
-                    }
-                  }
-                  return AppointmentCard(
-                    item: list[index].model,
-                    onPress: () async {
-                      if (list[index].id != null) {
-                        bool isSuccess = false;
-                        AppointmentItemInfo? appointmentItemInfo;
-                        isSuccess = await locator<AppointmentDetailsViewModel>()
-                            .getAppointmentDetails(list[index].id ?? -1);
-                        if (isSuccess) {
-                          appointmentItemInfo =
-                              locator<AppointmentDetailsViewModel>()
-                                  .getAppointmentsInfo();
-                        }
-                        if (isSuccess && appointmentItemInfo != null) {
-                          Navigator.of(context).pushNamed(
-                              RouteName.appointmentDetailsRoute,
-                              // arguments: appointmentData.id ?? 0
-                              arguments: AppointmentDetailsScreenArgs(
-                                  appointmentItemInfo: appointmentItemInfo,
-                                  isCancelable: list[index].cancelable,
-                                  isPrintable: list[index].printable,
-                                  fromHomePage: true));
-                        }
-                      }
-                    },
-                  );
-                },
+      onModelReady: (model) {},
+      builder: (context, model, child) {
+        List<AppointmentItem> list = model.getMyPreviousAppointmentsList();
+        return Scaffold(
+          backgroundColor: AppColor.white2,
+          appBar: DefaultAppBarWidget(
+            title: "previousAppointmentHeaderTitleWord".tr(),
+          ),
+          body: RefreshIndicator(
+            color: const Color(0xff389492),
+            onRefresh: () {
+              return model.getMyPreviousAppointments(
+                  pageIndex: 0, showErrorMsg: true);
+            },
+            child: ListView.builder(
+              controller: _scrollController,
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(
+                vertical: Constants.semiLargePadding,
+                horizontal: Constants.semiMediumPadding,
               ),
+              itemCount: list.length + 1,
+              itemBuilder: (context, index) {
+                if (index >= list.length) {
+                  if (loadMore) {
+                    return const SizedBox(
+                      height: 50,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: AppColor.baladyDarkGreen2,
+                        ),
+                      ),
+                    );
+                  } else {
+                    return Container(height: 50);
+                  }
+                }
+                return AppointmentCard(
+                  item: list[index].model,
+                  onPress: () async {
+                    if (list[index].id != null) {
+                      Navigator.of(context).pushNamed(
+                        RouteName.appointmentDetailsRoute,
+                        arguments: {
+                          "appointmentId": list[index].id!,
+                        },
+                      );
+                    }
+                  },
+                );
+              },
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }

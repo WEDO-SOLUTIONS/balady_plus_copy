@@ -8,6 +8,8 @@ class AppColor {
   static const orange = Color(0xFFed762d);
   static const error = Color(0xFF9a1111);
   static const warning = Colors.yellow;
+  static const darkYellow = Color(0xFFBE890E);
+  static const darkRed = Color(0xFFE0373D);
   static const success = Color(0xFF09B56D);
 
   static const Color white2 = Color(0xFFFAFAFA);
@@ -17,6 +19,9 @@ class AppColor {
   static const Color white6 = Color(0xFFf1f1f1);
   static const Color white7 = Color(0xFFd8d8d8);
   static const Color white8 = Color(0xFFF1F5F5);
+  static const Color white9 = Color(0xffF8FFFD);
+  static const Color white10 = Color(0xFFF5F7FA);
+
   static const Color lightGrey = Color(0xFFE9E8E2);
   static const Color grey1000 = Color(0xFF292929);
   static const Color black2 = Color(0xFF212121);
@@ -34,6 +39,7 @@ class AppColor {
   static const Color warmGrey3 = Color(0xFFbababa);
   static const Color spruce = Color(0xFF0a4d4a);
   static const Color baladyDarkGreen2 = Color(0xFF389492);
+  static const Color lightGreen2 = Color(0xFF91C5C3);
   static const Color duckEggBlue = Color(0xFFf6fdfd);
   static const Color algae = Color(0xFF4dac5f);
   static const Color algaea = Color(0xFFF9FAFB);
@@ -138,7 +144,6 @@ class AppColor {
   static const Color athkarAppbarGreen = Color(0xff046F6D);
   static const Color athkarAppbarGreen2 = Color(0xff3A879D);
   static const Color brown2 = Color(0xff928382);
-  static const Color white9 = Color(0xffF8FFFD);
   static const Color brownLight = Color(0xffFFECDF);
 
   static const maastrichtBlue = Color(0xFF0E1C2F);

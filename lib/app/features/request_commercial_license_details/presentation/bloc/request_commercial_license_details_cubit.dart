@@ -10,12 +10,11 @@ class RequestCommercialLicenseDetailsCubit
     extends Cubit<RequestCommercialLicenseDetailsState> {
   final GetRequestCommercialLicenseDetails getRequestCommercialLicenseDetails;
   final int requestId;
-  final int? requestTypeId;
 
   RequestCommercialLicenseDetailsCubit(
-      this.getRequestCommercialLicenseDetails, this.requestId,
-      {this.requestTypeId})
-      : super(const RequestCommercialLicenseDetailsState()) {
+    this.getRequestCommercialLicenseDetails,
+    this.requestId,
+  ) : super(const RequestCommercialLicenseDetailsState()) {
     getRequestCommercialLicenseDetailsById(
       requestId,
     );
