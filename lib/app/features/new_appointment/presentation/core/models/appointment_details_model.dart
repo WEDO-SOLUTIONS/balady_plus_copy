@@ -83,6 +83,7 @@ class AppointmentItemInfo {
       this.submitterName,
       this.mobileNumber,
       this.cancelable,
+      this.editable,
       this.printable,
       this.printUrl,
       this.applyMethod,
@@ -128,6 +129,7 @@ class AppointmentItemInfo {
   String? mobileNumber;
   bool? cancelable;
   bool? printable;
+  bool? editable;
   dynamic printUrl;
   String? applyMethod;
   String? mainClassification;
@@ -205,6 +207,7 @@ class AppointmentItemInfo {
       mobileNumber: json["mobileNumber"] == null ? null : json["mobileNumber"],
       cancelable: json["cancelable"] == null ? null : json["cancelable"],
       printable: json["printable"] == null ? null : json["printable"],
+      editable: json["editable"],
       printUrl: json["printUrl"],
       applyMethod: json["applyMethod"] == null ? null : json["applyMethod"],
       mainClassification: json["mainClassification"] == null

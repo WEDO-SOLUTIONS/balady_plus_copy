@@ -20,6 +20,12 @@ mapness/**/*.g.dart
 mapness/lib/l10n/generated
 mapness/lib/l10n/*.arb
 
+#linux
+linux/
+
+#windows
+windows/
+
 # IntelliJ related
 *.iml
 *.ipr

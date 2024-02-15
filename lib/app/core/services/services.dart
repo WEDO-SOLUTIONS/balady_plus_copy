@@ -1,5 +1,4 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
-import 'package:flutter/material.dart';
 
 import '../utils/constants/remote_config.dart';
 
@@ -571,6 +570,18 @@ Map<String, dynamic> servicesConfig = {
       "action": {"type": "page", "value": RouteName.municipalAdvisor},
       "ar": {"title": "municipal_advisor", "description": null, "tag": null},
       "en": {"title": "municipal_advisor", "description": null, "tag": null}
+    },
+    {
+      "id": 499,
+      "icon": "calender",
+      "3d_icon": null,
+      "order": 13,
+      "isNew": false,
+      "isImportant": false,
+      "requireLogin": true,
+      "action": {"type": "page", "value": RouteName.baladyCalendarPage},
+      "ar": {"title": "balady_calendar", "description": null, "tag": null},
+      "en": {"title": "balady_calendar", "description": null, "tag": null}
     },
     {
       "id": 402,
