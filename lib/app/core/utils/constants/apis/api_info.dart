@@ -771,7 +771,9 @@ class ApiUrl {
 
 //commercial license query
   static String getCommercialLicenseData(int licenseNumber,unifiedFacilityNumber) =>
-      '/v1/balady-commercial-services/licenses/$licenseNumber';
+      '/v1/balady-commercial-services/licenses/$licenseNumber/by-unn/$unifiedFacilityNumber';
+
+
   //! POST
 
   //! Delete
