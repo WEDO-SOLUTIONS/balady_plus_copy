@@ -49,11 +49,11 @@ class ChatBotProvider extends BaseViewModel {
           notifyListeners();
         }
 
-        if (scrollController.position.maxScrollExtent >=
-            scrollController.offset) {
+
+        if (scrollController.position.maxScrollExtent > scrollController.offset ) {
           scrollController.animateTo(
-            scrollController.position.maxScrollExtent + 200,
-            curve: Curves.easeOut,
+            scrollController.position.maxScrollExtent + 150 ,
+            curve: Curves.linear,
             duration: const Duration(milliseconds: 500),
           );
         }
