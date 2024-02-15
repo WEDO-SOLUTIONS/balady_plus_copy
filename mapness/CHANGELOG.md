@@ -4,6 +4,7 @@
 - BALADY-1294 [Marketing] wrong switching between layers behavior
 - BALADY-1314 [Marketing] Navigation panel is showing while explore tab is active
 - BALADY-1340 [Marketing] navigation ETA alignment
+- BALADY-1328 [Landing Page] Bottom bar icons and text is too big (Android)
 
 ## 3.8.2(7)
 
