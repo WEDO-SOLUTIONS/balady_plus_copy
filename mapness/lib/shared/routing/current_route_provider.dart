@@ -5,17 +5,29 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'current_route_provider.g.dart';
 
+class RouteState {
+  final String? currentPath;
+  final String? previousPath;
+
+  RouteState({this.currentPath, this.previousPath});
+}
+
 @riverpod
 class CurrentRoute extends _$CurrentRoute {
   @override
-  String? build() => null;
+  RouteState? build() => null;
 
   void update(String? path) {
-    state = path;
-    mixpanel?.track('CurrentRoute', properties: {'path': '$state'});
-    FlutterUxcam.tagScreenName(state ?? 'unknown');
+    final previosPath = state?.currentPath;
+
+    state = RouteState(currentPath: path, previousPath: previosPath);
+
+    mixpanel
+        ?.track('CurrentRoute', properties: {'path': '${state?.currentPath}'});
+    FlutterUxcam.tagScreenName(state?.currentPath ?? 'unknown');
     ref.read(urbiMetricsProvider.notifier).logEvent('CurrentRoute/update', {
-      'path': '$state',
+      'path': '${state?.currentPath}',
+      'previousPath': '$previosPath',
     });
   }
 }
