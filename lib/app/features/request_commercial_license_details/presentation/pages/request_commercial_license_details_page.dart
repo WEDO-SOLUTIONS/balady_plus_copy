@@ -38,7 +38,7 @@ class RequestCommercialLicenseDetailsPage extends StatelessWidget {
             ),
           ),
         ),
-        data['requestNumber'],
+        int.parse(data['requestNumber']),
       ),
       child: Scaffold(
         appBar: DefaultAppBarWidget(

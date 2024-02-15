@@ -24,10 +24,6 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
     required this.repository,
     required this.params,
   }) {
-    paramsMonths = EventsCountInMonthsParams(
-      commonParams: params,
-      year: DateTime.now().year,
-    );
     getEventsCountInYears();
     fetchFilterList();
   }
@@ -42,7 +38,6 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
     try {
       isLoading = true;
       notifyListeners();
-      monthsList = null;
       errorMessage = null;
       response = await repository.getEventsCountInYears(params: params);
       response.fold(
@@ -97,61 +92,15 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
 
   selectYear(EventsCountInYearsItem year) async {
     selectedYear = year;
-    paramsMonths.year = selectedYear!.year;
-    paramsMonths.commonParams = params;
-    await getEventsCountInM(
-      paramsMonths: paramsMonths.copyWith(
-        commonParams: params,
-        year: selectedYear!.year,
-      ),
-    );
+    // paramsMonths.year = selectedYear!.year;
+    // paramsMonths.commonParams = params;
+    // await getEventsCountInM(
+    //   paramsMonths: paramsMonths.copyWith(
+    //     commonParams: params,
+    //     year: selectedYear!.year,
+    //   ),
+    // );
     notifyListeners();
-  }
-
-  ////////////////////////// For Months
-  late final EventsCountInMonthsParams paramsMonths;
-  List<MonthsEventsCount>? monthsList;
-
-  Future<int?> getEventsCountInM(
-      {required EventsCountInMonthsParams paramsMonths}) async {
-    if (selectedYear?.eventsCount != 0) {
-      Either<Failure, List<MonthsEventsCount>> response;
-      try {
-        monthsList = null;
-        isLoading = true;
-        notifyListeners();
-        response = await repository.getEventsCountInMonths(
-          params: paramsMonths,
-        );
-        response.fold(
-          (failure) {
-            errorMessage = failure.toString();
-            notifyListeners();
-          },
-          (monthsList) {
-            this.monthsList = monthsList;
-            notifyListeners();
-          },
-        );
-      } on Exception catch (exception) {
-        CommonFunctions.sendEvent(
-          dioError: exception is DioException ? exception : null,
-          // response: response,
-          ex: exception,
-        );
-        errorMessage = exception.toString();
-      } catch (exception) {
-        CommonFunctions.sendEvent(
-          dioError: null,
-          // response: response,
-          ex: Exception(exception.toString()),
-        );
-        errorMessage = exception.toString();
-      }
-      isLoading = false;
-      notifyListeners();
-    }
-    return null;
   }
 
   // Filter
@@ -205,6 +154,52 @@ class BaladyCalendarYearsListViewModel extends BaseViewModel {
     notifyListeners();
     return null;
   }
+  //
+  // ////////////////////////// For Months
+  // late final EventsCountInMonthsParams paramsMonths;
+  // List<MonthsEventsCount>? monthsList;
+  //
+  // Future<int?> getEventsCountInM(
+  //     {required EventsCountInMonthsParams paramsMonths}) async {
+  //   if (selectedYear?.eventsCount != 0) {
+  //     Either<Failure, List<MonthsEventsCount>> response;
+  //     try {
+  //       monthsList = null;
+  //       isLoading = true;
+  //       notifyListeners();
+  //       response = await repository.getEventsCountInMonths(
+  //         params: paramsMonths,
+  //       );
+  //       response.fold(
+  //         (failure) {
+  //           errorMessage = failure.toString();
+  //           notifyListeners();
+  //         },
+  //         (monthsList) {
+  //           this.monthsList = monthsList;
+  //           notifyListeners();
+  //         },
+  //       );
+  //     } on Exception catch (exception) {
+  //       CommonFunctions.sendEvent(
+  //         dioError: exception is DioException ? exception : null,
+  //         // response: response,
+  //         ex: exception,
+  //       );
+  //       errorMessage = exception.toString();
+  //     } catch (exception) {
+  //       CommonFunctions.sendEvent(
+  //         dioError: null,
+  //         // response: response,
+  //         ex: Exception(exception.toString()),
+  //       );
+  //       errorMessage = exception.toString();
+  //     }
+  //     isLoading = false;
+  //     notifyListeners();
+  //   }
+  //   return null;
+  // }
 
   selectFilterOption(int index, bool isChecked) {
     if (isChecked) {

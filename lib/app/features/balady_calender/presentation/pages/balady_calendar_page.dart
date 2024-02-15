@@ -3,8 +3,6 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/balady_calender/data/models/events_count_in_years/events_count_in_years_item.dart';
 import 'package:balady_plus/app/features/balady_calender/domain/entities/events_common_params.dart';
-import 'package:balady_plus/app/features/balady_calender/domain/entities/events_count_in_months_params.dart';
-import 'package:balady_plus/app/features/balady_calender/presentation/mvvm/balady_calendar_months_list_view_model.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/mvvm/balady_calendar_years_list_view_model.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/widgets/action_show_filter_widget.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/widgets/action_show_type_date_widget.dart';
@@ -119,33 +117,17 @@ class BaladyCalendarPage extends StatelessWidget {
                             return const SizedBox();
                           }
 
+
                           // if have errors
                           if (selectedYear.eventsCount == 0) {
                             return Center(
                               child: Text(
-                                "no_events".tr(),
+                                "no_events".tr()
                               ),
                             );
                           }
 
-                          return ChangeNotifierProvider<
-                              BaladyCalendarMonthsListViewModel>(
-                            create: (_) => BaladyCalendarMonthsListViewModel(
-                              repository: contextYearsSelector
-                                  .read<BaladyCalendarYearsListViewModel>()
-                                  .repository,
-                              paramsMonths: EventsCountInMonthsParams(
-                                commonParams: contextYearsSelector
-                                    .read<BaladyCalendarYearsListViewModel>()
-                                    .params,
-                                year: contextYearsSelector
-                                    .read<BaladyCalendarYearsListViewModel>()
-                                    .selectedYear!
-                                    .year,
-                              ),
-                            ),
-                            child: const BaladyCalendarEventsWidget(),
-                          );
+                          return  BaladyCalendarEventsWidget(key: Key(selectedYear.year.toString()),);
                         },
                       );
                     },
