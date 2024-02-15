@@ -1,6 +1,8 @@
 PODS:
   - add_2_calendar (0.0.1):
     - Flutter
+  - app_links (0.0.1):
+    - Flutter
   - app_settings (5.1.1):
     - Flutter
   - AppAuth (1.4.0):
@@ -338,6 +340,7 @@ PODS:
 
 DEPENDENCIES:
   - add_2_calendar (from `.symlinks/plugins/add_2_calendar/ios`)
+  - app_links (from `.symlinks/plugins/app_links/ios`)
   - app_settings (from `.symlinks/plugins/app_settings/ios`)
   - AppAuth (from `https://github.com/MahmoudMB/AppAuth-iOS.git`)
   - background_location (from `.symlinks/plugins/background_location/ios`)
@@ -429,6 +432,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   add_2_calendar:
     :path: ".symlinks/plugins/add_2_calendar/ios"
+  app_links:
+    :path: ".symlinks/plugins/app_links/ios"
   app_settings:
     :path: ".symlinks/plugins/app_settings/ios"
   AppAuth:
@@ -533,6 +538,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   add_2_calendar: e9d68636aed37fb18e12f5a3d74c2e0589487af0
+  app_links: 5ef33d0d295a89d9d16bb81b0e3b0d5f70d6c875
   app_settings: 017320c6a680cdc94c799949d95b84cb69389ebc
   AppAuth: aadc4cc25bef2435551896b5bfa9316b42fde656
   background_location: 1b80c1fe3abd9912bca298618f6e365abf6f588f
@@ -620,4 +626,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 60f20f464f21bab6f5d9fd82901319bd6e2974b1
 
-COCOAPODS: 1.14.2
+COCOAPODS: 1.12.1
