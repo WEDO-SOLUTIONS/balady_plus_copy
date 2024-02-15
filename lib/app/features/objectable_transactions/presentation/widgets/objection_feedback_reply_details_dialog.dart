@@ -12,10 +12,11 @@ import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../objections/domain/entities/objection_details.dart';
 import '../../../profile_features/violations/presentation/widgets/create_objection_page/objection_reason_attachment.dart';
-import '../../domain/entities/objection_enquiry_details.dart';
+import '../../domain/entities/enquiry_objection_reply_params.dart';
 import '../enquiry_objection_bloc/enquiry_objection_bloc.dart';
 
 class ObjectionFeedBackReplyDetailsDialog extends StatelessWidget {
@@ -35,60 +36,66 @@ class ObjectionFeedBackReplyDetailsDialog extends StatelessWidget {
           }
         }, builder: (context, state) {
           return BottomSheetWithActions(
-            title: "التفاصيل",
-            body: Container(
-              padding: const EdgeInsets.only(
-                  right: 20, left: 20, top: 26, bottom: 5),
-              child: Column(
-                children: [
-                  ListView.builder(
-                      itemCount:
-                          state.details?.enquiryQuestionList?.length ?? 0,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (ctx, index) {
-                        return Column(
-                          children: [
-                            ObjectionFeedbackComponent(
-                              item: state.details!.enquiryQuestionList![index],
-                            )
-                          ],
-                        );
-                      }),
-                ],
-              ),
+            title: "details".tr(),
+            body: Stack(
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(
+                      right: 20, left: 20, top: 26, bottom: 5),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        ListView.builder(
+                            itemCount: state.requestDetails?.enquiryQuestionList
+                                    ?.length ??
+                                0,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (ctx, index) {
+                              EnquiryQuestionList item = state
+                                  .requestDetails!.enquiryQuestionList![index];
+                              return FeedBackQuestion(
+                                  question: item.question ?? "",
+                                  answer: item.answer,
+                                  hasAnswer: true,
+                                  questionDate: "",
+                                  answerDate: "",
+                                  questionAttachment: item
+                                      .questionAttachmentList
+                                      ?.firstOrNull
+                                      ?.questionAttachmentLocation,
+                                  questionAttachmentName: item
+                                      .questionAttachmentList
+                                      ?.firstOrNull
+                                      ?.questionAttachmentName,
+                                  answerAttachment: item.answerAttachmentList
+                                      ?.firstOrNull?.answerAttachmentLocation,
+                                  answerAttachmentName: item
+                                      .answerAttachmentList
+                                      ?.firstOrNull
+                                      ?.answerAttachmentName,
+                                  file: item
+                                      .answerAttachmentList?.firstOrNull?.file,
+                                  canReply: false,
+                                  index: index);
+                            }),
+                        ElevatedButtonWidget.custom(
+                            text: "objection_qnuiry_send".tr(),
+                            onPressed: () {
+                              context
+                                  .read<EnquiryObjectionBloc>()
+                                  .add(SubmitIncidentEvent());
+                            })
+                      ],
+                    ),
+                  ),
+                ),
+                if (state.status == BlocStatus.loading)
+                  const CustomCircularLoadingWidget(),
+              ],
             ),
           );
         }));
-  }
-}
-
-class ObjectionFeedbackComponent extends StatelessWidget {
-  final EnquiryQuestionList item;
-  const ObjectionFeedbackComponent({super.key, required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        FeedBackQuestion(
-          question: item.question ?? "",
-          answer: item.answer,
-          hasAnswer: true,
-          questionDate: "2021/01/01",
-          answerDate: "11/11/1",
-          questionAttachment: item
-              .questionAttachmentList?.firstOrNull?.questionAttachmentLocation,
-          questionAttachmentName:
-              item.questionAttachmentList?.firstOrNull?.questionAttachmentName,
-          answerAttachment:
-              item.answerAttachmentList?.firstOrNull?.answerAttachmentLocation,
-          answerAttachmentName:
-              item.answerAttachmentList?.firstOrNull?.answerAttachmentName,
-          canReply: false,
-        ),
-      ],
-    );
   }
 }
 
@@ -106,6 +113,7 @@ class FeedBackQuestion extends StatelessWidget {
   final String? questionDate;
   final String? answerDate;
   final FileDataItem? file;
+  final int index;
 
   const FeedBackQuestion(
       {super.key,
@@ -119,116 +127,129 @@ class FeedBackQuestion extends StatelessWidget {
       this.canReply,
       this.questionDate,
       this.answerDate,
-      this.file});
+      this.file,
+      required this.index});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsetsDirectional.only(top: 12),
-      margin: EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-          color: const Color(0xFFF3F7F7),
-          borderRadius: BorderRadius.circular(8)),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsetsDirectional.only(
-              start: 12,
-              end: 12,
-            ),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF3F7F7),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomTextWidget(
-                      "السؤال",
-                      fontWeight: AppFontWeight.bold,
-                      fontSize: 12,
-                      fontColor: AppColor.primary700Light,
-                    ),
-                    CustomTextWidget(
-                      questionDate ?? "",
-                      fontWeight: AppFontWeight.bold,
-                      fontSize: 12,
-                      fontColor: AppColor.blackModern500Light,
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                CustomTextWidget(
-                  question,
-                  fontWeight: AppFontWeight.bold,
-                  fontSize: 12,
-                  fontColor: AppColor.blackModern600Light,
-                ),
-                if (questionAttachment?.isNotEmpty ?? false)
-                  FeedbackAttachment(
-                    url: questionAttachment ?? "",
-                    name: questionAttachmentName,
-                  )
-              ],
-            ),
-          ),
-          Container(
-            padding:
-                const EdgeInsetsDirectional.only(start: 12, end: 12, top: 8),
-            margin: const EdgeInsetsDirectional.only(
-              top: 16,
-            ),
-            decoration: BoxDecoration(
-              color: Color(0xffD0DFE3),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomTextFieldWidget(
-                  label: "الرد",
-                  maxLines: 4,
-                  onChanged: (String? t) {},
-                ),
-                if (answerAttachment?.isNotEmpty ?? false)
-                  FeedbackAttachment(
-                    url: answerAttachment ?? "",
-                    name: answerAttachmentName,
+    return BlocBuilder<EnquiryObjectionBloc, EnquiryObjectionState>(
+        builder: (context, state) {
+      return Container(
+        padding: const EdgeInsetsDirectional.only(top: 12),
+        margin: EdgeInsets.only(bottom: 16),
+        decoration: BoxDecoration(
+            color: const Color(0xFFF3F7F7),
+            borderRadius: BorderRadius.circular(8)),
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsetsDirectional.only(
+                start: 12,
+                end: 12,
+              ),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF3F7F7),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomTextWidget(
+                        "objection_enquiry_question".tr(),
+                        fontWeight: AppFontWeight.bold,
+                        fontSize: 12,
+                        fontColor: AppColor.primary700Light,
+                      ),
+                      CustomTextWidget(
+                        questionDate ?? "",
+                        fontWeight: AppFontWeight.bold,
+                        fontSize: 12,
+                        fontColor: AppColor.blackModern500Light,
+                      ),
+                    ],
                   ),
-                if (file == null)
-                  ElevatedIconButtonWidget.upload(
-                    onPressed: () async {
-                      FileDataItem? file =
-                          await CommonFunctions.pickFile(context);
-                      if (file != null) {
-                        /*  context
-                            .read<CreateObjectionBloc>()
-                            .add(UploadFileEvent(params: file, index: index));*/
-                      }
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  CustomTextWidget(
+                    question,
+                    fontWeight: AppFontWeight.bold,
+                    fontSize: 12,
+                    fontColor: AppColor.blackModern600Light,
+                  ),
+                  if (questionAttachment?.isNotEmpty ?? false)
+                    FeedbackAttachment(
+                      url: CommonFunctions.getDMSUrl(questionAttachment ?? ""),
+                      name: questionAttachmentName,
+                    )
+                ],
+              ),
+            ),
+            Container(
+              padding:
+                  const EdgeInsetsDirectional.only(start: 12, end: 12, top: 8),
+              margin: const EdgeInsetsDirectional.only(
+                top: 32,
+              ),
+              decoration: BoxDecoration(
+                  color: AppColor.primary100Light,
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(8),
+                      bottomRight: Radius.circular(8))),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomTextFieldWidget(
+                    label: "objection_enquiry_reply".tr(),
+                    labelStyle: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 12,
+                      color: AppColor.primary700Light,
+                    ),
+                    maxLines: 4,
+                    onChanged: (String? t) {
+                      context
+                          .read<EnquiryObjectionBloc>()
+                          .add(ChangeIssueDescEvent(text: t, index: index));
                     },
                   ),
-                if (file != null)
-                  ObjectionReasonAttachment(
-                    onDelete: () {
-                      /*  context
-                          .read<CreateObjectionBloc>()
-                          .add(RemoveFileEvent(index: index));*/
-                    },
-                    fileName: file?.fileName ?? "",
-                    filePath: file?.filePath ?? "",
+                  const SizedBox(
+                    height: 16,
                   ),
-                const SizedBox(
-                  height: 16,
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
+                  if (file == null)
+                    ElevatedIconButtonWidget.upload(
+                      onPressed: () async {
+                        FileDataItem? file =
+                            await CommonFunctions.pickFile(context);
+                        if (file != null) {
+                          context
+                              .read<EnquiryObjectionBloc>()
+                              .add(UploadFileEvent(params: file, index: index));
+                        }
+                      },
+                    ),
+                  if (file != null)
+                    ObjectionReasonAttachment(
+                      onDelete: () {
+                        context
+                            .read<EnquiryObjectionBloc>()
+                            .add(RemoveFileEvent(index: index));
+                      },
+                      fileName: file?.fileName ?? "",
+                      filePath: file?.filePath ?? "",
+                    ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      );
+    });
   }
 }
 
@@ -251,7 +272,8 @@ class FeedbackAttachment extends StatelessWidget {
     return GestureDetector(
         onTap: () {
           CommonFunctions.showApigeeFile(
-              url, name ?? DateTime.now().millisecond.toString());
+              url, name ?? DateTime.now().millisecond.toString(),
+              serviceId: 2);
         },
         child: Container(
           padding: const EdgeInsets.all(16),
@@ -263,7 +285,7 @@ class FeedbackAttachment extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CustomTextWidget(
-                "إستعراض الملف",
+                "obkection_enquiry_show_file".tr(),
                 fontColor: AppColor.primary900Light,
                 fontSize: 12,
                 fontWeight: AppFontWeight.bold,

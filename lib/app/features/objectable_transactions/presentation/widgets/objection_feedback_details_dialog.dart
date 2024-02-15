@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +13,7 @@ import '../../../../core/utils/enums/bloc_status.dart';
 import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../_shared_feature_/presentation/dialogs/dialog_header.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../objections/domain/entities/objection_details.dart';
@@ -35,28 +37,40 @@ class ObjectionFeedBackDetailsDialog extends StatelessWidget {
           }
         }, builder: (context, state) {
           return BottomSheetWithActions(
-            title: "التفاصيل",
-            body: Container(
-              padding: const EdgeInsets.only(
-                  right: 20, left: 20, top: 26, bottom: 5),
-              child: Column(
-                children: [
-                  ListView.builder(
-                      itemCount:
-                          state.details?.enquiryQuestionList?.length ?? 0,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (ctx, index) {
-                        return Column(
-                          children: [
-                            ObjectionFeedbackComponent(
-                              item: state.details!.enquiryQuestionList![index],
-                            )
-                          ],
-                        );
-                      }),
-                ],
-              ),
+            title: "details".tr(),
+            body: Stack(
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(
+                      right: 20, left: 20, top: 26, bottom: 5),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        ListView.builder(
+                            itemCount:
+                                state.details?.enquiryQuestionList?.length ?? 0,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (ctx, index) {
+                              return Column(
+                                children: [
+                                  ObjectionFeedbackComponent(
+                                    responseDate: state
+                                        .details?.enquiryResponseDate
+                                        ?.toFormattedDate(),
+                                    item: state
+                                        .details!.enquiryQuestionList![index],
+                                  )
+                                ],
+                              );
+                            }),
+                      ],
+                    ),
+                  ),
+                ),
+                if (state.status == BlocStatus.loading)
+                  const CustomCircularLoadingWidget(),
+              ],
             ),
           );
         }));
@@ -65,7 +79,9 @@ class ObjectionFeedBackDetailsDialog extends StatelessWidget {
 
 class ObjectionFeedbackComponent extends StatelessWidget {
   final EnquiryQuestionList item;
-  const ObjectionFeedbackComponent({super.key, required this.item});
+  final String? responseDate;
+  const ObjectionFeedbackComponent(
+      {super.key, required this.item, this.responseDate});
 
   @override
   Widget build(BuildContext context) {
@@ -75,8 +91,8 @@ class ObjectionFeedbackComponent extends StatelessWidget {
           question: item.question ?? "",
           answer: item.answer,
           hasAnswer: true,
-          questionDate: "2021/01/01",
-          answerDate: "11/11/1",
+          questionDate: "",
+          answerDate: responseDate ?? "",
           questionAttachment: item
               .questionAttachmentList?.firstOrNull?.questionAttachmentLocation,
           questionAttachmentName:
@@ -144,7 +160,7 @@ class FeedBackQuestion extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CustomTextWidget(
-                      "السؤال",
+                      "objection_enquiry_question".tr(),
                       fontWeight: AppFontWeight.bold,
                       fontSize: 12,
                       fontColor: AppColor.primary700Light,
@@ -164,11 +180,12 @@ class FeedBackQuestion extends StatelessWidget {
                   question,
                   fontWeight: AppFontWeight.bold,
                   fontSize: 12,
+                  maxLines: 100,
                   fontColor: AppColor.blackModern600Light,
                 ),
                 if (questionAttachment?.isNotEmpty ?? false)
                   FeedbackAttachment(
-                    url: questionAttachment ?? "",
+                    url: CommonFunctions.getDMSUrl(questionAttachment ?? ""),
                     name: questionAttachmentName,
                   )
               ],
@@ -181,8 +198,10 @@ class FeedBackQuestion extends StatelessWidget {
               top: 16,
             ),
             decoration: BoxDecoration(
-              color: Color(0xffD0DFE3),
-            ),
+                color: AppColor.primary100Light,
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(8),
+                    bottomRight: Radius.circular(8))),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -190,13 +209,13 @@ class FeedBackQuestion extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CustomTextWidget(
-                      "الرد",
+                      "objection_enquiry_reply".tr(),
                       fontWeight: AppFontWeight.bold,
                       fontSize: 12,
                       fontColor: AppColor.primary700Light,
                     ),
                     CustomTextWidget(
-                      questionDate ?? "",
+                      answerDate ?? "",
                       fontWeight: AppFontWeight.bold,
                       fontSize: 12,
                       fontColor: AppColor.blackModern500Light,
@@ -210,11 +229,12 @@ class FeedBackQuestion extends StatelessWidget {
                   answer ?? "",
                   fontWeight: AppFontWeight.bold,
                   fontSize: 12,
+                  maxLines: 100,
                   fontColor: AppColor.blackModern600Light,
                 ),
                 if (answerAttachment?.isNotEmpty ?? false)
                   FeedbackAttachment(
-                    url: answerAttachment ?? "",
+                    url: CommonFunctions.getDMSUrl(answerAttachment ?? ""),
                     name: answerAttachmentName,
                   ),
                 const SizedBox(
@@ -248,7 +268,8 @@ class FeedbackAttachment extends StatelessWidget {
     return GestureDetector(
         onTap: () {
           CommonFunctions.showApigeeFile(
-              url, name ?? DateTime.now().millisecond.toString());
+              url, name ?? DateTime.now().millisecond.toString(),
+              serviceId: 2);
         },
         child: Container(
           padding: const EdgeInsets.all(16),
@@ -260,12 +281,12 @@ class FeedbackAttachment extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CustomTextWidget(
-                "إستعراض الملف",
+                "obkection_enquiry_show_file".tr(),
                 fontColor: AppColor.primary900Light,
                 fontSize: 12,
                 fontWeight: AppFontWeight.bold,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 32,
               ),
               const CustomSvgIconWidget(IconPath.receiveSquare, iconSize: 24.0),

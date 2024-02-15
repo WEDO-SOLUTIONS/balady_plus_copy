@@ -450,6 +450,7 @@ class RequestsRemoteDataSourceImplementation
         dioError: error,
       );
     } catch (ex) {
+      print(ex);
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
@@ -468,9 +469,8 @@ class RequestsRemoteDataSourceImplementation
       EnquiryObjectionReplyDetails request) async {
     var response;
     try {
-      response = await webService.dio.post(
-          ApiUrl.createEnquiryDetails(request.enquiryRequestNumber!),
-          data: request.toJson());
+      response = await webService.dio
+          .post(ApiUrl.createEnquiryDetails, data: request.toJson());
 
       final data = response.data;
       data.toString().successLog();
@@ -489,6 +489,7 @@ class RequestsRemoteDataSourceImplementation
         dioError: error,
       );
     } catch (ex) {
+      print(ex);
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
