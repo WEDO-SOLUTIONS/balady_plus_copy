@@ -266,7 +266,7 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
               firstToHourTmp, firstToMinuteTmp);
           final currentTime = DateTime.now();
           if (currentTime.isAfter(startTime) && currentTime.isBefore(endTime)) {
-            return " . يغلق " +
+            return "qr_closes_at".tr() +
                 CommonFunctions.convert24TimeTo12WithPeriod(
                     workTimes.getToday()?.firstToTime);
           }
@@ -290,7 +290,7 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
               secondToHourTmp, secondToMinuteTmp);
           final currentTime = DateTime.now();
           if (currentTime.isAfter(startTime) && currentTime.isBefore(endTime)) {
-            return " . يغلق " +
+            return "qr_closes_at".tr() +
                 CommonFunctions.convert24TimeTo12WithPeriod(
                     workTimes.getToday()?.secondToTime);
           }
@@ -303,7 +303,7 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
               date.year, date.month, date.day, firstFromHour, firstFromMinute);
           final currentTime = DateTime.now();
           if (currentTime.isBefore(startTime)) {
-            return " . يفتح " +
+            return "qr_opens".tr() +
                 CommonFunctions.convert24TimeTo12WithPeriod(
                     workTimes.getToday()?.firstFromTime);
           }
@@ -315,7 +315,7 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
               secondFromHour, secondFromMinute);
           final currentTime = DateTime.now();
           if (currentTime.isBefore(startTime)) {
-            return " . يفتح " +
+            return "qr_opens".tr() +
                 CommonFunctions.convert24TimeTo12WithPeriod(
                     workTimes.getToday()?.secondFromTime);
           }
@@ -335,14 +335,14 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
             WorkingTime day = workTimes.workingTimes![nextDay];
             if (day.openShiftOption == "OPEN_24HOUR") {
               if (i == 0) {
-                strWhenClosed = " . يفتح غداً ";
+                strWhenClosed = "qr_opens_tommorow".tr();
               } else {
-                strWhenClosed = " . يفتح ${day.dayName}";
+                strWhenClosed = " ${"qr_opens".tr()} ${day.dayName}";
               }
               return strWhenClosed;
             } else if (day.openShiftOption == "SHIFTED") {
               strWhenClosed =
-                  " . يفتح ${day.dayName} ${CommonFunctions.convert24TimeTo12WithPeriod(day.firstFromTime!)}";
+                  "${"qr_opens".tr()} ${day.dayName} ${CommonFunctions.convert24TimeTo12WithPeriod(day.firstFromTime!)}";
               return strWhenClosed;
             } else if (day.openShiftOption == "CLOSED") {
               nextDayWeekDay = nextDayWeekDay == DateTime.sunday

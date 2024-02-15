@@ -432,7 +432,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "requireLogin": true,
-      "action": {"type": "dialog", "value": "https://fees.balady.gov.sa/ewaa"},
+      "action": {"type": "dialog", "value": RemoteConfig.ewaaUrl},
       "ar": {"title": "municipal_ewaa", "description": null, "tag": null},
       "en": {"title": "municipal_ewaa", "description": null, "tag": null}
     },
