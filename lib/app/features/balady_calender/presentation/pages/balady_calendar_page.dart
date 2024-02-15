@@ -117,17 +117,18 @@ class BaladyCalendarPage extends StatelessWidget {
                             return const SizedBox();
                           }
 
-
                           // if have errors
                           if (selectedYear.eventsCount == 0) {
                             return Center(
-                              child: Text(
-                                "no_events".tr()
-                              ),
+                              child: Text("no_events".tr()),
                             );
                           }
 
-                          return  BaladyCalendarEventsWidget(key: Key(selectedYear.year.toString()),);
+                          return BaladyCalendarEventsWidget(
+                            key: Key(
+                              DateTime.now().microsecondsSinceEpoch.toString(),
+                            ),
+                          );
                         },
                       );
                     },

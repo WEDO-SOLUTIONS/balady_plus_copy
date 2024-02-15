@@ -3,6 +3,7 @@ import 'package:balady_plus/app/features/balady_calender/data/models/events_deta
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class ListItemsEventsWidget extends StatelessWidget {
   final List<CalendarEventItem> listEvents;
@@ -64,7 +65,7 @@ class ListItemsEventsWidget extends StatelessWidget {
                     Flexible(
                       fit: FlexFit.tight,
                       child: Text(
-                        event.metadata?.mainType?.name ?? '',
+                        event.metadata?.mainType?.name ?? event.entityType?.tr() ?? '',
                         style: AppStyle.signInFullTextStyle
                             .copyWith(fontWeight: FontWeight.w600),
                       ),
@@ -94,4 +95,9 @@ class ListItemsEventsWidget extends StatelessWidget {
       itemCount: listEvents.length,
     );
   }
+
+  getTypeByEntityType(String entityType) {
+
+  }
+
 }
