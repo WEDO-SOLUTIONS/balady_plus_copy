@@ -430,11 +430,15 @@ class EvaluationSection extends StatelessWidget {
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      CustomTextWidget(
-                        "qr_share_opnion".tr(),
-                        fontWeight: AppFontWeight.semiBold,
-                        fontSize: 12,
-                        fontColor: AppColor.blackModern700Light,
+                      Flexible(
+                        child: CustomTextWidget(
+                          "qr_share_opnion".tr(),
+                          fontWeight: AppFontWeight.semiBold,
+                          fontSize: 12,
+                          maxLines: 2,
+                          height: 1.4,
+                          fontColor: AppColor.blackModern700Light,
+                        ),
                       ),
                       EnhancedCustomElevatedButtonWidget(
                         btnText: "qr_facility_rating".tr(),

@@ -756,11 +756,19 @@
 "tabuk_municipality":"Tabuk Municipality",
 "hail_municipality":"Hail Region Municipality",
 "Alshmmalya_municipality":"Northern Border Region Municipality",
+"Alshmmalya_municipality_1": "Northern Border Region Municipality", 
+
 "baha_municipality":"Albaha Municipality",
 "njran_municipality":"Najran Municipality",
 "taif_municipality":"Taif Municipality",
+"taif_municipality_1": "Taif Municipality",
+
 "alhasa_municipality":"Alahsa Municipality",
+"alhasa_municipality_1": "Alahsa Municipality",
+
 "hafr_municipality":"Hafr Al Batin Municipality",
+"hafr_municipality_1": "Hafr Al Batin Municipality",
+
 "service_not_available":"This service is not available in this region currently",
 "_popUpButtonsComment":"Anything related to popUp Buttons",
 "popUpCloseBottomSheetButton":"Close",
@@ -2236,9 +2244,9 @@
 "saudi_dutch_bank":"Alawal Banck",
 "saudi_france_bank":"Banque Saudi Fransi",
 "anb_bank":"Arab National Bank",
-"qr_opens":". Opens",
-"qr_opens_tommorow":". Opens tomorrow",
-"qr_closes_at":". Closes",
+"qr_opens":". Opens ",
+"qr_opens_tommorow":". Opens tomorrow ",
+"qr_closes_at":". Closes ",
 "inq_incoming":"Incoming transactions",
 "peddler_license":"Peddler license",
 "activity_name":"Activity name",

@@ -91,13 +91,15 @@ class _ViolationDetailBodyState extends State<ViolationDetailBody> {
                           const CustomSvgIconWidget(
                               IconPath.informationCircleIcon),
                           const CustomHorizontalSpace(width: 12),
-                          CustomTextWidget(
-                            "objectionPeriodExpired".tr(),
-                            fontColor: AppColor.orange800,
-                            fontWeight: AppFontWeight.medium,
-                            fontSize: 13,
-                            maxLines: 1,
-                            textOverflow: TextOverflow.ellipsis,
+                          Flexible(
+                            child: CustomTextWidget(
+                              "objectionPeriodExpired".tr(),
+                              fontColor: AppColor.orange800,
+                              fontWeight: AppFontWeight.medium,
+                              fontSize: 13,
+                              maxLines: 3,
+                              textOverflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ],
                       )),

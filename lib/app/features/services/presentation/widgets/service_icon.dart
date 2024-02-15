@@ -259,8 +259,11 @@ class ServiceIcon extends StatelessWidget {
                 CommonFunctions.sendUXCamEvent(
                     UXCamEvents.startServiceMobileStores);
               }
-
-              CommonFunctions.openBaladyWebView(service.action.value);
+              String url = service.action.value;
+              if (!CommonFunctions.isAppAR) {
+                url = url.replaceAll("/ar/", "/en/");
+              }
+              CommonFunctions.openBaladyWebView(url);
             } else {
               showDialog(
                   context: context,
