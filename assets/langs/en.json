@@ -4273,9 +4273,9 @@
 "objection_enquiry_item_date":"تاريخ الإفادة", 
 "objection_enquiry_item_status":"حالة الإفادة", 
 "objection_enquiry_item_last_reply":"اخر تاريخ رد" , 
-"objection_enquiry_question":"السؤال", 
+"objection_enquiry_question":"Question", 
 "objection_enquiry_reply":"الرد", 
-"obkection_enquiry_show_file":"إستعراض الملف", 
+"obkection_enquiry_show_file":"View Attachment", 
 "objection_qnuiry_send": "إرسال الرد", 
 "objection_enquiry_warning":"عفوا تم إنتهاء مهلة الرد"
 
