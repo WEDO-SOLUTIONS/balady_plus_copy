@@ -5,7 +5,7 @@
 - BALADY-1314 [Marketing] Navigation panel is showing while explore tab is active
 - BALADY-1340 [Marketing] navigation ETA alignment
 - BALADY-1328 [Landing Page] Bottom bar icons and text is too big (Android)
-
+- BALADY-1331 [Marketing] place marker on closest point
 ## 3.8.2(7)
 
 - BALADY-1293: [Marketing][POI card] title text is truncated
