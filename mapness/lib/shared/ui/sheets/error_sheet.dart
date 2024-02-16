@@ -18,10 +18,14 @@ class ErrorSheet extends StatelessWidget {
   /// button label (localized default: reload)
   final String? buttonLabel;
 
+  /// error label (localized default: somethingWentWrong)
+  final String? errorLabel;
+
   const ErrorSheet({
-    super.key,
     required this.onRetry,
+    super.key,
     this.buttonLabel,
+    this.errorLabel,
     this.onClose,
   });
 
@@ -57,9 +61,13 @@ class ErrorSheet extends StatelessWidget {
               package: PackageConfig.packageName,
             ),
             const SizedBox(height: 16),
-            text(context.l10n.somethingWentWrong),
-            const SizedBox(height: 4),
-            text(context.l10n.pleaseTryAgainLater),
+            if (errorLabel != null)
+              text(errorLabel!)
+            else ...[
+              text(context.l10n.somethingWentWrong),
+              const SizedBox(height: 4),
+              text(context.l10n.pleaseTryAgainLater),
+            ],
             const SizedBox(height: 24),
             LabeledElevatedButton(
               onPressed: onRetry,
