@@ -34,7 +34,7 @@ class PoiMapRoute extends GoRouteData {
   });
 
   static void open(
-    BuildContext context,
+    GoRouter router,
     int dgisObjectId, {
     double? zoom,
     double? bearing,
@@ -49,13 +49,13 @@ class PoiMapRoute extends GoRouteData {
       lat: latLng?.latitude,
       lng: latLng?.longitude,
     );
-    final router = GoRouter.of(context);
+    // final router = GoRouter.of(context);
     final matches = router.routerDelegate.currentConfiguration.matches;
     if (matches.last.matchedLocation.contains(IwishCardRoute.path) ||
         matches.last.matchedLocation == (PoiMapRoute.path)) {
-      poiMapRoute.pushReplacement(context);
+      router.pushReplacement(poiMapRoute.location);
     } else {
-      poiMapRoute.push(context);
+      router.push(poiMapRoute.location);
     }
   }
 

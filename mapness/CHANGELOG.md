@@ -1,4 +1,7 @@
-## 3.9.0(1) - Current
+## 3.9.0(3) - Current
+- BALADY-1357 [Quick Filters] quick filters in opened dashboard do not work
+
+## 3.9.0(1)
 
 - BALADY-1325 [Marketing] no action happen when click on show more in feedback for a location
 - BALADY-1294 [Marketing] wrong switching between layers behavior
