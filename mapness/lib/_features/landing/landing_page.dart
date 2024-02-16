@@ -138,7 +138,11 @@ class _LandingPageState extends ConsumerState<LandingPage> {
         {'objectId': event.dgisObjectId.objectId},
       );
       if (context.mounted) {
-        PoiMapRoute.open(context, event.dgisObjectId.objectId);
+        PoiMapRoute.open(
+          context,
+          event.dgisObjectId.objectId,
+          latLng: event.latLng,
+        );
       }
     } else if (event is RoadEventTapEvent) {
       EventsRoute.open(context, event);

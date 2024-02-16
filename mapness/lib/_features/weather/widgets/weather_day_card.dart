@@ -1,10 +1,10 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/weather/domain/entities/weather_info.dart';
-
 import 'package:mapness/_features/weather/weather_date.dart';
 import 'package:mapness/_features/weather/widgets/custom_svg_icon_widget.dart';
 import 'package:mapness/_features/weather/widgets/expansion_tile.dart';
@@ -13,29 +13,28 @@ import 'package:mapness/shared/providers/app_language.dart';
 
 class WeatherDayCard extends ConsumerWidget {
   const WeatherDayCard({
-    super.key,
     required this.forecastDay,
     required this.isExpanded,
     required this.onExpansionChanged,
+    super.key,
   });
 
   final ForecastDay? forecastDay;
   final bool isExpanded;
+  // ignore: avoid_positional_boolean_parameters
   final Function(bool expanded) onExpansionChanged;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final locale = ref
-        .watch(appLanguageProvider)
-        .locale;
+    final locale = ref.watch(appLanguageProvider).locale;
     final style = context.textStyle;
     final nowTime = DateTime.now();
     final isToday =
-    WeatherDateFormatter.isToday(forecastDay?.date ?? '2022-01-01', locale);
+        WeatherDateFormatter.isToday(forecastDay?.date ?? '2022-01-01', locale);
     final dayText = isToday
         ? context.l10n.today
         : WeatherDateFormatter.getDay(
-        forecastDay?.date ?? '2022-01-01', locale);
+            forecastDay?.date ?? '2022-01-01', locale);
     final conditionIconPath = forecastDay?.day?.condition?.iconPath ?? '';
     final conditionText = forecastDay?.day?.condition?.text ?? '';
 
@@ -44,16 +43,16 @@ class WeatherDayCard extends ConsumerWidget {
     final minTemp = '${forecastDay?.day?.mintempC.toString()}º';
 
     return CustomExpansionTile(
-      collapsedBackgroundColor: Color(0xFFF5F7FA),
-      backgroundColor: Color(0xffE4F2F1),
+      collapsedBackgroundColor: const Color(0xFFF5F7FA),
+      backgroundColor: const Color(0xffE4F2F1),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
-            12,
-          )),
+        12,
+      )),
       collapsedShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
-            12,
-          )),
+        12,
+      )),
       key: UniqueKey(),
       hasIcon: false,
       onExpansionChanged: onExpansionChanged,
@@ -64,7 +63,6 @@ class WeatherDayCard extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              flex: 1,
               child: Text(
                 dayText,
                 style: style.accentM.copyWith(
@@ -74,52 +72,50 @@ class WeatherDayCard extends ConsumerWidget {
               ),
             ),
             Expanded(
-              flex: 1,
               child: Row(
                 children: [
                   CustomSvgIconWidget(
-                      conditionIconPath,
-                      iconSize: 16,
-                      iconColor: const Color(0xff4CA5B4),
+                    conditionIconPath,
+                    iconSize: 16,
+                    iconColor: const Color(0xff4CA5B4),
                   ),
-                  const SizedBox(width: 8,),
-                  Text(
-                    conditionText,
-                    style: style.accentM.copyWith(
-                      color: colorPrimary,
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  Expanded(
+                    child: AutoSizeText(
+                      conditionText,
+                      style: style.accentM.copyWith(
+                        color: colorPrimary,
+                      ),
+                      maxLines: 1,
                     ),
-                    maxLines: 1,
                   ),
                 ],
               ),
             ),
             Expanded(
-              flex: 1,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Container(
-                    height: 20,
-                    child: Text(
-                      maxTemp,
-                      style: style.accentS.copyWith(
-                        color: colorPrimary,
-                      ),
-                      maxLines: 1,
+                  Text(
+                    maxTemp,
+                    textDirection: TextDirection.ltr,
+                    style: style.accentS.copyWith(
+                      color: colorPrimary,
                     ),
+                    maxLines: 1,
                   ),
-                  Container(
-                    height: 20,
-                    width: 38,
-                    child: Text(
-                      minTemp,
-                      textDirection: TextDirection.ltr,
-                      style: style.textXS.copyWith(
-                        color: colorPrimary,
-                      ),
-                      maxLines: 1,
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  Text(
+                    minTemp,
+                    textDirection: TextDirection.ltr,
+                    style: style.textXS.copyWith(
+                      color: colorPrimary,
                     ),
+                    maxLines: 1,
                   ),
                 ],
               ),
@@ -135,20 +131,15 @@ class WeatherDayCard extends ConsumerWidget {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
-                // itemCount: 24,
-                // separatorBuilder: (_, __) => const SizedBox(width: 12),
-                // itemBuilder: (ctx, index) {},
                 children: [
                   ...?forecastDay?.hour?.where((hour) {
-                    if (isToday == false) return true;
-                    return DateTime
-                        .parse(hour.time ?? '')
-                        .hour >= nowTime.hour;
+                    if (isToday == false) {
+                      return true;
+                    }
+                    return DateTime.parse(hour.time ?? '').hour >= nowTime.hour;
                   }).map<Widget>((hour) {
-                    // var hour = forecastDay?.hour?.elementAt(index);
-                    // var time = hour?.time??'';
                     final dateTime = DateTime.parse(hour.time ?? '');
-                    final time = (DateFormat('hh:mm').format(dateTime));
+                    final time = DateFormat('hh:mm').format(dateTime);
 
                     final formatter = NumberFormat()
                       ..minimumFractionDigits = 0
@@ -158,8 +149,6 @@ class WeatherDayCard extends ConsumerWidget {
                     return Padding(
                       padding: const EdgeInsets.only(left: 12),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Container(
                             width: 48,
@@ -174,19 +163,19 @@ class WeatherDayCard extends ConsumerWidget {
                                 hour.condition?.iconPath ?? '',
                                 height: 24,
                                 width: 24,
-                                color: const Color(0xff4CA5B4),
-                                // color: Color(0xff4CA5B4),
-                                // iconFit: BoxFit.cover,
+                                colorFilter: const ColorFilter.mode(
+                                  Color(0xff4CA5B4),
+                                  BlendMode.srcIn,
+                                ),
                               ),
                             ),
                           ),
                           const SizedBox(height: 4),
                           Center(
                             child: Text(
-                              // ' ${hour?.time?.split(" ")[1].split(":")[0]}',
                               time,
                               style: style.textXS.copyWith(
-                                color: Color(0x5B1E2A36),
+                                color: const Color(0x5B1E2A36),
                               ),
                             ),
                           ),
