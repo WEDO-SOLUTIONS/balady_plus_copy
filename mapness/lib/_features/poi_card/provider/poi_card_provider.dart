@@ -47,6 +47,7 @@ class PoiCardProvider extends _$PoiCardProvider {
   Future<PoiCardState?> build(
     DgisObjectIdMessage objectId, {
     PoiCameraConfig? cameraConfig,
+    LatLng? closestPoint,
   }) async {
     if (poiCardState != null &&
         poiCardState?.gisObjectIdMessage?.id == objectId) {
@@ -56,12 +57,20 @@ class PoiCardProvider extends _$PoiCardProvider {
     final qrLicenseRepository = ref.watch(qrLicenseRepositoryProvider.notifier);
 
     final result = await ref
-        .watch(pointOfInterestProvider(objectId, cameraConfig: cameraConfig)
-            .future)
-        .timeout(const Duration(minutes: 1), onTimeout: () {
-      ref.read(goRouterProvider).pop();
-      return null;
-    });
+        .watch(
+      pointOfInterestProvider(
+        objectId,
+        cameraConfig: cameraConfig,
+        closestPoint: closestPoint,
+      ).future,
+    )
+        .timeout(
+      const Duration(minutes: 1),
+      onTimeout: () {
+        ref.read(goRouterProvider).pop();
+        return null;
+      },
+    );
 
     final tradeLicense = result?.tradeLicense;
 
