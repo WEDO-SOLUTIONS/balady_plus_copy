@@ -40,31 +40,8 @@ class LocationControlHandler(
         )
     }
 
-    fun setFollowState(state: Messages.FollowStateMessage) {
-        val prevBehaviour = map.camera.behaviour.newBehaviour
-
-        val behaviour = when (state) {
-            Messages.FollowStateMessage.OFF -> CameraBehaviour(
-                position = null,
-                tilt = prevBehaviour.tilt
-            )
-            Messages.FollowStateMessage.FOLLOW_POSITION -> CameraBehaviour(
-                position = FollowPosition(
-                    bearing = FollowBearing.OFF,
-                    styleZoom = prevBehaviour.position?.styleZoom ?: FollowStyleZoom.OFF,
-                ),
-                tilt = prevBehaviour.tilt
-            )
-            Messages.FollowStateMessage.FOLLOW_DIRECTION -> CameraBehaviour(
-                position = FollowPosition(
-                    bearing = FollowBearing.ON,
-                    styleZoom = prevBehaviour.position?.styleZoom ?: FollowStyleZoom.OFF,
-                ),
-                tilt = prevBehaviour.tilt
-            )
-        }
-
-        map.camera.setBehaviour(behaviour)
+    fun toggleFollowState() {
+       model.onClicked()
     }
 
     override fun close() {
