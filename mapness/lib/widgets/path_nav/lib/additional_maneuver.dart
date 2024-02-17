@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 /// unused for now but may be required after first demo
 class _AdditionalManeuver extends StatelessWidget {
@@ -12,12 +13,12 @@ class _AdditionalManeuver extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(8.0),
-      decoration: const BoxDecoration(
+      decoration:  BoxDecoration(
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(16),
           bottomRight: Radius.circular(16),
         ),
-        color: Color(0xffEFEFEF),
+        color: context.color.surface_base_primary,
       ),
       child: Column(
         children: [

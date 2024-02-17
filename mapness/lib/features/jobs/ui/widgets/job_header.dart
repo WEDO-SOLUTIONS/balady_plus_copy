@@ -95,7 +95,7 @@ class JobHeader extends ConsumerWidget {
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
                       .textS
-                      .apply(color: const Color(0xff1E2A36).withOpacity(.5)),
+                      .apply(color: context.color.text_and_icons_base_primary.withOpacity(.5)),
                 ),
               ],
             ),

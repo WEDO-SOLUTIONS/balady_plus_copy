@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:expansion_widget/expansion_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 import '../../../shared/config/package_config.dart';
 
@@ -31,7 +32,7 @@ class ExpandableCell extends StatelessWidget {
         titleBuilder:
             (animationValue, easeInValue, isExpanded, toggleFunction) {
           return Material(
-            color: const Color(0xFFF5F7FA),
+            color: context.color.surface_base_secondary,
             borderRadius: BorderRadius.only(
               topLeft: const Radius.circular(8),
               topRight: const Radius.circular(8),
@@ -72,7 +73,7 @@ class ExpandableCell extends StatelessWidget {
                             style: DefaultTextStyle.of(context).style.copyWith(
                                   fontSize: 16,
                                   height: 1.4,
-                                  color: const Color(0xFF1E2A36),
+                                  color: context.color.text_and_icons_base_primary,
                                 ),
                           ),
                           if (subtitle != null) ...[
@@ -84,7 +85,7 @@ class ExpandableCell extends StatelessWidget {
                               style: Theme.of(context)
                                   .extension<ThemeTextStyles>()!
                                   .textXS
-                                  .copyWith(color: const Color(0xB21E2A36)),
+                                  .copyWith(color: context.color.text_and_icons_base_primary),
                             ),
                           ]
                         ],
@@ -99,7 +100,7 @@ class ExpandableCell extends StatelessWidget {
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
                               .textM
-                              .copyWith(color: const Color(0xFF1E2A36)),
+                              .copyWith(color: context.color.text_and_icons_base_primary),
                         ),
                       ),
                     const SizedBox(

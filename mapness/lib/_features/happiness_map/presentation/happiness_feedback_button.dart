@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class HappinesFeedbackButton extends StatelessWidget {
   final HappinessFeedback type;
@@ -40,7 +41,7 @@ class HappinesFeedbackButton extends StatelessWidget {
         Colors.white,
 
       /// not match
-      _ => const Color(0xFF4CA5B4),
+      _ => context.color.stroke_accent,
     };
 
     return Ink(

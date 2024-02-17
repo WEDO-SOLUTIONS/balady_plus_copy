@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class RouteTypeSwitch extends ConsumerWidget {
   final VoidCallback onPressed;
@@ -22,7 +23,7 @@ class RouteTypeSwitch extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final titleColor =
-        isChoosed ? const Color(0xff1E2A36) : const Color(0xff8E949A);
+        isChoosed ? context.color.text_and_icons_base_primary : const Color(0xff8E949A);
 
     return Directionality(
       textDirection: ref.watch(uiDirectionProvider),

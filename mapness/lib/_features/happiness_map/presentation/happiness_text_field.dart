@@ -29,7 +29,7 @@ class HappinessTextField extends ConsumerWidget {
       decoration: InputDecoration(
         hintText: context.l10n.shareYourFeedback,
         enabledBorder: border,
-        fillColor: const Color(0xfff4f4f5),
+        fillColor: context.color.surface_base_primary,
         filled: true,
         border: border,
         contentPadding:

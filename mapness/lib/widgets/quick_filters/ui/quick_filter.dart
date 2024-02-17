@@ -2,6 +2,7 @@ import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 
 class QuickFilter extends StatelessWidget {
@@ -18,7 +19,7 @@ class QuickFilter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-      color: selected ? const Color(0xFF1E2A36) : background,
+      color: selected ? context.color.text_and_icons_base_primary : background,
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
@@ -40,7 +41,7 @@ class QuickFilter extends StatelessWidget {
                   width: 24,
                   package: PackageConfig.packageName,
                   colorFilter: ColorFilter.mode(
-                    selected ? Colors.white : const Color(0xFF1E2A36),
+                    selected ? Colors.white : context.color.text_and_icons_base_primary,
                     BlendMode.srcIn,
                   ),
                 ),
@@ -55,7 +56,7 @@ class QuickFilter extends StatelessWidget {
                         .textM
                         .copyWith(
                           color:
-                              selected ? Colors.white : const Color(0xFF1E2A36),
+                              selected ? Colors.white : context.color.text_and_icons_base_primary,
                         ),
                   )
                 ]

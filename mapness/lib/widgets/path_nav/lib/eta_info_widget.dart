@@ -1,5 +1,6 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class EtaInfoWidget extends StatelessWidget {
   final String? title;
@@ -30,7 +31,7 @@ class EtaInfoWidget extends StatelessWidget {
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
                     .headingS
-                    .copyWith(color: const Color(0xFF1D2A36)),
+                    .copyWith(color: context.color.text_and_icons_base_primary),
               ),
               Text(
                 subtitle ?? '-',

@@ -91,8 +91,8 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                             Container(
                               height: 4,
                               width: 40,
-                              decoration: const BoxDecoration(
-                                color: Color(0xFFDDE4EE),
+                              decoration: BoxDecoration(
+                                color: context.color.surface_base_primary,
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(24)),
                               ),
@@ -197,7 +197,7 @@ class FilterRow extends StatelessWidget {
                 semanticsLabel: 'MinApps Screen',
                 package: "mapness",
                 color: isSelected
-                    ? const Color(0xff4CA5B4)
+                    ? context.color.stroke_accent
                     : const Color.fromRGBO(30, 42, 54, 0.5),
               ),
               const SizedBox(
@@ -206,7 +206,7 @@ class FilterRow extends StatelessWidget {
               Text(
                 value.titleLocale(context.l10n),
                 style: textM.copyWith(
-                  color: isSelected ? const Color(0xff4CA5B4) : textM.color,
+                  color: isSelected ? context.color.stroke_accent : textM.color,
                 ),
               ),
             ],

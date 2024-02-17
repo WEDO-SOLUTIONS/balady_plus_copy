@@ -18,8 +18,8 @@ class FavouritesPicker extends ConsumerWidget {
     final asyncState = ref.watch(favouriteRepositoryProvider);
 
     if (asyncState.isLoading) {
-      return const Material(
-        color: Color(0xffF4F4F5),
+      return Material(
+        color: context.color.surface_base_primary,
         child: Center(
           child: CircularProgressIndicator(),
         ),
@@ -60,7 +60,7 @@ class FavouritesPicker extends ConsumerWidget {
                               .extension<ThemeTextStyles>()!
                               .accentM
                               .copyWith(
-                                color: const Color(0xFF1E2A36),
+                                color: context.color.text_and_icons_base_primary,
                               ),
                         ),
                       ),
@@ -80,8 +80,8 @@ class FavouritesPicker extends ConsumerWidget {
                             height: 24,
                             width: 24,
                             package: PackageConfig.packageName,
-                            colorFilter: const ColorFilter.mode(
-                              Color(0xFF1E2A36),
+                            colorFilter: ColorFilter.mode(
+                              context.color.text_and_icons_base_primary,
                               BlendMode.srcIn,
                             ),
                           ),
@@ -95,7 +95,7 @@ class FavouritesPicker extends ConsumerWidget {
           ),
           Expanded(
             child: Container(
-              color: const Color(0xffF4F4F5),
+              color: context.color.surface_base_primary,
               child: state?.items.isEmpty ?? false
                   ? Padding(
                       padding: const EdgeInsets.only(

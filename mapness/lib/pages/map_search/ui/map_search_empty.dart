@@ -30,7 +30,7 @@ class MapSearchEmpty extends StatelessWidget {
               context.l10n.weCouldntFindAnythingTryChangingYourRequest,
               textDirection: TextDirection.ltr,
               textAlign: TextAlign.center,
-              style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: const Color(0xFF1D2A36)),
+              style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: context.color.text_and_icons_base_primary),
             ),
           ),
         ],

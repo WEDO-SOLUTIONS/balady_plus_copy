@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 import '../../../shared/config/package_config.dart';
 import '../../../shared/providers/app_language.dart';
@@ -44,7 +45,7 @@ class LanguageRow extends ConsumerWidget {
     return Directionality(
       textDirection: ref.watch(uiDirectionProvider),
       child: Material(
-        color: const Color(0xFFF5F7FA),
+        color: context.color.surface_base_secondary,
         borderRadius: BorderRadius.only(
           bottomLeft:
               border ? const Radius.circular(12) : const Radius.circular(0),
@@ -85,7 +86,7 @@ class LanguageRow extends ConsumerWidget {
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
                       .textM
-                      .copyWith(color: const Color(0xFF1E2A36)),
+                      .copyWith(color: context.color.text_and_icons_base_primary),
                 ),
               ],
             ),

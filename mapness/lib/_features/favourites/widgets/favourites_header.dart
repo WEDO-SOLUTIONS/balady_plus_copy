@@ -29,7 +29,7 @@ class FavouritesHeader extends StatelessWidget {
         children: [
           Text(
             context.l10n.favourites,
-            style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: const Color(0xFF1E2A36)),
+            style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: context.color.text_and_icons_base_primary),
           ),
           const SizedBox(
             height: 40,
@@ -41,7 +41,7 @@ class FavouritesHeader extends StatelessWidget {
                       onTap: onDeleteAllTap,
                       child: Text(
                         context.l10n.deleteAll,
-                        style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: const Color(0xFF1E2A36)),
+                        style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: context.color.text_and_icons_base_primary),
                       ),
                     )
                   : Material(
@@ -59,8 +59,8 @@ class FavouritesHeader extends StatelessWidget {
                             height: 24,
                             width: 24,
                             package: PackageConfig.packageName,
-                            colorFilter: const ColorFilter.mode(
-                              Color(0xB21E2A36),
+                            colorFilter: ColorFilter.mode(
+                              context.color.text_and_icons_base_primary,
                               BlendMode.srcIn,
                             ),
                           ),
@@ -72,7 +72,7 @@ class FavouritesHeader extends StatelessWidget {
                 onTap: isEditing ? onEditTap : onDoneTap,
                 child: Text(
                   isEditing ? context.l10n.done : context.l10n.edit,
-                  style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: const Color(0xFF1E2A36)),
+                  style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: context.color.text_and_icons_base_primary),
                 ),
               )
             ],

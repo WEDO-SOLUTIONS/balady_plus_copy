@@ -1,5 +1,6 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
@@ -46,7 +47,7 @@ class LabeledDraggableSheet extends StatelessWidget {
                         .extension<ThemeTextStyles>()!
                         .headingS
                         .copyWith(
-                          color: const Color(0xFF1D2A36),
+                          color: context.color.text_and_icons_base_primary,
                         ),
                   ),
                 ),

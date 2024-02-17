@@ -61,7 +61,7 @@ class PinnedPlaceWidget extends StatelessWidget {
       child: Ink(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: const Color(0xffEDF6F7),
+          color: context.color.surface_base_primary,
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
@@ -82,7 +82,7 @@ class PinnedPlaceWidget extends StatelessWidget {
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
                             .textL
-                            .copyWith(color: const Color(0xFF1D2A36)),
+                            .copyWith(color: context.color.text_and_icons_base_primary),
                       ),
                       Text(
                         address,
@@ -94,7 +94,7 @@ class PinnedPlaceWidget extends StatelessWidget {
                             .textS
                             .copyWith(
                                 color: isAdded
-                                    ? const Color(0xFF4CA5B4)
+                                    ? context.color.stroke_accent
                                     : const Color(0xF2285A5B)),
                       ),
                     ],
@@ -106,15 +106,15 @@ class PinnedPlaceWidget extends StatelessWidget {
                 Container(
                   height: 38,
                   width: 38,
-                  decoration: const BoxDecoration(
-                    color: Color(0xffe5eef1),
+                  decoration:  BoxDecoration(
+                    color: context.color.surface_base_primary,
                     shape: BoxShape.circle,
                   ),
                   child: Center(
                     child: SvgPicture.asset(
                       iconAsset,
-                      colorFilter: const ColorFilter.mode(
-                        Color(0xff4CA5B4),
+                      colorFilter:  ColorFilter.mode(
+                        context.color.stroke_accent,
                         BlendMode.srcATop,
                       ),
                       package: PackageConfig.packageName,

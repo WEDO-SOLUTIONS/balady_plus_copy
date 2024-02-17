@@ -43,7 +43,7 @@ class RouteEditor extends StatelessWidget {
                     onTap: () => onTap(index),
                     borderRadius: BorderRadius.circular(12),
                     child: DestinationRow(
-                      color: points[index].titleColor,
+                      color: points[index].titleColor(context),
                       value: points[index].title(context.l10n) ??
                           (index == 0 ? context.l10n.from : context.l10n.to),
                       icon: points[index].icon,
@@ -98,7 +98,7 @@ class DestinationRow extends StatelessWidget {
               icon,
               package: PackageConfig.packageName,
               colorFilter: ColorFilter.mode(
-                index == 0 ? const Color(0xFF52B374) : const Color(0xFF4CA5B4),
+                index == 0 ? const Color(0xFF52B374) : context.color.stroke_accent,
                 BlendMode.srcATop,
               ),
             ),

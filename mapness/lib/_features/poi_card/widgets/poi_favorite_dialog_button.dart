@@ -2,6 +2,7 @@ import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PoiFavoriteDialogButton extends StatelessWidget {
   final VoidCallback onTap;
@@ -21,10 +22,10 @@ class PoiFavoriteDialogButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Ink(
       decoration: showBorder
-          ? const BoxDecoration(
+          ? BoxDecoration(
               border: Border(
                 bottom: BorderSide(
-                  color: Color(0xffDDDFE1),
+                  color: context.color.surface_base_primary,
                   width: 1,
                 ),
               ),

@@ -6,6 +6,7 @@ import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/pages/routing/ui/routing_search_content.dart';
 import 'package:mapness/pages/routing/ui/routing_search_header_delegate.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
 const _searchScope = 'RoutingSearch';
@@ -90,8 +91,8 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheet> {
               },
               middleHeight: constraints.maxHeight * 0.7,
               scrollableBody: (context, scrollController) => Container(
-                decoration: const BoxDecoration(
-                  color: Color(0xFFF1F4F8),
+                decoration: BoxDecoration(
+                  color: context.color.surface_base_primary,
                   borderRadius: BorderRadius.only(
                     topRight: Radius.circular(16.0),
                     topLeft: Radius.circular(16.0),

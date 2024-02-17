@@ -50,7 +50,7 @@ class ComplienceBuildingLegend extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             _LegendItem(
-              color: const Color(0xffD9D9D9),
+              color: context.color.surface_base_primary,
               borderColor: const Color(0xff888888),
               text: locale.legendComplienceBuildingGrey,
               group: sizeGroupItems,

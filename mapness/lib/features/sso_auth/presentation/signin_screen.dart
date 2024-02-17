@@ -67,7 +67,7 @@ class SigninScreen extends ConsumerWidget {
                       context.pop();
                     },
                     label: context.l10n.signIn,
-                    textColor: const Color(0xff4CA5B4),
+                    textColor: context.color.stroke_accent,
                     backgroundColor: Colors.white,
                   ),
                 ),
@@ -95,7 +95,7 @@ class SigninScreen extends ConsumerWidget {
               borderRadius: const BorderRadius.all(
                 Radius.circular(8),
               ),
-              color: const Color(0xff1E2A36).withOpacity(0.05),
+              color: context.color.text_and_icons_base_primary.withOpacity(0.05),
             ),
             padding: const EdgeInsets.all(8.0),
             child: SvgPicture.asset(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/pages/routing/ui/routing_search_bar.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class RoutingSearchHeaderDelegate extends SliverPersistentHeaderDelegate {
   RoutingSearchHeaderDelegate({
@@ -58,8 +59,8 @@ class DashboardHeader extends ConsumerWidget {
             child: Container(
               height: 4,
               width: 26,
-              decoration: const BoxDecoration(
-                color: Color(0xFFDDE4EE),
+              decoration:  BoxDecoration(
+                color: context.color.surface_base_primary,
                 borderRadius: BorderRadius.all(Radius.circular(24)),
               ),
             ),

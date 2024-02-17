@@ -2,6 +2,7 @@ import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 
 import 'package:mapness/_features/common/image/loading_image/loading_shimmer_image.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class StoryThumbnailWidget extends StatelessWidget {
   final String title;
@@ -28,7 +29,7 @@ class StoryThumbnailWidget extends StatelessWidget {
             shape: RoundedRectangleBorder(
               side: BorderSide(
                 width: 2,
-                color: isWatched ? Colors.transparent : const Color(0xFF4CA5B4),
+                color: isWatched ? Colors.transparent : context.color.stroke_accent,
               ),
               borderRadius: BorderRadius.circular(16),
             ),

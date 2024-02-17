@@ -102,12 +102,12 @@ class _MapSearchHistoryCollapsibleState
                   : widget.history.length,
               separatorBuilder: (context, index) => Container(
                 color: Colors.white,
-                child: const Padding(
+                child:  Padding(
                   padding: EdgeInsetsDirectional.only(start: 56),
                   child: Divider(
                     thickness: 1,
                     height: 2,
-                    color: Color(0x17022224),
+                    color: context.color.surface_base_primary,
                   ),
                 ),
               ),
@@ -115,12 +115,12 @@ class _MapSearchHistoryCollapsibleState
             if (widget.history.length > 10) ...[
               Container(
                 color: Colors.white,
-                child: const Padding(
+                child:  Padding(
                   padding: EdgeInsetsDirectional.only(start: 56),
                   child: Divider(
                     thickness: 1,
                     height: 2,
-                    color: Color(0x17022224),
+                    color: context.color.surface_base_primary,
                   ),
                 ),
               ),
@@ -201,7 +201,7 @@ class _ShowMore extends StatelessWidget {
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()!
                   .textM
-                  .copyWith(color: const Color(0xFF1E2A36)),
+                  .copyWith(color: context.color.text_and_icons_base_primary),
             ),
           ],
         ),

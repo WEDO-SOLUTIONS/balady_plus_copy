@@ -13,6 +13,7 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dar
 import 'package:mapness/_features/stories/data/story_service.dart';
 import 'package:mapness/_features/stories/stories.dart';
 import 'package:mapness/_features/stories/stories_widget.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
 import 'widgets/interesting_places_cards.dart';
@@ -142,7 +143,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                   SliverList.list(
                     children: [
                       Container(
-                        color: const Color(0xFFF1F4F8),
+                        color: context.color.surface_base_primary,
                         padding: const EdgeInsets.only(
                           top: 16.0,
                         ),

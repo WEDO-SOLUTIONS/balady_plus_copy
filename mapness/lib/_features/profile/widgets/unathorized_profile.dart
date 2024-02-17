@@ -87,7 +87,7 @@ class UnautorizedProfile extends StatelessWidget {
                               style: Theme.of(context)
                                   .extension<ThemeTextStyles>()!
                                   .accentM
-                                  .copyWith(color: const Color(0xFF1E928F)),
+                                  .copyWith(color: context.color.text_and_icons_status_accent),
                             ),
                           ],
                         ),

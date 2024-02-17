@@ -5,10 +5,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/config/package_fonts.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 const colorShadow = Color(0x1C77758D);
-const colorPrimary = Color(0xff1E2A36);
-const colorAccent = Color(0xff4CA5B4);
 const colorIconPositive = Color(0xff52B374);
 const colorIconError = Color(0xffD14733);
 
@@ -55,51 +54,55 @@ Widget buildIconButton({
   Color? colorButton,
   int flex = 1,
 }) {
-  return Flexible(
-    flex: flex,
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Material(
-        color: colorButton ?? colorPrimary.withOpacity(0.05),
-        borderRadius: borderRadius,
-        child: InkWell(
-          borderRadius: borderRadius,
-          onTap: onTap,
-          child: Container(
-            constraints: const BoxConstraints(
-              minHeight: 40,
-              maxHeight: 40,
-              minWidth: 52,
-            ),
-            decoration: boxDecoration(),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(
-                    key: ValueKey(assetName),
-                    assetName,
-                    height: 24,
-                    width: 24,
-                    color: colorIcon,
-                    package: PackageConfig.packageName,
-                    matchTextDirection: true,
+  return Builder(
+    builder: (context) {
+      return Flexible(
+        flex: flex,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 4),
+          child: Material(
+            color: colorButton ?? context.color.text_and_icons_base_primary.withOpacity(0.05),
+            borderRadius: borderRadius,
+            child: InkWell(
+              borderRadius: borderRadius,
+              onTap: onTap,
+              child: Container(
+                constraints: const BoxConstraints(
+                  minHeight: 40,
+                  maxHeight: 40,
+                  minWidth: 52,
+                ),
+                decoration: boxDecoration(),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        key: ValueKey(assetName),
+                        assetName,
+                        height: 24,
+                        width: 24,
+                        color: colorIcon,
+                        package: PackageConfig.packageName,
+                        matchTextDirection: true,
+                      ),
+                      if (desc != null) ...[
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        Flexible(child: desc),
+                      ]
+                    ],
                   ),
-                  if (desc != null) ...[
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    Flexible(child: desc),
-                  ]
-                ],
+                ),
               ),
             ),
           ),
         ),
-      ),
-    ),
+      );
+    }
   );
 }
 

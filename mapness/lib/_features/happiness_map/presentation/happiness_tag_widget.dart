@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class HappinessTagWidget extends StatelessWidget {
   final String title;
@@ -28,7 +29,8 @@ class HappinessTagWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
             color:
-                isSelected ? const Color(0xff4CA5B4) : const Color(0xffddeef1),
+            isSelected ? context.color.stroke_accent : context.color
+                .surface_base_primary,
             width: 2),
         color: const Color(0x194CA5B4),
       ),
@@ -54,7 +56,7 @@ class HappinessTagWidget extends StatelessWidget {
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
                     .accentXS
-                    .copyWith(color: const Color(0xFF1D2A36)),
+                    .copyWith(color: context.color.text_and_icons_base_primary),
               )
             ],
           ),

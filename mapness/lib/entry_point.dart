@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:app_links/app_links.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/etmam_app/core/utils/themes/app_color_theme.dart';
 import 'package:balady_uikit/colors/app_colors_theme.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
@@ -23,7 +22,6 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
 import 'package:mapness/widgets/map/map_page.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
@@ -152,7 +150,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                   900: Color(0xFF89cfbe),
                 },
               ),
-              unselectedWidgetColor: const Color(0xFF1E2A36),
+              // unselectedWidgetColor: context.color.text_and_icons_base_primary,
               scaffoldBackgroundColor: Colors.transparent,
               dividerColor: Colors.grey[400],
               useMaterial3: false,

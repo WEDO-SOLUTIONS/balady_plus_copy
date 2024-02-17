@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 // TODO: rewrite according to UIKit
 class NavButton extends StatelessWidget {
@@ -28,8 +29,8 @@ class NavButton extends StatelessWidget {
         child: SvgPicture.asset(
           icon,
           package: PackageConfig.packageName,
-          colorFilter: const ColorFilter.mode(
-            Color(0xB21E2A36),
+          colorFilter: ColorFilter.mode(
+            context.color.text_and_icons_base_primary,
             BlendMode.srcATop,
           ),
         ),

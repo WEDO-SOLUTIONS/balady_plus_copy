@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/entities/iwish/models/iwish_feedback_tag.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class IwishFeedbackTags extends StatelessWidget {
   final List<IwishFeedbackTag> tags;
@@ -35,12 +36,12 @@ class IwishFeedbackTags extends StatelessWidget {
               color: Colors.transparent,
               child: Ink(
                 decoration: BoxDecoration(
-                  color: const Color(0xffF4F4F5),
+                  color: context.color.surface_base_primary,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
                     color: selectedTags.contains(e.id)
-                        ? const Color(0xff4CA5B4)
-                        : const Color(0xffF4F4F5),
+                        ? context.color.stroke_accent
+                        : context.color.surface_base_primary,
                     width: 2,
                   ),
                 ),
@@ -83,7 +84,7 @@ class IwishFeedbackTags extends StatelessWidget {
                                   .extension<ThemeTextStyles>()!
                                   .textM
                                   .copyWith(
-                                    color: const Color(0xFF1D2A36),
+                                    color: context.color.text_and_icons_base_primary,
                                   ),
                             ),
                           ),

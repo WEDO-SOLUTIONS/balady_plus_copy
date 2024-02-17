@@ -2,6 +2,7 @@ import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class SearchActions extends StatelessWidget {
   const SearchActions({
@@ -83,7 +84,7 @@ class SearchActionRow extends StatelessWidget {
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
                     .textM
-                    .copyWith(color: const Color(0xFF1E2A36)),
+                    .copyWith(color: context.color.text_and_icons_base_primary),
               ),
             ),
           ),

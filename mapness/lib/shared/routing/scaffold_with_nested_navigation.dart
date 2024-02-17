@@ -77,8 +77,7 @@ class _ScaffoldWithNestedNavigationState
       );
 }
 
-const _selectedColor = Color(0xFF1E928F);
-final _unselectedColor = const Color(0xff1E2A36).withOpacity(0.36);
+const _unselectedColor = Color(0x801E2A36);
 
 class ScaffoldWithNavigationBar extends ConsumerWidget {
   const ScaffoldWithNavigationBar({
@@ -123,8 +122,16 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
                   backgroundColor: Colors.white,
                   elevation: 0,
                   type: BottomNavigationBarType.fixed,
-                  selectedLabelStyle: const TextStyle(fontSize: 0, height: 0),
-                  unselectedLabelStyle: const TextStyle(fontSize: 0, height: 0),
+                selectedLabelStyle: TextStyle(
+                  color: context.color.stroke_accent,
+                  fontSize: 0,
+                  height: 0,
+                ),
+                unselectedLabelStyle: TextStyle(
+                  color: context.color.text_and_icons_base_primary,
+                  fontSize: 0,
+                  height: 0,
+                ),
                   items: [
                     BottomNavigationBarItem(
                       icon: _BottomNavigationBarItem(
@@ -193,6 +200,85 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
                   currentIndex: currentIndex,
                   onTap: onDestinationSelected,
                 ),
+              child: BottomNavigationBar(
+                type: BottomNavigationBarType.fixed,
+                selectedLabelStyle: TextStyle(
+                  color: context.color.stroke_accent,
+                  fontSize: 0,
+                  height: 0,
+                ),
+                unselectedLabelStyle: TextStyle(
+                  color: context.color.text_and_icons_base_primary,
+                  fontSize: 0,
+                  height: 0,
+                ),
+                items: [
+                  BottomNavigationBarItem(
+                    icon: _BottomNavigationBarItem(
+                      selected: currentIndex == 0,
+                      iconBuilder: (context, selected) =>
+                          const ProfileImageWidget(
+                        dimension: 28,
+                      ),
+                      label: context.l10n.nav_profile,
+                    ),
+                    label: '',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: _BottomNavigationBarItem(
+                      selected: currentIndex == 1,
+                      icon: 'assets/icons/svg/ic_nav_landing.svg',
+                      label: context.l10n.nav_landing,
+                    ),
+                    label: '',
+                  ),
+                  if (appFeatures.naviEnabled)
+                    BottomNavigationBarItem(
+                      icon: _BottomNavigationBarItem(
+                        selected: currentIndex == 2,
+                        icon: 'assets/icons/svg/ic_nav_route.svg',
+                        labelBuilder: (context, selected) => Directionality(
+                          textDirection: direction,
+                          child: Center(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  '${context.l10n.nav_route} ',
+                                  style: Theme.of(context)
+                                      .extension<ThemeTextStyles>()!
+                                      .textXS
+                                      .copyWith(
+                                        color: selected
+                                            ? context.color.stroke_accent
+                                            : _unselectedColor,
+                                      ),
+                                ),
+                                SvgPicture.asset(
+                                  ref.read(appLanguageProvider) ==
+                                          Language.arabic
+                                      ? 'assets/icons/svg/beta_ar.svg'
+                                      : 'assets/icons/svg/beta_en.svg',
+                                  package: 'mapness',
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      label: '',
+                    ),
+                  BottomNavigationBarItem(
+                    icon: _BottomNavigationBarItem(
+                      selected: currentIndex == landingIndex,
+                      icon: 'assets/icons/svg/ic_nav_general.svg',
+                      label: context.l10n.nav_general,
+                    ),
+                    label: '', //context.l10n.nav_general,
+                  ),
+                ],
+                currentIndex: currentIndex,
+                onTap: onDestinationSelected,
               ),
             ),
           ],
@@ -254,7 +340,7 @@ class _DefaultIcon extends StatelessWidget {
         width: 24,
         package: 'mapness',
         colorFilter: ColorFilter.mode(
-          selected ? _selectedColor : _unselectedColor,
+          selected ? context.color.stroke_accent : _unselectedColor,
           BlendMode.srcIn,
         ),
       );

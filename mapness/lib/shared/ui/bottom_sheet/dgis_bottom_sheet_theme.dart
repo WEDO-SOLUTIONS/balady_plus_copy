@@ -17,6 +17,6 @@ class DgisBottomSheetTheme {
   static const DgisBottomSheetTheme defaultTheme = DgisBottomSheetTheme(
     expandedBackgroundColor: Color(0xFFFFFFFF),
     handleColor: Color(0xFFE0E0E0),
-    bodyBackgroundColor: Color(0xFFF4F4F5),
+    bodyBackgroundColor: Color(0xFFFFFFFF),
   );
 }

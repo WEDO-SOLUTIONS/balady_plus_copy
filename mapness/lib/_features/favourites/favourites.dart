@@ -45,8 +45,8 @@ class _FavouritesState extends ConsumerState<Favourites> {
           ref.invalidate(favouriteRepositoryProvider);
         },
       ),
-      loading: (_) => const Material(
-        color: Color(0xffF4F4F5),
+      loading: (_) => Material(
+        color: context.color.surface_base_primary,
         child: Center(
           child: CircularProgressIndicator(),
         ),
@@ -167,7 +167,7 @@ class _FavouritesState extends ConsumerState<Favourites> {
                 ),
                 Expanded(
                   child: Container(
-                    color: const Color(0xffF4F4F5),
+                    color: context.color.surface_base_primary,
                     child: state?.items.isEmpty == true
                         ? Padding(
                             padding: const EdgeInsets.only(

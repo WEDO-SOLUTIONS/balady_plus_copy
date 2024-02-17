@@ -43,7 +43,7 @@ class WeatherDayCard extends ConsumerWidget {
     final minTemp = '${forecastDay?.day?.mintempC.toString()}º';
 
     return CustomExpansionTile(
-      collapsedBackgroundColor: const Color(0xFFF5F7FA),
+      collapsedBackgroundColor: context.color.surface_base_secondary,
       backgroundColor: const Color(0xffE4F2F1),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
@@ -66,7 +66,7 @@ class WeatherDayCard extends ConsumerWidget {
               child: Text(
                 dayText,
                 style: style.accentM.copyWith(
-                  color: colorPrimary,
+                  color: context.color.text_and_icons_base_primary,
                 ),
                 maxLines: 1,
               ),
@@ -77,16 +77,14 @@ class WeatherDayCard extends ConsumerWidget {
                   CustomSvgIconWidget(
                     conditionIconPath,
                     iconSize: 16,
-                    iconColor: const Color(0xff4CA5B4),
+                    iconColor: context.color.stroke_accent,
                   ),
-                  const SizedBox(
-                    width: 8,
-                  ),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: AutoSizeText(
                       conditionText,
                       style: style.accentM.copyWith(
-                        color: colorPrimary,
+                        color: context.color.text_and_icons_base_primary,
                       ),
                       maxLines: 1,
                     ),
@@ -102,7 +100,7 @@ class WeatherDayCard extends ConsumerWidget {
                     maxTemp,
                     textDirection: TextDirection.ltr,
                     style: style.accentS.copyWith(
-                      color: colorPrimary,
+                      color: context.color.text_and_icons_base_primary,
                     ),
                     maxLines: 1,
                   ),
@@ -113,7 +111,7 @@ class WeatherDayCard extends ConsumerWidget {
                     minTemp,
                     textDirection: TextDirection.ltr,
                     style: style.textXS.copyWith(
-                      color: colorPrimary,
+                      color: context.color.text_and_icons_base_primary,
                     ),
                     maxLines: 1,
                   ),
@@ -163,8 +161,8 @@ class WeatherDayCard extends ConsumerWidget {
                                 hour.condition?.iconPath ?? '',
                                 height: 24,
                                 width: 24,
-                                colorFilter: const ColorFilter.mode(
-                                  Color(0xff4CA5B4),
+                                colorFilter: ColorFilter.mode(
+                                  context.color.stroke_accent,
                                   BlendMode.srcIn,
                                 ),
                               ),
@@ -183,7 +181,8 @@ class WeatherDayCard extends ConsumerWidget {
                             child: Text(
                               temperature,
                               style: style.accentS.copyWith(
-                                color: colorPrimary,
+                                color:
+                                    context.color.text_and_icons_base_primary,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w700,
                               ),

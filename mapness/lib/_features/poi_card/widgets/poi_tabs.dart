@@ -125,8 +125,8 @@ class _PoiTabItem extends StatelessWidget {
                           .accentS
                           .copyWith(
                             color: isActive ?? false
-                                ? const Color(0xff1E2A36)
-                                : const Color(0xff1E2A36).withOpacity(0.5),
+                                ? context.color.text_and_icons_base_primary
+                                : context.color.text_and_icons_base_primary.withOpacity(0.5),
                           ),
                     ),
                     if (count != null)
@@ -147,7 +147,7 @@ class _PoiTabItem extends StatelessWidget {
                                 ? BoxShape.circle
                                 : BoxShape.rectangle,
                             color: isActive ?? false
-                                ? const Color(0xff4CA5B4)
+                                ? context.color.stroke_accent
                                 : const Color(0xff2A364D).withOpacity(0.3),
                           ),
                           child: Text(

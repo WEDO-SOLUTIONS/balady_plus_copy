@@ -101,7 +101,7 @@ class ProfileImageWidget extends ConsumerWidget {
             //       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             //       child: const Icon(
             //         Icons.edit,
-            //         color: Color(0xFF1E928F),
+            //         color: context.color.text_and_icons_status_accent,
             //       ),
             //     ),
             //   ),

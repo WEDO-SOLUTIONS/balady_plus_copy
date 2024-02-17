@@ -51,10 +51,10 @@ class KiblahCompass extends ConsumerWidget {
                             Color(0xFF52B374),
                             Color(0xFF52B374),
                           ]
-                        : const [
-                            Color(0xFF4CA5B4),
+                        : [
+                            context.color.stroke_accent,
                             Color(0xFFC1EBF2),
-                            Color(0xFF4CA5B4),
+                            context.color.stroke_accent,
                           ],
                     stops: const [0, 0.48, 1],
                   ),
@@ -70,10 +70,10 @@ class KiblahCompass extends ConsumerWidget {
                 child: RadarWidget(
                   backgroundColor: correct
                       ? const Color(0xFF52B374).withOpacity(0.2)
-                      : const Color(0xFF1E2A36).withOpacity(0.2),
+                      : context.color.text_and_icons_base_primary.withOpacity(0.2),
                   radarColor: correct
                       ? const Color(0xFF52B374).withOpacity(0.7)
-                      : const Color(0xFF1E2A36).withOpacity(0.7),
+                      : context.color.text_and_icons_base_primary.withOpacity(0.7),
                 ),
               ),
             ),
@@ -180,7 +180,7 @@ class _KaabaIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         decoration: BoxDecoration(
-          color: isCorrect ? const Color(0xFF52B374) : const Color(0xFF4CA5B4),
+          color: isCorrect ? const Color(0xFF52B374) : context.color.stroke_accent,
           borderRadius: BorderRadius.circular(16),
         ),
         width: 32,

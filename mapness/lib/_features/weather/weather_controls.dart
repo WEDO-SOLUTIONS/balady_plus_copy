@@ -7,6 +7,7 @@ import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/_features/weather/domain/enum/weather_enum.dart';
 import 'package:mapness/_features/weather/provider/weather_map_controls.dart';
 import 'package:mapness/_features/weather/widgets/weather_state_icon.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 import 'provider/weather_map_controller.dart';
 
@@ -86,7 +87,7 @@ class Legend extends ConsumerWidget {
     final style = Theme.of(context)
         .extension<ThemeTextStyles>()!
         .accentXS
-        .copyWith(color: const Color(0xff1E2A36));
+        .copyWith(color: context.color.text_and_icons_base_primary);
     return Column(
       children: [
         Container(

@@ -50,7 +50,8 @@ class RoutesCarousel extends ConsumerWidget {
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
                       .textM
-                      .copyWith(color: const Color(0xFF1E2A36)),
+                      .copyWith(
+                          color: context.color.text_and_icons_base_primary),
                 ),
                 const SizedBox(
                   height: 8,
@@ -126,21 +127,23 @@ class RouteCell extends ConsumerWidget {
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .accentM
-                          .copyWith(color: const Color(0xFF1E2A36)),
+                          .copyWith(
+                              color: context.color.text_and_icons_base_primary),
                     ),
                     Text(
                       route.distance.formatDistance(context.l10n),
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .textS
-                          .copyWith(color: const Color(0xFF1E2A36)),
+                          .copyWith(
+                              color: context.color.text_and_icons_base_primary),
                     )
                   ],
                 ),
               ),
               const Spacer(),
               Material(
-                color: const Color(0xFF4CA5B4),
+                color: context.color.stroke_accent,
                 borderRadius: BorderRadius.circular(8),
                 child: InkWell(
                   onTap: startNavigation,
@@ -162,7 +165,7 @@ class RouteCell extends ConsumerWidget {
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

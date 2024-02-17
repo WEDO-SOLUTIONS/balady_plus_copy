@@ -7,6 +7,7 @@ import 'package:mapness/features/jobs/data/models/job_model.dart';
 import 'package:mapness/features/jobs/providers/job_list_provider.dart';
 import 'package:mapness/features/jobs/ui/widgets/job_card.dart';
 import 'package:mapness/features/jobs/ui/widgets/job_header.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/scroll_controller_ext.dart';
 import 'package:mapness/shared/lib/geo/geo_utils.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -85,8 +86,8 @@ class _JobMapBottomSheetState extends ConsumerState<JobMapBottomSheet> {
         return Directionality(
           textDirection: Directionality.of(context),
           child: Container(
-            decoration: const BoxDecoration(
-              color: Color(0xffF4F4F5),
+            decoration: BoxDecoration(
+              color: context.color.surface_base_primary,
               borderRadius: BorderRadius.only(
                 topRight: Radius.circular(16.0),
                 topLeft: Radius.circular(16.0),

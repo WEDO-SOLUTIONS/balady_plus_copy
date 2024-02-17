@@ -3,6 +3,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/make_address.dart';
 
 class SuggestItem extends StatelessWidget {
@@ -64,7 +65,7 @@ class SuggestItem extends StatelessWidget {
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
                               .textM
-                              .copyWith(color: const Color(0x801E2A36)),
+                              .copyWith(color: context.color.text_and_icons_base_tertiary),
                         ),
                     ],
                   ),
@@ -103,7 +104,7 @@ List<TextSpan> buildSuggestTitle(BuildContext context, suggest) {
       style: Theme.of(context)
           .extension<ThemeTextStyles>()!
           .textM
-          .copyWith(color: const Color(0x801E2A36)),
+          .copyWith(color: context.color.text_and_icons_base_tertiary),
     )
   ];
 }

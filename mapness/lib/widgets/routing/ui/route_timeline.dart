@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 import 'package:timelines/timelines.dart';
 
@@ -59,7 +60,10 @@ class RouteTimelineRow extends StatelessWidget {
         ),
         child: Text(
           point,
-          style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: index == 0 ? const Color(0x801E2A36) : const Color(0xFF1E2A36)),
+          style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(
+              color: index == 0
+                  ? context.color.text_and_icons_base_tertiary
+                  : context.color.text_and_icons_base_primary),
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
@@ -70,7 +74,7 @@ class RouteTimelineRow extends StatelessWidget {
           "assets/icons/svg/ic_routing_circle_small.svg",
           package: PackageConfig.packageName,
           colorFilter: ColorFilter.mode(
-            index == 0 ? const Color(0xFF52B374) : const Color(0xFF4CA5B4),
+            index == 0 ? const Color(0xFF52B374) : context.color.stroke_accent,
             BlendMode.srcATop,
           ),
         ),

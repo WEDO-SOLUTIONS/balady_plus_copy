@@ -96,7 +96,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .textM
-                          .copyWith(color: const Color(0xff1e2936)),
+                          .copyWith(color: context.color.text_and_icons_base_primary),
                     ),
                     const SizedBox(height: 4),
                     Text(

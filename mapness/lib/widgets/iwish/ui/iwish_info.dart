@@ -1,6 +1,7 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
 class IwishInfo extends StatelessWidget {
@@ -17,7 +18,7 @@ class IwishInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const black = Color(0xff1d2a36);
+    final black = context.color.text_and_icons_base_primary;
     const grey = Color(0x7F1E2A36);
 
     return Column(

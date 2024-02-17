@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/weather/data/models/weather_model.dart';
 import 'package:mapness/_features/weather/provider/current_weather_provider.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 import '../../../shared/ui/buttons/map_button.dart';
 
@@ -53,7 +54,7 @@ class WeatherControl extends ConsumerWidget {
                   .extension<ThemeTextStyles>()!
                   .textM
                   .copyWith(
-                    color: const Color(0xFF1E2A36),
+                    color: context.color.text_and_icons_base_primary,
                   ),
             ),
           ),

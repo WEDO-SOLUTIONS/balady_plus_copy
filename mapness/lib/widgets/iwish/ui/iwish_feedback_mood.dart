@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class IwishFeedbackMood extends StatelessWidget {
   final IwishFeedbackMoodType? selectedMood;
@@ -21,7 +22,7 @@ class IwishFeedbackMood extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 color: e == selectedMood
                     ? const Color(0xff52B374)
-                    : const Color(0xffF4F4F5),
+                    : context.color.surface_base_primary,
                 child: InkWell(
                   borderRadius: BorderRadius.circular(10),
                   onTap: () => onMoodSelected(e),

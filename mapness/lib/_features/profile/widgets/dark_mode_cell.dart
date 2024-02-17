@@ -25,7 +25,7 @@ class DarkModeCell extends ConsumerWidget {
         ),
         child: Material(
           borderRadius: BorderRadius.circular(8),
-          color: const Color(0xFFF5F7FA),
+          color: context.color.surface_base_secondary,
           child: InkWell(
             onTap: () {
               ref.read(darkModeProvider.notifier).toggle();
@@ -53,7 +53,7 @@ class DarkModeCell extends ConsumerWidget {
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
                             .textM
-                            .copyWith(color: const Color(0xFF1E2A36)),
+                            .copyWith(color: context.color.text_and_icons_base_primary),
                       ),
                     ),
                     const Spacer(),
