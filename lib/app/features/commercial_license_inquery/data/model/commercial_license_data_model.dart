@@ -1,5 +1,7 @@
 import 'package:balady_plus/app/features/commercial_license_inquery/domain/entity/commercial_license_data_entity.dart';
 
+import '../../../facility_qr/data/qr_details_response.dart';
+
 class CommercialLicenseDataModel extends CommercialLicenseData {
   CommercialLicenseDataModel({
     super.licenseNumber,
@@ -49,10 +51,14 @@ class CommercialLicenseDataModel extends CommercialLicenseData {
     twitter = json['twitter'];
     snapchat = json['snapchat'];
     whatsApp = json['whatsApp'];
-    workTimes = WorkTimesModel.fromJson(json['workTimes']);
 
+    workTimes= json["workTimes"] == null
+        ? null : WorkTimes.fromJson(json["workTimes"]);
 
   }
+
+
+
 
 
 }
@@ -94,40 +100,83 @@ class InfoModel  extends Info{
 
 
 
-class WorkTimesModel  extends WorkTimes{
-  WorkTimesModel({
-    super.workingTimes,
-  });
-
-
-  WorkTimesModel.fromJson(Map<String, dynamic> json){
-    workingTimes = List.from(json['workingTimes']).map((e)=>WorkingTimesModel.fromJson(e)).toList();
-  }
-
-
-}
-
-class WorkingTimesModel extends WorkingTime {
-  WorkingTimesModel({
-    super.dayId,
-    super.dayName,
-    super.firstFromTime,
-    super.firstToTime,
-    super.openShiftOption,
-    super.secondFromTime,
-    super.secondToTime,
-  });
-
-
-  WorkingTimesModel.fromJson(Map<String, dynamic> json){
-    dayId = json['dayId'];
-    dayName = json['dayName'];
-    firstFromTime = json['firstFromTime'];
-    firstToTime = json['firstToTime'];
-    openShiftOption = json['openShiftOption'];
-    secondFromTime = json['secondFromTime'];
-    secondToTime = json['secondToTime'];
-  }
-
-
-}
+// class WorkTimesModel  extends WorkTimes{
+//   WorkTimesModel({
+//     super.workingTimes,
+//   });
+//
+//
+//   WorkTimesModel.fromJson(Map<String, dynamic> json){
+//     workingTimes = List.from(json['workingTimes']).map((e)=>WorkingTimesModel.fromJson(e)).toList();
+//   }
+//
+//
+//
+//
+// }
+//
+// class WorkingTimesModel extends WorkingTime {
+//   WorkingTimesModel({
+//     super.dayId,
+//     super.dayName,
+//     super.firstFromTime,
+//     super.firstToTime,
+//     super.openShiftOption,
+//     super.secondFromTime,
+//     super.secondToTime,
+//     super.weekDay,
+//     super.isToday,
+//
+//   });
+//
+//
+//   WorkingTimesModel.fromJson(Map<String, dynamic> json){
+//     DateTime date = DateTime.now();
+//     dayId = json['dayId'];
+//     dayName = json['dayName'];
+//     firstFromTime = json['firstFromTime'];
+//     firstToTime = json['firstToTime'];
+//     openShiftOption = json['openShiftOption'];
+//     secondFromTime = json['secondFromTime'];
+//     secondToTime = json['secondToTime'];
+//     weekDay: getWeekday(json["dayId"]);
+//     isToday: (getWeekday(json["dayId"]) == date.weekday);
+//   }
+//   static int getWeekday(int dayId) {
+//     if (dayId != null) {
+//       switch (dayId) {
+//         case 1:
+//           return DateTime.sunday;
+//           break;
+//         case 2:
+//           return DateTime.monday;
+//           break;
+//         case 3:
+//           return DateTime.tuesday;
+//           break;
+//         case 4:
+//           return DateTime.wednesday;
+//           break;
+//         case 5:
+//           return DateTime.thursday;
+//           break;
+//         case 6:
+//           return DateTime.friday;
+//           break;
+//         case 7:
+//           return DateTime.saturday;
+//         default:
+//           return dayId;
+//       }
+//     }
+//     return 0;
+//   }
+//
+//
+//
+//
+//
+//
+//
+//
+// }
