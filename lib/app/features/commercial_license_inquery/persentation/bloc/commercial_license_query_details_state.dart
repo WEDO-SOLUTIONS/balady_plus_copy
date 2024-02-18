@@ -8,6 +8,7 @@ class CommercialLicenseQueryDetailsState extends Equatable {
   //error message
   final String? errorMessage;
 
+
   const CommercialLicenseQueryDetailsState({
     this.status = BlocRequestStatus.initial,
     this.commercialLicenceQueryDetails,
@@ -34,4 +35,10 @@ class CommercialLicenseQueryDetailsState extends Equatable {
     commercialLicenceQueryDetails,
     errorMessage,
   ];
+
+
+
+
+
+
 }

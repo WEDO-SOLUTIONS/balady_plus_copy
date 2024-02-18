@@ -534,12 +534,33 @@ class ServiceCardDescWidget extends StatelessWidget {
                       :
 
               Center(
-                child: ReloadWidget(
-
-                            onTab: () {
-                              viewModel.getServicesCards();
-                            },
+                child: Expanded(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context)
+                            .viewPadding
+                            .top,
+                      ),
+                       Row(
+                        children: [
+                          BackButton(color: Colors.white),
+                          Text('error'.tr(),
+                            style: AppStyle.violationCreateTitle
+                                .copyWith(color: Colors.white),
                           ),
+                        ],
+                      ),
+
+                      ReloadWidget(
+
+                                  onTab: () {
+                                    viewModel.getServicesCards();
+                                  },
+                                ),
+                    ],
+                  ),
+                ),
               );
             },
           ),
