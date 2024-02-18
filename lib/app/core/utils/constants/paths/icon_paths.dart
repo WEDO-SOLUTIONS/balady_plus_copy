@@ -427,7 +427,7 @@ class IconPath {
 
   static const chatBot = '${_pngIconPath}chat_bot$_png';
 
-
+  static const share = '${_svgIconPath}share$_svg';
 
 }
 ///Users/abdelrahmanismail/StudioProjects/balady-plus/assets/icons/svg/jod/apple_pay.svg

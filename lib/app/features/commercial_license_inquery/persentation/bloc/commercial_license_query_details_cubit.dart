@@ -2,6 +2,8 @@ import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/utils/common_functions.dart';
+import '../../../facility_qr/data/qr_details_response.dart';
 import '../../data/model/commercial_license_data_model.dart';
 import '../../domain/use_cases/get_commercial_license_query_data.dart';
 
@@ -11,6 +13,7 @@ class CommercialLicenseQueryDetailsCubit extends Cubit<CommercialLicenseQueryDet
   final GetCommercialLicenseQueryData getCommercialLicenseQueryData;
   final int commercialLicenseNumber;
   final int unifiedFacilityNumber;
+  //CommercialLicenseDataModel? objcommercialLicenceDetails,
 
   CommercialLicenseQueryDetailsCubit(
       this.getCommercialLicenseQueryData,
@@ -46,4 +49,11 @@ class CommercialLicenseQueryDetailsCubit extends Cubit<CommercialLicenseQueryDet
       },
     );
   }
+
+
+
+
+
+
+
 }

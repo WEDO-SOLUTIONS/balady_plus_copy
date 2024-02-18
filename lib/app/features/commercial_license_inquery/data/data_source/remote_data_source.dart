@@ -37,7 +37,7 @@ class CommercialLicenseQueryRemoteDataSourceImplementation implements Commercial
       );
       final data = response.data;
 
-      final res = data["data"]["result"];
+
       var parsedResult = data != null ? CommercialLicenseDataModel.fromJson(data["data"]["result"]) : null;
       final decodedResponse = ResponseBodyModel<CommercialLicenseDataModel>.fromMap(
           response.data,

@@ -2,10 +2,13 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
+import 'package:balady_plus/app/features/commercial_license_inquery/persentation/commercial_license_query_Details/socail_contact_widget.dart';
+import 'package:balady_plus/app/features/commercial_license_inquery/persentation/commercial_license_query_Details/working_hours_details_update.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../domain/entity/commercial_license_data_entity.dart';
 import '../bloc/commercial_license_query_details_cubit.dart';
 
@@ -21,7 +24,8 @@ class _CommercialLicenseQueryDetailsState
     extends State<CommercialLicenseQueryDetails> {
 
   CommercialLicenseQueryDetailsCubit? bloc;
-
+  bool showDays = false;
+String? commercialLicenseNumber;
 
   @override
   void initState() {
@@ -32,6 +36,9 @@ class _CommercialLicenseQueryDetailsState
 
 
     Future.microtask(() {
+      setState(() {
+        commercialLicenseNumber = "${bloc!.commercialLicenseNumber}#";
+      });
       bloc!.getCommercialLicenseQueryDetails(bloc!.commercialLicenseNumber, bloc!.unifiedFacilityNumber);
 
     });
@@ -51,20 +58,24 @@ class _CommercialLicenseQueryDetailsState
       },
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          backgroundColor: AppColor.scaffoldBackground,
-          elevation: 0,
-          shadowColor: AppColor.primary100Light,
-          centerTitle: false,
-          title: CustomTextWidget(
-            "#${bloc?.commercialLicenseNumber}?''",
-            fontSize: 14,
-            maxLines: 1,
-            textOverflow: TextOverflow.ellipsis,
-            fontWeight: AppFontWeight.medium,
-            fontColor: AppColor.blackModern700Light,
-          ),
+        appBar: DefaultAppBarWidget(
+          titleWidget:
+          RichText(
+        text: TextSpan(
+
+        children: [
+          TextSpan(text: 'query'.tr(), style: AppStyle.complianceTitleStyle),
+        const WidgetSpan(child: SizedBox(width: 10,)),
+        TextSpan(text: commercialLicenseNumber, style: AppStyle.listTitleTextStyle),
+        ],
+      ),
+    )
+          ,
+
         ),
+
+
+
 
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -86,9 +97,9 @@ class _CommercialLicenseQueryDetailsState
         CommercialLicenseQueryDetailsState>(
       listenWhen: (previous, current) => previous.status != current.status,
       listener: (_, state) async {
-        if (state.status == BlocRequestStatus.submissionGetFailure) {
-          MessageDialog.showErrorNotification(msg: state.error);
-        }
+        // if (state.status == BlocRequestStatus.submissionGetFailure) {
+        //   MessageDialog.showErrorNotification(msg: state.error);
+        // }
       },
       builder: (context, state) {
         if (state.status == BlocRequestStatus.submissionGetLoading) {
@@ -107,15 +118,6 @@ class _CommercialLicenseQueryDetailsState
               children: [
                 Row(
                   children: [
-                    const DrawIconBasedTypeWidget(
-                      icon: IconPath.calendar,
-                      iconSize: 24,
-                    ),
-                    const SizedBox(width: 4),
-                    CustomTextWidget(
-                      'date',
-                      textStyle: AppStyle.dateTextStyle,
-                    ),
                     const Spacer(),
                     Container(
                       height: 24,
@@ -223,9 +225,6 @@ class _CommercialLicenseQueryDetailsState
 
                   ],
                 ),
-
-
-
                 commercialLicenceQueryDetails.mainActivity != null
                     ? ExpandableCard(
                   title: 'activity_info'.tr(),
@@ -242,9 +241,8 @@ class _CommercialLicenseQueryDetailsState
                       value: commercialLicenceQueryDetails.mainActivity!.isicName.toString(),
                       bgColor: AppColor.mystic,
                     ),
-                    commercialLicenceQueryDetails.additionalActivities
-                        !=
-                        null
+                    (commercialLicenceQueryDetails.additionalActivities!=null && commercialLicenceQueryDetails
+                        .additionalActivities!.isNotEmpty )
                         ?
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -285,56 +283,103 @@ class _CommercialLicenseQueryDetailsState
 
                               );
 
-                            ;
+
                           },
                         ),
                       ],
                     )
                         : const SizedBox(),
+
+
                   ],
                 )
                     : const SizedBox(),
 
 
 
+                if (
+                commercialLicenceQueryDetails.workTimes != null)
+                  Column(
+                  children: [
+                    const SizedBox(height: 20,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const SizedBox(width: 8),
+                        CustomTextWidget(
+                          'personal_contact_info'.tr(),
+                          textStyle: AppStyle.cardTitleTextStle.copyWith(fontSize: 16),
+                          maxLines: 2,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10,),
+                  ],
+                ),
+
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      boxShadow: [],
+                      borderRadius: BorderRadius.circular(16),
+                      color: AppColor.white),
+                  child: Column(
+                    children: [
+
+                      if (
+                      commercialLicenceQueryDetails.workTimes != null)
+                        WorkingHourDetailsUpdate(
+                          openNow: commercialLicenceQueryDetails.checkIsOpenNow(),
+                          todayWorkingHours: commercialLicenceQueryDetails.getTodayWorkingHours(),
+                          workingHours: (commercialLicenceQueryDetails.workTimes!),
+                          customerServiceNumber: commercialLicenceQueryDetails.customerServicePhoneNumber!,
+                        ),
+
+                    ],
+                  ),
+                ),
+
+
+                if (commercialLicenceQueryDetails.website != null && commercialLicenceQueryDetails.website!.isNotEmpty) ...[
+                  const CustomVerticalSpace(height: 20),
+                  LabelIconSubtitleComponent(
+                    padding: const EdgeInsetsDirectional.only(start: 20,top: 10,bottom: 10),
+                    text: ('website').tr(),
+                    icon: IconPath.qrWebIcon,
+                    subtitle: commercialLicenceQueryDetails.website,
+                    onPress: () async{
+                      try {
+                        await launch(commercialLicenceQueryDetails.website!);
+                      } catch (ex) {
+
+                      }
+
+
+                    },
+                  )
+                ],
+                if (commercialLicenceQueryDetails.phone != null && commercialLicenceQueryDetails.phone!.isNotEmpty) ...[
+                  const CustomVerticalSpace(height: 20),
+                  LabelIconSubtitleComponent(
+                    padding: const EdgeInsetsDirectional.only(start: 20,top: 10,bottom: 10),
+                    text: ('contact_number').tr(),
+                    icon: IconPath.qrCallIcon,
+                    subtitle: commercialLicenceQueryDetails.phone,
+                    onPress: () {
+                      launch("tel://${commercialLicenceQueryDetails.phone}");
+                    },
+                  )
+                ],
+
+                const SizedBox(height: 20),
+              SocailContactWidget(twitterContact:commercialLicenceQueryDetails.twitter,
+                snapchatContact:commercialLicenceQueryDetails.snapchat,
+                instegramContact:commercialLicenceQueryDetails.instagram,
+                facebookContact: commercialLicenceQueryDetails.facebook,
+                whatsappContact: commercialLicenceQueryDetails.whatsApp, ),
 
 
 
-                // commercialLicenceQueryDetails.activityInfo!.additionalActivities !=
-                //     null
-                //     ? ExpandableCard(
-                //   title: 'list_additional_activities'.tr(),
-                //   icon: IconPath.editIcon,
-                //   children: [
-                //     Column(
-                //       children: commercialLicenceQueryDetails
-                //           .activityInfo!.additionalActivities!
-                //           .map(
-                //             (e) => Card(
-                //           margin: const EdgeInsets.all(8),
-                //           child: Column(
-                //             children: [
-                //               CardParameter(
-                //                 title: 'isicActivityName_sub'.tr(),
-                //                 value: e.isicActivityName,
-                //               ),
-                //               CardParameter(
-                //                 title: 'detailedActivityName'.tr(),
-                //                 value: e.detailedActivityName,
-                //               ),
-                //               CardParameter(
-                //                 title: 'isicActivityName'.tr(),
-                //                 value: e.area.toString(),
-                //               ),
-                //             ],
-                //           ),
-                //         ),
-                //       )
-                //           .toList(),
-                //     ),
-                //   ],
-                // )
-                //     : const SizedBox(),
 
                 const SizedBox(height: 24),
               ],
@@ -351,5 +396,8 @@ class _CommercialLicenseQueryDetailsState
       },
     );
   }
+
+
+
 
 }
