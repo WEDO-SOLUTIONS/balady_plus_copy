@@ -22,8 +22,9 @@
 // screenName: “My_Violations_View_Details_Page”
 // ____________________________
 
-// depaned on This get Screen by type (invoice,appointment,objection,Violations)
-// and some time dpaind on mainTypeId or requestMainTypeId to selotion
+//(invoice,appointment,objection,Violations) depaneds on type name,
+// although license depends on maintype.id service,
+// and for requests it depends on 
 // string -> tag and return screen name  and some time send intgear -> id
 
 import 'constants/route_names.dart';
@@ -34,7 +35,7 @@ String getScreenName(String tag, {int? typeId}) {
     ////// This depand on mainTypeId or requestMainTypeId
     case 'request':
       switch (typeId) {
-        case 1300:
+        case 1301 || 1302 || 1303 || 1308:
           return RouteName.healthRequestDetailsScreen;
         case 1130:
           return RouteName.complianceDetailsPage;
