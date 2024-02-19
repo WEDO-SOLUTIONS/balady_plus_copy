@@ -55,7 +55,8 @@ class _SearchFieldState extends State<SearchField> {
             decoration: InputDecoration(
               filled: true,
               hintText: context.l10n.search,
-              fillColor: context.color.text_and_icons_base_primary.withOpacity(0.05),
+              // fillColor: context.color.surface_base_secondary.withOpacity(0.05),
+              fillColor: context.color.surface_base_secondary,
               contentPadding: const EdgeInsetsDirectional.only(
                 start: 8,
                 end: 38,

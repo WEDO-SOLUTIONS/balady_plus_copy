@@ -6,6 +6,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class UnautorizedProfile extends StatelessWidget {
   final VoidCallback? onConnect;
+
   const UnautorizedProfile({super.key, this.onConnect});
 
   @override
@@ -24,9 +25,10 @@ class UnautorizedProfile extends StatelessWidget {
                 size: const Size.fromRadius(48),
                 child: const Image(
                   image: AssetImage(
-                    'assets/images/log_in_card.png',
+                    'assets/images/log_in_card_brown.png',
                     package: PackageConfig.packageName,
                   ),
+
                   fit: BoxFit.cover,
                 ),
               ),
@@ -87,7 +89,9 @@ class UnautorizedProfile extends StatelessWidget {
                               style: Theme.of(context)
                                   .extension<ThemeTextStyles>()!
                                   .accentM
-                                  .copyWith(color: context.color.text_and_icons_status_accent),
+                                  .copyWith(
+                                      color: context
+                                          .color.text_and_icons_status_accent),
                             ),
                           ],
                         ),

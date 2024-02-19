@@ -68,6 +68,7 @@ class SearchActionRow extends StatelessWidget {
               child: SvgPicture.asset(
                 icon,
                 package: PackageConfig.packageName,
+                color: context.color.text_and_icons_status_accent,
               ),
             ),
           ),

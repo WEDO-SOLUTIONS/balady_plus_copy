@@ -59,6 +59,7 @@ class ExpandableCell extends StatelessWidget {
                       height: 24,
                       width: 24,
                       package: PackageConfig.packageName,
+                      color: context.color.text_and_icons_status_accent,
                     ),
                     const SizedBox(
                       width: 12,

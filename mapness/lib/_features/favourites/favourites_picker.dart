@@ -22,7 +22,9 @@ class FavouritesPicker extends ConsumerWidget {
       return Material(
         color: context.color.surface_base_primary,
         child: Center(
-          child: CircularProgressIndicator(),
+          child: CircularProgressIndicator(
+            color: context.color.text_and_icons_status_accent,
+          ),
         ),
       );
     }

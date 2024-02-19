@@ -18,7 +18,9 @@ class LoadingSheet extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const CircularProgressIndicator(),
+             CircularProgressIndicator(
+                color: context.color.text_and_icons_status_accent,
+            ),
             const SizedBox(height: 16),
             Text(
               text ?? context.l10n.loading,

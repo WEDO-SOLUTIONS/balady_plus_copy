@@ -42,6 +42,7 @@ class DarkModeCell extends ConsumerWidget {
                       height: 24,
                       width: 24,
                       package: PackageConfig.packageName,
+                      color: context.color.text_and_icons_status_accent,
                     ),
                     const SizedBox(
                       width: 12,
@@ -59,6 +60,7 @@ class DarkModeCell extends ConsumerWidget {
                     const Spacer(),
                     IgnorePointer(
                       child: CupertinoSwitch(
+                        activeColor: context.color.text_and_icons_status_accent,
                         onChanged: (bool value) {},
                         value: darkMode,
                       ),

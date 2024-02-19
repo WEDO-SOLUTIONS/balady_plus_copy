@@ -98,10 +98,11 @@ class DestinationRow extends StatelessWidget {
             child: SvgPicture.asset(
               icon,
               package: PackageConfig.packageName,
-              colorFilter: ColorFilter.mode(
-                index == 0 ? NonThemeColor.color3 : context.color.stroke_accent,
-                BlendMode.srcATop,
-              ),
+              color: context.color.text_and_icons_status_accent,
+              // colorFilter: ColorFilter.mode(
+                // index == 0 ? NonThemeColor.color3 : context.color.stroke_accent,
+                // BlendMode.srcATop,
+              // ),
             ),
           ),
           const SizedBox(

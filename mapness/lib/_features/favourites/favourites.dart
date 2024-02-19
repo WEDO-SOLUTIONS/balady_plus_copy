@@ -49,7 +49,9 @@ class _FavouritesState extends ConsumerState<Favourites> {
       loading: (_) => Material(
         color: context.color.surface_base_primary,
         child: Center(
-          child: CircularProgressIndicator(),
+          child: CircularProgressIndicator(
+            color: context.color.text_and_icons_status_accent,
+          ),
         ),
       ),
       data: (data) {

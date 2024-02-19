@@ -151,7 +151,10 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                     ],
                   ),
                   if (state.isLoading)
-                    const Center(child: CircularProgressIndicator()),
+                    Center(
+                        child: CircularProgressIndicator(
+                      color: context.color.text_and_icons_status_accent,
+                    )),
                 ],
               ),
             ),

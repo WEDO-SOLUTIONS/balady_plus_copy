@@ -1,20 +1,27 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
+import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -35,6 +42,8 @@ class LandingPage extends ConsumerStatefulWidget {
 
 class _LandingPageState extends ConsumerState<LandingPage> {
   StreamSubscription<TapEvent>? _streamSubscription;
+  bool dialogWasShown = false;
+  bool needToShow = false;
 
   @override
   void initState() {
@@ -108,6 +117,42 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
     ref.watch(mapObjectManagerProvider(named: MapnessConsts.mapLayerName));
 
+    ref.read(colorSchemeProvider.notifier).needToShowBanner().then((value) {
+      setState(() {
+        needToShow = value;
+        // if(dialogWasShown == false){
+        //   dialogWasShown = true;
+        // }
+      });
+    });
+
+    // if (needToShow && !dialogWasShown) {
+    //   showDialog(
+    //       context: context,
+    //       builder: (c) {
+    //         return BackdropFilter(
+    //           filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
+    //           child: Center(
+    //             child: Padding(
+    //               padding: const EdgeInsets.all(16),
+    //               child: Container(
+    //                 child: Image(
+    //                     fit: BoxFit.fitWidth,
+    //                     image: AssetImage(
+    //                       'assets/images/foundation_day_banner.png',
+    //                       package: PackageConfig.packageName,
+    //                     )),
+    //               ),
+    //             ),
+    //           ),
+    //         );
+    //       });
+    //
+    //   setState(() {
+    //     dialogWasShown = true;
+    //   });
+    // }
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Directionality(
@@ -126,6 +171,64 @@ class _LandingPageState extends ConsumerState<LandingPage> {
                         initWithMinSize:
                             widget.focusMaker == LangingFocusMaker.iwish,
                       )),
+              if (needToShow)
+                BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Stack(
+                        children: [
+                          Container(
+                            child: Image(
+                                fit: BoxFit.fitWidth,
+                                image: AssetImage(
+                                  'assets/images/foundation_day_banner.png',
+                                  package: PackageConfig.packageName,
+                                )),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: Material(
+                              borderRadius: borderRadius,
+                              child: InkWell(
+                                borderRadius: borderRadius,
+                                onTap: () {
+                                  setState(() {
+                                    needToShow = false;
+                                  });
+                                },
+                                child: Container(
+                                  height: 40,
+                                  width: 40,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(8),
+                                    ),
+                                    color: context
+                                        .color.text_and_icons_base_primary
+                                        .withAlpha(10),
+                                  ),
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: SvgPicture.asset(
+                                    'assets/icons/svg/ic_search_close.svg',
+                                    semanticsLabel: 'MinApps Screen',
+                                    package: PackageConfig.packageName,
+                                    colorFilter: ColorFilter.mode(
+                                      context.color.text_and_icons_base_primary
+                                          .withOpacity(0.7),
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
         ),

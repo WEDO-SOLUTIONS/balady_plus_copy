@@ -40,6 +40,7 @@ class SuggestItem extends StatelessWidget {
               SvgPicture.asset(
                 "assets/icons/svg/ic_suggest_$icon.svg",
                 package: PackageConfig.packageName,
+                color: context.color.text_and_icons_status_accent,
               ),
               const SizedBox(
                 width: 12,
@@ -104,7 +105,7 @@ List<TextSpan> buildSuggestTitle(BuildContext context, suggest) {
       style: Theme.of(context)
           .extension<ThemeTextStyles>()!
           .textM
-          .copyWith(color: context.color.text_and_icons_base_tertiary),
+          .copyWith(color: context.color.text_and_icons_base_primary),
     )
   ];
 }
