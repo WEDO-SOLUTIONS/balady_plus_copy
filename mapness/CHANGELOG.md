@@ -1,4 +1,9 @@
-## 3.9.0(3) - Current
+## 3.9.0(4) - Current
+- BALADY-1377 [Profile] change Help Center Contact Info Email
+- BALADY-1318 [Marketing][Navi] wrong ETA label direction
+- BALADY-1379 [Navi] add function to create route to the point B for 42
+
+## 3.9.0(3)
 - BALADY-1357 [Quick Filters] quick filters in opened dashboard do not work
 
 ## 3.9.0(1)
