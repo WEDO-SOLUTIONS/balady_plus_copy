@@ -4275,5 +4275,6 @@
   "extra_isicName": "Additional IsicName",
   "open_at": " Open. ",
   "close_at": " Close. ",
-  "opentomrrow": "Open tomorrow. "
+  "opentomrrow": "Open tomorrow. ",
+  "cannot_open_google": "Can't open google map"
 }
