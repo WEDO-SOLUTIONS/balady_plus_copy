@@ -468,8 +468,7 @@ class _ObjectionFeedBackState extends State<ObjectionFeedBack> {
                                   GetObjectionDetailsEvent(
                                       params: state.details
                                               ?.objectionRequestNumber ??
-                                          "",
-                                      refresh: true));
+                                          "",));
                             },
                           );
 
