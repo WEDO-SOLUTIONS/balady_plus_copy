@@ -780,6 +780,13 @@ class ApiUrl {
 
   static const weatherAlerts = 'v1/mater-services/notifications/locations';
 
+
+//commercial license query
+  static String getCommercialLicenseData(int licenseNumber,unifiedFacilityNumber) =>
+      '/v1/balady-commercial-services/licenses/$licenseNumber/by-unn/$unifiedFacilityNumber';
+
+
+
   //! Balady Calednar
 
   static const baladyCalendarFilter =
