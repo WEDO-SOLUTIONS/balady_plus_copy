@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -56,7 +57,7 @@ class ProfileImageWidget extends ConsumerWidget {
           width: dimension,
           package: PackageConfig.packageName,
           colorFilter: ColorFilter.mode(
-            color ?? const Color(0xff898e96),
+            color ?? NonThemeColor.color40,
             BlendMode.srcIn,
           ),
         );

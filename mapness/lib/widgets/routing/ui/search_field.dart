@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -57,7 +58,7 @@ class _SearchFieldState extends State<SearchField> {
             decoration: InputDecoration(
               filled: true,
               hintText: widget.placeholder,
-              fillColor: const Color(0x0D1E2A36),
+              fillColor: NonThemeColor.color11,
               contentPadding: const EdgeInsets.only(
                 right: 8,
                 left: 38,

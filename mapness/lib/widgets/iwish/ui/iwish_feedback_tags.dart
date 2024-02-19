@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -61,7 +62,7 @@ class IwishFeedbackTags extends StatelessWidget {
                           package: PackageConfig.packageName,
                           matchTextDirection: e.rtlAsset,
                           colorFilter: const ColorFilter.mode(
-                            Color(0xff5E676F),
+                            NonThemeColor.color63,
                             BlendMode.srcATop,
                           ),
                         ),

@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -41,7 +42,7 @@ class StoryThumbnailWidget extends StatelessWidget {
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     border:
-                        Border.all(width: 0.50, color: const Color(0x4C898989)),
+                        Border.all(width: 0.50, color: NonThemeColor.color6),
                     borderRadius: BorderRadius.circular(13),
                   ),
                   // TODO: avoid cliprrect
@@ -75,8 +76,8 @@ class StoryThumbnailWidget extends StatelessWidget {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        const Color(0xFF35144900).withOpacity(0),
-                        const Color(0xFF2D103FA8).withOpacity(0.66),
+                        NonThemeColor.color55.withOpacity(0),
+                        NonThemeColor.color56.withOpacity(0.66),
                       ],
                     ),
                   ),

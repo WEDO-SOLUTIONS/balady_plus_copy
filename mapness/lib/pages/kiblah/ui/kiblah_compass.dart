@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,13 +48,13 @@ class KiblahCompass extends ConsumerWidget {
                     //TODO(someone): move colors to constants
                     colors: correct
                         ? const [
-                            Color(0xFF52B374),
-                            Color(0xFF52B374),
-                            Color(0xFF52B374),
+                            NonThemeColor.color3,
+                            NonThemeColor.color3,
+                            NonThemeColor.color3,
                           ]
                         : [
                             context.color.stroke_accent,
-                            Color(0xFFC1EBF2),
+                            NonThemeColor.color67,
                             context.color.stroke_accent,
                           ],
                     stops: const [0, 0.48, 1],
@@ -69,11 +70,13 @@ class KiblahCompass extends ConsumerWidget {
               child: Center(
                 child: RadarWidget(
                   backgroundColor: correct
-                      ? const Color(0xFF52B374).withOpacity(0.2)
-                      : context.color.text_and_icons_base_primary.withOpacity(0.2),
+                      ? NonThemeColor.color3.withOpacity(0.2)
+                      : context.color.text_and_icons_base_primary
+                          .withOpacity(0.2),
                   radarColor: correct
-                      ? const Color(0xFF52B374).withOpacity(0.7)
-                      : context.color.text_and_icons_base_primary.withOpacity(0.7),
+                      ? NonThemeColor.color3.withOpacity(0.7)
+                      : context.color.text_and_icons_base_primary
+                          .withOpacity(0.7),
                 ),
               ),
             ),
@@ -175,12 +178,13 @@ class KiblahCompass extends ConsumerWidget {
 
 class _KaabaIcon extends StatelessWidget {
   final bool isCorrect;
+
   const _KaabaIcon({required this.isCorrect});
 
   @override
   Widget build(BuildContext context) => Container(
         decoration: BoxDecoration(
-          color: isCorrect ? const Color(0xFF52B374) : context.color.stroke_accent,
+          color: isCorrect ? NonThemeColor.color3 : context.color.stroke_accent,
           borderRadius: BorderRadius.circular(16),
         ),
         width: 32,

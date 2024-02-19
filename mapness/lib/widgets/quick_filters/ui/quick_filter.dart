@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -10,7 +11,7 @@ class QuickFilter extends StatelessWidget {
     super.key,
     required this.item,
     required this.selected,
-    this.background = const Color(0x0D1E2A36),
+    this.background = NonThemeColor.color11,
   });
 
   final FilterItem item;

@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -44,7 +45,7 @@ class WeatherDayCard extends ConsumerWidget {
 
     return CustomExpansionTile(
       collapsedBackgroundColor: context.color.surface_base_secondary,
-      backgroundColor: const Color(0xffE4F2F1),
+      backgroundColor: NonThemeColor.color9,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
         12,
@@ -173,7 +174,7 @@ class WeatherDayCard extends ConsumerWidget {
                             child: Text(
                               time,
                               style: style.textXS.copyWith(
-                                color: const Color(0x5B1E2A36),
+                                color: NonThemeColor.color10,
                               ),
                             ),
                           ),

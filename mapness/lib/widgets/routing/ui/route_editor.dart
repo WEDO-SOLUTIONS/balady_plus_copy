@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -21,7 +22,7 @@ class RouteEditor extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0x1A1E2A36),
+        color: NonThemeColor.color51,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Stack(
@@ -59,7 +60,7 @@ class RouteEditor extends StatelessWidget {
             padding: EdgeInsets.only(right: 52),
             child: Divider(
               height: 1,
-              color: Color(0x261E2A36),
+              color: NonThemeColor.color53,
             ),
           )
         ],
@@ -98,7 +99,7 @@ class DestinationRow extends StatelessWidget {
               icon,
               package: PackageConfig.packageName,
               colorFilter: ColorFilter.mode(
-                index == 0 ? const Color(0xFF52B374) : context.color.stroke_accent,
+                index == 0 ? NonThemeColor.color3 : context.color.stroke_accent,
                 BlendMode.srcATop,
               ),
             ),

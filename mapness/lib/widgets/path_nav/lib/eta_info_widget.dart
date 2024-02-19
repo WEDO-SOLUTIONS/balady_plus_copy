@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -39,7 +40,7 @@ class EtaInfoWidget extends StatelessWidget {
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
                     .textXS
-                    .copyWith(color: const Color(0x7F1E2A36)),
+                    .copyWith(color: NonThemeColor.color38),
               ),
             ],
           ),

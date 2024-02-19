@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,7 +23,7 @@ class QuickFilters extends ConsumerWidget {
     ),
     this.customFilters,
     this.onCustomTap,
-    this.itemBackground = const Color(0x0D1E2A36),
+    this.itemBackground = NonThemeColor.color11,
   });
 
   final int? selectedIndex;

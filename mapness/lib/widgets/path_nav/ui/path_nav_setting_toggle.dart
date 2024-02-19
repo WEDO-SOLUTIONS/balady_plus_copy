@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,7 @@ class PathNavSettingToggle extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     subtitle!,
-                    style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0xff8E949A)),
+                    style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: NonThemeColor.color16),
                   ),
                 ]
               ],

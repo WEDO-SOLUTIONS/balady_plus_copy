@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -62,7 +63,7 @@ class _FavouritesState extends ConsumerState<Favourites> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 Container(
-                  color: const Color(0x1242909B),
+                  color: NonThemeColor.color48,
                   child: SafeArea(
                     bottom: false,
                     child: FavouritesHeader(

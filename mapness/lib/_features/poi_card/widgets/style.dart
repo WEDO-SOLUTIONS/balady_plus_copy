@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,9 +8,9 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/config/package_fonts.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-const colorShadow = Color(0x1C77758D);
-const colorIconPositive = Color(0xff52B374);
-const colorIconError = Color(0xffD14733);
+const colorShadow = NonThemeColor.color71;
+const colorIconPositive = NonThemeColor.color3;
+const colorIconError = NonThemeColor.color1;
 
 const headerHeight = 124.0;
 const footerHeight = 50.0;

@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
@@ -23,7 +24,7 @@ class CloseHappinessButton extends StatelessWidget {
           width: 16,
           package: PackageConfig.packageName,
           colorFilter: const ColorFilter.mode(
-            Color(0xff898e96),
+            NonThemeColor.color40,
             BlendMode.srcIn,
           ),
         ),

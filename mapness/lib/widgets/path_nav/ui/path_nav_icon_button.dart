@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
@@ -34,7 +35,7 @@ class PathNavIconButton extends StatelessWidget {
             height: 24,
             package: PackageConfig.packageName,
             colorFilter: const ColorFilter.mode(
-              Color(0xff1A1A1A),
+              NonThemeColor.color62,
               BlendMode.srcATop,
             ),
           ),

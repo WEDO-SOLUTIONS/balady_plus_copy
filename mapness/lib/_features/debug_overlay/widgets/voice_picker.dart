@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -102,7 +103,7 @@ class VoiceRow extends ConsumerWidget {
                         .copyWith(
                             color: packageInfo.installed
                                 ? context.color.stroke_accent
-                                : const Color(0xFFD14733)),
+                                : NonThemeColor.color1),
                   ),
                 ],
               ),

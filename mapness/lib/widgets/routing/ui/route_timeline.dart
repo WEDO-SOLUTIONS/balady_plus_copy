@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -74,20 +75,20 @@ class RouteTimelineRow extends StatelessWidget {
           "assets/icons/svg/ic_routing_circle_small.svg",
           package: PackageConfig.packageName,
           colorFilter: ColorFilter.mode(
-            index == 0 ? const Color(0xFF52B374) : context.color.stroke_accent,
+            index == 0 ? NonThemeColor.color3 : context.color.stroke_accent,
             BlendMode.srcATop,
           ),
         ),
         startConnector: index == 0
             ? null
             : const SolidLineConnector(
-                color: Color(0x261E2A36),
+                color: NonThemeColor.color53,
                 endIndent: 2,
               ),
         endConnector: last
             ? null
             : const SolidLineConnector(
-                color: Color(0x261E2A36),
+                color: NonThemeColor.color53,
                 indent: 2,
               ),
       ),

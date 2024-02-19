@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,7 +51,7 @@ class _MapSearchHistoryCollapsibleState
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    color: const Color(0xfff4383c),
+                    color: NonThemeColor.color50,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -154,7 +155,7 @@ class _MapSearchHistoryCollapsibleState
                 height: 16,
               ),
               Material(
-                color: const Color(0xFF42909B),
+                color: NonThemeColor.color32,
                 borderRadius: BorderRadius.circular(8),
                 child: InkWell(
                   onTap: widget.onClear,

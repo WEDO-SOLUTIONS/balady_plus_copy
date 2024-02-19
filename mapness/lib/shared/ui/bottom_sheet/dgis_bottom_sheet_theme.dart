@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:balady_uikit/colors/non_theme_colors.dart';
+
 /// contains theme for [DgisBottomSheet] widget
 class DgisBottomSheetTheme {
   final Color handleColor;
@@ -15,8 +17,8 @@ class DgisBottomSheetTheme {
 
   // todo(someone): remove when theme will be provided in widget tree
   static const DgisBottomSheetTheme defaultTheme = DgisBottomSheetTheme(
-    expandedBackgroundColor: Color(0xFFFFFFFF),
-    handleColor: Color(0xFFE0E0E0),
-    bodyBackgroundColor: Color(0xFFFFFFFF),
+    expandedBackgroundColor: NonThemeColor.color64,
+    handleColor: NonThemeColor.color65,
+    bodyBackgroundColor: NonThemeColor.color64,
   );
 }

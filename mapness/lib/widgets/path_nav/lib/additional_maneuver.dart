@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -36,7 +37,7 @@ class _AdditionalManeuver extends StatelessWidget {
                   width: 28,
                   height: 28,
                   colorFilter: const ColorFilter.mode(
-                    Color(0xff3588fd),
+                    NonThemeColor.color61,
                     BlendMode.srcATop,
                   )),
             ],

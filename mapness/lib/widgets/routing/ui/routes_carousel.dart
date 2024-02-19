@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -110,7 +111,7 @@ class RouteCell extends ConsumerWidget {
         horizontal: 4,
       ),
       child: Material(
-        color: const Color(0x0D1E2A36),
+        color: NonThemeColor.color11,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(12.0),

@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -32,7 +33,7 @@ class HappinessTagWidget extends StatelessWidget {
             isSelected ? context.color.stroke_accent : context.color
                 .surface_base_primary,
             width: 2),
-        color: const Color(0x194CA5B4),
+        color: NonThemeColor.color37,
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(8),

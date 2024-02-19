@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
@@ -23,7 +24,7 @@ class NavButton extends StatelessWidget {
           borderRadius: BorderRadius.all(
             Radius.circular(8),
           ),
-          color: Color(0x0D1E2A36),
+          color: NonThemeColor.color11,
         ),
         padding: const EdgeInsets.all(8.0),
         child: SvgPicture.asset(

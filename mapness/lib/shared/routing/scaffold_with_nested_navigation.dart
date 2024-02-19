@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_positional_boolean_parameters
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -77,7 +78,7 @@ class _ScaffoldWithNestedNavigationState
       );
 }
 
-const _unselectedColor = Color(0x801E2A36);
+const _unselectedColor = NonThemeColor.color66;
 
 class ScaffoldWithNavigationBar extends ConsumerWidget {
   const ScaffoldWithNavigationBar({
@@ -113,7 +114,7 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF000000).withOpacity(0.05),
+                    color: NonThemeColor.color14.withOpacity(0.05),
                     offset: const Offset(0, -2),
                     blurRadius: 8,
                   ),

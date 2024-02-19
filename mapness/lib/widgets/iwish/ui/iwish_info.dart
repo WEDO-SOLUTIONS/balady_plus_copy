@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
@@ -19,7 +20,7 @@ class IwishInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final black = context.color.text_and_icons_base_primary;
-    const grey = Color(0x7F1E2A36);
+    const grey = NonThemeColor.color38;
 
     return Column(
       mainAxisSize: MainAxisSize.min,

@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -113,7 +114,7 @@ class ProfileInfoPage extends ConsumerWidget {
                           .extension<ThemeTextStyles>()!
                           .textS
                           .copyWith(
-                            color: const Color(0xA31E2A36),
+                            color: NonThemeColor.color39,
                           ),
                       textAlign: TextAlign.center,
                     ),
@@ -134,7 +135,7 @@ class ProfileInfoPage extends ConsumerWidget {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       decoration: BoxDecoration(
-                        color: const Color(0xff566B83).withOpacity(.12),
+                        color: NonThemeColor.color27.withOpacity(.12),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(

@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -36,7 +37,7 @@ class PinnedPlaceWidget extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: const Color(0xfff4383c),
+          color: NonThemeColor.color57,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -95,7 +96,7 @@ class PinnedPlaceWidget extends StatelessWidget {
                             .copyWith(
                                 color: isAdded
                                     ? context.color.stroke_accent
-                                    : const Color(0xF2285A5B)),
+                                    : NonThemeColor.color34),
                       ),
                     ],
                   ),

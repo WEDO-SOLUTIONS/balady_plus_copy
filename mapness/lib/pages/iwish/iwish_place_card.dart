@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -154,8 +155,7 @@ class IwishPlaceCard extends ConsumerWidget {
                                                 start: 8,
                                               ),
                                               foreground: context.color.text_and_icons_base_primary,
-                                              background: const Color(
-                                                  0x1F566B83),
+                                              background: NonThemeColor.color60,
                                               finishPoint: RouteSearchPointMessage(
                                                 coordinates: GeoPointMessage(
                                                   latitude:

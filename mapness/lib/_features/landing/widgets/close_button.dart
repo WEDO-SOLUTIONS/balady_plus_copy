@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -22,7 +23,7 @@ class CloseButton extends StatelessWidget {
           semanticsLabel: 'MinApps Screen',
           package: "mapness",
           colorFilter: const ColorFilter.mode(
-            Color(0x802B588A),
+            NonThemeColor.color49,
             BlendMode.srcIn,
           ),
         ),
