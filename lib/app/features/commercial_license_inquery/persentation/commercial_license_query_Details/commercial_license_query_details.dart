@@ -191,33 +191,57 @@ String? commercialLicenseNumber;
                         ?
                     SizedBox(
                       height: 250,
-                      child: GoogleMap(
-                        initialCameraPosition: CameraPosition(
-                            target: LatLng(
-                              double.parse(
-                                  commercialLicenceQueryDetails
-                                      .x!),
-                              double.parse(
-                                  commercialLicenceQueryDetails
-                                      .y!),
+                      child: Stack(
+                        children:
+                        [
+
+                          GoogleMap(
+                          initialCameraPosition: CameraPosition(
+                              target: LatLng(
+                                double.parse(
+                                    commercialLicenceQueryDetails
+                                        .x!),
+                                double.parse(
+                                    commercialLicenceQueryDetails
+                                        .y!),
+                              ),
+                              zoom: 16),
+                          markers: {
+                            Marker(
+                              markerId: const MarkerId('position'),
+                              position: LatLng(
+                                double.parse(
+                                    commercialLicenceQueryDetails
+                                        .x!),
+                                double.parse(
+                                    commercialLicenceQueryDetails
+                                        .y!),
+                              ),
+                            )
+                          },
+                          zoomControlsEnabled: false,
+                          zoomGesturesEnabled: false,
+                          scrollGesturesEnabled: false,
+                        ),
+                          Positioned(
+                            bottom: 20,
+                            left: 20,
+                            child: GestureDetector(
+                              onTap: (){
+                                navigateTo(double.parse(
+                                    commercialLicenceQueryDetails
+                                        .x!),
+                                    double.parse(
+                                        commercialLicenceQueryDetails
+                                            .y!));
+                              },
+                              child: const Image(
+                                height: 40,
+                                  width: 40,
+                                  image: AssetImage(IconPath.direction)),
                             ),
-                            zoom: 16),
-                        markers: {
-                          Marker(
-                            markerId: const MarkerId('position'),
-                            position: LatLng(
-                              double.parse(
-                                  commercialLicenceQueryDetails
-                                      .x!),
-                              double.parse(
-                                  commercialLicenceQueryDetails
-                                      .y!),
-                            ),
-                          )
-                        },
-                        zoomControlsEnabled: false,
-                        zoomGesturesEnabled: false,
-                        scrollGesturesEnabled: false,
+                          ),
+        ]
                       ),
                     )
                         : const SizedBox(),
@@ -398,6 +422,14 @@ String? commercialLicenseNumber;
   }
 
 
+   void navigateTo(double lat, double lng) async {
+    var uri = Uri.parse("google.navigation:q=$lat,$lng&mode=d");
+    if (await canLaunch(uri.toString())) {
+      await launch(uri.toString());
+    } else {
+      MessageDialog.showErrorNotification(msg: "cannot_open_google".tr());
 
+    }
+  }
 
 }

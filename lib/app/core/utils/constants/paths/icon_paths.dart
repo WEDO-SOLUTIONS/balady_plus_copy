@@ -429,5 +429,7 @@ class IconPath {
 
   static const share = '${_svgIconPath}share$_svg';
 
+  static const direction = '${_pngIconPath}direction$_png';
+
 }
 ///Users/abdelrahmanismail/StudioProjects/balady-plus/assets/icons/svg/jod/apple_pay.svg
