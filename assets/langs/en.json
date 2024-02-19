@@ -4255,20 +4255,25 @@
  "BuildingNature": "Building Nature", 
  "edit_owner_data":"Edit Owner Data", 
  "reason_text":"reason", 
- "attachment_text":"attachment", 
-
+ "attachment_text":"attachment",
  "National_ID":"National ID", 
-"Iqama_ID":"Resident ID",
-  "CommerciallicenseQuery": "Commercial License Query",
+  "Iqama_ID":"Resident ID",
+  "CommerciallicenseQuery": "Inquiry about a commercial activity license",
   "agentNumber":  "Agent Number",
-  "query": "Search",
-  "agentNumberError":"Please Enter Agent Number",
-  "commercial_license_error":"Please Enter License No",
-  "license_nubmer": "License NUmber"
-
-
-
-
-
-
+  "query": "Inquiry",
+  "agentNumberError":"Please enter agent number",
+  "commercial_license_error":"Please enter license number",
+  "license_nubmer": "License Number",
+  "employee_type": "Work Type",
+  "license_shop_name_ar": "Arabic Shop Name",
+  "license_shop_name_en": "English Shop Name",
+  "activity_info": "Activity Information",
+  "additional_activity_info": "Addition Activity Information",
+  "isicNumber": "IsicNumber",
+  "isicName":"IsicName",
+  "extra_isicNumber": "Additional IsicNumber",
+  "extra_isicName": "Additional IsicName",
+  "open_at": " Open. ",
+  "close_at": " Close. ",
+  "opentomrrow": "Open tomorrow. "
 }
