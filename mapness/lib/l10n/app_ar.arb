@@ -167,6 +167,8 @@
   "nav_landing": "الخدمات",
   "nav_profile": "الحساب",
   "nav_route": "التنقل",
+  "naviRoutesLocationDisabled": "Location services are disabled, please enable them to create route",
+  "naviRoutesLocationLoading": "Loading...",
   "next": "التالي",
   "noThanks": "لا، شكرًا",
   "north": "شمال",
