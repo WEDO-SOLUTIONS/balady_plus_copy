@@ -36,8 +36,13 @@ class CommercialLicenseDataModel extends CommercialLicenseData {
     workerType = json['workerType'];
     shopNameAr = json['shopNameAr'];
     shopNameEn = json['shopNameEn'];
-    city = InfoModel.fromJson(json['city']);
-    district = InfoModel.fromJson(json['district']);
+    if(json['city'] != null)
+      {
+        city = InfoModel.fromJson(json['city']);
+      }
+    if(json['district'] != null) {
+      district = InfoModel.fromJson(json['district']);
+    }
     x = json['x'];
     y = json['y'];
     mainActivity = ActivityModel.fromJson(json['mainActivity']);

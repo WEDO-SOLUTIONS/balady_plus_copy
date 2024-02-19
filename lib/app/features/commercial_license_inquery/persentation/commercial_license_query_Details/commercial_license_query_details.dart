@@ -177,11 +177,12 @@ String? commercialLicenseNumber;
                       value: commercialLicenceQueryDetails.city?.name?? '',
                       bgColor: AppColor.mystic,
                     ),
+                    commercialLicenceQueryDetails.district != null ?
                     CardParameter(
                       title: 'district'.tr(),
                       value: commercialLicenceQueryDetails.district?.name ?? '',
                       bgColor: AppColor.mystic,
-                    ),
+                    ):Container(),
                     const SizedBox(height: 16),
                     commercialLicenceQueryDetails.x !=
                         null &&
@@ -373,7 +374,12 @@ String? commercialLicenseNumber;
                     subtitle: commercialLicenceQueryDetails.website,
                     onPress: () async{
                       try {
-                        await launch(commercialLicenceQueryDetails.website!);
+                        String url = commercialLicenceQueryDetails.website!;
+                        if(url.contains("https")==false)
+                          {
+                            url = "https://$url";
+                          }
+                        await launchUrl(Uri.parse(url));
                       } catch (ex) {
 
                       }

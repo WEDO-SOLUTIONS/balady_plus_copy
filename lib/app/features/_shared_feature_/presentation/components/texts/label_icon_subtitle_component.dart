@@ -65,7 +65,9 @@ class LabelIconSubtitleComponent extends StatelessWidget {
                     if (subtitle != null)
                       GestureDetector(
                         onTap: () {
-                          if (onPress != null) onPress!();
+                          if (onPress != null) {
+                            onPress!();
+                          }
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(top: 5.0),
