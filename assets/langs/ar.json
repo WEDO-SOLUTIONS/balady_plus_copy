@@ -3910,7 +3910,55 @@
   "objection_qnuiry_send": "إرسال الرد",
   "objection_enquiry_warning": "عفوا تم إنتهاء مهلة الرد",
 "calendar_type_appmt":"موعد",
-"calendar_type_invoice":"فاتورة غير مدفوعة"
+"calendar_type_invoice":"فاتورة غير مدفوعة",
+
+
+
+  "backgournd_location_consent":"يستخدم تطبيق بلدي خدمة تحديد المواقع في خلفية التطبيق، ويساعدنا ذلك في تحديد موقعك لاستخدامه في خدمات المدن الذكية، بما في ذلك خدمة تنبيهات الطقس التي تقدم معلومات هامة بحسب موقعك الجغرافي.\n\n هل ترغب في تفعيل هذه الخدمة؟",
+  "backgournd_location_consent_agree":"موافق" ,
+  "backgournd_location_consent_non_agree":"غير موافق",
+
+  "Damaged":"تالفة",
+  "BRoken":"آلية معطلة",
+  "Abandoned":"مهملة",
+
+  "Morning_Remembrances" :"اذكار الصباح",
+  "BedtimeـRemembrances":"اذكار النوم",
+  "EveningـRemembrances":"اذكار المساء",
+  "Post-PrayerـRemembrances":"اذكار بعد الصلاة",
+  "Praises":"التسابيح",
+  "Remembrance_of_waking_up":"اذكار الاستيقاظ من النوم",
+  "Prayer_Remembrances":"اذكار الصلاة",
+  "Comprehensive_Supplications":"جوامع الدعاء",
+  "sar_text":"ر.س",
+  "Directional":"إرشادية",
+  "Advertising":"إعلانية",
+  "BuildingNature": "طبيعة الموقع",
+  "edit_owner_data":"تعديل بيانات المالك",
+  "reason_text":"سبب",
+  "attachment_text":"مرفق",
+  "National_ID":"هوية وطنية",
+  "Iqama_ID":"هوية مقيم",
+  "open_at": " . يفتح ",
+  "close_at": " . يغلق " ,
+  "opentomrrow": ". يفتح غداً",
+  "CommerciallicenseQuery": "الاستعلام عن رخصة تجارية",
+  "agentNumber": "الرقم الموحد للمنشآة",
+  "query": "استعلام",
+  "agentNumberError":"يرجي ادخال رقم السجل التجاري المالك للرخصة",
+  "commercial_license_error":"يرجي ادخال رقم رخصة تجارية",
+  "license_nubmer": "رقم الرخصة التجارية",
+  "employee_type": "نوع العمالة",
+  "license_shop_name_ar": "اسم المحل باللغة العربية",
+  "license_shop_name_en": "اسم المحل باللغة الإنجليزية",
+  "activity_info": "بيانات الأنشطة",
+  "additional_activity_info": "قائمة الأنشطة الإضافية للرخصة",
+  "isicNumber": "رمز النشاط الآيزيك الأساسي للرخصة",
+  "isicName": "اسم النشاط الآيزيك الأساسي للرخصة",
+  "extra_isicNumber": "رمز النشاط الآيزيك الإضافي",
+  "extra_isicName": "اسم النشاط الآيزيك الإضافي",
+  "cannot_open_google": "الرجاء التاكد من وجود تطبيق جوجل ماب",
+  "close_status": "مغلق"
 
 
 }
