@@ -863,7 +863,15 @@ class CommonFunctions {
       if (fromTime.period == DayPeriod.pm) return "$hoursFromAS12:$minuteStr م";
 
       if (fromTime.period == DayPeriod.am) {
-        return "$hoursFromAS12:$minuteStr ص";
+
+
+        if(isAppAR == false) {
+          return "$hoursFromAS12:$minuteStr ص".replaceAll("ص", ("am").tr()).replaceAll("م", ("pm").tr());
+        }
+        else
+          {
+            return "$hoursFromAS12:$minuteStr ص";
+          }
       }
     }
     return "";
@@ -911,6 +919,10 @@ class CommonFunctions {
       } else if (fromTime.period == DayPeriod.pm &&
           toTime.period == DayPeriod.pm) {
         time = "$hoursFromAS12:$minuteFromStr - $hoursToAS12:$minuteToStr م";
+
+        if (isAppAR == false) {
+          time = time.replaceAll("ص", ("am").tr()).replaceAll("م", ("pm").tr());
+        }
         return time;
       } else {
         String from = "";
@@ -926,6 +938,14 @@ class CommonFunctions {
         if (toTime.period == DayPeriod.pm) to = "$hoursToAS12:$minuteToStr م";
 
         if (toTime.period == DayPeriod.am) to = "$hoursToAS12:$minuteToStr ص";
+
+
+        if (isAppAR == false) {
+          from = from.replaceAll("ص", ("am").tr()).replaceAll("م", ("pm").tr());
+          to = to.replaceAll("ص", ("am").tr()).replaceAll("م", ("pm").tr());
+        }
+
+
 
         return "$from - $to";
       }
