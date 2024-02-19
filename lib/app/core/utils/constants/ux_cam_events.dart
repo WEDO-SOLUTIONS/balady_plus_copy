@@ -804,4 +804,15 @@ class UXCamEvents {
       "DashBoard_Click_Dashboard_Event";
   static String DashBoard_Click_Dashboard_Filter_Event =
       "DashBoard_Click_Dashboard_Filter_Event";
+
+
+
+
+
+  static String startCardServiceQueryLicenseService =
+      "Start_Card_Service_QueryLicenseService"; //Done
+  static String startServiceQueryLicenseService =
+      "Start_Service_QueryLicenseService"; //Done
+  static String finishServiceQueryLicenseService =
+      "Finish_Service_QueryLicenseService"; //Done
 }
