@@ -4276,5 +4276,6 @@
   "open_at": " Open. ",
   "close_at": " Close. ",
   "opentomrrow": "Open tomorrow. ",
-  "cannot_open_google": "Can't open google map"
+  "cannot_open_google": "Can't open google map",
+  "close_status": "Closed"
 }

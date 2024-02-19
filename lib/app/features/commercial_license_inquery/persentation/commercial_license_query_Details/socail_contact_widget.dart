@@ -27,46 +27,48 @@ class SocailContactWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    if ((twitterContact != null &&twitterContact!.isNotEmpty) ||
-        (snapchatContact != null && snapchatContact!.isNotEmpty) ||
-        (instegramContact != null &&instegramContact!.isNotEmpty) ||
-        (instegramContact != null && instegramContact!.isNotEmpty) ||
-        (facebookContact != null && facebookContact!.isNotEmpty)) {
+    if ((twitterContact != null &&twitterContact!.isNotEmpty && twitterContact!.contains("twitter")) ||
+        (snapchatContact != null && snapchatContact!.isNotEmpty&& snapchatContact!.contains("snapchat")) ||
+        (instegramContact != null &&instegramContact!.isNotEmpty&&  instegramContact!.contains("instagram")) ||
+        (whatsappContact != null && whatsappContact!.isNotEmpty) ||
+        (facebookContact != null && facebookContact!.isNotEmpty&&facebookContact!.contains("facebook"))) {
       return LabelIconSubtitleComponent(
           text: ("qr_social").tr(),
           icon: IconPath.share,
           padding: const EdgeInsetsDirectional.only(start: 20,top: 10,bottom: 10),
           subWidget: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              if (twitterContact != null && twitterContact!.isNotEmpty)
+              if (twitterContact != null && twitterContact!.isNotEmpty && twitterContact!.contains("twitter"))
                 CustomIconButtonWidget(
                   icon: IconPath.qrTwitterIcon, //MM
                   iconSize: 35,
-                  onPressed: () async{
 
-                    await launch(this.twitterContact!);
+                  onPressed: () {
+                    String url = twitterContact!;
+                     launch(url);
                   },
                   btnHeight: 42,
                   btnWidth: 42,
                 ),
-              if (snapchatContact != null && snapchatContact!.isNotEmpty)
+              if (snapchatContact != null && snapchatContact!.isNotEmpty && snapchatContact!.contains("snapchat") )
                 CustomIconButtonWidget(
                   iconSize: 35,
                   icon: IconPath.qrSnapChatIcon,
-                  onPressed: () async {
+                  onPressed: ()  {
 
-                    await launch(snapchatContact!);
+                     launch(snapchatContact!);
                   },
                   btnHeight: 42,
                   btnWidth: 42,
                 ),
-              if ( instegramContact != null&& instegramContact!.isNotEmpty)
+              if ( instegramContact != null&& instegramContact!.isNotEmpty &&  instegramContact!.contains("instagram"))
                 CustomIconButtonWidget(
                   icon: IconPath.qrInstagramIcon,
                   iconSize: 35,
-                  onPressed: () async{
-                    await launch(instegramContact!);
+                  onPressed: () {
+                     launch(instegramContact!);
 
                   },
                   btnHeight: 42,
@@ -76,23 +78,23 @@ class SocailContactWidget extends StatelessWidget {
                 CustomIconButtonWidget(
                   icon: IconPath.qrWhatsupIcon,
                   iconSize: 35,
-                  onPressed: () async{
+                  onPressed: () {
                     String mobileNumber =whatsappContact!;
                     if (mobileNumber.isNotEmpty) {
                       mobileNumber = "http://wa.me/$mobileNumber";
-                      await launch(mobileNumber);
+                       launch(mobileNumber);
                     }
                   },
                   btnHeight: 42,
                   btnWidth: 42,
                 ),
-              if (facebookContact != null &&facebookContact!.isNotEmpty)
+              if (facebookContact != null &&facebookContact!.isNotEmpty &&facebookContact!.contains("facebook") )
                 CustomIconButtonWidget(
                   icon: IconPath.qrFaceBookIcon,
                   iconSize: 35,
-                  onPressed: () async{
+                  onPressed: () {
 
-                    await launch(facebookContact!);
+                     launch(facebookContact!);
                   },
                   btnHeight: 42,
                   btnWidth: 42,

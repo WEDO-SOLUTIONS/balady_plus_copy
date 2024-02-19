@@ -124,7 +124,7 @@ class _WorkingHourDetailsUpdateState extends State<WorkingHourDetailsUpdate> {
                                 .openShiftOption ==
                                 "OPEN_24HOUR";
                             if (closeDay) {
-                              closedOr24Hours = ("qr_facility_Closed").tr();
+                              closedOr24Hours = ("close_status").tr();
                             } else if (hours24) {
                               closedOr24Hours = ("qr_facility_opened_24").tr();
                             }
@@ -289,7 +289,7 @@ class _WorkingHourDetailsUpdateState extends State<WorkingHourDetailsUpdate> {
                       child: CustomTextWidget(
                         widget.openNow
                             ? ("lbl_open_now").tr()
-                            : ("closed").tr(),
+                            : ("close_status").tr(),
                         fontColor: widget.openNow
                             ? AppColor.greenishYellow800
                             : AppColor.red,
