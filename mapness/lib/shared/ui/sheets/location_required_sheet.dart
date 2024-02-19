@@ -12,11 +12,14 @@ part 'location_required_sheet.g.dart';
   path: '/request_location',
 )
 class LocationErrorSheet extends GoRouteData {
-  const LocationErrorSheet();
+  final String? routeOnClose;
+
+  const LocationErrorSheet({this.routeOnClose});
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
+  // ignore: prefer_expression_function_bodies
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     return TransculentPage(
       child: Stack(
@@ -30,6 +33,9 @@ class LocationErrorSheet extends GoRouteData {
             child: Align(
               alignment: Alignment.bottomCenter,
               child: ErrorSheetV2(
+                onClose: () => routeOnClose != null
+                    ? context.go(routeOnClose!)
+                    : context.pop(),
                 errorTitle: 'We lost you =(',
                 errorContent: 'It is necessary to enable '
                     'the GPS in the device settings',
