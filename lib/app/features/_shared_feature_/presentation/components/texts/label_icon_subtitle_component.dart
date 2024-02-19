@@ -13,25 +13,29 @@ class LabelIconSubtitleComponent extends StatelessWidget {
   final String? icon;
   final double? iconSize;
   final Function? onPress;
-  const LabelIconSubtitleComponent(
+  EdgeInsetsDirectional ? padding;
+
+   LabelIconSubtitleComponent(
       {required this.text,
       this.subtitle,
       this.subWidget,
       this.icon,
       this.onPress,
       this.iconSize,
+        this.padding,
       super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: padding ?? const EdgeInsets.all(10),
       decoration: BoxDecoration(
           boxShadow: [],
           borderRadius: BorderRadius.circular(16),
           color: AppColor.white),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -61,10 +65,12 @@ class LabelIconSubtitleComponent extends StatelessWidget {
                     if (subtitle != null)
                       GestureDetector(
                         onTap: () {
-                          if (onPress != null) onPress!();
+                          if (onPress != null) {
+                            onPress!();
+                          }
                         },
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
+                          padding: const EdgeInsets.only(top: 5.0),
                           child: CustomTextWidget(
                             subtitle ?? "",
                             fontWeight: AppFontWeight.bold,

@@ -420,9 +420,15 @@ class IconPath {
 
   static const chatBot = '${_pngIconPath}chat_bot$_png';
 
+
   static const baladyCalendar = '${_svgIconPath}balady_calendar$_svg';
   static const filterCalendar = '${_svgIconPath}filter_calendar$_svg';
   static const noEvents = '${_svgIconPath}no_events$_svg';
+
+  static const share = '${_svgIconPath}share$_svg';
+
+  static const direction = '${_pngIconPath}direction$_png';
+
 }
 
 ///Users/abdelrahmanismail/StudioProjects/balady-plus/assets/icons/svg/jod/apple_pay.svg
