@@ -176,8 +176,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
     
-    func setFollowStateState(_ state: FollowStateMessage, completion: @escaping (FlutterError?) -> Void) {
-        self.locationControlHandler?.setFollowState(state: state)
+    func toggleFollowState(completion: @escaping (FlutterError?) -> Void) {
+        self.locationControlHandler?.toggleFollowState()
         completion(nil)
     }
     

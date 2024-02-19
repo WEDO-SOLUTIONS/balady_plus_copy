@@ -123,8 +123,8 @@ class DgisMapView(
         result?.success(null)
     }
 
-    override fun setFollowState(state: FollowStateMessage, result: Messages.Result<Void>?) {
-        locationControlHandler?.setFollowState(state)
+    override fun toggleFollowState(result: Messages.Result<Void>?) {
+        locationControlHandler?.toggleFollowState()
 
         result?.success(null)
     }

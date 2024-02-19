@@ -343,6 +343,7 @@ class SearchHandler(
 
         val suggestQuery = suggestQueryBuilder.build()
 
+        suggestFuture?.close()
         suggestFuture = searchManager.suggest(suggestQuery).apply {
             onResult { response ->
                 this@SearchHandler.queries.clear()
