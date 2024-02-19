@@ -146,7 +146,7 @@ class _WorkingHourDetailsUpdateState extends State<WorkingHourDetailsUpdate> {
                                       child: Expanded(
                                           flex: 1,
                                           child: Padding(
-                                            padding: const EdgeInsets.only(right: 10.0),
+                                            padding: const EdgeInsets.only(right: 10.0,left: 10),
                                             child: CustomTextWidget(
                                               widget.workingHours.workingTimes?[index]
                                                   .dayName ??
@@ -167,7 +167,7 @@ class _WorkingHourDetailsUpdateState extends State<WorkingHourDetailsUpdate> {
                                       child: Expanded(
                                         flex: 1,
                                         child: Padding(
-                                          padding: const EdgeInsets.only(left: 10),
+                                          padding: const EdgeInsets.only(left: 10,right: 10),
                                           child: CustomTextWidget(
                                             closedOr24Hours.isNotEmpty
                                                 ? closedOr24Hours
@@ -195,7 +195,7 @@ class _WorkingHourDetailsUpdateState extends State<WorkingHourDetailsUpdate> {
                                       child: Expanded(
                                         flex: 1,
                                         child: Padding(
-                                          padding: const EdgeInsets.only(left: 10),
+                                          padding: const EdgeInsets.only(left: 10,right: 10),
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.end,
                                             mainAxisAlignment: MainAxisAlignment.center,
