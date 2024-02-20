@@ -1,6 +1,7 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
 class ClosureCard extends StatelessWidget {
@@ -21,7 +22,7 @@ class ClosureCard extends StatelessWidget {
         child: Container(
           margin: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: const Color(0xffF4F4F5),
+            color: context.color.surface_base_primary,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Container(
@@ -46,7 +47,7 @@ class ClosureCard extends StatelessWidget {
                                 .extension<ThemeTextStyles>()!
                                 .headingS
                                 .copyWith(
-                                  color: const Color(0xff1E2A36),
+                                  color: context.color.text_and_icons_base_primary,
                                 ),
                           ),
                           Text(
@@ -56,7 +57,7 @@ class ClosureCard extends StatelessWidget {
                                 .textS
                                 .copyWith(
                                   color:
-                                      const Color(0xff1E2A36).withOpacity(0.64),
+                                      context.color.text_and_icons_base_primary.withOpacity(0.64),
                                 ),
                           ),
                         ],
@@ -76,7 +77,7 @@ class ClosureCard extends StatelessWidget {
                           .extension<ThemeTextStyles>()!
                           .textXS
                           .copyWith(
-                            color: const Color(0xff1E2A36).withOpacity(0.64),
+                            color: context.color.text_and_icons_base_primary.withOpacity(0.64),
                           ),
                     ),
                   ),

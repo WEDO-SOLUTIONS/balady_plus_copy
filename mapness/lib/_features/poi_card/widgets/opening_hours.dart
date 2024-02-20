@@ -44,7 +44,7 @@ class _OpeningHoursState extends State<OpeningHours> {
       final textStyle = Theme.of(context)
           .extension<ThemeTextStyles>()!
           .textM
-          .copyWith(color: colorPrimary);
+          .copyWith(color: context.color.text_and_icons_base_primary);
       return Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -84,7 +84,7 @@ class _OpeningHoursState extends State<OpeningHours> {
     var fontStyle = Theme.of(context)
         .extension<ThemeTextStyles>()!
         .textM
-        .copyWith(color: colorPrimary);
+        .copyWith(color: context.color.text_and_icons_base_primary);
     var widgets = convertWeekTimeInterval(context, openingHours);
 
     return is24x7 || isOpenSameTime
@@ -116,7 +116,7 @@ class _OpeningHoursState extends State<OpeningHours> {
     final style = Theme.of(context)
         .extension<ThemeTextStyles>()!
         .textM
-        .copyWith(color: colorPrimary);
+        .copyWith(color: context.color.text_and_icons_base_primary);
 
     final openHours = widget.model?.openingHours?.first;
 

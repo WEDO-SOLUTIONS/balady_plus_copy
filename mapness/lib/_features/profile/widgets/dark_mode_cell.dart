@@ -25,7 +25,7 @@ class DarkModeCell extends ConsumerWidget {
         ),
         child: Material(
           borderRadius: BorderRadius.circular(8),
-          color: const Color(0xFFF5F7FA),
+          color: context.color.surface_base_secondary,
           child: InkWell(
             onTap: () {
               ref.read(darkModeProvider.notifier).toggle();
@@ -42,6 +42,7 @@ class DarkModeCell extends ConsumerWidget {
                       height: 24,
                       width: 24,
                       package: PackageConfig.packageName,
+                      color: context.color.text_and_icons_status_accent,
                     ),
                     const SizedBox(
                       width: 12,
@@ -53,12 +54,13 @@ class DarkModeCell extends ConsumerWidget {
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
                             .textM
-                            .copyWith(color: const Color(0xFF1E2A36)),
+                            .copyWith(color: context.color.text_and_icons_base_primary),
                       ),
                     ),
                     const Spacer(),
                     IgnorePointer(
                       child: CupertinoSwitch(
+                        activeColor: context.color.text_and_icons_status_accent,
                         onChanged: (bool value) {},
                         value: darkMode,
                       ),

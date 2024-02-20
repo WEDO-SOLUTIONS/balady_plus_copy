@@ -40,7 +40,7 @@ class HelpCenterPage extends ConsumerWidget {
                         width: 40,
                         child: Material(
                           borderRadius: BorderRadius.circular(8),
-                          color: const Color(0xFFF5F7FA),
+                          color: context.color.surface_base_secondary,
                           child: InkWell(
                             onTap: () {
                               context.pop();
@@ -55,8 +55,8 @@ class HelpCenterPage extends ConsumerWidget {
                                 height: 24,
                                 width: 24,
                                 package: PackageConfig.packageName,
-                                colorFilter: const ColorFilter.mode(
-                                  Color(0xFF1E2A36),
+                                colorFilter:  ColorFilter.mode(
+                                  context.color.text_and_icons_base_primary,
                                   BlendMode.srcIn,
                                 ),
                               ),
@@ -70,7 +70,7 @@ class HelpCenterPage extends ConsumerWidget {
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
                             .accentM
-                            .copyWith(color: const Color(0xFF1E2A36)),
+                            .copyWith(color: context.color.text_and_icons_base_primary),
                       ),
                       const Spacer(),
                       const SizedBox(
@@ -89,7 +89,7 @@ class HelpCenterPage extends ConsumerWidget {
                   height: 52,
                   child: Material(
                     borderRadius: BorderRadius.circular(12),
-                    color: const Color(0xFFF5F7FA),
+                    color: context.color.surface_base_secondary,
                     child: InkWell(
                       onTap: () {
                         const MomraWebsitePageRoute().push(context);
@@ -107,8 +107,8 @@ class HelpCenterPage extends ConsumerWidget {
                               height: 24,
                               width: 24,
                               package: PackageConfig.packageName,
-                              colorFilter: const ColorFilter.mode(
-                                Color(0xFF1E928F),
+                              colorFilter:  ColorFilter.mode(
+                                context.color.text_and_icons_status_accent,
                                 BlendMode.srcIn,
                               ),
                             ),
@@ -120,7 +120,7 @@ class HelpCenterPage extends ConsumerWidget {
                               style: Theme.of(context)
                                   .extension<ThemeTextStyles>()!
                                   .textM
-                                  .copyWith(color: const Color(0xFF1E2A36)),
+                                  .copyWith(color: context.color.text_and_icons_base_primary),
                             ),
                             const Spacer(),
                             SvgPicture.asset(
@@ -130,8 +130,8 @@ class HelpCenterPage extends ConsumerWidget {
                               height: 24,
                               width: 24,
                               package: PackageConfig.packageName,
-                              colorFilter: const ColorFilter.mode(
-                                Color(0xFF1E2A36),
+                              colorFilter:  ColorFilter.mode(
+                                context.color.text_and_icons_base_primary,
                                 BlendMode.srcIn,
                               ),
                             ),
@@ -171,7 +171,7 @@ class HelpCenterPage extends ConsumerWidget {
               //               .textXS
               //               .copyWith(
               //                   color:
-              //                       const Color(0xFF1E2A36).withOpacity(0.36)),
+              //                       context.color.text_and_icons_base_primary.withOpacity(0.36)),
               //         ),
               //       ),
               //     ],

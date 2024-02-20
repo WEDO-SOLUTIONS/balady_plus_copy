@@ -31,7 +31,7 @@ class DashboardProfile extends ConsumerWidget {
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
                     .accentL
-                    .apply(color: const Color(0xff4CA5B4)),
+                    .apply(color: context.color.stroke_accent),
                 textAlign: TextAlign.end,
               ),
           data: (userInfo) {
@@ -52,7 +52,7 @@ class DashboardProfile extends ConsumerWidget {
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()!
                   .accentL
-                  .apply(color: const Color(0xff4CA5B4)),
+                  .apply(color: context.color.stroke_accent),
               textAlign: TextAlign.end,
             );
           }),

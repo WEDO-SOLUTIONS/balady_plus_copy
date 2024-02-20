@@ -91,7 +91,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
               ),
               const SizedBox(height: 16),
               Material(
-                color: const Color(0xffE8E9EA),
+                color: context.color.surface_base_primary,
                 borderRadius: BorderRadius.circular(8),
                 child: InkWell(
                   onTap: () =>
@@ -107,7 +107,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .textM
-                          .copyWith(color: const Color(0xFF1D2A36)),
+                          .copyWith(color: context.color.text_and_icons_base_primary),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),

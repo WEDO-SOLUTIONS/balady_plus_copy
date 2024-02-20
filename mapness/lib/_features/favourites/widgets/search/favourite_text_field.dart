@@ -87,8 +87,8 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
                 'assets/icons/svg/ic_dashboard_search.svg',
                 semanticsLabel: 'MinApps Screen',
                 package: 'mapness',
-                colorFilter: const ColorFilter.mode(
-                  Color(0xFF4CA5B4),
+                colorFilter: ColorFilter.mode(
+                  context.color.stroke_accent,
                   BlendMode.srcIn,
                 ),
               ),

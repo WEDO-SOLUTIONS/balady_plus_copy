@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
 import 'package:mapness/app/routes/search.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/search/ui/search_field.dart';
 
 class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
@@ -56,8 +57,8 @@ class DashboardHeader extends ConsumerWidget {
             child: Container(
               height: 4,
               width: 26,
-              decoration: const BoxDecoration(
-                color: Color(0xFFDDE4EE),
+              decoration: BoxDecoration(
+                color: context.color.surface_base_primary,
                 borderRadius: BorderRadius.all(Radius.circular(24)),
               ),
             ),
