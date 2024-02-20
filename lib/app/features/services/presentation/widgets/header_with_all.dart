@@ -10,8 +10,15 @@ class HeaderWithAll extends StatelessWidget {
   final String text;
   final Function onPressAll;
   final EdgeInsets? margin;
+  final Color? showAllColor;
+  final Color? titleColor;
   const HeaderWithAll(
-      {super.key, required this.onPressAll, required this.text, this.margin});
+      {super.key,
+      required this.onPressAll,
+      required this.text,
+      this.margin,
+      this.showAllColor,
+      this.titleColor});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +31,7 @@ class HeaderWithAll extends StatelessWidget {
             text,
             fontSize: 16,
             fontWeight: AppFontWeight.bold,
-            fontColor: const Color(0xff1E2A36),
+            fontColor: titleColor ?? const Color(0xff1E2A36),
           ),
           InkWell(
             onTap: () => onPressAll(),
@@ -36,7 +43,7 @@ class HeaderWithAll extends StatelessWidget {
                   "show_all".tr(),
                   fontSize: 14,
                   fontWeight: AppFontWeight.regular,
-                  fontColor: const Color(0xff1E2A36),
+                  fontColor: showAllColor ?? const Color(0xff1E2A36),
                 ),
                 const SizedBox(
                   width: 4,
@@ -44,7 +51,7 @@ class HeaderWithAll extends StatelessWidget {
                 DrawIconBasedTypeWidget(
                   icon: Icons.arrow_forward_ios,
                   iconSize: 16,
-                  iconColor: const Color(0xff1E2A36),
+                  iconColor: showAllColor ?? const Color(0xff1E2A36),
                 ),
               ],
             ),

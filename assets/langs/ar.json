@@ -3976,6 +3976,19 @@
 "National_ID":"هوية وطنية", 
 "Iqama_ID":"هوية مقيم", 
 
+"Lease_Contract":"عقد ايجار", 
+"Investment_Contract":"عقد استثمار", 
+"Ownership_Contract":"عقد تملك", 
+
+"Attach_Lease_Contract":"عقد ايجار مرفق", 
+"Electronic_Lease_Contract":"عقد ايجار الكتروني", 
+"Attach_Investment_Contract":"عقد استثمار مرفق", 
+"Electronic_Investment_Contract":"عقد استثمار الكتروني",
+"Attach_Ownership_Contract":"عقد تملك مرفق", 
+"Electronic_Ownership_Contract":"عقد تملك الكتروني", 
+
+
+"Building_Compliance_Certificate_Issuance" : "إصدار شهادة امتثال المباني",  
 "objection_enquiry_requests":"طلبات الإفادة", 
 "objection_enquiry_item":"افادة", 
 "objection_enquiry_item_number":"رقم الإفادة", 

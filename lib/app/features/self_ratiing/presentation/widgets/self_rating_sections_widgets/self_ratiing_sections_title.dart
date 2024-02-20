@@ -21,6 +21,7 @@ class SelfRatingSectionsTitle extends StatelessWidget {
         ),
         CustomTextWidget(
           'review_title_subtitle'.tr(),
+          maxLines: 4,
           textStyle: AppStyle.selfRatingSubtitleStyle,
         )
       ],

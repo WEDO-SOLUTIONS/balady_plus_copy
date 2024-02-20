@@ -55,62 +55,59 @@ class _ComplianceOtpScreen extends State<ComplianceOtpScreen> {
           }
         },
         builder: (context, state) {
-          return Directionality(
-            textDirection: (TextDirection.rtl),
-            child: Scaffold(
-              body: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    CustomVerticalSpace(
-                        height: MediaQuery.of(context).padding.top),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: DialogHeader(title: "lbl_verify_code".tr()),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Image.asset(
-                              IconPath.otpLogo,
-                              height: 100,
-                              width: 91,
-                            ),
-                            const CustomVerticalSpace(height: 25),
-                            CustomTextWidget(("lbl_verify_code").tr(),
-                                fontColor: AppColor.black, fontSize: 22),
-                            const CustomVerticalSpace(height: 15),
-                            CustomTextWidget(
-                              ("lbl_mobile_otp_hint").tr() +
-                                  " " +
-                                  (context
-                                          .read<ComplianceOTPBloc>()
-                                          .createBloc
-                                          .state
-                                          .contactMobileNumber ??
-                                      ""),
-                              fontColor: AppColor.black500,
-                              fontWeight: AppFontWeight.medium,
-                              height: 2,
-                              maxLines: 3,
-                            ),
-                            const CustomVerticalSpace(height: 20),
-                            CustomTextWidget(
-                              ("lbl_enter_verify_code").tr(),
-                              fontColor: AppColor.baladyDarkGreen2,
-                              fontSize: 13,
-                            ),
-                            OTPCode(),
-                            const CustomVerticalSpace(height: 20),
-                            CounterWidget()
-                          ],
-                        ),
+          return Scaffold(
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  CustomVerticalSpace(
+                      height: MediaQuery.of(context).padding.top),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: DialogHeader(title: "lbl_verify_code".tr()),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Image.asset(
+                            IconPath.otpLogo,
+                            height: 100,
+                            width: 91,
+                          ),
+                          const CustomVerticalSpace(height: 25),
+                          CustomTextWidget(("lbl_verify_code").tr(),
+                              fontColor: AppColor.black, fontSize: 22),
+                          const CustomVerticalSpace(height: 15),
+                          CustomTextWidget(
+                            ("lbl_mobile_otp_hint").tr() +
+                                " " +
+                                (context
+                                        .read<ComplianceOTPBloc>()
+                                        .createBloc
+                                        .state
+                                        .contactMobileNumber ??
+                                    ""),
+                            fontColor: AppColor.black500,
+                            fontWeight: AppFontWeight.medium,
+                            height: 2,
+                            maxLines: 3,
+                          ),
+                          const CustomVerticalSpace(height: 20),
+                          CustomTextWidget(
+                            ("lbl_enter_verify_code").tr(),
+                            fontColor: AppColor.baladyDarkGreen2,
+                            fontSize: 13,
+                          ),
+                          OTPCode(),
+                          const CustomVerticalSpace(height: 20),
+                          CounterWidget()
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           );
