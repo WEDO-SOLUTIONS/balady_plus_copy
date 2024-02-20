@@ -16,13 +16,14 @@ import 'package:balady_plus/etmam_app/features/etmam_entry_point/etmam_entry_poi
         UpdateDeviceToken,
         GetForceVersion;
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
-    show showUpdateAppPopUpWidget;
+    show CityItem, showUpdateAppPopUpWidget;
 import 'package:balady_plus/etmam_app/features/etmam_entry_point/domain/entities/create_profile_params.dart';
 import 'package:balady_plus/etmam_app/features/etmam_entry_point/domain/entities/profile.dart';
 import 'package:balady_plus/etmam_app/features/etmam_entry_point/domain/entities/update_profile_params.dart';
 import 'package:balady_plus/etmam_app/features/etmam_entry_point/domain/use_cases/create_profile.dart';
 
 import '../../../../../app/core/dependency_injection/injection_container.dart';
+import '../../../on_boarding_cities/presentation/blocs/city_bloc.dart';
 
 part 'etmam_entry_point_state.dart';
 
@@ -116,6 +117,9 @@ class EtmamEntryPointCubit extends Cubit<EtmamEntryPointState> {
             ));
           }
           _updateDeviceToken(NoParams());
+          sl<CityBloc>().updateCurrentCity(CityItem(
+              id: success.data!.result!.cityId,
+              name: success.data!.result!.cityName));
         });
       });
     }, (success) async {
@@ -134,6 +138,14 @@ class EtmamEntryPointCubit extends Cubit<EtmamEntryPointState> {
           name: success.data?.result?.type?.name ?? "Main Profile"));
 
       _updateDeviceToken(NoParams());
+      if (success.data!.result!.cityId != null &&
+          success.data!.result!.cityId!.isNotEmpty) {
+        if (CommonProperties.cityItem == null ||
+            success.data!.result!.cityId! == CommonProperties.cityItem?.id)
+          sl<CityBloc>().updateCurrentCity(CityItem(
+              id: success.data!.result!.cityId,
+              name: success.data!.result!.cityName));
+      }
     });
   }
 
@@ -145,6 +157,17 @@ class EtmamEntryPointCubit extends Cubit<EtmamEntryPointState> {
     emit(state.copyWith(
       blocStatus: BlocStatus.success,
     ));
+  }
+
+  Future<void> updateCity(CityItem city) async {
+    final failOrSuccess = await _updateProfile(UpdateProfileParams(
+        cityId: city.id!,
+        langId: state.profile?.langId ?? "ar",
+        name: state.profile?.type?.name ?? "Main Profile"));
+
+    failOrSuccess.fold((l) {}, (r) {
+      sl<CityBloc>().updateCurrentCity(city);
+    });
   }
 
   Future<void> refreshProfile() async {

@@ -392,7 +392,7 @@ class ViolationClauses extends StatelessWidget {
                                                   .nonComplianceSubClauses![i]
                                                   .attachments!
                                                   .length,
-                                              itemBuilder: (ctx, i) {
+                                              itemBuilder: (ctx, j) {
                                                 return ObjectionAttachmentItem(
                                                     file: ReasonAttachment(
                                                         contentLocation: state
@@ -401,8 +401,7 @@ class ViolationClauses extends StatelessWidget {
                                                                     index]
                                                                 .nonComplianceSubClauses![
                                                                     i]
-                                                                .attachments![
-                                                                    index]
+                                                                .attachments![j]
                                                                 .contentLocation ??
                                                             "",
                                                         fileName: state
@@ -411,8 +410,7 @@ class ViolationClauses extends StatelessWidget {
                                                                     index]
                                                                 .nonComplianceSubClauses![
                                                                     i]
-                                                                .attachments![
-                                                                    index]
+                                                                .attachments![j]
                                                                 .fileName ??
                                                             ""));
                                               },

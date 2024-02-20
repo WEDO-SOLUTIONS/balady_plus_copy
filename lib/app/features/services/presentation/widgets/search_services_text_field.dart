@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/utils/utils_exports.dart' show AppColor, IconPath;
+import '../../../../core/utils/utils_exports.dart'
+    show AppColor, CommonFunctions, IconPath;
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show CustomTextFieldWidget, DrawIconBasedTypeWidget;
 import '../../services_exports.dart' show ServicesCubit, ServicesState;
@@ -43,6 +44,9 @@ class _SearchServicesTextFieldState extends State<SearchServicesTextField> {
 
   @override
   Widget build(BuildContext context) {
+    Color? textColor =
+        /*CommonFunctions.isFoundationDay() ? Color(0xff6B4E45) :*/ null;
+
     return BlocBuilder<ServicesCubit, ServicesState>(
       builder: (context, state) {
         return Container(
@@ -53,14 +57,18 @@ class _SearchServicesTextFieldState extends State<SearchServicesTextField> {
             hintText: 'search'.tr(),
             textFieldVerticalPadding: 16,
             fillColor: Color(0xffF5F7FA),
-            prefixIcon: const DrawIconBasedTypeWidget(
+            prefixIcon: DrawIconBasedTypeWidget(
               icon: Icons.search,
               iconSize: 24,
-              iconColor: Color(0x5C1E2A36),
+              iconColor: textColor ?? Color(0x5C1E2A36),
             ),
             borderRadius: 8,
+            hintStyle: TextStyle(
+                color: textColor ?? Color(0x5C1E2A36),
+                fontSize: 14,
+                fontWeight: FontWeight.w400),
             textFieldStyle: TextStyle(
-                color: Color(0x5C1E2A36),
+                color: textColor ?? Color(0x5C1E2A36),
                 fontSize: 14,
                 fontWeight: FontWeight.w400),
             borderColor: Colors.transparent,

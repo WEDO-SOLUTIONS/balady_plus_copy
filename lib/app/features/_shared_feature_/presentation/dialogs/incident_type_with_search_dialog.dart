@@ -16,6 +16,7 @@ class IncidentTypeWithSearchDialog extends StatefulWidget {
   DropDownItem? selectedItem;
   String? title;
   String? searchHint;
+  final bool? isButtonDisabled;
 
   IncidentTypeWithSearchDialog(
       {Key? key,
@@ -23,7 +24,8 @@ class IncidentTypeWithSearchDialog extends StatefulWidget {
       this.selectedItem,
       required this.items,
       this.title,
-      this.searchHint})
+      this.searchHint,
+      this.isButtonDisabled})
       : super(key: key);
 
   @override
@@ -48,6 +50,9 @@ class _IncidentTypeWithSearchDialog
     items.clear();
     items.addAll(widget.items);
     scrollToPrevoiusSelected();
+    if (widget.isButtonDisabled != null) {
+      isButtonDisabled = widget.isButtonDisabled!;
+    }
   }
 
   @override
