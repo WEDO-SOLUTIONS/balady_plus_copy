@@ -1,4 +1,13 @@
-## 3.9.0(1) - Current
+## 3.9.0(4) - Current
+- BALADY-1377 [Profile] change Help Center Contact Info Email
+- BALADY-1318 [Marketing][Navi] wrong ETA label direction
+- BALADY-1379 [Navi] add function to create route to the point B for 42
+- BALADY-1324 [Marketing] should show a descriptive message when location permission is off and user try to navigate
+
+## 3.9.0(3)
+- BALADY-1357 [Quick Filters] quick filters in opened dashboard do not work
+
+## 3.9.0(1)
 
 - BALADY-1325 [Marketing] no action happen when click on show more in feedback for a location
 - BALADY-1294 [Marketing] wrong switching between layers behavior

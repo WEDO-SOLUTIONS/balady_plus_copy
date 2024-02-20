@@ -1055,7 +1055,7 @@ abstract class MapApi {
   void zoomUp(ZoomControlMessage type);
 
   @async
-  void setFollowState(FollowStateMessage state);
+  void toggleFollowState();
 
   @async
   void followNavigation();

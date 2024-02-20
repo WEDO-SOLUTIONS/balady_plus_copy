@@ -423,7 +423,7 @@ class MapViewModel extends BaseViewModel {
       if (permission.isGranted) {
         await controller.onLocationPremissionGranted();
 
-        await controller.setFollowState(FollowStateMessage.followDirection);
+        await controller.toggleFollowState();
 
         await controller.setCameraPosition(
           CameraPositionMessage(
@@ -439,7 +439,7 @@ class MapViewModel extends BaseViewModel {
           ),
         );
       } else {
-        await controller.setFollowState(FollowStateMessage.followDirection);
+        await controller.toggleFollowState();
         await controller.setCameraPosition(
           CameraPositionMessage(
             point: CommonProperties.userLocation != null
@@ -456,7 +456,7 @@ class MapViewModel extends BaseViewModel {
       }
     } catch (ex) {
       await controller.onLocationPremissionGranted();
-      await controller.setFollowState(FollowStateMessage.followDirection);
+      await controller.toggleFollowState();
       await controller.setCameraPosition(
         CameraPositionMessage(
           point: CommonProperties.userLocation != null
@@ -480,7 +480,7 @@ class MapViewModel extends BaseViewModel {
   }
 
   void onLocationTap() async {
-    await controller.setFollowState(FollowStateMessage.followDirection);
+    await controller.toggleFollowState();
   }
 
   void onChangeTheme() async {
@@ -1426,7 +1426,7 @@ class MapViewModel extends BaseViewModel {
         await controller.onLocationPremissionGranted();
       }
     } catch (ex) {}
-    await controller.setFollowState(FollowStateMessage.followDirection);
+    await controller.toggleFollowState();
 
     await controller.setCameraPosition(
       CameraPositionMessage(

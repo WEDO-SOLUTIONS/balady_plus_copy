@@ -143,8 +143,7 @@ class DgisMapController {
       _instance.overrideLocales(locales);
 
   /// Changes state of location follow. Observe state listening to [locationFollowEvents].
-  Future<void> setFollowState(FollowStateMessage state) =>
-      _instance.setFollowState(state);
+  Future<void> toggleFollowState() => _instance.toggleFollowState();
 
   /// Changes state of location follow in navigation mode.
   Future<void> followNavigation() => _instance.followNavigation();

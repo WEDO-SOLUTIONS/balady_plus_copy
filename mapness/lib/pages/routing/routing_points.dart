@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/app/routes/routing.dart';
@@ -80,7 +81,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
         {'objectId': event.dgisObjectId.objectId},
       );
       if (context.mounted) {
-        PoiMapRoute.open(context, event.dgisObjectId.objectId);
+        PoiMapRoute.open(ref.read(goRouterProvider), event.dgisObjectId.objectId);
       }
     } else if (event is RoadEventTapEvent) {
       EventsRoute.open(context, event);
