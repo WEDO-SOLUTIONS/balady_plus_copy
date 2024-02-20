@@ -49,6 +49,7 @@ class _ChangeCityDialogState extends State<ChangeCityDialog> {
   void initState() {
     super.initState();
     //CommonFunctions.sendEventToAnalytics(AppEvents.ChangeCity);
+    print("GGGG");
   }
 
   @override

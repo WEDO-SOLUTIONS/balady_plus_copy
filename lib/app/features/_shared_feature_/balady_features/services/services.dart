@@ -53,6 +53,34 @@ class BaladyServices {
     return investmentDetailsResponse;
   }
 
+  Future<InvestmentDetailsResponse?> getDirectRentalDetails(String id) async {
+    EasyLoading.show();
+
+    bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
+    InvestmentDetailsResponse? investmentDetailsResponse;
+    try {
+      final response = await webService.dio.get(
+        sl<EnvType>().domain + "v1/ims/direct-rental-opportunities" + "/$id",
+        options: Options(headers: {
+          'Authorization':
+              "Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}",
+        }),
+      );
+
+      investmentDetailsResponse =
+          InvestmentDetailsResponse.fromJson(response.data);
+    } catch (ex) {}
+
+    EasyLoading.dismiss();
+
+    if (investmentDetailsResponse != null) {
+      NavigationService.navigatorKey.currentState!.pushNamed(
+          RouteName.DirectRentalPage,
+          arguments: investmentDetailsResponse);
+    }
+    return investmentDetailsResponse;
+  }
+
   Future<RentalDetailsResponse?> getTempRentalDetails(
       String id, String type) async {
     EasyLoading.show();
