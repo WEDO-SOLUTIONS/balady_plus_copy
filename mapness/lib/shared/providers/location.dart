@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dgis_map/library.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mapness/app/router.dart';
@@ -18,9 +20,7 @@ class _Location extends _$Location {
         return;
       }
 
-      const locationSettings = LocationSettings(
-        accuracy: LocationAccuracy.best,
-      );
+      const locationSettings = LocationSettings();
 
       final locationSubscription = Geolocator.getPositionStream(
         locationSettings: locationSettings,
@@ -42,25 +42,28 @@ class _Location extends _$Location {
     return null;
   }
 
-  Future<bool> checkLocationPermission() async {
-    perm.ServiceStatus serviceStatus =
-        await perm.Permission.location.serviceStatus;
+  Future<bool> checkLocationPermission({String? routeOnClose}) async {
+    final serviceStatus = await perm.Permission.location.serviceStatus;
     final router = ref.read(goRouterProvider);
 
     if (serviceStatus != perm.ServiceStatus.disabled) {
-      var status = await perm.Permission.location.request();
+      final status = await perm.Permission.location.request();
 
       if (status == perm.PermissionStatus.permanentlyDenied) {
-        router.push(const LocationErrorSheet().location);
+        unawaited(
+          router.push(LocationErrorSheet(routeOnClose: routeOnClose).location),
+        );
         return false;
       } else if (status != perm.PermissionStatus.granted) {
-        perm.Permission.location.request();
+        unawaited(perm.Permission.location.request());
         return false;
       } else {
         return true;
       }
     } else {
-      router.push(const LocationErrorSheet().location);
+      unawaited(
+        router.push(LocationErrorSheet(routeOnClose: routeOnClose).location),
+      );
     }
 
     return false;
