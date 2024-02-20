@@ -121,7 +121,7 @@ class DgisController extends _$DgisController {
 
     await Future.delayed(
       const Duration(milliseconds: 100),
-      () => controller.setFollowState(FollowStateMessage.followDirection),
+      () => controller.toggleFollowState(),
     );
   }
 

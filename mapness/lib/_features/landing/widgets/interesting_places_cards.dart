@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/interesting_places.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
+import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -42,7 +43,7 @@ class InterestingPlacesCardsList extends ConsumerWidget {
                     },
                   );
 
-                  PoiMapRoute.open(context, objectId, zoom: 17);
+                  PoiMapRoute.open(ref.read(goRouterProvider), objectId, zoom: 17);
                 },
               );
             },
