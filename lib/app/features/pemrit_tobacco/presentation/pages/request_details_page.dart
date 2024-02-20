@@ -1,10 +1,8 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/posters/presentation/blocs/posters_license_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:collection/collection.dart';
 
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/ux_cam_events.dart';
@@ -29,31 +27,26 @@ class PermitsTobaccoReqeuestDetailsPage extends StatefulWidget {
   const PermitsTobaccoReqeuestDetailsPage({super.key});
 
   @override
-  State<PermitsTobaccoReqeuestDetailsPage> createState() => _PermitsTobaccoReqeuestDetailsPageState();
+  State<PermitsTobaccoReqeuestDetailsPage> createState() =>
+      _PermitsTobaccoReqeuestDetailsPageState();
 }
 
-class _PermitsTobaccoReqeuestDetailsPageState extends State<PermitsTobaccoReqeuestDetailsPage> {
-
-
-@override
+class _PermitsTobaccoReqeuestDetailsPageState
+    extends State<PermitsTobaccoReqeuestDetailsPage> {
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
-       CommonFunctions.sendUXCamEvent(
-        UXCamEvents.detailsServiceTobaccoPermit);
-
+    CommonFunctions.sendUXCamEvent(UXCamEvents.detailsServiceTobaccoPermit);
   }
-
-
 
   @override
   Widget build(BuildContext context) {
-    int? detailsRequestNumber =
-        ModalRoute.of(context)!.settings.arguments as int?;
+    Map data = ModalRoute.of(context)!.settings.arguments as Map;
     return BlocProvider(
-      create: (context) =>
-          PermitTobaccoLicenseBloc(requestId: detailsRequestNumber)
-            ..add(GetPermitRequestDetailsEvent()),
+      create: (context) => PermitTobaccoLicenseBloc(
+          requestId: int.tryParse(data['requestNumber']))
+        ..add(const GetPermitRequestDetailsEvent()),
       child: BlocListener<PermitTobaccoLicenseBloc, PermitTobaccoLicenseState>(
         listener: (context, state) {},
         child:
@@ -100,7 +93,8 @@ class _PermitsTobaccoReqeuestDetailsPageState extends State<PermitsTobaccoReqeue
                       [];
                   await BottomSheetDialog.showDraggableSheet(context,
                       isFullHeight: false,
-                      height: 250, //MM
+                      height: 250,
+                      //MM
                       //   dialogKeyName: DialogName.complianceRequestActionsDialog,
                       //  currentRouteName: RouteName.complianceDetailsPage,
                       child: BottomSheetWithActions(
