@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -36,7 +37,7 @@ class PinnedPlaceWidget extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: const Color(0xfff4383c),
+          color: NonThemeColor.color57,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -61,7 +62,7 @@ class PinnedPlaceWidget extends StatelessWidget {
       child: Ink(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: const Color(0xffEDF6F7),
+          color: context.color.surface_base_primary,
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
@@ -82,7 +83,7 @@ class PinnedPlaceWidget extends StatelessWidget {
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
                             .textL
-                            .copyWith(color: const Color(0xFF1D2A36)),
+                            .copyWith(color: context.color.text_and_icons_base_primary),
                       ),
                       Text(
                         address,
@@ -94,8 +95,8 @@ class PinnedPlaceWidget extends StatelessWidget {
                             .textS
                             .copyWith(
                                 color: isAdded
-                                    ? const Color(0xFF4CA5B4)
-                                    : const Color(0xF2285A5B)),
+                                    ? context.color.stroke_accent
+                                    : NonThemeColor.color34),
                       ),
                     ],
                   ),
@@ -106,15 +107,15 @@ class PinnedPlaceWidget extends StatelessWidget {
                 Container(
                   height: 38,
                   width: 38,
-                  decoration: const BoxDecoration(
-                    color: Color(0xffe5eef1),
+                  decoration:  BoxDecoration(
+                    color: context.color.surface_base_primary,
                     shape: BoxShape.circle,
                   ),
                   child: Center(
                     child: SvgPicture.asset(
                       iconAsset,
-                      colorFilter: const ColorFilter.mode(
-                        Color(0xff4CA5B4),
+                      colorFilter:  ColorFilter.mode(
+                        context.color.stroke_accent,
                         BlendMode.srcATop,
                       ),
                       package: PackageConfig.packageName,

@@ -96,7 +96,7 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
             ),
             const SizedBox(height: 8),
             LabeledElevatedButton(
-              textColor: colorPrimary,
+              textColor: context.color.text_and_icons_base_primary,
               backgroundColor: Colors.white,
               onPressed: () => Navigator.of(context).pop(),
               label: context.l10n.cancel,

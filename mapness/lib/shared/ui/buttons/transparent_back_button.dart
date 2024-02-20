@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class TransparentBackButton extends StatelessWidget {
   final VoidCallback onClose;
@@ -25,8 +26,8 @@ class TransparentBackButton extends StatelessWidget {
                   width: 24,
                   package: PackageConfig.packageName,
                   matchTextDirection: true,
-                  colorFilter: const ColorFilter.mode(
-                    Color(0xFFFFFFFF),
+                  colorFilter: ColorFilter.mode(
+                    context.color.surface_base_tertiary,
                     BlendMode.srcIn,
                   ),
                 ),

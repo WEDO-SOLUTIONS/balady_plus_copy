@@ -7,6 +7,7 @@ import 'package:mapness/_features/favourites/domain/extensions/extensions.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
 import 'package:mapness/_features/favourites/widgets/screen/search_screen.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/suggest.dart';
@@ -86,7 +87,7 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
                               .textS
-                              .copyWith(color: const Color(0xFF1E2A36)),
+                              .copyWith(color: context.color.text_and_icons_base_primary),
                         ),
                         Text(
                           item.makeAddress(),
@@ -95,7 +96,7 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
                               .textS
-                              .copyWith(color: const Color(0xFF1E2A36)),
+                              .copyWith(color: context.color.text_and_icons_base_primary),
                         ),
                         if (item.workStatus != null)
                           Text(
@@ -105,8 +106,8 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
                                 .textS
                                 .copyWith(
                                   color: item.workStatus!.isOpen
-                                      ? const Color(0xFF4CA5B4)
-                                      : const Color(0xFF1E2A36),
+                                      ? context.color.stroke_accent
+                                      : context.color.text_and_icons_base_primary,
                                 ),
                           ),
                       ],

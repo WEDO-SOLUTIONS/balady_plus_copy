@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/widgets/search/favourite_text_field.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/search/ui/search_history.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class SearchScreen extends ConsumerWidget {
   final VoidCallback onBackTap;
@@ -23,11 +24,11 @@ class SearchScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
-        backgroundColor: const Color(0xfff4f4f5),
+        backgroundColor: context.color.surface_base_primary,
         body: Column(
           children: [
             Container(
-              color: const Color(0xfff2f7f8),
+              color: context.color.surface_base_primary,
               padding: EdgeInsets.only(
                 left: 16,
                 right: 16,

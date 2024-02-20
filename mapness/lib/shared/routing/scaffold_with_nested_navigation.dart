@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_positional_boolean_parameters
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -77,8 +78,7 @@ class _ScaffoldWithNestedNavigationState
       );
 }
 
-const _selectedColor = Color(0xFF1E928F);
-final _unselectedColor = const Color(0xff1E2A36).withOpacity(0.36);
+const _unselectedColor = NonThemeColor.color66;
 
 class ScaffoldWithNavigationBar extends ConsumerWidget {
   const ScaffoldWithNavigationBar({
@@ -114,7 +114,7 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF000000).withOpacity(0.05),
+                    color: NonThemeColor.color14.withOpacity(0.05),
                     offset: const Offset(0, -2),
                     blurRadius: 8,
                   ),
@@ -123,15 +123,25 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
                   backgroundColor: Colors.white,
                   elevation: 0,
                   type: BottomNavigationBarType.fixed,
-                  selectedLabelStyle: const TextStyle(fontSize: 0, height: 0),
-                  unselectedLabelStyle: const TextStyle(fontSize: 0, height: 0),
+                  selectedLabelStyle: TextStyle(
+                    color: context.color.stroke_accent,
+                    fontSize: 0,
+                    height: 0,
+                  ),
+                  unselectedLabelStyle: TextStyle(
+                    color: context.color.text_and_icons_base_primary,
+                    fontSize: 0,
+                    height: 0,
+                  ),
                   items: [
                     BottomNavigationBarItem(
                       icon: _BottomNavigationBarItem(
                         selected: currentIndex == 0,
                         iconBuilder: (context, selected) => ProfileImageWidget(
                           dimension: 24,
-                          color: selected ? _selectedColor : _unselectedColor,
+                          color: selected
+                              ? context.color.stroke_accent
+                              : _unselectedColor,
                         ),
                         label: context.l10n.nav_profile,
                       ),
@@ -163,7 +173,7 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
                                         .textXS
                                         .copyWith(
                                           color: selected
-                                              ? _selectedColor
+                                              ? context.color.stroke_accent
                                               : _unselectedColor,
                                         ),
                                   ),
@@ -254,7 +264,7 @@ class _DefaultIcon extends StatelessWidget {
         width: 24,
         package: 'mapness',
         colorFilter: ColorFilter.mode(
-          selected ? _selectedColor : _unselectedColor,
+          selected ? context.color.stroke_accent : _unselectedColor,
           BlendMode.srcIn,
         ),
       );
@@ -273,7 +283,7 @@ class _DefaultLabel extends StatelessWidget {
   Widget build(BuildContext context) => Text(
         label,
         style: Theme.of(context).extension<ThemeTextStyles>()!.textXS.copyWith(
-              color: selected ? _selectedColor : _unselectedColor,
+              color: selected ? context.color.stroke_accent : _unselectedColor,
             ),
       );
 }

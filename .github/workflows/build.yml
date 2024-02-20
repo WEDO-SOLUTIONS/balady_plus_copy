@@ -139,6 +139,7 @@ jobs:
           #name: app-momrah-prod.apk
           #path: build/app/outputs/flutter-apk/app-momrah-prod.apk
 
+
   # notify:
   #   name: Notify
   #   runs-on: ubuntu-latest
@@ -153,3 +154,15 @@ jobs:
   #           Commit message: ${{ github.event.commits[0].message }}
   #           Repository: ${{ github.repository }}
   #           See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+
+#      - name: 🤖🔨 Build WidgetBook instance
+#        run: |
+#          cd balady_uikit/
+#          flutter pub get
+#          dart run build_runner clean
+#          dart run build_runner build --delete-conflicting-outputs
+#          cd ./example
+#          flutter build web
+#          rm -rf ../../docs
+#          mv build/web ../../docs
+#          ls -l ../../docs
