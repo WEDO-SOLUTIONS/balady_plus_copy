@@ -21,7 +21,7 @@ class EtmamMainPage extends StatelessWidget {
       value: sl<CityBloc>(),
       child: BlocBuilder<CityBloc, CityState>(
         builder: (context, state) {
-          return CommonProperties.cityId.isNotEmpty
+          return CommonProperties.cityItem != null
               ? EtmamHomePage(isMunicipalService: args?.$1 ?? true)
               : EtmamSelectCityPage();
         },

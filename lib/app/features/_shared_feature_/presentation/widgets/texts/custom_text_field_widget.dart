@@ -152,7 +152,10 @@ class CustomTextFieldWidget extends StatelessWidget {
                 labelStyle: labelStyle,
               ),
             ),
-            if (showOptional == true)
+            if (showOptional == true) ...[
+              const SizedBox(
+                width: 4,
+              ),
               Text(
                 ('optional').tr(),
                 style: const TextStyle(
@@ -160,7 +163,8 @@ class CustomTextFieldWidget extends StatelessWidget {
                     fontSize: 13.0,
                     fontFamily: GeneralKey.appFontType,
                     fontWeight: FontWeight.bold),
-              ),
+              )
+            ],
           ],
         ),
         // Field

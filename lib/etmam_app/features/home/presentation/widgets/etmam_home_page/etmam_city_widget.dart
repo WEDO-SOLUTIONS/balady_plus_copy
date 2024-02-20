@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/etmam_app/core/dependency_injection/dependency_injection_exports.dart'
     show sl;
 import 'package:balady_plus/etmam_app/core/utils/common_properties.dart';
@@ -14,23 +15,28 @@ import '../../../../_shared_feature_/shared/shared_feature_exports.dart'
         CustomTextButtonWithIconWidget,
         CustomTextWidget,
         showDialogWidget;
+import '../../../../etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
 
 class EtmamCityWidget extends StatelessWidget {
   const EtmamCityWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
-      builder: (context, state) {
-        return EtmamCityNameWidget(
-          cityName: CommonProperties.cityItem?.name ?? "",
-          onChanged: (CityItem? item) {
-            sl<CityBloc>().add(SelectCityEvent(item: item));
-            context.read<HomeBloc>().add(ChangeCityEvent());
-          },
-        );
-      },
-    );
+    return BlocBuilder<CityBloc, CityState>(builder: (context, cityState) {
+      return BlocBuilder<HomeBloc, HomeState>(
+        builder: (context, state) {
+          return EtmamCityNameWidget(
+            cityName: cityState.status == BlocStatus.success
+                ? CommonProperties.cityItem?.name ?? ""
+                : "",
+            onChanged: (CityItem? item) {
+              sl<CityBloc>().add(SelectCityEvent(item: item));
+              context.read<HomeBloc>().add(ChangeCityEvent());
+            },
+          );
+        },
+      );
+    });
   }
 }
 

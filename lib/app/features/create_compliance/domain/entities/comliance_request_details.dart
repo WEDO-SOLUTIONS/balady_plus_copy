@@ -322,25 +322,29 @@ class OwnershipDocInfoDto {
   final String? ownershipDocumentDate;
   final dynamic ownersInfo;
   final bool? paper;
+  final int? receiptTypeId;
+  final String? receiptTypeDesc;
 
-  OwnershipDocInfoDto({
-    this.ownershipDocumentType,
-    this.ownerShipDocTypeName,
-    this.ownershipDocumentNo,
-    this.ownershipDocumentDate,
-    this.ownersInfo,
-    this.paper,
-  });
+  OwnershipDocInfoDto(
+      {this.ownershipDocumentType,
+      this.ownerShipDocTypeName,
+      this.ownershipDocumentNo,
+      this.ownershipDocumentDate,
+      this.ownersInfo,
+      this.paper,
+      this.receiptTypeId,
+      this.receiptTypeDesc});
 
   factory OwnershipDocInfoDto.fromJson(Map<String, dynamic> json) =>
       OwnershipDocInfoDto(
-        ownershipDocumentType: json["ownershipDocumentType"],
-        ownerShipDocTypeName: json["ownerShipDocTypeName"],
-        ownershipDocumentNo: json["ownershipDocumentNo"],
-        ownershipDocumentDate: json["ownershipDocumentDate"],
-        ownersInfo: json["ownersInfo"],
-        paper: json["paper"],
-      );
+          ownershipDocumentType: json["ownershipDocumentType"],
+          ownerShipDocTypeName: json["ownerShipDocTypeName"],
+          ownershipDocumentNo: json["ownershipDocumentNo"],
+          ownershipDocumentDate: json["ownershipDocumentDate"],
+          ownersInfo: json["ownersInfo"],
+          paper: json["paper"],
+          receiptTypeId: json["receiptTypeId"],
+          receiptTypeDesc: json["receiptTypeDesc"]);
 
   Map<String, dynamic> toJson() => {
         "ownershipDocumentType": ownershipDocumentType,
@@ -349,6 +353,8 @@ class OwnershipDocInfoDto {
         "ownershipDocumentDate": ownershipDocumentDate,
         "ownersInfo": ownersInfo,
         "paper": paper,
+        "receiptTypeId": receiptTypeId,
+        "receiptTypeDesc": receiptTypeDesc
       };
 }
 

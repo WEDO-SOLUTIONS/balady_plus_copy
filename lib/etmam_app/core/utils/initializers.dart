@@ -33,7 +33,7 @@ class Initializers {
         CommonProperties.deviceName = (await DeviceInfoPlugin().iosInfo).name;
       }
       CommonProperties.sessionId = CommonFunctions.generateGUID();
-      CommonProperties.cityId = sharedPrefs.getCity()?.id ?? "";
+      //CommonProperties.cityId = sharedPrefs.getCity()?.id ?? "";
       // Theme: init Theme
       AppColorsTheme.setTheme(CommonProperties.cityId);
       var ip;

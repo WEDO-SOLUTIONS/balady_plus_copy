@@ -15,6 +15,7 @@ import 'package:balady_plus/etmam_app/features/on_boarding_cities/on_boarding_ci
     show GetCities;
 import 'package:balady_plus/etmam_app/core/errors/errors_exports.dart'
     show ServerFailure;
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../app/core/services/local/navigation_services.dart';
 import '../../../services/domain/use_cases/get_services.dart';
@@ -35,7 +36,7 @@ class CityBloc extends Bloc<CityEvent, CityState> {
         super(CityState()) {
     on<CityEvent>((event, emit) {});
     on<GetLocalCities>(_getLocalCitiesHandler);
-    add(const GetLocalCities());
+    //add(const GetLocalCities());
 
     on<GetCitiesEvent>(_getCitiesHandler);
 
@@ -72,8 +73,8 @@ class CityBloc extends Bloc<CityEvent, CityState> {
               : state.nextPageIndex,
           searchedItems: success.data?.result?.items));
 
-      sharedPrefs.setCitiesList(
-          success.data?.result?.items?.map((e) => e.toModel).toList());
+      // sharedPrefs.setCitiesList(
+      //     success.data?.result?.items?.map((e) => e.toModel).toList());
     });
   }
 
@@ -106,38 +107,51 @@ class CityBloc extends Bloc<CityEvent, CityState> {
           errorMessage: "",
           searchedItems: searchedItems));
 
-      sharedPrefs.setCitiesList(searchedItems.map((e) => e.toModel).toList());
+      // sharedPrefs.setCitiesList(searchedItems.map((e) => e.toModel).toList());
     });
   }
 
   Future<void> _selectCityHandler(SelectCityEvent e, Emitter emitter) async {
     if (e.item != null) {
-      emitter(state.copyWith(status: BlocStatus.loading));
+      emitter(state.copyWith(providersStatus: BlocStatus.loading));
 
-      emitter(state.copyWith(status: BlocStatus.success, selectedItem: e.item));
       sharedPrefs.setCurrentCity(e.item!.toModel);
 
-      CommonProperties.cityId = e.item?.id ?? "";
+      // CommonProperties.cityId = e.item?.id ?? "";
       sl<EtmamEntryPointCubit>().setTheme();
-      if (e.subServiceid != null) {
+      if (e.item?.id != null) {
+        print("update city ${e.item!.id!}");
+        sl<EtmamEntryPointCubit>().updateCity(e.item!);
+      }
+      if (e.subServiceid != null && e.subServiceid!.isNotEmpty) {
         await sl<EtmamEntryPointCubit>().onLogin();
+        print("CALLLLED ${e.subServiceid}");
         add(GetProvidersForASubServiceEvent(subServiceId: e.subServiceid));
       }
+
+      emitter(state.copyWith(
+          providersStatus: BlocStatus.success, selectedItem: e.item));
     }
+  }
+
+  void updateCurrentCity(CityItem item) {
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    emit(state.copyWith(status: BlocStatus.success, selectedItem: item));
   }
 
   Future<void> _getLocalCitiesHandler(GetLocalCities e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
-    List<CityItem>? items = sharedPrefs.getCitiesList();
-    CityItem? item = sharedPrefs.getCity();
+    //  List<CityItem>? items = sharedPrefs.getCitiesList();
+    //  CityItem? item = sharedPrefs.getCity();
 
-    if (items != null) {
+    /* if (items != null) {
       emitter(state.copyWith(
           status: BlocStatus.success,
           items: items,
           selectedItem: item,
           searchedItems: items));
-    }
+    }*/
   }
 
   Future<void> _searchForCityHandler(
@@ -163,8 +177,8 @@ class CityBloc extends Bloc<CityEvent, CityState> {
           nextPageIndex: 2,
           searchedItems: success.data?.result?.items));
 
-      sharedPrefs.setCitiesList(
-          success.data?.result?.items?.map((e) => e.toModel).toList());
+      // sharedPrefs.setCitiesList(
+      //     success.data?.result?.items?.map((e) => e.toModel).toList());
     });
   }
 
@@ -176,7 +190,7 @@ class CityBloc extends Bloc<CityEvent, CityState> {
         pageIndex: "1",
         cityId: CommonProperties.cityId,
         subServiceId: e.subServiceId ?? "",
-        subServiceName: "إصدار شهادة امتثال المباني"));
+        subServiceName: "Building_Compliance_Certificate_Issuance".tr()));
 
     failureOrSuccess.fold((failure) {
       emitter(state.copyWith(
@@ -197,4 +211,6 @@ class CityBloc extends Bloc<CityEvent, CityState> {
               ));
     });
   }
+
+  void clearSearch() {}
 }

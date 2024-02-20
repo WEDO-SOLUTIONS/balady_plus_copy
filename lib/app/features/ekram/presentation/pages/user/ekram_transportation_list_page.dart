@@ -92,7 +92,7 @@ class _EkramTransportationListPageState
         builder: (context, state) {
           return Scaffold(
             appBar: DefaultAppBarWidget(
-              title: 'requests_transporting_deceased'.tr(),
+              title: 'ekram_benf_transport'.tr(),
               bottom: AppBarSeachBar(
                 onChanged: (value) {
                   _debouncer.run(() {
