@@ -15,13 +15,13 @@ class DashboardCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color? backgroundColor =
-        /*CommonFunctions.isFoundationDay() ? Color(0xffFBF8F7) :*/ null;
+        CommonFunctions.isFoundationDay() ? Color(0xffFBF8F7) : null;
 
     Color? titleColor =
-        /*CommonFunctions.isFoundationDay() ? Color(0xff1E2A36) : */ null;
+        CommonFunctions.isFoundationDay() ? Color(0xff1E2A36) : null;
 
     Color? textColor =
-        /*CommonFunctions.isFoundationDay() ? Color(0xffA97747) :*/ null;
+        CommonFunctions.isFoundationDay() ? Color(0xffA97747) : null;
 
     return Container(
       width: 80,

@@ -23,17 +23,15 @@ class ServicesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color
-        backgroundColor = /*CommonFunctions.isFoundationDay()
+    Color backgroundColor = CommonFunctions.isFoundationDay()
         ? Color(0xffFBF8F7)
-        : */
-        Color(0xffF5F7FA);
+        : Color(0xffF5F7FA);
 
     Color? titleColor =
-        /*CommonFunctions.isFoundationDay() ? Color(0xff1E2A36) :*/ null;
+        CommonFunctions.isFoundationDay() ? Color(0xff1E2A36) : null;
 
     Color? showAllColor =
-        /*CommonFunctions.isFoundationDay() ? Color(0xff231F20) :*/ null;
+        CommonFunctions.isFoundationDay() ? Color(0xff231F20) : null;
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
