@@ -56,7 +56,7 @@ class _AllServicesPageState extends State<AllServicesPage> {
       searchedServices.addAll(services);
     }
     Color? textColor =
-        /*CommonFunctions.isFoundationDay() ? Color(0xff6B4E45) : */ null;
+        CommonFunctions.isFoundationDay() ? Color(0xff6B4E45) : null;
     return Scaffold(
       backgroundColor: AppColor.white,
       appBar: EnhancedAppBar(
