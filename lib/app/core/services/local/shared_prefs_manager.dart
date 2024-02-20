@@ -391,8 +391,7 @@ class SharedPrefs {
     return _sharedPreferences?.getBool('isEkramDriver');
   }
 
-
-   setLocationConsent(bool? value) async {
+  setLocationConsent(bool? value) async {
     if (value != null) {
       await _sharedPreferences?.setBool('locationConsent', value);
     } else {

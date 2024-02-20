@@ -21,7 +21,7 @@ class CommonProperties {
   static String? get profileId => sl<EtmamEntryPointCubit>().state.profile?.id;
   static AuthStatus get authStatus => sl<EntryPointCubit>().state.status;
   static bool get isUserLogged => sl<EntryPointCubit>().state.token != null;
-  static String cityId = "";
+  static String get cityId => sl<CityBloc>().state.selectedItem?.id ?? "";
   static CityItem? get cityItem => sl<CityBloc>().state.selectedItem;
 
   static String appName = "Balady";
