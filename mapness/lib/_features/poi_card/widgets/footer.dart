@@ -49,14 +49,17 @@ class PoiCardFooter extends ConsumerWidget {
     ref.watch(favouriteRepositoryProvider).valueOrNull;
     final provider = ref.watch(favouriteRepositoryProvider.notifier);
 
-    final isFav = provider.isFavourite(model.directoryObjectMessage?.id?.objectId);
-    final favData = provider.getFavouriteOrNull(model.directoryObjectMessage?.id?.objectId);
+    final isFav =
+        provider.isFavourite(model.directoryObjectMessage?.id?.objectId);
+    final favData =
+        provider.getFavouriteOrNull(model.directoryObjectMessage?.id?.objectId);
 
     Widget favItem({int flex = 1}) => buildIconButton(
           flex: flex,
           assetName: isFav
               ? 'assets/icons/svg/ic_fav_solid.svg'
               : 'assets/icons/svg/ic_fav_poi.svg',
+          colorIcon: context.color.text_and_icons_status_accent,
           onTap: () => _onFavTap(
             context: context,
             favouriteItem: favData,
