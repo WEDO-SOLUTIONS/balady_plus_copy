@@ -167,6 +167,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                               height: 20,
                             ),
                             EventsHomeCardWrapper(
+                              colorScheme: ref.read(colorSchemeProvider),
                               key: ValueKey(
                                   'events_home_card_wrapper_${direction.name}'),
                             ),
