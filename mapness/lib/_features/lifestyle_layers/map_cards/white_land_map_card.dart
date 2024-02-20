@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
@@ -37,7 +38,7 @@ class WhiteLandMapCard extends StatelessWidget {
         ),
         shadows: const [
           BoxShadow(
-            color: Color(0x1C77758D),
+            color: NonThemeColor.color71,
             blurRadius: 22,
             offset: Offset(0, 4),
             spreadRadius: 0,

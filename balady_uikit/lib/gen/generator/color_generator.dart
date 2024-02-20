@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:balady_uikit/gen/palette_entity.dart';
-import 'package:collection/collection.dart';
+
+import 'package:balady_uikit/gen/generator/palette_entity.dart';
 import 'package:build/build.dart';
+import 'package:collection/collection.dart';
 
 typedef Collection = Map<String, dynamic>;
 
@@ -16,18 +17,18 @@ class ColorConstantsGenerator implements Builder {
     final inputId = buildStep.inputId;
     final content = await buildStep.readAsString(inputId);
 
-    final jsonData = json.decode(content);
-
-    var colorPalette = ColorPalette.fromJson(jsonData);
-
-    for (final collection in colorPalette.collections) {
-      generatePallette(
-        colorPalette.collections,
-        collection,
-        inputId,
-        collection.name,
-      );
-    }
+    var path = buildStep.inputId.path;
+    if (path != 'assets/colors/colors.json') return;
+      final jsonData = json.decode(content);
+      var colorPalette = ColorPalette.fromJson(jsonData);
+      for (final collection in colorPalette.collections) {
+          generatePallette(
+            colorPalette.collections,
+            collection,
+            inputId,
+            collection.name,
+          );
+      }
   }
 
   @override

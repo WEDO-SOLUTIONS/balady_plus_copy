@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class DragHandle extends StatelessWidget {
   final BorderRadius? borderRadius;
@@ -10,7 +11,7 @@ class DragHandle extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: borderRadius ?? BorderRadius.circular(16),
-            color: const Color(0xff1E2A36).withOpacity(0.1),
+            color: context.color.text_and_icons_base_primary.withOpacity(0.1),
           ),
           height: 4,
           width: 40,

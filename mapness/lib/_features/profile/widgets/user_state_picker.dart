@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:mapness/_features/common/providers/user_state.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class UserStatePicker extends StatelessWidget {
   const UserStatePicker({super.key});
@@ -59,7 +60,12 @@ class UserStateRow extends ConsumerWidget {
               const Spacer(),
               Text(
                 userState.name,
-                style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0xFF1E2A36)),
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .textM
+                    .copyWith(
+                      color: context.color.text_and_icons_base_primary,
+                    ),
               ),
             ],
           ),

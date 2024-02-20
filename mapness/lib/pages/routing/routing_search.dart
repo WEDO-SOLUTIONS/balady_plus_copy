@@ -91,7 +91,7 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheet> {
               middleHeight: constraints.maxHeight * 0.7,
               scrollableBody: (context, scrollController) => Container(
                 decoration: const BoxDecoration(
-                  color: Color(0xFFF1F4F8),
+                  color: Color(0xFFF4F4F5),
                   borderRadius: BorderRadius.only(
                     topRight: Radius.circular(16.0),
                     topLeft: Radius.circular(16.0),

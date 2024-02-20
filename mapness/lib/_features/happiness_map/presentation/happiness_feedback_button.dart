@@ -1,7 +1,9 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class HappinesFeedbackButton extends StatelessWidget {
   final HappinessFeedback type;
@@ -18,8 +20,8 @@ class HappinesFeedbackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final splashColor = switch (type) {
-      HappinessFeedback.like => const Color(0xff1DB93C),
-      HappinessFeedback.dislike => const Color(0xffff4d4d),
+      HappinessFeedback.like => NonThemeColor.color35,
+      HappinessFeedback.dislike => NonThemeColor.color36,
     };
     final bgColor = Color(
       switch ((state, type)) {
@@ -40,7 +42,7 @@ class HappinesFeedbackButton extends StatelessWidget {
         Colors.white,
 
       /// not match
-      _ => const Color(0xFF4CA5B4),
+      _ => context.color.stroke_accent,
     };
 
     return Ink(

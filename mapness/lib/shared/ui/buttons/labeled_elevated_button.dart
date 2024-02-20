@@ -1,5 +1,6 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class LabeledElevatedButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -24,8 +25,8 @@ class LabeledElevatedButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: enabled ? onPressed : null,
       style: ElevatedButton.styleFrom(
-        backgroundColor: backgroundColor ?? const Color(0xff4CA5B4),
-        disabledBackgroundColor: const Color(0xffDDDFE1),
+        backgroundColor: backgroundColor ?? context.color.stroke_accent,
+        disabledBackgroundColor: context.color.surface_base_primary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),

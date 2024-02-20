@@ -1,0 +1,1 @@
+enum AppColorScheme { main, brown }

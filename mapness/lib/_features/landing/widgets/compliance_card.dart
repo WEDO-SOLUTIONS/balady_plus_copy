@@ -136,7 +136,7 @@ class ComplianceCard extends ConsumerWidget {
                                 .extension<ThemeTextStyles>()
                                 ?.accentM
                                 .copyWith(
-                                  color: const Color(0xFF4CA5B4),
+                                  color: context.color.stroke_accent,
                                 ),
                           ),
                         ),
@@ -189,7 +189,7 @@ class ComplianceCard extends ConsumerWidget {
                                   .extension<ThemeTextStyles>()
                                   ?.textS
                                   .copyWith(
-                                    color: const Color(0xFF4CA5B4)
+                                    color: context.color.stroke_accent
                                         .withOpacity(0.7),
                                     fontSize: 11,
                                   ),
@@ -200,7 +200,7 @@ class ComplianceCard extends ConsumerWidget {
                                   .extension<ThemeTextStyles>()
                                   ?.textS
                                   .copyWith(
-                                    color: const Color(0xFF4CA5B4)
+                                    color: context.color.stroke_accent
                                         .withOpacity(0.7),
                                     fontSize: 11,
                                   ),
@@ -215,7 +215,7 @@ class ComplianceCard extends ConsumerWidget {
                                   .extension<ThemeTextStyles>()
                                   ?.textS
                                   .copyWith(
-                                    color: const Color(0xFF4CA5B4),
+                                    color: context.color.stroke_accent,
                                     fontSize: 12,
                                   ),
                             ),
@@ -225,7 +225,7 @@ class ComplianceCard extends ConsumerWidget {
                                   .extension<ThemeTextStyles>()
                                   ?.textS
                                   .copyWith(
-                                    color: const Color(0xFF4CA5B4)
+                                    color: context.color.stroke_accent
                                         .withOpacity(0.7),
                                     fontSize: 11,
                                   ),
@@ -236,7 +236,7 @@ class ComplianceCard extends ConsumerWidget {
                                   .extension<ThemeTextStyles>()
                                   ?.textS
                                   .copyWith(
-                                    color: const Color(0xFF4CA5B4)
+                                    color: context.color.stroke_accent
                                         .withOpacity(0.7),
                                     fontSize: 11,
                                   ),
@@ -247,7 +247,7 @@ class ComplianceCard extends ConsumerWidget {
                                   .extension<ThemeTextStyles>()
                                   ?.textS
                                   .copyWith(
-                                    color: const Color(0xFF4CA5B4)
+                                    color: context.color.stroke_accent
                                         .withOpacity(0.7),
                                     fontSize: 11,
                                   ),
@@ -262,7 +262,7 @@ class ComplianceCard extends ConsumerWidget {
                                   .extension<ThemeTextStyles>()
                                   ?.textS
                                   .copyWith(
-                                    color: const Color(0xFF4CA5B4),
+                                    color: context.color.stroke_accent,
                                     fontSize: 12,
                                   ),
                             ),

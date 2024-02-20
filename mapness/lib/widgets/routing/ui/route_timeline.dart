@@ -1,8 +1,10 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 import 'package:timelines/timelines.dart';
 
@@ -59,7 +61,10 @@ class RouteTimelineRow extends StatelessWidget {
         ),
         child: Text(
           point,
-          style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: index == 0 ? const Color(0x801E2A36) : const Color(0xFF1E2A36)),
+          style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(
+              color: index == 0
+                  ? context.color.text_and_icons_base_tertiary
+                  : context.color.text_and_icons_base_primary),
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
@@ -70,20 +75,20 @@ class RouteTimelineRow extends StatelessWidget {
           "assets/icons/svg/ic_routing_circle_small.svg",
           package: PackageConfig.packageName,
           colorFilter: ColorFilter.mode(
-            index == 0 ? const Color(0xFF52B374) : const Color(0xFF4CA5B4),
+            index == 0 ? NonThemeColor.color3 : context.color.stroke_accent,
             BlendMode.srcATop,
           ),
         ),
         startConnector: index == 0
             ? null
             : const SolidLineConnector(
-                color: Color(0x261E2A36),
+                color: NonThemeColor.color53,
                 endIndent: 2,
               ),
         endConnector: last
             ? null
             : const SolidLineConnector(
-                color: Color(0x261E2A36),
+                color: NonThemeColor.color53,
                 indent: 2,
               ),
       ),

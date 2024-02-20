@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class EmptyResultWidget extends StatelessWidget {
   final String text;
+
   const EmptyResultWidget({Key? key, required this.text}) : super(key: key);
 
   @override
@@ -23,7 +25,9 @@ class EmptyResultWidget extends StatelessWidget {
           text,
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.center,
-          style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: const Color(0xFF1D2A36)),
+          style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(
+                color: context.color.text_and_icons_base_primary,
+              ),
         ),
       ],
     );

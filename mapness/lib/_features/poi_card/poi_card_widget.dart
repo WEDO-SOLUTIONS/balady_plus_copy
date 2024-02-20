@@ -2,8 +2,6 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/_features/landing/providers/map_controls.dart'
-    as map_control_provider;
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
@@ -187,7 +185,7 @@ class _ContentState extends ConsumerState<_Content>
 
     // TODO(scroollocker): move it to widget
     final infoBody = Padding(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -261,7 +259,9 @@ class _ContentState extends ConsumerState<_Content>
             data: data,
             onTapClose: () {
               ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
-              ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
+              ref
+                  .read(highlightProvider.notifier)
+                  .removeHighlight(widget.objectId);
               context.pop();
             },
           ),

@@ -1,6 +1,8 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PathNavIconButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -15,7 +17,7 @@ class PathNavIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: const Color(0xffF4F4F5),
+      color: context.color.surface_base_primary,
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
@@ -33,7 +35,7 @@ class PathNavIconButton extends StatelessWidget {
             height: 24,
             package: PackageConfig.packageName,
             colorFilter: const ColorFilter.mode(
-              Color(0xff1A1A1A),
+              NonThemeColor.color62,
               BlendMode.srcATop,
             ),
           ),

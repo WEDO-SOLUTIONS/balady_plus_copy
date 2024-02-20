@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/debug_overlay/widgets/bug_button.dart';
 import 'package:mapness/_features/debug_overlay/widgets/debug_sheet.dart';
+import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/app/routes/routing.dart';
 
 class DebugOverlay extends StatefulWidget {
   const DebugOverlay({super.key});
@@ -19,20 +21,23 @@ class _DebugOverlayState extends State<DebugOverlay> {
   }
 
   @override
-  Widget build(BuildContext context) => Stack(
-        children: [
-          BugButton(
-            onTap: () {
-              _draggableController.animateTo(
-                0.8,
-                duration: const Duration(milliseconds: 250),
-                curve: Curves.linear,
-              );
-            },
-          ),
-          DebugSheet(
-            draggableController: _draggableController,
-          )
-        ],
+  Widget build(BuildContext context) => Theme(
+        data: Theme.of(rootNavigatorKey.currentContext!),
+        child: Stack(
+          children: [
+            BugButton(
+              onTap: () {
+                _draggableController.animateTo(
+                  0.8,
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.linear,
+                );
+              },
+            ),
+            DebugSheet(
+              draggableController: _draggableController,
+            )
+          ],
+        ),
       );
 }
