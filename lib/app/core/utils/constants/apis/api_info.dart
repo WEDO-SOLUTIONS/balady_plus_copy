@@ -779,6 +779,28 @@ class ApiUrl {
       '/v1/balady-commercial-services/rating/submit';
 
   static const weatherAlerts = 'v1/mater-services/notifications/locations';
+
+
+//commercial license query
+  static String getCommercialLicenseData(int licenseNumber,unifiedFacilityNumber) =>
+      '/v1/balady-commercial-services/licenses/$licenseNumber/by-unn/$unifiedFacilityNumber';
+
+
+
+  //! Balady Calednar
+
+  static const baladyCalendarFilter =
+      'v1/balady-calendar-services/main-filterations';
+
+  static const baladyCalendarEventsCountInYears =
+      'v1/balady-calendar-services/events/count-in-year';
+
+  static const baladyCalendarEventsCountInMonths =
+      'v1/balady-calendar-services/events/count-in-months-by-year';
+
+  static const baladyCalendarEvents =
+      'v1/balady-calendar-services/events/by-year';
+
   //! POST
 
   //! Delete

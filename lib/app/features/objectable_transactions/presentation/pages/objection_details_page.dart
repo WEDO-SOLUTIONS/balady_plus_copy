@@ -52,11 +52,15 @@ class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    ObjectionDetails? params =
-        ModalRoute.of(context)!.settings.arguments as ObjectionDetails;
+    Map? data = ModalRoute.of(context)!.settings.arguments as Map?;
 
     return BlocProvider(
-      create: (context) => ObjectionsDetailsBloc(details: params),
+      create: (context) => ObjectionsDetailsBloc()
+        ..add(
+          GetObjectionDetailsEvent(
+            params: data?['objectionRequestNumber'] ?? '',
+          ),
+        ),
       child: BlocConsumer<ObjectionsDetailsBloc, ObjectionDetailsState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure) {
@@ -383,6 +387,7 @@ class ObjectionReaason extends StatelessWidget {
 
 class AttachmentWidget extends StatelessWidget {
   final String attachment;
+
   const AttachmentWidget({Key? key, required this.attachment})
       : super(key: key);
 
@@ -463,8 +468,7 @@ class _ObjectionFeedBackState extends State<ObjectionFeedBack> {
                                   GetObjectionDetailsEvent(
                                       params: state.details
                                               ?.objectionRequestNumber ??
-                                          "",
-                                      refresh: true));
+                                          "",));
                             },
                           );
 
