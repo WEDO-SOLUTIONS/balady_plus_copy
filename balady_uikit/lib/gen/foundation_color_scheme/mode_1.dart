@@ -1,4 +1,5 @@
-import "dart:ui";
+import 'dart:ui';
+
 class Mode1 {
   // Mode 1
   static const black_100 = Color(0xFF231F20);

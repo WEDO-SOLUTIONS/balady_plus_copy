@@ -125,7 +125,8 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
             id: markerInfo?.objectId?.objectId.toString() ??
                 context.l10n.invalid,
             onTap: () {
-              PoiMapRoute.open(ref.read(goRouterProvider), markerInfo.objectId!.objectId);
+              PoiMapRoute.open(
+                  ref.read(goRouterProvider), markerInfo.objectId!.objectId);
             },
             options: MarkerOptionsMessage(
               position: markerInfo!.geoPoint,
@@ -216,7 +217,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
           return ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: Material(
-              color: context.color.surface_base_primary,
+              color: const Color(0xFFF4F4F5),
               child: SearchScope(
                 named: searchScope,
                 child: CustomScrollView(

@@ -21,7 +21,6 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -68,6 +67,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
                   ),
                 );
             // dgisController
+            // ignore: avoid_catches_without_on_clauses
           } catch (e) {
             // todo: make it better
             if (kDebugMode) {
@@ -81,20 +81,21 @@ class _LandingPageState extends ConsumerState<LandingPage> {
           ref.read(searchByRubricsQueryProvider.notifier).update((
             QuickFilter(
               rubrics: [13374],
-              title: "المساجد",
-              uiIcon: "assets/icons/svg/quick_filters/ic_quick_mosques.svg",
-              mapIcon: "assets/icons/svg/quick_filters/mosques_pin.svg",
+              title: 'المساجد',
+              uiIcon: 'assets/icons/svg/quick_filters/ic_quick_mosques.svg',
+              mapIcon: 'assets/icons/svg/quick_filters/mosques_pin.svg',
             ),
             1
           ));
         });
         break;
+      // ignore: no_default_cases
       default:
         break;
     }
   }
 
-  void setupTapListener() async {
+  Future<void> setupTapListener() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     _streamSubscription =
         dgisController.objectTapEvents.listen(_objectTapListener);
@@ -108,50 +109,14 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(layersControlsProvider);
-    ref.watch(favouriteMarkersProvider.select((value) => null));
+    ref
+      ..watch(layersControlsProvider)
+      ..watch(favouriteMarkersProvider.select((value) => null))
 
-    /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
-    ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
-    // ref.watch(iwishMarkersProvider.select((value) => null));
-
-    ref.watch(mapObjectManagerProvider(named: MapnessConsts.mapLayerName));
-
-    ref.read(colorSchemeProvider.notifier).needToShowBanner().then((value) {
-      setState(() {
-        needToShow = value;
-        // if(dialogWasShown == false){
-        //   dialogWasShown = true;
-        // }
-      });
-    });
-
-    // if (needToShow && !dialogWasShown) {
-    //   showDialog(
-    //       context: context,
-    //       builder: (c) {
-    //         return BackdropFilter(
-    //           filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
-    //           child: Center(
-    //             child: Padding(
-    //               padding: const EdgeInsets.all(16),
-    //               child: Container(
-    //                 child: Image(
-    //                     fit: BoxFit.fitWidth,
-    //                     image: AssetImage(
-    //                       'assets/images/foundation_day_banner.png',
-    //                       package: PackageConfig.packageName,
-    //                     )),
-    //               ),
-    //             ),
-    //           ),
-    //         );
-    //       });
-    //
-    //   setState(() {
-    //     dialogWasShown = true;
-    //   });
-    // }
+      /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
+      ..watch(mapObjectManagerProvider(named: mapLayerName).notifier)
+      // ref.watch(iwishMarkersProvider.select((value) => null));
+      ..watch(mapObjectManagerProvider(named: MapnessConsts.mapLayerName));
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -163,72 +128,14 @@ class _LandingPageState extends ConsumerState<LandingPage> {
             children: [
               const controls.MapControls(),
               LayoutBuilder(
-                  builder: (context, constraints) => Dashboard(
-                        biggestHeight: constraints.biggest.height,
-                        biggestWidth: constraints.biggest.width,
+                builder: (context, constraints) => Dashboard(
+                  biggestHeight: constraints.biggest.height,
+                  biggestWidth: constraints.biggest.width,
 
-                        ///TODO: change while Dashboard refactoring
-                        initWithMinSize:
-                            widget.focusMaker == LangingFocusMaker.iwish,
-                      )),
-              if (needToShow)
-                BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Stack(
-                        children: [
-                          Container(
-                            child: Image(
-                                fit: BoxFit.fitWidth,
-                                image: AssetImage(
-                                  'assets/images/foundation_day_banner.png',
-                                  package: PackageConfig.packageName,
-                                )),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 16),
-                            child: Material(
-                              borderRadius: borderRadius,
-                              child: InkWell(
-                                borderRadius: borderRadius,
-                                onTap: () {
-                                  setState(() {
-                                    needToShow = false;
-                                  });
-                                },
-                                child: Container(
-                                  height: 40,
-                                  width: 40,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(8),
-                                    ),
-                                    color: context
-                                        .color.text_and_icons_base_primary
-                                        .withAlpha(10),
-                                  ),
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: SvgPicture.asset(
-                                    'assets/icons/svg/ic_search_close.svg',
-                                    semanticsLabel: 'MinApps Screen',
-                                    package: PackageConfig.packageName,
-                                    colorFilter: ColorFilter.mode(
-                                      context.color.text_and_icons_base_primary
-                                          .withOpacity(0.7),
-                                      BlendMode.srcIn,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  ///TODO: change while Dashboard refactoring
+                  initWithMinSize: widget.focusMaker == LangingFocusMaker.iwish,
                 ),
+              ),
             ],
           ),
         ),
@@ -252,5 +159,64 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     } else if (event is RoadEventTapEvent) {
       EventsRoute.open(context, event);
     }
+  }
+}
+
+class MyWidget extends StatelessWidget {
+  const MyWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Stack(
+            children: [
+              const Image(
+                fit: BoxFit.fitWidth,
+                image: AssetImage(
+                  'assets/images/foundation_day_banner.png',
+                  package: PackageConfig.packageName,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Material(
+                  borderRadius: borderRadius,
+                  child: InkWell(
+                    borderRadius: borderRadius,
+                    onTap: () {},
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(8),
+                        ),
+                        color: context.color.text_and_icons_base_primary
+                            .withAlpha(10),
+                      ),
+                      padding: const EdgeInsets.all(8.0),
+                      child: SvgPicture.asset(
+                        'assets/icons/svg/ic_search_close.svg',
+                        semanticsLabel: 'MinApps Screen',
+                        package: PackageConfig.packageName,
+                        colorFilter: ColorFilter.mode(
+                          context.color.text_and_icons_base_primary
+                              .withOpacity(0.7),
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

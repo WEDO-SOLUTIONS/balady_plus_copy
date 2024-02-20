@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:app_links/app_links.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_uikit/colors/app_color_scheme.dart';
 import 'package:balady_uikit/colors/app_colors_theme.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
@@ -156,7 +157,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
               useMaterial3: false,
               extensions: <ThemeExtension<dynamic>>[
                 ThemeTextStyles.arabic(isDark: false),
-                AppColorsThemeExt.palette(isDark: false),
+                AppColorsThemeExt.palette(AppColorScheme.main, isDark: false),
               ],
             ),
             locale: language.locale,

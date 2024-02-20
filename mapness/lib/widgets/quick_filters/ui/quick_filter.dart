@@ -20,51 +20,54 @@ class QuickFilter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-      color: selected ? context.color.text_and_icons_base_primary : background,
-      borderRadius: BorderRadius.circular(8),
-      child: InkWell(
+        color: selected ? context.color.stroke_accent : background,
         borderRadius: BorderRadius.circular(8),
-        onTap: item.onTap,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minWidth: 52),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 8,
-              horizontal: 9,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SvgPicture.asset(
-                  item.icon,
-                  height: 24,
-                  width: 24,
-                  package: PackageConfig.packageName,
-                  colorFilter: ColorFilter.mode(
-                    selected ? Colors.white : context.color.text_and_icons_base_primary,
-                    BlendMode.srcIn,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(8),
+          onTap: item.onTap,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 52),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 9,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(
+                    item.icon,
+                    height: 24,
+                    width: 24,
+                    package: PackageConfig.packageName,
+                    colorFilter: ColorFilter.mode(
+                      selected
+                          ? Colors.white
+                          : context.color.text_and_icons_base_primary,
+                      BlendMode.srcIn,
+                    ),
                   ),
-                ),
-                if (item.title != null) ...[
-                  const SizedBox(
-                    width: 4,
-                  ),
-                  Text(
-                    item.title!,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .textM
-                        .copyWith(
-                          color:
-                              selected ? Colors.white : context.color.text_and_icons_base_primary,
-                        ),
-                  )
-                ]
-              ],
+                  if (item.title != null) ...[
+                    const SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      item.title!,
+                      style: Theme.of(context)
+                          .extension<ThemeTextStyles>()!
+                          .textM
+                          .copyWith(
+                            color: selected
+                                ? Colors.white
+                                : context.color.text_and_icons_base_primary,
+                          ),
+                    )
+                  ]
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
 }

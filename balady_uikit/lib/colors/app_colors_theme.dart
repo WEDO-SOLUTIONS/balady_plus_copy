@@ -1,6 +1,10 @@
-import 'package:balady_uikit/gen/dark.dart';
-import 'package:balady_uikit/gen/light.dart';
+import 'package:balady_uikit/gen/default_color_scheme/scheme.dart'
+    as defaultScheme;
+import 'package:balady_uikit/gen/foundation_color_scheme/scheme.dart'
+    as foundationScheme;
 import 'package:flutter/material.dart';
+
+import 'app_color_scheme.dart';
 
 class AppColorsThemeExt extends ThemeExtension<AppColorsThemeExt> {
   Color text_and_icons_base_primary;
@@ -66,44 +70,45 @@ class AppColorsThemeExt extends ThemeExtension<AppColorsThemeExt> {
     Color? surface_contrast_high,
     Color? stroke_primary,
     Color? stroke_accent,
-  }) => AppColorsThemeExt(
-      text_and_icons_base_primary:
-          text_and_icons_base_primary ?? this.text_and_icons_base_primary,
-      text_and_icons_base_secondary:
-          text_and_icons_base_secondary ?? this.text_and_icons_base_secondary,
-      text_and_icons_base_tertiary:
-          text_and_icons_base_tertiary ?? this.text_and_icons_base_tertiary,
-      text_and_icons_base_inverse_primary:
-          text_and_icons_base_inverse_primary ??
-              this.text_and_icons_base_inverse_primary,
-      text_and_icons_base_inverse_secondary:
-          text_and_icons_base_inverse_secondary ??
-              this.text_and_icons_base_inverse_secondary,
-      text_and_icons_base_inverse_tertiary:
-          text_and_icons_base_inverse_tertiary ??
-              this.text_and_icons_base_inverse_tertiary,
-      text_and_icons_status_accent:
-          text_and_icons_status_accent ?? this.text_and_icons_status_accent,
-      text_and_icons_status_positive:
-          text_and_icons_status_positive ?? this.text_and_icons_status_positive,
-      text_and_icons_status_attention: text_and_icons_status_attention ??
-          this.text_and_icons_status_attention,
-      text_and_icons_status_negative:
-          text_and_icons_status_negative ?? this.text_and_icons_status_negative,
-      surface_base_primary: surface_base_primary ?? this.surface_base_primary,
-      surface_base_secondary:
-          surface_base_secondary ?? this.surface_base_secondary,
-      surface_base_tertiary:
-          surface_base_tertiary ?? this.surface_base_tertiary,
-      surface_contrast_low: surface_contrast_low ?? this.surface_contrast_low,
-      surface_base_inverse_primary:
-          surface_base_inverse_primary ?? this.surface_base_inverse_primary,
-      surface_contrast_mid: surface_contrast_mid ?? this.surface_contrast_mid,
-      surface_contrast_high:
-          surface_contrast_high ?? this.surface_contrast_high,
-      stroke_primary: stroke_primary ?? this.stroke_primary,
-      stroke_accent: stroke_accent ?? this.stroke_accent,
-    );
+  }) =>
+      AppColorsThemeExt(
+        text_and_icons_base_primary:
+            text_and_icons_base_primary ?? this.text_and_icons_base_primary,
+        text_and_icons_base_secondary:
+            text_and_icons_base_secondary ?? this.text_and_icons_base_secondary,
+        text_and_icons_base_tertiary:
+            text_and_icons_base_tertiary ?? this.text_and_icons_base_tertiary,
+        text_and_icons_base_inverse_primary:
+            text_and_icons_base_inverse_primary ??
+                this.text_and_icons_base_inverse_primary,
+        text_and_icons_base_inverse_secondary:
+            text_and_icons_base_inverse_secondary ??
+                this.text_and_icons_base_inverse_secondary,
+        text_and_icons_base_inverse_tertiary:
+            text_and_icons_base_inverse_tertiary ??
+                this.text_and_icons_base_inverse_tertiary,
+        text_and_icons_status_accent:
+            text_and_icons_status_accent ?? this.text_and_icons_status_accent,
+        text_and_icons_status_positive: text_and_icons_status_positive ??
+            this.text_and_icons_status_positive,
+        text_and_icons_status_attention: text_and_icons_status_attention ??
+            this.text_and_icons_status_attention,
+        text_and_icons_status_negative: text_and_icons_status_negative ??
+            this.text_and_icons_status_negative,
+        surface_base_primary: surface_base_primary ?? this.surface_base_primary,
+        surface_base_secondary:
+            surface_base_secondary ?? this.surface_base_secondary,
+        surface_base_tertiary:
+            surface_base_tertiary ?? this.surface_base_tertiary,
+        surface_contrast_low: surface_contrast_low ?? this.surface_contrast_low,
+        surface_base_inverse_primary:
+            surface_base_inverse_primary ?? this.surface_base_inverse_primary,
+        surface_contrast_mid: surface_contrast_mid ?? this.surface_contrast_mid,
+        surface_contrast_high:
+            surface_contrast_high ?? this.surface_contrast_high,
+        stroke_primary: stroke_primary ?? this.stroke_primary,
+        stroke_accent: stroke_accent ?? this.stroke_accent,
+      );
 
   @override
   ThemeExtension<AppColorsThemeExt> lerp(
@@ -164,53 +169,62 @@ class AppColorsThemeExt extends ThemeExtension<AppColorsThemeExt> {
     );
   }
 
-  static palette({required bool isDark}) => AppColorsThemeExt(
-        text_and_icons_base_primary: isDark
-            ? Dark.text_and_icons_base_primary
-            : Light.text_and_icons_base_primary,
-        text_and_icons_base_secondary: isDark
-            ? Dark.text_and_icons_base_secondary
-            : Light.text_and_icons_base_secondary,
-        text_and_icons_base_tertiary: isDark
-            ? Dark.text_and_icons_base_tertiary
-            : Light.text_and_icons_base_tertiary,
-        text_and_icons_base_inverse_primary: isDark
-            ? Dark.text_and_icons_base_inverse_primary
-            : Light.text_and_icons_base_inverse_primary,
-        text_and_icons_base_inverse_secondary: isDark
-            ? Dark.text_and_icons_base_inverse_secondary
-            : Light.text_and_icons_base_inverse_secondary,
-        text_and_icons_base_inverse_tertiary: isDark
-            ? Dark.text_and_icons_base_inverse_tertiary
-            : Light.text_and_icons_base_inverse_tertiary,
-        text_and_icons_status_accent: isDark
-            ? Dark.text_and_icons_status_accent
-            : Light.text_and_icons_status_accent,
-        text_and_icons_status_positive: isDark
-            ? Dark.text_and_icons_status_positive
-            : Light.text_and_icons_status_positive,
-        text_and_icons_status_attention: isDark
-            ? Dark.text_and_icons_status_attention
-            : Light.text_and_icons_status_attention,
-        text_and_icons_status_negative: isDark
-            ? Dark.text_and_icons_status_negative
-            : Light.text_and_icons_status_negative,
-        surface_base_primary:
-            isDark ? Dark.surface_base_primary : Light.surface_base_primary,
-        surface_base_secondary:
-            isDark ? Dark.surface_base_secondary : Light.surface_base_secondary,
-        surface_base_tertiary:
-            isDark ? Dark.surface_base_tertiary : Light.surface_base_tertiary,
-        surface_contrast_low:
-            isDark ? Dark.surface_contrast_low : Light.surface_contrast_low,
-        surface_base_inverse_primary: isDark
-            ? Dark.surface_base_inverse_primary
-            : Light.surface_base_inverse_primary,
-        surface_contrast_mid:
-            isDark ? Dark.surface_contrast_mid : Light.surface_contrast_mid,
-        surface_contrast_high:
-            isDark ? Dark.surface_contrast_high : Light.surface_contrast_high,
-        stroke_primary: isDark ? Dark.stroke_primary : Light.stroke_primary,
-        stroke_accent: isDark ? Dark.stroke_accent : Light.stroke_accent,
-      );
+  static palette(AppColorScheme scheme, {required bool isDark}) {
+    final Dark = scheme == AppColorScheme.brown
+        ? foundationScheme.Dark()
+        : defaultScheme.Dark();
+    final Light = scheme == AppColorScheme.brown
+        ? foundationScheme.Light()
+        : defaultScheme.Light();
+
+    return AppColorsThemeExt(
+      text_and_icons_base_primary: isDark
+          ? Dark.text_and_icons_base_primary
+          : Light.text_and_icons_base_primary,
+      text_and_icons_base_secondary: isDark
+          ? Dark.text_and_icons_base_secondary
+          : Light.text_and_icons_base_secondary,
+      text_and_icons_base_tertiary: isDark
+          ? Dark.text_and_icons_base_tertiary
+          : Light.text_and_icons_base_tertiary,
+      text_and_icons_base_inverse_primary: isDark
+          ? Dark.text_and_icons_base_inverse_primary
+          : Light.text_and_icons_base_inverse_primary,
+      text_and_icons_base_inverse_secondary: isDark
+          ? Dark.text_and_icons_base_inverse_secondary
+          : Light.text_and_icons_base_inverse_secondary,
+      text_and_icons_base_inverse_tertiary: isDark
+          ? Dark.text_and_icons_base_inverse_tertiary
+          : Light.text_and_icons_base_inverse_tertiary,
+      text_and_icons_status_accent: isDark
+          ? Dark.text_and_icons_status_accent
+          : Light.text_and_icons_status_accent,
+      text_and_icons_status_positive: isDark
+          ? Dark.text_and_icons_status_positive
+          : Light.text_and_icons_status_positive,
+      text_and_icons_status_attention: isDark
+          ? Dark.text_and_icons_status_attention
+          : Light.text_and_icons_status_attention,
+      text_and_icons_status_negative: isDark
+          ? Dark.text_and_icons_status_negative
+          : Light.text_and_icons_status_negative,
+      surface_base_primary:
+          isDark ? Dark.surface_base_primary : Light.surface_base_primary,
+      surface_base_secondary:
+          isDark ? Dark.surface_base_secondary : Light.surface_base_secondary,
+      surface_base_tertiary:
+          isDark ? Dark.surface_base_tertiary : Light.surface_base_tertiary,
+      surface_contrast_low:
+          isDark ? Dark.surface_contrast_low : Light.surface_contrast_low,
+      surface_base_inverse_primary: isDark
+          ? Dark.surface_base_inverse_primary
+          : Light.surface_base_inverse_primary,
+      surface_contrast_mid:
+          isDark ? Dark.surface_contrast_mid : Light.surface_contrast_mid,
+      surface_contrast_high:
+          isDark ? Dark.surface_contrast_high : Light.surface_contrast_high,
+      stroke_primary: isDark ? Dark.stroke_primary : Light.stroke_primary,
+      stroke_accent: isDark ? Dark.stroke_accent : Light.stroke_accent,
+    );
+  }
 }
