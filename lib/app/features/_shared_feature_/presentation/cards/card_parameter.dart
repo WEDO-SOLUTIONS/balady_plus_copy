@@ -6,11 +6,12 @@ import '../../shared_feature_exports.dart' show CustomTextWidget;
 class CardParameter extends StatelessWidget {
   final String title;
   final String value;
-
-  const CardParameter({
+  Color ? bgColor;
+   CardParameter({
     super.key,
     required this.title,
     required this.value,
+     this.bgColor
   });
 
   @override
@@ -21,7 +22,7 @@ class CardParameter extends StatelessWidget {
       margin: const EdgeInsets.only(top: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: AppColor.primary50Light50,
+        color: bgColor?? AppColor.primary50Light50,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

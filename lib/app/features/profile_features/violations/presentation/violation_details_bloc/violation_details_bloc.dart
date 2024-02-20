@@ -21,12 +21,12 @@ class ViolationDetailsBloc
 
   final ValidateObjectableTransaction validateObjectableTransaction;
 
-  ViolationDetailsBloc({required ViolationsEntity violationsEntity})
+  ViolationDetailsBloc()
       : _getViolationDetails = GetViolationDetails(repository: sl()),
         _getGisData = GetGISData(repository: sl()),
         validateObjectableTransaction =
             ValidateObjectableTransaction(repository: sl()),
-        super(ViolationDetailsState(violationsEntity: violationsEntity)) {
+        super(const ViolationDetailsState()) {
     on<ViolationDetailsEvent>((event, emit) {});
 
     on<GetViolationDetailsEvent>(_getViolationDetailsHandler);
@@ -34,7 +34,7 @@ class ViolationDetailsBloc
     on<GetGisLocationInfoEvent>(_getGisDataInfoHandler);
 
     on<ValidateObjectionDetailsTransactions>(_validateObjectableTransaction);
-    add(GetGisLocationInfoEvent());
+    add(const GetGisLocationInfoEvent());
   }
 
   Future<void> _getGisDataInfoHandler(
@@ -72,7 +72,6 @@ class ViolationDetailsBloc
             CommonProperties.selectedDelegator?.unifiedNationalNumber));
 
     await failureOrSuccess.fold((failure) {
-      print(failure);
       emitter(state.copyWith(
         status: BlocStatus.failure,
         errorMessage: (failure as ServerFailure).errorMessage,
