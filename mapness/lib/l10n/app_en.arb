@@ -167,6 +167,8 @@
   "nav_landing": "Services",
   "nav_profile": "Profile",
   "nav_route": "Routes",
+  "naviRoutesLocationDisabled": "Location services are disabled, please enable them to create route",
+  "naviRoutesLocationLoading": "Loading...",
   "next": "Next",
   "noThanks": "No thanks",
   "north": "North",
