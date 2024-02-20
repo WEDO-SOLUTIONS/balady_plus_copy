@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/features/_shared_feature_/balady_features/balady_exports.dart';
 import 'package:flutter/material.dart' hide SearchBar, ScrollPosition;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
@@ -107,7 +108,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
       },
       child: DraggableScrollableSheet(
         controller: _draggableScrollableController,
-        initialChildSize: widget.initWithMinSize?_headerExtent:.75,
+        initialChildSize: widget.initWithMinSize ? _headerExtent : .75,
         minChildSize: _headerExtent,
         maxChildSize: .9,
         snap: true,
@@ -166,6 +167,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                               height: 20,
                             ),
                             EventsHomeCardWrapper(
+                              colorScheme: ref.read(colorSchemeProvider),
                               key: ValueKey(
                                   'events_home_card_wrapper_${direction.name}'),
                             ),
@@ -180,7 +182,9 @@ class _DashboardState extends ConsumerState<Dashboard> {
                             const SizedBox(
                               height: 20,
                             ),
-                            const CalendarHomeCard(),
+                            CalendarHomeCard(
+                              colorScheme: ref.read(colorSchemeProvider),
+                            ),
                             const SizedBox(
                               height: 20,
                             ),

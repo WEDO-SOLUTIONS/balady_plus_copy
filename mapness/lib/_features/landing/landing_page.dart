@@ -19,7 +19,6 @@ import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -150,7 +149,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
                       },
                     );
                   }
-                  return SizedBox.shrink();
+                  return const SizedBox.shrink();
                 },
               ),
             ],
@@ -180,58 +179,62 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 }
 
 class MyWidget extends StatelessWidget {
-  final Function? onClose;
+  final void Function()? onClose;
 
   const MyWidget({super.key, this.onClose});
 
   @override
-  Widget build(BuildContext context) {
-    return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Stack(
-            children: [
-              IgnorePointer(),
-              const Image(
-                fit: BoxFit.fitWidth,
-                image: AssetImage(
-                  'assets/images/foundation_day_banner.png',
-                  package: PackageConfig.packageName,
-                ),
-              ),
-              Padding(
+  Widget build(BuildContext context) => Stack(
+        children: [
+          GestureDetector(
+            onTap: () => onClose?.call(),
+          ),
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+            child: Center(
+              child: Padding(
                 padding: const EdgeInsets.all(16),
-                child: Material(
-                  borderRadius: borderRadius,
-                  child: InkWell(
-                    borderRadius: borderRadius,
-                    onTap: () => onClose?.call(),
-                    child: Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(8),
-                        ),
-                        color: Color(0xff6B4E45).withAlpha(15),
-                      ),
-                      padding: const EdgeInsets.all(8.0),
-                      child: SvgPicture.asset(
-                        'assets/icons/svg/ic_search_close.svg',
-                        semanticsLabel: 'MinApps Screen',
+                child: Stack(
+                  children: [
+                    const Image(
+                      fit: BoxFit.fitWidth,
+                      image: AssetImage(
+                        'assets/images/foundation_day_banner.png',
                         package: PackageConfig.packageName,
-                        color: Color(0xff6B4E45),
                       ),
                     ),
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Material(
+                        borderRadius: borderRadius,
+                        child: InkWell(
+                          borderRadius: borderRadius,
+                          onTap: () => onClose?.call(),
+                          child: Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(8),
+                              ),
+                              color: const Color(0xff6B4E45).withAlpha(15),
+                            ),
+                            padding: const EdgeInsets.all(8.0),
+                            child: SvgPicture.asset(
+                              'assets/icons/svg/ic_search_close.svg',
+                              semanticsLabel: 'MinApps Screen',
+                              package: PackageConfig.packageName,
+                              color: const Color(0xff6B4E45),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
-        ),
-      ),
-    );
-  }
+        ],
+      );
 }
