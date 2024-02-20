@@ -40,6 +40,14 @@ codegen:
     fvm dart run build_runner build --delete-conflicting-outputs || true
     print_style '' 'yellow' '< code generated'
 
+codegen_dir path:
+    #!/bin/bash
+    set -euo pipefail
+    print_style '' 'yellow' '> generate code for: {{path}}'
+    cd mapness
+    fvm dart run build_runner build --build-filter="{{path}}" --delete-conflicting-outputs || true
+    print_style '' 'yellow' '< code generated: {{path}}'
+
 codegen-watch:
     #!/bin/bash
     set -euo pipefail

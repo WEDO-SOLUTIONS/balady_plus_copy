@@ -119,7 +119,7 @@ class RouteCell extends ConsumerWidget {
               Directionality(
                 textDirection: direction,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       route.duration.formatDuration(context.l10n),
