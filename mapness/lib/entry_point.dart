@@ -15,6 +15,7 @@ import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
 import 'package:mapness/_features/debug_overlay/debug_overlay.dart';
@@ -133,38 +134,42 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
             height: MediaQuery.of(context).size.height,
             child: const MapPage(),
           ),
-          MaterialApp.router(
-            routerConfig: goRouter,
-            theme: ThemeData(
-              primarySwatch: const MaterialColor(
-                0xFF4CA5B4,
-                <int, Color>{
-                  50: Color(0xFF89cfbe),
-                  100: Color(0xFF89cfbe),
-                  200: Color(0xFF89cfbe),
-                  300: Color(0xFF89cfbe),
-                  400: Color(0xFF89cfbe),
-                  500: Color(0xFF89cfbe),
-                  600: Color(0xFF89cfbe),
-                  700: Color(0xFF89cfbe),
-                  800: Color(0xFF89cfbe),
-                  900: Color(0xFF89cfbe),
-                },
+          Consumer(builder: (context, ref, child) {
+            final colorScheme = ref.watch(colorSchemeProvider);
+
+            return MaterialApp.router(
+              routerConfig: goRouter,
+              theme: ThemeData(
+                primarySwatch: const MaterialColor(
+                  0xFF4CA5B4,
+                  <int, Color>{
+                    50: Color(0xFF89cfbe),
+                    100: Color(0xFF89cfbe),
+                    200: Color(0xFF89cfbe),
+                    300: Color(0xFF89cfbe),
+                    400: Color(0xFF89cfbe),
+                    500: Color(0xFF89cfbe),
+                    600: Color(0xFF89cfbe),
+                    700: Color(0xFF89cfbe),
+                    800: Color(0xFF89cfbe),
+                    900: Color(0xFF89cfbe),
+                  },
+                ),
+                // unselectedWidgetColor: context.color.text_and_icons_base_primary,
+                scaffoldBackgroundColor: Colors.transparent,
+                dividerColor: Colors.grey[400],
+                useMaterial3: false,
+                extensions: <ThemeExtension<dynamic>>[
+                  ThemeTextStyles.arabic(isDark: false),
+                  AppColorsThemeExt.palette(colorScheme, isDark: false),
+                ],
               ),
-              // unselectedWidgetColor: context.color.text_and_icons_base_primary,
-              scaffoldBackgroundColor: Colors.transparent,
-              dividerColor: Colors.grey[400],
-              useMaterial3: false,
-              extensions: <ThemeExtension<dynamic>>[
-                ThemeTextStyles.arabic(isDark: false),
-                AppColorsThemeExt.palette(AppColorScheme.main, isDark: false),
-              ],
-            ),
-            locale: language.locale,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            debugShowCheckedModeBanner: false,
-          ),
+              locale: language.locale,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              debugShowCheckedModeBanner: false,
+            );
+          }),
         ],
       ),
     );
