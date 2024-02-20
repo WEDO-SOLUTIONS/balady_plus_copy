@@ -60,6 +60,7 @@ class EventItemCard extends StatelessWidget {
                     'assets/images/event_card_item_mask.png',
                     package: PackageConfig.packageName,
                     fit: BoxFit.cover,
+                    width: double.infinity,
                   ),
                 ),
               Container(
