@@ -60,7 +60,7 @@ class WorkCard extends StatelessWidget {
               height: 24,
               width: 24,
               colorFilter: ColorFilter.mode(
-                colorPrimary.withAlpha(125),
+                context.color.text_and_icons_base_primary.withAlpha(125),
                 BlendMode.srcATop,
               ),
             ),
@@ -69,8 +69,8 @@ class WorkCard extends StatelessWidget {
             ),
             Text(
               context.l10n.work,
-              style: const TextStyle(
-                color: colorPrimary,
+              style:  TextStyle(
+                color: context.color.text_and_icons_base_primary,
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
               ),
@@ -93,7 +93,7 @@ class HomeCard extends StatelessWidget {
               height: 24,
               width: 24,
               colorFilter: ColorFilter.mode(
-                colorPrimary.withAlpha(125),
+                context.color.text_and_icons_base_primary.withAlpha(125),
                 BlendMode.srcATop,
               ),
             ),
@@ -102,8 +102,8 @@ class HomeCard extends StatelessWidget {
             ),
             Text(
               context.l10n.home,
-              style: const TextStyle(
-                color: colorPrimary,
+              style:  TextStyle(
+                color: context.color.text_and_icons_base_primary,
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
               ),

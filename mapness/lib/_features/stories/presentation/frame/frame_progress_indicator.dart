@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/stories/presentation/frame/close_story_button.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class FrameProgressIndicator extends StatelessWidget {
   final VoidCallback? onClose;
@@ -33,8 +34,8 @@ class FrameProgressIndicator extends StatelessWidget {
             const SizedBox(width: 11),
             Expanded(
               child: ProgressIndicatorTheme(
-                data: const ProgressIndicatorThemeData(
-                  linearTrackColor: Color(0xFFD9D9D9),
+                data: ProgressIndicatorThemeData(
+                  linearTrackColor: context.color.surface_base_primary,
                   linearMinHeight: 2,
                   color: Colors.white,
                 ),

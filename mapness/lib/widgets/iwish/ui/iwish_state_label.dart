@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -25,8 +26,8 @@ class IwishStateLabel extends StatelessWidget {
               Theme.of(context).extension<ThemeTextStyles>()!.accentS.copyWith(
                       color: switch (state) {
                     IwishState.unknown => Colors.grey,
-                    IwishState.planned => const Color(0xFFFFB814),
-                    IwishState.completed => const Color(0xFF52B374),
+                    IwishState.planned => NonThemeColor.color20,
+                    IwishState.completed => NonThemeColor.color3,
                   }),
         ),
       );

@@ -159,7 +159,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                                       .extension<ThemeTextStyles>()!
                                       .accentL
                                       .copyWith(
-                                        color: const Color(0xFF1E2A36),
+                                        color: context.color.text_and_icons_base_primary,
                                       ),
                                 ),
                                 Text(
@@ -168,7 +168,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                                       .extension<ThemeTextStyles>()!
                                       .textS
                                       .copyWith(
-                                        color: const Color(0x801E2A36),
+                                        color: context.color.text_and_icons_base_tertiary,
                                       ),
                                 ),
                               ],
@@ -243,20 +243,20 @@ class _NearestObject extends StatelessWidget {
                 width: 20,
                 height: 20,
               ),
-              error: (_, __) => const SizedBox(
+              error: (_, __) => SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: Color(0xB21E2A36),
+                  color: context.color.text_and_icons_base_primary,
                 ),
               ),
-              loading: () => const SizedBox(
+              loading: () => SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: Color(0xB21E2A36),
+                  color: context.color.text_and_icons_base_primary,
                 ),
               ),
             ),
@@ -272,7 +272,7 @@ class _NearestObject extends StatelessWidget {
                     .extension<ThemeTextStyles>()!
                     .textM
                     .copyWith(
-                      color: const Color(0xFF1E2A36),
+                      color: context.color.text_and_icons_base_primary,
                     ),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -282,7 +282,7 @@ class _NearestObject extends StatelessWidget {
                     .extension<ThemeTextStyles>()!
                     .textM
                     .copyWith(
-                      color: const Color(0xFF1E2A36),
+                      color: context.color.text_and_icons_base_primary,
                     ),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -292,7 +292,7 @@ class _NearestObject extends StatelessWidget {
                     .extension<ThemeTextStyles>()!
                     .textM
                     .copyWith(
-                      color: const Color(0xFF1E2A36),
+                      color: context.color.text_and_icons_base_primary,
                     ),
                 overflow: TextOverflow.ellipsis,
               ),

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
@@ -500,7 +501,7 @@ class LayersControls extends _$LayersControls {
                     width: 30,
                   ),
                   textStyle: MarkerTextStyleMessage(
-                    color: const Color(0xFF1BA136).value,
+                    color: NonThemeColor.color26.value,
                     strokeColor: Colors.white.value,
                     strokeWidth: 1,
                     fontSize: 14,

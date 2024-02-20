@@ -148,21 +148,25 @@ class ProfilePage extends ConsumerWidget {
   }
 
   Widget _buildDivider() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      child: Container(
-        color: const Color(0xFFF5F7FA),
-        child: Padding(
-          padding: const EdgeInsets.only(
-            right: 52,
-            left: 8,
+    return Builder(
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: Container(
+            color: context.color.surface_base_secondary,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                right: 52,
+                left: 8,
+              ),
+              child: Divider(
+                height: 1,
+                color: context.color.text_and_icons_base_primary.withOpacity(0.2),
+              ),
+            ),
           ),
-          child: Divider(
-            height: 1,
-            color: const Color(0xFF1E2A36).withOpacity(0.2),
-          ),
-        ),
-      ),
+        );
+      }
     );
   }
 
@@ -179,7 +183,7 @@ class ProfilePage extends ConsumerWidget {
           height: 52,
           child: Material(
             borderRadius: BorderRadius.circular(12),
-            color: const Color(0xFFF5F7FA),
+            color: context.color.surface_base_secondary,
             child: InkWell(
               onTap: onTap,
               borderRadius: BorderRadius.circular(12),
@@ -195,8 +199,8 @@ class ProfilePage extends ConsumerWidget {
                       height: 24,
                       width: 24,
                       package: PackageConfig.packageName,
-                      colorFilter: const ColorFilter.mode(
-                        Color(0xFF1E928F),
+                      colorFilter: ColorFilter.mode(
+                        context.color.text_and_icons_status_accent,
                         BlendMode.srcIn,
                       ),
                     ),
@@ -211,7 +215,7 @@ class ProfilePage extends ConsumerWidget {
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
                             .textM
-                            .copyWith(color: const Color(0xFF1E2A36)),
+                            .copyWith(color: context.color.text_and_icons_base_primary),
                       ),
                     ),
                     const SizedBox(
@@ -224,8 +228,8 @@ class ProfilePage extends ConsumerWidget {
                       height: 24,
                       width: 24,
                       package: PackageConfig.packageName,
-                      colorFilter: const ColorFilter.mode(
-                        Color(0xFF1E2A36),
+                      colorFilter: ColorFilter.mode(
+                        context.color.text_and_icons_base_primary,
                         BlendMode.srcIn,
                       ),
                     ),
@@ -254,7 +258,7 @@ class AuthorizedRow extends ConsumerWidget {
 
     return Material(
       borderRadius: BorderRadius.circular(12),
-      color: const Color(0xFFF5F7FA),
+      color: context.color.surface_base_secondary,
       child: InkWell(
         onTap: () {
           const ProfileInfoPageRoute().push(context);
@@ -283,14 +287,14 @@ class AuthorizedRow extends ConsumerWidget {
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .textM
-                          .copyWith(color: const Color(0xFF1E2A36)),
+                          .copyWith(color: context.color.text_and_icons_base_primary),
                     ),
                     Text(
                       userData.idNo ?? "",
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .textS
-                          .copyWith(color: const Color(0x5C1E2A36)),
+                          .copyWith(color: context.color.text_and_icons_base_primary),
                     ),
                   ],
                 ),
@@ -304,8 +308,8 @@ class AuthorizedRow extends ConsumerWidget {
                     height: 24,
                     width: 24,
                     package: PackageConfig.packageName,
-                    colorFilter: const ColorFilter.mode(
-                      Color(0xFF1E2A36),
+                    colorFilter: ColorFilter.mode(
+                      context.color.text_and_icons_base_primary,
                       BlendMode.srcIn,
                     ),
                   );

@@ -1,5 +1,6 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class IwishTextEditingField extends StatefulWidget {
   final void Function(String) onChanged;
@@ -42,11 +43,11 @@ class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
       style: Theme.of(context)
           .extension<ThemeTextStyles>()!
           .textM
-          .copyWith(color: const Color(0xFF1D2A36)),
-      cursorColor: const Color(0xff4CA5B4),
+          .copyWith(color: context.color.text_and_icons_base_primary),
+      cursorColor: context.color.stroke_accent,
       decoration: InputDecoration(
         filled: true,
-        fillColor: const Color(0xffF4F4F5),
+        fillColor: context.color.surface_base_primary,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide.none,

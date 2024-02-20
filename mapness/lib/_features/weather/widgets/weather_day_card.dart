@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -43,8 +44,8 @@ class WeatherDayCard extends ConsumerWidget {
     final minTemp = '${forecastDay?.day?.mintempC.toString()}º';
 
     return CustomExpansionTile(
-      collapsedBackgroundColor: const Color(0xFFF5F7FA),
-      backgroundColor: const Color(0xffE4F2F1),
+      collapsedBackgroundColor: context.color.surface_base_secondary,
+      backgroundColor: NonThemeColor.color9,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
         12,
@@ -66,7 +67,7 @@ class WeatherDayCard extends ConsumerWidget {
               child: Text(
                 dayText,
                 style: style.accentM.copyWith(
-                  color: colorPrimary,
+                  color: context.color.text_and_icons_base_primary,
                 ),
                 maxLines: 1,
               ),
@@ -77,16 +78,14 @@ class WeatherDayCard extends ConsumerWidget {
                   CustomSvgIconWidget(
                     conditionIconPath,
                     iconSize: 16,
-                    iconColor: const Color(0xff4CA5B4),
+                    iconColor: context.color.stroke_accent,
                   ),
-                  const SizedBox(
-                    width: 8,
-                  ),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: AutoSizeText(
                       conditionText,
                       style: style.accentM.copyWith(
-                        color: colorPrimary,
+                        color: context.color.text_and_icons_base_primary,
                       ),
                       maxLines: 1,
                     ),
@@ -102,7 +101,7 @@ class WeatherDayCard extends ConsumerWidget {
                     maxTemp,
                     textDirection: TextDirection.ltr,
                     style: style.accentS.copyWith(
-                      color: colorPrimary,
+                      color: context.color.text_and_icons_base_primary,
                     ),
                     maxLines: 1,
                   ),
@@ -113,7 +112,7 @@ class WeatherDayCard extends ConsumerWidget {
                     minTemp,
                     textDirection: TextDirection.ltr,
                     style: style.textXS.copyWith(
-                      color: colorPrimary,
+                      color: context.color.text_and_icons_base_primary,
                     ),
                     maxLines: 1,
                   ),
@@ -163,8 +162,8 @@ class WeatherDayCard extends ConsumerWidget {
                                 hour.condition?.iconPath ?? '',
                                 height: 24,
                                 width: 24,
-                                colorFilter: const ColorFilter.mode(
-                                  Color(0xff4CA5B4),
+                                colorFilter: ColorFilter.mode(
+                                  context.color.stroke_accent,
                                   BlendMode.srcIn,
                                 ),
                               ),
@@ -175,7 +174,7 @@ class WeatherDayCard extends ConsumerWidget {
                             child: Text(
                               time,
                               style: style.textXS.copyWith(
-                                color: const Color(0x5B1E2A36),
+                                color: NonThemeColor.color10,
                               ),
                             ),
                           ),
@@ -183,7 +182,8 @@ class WeatherDayCard extends ConsumerWidget {
                             child: Text(
                               temperature,
                               style: style.accentS.copyWith(
-                                color: colorPrimary,
+                                color:
+                                    context.color.text_and_icons_base_primary,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w700,
                               ),

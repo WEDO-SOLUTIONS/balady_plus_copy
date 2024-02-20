@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/indoor_levels.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 
@@ -52,8 +53,8 @@ class _IndoorControl extends StatelessWidget {
                     .accentM
                     .copyWith(
                       color: e.levelIndex == state.active
-                          ? const Color(0xff4CA5B4)
-                          : const Color(0xff1E2A36),
+                          ? context.color.stroke_accent
+                          : context.color.text_and_icons_base_primary,
                     ),
               ),
             ),

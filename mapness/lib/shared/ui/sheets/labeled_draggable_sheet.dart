@@ -1,5 +1,7 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
@@ -29,7 +31,7 @@ class LabeledDraggableSheet extends StatelessWidget {
               width: 26,
               height: 3,
               decoration: ShapeDecoration(
-                color: const Color(0xFFDCE4EE),
+                color: NonThemeColor.color52,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(23),
                 ),
@@ -46,7 +48,7 @@ class LabeledDraggableSheet extends StatelessWidget {
                         .extension<ThemeTextStyles>()!
                         .headingS
                         .copyWith(
-                          color: const Color(0xFF1D2A36),
+                          color: context.color.text_and_icons_base_primary,
                         ),
                   ),
                 ),
