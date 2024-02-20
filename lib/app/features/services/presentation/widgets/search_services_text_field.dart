@@ -45,7 +45,7 @@ class _SearchServicesTextFieldState extends State<SearchServicesTextField> {
   @override
   Widget build(BuildContext context) {
     Color? textColor =
-        /*CommonFunctions.isFoundationDay() ? Color(0xff6B4E45) :*/ null;
+        CommonFunctions.isFoundationDay() ? Color(0xff6B4E45) : null;
 
     return BlocBuilder<ServicesCubit, ServicesState>(
       builder: (context, state) {
