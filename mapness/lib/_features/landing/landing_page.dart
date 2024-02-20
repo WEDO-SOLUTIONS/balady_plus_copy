@@ -41,8 +41,7 @@ class LandingPage extends ConsumerStatefulWidget {
 
 class _LandingPageState extends ConsumerState<LandingPage> {
   StreamSubscription<TapEvent>? _streamSubscription;
-  bool dialogWasShown = false;
-  bool needToShow = false;
+  bool needToShow = true;
 
   @override
   void initState() {
@@ -118,6 +117,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       // ref.watch(iwishMarkersProvider.select((value) => null));
       ..watch(mapObjectManagerProvider(named: MapnessConsts.mapLayerName));
 
+    final colorScheme = ref.read(colorSchemeProvider.notifier);
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Directionality(
@@ -135,6 +136,22 @@ class _LandingPageState extends ConsumerState<LandingPage> {
                   ///TODO: change while Dashboard refactoring
                   initWithMinSize: widget.focusMaker == LangingFocusMaker.iwish,
                 ),
+              ),
+              FutureBuilder(
+                future: colorScheme.needToShowBanner(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData && snapshot.data == true && needToShow) {
+                    return MyWidget(
+                      onClose: () {
+                        colorScheme.hideBanner();
+                        setState(() {
+                          needToShow = false;
+                        });
+                      },
+                    );
+                  }
+                  return SizedBox.shrink();
+                },
               ),
             ],
           ),
@@ -163,7 +180,9 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 }
 
 class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
+  final Function? onClose;
+
+  const MyWidget({super.key, this.onClose});
 
   @override
   Widget build(BuildContext context) {
@@ -174,6 +193,7 @@ class MyWidget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Stack(
             children: [
+              IgnorePointer(),
               const Image(
                 fit: BoxFit.fitWidth,
                 image: AssetImage(
@@ -182,12 +202,12 @@ class MyWidget extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.all(16),
                 child: Material(
                   borderRadius: borderRadius,
                   child: InkWell(
                     borderRadius: borderRadius,
-                    onTap: () {},
+                    onTap: () => onClose?.call(),
                     child: Container(
                       height: 40,
                       width: 40,
@@ -195,19 +215,14 @@ class MyWidget extends StatelessWidget {
                         borderRadius: const BorderRadius.all(
                           Radius.circular(8),
                         ),
-                        color: context.color.text_and_icons_base_primary
-                            .withAlpha(10),
+                        color: Color(0xff6B4E45).withAlpha(15),
                       ),
                       padding: const EdgeInsets.all(8.0),
                       child: SvgPicture.asset(
                         'assets/icons/svg/ic_search_close.svg',
                         semanticsLabel: 'MinApps Screen',
                         package: PackageConfig.packageName,
-                        colorFilter: ColorFilter.mode(
-                          context.color.text_and_icons_base_primary
-                              .withOpacity(0.7),
-                          BlendMode.srcIn,
-                        ),
+                        color: Color(0xff6B4E45),
                       ),
                     ),
                   ),

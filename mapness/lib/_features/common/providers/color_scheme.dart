@@ -7,15 +7,15 @@ part 'color_scheme.g.dart';
 @Riverpod(keepAlive: true)
 class ColorScheme extends _$ColorScheme {
   @override
-  AppColorScheme build() => AppColorScheme.main;
+  AppColorScheme build() => AppColorScheme.brown;
 
   Future<bool> needToShowBanner() async {
     final hive = await ref.read(hiveProvider('foundation_day').future);
-    Future.delayed(
-      const Duration(seconds: 3),
-      () => hive.put('foundation_day_dialog', false),
-    );
-    // return hive.get('foundation_day_dialog', defaultValue: true);
-    return true;
+    return hive.get('foundation_day_dialog', defaultValue: true);
+  }
+
+  Future<void> hideBanner() async {
+    final hive = await ref.read(hiveProvider('foundation_day').future);
+    await hive.put('foundation_day_dialog', false);
   }
 }
