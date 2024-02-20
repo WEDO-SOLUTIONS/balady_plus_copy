@@ -112,7 +112,7 @@ class OldEventHomeCard extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 margin: const EdgeInsets.all(16),
                 decoration: const BoxDecoration(
-                    color: Color(0xff4CA5B4),
+                    color: Color(0x8F4CA5B4),
                     borderRadius: BorderRadius.all(Radius.circular(4))),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
