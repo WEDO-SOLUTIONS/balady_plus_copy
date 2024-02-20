@@ -2,6 +2,7 @@ import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class JobButton extends StatelessWidget {
   final String label;
@@ -25,8 +26,8 @@ class JobButton extends StatelessWidget {
   Widget build(BuildContext context) => ElevatedButton(
         onPressed: enabled ? onPressed : null,
         style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? const Color(0xff4CA5B4),
-          disabledBackgroundColor: const Color(0xffDDDFE1),
+          backgroundColor: backgroundColor ?? context.color.stroke_accent,
+          disabledBackgroundColor: context.color.surface_base_primary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),

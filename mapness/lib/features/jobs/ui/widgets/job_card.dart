@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/jobs_map.dart';
 import 'package:mapness/features/jobs/data/models/job_model.dart';
 import 'package:mapness/features/jobs/ui/widgets/ui/time_distance_indicator.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 
 class JobCard extends ConsumerWidget {
@@ -55,7 +56,7 @@ class JobCard extends ConsumerWidget {
                     .extension<ThemeTextStyles>()!
                     .accentM
                     .copyWith(
-                      color: const Color(0xff1E2A36),
+                      color: context.color.text_and_icons_base_primary,
                     ),
               ),
               Text(
@@ -64,7 +65,7 @@ class JobCard extends ConsumerWidget {
                     .extension<ThemeTextStyles>()!
                     .textS
                     .copyWith(
-                      color: const Color(0xff1E2A36).withOpacity(.5),
+                      color: context.color.text_and_icons_base_primary.withOpacity(.5),
                     ),
               ),
               if (jobModel.description != null)
@@ -76,7 +77,7 @@ class JobCard extends ConsumerWidget {
                         .extension<ThemeTextStyles>()!
                         .textS
                         .copyWith(
-                          color: const Color(0xff1E2A36),
+                          color: context.color.text_and_icons_base_primary,
                         ),
                   ),
                 ),

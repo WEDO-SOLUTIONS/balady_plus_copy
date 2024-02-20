@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/jobs/providers/job_detail_provider.dart';
 import 'package:mapness/features/jobs/ui/widgets/ui/header_wrapper.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:shimmer/shimmer.dart';
 
 const double headerSize = 100;
@@ -107,7 +108,7 @@ class DashboardHeader extends ConsumerWidget {
                             .extension<ThemeTextStyles>()!
                             .textS
                             .apply(
-                              color: const Color(0xff1E2A36).withOpacity(.5),
+                              color: context.color.text_and_icons_base_primary.withOpacity(.5),
                             ),
                       ),
                     ],

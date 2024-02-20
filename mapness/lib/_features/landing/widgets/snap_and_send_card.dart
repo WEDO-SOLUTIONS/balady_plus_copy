@@ -1,16 +1,19 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_uikit/colors/app_color_scheme.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart' as mapness;
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
-class SnapAndSendCard extends StatelessWidget {
+class SnapAndSendCard extends ConsumerWidget {
   const SnapAndSendCard({super.key});
 
   @override
-  Widget build(BuildContext context) => Padding(
+  Widget build(BuildContext context, WidgetRef ref) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -21,7 +24,7 @@ class SnapAndSendCard extends StatelessWidget {
                   .extension<ThemeTextStyles>()!
                   .accentL
                   .copyWith(
-                    color: const Color(0xFF1E2A36),
+                    color: context.color.text_and_icons_base_primary,
                   ),
             ),
             const SizedBox(
@@ -31,9 +34,11 @@ class SnapAndSendCard extends StatelessWidget {
               height: 189,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                image: const DecorationImage(
+                image: DecorationImage(
                   image: AssetImage(
-                    'assets/images/snap_and_send_card.png',
+                    ref.read(colorSchemeProvider) == AppColorScheme.brown
+                        ? 'assets/images/snap_and_send_card_brown.png'
+                        : 'assets/images/snap_and_send_card.png',
                     package: PackageConfig.packageName,
                   ),
                   fit: BoxFit.cover,
@@ -91,7 +96,9 @@ class SnapAndSendCard extends StatelessWidget {
                       ),
                     ),
                     Image.asset(
-                      'assets/images/snap_and_send_phone.png',
+                      ref.read(colorSchemeProvider) == AppColorScheme.brown
+                          ? 'assets/images/snap_and_send_phone_brown.png'
+                          : 'assets/images/snap_and_send_phone.png',
                       package: PackageConfig.packageName,
                     ),
                   ],

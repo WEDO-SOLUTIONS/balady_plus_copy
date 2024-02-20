@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class FavouritesToggle extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: ShapeDecoration(
-        color: const Color(0x238DBABD),
+        color: NonThemeColor.color46,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: Row(
@@ -31,12 +32,12 @@ class FavouritesToggle extends ConsumerWidget {
             style: Theme.of(context)
                 .extension<ThemeTextStyles>()!
                 .textL
-                .copyWith(color: const Color(0xFF001022)),
+                .copyWith(color: NonThemeColor.color47),
           ),
           const Spacer(),
           CupertinoSwitch(
             value: state,
-            activeColor: const Color(0xFF42909B),
+            activeColor: NonThemeColor.color32,
             onChanged: isEditing
                 ? null
                 : (_) async {

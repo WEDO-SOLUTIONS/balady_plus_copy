@@ -30,7 +30,7 @@ extension IwishMarkerMapper on IwishMarker {
         ),
         // text: "JOY Parks",
         // textStyle: MarkerTextStyleMessage(
-        //   color: const Color(0xFF1BA136).value,
+        //   color: NonThemeColor.color26.value,
         //   strokeColor: Colors.white.value,
         //   strokeWidth: 1,
         //   fontSize: 14,

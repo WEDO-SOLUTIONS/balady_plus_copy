@@ -9,6 +9,7 @@ import 'package:mapness/_features/poi_card/widgets/poi_tabs.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/features/routing/ui/brief_route_widgets.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 
 const mockArabickText =
@@ -86,17 +87,24 @@ class PoiHeader extends ConsumerWidget {
     );
   }
 
-  Widget _scrollHandle() => Center(
-          child: Container(
-        decoration: BoxDecoration(
-          borderRadius: borderRadius,
-          color: colorPrimary.withOpacity(0.1),
-        ),
-        height: 4,
-        width: 40,
-      ));
+  Widget _scrollHandle() =>
+      Center(
+          child: Builder(
+              builder: (context) {
+                return Container(
+                  decoration: BoxDecoration(
+                    borderRadius: borderRadius,
+                    color: context.color.text_and_icons_base_primary
+                        .withOpacity(0.1),
+                  ),
+                  height: 4,
+                  width: 40,
+                );
+              }
+          ));
 
-  Widget _subTitle(BuildContext context, String text, PoiModel data) => Row(
+  Widget _subTitle(BuildContext context, String text, PoiModel data) =>
+      Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Flexible(
@@ -105,7 +113,7 @@ class PoiHeader extends ConsumerWidget {
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()!
                   .textS
-                  .copyWith(color: colorPrimary),
+                  .copyWith(color: context.color.text_and_icons_base_primary),
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
               // textAlign: TextAlign.right,
@@ -125,7 +133,7 @@ class PoiHeader extends ConsumerWidget {
     final titleTextStyle = Theme.of(context)
         .extension<ThemeTextStyles>()!
         .headingS
-        .copyWith(color: colorPrimary);
+        .copyWith(color: context.color.text_and_icons_base_primary);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -144,58 +152,66 @@ class PoiHeader extends ConsumerWidget {
     );
   }
 
-  Widget _titleAddition(BuildContext context, String text) => text.isNotEmpty
-      ? Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Flexible(
-              child: Text(
-                text,
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .textS
-                    .copyWith(color: colorPrimary.withOpacity(0.5)),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                textAlign: TextAlign.start,
-              ),
-            ),
-            const SizedBox(
-              width: 56,
-            )
-          ],
-        )
-      : const SizedBox.shrink();
-
-  Widget _buildcloseButton() => Padding(
-        padding: const EdgeInsets.only(bottom: 16),
-        child: Material(
-          borderRadius: borderRadius,
-          child: InkWell(
-            borderRadius: borderRadius,
-            onTap: onTapClose,
-            child: Container(
-              height: 40,
-              width: 40,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(8),
-                ),
-                color: colorPrimary.withAlpha(10),
-              ),
-              padding: const EdgeInsets.all(8.0),
-              child: SvgPicture.asset(
-                'assets/icons/svg/ic_search_close.svg',
-                semanticsLabel: 'MinApps Screen',
-                package: PackageConfig.packageName,
-                colorFilter: ColorFilter.mode(
-                  colorPrimary.withOpacity(0.7),
-                  BlendMode.srcIn,
-                ),
-              ),
+  Widget _titleAddition(BuildContext context, String text) =>
+      text.isNotEmpty
+          ? Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Flexible(
+            child: Text(
+              text,
+              style: Theme.of(context)
+                  .extension<ThemeTextStyles>()!
+                  .textS
+                  .copyWith(
+                  color: context.color.text_and_icons_base_primary.withOpacity(
+                      0.5)),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              textAlign: TextAlign.start,
             ),
           ),
-        ),
+          const SizedBox(
+            width: 56,
+          )
+        ],
+      )
+          : const SizedBox.shrink();
+
+  Widget _buildcloseButton() =>
+      Builder(
+        builder: (context) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Material(
+              borderRadius: borderRadius,
+              child: InkWell(
+                borderRadius: borderRadius,
+                onTap: onTapClose,
+                child: Container(
+                  height: 40,
+                  width: 40,
+                  decoration: BoxDecoration(
+                    borderRadius:  BorderRadius.all(
+                      Radius.circular(8),
+                    ),
+                    color: context.color.text_and_icons_base_primary.withAlpha(10),
+                  ),
+                  padding: const EdgeInsets.all(8.0),
+                  child: SvgPicture.asset(
+                    'assets/icons/svg/ic_search_close.svg',
+                    semanticsLabel: 'MinApps Screen',
+                    package: PackageConfig.packageName,
+                    colorFilter: ColorFilter.mode(
+                      context.color.text_and_icons_base_primary.withOpacity(0.7),
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
       );
 }

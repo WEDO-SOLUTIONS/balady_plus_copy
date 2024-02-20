@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -45,7 +46,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: const Color(0xfff4383c),
+          color: NonThemeColor.color57 ,
         ),
         child: isDismissed
             ? null
@@ -96,7 +97,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .textM
-                          .copyWith(color: const Color(0xff1e2936)),
+                          .copyWith(color: context.color.text_and_icons_base_primary),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -104,7 +105,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .textS
-                          .copyWith(color: const Color(0xff346263)),
+                          .copyWith(color: NonThemeColor.color33),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],

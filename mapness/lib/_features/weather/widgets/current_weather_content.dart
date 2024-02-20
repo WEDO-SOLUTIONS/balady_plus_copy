@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/weather/provider/forecast_weather_provider.dart';
@@ -18,7 +19,7 @@ class CurrentWeatherContent extends ConsumerWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           gradient: const LinearGradient(
-            colors: [Color(0xff046F6D), Color(0xff84BC47)],
+            colors: [NonThemeColor.color68, NonThemeColor.color69],
           ),
         ),
         child: Column(

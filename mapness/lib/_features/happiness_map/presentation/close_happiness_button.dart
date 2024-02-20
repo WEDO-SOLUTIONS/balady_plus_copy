@@ -1,6 +1,8 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class CloseHappinessButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -13,7 +15,7 @@ class CloseHappinessButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: const Color(0xfff4f4f5),
+          color: context.color.surface_base_primary,
           borderRadius: BorderRadius.circular(8),
         ),
         child: SvgPicture.asset(
@@ -22,7 +24,7 @@ class CloseHappinessButton extends StatelessWidget {
           width: 16,
           package: PackageConfig.packageName,
           colorFilter: const ColorFilter.mode(
-            Color(0xff898e96),
+            NonThemeColor.color40,
             BlendMode.srcIn,
           ),
         ),

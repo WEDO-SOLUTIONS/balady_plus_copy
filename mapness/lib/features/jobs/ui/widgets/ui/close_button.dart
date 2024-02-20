@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class CloseButton extends StatelessWidget {
   final VoidCallback onTap;
@@ -19,12 +20,12 @@ class CloseButton extends StatelessWidget {
           child: Container(
             height: 40,
             width: 40,
-            decoration: const BoxDecoration(
+            decoration:  BoxDecoration(
               borderRadius: BorderRadius.all(
                 Radius.circular(8),
               ),
               // color: Colors.white,
-              color: Color(0xffF4F4F5),
+              color: context.color.surface_base_primary,
             ),
             padding: const EdgeInsets.all(8.0),
             child: SvgPicture.asset(
@@ -32,7 +33,7 @@ class CloseButton extends StatelessWidget {
               semanticsLabel: 'MinApps Screen',
               package: 'mapness',
               colorFilter: ColorFilter.mode(
-                const Color(0xff1E2A36).withOpacity(0.7),
+                context.color.text_and_icons_base_primary.withOpacity(0.7),
                 BlendMode.srcIn,
               ),
             ),

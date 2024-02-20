@@ -25,7 +25,7 @@ class Description extends StatelessWidget {
                   .extension<ThemeTextStyles>()
                   ?.textM
                   .copyWith(
-                    color: const Color(0xFF1E2A36),
+                    color: context.color.text_and_icons_base_primary,
                     height: 1.5,
                   ),
             ),
@@ -38,7 +38,7 @@ class Description extends StatelessWidget {
                   .extension<ThemeTextStyles>()
                   ?.textS
                   .copyWith(
-                    color: const Color(0x801E2A36),
+                    color: context.color.text_and_icons_base_tertiary,
                     height: 1.5,
                   ),
             ),
