@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -70,9 +71,9 @@ class IwishPlaceCard extends ConsumerWidget {
                         const SizedBox(height: 8),
                         Expanded(
                           child: Container(
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               // color: Colors.white,
-                              color: Color(0xffF4F4F5),
+                              color: context.color.surface_base_primary,
                               borderRadius:
                               BorderRadius.vertical(top: Radius.circular(12)),
                             ),
@@ -153,10 +154,8 @@ class IwishPlaceCard extends ConsumerWidget {
                                               const EdgeInsetsDirectional.only(
                                                 start: 8,
                                               ),
-                                              foreground: const Color(
-                                                  0xFF1E2A36),
-                                              background: const Color(
-                                                  0x1F566B83),
+                                              foreground: context.color.text_and_icons_base_primary,
+                                              background: NonThemeColor.color60,
                                               finishPoint: RouteSearchPointMessage(
                                                 coordinates: GeoPointMessage(
                                                   latitude:

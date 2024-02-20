@@ -21,7 +21,7 @@ class SnapAndSendCard extends StatelessWidget {
                   .extension<ThemeTextStyles>()!
                   .accentL
                   .copyWith(
-                    color: const Color(0xFF1E2A36),
+                    color: context.color.text_and_icons_base_primary,
                   ),
             ),
             const SizedBox(

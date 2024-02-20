@@ -68,7 +68,7 @@ class PoiCardFooter extends ConsumerWidget {
           //         style: Theme.of(context)
           //             .extension<ThemeTextStyles>()!
           //             .accentS
-          //             .copyWith(color: colorPrimary.withOpacity(0.5)),
+          //             .copyWith(color: context.color.text_and_icons_base_primary.withOpacity(0.5)),
           //         overflow: TextOverflow.ellipsis,
           //         maxLines: 1,
           //         textAlign: TextAlign.start,
@@ -109,7 +109,7 @@ class PoiCardFooter extends ConsumerWidget {
             //         style: Theme.of(context)
             //             .extension<ThemeTextStyles>()!
             //             .accentS
-            //             .copyWith(color: colorPrimary.withOpacity(0.5)),
+            //             .copyWith(color: context.color.text_and_icons_base_primary.withOpacity(0.5)),
             //         overflow: TextOverflow.ellipsis,
             //         maxLines: 1,
             //         textAlign: TextAlign.start,
@@ -123,7 +123,7 @@ class PoiCardFooter extends ConsumerWidget {
     //       desc: (hasEntrances == false && hasContacts == false)
     //           ? Text(
     //               'يشارك',
-    //               style: Theme.of(context).extension<ThemeTextStyles>()!.accentS.copyWith(color: colorPrimary.withOpacity(0.5)),
+    //               style: Theme.of(context).extension<ThemeTextStyles>()!.accentS.copyWith(color: context.color.text_and_icons_base_primary.withOpacity(0.5)),
     //               overflow: TextOverflow.ellipsis,
     //               maxLines: 1,
     //               textAlign: TextAlign.start,

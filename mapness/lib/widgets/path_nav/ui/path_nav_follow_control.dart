@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,7 +17,7 @@ class PathNavFollowControl extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final followState = ref.watch(followStateProvider);
     final iconColor = followState.type != LocationFollowType.off
-        ? const Color(0xFF7D9CBD)
+        ? NonThemeColor.color30
         : Colors.black;
 
     return AnimatedOpacity(

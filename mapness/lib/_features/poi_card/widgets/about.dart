@@ -40,7 +40,7 @@ class _AboutState extends State<About> {
             style: Theme.of(context)
                 .extension<ThemeTextStyles>()!
                 .textM
-                .copyWith(color: colorPrimary),
+                .copyWith(color: context.color.text_and_icons_base_primary),
             overflow: TextOverflow.ellipsis,
             maxLines: 5,
             textAlign: TextAlign.start,
@@ -53,7 +53,7 @@ class _AboutState extends State<About> {
           //   style: Theme.of(context)
           //       .extension<ThemeTextStyles>()!
           //       .textS
-          //       .copyWith(color: colorPrimary),
+          //       .copyWith(color: context.color.text_and_icons_base_primary),
           //   maxLines: 5,
           //   textAlign: TextAlign.start,
           // ),
@@ -62,7 +62,7 @@ class _AboutState extends State<About> {
               height: 8,
             ),
             Material(
-              color: colorPrimary.withAlpha(10),
+              color: context.color.text_and_icons_base_primary.withAlpha(10),
               borderRadius: borderRadius,
               child: InkWell(
                 onTap: widget.onEntranceTap,
@@ -74,7 +74,7 @@ class _AboutState extends State<About> {
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
                         .accentS
-                        .copyWith(color: colorPrimary),
+                        .copyWith(color: context.color.text_and_icons_base_primary),
                   ),
                 ),
               ),

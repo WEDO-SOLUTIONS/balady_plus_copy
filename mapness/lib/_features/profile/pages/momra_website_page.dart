@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,7 +28,7 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
 
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(const Color(0x00000000))
+      ..setBackgroundColor(NonThemeColor.color70)
       ..setNavigationDelegate(
         NavigationDelegate(
           onProgress: (int progress) {},
@@ -70,7 +71,7 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
                           width: 40,
                           child: Material(
                             borderRadius: BorderRadius.circular(8),
-                            color: const Color(0xFFF5F7FA),
+                            color: context.color.surface_base_secondary,
                             child: InkWell(
                               onTap: () {
                                 context.pop();
@@ -85,8 +86,8 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
                                   height: 24,
                                   width: 24,
                                   package: PackageConfig.packageName,
-                                  colorFilter: const ColorFilter.mode(
-                                    Color(0xFF1E2A36),
+                                  colorFilter:  ColorFilter.mode(
+                                    context.color.text_and_icons_base_primary,
                                     BlendMode.srcIn,
                                   ),
                                 ),
@@ -101,7 +102,7 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
                             .accentM
-                            .copyWith(color: const Color(0xFF1E2A36)),
+                            .copyWith(color: context.color.text_and_icons_base_primary),
                       ),
                       const Spacer(),
                       const SizedBox(

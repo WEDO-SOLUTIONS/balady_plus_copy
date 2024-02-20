@@ -48,8 +48,8 @@ class RoutingFavouritesPage extends StatelessWidget {
                         height: 24,
                         width: 24,
                         package: PackageConfig.packageName,
-                        colorFilter: const ColorFilter.mode(
-                          Color(0xB21E2A36),
+                        colorFilter:  ColorFilter.mode(
+                          context.color.text_and_icons_base_primary,
                           BlendMode.srcIn,
                         ),
                       ),

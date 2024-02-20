@@ -16,12 +16,13 @@ class ContactInfo extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: Container(
-              color: const Color(0xFFF5F7FA),
+              color: context.color.surface_base_secondary,
               child: Padding(
                 padding: const EdgeInsets.only(right: 52),
                 child: Divider(
                   height: 1,
-                  color: const Color(0xFF1E2A36).withOpacity(0.2),
+                  color: context.color.text_and_icons_base_primary
+                      .withOpacity(0.2),
                 ),
               ),
             ),
@@ -34,12 +35,13 @@ class ContactInfo extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: Container(
-              color: const Color(0xFFF5F7FA),
+              color: context.color.surface_base_secondary,
               child: Padding(
                 padding: const EdgeInsets.only(right: 52),
                 child: Divider(
                   height: 1,
-                  color: const Color(0xFF1E2A36).withOpacity(0.2),
+                  color: context.color.text_and_icons_base_primary
+                      .withOpacity(0.2),
                 ),
               ),
             ),
@@ -67,7 +69,7 @@ class ContactRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-        color: const Color(0xFFF5F7FA),
+        color: context.color.surface_base_secondary,
         borderRadius: BorderRadius.only(
             bottomLeft:
                 border ? const Radius.circular(12) : const Radius.circular(0),
@@ -97,7 +99,8 @@ class ContactRow extends StatelessWidget {
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .textM
-                          .copyWith(color: const Color(0xFF1E2A36)),
+                          .copyWith(
+                              color: context.color.text_and_icons_base_primary),
                     ),
                     Text(
                       subtitle,
@@ -105,7 +108,8 @@ class ContactRow extends StatelessWidget {
                           .extension<ThemeTextStyles>()!
                           .textS
                           .copyWith(
-                              color: const Color(0xFF1E2A36).withOpacity(0.36)),
+                              color: context.color.text_and_icons_base_primary
+                                  .withOpacity(0.36)),
                     ),
                   ],
                 ),

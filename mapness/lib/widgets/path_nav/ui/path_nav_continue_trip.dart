@@ -16,7 +16,7 @@ class PathNavContinueTrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: const Color(0xff4CA5B4),
+      color: context.color.stroke_accent,
       borderRadius: BorderRadius.circular(16),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),

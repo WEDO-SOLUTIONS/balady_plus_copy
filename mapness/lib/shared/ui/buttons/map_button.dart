@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 
 class MapButton extends StatefulWidget {
@@ -65,7 +66,7 @@ class _MapButtonState extends State<MapButton> {
         child: Material(
           borderRadius: widget.borderRadius,
           color: _pressed
-              ? const Color(0x261E2A36)
+              ? NonThemeColor.color53
               : Colors.white.withOpacity(0.8),
           child: Container(
             constraints: const BoxConstraints(minWidth: 48),
