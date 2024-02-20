@@ -59,7 +59,7 @@ class WebService {
       PrettyDioLogger(
         requestHeader: false,
         requestBody: false,
-        responseBody: true,
+        responseBody: false,
       ),
     );
     dio.interceptors.add(AppInterceptors());
