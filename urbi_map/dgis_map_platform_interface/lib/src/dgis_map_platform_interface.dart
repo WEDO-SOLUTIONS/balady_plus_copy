@@ -92,7 +92,7 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<void> onZoomAction(ZoomControlType btn, {required bool isPressed});
 
-  Future<void> setFollowState(FollowStateMessage state);
+  Future<void> toggleFollowState();
 
   Future<void> followNavigation();
 

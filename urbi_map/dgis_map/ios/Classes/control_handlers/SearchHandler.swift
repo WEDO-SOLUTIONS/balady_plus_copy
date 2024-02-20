@@ -471,6 +471,7 @@ class SearchHandler: NSObject {
             
         let suggestQuery = suggestQueryBuilder.build()
 
+        suggestCancelable?.cancel()
         suggestCancelable = searchManager.suggest(query: suggestQuery).sink(
             receiveValue: {
                 [weak self] response in
