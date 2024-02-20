@@ -1,8 +1,10 @@
 import 'dart:ui';
 
 import 'package:dgis_map/library.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 enum RoutePointType { object, myLocation }
 
@@ -11,7 +13,7 @@ sealed class RoutePoint {
 
   String? title(AppLocalizations locale);
 
-  Color get titleColor;
+  Color titleColor(BuildContext context);
 
   bool get isNotEmpty;
 
@@ -37,7 +39,7 @@ class RoutePointMyLocation extends RoutePoint {
   String? title(AppLocalizations locale) => locale.myLocation;
 
   @override
-  Color get titleColor => const Color(0xFF1E2A36);
+  Color titleColor(BuildContext context) => context.color.text_and_icons_base_primary;
 }
 
 class RoutePointCoordinates extends RoutePoint {
@@ -62,7 +64,7 @@ class RoutePointCoordinates extends RoutePoint {
       '${coords.latitude.toStringAsFixed(5)}, ${coords.longitude.toStringAsFixed(5)}';
 
   @override
-  Color get titleColor => const Color(0xFF1E2A36);
+  Color titleColor(BuildContext context) => context.color.text_and_icons_base_primary;
 }
 
 class RoutePointDirectoryObject extends RoutePoint {
@@ -86,8 +88,9 @@ class RoutePointDirectoryObject extends RoutePoint {
   String? title(AppLocalizations locale) => object?.title;
 
   @override
-  Color get titleColor =>
-      object == null ? const Color(0x801E2A36) : const Color(0xFF1E2A36);
+  Color titleColor(BuildContext context) =>
+      object == null ? context.color.text_and_icons_base_tertiary :
+      context.color.text_and_icons_base_primary;
 }
 
 class RoutePointFavouriteItem extends RoutePoint {
@@ -111,6 +114,6 @@ class RoutePointFavouriteItem extends RoutePoint {
   String? title(AppLocalizations locale) => item?.title;
 
   @override
-  Color get titleColor =>
-      item == null ? const Color(0x801E2A36) : const Color(0xFF1E2A36);
+  Color titleColor(BuildContext context) =>
+      item == null ? context.color.text_and_icons_base_tertiary : context.color.text_and_icons_base_primary;
 }

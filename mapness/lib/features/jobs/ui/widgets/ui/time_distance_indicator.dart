@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/features/jobs/providers/job_distance_provider.dart';
 import 'package:mapness/features/path_nav/lib/number_formatters.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class TimeDistanceIndicator extends ConsumerWidget {
   final double latitude;
@@ -36,7 +37,7 @@ class TimeDistanceIndicator extends ConsumerWidget {
             SvgPicture.asset(
               'assets/icons/svg/ic_car.svg',
               colorFilter: ColorFilter.mode(
-                const Color(0xff1E2A36).withOpacity(.5),
+                context.color.text_and_icons_base_primary.withOpacity(.5),
                 BlendMode.srcIn,
               ),
               package: PackageConfig.packageName,
@@ -48,7 +49,7 @@ class TimeDistanceIndicator extends ConsumerWidget {
                   .extension<ThemeTextStyles>()!
                   .textS
                   .copyWith(
-                    color: const Color(0xff1E2A36).withOpacity(.5),
+                    color: context.color.text_and_icons_base_primary.withOpacity(.5),
                   ),
             ),
           ],

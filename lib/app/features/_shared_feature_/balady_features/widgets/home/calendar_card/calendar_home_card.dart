@@ -5,6 +5,7 @@ import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_bloc.dart';
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart';
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_state.dart';
+import 'package:balady_uikit/colors/app_color_scheme.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,8 +16,11 @@ import '../../../../../calendar/domain/entities/search_calendar/search_calendar_
 import '../../../../presentation/widgets/custom_shimmer_list_widget.dart';
 
 class CalendarHomeCard extends StatelessWidget {
+  final AppColorScheme colorScheme;
+
   const CalendarHomeCard({
     super.key,
+    required this.colorScheme,
   });
 
   @override
@@ -92,6 +96,7 @@ class CalendarHomeCard extends StatelessWidget {
                       width: MediaQuery.of(context).size.width - 60,
                       padding: const EdgeInsets.only(top: 0, right: 16),
                       item: state.searchItems[index],
+                      colorScheme: colorScheme,
                     );
                   },
                 ),

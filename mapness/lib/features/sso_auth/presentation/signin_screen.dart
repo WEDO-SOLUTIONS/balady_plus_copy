@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,8 +22,8 @@ class SigninScreen extends ConsumerWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    const Color(0xff499959),
-                    const Color(0xff07726D),
+                    NonThemeColor.color12,
+                    NonThemeColor.color13,
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -67,7 +68,7 @@ class SigninScreen extends ConsumerWidget {
                       context.pop();
                     },
                     label: context.l10n.signIn,
-                    textColor: const Color(0xff4CA5B4),
+                    textColor: context.color.stroke_accent,
                     backgroundColor: Colors.white,
                   ),
                 ),
@@ -95,7 +96,7 @@ class SigninScreen extends ConsumerWidget {
               borderRadius: const BorderRadius.all(
                 Radius.circular(8),
               ),
-              color: const Color(0xff1E2A36).withOpacity(0.05),
+              color: context.color.text_and_icons_base_primary.withOpacity(0.05),
             ),
             padding: const EdgeInsets.all(8.0),
             child: SvgPicture.asset(

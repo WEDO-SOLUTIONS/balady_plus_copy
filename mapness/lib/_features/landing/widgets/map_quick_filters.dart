@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/debouncer.dart';
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -101,7 +102,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
         });
       },
       selectedIndex: selectedFilter?.$2,
-      itemBackground: widget.forMap ? Colors.white : const Color(0x0D1E2A36),
+      itemBackground: widget.forMap ? Colors.white : NonThemeColor.color11,
       customFilters: widget.customFilters,
       onCustomTap: widget.onCustomTap,
       padding: widget.forMap

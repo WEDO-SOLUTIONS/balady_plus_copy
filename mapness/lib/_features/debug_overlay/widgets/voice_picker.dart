@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_packages.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
 
@@ -80,7 +82,7 @@ class VoiceRow extends ConsumerWidget {
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()
                       ?.textXS
-                      .copyWith(color: const Color(0xB21E2A36)),
+                      .copyWith(color: context.color.text_and_icons_base_primary),
                 ),
               const Spacer(),
               Column(
@@ -91,7 +93,7 @@ class VoiceRow extends ConsumerWidget {
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()
                         ?.textM
-                        .copyWith(color: const Color(0xFF1E2A36)),
+                        .copyWith(color: context.color.text_and_icons_base_primary),
                   ),
                   Text(
                     "${packageInfo.installed ? "Installed" : "Not installed"}${packageInfo.hasUpdate ? " · Update available" : ""}",
@@ -100,8 +102,8 @@ class VoiceRow extends ConsumerWidget {
                         ?.textXS
                         .copyWith(
                             color: packageInfo.installed
-                                ? const Color(0xFF4CA5B4)
-                                : const Color(0xFFD14733)),
+                                ? context.color.stroke_accent
+                                : NonThemeColor.color1),
                   ),
                 ],
               ),

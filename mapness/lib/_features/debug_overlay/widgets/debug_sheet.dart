@@ -2,6 +2,7 @@ import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_features/debug_overlay/widgets/colorscheme_toggler.dart';
 import 'package:mapness/_features/debug_overlay/widgets/debug_navigation_controll.dart';
 import 'package:mapness/_features/debug_overlay/widgets/debug_server_url.dart';
 import 'package:mapness/_features/debug_overlay/widgets/sso_credential_view.dart';
@@ -190,6 +191,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   const SsoCredentialView(),
                   const VoicePicker(),
                   const DebugNavigationControll(),
+                  const ColorschemeToggler(),
                 ],
               ),
             ),

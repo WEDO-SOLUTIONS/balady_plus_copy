@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide SearchBar, ScrollPosition;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/jobs/ui/widgets/job_detail.dart';
 import 'package:mapness/features/jobs/ui/widgets/job_detail_header.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class JobDetailSheet extends ConsumerStatefulWidget {
   final String jobId;
@@ -49,8 +50,8 @@ class _JobDetailSheetState extends ConsumerState<JobDetailSheet> {
         builder: (context, scrollController) => Directionality(
           textDirection: Directionality.of(context),
           child: Container(
-            decoration: const BoxDecoration(
-              color: Color(0xffF4F4F5),
+            decoration:  BoxDecoration(
+              color: context.color.surface_base_primary,
               borderRadius: BorderRadius.only(
                 topRight: Radius.circular(16.0),
                 topLeft: Radius.circular(16.0),

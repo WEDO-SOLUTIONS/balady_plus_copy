@@ -1,8 +1,10 @@
+import 'package:balady_uikit/colors/app_color_scheme.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 import '../../../../../../core/utils/common_functions.dart';
 import '../../../../../../core/utils/constants/ux_cam_events.dart';
@@ -12,8 +14,14 @@ class CalendarHomeItemCard extends StatelessWidget {
   final SearchCalendarItem item;
   final double? width;
   final EdgeInsets? padding;
-  const CalendarHomeItemCard(
-      {super.key, required this.item, this.width, this.padding});
+  final AppColorScheme colorScheme;
+  const CalendarHomeItemCard({
+    super.key,
+    required this.item,
+    this.width,
+    this.padding,
+    required this.colorScheme,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +37,11 @@ class CalendarHomeItemCard extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        image: const DecorationImage(
+        image: DecorationImage(
           image: AssetImage(
-            "assets/images/calendar_card.png",
+            colorScheme == AppColorScheme.brown
+                ? "assets/images/calendar_card_brown.png"
+                : "assets/images/calendar_card.png",
             package: PackageConfig.packageName,
           ),
           fit: BoxFit.cover,
@@ -180,7 +190,7 @@ class SaudiContainer extends StatelessWidget {
                     .extension<ThemeTextStyles>()
                     ?.accentM
                     .copyWith(
-                      color: const Color(0xFF4CA5B4),
+                      color: context.color.text_and_icons_status_accent,
                       height: 1.5,
                     ),
               ),

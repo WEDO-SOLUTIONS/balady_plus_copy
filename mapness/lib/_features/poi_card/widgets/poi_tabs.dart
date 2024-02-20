@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -125,8 +126,8 @@ class _PoiTabItem extends StatelessWidget {
                           .accentS
                           .copyWith(
                             color: isActive ?? false
-                                ? const Color(0xff1E2A36)
-                                : const Color(0xff1E2A36).withOpacity(0.5),
+                                ? context.color.text_and_icons_base_primary
+                                : context.color.text_and_icons_base_primary.withOpacity(0.5),
                           ),
                     ),
                     if (count != null)
@@ -147,8 +148,8 @@ class _PoiTabItem extends StatelessWidget {
                                 ? BoxShape.circle
                                 : BoxShape.rectangle,
                             color: isActive ?? false
-                                ? const Color(0xff4CA5B4)
-                                : const Color(0xff2A364D).withOpacity(0.3),
+                                ? context.color.stroke_accent
+                                : NonThemeColor.color72.withOpacity(0.3),
                           ),
                           child: Text(
                             '$count',

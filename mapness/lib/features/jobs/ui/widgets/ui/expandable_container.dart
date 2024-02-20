@@ -1,5 +1,6 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ExpandableContainer extends StatefulWidget {
   final String title;
@@ -33,7 +34,7 @@ class ExpandableContainerState extends State<ExpandableContainer> {
                       .extension<ThemeTextStyles>()!
                       .textM
                       .apply(
-                        color: const Color(0xff1E2A36),
+                        color: context.color.text_and_icons_base_primary,
                       ),
                 ),
                 const SizedBox(width: 8),
@@ -44,7 +45,7 @@ class ExpandableContainerState extends State<ExpandableContainer> {
                         .extension<ThemeTextStyles>()!
                         .textM
                         .apply(
-                          color: const Color(0xff1E2A36),
+                          color: context.color.text_and_icons_base_primary,
                         ),
                   ),
                 ),
@@ -73,7 +74,7 @@ class ExpandableContainerState extends State<ExpandableContainer> {
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
                       .accentL
-                      .apply(color: const Color(0xff1E2A36)),
+                      .apply(color: context.color.text_and_icons_base_primary),
                 ),
                 if (widget.data.split('\n').length > 5)
                   Icon(
@@ -94,7 +95,7 @@ class ExpandableContainerState extends State<ExpandableContainer> {
                       .extension<ThemeTextStyles>()!
                       .textM
                       .apply(
-                        color: const Color(0xff1E2A36),
+                        color: context.color.text_and_icons_base_primary,
                       ),
                 ),
               ),
