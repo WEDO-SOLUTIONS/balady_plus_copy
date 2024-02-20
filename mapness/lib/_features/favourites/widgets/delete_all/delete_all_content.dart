@@ -19,7 +19,7 @@ class DeleteAllContent extends StatelessWidget {
         .extension<ThemeTextStyles>()!
         .textL
         .copyWith(color: Colors.white);
-    const color = Color(0xff4ba5b4);
+    final color = context.color.stroke_accent;
 
     return Material(
       color: Colors.black.withOpacity(0.8),

@@ -90,7 +90,7 @@ class _JobDetailState extends ConsumerState<JobDetail> {
                       JobButton(
                         label: context.l10n.call,
                         asset: 'assets/icons/svg/ic_phone.svg',
-                        backgroundColor: const Color(0xff4CA5B4),
+                        backgroundColor: context.color.stroke_accent,
                         textColor: Colors.white,
                         onPressed: () =>
                             CommonFunctions.call(data.mobile ?? ''),
@@ -169,7 +169,7 @@ class _JobDetailCard extends StatelessWidget {
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()!
                   .accentL
-                  .apply(color: const Color(0xff1E2A36)),
+                  .apply(color: context.color.text_and_icons_base_primary),
             ),
             const SizedBox(height: 12),
             Row(
@@ -181,7 +181,7 @@ class _JobDetailCard extends StatelessWidget {
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
                         .textM
-                        .apply(color: const Color(0xff1E2A36)),
+                        .apply(color: context.color.text_and_icons_base_primary),
                   ),
                 ),
                 Expanded(
@@ -191,7 +191,7 @@ class _JobDetailCard extends StatelessWidget {
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
                         .textS
-                        .apply(color: const Color(0xff1E2A36).withOpacity(0.5)),
+                        .apply(color: context.color.text_and_icons_base_primary.withOpacity(0.5)),
                   ),
                 ),
               ],
@@ -206,7 +206,7 @@ class _JobDetailCard extends StatelessWidget {
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
                         .textM
-                        .apply(color: const Color(0xff1E2A36)),
+                        .apply(color: context.color.text_and_icons_base_primary),
                   ),
                 ),
                 Expanded(
@@ -216,7 +216,7 @@ class _JobDetailCard extends StatelessWidget {
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
                         .textS
-                        .apply(color: const Color(0xff1E2A36).withOpacity(0.5)),
+                        .apply(color: context.color.text_and_icons_base_primary.withOpacity(0.5)),
                   ),
                 ),
               ],
@@ -231,7 +231,7 @@ class _JobDetailCard extends StatelessWidget {
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
                         .textM
-                        .apply(color: const Color(0xff1E2A36)),
+                        .apply(color: context.color.text_and_icons_base_primary),
                   ),
                 ),
                 Expanded(
@@ -241,7 +241,7 @@ class _JobDetailCard extends StatelessWidget {
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
                         .textS
-                        .apply(color: const Color(0xff1E2A36).withOpacity(0.5)),
+                        .apply(color: context.color.text_and_icons_base_primary.withOpacity(0.5)),
                   ),
                 ),
               ],
@@ -275,8 +275,8 @@ class _JobContactsWidget extends StatelessWidget {
                   width: 18,
                   height: 18,
                   package: 'mapness',
-                  colorFilter: const ColorFilter.mode(
-                      Color(0xff4CA5B4), BlendMode.srcIn),
+                  colorFilter:  ColorFilter.mode(
+                      context.color.stroke_accent, BlendMode.srcIn),
                 ),
                 const SizedBox(
                   width: 12,
@@ -291,7 +291,7 @@ class _JobContactsWidget extends StatelessWidget {
                           .extension<ThemeTextStyles>()!
                           .textM
                           .apply(
-                            color: const Color(0xff1E2A36),
+                            color: context.color.text_and_icons_base_primary,
                           ),
                     ),
                   ),
@@ -301,7 +301,7 @@ class _JobContactsWidget extends StatelessWidget {
             Padding(
               padding: const EdgeInsetsDirectional.only(start: 36),
               child: Divider(
-                color: const Color(0xff1E2A36).withOpacity(.15),
+                color: context.color.text_and_icons_base_primary.withOpacity(.15),
               ),
             ),
             Row(
@@ -312,8 +312,8 @@ class _JobContactsWidget extends StatelessWidget {
                   width: 24,
                   height: 24,
                   package: 'mapness',
-                  colorFilter: const ColorFilter.mode(
-                      Color(0xff4CA5B4), BlendMode.srcIn),
+                  colorFilter:  ColorFilter.mode(
+                      context.color.stroke_accent, BlendMode.srcIn),
                 ),
                 const SizedBox(
                   width: 12,
@@ -328,7 +328,7 @@ class _JobContactsWidget extends StatelessWidget {
                           .extension<ThemeTextStyles>()!
                           .textM
                           .apply(
-                            color: const Color(0xff1E2A36),
+                            color: context.color.text_and_icons_base_primary,
                           ),
                     ),
                   ),
@@ -364,7 +364,7 @@ class _JobInfoWidget extends StatelessWidget {
               title,
               style:
                   Theme.of(context).extension<ThemeTextStyles>()!.textM.apply(
-                        color: const Color(0xff1E2A36),
+                        color: context.color.text_and_icons_base_primary,
                       ),
             ),
             const SizedBox(height: 12),
@@ -372,7 +372,7 @@ class _JobInfoWidget extends StatelessWidget {
               data,
               style:
                   Theme.of(context).extension<ThemeTextStyles>()!.textS.apply(
-                        color: const Color(0xff1E2A36).withOpacity(.5),
+                        color: context.color.text_and_icons_base_primary.withOpacity(.5),
                       ),
             ),
           ],
@@ -415,7 +415,7 @@ class _JobLicenseWidget extends StatelessWidget {
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .textM
-                          .apply(color: const Color(0xff1E2A36)),
+                          .apply(color: context.color.text_and_icons_base_primary),
                     ),
                     Text(
                       context.l10n.commercialLicenseNumber,
@@ -423,7 +423,7 @@ class _JobLicenseWidget extends StatelessWidget {
                           .extension<ThemeTextStyles>()!
                           .textS
                           .apply(
-                              color: const Color(0xff1E2A36).withOpacity(.5)),
+                              color: context.color.text_and_icons_base_primary.withOpacity(.5)),
                     ),
                   ],
                 ),

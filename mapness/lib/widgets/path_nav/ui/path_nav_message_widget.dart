@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_message.dart';
@@ -16,8 +17,8 @@ class PathNavMessageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: switch (message.state) {
-        _State.error => const Color(0xffD14733),
-        _State.reroute => const Color(0xff52B374),
+        _State.error => NonThemeColor.color1,
+        _State.reroute => NonThemeColor.color3,
       },
       borderRadius: BorderRadius.circular(16),
       child: Padding(

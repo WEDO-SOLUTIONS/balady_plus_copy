@@ -5,6 +5,7 @@ import 'package:expansion_widget/expansion_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ExpandableWidget extends StatelessWidget {
   const ExpandableWidget({
@@ -67,7 +68,13 @@ class ExpandableWidget extends StatelessWidget {
                             ),
                             Text(
                               subtitle!,
-                              style: Theme.of(context).extension<ThemeTextStyles>()!.textXS.copyWith(color: const Color(0xB21E2A36)),
+                              style: Theme.of(context)
+                                  .extension<ThemeTextStyles>()!
+                                  .textXS
+                                  .copyWith(
+                                    color: context
+                                        .color.text_and_icons_base_primary,
+                                  ),
                             ),
                           ]
                         ],

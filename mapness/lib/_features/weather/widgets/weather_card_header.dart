@@ -13,7 +13,6 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:shimmer/shimmer.dart';
 
-const colorPrimary = Color(0xff1E2A36);
 final borderRadius = BorderRadius.circular(16);
 const weatherHeaderSize = 300.0;
 
@@ -115,12 +114,13 @@ class Data extends ConsumerWidget {
 
     final textStyle = context.textStyle.accentXS.copyWith(
       height: 1.4,
-      color: colorPrimary,
+      color: context.color.text_and_icons_base_primary,
     );
 
     return Container(
       height: weatherHeaderSize,
       decoration: const BoxDecoration(
+        // color: context.color.surface_base_primary,
         color: Colors.white,
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(16.0),
@@ -162,7 +162,7 @@ class Data extends ConsumerWidget {
               onTap: onTap,
               child: Container(
                   decoration: BoxDecoration(
-                      color: const Color(0xFFF5F7FA),
+                      color: context.color.surface_base_secondary,
                       borderRadius: BorderRadius.circular(16)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -210,8 +210,9 @@ class Data extends ConsumerWidget {
                                           .extension<ThemeTextStyles>()!
                                           .textXS
                                           .copyWith(
-                                            color:
-                                                colorPrimary.withOpacity(0.5),
+                                            color: context.color
+                                                .text_and_icons_base_primary
+                                                .withOpacity(0.5),
                                           ),
                                     ),
                                     const SizedBox(height: 16),
@@ -236,7 +237,8 @@ class Data extends ConsumerWidget {
                                                   height: 1,
                                                   fontSize: 64,
                                                   fontWeight: FontWeight.w400,
-                                                  color: colorPrimary,
+                                                  color: context.color
+                                                      .text_and_icons_base_primary,
                                                 ),
                                           ),
                                         ),
@@ -247,7 +249,8 @@ class Data extends ConsumerWidget {
                                             fontSize: 27,
                                             height: 1,
                                             fontWeight: FontWeight.w600,
-                                            color: colorPrimary,
+                                            color: context.color
+                                                .text_and_icons_base_primary,
                                           ),
                                         ),
                                       ],
@@ -259,7 +262,8 @@ class Data extends ConsumerWidget {
                                       maxLines: 1,
                                       style: context.textStyle.accentM.copyWith(
                                         fontWeight: FontWeight.w700,
-                                        color: colorPrimary,
+                                        color: context
+                                            .color.text_and_icons_base_primary,
                                       ),
                                     ),
                                   ],
@@ -306,43 +310,48 @@ class Data extends ConsumerWidget {
     );
   }
 
-  Widget _closeButton({Function()? onTap}) => Material(
-        borderRadius: borderRadius,
-        child: InkWell(
+  Widget _closeButton({Function()? onTap}) => Builder(
+        builder: (context) => Material(
           borderRadius: borderRadius,
-          onTap: onTap,
-          child: Container(
-            height: 40,
-            width: 40,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(8),
+          child: InkWell(
+            borderRadius: borderRadius,
+            onTap: onTap,
+            child: Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(8),
+                ),
+                color: context.color.surface_base_primary,
               ),
-              color: Color(0xffF4F4F5),
-            ),
-            padding: const EdgeInsets.all(8.0),
-            child: SvgPicture.asset(
-              'assets/icons/svg/ic_search_close.svg',
-              semanticsLabel: 'MinApps Screen',
-              package: PackageConfig.packageName,
-              colorFilter: ColorFilter.mode(
-                colorPrimary.withOpacity(0.7),
-                BlendMode.srcIn,
+              padding: const EdgeInsets.all(8.0),
+              child: SvgPicture.asset(
+                'assets/icons/svg/ic_search_close.svg',
+                semanticsLabel: 'MinApps Screen',
+                package: PackageConfig.packageName,
+                colorFilter: ColorFilter.mode(
+                  context.color.text_and_icons_base_primary.withOpacity(0.7),
+                  BlendMode.srcIn,
+                ),
               ),
             ),
           ),
         ),
       );
 
-  Widget _scrollHandle() => Center(
+  Widget _scrollHandle() => Builder(
+        builder: (context) => Center(
           child: Container(
-        decoration: BoxDecoration(
-          borderRadius: borderRadius,
-          color: colorPrimary.withOpacity(0.1),
+            decoration: BoxDecoration(
+              borderRadius: borderRadius,
+              color: context.color.text_and_icons_base_primary.withOpacity(0.1),
+            ),
+            height: 4,
+            width: 40,
+          ),
         ),
-        height: 4,
-        width: 40,
-      ));
+      );
 
   Widget buildButton({
     required String assetName,
@@ -354,44 +363,48 @@ class Data extends ConsumerWidget {
   }) {
     final borderRadius = BorderRadius.circular(8);
 
-    return Flexible(
-      flex: flex,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Container(
-          alignment: Alignment.center,
-          constraints: const BoxConstraints(
-            minHeight: 40,
-            maxHeight: 40,
-            minWidth: 52,
-          ),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: borderRadius,
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (desc != null) ...[
-                desc,
-                const SizedBox(
-                  width: 2,
+    return Builder(
+      builder: (context) => Flexible(
+        flex: flex,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: Container(
+            alignment: Alignment.center,
+            constraints: const BoxConstraints(
+              minHeight: 40,
+              maxHeight: 40,
+              minWidth: 52,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: borderRadius,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (desc != null) ...[
+                  desc,
+                  const SizedBox(
+                    width: 2,
+                  ),
+                ],
+                SvgPicture.asset(
+                  key: ValueKey(assetName),
+                  assetName,
+                  height: 24,
+                  width: 24,
+                  colorFilter: ColorFilter.mode(
+                    colorIcon ??
+                        context.color.text_and_icons_base_primary
+                            .withOpacity(0.7),
+                    BlendMode.srcIn,
+                  ),
+                  package: PackageConfig.packageName,
+                  matchTextDirection: true,
                 ),
               ],
-              SvgPicture.asset(
-                key: ValueKey(assetName),
-                assetName,
-                height: 24,
-                width: 24,
-                colorFilter: ColorFilter.mode(
-                  colorIcon ?? colorPrimary.withOpacity(0.7),
-                  BlendMode.srcIn,
-                ),
-                package: PackageConfig.packageName,
-                matchTextDirection: true,
-              ),
-            ],
+            ),
           ),
         ),
       ),

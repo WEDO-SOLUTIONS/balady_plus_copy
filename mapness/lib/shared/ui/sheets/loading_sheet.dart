@@ -18,14 +18,16 @@ class LoadingSheet extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const CircularProgressIndicator(),
+             CircularProgressIndicator(
+                color: context.color.text_and_icons_status_accent,
+            ),
             const SizedBox(height: 16),
             Text(
               text ?? context.l10n.loading,
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()!
                   .textL
-                  .copyWith(color: const Color(0xB21E2A36)),
+                  .copyWith(color: context.color.text_and_icons_base_primary),
             ),
           ],
         ),
