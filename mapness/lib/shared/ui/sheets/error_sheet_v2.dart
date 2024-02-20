@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
@@ -41,7 +42,7 @@ class ErrorSheetV2 extends StatelessWidget {
           style: (isTitle
                   ? Theme.of(context).extension<ThemeTextStyles>()?.headingS
                   : Theme.of(context).extension<ThemeTextStyles>()?.textM)
-              ?.copyWith(color: const Color(0xff1E2A36)),
+              ?.copyWith(color: context.color.text_and_icons_base_primary),
         );
 
     final isLtr = Directionality.of(context) == TextDirection.ltr;

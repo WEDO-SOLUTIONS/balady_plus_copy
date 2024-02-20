@@ -58,7 +58,7 @@ class LoginCard extends StatelessWidget {
                       child: Text(
                         context.l10n.signIn,
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).extension<ThemeTextStyles>()!.accentM.copyWith(color: const Color(0xFF4CA5B4)),
+                        style: Theme.of(context).extension<ThemeTextStyles>()!.accentM.copyWith(color: context.color.stroke_accent),
                       ),
                     )
                   ],

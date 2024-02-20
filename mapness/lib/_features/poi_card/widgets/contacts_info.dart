@@ -7,6 +7,7 @@ import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ContactsInfo extends StatefulWidget {
   final PoiCardViewModel viewModel;
@@ -80,7 +81,7 @@ class _ContactsInfoState extends State<ContactsInfo> {
                 package: PackageConfig.packageName,
                 height: 16,
                 width: 16,
-                color: colorAccent,
+                color: context.color.stroke_accent,
               ),
               const SizedBox(
                 width: 12,
@@ -96,7 +97,7 @@ class _ContactsInfoState extends State<ContactsInfo> {
                           text: displayText,
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
-                          color: colorPrimary,
+                          color: context.color.text_and_icons_base_primary,
                           maxLines: 1),
                     ),
                     Directionality(
@@ -106,7 +107,7 @@ class _ContactsInfoState extends State<ContactsInfo> {
                         text: contactsModel.comment,
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
-                        color: colorPrimary.withOpacity(.5),
+                        color: context.color.text_and_icons_base_primary.withOpacity(.5),
                       ),
                     )
                   ],

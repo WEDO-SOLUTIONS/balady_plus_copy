@@ -34,7 +34,7 @@ class TradeLicense extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      color: colorPrimary.withAlpha(125),
+                      color: context.color.text_and_icons_base_primary.withAlpha(125),
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                     ),
@@ -42,7 +42,7 @@ class TradeLicense extends StatelessWidget {
                   Text(
                     subtitle,
                     style: TextStyle(
-                      color: colorPrimary.withAlpha(125),
+                      color: context.color.text_and_icons_base_primary.withAlpha(125),
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                     ),

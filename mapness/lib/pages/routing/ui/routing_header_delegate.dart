@@ -61,8 +61,8 @@ class RoutingHeader extends StatelessWidget {
               child: Container(
                 height: 4,
                 width: 40,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFDDE4EE),
+                decoration: BoxDecoration(
+                  color: context.color.surface_base_primary,
                   borderRadius: BorderRadius.all(Radius.circular(24)),
                 ),
               ),

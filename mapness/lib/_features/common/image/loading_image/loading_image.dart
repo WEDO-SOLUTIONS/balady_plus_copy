@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/_features/stories/presentation/story_refresh_button.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 enum ImageState { loading, loaded, error }
 
@@ -86,7 +87,7 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
 
     return switch (state) {
       ImageState.error => Container(
-          color: const Color(0xFFE9E9E9),
+          color: context.color.surface_base_primary,
           child: Center(
             child: StoryRefreshButton(
               onPressed: () {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/entities/search/models/search_history.dart' as models;
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class SearchHistoryItem extends StatelessWidget {
   const SearchHistoryItem({
@@ -19,6 +20,10 @@ class SearchHistoryItem extends StatelessWidget {
           children: [
             SvgPicture.asset(
               'assets/icons/svg/ic_history.svg',
+              colorFilter: ColorFilter.mode(
+                context.color.text_and_icons_status_accent,
+                BlendMode.srcATop,
+              ),
               package: PackageConfig.packageName,
             ),
             const SizedBox(
@@ -38,7 +43,8 @@ class SearchHistoryItem extends StatelessWidget {
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .textM
-                          .copyWith(color: const Color(0xFF1E2A36)),
+                          .copyWith(
+                              color: context.color.text_and_icons_base_primary),
                     ),
                   ),
                   if (result.address.isNotEmpty)
@@ -48,7 +54,9 @@ class SearchHistoryItem extends StatelessWidget {
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .textM
-                          .copyWith(color: const Color(0x801E2A36)),
+                          .copyWith(
+                              color:
+                                  context.color.text_and_icons_base_tertiary),
                     ),
                 ],
               ),

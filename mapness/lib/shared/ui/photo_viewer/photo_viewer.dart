@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -58,7 +59,7 @@ class _PhotoViewerState extends State<PhotoViewer> {
                   padding: EdgeInsets.all(8),
                   child: Icon(
                     Icons.close,
-                    color: Color(0xff889097),
+                    color: NonThemeColor.color58,
                   ),
                 ),
               ),

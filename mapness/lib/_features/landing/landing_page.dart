@@ -1,18 +1,23 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
+import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -35,6 +40,7 @@ class LandingPage extends ConsumerStatefulWidget {
 
 class _LandingPageState extends ConsumerState<LandingPage> {
   StreamSubscription<TapEvent>? _streamSubscription;
+  bool needToShow = true;
 
   @override
   void initState() {
@@ -59,6 +65,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
                   ),
                 );
             // dgisController
+            // ignore: avoid_catches_without_on_clauses
           } catch (e) {
             // todo: make it better
             if (kDebugMode) {
@@ -72,20 +79,21 @@ class _LandingPageState extends ConsumerState<LandingPage> {
           ref.read(searchByRubricsQueryProvider.notifier).update((
             QuickFilter(
               rubrics: [13374],
-              title: "المساجد",
-              uiIcon: "assets/icons/svg/quick_filters/ic_quick_mosques.svg",
-              mapIcon: "assets/icons/svg/quick_filters/mosques_pin.svg",
+              title: 'المساجد',
+              uiIcon: 'assets/icons/svg/quick_filters/ic_quick_mosques.svg',
+              mapIcon: 'assets/icons/svg/quick_filters/mosques_pin.svg',
             ),
             1
           ));
         });
         break;
+      // ignore: no_default_cases
       default:
         break;
     }
   }
 
-  void setupTapListener() async {
+  Future<void> setupTapListener() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     _streamSubscription =
         dgisController.objectTapEvents.listen(_objectTapListener);
@@ -99,14 +107,16 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(layersControlsProvider);
-    ref.watch(favouriteMarkersProvider.select((value) => null));
+    ref
+      ..watch(layersControlsProvider)
+      ..watch(favouriteMarkersProvider.select((value) => null))
 
-    /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
-    ref.watch(mapObjectManagerProvider(named: mapLayerName).notifier);
-    // ref.watch(iwishMarkersProvider.select((value) => null));
+      /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
+      ..watch(mapObjectManagerProvider(named: mapLayerName).notifier)
+      // ref.watch(iwishMarkersProvider.select((value) => null));
+      ..watch(mapObjectManagerProvider(named: MapnessConsts.mapLayerName));
 
-    ref.watch(mapObjectManagerProvider(named: MapnessConsts.mapLayerName));
+    final colorScheme = ref.read(colorSchemeProvider.notifier);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -118,14 +128,30 @@ class _LandingPageState extends ConsumerState<LandingPage> {
             children: [
               const controls.MapControls(),
               LayoutBuilder(
-                  builder: (context, constraints) => Dashboard(
-                        biggestHeight: constraints.biggest.height,
-                        biggestWidth: constraints.biggest.width,
+                builder: (context, constraints) => Dashboard(
+                  biggestHeight: constraints.biggest.height,
+                  biggestWidth: constraints.biggest.width,
 
-                        ///TODO: change while Dashboard refactoring
-                        initWithMinSize:
-                            widget.focusMaker == LangingFocusMaker.iwish,
-                      )),
+                  ///TODO: change while Dashboard refactoring
+                  initWithMinSize: widget.focusMaker == LangingFocusMaker.iwish,
+                ),
+              ),
+              FutureBuilder(
+                future: colorScheme.needToShowBanner(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData && snapshot.data == true && needToShow) {
+                    return MyWidget(
+                      onClose: () {
+                        colorScheme.hideBanner();
+                        setState(() {
+                          needToShow = false;
+                        });
+                      },
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
             ],
           ),
         ),
@@ -150,4 +176,65 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       EventsRoute.open(context, event);
     }
   }
+}
+
+class MyWidget extends StatelessWidget {
+  final void Function()? onClose;
+
+  const MyWidget({super.key, this.onClose});
+
+  @override
+  Widget build(BuildContext context) => Stack(
+        children: [
+          GestureDetector(
+            onTap: () => onClose?.call(),
+          ),
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Stack(
+                  children: [
+                    const Image(
+                      fit: BoxFit.fitWidth,
+                      image: AssetImage(
+                        'assets/images/foundation_day_banner.png',
+                        package: PackageConfig.packageName,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Material(
+                        borderRadius: borderRadius,
+                        child: InkWell(
+                          borderRadius: borderRadius,
+                          onTap: () => onClose?.call(),
+                          child: Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(8),
+                              ),
+                              color: const Color(0xff6B4E45).withAlpha(15),
+                            ),
+                            padding: const EdgeInsets.all(8.0),
+                            child: SvgPicture.asset(
+                              'assets/icons/svg/ic_search_close.svg',
+                              semanticsLabel: 'MinApps Screen',
+                              package: PackageConfig.packageName,
+                              color: const Color(0xff6B4E45),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
 }

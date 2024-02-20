@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -19,7 +20,7 @@ class IwishAboutPark extends StatelessWidget {
     final locale = context.l10n;
     final textStyles = Theme.of(context).extension<ThemeTextStyles>()!;
     final title = textStyles.textM;
-    final data = textStyles.textS.copyWith(color: const Color(0xff8E949A));
+    final data = textStyles.textS.copyWith(color: NonThemeColor.color16);
 
     final showSize = parkSize != ParkSize.unknown;
     final showArea = metadata.areaSize != 0;
