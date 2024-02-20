@@ -120,12 +120,10 @@ class _SubmitApplicationSuccessfullyRenewState
                       onPressed: () async {
                         Navigator.of(context).popAndPushNamed(
                           RouteName.invoiceDetails,
-                          arguments: (
-                            submitResponse.payUrl.toString(),
-                            CommonProperties.selectedDelegator?.crNumber ?? "",
-                            CommonProperties.selectedDelegator?.crType ?? "",
-                            "SADAD",
-                          ),
+                          arguments: {
+                            "payUrl": submitResponse.payUrl.toString(),
+                            "xSourceApp": "SADAD",
+                          },
                         );
                       },
                     )
