@@ -129,7 +129,7 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
       response = await webService.dio.put(
           ApiUrl.updateProfile + CommonProperties.profileId!,
           data: {
-            ApiParams.cityId: CommonProperties.cityId,
+            ApiParams.cityId: params.cityId,
             ApiParams.langId: "ar",
             ApiParams.name: "Main Profile",
           },

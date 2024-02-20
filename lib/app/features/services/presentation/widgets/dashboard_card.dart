@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
@@ -13,6 +14,15 @@ class DashboardCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color? backgroundColor =
+        /*CommonFunctions.isFoundationDay() ? Color(0xffFBF8F7) :*/ null;
+
+    Color? titleColor =
+        /*CommonFunctions.isFoundationDay() ? Color(0xff1E2A36) : */ null;
+
+    Color? textColor =
+        /*CommonFunctions.isFoundationDay() ? Color(0xffA97747) :*/ null;
+
     return Container(
       width: 80,
       margin: const EdgeInsets.symmetric(
@@ -20,7 +30,8 @@ class DashboardCard extends StatelessWidget {
       ),
       padding: const EdgeInsets.symmetric(vertical: 16),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8), color: Color(0xffF5F7FA)),
+          borderRadius: BorderRadius.circular(8),
+          color: backgroundColor ?? Color(0xffF5F7FA)),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -32,7 +43,7 @@ class DashboardCard extends StatelessWidget {
               totalCount.toString(),
               fontSize: 21,
               fontWeight: AppFontWeight.bold,
-              fontColor: const Color(0xff359748),
+              fontColor: textColor ?? const Color(0xff359748),
             ),
           ),
           const SizedBox(
@@ -47,7 +58,7 @@ class DashboardCard extends StatelessWidget {
               height: 1.3,
               textAlign: TextAlign.center,
               fontWeight: AppFontWeight.regular,
-              fontColor: const Color(0xff1E2A36),
+              fontColor: titleColor ?? const Color(0xff1E2A36),
             ),
           ),
         ],

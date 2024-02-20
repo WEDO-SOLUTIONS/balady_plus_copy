@@ -38,7 +38,8 @@ class ViolationAddressSectionWidget extends StatelessWidget {
                     ),
                     Flexible(
                       child: CustomTextWidget(
-                        state.gisResponse?.getFullAddress() ?? "حدد الموقع",
+                        state.gisResponse?.getFullAddress() ??
+                            "lbl_locate_from_here".tr(),
                         textStyle: AppStyle.violationLocationMapStyle,
                         maxLines: 4,
                       ),

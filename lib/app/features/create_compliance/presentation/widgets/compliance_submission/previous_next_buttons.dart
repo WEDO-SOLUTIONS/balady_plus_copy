@@ -25,7 +25,9 @@ class PreviousNextButtons extends StatelessWidget {
             btnColor:
                 isButtonDisabled ? AppColor.black200 : AppColor.primary900Light,
             btnTextColor: isButtonDisabled ? AppColor.black400 : AppColor.white,
-            btnPressed: isButtonDisabled
+            btnPressed: isButtonDisabled ||
+                    state.status == BlocStatus.loading ||
+                    state.detailsStatus == BlocStatus.loading
                 ? () {}
                 : () {
                     if (!isLastPage) {

@@ -4,7 +4,8 @@ import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/utils/utils_exports.dart' show AppStyle, RouteName;
+import '../../../../core/utils/utils_exports.dart'
+    show AppStyle, CommonFunctions, RouteName;
 import '../../services_exports.dart' show ServiceEntity, ServiceIcon;
 import 'header_with_all.dart';
 
@@ -22,12 +23,24 @@ class ServicesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color
+        backgroundColor = /*CommonFunctions.isFoundationDay()
+        ? Color(0xffFBF8F7)
+        : */
+        Color(0xffF5F7FA);
+
+    Color? titleColor =
+        /*CommonFunctions.isFoundationDay() ? Color(0xff1E2A36) :*/ null;
+
+    Color? showAllColor =
+        /*CommonFunctions.isFoundationDay() ? Color(0xff231F20) :*/ null;
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
       width: double.infinity,
-      decoration: const BoxDecoration(
-        color: Color(0xffF5F7FA),
+      decoration: BoxDecoration(
+        color: backgroundColor,
         // borderRadius: BorderRadius.all(
         //   Radius.circular(16),
         // ),
@@ -38,6 +51,8 @@ class ServicesList extends StatelessWidget {
         children: [
           HeaderWithAll(
             text: title,
+            titleColor: titleColor,
+            showAllColor: showAllColor,
             margin: EdgeInsets.only(top: 16),
             onPressAll: () {
               NavigationService.navigatorKey.currentState!.pushNamed(
