@@ -110,7 +110,11 @@ class CommercialLicenseCancelBloc
       submitResponse!.crNumber = crNumber;
       submitResponse!.crType = crType;
       emitter(
-          SubmitCancelRequestSucceededState(submitResponse: submitResponse!));
+        SubmitCancelRequestSucceededState(
+          submitResponse: submitResponse!,
+          totalCost: saveCancellationReasonResponse!.calculatorResponse.totalCost,
+        ),
+      );
 
       CommonFunctions.sendUXCamEvent(
           UXCamEvents.CancelCommercialLicense_Open_Success_Page_Event);
