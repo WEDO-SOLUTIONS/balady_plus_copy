@@ -9,6 +9,7 @@ import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
@@ -120,6 +121,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
                   builder: (context, constraints) => Dashboard(
                         biggestHeight: constraints.biggest.height,
                         biggestWidth: constraints.biggest.width,
+
                         ///TODO: change while Dashboard refactoring
                         initWithMinSize:
                             widget.focusMaker == LangingFocusMaker.iwish,
@@ -139,7 +141,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       );
       if (context.mounted) {
         PoiMapRoute.open(
-          context,
+          ref.read(goRouterProvider),
           event.dgisObjectId.objectId,
           latLng: event.latLng,
         );
