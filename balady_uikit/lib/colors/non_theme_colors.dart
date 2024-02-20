@@ -114,4 +114,7 @@ class NonThemeColor {
   static const color70 = const Color(0x00000000);
   static const color71 = const Color(0x1C77758D);
   static const color72 = const Color(0xff2A364D);
+
+  static const colorBgStories = Color(0x005B4017);
+  static const colorBgStories2 = Color(0xB2261B0A);
 } // NonThemeColor.color6

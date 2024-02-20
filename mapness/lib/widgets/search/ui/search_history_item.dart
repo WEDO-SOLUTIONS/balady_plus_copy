@@ -20,6 +20,10 @@ class SearchHistoryItem extends StatelessWidget {
           children: [
             SvgPicture.asset(
               'assets/icons/svg/ic_history.svg',
+              colorFilter: ColorFilter.mode(
+                context.color.text_and_icons_status_accent,
+                BlendMode.srcATop,
+              ),
               package: PackageConfig.packageName,
             ),
             const SizedBox(
@@ -39,7 +43,8 @@ class SearchHistoryItem extends StatelessWidget {
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .textM
-                          .copyWith(color: context.color.text_and_icons_base_primary),
+                          .copyWith(
+                              color: context.color.text_and_icons_base_primary),
                     ),
                   ),
                   if (result.address.isNotEmpty)
@@ -49,7 +54,9 @@ class SearchHistoryItem extends StatelessWidget {
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .textM
-                          .copyWith(color: context.color.text_and_icons_base_tertiary),
+                          .copyWith(
+                              color:
+                                  context.color.text_and_icons_base_tertiary),
                     ),
                 ],
               ),

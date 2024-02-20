@@ -1,11 +1,14 @@
+import 'package:balady_uikit/colors/app_color_scheme.dart';
 import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:mapness/_features/common/image/loading_image/loading_shimmer_image.dart';
+import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-class StoryThumbnailWidget extends StatelessWidget {
+class StoryThumbnailWidget extends ConsumerWidget {
   final String title;
   final String imageUrl;
   final bool isWatched;
@@ -20,7 +23,9 @@ class StoryThumbnailWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorSchemeType = ref.watch(colorSchemeProvider);
+
     return InkWell(
       onTap: onPress,
       child: AspectRatio(
@@ -30,7 +35,9 @@ class StoryThumbnailWidget extends StatelessWidget {
             shape: RoundedRectangleBorder(
               side: BorderSide(
                 width: 2,
-                color: isWatched ? Colors.transparent : context.color.stroke_accent,
+                color: isWatched
+                    ? Colors.transparent
+                    : context.color.stroke_accent,
               ),
               borderRadius: BorderRadius.circular(16),
             ),
@@ -73,13 +80,18 @@ class StoryThumbnailWidget extends StatelessWidget {
                       top: Radius.circular(4),
                     ),
                     gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        NonThemeColor.color55.withOpacity(0),
-                        NonThemeColor.color56.withOpacity(0.66),
-                      ],
-                    ),
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: switch (colorSchemeType) {
+                          AppColorScheme.brown => [
+                              NonThemeColor.colorBgStories,
+                              NonThemeColor.colorBgStories2,
+                            ],
+                          AppColorScheme.main => [
+                              NonThemeColor.color55.withOpacity(0),
+                              NonThemeColor.color56.withOpacity(0.66),
+                            ],
+                        }),
                   ),
                   child: Column(
                     children: [
@@ -87,7 +99,10 @@ class StoryThumbnailWidget extends StatelessWidget {
                       Text(
                         title,
                         // TODO: move to theme
-                        style: Theme.of(context).extension<ThemeTextStyles>()!.accentS.copyWith(color: Colors.white),
+                        style: Theme.of(context)
+                            .extension<ThemeTextStyles>()!
+                            .accentS
+                            .copyWith(color: Colors.white),
                       ),
                     ],
                   ),
