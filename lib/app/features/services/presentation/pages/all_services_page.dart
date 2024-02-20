@@ -6,7 +6,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/utils_exports.dart'
-    show AppColor, AppFontWeight, IconPath, RouteName;
+    show AppColor, AppFontWeight, CommonFunctions, IconPath, RouteName;
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show
         CustomTextFieldWidget,
@@ -55,7 +55,8 @@ class _AllServicesPageState extends State<AllServicesPage> {
     if (searchedServices.isEmpty && query.isEmpty) {
       searchedServices.addAll(services);
     }
-
+    Color? textColor =
+        /*CommonFunctions.isFoundationDay() ? Color(0xff6B4E45) : */ null;
     return Scaffold(
       backgroundColor: AppColor.white,
       appBar: EnhancedAppBar(
@@ -71,10 +72,10 @@ class _AllServicesPageState extends State<AllServicesPage> {
               child: CustomTextFieldWidget(
                 hintText: 'search'.tr(),
                 fillColor: Color(0xffF5F7FA),
-                prefixIcon: const DrawIconBasedTypeWidget(
+                prefixIcon: DrawIconBasedTypeWidget(
                   icon: Icons.search,
                   iconSize: 24,
-                  iconColor: Color(0x5C1E2A36),
+                  iconColor: textColor ?? Color(0x5C1E2A36),
                 ),
                 borderRadius: 8,
                 textFieldVerticalPadding: 16,
@@ -89,8 +90,12 @@ class _AllServicesPageState extends State<AllServicesPage> {
 
                   setState(() {});
                 },
+                hintStyle: TextStyle(
+                    color: textColor ?? Color(0x5C1E2A36),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400),
                 textFieldStyle: TextStyle(
-                    color: Color(0x5C1E2A36),
+                    color: textColor ?? Color(0x5C1E2A36),
                     fontSize: 12,
                     fontWeight: FontWeight.w400),
                 borderColor: Colors.transparent,

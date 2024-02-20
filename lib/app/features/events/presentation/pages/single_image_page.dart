@@ -75,103 +75,121 @@ class _SingleEventDescriptionPageState
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Container(
-                      height: 455,
-                      width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).padding.top,
-                        right: 16,
-                      ),
-                      decoration: BoxDecoration(
-                        image: (img.endsWith(".svg"))
-                            ? DecorationImage(
-                                image: svgProvider.Svg(
-                                  img,
-                                  source: svgProvider.SvgSource.network,
-                                ),
-                                fit: BoxFit.fill,
-                              )
-                            : DecorationImage(
-                                image: NetworkImage(img),
-                                fit: BoxFit.fill,
-                              ),
-                      ),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(
-                                top: MediaQuery.of(context).padding.top,
-                                left: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                InkWell(
-                                  child: CircleIcon(
-                                    iconSize: 24,
-                                    circleSize: 36,
-                                    icon: Icons.close,
-                                    backgroundColor:
-                                        Colors.white.withOpacity(0.7),
+                    Stack(
+                      children: [
+                        ConstrainedBox(
+                          constraints: new BoxConstraints(
+                            minHeight: 0.0,
+                            maxHeight: 350.0,
+                          ),
+                          child: Image.network(
+                            img,
+                            width: double.infinity,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).padding.top,
+                            right: 16,
+                          ),
+                          /*  decoration: BoxDecoration(
+                            image: (img.endsWith(".svg"))
+                                ? DecorationImage(
+                                    image: svgProvider.Svg(
+                                      img,
+                                      source: svgProvider.SvgSource.network,
+                                    ),
+                                    fit: BoxFit.contain,
+                                  )
+                                : DecorationImage(
+                                    image: NetworkImage(img),
+                                    alignment: Alignment.topCenter,
+                                    fit: BoxFit.contain,
                                   ),
-                                  onTap: () {
-                                    Navigator.of(context).pop();
+                          ),*/
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    top: MediaQuery.of(context).padding.top,
+                                    left: 16),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    InkWell(
+                                      child: CircleIcon(
+                                        iconSize: 24,
+                                        circleSize: 36,
+                                        icon: Icons.close,
+                                        backgroundColor:
+                                            Colors.white.withOpacity(0.7),
+                                      ),
+                                      onTap: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                    /*  EventsDayMonthEvent(
+                                      color: const Color(0xFF145E75),
+                                      monthStyle: AppStyle.eventsMonthStyle1,
+                                      dayStyle: AppStyle.eventsDayStyle1,
+                                      startDay: state.eventDetails.getStartDay(),
+                                      startMonth: state.eventDetails.getStartMonth(),
+                                    ),*/
+                                    if (state.eventDetails.getEndDateFull() !=
+                                            null &&
+                                        state.eventDetails.getStartDateFull() !=
+                                            null)
+                                      GestureDetector(
+                                        onTap: () {
+                                          if (state.eventDetails.ticketUrl !=
+                                              null)
+                                            Share.share(
+                                                state.eventDetails.ticketUrl ??
+                                                    "");
+
+                                          CommonFunctions.sendUXCamEvent(UXCamEvents
+                                              .Events_List_Click_Item_Share_Event);
+                                        },
+                                        child: Container(
+                                          width: 36,
+                                          height: 36,
+                                          padding: EdgeInsets.all(5),
+                                          decoration: ShapeDecoration(
+                                            color: AppColor.primary100Light,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                          child: SvgPicture.asset(
+                                            IconPath.export,
+                                          ),
+                                        ),
+                                      )
+                                  ],
+                                ),
+                              ),
+                              /* const Expanded(
+                                child: SizedBox(),
+                              ),
+                              SizedBox(
+                                height: 120,
+                                child: EventImageSwiper(
+                                  onChange: (String img) {
+                                    setState(() {
+                                      this.img = img;
+                                    });
                                   },
                                 ),
-                                /*  EventsDayMonthEvent(
-                                  color: const Color(0xFF145E75),
-                                  monthStyle: AppStyle.eventsMonthStyle1,
-                                  dayStyle: AppStyle.eventsDayStyle1,
-                                  startDay: state.eventDetails.getStartDay(),
-                                  startMonth: state.eventDetails.getStartMonth(),
-                                ),*/
-                                if (state.eventDetails.getEndDateFull() !=
-                                        null &&
-                                    state.eventDetails.getStartDateFull() !=
-                                        null)
-                                  GestureDetector(
-                                    onTap: () {
-                                      if (state.eventDetails.ticketUrl != null)
-                                        Share.share(
-                                            state.eventDetails.ticketUrl ?? "");
-
-                                      CommonFunctions.sendUXCamEvent(UXCamEvents
-                                          .Events_List_Click_Item_Share_Event);
-                                    },
-                                    child: Container(
-                                      width: 36,
-                                      height: 36,
-                                      padding: EdgeInsets.all(5),
-                                      decoration: ShapeDecoration(
-                                        color: AppColor.primary100Light,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                      ),
-                                      child: SvgPicture.asset(
-                                        IconPath.export,
-                                      ),
-                                    ),
-                                  )
-                              ],
-                            ),
+                              ),*/
+                            ],
                           ),
-                          /* const Expanded(
-                            child: SizedBox(),
-                          ),
-                          SizedBox(
-                            height: 120,
-                            child: EventImageSwiper(
-                              onChange: (String img) {
-                                setState(() {
-                                  this.img = img;
-                                });
-                              },
-                            ),
-                          ),*/
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                     Padding(
                       padding: const EdgeInsets.all(15.0),

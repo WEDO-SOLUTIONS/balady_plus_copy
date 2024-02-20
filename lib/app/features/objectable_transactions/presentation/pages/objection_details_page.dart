@@ -169,8 +169,8 @@ class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
                       const ObjectionReaason(),
                       Constants.verticalSpaceSmall,
 
-                      const ObjectionFeedBack(),
-                      Constants.verticalSpaceSmall,
+                      //   const ObjectionFeedBack(),
+                      //  Constants.verticalSpaceSmall,
                     ]),
                   ),
                 ),

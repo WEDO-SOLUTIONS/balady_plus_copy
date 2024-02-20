@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class CommercialLicenceDetails {
   int requestId;
@@ -873,33 +874,33 @@ class ContractInfoResponseDto {
   String getDisplayContractTypeName() {
     switch (contractType) {
       case "EJAR":
-        return "عقد ايجار";
+        return "Lease_Contract".tr();
       case "INVEST":
-        return "عقد استثمار";
+        return "Investment_Contract".tr();
       case "DEED":
-        return "عقد تملك";
+        return "Ownership_Contract".tr();
     }
     return contractType;
   }
 
   String getDisplayCleanContractName() {
     if (contractType == "EJAR" && contractOption == "ATTACH")
-      return "عقد ايجار مرفق";
+      return "Attach_Lease_Contract".tr();
 
     if (contractType == "EJAR" && contractOption == "SERVICE")
-      return "عقد ايجار الكتروني";
+      return "Electronic_Lease_Contract".tr();
 
     if (contractType == "INVEST" && contractOption == "ATTACH")
-      return "عقد استثمار مرفق";
+      return "Attach_Investment_Contract".tr();
 
     if (contractType == "INVEST" && contractOption == "SERVICE")
-      return "عقد استثمار الكتروني";
+      return "Electronic_Investment_Contract".tr();
 
     if (contractType == "DEED" && contractOption == "ATTACH")
-      return " عقد تملك مرفق";
+      return "Attach_Ownership_Contract".tr();
 
     if (contractType == "DEED" && contractOption == "SERVICE")
-      return "عقد تملك الكتروني";
+      return "Electronic_Ownership_Contract".tr();
 
     return contractType;
   }
