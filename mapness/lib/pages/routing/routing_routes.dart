@@ -11,6 +11,7 @@ import 'package:mapness/pages/routing/lib/route_point_extension.dart';
 import 'package:mapness/pages/routing/lib/route_search_options_extension.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/buttons/nav_button.dart';
@@ -54,6 +55,20 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final locationPermission = ref.read(locationProvider.notifier);
+
+    /// if route from user location make sure he has location permission
+    if (widget.points.any((element) => element == null)) {
+      locationPermission.checkLocationPermission(
+        routeOnClose: const RoutingRoute().location,
+      );
+    }
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -66,134 +81,137 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   }
 
   @override
-  Widget build(BuildContext context) => Directionality(
-        textDirection: TextDirection.rtl,
-        child: Stack(
-          children: [
-            RoutingMapControls(
-                bottomExtent: MediaQuery.of(context).size.height * 0.35),
-            DraggableScrollableSheet(
-              controller: _controller,
-              initialChildSize: 0.35,
-              minChildSize: 0.35,
-              maxChildSize: 0.35,
-              builder: (context, scrollController) => Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(16.0),
-                    topLeft: Radius.circular(16.0),
-                  ),
-                ),
-                child: Material(
-                  color: const Color(0x0D1E2A36),
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(16.0),
-                        topLeft: Radius.circular(16.0),
-                      ),
-                    ),
-                    child: SafeArea(
-                      top: false,
-                      child: Column(
-                        children: [
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Center(
-                            child: Container(
-                              height: 4,
-                              width: 26,
-                              decoration: const BoxDecoration(
-                                color: Color(0xFFDDE4EE),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(24)),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: RouteTimeline(
-                                    labels: labels,
-                                  ),
-                                ),
-                                NavButton(
-                                  onTap: () {
-                                    setState(() {
-                                      points = points.reversed.toList();
-                                      labels = labels.reversed.toList();
-                                      searchPoints =
-                                          searchPoints.reversed.toList();
-                                    });
-                                  },
-                                  icon: 'assets/icons/svg/ic_transition.svg',
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                NavButton(
-                                  onTap: () {
-                                    final routes =
-                                        ref.read(currentRouteProvider);
+  Widget build(BuildContext context) {
+    ref.watch(locationProvider);
 
-                                    if ((routes?.previousPath
-                                                ?.contains('/poi-map') ??
-                                            false) ||
-                                        (routes?.previousPath
-                                                ?.startsWith('/iwish') ??
-                                            false)) {
-                                      const LandingRoute().go(context);
-                                    } else {
-                                      const RoutingRoute().go(context);
-                                    }
-                                  },
-                                  icon: 'assets/icons/svg/ic_search_close.svg',
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Stack(
+        children: [
+          RoutingMapControls(
+              bottomExtent: MediaQuery.of(context).size.height * 0.35),
+          DraggableScrollableSheet(
+            controller: _controller,
+            initialChildSize: 0.35,
+            minChildSize: 0.35,
+            maxChildSize: 0.35,
+            builder: (context, scrollController) => Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(16.0),
+                  topLeft: Radius.circular(16.0),
+                ),
+              ),
+              child: Material(
+                color: const Color(0x0D1E2A36),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(16.0),
+                      topLeft: Radius.circular(16.0),
+                    ),
+                  ),
+                  child: SafeArea(
+                    top: false,
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Center(
+                          child: Container(
+                            height: 4,
+                            width: 26,
+                            decoration:const BoxDecoration(
+                              color: Color(0xFFDDE4EE),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(24)),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: RouteTimeline(
+                                  labels: labels,
                                 ),
-                              ],
-                            ),
+                              ),
+                              NavButton(
+                                onTap: () {
+                                  setState(() {
+                                    points = points.reversed.toList();
+                                    labels = labels.reversed.toList();
+                                    searchPoints =
+                                        searchPoints.reversed.toList();
+                                  });
+                                },
+                                icon: 'assets/icons/svg/ic_transition.svg',
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              NavButton(
+                                onTap: () {
+                                  final routes = ref.read(currentRouteProvider);
+
+                                  if ((routes?.previousPath
+                                              ?.contains('/poi-map') ??
+                                          false) ||
+                                      (routes?.previousPath
+                                              ?.startsWith('/iwish') ??
+                                          false)) {
+                                    const LandingRoute().go(context);
+                                  } else {
+                                    const RoutingRoute().go(context);
+                                  }
+                                },
+                                icon: 'assets/icons/svg/ic_search_close.svg',
+                              ),
+                            ],
                           ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Expanded(
-                            child: RoutesCarousel(
-                              points: points,
-                              startNavigation: () {
-                                PathNavRoute.open(
-                                    ref.watch(goRouterProvider), navType);
-                              },
-                              navType: navType,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          _RouteTabBar(
-                            active: navType,
-                            onChanged: (e) {
-                              setState(() {
-                                navType = e;
-                              });
-                            },
+                        ),
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        Expanded(
+                          child: RoutesCarousel(
                             points: points,
+                            startNavigation: () {
+                              PathNavRoute.open(
+                                  ref.watch(goRouterProvider), navType);
+                            },
+                            navType: navType,
                           ),
-                          const SizedBox(height: 16),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 16),
+                        _RouteTabBar(
+                          active: navType,
+                          onChanged: (e) {
+                            setState(() {
+                              navType = e;
+                            });
+                          },
+                          points: points,
+                        ),
+                        const SizedBox(height: 16),
+                      ],
                     ),
                   ),
                 ),
               ),
             ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _RouteTabBar extends ConsumerWidget {

@@ -6,9 +6,11 @@ import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
@@ -16,11 +18,14 @@ import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
 import 'package:mapness/_features/debug_overlay/debug_overlay.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/l10n/generated/app_localizations_ar.dart';
+import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
 import 'package:mapness/widgets/map/map_page.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart' as provider;
 import 'package:share_plus/share_plus.dart';
 
 import 'app/router.dart';
@@ -37,7 +42,28 @@ class MapnessProviderScope extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ProviderScope(
-        child: EagerInitWidget(child: child),
+        child: EagerInitWidget(
+          child: Consumer(
+            builder: (context, ref, child) {
+              final goRouter = ref.watch(goRouterProvider);
+              final language = ref.watch(appLanguageProvider);
+              final localizations = language == Language.arabic
+                  ? AppLocalizationsAr()
+                  : AppLocalizationsEn();
+
+              return provider.MultiProvider(
+                providers: [
+                  provider.Provider<GoRouter>.value(value: goRouter),
+                  provider.Provider<AppLocalizations>.value(
+                    value: localizations,
+                  ),
+                ],
+                child: child,
+              );
+            },
+            child: child,
+          ),
+        ),
       );
 }
 
@@ -167,7 +193,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
 
     _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
-      print("_linkSubscription $uri");
+      if (kDebugMode) {
+        print('_linkSubscription $uri');
+      }
       openAppLink(uri);
     });
   }

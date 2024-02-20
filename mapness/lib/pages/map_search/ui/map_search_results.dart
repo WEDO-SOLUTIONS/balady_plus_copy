@@ -1,6 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
@@ -41,7 +42,7 @@ class MapSearchResults extends ConsumerWidget {
           ref.read(searchHistoryProvider(scope.value).notifier).put(
                 SearchHistoryItem.fromDirectoryObject(item),
               );
-          PoiMapRoute.open(context,item.id!.objectId);
+          PoiMapRoute.open(ref.read(goRouterProvider),item.id!.objectId);
         },
       ),
     );
