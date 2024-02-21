@@ -22,7 +22,7 @@ import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_scrollable_content.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 
 import '../../shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'domain/model/poi_camera_config.dart';
@@ -135,27 +135,11 @@ class _ContentState extends ConsumerState<_Content>
     final data = poiCardState?.gisObjectIdMessage;
     final objectId = data?.id?.objectId;
 
-    /// loading shimmer
+    /// loading progress indicator
     if (state.isLoading) {
-      return Column(
-        children: [
-          const Spacer(flex: 3),
-          Expanded(
-            child: Shimmer.fromColors(
-              baseColor: Colors.grey[200]!,
-              highlightColor: Colors.grey[100]!,
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(16),
-                    topLeft: Radius.circular(16),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+      return Align(
+        alignment: Alignment.bottomCenter,
+        child: LoadingSheet(text: context.l10n.sending),
       );
     }
 

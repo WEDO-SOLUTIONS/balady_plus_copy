@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
+import 'package:mapness/shared/ui/loading/loading_small.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
-import 'package:shimmer/shimmer.dart';
 
 class RoutesCarousel extends ConsumerWidget {
   const RoutesCarousel({
@@ -73,13 +73,16 @@ class RoutesCarousel extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(
                 horizontal: 4,
               ),
-              child: Shimmer.fromColors(
-                baseColor: Colors.grey[300]!,
-                highlightColor: Colors.grey[100]!,
-                child: Container(
+              child: Directionality(
+                textDirection: TextDirection.ltr,
+                child: DecoratedBox(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    color: Colors.grey,
+                    color: NonThemeColor.color11,
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.0),
+                    child: LoadingSmall(),
                   ),
                 ),
               ),
