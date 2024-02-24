@@ -3081,7 +3081,7 @@
 "events_description_subtitle":"The Elephant Mountain sits on the golden sands of the desert with an eye-catching sight, and embraces the Al Ula sky with its body and trunk at a height of 52 meters.",
 "event_location_title":"Event location",
 "events_description2":"The beginnings of Diriyah can be traced back to 1446 AD, after Mani’ bin Rabi’ah Al-Muraydi came from a small town located next to Qatif, to fertile land on the banks of Wadi Hanifa, where he settled with his family. Over time, their influence and farms expanded, until they became princes of that region and its surroundings.",
-"event_button_text":"Go to details",
+"event_button_text":"Event Details",
 "nature":"Nature",
 "events_filter_season":"Season",
 "events_filter_category":"Interest",
@@ -4293,7 +4293,9 @@
 "objection_enquiry_reply":"الرد", 
 "obkection_enquiry_show_file":"View Attachment", 
 "objection_qnuiry_send": "إرسال الرد", 
-"objection_enquiry_warning":"عفوا تم إنتهاء مهلة الرد"
+"objection_enquiry_warning":"عفوا تم إنتهاء مهلة الرد", 
+"move_through_balady_map":"Navigate through Balady Maps"
+
 
 
 

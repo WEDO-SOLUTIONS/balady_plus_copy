@@ -232,18 +232,22 @@ class _SingleEventDescriptionPageState
                           ),
                           EventMapWidget(
                             location: state.eventDetails.getLocation(),
+                            name: state.eventDetails.name,
                           ),
                           const SizedBox(
                             height: 16,
                           ),
-                          ElevatedIconButtonWidget.export(
-                            onPressed: () {
-                              CommonFunctions.externalLaunch(
-                                  state.eventDetails.ticketUrl);
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedIconButtonWidget.export(
+                              onPressed: () {
+                                CommonFunctions.externalLaunch(
+                                    state.eventDetails.ticketUrl);
 
-                              CommonFunctions.sendUXCamEvent(UXCamEvents
-                                  .Events_List_Click_Item_Move_To_Details_Event);
-                            },
+                                CommonFunctions.sendUXCamEvent(UXCamEvents
+                                    .Events_List_Click_Item_Move_To_Details_Event);
+                              },
+                            ),
                           ),
                         ],
                       ),
