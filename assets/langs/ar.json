@@ -3090,7 +3090,7 @@
 "events_description_subtitle":"يتربّع جبل الفيل رمال الصحراء الذهبية بمشهد يخطف الأنظار، ويعانق سماء العلا بجسده وخرطومه على ارتفاع 52 متر.",
 "event_location_title":"موقع الفعالية",
 "events_description2":"تعود نشأة الدرعية التاريخية إلى عام 1446م، بعد مجيء مانع بن ربيعة المريدي من بلدة صغيرة تقع بجوار القطيف، إلى أرض خصبة على ضفاف وادي حنيفة، فاستقر بها مع عائلته، واتسعت مع مرور الوقت نفوذهم ومزارعهم، حتى أصبحوا أمراء تلك المنطقة وما جوارها.",
-"event_button_text":"الانتقال الى التفاصيل",
+"event_button_text":"تفاصيل الفعالية",
 "nature":"طبيعة",
 "events_filter_season":"الموسم",
 "events_filter_category":"الإهتمام",
@@ -3998,8 +3998,10 @@
 "objection_enquiry_question":"السؤال", 
 "objection_enquiry_reply":"الرد", 
 "obkection_enquiry_show_file":"إستعراض الملف", 
-"objection_qnuiry_send": "إرسال الرد", 
-"objection_enquiry_warning":"عفوا تم إنتهاء مهلة الرد"
+"objection_qnuiry_send": "إرسال الرد",  
+"objection_enquiry_warning":"عفوا تم إنتهاء مهلة الرد", 
+"move_through_balady_map":"تنقل عبر خرائط بلدي"
+
 
 
 
