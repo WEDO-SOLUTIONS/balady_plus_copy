@@ -4277,6 +4277,7 @@
   "close_at": " Close. ",
   "opentomrrow": "Open tomorrow. ",
   "cannot_open_google": "Can't open google map",
-  "close_status": "Closed"
+  "close_status": "Closed",
+  "crNumber": "Commercial registry number"
 
 }
