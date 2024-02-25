@@ -13,6 +13,7 @@ import 'package:balady_plus/app/features/athkar/presentation/pages/athkar_entity
 import 'package:balady_plus/app/features/boarding/presentation/pages/boarding_main_page.dart';
 import 'package:balady_plus/app/features/force_update/presentation/pages/forceUpdatePage.dart';
 import 'package:balady_plus/app/features/jod_services/presentation/tobacco_list/pages/jod_donation_page.dart';
+import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_list_page.dart';
 import 'package:balady_plus/app/features/profile_features/incidents/presentation/pages/dc_details.dart';
 import 'package:balady_plus/app/features/profile_features/incidents/presentation/pages/incident_details.dart';
 import 'package:balady_plus/app/features/profile_features/about_balady/presentation/screens/about_balady_screen.dart';
@@ -766,9 +767,18 @@ class Routes {
 
         RouteName.chatbot: (context) => const ChatBotScreen(),
 
-        RouteName.commercialLicenseOverView: (context) => const CommercialLicenseOverviewScreen(),
-        RouteName.commercialLicenseQuery: (context) => const CommercialLicenseQueryScreen(),
-       RouteName.commercialLicenseQueryDetails: (context) => const CommercialLicenseQueryDetails(),
+        RouteName.commercialLicenseOverView: (context) =>
+            const CommercialLicenseOverviewScreen(),
+        RouteName.commercialLicenseQuery: (context) =>
+            const CommercialLicenseQueryScreen(),
+        RouteName.commercialLicenseQueryDetails: (context) =>
+            const CommercialLicenseQueryDetails(),
+
+
+
+
+        RouteName.notificationsListScreen: (context) =>
+            const NotificationsListPage(),
       };
 }
 

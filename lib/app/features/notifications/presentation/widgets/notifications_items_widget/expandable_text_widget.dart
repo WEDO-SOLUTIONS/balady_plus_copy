@@ -1,0 +1,68 @@
+import 'package:flutter/material.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:provider/provider.dart';
+
+class ExpandableTextWidget extends StatelessWidget {
+  final String text;
+
+  const ExpandableTextWidget({
+    super.key,
+    required this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => ExpandableTextProvider(),
+      child: Selector<ExpandableTextProvider, bool>(
+        selector: (_, provider) => provider.isExpandable,
+        builder: (contextProvider, isExpandable, _) {
+          ExpandableTextProvider provider = Provider.of<ExpandableTextProvider>(contextProvider);
+          return InkWell(
+            onTap: () {
+              provider.expandableText();
+              // contextProvider.read()<ExpandableTextProvider>().expandableText();
+            },
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(
+                      text,
+                      style: AppStyle.nearbyItemSubTitleTextStyle.copyWith(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 11,
+                        color: AppColor.warmGrey2,
+                      ),
+                      maxLines: isExpandable ? null : 1,
+                      overflow: TextOverflow.clip,
+                    ),
+                  ),
+                ),
+                Icon(
+                  isExpandable
+                      ? Icons.keyboard_arrow_up
+                      : Icons.keyboard_arrow_down,
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class ExpandableTextProvider extends ChangeNotifier {
+  bool isExpandable;
+
+  ExpandableTextProvider({this.isExpandable = false});
+
+  void expandableText() {
+    isExpandable = !isExpandable;
+    notifyListeners();
+  }
+}
