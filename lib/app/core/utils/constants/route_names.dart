@@ -352,6 +352,12 @@ class RouteName {
   static const commercialLicenseQueryDetails =
       'QueryCommercialLicense_query_details_Screen';
 
+
+
+  static const notificationsListScreen = 'notifications_list_screen';
+  static const notificationsDetailsScreen = 'notifications_details_screen';
+
+
 }
 
 class EtmamRoutesNames {
