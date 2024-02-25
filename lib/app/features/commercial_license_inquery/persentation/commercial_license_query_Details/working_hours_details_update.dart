@@ -114,7 +114,7 @@ class _WorkingHourDetailsUpdateState extends State<WorkingHourDetailsUpdate> {
                         child: ListView.builder(
                           shrinkWrap: true,
                           itemCount: widget.workingHours.workingTimes?.length,
-                          physics: const ScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (ctx, index) {
                             String closedOr24Hours = "";
                             bool closeDay = widget.workingHours.workingTimes?[index]
@@ -138,111 +138,105 @@ class _WorkingHourDetailsUpdateState extends State<WorkingHourDetailsUpdate> {
                               ),
                               child: Center(
                                 child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
                                   children: [
-                                    Center(
-                                      child: Expanded(
-                                          flex: 1,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(right: 10.0,left: 10),
-                                            child: CustomTextWidget(
-                                              widget.workingHours.workingTimes?[index]
-                                                  .dayName ??
-                                                  "",
-                                              fontColor: AppColor.blackModern600Light,
-                                              fontWeight: AppFontWeight.bold,
-                                              fontSize: 13,
-                                              textAlign: TextAlign.start,
-                                            ),
-                                          )),
-                                    ),
+                                    Expanded(
+                                        flex: 1,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(right: 10.0,left: 10),
+                                          child: CustomTextWidget(
+                                            widget.workingHours.workingTimes?[index]
+                                                .dayName ??
+                                                "",
+                                            fontColor: AppColor.blackModern600Light,
+                                            fontWeight: AppFontWeight.bold,
+                                            fontSize: 13,
+                                            textAlign: TextAlign.start,
+                                          ),
+                                        )),
                                     !(widget.workingHours.workingTimes?[index]
                                         .dayHasTwoShifts() ??
                                         true)
                                         ?
 
-                                    Center(
-                                      child: Expanded(
-                                        flex: 1,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(left: 10,right: 10),
-                                          child: CustomTextWidget(
-                                            closedOr24Hours.isNotEmpty
-                                                ? closedOr24Hours
-                                                : CommonFunctions
-                                                .getFormattedTimeforQR(
-                                                widget
-                                                    .workingHours
-                                                    .workingTimes?[index]
-                                                    .firstFromTime,
-                                                widget
-                                                    .workingHours
-                                                    .workingTimes?[index]
-                                                    .firstToTime),
-                                            fontColor: AppColor.blackModern600Light,
-                                            fontSize: 13,
-                                            fontWeight: AppFontWeight.medium,
-                                            textAlign: TextAlign.end,
+                                    Expanded(
+                                      flex: 1,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 10,right: 10),
+                                        child: CustomTextWidget(
+                                          closedOr24Hours.isNotEmpty
+                                              ? closedOr24Hours
+                                              : CommonFunctions
+                                              .getFormattedTimeforQR(
+                                              widget
+                                                  .workingHours
+                                                  .workingTimes?[index]
+                                                  .firstFromTime,
+                                              widget
+                                                  .workingHours
+                                                  .workingTimes?[index]
+                                                  .firstToTime),
+                                          fontColor: AppColor.blackModern600Light,
+                                          fontSize: 13,
+                                          fontWeight: AppFontWeight.medium,
+                                          textAlign: TextAlign.end,
 
-                                          ),
                                         ),
                                       ),
                                     )
                                         :
-                                    Center(
-                                      child: Expanded(
-                                        flex: 1,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(left: 10,right: 10),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 10,right: 10),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
 
-                                              CustomTextWidget(
-                                                closedOr24Hours.isNotEmpty
-                                                    ? closedOr24Hours
-                                                    : CommonFunctions
-                                                    .getFormattedTimeforQR(
-                                                    widget
-                                                        .workingHours
-                                                        .workingTimes?[index]
-                                                        .firstFromTime,
-                                                    widget
-                                                        .workingHours
-                                                        .workingTimes?[index]
-                                                        .firstToTime),
-                                                fontColor: AppColor.blackModern600Light,
-                                                fontSize: 13,
-                                                fontWeight: AppFontWeight.medium,
-                                                textAlign: TextAlign.end,
-                                              ),
-                                              const CustomVerticalSpace(
-                                                height: 5,
-                                              ),
-                                              CustomTextWidget(
-                                                closedOr24Hours.isNotEmpty
-                                                    ? closedOr24Hours
-                                                    : CommonFunctions
-                                                    .getFormattedTimeforQR(
-                                                    widget
-                                                        .workingHours
-                                                        .workingTimes?[index]
-                                                        .secondFromTime,
-                                                    widget
-                                                        .workingHours
-                                                        .workingTimes?[index]
-                                                        .secondToTime),
-                                                fontColor: AppColor.blackModern600Light,
-                                                fontSize: 13,
-                                                fontWeight:AppFontWeight.medium,
-                                                textAlign: TextAlign.end,
-                                              ),
+                                            CustomTextWidget(
+                                              closedOr24Hours.isNotEmpty
+                                                  ? closedOr24Hours
+                                                  : CommonFunctions
+                                                  .getFormattedTimeforQR(
+                                                  widget
+                                                      .workingHours
+                                                      .workingTimes?[index]
+                                                      .firstFromTime,
+                                                  widget
+                                                      .workingHours
+                                                      .workingTimes?[index]
+                                                      .firstToTime),
+                                              fontColor: AppColor.blackModern600Light,
+                                              fontSize: 13,
+                                              fontWeight: AppFontWeight.medium,
+                                              textAlign: TextAlign.end,
+                                            ),
+                                            const CustomVerticalSpace(
+                                              height: 5,
+                                            ),
+                                            CustomTextWidget(
+                                              closedOr24Hours.isNotEmpty
+                                                  ? closedOr24Hours
+                                                  : CommonFunctions
+                                                  .getFormattedTimeforQR(
+                                                  widget
+                                                      .workingHours
+                                                      .workingTimes?[index]
+                                                      .secondFromTime,
+                                                  widget
+                                                      .workingHours
+                                                      .workingTimes?[index]
+                                                      .secondToTime),
+                                              fontColor: AppColor.blackModern600Light,
+                                              fontSize: 13,
+                                              fontWeight:AppFontWeight.medium,
+                                              textAlign: TextAlign.end,
+                                            ),
 
-                                            ],
-                                          ),
+                                          ],
                                         ),
                                       ),
                                     )

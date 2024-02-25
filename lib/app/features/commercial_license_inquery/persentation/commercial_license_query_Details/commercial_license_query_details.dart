@@ -145,7 +145,7 @@ String? commercialLicenseNumber;
                   isExpandedByDefault: false,
                   children: [
                     CardParameter(
-                      title: 'cr_Number'.tr(),
+                      title: 'crNumber'.tr(),
                       value: commercialLicenceQueryDetails.licenseNumber.toString() ?? '',
                       bgColor: AppColor.mystic,
                     ),
