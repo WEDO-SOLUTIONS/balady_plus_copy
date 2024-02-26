@@ -28,19 +28,23 @@ class BaladyCalendarPage extends StatelessWidget {
         EventsCommonParams eventsCommonParams() {
           if (selectedAgent != null) {
             return EventsCommonParams(
-                agencyInRequestDto: AgencyInRequestDto(
-                    agencyNumber: selectedAgent.agencyNumber!,
-                    ownerNumber: selectedAgent.ownerNumber!,
-                    ownerTypeId: selectedAgent.ownerTypeId!));
+              typeUser:  UserType.agency,
+              agencyInRequestDto: AgencyInRequestDto(
+                agencyNumber: selectedAgent.agencyNumber!,
+                ownerNumber: selectedAgent.ownerNumber!,
+                ownerTypeId: selectedAgent.ownerTypeId!,
+              ),
+            );
           } else if (selectedDelegator != null) {
             return EventsCommonParams(
-                unifiedNationalNumber: selectedDelegator.unifiedNationalNumber!,
-                relationTypeeId:
-                    int.tryParse(selectedDelegator.relationTypeId));
+              typeUser: UserType.delegator,
+              ownerNumber: selectedDelegator.crNumber,
+              ownerTypeId: selectedDelegator.crType,
+              unifiedNationalNumber: selectedDelegator.unifiedNationalNumber!,
+              relationTypeeId: int.tryParse(selectedDelegator.relationTypeId),
+            );
           } else {
-            return EventsCommonParams(
-                loginIdentityId: selectedDelegator?.crNumber,
-                loginIdentityType: selectedDelegator?.crType);
+            return EventsCommonParams(typeUser: UserType.owner);
           }
         }
 
@@ -127,7 +131,9 @@ class BaladyCalendarPage extends StatelessWidget {
                                   SvgPicture.asset(
                                     IconPath.noEvents,
                                   ),
-                                  SizedBox(height: 10,),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
                                   Text('no_events'.tr())
                                 ],
                               ),
