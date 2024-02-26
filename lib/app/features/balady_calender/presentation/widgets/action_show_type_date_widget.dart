@@ -34,8 +34,8 @@ class ActionShowTypeDateWidget extends StatelessWidget {
         }
       },
       child: Container(
-        height: 60,
-        width: 110,
+        height: 50,
+        width: 100,
         padding: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
           color: AppColor.lightGreen2.withOpacity(0.1),
