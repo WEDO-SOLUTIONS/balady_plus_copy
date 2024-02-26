@@ -35,8 +35,8 @@ class ActionShowFilterWidget extends StatelessWidget {
         }
       },
       child: Container(
-        height: 60,
-        width: 60,
+        height: 50,
+        width: 50,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: AppColor.lightGreen2.withOpacity(0.1),
