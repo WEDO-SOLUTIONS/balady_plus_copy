@@ -4193,11 +4193,11 @@
  "National_ID":"National ID", 
   "Iqama_ID":"Resident ID",
   "CommerciallicenseQuery": "Inquiry about a commercial activity license",
-  "agentNumber":  "Agent Number",
+  "agentNumber":  "Unified Number for Establishment",
   "query": "Inquiry",
-  "agentNumberError":"Please enter agent number",
+  "agentNumberError":"Please enter Unified Number for Establishment",
   "commercial_license_error":"Please enter license number",
-  "license_nubmer": "License Number",
+  "license_nubmer": "Commercial License Number",
   "employee_type": "Work Type",
   "license_shop_name_ar": "Arabic Shop Name",
   "license_shop_name_en": "English Shop Name",
@@ -4212,6 +4212,6 @@
   "opentomrrow": "Open tomorrow. ",
   "cannot_open_google": "Can't open google map",
   "close_status": "Closed",
-  "crNumber": "Commercial registry number"
+  "crNumbers": "Commercial registry number"
 
 }
