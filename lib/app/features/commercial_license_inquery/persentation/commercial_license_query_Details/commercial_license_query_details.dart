@@ -145,7 +145,7 @@ String? commercialLicenseNumber;
                   isExpandedByDefault: false,
                   children: [
                     CardParameter(
-                      title: 'crNumber'.tr(),
+                      title: 'crNumbers'.tr(),
                       value: commercialLicenceQueryDetails.licenseNumber.toString() ?? '',
                       bgColor: AppColor.mystic,
                     ),
@@ -201,10 +201,10 @@ String? commercialLicenseNumber;
                               target: LatLng(
                                 double.parse(
                                     commercialLicenceQueryDetails
-                                        .x!),
+                                        .y!),
                                 double.parse(
                                     commercialLicenceQueryDetails
-                                        .y!),
+                                        .x!),
                               ),
                               zoom: 16),
                           markers: {
@@ -213,10 +213,10 @@ String? commercialLicenseNumber;
                               position: LatLng(
                                 double.parse(
                                     commercialLicenceQueryDetails
-                                        .x!),
+                                        .y!),
                                 double.parse(
                                     commercialLicenceQueryDetails
-                                        .y!),
+                                        .x!),
                               ),
                             )
                           },
@@ -231,10 +231,10 @@ String? commercialLicenseNumber;
                               onTap: (){
                                 navigateTo(double.parse(
                                     commercialLicenceQueryDetails
-                                        .x!),
+                                        .y!),
                                     double.parse(
                                         commercialLicenceQueryDetails
-                                            .y!));
+                                            .x!));
                               },
                               child: const Image(
                                 height: 40,
