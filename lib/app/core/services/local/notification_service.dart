@@ -7,6 +7,8 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
 
+import 'navigation_services.dart';
+
 /// A notification action which triggers a App navigation event
 String navigationActionId = 'id_3';
 
@@ -188,6 +190,10 @@ class NotificationService {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+
+      NavigationService.pushNamed(routeName: RouteName.notificationsListScreen);
+
+      print("open notication clciked");
       //print('A new onMessageOpenedApp event was published!');
     });
   }
