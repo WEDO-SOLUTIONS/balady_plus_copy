@@ -4,10 +4,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'weather_map_controls.g.dart';
 
 class WeatherMapControlsState {
-  final double extent;
-  final bool controlsVisible;
 
   WeatherMapControlsState(this.extent, this.controlsVisible);
+  final double extent;
+  final bool controlsVisible;
 
   WeatherMapControlsState copy({double? extent, bool? controlsVisible}) {
     return WeatherMapControlsState(

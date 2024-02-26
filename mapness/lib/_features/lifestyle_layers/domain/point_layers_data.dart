@@ -2,13 +2,6 @@ import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 
 class PointLayersData {
-  final String id;
-  final String name;
-  final String description;
-  final String type;
-
-  final GeoPointWithElevationMessage? latLng;
-  final GISMapLayers layerType;
 
   PointLayersData({
     required this.id,
@@ -18,6 +11,13 @@ class PointLayersData {
     required this.layerType,
     this.latLng,
   });
+  final String id;
+  final String name;
+  final String description;
+  final String type;
+
+  final GeoPointWithElevationMessage? latLng;
+  final GISMapLayers layerType;
 }
 
 enum LayersType {
@@ -31,9 +31,9 @@ enum LayersType {
 }
 
 List<GeoPointMessage> getList(List list) {
-  final List<GeoPointMessage> paths = [];
-  for (var pointList in list) {
-    for (var point in pointList) {
+  final paths = <GeoPointMessage>[];
+  for (final pointList in list) {
+    for (final point in pointList) {
       paths.add(
         GeoPointMessage(
           latitude: double.parse(point[1].toString()),
@@ -46,9 +46,9 @@ List<GeoPointMessage> getList(List list) {
 }
 
 List<GeoPointMessage> getPolyLines(List list) {
-  final List<GeoPointMessage> paths = [];
-  for (var pointList in list) {
-    for (var point in pointList) {
+  final paths = <GeoPointMessage>[];
+  for (final pointList in list) {
+    for (final point in pointList) {
       paths.add(
         GeoPointMessage(
           latitude: double.parse(point[1].toString()),
@@ -63,11 +63,11 @@ List<GeoPointMessage> getPolyLines(List list) {
 
 
 List<List<GeoPointMessage>> getGoogleList(List list) {
-  final List<List<GeoPointMessage>> paths = [];
-  for (var pointList in list) {
-    final List<GeoPointMessage> inside = [];
+  final paths = <List<GeoPointMessage>>[];
+  for (final pointList in list) {
+    final inside = <GeoPointMessage>[];
 
-    for (var point in pointList) {
+    for (final point in pointList) {
       inside.add(
         GeoPointMessage(
           latitude: double.parse(point[1].toString()),

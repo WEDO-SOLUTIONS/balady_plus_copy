@@ -2,19 +2,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
-import '../provider/poi_photo_provider.dart';
-import 'poi_photos_row.dart';
+import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
+import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
+import 'package:mapness/_features/poi_card/widgets/poi_photos_row.dart';
 
 class PoiPhotosHeader extends ConsumerWidget {
-  final ValueListenable<Expansion> expansion;
-  final int objectId;
 
   const PoiPhotosHeader({
     required this.expansion,
     required this.objectId,
     super.key,
   });
+  final ValueListenable<Expansion> expansion;
+  final int objectId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,7 +30,7 @@ class PoiPhotosHeader extends ConsumerWidget {
         duration: const Duration(milliseconds: 300),
         firstChild: const SizedBox.shrink(),
         secondChild: Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
+          padding: const EdgeInsets.only(bottom: 8),
           child: AnimatedCrossFade(
             firstCurve: Curves.easeInOut,
             secondCurve: Curves.easeInOut,

@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -30,17 +29,16 @@ class _ModalScopeStatus extends InheritedWidget {
   void debugFillProperties(DiagnosticPropertiesBuilder description) {
     super.debugFillProperties(description);
     description.add(FlagProperty('isCurrent',
-        value: isCurrent, ifTrue: 'active', ifFalse: 'inactive'));
+        value: isCurrent, ifTrue: 'active', ifFalse: 'inactive',),);
     description.add(FlagProperty('canPop', value: canPop, ifTrue: 'can pop'));
     description.add(FlagProperty('impliesAppBarDismissal',
-        value: impliesAppBarDismissal, ifTrue: 'implies app bar dismissal'));
+        value: impliesAppBarDismissal, ifTrue: 'implies app bar dismissal',),);
   }
 }
 
 class _ModalScope<T> extends StatefulWidget {
   const _ModalScope({
-    super.key,
-    required this.route,
+    required this.route, super.key,
   });
 
   final ModalRoute<T> route;
@@ -66,7 +64,7 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
   @override
   void initState() {
     super.initState();
-    final List<Listenable> animations = <Listenable>[
+    final animations = <Listenable>[
       if (widget.route.animation != null) widget.route.animation!,
       if (widget.route.secondaryAnimation != null)
         widget.route.secondaryAnimation!,
@@ -90,7 +88,7 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
 
   void _updateFocusScopeNode() {
     final TraversalEdgeBehavior traversalEdgeBehavior;
-    final ModalRoute<T> route = widget.route;
+    final route = widget.route;
     if (route.traversalEdgeBehavior != null) {
       traversalEdgeBehavior = route.traversalEdgeBehavior!;
     } else {
@@ -161,7 +159,7 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
             child: Builder(
               builder: (BuildContext context) {
                 return Actions(
-                  actions: <Type, Action<Intent>>{
+                  actions: const <Type, Action<Intent>>{
                     // DismissIntent: _DismissModalAction(context),
                   },
                   child: PrimaryScrollController(
@@ -185,7 +183,7 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
                                         ?.userGestureInProgressNotifier ??
                                     ValueNotifier<bool>(false),
                                 builder: (BuildContext context, Widget? child) {
-                                  final bool ignoreEvents =
+                                  final ignoreEvents =
                                       _shouldIgnoreFocusRequest;
                                   focusScopeNode.canRequestFocus =
                                       !ignoreEvents;
@@ -235,7 +233,7 @@ abstract class ModalRoute<T> extends TransitionRoute<T>
 
   @optionalTypeArgs
   static ModalRoute<T>? of<T extends Object?>(BuildContext context) {
-    final _ModalScopeStatus? widget =
+    final widget =
         context.dependOnInheritedWidgetOfExactType<_ModalScopeStatus>();
     return widget?.route as ModalRoute<T>?;
   }
@@ -258,7 +256,7 @@ abstract class ModalRoute<T> extends TransitionRoute<T>
   }
 
   Widget buildPage(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation);
+      Animation<double> secondaryAnimation,);
 
   Widget buildTransitions(
     BuildContext context,
@@ -328,9 +326,9 @@ abstract class ModalRoute<T> extends TransitionRoute<T>
 
   @override
   Future<RoutePopDisposition> willPop() async {
-    final _ModalScopeState<T>? scope = _scopeKey.currentState;
+    final scope = _scopeKey.currentState;
     assert(scope != null);
-    for (final WillPopCallback callback
+    for (final callback
         in List<WillPopCallback>.of(_willPopCallbacks)) {
       if (await callback() != true) {
         return RoutePopDisposition.doNotPop;
@@ -341,13 +339,13 @@ abstract class ModalRoute<T> extends TransitionRoute<T>
 
   void addScopedWillPopCallback(WillPopCallback callback) {
     assert(_scopeKey.currentState != null,
-        'Tried to add a willPop callback to a route that is not currently in the tree.');
+        'Tried to add a willPop callback to a route that is not currently in the tree.',);
     _willPopCallbacks.add(callback);
   }
 
   void removeScopedWillPopCallback(WillPopCallback callback) {
     assert(_scopeKey.currentState != null,
-        'Tried to remove a willPop callback from a route that is not currently in the tree.');
+        'Tried to remove a willPop callback from a route that is not currently in the tree.',);
     _willPopCallbacks.remove(callback);
   }
 
@@ -390,7 +388,7 @@ abstract class ModalRoute<T> extends TransitionRoute<T>
 
   Widget _buildModalScope(BuildContext context) {
     return _modalScopeCache ??= Semantics(
-      sortKey: const OrdinalSortKey(0.0),
+      sortKey: const OrdinalSortKey(0),
       child: _ModalScope<T>(
         key: _scopeKey,
         route: this,
@@ -437,11 +435,11 @@ class TRoute<T> extends ModalRoute<T> {
 }
 
 class TransculentPage<T> extends Page<T> {
-  final Widget child;
 
   const TransculentPage({
     required this.child,
   });
+  final Widget child;
 
   @override
   Route<T> createRoute(BuildContext context) {

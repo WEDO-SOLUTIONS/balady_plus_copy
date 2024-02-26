@@ -41,7 +41,7 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
         Uri.parse(switch (language) {
           Language.arabic => 'https://balady.gov.sa/ar',
           Language.english => 'https://balady.gov.sa/en',
-        }),
+        },),
       );
   }
 
@@ -61,7 +61,7 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
               SafeArea(
                 bottom: false,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
                       Consumer(builder: (context, ref, _) {
@@ -95,7 +95,7 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
                             ),
                           ),
                         );
-                      }),
+                      },),
                       const Spacer(),
                       Text(
                         context.l10n.baladyWebsite,

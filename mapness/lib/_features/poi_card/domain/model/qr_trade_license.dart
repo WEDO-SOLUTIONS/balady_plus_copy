@@ -1,7 +1,7 @@
+// ignore_for_file: argument_type_not_assignable
+// ignore_for_file: avoid_dynamic_calls
+// ignore_for_file: not_assigned_potentially_non_nullable_local_variable
 class StatusDetails {
-  final int code;
-  final String message;
-
   StatusDetails({required this.code, required this.message});
 
   factory StatusDetails.fromJson(Map<String, dynamic> json) {
@@ -10,21 +10,11 @@ class StatusDetails {
       message: json['message'] as String,
     );
   }
+  final int code;
+  final String message;
 }
 
 class QrLicenseMessage {
-  final int requestId;
-  final String shopName;
-  final String? mobile;
-  final int parkingCount;
-  final bool hasParking;
-  final bool serveDisabledPersons;
-  final bool hasVehicleParking;
-  final bool hasDelivery;
-  final LicenseInfo licenseInfo;
-  final NationalAddressInfo nationalAddressInfo;
-  // final SiteDetailsInfo siteDetailsInfo;
-  final List<WorkingTimesInfo> workingTimesInfo;
   // final dynamic attachmentsInfo; // You might want to change the type to match the actual data
 
   QrLicenseMessage({
@@ -58,21 +48,27 @@ class QrLicenseMessage {
           NationalAddressInfo.fromJson(json['nationalAddressInfo']),
       // siteDetailsInfo: SiteDetailsInfo.fromJson(json['siteDetailsInfo']),
       workingTimesInfo: (json['workingTimesInfo'] as List<dynamic>)
-          .map((e) => WorkingTimesInfo.fromJson(e))
+          .map(WorkingTimesInfo.fromJson)
           .toList(),
       // attachmentsInfo: json[
       //     'attachmentsInfo'], // Adjust this based on the actual data structure
     );
   }
+  final int requestId;
+  final String shopName;
+  final String? mobile;
+  final int parkingCount;
+  final bool hasParking;
+  final bool serveDisabledPersons;
+  final bool hasVehicleParking;
+  final bool hasDelivery;
+  final LicenseInfo licenseInfo;
+  final NationalAddressInfo nationalAddressInfo;
+  // final SiteDetailsInfo siteDetailsInfo;
+  final List<WorkingTimesInfo> workingTimesInfo;
 }
 
 class LicenseInfo {
-  final int licenseId;
-  final int issueDate;
-  final int expiryDate;
-  final Status status;
-  final CurrentRequestType currentRequestType;
-
   LicenseInfo({
     required this.licenseId,
     required this.issueDate,
@@ -91,12 +87,14 @@ class LicenseInfo {
           CurrentRequestType.fromJson(json['currentRequestType']),
     );
   }
+  final int licenseId;
+  final int issueDate;
+  final int expiryDate;
+  final Status status;
+  final CurrentRequestType currentRequestType;
 }
 
 class Status {
-  final String id;
-  final String name;
-
   Status({required this.id, required this.name});
 
   factory Status.fromJson(Map<String, dynamic> json) {
@@ -105,12 +103,11 @@ class Status {
       name: json['name'] as String,
     );
   }
+  final String id;
+  final String name;
 }
 
 class CurrentRequestType {
-  final String id;
-  final String name;
-
   CurrentRequestType({required this.id, required this.name});
 
   factory CurrentRequestType.fromJson(Map<String, dynamic> json) {
@@ -119,29 +116,12 @@ class CurrentRequestType {
       name: json['name'] as String,
     );
   }
+  final String id;
+  final String name;
 }
 
 class NationalAddressInfo {
-  final dynamic
-      buildingNumber; // You might want to change the type to match the actual data
-  final dynamic
-      additionalNumber; // You might want to change the type to match the actual data
-  final dynamic
-      zipCode; // You might want to change the type to match the actual data
-  final dynamic
-      unitTypeId; // You might want to change the type to match the actual data
-  final dynamic
-      unitNumber; // You might want to change the type to match the actual data
-  final dynamic
-      regionCode; // You might want to change the type to match the actual data
-  final dynamic
-      cityCode; // You might want to change the type to match the actual data
-  final dynamic
-      floorNumber; // You might want to change the type to match the actual data
-  final dynamic
-      streetName; // You might want to change the type to match the actual data
-  final dynamic
-      streetEname; // You might want to change the type to match the actual data
+  // You might want to change the type to match the actual data
 
   NationalAddressInfo({
     required this.buildingNumber,
@@ -179,28 +159,29 @@ class NationalAddressInfo {
       streetEname: json['streetEname'], // Adjust this based on the actual data
     );
   }
+  final dynamic
+      buildingNumber; // You might want to change the type to match the actual data
+  final dynamic
+      additionalNumber; // You might want to change the type to match the actual data
+  final dynamic
+      zipCode; // You might want to change the type to match the actual data
+  final dynamic
+      unitTypeId; // You might want to change the type to match the actual data
+  final dynamic
+      unitNumber; // You might want to change the type to match the actual data
+  final dynamic
+      regionCode; // You might want to change the type to match the actual data
+  final dynamic
+      cityCode; // You might want to change the type to match the actual data
+  final dynamic
+      floorNumber; // You might want to change the type to match the actual data
+  final dynamic
+      streetName; // You might want to change the type to match the actual data
+  final dynamic streetEname;
 }
 
 class SiteDetailsInfo {
-  final String subMunicipalityGisCode;
-  final dynamic
-      streetCode; // You might want to change the type to match the actual data
-  final dynamic
-      streetName; // You might want to change the type to match the actual data
-  final dynamic
-      districtCode; // You might want to change the type to match the actual data
-  final dynamic
-      districtName; // You might want to change the type to match the actual data
-  final String subMunicipalityName;
-  final String municipalityId;
-  final String municipalityName;
-  final String subMunicipalityId;
-  final int regionId;
-  final String regionName;
-  final dynamic
-      latitude; // You might want to change the type to match the actual data
-  final dynamic
-      longitude; // You might want to change the type to match the actual data
+  // You might want to change the type to match the actual data
 
   SiteDetailsInfo({
     required this.subMunicipalityGisCode,
@@ -240,20 +221,28 @@ class SiteDetailsInfo {
       longitude: json['longitude'], // Adjust this based on the actual data
     );
   }
+  final String subMunicipalityGisCode;
+  final dynamic
+      streetCode; // You might want to change the type to match the actual data
+  final dynamic
+      streetName; // You might want to change the type to match the actual data
+  final dynamic
+      districtCode; // You might want to change the type to match the actual data
+  final dynamic
+      districtName; // You might want to change the type to match the actual data
+  final String subMunicipalityName;
+  final String municipalityId;
+  final String municipalityName;
+  final String subMunicipalityId;
+  final int regionId;
+  final String regionName;
+  final dynamic
+      latitude; // You might want to change the type to match the actual data
+  final dynamic longitude;
 }
 
 class WorkingTimesInfo {
-  final int dayId;
-  final String dayName;
-  final String openShiftOption;
-  final dynamic
-      firstFromTime; // You might want to change the type to match the actual data
-  final dynamic
-      firstToTime; // You might want to change the type to match the actual data
-  final dynamic
-      secondFromTime; // You might want to change the type to match the actual data
-  final dynamic
-      secondToTime; // You might want to change the type to match the actual data
+  // You might want to change the type to match the actual data
 
   WorkingTimesInfo({
     required this.dayId,
@@ -280,4 +269,14 @@ class WorkingTimesInfo {
           json['secondToTime'], // Adjust this based on the actual data
     );
   }
+  final int dayId;
+  final String dayName;
+  final String openShiftOption;
+  final dynamic
+      firstFromTime; // You might want to change the type to match the actual data
+  final dynamic
+      firstToTime; // You might want to change the type to match the actual data
+  final dynamic
+      secondFromTime; // You might want to change the type to match the actual data
+  final dynamic secondToTime;
 }

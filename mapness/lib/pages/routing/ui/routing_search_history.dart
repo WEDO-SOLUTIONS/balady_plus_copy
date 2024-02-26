@@ -11,6 +11,8 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/widgets/routing/ui/search_action.dart';
 
+import 'package:mapness/_features/favourites/domain/favourite_item.dart';
+
 const _searchScope = 'RoutingSearch';
 
 class RoutingSearchHistory extends ConsumerWidget {
@@ -79,17 +81,22 @@ class RoutingSearchHistory extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(12),
                   child: InkWell(
                     onTap: () async {
-                      await CommonFunctions.authOrOpen(context,
-                          callback: () async {
-                        final result =
-                            await const FavouritesPickerRoute().push(context);
+                      await CommonFunctions.authOrOpen(
+                        context,
+                        callback: () async {
+                          if (!context.mounted) return;
+                          final result =
+                              // ignore: inference_failure_on_function_invocation
+                              await const FavouritesPickerRoute().push(context);
 
-                        if (result != null) {
-                          context.pop(
-                            RoutePointFavouriteItem(result),
-                          );
-                        }
-                      });
+                          if (result != null) {
+                            // ignore: use_build_context_synchronously
+                            context.pop(
+                              RoutePointFavouriteItem(result as FavouriteItem?),
+                            );
+                          }
+                        },
+                      );
                     },
                     child: SearchActionRow(
                       icon: 'assets/icons/svg/ic_actions_fav.svg',

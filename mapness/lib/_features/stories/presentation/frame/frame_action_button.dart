@@ -5,18 +5,14 @@ import 'package:mapness/_features/stories/domain/frame/story_text_style.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class FrameActionButton extends StatelessWidget {
+
+  const FrameActionButton({
+    required this.title, required this.onPressed, required this.backgroundColor, required this.textStyle, super.key,
+  });
   final String title;
   final VoidCallback onPressed;
   final Color? backgroundColor;
   final StoryTextStyle? textStyle;
-
-  const FrameActionButton({
-    super.key,
-    required this.title,
-    required this.onPressed,
-    required this.backgroundColor,
-    required this.textStyle,
-  });
 
   @override
   Widget build(BuildContext context) {

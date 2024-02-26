@@ -8,10 +8,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class RouteEditor extends StatelessWidget {
   const RouteEditor({
-    super.key,
-    required this.points,
-    required this.onReorder,
-    required this.onTap,
+    required this.points, required this.onReorder, required this.onTap, super.key,
   });
 
   final List<RoutePoint> points;
@@ -62,7 +59,7 @@ class RouteEditor extends StatelessWidget {
               height: 1,
               color: NonThemeColor.color53,
             ),
-          )
+          ),
         ],
       ),
     );
@@ -71,11 +68,7 @@ class RouteEditor extends StatelessWidget {
 
 class DestinationRow extends StatelessWidget {
   const DestinationRow({
-    super.key,
-    required this.color,
-    required this.value,
-    required this.icon,
-    required this.index,
+    required this.color, required this.value, required this.icon, required this.index, super.key,
   });
 
   final Color color;
@@ -128,7 +121,7 @@ class DestinationRow extends StatelessWidget {
               width: 24,
               height: 24,
               child: SvgPicture.asset(
-                "assets/icons/svg/ic_drag_indicator.svg",
+                'assets/icons/svg/ic_drag_indicator.svg',
                 package: PackageConfig.packageName,
               ),
             ),

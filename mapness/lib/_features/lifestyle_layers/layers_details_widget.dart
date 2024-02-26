@@ -8,12 +8,12 @@ import 'package:mapness/_features/lifestyle_layers/domain/white_lands.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_details.dart';
 import 'package:shimmer/shimmer.dart';
 
-import 'domain/building_compliance_certificate.dart';
+import 'package:mapness/_features/lifestyle_layers/domain/building_compliance_certificate.dart';
 
 class LayersDetailsWidget extends ConsumerStatefulWidget {
-  final PointLayersData? data;
 
   const LayersDetailsWidget({super.key, this.data});
+  final PointLayersData? data;
 
   @override
   ConsumerState<LayersDetailsWidget> createState() => LayersDetailsState();
@@ -28,7 +28,7 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidget> {
   @override
   Widget build(BuildContext context) => SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: Stack(
             alignment: Alignment.bottomCenter,
             children: [
@@ -86,7 +86,7 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidget> {
                     context.pop();
                     return buildShimmer();
                   },
-                  loading: (_) => buildShimmer()),
+                  loading: (_) => buildShimmer(),),
             ],
           ),
         ),

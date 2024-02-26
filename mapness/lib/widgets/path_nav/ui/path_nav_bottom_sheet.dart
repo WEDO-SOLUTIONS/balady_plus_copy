@@ -3,11 +3,6 @@ import 'package:mapness/pages/path_nav/lib/no_overscroll_behavior.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PathNavBottomSheet extends StatefulWidget {
-  final Widget header;
-  final Widget body;
-  final double maxSize;
-  final double minSize;
-  final DraggableScrollableController controller;
 
   const PathNavBottomSheet({
     required this.header,
@@ -17,6 +12,11 @@ class PathNavBottomSheet extends StatefulWidget {
     required this.controller,
     super.key,
   });
+  final Widget header;
+  final Widget body;
+  final double maxSize;
+  final double minSize;
+  final DraggableScrollableController controller;
 
   @override
   State<PathNavBottomSheet> createState() => _PathNavBottomSheetState();

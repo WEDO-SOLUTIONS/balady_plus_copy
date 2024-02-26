@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:app_links/app_links.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_uikit/colors/app_color_scheme.dart';
 import 'package:balady_uikit/colors/app_colors_theme.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
@@ -19,6 +18,7 @@ import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
 import 'package:mapness/_features/debug_overlay/debug_overlay.dart';
+import 'package:mapness/app/router.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
@@ -30,8 +30,6 @@ import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:share_plus/share_plus.dart';
-
-import 'app/router.dart';
 
 Mixpanel? mixpanel;
 
@@ -71,12 +69,11 @@ class MapnessProviderScope extends StatelessWidget {
 }
 
 class MapnessEntryPoint extends ConsumerStatefulWidget {
-  final void Function(DgisMapController) mapCreated;
-
   const MapnessEntryPoint({
     required this.mapCreated,
     super.key,
   });
+  final void Function(DgisMapController) mapCreated;
 
   @override
   ConsumerState<MapnessEntryPoint> createState() => _MapnessEntryPointState();
@@ -134,42 +131,46 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
             height: MediaQuery.of(context).size.height,
             child: const MapPage(),
           ),
-          Consumer(builder: (context, ref, child) {
-            final colorScheme = ref.watch(colorSchemeProvider);
+          Consumer(
+            builder: (context, ref, child) {
+              final colorScheme = ref.watch(colorSchemeProvider);
 
-            return MaterialApp.router(
-              routerConfig: goRouter,
-              theme: ThemeData(
-                primarySwatch: const MaterialColor(
-                  0xFF4CA5B4,
-                  <int, Color>{
-                    50: Color(0xFF89cfbe),
-                    100: Color(0xFF89cfbe),
-                    200: Color(0xFF89cfbe),
-                    300: Color(0xFF89cfbe),
-                    400: Color(0xFF89cfbe),
-                    500: Color(0xFF89cfbe),
-                    600: Color(0xFF89cfbe),
-                    700: Color(0xFF89cfbe),
-                    800: Color(0xFF89cfbe),
-                    900: Color(0xFF89cfbe),
-                  },
+              return MaterialApp.router(
+                routerConfig: goRouter,
+                theme: ThemeData(
+                  primarySwatch: const MaterialColor(
+                    0xFF4CA5B4,
+                    <int, Color>{
+                      50: Color(0xFF89cfbe),
+                      100: Color(0xFF89cfbe),
+                      200: Color(0xFF89cfbe),
+                      300: Color(0xFF89cfbe),
+                      400: Color(0xFF89cfbe),
+                      500: Color(0xFF89cfbe),
+                      600: Color(0xFF89cfbe),
+                      700: Color(0xFF89cfbe),
+                      800: Color(0xFF89cfbe),
+                      900: Color(0xFF89cfbe),
+                    },
+                  ),
+                  // unselectedWidgetColor: context.color.text_and_icons_base_primary,
+                  scaffoldBackgroundColor: Colors.transparent,
+                  dividerColor: Colors.grey[400],
+                  useMaterial3: false,
+                  extensions: <ThemeExtension<dynamic>>[
+                    ThemeTextStyles.arabic(isDark: false)
+                        as ThemeExtension<dynamic>,
+                    AppColorsThemeExt.palette(colorScheme, isDark: false)
+                        as ThemeExtension<dynamic>,
+                  ],
                 ),
-                // unselectedWidgetColor: context.color.text_and_icons_base_primary,
-                scaffoldBackgroundColor: Colors.transparent,
-                dividerColor: Colors.grey[400],
-                useMaterial3: false,
-                extensions: <ThemeExtension<dynamic>>[
-                  ThemeTextStyles.arabic(isDark: false),
-                  AppColorsThemeExt.palette(colorScheme, isDark: false),
-                ],
-              ),
-              locale: language.locale,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              debugShowCheckedModeBanner: false,
-            );
-          }),
+                locale: language.locale,
+                localizationsDelegates: AppLocalizations.localizationsDelegates,
+                supportedLocales: AppLocalizations.supportedLocales,
+                debugShowCheckedModeBanner: false,
+              );
+            },
+          ),
         ],
       ),
     );
@@ -181,7 +182,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       trackAutomaticEvents: true,
     );
     mixpanel?.setLoggingEnabled(true);
-    final FlutterUxConfig config = FlutterUxConfig(
+    final config = FlutterUxConfig(
       enableAdvancedGestureRecognition: true,
       enableCrashHandling: true,
       enableMultiSessionRecord: true,

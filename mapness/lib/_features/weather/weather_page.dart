@@ -4,15 +4,12 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/weather/weather_controls.dart';
 import 'package:mapness/_features/weather/weather_dashboard.dart';
 import 'package:mapness/_features/weather/wiidget_ref_extension.dart';
-import 'package:mapness/app/routes/poi_map.dart';
-import 'package:mapness/shared/routing/current_route_provider.dart';
 
 class WeatherPage extends ConsumerStatefulWidget {
-  const WeatherPage({Key? key}) : super(key: key);
+  const WeatherPage({super.key});
 
   @override
   ConsumerState<WeatherPage> createState() => _WeatherPageState();
@@ -54,7 +51,7 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
                     biggestHeight: constraints.biggest.height,
                     biggestWidth: constraints.biggest.width,
                   );
-                }),
+                },),
               ],
             ),
           ),

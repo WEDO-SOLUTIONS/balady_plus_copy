@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PathNavEndTripButton extends StatelessWidget {
+  const PathNavEndTripButton({required this.onPressed, super.key});
   final VoidCallback onPressed;
-  const PathNavEndTripButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

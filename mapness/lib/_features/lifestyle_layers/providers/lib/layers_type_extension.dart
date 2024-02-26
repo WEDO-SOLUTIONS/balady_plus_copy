@@ -25,11 +25,11 @@ extension LayerTypeExt on LayerType {
 
   String iconPath() {
     return switch (this) {
-      LayerType.favourites => "assets/icons/svg/layers/bookmark.svg",
-      LayerType.invest => "assets/icons/svg/layers/Invest.svg",
-      LayerType.buildings => "assets/icons/svg/layers/buildings.svg",
-      LayerType.fencing => "assets/icons/svg/layers/fence.svg",
-      LayerType.joy => "assets/icons/svg/layers/joy.svg",
+      LayerType.favourites => 'assets/icons/svg/layers/bookmark.svg',
+      LayerType.invest => 'assets/icons/svg/layers/Invest.svg',
+      LayerType.buildings => 'assets/icons/svg/layers/buildings.svg',
+      LayerType.fencing => 'assets/icons/svg/layers/fence.svg',
+      LayerType.joy => 'assets/icons/svg/layers/joy.svg',
     };
   }
 

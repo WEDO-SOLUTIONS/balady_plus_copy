@@ -4,14 +4,12 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class IwishActionIconButton extends StatelessWidget {
-  final String iconAsset;
-  final VoidCallback? onPressed;
 
   const IwishActionIconButton({
-    super.key,
-    required this.iconAsset,
-    required this.onPressed,
+    required this.iconAsset, required this.onPressed, super.key,
   });
+  final String iconAsset;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {

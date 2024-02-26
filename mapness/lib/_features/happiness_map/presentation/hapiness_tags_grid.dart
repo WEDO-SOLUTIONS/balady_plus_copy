@@ -6,12 +6,12 @@ import 'package:mapness/_features/happiness_map/domain/happiness_tag.dart';
 import 'package:mapness/_features/happiness_map/presentation/happiness_tag_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-import '../data/happines_manager.dart';
+import 'package:mapness/_features/happiness_map/data/happines_manager.dart';
 
 class HappinessTagsGrid extends ConsumerWidget {
-  final sizeGroup = AutoSizeGroup();
 
-  HappinessTagsGrid({Key? key}) : super(key: key);
+  HappinessTagsGrid({super.key});
+  final sizeGroup = AutoSizeGroup();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

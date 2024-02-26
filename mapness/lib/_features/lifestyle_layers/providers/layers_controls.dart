@@ -28,8 +28,8 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../domain/building_compliance_certificate.dart';
-import '../domain/point_layers_data.dart';
+import 'package:mapness/_features/lifestyle_layers/domain/building_compliance_certificate.dart';
+import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
 
 part 'layers_controls.g.dart';
 
@@ -47,13 +47,6 @@ class SelectedLayer extends _$SelectedLayer {
 }
 
 class LayersState {
-  final bool layersVisible;
-  final LayerType? selectedType;
-  final bool isLoading;
-
-  Map<String, Marker> investmentsMarkers = {};
-  Map<String, Polyline> polylines = {};
-  Map<String, Polygon> polygons = {};
 
   LayersState({
     required this.isLoading,
@@ -63,6 +56,13 @@ class LayersState {
     required this.polylines,
     required this.polygons,
   });
+  final bool layersVisible;
+  final LayerType? selectedType;
+  final bool isLoading;
+
+  Map<String, Marker> investmentsMarkers = {};
+  Map<String, Polyline> polylines = {};
+  Map<String, Polygon> polygons = {};
 }
 
 const duration = Duration(milliseconds: 700);
@@ -310,7 +310,7 @@ class LayersControls extends _$LayersControls {
   }
 
   MapRequestParams _createParams(
-          VisibleRect visibleRect, LayerType layer, EnvironmentConfig env) =>
+          VisibleRect visibleRect, LayerType layer, EnvironmentConfig env,) =>
       MapRequestParams(
         layer: layer.getGISLayerType(),
         southWestLongitude: visibleRect.southWestLon,
@@ -396,9 +396,9 @@ class LayersControls extends _$LayersControls {
                   northEastLongitude: visibleRect.northEastLon,
                   northEastLatitude: visibleRect.northEastLat,
                   proxy: env.proxy,
-                  domain: env.url),
+                  domain: env.url,),
               cancelToken,
-            ))
+            ),)
         .map(_makePolygons)
         .listen((data) async {
       update(isLoading: false);
@@ -435,7 +435,7 @@ class LayersControls extends _$LayersControls {
         .debounceTime(duration)
         .map((event) => event.visibleRect)
         .asyncMap((visibleRect) => controller.buildingComplianceCertificate(
-            _createParams(visibleRect, LayerType.buildings, env), cancelToken))
+            _createParams(visibleRect, LayerType.buildings, env), cancelToken,),)
         .listen(
       (data) async {
         update(isLoading: false);
@@ -463,14 +463,14 @@ class LayersControls extends _$LayersControls {
       for (final element in pointList) {
         final pathsGoogle = element.pathsGoogle;
         if (pathsGoogle != null) {
-          for (final List<GeoPointMessage> i in pathsGoogle) {
-            final int id = int.parse(element.id);
-            final String idPolyline = '${id.toString()}+$i';
+          for (final i in pathsGoogle) {
+            final id = int.parse(element.id);
+            final idPolyline = '$id+$i';
             polylines.add(
               Polyline(
                 id: idPolyline,
                 options: PolylineOptionsMessage(
-                    points: i, width: 2, color: 0xff358281),
+                    points: i, width: 2, color: 0xff358281,),
                 onTap: () => _showEsriCard(element),
               ),
             );
@@ -527,8 +527,8 @@ class LayersControls extends _$LayersControls {
                   strokeWidth: 2,
                   strokeColor: e.strokeColor,
                   color: e.color,
-                  contours: [e.paths]),
-              onTap: () => _showEsriCard(e)))
+                  contours: [e.paths],),
+              onTap: () => _showEsriCard(e),),)
           .toList() ??
       [];
 
@@ -544,13 +544,13 @@ class LayersControls extends _$LayersControls {
     }).timeout(duration, onTimeout: () {
       onError();
       return [];
-    });
+    },);
     await _removeAll();
     await ref
         .read(mapObjectManagerProvider(named: mapLayerName).notifier)
         .addMarkers(markers)
         .onError((error, stackTrace) => onError())
-        .timeout(duration, onTimeout: () => onError());
+        .timeout(duration, onTimeout: onError);
     update(isLoading: false);
   }
 

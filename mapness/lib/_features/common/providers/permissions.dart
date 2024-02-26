@@ -11,7 +11,7 @@ class Permissions extends _$Permissions {
   }
 
   Future<PermissionStatus> request() async {
-    PermissionStatus status = await future;
+    var status = await future;
 
     while (status.isDenied) {
       try {

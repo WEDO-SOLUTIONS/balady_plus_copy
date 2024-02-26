@@ -15,7 +15,7 @@ class SsoCredentialView extends ConsumerWidget {
     return Column(
       children: [
         Text(
-          "SSO Credentials",
+          'SSO Credentials',
           style: Theme.of(context)
               .extension<ThemeTextStyles>()
               ?.textS
@@ -45,7 +45,7 @@ class SsoCredentialView extends ConsumerWidget {
 }
 
 Widget _infoItem(BuildContext context,
-    {required String title, required String value}) {
+    {required String title, required String value,}) {
   return Row(
     children: [
       Expanded(

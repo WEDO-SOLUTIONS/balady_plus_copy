@@ -6,18 +6,15 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 
 class PathNavSettingToggle extends StatelessWidget {
+
+  const PathNavSettingToggle({
+    required this.title, required this.state, required this.onChanged, super.key,
+    this.subtitle,
+  });
   final String title;
   final String? subtitle;
   final bool state;
   final void Function(bool)? onChanged;
-
-  const PathNavSettingToggle({
-    super.key,
-    required this.title,
-    this.subtitle,
-    required this.state,
-    required this.onChanged,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +34,7 @@ class PathNavSettingToggle extends StatelessWidget {
                   title,
                   style: Theme.of(context).extension<ThemeTextStyles>()!.textM
                       .copyWith(
-                      color: context.color.text_and_icons_base_primary),
+                      color: context.color.text_and_icons_base_primary,),
                 ),
                 if (subtitle != null) ...[
                   const SizedBox(height: 2),
@@ -45,7 +42,7 @@ class PathNavSettingToggle extends StatelessWidget {
                     subtitle!,
                     style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: NonThemeColor.color16),
                   ),
-                ]
+                ],
               ],
             ),
           ),

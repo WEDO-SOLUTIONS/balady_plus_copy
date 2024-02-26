@@ -2,13 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import 'radar_painter.dart';
+import 'package:mapness/pages/kiblah/ui/radar_painter.dart';
 
 class RadarWidget extends StatefulWidget {
   const RadarWidget({
-    super.key,
-    required this.backgroundColor,
-    required this.radarColor,
+    required this.backgroundColor, required this.radarColor, super.key,
   });
 
   final Color backgroundColor;
@@ -20,7 +18,7 @@ class RadarWidget extends StatefulWidget {
 
 class RadarWidgetState extends State<RadarWidget>
     with TickerProviderStateMixin {
-  var updateTime = 0.0;
+  double updateTime = 0;
 
   @override
   void initState() {
@@ -54,7 +52,7 @@ class RadarWidgetState extends State<RadarWidget>
                 ..setFloat(9, widget.radarColor.alpha / 255)
                 ..setFloat(10, updateTime);
             } catch (e) {
-              return Text("Shader ${e.toString()}");
+              return Text('Shader $e');
             }
 
             return CustomPaint(
@@ -68,7 +66,7 @@ class RadarWidgetState extends State<RadarWidget>
           }
         },
       );
-    });
+    },);
   }
 
   Future<FragmentProgram> _initShader() {

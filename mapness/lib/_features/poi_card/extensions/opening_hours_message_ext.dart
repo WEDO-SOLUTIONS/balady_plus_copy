@@ -19,7 +19,7 @@ extension OpeningHoursMessageExt on OpeningHoursMessage {
           .map((e) => e?.values.first)
           .toList();
 
-      var allWeekDayNames = DateTimeExt.getAllWeekDayNames(locale);
+      final allWeekDayNames = DateTimeExt.getAllWeekDayNames(locale);
 
       final allWeekDays = allWeekDayNames.map((weekDay) {
         final weekTimeInterval = list.firstWhere(
@@ -30,14 +30,14 @@ extension OpeningHoursMessageExt on OpeningHoursMessage {
           orElse: () => null,
         );
 
-        var displayStartTime =
+        final displayStartTime =
             weekTimeInterval?.displayStartTime(format24: true);
 
-        var displayFinishTime =
+        final displayFinishTime =
             weekTimeInterval?.displayFinishTime(format24: true);
 
         return OpenHours(
-          isWeekend: (displayStartTime == null || displayFinishTime == null),
+          isWeekend: displayStartTime == null || displayFinishTime == null,
           weekDay: toBeginningOfSentenceCase(weekDay)!,
           openHour: displayStartTime,
           closeHour: displayFinishTime,
@@ -45,7 +45,7 @@ extension OpeningHoursMessageExt on OpeningHoursMessage {
       });
       return allWeekDays.toList();
     } catch (e) {
-      debugPrint("OPEN TIME EXCEPTION: $e");
+      debugPrint('OPEN TIME EXCEPTION: $e');
       return <OpenHours>[];
     }
   }
@@ -60,7 +60,7 @@ extension OpeningHoursMessageExt on OpeningHoursMessage {
   }
 
   bool defineIsDailySameOpenHours(AppLocalizations locale) {
-    var groupListsBy = getDisplayOpenHours(locale, format24: true).groupListsBy(
+    final groupListsBy = getDisplayOpenHours(locale, format24: true).groupListsBy(
       (element) => '${element.openHour}${element.closeHour}',
     );
     return groupListsBy.length == 1;

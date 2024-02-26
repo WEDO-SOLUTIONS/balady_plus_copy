@@ -2,11 +2,11 @@ import 'package:balady_plus/app/features/entry_point/domain/entities/sso_user_in
 import 'package:mapness/shared/providers/app_language.dart';
 
 class UserProfileData {
-  final String imageBase64;
 
   const UserProfileData({
     this.imageBase64 = '',
   });
+  final String imageBase64;
 }
 
 extension LocalizedName on SsoUserInfo {
@@ -18,7 +18,7 @@ extension LocalizedName on SsoUserInfo {
       sname = enName;
     }
 
-    List<String> names = sname?.split(' ') ?? [""];
+    final names = sname?.split(' ') ?? [''];
 
     return names.first;
   }
@@ -31,12 +31,12 @@ extension LocalizedName on SsoUserInfo {
       sname = enName;
     }
 
-    List<String> names = sname?.split(' ') ?? [""];
+    final names = sname?.split(' ') ?? [''];
 
     return names.last;
   }
 
   String getLocalizedFirstAndLastName(Language lang) {
-    return "${getLocalizedFirstName(lang)} ${getLocalizedLastName(lang)}";
+    return '${getLocalizedFirstName(lang)} ${getLocalizedLastName(lang)}';
   }
 }

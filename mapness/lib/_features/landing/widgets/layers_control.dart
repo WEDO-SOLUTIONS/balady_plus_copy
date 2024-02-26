@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/esri_layers.dart';
 
-import '../../../shared/ui/buttons/map_button.dart';
+import 'package:mapness/shared/ui/buttons/map_button.dart';
 
 class LayersControl extends ConsumerWidget {
   const LayersControl({
@@ -14,5 +14,5 @@ class LayersControl extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => MapButton(
       onTap: () => EsriLayersRoute.open(context),
-      child: const AppIcons(BaladyIcons.Layers));
+      child: const AppIcons(BaladyIcons.Layers),);
 }

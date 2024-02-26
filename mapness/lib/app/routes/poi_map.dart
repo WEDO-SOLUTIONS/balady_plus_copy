@@ -6,7 +6,7 @@ import 'package:mapness/_features/poi_card/poi_card_widget.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/shared/routing/transculent_page.dart';
 
-import 'iwish.dart';
+import 'package:mapness/app/routes/iwish.dart';
 
 part 'poi_map.g.dart';
 
@@ -14,15 +14,6 @@ part 'poi_map.g.dart';
   path: PoiMapRoute.path,
 )
 class PoiMapRoute extends GoRouteData {
-  static const path = '/poi-map';
-  final int dgisObjectId;
-  final double? zoom;
-  final double? bearing;
-  final double? tilt;
-  final double? lat;
-  final double? lng;
-
-  static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   const PoiMapRoute({
     required this.dgisObjectId,
@@ -32,6 +23,15 @@ class PoiMapRoute extends GoRouteData {
     this.lat,
     this.lng,
   });
+  static const path = '/poi-map';
+  final int dgisObjectId;
+  final double? zoom;
+  final double? bearing;
+  final double? tilt;
+  final double? lat;
+  final double? lng;
+
+  static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   static void open(
     GoRouter router,

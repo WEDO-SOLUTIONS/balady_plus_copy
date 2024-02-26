@@ -4,9 +4,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class AppCloseButton extends StatelessWidget {
-  final VoidCallback onPressed;
 
-  const AppCloseButton({super.key, required this.onPressed});
+  const AppCloseButton({required this.onPressed, super.key});
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -58,11 +58,11 @@ class CustomCloseButton extends StatelessWidget {
               ),
               color: context.color.text_and_icons_base_primary.withAlpha(10),
             ),
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8),
             child: SvgPicture.asset(
-              "assets/icons/svg/ic_search_close.svg",
+              'assets/icons/svg/ic_search_close.svg',
               semanticsLabel: 'MinApps Screen',
-              package: "mapness",
+              package: 'mapness',
               color: context.color.text_and_icons_base_primary.withOpacity(0.7),
             ),
           ),

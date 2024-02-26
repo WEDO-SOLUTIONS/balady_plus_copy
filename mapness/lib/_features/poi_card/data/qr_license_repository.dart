@@ -18,32 +18,32 @@ class QrLicenseRepository extends _$QrLicenseRepository {
   );
 
   Future<QrLicenseMessage?> getLicenseInfo(String licenseNumber) async {
-    mixpanel?.timeEvent("Qr License: getLicenseInfo");
+    mixpanel?.timeEvent('Qr License: getLicenseInfo');
     final env = await ref.read(dgisEnvironmentProvider.future);
-    var resultUrl;
-    var verifyKey;
-    var proxy = env.proxy;
+    String resultUrl;
+    var verifyKey = '';
+    final proxy = env.proxy;
     const licenseDetails = 'qr-services/mobile/license-details';
 
     if (proxy != null) {
       const domain = 'https://apiservicesstg.balady.gov.sa';
-      var url = "$domain/v1/$licenseDetails/$licenseNumber";
-      verifyKey = hashRequest(url, "GET");
-      final proxyUrl = "$proxy/v1/$licenseDetails";
-      resultUrl = "$proxyUrl/$licenseNumber";
+      final url = '$domain/v1/$licenseDetails/$licenseNumber';
+      verifyKey = hashRequest(url, 'GET');
+      final proxyUrl = '$proxy/v1/$licenseDetails';
+      resultUrl = '$proxyUrl/$licenseNumber';
     } else {
-      var domain = env.url.replaceAll('/urbi-services/', '');
-      resultUrl = "$domain/$licenseDetails/$licenseNumber";
+      final domain = env.url.replaceAll('/urbi-services/', '');
+      resultUrl = '$domain/$licenseDetails/$licenseNumber';
     }
 
-    var response = await dataSource.getLicenseInfo(
+    final response = await dataSource.getLicenseInfo(
       verifyingKEY: verifyKey,
       url: resultUrl,
     );
 
     if (response == null) return null;
-    mixpanel?.track("Qr License: getLicenseInfo");
-    
+    mixpanel?.track('Qr License: getLicenseInfo');
+
     return QrLicenseMessage.fromJson(response);
   }
 

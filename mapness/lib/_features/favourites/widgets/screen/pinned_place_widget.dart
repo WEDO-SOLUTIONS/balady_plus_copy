@@ -6,16 +6,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/favourites/widgets/screen/delete_icon.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-import '../../../../shared/config/package_config.dart';
+import 'package:mapness/shared/config/package_config.dart';
 
 class PinnedPlaceWidget extends StatelessWidget {
-  final String iconAsset;
-  final String title;
-  final String address;
-  final bool isAdded;
-  final bool isEditing;
-  final VoidCallback? onTap;
-  final VoidCallback onDelete;
 
   const PinnedPlaceWidget({
     required this.address,
@@ -27,6 +20,13 @@ class PinnedPlaceWidget extends StatelessWidget {
     required this.onDelete,
     required this.isAdded,
   });
+  final String iconAsset;
+  final String title;
+  final String address;
+  final bool isAdded;
+  final bool isEditing;
+  final VoidCallback? onTap;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +96,7 @@ class PinnedPlaceWidget extends StatelessWidget {
                             .copyWith(
                                 color: isAdded
                                     ? context.color.stroke_accent
-                                    : NonThemeColor.color34),
+                                    : NonThemeColor.color34,),
                       ),
                     ],
                   ),

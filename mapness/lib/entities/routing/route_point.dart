@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
@@ -43,9 +42,9 @@ class RoutePointMyLocation extends RoutePoint {
 }
 
 class RoutePointCoordinates extends RoutePoint {
-  final GeoPointMessage coords;
 
   RoutePointCoordinates(this.coords);
+  final GeoPointMessage coords;
 
   @override
   String get icon => 'assets/icons/svg/ic_routing_circle.svg';
@@ -68,9 +67,9 @@ class RoutePointCoordinates extends RoutePoint {
 }
 
 class RoutePointDirectoryObject extends RoutePoint {
-  final DirectoryObjectMessage? object;
 
   RoutePointDirectoryObject(this.object);
+  final DirectoryObjectMessage? object;
 
   @override
   String get icon => 'assets/icons/svg/ic_routing_circle.svg';
@@ -94,9 +93,9 @@ class RoutePointDirectoryObject extends RoutePoint {
 }
 
 class RoutePointFavouriteItem extends RoutePoint {
-  final FavouriteItem? item;
 
   RoutePointFavouriteItem(this.item);
+  final FavouriteItem? item;
 
   @override
   String get icon => 'assets/icons/svg/ic_routing_circle.svg';

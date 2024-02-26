@@ -7,8 +7,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class SearchActions extends StatelessWidget {
   const SearchActions({
-    super.key,
-    required this.children,
+    required this.children, super.key,
   });
 
   final List<Widget> children;
@@ -41,9 +40,7 @@ class SearchActions extends StatelessWidget {
 
 class SearchActionRow extends StatelessWidget {
   const SearchActionRow({
-    super.key,
-    required this.icon,
-    required this.title,
+    required this.icon, required this.title, super.key,
   });
 
   final String icon;

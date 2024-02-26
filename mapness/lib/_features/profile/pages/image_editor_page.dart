@@ -48,7 +48,7 @@ class _ImageEditorPageState extends ConsumerState<ImageEditorPage> {
                 children: [
                   const Spacer(),
                   TextButton(
-                    child: const Text("Cancel"),
+                    child: const Text('Cancel'),
                     onPressed: () {
                       context.pop();
                     },
@@ -56,26 +56,26 @@ class _ImageEditorPageState extends ConsumerState<ImageEditorPage> {
                   const Spacer(),
                   IconButton(
                       icon: const Icon(Icons.refresh),
-                      onPressed: controller.reset),
+                      onPressed: controller.reset,),
                   IconButton(
                       icon: const Icon(Icons.zoom_in),
                       onPressed: () =>
-                          controller.addTransition(CropImageData(scale: 1.33))),
+                          controller.addTransition(CropImageData(scale: 1.33)),),
                   IconButton(
                       icon: const Icon(Icons.zoom_out),
                       onPressed: () =>
-                          controller.addTransition(CropImageData(scale: 0.75))),
+                          controller.addTransition(CropImageData(scale: 0.75)),),
                   IconButton(
                       icon: const Icon(Icons.rotate_left),
                       onPressed: () => controller
-                          .addTransition(CropImageData(angle: -pi / 4))),
+                          .addTransition(CropImageData(angle: -pi / 4)),),
                   IconButton(
                       icon: const Icon(Icons.rotate_right),
                       onPressed: () => controller
-                          .addTransition(CropImageData(angle: pi / 4))),
+                          .addTransition(CropImageData(angle: pi / 4)),),
                   const Spacer(),
                   TextButton(
-                    child: const Text("Accept"),
+                    child: const Text('Accept'),
                     onPressed: () async {
                       final image = await controller.onCropImage();
                       context.pop(image?.bytes);

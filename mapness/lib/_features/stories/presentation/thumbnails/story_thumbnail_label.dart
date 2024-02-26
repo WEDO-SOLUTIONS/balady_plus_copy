@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 
 class StoryThumbnailLabel extends StatelessWidget {
+  const StoryThumbnailLabel({required this.title, super.key});
   final String title;
-  const StoryThumbnailLabel({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {

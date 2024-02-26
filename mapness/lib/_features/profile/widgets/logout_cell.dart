@@ -5,14 +5,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-import '../../../shared/config/package_config.dart';
+import 'package:mapness/shared/config/package_config.dart';
 
 class LogoutCell extends ConsumerWidget {
-  final VoidCallback? onTap;
   const LogoutCell({
     super.key,
     this.onTap,
   });
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,7 +37,7 @@ class LogoutCell extends ConsumerWidget {
               children: [
                 const Spacer(),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 2.0),
+                  padding: const EdgeInsets.only(bottom: 2),
                   child: Text(
                     context.l10n.logOut,
                     style: Theme.of(context)
@@ -50,7 +50,7 @@ class LogoutCell extends ConsumerWidget {
                   width: 12,
                 ),
                 SvgPicture.asset(
-                  "assets/icons/svg/ic_profile_logout.svg",
+                  'assets/icons/svg/ic_profile_logout.svg',
                   height: 24,
                   width: 24,
                   package: PackageConfig.packageName,

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
 class StoryRefreshButton extends StatelessWidget {
-  final VoidCallback onPressed;
 
-  const StoryRefreshButton({Key? key, required this.onPressed})
-      : super(key: key);
+  const StoryRefreshButton({required this.onPressed, super.key});
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {

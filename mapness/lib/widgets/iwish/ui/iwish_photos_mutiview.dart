@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/image/loading_image/loading_shimmer_image.dart';
 
 class PhotosMutiview extends StatelessWidget {
+  const PhotosMutiview({required this.photos, super.key});
   final List<String> photos;
-  const PhotosMutiview({super.key, required this.photos});
 
   @override
   Widget build(BuildContext context) {

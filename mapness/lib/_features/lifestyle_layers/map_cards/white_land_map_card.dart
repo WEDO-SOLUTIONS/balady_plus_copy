@@ -3,6 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
 class WhiteLandMapCard extends StatelessWidget {
+
+  const WhiteLandMapCard(
+      {required this.onClose, super.key,
+      this.subSubTitle,
+      this.subTitle,
+      this.title,
+      this.municipality,
+      this.subMunicipality,
+      this.area,
+      this.parcelNo,
+      this.stageNo,});
   final String? title;
   final String? subTitle;
   final String? subSubTitle;
@@ -13,18 +24,6 @@ class WhiteLandMapCard extends StatelessWidget {
   final String? stageNo;
 
   final Function()? onClose;
-
-  const WhiteLandMapCard(
-      {super.key,
-      this.subSubTitle,
-      this.subTitle,
-      this.title,
-      this.municipality,
-      this.subMunicipality,
-      this.area,
-      this.parcelNo,
-      this.stageNo,
-      required this.onClose});
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +40,7 @@ class WhiteLandMapCard extends StatelessWidget {
             color: NonThemeColor.color71,
             blurRadius: 22,
             offset: Offset(0, 4),
-            spreadRadius: 0,
-          )
+          ),
         ],
       ),
       child: Column(
@@ -54,18 +52,18 @@ class WhiteLandMapCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                "land_info",
+                'land_info',
                 // fontColor: AppColor.blackModern800Light,
                 // fontSize: 16,
                 // fontWeight: AppFontWeight.bold,
                 maxLines: 1,
               ),
-              CustomCloseButton(onClose: onClose)
+              CustomCloseButton(onClose: onClose),
             ],
           ),
           const SizedBox(height: 8),
           Text(
-            "$municipality,  $subMunicipality",
+            '$municipality,  $subMunicipality',
             // fontColor: AppColor.blackModern500Light,
             // fontSize: 12,
             // fontWeight: AppFontWeight.semiBold,
@@ -74,7 +72,7 @@ class WhiteLandMapCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            area ?? "",
+            area ?? '',
             // fontColor: AppColor.blackModern500Light,
             // fontSize: 12,
             // fontWeight: AppFontWeight.semiBold,
@@ -83,7 +81,7 @@ class WhiteLandMapCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            "القطعة: $parcelNo",
+            'القطعة: $parcelNo',
             // fontColor: AppColor.blackModern500Light,
             // fontSize: 12,
             // fontWeight: AppFontWeight.semiBold,
@@ -92,7 +90,7 @@ class WhiteLandMapCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            "المرحلة: $stageNo",
+            'المرحلة: $stageNo',
             // fontColor: AppColor.blackModern500Light,
             // fontSize: 12,
             // fontWeight: AppFontWeight.semiBold,

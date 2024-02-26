@@ -4,7 +4,7 @@ import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class Description extends StatelessWidget {
-  const Description({super.key, required this.text});
+  const Description({required this.text, super.key});
 
   final String text;
 

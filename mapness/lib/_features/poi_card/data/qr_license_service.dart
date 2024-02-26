@@ -5,7 +5,6 @@ import 'package:dio/io.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class QrLicenseService {
-  final Dio dio;
 
   QrLicenseService({required this.dio}) {
 
@@ -21,10 +20,10 @@ class QrLicenseService {
     dio.options.sendTimeout = const Duration(milliseconds: 60000);
     dio.options.headers = {};
     dio.interceptors.add(PrettyDioLogger(
-      responseBody: true,
       requestHeader: true,
       requestBody: true,
-      responseHeader: true
-    ));
+      responseHeader: true,
+    ),);
   }
+  final Dio dio;
 }

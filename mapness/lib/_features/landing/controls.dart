@@ -19,14 +19,14 @@ import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
-import '../weather/widgets/weather_control.dart';
+import 'package:mapness/_features/weather/widgets/weather_control.dart';
 
 class MapControls extends ConsumerWidget {
-  final bool? hideControls;
   const MapControls({
     this.hideControls,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
+  final bool? hideControls;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -65,7 +65,7 @@ class MapControls extends ConsumerWidget {
                           children: [
                             WeatherControl(
                                 onTap: () =>
-                                    const WeatherRoute().push(context)),
+                                    const WeatherRoute().push(context),),
                             const SizedBox(height: 8),
                             const HappinesControl(),
                             const Spacer(),
@@ -131,7 +131,7 @@ class MapControls extends ConsumerWidget {
                 child: Directionality(
                   textDirection: ref.watch(uiDirectionProvider),
                   child: const Padding(
-                    padding: EdgeInsets.only(bottom: 12.0),
+                    padding: EdgeInsets.only(bottom: 12),
                     child: MapQuickFilters(
                       forMap: true,
                     ),

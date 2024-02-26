@@ -1,11 +1,11 @@
 class StoryThumbnailData {
-  final String title;
-  final String imageUrl;
 
   StoryThumbnailData({
     required this.title,
     required this.imageUrl,
   });
+  final String title;
+  final String imageUrl;
 
   StoryThumbnailData copyWith({
     String? title,

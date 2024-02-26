@@ -1,8 +1,6 @@
-import 'dart:ui';
 
 import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/config/package_fonts.dart';
@@ -17,11 +15,8 @@ const footerHeight = 50.0;
 const gapHeight = 16.0;
 
 Widget buildText({
-  String? text,
+  required double fontSize, required FontWeight fontWeight, required Color color, String? text,
   int? maxLines,
-  required double fontSize,
-  required FontWeight fontWeight,
-  required Color color,
 }) {
   return text == null
       ? const SizedBox.shrink()
@@ -60,7 +55,7 @@ Widget buildIconButton({
       return Flexible(
         flex: flex,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 4),
           child: Material(
             color: colorButton ?? context.color.text_and_icons_base_primary.withOpacity(0.05),
             borderRadius: borderRadius,
@@ -77,7 +72,6 @@ Widget buildIconButton({
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SvgPicture.asset(
@@ -94,7 +88,7 @@ Widget buildIconButton({
                           width: 8,
                         ),
                         Flexible(child: desc),
-                      ]
+                      ],
                     ],
                   ),
                 ),
@@ -103,7 +97,7 @@ Widget buildIconButton({
           ),
         ),
       );
-    }
+    },
   );
 }
 

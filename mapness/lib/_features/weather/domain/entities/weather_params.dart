@@ -12,13 +12,11 @@ class WeatherParams {
   String? proxy;
 
   WeatherParams(
-      {this.longitude,
+      {required this.numberOfDays, required this.domain, this.longitude,
       this.latitude,
-      required this.numberOfDays,
-      required this.domain,
       this.proxy,
-      this.languageCode = "ar",
-      this.alert = "yes"});
+      this.languageCode = 'ar',
+      this.alert = 'yes',});
 
   WeatherParams copyWith({
     double? longitude,
@@ -40,20 +38,20 @@ class WeatherParams {
     const weatherServices = 'v1/weather-services/forecast?';
     final params = toMap();
 
-    String hashedUrl = proxy != null
+    var hashedUrl = proxy != null
         ? "${EnvironmentConfig.momrahStaging().weatherApi}$weatherServices"
         : "$domain$weatherServices";
 
-    params.forEach((key, value) => hashedUrl += "$key=$value&");
+    params.forEach((key, value) => hashedUrl += '$key=$value&');
     hashedUrl = hashedUrl.substring(0, hashedUrl.length - 1);
-    verifyingKey = hashRequest(hashedUrl, "GET");
+    verifyingKey = hashRequest(hashedUrl, 'GET');
     return verifyingKey;
   }
 
   Map<String, dynamic> toMap() => {
-        if (latitude != null && longitude != null) "q": "$latitude,$longitude",
-        "days": '$numberOfDays',
-        if (languageCode != null) "lang": '$languageCode',
-        if (alert != null) "alerts": '$alert',
+        if (latitude != null && longitude != null) 'q': '$latitude,$longitude',
+        'days': '$numberOfDays',
+        if (languageCode != null) 'lang': '$languageCode',
+        if (alert != null) 'alerts': '$alert',
       };
 }

@@ -3,21 +3,6 @@ import 'package:flutter/foundation.dart';
 //TODO(Scroollocker): change to equatable
 @immutable
 class JobModel {
-  final String? id;
-  final String? number;
-  final String? name;
-  final ProviderModel? provider;
-  final String? description;
-  final double? workHours;
-  final ContractTypeModel? contractType;
-  final String? expiryDate;
-  final String? skills;
-  final String? email;
-  final String? mobile;
-  final LocationModel? location;
-  final String? publishDate;
-  final String? commercialLicenseNumber;
-  final bool? saudi;
 
   const JobModel({
     this.id,
@@ -49,7 +34,7 @@ class JobModel {
         contractType: json['contractType'] == null
             ? null
             : ContractTypeModel.fromJson(
-                json['contractType'] as Map<String, dynamic>),
+                json['contractType'] as Map<String, dynamic>,),
         expiryDate: json['expiryDate'] as String?,
         skills: json['skills'] as String?,
         email: json['email'] as String?,
@@ -61,6 +46,21 @@ class JobModel {
         commercialLicenseNumber: json['commercialLicenseNumber'] as String?,
         saudi: json['saudi'] as bool?,
       );
+  final String? id;
+  final String? number;
+  final String? name;
+  final ProviderModel? provider;
+  final String? description;
+  final double? workHours;
+  final ContractTypeModel? contractType;
+  final String? expiryDate;
+  final String? skills;
+  final String? email;
+  final String? mobile;
+  final LocationModel? location;
+  final String? publishDate;
+  final String? commercialLicenseNumber;
+  final bool? saudi;
 
   @override
   bool operator ==(Object other) {
@@ -107,8 +107,6 @@ class JobModel {
 
 @immutable
 class LocationModel {
-  final String? latitude;
-  final String? longitude;
 
   const LocationModel({
     this.latitude,
@@ -119,6 +117,8 @@ class LocationModel {
         latitude: json['latitude'] as String?,
         longitude: json['longitude'] as String?,
       );
+  final String? latitude;
+  final String? longitude;
 
   @override
   bool operator ==(Object other) {
@@ -137,8 +137,6 @@ class LocationModel {
 
 @immutable
 class ProviderModel {
-  final String? id;
-  final String? name;
 
   const ProviderModel({
     this.id,
@@ -149,6 +147,8 @@ class ProviderModel {
         id: json['id'] as String?,
         name: json['name'] as String?,
       );
+  final String? id;
+  final String? name;
 
   @override
   bool operator ==(Object other) {
@@ -165,8 +165,6 @@ class ProviderModel {
 
 @immutable
 class ContractTypeModel {
-  final String? id;
-  final String? name;
 
   const ContractTypeModel({
     this.id,
@@ -178,6 +176,8 @@ class ContractTypeModel {
         id: json['id'] as String?,
         name: json['name'] as String?,
       );
+  final String? id;
+  final String? name;
 
   @override
   bool operator ==(Object other) {

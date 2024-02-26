@@ -5,7 +5,7 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../models/search_state.dart';
+import 'package:mapness/features/search/models/search_state.dart';
 
 part 'search.g.dart';
 
@@ -78,7 +78,7 @@ class Search extends _$Search {
       query,
       sortingType: SortingTypeMessage.byDistance,
       spatialRestriction: saRestrictions,
-    ));
+    ),);
     _searchOperation = searchOperation;
     final results = await searchOperation.value;
     state = (results.firstPage?.items.isEmpty ?? true)
@@ -101,7 +101,7 @@ class Search extends _$Search {
       query,
       sortingType: SortingTypeMessage.byDistance,
       spatialRestriction: saRestrictions,
-    ));
+    ),);
     _searchOperation = searchOperation;
     final results = await searchOperation.value;
     state = (results.firstPage?.items.isEmpty ?? true)

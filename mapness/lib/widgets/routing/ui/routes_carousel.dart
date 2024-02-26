@@ -52,7 +52,7 @@ class RoutesCarousel extends ConsumerWidget {
                       .extension<ThemeTextStyles>()!
                       .textM
                       .copyWith(
-                          color: context.color.text_and_icons_base_primary),
+                          color: context.color.text_and_icons_base_primary,),
                 ),
                 const SizedBox(
                   height: 8,
@@ -60,7 +60,7 @@ class RoutesCarousel extends ConsumerWidget {
                 LabeledElevatedButton(
                   label: context.l10n.reload,
                   onPressed: refresh,
-                )
+                ),
               ],
             ),
           ),
@@ -81,7 +81,7 @@ class RoutesCarousel extends ConsumerWidget {
                     color: NonThemeColor.color11,
                   ),
                   child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0),
+                    padding: EdgeInsets.symmetric(horizontal: 20),
                     child: LoadingSmall(),
                   ),
                 ),
@@ -117,7 +117,7 @@ class RouteCell extends ConsumerWidget {
         color: NonThemeColor.color11,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(12),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -132,7 +132,7 @@ class RouteCell extends ConsumerWidget {
                           .extension<ThemeTextStyles>()!
                           .accentM
                           .copyWith(
-                              color: context.color.text_and_icons_base_primary),
+                              color: context.color.text_and_icons_base_primary,),
                     ),
                     Text(
                       route.distance.formatDistance(context.l10n),
@@ -140,8 +140,8 @@ class RouteCell extends ConsumerWidget {
                           .extension<ThemeTextStyles>()!
                           .textS
                           .copyWith(
-                              color: context.color.text_and_icons_base_primary),
-                    )
+                              color: context.color.text_and_icons_base_primary,),
+                    ),
                   ],
                 ),
               ),
@@ -157,7 +157,7 @@ class RouteCell extends ConsumerWidget {
                     child: Align(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 14),
+                            vertical: 10, horizontal: 14,),
                         child: Text(
                           context.l10n.go,
                           style: Theme.of(context)

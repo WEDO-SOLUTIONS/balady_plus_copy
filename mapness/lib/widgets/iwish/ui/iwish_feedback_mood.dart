@@ -5,13 +5,12 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class IwishFeedbackMood extends StatelessWidget {
+  const IwishFeedbackMood({
+    required this.onMoodSelected, super.key,
+    this.selectedMood,
+  });
   final IwishFeedbackMoodType? selectedMood;
   final void Function(IwishFeedbackMoodType) onMoodSelected;
-  const IwishFeedbackMood({
-    super.key,
-    this.selectedMood,
-    required this.onMoodSelected,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +28,7 @@ class IwishFeedbackMood extends StatelessWidget {
                   onTap: () => onMoodSelected(e),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 34),
+                        vertical: 10, horizontal: 34,),
                     child: SvgPicture.asset(
                       'assets/icons/svg/ic_face_${e.name}.svg',
                       package: PackageConfig.packageName,

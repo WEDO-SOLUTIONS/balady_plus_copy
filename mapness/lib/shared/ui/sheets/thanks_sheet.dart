@@ -8,13 +8,13 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
 class ThanksSheet extends StatelessWidget {
+
+  const ThanksSheet({super.key, this.onClose, this.buttonLabel});
   /// action when leave the sheet (default: pop)
   final VoidCallback? onClose;
 
   /// button label (localized default: reload)
   final String? buttonLabel;
-
-  const ThanksSheet({super.key, this.onClose, this.buttonLabel});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,6 @@ class ThanksSheet extends StatelessWidget {
             const EdgeInsets.only(left: 16, right: 16, bottom: 40, top: 16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Align(

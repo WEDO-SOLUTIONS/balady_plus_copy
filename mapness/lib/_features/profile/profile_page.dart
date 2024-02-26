@@ -26,8 +26,7 @@ class ProfilePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    RateMyApp rateMyApp = RateMyApp(
-      preferencesPrefix: 'rateMyApp_',
+    final rateMyApp = RateMyApp(
       minDays: 0, // Show rate popup on first day of install.
       minLaunches:
           5, // Show rate popup after 5 launches of app after minDays is passed.
@@ -151,7 +150,7 @@ class ProfilePage extends ConsumerWidget {
     return Builder(
       builder: (context) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Container(
             color: context.color.surface_base_secondary,
             child: Padding(
@@ -166,7 +165,7 @@ class ProfilePage extends ConsumerWidget {
             ),
           ),
         );
-      }
+      },
     );
   }
 
@@ -188,11 +187,11 @@ class ProfilePage extends ConsumerWidget {
               onTap: onTap,
               borderRadius: BorderRadius.circular(12),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                padding: const EdgeInsets.symmetric(vertical: 12),
                 child: Row(
                   children: [
                     const SizedBox(
-                      width: 16.0,
+                      width: 16,
                     ),
                     SvgPicture.asset(
                       assetImage,
@@ -205,7 +204,7 @@ class ProfilePage extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(
-                      width: 12.0,
+                      width: 12,
                     ),
                     Expanded(
                       child: Text(
@@ -219,7 +218,7 @@ class ProfilePage extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(
-                      width: 12.0,
+                      width: 12,
                     ),
                     SvgPicture.asset(
                       direction == TextDirection.rtl
@@ -234,7 +233,7 @@ class ProfilePage extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(
-                      width: 16.0,
+                      width: 16,
                     ),
                   ],
                 ),
@@ -248,7 +247,7 @@ class ProfilePage extends ConsumerWidget {
 }
 
 class AuthorizedRow extends ConsumerWidget {
-  const AuthorizedRow({super.key, required this.userData});
+  const AuthorizedRow({required this.userData, super.key});
 
   final SsoUserInfo userData;
 
@@ -265,18 +264,17 @@ class AuthorizedRow extends ConsumerWidget {
         },
         borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          padding: const EdgeInsets.symmetric(vertical: 12),
           child: Row(
             children: [
               const SizedBox(
-                width: 16.0,
+                width: 16,
               ),
               const ProfileImageWidget(
-                editable: false,
                 dimension: 36,
               ),
               const SizedBox(
-                width: 12.0,
+                width: 12,
               ),
               Expanded(
                 child: Column(
@@ -290,7 +288,7 @@ class AuthorizedRow extends ConsumerWidget {
                           .copyWith(color: context.color.text_and_icons_base_primary),
                     ),
                     Text(
-                      userData.idNo ?? "",
+                      userData.idNo ?? '',
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .textS
@@ -316,7 +314,7 @@ class AuthorizedRow extends ConsumerWidget {
                 },
               ),
               const SizedBox(
-                width: 16.0,
+                width: 16,
               ),
             ],
           ),

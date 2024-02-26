@@ -10,11 +10,6 @@ extension DgisEnvExt on DgisEnv {
 }
 
 class EnvironmentConfig {
-  final String url;
-  final String meteoblue;
-  final String weatherApi;
-  final String jobsApi;
-  final String? proxy;
 
   EnvironmentConfig({
     required this.url,
@@ -53,4 +48,9 @@ class EnvironmentConfig {
         weatherApi: 'https://sa1.ops.2gis.dev/',
         jobsApi: 'https://sa1.ops.2gis.dev/v1/recruitment-services',
       );
+  final String url;
+  final String meteoblue;
+  final String weatherApi;
+  final String jobsApi;
+  final String? proxy;
 }

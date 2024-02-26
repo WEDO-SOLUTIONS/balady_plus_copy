@@ -11,20 +11,20 @@ String hashRequest(
   bool authorization = false,
   String? corelationId,
 }) {
-  String message = "";
+  var message = '';
   message = url + method;
 
   if (corelationId != null) message += corelationId;
   if (authorization) message += 'Bearer ${CommonProperties.token}';
 
   if (body != null) {
-    message += body.replaceAll(RegExp(r'^/\\n/g'), "");
+    message += body.replaceAll(RegExp(r'^/\\n/g'), '');
   }
   message.trim();
-  var key = utf8.encode(RemoteConfig.hmCode);
-  var bytes = utf8.encode(message);
-  var hmacSha256 = Hmac(sha256, key);
-  var digest = hmacSha256.convert(bytes);
-  String base64 = base64Encode(digest.bytes);
+  final key = utf8.encode(RemoteConfig.hmCode);
+  final bytes = utf8.encode(message);
+  final hmacSha256 = Hmac(sha256, key);
+  final digest = hmacSha256.convert(bytes);
+  final base64 = base64Encode(digest.bytes);
   return base64;
 }

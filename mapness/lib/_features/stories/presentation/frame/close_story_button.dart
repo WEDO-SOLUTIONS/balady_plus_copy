@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CloseStoryButton extends StatelessWidget {
-  final VoidCallback? onPressed;
 
   const CloseStoryButton({super.key, this.onPressed});
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {

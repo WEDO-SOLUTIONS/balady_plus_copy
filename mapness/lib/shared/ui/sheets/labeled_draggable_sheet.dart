@@ -6,16 +6,13 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
 class LabeledDraggableSheet extends StatelessWidget {
+
+  const LabeledDraggableSheet({
+    required this.onClose, required this.title, required this.child, super.key,
+  });
   final VoidCallback onClose;
   final String title;
   final Widget child;
-
-  const LabeledDraggableSheet({
-    super.key,
-    required this.onClose,
-    required this.title,
-    required this.child,
-  });
 
   @override
   Widget build(BuildContext context) {

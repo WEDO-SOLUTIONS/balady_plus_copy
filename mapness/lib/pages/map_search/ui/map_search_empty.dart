@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-import '../../../shared/config/package_config.dart';
+import 'package:mapness/shared/config/package_config.dart';
 
 class MapSearchEmpty extends StatelessWidget {
   const MapSearchEmpty({super.key});
@@ -20,8 +20,6 @@ class MapSearchEmpty extends StatelessWidget {
             package: PackageConfig.packageName,
             width: 240,
             height: 140,
-            fit: BoxFit.contain,
-            alignment: Alignment.center,
           ),
           const SizedBox(height: 10),
           SizedBox(

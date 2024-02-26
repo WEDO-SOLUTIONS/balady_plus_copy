@@ -9,6 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
+import 'package:mapness/_features/landing/controls.dart' as controls;
+import 'package:mapness/_features/landing/dashboard.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
@@ -24,15 +26,12 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 
-import 'controls.dart' as controls;
-import 'dashboard.dart';
-
 enum LangingFocusMaker { iwish, mosques }
 
 class LandingPage extends ConsumerStatefulWidget {
-  final LangingFocusMaker? focusMaker;
 
-  const LandingPage({this.focusMaker, Key? key}) : super(key: key);
+  const LandingPage({this.focusMaker, super.key});
+  final LangingFocusMaker? focusMaker;
 
   @override
   ConsumerState<LandingPage> createState() => _LandingPageState();
@@ -73,7 +72,6 @@ class _LandingPageState extends ConsumerState<LandingPage> {
             }
           }
         }();
-        break;
       case LangingFocusMaker.mosques:
         Future.delayed(Duration.zero, () {
           ref.read(searchByRubricsQueryProvider.notifier).update((
@@ -84,9 +82,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
               mapIcon: 'assets/icons/svg/quick_filters/mosques_pin.svg',
             ),
             1
-          ));
+          ),);
         });
-        break;
       // ignore: no_default_cases
       default:
         break;
@@ -179,9 +176,9 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 }
 
 class MyWidget extends StatelessWidget {
-  final void Function()? onClose;
 
   const MyWidget({super.key, this.onClose});
+  final void Function()? onClose;
 
   @override
   Widget build(BuildContext context) => Stack(
@@ -219,7 +216,7 @@ class MyWidget extends StatelessWidget {
                               ),
                               color: const Color(0xff6B4E45).withAlpha(15),
                             ),
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8),
                             child: SvgPicture.asset(
                               'assets/icons/svg/ic_search_close.svg',
                               semanticsLabel: 'MinApps Screen',

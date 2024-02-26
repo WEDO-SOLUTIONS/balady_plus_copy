@@ -5,9 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class HappinessSubmitButton extends ConsumerWidget {
+  const HappinessSubmitButton({required this.onPress, super.key});
   final VoidCallback onPress;
-  const HappinessSubmitButton({Key? key, required this.onPress})
-      : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

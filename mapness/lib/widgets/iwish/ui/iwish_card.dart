@@ -4,18 +4,14 @@ import 'package:mapness/widgets/iwish/ui/iwish_info.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_photos_mutiview.dart';
 
 class IwishCard extends StatelessWidget {
+
+  const IwishCard({
+    required this.iwish, required this.onClose, required this.distance, required this.onTap, super.key,
+  });
   final IwishEntity iwish;
   final String distance;
   final VoidCallback onClose;
   final VoidCallback onTap;
-
-  const IwishCard({
-    super.key,
-    required this.iwish,
-    required this.onClose,
-    required this.distance,
-    required this.onTap,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +22,13 @@ class IwishCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               PhotosMutiview(photos: iwish.photos),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8),
                 child: IwishInfo(
                   iwish: iwish,
                   distance: distance,

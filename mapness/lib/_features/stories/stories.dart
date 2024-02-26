@@ -86,7 +86,7 @@ class Stories {
   }
 
   static void showOnboarding(BuildContext context, StoryTypes type, String id,
-      {VoidCallback? onClose}) {
+      {VoidCallback? onClose,}) {
     final storyWidget = StoriesOnboarding(
       type: type,
       initialStoryId: id,

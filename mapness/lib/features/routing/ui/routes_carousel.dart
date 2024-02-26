@@ -7,7 +7,6 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/routing/ui/routes_carousel.dart' as widgets;
 
 class RoutesCarousel extends StatelessWidget {
-  final RouteSearchOptionsMessage navType;
 
   const RoutesCarousel({
     required this.startNavigation,
@@ -15,6 +14,7 @@ class RoutesCarousel extends StatelessWidget {
     required this.navType,
     super.key,
   });
+  final RouteSearchOptionsMessage navType;
 
   final List<RouteParamsPoint?> points;
   final Function() startNavigation;
@@ -31,10 +31,6 @@ class RoutesCarousel extends StatelessWidget {
 }
 
 class _RoutesCarousel extends ConsumerStatefulWidget {
-  final RouteSearchOptionsMessage navType;
-  final double biggestWidth;
-  final Function() startNavigation;
-  final List<RouteParamsPoint?> points;
 
   const _RoutesCarousel({
     required this.navType,
@@ -42,6 +38,10 @@ class _RoutesCarousel extends ConsumerStatefulWidget {
     required this.startNavigation,
     required this.biggestWidth,
   });
+  final RouteSearchOptionsMessage navType;
+  final double biggestWidth;
+  final Function() startNavigation;
+  final List<RouteParamsPoint?> points;
 
   @override
   ConsumerState<_RoutesCarousel> createState() => _RoutesCarouselState();

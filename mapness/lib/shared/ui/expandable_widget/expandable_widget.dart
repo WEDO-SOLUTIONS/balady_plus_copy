@@ -9,11 +9,8 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ExpandableWidget extends StatelessWidget {
   const ExpandableWidget({
-    super.key,
-    required this.title,
+    required this.title, required this.icon, required this.content, super.key,
     this.subtitle,
-    required this.icon,
-    required this.content,
   });
 
   final Widget title;
@@ -24,7 +21,7 @@ class ExpandableWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8),
       child: ExpansionWidget(
         titleBuilder: (
           animationValue,
@@ -57,7 +54,7 @@ class ExpandableWidget extends StatelessWidget {
                       width: 12,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 2.0),
+                      padding: const EdgeInsets.only(bottom: 2),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -76,7 +73,7 @@ class ExpandableWidget extends StatelessWidget {
                                         .color.text_and_icons_base_primary,
                                   ),
                             ),
-                          ]
+                          ],
                         ],
                       ),
                     ),
@@ -84,7 +81,7 @@ class ExpandableWidget extends StatelessWidget {
                     Transform.rotate(
                       angle: pi * animationValue,
                       child: SvgPicture.asset(
-                        "assets/icons/svg/ic_chevron_down.svg",
+                        'assets/icons/svg/ic_chevron_down.svg',
                         height: 24,
                         width: 24,
                         package: PackageConfig.packageName,

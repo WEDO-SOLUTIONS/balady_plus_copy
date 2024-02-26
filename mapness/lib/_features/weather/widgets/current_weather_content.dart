@@ -23,7 +23,6 @@ class CurrentWeatherContent extends ConsumerWidget {
           ),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(
               height: MediaQuery.of(context).padding.top,
@@ -40,7 +39,7 @@ class CurrentWeatherContent extends ConsumerWidget {
                 const Padding(
                   padding: EdgeInsets.only(bottom: 6),
                   child: Text(
-                    "C",
+                    'C',
                     // fontSize: 18,
                     // fontWeight: FontWeight.normal,
                   ),
@@ -49,7 +48,7 @@ class CurrentWeatherContent extends ConsumerWidget {
                 const Padding(
                   padding: EdgeInsets.only(bottom: 10),
                   child: Text(
-                    "°",
+                    '°',
                     // fontSize: 20,
                     // fontWeight: FontWeight.normal,
                   ),
@@ -89,7 +88,7 @@ class CurrentWeatherContent extends ConsumerWidget {
                         time: allWeatherInfo
                                 ?.forecast?.forecastday?[0].astro?.sunrise
                                 ?.replaceAll('AM', '') ??
-                            ''),
+                            '',),
                     const Padding(
                       padding:
                           EdgeInsets.symmetric(vertical: 8, horizontal: 36),
@@ -102,7 +101,7 @@ class CurrentWeatherContent extends ConsumerWidget {
                         time: allWeatherInfo
                                 ?.forecast?.forecastday?[0].astro?.sunset
                                 ?.replaceAll('PM', '') ??
-                            ''),
+                            '',),
                   ],
                 ),
               ),

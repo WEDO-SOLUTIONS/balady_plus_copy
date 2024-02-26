@@ -81,7 +81,7 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheet> {
               availableExpansions: const {
                 Expansion.hidden,
                 Expansion.middle,
-                Expansion.expanded
+                Expansion.expanded,
               },
               onExpansionChanged: (expansion, {byUser = false}) {
                 if (expansion == Expansion.hidden && context.mounted) {
@@ -93,8 +93,8 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheet> {
                 decoration: const BoxDecoration(
                   color: Color(0xFFF4F4F5),
                   borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(16.0),
-                    topLeft: Radius.circular(16.0),
+                    topRight: Radius.circular(16),
+                    topLeft: Radius.circular(16),
                   ),
                 ),
                 child: Material(

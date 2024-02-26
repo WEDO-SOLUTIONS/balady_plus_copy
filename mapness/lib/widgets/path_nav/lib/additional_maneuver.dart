@@ -5,17 +5,17 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 /// unused for now but may be required after first demo
 class _AdditionalManeuver extends StatelessWidget {
+  const _AdditionalManeuver(
+      {required this.instruction, required this.iconPath,});
   final String instruction;
   final String iconPath;
-  const _AdditionalManeuver(
-      {super.key, required this.instruction, required this.iconPath});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8),
       decoration:  BoxDecoration(
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(16),
           bottomRight: Radius.circular(16),
         ),
@@ -23,7 +23,7 @@ class _AdditionalManeuver extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const SizedBox(height: 25.0),
+          const SizedBox(height: 25),
           Row(
             children: [
               Text(
@@ -39,7 +39,7 @@ class _AdditionalManeuver extends StatelessWidget {
                   colorFilter: const ColorFilter.mode(
                     NonThemeColor.color61,
                     BlendMode.srcATop,
-                  )),
+                  ),),
             ],
           ),
         ],

@@ -14,13 +14,9 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 
-import '../../favourites/providers/favourite_repository.dart';
+import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
 
 class PoiCardFooter extends ConsumerWidget {
-  final DirectoryObjectMessage data;
-  final PoiCardViewModel viewModel;
-  final void Function() onEntranceTap;
-  late final RouteSearchPointMessage _finishPoint;
 
   PoiCardFooter({
     required this.data,
@@ -33,6 +29,10 @@ class PoiCardFooter extends ConsumerWidget {
       objectId: data.id!,
     );
   }
+  final DirectoryObjectMessage data;
+  final PoiCardViewModel viewModel;
+  final void Function() onEntranceTap;
+  late final RouteSearchPointMessage _finishPoint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -104,7 +104,7 @@ class PoiCardFooter extends ConsumerWidget {
         ? buildIconButton(
             flex: flex,
             assetName: 'assets/icons/svg/ic_entrance.svg',
-            onTap: () => onEntranceTap(),
+            onTap: onEntranceTap,
             // onTap: () => widget.viewModel.onEntranceTap(objectMessage),
             // desc: (hasContacts == false)
             //     ? Text(

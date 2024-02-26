@@ -16,8 +16,6 @@ const mockArabickText =
     'الملك فهد، الرياضالملك فهد، الرياضالملك فهد، الرياض 12261، المملكة العربية السعودية الرياض';
 
 class PoiHeader extends ConsumerWidget {
-  final TabController tabController;
-  final Function()? onTapClose;
 
   const PoiHeader({
     required this.data,
@@ -25,6 +23,8 @@ class PoiHeader extends ConsumerWidget {
     required this.tabController,
     super.key,
   });
+  final TabController tabController;
+  final Function()? onTapClose;
 
   final DirectoryObjectMessage data;
 
@@ -100,8 +100,8 @@ class PoiHeader extends ConsumerWidget {
                   height: 4,
                   width: 40,
                 );
-              }
-          ));
+              },
+          ),);
 
   Widget _subTitle(BuildContext context, String text, PoiModel data) =>
       Row(
@@ -166,7 +166,7 @@ class PoiHeader extends ConsumerWidget {
                   .textS
                   .copyWith(
                   color: context.color.text_and_icons_base_primary.withOpacity(
-                      0.5)),
+                      0.5,),),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
               textAlign: TextAlign.start,
@@ -174,7 +174,7 @@ class PoiHeader extends ConsumerWidget {
           ),
           const SizedBox(
             width: 56,
-          )
+          ),
         ],
       )
           : const SizedBox.shrink();
@@ -193,12 +193,12 @@ class PoiHeader extends ConsumerWidget {
                   height: 40,
                   width: 40,
                   decoration: BoxDecoration(
-                    borderRadius:  BorderRadius.all(
+                    borderRadius:  const BorderRadius.all(
                       Radius.circular(8),
                     ),
                     color: context.color.text_and_icons_base_primary.withAlpha(10),
                   ),
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8),
                   child: SvgPicture.asset(
                     'assets/icons/svg/ic_search_close.svg',
                     semanticsLabel: 'MinApps Screen',
@@ -212,6 +212,6 @@ class PoiHeader extends ConsumerWidget {
               ),
             ),
           );
-        }
+        },
       );
 }

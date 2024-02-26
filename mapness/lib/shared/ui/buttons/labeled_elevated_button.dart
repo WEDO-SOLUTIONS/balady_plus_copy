@@ -3,22 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class LabeledElevatedButton extends StatelessWidget {
+
+  const LabeledElevatedButton({
+    required this.onPressed, required this.label, super.key,
+    this.enabled = true,
+    this.backgroundColor,
+    this.textColor,
+    this.padding,
+  });
   final VoidCallback onPressed;
   final bool enabled;
   final String label;
   final Color? backgroundColor;
   final Color? textColor;
   final EdgeInsets? padding;
-
-  const LabeledElevatedButton({
-    super.key,
-    required this.onPressed,
-    required this.label,
-    this.enabled = true,
-    this.backgroundColor,
-    this.textColor,
-    this.padding,
-  });
 
   @override
   Widget build(BuildContext context) {

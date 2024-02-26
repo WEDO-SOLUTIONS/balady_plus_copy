@@ -6,7 +6,7 @@ class NoOverscrollBehavior extends ScrollBehavior {
       const ClampingScrollPhysics();
 
   @override
-  Widget buildOverscrollIndicator(context, child, details) {
+  Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) {
     return child;
   }
 }

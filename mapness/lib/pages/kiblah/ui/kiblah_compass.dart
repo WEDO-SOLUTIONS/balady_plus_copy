@@ -13,7 +13,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/compass.dart';
 import 'package:mapness/shared/ui/gradient_stroke.dart';
 
-import '../providers/fake_compass.dart';
+import 'package:mapness/pages/kiblah/providers/fake_compass.dart';
 
 class KiblahCompass extends ConsumerWidget {
   const KiblahCompass({
@@ -177,9 +177,9 @@ class KiblahCompass extends ConsumerWidget {
 }
 
 class _KaabaIcon extends StatelessWidget {
-  final bool isCorrect;
 
   const _KaabaIcon({required this.isCorrect});
+  final bool isCorrect;
 
   @override
   Widget build(BuildContext context) => Container(

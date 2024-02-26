@@ -1,8 +1,4 @@
 class IwishFeedbackTag {
-  final String id;
-  final String displayName;
-  final String assetUrl;
-  final bool rtlAsset;
 
   const IwishFeedbackTag({
     required this.id,
@@ -10,4 +6,8 @@ class IwishFeedbackTag {
     required this.assetUrl,
     this.rtlAsset = false,
   });
+  final String id;
+  final String displayName;
+  final String assetUrl;
+  final bool rtlAsset;
 }

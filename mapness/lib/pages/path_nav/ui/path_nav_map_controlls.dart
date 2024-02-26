@@ -15,10 +15,9 @@ import 'package:mapness/widgets/path_nav/ui/path_nav_message_widget.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_speed_info_widget.dart';
 
 class PathNavMapControlls extends StatelessWidget {
-  final RouteSearchOptionsMessage navType;
 
-  const PathNavMapControlls({required this.navType, Key? key})
-      : super(key: key);
+  const PathNavMapControlls({required this.navType, super.key});
+  final RouteSearchOptionsMessage navType;
 
   @override
   // ignore: prefer_expression_function_bodies
@@ -36,7 +35,7 @@ class PathNavMapControlls extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 /// speed info
-                if (navType == RouteSearchOptionsMessage.pedestrian) Spacer(),
+                if (navType == RouteSearchOptionsMessage.pedestrian) const Spacer(),
                 if (navType != RouteSearchOptionsMessage.pedestrian)
                   Consumer(
                     builder: (context, ref, child) {

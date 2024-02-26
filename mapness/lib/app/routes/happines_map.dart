@@ -11,11 +11,11 @@ part 'happines_map.g.dart';
     path: '/happines_map',
     routes: <TypedGoRoute<GoRouteData>>[
       TypedGoRoute<HappinessMapCommentRoute>(path: 'comment'),
-    ])
+    ],)
 class HappinessMapRoute extends GoRouteData {
-  final bool? bottomSheetOpened;
 
   const HappinessMapRoute({this.bottomSheetOpened});
+  final bool? bottomSheetOpened;
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
@@ -39,7 +39,7 @@ class HappinessMapCommentRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(context, state) => _happinesTransition(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => _happinesTransition(
         context: context,
         child: HappinesFeedbackComment(),
       );

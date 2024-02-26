@@ -3,8 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
 
 class DeleteIcon extends StatelessWidget {
+  const DeleteIcon({required this.onPressed, super.key});
   final VoidCallback onPressed;
-  const DeleteIcon({Key? key, required this.onPressed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

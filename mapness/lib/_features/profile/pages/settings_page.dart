@@ -12,7 +12,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
 
-import '../widgets/language_picker.dart';
+import 'package:mapness/_features/profile/widgets/language_picker.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
@@ -39,7 +39,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 SafeArea(
                   bottom: false,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Row(
                       children: [
                         SizedBox(
@@ -117,7 +117,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   height: 8,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
                       Text(
@@ -127,7 +127,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             .textXS
                             .copyWith(
                                 color:
-                                    context.color.text_and_icons_base_primary.withOpacity(0.36)),
+                                    context.color.text_and_icons_base_primary.withOpacity(0.36),),
                       ),
                     ],
                   ),
@@ -140,7 +140,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   height: 8,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
                       Text(
@@ -150,7 +150,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             .textXS
                             .copyWith(
                                 color:
-                                    context.color.text_and_icons_base_primary.withOpacity(0.36)),
+                                    context.color.text_and_icons_base_primary.withOpacity(0.36),),
                       ),
                     ],
                   ),

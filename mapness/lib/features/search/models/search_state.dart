@@ -7,15 +7,15 @@ class SearchStateHistory extends SearchState {}
 class SearchStateEmpty extends SearchState {}
 
 class SearchStateSuggest extends SearchState {
-  final SuggestResultMessage suggest;
 
   SearchStateSuggest(this.suggest);
+  final SuggestResultMessage suggest;
 }
 
 class SearchStateResults extends SearchState {
-  final SearchResultMessage results;
 
   SearchStateResults(this.results);
+  final SearchResultMessage results;
 }
 
 extension SearchStateMap on SearchState {

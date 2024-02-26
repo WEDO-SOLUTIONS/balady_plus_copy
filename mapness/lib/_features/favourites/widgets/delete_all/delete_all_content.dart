@@ -4,14 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class DeleteAllContent extends StatelessWidget {
-  final VoidCallback onConfirm;
-  final VoidCallback onCancel;
 
   const DeleteAllContent({
-    Key? key,
-    required this.onConfirm,
-    required this.onCancel,
-  }) : super(key: key);
+    required this.onConfirm, required this.onCancel, super.key,
+  });
+  final VoidCallback onConfirm;
+  final VoidCallback onCancel;
 
   @override
   Widget build(BuildContext context) {

@@ -1,19 +1,15 @@
 import 'dart:collection';
 
 class Coordinates {
-  final double latitude;
-  final double longitude;
 
   const Coordinates({required this.latitude, required this.longitude});
   const Coordinates.ltlg(this.latitude, this.longitude);
+  final double latitude;
+  final double longitude;
   static const Coordinates zero = Coordinates(latitude: 0, longitude: 0);
 }
 
 class HappinessState {
-  final HappinessFeedback? feedback;
-  final Coordinates coordinates;
-  final String comment;
-  final List<String> tags;
 
   const HappinessState({
     required this.comment,
@@ -21,6 +17,10 @@ class HappinessState {
     required this.coordinates,
     required this.tags,
   }) : assert(feedback != null || tags.length == 0);
+  final HappinessFeedback? feedback;
+  final Coordinates coordinates;
+  final String comment;
+  final List<String> tags;
 
   HappinessState copyWith({
     HappinessFeedback? feedback,

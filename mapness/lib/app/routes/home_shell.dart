@@ -69,9 +69,9 @@ class LandingBranch extends StatefulShellBranchData {
 }
 
 class LandingRoute extends GoRouteData {
-  final LangingFocusMaker? focusMaker;
 
   const LandingRoute({this.focusMaker});
+  final LangingFocusMaker? focusMaker;
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) =>
@@ -91,10 +91,10 @@ class RoutingBranch extends StatefulShellBranchData {
 }
 
 class RoutingRoute extends GoRouteData {
-  /// open page with collapsed bottom sheet
-  final bool collapseInitially;
 
   const RoutingRoute({this.collapseInitially = false});
+  /// open page with collapsed bottom sheet
+  final bool collapseInitially;
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) =>

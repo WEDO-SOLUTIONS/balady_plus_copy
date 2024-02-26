@@ -13,9 +13,9 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/suggest.dart';
 
 class FavouritesSearch extends ConsumerStatefulWidget {
-  final FavouriteItemMarkerType markerType;
 
   const FavouritesSearch({required this.markerType, super.key});
+  final FavouriteItemMarkerType markerType;
 
   @override
   ConsumerState<FavouritesSearch> createState() => _FavouritesSearchState();
@@ -72,7 +72,7 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
           child: Directionality(
             textDirection: TextDirection.rtl,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              padding: const EdgeInsets.symmetric(vertical: 8),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

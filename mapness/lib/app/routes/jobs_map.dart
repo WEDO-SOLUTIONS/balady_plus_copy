@@ -30,9 +30,9 @@ class JobsMapRoute extends GoRouteData {
   path: '/job/:jobId/detail',
 )
 class JobsMapDetail extends GoRouteData {
-  final String jobId;
 
   JobsMapDetail({required this.jobId});
+  final String jobId;
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 

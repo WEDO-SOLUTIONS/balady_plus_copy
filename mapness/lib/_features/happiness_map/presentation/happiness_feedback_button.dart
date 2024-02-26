@@ -6,16 +6,13 @@ import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class HappinesFeedbackButton extends StatelessWidget {
+
+  const HappinesFeedbackButton({
+    required this.type, required this.state, required this.onPressed, super.key,
+  });
   final HappinessFeedback type;
   final HappinessFeedback? state;
   final void Function(HappinessFeedback) onPressed;
-
-  const HappinesFeedbackButton({
-    super.key,
-    required this.type,
-    required this.state,
-    required this.onPressed,
-  });
 
   @override
   Widget build(BuildContext context) {

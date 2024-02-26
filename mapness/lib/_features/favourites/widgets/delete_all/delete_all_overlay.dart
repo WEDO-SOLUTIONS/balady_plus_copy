@@ -12,7 +12,7 @@ class DeleteAllOverlay {
         color: Colors.transparent,
         child: child,
       );
-    });
+    },);
     Overlay.of(context).insert(_overlayEntry!);
   }
 

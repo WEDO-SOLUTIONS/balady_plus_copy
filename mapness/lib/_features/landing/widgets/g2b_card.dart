@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 
 class G2BCard extends StatelessWidget {
   const G2BCard({
-    super.key,
-    required this.title,
-    required this.subtitle,
-    required this.color,
-    required this.onTap,
+    required this.title, required this.subtitle, required this.color, required this.onTap, super.key,
   });
 
   final String title;

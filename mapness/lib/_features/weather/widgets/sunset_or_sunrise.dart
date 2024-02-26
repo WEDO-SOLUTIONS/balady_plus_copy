@@ -4,18 +4,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class SunriseOrSunsetTime extends StatelessWidget {
   const SunriseOrSunsetTime(
-      {super.key, required this.time, required this.icon});
+      {required this.time, required this.icon, super.key,});
 
   const SunriseOrSunsetTime.sunrise({
-    super.key,
-    required this.time,
-    this.icon = "assets/icons/svg/weather/sunrise.svg",
+    required this.time, super.key,
+    this.icon = 'assets/icons/svg/weather/sunrise.svg',
   });
 
   const SunriseOrSunsetTime.sunset({
-    super.key,
-    required this.time,
-    this.icon = "assets/icons/svg/weather/sunset.svg",
+    required this.time, super.key,
+    this.icon = 'assets/icons/svg/weather/sunset.svg',
   });
 
   final String time;

@@ -10,8 +10,7 @@ import 'package:timelines/timelines.dart';
 
 class RouteTimeline extends StatelessWidget {
   const RouteTimeline({
-    super.key,
-    required this.labels,
+    required this.labels, super.key,
   });
 
   final List<String> labels;
@@ -23,7 +22,7 @@ class RouteTimeline extends StatelessWidget {
         nodePosition: 0,
         indicatorPosition: 0.5,
         connectorTheme: TimelineTheme.of(context).connectorTheme.copyWith(
-              thickness: 2.0,
+              thickness: 2,
             ),
       ),
       children: labels
@@ -41,10 +40,7 @@ class RouteTimeline extends StatelessWidget {
 
 class RouteTimelineRow extends StatelessWidget {
   const RouteTimelineRow({
-    super.key,
-    required this.last,
-    required this.index,
-    required this.point,
+    required this.last, required this.index, required this.point, super.key,
   });
 
   final int index;
@@ -64,7 +60,7 @@ class RouteTimelineRow extends StatelessWidget {
           style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(
               color: index == 0
                   ? context.color.text_and_icons_base_tertiary
-                  : context.color.text_and_icons_base_primary),
+                  : context.color.text_and_icons_base_primary,),
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
@@ -72,7 +68,7 @@ class RouteTimelineRow extends StatelessWidget {
       node: TimelineNode(
         // indicatorPosition: 0.5,
         indicator: SvgPicture.asset(
-          "assets/icons/svg/ic_routing_circle_small.svg",
+          'assets/icons/svg/ic_routing_circle_small.svg',
           package: PackageConfig.packageName,
           colorFilter: ColorFilter.mode(
             index == 0 ? NonThemeColor.color3 : context.color.stroke_accent,

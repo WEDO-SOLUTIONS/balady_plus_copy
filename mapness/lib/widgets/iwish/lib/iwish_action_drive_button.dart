@@ -6,14 +6,13 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class IwishActionDriveButton extends StatelessWidget {
-  final VoidCallback? onPressed;
-  final String label;
 
   const IwishActionDriveButton({
-    super.key,
+    required this.label, super.key,
     this.onPressed,
-    required this.label,
   });
+  final VoidCallback? onPressed;
+  final String label;
 
   @override
   Widget build(BuildContext context) {

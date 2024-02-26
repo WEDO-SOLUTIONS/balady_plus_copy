@@ -37,7 +37,7 @@ class ProfileInfoPage extends ConsumerWidget {
               SafeArea(
                 bottom: false,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
                       SizedBox(
@@ -86,13 +86,11 @@ class ProfileInfoPage extends ConsumerWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const ProfileImageWidget(
                       editable: true,
-                      dimension: 96,
                     ),
                     const SizedBox(
                       height: 12,
@@ -109,7 +107,7 @@ class ProfileInfoPage extends ConsumerWidget {
                       height: 8,
                     ),
                     Text(
-                      userData.idNo ?? "",
+                      userData.idNo ?? '',
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .textS
@@ -123,7 +121,7 @@ class ProfileInfoPage extends ConsumerWidget {
               ),
               PersonalData(userInfo: userData),
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16),
                 child: Directionality(
                   textDirection: Directionality.of(context),
                   child: InkWell(
@@ -147,9 +145,9 @@ class ProfileInfoPage extends ConsumerWidget {
                                   .textS
                                   .copyWith(
                                     color: context.color.text_and_icons_status_negative,
-                                  )),
+                                  ),),
                           SvgPicture.asset(
-                            "assets/icons/svg/ic_profile_logout.svg",
+                            'assets/icons/svg/ic_profile_logout.svg',
                             height: 24,
                             width: 24,
                             package: PackageConfig.packageName,

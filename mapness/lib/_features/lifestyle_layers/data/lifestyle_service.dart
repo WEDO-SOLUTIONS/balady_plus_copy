@@ -5,7 +5,6 @@ import 'package:dio/io.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class LifestyleLayersService {
-  final Dio dio;
 
   LifestyleLayersService({required this.dio}) {
 
@@ -20,10 +19,9 @@ class LifestyleLayersService {
     dio.options.sendTimeout = const Duration(milliseconds: 60000);
     // dio.options.headers = {};
     dio.interceptors.add(PrettyDioLogger(
-      responseBody: true,
       requestHeader: true,
-      requestBody: false,
-      responseHeader: true
-    ));
+      responseHeader: true,
+    ),);
   }
+  final Dio dio;
 }

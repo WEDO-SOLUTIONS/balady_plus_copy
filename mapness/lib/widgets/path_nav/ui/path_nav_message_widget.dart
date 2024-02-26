@@ -6,12 +6,11 @@ import 'package:mapness/entities/path_nav/models/path_nav_message.dart';
 typedef _State = PathNavManeuverState;
 
 class PathNavMessageWidget extends StatelessWidget {
-  final PathNavMessage message;
 
   const PathNavMessageWidget({
-    super.key,
-    required this.message,
+    required this.message, super.key,
   });
+  final PathNavMessage message;
 
   @override
   Widget build(BuildContext context) {

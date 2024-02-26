@@ -5,14 +5,12 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PathNavIconButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final String iconPath;
 
   const PathNavIconButton({
-    super.key,
-    required this.onPressed,
-    required this.iconPath,
+    required this.onPressed, required this.iconPath, super.key,
   });
+  final VoidCallback onPressed;
+  final String iconPath;
 
   @override
   Widget build(BuildContext context) {

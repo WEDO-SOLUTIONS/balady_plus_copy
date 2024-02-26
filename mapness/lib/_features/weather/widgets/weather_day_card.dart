@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart' hide TextDirection;
-import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/weather/domain/entities/weather_info.dart';
 import 'package:mapness/_features/weather/weather_date.dart';
 import 'package:mapness/_features/weather/widgets/custom_svg_icon_widget.dart';
@@ -35,13 +34,13 @@ class WeatherDayCard extends ConsumerWidget {
     final dayText = isToday
         ? context.l10n.today
         : WeatherDateFormatter.getDay(
-            forecastDay?.date ?? '2022-01-01', locale);
+            forecastDay?.date ?? '2022-01-01', locale,);
     final conditionIconPath = forecastDay?.day?.condition?.iconPath ?? '';
     final conditionText = forecastDay?.day?.condition?.text ?? '';
 
-    final maxTemp = '${forecastDay?.day?.maxtempC.toString()}º';
+    final maxTemp = '${forecastDay?.day?.maxtempC}º';
 
-    final minTemp = '${forecastDay?.day?.mintempC.toString()}º';
+    final minTemp = '${forecastDay?.day?.mintempC}º';
 
     return CustomExpansionTile(
       collapsedBackgroundColor: context.color.surface_base_secondary,
@@ -49,11 +48,11 @@ class WeatherDayCard extends ConsumerWidget {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
         12,
-      )),
+      ),),
       collapsedShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
         12,
-      )),
+      ),),
       key: UniqueKey(),
       hasIcon: false,
       onExpansionChanged: onExpansionChanged,
@@ -118,7 +117,7 @@ class WeatherDayCard extends ConsumerWidget {
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -193,10 +192,10 @@ class WeatherDayCard extends ConsumerWidget {
                         ],
                       ),
                     );
-                  }).toList(),
+                  }),
                 ],
               ),
-            ))
+            ),),
       ],
     );
   }

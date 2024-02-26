@@ -7,8 +7,7 @@ import 'package:mapness/features/search/ui/suggest_item.dart';
 
 class MapSuggestList extends ConsumerWidget {
   const MapSuggestList({
-    super.key,
-    required this.suggest,
+    required this.suggest, super.key,
   });
 
   final SuggestResultMessage suggest;
@@ -19,7 +18,6 @@ class MapSuggestList extends ConsumerWidget {
 
     return ListView.separated(
       shrinkWrap: true,
-      scrollDirection: Axis.vertical,
       padding: const EdgeInsetsDirectional.only(
         start: 16,
         bottom: 16,
@@ -36,7 +34,7 @@ class MapSuggestList extends ConsumerWidget {
       itemCount: suggests.length,
       separatorBuilder: (BuildContext context, int index) {
         return const Padding(
-          padding: EdgeInsetsDirectional.only(start: 52.0),
+          padding: EdgeInsetsDirectional.only(start: 52),
           child: Divider(),
         );
       },

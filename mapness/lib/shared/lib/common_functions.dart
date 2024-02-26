@@ -9,14 +9,14 @@ import 'package:url_launcher/url_launcher.dart';
 
 class CommonFunctions {
   static Future<void> externalLaunch(String url) async {
-    final Uri convertUrl = Uri.parse(url);
+    final convertUrl = Uri.parse(url);
     if (!await launchUrl(convertUrl, mode: LaunchMode.externalApplication)) {
       throw Exception('Could not launch $convertUrl');
     }
   }
 
   static Future<void> launch(String url) async {
-    final Uri convertUrl = Uri.parse(url);
+    final convertUrl = Uri.parse(url);
     if (!await launchUrl(convertUrl)) {
       throw Exception('Could not launch $convertUrl');
     }
@@ -38,7 +38,7 @@ class CommonFunctions {
     BuildContext context, {
     VoidCallback? callback,
   }) async {
-    bool isAuth = CommonProperties.isLoggedIn;
+    var isAuth = CommonProperties.isLoggedIn;
     if (!isAuth) {
       if (context.mounted) {
         await const SignInRoute().push(context);
@@ -71,7 +71,7 @@ class CommonFunctions {
     );
 
     final corners = box.corners2D.toList();
-    final List<gb.Position> positions = [...corners, corners[0]]
+    final positions = [...corners, corners[0]]
         .map((e) => gb.Position.create(x: e.x, y: e.y))
         .toList();
 

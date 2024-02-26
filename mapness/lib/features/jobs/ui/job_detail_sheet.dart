@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart' hide SearchBar, ScrollPosition;
+import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/jobs/ui/widgets/job_detail.dart';
 import 'package:mapness/features/jobs/ui/widgets/job_detail_header.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class JobDetailSheet extends ConsumerStatefulWidget {
-  final String jobId;
 
   const JobDetailSheet({
     required this.jobId,
@@ -13,6 +12,7 @@ class JobDetailSheet extends ConsumerStatefulWidget {
     required this.biggestWidth,
     super.key,
   });
+  final String jobId;
 
   final double biggestHeight;
   final double biggestWidth;
@@ -52,9 +52,9 @@ class _JobDetailSheetState extends ConsumerState<JobDetailSheet> {
           child: Container(
             decoration:  BoxDecoration(
               color: context.color.surface_base_primary,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(16.0),
-                topLeft: Radius.circular(16.0),
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(16),
+                topLeft: Radius.circular(16),
               ),
             ),
             child: CustomScrollView(

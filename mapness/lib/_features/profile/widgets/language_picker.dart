@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
+import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-
-import '../../../shared/config/package_config.dart';
-import '../../../shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 
 class LanguagePicker extends StatelessWidget {
   const LanguagePicker({super.key});
@@ -30,9 +29,7 @@ class LanguagePicker extends StatelessWidget {
 
 class LanguageRow extends ConsumerWidget {
   const LanguageRow({
-    super.key,
-    required this.language,
-    required this.border,
+    required this.language, required this.border, super.key,
   });
 
   final Language language;
@@ -68,12 +65,11 @@ class LanguageRow extends ConsumerWidget {
               vertical: 12,
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SvgPicture.asset(
                   currentLanguage == language
-                      ? "assets/icons/svg/ic_radio_on.svg"
-                      : "assets/icons/svg/ic_radio_off.svg",
+                      ? 'assets/icons/svg/ic_radio_on.svg'
+                      : 'assets/icons/svg/ic_radio_off.svg',
                   height: 24,
                   width: 24,
                   package: PackageConfig.packageName,

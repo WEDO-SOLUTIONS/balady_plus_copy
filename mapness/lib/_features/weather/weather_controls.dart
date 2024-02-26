@@ -9,12 +9,12 @@ import 'package:mapness/_features/weather/provider/weather_map_controls.dart';
 import 'package:mapness/_features/weather/widgets/weather_state_icon.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-import 'provider/weather_map_controller.dart';
+import 'package:mapness/_features/weather/provider/weather_map_controller.dart';
 
 class WeatherControls extends ConsumerWidget {
   const WeatherControls({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,10 +42,10 @@ class WeatherControls extends ConsumerWidget {
                       AnimatedOpacity(
                           opacity: mapControls.controlsVisible ? 1 : 0,
                           duration: const Duration(milliseconds: 150),
-                          child: const Legend()),
+                          child: const Legend(),),
                       SizedBox(
                         height: mapControls.extent,
-                      )
+                      ),
                     ],
                   ),
                   const Spacer(),
@@ -97,8 +97,8 @@ class Legend extends ConsumerWidget {
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(8.0),
-              topRight: Radius.circular(8.0),
+              topLeft: Radius.circular(8),
+              topRight: Radius.circular(8),
             ),
           ),
           child: Text(measureUnit, style: style),
@@ -107,8 +107,8 @@ class Legend extends ConsumerWidget {
           width: 30,
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(8.0),
-              bottomRight: Radius.circular(8.0),
+              bottomLeft: Radius.circular(8),
+              bottomRight: Radius.circular(8),
             ),
             gradient: LinearGradient(
               begin: Alignment.topCenter,

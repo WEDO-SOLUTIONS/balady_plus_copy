@@ -14,7 +14,7 @@ class SnapAndSendCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -87,9 +87,7 @@ class SnapAndSendCard extends ConsumerWidget {
                             ),
                             onPressed: () {
                               mapness.CommonFunctions.authOrOpen(context,
-                                  callback: () {
-                                CommonFunctions.openSnapAndSend();
-                              });
+                                  callback: CommonFunctions.openSnapAndSend,);
                             },
                           ),
                         ],

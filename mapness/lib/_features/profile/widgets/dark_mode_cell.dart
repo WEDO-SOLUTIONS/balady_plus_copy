@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-
+import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
-
-import '../../../shared/config/package_config.dart';
 
 class DarkModeCell extends ConsumerWidget {
   const DarkModeCell({super.key});
@@ -34,11 +32,11 @@ class DarkModeCell extends ConsumerWidget {
             child: SizedBox(
               height: 48,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
                     SvgPicture.asset(
-                      "assets/icons/svg/ic_profile_dark.svg",
+                      'assets/icons/svg/ic_profile_dark.svg',
                       height: 24,
                       width: 24,
                       package: PackageConfig.packageName,
@@ -48,7 +46,7 @@ class DarkModeCell extends ConsumerWidget {
                       width: 12,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 2.0),
+                      padding: const EdgeInsets.only(bottom: 2),
                       child: Text(
                         context.l10n.darkMap,
                         style: Theme.of(context)

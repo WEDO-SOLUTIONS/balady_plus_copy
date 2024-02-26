@@ -1,10 +1,6 @@
 import 'package:dgis_map/library.dart';
 
 class PathNavSpeedInfo {
-  final NaviCameraDirection? direction;
-  final int speed;
-  final int? speedLimit;
-  final bool speedExceed;
 
   const PathNavSpeedInfo({
     required this.direction,
@@ -12,6 +8,10 @@ class PathNavSpeedInfo {
     required this.speedLimit,
     required this.speedExceed,
   });
+  final NaviCameraDirection? direction;
+  final int speed;
+  final int? speedLimit;
+  final bool speedExceed;
 
   PathNavSpeedInfo copyWith({
     NaviCameraDirection? direction,

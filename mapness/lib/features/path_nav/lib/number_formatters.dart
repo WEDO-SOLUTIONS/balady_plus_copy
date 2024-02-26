@@ -1,4 +1,4 @@
-import 'enums.dart';
+import 'package:mapness/features/path_nav/lib/enums.dart';
 
 /// @nodoc
 extension FormattedDistance on double {

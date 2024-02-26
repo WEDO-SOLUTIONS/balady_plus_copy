@@ -3,18 +3,17 @@ import 'package:mapness/_features/common/image/loading_image/loading_image.dart'
 import 'package:shimmer/shimmer.dart';
 
 class LoadingShimmerImage extends StatelessWidget {
-  final String imageUrl;
-  final VoidCallback? onImageReady;
-  final BoxFit? fit;
-  final void Function(String name,bool? isAsset)? onImageTap;
 
   const LoadingShimmerImage({
-    super.key,
-    required this.imageUrl,
+    required this.imageUrl, super.key,
     this.onImageReady,
     this.fit,
     this.onImageTap,
   });
+  final String imageUrl;
+  final VoidCallback? onImageReady;
+  final BoxFit? fit;
+  final void Function(String name,bool? isAsset)? onImageTap;
 
   @override
   Widget build(BuildContext context) {

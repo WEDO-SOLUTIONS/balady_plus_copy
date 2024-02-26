@@ -14,7 +14,7 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   final DraggableScrollableController draggableScrollableController;
 
   @override
-  Widget build(context, double shrinkOffset, bool overlapsContent) {
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return DashboardHeader(
       draggableScrollableController: draggableScrollableController,
     );
@@ -32,8 +32,7 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
 
 class DashboardHeader extends ConsumerWidget {
   const DashboardHeader({
-    super.key,
-    required this.draggableScrollableController,
+    required this.draggableScrollableController, super.key,
   });
 
   final DraggableScrollableController draggableScrollableController;
@@ -44,8 +43,8 @@ class DashboardHeader extends ConsumerWidget {
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
-          topRight: Radius.circular(16.0),
-          topLeft: Radius.circular(16.0),
+          topRight: Radius.circular(16),
+          topLeft: Radius.circular(16),
         ),
       ),
       child: Column(
@@ -59,7 +58,7 @@ class DashboardHeader extends ConsumerWidget {
               width: 26,
               decoration: BoxDecoration(
                 color: context.color.surface_base_primary,
-                borderRadius: BorderRadius.all(Radius.circular(24)),
+                borderRadius: const BorderRadius.all(Radius.circular(24)),
               ),
             ),
           ),
@@ -67,7 +66,7 @@ class DashboardHeader extends ConsumerWidget {
             height: 8,
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: GestureDetector(
               onTap: () {
                 ref.read(searchByRubricsQueryProvider.notifier).update(null);

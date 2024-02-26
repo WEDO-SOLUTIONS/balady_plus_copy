@@ -5,11 +5,7 @@ import 'package:flutter/material.dart';
 
 class EventCard extends StatelessWidget {
   const EventCard({
-    super.key,
-    required this.title,
-    required this.subtitle,
-    required this.imageUrl,
-    required this.id,
+    required this.title, required this.subtitle, required this.imageUrl, required this.id, super.key,
   });
 
   final String title;
@@ -59,7 +55,7 @@ class EventCard extends StatelessWidget {
                           .extension<ThemeTextStyles>()!
                           .textS
                           .copyWith(color: Colors.white.withOpacity(0.8)),
-                    )
+                    ),
                   ],
                 ),
               ),

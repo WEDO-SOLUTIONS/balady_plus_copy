@@ -14,12 +14,12 @@ class _HappinessRepository extends _$HappinessRepository {
   Future<void> submitFeedback(HappinessState feedback) async {
     ref
         .read(urbiMetricsProvider.notifier)
-        .logEvent("Happiness_map/submitFeedback", {
-      "feedback": feedback.feedback.toString(),
-      "tags": feedback.tags.toString(),
-      "coordinates": feedback.coordinates.toString(),
+        .logEvent('Happiness_map/submitFeedback', {
+      'feedback': feedback.feedback.toString(),
+      'tags': feedback.tags.toString(),
+      'coordinates': feedback.coordinates.toString(),
     });
-    mixpanel?.timeEvent("Happiness map: submitFeedback");
+    mixpanel?.timeEvent('Happiness map: submitFeedback');
     final dio = await ref.read(dGisNetworkProvider.future);
     state = const AsyncLoading();
     final data = HappinessRequest(
@@ -39,7 +39,7 @@ class _HappinessRepository extends _$HappinessRepository {
       );
       state = const AsyncData(true);
 
-      mixpanel?.track("Happiness map: submitFeedback");
+      mixpanel?.track('Happiness map: submitFeedback');
     } on DioException {
       state = AsyncError(
         'Dio error',

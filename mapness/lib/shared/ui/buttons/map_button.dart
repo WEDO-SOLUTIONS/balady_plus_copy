@@ -1,15 +1,8 @@
-import 'dart:ui';
 
 import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 
 class MapButton extends StatefulWidget {
-  final Widget child;
-  final bool disabled;
-  final BorderRadius borderRadius;
-  final void Function()? onTap;
-  final void Function(TapUpDetails)? onTapUp;
-  final void Function(TapDownDetails)? onTapDown;
 
   MapButton({
     required this.child,
@@ -21,6 +14,12 @@ class MapButton extends StatefulWidget {
     super.key,
   })  : disabled = disabled ?? false,
         borderRadius = borderRadius ?? BorderRadius.circular(10);
+  final Widget child;
+  final bool disabled;
+  final BorderRadius borderRadius;
+  final void Function()? onTap;
+  final void Function(TapUpDetails)? onTapUp;
+  final void Function(TapDownDetails)? onTapDown;
 
   @override
   State<MapButton> createState() => _MapButtonState();
@@ -51,16 +50,13 @@ class _MapButtonState extends State<MapButton> {
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.07),
-              spreadRadius: 0,
               blurRadius: 1,
-              offset: const Offset(0, 0),
             ),
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
               blurRadius: 4,
-              spreadRadius: 0,
               offset: const Offset(0, 2),
-            )
+            ),
           ],
         ),
         child: Material(

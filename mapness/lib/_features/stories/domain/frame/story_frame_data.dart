@@ -23,17 +23,6 @@ extension StoryFrameDataX on StoryFrameData {
 }
 
 class StoryFrameData {
-  final String storyId;
-  final String title;
-  final String imageUrl;
-  final String? subtitle;
-  final String? description;
-  final StoryTextStyle? titleStyle;
-  final StoryTextStyle? descriptionStyle;
-  final bool isWatched;
-  final StoryFrameAction? action;
-  final int duration;
-  final bool? isAssetImage;
 
   const StoryFrameData({
     required this.duration,
@@ -48,6 +37,17 @@ class StoryFrameData {
     this.action,
     this.isAssetImage = false,
   });
+  final String storyId;
+  final String title;
+  final String imageUrl;
+  final String? subtitle;
+  final String? description;
+  final StoryTextStyle? titleStyle;
+  final StoryTextStyle? descriptionStyle;
+  final bool isWatched;
+  final StoryFrameAction? action;
+  final int duration;
+  final bool? isAssetImage;
 
   StoryFrameData copyWith({
     String? storyId,

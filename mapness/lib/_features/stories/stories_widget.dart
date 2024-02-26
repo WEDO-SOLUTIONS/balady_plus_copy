@@ -7,10 +7,10 @@ import 'package:mapness/_features/stories/presentation/story_thumbnails.dart';
 import 'package:mapness/_features/stories/stories.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
-import '../common/providers/network_status.dart';
+import 'package:mapness/_features/common/providers/network_status.dart';
 
 class StoriesWidget extends ConsumerStatefulWidget {
-  const StoriesWidget({Key? key}) : super(key: key);
+  const StoriesWidget({super.key});
 
   @override
   ConsumerState<StoriesWidget> createState() => _StoriesWidgetState();

@@ -4,15 +4,15 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../../shared/providers/map/search.dart';
+import 'package:mapness/shared/providers/map/search.dart';
 
 part 'weather_map_controller.g.dart';
 
 class WeatherMapState {
-  final WeatherMapType type;
-  final bool? isEnabled;
 
   WeatherMapState({required this.type, this.isEnabled});
+  final WeatherMapType type;
+  final bool? isEnabled;
 
   WeatherMapState copy({WeatherMapType? type, bool? isEnabled}) {
     return WeatherMapState(
@@ -41,7 +41,7 @@ class WeatherMapController extends _$WeatherMapController {
             type: type,
             layerName: type?.layerName(),
             rasterTileUri: type?.tileSourceUri(),
-            enabled: enable),
+            enabled: enable,),
       );
       state = state.copy(type: type, isEnabled: result);
 
@@ -62,9 +62,7 @@ class WeatherMapController extends _$WeatherMapController {
     });
 
     ref.onDispose(
-      () {
-        listener.cancel();
-      },
+      listener.cancel,
     );
     return WeatherMapState(
       type: WeatherMapType.temperature,
@@ -72,8 +70,7 @@ class WeatherMapController extends _$WeatherMapController {
   }
 
   void toggleWeatherMap({
-    WeatherMapType? type,
-    required bool enable,
+    required bool enable, WeatherMapType? type,
   }) {
     sub.add((type ?? WeatherMapType.temperature, enable));
   }

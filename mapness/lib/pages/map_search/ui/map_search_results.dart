@@ -9,13 +9,11 @@ import 'package:mapness/features/search/ui/search_results.dart';
 import 'package:mapness/widgets/search/ui/search_item.dart';
 import 'package:provider/provider.dart';
 
-import '../../../features/search/models/search_scope.dart';
+import 'package:mapness/features/search/models/search_scope.dart';
 
 class MapSearchResults extends ConsumerWidget {
   const MapSearchResults({
-    super.key,
-    required this.results,
-    required this.scrollController,
+    required this.results, required this.scrollController, super.key,
   });
 
   final SearchResultMessage results;

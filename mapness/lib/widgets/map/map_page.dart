@@ -6,7 +6,7 @@ import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 
 class MapPage extends ConsumerStatefulWidget {
-  const MapPage({Key? key}) : super(key: key);
+  const MapPage({super.key});
 
   @override
   ConsumerState<MapPage> createState() => _MapPageState();
@@ -14,7 +14,7 @@ class MapPage extends ConsumerStatefulWidget {
 
 class _MapPageState extends ConsumerState<MapPage>
     with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
-  int _keyIndex = 0;
+  final int _keyIndex = 0;
   bool _needRefresh = false;
 
   @override

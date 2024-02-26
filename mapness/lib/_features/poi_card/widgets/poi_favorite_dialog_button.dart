@@ -6,18 +6,14 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PoiFavoriteDialogButton extends StatelessWidget {
+
+  const PoiFavoriteDialogButton({
+    required this.onTap, required this.iconAsset, required this.title, required this.showBorder, super.key,
+  });
   final VoidCallback onTap;
   final String title;
   final String iconAsset;
   final bool showBorder;
-
-  const PoiFavoriteDialogButton({
-    super.key,
-    required this.onTap,
-    required this.iconAsset,
-    required this.title,
-    required this.showBorder,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +23,6 @@ class PoiFavoriteDialogButton extends StatelessWidget {
               border: Border(
                 bottom: BorderSide(
                   color: context.color.surface_base_primary,
-                  width: 1,
                 ),
               ),
             )

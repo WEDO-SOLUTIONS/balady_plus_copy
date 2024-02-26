@@ -10,11 +10,11 @@ class LoginCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(8.0),
+      borderRadius: BorderRadius.circular(8),
       child: Material(
         child: Ink.image(
           image: const AssetImage(
-            "assets/images/login.png",
+            'assets/images/login.png',
             package: PackageConfig.packageName,
           ),
           fit: BoxFit.cover,
@@ -50,7 +50,7 @@ class LoginCard extends StatelessWidget {
                     const Spacer(),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 10),
+                          horizontal: 8, vertical: 10,),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         color: Colors.white,
@@ -60,7 +60,7 @@ class LoginCard extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: Theme.of(context).extension<ThemeTextStyles>()!.accentM.copyWith(color: context.color.stroke_accent),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),

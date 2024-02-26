@@ -26,13 +26,13 @@ const _ssoCredential = {
     '1005830086',
     'P@ssw0rd',
     '0000',
-  )
+  ),
 };
 
 class Credential {
+
+  const Credential(this.username, this.password, this.otp);
   final String username;
   final String password;
   final String otp;
-
-  const Credential(this.username, this.password, this.otp);
 }

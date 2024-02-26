@@ -1,4 +1,3 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/stories/data/story_types.dart';
 import 'package:mapness/_features/stories/domain/frame/story_frame_action.dart';
@@ -39,7 +38,6 @@ extension NetworkStoryFrameMapper on NetworkStoryFrame {
       title: title,
       imageUrl: background.url,
       storyId: storyId,
-      subtitle: null,
       description: description,
       action: actionButton.toDomain(),
       duration: duration,

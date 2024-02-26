@@ -2,11 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart' show Shimmer;
 
 class ShimmerEffectWidget extends StatelessWidget {
-  final double height;
-  final double? width;
-  final double borderRadius;
-  final EdgeInsetsGeometry? margin;
-  final double? elevation;
   const ShimmerEffectWidget({
     super.key,
     this.height = 200.0,
@@ -15,6 +10,11 @@ class ShimmerEffectWidget extends StatelessWidget {
     this.margin,
     this.elevation,
   });
+  final double height;
+  final double? width;
+  final double borderRadius;
+  final EdgeInsetsGeometry? margin;
+  final double? elevation;
 
   @override
   Widget build(BuildContext context) {

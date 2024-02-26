@@ -5,7 +5,6 @@ import 'package:dio/io.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class WebServiceWeather {
-  final Dio dio;
 
   WebServiceWeather({required this.dio, required String baseUrl,}) {
 
@@ -24,8 +23,8 @@ class WebServiceWeather {
     dio.interceptors.add(PrettyDioLogger(
       responseBody: false,
       requestHeader: true,
-      requestBody: false,
-      responseHeader: true
-    ));
+      responseHeader: true,
+    ),);
   }
+  final Dio dio;
 }

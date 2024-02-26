@@ -10,9 +10,7 @@ import 'package:provider/provider.dart';
 
 class SuggestItem extends ConsumerWidget {
   const SuggestItem({
-    super.key,
-    required this.suggest,
-    required this.onObjectTap,
+    required this.suggest, required this.onObjectTap, super.key,
   });
 
   final SuggestMessage suggest;

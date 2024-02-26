@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class IwishTextEditingField extends StatefulWidget {
-  final void Function(String) onChanged;
-  final String? initialValue;
 
   const IwishTextEditingField({
-    super.key,
-    required this.onChanged,
+    required this.onChanged, super.key,
     this.initialValue,
   });
+  final void Function(String) onChanged;
+  final String? initialValue;
 
   @override
   State<IwishTextEditingField> createState() => _IwishTextEditingFieldState();

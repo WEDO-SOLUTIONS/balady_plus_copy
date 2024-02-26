@@ -1,10 +1,6 @@
 import 'package:dgis_map/library.dart';
 
 class RouteParamsPoint {
-  final double latitude;
-  final double longitude;
-  final int? objectId;
-  final int? entraceId;
 
   RouteParamsPoint({
     required this.latitude,
@@ -12,6 +8,10 @@ class RouteParamsPoint {
     this.objectId,
     this.entraceId,
   });
+  final double latitude;
+  final double longitude;
+  final int? objectId;
+  final int? entraceId;
 }
 
 extension GeoPoint on RouteParamsPoint {

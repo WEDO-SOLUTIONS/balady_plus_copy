@@ -1,21 +1,17 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'dart:math';
 
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:expansion_widget/expansion_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-
-import '../../../shared/config/package_config.dart';
 
 class ExpandableCell extends StatelessWidget {
   const ExpandableCell({
-    super.key,
-    required this.title,
+    required this.title, required this.icon, required this.content, super.key,
     this.subtitle,
     this.count,
-    required this.icon,
-    required this.content,
   });
 
   final String title;
@@ -27,7 +23,7 @@ class ExpandableCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: ExpansionWidget(
         titleBuilder:
             (animationValue, easeInValue, isExpanded, toggleFunction) {
@@ -65,7 +61,7 @@ class ExpandableCell extends StatelessWidget {
                       width: 12,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 2.0),
+                      padding: const EdgeInsets.only(bottom: 2),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -88,16 +84,16 @@ class ExpandableCell extends StatelessWidget {
                                   .textXS
                                   .copyWith(color: context.color.text_and_icons_base_primary),
                             ),
-                          ]
+                          ],
                         ],
                       ),
                     ),
                     const Spacer(),
                     if (count != null)
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 2.0),
+                        padding: const EdgeInsets.only(bottom: 2),
                         child: Text(
-                          "$count",
+                          '$count',
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
                               .textM
@@ -110,7 +106,7 @@ class ExpandableCell extends StatelessWidget {
                     Transform.rotate(
                       angle: pi * animationValue,
                       child: SvgPicture.asset(
-                        "assets/icons/svg/ic_chevron_down.svg",
+                        'assets/icons/svg/ic_chevron_down.svg',
                         height: 24,
                         width: 24,
                         package: PackageConfig.packageName,

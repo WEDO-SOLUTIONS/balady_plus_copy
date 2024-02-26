@@ -4,14 +4,12 @@ import 'package:mapness/entities/path_nav/models/path_nav_eta.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PathNavContinueTrip extends StatelessWidget {
-  final PathNavEta? eta;
-  final VoidCallback onPressed;
 
   const PathNavContinueTrip({
-    super.key,
-    required this.onPressed,
-    required this.eta,
+    required this.onPressed, required this.eta, super.key,
   });
+  final PathNavEta? eta;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +63,7 @@ class PathNavContinueTrip extends StatelessWidget {
                         ),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),

@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:mapness/features/road_events/ui/widgets/closure_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-import 'widgets/closure_card.dart';
+import 'package:mapness/features/road_events/ui/widgets/closure_card.dart';
 
 // const _roadClosuresName = 'road-closures';
 
@@ -67,7 +67,7 @@ class _RoadClosurePageState extends ConsumerState<RoadClosurePage> {
           title: context.l10n.roadBlocking,
           description: widget.description,
           workDuration: _formatSchedule(widget.startTime, widget.finishTime),
-        )
+        ),
       ],
     );
   }
@@ -77,7 +77,7 @@ class _RoadClosurePageState extends ConsumerState<RoadClosurePage> {
       return null;
     }
 
-    String schedule = from.hour > 10
+    var schedule = from.hour > 10
         ? RoadClosurePage._dateFormat.format(from)
         : RoadClosurePage._dateFormatShort.format(from);
     if (to != null) {

@@ -35,52 +35,52 @@ class SsoUserInfo {
 
   String getFormattedBirthDate({bool withDash = false}) {
     if (dob != null) {
-      String formattedBirthDate = dob!;
+      final formattedBirthDate = dob!;
       //  formattedBirthDate = formattedBirthDate.replaceAll("-", "/");
-      String birthDate = "";
+      var birthDate = '';
       if (withDash) {
-        birthDate = formattedBirthDate.split("/").reversed.join("-");
+        birthDate = formattedBirthDate.split('/').reversed.join('-');
       } else {
-        birthDate = formattedBirthDate.split("/").reversed.join("/");
+        birthDate = formattedBirthDate.split('/').reversed.join('/');
       }
 
       return birthDate;
     }
-    return "";
+    return '';
   }
 
   String getFirstName() {
-    List<String> names = sname?.split(',') ?? [""];
+    final names = sname?.split(',') ?? [''];
 
     return names.first;
   }
 
   String getLastName() {
-    List<String> names = sname?.split(',') ?? [""];
+    final names = sname?.split(',') ?? [''];
 
     return names.last;
   }
 
   String getMiddleName() {
     try {
-      List<String> names = sname?.split(',') ?? [""];
+      final names = sname?.split(',') ?? [''];
 
       return names.elementAt(1);
     } catch (ex) {
-      return " ";
+      return ' ';
     }
   }
 
   String getThirdName() {
     try {
-      List<String> names = (sname ?? "").split(',');
+      final names = (sname ?? '').split(',');
       if (names.length >= 4) {
         return names.elementAt(2);
       }
     } catch (ex) {
-      return " ";
+      return ' ';
     }
-    return " ";
+    return ' ';
   }
 
   String getFirstAndLastName() {
@@ -89,10 +89,10 @@ class SsoUserInfo {
 
   String getIdType() {
     if (idNo != null) {
-      if (idNo?.startsWith("1") ?? false) {
-        return "1";
+      if (idNo?.startsWith('1') ?? false) {
+        return '1';
       } else {
-        return "3";
+        return '3';
       }
 
 // هوية وطنيه ١
@@ -100,15 +100,15 @@ class SsoUserInfo {
 // رقم حدود ٩
 // هوية مقيم ٣
     }
-    return "";
+    return '';
   }
 
   String getIdTypeName() {
     if (idType != null) {
-      if (idType?.startsWith("1") ?? false) {
-        return "هوية وطنية";
+      if (idType?.startsWith('1') ?? false) {
+        return 'هوية وطنية';
       } else {
-        return "هوية مقيم";
+        return 'هوية مقيم';
       }
 
 // هوية وطنيه ١
@@ -116,22 +116,22 @@ class SsoUserInfo {
 // رقم حدود ٩
 // هوية مقيم ٣
     }
-    return "";
+    return '';
   }
 
   String getEmail() {
-    String email =
-        mail?.replaceAll("\u200e", '').replaceAll("\u200f", '').trim() ?? "";
+    final email =
+        mail?.replaceAll('\u200e', '').replaceAll('\u200f', '').trim() ?? '';
     return email;
   }
 
   String getPhone() {
     return phone != null
-        ? (!phone!.startsWith("0") ? "0${phone!}" : phone!)
-        : "";
+        ? (!phone!.startsWith('0') ? '0${phone!}' : phone!)
+        : '';
   }
 
   String getGender() {
-    return sex == "1" ? "male" : "female";
+    return sex == '1' ? 'male' : 'female';
   }
 }

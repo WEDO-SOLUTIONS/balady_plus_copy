@@ -10,7 +10,7 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 
-import 'places_horizontal_list.dart';
+import 'package:mapness/_features/landing/widgets/places_horizontal_list.dart';
 
 class InterestingPlacesCardsList extends ConsumerWidget {
   const InterestingPlacesCardsList({super.key});

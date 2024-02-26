@@ -7,11 +7,11 @@ import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class About extends StatefulWidget {
+
+  const About(this.data, {required this.onEntranceTap, super.key});
   final DirectoryObjectMessage? data;
 
   final Function() onEntranceTap;
-
-  const About(this.data, {super.key, required this.onEntranceTap});
 
   @override
   State<About> createState() => _AboutState();
@@ -33,7 +33,6 @@ class _AboutState extends State<About> {
     return CardContent(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
             data?.address?.buildingName ?? data?.title ?? '',
@@ -79,7 +78,7 @@ class _AboutState extends State<About> {
                 ),
               ),
             ),
-          ]
+          ],
         ],
       ),
     );

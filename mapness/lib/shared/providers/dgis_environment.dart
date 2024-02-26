@@ -1,7 +1,7 @@
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import 'hive.dart';
+import 'package:mapness/shared/providers/hive.dart';
 
 part 'dgis_environment.g.dart';
 
@@ -21,11 +21,11 @@ class DgisEnvironment extends _$DgisEnvironment {
 
     final env = _env ??
         switch (envType) {
-          "dev" => DgisEnv.urbiDev,
-          "stg" => DgisEnv.momrahStaging,
-          "pre" => DgisEnv.urbiPreprod,
-          "prod" => DgisEnv.momrahProd,
-          "urbiPre" => DgisEnv.urbiPreprod,
+          'dev' => DgisEnv.urbiDev,
+          'stg' => DgisEnv.momrahStaging,
+          'pre' => DgisEnv.urbiPreprod,
+          'prod' => DgisEnv.momrahProd,
+          'urbiPre' => DgisEnv.urbiPreprod,
           _ => DgisEnv.urbiPreprod,
         };
     return env.getConfig();

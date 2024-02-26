@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 List<TextSpan> buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
-  List<TextSpan> parts = [];
+  final parts = <TextSpan>[];
   final matchedParts =
       suggest.title.matchedParts.whereType<MarkedUpTextSpanMessage>().toList();
 
@@ -16,11 +16,11 @@ List<TextSpan> buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
             .extension<ThemeTextStyles>()!
             .textM
             .copyWith(color: context.color.text_and_icons_base_tertiary),
-      )
+      ),
     ];
   }
 
-  bool markupValid = true;
+  var markupValid = true;
   for (final matchedPart in matchedParts) {
     if (matchedPart.offset >= suggest.title.text.length ||
         matchedPart.offset + matchedPart.length > suggest.title.text.length) {
@@ -36,7 +36,7 @@ List<TextSpan> buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
             .extension<ThemeTextStyles>()!
             .textM
             .copyWith(color: context.color.text_and_icons_base_tertiary),
-      )
+      ),
     ];
   }
 

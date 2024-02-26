@@ -6,7 +6,7 @@ import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/map_requests_params.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../domain/point_layers_data.dart';
+import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
 
 part 'layers_details.g.dart';
 
@@ -21,8 +21,8 @@ class LayersDetails extends _$LayersDetails {
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
     final env = await ref.read(dgisEnvironmentProvider.future);
 
-    var layerType = layerData.layerType;
-    var requestParams = MapRequestParams(
+    final layerType = layerData.layerType;
+    final requestParams = MapRequestParams(
       layer: layerType,
       domain: env.url,
       proxy: env.proxy,

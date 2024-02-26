@@ -55,10 +55,10 @@ class SigninScreen extends ConsumerWidget {
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
                       .textM
-                      .apply(color: Colors.white)),
+                      .apply(color: Colors.white),),
               const SizedBox(height: 16),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints.expand(height: 48),
                   child: LabeledElevatedButton(
@@ -74,7 +74,7 @@ class SigninScreen extends ConsumerWidget {
                 ),
               ),
             ],
-          ))),
+          ),),),
         ],
       ),
     );
@@ -98,9 +98,9 @@ class SigninScreen extends ConsumerWidget {
               ),
               color: context.color.text_and_icons_base_primary.withOpacity(0.05),
             ),
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8),
             child: SvgPicture.asset(
-              "assets/icons/svg/ic_search_close.svg",
+              'assets/icons/svg/ic_search_close.svg',
               semanticsLabel: 'MinApps Screen',
               package: PackageConfig.packageName,
               color: Colors.white,

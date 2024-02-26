@@ -8,9 +8,9 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/expandable_widget/expandable_widget.dart';
 
 class OpeningHours extends StatefulWidget {
-  final OpeningHoursModel? model;
 
   const OpeningHours(this.model, {super.key});
+  final OpeningHoursModel? model;
 
   @override
   State<OpeningHours> createState() => _OpeningHoursState();
@@ -37,7 +37,7 @@ class _OpeningHoursState extends State<OpeningHours> {
   }
 
   List<Widget>? convertWeekTimeInterval(
-      BuildContext context, List<OpenHours>? openingHours) {
+      BuildContext context, List<OpenHours>? openingHours,) {
     return openingHours?.map((e) {
       final weekDay = e.weekDay;
 
@@ -46,18 +46,14 @@ class _OpeningHoursState extends State<OpeningHours> {
           .textM
           .copyWith(color: context.color.text_and_icons_base_primary);
       return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
-            flex: 1,
             child: Text(
               weekDay,
               style: textStyle,
             ),
           ),
           Expanded(
-            flex: 1,
             child: e.isWeekend
                 ? Text(
                     context.l10n.weekend,
@@ -81,11 +77,11 @@ class _OpeningHoursState extends State<OpeningHours> {
     final todayOpeningInfo = widget.model?.getTodayOpeningInfo(context.l10n);
     final isWeekend = todayOpeningInfo?.isWeekend ?? false;
 
-    var fontStyle = Theme.of(context)
+    final fontStyle = Theme.of(context)
         .extension<ThemeTextStyles>()!
         .textM
         .copyWith(color: context.color.text_and_icons_base_primary);
-    var widgets = convertWeekTimeInterval(context, openingHours);
+    final widgets = convertWeekTimeInterval(context, openingHours);
 
     return is24x7 || isOpenSameTime
         ? CardContent(child: _buildTitle())
@@ -120,7 +116,7 @@ class _OpeningHoursState extends State<OpeningHours> {
 
     final openHours = widget.model?.openingHours?.first;
 
-    print("_buildTitle $openHours");
+    print('_buildTitle $openHours');
 
     return Row(
       children: [
@@ -133,7 +129,7 @@ class _OpeningHoursState extends State<OpeningHours> {
           Text(openHours!.openHour!, style: style),
           Text(' - ', style: style),
           Text(openHours.closeHour!, style: style),
-        ]
+        ],
       ],
     );
   }
