@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
+import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import 'package:balady_plus/app/features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
@@ -16,9 +17,9 @@ class ActionShowFilterWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     context.read<DelegatorsCubit>().getDelegators();
     context.read<DelegatorsCubit>().getAgents();
+    DashboardBloc bloc = BlocProvider.of<DashboardBloc>(context);
     return IconButton(
       onPressed: () async {
-
         if (CommonProperties.isLoggedIn) {
           await BottomSheetDialog.showDraggableSheet(
             context,
@@ -28,7 +29,7 @@ class ActionShowFilterWidget extends StatelessWidget {
               delegatorsCubit: context.read<DelegatorsCubit>(),
             ),
           );
-          BlocProvider.of<DashboardBloc>(context).add(DashboardEventInitial());
+          bloc.add(DashboardEventInitial());
         } else {
           showDialog(
             context: context,
@@ -45,14 +46,14 @@ class ActionShowFilterWidget extends StatelessWidget {
                       delegatorsCubit: context.read<DelegatorsCubit>(),
                     ),
                   );
-                  BlocProvider.of<DashboardBloc>(context).add(DashboardEventInitial());
+                  bloc.add(DashboardEventInitial());
                 }
               },
             ),
           );
         }
       },
-      icon: SvgPicture.asset("assets/icons/svg/refresh.svg"),
+      icon: SvgPicture.asset(IconPath.users03),
     );
   }
 

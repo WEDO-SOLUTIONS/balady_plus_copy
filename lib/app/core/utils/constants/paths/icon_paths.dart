@@ -433,6 +433,11 @@ class IconPath {
   static const bookIcon = '${_svgIconPath}book$_svg';
 
 
+  static const users03 = '${_svgIconPath}users_03$_svg';
+  static const dotsVertical = '${_svgIconPath}dots_vertical$_svg';
+  static const trash01 = '${_svgIconPath}trash_01$_svg';
+  static const check = '${_svgIconPath}check$_svg';
+
 
 }
 
