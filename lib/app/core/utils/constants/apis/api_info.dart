@@ -786,6 +786,13 @@ class ApiUrl {
       '/v1/balady-commercial-services/licenses/$licenseNumber/by-unn/$unifiedFacilityNumber';
 
 
+  //Noification APIS
+
+
+  static String updateNotificationSettings() =>
+      '/v1/balady-commercial-services/licenses';
+
+
 
   //! Balady Calednar
 
