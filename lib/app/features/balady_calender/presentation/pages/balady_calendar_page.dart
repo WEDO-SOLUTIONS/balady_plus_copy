@@ -61,6 +61,7 @@ class BaladyCalendarPage extends StatelessWidget {
                 const SizedBox(height: 8),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     InkWell(
                       onTap: () => Navigator.pop(context),
@@ -68,16 +69,18 @@ class BaladyCalendarPage extends StatelessWidget {
                         icon: Icons.close,
                         iconColor: AppColor.primary600Light,
                         backgroundColor: AppColor.geyser.withOpacity(0.5),
-                        iconSize: 18,
+                        iconSize: 15,
+                        circleSize: 40,
                       ),
                     ),
                     const SizedBox(width: 8),
                     Flexible(
                       fit: FlexFit.tight,
-                      child: CustomTextWidget(
+                      child: Text(
                         "balady_calendar".tr(),
-                        textStyle: AppStyle.appBarTitleTextStyle.copyWith(
+                        style: AppStyle.appBarTitleTextStyle.copyWith(
                           fontWeight: FontWeight.w900,
+                          fontSize: 16
                         ),
                       ),
                     ),
