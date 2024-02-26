@@ -4212,6 +4212,18 @@
   "opentomrrow": "Open tomorrow. ",
   "cannot_open_google": "Can't open google map",
   "close_status": "Closed",
-  "crNumbers": "Commercial registry number"
+  "crNumbers": "Commercial registry number",
+
+
+  "balady_calendar_hijri": "hijri",
+  "balady_calendar_gregorian": "gregorian",
+  "balady_calendar": "Balady Calendar",
+  "show": "show",
+  "filter_calendar": "Calendar filter",
+  "calendar_type": "Calendar type",
+  "no_events": "Sorry, there are no events now",
+  "calendar_type_appmt":"Appointment",
+  "calendar_type_invoice":"Invoice not paid"
+
 
 }
