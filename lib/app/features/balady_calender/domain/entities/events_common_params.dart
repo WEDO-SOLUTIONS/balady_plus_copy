@@ -3,11 +3,14 @@ import 'dart:convert';
 String eventsCountInyearsParamsToJson(EventsCommonParams data) =>
     json.encode(data.toJson());
 
+enum UserType {owner,delegator,agency}
+
 class EventsCommonParams {
+  UserType typeUser;
   //////////////////////////////////////
   // Use This When User Selected
-  String? loginIdentityId;
-  String? loginIdentityType;
+  String? ownerNumber;
+  String? ownerTypeId;
 
   // Use This When Selecteded Delegator
   String? unifiedNationalNumber;
@@ -23,8 +26,9 @@ class EventsCommonParams {
   bool hijri;
 
   EventsCommonParams({
-    this.loginIdentityId,
-    this.loginIdentityType,
+    required this.typeUser,
+    this.ownerNumber,
+    this.ownerTypeId,
     this.unifiedNationalNumber,
     this.relationTypeeId,
     this.filterationEntity,
@@ -40,21 +44,24 @@ class EventsCommonParams {
     List<String>? filterationEntity,
     AgencyInRequestDto? agencyInRequestDto,
     bool? hijri,
+    UserType? typeUser,
   }) =>
       EventsCommonParams(
-        loginIdentityId: loginIdentityId ?? this.loginIdentityId,
-        loginIdentityType: loginIdentityType ?? this.loginIdentityType,
+        ownerNumber: loginIdentityId ?? this.ownerNumber,
+        ownerTypeId: loginIdentityType ?? this.ownerTypeId,
         unifiedNationalNumber:
             unifiedNationalNumber ?? this.unifiedNationalNumber,
         relationTypeeId: relationTypeeId ?? this.relationTypeeId,
         filterationEntity: filterationEntity ?? this.filterationEntity,
         agencyInRequestDto: agencyInRequestDto ?? this.agencyInRequestDto,
         hijri: hijri ?? this.hijri,
+        typeUser: typeUser ?? this.typeUser,
       );
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> data = {
       "hijri": hijri,
+      "type": typeUser.index,
     };
     if (filterationEntity?.isNotEmpty ?? false) {
       data["filterationEntity"] = List<dynamic>.from(
@@ -62,19 +69,21 @@ class EventsCommonParams {
       );
     }
     if (agencyInRequestDto != null) {
-      data["agencyInRequestDto"] = agencyInRequestDto!.toJson();
+      data["agencyNumber"] = agencyInRequestDto!.agencyNumber;
+      data["ownerNumber"] = agencyInRequestDto!.ownerNumber;
+      data["ownerTypeId"] = agencyInRequestDto!.ownerTypeId;
     } else {
-      if (loginIdentityId != null) {
-        data["loginIdentityId"] = loginIdentityId;
+      if (ownerNumber != null) {
+        data["ownerNumber"] = ownerNumber;
       }
-      if (loginIdentityType != null) {
-        data["loginIdentityType"] = loginIdentityType;
+      if (ownerTypeId != null) {
+        data["ownerTypeId"] = ownerTypeId;
       }
       if (unifiedNationalNumber != null) {
         data["unifiedNationalNumber"] = unifiedNationalNumber;
       }
       if (relationTypeeId != null) {
-        data["relationTypeeId"] = relationTypeeId;
+        data["relationTypeId"] = relationTypeeId;
       }
     }
     return data;
