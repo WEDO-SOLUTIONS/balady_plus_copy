@@ -7,6 +7,11 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
 
+import '../../../../etmam_app/core/dependency_injection/injection_container.dart';
+import '../../../features/_shared_feature_/data/entities/device_details.dart';
+import '../../../features/_shared_feature_/data/entities/package_details.dart';
+import '../../../features/notifications/Data/model/notification_request.dart';
+import '../../../features/notifications/manager/notification_manager.dart';
 import 'navigation_services.dart';
 
 /// A notification action which triggers a App navigation event
@@ -141,7 +146,27 @@ class NotificationService {
     );
 
     FirebaseMessaging.instance.getToken().then((value) {
-      if (value != null && value.isNotEmpty) CommonProperties.fcmToken = value;
+      if (value != null && value.isNotEmpty) {
+        CommonProperties.fcmToken = value;
+
+        NotificationManager manager = sl();
+
+
+        DeviceDetails details = sl();
+        Device device = Device();
+        device.typeId = GeneralKey.typeId;
+        device.id = details.deviceId;
+        device.osTypeId = details.deviceOs;
+
+        PackageDetails info =  sl();
+        NotificationRequest request = NotificationRequest();
+        request.fcmToken = value;
+        request.appId = GeneralKey.appId;
+        request.device = device;
+        request.appVersion = info.version;
+        manager.updateNotificationSettings(request);
+      }
+
     });
     // FirebaseMessaging.instance.subscribeToTopic("all").then((value) {});
     FirebaseMessaging.instance
@@ -150,18 +175,18 @@ class NotificationService {
       if (message != null) {}
     });
 
-    showNotification(Map<String, dynamic> msg) {
-      var androidNotification = AndroidNotificationDetails(
-        'channelId',
-        'channelName',
-      );
-      DarwinNotificationDetails iOSPlatformChannelSpecifics =
-          DarwinNotificationDetails();
-      var notificationDetails = NotificationDetails(
-          android: androidNotification, iOS: iOSPlatformChannelSpecifics);
-      _notifications.show(0, msg['notification']['title'],
-          msg['notification']['body'], notificationDetails);
-    }
+    // showNotification(Map<String, dynamic> msg) {
+    //   var androidNotification = AndroidNotificationDetails(
+    //     'channelId',
+    //     'channelName',
+    //   );
+    //   DarwinNotificationDetails iOSPlatformChannelSpecifics =
+    //       DarwinNotificationDetails();
+    //   var notificationDetails = NotificationDetails(
+    //       android: androidNotification, iOS: iOSPlatformChannelSpecifics);
+    //   _notifications.show(0, msg['notification']['title'],
+    //       msg['notification']['body'], notificationDetails);
+    // }
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
