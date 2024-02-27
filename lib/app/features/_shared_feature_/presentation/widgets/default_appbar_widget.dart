@@ -14,8 +14,9 @@ class DefaultAppBarWidget extends StatelessWidget
   final Widget? flexibleSpace;
   final VoidCallback? onBack;
   final bool showBack;
+  Widget? titleWidget;
 
-  const DefaultAppBarWidget(
+   DefaultAppBarWidget(
       {super.key,
       this.title,
       this.bottom,
@@ -23,7 +24,9 @@ class DefaultAppBarWidget extends StatelessWidget
       this.showBack = true,
       this.x = false,
       this.onBack,
-      this.flexibleSpace});
+      this.flexibleSpace,
+      this.titleWidget
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +49,9 @@ class DefaultAppBarWidget extends StatelessWidget
           : null,
       titleSpacing: Navigator.canPop(context) ? 0 : 16,
       centerTitle: false,
-      title: CustomTextWidget(
+      title:
+      titleWidget??
+      CustomTextWidget(
         title ?? "",
         fontSize: 20,
         maxLines: 3,
