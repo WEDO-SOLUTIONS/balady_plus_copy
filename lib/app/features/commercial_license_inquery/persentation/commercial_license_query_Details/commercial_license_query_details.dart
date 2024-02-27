@@ -377,10 +377,12 @@ String? commercialLicenseNumber;
                     onPress: () async{
                       try {
                         String url = commercialLicenceQueryDetails.website!;
-                        if(url.contains("https")==false)
+                        if(url.contains("https")==false || url.contains("http")==false)
                           {
                             url = "https://$url";
                           }
+
+
                         await launchUrl(Uri.parse(url));
                       } catch (ex) {
 
