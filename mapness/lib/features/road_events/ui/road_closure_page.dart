@@ -1,10 +1,14 @@
 // ignore_for_file: prefer_expression_function_bodies
 
+import 'dart:async';
+
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:mapness/features/road_events/ui/widgets/closure_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 
 import 'package:mapness/features/road_events/ui/widgets/closure_card.dart';
 
@@ -12,6 +16,7 @@ import 'package:mapness/features/road_events/ui/widgets/closure_card.dart';
 
 class RoadClosurePage extends ConsumerStatefulWidget {
   const RoadClosurePage({
+    required this.id,
     required this.title,
     required this.description,
     required this.startTime,
@@ -21,6 +26,7 @@ class RoadClosurePage extends ConsumerStatefulWidget {
     super.key,
   });
 
+  final DgisObjectId id;
   final String title;
   final String description;
   final DateTime? startTime;
@@ -37,26 +43,37 @@ class RoadClosurePage extends ConsumerStatefulWidget {
 
 class _RoadClosurePageState extends ConsumerState<RoadClosurePage> {
   @override
-  Widget build(BuildContext context) {
-    // TODO(@scroollocker): Remove comment when pin will be fixed by gis style
-    // ref.watch(
-    //   mapObjectManagerProvider(named: _roadClosuresName),
-    // );
-    // ref.read(mapObjectManagerProvider(named: _roadClosuresName).notifier)
-    //   ..removeAllMarkers()
-    //   ..addMarker(
-    //     Markers.pinMarker(
-    //       GeoPointWithElevationMessage(
-    //         latitude: widget.latitude,
-    //         longitude: widget.longitude,
-    //         elevation: 0,
-    //       ),
-    //       id: 'closure-${widget.latitude}-${widget.longitude}',
-    //       width: 48,
-    //       icon: 'packages/mapness/assets/icons/svg/ic_map_closure.svg',
-    //     ),
-    //   );
+  void initState() {
+    super.initState();
+    unawaited(selectEvent());
+  }
 
+  @override
+  void activate() {
+    super.activate();
+    unawaited(selectEvent());
+  }
+
+  @override
+  void deactivate() {
+    unawaited(removeSelection());
+    super.deactivate();
+  }
+
+  Future<void> selectEvent() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    await dgisController.setHighlighted([
+      widget.id.toMessage(),
+    ]);
+  }
+
+  Future<void> removeSelection() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    await dgisController.setHighlighted([]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         const Expanded(
