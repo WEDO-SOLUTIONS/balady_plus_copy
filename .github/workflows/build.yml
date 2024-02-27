@@ -125,7 +125,7 @@ jobs:
 
       - name: 🤖🔨 Build Android app
         run: |
-          flutter build apk --target lib/main_urbi_pre.dart --dart-define=GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)" --dart-define=GIT_COMMIT="$(git --no-pager show -s --format='%s')" --dart-define=VENDOR_CONFIG=urbi-pre-prod
+          flutter --verbose build apk --target lib/main_urbi_pre.dart --dart-define=GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)" --dart-define=GIT_COMMIT="$(git --no-pager show -s --format='%s')" --dart-define=VENDOR_CONFIG=urbi-pre-prod
           mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-urbi-pre-prod.apk
           #flutter build apk --target lib/main_prod.dart --dart-define=GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)" --dart-define=GIT_COMMIT="$(git --no-pager show -s --format='%s')" --dart-define=VENDOR_CONFIG=momrah-prod
           #mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-momrah-prod.apk
