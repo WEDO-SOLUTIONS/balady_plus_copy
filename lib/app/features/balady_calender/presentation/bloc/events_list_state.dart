@@ -30,11 +30,10 @@ final class FailureEventsListState extends EventsListState {
 final class SucceedEventsListState extends EventsListState {
   final Map<int, List<CalendarEventItem>> event;
   final List<MonthsEventsCount> listMonths;
-
   SucceedEventsListState({required this.event, required this.listMonths});
 
   @override
-  List<Object?> get props => [event, listMonths];
+  List<Object?> get props => [event, listMonths,listMonths.length];
 }
 
 // final class SucceedWithLoadingEventsListState extends SucceedEventsListState {
@@ -49,12 +48,13 @@ final class SucceedEventsListState extends EventsListState {
 // }
 
 final class SucceedWithPaginationEventsListState extends SucceedEventsListState {
-  SucceedWithPaginationEventsListState({required event, required listMonths})
+
+  // to get new state
+  final int page;
+
+  SucceedWithPaginationEventsListState({required this.page,required event, required listMonths})
       : super(event: event, listMonths: listMonths);
 
   @override
-  List<Object?> get props => [
-        event,
-        listMonths,
-      ];
+  List<Object?> get props => [page,event.length,listMonths,listMonths.length];
 }
