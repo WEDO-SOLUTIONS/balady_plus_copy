@@ -43,7 +43,7 @@ class CalendarTypePopup extends StatelessWidget {
             activeColor: AppColor.primary600Light,
             controlAffinity: ListTileControlAffinity.trailing,
             title: Text(
-              'gregorian'.tr(),
+              'balady_calendar_gregorian'.tr(),
               style: AppStyle.pickerStyle.copyWith(fontWeight: FontWeight.w700),
             ),
             value: 1,
@@ -63,7 +63,7 @@ class CalendarTypePopup extends StatelessWidget {
             activeColor: AppColor.primary600Light,
             controlAffinity: ListTileControlAffinity.trailing,
             title: Text(
-              'hijri'.tr(),
+              'balady_calendar_hijri'.tr(),
               style: AppStyle.pickerStyle.copyWith(fontWeight: FontWeight.w700),
             ), // Display the title for option true
             // Display a subtitle for option 2
