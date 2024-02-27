@@ -18,13 +18,13 @@ class _BaladyServicesPageState extends State<BaladyServicesPage> {
           child: Column(children: [
         //!     Home Cards
         // Saudi Calendar
-        const CalendarHomeCard(),
+        //  const CalendarHomeCard(),
         const SizedBox(
           height: 32,
         ),
 
         // Events Home Card
-        const EventsHomeCard(),
+        //   const EventsHomeCard(),
 
         // Prayers Card
         const PrayerHomeCard(),
