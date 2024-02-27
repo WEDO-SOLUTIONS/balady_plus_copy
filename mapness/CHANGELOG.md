@@ -1,4 +1,7 @@
-## 3.9.0(4) - Current
+## 3.9.2(1) - Current
+
+
+## 3.9.0(4)
 - BALADY-1377 [Profile] change Help Center Contact Info Email
 - BALADY-1318 [Marketing][Navi] wrong ETA label direction
 - BALADY-1379 [Navi] add function to create route to the point B for 42
@@ -9,7 +12,7 @@
 - BALADY-951: [UIkit] Components Library - Layouting
 - BALADY-941: [UIkit] Components Library - Icons
 
-## 3.9.0(1) - Current
+## 3.9.0(1)
 
 - BALADY-1325 [Marketing] no action happen when click on show more in feedback for a location
 - BALADY-1294 [Marketing] wrong switching between layers behavior
