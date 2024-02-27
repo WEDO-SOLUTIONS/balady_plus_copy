@@ -3935,7 +3935,11 @@
   "extra_isicName": "اسم النشاط الآيزيك الإضافي",
   "cannot_open_google": "الرجاء التاكد من وجود تطبيق جوجل ماب",
   "close_status": "مغلق",
-  "crNumbers": "رقم الرخصة"
+  "crNumbers": "رقم الرخصة",
 
+
+
+  "balady_calendar_hijri": "هجري",
+  "balady_calendar_gregorian": "ميلادي"
 }
 
