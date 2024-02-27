@@ -30,7 +30,4 @@ export 'presentation/core/services/repository/appointment_repository.dart';
 export 'presentation/core/services/view_models/appontment_details_view_model.dart';
 export 'presentation/core/services/view_models/my_appointments_view_model.dart';
 
-/// presentation -> core -> services -> models
-export 'presentation/core/models/appointment_details_screen_args.dart';
-
 export 'presentation/dialogs/confirm_cancel_appointment_dialog.dart';

@@ -48,9 +48,7 @@ class _CommercialLicenseCancelScreenState
 
   @override
   Widget build(BuildContext context) {
-    CommercialLicenseCancelBloc bloc = ModalRoute.of(context)!
-        .settings
-        .arguments as CommercialLicenseCancelBloc;
+    Map data = ModalRoute.of(context)!.settings.arguments as Map;
     return WillPopScope(
       onWillPop: () async {
         if (currentPageValue < 0) {
@@ -69,7 +67,7 @@ class _CommercialLicenseCancelScreenState
             create: (BuildContext context) {
               return RequestAttachmentsViewModel(
                 webService: sl(),
-                requestId: bloc.requestId,
+                requestId: data['requestId'],
               );
             },
           ),
@@ -88,14 +86,21 @@ class _CommercialLicenseCancelScreenState
             //   create: (context) => CommercialLicenseCancelPagesBloc(),
             // ),
             BlocProvider(
-              create: (context) => bloc,
+              create: (context) => CommercialLicenseCancelBloc(
+                    webService: sl(),
+                    from: "request",
+                    crNumber: CommonProperties.selectedDelegator!.crNumber!,
+                    crType: CommonProperties.selectedDelegator!.crType,
+                    reasonCancel: data['reasonCancel'],
+                    requestId: data['requestId'],
+                    availableCloseDate: data['availableCloseDate']
+                  ),
             ),
           ],
           child: Column(
             children: [
               Expanded(
-                child: BlocListener<CommercialLicenseCancelBloc,
-                    CommercialLicenseCancelState>(
+                child: BlocListener<CommercialLicenseCancelBloc, CommercialLicenseCancelState>(
                   listener: (BuildContext context, state) {
                     if (state is CommercialLicenseCancelSucceededState) {
                       setState(() {
@@ -107,10 +112,9 @@ class _CommercialLicenseCancelScreenState
                       Navigator.of(context).popAndPushNamed(
                         RouteName.submitApplicationSuccessfullyCancel,
                         arguments: (
-                          bloc.from,
+                          data['from'],
                           state.submitResponse,
-                          bloc.saveCancellationReasonResponse!
-                              .calculatorResponse.totalCost,
+                          state.totalCost,
                         ),
                       );
                     }
@@ -136,7 +140,7 @@ class _CommercialLicenseCancelScreenState
                           }
                         },
                         onTapCloseAction: () => showBackDialog(),
-                        requestNum: bloc.requestId,
+                        requestNum: data['requestId'],
                       ),
                       body: PageView.builder(
                         itemCount: pagesList.length,
