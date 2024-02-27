@@ -821,6 +821,10 @@ class ObjectTapHandler {
         case .roadRestriction:
             eventChannel.success([
                 "event": Events.onRoadEventTap,
+                "dgisObjectId": [
+                    "objectId": event.id.objectId,
+                    "entranceId": event.id.entranceId,
+                ],
                 "title": event.event.name,
                 "description": event.event.description,
                 "startTime": (event.event.schedule?.startTime?.timeIntervalSince1970).map {
