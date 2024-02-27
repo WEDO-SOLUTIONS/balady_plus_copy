@@ -72,7 +72,13 @@ class ListItemsEventsWidget extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      DateFormat(' EEEE dd ',).format(event.eventDate!) + ((event.entityType ?? '') == ScreenTage.appmt.name ? event.metadata?.time ?? '' : ''),
+                      DateFormat(
+                            ' EEEE dd ',
+                            Localizations.localeOf(context).languageCode,
+                          ).format(event.eventDate!) +
+                          ((event.entityType ?? '') == ScreenTage.appmt.name
+                              ? event.metadata?.time ?? ''
+                              : ''),
                       style: AppStyle.signInFullTextStyle
                           .copyWith(fontWeight: FontWeight.w600),
                     ),
@@ -94,5 +100,4 @@ class ListItemsEventsWidget extends StatelessWidget {
       itemCount: listEvents.length,
     );
   }
-
 }

@@ -75,6 +75,7 @@ class EventsListCubit extends Cubit<EventsListState> {
           } else {
             emit(
               SucceedWithPaginationEventsListState(
+                page: params.page,
                 event: newMapEvents,
                 listMonths: listMonths,
               ),
