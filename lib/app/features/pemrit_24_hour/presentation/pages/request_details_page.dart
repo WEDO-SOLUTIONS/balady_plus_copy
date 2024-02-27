@@ -1,10 +1,8 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/posters/presentation/blocs/posters_license_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:collection/collection.dart';
 
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/ux_cam_events.dart';
@@ -44,10 +42,10 @@ class _PermitsReqeuestDetailsPageState
 
   @override
   Widget build(BuildContext context) {
-    int? detailsRequestNumber =
-        ModalRoute.of(context)!.settings.arguments as int?;
+    Map data =
+        ModalRoute.of(context)!.settings.arguments as Map;
     return BlocProvider(
-      create: (context) => Permit24LicenseBloc(requestId: detailsRequestNumber)
+      create: (context) => Permit24LicenseBloc(requestId: int.tryParse(data['requestNumber']))
         ..add(GetPermitRequestDetailsEvent()),
       child: BlocListener<Permit24LicenseBloc, Permit24LicenseState>(
         listener: (context, state) {},

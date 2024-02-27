@@ -279,12 +279,11 @@ class CustomPopUpsWidgets {
       )) ??
       false;
 
-  static Future<dynamic> showBottomSheet(
-    BuildContext context, {
-    required Widget child,
-    bool isFullHeight = true,
-    double? height,
-  }) async {
+  static Future<dynamic> showBottomSheet(BuildContext context,
+      {required Widget child,
+      bool isFullHeight = true,
+      double? height,
+      double? radius}) async {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenStatusBarHeight = MediaQuery.of(context).padding.top + 5;
     return (await showModalBottomSheet(
@@ -292,8 +291,9 @@ class CustomPopUpsWidgets {
           isDismissible: true,
           isScrollControlled: true,
           enableDrag: false,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)),
+          shape: RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.vertical(top: Radius.circular(radius ?? 10)),
           ),
           builder: (context) => SizedBox(
             // height: height ?? screenHeight * 0.90, // 90% from screenHeight
