@@ -60,11 +60,18 @@ open_built:
 build_pigeon:
     #!/bin/bash
     set -euo pipefail
-    cd urbi_map/dgis_map_platform_interface/
+
+    cd urbi_map
+    fvm flutter pub get
+    fvm dart run build_runner build --delete-conflicting-outputs || true
+
+    cd dgis_map_platform_interface/
+    fvm flutter pub get
+    fvm dart run build_runner build --delete-conflicting-outputs || true
 
     print_style '' 'yellow' '> build pigeons...'
-    # fvm flutter pub run pigeon --input pigeons/messages.dart
-    ./pigeon.sh
+    mkdir -p mkdir lib/src/pigeons/ ../dgis_map/android/src/main/kotlin/com/dgis/map/map_api/
+    fvm dart pub run pigeon --input pigeons/messages.dart
     print_style '' 'yellow' '< pigeons ready'
 
 run:
