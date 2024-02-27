@@ -36,7 +36,7 @@ class ActionShowFilterWidget extends StatelessWidget {
       child: Container(
         height: 50,
         width: 50,
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
           color: AppColor.lightGreen2.withOpacity(0.1),
           borderRadius: BorderRadius.circular(30.0),
