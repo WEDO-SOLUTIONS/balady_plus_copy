@@ -125,6 +125,15 @@ class PosterItemWidget extends StatelessWidget {
               ],
             ),
           ]),
+          const SizedBox(
+            height: 8,
+          ),
+          if (item?.discountPercentage != null)
+            FieldData(
+                title: "posters_percentage_discount".tr(),
+                subTitle: item?.discountPercentage != null
+                    ? item?.discountPercentage.toString() ?? ""
+                    : ""),
           AttachmentListWidget(
             attachments: item?.attachedDocuments ?? [],
             showDelete: false,
