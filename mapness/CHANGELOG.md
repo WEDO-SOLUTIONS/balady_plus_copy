@@ -1,5 +1,9 @@
 ## 3.9.2(1) - Current
 
+- BALADY-1412: Update SDK Version to 10.2.1
+- BALADY-1136: [Navi] street direction card localizationat
+- BALADY-765: [POI] Marker of location should be on the top of every layers
+- BALADY-1422: [Navi] Road restriction. Add selection State
 
 ## 3.9.0(4)
 - BALADY-1377 [Profile] change Help Center Contact Info Email
