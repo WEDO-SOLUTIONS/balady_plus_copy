@@ -89,6 +89,8 @@ jobs:
           java-version: "17.x"
           cache: "gradle"
         id: java
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
       - name: Add Android ABI filter
         run: |
           git apply .github/workflows/abi_filter.patch
