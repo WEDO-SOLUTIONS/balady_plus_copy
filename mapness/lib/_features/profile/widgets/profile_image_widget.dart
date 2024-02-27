@@ -1,12 +1,11 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:convert';
-
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/profile.dart';
 import 'package:mapness/shared/config/package_config.dart';
@@ -16,11 +15,13 @@ import '../providers/_index.dart';
 class ProfileImageWidget extends ConsumerWidget {
   const ProfileImageWidget({
     this.editable = false,
+    this.color,
     this.dimension = 96,
     super.key,
   });
 
   final bool editable;
+  final Color? color;
   final double dimension;
 
   Future<void> _onEdit(WidgetRef ref) async {
@@ -32,12 +33,12 @@ class ProfileImageWidget extends ConsumerWidget {
 
     final bytes = await image.readAsBytes();
 
-    Uint8List? croppedBytes = await ref
+    final Uint8List? croppedBytes = await ref
         .read(goRouterProvider)
         .push(const ImageEditorRoute().location, extra: bytes);
 
     if (croppedBytes != null) {
-      ref
+      await ref
           .read(profileImageProvider.notifier)
           .changeUserProfileImageByBytes(croppedBytes);
     }
@@ -55,8 +56,8 @@ class ProfileImageWidget extends ConsumerWidget {
           height: dimension,
           width: dimension,
           package: PackageConfig.packageName,
-          colorFilter: const ColorFilter.mode(
-            Color(0xff898e96),
+          colorFilter: ColorFilter.mode(
+            color ?? NonThemeColor.color40,
             BlendMode.srcIn,
           ),
         );
@@ -76,17 +77,12 @@ class ProfileImageWidget extends ConsumerWidget {
                   height: dimension,
                   width: dimension,
                   fit: BoxFit.cover,
-                  alignment: Alignment.center,
                 ),
               ),
             );
           },
-          error: (error, trace) {
-            return defaultImage;
-          },
-          loading: () {
-            return defaultImage;
-          },
+          error: (error, trace) => defaultImage,
+          loading: () => defaultImage,
         );
 
         return Stack(
@@ -106,7 +102,7 @@ class ProfileImageWidget extends ConsumerWidget {
             //       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             //       child: const Icon(
             //         Icons.edit,
-            //         color: Color(0xFF1E928F),
+            //         color: context.color.text_and_icons_status_accent,
             //       ),
             //     ),
             //   ),

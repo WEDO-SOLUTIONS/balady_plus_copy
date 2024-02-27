@@ -298,6 +298,7 @@ class Poster {
   final double? length;
   final double? width;
   final double? area;
+  final double? discountPercentage;
   final List<Attachment>? attachments;
 
   Poster({
@@ -308,6 +309,7 @@ class Poster {
     this.length,
     this.width,
     this.area,
+    this.discountPercentage,
     this.attachments,
   });
 
@@ -319,6 +321,7 @@ class Poster {
         length: json["length"]?.toDouble(),
         width: json["width"]?.toDouble(),
         area: json["area"]?.toDouble(),
+        discountPercentage: json["discountPercentage"]?.toDouble(),
         attachments: json["attachments"] == null
             ? []
             : List<Attachment>.from(
@@ -333,6 +336,7 @@ class Poster {
         "length": length,
         "width": width,
         "area": area,
+        "discountPercentage": discountPercentage,
         "attachments": attachments == null
             ? []
             : List<dynamic>.from(attachments!.map((x) => x.toJson())),

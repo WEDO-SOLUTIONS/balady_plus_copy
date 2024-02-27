@@ -19,29 +19,43 @@ class PoiMapRoute extends GoRouteData {
   final double? zoom;
   final double? bearing;
   final double? tilt;
+  final double? lat;
+  final double? lng;
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
-  const PoiMapRoute(
-      {required this.dgisObjectId, this.zoom, this.bearing, this.tilt});
+  const PoiMapRoute({
+    required this.dgisObjectId,
+    this.zoom,
+    this.bearing,
+    this.tilt,
+    this.lat,
+    this.lng,
+  });
 
   static void open(
-    BuildContext context,
+    GoRouter router,
     int dgisObjectId, {
     double? zoom,
     double? bearing,
     double? tilt,
+    LatLng? latLng,
   }) {
     final poiMapRoute = PoiMapRoute(
-        dgisObjectId: dgisObjectId, zoom: zoom, bearing: bearing, tilt: tilt);
-    final router = GoRouter.of(context);
+      dgisObjectId: dgisObjectId,
+      zoom: zoom,
+      bearing: bearing,
+      tilt: tilt,
+      lat: latLng?.latitude,
+      lng: latLng?.longitude,
+    );
+    // final router = GoRouter.of(context);
     final matches = router.routerDelegate.currentConfiguration.matches;
-    if(matches.last.matchedLocation.contains(IwishCardRoute.path) ||
-        matches.last.matchedLocation  == (PoiMapRoute.path))
-    {
-      poiMapRoute.pushReplacement(context);
+    if (matches.last.matchedLocation.contains(IwishCardRoute.path) ||
+        matches.last.matchedLocation == (PoiMapRoute.path)) {
+      router.pushReplacement(poiMapRoute.location);
     } else {
-      poiMapRoute.push(context);
+      router.push(poiMapRoute.location);
     }
   }
 
@@ -60,10 +74,16 @@ class PoiMapRoute extends GoRouteData {
         child: PoiCardWidget(
           key: const Key('POI CARD WIDGET'),
           cameraConfig: cameraConfig,
-          DgisObjectIdMessage(
+          objectId: DgisObjectIdMessage(
             objectId: dgisObjectId,
             entranceId: 0,
           ),
+          closestPoint: lat != null && lng != null
+              ? LatLng(
+                  latitude: lat!,
+                  longitude: lng!,
+                )
+              : null,
         ),
       );
 }

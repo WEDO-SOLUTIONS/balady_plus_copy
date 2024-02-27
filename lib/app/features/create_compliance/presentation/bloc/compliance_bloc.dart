@@ -585,6 +585,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     ComplinaceLookUpItem? selectedMainUsage = state.selectedMainUsage;
     ComplinaceLookUpItem? selectedSubUsage = state.selectedSubUsage;
     ComplinaceLookUpItem? selectedOwnerShip = state.selectedOwnerShip;
+    ComplinaceLookUpItem? selectedReciptType = state.selectedReciptType;
 
     int? submitterThrough = state.benificiaryTypeSelection;
     int? certificateBaseType = state.documentTypeSelection;
@@ -604,6 +605,13 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
           id: r?.ownershipDocInfoDto?.ownershipDocumentType,
           name: r?.ownershipDocInfoDto?.ownerShipDocTypeName);
     }
+
+    if (r?.ownershipDocInfoDto?.receiptTypeId != null) {
+      selectedReciptType = ComplinaceLookUpItem(
+          id: r?.ownershipDocInfoDto?.receiptTypeId,
+          name: r?.ownershipDocInfoDto?.receiptTypeDesc);
+    }
+
     if (r?.mainUsageCode != null && r?.mainUsageName != null) {
       add(GetSubUsagesEvent(item: selectedMainUsage, clearSub: false));
     }
@@ -626,6 +634,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
         isDraft: true,
         currentStep: 3,
         requestId: requestId,
+        selectedReciptType: Nullable(selectedReciptType),
         contactMobileVerified: Nullable(true),
         selectedOwnerShip: Nullable(selectedOwnerShip),
         ownershipText:

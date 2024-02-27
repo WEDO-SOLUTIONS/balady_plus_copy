@@ -28,19 +28,23 @@ class BaladyCalendarPage extends StatelessWidget {
         EventsCommonParams eventsCommonParams() {
           if (selectedAgent != null) {
             return EventsCommonParams(
-                agencyInRequestDto: AgencyInRequestDto(
-                    agencyNumber: selectedAgent.agencyNumber!,
-                    ownerNumber: selectedAgent.ownerNumber!,
-                    ownerTypeId: selectedAgent.ownerTypeId!));
+              typeUser: UserType.agency,
+              agencyInRequestDto: AgencyInRequestDto(
+                agencyNumber: selectedAgent.agencyNumber!,
+                ownerNumber: selectedAgent.ownerNumber!,
+                ownerTypeId: selectedAgent.ownerTypeId!,
+              ),
+            );
           } else if (selectedDelegator != null) {
             return EventsCommonParams(
-                unifiedNationalNumber: selectedDelegator.unifiedNationalNumber!,
-                relationTypeeId:
-                    int.tryParse(selectedDelegator.relationTypeId));
+              typeUser: UserType.delegator,
+              ownerNumber: selectedDelegator.crNumber,
+              ownerTypeId: selectedDelegator.crType,
+              unifiedNationalNumber: selectedDelegator.unifiedNationalNumber!,
+              relationTypeeId: int.tryParse(selectedDelegator.relationTypeId),
+            );
           } else {
-            return EventsCommonParams(
-                loginIdentityId: selectedDelegator?.crNumber,
-                loginIdentityType: selectedDelegator?.crType);
+            return EventsCommonParams(typeUser: UserType.owner);
           }
         }
 
@@ -54,7 +58,10 @@ class BaladyCalendarPage extends StatelessWidget {
             child: Column(
               children: [
                 // AppBar
+                const SizedBox(height: 8),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     InkWell(
                       onTap: () => Navigator.pop(context),
@@ -62,18 +69,23 @@ class BaladyCalendarPage extends StatelessWidget {
                         icon: Icons.close,
                         iconColor: AppColor.primary600Light,
                         backgroundColor: AppColor.geyser.withOpacity(0.5),
-                        iconSize: 18,
+                        iconSize: 15,
+                        circleSize: 40,
                       ),
                     ),
-                    const SizedBox(width: 15),
-                    CustomTextWidget(
-                      "balady_calendar".tr(),
-                      textStyle: AppStyle.appBarTitleTextStyle
-                          .copyWith(fontWeight: FontWeight.w900),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      fit: FlexFit.tight,
+                      child: Text(
+                        "balady_calendar".tr(),
+                        style: AppStyle.appBarTitleTextStyle.copyWith(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 16
+                        ),
+                      ),
                     ),
-                    const Spacer(),
                     const ActionShowTypeDateWidget(),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 4),
                     const ActionShowFilterWidget(),
                   ],
                 ),
@@ -127,7 +139,9 @@ class BaladyCalendarPage extends StatelessWidget {
                                   SvgPicture.asset(
                                     IconPath.noEvents,
                                   ),
-                                  SizedBox(height: 10,),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
                                   Text('no_events'.tr())
                                 ],
                               ),

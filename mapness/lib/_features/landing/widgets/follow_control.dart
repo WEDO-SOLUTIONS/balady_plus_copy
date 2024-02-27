@@ -1,8 +1,8 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/shared/providers/map/bearing_state.dart';
 import 'package:mapness/shared/providers/map/follow_state.dart';
 
 import '../../../shared/ui/buttons/map_button.dart';
@@ -20,27 +20,14 @@ class FollowControl extends ConsumerWidget {
     final followState = ref.watch(followStateProvider);
     final followNotifier = ref.watch(followStateProvider.notifier);
     final iconColor = followState.type != LocationFollowType.off
-        ? const Color(0xFF7D9CBD)
+        ? NonThemeColor.color30
         : Colors.black;
 
     return AnimatedOpacity(
       opacity: followState.enabled ? 1 : 1, // fix
       duration: const Duration(milliseconds: 250),
       child: MapButton(
-        onTap: () {
-          switch (followState.type) {
-            case LocationFollowType.followDirection:
-              ref.watch(bearingStateProvider.notifier).onCompassTap();
-            case LocationFollowType.followPosition:
-              followNotifier.setFollowState(FollowStateMessage.followDirection);
-            case LocationFollowType.off:
-              followNotifier.setFollowState(
-                onlyFollowDirection
-                    ? FollowStateMessage.followDirection
-                    : FollowStateMessage.followPosition,
-              );
-          }
-        },
+        onTap: followNotifier.toggleFollowState,
         child: SvgPicture.asset(
           'assets/icons/svg/ic_control_location.svg',
           semanticsLabel: 'MinApps Screen',

@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,7 +16,7 @@ class PathNavSpeedInfoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const red = Color(0xffE91C21);
+    const red = NonThemeColor.color59;
     return Material(
       color: Colors.transparent,
       child: SizedBox(

@@ -6,6 +6,7 @@ import 'package:mapness/_features/stories/presentation/frame/frame_action_button
 import 'package:mapness/_features/stories/presentation/frame/frame_progress_indicator.dart';
 import 'package:mapness/_features/stories/presentation/frame/story_frame_content.dart';
 import 'package:mapness/_features/stories/presentation/frame/story_frame_controller.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class StoryFrameWidget extends StatefulWidget {
   final StoryFrameData frame;
@@ -148,7 +149,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                 imageUrl: widget.frame.imageUrl,
                 fit: BoxFit.cover,
                 loadingWidget: Container(
-                  color: const Color(0xFFE9E9E9),
+                  color: context.color.surface_base_primary,
                   child: const Center(
                     child: CircularProgressIndicator(
                       color: Colors.black,

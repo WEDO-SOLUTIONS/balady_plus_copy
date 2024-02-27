@@ -1,6 +1,5 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/mvvm/balady_calendar_years_list_view_model.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/widgets/calendar_filter_popup.dart';
@@ -35,14 +34,16 @@ class ActionShowFilterWidget extends StatelessWidget {
         }
       },
       child: Container(
-        height: 60,
-        width: 60,
-        padding: const EdgeInsets.all(20),
+        height: 50,
+        width: 50,
+        padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
           color: AppColor.lightGreen2.withOpacity(0.1),
           borderRadius: BorderRadius.circular(30.0),
         ),
-        child: SvgPicture.asset(IconPath.filterCalendar),
+        child: SvgPicture.asset(
+          IconPath.filterCalendar,
+        ),
       ),
     );
   }

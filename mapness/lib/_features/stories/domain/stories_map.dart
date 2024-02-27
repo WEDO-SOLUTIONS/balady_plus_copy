@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/stories/domain/frame/story_frame_action.dart';
 import 'package:mapness/_features/stories/domain/frame/story_frame_data.dart';
@@ -28,7 +29,7 @@ class StoriesMap {
               deeplinkUrl: 'next',
               action: StoryAction.next,
               title: 'Next',
-              backgroundColor: const Color(0xff1961C7),
+              backgroundColor: NonThemeColor.color29,
               textStyle: StoryTextStyle(
                 color: Colors.white,
               ),
@@ -47,7 +48,7 @@ class StoriesMap {
               deeplinkUrl: 'next',
               action: StoryAction.next,
               title: 'Next',
-              backgroundColor: const Color(0xff1961C7),
+              backgroundColor: NonThemeColor.color29,
               textStyle: StoryTextStyle(
                 color: Colors.white,
               ),
@@ -65,7 +66,7 @@ class StoriesMap {
               deeplinkUrl: 'route',
               action: StoryAction.close,
               title: 'Try Now',
-              backgroundColor: const Color(0xff1961C7),
+              backgroundColor: NonThemeColor.color29,
               textStyle: StoryTextStyle(
                 color: Colors.white,
               ),

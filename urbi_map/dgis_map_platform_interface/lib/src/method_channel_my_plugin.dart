@@ -203,8 +203,8 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   }
 
   @override
-  Future<void> setFollowState(FollowStateMessage state) {
-    return _locationEventHandler.setFollowState(state);
+  Future<void> toggleFollowState() {
+    return _locationEventHandler.toggleFollowState();
   }
 
   @override

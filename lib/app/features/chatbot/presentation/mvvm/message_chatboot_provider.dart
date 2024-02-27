@@ -43,7 +43,7 @@ class MessageChatBotProvider extends BaseViewModel {
           notifyListeners();
         },
         (stream) {
-          if(isClose) {
+          if(!isClose) {
             listen = stream.listen((messageType) {
               message.value = message.value.copyWith(
                 answer: "${message.value.answer}$messageType",

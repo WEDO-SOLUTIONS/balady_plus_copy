@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,8 @@ class RoutesCarousel extends ConsumerWidget {
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
                       .textM
-                      .copyWith(color: const Color(0xFF1E2A36)),
+                      .copyWith(
+                          color: context.color.text_and_icons_base_primary),
                 ),
                 const SizedBox(
                   height: 8,
@@ -109,7 +111,7 @@ class RouteCell extends ConsumerWidget {
         horizontal: 4,
       ),
       child: Material(
-        color: const Color(0x0D1E2A36),
+        color: NonThemeColor.color11,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -119,28 +121,30 @@ class RouteCell extends ConsumerWidget {
               Directionality(
                 textDirection: direction,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       route.duration.formatDuration(context.l10n),
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .accentM
-                          .copyWith(color: const Color(0xFF1E2A36)),
+                          .copyWith(
+                              color: context.color.text_and_icons_base_primary),
                     ),
                     Text(
                       route.distance.formatDistance(context.l10n),
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .textS
-                          .copyWith(color: const Color(0xFF1E2A36)),
+                          .copyWith(
+                              color: context.color.text_and_icons_base_primary),
                     )
                   ],
                 ),
               ),
               const Spacer(),
               Material(
-                color: const Color(0xFF4CA5B4),
+                color: context.color.stroke_accent,
                 borderRadius: BorderRadius.circular(8),
                 child: InkWell(
                   onTap: startNavigation,
@@ -162,7 +166,7 @@ class RouteCell extends ConsumerWidget {
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

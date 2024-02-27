@@ -33,7 +33,6 @@ import '../../objections_exports.dart'
         RequestTypeEntity;
 
 part 'objections_event.dart';
-
 part 'objections_state.dart';
 
 class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
@@ -42,7 +41,6 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
   final GetRequestStatuses getRequestStatuses;
   final GetRequestSubTypes getRequestSubTypes;
   final GetObjectionDetails getObjectionDetails;
-
   ObjectionsBloc()
       : getRequests = GetObjectionRequests(repository: sl()),
         getRequestTypes = GetRequestTypes(repository: sl()),
@@ -50,6 +48,7 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
         getRequestSubTypes = GetRequestSubTypes(repository: sl()),
         getObjectionDetails = GetObjectionDetails(repository: sl()),
         super(const RequestsState()) {
+    on<GetObjectionDetailsEvent>(_getObjectionDetailsHandler);
 
     on<GetRequestsEvent>((event, emit) async {
       emit(
@@ -318,4 +317,30 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
     });
   }
 
+  Future<void> _getObjectionDetailsHandler(
+      GetObjectionDetailsEvent e, Emitter emitter) async {
+    emitter(
+        state.copyWith(detailsStatus: BlocRequestStatus.submissionGetLoading));
+
+    var failureOrSuccess = await getObjectionDetails(e.params);
+
+    await failureOrSuccess.fold((failure) {
+      emitter(state.copyWith(
+        detailsStatus: BlocRequestStatus.submissionGetFailure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (success) async {
+      emitter(state.copyWith(
+        detailsStatus: BlocRequestStatus.submissionGetSuccess,
+        errorMessage: "",
+      ));
+
+      ObjectionDetails details = success;
+
+      details.hashingRequestNumber = e.hashingRequestNumber;
+      details.serviceTypeId = e.serviceTypeId;
+      NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.objectionsDetailsPage, arguments: success);
+    });
+  }
 }

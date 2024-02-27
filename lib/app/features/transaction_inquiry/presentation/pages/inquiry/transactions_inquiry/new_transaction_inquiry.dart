@@ -148,6 +148,7 @@ class _TransactionBodySectionState extends State<TransactionBodySection> {
         CustomTapWidgetForLongDialog(
           items: model.types,
           value: model.type,
+          isButtonDisabled: false,
           onChangeType: (DropDownItem? item) {
             // model.type = item;
             // model.validateForm();

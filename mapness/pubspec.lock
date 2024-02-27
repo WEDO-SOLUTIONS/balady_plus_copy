@@ -41,6 +41,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.11.3"
+  app_links:
+    dependency: "direct main"
+    description:
+      name: app_links
+      sha256: "4e392b5eba997df356ca6021f28431ce1cfeb16758699553a94b13add874a3bb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.5.0"
   app_settings:
     dependency: transitive
     description:
@@ -95,7 +103,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "3.9.0+190"
+    version: "3.9.0+191"
   balady_uikit:
     dependency: "direct main"
     description:
@@ -1307,6 +1315,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.1"
+  gtk:
+    dependency: transitive
+    description:
+      name: gtk
+      sha256: e8ce9ca4b1df106e4d72dad201d345ea1a036cc12c360f1a7d5a758f78ffa42c
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   hijri:
     dependency: transitive
     description:
@@ -2704,6 +2720,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.9.4"
+  widgetbook_annotation:
+    dependency: transitive
+    description:
+      name: widgetbook_annotation
+      sha256: c2d881d0241525b36aa3777d0ac406d198528ed28b84ca73b7dd9f59189d6bb0
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   win32:
     dependency: transitive
     description:

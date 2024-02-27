@@ -144,8 +144,8 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                     Container(
                       height: 4,
                       width: 26,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFDDE4EE),
+                      decoration: BoxDecoration(
+                        color: context.color.surface_base_primary,
                         borderRadius: BorderRadius.all(Radius.circular(24)),
                       ),
                     ),
@@ -169,7 +169,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                                         .extension<ThemeTextStyles>()!
                                         .headingS
                                         .copyWith(
-                                          color: const Color(0xFF1D2A36),
+                                          color: context.color.text_and_icons_base_primary,
                                         ),
                                   ),
                                 ),
@@ -204,7 +204,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                               HappinessTagsGrid(),
                               const SizedBox(height: 20),
                               Material(
-                                color: const Color(0xffE8E9EA),
+                                color: context.color.surface_base_primary,
                                 borderRadius: BorderRadius.circular(8),
                                 child: InkWell(
                                   onTap: () => const HappinessMapCommentRoute()
@@ -224,7 +224,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                                           .extension<ThemeTextStyles>()!
                                           .textM
                                           .copyWith(
-                                              color: const Color(0xFF1D2A36)),
+                                              color: context.color.text_and_icons_base_primary),
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),

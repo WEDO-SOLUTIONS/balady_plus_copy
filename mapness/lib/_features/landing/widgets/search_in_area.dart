@@ -31,7 +31,7 @@ class SearchInArea extends ConsumerWidget {
                     .extension<ThemeTextStyles>()
                     ?.accentM
                     .copyWith(
-                      color: const Color(0xFF1E2A36),
+                      color: context.color.text_and_icons_base_primary,
                     ),
               ),
             ),

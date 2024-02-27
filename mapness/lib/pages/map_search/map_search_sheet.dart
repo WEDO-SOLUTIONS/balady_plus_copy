@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -124,7 +125,8 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
             id: markerInfo?.objectId?.objectId.toString() ??
                 context.l10n.invalid,
             onTap: () {
-              PoiMapRoute.open(context, markerInfo.objectId!.objectId);
+              PoiMapRoute.open(
+                  ref.read(goRouterProvider), markerInfo.objectId!.objectId);
             },
             options: MarkerOptionsMessage(
               position: markerInfo!.geoPoint,
@@ -215,7 +217,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
           return ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: Material(
-              color: const Color(0xFFF1F4F8),
+              color: const Color(0xFFF4F4F5),
               child: SearchScope(
                 named: searchScope,
                 child: CustomScrollView(

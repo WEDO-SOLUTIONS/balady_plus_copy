@@ -47,7 +47,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                           width: 40,
                           child: Material(
                             borderRadius: BorderRadius.circular(8),
-                            color: const Color(0xFFF5F7FA),
+                            color: context.color.surface_base_secondary,
                             child: InkWell(
                               onTap: () {
                                 context.pop();
@@ -63,8 +63,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                   height: 24,
                                   width: 24,
                                   package: PackageConfig.packageName,
-                                  colorFilter: const ColorFilter.mode(
-                                    Color(0xFF1E2A36),
+                                  colorFilter:  ColorFilter.mode(
+                                    context.color.text_and_icons_base_primary,
                                     BlendMode.srcIn,
                                   ),
                                 ),
@@ -87,7 +87,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             style: Theme.of(context)
                                 .extension<ThemeTextStyles>()!
                                 .accentM
-                                .copyWith(color: const Color(0xFF1E2A36)),
+                                .copyWith(color: context.color.text_and_icons_base_primary),
                           ),
                         ),
                         const Spacer(),
@@ -127,7 +127,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             .textXS
                             .copyWith(
                                 color:
-                                    const Color(0xFF1E2A36).withOpacity(0.36)),
+                                    context.color.text_and_icons_base_primary.withOpacity(0.36)),
                       ),
                     ],
                   ),
@@ -150,7 +150,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             .textXS
                             .copyWith(
                                 color:
-                                    const Color(0xFF1E2A36).withOpacity(0.36)),
+                                    context.color.text_and_icons_base_primary.withOpacity(0.36)),
                       ),
                     ],
                   ),

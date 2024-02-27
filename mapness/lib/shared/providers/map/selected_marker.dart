@@ -1,5 +1,4 @@
 import 'package:dgis_map/library.dart';
-import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -26,6 +25,13 @@ class SelectedMarker extends _$SelectedMarker {
     final read = ref.read(
         mapObjectManagerProvider(named: selectedMarkerManagerId).notifier);
     await read.removeMarkerById(id);
+    state = null;
+  }
+
+  Future<void> removeAllMarkers() async {
+    final read = ref.read(
+        mapObjectManagerProvider(named: selectedMarkerManagerId).notifier);
+    await read.removeAllMarkers();
     state = null;
   }
 }

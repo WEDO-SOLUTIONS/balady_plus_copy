@@ -42,7 +42,7 @@ class BriefRouteButton extends ConsumerWidget {
         ? Padding(
             padding: padding ?? const EdgeInsets.all(0),
             child: Material(
-              color: background ?? const Color(0xFF4CA5B4),
+              color: background ?? context.color.stroke_accent,
               borderRadius: BorderRadius.circular(8),
               child: InkWell(
                 onTap: onTap,
@@ -90,8 +90,8 @@ class BriefRouteInfo extends ConsumerWidget {
     return (briefInfo != null && appFeatures.naviEnabled)
         ? _BriefRouteInfo(
             iconSize: 16,
-            iconColor: const Color(0x801E2A36),
-            textColor: const Color(0xB21E2A36),
+            iconColor: context.color.text_and_icons_base_tertiary,
+            textColor: context.color.text_and_icons_base_primary,
             briefInfo: briefInfo,
           )
         : const SizedBox.shrink();

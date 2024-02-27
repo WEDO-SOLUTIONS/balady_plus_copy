@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,7 +45,7 @@ class ProfileInfoPage extends ConsumerWidget {
                         width: 40,
                         child: Material(
                           borderRadius: BorderRadius.circular(8),
-                          color: const Color(0xFFF5F7FA),
+                          color: context.color.surface_base_secondary,
                           child: InkWell(
                             onTap: () {
                               context.pop();
@@ -59,8 +60,8 @@ class ProfileInfoPage extends ConsumerWidget {
                                 height: 24,
                                 width: 24,
                                 package: PackageConfig.packageName,
-                                colorFilter: const ColorFilter.mode(
-                                  Color(0xFF1E2A36),
+                                colorFilter: ColorFilter.mode(
+                                  context.color.text_and_icons_base_primary,
                                   BlendMode.srcIn,
                                 ),
                               ),
@@ -74,7 +75,7 @@ class ProfileInfoPage extends ConsumerWidget {
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
                             .accentM
-                            .copyWith(color: const Color(0xFF1E2A36)),
+                            .copyWith(color: context.color.text_and_icons_base_primary),
                       ),
                       const Spacer(),
                       const SizedBox(
@@ -101,7 +102,7 @@ class ProfileInfoPage extends ConsumerWidget {
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
                           .headingS
-                          .copyWith(color: const Color(0xFF1E2A36)),
+                          .copyWith(color: context.color.text_and_icons_base_primary),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(
@@ -113,7 +114,7 @@ class ProfileInfoPage extends ConsumerWidget {
                           .extension<ThemeTextStyles>()!
                           .textS
                           .copyWith(
-                            color: const Color(0xA31E2A36),
+                            color: NonThemeColor.color39,
                           ),
                       textAlign: TextAlign.center,
                     ),
@@ -134,7 +135,7 @@ class ProfileInfoPage extends ConsumerWidget {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       decoration: BoxDecoration(
-                        color: const Color(0xff566B83).withOpacity(.12),
+                        color: NonThemeColor.color27.withOpacity(.12),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
@@ -145,7 +146,7 @@ class ProfileInfoPage extends ConsumerWidget {
                                   .extension<ThemeTextStyles>()!
                                   .textS
                                   .copyWith(
-                                    color: const Color(0xffE0373D),
+                                    color: context.color.text_and_icons_status_negative,
                                   )),
                           SvgPicture.asset(
                             "assets/icons/svg/ic_profile_logout.svg",

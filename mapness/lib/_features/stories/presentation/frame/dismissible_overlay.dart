@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class DismissibleTransition extends StatefulWidget {
   final Widget child;
@@ -72,7 +73,7 @@ class DismissibleTransitionState extends State<DismissibleTransition>
             children: [
               Opacity(
                 opacity: _opacityAnimation.value,
-                child: Container(color: const Color(0xff1e2936)),
+                child: Container(color: context.color.text_and_icons_base_primary),
               ),
               Transform(
                 transform: Matrix4.identity()

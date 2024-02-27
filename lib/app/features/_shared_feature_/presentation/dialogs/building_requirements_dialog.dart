@@ -215,7 +215,7 @@ class _BuildingRequirementsDialogState
     String qa = await rootBundle
         .loadString("assets/compliance_pdf/text/conditions.json");
     if (!CommonFunctions.isAppAR) {
-      String qa = await rootBundle
+      qa = await rootBundle
           .loadString("assets/compliance_pdf/text/conditions_en.json");
     }
 

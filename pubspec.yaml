@@ -16,7 +16,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 3.22.0+1
+version: 3.9.2+197
 
 environment:
   sdk: ">=3.0.1 <4.0.0"
@@ -302,3 +302,6 @@ flutter:
           weight: 700
         - asset: fonts/frutigerltarabic75black.ttf
           weight: 900
+    - family: BaladyIcons.ttf
+      fonts:
+        - asset: assets/fonts/BaladyIcons.ttf
