@@ -70,7 +70,8 @@ jobs:
   build:
     name: Build Android
     if: github.event.pull_request.draft == false
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
+    runs-on: self-hosted
     timeout-minutes: 60
     steps:
       - name: ⬇️ Checkout repository
