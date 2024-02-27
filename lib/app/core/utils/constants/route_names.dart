@@ -1,4 +1,5 @@
 class RouteName {
+  static const baladyCalendarPage = '/baladyCalendarPage';
   static const splash = '/splash';
   static const signIn = '/signIn';
   static const signUp = '/signUp';
@@ -339,6 +340,18 @@ static const DirectRentalPage = 'DirectRentalPage';
   static const SpecificServicePage = 'SpecificServicePage';
   static const jodDonationPage = 'JodDonationPage';
   static const chatbot = '/chatbot';
+
+
+
+
+
+  static const commercialLicenseOverView =
+      'OverviewCommercialLicense_Screen';
+  static const commercialLicenseQuery =
+      'QueryCommercialLicense_Screen';
+  static const commercialLicenseQueryDetails =
+      'QueryCommercialLicense_query_details_Screen';
+
 }
 
 class EtmamRoutesNames {
@@ -407,4 +420,7 @@ class EtmamRoutesNames {
   static const editBiddingForm = '/EditBiddingForm';
 
   static const biddingReleationTypes = '/biddingReleationTypes';
+
+
+
 }

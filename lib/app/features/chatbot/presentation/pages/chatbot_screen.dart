@@ -1,11 +1,16 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
+import 'package:balady_plus/app/features/_shared_features/rating_feature/models/rating_request.dart';
+import 'package:balady_plus/app/features/_shared_features/rating_feature/models/services_types.dart';
+import 'package:balady_plus/app/features/_shared_features/rating_feature/widgets/submit_rating_widget.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/mvvm/chatboot_provider.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/widgets/app_bar_chat_bot.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/widgets/chat_bot_list.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/widgets/send_mseeage_card_chat_bot.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
 class ChatBotScreen extends StatefulWidget {
@@ -16,7 +21,12 @@ class ChatBotScreen extends StatefulWidget {
 }
 
 class _ChatBotScreenState extends State<ChatBotScreen> {
-  ChatBotProvider provider = ChatBotProvider(sl());
+  ChatBotProvider provider = ChatBotProvider(
+    sl(),
+    // Make The Section id to send with all question in the Section and send to
+    // rating API switch the request id
+    sectionId: DateTime.now().millisecondsSinceEpoch,
+  );
 
   @override
   void initState() {
@@ -27,19 +37,48 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => provider,
-      child: const Scaffold(
-        body: Column(
-          children: [
-            AppBarChatBot(),
-            ChatBotList(),
-            SendMessageCardChatBot(),
-          ],
+        create: (context) => provider,
+        child: Scaffold(
+          body: Column(
+            children: [
+              const AppBarChatBot(),
+              Expanded(
+                child: Selector<ChatBotProvider, bool>(
+                  selector: (_, provider) => provider.isLoadingEnabled,
+                  builder: (_, isLoading, __) {
+                    return isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : provider.isEnabled
+                            ? const Column(
+                                children: [
+                                  ChatBotList(),
+                                  SendMessageCardChatBot(),
+                                ],
+                              )
+                            : Padding(
+                              padding: const EdgeInsets.all(18.0),
+                              child: Center(
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        'chat_bot_not_working_title'.tr(),
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Text(
+                                        'chat_bot_not_working_message'.tr(),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                            );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
   }
-
 
   @override
   void deactivate() {
