@@ -1,4 +1,6 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:mapness/widgets/quick_filters/ui/quick_filter.dart';
 
@@ -10,7 +12,7 @@ class QuickFilters extends StatelessWidget {
     this.padding = const EdgeInsets.symmetric(
       horizontal: 16,
     ),
-    this.itemBackground = const Color(0x0D1E2A36),
+    this.itemBackground = NonThemeColor.color11,
   });
 
   final EdgeInsets padding;
@@ -31,7 +33,8 @@ class QuickFilters extends StatelessWidget {
             return QuickFilter(
               item: item,
               selected: index == selectedIndex,
-              background: itemBackground,
+              // background: itemBackground,
+              background: context.color.surface_base_secondary,
             );
           },
         ),

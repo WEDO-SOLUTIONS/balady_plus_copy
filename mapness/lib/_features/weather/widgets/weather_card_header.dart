@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,7 +13,6 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:shimmer/shimmer.dart';
 
-const colorPrimary = Color(0xff1E2A36);
 final borderRadius = BorderRadius.circular(16);
 const weatherHeaderSize = 300.0;
 
@@ -24,11 +24,11 @@ class WeatherCardHeaderDelegate extends SliverPersistentHeaderDelegate {
   final DraggableScrollableController draggableScrollableController;
 
   @override
-  Widget build(context, double shrinkOffset, bool overlapsContent) {
-    return DashboardHeader(
-      draggableScrollableController: draggableScrollableController,
-    );
-  }
+  Widget build(
+          BuildContext context, double shrinkOffset, bool overlapsContent) =>
+      DashboardHeader(
+        draggableScrollableController: draggableScrollableController,
+      );
 
   @override
   double get maxExtent => weatherHeaderSize;
@@ -42,8 +42,8 @@ class WeatherCardHeaderDelegate extends SliverPersistentHeaderDelegate {
 
 class DashboardHeader extends ConsumerWidget {
   const DashboardHeader({
-    super.key,
     required this.draggableScrollableController,
+    super.key,
   });
 
   final DraggableScrollableController draggableScrollableController;
@@ -75,7 +75,7 @@ class DashboardHeader extends ConsumerWidget {
           allWeatherInfo: allWeatherInfo,
           locale: locale,
           onTap: () {
-            var size = draggableScrollableController.size;
+            final size = draggableScrollableController.size;
             draggableScrollableController.animateTo(
               size < 1 ? 1 : .1,
               duration: const Duration(milliseconds: 500),
@@ -95,16 +95,15 @@ class Data extends ConsumerWidget {
 
   const Data({
     required this.onTap,
-    super.key,
     required this.allWeatherInfo,
     required this.locale,
+    super.key,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // "4:35pm, 20 November, Mon",
-    final dateTime = (DateFormat('h:mm a, d MMMM, E', locale.languageCode)
-        .format(DateTime.now()));
+    final dateTime = DateFormat('h:mm a, d MMMM, E', locale.languageCode)
+        .format(DateTime.now());
     final windMph = allWeatherInfo?.current?.windMph?.toStringAsPrecision(2);
     final humidity = allWeatherInfo?.current?.humidity?.toStringAsPrecision(2);
     final pressureMb = allWeatherInfo?.current?.pressureMb?.toStringAsFixed(0);
@@ -115,16 +114,14 @@ class Data extends ConsumerWidget {
 
     final textStyle = context.textStyle.accentXS.copyWith(
       height: 1.4,
-      color: colorPrimary,
+      color: context.color.text_and_icons_base_primary,
     );
 
     return Container(
-      // padding: EdgeInsets.only(left: 16,right: 16,bottom: 16,),
       height: weatherHeaderSize,
       decoration: const BoxDecoration(
-        // color: Color(0xffF4F4F5),
+        // color: context.color.surface_base_primary,
         color: Colors.white,
-
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(16.0),
           topLeft: Radius.circular(16.0),
@@ -133,8 +130,6 @@ class Data extends ConsumerWidget {
       child: Directionality(
         textDirection: TextDirection.ltr,
         child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const SizedBox(
               height: 8,
@@ -143,26 +138,23 @@ class Data extends ConsumerWidget {
             const SizedBox(
               height: 6,
             ),
-            Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ///close
-                  _closeButton(onTap: ()async {
-                   await ref.switchOffWeatherLayers();
-                    context.pop();
-                  }),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              ///close
+              _closeButton(onTap: () async {
+                await ref.switchOffWeatherLayers();
+                context.pop();
+              }),
 
-                  ///settings
-                  ///cityname
-                  Text(
-                    placeName,
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .accentL
-                        .copyWith(fontSize: 19, color: Colors.black),
-                  ),
-                ]),
+              ///settings
+              ///cityname
+              Text(
+                placeName,
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .accentL
+                    .copyWith(fontSize: 19, color: Colors.black),
+              ),
+            ]),
             const SizedBox(
               height: 16,
             ),
@@ -170,9 +162,10 @@ class Data extends ConsumerWidget {
               onTap: onTap,
               child: Container(
                   decoration: BoxDecoration(
-                      color: Color(0xFFF5F7FA),
+                      color: context.color.surface_base_secondary,
                       borderRadius: BorderRadius.circular(16)),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(
@@ -181,72 +174,9 @@ class Data extends ConsumerWidget {
                           right: 16,
                         ),
                         child: Row(
-                          textDirection: TextDirection.rtl,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          textDirection: TextDirection.ltr,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            ///weather info
-                            Column(
-                              textDirection: TextDirection.rtl,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                ///date
-                                Text(
-                                  dateTime,
-                                  style: Theme.of(context)
-                                      .extension<ThemeTextStyles>()!
-                                      .textXS
-                                      .copyWith(
-                                        color: colorPrimary.withOpacity(0.5),
-                                      ),
-                                ),
-                                SizedBox(height: 16),
-
-                                ///temperature
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ConstrainedBox(
-                                      constraints: const BoxConstraints(
-                                        maxHeight: 70,
-                                        minHeight: 65,
-                                      ),
-                                      child: Text(
-                                        tempC,
-                                        style: Theme.of(context)
-                                            .extension<ThemeTextStyles>()!
-                                            .textL
-                                            .copyWith(
-                                              height: 1,
-                                              fontSize: 64,
-                                              fontWeight: FontWeight.w400,
-                                              color: colorPrimary,
-                                            ),
-                                      ),
-                                    ),
-                                    Text(
-                                      '℃',
-                                      style: context.textStyle.textL.copyWith(
-                                        fontSize: 27,
-                                        height: 1,
-                                        fontWeight: FontWeight.w600,
-                                        color: colorPrimary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-
-                                ///condition
-                                Text(condition,
-                                    style: context.textStyle.accentM.copyWith(
-                                      // height: 1,
-                                      fontWeight: FontWeight.w700,
-                                      color: colorPrimary,
-                                    )),
-                              ],
-                            ),
-
                             ///icon
                             SizedBox(
                               height: 100,
@@ -259,6 +189,84 @@ class Data extends ConsumerWidget {
                                   package: PackageConfig.packageName,
                                   height: 75,
                                   width: 75,
+                                ),
+                              ),
+                            ),
+
+                            ///weather info
+                            Expanded(
+                              child: Align(
+                                alignment: AlignmentDirectional.centerEnd,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    ///date
+                                    Text(
+                                      dateTime,
+                                      textAlign: TextAlign.end,
+                                      style: Theme.of(context)
+                                          .extension<ThemeTextStyles>()!
+                                          .textXS
+                                          .copyWith(
+                                            color: context.color
+                                                .text_and_icons_base_primary
+                                                .withOpacity(0.5),
+                                          ),
+                                    ),
+                                    const SizedBox(height: 16),
+
+                                    ///temperature
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        ConstrainedBox(
+                                          constraints: const BoxConstraints(
+                                            maxHeight: 70,
+                                            minHeight: 65,
+                                          ),
+                                          child: Text(
+                                            tempC,
+                                            style: Theme.of(context)
+                                                .extension<ThemeTextStyles>()!
+                                                .textL
+                                                .copyWith(
+                                                  height: 1,
+                                                  fontSize: 64,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: context.color
+                                                      .text_and_icons_base_primary,
+                                                ),
+                                          ),
+                                        ),
+                                        Text(
+                                          '℃',
+                                          style:
+                                              context.textStyle.textL.copyWith(
+                                            fontSize: 27,
+                                            height: 1,
+                                            fontWeight: FontWeight.w600,
+                                            color: context.color
+                                                .text_and_icons_base_primary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+
+                                    ///condition
+                                    AutoSizeText(
+                                      condition,
+                                      maxLines: 1,
+                                      style: context.textStyle.accentM.copyWith(
+                                        fontWeight: FontWeight.w700,
+                                        color: context
+                                            .color.text_and_icons_base_primary,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -302,45 +310,48 @@ class Data extends ConsumerWidget {
     );
   }
 
-  Widget _closeButton({Function()? onTap}) {
-    return Material(
-      borderRadius: borderRadius,
-      child: InkWell(
-        borderRadius: borderRadius,
-        onTap: onTap,
-        child: Container(
-          height: 40,
-          width: 40,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(
-              Radius.circular(8),
+  Widget _closeButton({Function()? onTap}) => Builder(
+        builder: (context) => Material(
+          borderRadius: borderRadius,
+          child: InkWell(
+            borderRadius: borderRadius,
+            onTap: onTap,
+            child: Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(8),
+                ),
+                color: context.color.surface_base_primary,
+              ),
+              padding: const EdgeInsets.all(8.0),
+              child: SvgPicture.asset(
+                'assets/icons/svg/ic_search_close.svg',
+                semanticsLabel: 'MinApps Screen',
+                package: PackageConfig.packageName,
+                colorFilter: ColorFilter.mode(
+                  context.color.text_and_icons_base_primary.withOpacity(0.7),
+                  BlendMode.srcIn,
+                ),
+              ),
             ),
-            // color: Colors.white,
-            color: Color(0xffF4F4F5),
-          ),
-          padding: const EdgeInsets.all(8.0),
-          child: SvgPicture.asset(
-            "assets/icons/svg/ic_search_close.svg",
-            semanticsLabel: 'MinApps Screen',
-            package: "mapness",
-            color: colorPrimary.withOpacity(0.7),
           ),
         ),
-      ),
-    );
-  }
+      );
 
-  Widget _scrollHandle() {
-    return Center(
-        child: Container(
-      decoration: BoxDecoration(
-        borderRadius: borderRadius,
-        color: colorPrimary.withOpacity(0.1),
-      ),
-      height: 4,
-      width: 40,
-    ));
-  }
+  Widget _scrollHandle() => Builder(
+        builder: (context) => Center(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: borderRadius,
+              color: context.color.text_and_icons_base_primary.withOpacity(0.1),
+            ),
+            height: 4,
+            width: 40,
+          ),
+        ),
+      );
 
   Widget buildButton({
     required String assetName,
@@ -350,43 +361,50 @@ class Data extends ConsumerWidget {
     Color? colorButton,
     int flex = 1,
   }) {
-    BorderRadius borderRadius = BorderRadius.circular(8);
+    final borderRadius = BorderRadius.circular(8);
 
-    return Flexible(
-      flex: flex,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Container(
-          alignment: Alignment.center,
-          constraints: const BoxConstraints(
-            minHeight: 40,
-            maxHeight: 40,
-            minWidth: 52,
-          ),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: borderRadius,
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (desc != null) ...[
-                desc,
-                const SizedBox(
-                  width: 2,
+    return Builder(
+      builder: (context) => Flexible(
+        flex: flex,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: Container(
+            alignment: Alignment.center,
+            constraints: const BoxConstraints(
+              minHeight: 40,
+              maxHeight: 40,
+              minWidth: 52,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: borderRadius,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (desc != null) ...[
+                  desc,
+                  const SizedBox(
+                    width: 2,
+                  ),
+                ],
+                SvgPicture.asset(
+                  key: ValueKey(assetName),
+                  assetName,
+                  height: 24,
+                  width: 24,
+                  colorFilter: ColorFilter.mode(
+                    colorIcon ??
+                        context.color.text_and_icons_base_primary
+                            .withOpacity(0.7),
+                    BlendMode.srcIn,
+                  ),
+                  package: PackageConfig.packageName,
+                  matchTextDirection: true,
                 ),
               ],
-              SvgPicture.asset(
-                key: ValueKey(assetName),
-                assetName,
-                height: 24,
-                width: 24,
-                color: colorPrimary.withOpacity(0.7),
-                package: PackageConfig.packageName,
-                matchTextDirection: true,
-              ),
-            ],
+            ),
           ),
         ),
       ),

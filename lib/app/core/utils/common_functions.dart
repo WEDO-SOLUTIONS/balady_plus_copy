@@ -1236,7 +1236,7 @@ class CommonFunctions {
 
     dio.options.sendTimeout = const Duration(milliseconds: 60000);
     dio.addSentry();
-
+    dio.options.responseType = ResponseType.bytes;
     dio.interceptors.add(AppInterceptors());
     ;
     print("SERVCE $serviceId");
@@ -1246,10 +1246,11 @@ class CommonFunctions {
             headers: {if (serviceId != null) "X-Service-Id": serviceId}));
     String extension =
         r.headers["Content-Type"].toString().split("/")[1].replaceAll("]", "");
-    print(r.headers["Content-Type"]);
+
     String dir = (await getTemporaryDirectory()).path;
     File file = new File('$dir/$fileName.$extension');
-    await file.writeAsString(r.data);
+
+    await file.writeAsBytes(r.data);
     return file;
   }
 
@@ -1365,6 +1366,18 @@ class CommonFunctions {
 
   static String getDMSUrl(String id) {
     return RemoteConfig.apigeeURL + "/v1/dms-mobile/files/$id";
+  }
+
+  static bool isFoundationDay() {
+    DateTime today = DateTime.now();
+
+    int todayDay = today.day;
+    int todayMonth = today.month;
+    int todayYear = today.year;
+    var allowedDays = [20, 21, 22, 23, 24, 25];
+    if (allowedDays.contains(todayDay) && todayMonth == 2 && todayYear == 2024)
+      return true;
+    return false;
   }
 }
 

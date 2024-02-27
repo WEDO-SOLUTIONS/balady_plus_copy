@@ -1,3 +1,4 @@
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,14 +30,14 @@ class HappinessTextField extends ConsumerWidget {
       decoration: InputDecoration(
         hintText: context.l10n.shareYourFeedback,
         enabledBorder: border,
-        fillColor: const Color(0xfff4f4f5),
+        fillColor: context.color.surface_base_primary,
         filled: true,
         border: border,
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         focusedBorder: border,
         isDense: true,
-        hintStyle: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: const Color(0x7F1E2A36)),
+        hintStyle: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: NonThemeColor.color38),
       ),
     );
   }

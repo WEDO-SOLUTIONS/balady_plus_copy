@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/pages/path_nav/lib/no_overscroll_behavior.dart';
-import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_theme.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 /// widget contains scrollable common content layout for [DgisBottomSheet]: fixed header and scrollable body
@@ -26,8 +25,7 @@ class DgisBottomSheetScrollableContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor =
-        DgisBottomSheetTheme.defaultTheme.bodyBackgroundColor;
+    const backgroundColor = Color(0xFFF4F4F5);
 
     return ScrollConfiguration(
       behavior: NoOverscrollBehavior(),

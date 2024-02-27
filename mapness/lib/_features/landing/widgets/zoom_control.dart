@@ -1,9 +1,10 @@
+import 'package:balady_uikit/icons/app_icons.dart';
+import 'package:balady_uikit/icons/baladi_icons.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/shared/providers/map/zoom_state.dart';
+import 'package:mapness/shared/ui/buttons/map_button.dart';
 
 class ZoomControl extends ConsumerWidget {
   const ZoomControl({super.key});
@@ -27,13 +28,7 @@ class ZoomControl extends ConsumerWidget {
             topLeft: Radius.circular(10),
             topRight: Radius.circular(10),
           ),
-          child: SvgPicture.asset(
-            "assets/icons/svg/ic_control_zoom_in.svg",
-            semanticsLabel: 'MinApps Screen',
-            package: "mapness",
-            width: 24,
-            height: 24,
-          ),
+          child: const AppIcons(BaladyIcons.Zoom_Plus),
         ),
         MapButton(
           onTapUp: (_) {
@@ -49,11 +44,7 @@ class ZoomControl extends ConsumerWidget {
             bottomLeft: Radius.circular(10),
             bottomRight: Radius.circular(10),
           ),
-          child: SvgPicture.asset(
-            "assets/icons/svg/ic_control_zoom_out.svg",
-            semanticsLabel: 'MinApps Screen',
-            package: "mapness",
-          ),
+          child: const AppIcons(BaladyIcons.Zoom_Minus),
         ),
       ],
     );

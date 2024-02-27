@@ -36,7 +36,6 @@ class CityWidget extends StatelessWidget {
             //crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                height: 68,
                 width: 68,
                 margin: const EdgeInsetsDirectional.only(end: 10),
                 decoration: BoxDecoration(
@@ -73,15 +72,15 @@ class CityWidget extends StatelessWidget {
               ),
               const CustomVerticalSpace(height: 4),
               SizedBox(
-                width: 50,
+                //  width: 50,
                 child: Center(
                   child: CustomAutoSizeTextWidget(
                     cityName,
                     textAlign: TextAlign.center,
                     maxFontSize: 13,
-                    minFontSize: 10,
+                    minFontSize: 9,
                     maxLines: 1,
-                    //  textOverflow: TextOverflow.,
+                    // textOverflow: TextOverflow.ellipsis,
                     fontWeight: AppFontWeight.medium,
                     fontColor:
                         isSelected ? AppColor.darkTurquoise : AppColor.black,

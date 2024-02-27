@@ -1,13 +1,12 @@
 import 'package:balady_plus/app/core/utils/debouncer.dart';
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/routes/favourites.dart';
-import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/geo/geo_utils.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -67,40 +66,10 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
       if (!widget.forMap) {
         return;
       }
-      if (!_isFilterSelected) {
-        await searchObjectManager.removeAllMarkers();
-        return;
-      }
-      await searchObjectManager.removeAllMarkers();
       final value = next.unwrapPrevious().value;
-
       if (value != null) {
-        final markers = <Marker>[];
-        for (final markerInfo
-            in value.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
-          markers.add(
-            Marker(
-              id: markerInfo?.objectId?.objectId.toString() ??
-                  context.l10n.invalid,
-              onTap: () {
-                PoiMapRoute.open(context, markerInfo.objectId!.objectId);
-              },
-              options: MarkerOptionsMessage(
-                position: markerInfo!.geoPoint,
-                icon: MarkerIconMessage(
-                  path:
-                      "packages/mapness/${selectedFilter?.$1.mapIcon ?? "assets/icons/svg/ic_marker.svg"}",
-                  width: 24,
-                ),
-              ),
-            ),
-          );
-        }
-
-        await searchObjectManager.addMarkers(markers);
-
         Debouncer(milliseconds: 300).run(() async {
-          await _computeCameraPosition(markers);
+          await _computeCameraPosition(value);
         });
       } else {
         isZoomInteracted = false;
@@ -122,6 +91,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
           if (selectedFilter?.$1 == filter) {
             _isFilterSelected = false;
             ref.read(searchByRubricsQueryProvider.notifier).update(null);
+            searchObjectManager.removeAllMarkers();
           } else {
             _isFilterSelected = true;
             ref.read(layersControlsProvider.notifier).disable();
@@ -132,7 +102,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
         });
       },
       selectedIndex: selectedFilter?.$2,
-      itemBackground: widget.forMap ? Colors.white : const Color(0x0D1E2A36),
+      itemBackground: widget.forMap ? Colors.white : NonThemeColor.color11,
       customFilters: widget.customFilters,
       onCustomTap: widget.onCustomTap,
       padding: widget.forMap

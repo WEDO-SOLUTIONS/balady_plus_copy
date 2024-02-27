@@ -14,6 +14,7 @@ class EnhancedAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? flexibleSpace;
   final VoidCallback? onBack;
   final bool showBack;
+  final Color? titleColor;
 
   const EnhancedAppBar(
       {super.key,
@@ -22,7 +23,7 @@ class EnhancedAppBar extends StatelessWidget implements PreferredSizeWidget {
       this.actions,
       this.showBack = true,
       this.x = false,
-      this.onBack,
+      this.onBack, this.titleColor, 
       this.flexibleSpace});
 
   @override
@@ -32,7 +33,7 @@ class EnhancedAppBar extends StatelessWidget implements PreferredSizeWidget {
           ? Colors.transparent
           : AppColor.scaffoldBackground,
       elevation: 0,
-      shadowColor: AppColor.primary100Light,
+      shadowColor: titleColor ?? AppColor.primary100Light,
       leadingWidth: showBack == true ? null : 8,
       leading: Navigator.canPop(context) && showBack
           ? IconButton(

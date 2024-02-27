@@ -20,8 +20,8 @@ class FavoriteCard extends StatelessWidget {
             package: PackageConfig.packageName,
             height: 24,
             width: 24,
-            colorFilter: const ColorFilter.mode(
-              colorAccent,
+            colorFilter: ColorFilter.mode(
+              context.color.stroke_accent,
               BlendMode.srcATop,
             ),
           ),
@@ -33,7 +33,7 @@ class FavoriteCard extends StatelessWidget {
             style: Theme.of(context)
                 .extension<ThemeTextStyles>()!
                 .textM
-                .copyWith(color: colorPrimary),
+                .copyWith(color: context.color.text_and_icons_base_primary),
           ),
           const Spacer(),
           SvgPicture.asset(
@@ -41,8 +41,8 @@ class FavoriteCard extends StatelessWidget {
             package: PackageConfig.packageName,
             height: 24,
             width: 24,
-            colorFilter: const ColorFilter.mode(
-              colorPrimary,
+            colorFilter: ColorFilter.mode(
+              context.color.text_and_icons_base_primary,
               BlendMode.srcATop,
             ),
           ),

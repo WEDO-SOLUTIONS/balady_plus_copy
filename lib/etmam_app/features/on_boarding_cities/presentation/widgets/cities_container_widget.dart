@@ -50,6 +50,7 @@ class _CityContainerWidgetState extends State<CitiesContainerWidget> {
   @override
   void initState() {
     super.initState();
+
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
@@ -146,7 +147,6 @@ class _CityContainerWidgetState extends State<CitiesContainerWidget> {
                   const CustomVerticalSpace(height: 15),
                   CustomPrimaryButton(
                     onPressed: () {
-                      //  sharedPrefs.setIsFirstLaunch(false);
                       sl<CityBloc>().add(SelectCityEvent(
                           item: state.searchedItems?[selectedIndex]));
                       Navigator.of(context).pushReplacementNamed(

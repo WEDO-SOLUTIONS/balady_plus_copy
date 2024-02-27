@@ -25,30 +25,57 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   PointOfInterestRef ref,
   DgisObjectIdMessage objectId, {
   PoiCameraConfig? cameraConfig,
+  LatLng? closestPoint,
 }) async {
   final dgisController = ref.watch(dgisControllerProvider);
+  if (closestPoint != null) {
+    final read = ref.read(selectedMarkerProvider.notifier);
+    await read.showMarker(
+      Markers.pinMarker(
+        GeoPointWithElevationMessage(
+          latitude: closestPoint.latitude,
+          longitude: closestPoint.longitude,
+          elevation: 0,
+        ),
+        id: poiPinId,
+      ),
+    );
+  }
 
   final cameraData = ref.read(cameraPositionProvider) ??
       await dgisController.value?.getCameraPosition();
-
-  final highlightController = ref.watch(highlightProvider.notifier);
 
   final result = await dgisController.value?.searchByObjectId(objectId);
 
   final cameraZoom = cameraData?.zoom;
   final point = cameraData?.point;
 
+  final highlightController = ref.read(highlightProvider.notifier);
+  await highlightController.removeAll();
   await highlightController.addHighlight(objectId);
-  ref.onDispose(() {
-    highlightController.removeAll();
+  ref.onDispose(() async {
+    await highlightController.removeAll();
   });
   if (result == null || result.markerPosition == null) {
     return null;
   }
   final position = result.markerPosition!;
+  if (closestPoint == null) {
+    final read = ref.read(selectedMarkerProvider.notifier);
+    await read.showMarker(
+      Markers.pinMarker(
+        GeoPointWithElevationMessage(
+          latitude: position.latitude,
+          longitude: position.longitude,
+          elevation: 0,
+        ),
+        id: poiPinId,
+      ),
+    );
+  }
   final markerPoint = GeoPointMessage(
-    latitude: position.latitude,
-    longitude: position.longitude,
+    latitude: closestPoint?.latitude ?? position.latitude,
+    longitude: closestPoint?.longitude ?? position.longitude,
   );
   if (cameraConfig == null) {
     // get viewport
@@ -90,13 +117,5 @@ Future<DirectoryObjectMessage?> pointOfInterest(
           ),
         );
   }
-  await ref.read(selectedMarkerProvider.notifier).showMarker(
-        Markers.pinMarker(position, id: poiPinId),
-      );
-  ref.onDispose(() async {
-    final read = ref.read(selectedMarkerProvider.notifier);
-    await read.removeMarker(poiPinId);
-  });
-
   return result;
 }

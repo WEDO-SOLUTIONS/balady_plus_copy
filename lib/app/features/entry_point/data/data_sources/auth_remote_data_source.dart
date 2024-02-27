@@ -415,6 +415,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         ApiUrl.paymentURL,
         data: params.toMap(),
       );
+      print(response);
       print(response.data["data"]);
       return response.data["data"]?["result"];
     } on DioError catch (error) {

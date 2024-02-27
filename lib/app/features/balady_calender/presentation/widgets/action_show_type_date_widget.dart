@@ -34,8 +34,8 @@ class ActionShowTypeDateWidget extends StatelessWidget {
         }
       },
       child: Container(
-        height: 60,
-        width: 110,
+        height: 50,
+        margin: EdgeInsets.zero,
         padding: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
           color: AppColor.lightGreen2.withOpacity(0.1),
@@ -48,13 +48,15 @@ class ActionShowTypeDateWidget extends StatelessWidget {
               width: 25,
               height: 25,
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 2),
             Selector<BaladyCalendarYearsListViewModel, bool>(
               selector: (_, provider) => provider.params.hijri,
               builder: (BuildContext context, hijri, Widget? child) {
                 return Text(
-                  hijri ? "hijri".tr() : "gregorian".tr(),
-                  style: AppStyle.mainTextStyle,
+                  hijri ? "balady_calendar_hijri".tr() : "balady_calendar_gregorian".tr(),
+                  style: AppStyle.mainTextStyle.copyWith(
+                    fontSize: 10
+                  ),
                 );
               },
             ),

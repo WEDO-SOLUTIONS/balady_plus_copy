@@ -30,7 +30,7 @@ class _ProfileHeaderState extends ConsumerState<ProfileHeader> {
             width: 40,
             child: Material(
               borderRadius: BorderRadius.circular(8),
-              color: const Color(0xFFF5F7FA),
+              color: context.color.surface_base_secondary,
               child: InkWell(
                 onTap: widget.onBackPress,
                 borderRadius: BorderRadius.circular(8),
@@ -43,8 +43,8 @@ class _ProfileHeaderState extends ConsumerState<ProfileHeader> {
                     height: 24,
                     width: 24,
                     package: PackageConfig.packageName,
-                    colorFilter: const ColorFilter.mode(
-                      Color(0xFF1E2A36),
+                    colorFilter: ColorFilter.mode(
+                      context.color.text_and_icons_base_primary,
                       BlendMode.srcIn,
                     ),
                   ),
@@ -58,7 +58,7 @@ class _ProfileHeaderState extends ConsumerState<ProfileHeader> {
             style: Theme.of(context)
                 .extension<ThemeTextStyles>()!
                 .textL
-                .copyWith(color: const Color(0xFF1E2A36)),
+                .copyWith(color: context.color.text_and_icons_base_primary),
           ),
           const Spacer(),
           const SizedBox(

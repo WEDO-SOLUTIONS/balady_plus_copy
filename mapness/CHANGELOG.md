@@ -1,4 +1,24 @@
-## 3.8.2(7) - Current
+## 3.9.0(4) - Current
+- BALADY-1377 [Profile] change Help Center Contact Info Email
+- BALADY-1318 [Marketing][Navi] wrong ETA label direction
+- BALADY-1379 [Navi] add function to create route to the point B for 42
+- BALADY-1324 [Marketing] should show a descriptive message when location permission is off and user try to navigate
+
+## 3.9.0(3)
+- BALADY-1357 [Quick Filters] quick filters in opened dashboard do not work
+- BALADY-951: [UIkit] Components Library - Layouting
+- BALADY-941: [UIkit] Components Library - Icons
+
+## 3.9.0(1) - Current
+
+- BALADY-1325 [Marketing] no action happen when click on show more in feedback for a location
+- BALADY-1294 [Marketing] wrong switching between layers behavior
+- BALADY-1314 [Marketing] Navigation panel is showing while explore tab is active
+- BALADY-1340 [Marketing] navigation ETA alignment
+- BALADY-1328 [Landing Page] Bottom bar icons and text is too big (Android)
+- BALADY-1331 [Marketing] place marker on closest point
+
+## 3.8.2(7)
 
 - BALADY-1293: [Marketing][POI card] title text is truncated
 - BALADY-1313: [Marketing] Compliance buildings layer - The label is unclear and very small

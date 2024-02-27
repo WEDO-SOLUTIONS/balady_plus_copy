@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
@@ -23,6 +24,7 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -74,6 +76,13 @@ class LayersControls extends _$LayersControls {
   final tapSubject = PublishSubject<LayerType>();
   StreamSubscription? tapSubscription;
 
+  Future<void> _hideAllSelectedMarkers() async {
+    final selectedPoint = ref.read(selectedMarkerProvider.notifier);
+    final controller = await ref.read(dgisControllerProvider.future);
+    await selectedPoint.removeAllMarkers();
+    await controller.removeAllHighlights();
+  }
+
   @override
   LayersState build() {
     ref.onDispose(() {
@@ -86,6 +95,8 @@ class LayersControls extends _$LayersControls {
 
       cancelToken?.cancel();
       viewPortSubscription?.cancel();
+
+      _hideAllSelectedMarkers();
 
       switch (value) {
         case LayerType.favourites:
@@ -235,6 +246,7 @@ class LayersControls extends _$LayersControls {
 
   Future<void> toggleIwish(LayerType? currentState, LayerType value) async {
     final layers = ref.watch(layersControlsProvider.notifier);
+
     await viewPortSubscription?.cancel();
 
     if (currentState == LayerType.joy) {
@@ -489,7 +501,7 @@ class LayersControls extends _$LayersControls {
                     width: 30,
                   ),
                   textStyle: MarkerTextStyleMessage(
-                    color: const Color(0xFF1BA136).value,
+                    color: NonThemeColor.color26.value,
                     strokeColor: Colors.white.value,
                     strokeWidth: 1,
                     fontSize: 14,

@@ -2,8 +2,6 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/_features/landing/providers/map_controls.dart'
-    as map_control_provider;
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
@@ -21,6 +19,7 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_scrollable_content.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:shimmer/shimmer.dart';
@@ -36,9 +35,11 @@ import 'widgets/poi_photos_header.dart';
 class PoiCardWidget extends StatelessWidget {
   final DgisObjectIdMessage objectId;
   final PoiCameraConfig? cameraConfig;
+  final LatLng? closestPoint;
 
-  const PoiCardWidget(
-    this.objectId, {
+  const PoiCardWidget({
+    required this.objectId,
+    required this.closestPoint,
     super.key,
     this.cameraConfig,
   });
@@ -47,13 +48,13 @@ class PoiCardWidget extends StatelessWidget {
   // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
     // ref.read(poiCardProviderProvider.notifier).getDgisObject(objectId);
-
     return LayoutBuilder(
       builder: (context, constraints) => _Content(
         objectId: objectId,
         cameraConfig: cameraConfig,
         biggestHeight: constraints.biggest.height,
         biggestWidth: constraints.biggest.width,
+        closestPoint: closestPoint,
         // directoryObject: result,
       ),
     );
@@ -66,11 +67,13 @@ class _Content extends ConsumerStatefulWidget {
 
   final double biggestHeight;
   final double biggestWidth;
+  final LatLng? closestPoint;
 
   const _Content({
     required this.biggestHeight,
     required this.biggestWidth,
     required this.objectId,
+    required this.closestPoint,
     this.cameraConfig,
   });
 
@@ -124,6 +127,7 @@ class _ContentState extends ConsumerState<_Content>
     final viewModelProvider = poiCardProviderProvider(
       widget.objectId,
       cameraConfig: widget.cameraConfig,
+      closestPoint: widget.closestPoint,
     );
     final state = ref.watch(viewModelProvider);
 
@@ -157,17 +161,6 @@ class _ContentState extends ConsumerState<_Content>
 
     /// error handling or invalid data
     if (state.hasError || objectId == null || data == null) {
-      // TODO(ForesThule): fix this
-      // чет очень не очень, что у нас логика внутри юай. И если будет стейт в ошибке и перерисовка, то
-      // то спамим обновление провайдера. Риверпод, не должен плодить обновление тк стейт идентичен,
-      // но класс не реализует сравнение и хеш, так что не гарантирую что все ок и это не приведет к проблемам.
-      // чем обусловлен этот вызов я не совсем понял, так что оставил.
-      // ps: коммент удалить после фикса
-      Future(
-        () => ref
-            .read(map_control_provider.mapControlsProvider.notifier)
-            .update(map_control_provider.MapControlsStateIdle()),
-      );
       return Column(
         children: [
           const Spacer(flex: 3),
@@ -192,7 +185,7 @@ class _ContentState extends ConsumerState<_Content>
 
     // TODO(scroollocker): move it to widget
     final infoBody = Padding(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -264,7 +257,13 @@ class _ContentState extends ConsumerState<_Content>
           header: PoiHeader(
             tabController: _tabController,
             data: data,
-            onTapClose: () => context.pop(),
+            onTapClose: () {
+              ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+              ref
+                  .read(highlightProvider.notifier)
+                  .removeHighlight(widget.objectId);
+              context.pop();
+            },
           ),
           body: [
             ValueListenableBuilder(

@@ -53,7 +53,7 @@ class FollowState extends _$FollowState {
     state = state.copyWith(enabled: event.isEnabled);
   }
 
-  void setFollowState(FollowStateMessage state) {
-    ref.read(dgisControllerProvider).value?.setFollowState(state);
+  void toggleFollowState() {
+    ref.read(dgisControllerProvider).value?.toggleFollowState();
   }
 }

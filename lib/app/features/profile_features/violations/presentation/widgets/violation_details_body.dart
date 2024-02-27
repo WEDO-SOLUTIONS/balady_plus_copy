@@ -375,13 +375,27 @@ class ViolationClauses extends StatelessWidget {
                                                   .nonComplianceSubClauses![i]
                                                   .attachments!
                                                   .length,
-                                              itemBuilder: (ctx, i2) {
+                                              itemBuilder: (ctx, j) {
                                                 return ObjectionAttachmentItem(
                                                     file: ReasonAttachment(
-                                                        contentLocation: state.details?.nonComplianceClauses?[index].nonComplianceSubClauses?[i].attachments?[i2].contentLocation ?? "",
-                                                        fileName: state.details?.nonComplianceClauses?[index].nonComplianceSubClauses?[i].attachments?[i2].fileName ?? "",
-                                                    ),
-                                                );
+                                                        contentLocation: state
+                                                                .details
+                                                                ?.nonComplianceClauses![
+                                                                    index]
+                                                                .nonComplianceSubClauses![
+                                                                    i]
+                                                                .attachments![j]
+                                                                .contentLocation ??
+                                                            "",
+                                                        fileName: state
+                                                                .details
+                                                                ?.nonComplianceClauses![
+                                                                    index]
+                                                                .nonComplianceSubClauses![
+                                                                    i]
+                                                                .attachments![j]
+                                                                .fileName ??
+                                                            ""));
                                               },
                                             ),
                                           ),

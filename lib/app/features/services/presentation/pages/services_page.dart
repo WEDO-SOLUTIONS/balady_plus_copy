@@ -56,15 +56,19 @@ class _ServicesPageState extends State<ServicesPage> {
 
   @override
   Widget build(BuildContext context) {
+    Color? color = CommonFunctions.isFoundationDay() ? Color(0xff6B4E45) : null;
+
     return BlocConsumer<DashboardBloc, DashboardState>(
         listener: (context, dashboardState) {},
         builder: (context, dashboardState) {
           return BlocBuilder<ServicesCubit, ServicesState>(
             builder: (context, state) {
               return Scaffold(
+                resizeToAvoidBottomInset: false,
                 backgroundColor: AppColor.white,
                 appBar: EnhancedAppBar(
                   title: "services".tr(),
+                  titleColor: color,
                   actions: [
                     IconButton(
                         onPressed: () async {
@@ -73,7 +77,10 @@ class _ServicesPageState extends State<ServicesPage> {
                           CommonFunctions.sendUXCamEvent(UXCamEvents
                               .DashBoard_Click_Switch_Account_From_Services_Event);
                         },
-                        icon: SvgPicture.asset("assets/icons/svg/refresh.svg"))
+                        icon: SvgPicture.asset(
+                          "assets/icons/svg/refresh.svg",
+                          color: color,
+                        ))
                   ],
                 ),
                 body: BlocBuilder<ServicesCubit, ServicesState>(
@@ -81,6 +88,8 @@ class _ServicesPageState extends State<ServicesPage> {
                     return BlocBuilder<EntryPointCubit, EntryPointState>(
                         builder: (context, entryPointState) {
                       return SingleChildScrollView(
+                        padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [

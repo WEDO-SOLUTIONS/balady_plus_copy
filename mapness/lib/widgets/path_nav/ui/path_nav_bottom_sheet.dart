@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/pages/path_nav/lib/no_overscroll_behavior.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PathNavBottomSheet extends StatefulWidget {
   final Widget header;
@@ -88,7 +89,7 @@ class _PathNavBottomSheetState extends State<PathNavBottomSheet>
             duration: duration,
             curve: curve,
             decoration: BoxDecoration(
-              color: const Color(0xffF4F4F5).withOpacity(1 - state),
+              color: context.color.surface_base_primary.withOpacity(1 - state),
               borderRadius: BorderRadius.vertical(
                 top: const Radius.circular(16),
                 bottom: Radius.circular(16 * state),
@@ -124,7 +125,7 @@ class _PathNavBottomSheetState extends State<PathNavBottomSheet>
                       children: [
                         /// handle
                         Container(
-                          color: const Color(0xffE8EAEB),
+                          color: context.color.surface_base_primary,
                           height: 4,
                           width: 40,
                         ),

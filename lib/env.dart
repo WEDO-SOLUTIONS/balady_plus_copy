@@ -61,7 +61,7 @@ abstract class AppEnv {
     await translator.init(
       // localeType: LocalizationDefaultType.device, // based on device language
       // localeType: LocalizationDefaultType.asDefined, // based on first element at languageList
-      localeType: LocalizationDefaultType.asDefined,
+      localeType: LocalizationDefaultType.device,
       languagesList: AppConfig.defaultAppLanguage.languages,
       assetsDirectory: AppConfig.appLanguagesPath,
     );

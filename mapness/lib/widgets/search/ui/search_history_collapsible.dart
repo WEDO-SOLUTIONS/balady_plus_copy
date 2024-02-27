@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,7 +51,7 @@ class _MapSearchHistoryCollapsibleState
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    color: const Color(0xfff4383c),
+                    color: NonThemeColor.color50,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -102,12 +103,12 @@ class _MapSearchHistoryCollapsibleState
                   : widget.history.length,
               separatorBuilder: (context, index) => Container(
                 color: Colors.white,
-                child: const Padding(
+                child:  Padding(
                   padding: EdgeInsetsDirectional.only(start: 56),
                   child: Divider(
                     thickness: 1,
                     height: 2,
-                    color: Color(0x17022224),
+                    color: context.color.surface_base_primary,
                   ),
                 ),
               ),
@@ -115,12 +116,12 @@ class _MapSearchHistoryCollapsibleState
             if (widget.history.length > 10) ...[
               Container(
                 color: Colors.white,
-                child: const Padding(
+                child:  Padding(
                   padding: EdgeInsetsDirectional.only(start: 56),
                   child: Divider(
                     thickness: 1,
                     height: 2,
-                    color: Color(0x17022224),
+                    color: context.color.surface_base_primary,
                   ),
                 ),
               ),
@@ -154,7 +155,7 @@ class _MapSearchHistoryCollapsibleState
                 height: 16,
               ),
               Material(
-                color: const Color(0xFF42909B),
+                color: NonThemeColor.color32,
                 borderRadius: BorderRadius.circular(8),
                 child: InkWell(
                   onTap: widget.onClear,
@@ -201,7 +202,7 @@ class _ShowMore extends StatelessWidget {
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()!
                   .textM
-                  .copyWith(color: const Color(0xFF1E2A36)),
+                  .copyWith(color: context.color.text_and_icons_base_primary),
             ),
           ],
         ),
