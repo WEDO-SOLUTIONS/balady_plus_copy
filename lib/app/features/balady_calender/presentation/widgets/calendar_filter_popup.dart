@@ -53,8 +53,7 @@ class _CalendarFilterState extends State<CalendarFilterPopup> {
           Selector<BaladyCalendarYearsListViewModel,
               List<CheckboxListTileEntity>?>(
             selector: (p0, p1) => p1.checkboListTileEntityList,
-            builder: (context, value, child) => SizedBox(
-              height: 300,
+            builder: (context, value, child) => Expanded(
               child: ListView.builder(
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
@@ -63,7 +62,8 @@ class _CalendarFilterState extends State<CalendarFilterPopup> {
                   return Selector<BaladyCalendarYearsListViewModel,
                       List<String>>(
                     selector: (p0, p1) => p1.idsSelected,
-                    builder: (context, idsSelected, child) => CheckboxListTile(
+                    builder: (context, idsSelected, child) =>
+                        CheckboxListTile(
                       contentPadding: EdgeInsets.zero,
                       fillColor: const MaterialStatePropertyAll(
                         AppColor.primary600Light,
@@ -89,14 +89,15 @@ class _CalendarFilterState extends State<CalendarFilterPopup> {
               ),
             ),
           ),
-          const SizedBox(height: 25),
-          ElevatedButtonWidget.primaryCustom(
-            onPressed: () {
-              Navigator.of(context).pop(
-                baladyCalendarYearsListViewModel.idsSelected,
-              );
-            },
-            text: 'confirm'.tr(),
+          SafeArea(
+            child: ElevatedButtonWidget.primaryCustom(
+              onPressed: () {
+                Navigator.of(context).pop(
+                  baladyCalendarYearsListViewModel.idsSelected,
+                );
+              },
+              text: 'confirm'.tr(),
+            ),
           ),
         ],
       ),

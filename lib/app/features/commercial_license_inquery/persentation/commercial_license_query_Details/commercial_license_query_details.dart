@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
@@ -428,13 +430,38 @@ String? commercialLicenseNumber;
   }
 
 
-   void navigateTo(double lat, double lng) async {
-    var uri = Uri.parse("google.navigation:q=$lat,$lng&mode=d");
-    if (await canLaunch(uri.toString())) {
-      await launch(uri.toString());
-    } else {
-      MessageDialog.showErrorNotification(msg: "cannot_open_google".tr());
+  //  void navigateTo(double lat, double lng) async {
+  //   var uri = Uri.parse("google.navigation:q=$lat,$lng&mode=d");
+  //   if (await canLaunch(uri.toString())) {
+  //     await launch(uri.toString());
+  //   } else {
+  //     MessageDialog.showErrorNotification(msg: "cannot_open_google".tr());
+  //
+  //   }
+  // }
 
+
+  static Future<void> navigateTo(double lat, double lng) async {
+    String url = '';
+    String urlAppleMaps = '';
+    if (Platform.isAndroid) {
+     // url = 'https://www.google.com/maps/search/?api=1&query=$lat,$lng&mode=d';
+      url = "google.navigation:q=$lat,$lng&mode=d";
+      if (await canLaunchUrl(Uri.parse(url))) {
+        await launchUrl(Uri.parse(url));
+      } else {
+        MessageDialog.showErrorNotification(msg: "cannot_open_google".tr());
+      }
+    } else {
+      urlAppleMaps = 'https://maps.apple.com/?q=$lat,$lng';
+      url = 'comgooglemaps://?saddr=&daddr=$lat,$lng&directionsmode=driving';
+      if (await canLaunchUrl(Uri.parse(url))) {
+        await launchUrl(Uri.parse(url));
+      } else if (await canLaunchUrl(Uri.parse(urlAppleMaps))) {
+        await launchUrl(Uri.parse(urlAppleMaps));
+      } else {
+        MessageDialog.showErrorNotification(msg: "cannot_open_google".tr());
+      }
     }
   }
 
