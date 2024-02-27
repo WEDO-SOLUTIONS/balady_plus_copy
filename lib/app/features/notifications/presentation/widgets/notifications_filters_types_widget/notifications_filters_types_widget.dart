@@ -14,7 +14,7 @@ class NotificationsFiltersTypesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 50,
+      height: 60,
       child: ListView.builder(
         itemBuilder: (BuildContext context, int index) {
           return NotificationTypeWidget(
