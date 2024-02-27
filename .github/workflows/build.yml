@@ -119,8 +119,8 @@ jobs:
       - name: 🤖🔨 Generate dart locale bindings
         run: |
           cd mapness
-          sudo mkdir -p lib/l10n/generated
-          sudo chmod -R 777 lib/l10n/
+          mkdir -p lib/l10n/generated
+          chmod -R 777 lib/l10n/
           flutter gen-l10n
 
       - name: 🤖🔨 Build Android app
