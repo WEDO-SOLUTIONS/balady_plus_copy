@@ -47,6 +47,10 @@ class SocailContactWidget extends StatelessWidget {
 
                   onPressed: () {
                     String url = twitterContact!;
+                    if(url.contains("https")==false || url.contains("http")==false)
+                    {
+                      url = "https://$url";
+                    }
                      launch(url);
                   },
                   btnHeight: 42,
@@ -58,6 +62,10 @@ class SocailContactWidget extends StatelessWidget {
                   icon: IconPath.qrSnapChatIcon,
                   onPressed: ()  {
 
+                    if(snapchatContact!.contains("https")==false || snapchatContact!.contains("http")==false)
+                    {
+                      snapchatContact = "https://$snapchatContact";
+                    }
                      launch(snapchatContact!);
                   },
                   btnHeight: 42,
@@ -68,6 +76,11 @@ class SocailContactWidget extends StatelessWidget {
                   icon: IconPath.qrInstagramIcon,
                   iconSize: 35,
                   onPressed: () {
+
+                    if(instegramContact!.contains("https")==false || instegramContact!.contains("http")==false)
+                    {
+                      instegramContact = "https://$instegramContact";
+                    }
                      launch(instegramContact!);
 
                   },
@@ -93,6 +106,12 @@ class SocailContactWidget extends StatelessWidget {
                   icon: IconPath.qrFaceBookIcon,
                   iconSize: 35,
                   onPressed: () {
+
+                    if(facebookContact!.contains("https")==false || facebookContact!.contains("http")==false)
+                    {
+                      facebookContact = "https://$facebookContact";
+                    }
+
 
                      launch(facebookContact!);
                   },
