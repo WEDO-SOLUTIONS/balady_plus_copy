@@ -2,7 +2,10 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/features/health_certificate/presentation/core/services/view_models/main_health_license_view_model.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
@@ -31,11 +34,39 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
   final _rpository = locator<HealthLicenseRepository>();
 
   HealthRequestDetails? requestDetails;
-  bool? isDeletable;
-  bool? isPrintable;
+  String requestNumber;
 
-  HealthRequestDetailsViewModel(
-      {this.requestDetails, this.isDeletable, this.isPrintable});
+  HealthRequestDetailsViewModel({
+    required this.requestNumber,
+  }) {
+    getHealthRequestDetails(requestNumber);
+  }
+
+  void getHealthRequestDetails(String requestNumber) async {
+    try {
+      isLoading = true;
+      notifyListeners();
+      final model = locator<MainHealthLicenseViewModel>();
+      requestDetails = await model.getHealthRequestDetails(
+        int.parse(requestNumber),
+      );
+
+    } on Exception catch (exception) {
+      CommonFunctions.sendEvent(
+        dioError: exception is DioException ? exception : null,
+        response: null,
+        ex: exception,
+      );
+    } catch (exception) {
+      CommonFunctions.sendEvent(
+        dioError: null,
+        response: null,
+        ex: Exception(exception.toString()),
+      );
+    }
+    isLoading = false;
+    notifyListeners();
+  }
 
   void checkHealthCertificatePhoto() async {
     if (requestDetails?.data?.result?.requestTypeId == 1301 ||
@@ -81,9 +112,10 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
         result.data?.result == true) {
       //MM locator<MainHealthLicenseViewModel>().getMyHealthLicensesAndRequests();
       NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
-          RouteName.successRoute,
-          ModalRoute.withName(RouteName.bottomNavigation),
-          arguments: SuccessScreenArgs(type: PAGE_TYPE.deleteRequestScreen));
+        RouteName.successRoute,
+        ModalRoute.withName(RouteName.bottomNavigation),
+        arguments: SuccessScreenArgs(type: PAGE_TYPE.deleteRequestScreen),
+      );
     }
     return result;
   }
@@ -92,20 +124,23 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
     bool isRenew =
         requestDetails?.data?.result?.requestTypeId == 1303 ? true : false;
     SubmitNewRequestResponse? result = await dataModel.submitRequest(
-        requestDetails?.data?.result?.requestId ?? 0,
-        renewLicense: isRenew);
+      requestDetails?.data?.result?.requestId ?? 0,
+      renewLicense: isRenew,
+    );
 
     if (result != null &&
         result.data?.result != null &&
         result.data?.result?.requestId != null) {
       //MM locator<MainHealthLicenseViewModel>().getMyHealthRequests(showLoad: true);
       NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
-          RouteName.successRoute,
-          ModalRoute.withName(RouteName.bottomNavigation),
-          arguments: SuccessScreenArgs(
-              type: PAGE_TYPE.licenseScreen,
-              idNumber: result.data?.result?.requestId.toString() ?? "",
-              msg: result.data?.result?.message));
+        RouteName.successRoute,
+        ModalRoute.withName(RouteName.bottomNavigation),
+        arguments: SuccessScreenArgs(
+          type: PAGE_TYPE.licenseScreen,
+          idNumber: result.data?.result?.requestId.toString() ?? "",
+          msg: result.data?.result?.message,
+        ),
+      );
     }
     return result;
   }
@@ -118,12 +153,14 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
     if (result != null && result.data?.result?.requestId != null) {
       //MM   locator<MainHealthLicenseViewModel>().getMyHealthLicensesAndRequests();
       NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
-          RouteName.successRoute,
-          ModalRoute.withName(RouteName.bottomNavigation),
-          arguments: SuccessScreenArgs(
-              type: PAGE_TYPE.licenseScreen,
-              idNumber: result.data?.result?.requestId.toString() ?? "",
-              msg: result.data?.result?.message ?? ""));
+        RouteName.successRoute,
+        ModalRoute.withName(RouteName.bottomNavigation),
+        arguments: SuccessScreenArgs(
+          type: PAGE_TYPE.licenseScreen,
+          idNumber: result.data?.result?.requestId.toString() ?? "",
+          msg: result.data?.result?.message ?? "",
+        ),
+      );
     }
     return result;
   }
@@ -133,17 +170,17 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
       List<Uint8List?> res = await Future.wait(requestDetails!
           .data!.result!.requestAttachments!
           .map((e) => dataModel.downloadAttachments(e.attachUrl ?? "")));
- 
+
     }*/
     Tuple2<Uint8List?, String?> res = await dataModel.downloadAttachments(id);
     if (res.item1 != null) showFile(res.item1!, contentType: res.item2);
   }
 
-  LICENSE_MANAGEMENT_STATUS isOrderDeletable() {
-    return isDeletable == true
-        ? LICENSE_MANAGEMENT_STATUS.DRAFT
-        : LICENSE_MANAGEMENT_STATUS.DONE;
-  }
+  // LICENSE_MANAGEMENT_STATUS isOrderDeletable() {
+  //   return isDeletable == true
+  //       ? LICENSE_MANAGEMENT_STATUS.DRAFT
+  //       : LICENSE_MANAGEMENT_STATUS.DONE;
+  // }
 
   bool isValidToSubmit() {
     return requestDetails?.data?.result?.validToSubmit ?? false;
@@ -152,13 +189,19 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
   void showFile(Uint8List bytes, {String? contentType}) async {
     try {
       if (contentType?.toLowerCase().contains("pdf") ?? false) {
-        Navigator.push(NavigationService.navigatorKey.currentState!.context,
-            MaterialPageRoute(builder: (context) => PDFViewer(file: bytes)));
+        Navigator.push(
+          NavigationService.navigatorKey.currentState!.context,
+          MaterialPageRoute(
+            builder: (context) => PDFViewer(file: bytes),
+          ),
+        );
       } else if (contentType?.toLowerCase().contains("image") ?? false) {
         Navigator.push(
-            NavigationService.navigatorKey.currentState!.context,
-            MaterialPageRoute(
-                builder: (context) => FullImageViewBytes(imageBase64: bytes)));
+          NavigationService.navigatorKey.currentState!.context,
+          MaterialPageRoute(
+            builder: (context) => FullImageViewBytes(imageBase64: bytes),
+          ),
+        );
       } else {
         openFile(bytes, contentType: contentType);
       }
@@ -202,7 +245,7 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
         ?.data?.result?.healthCertificateInfo?.certificateId
         .toString();
     if (licenseId != null) {
-      if (isPrintable == true) {
+      if (requestDetails?.data?.result?.printable == true) {
         Tuple2<Uint8List?, String?> res =
             await dataModel.downloadLicense(licenseId);
 
@@ -215,8 +258,9 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
         if (res.item1 != null) openFile(res.item1!, contentType: res.item2);
       } else if (requestDetails?.getLicenseStatus() ==
           LICENSE_MANAGEMENT_STATUS.HOLDED) {
-        showError(Helpers.translatingWord(
-            "print_license_not_available_holded_error"));
+        showError(
+          Helpers.translatingWord("print_license_not_available_holded_error"),
+        );
       } else {
         showError(Helpers.translatingWord("print_license_not_available"));
       }

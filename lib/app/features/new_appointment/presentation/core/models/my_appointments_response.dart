@@ -108,7 +108,6 @@ class AppointmentItem {
   factory AppointmentItem.fromJson(Map<String, dynamic> json) =>
       AppointmentItem(
         id: json["id"],
-        editable: json["editable"],
         municipalityId: json["municipalityId"],
         municipalityName: json["municipalityName"],
         subMunicipalityId: json["subMunicipalityId"],
@@ -120,6 +119,7 @@ class AppointmentItem {
         statusId: json["statusId"],
         statusName: json["statusName"],
         cancelable: json["cancelable"],
+        editable: json["editable"],
         printable: json["printable"],
         printUrl: json["printUrl"],
         mainClassName: json["mainClassName"],
