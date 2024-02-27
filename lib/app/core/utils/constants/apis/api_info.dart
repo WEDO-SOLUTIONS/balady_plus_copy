@@ -790,7 +790,10 @@ class ApiUrl {
 
 
   static String updateNotificationSettings() =>
-      '/v1/balady-commercial-services/licenses';
+      '/v1/notifications-services/devices';
+
+
+
 
 
 

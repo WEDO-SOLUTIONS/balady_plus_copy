@@ -49,6 +49,9 @@ import '../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubi
 import '../../features/force_update/presentation/core/force_update_view_model.dart';
 import '../../features/location/presentation/bloc/location_bloc.dart';
 import '../../features/map_page/data/repositories/layers_repositories.dart';
+import '../../features/notifications/Data/data_source/remote_data_source.dart';
+import '../../features/notifications/Data/repositories/notification_repository_implementation.dart';
+import '../../features/notifications/manager/notification_manager.dart';
 import '../../features/unknow/data/repositories/repository_implementation.dart';
 import '../../features/unknow/domain/repositories/repository.dart';
 import '../../features/weather/presentation/bloc/weather_bloc.dart';
@@ -247,5 +250,14 @@ void initialize() {
   //Balady Calendar
   sl.registerLazySingleton<BaladyCalendarRemoteDataSource>(() => CalendarBaladyRemoteDataSourceImpl(webService: sl()));
   sl.registerLazySingleton<BaladyCalendarRepository>(() => BaladyCalendarRepositoryImpl(remoteDataSource: sl()));
+
+
+  //noification
+  sl.registerLazySingleton<NotificationRemoteDataSource>(() => NotificationRemoteDataSourceImplementation(webService: sl()));
+  sl.registerLazySingleton<NotificationRepositoryImplementation>(() => NotificationRepositoryImplementation(remoteDataSource: sl()));
+  sl.registerLazySingleton<NotificationManager>(() => NotificationManager(repository: sl()));
+
+
+
 
 }

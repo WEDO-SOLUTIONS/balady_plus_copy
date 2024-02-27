@@ -28,6 +28,9 @@ abstract class AppEnv {
   static Future<void> setupEnv(EnvType type) async {
     ///  await _deleteAppDir();
     // await _deleteCacheDir();
+
+
+
     WidgetsFlutterBinding.ensureInitialized();
 
     /// force app to be only portrait
@@ -36,7 +39,7 @@ abstract class AppEnv {
       DeviceOrientation.portraitDown,
     ]);
 
-    NotificationService.init(initScheduled: true);
+
 
     MapUtils.loadMarkers();
     sharedPrefs.init();
@@ -50,7 +53,7 @@ abstract class AppEnv {
     //final cameras = await CommonFunctions.getAvailableCameras();
 
     // initialize somethings before start app, e.g. device details, lang
-    await Initializer.init();
+
 
     // Initialize hive and open all needed boxes
     await HiveManager.initializeHive();
@@ -68,6 +71,8 @@ abstract class AppEnv {
     }
     HijriCalendar.setLocal(translator.activeLanguageCode);
     configLoading();
+    await Initializer.init();
+    NotificationService.init(initScheduled: true);
     NotificationService.configure();
   }
 
