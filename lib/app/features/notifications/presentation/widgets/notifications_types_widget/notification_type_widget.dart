@@ -21,7 +21,7 @@ class NotificationTypeWidget extends StatelessWidget {
       },
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 4,vertical: 8),
-        color: isSelected ? AppColor.primary700Light : Colors.grey.shade200,
+        color: isSelected ? AppColor.primary700Light : AppColor.white10,
         elevation: isSelected ? 2 : 0,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -40,7 +40,7 @@ class NotificationTypeWidget extends StatelessWidget {
                     color: isSelected ? Colors.white : Colors.grey,
                   ),
                 ),
-                const SizedBox(width: 4),
+                const SizedBox(width: 4,height: double.maxFinite),
                 Text(
                   '($count)',
                   style: AppStyle.serviceTitleStyle.copyWith(

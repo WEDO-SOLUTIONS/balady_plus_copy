@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import 'package:balady_plus/app/features/notifications/presentation/widgets/actions_appbar/action_show_filter_widget.dart';
 import 'package:balady_plus/app/features/notifications/presentation/widgets/actions_appbar/action_show_type_date_widget.dart';
+import 'package:balady_plus/app/features/notifications/presentation/widgets/notification_search_widget.dart';
 import 'package:balady_plus/app/features/notifications/presentation/widgets/notifications_filters_types_widget/notifications_filters_types_widget.dart';
 import 'package:balady_plus/app/features/notifications/presentation/widgets/notifications_items_widget/notifications_list_items_widget.dart';
 import 'package:balady_plus/app/features/notifications/presentation/widgets/notifications_types_widget/notifications_types_select_widget.dart';
@@ -10,14 +11,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-class NotificationsListPage extends StatelessWidget {
-  const NotificationsListPage({super.key});
+class NotificationsListScreen extends StatelessWidget {
+  const NotificationsListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<DelegatorsCubit>.value(
       value: sl<DelegatorsCubit>(),
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: DefaultAppBarWidget(
           title: "notifications".tr(),
           actions: const [
@@ -33,7 +35,9 @@ class NotificationsListPage extends StatelessWidget {
               children: [
                 SizedBox(height: 12),
                 NotificationsTypesWidget(),
-                // add Search
+                SizedBox(height: 12),
+                NotificationSearchWidget(),
+                SizedBox(height: 6),
                 NotificationsFiltersTypesWidget(),
                 Expanded(child: ListItemsEventsWidget()),
               ],

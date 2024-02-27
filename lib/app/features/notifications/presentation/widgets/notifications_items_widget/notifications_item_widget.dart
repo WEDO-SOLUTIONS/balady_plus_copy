@@ -13,7 +13,9 @@ class NotificationsItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.of(context).pushNamed(RouteName.notificationsDetailsScreen);
+      },
       child: Card(
         margin: const EdgeInsets.only(bottom: 12),
         elevation: 3,
@@ -42,6 +44,11 @@ class NotificationsItemWidget extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         Card(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                          ),
+                          color: Colors.red.shade800.withAlpha(60),
+                          elevation: 0,
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 5),
@@ -54,11 +61,6 @@ class NotificationsItemWidget extends StatelessWidget {
                               ),
                             ),
                           ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(6)),
-                          ),
-                          color: Colors.red.shade800.withAlpha(60),
-                          elevation: 0,
                         ),
                         const Spacer(),
                         Text(
@@ -71,8 +73,7 @@ class NotificationsItemWidget extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
-                    ExpandableTextWidget(
+                    const ExpandableTextWidget(
                       text:
                       "نأمل منك تحديث بيانات رخصة رقم 349350349 تجنبًا للغرامات"
                           "اسم المالك: محمد فهد الحربي"
