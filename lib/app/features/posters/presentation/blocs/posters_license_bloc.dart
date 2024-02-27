@@ -394,6 +394,7 @@ class PostersLicenseBloc
                 length: e.length,
                 width: e.width,
                 typeId: e.posterType?.id,
+                discountPercentage: e.discountPercentage,
                 name: e.name))
             .toList()));
 

@@ -7,12 +7,13 @@ class PosterItem {
   final double? width;
   final String? name;
   final PermitPosterTypeItem? posterType;
+  final int? discountPercentage;
   final List<PermitAttachmentItem>? attachedDocuments;
-  PosterItem({
-    this.length,
-    this.width,
-    this.name,
-    this.posterType,
-    this.attachedDocuments,
-  });
+  PosterItem(
+      {this.length,
+      this.width,
+      this.name,
+      this.posterType,
+      this.attachedDocuments,
+      this.discountPercentage});
 }
