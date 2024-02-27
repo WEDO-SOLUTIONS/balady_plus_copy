@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
 import 'package:bot_toast/bot_toast.dart'
     show BotToastInit, BotToastNavigatorObserver;
@@ -77,33 +79,45 @@ class AppWidget extends StatefulWidget {
 class _AppWidgetState extends State<AppWidget> {
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: translator.activeLanguageCode == "ar"
-          ? TextDirection.rtl
-          : TextDirection.ltr,
-      child: MaterialApp(
-        title: 'appNameWord'.tr(),
-        debugShowCheckedModeBanner: false,
-        navigatorKey: NavigationService.navigatorKey,
-        theme: ThemeData(
-          primaryColor: AppColor.blue,
-          scaffoldBackgroundColor: AppColor.scaffoldBackground,
-          fontFamily: AppConfig.appFontType,
-          useMaterial3: false,
-          appBarTheme: const AppBarTheme(backgroundColor: AppColor.blue),
+    return GestureDetector(
+      onTap: () {
+        // When running in iOS, dismiss the keyboard when any Tap happens outside a TextField
+        if (Platform.isIOS) hideKeyboard(context);
+      },
+      child: Directionality(
+        textDirection: translator.activeLanguageCode == "ar"
+            ? TextDirection.rtl
+            : TextDirection.ltr,
+        child: MaterialApp(
+          title: 'appNameWord'.tr(),
+          debugShowCheckedModeBanner: false,
+          navigatorKey: NavigationService.navigatorKey,
+          theme: ThemeData(
+            primaryColor: AppColor.blue,
+            scaffoldBackgroundColor: AppColor.scaffoldBackground,
+            fontFamily: AppConfig.appFontType,
+            useMaterial3: false,
+            appBarTheme: const AppBarTheme(backgroundColor: AppColor.blue),
+          ),
+          builder: EasyLoading.init(builder: BotToastInit()),
+          navigatorObservers: [
+            BotToastNavigatorObserver(),
+            FlutterUxcamNavigatorObserver(),
+          ],
+          localizationsDelegates: translator.delegates.toList()
+            ..add(CountryLocalizations.delegate), // Android + iOS Delegates
+          locale: translator.activeLocale, // Active locale
+          supportedLocales: translator.locals(), // Locals list
+          initialRoute: RouteName.splash,
+          routes: Routes.routes(),
         ),
-        builder: EasyLoading.init(builder: BotToastInit()),
-        navigatorObservers: [
-          BotToastNavigatorObserver(),
-          FlutterUxcamNavigatorObserver(),
-        ],
-        localizationsDelegates: translator.delegates.toList()
-          ..add(CountryLocalizations.delegate), // Android + iOS Delegates
-        locale: translator.activeLocale, // Active locale
-        supportedLocales: translator.locals(), // Locals list
-        initialRoute: RouteName.splash,
-        routes: Routes.routes(),
       ),
     );
+  }
+  void hideKeyboard(BuildContext context) {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
   }
 }
