@@ -6,11 +6,10 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:mapness/features/road_events/ui/widgets/closure_card.dart';
 import 'package:mapness/features/road_events/ui/widgets/closure_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
-
-import 'package:mapness/features/road_events/ui/widgets/closure_card.dart';
 
 // const _roadClosuresName = 'road-closures';
 

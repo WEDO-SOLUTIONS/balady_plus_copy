@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
@@ -9,9 +8,9 @@ class LifestyleLayersService {
   LifestyleLayersService({required this.dio}) {
 
     (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
-        (HttpClient client) {
+        (client) {
       client.badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
+          (cert, host, port) => true;
       return client;
     };
     dio.options.connectTimeout = const Duration(milliseconds: 60000);

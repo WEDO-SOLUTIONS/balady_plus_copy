@@ -11,8 +11,7 @@ class _AdditionalManeuver extends StatelessWidget {
   final String iconPath;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       padding: const EdgeInsets.all(8),
       decoration:  BoxDecoration(
         borderRadius: const BorderRadius.only(
@@ -45,5 +44,4 @@ class _AdditionalManeuver extends StatelessWidget {
         ],
       ),
     );
-  }
 }

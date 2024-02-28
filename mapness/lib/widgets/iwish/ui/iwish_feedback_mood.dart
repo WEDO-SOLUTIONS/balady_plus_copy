@@ -13,8 +13,7 @@ class IwishFeedbackMood extends StatelessWidget {
   final void Function(IwishFeedbackMoodType) onMoodSelected;
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
+  Widget build(BuildContext context) => Row(
       children: IwishFeedbackMoodType.values
           .map(
             (e) => Expanded(
@@ -48,7 +47,6 @@ class IwishFeedbackMood extends StatelessWidget {
           .take(5)
           .toList(),
     );
-  }
 }
 
 enum IwishFeedbackMoodType {

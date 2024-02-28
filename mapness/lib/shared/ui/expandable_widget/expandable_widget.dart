@@ -19,8 +19,7 @@ class ExpandableWidget extends StatelessWidget {
   final Widget content;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context) => Padding(
       padding: const EdgeInsets.all(8),
       child: ExpansionWidget(
         titleBuilder: (
@@ -110,5 +109,4 @@ class ExpandableWidget extends StatelessWidget {
         ),
       ),
     );
-  }
 }

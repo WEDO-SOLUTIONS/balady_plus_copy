@@ -12,8 +12,7 @@ class G2BCard extends StatelessWidget {
   final void Function() onTap;
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       color: color,
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
@@ -53,5 +52,4 @@ class G2BCard extends StatelessWidget {
         ),
       ),
     );
-  }
 }

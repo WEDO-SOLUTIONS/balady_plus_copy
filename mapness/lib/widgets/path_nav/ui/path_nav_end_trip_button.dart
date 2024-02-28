@@ -8,8 +8,7 @@ class PathNavEndTripButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       child: Ink(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
@@ -33,5 +32,4 @@ class PathNavEndTripButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }

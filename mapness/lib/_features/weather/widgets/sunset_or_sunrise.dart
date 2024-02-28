@@ -20,8 +20,7 @@ class SunriseOrSunsetTime extends StatelessWidget {
   final String icon;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       children: [
         SvgPicture.asset(icon),
         const SizedBox(
@@ -34,5 +33,4 @@ class SunriseOrSunsetTime extends StatelessWidget {
         ),
       ],
     );
-  }
 }

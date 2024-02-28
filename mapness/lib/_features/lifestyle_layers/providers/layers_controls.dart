@@ -9,8 +9,10 @@ import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_repository.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
+import 'package:mapness/_features/lifestyle_layers/domain/building_compliance_certificate.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/investment_sites.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/map_requests_params.dart';
+import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/white_lands.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
@@ -28,9 +30,6 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'package:mapness/_features/lifestyle_layers/domain/building_compliance_certificate.dart';
-import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
-
 part 'layers_controls.g.dart';
 
 const mapLayerName = 'esri_markers';
@@ -47,7 +46,6 @@ class SelectedLayer extends _$SelectedLayer {
 }
 
 class LayersState {
-
   LayersState({
     required this.isLoading,
     required this.layersVisible,
@@ -310,7 +308,10 @@ class LayersControls extends _$LayersControls {
   }
 
   MapRequestParams _createParams(
-          VisibleRect visibleRect, LayerType layer, EnvironmentConfig env,) =>
+    VisibleRect visibleRect,
+    LayerType layer,
+    EnvironmentConfig env,
+  ) =>
       MapRequestParams(
         layer: layer.getGISLayerType(),
         southWestLongitude: visibleRect.southWestLon,
@@ -388,17 +389,20 @@ class LayersControls extends _$LayersControls {
         .whereNotNull()
         .debounceTime(duration)
         .map((event) => event.visibleRect)
-        .asyncMap((visibleRect) => controller.getWhiteLands(
-              MapRequestParams(
-                  layer: GISMapLayers.BSWhiteParcelS,
-                  southWestLongitude: visibleRect.southWestLon,
-                  southWestLatitude: visibleRect.southWestLat,
-                  northEastLongitude: visibleRect.northEastLon,
-                  northEastLatitude: visibleRect.northEastLat,
-                  proxy: env.proxy,
-                  domain: env.url,),
-              cancelToken,
-            ),)
+        .asyncMap(
+          (visibleRect) => controller.getWhiteLands(
+            MapRequestParams(
+              layer: GISMapLayers.BSWhiteParcelS,
+              southWestLongitude: visibleRect.southWestLon,
+              southWestLatitude: visibleRect.southWestLat,
+              northEastLongitude: visibleRect.northEastLon,
+              northEastLatitude: visibleRect.northEastLat,
+              proxy: env.proxy,
+              domain: env.url,
+            ),
+            cancelToken,
+          ),
+        )
         .map(_makePolygons)
         .listen((data) async {
       update(isLoading: false);
@@ -434,8 +438,12 @@ class LayersControls extends _$LayersControls {
         .whereNotNull()
         .debounceTime(duration)
         .map((event) => event.visibleRect)
-        .asyncMap((visibleRect) => controller.buildingComplianceCertificate(
-            _createParams(visibleRect, LayerType.buildings, env), cancelToken,),)
+        .asyncMap(
+          (visibleRect) => controller.buildingComplianceCertificate(
+            _createParams(visibleRect, LayerType.buildings, env),
+            cancelToken,
+          ),
+        )
         .listen(
       (data) async {
         update(isLoading: false);
@@ -470,7 +478,10 @@ class LayersControls extends _$LayersControls {
               Polyline(
                 id: idPolyline,
                 options: PolylineOptionsMessage(
-                    points: i, width: 2, color: 0xff358281,),
+                  points: i,
+                  width: 2,
+                  color: 0xff358281,
+                ),
                 onTap: () => _showEsriCard(element),
               ),
             );
@@ -521,14 +532,18 @@ class LayersControls extends _$LayersControls {
 
   List<Polygon> _makePolygons(List<WhiteLands>? list) =>
       list
-          ?.map((e) => Polygon(
+          ?.map(
+            (e) => Polygon(
               id: e.id,
               options: PolygonOptionsMessage(
-                  strokeWidth: 2,
-                  strokeColor: e.strokeColor,
-                  color: e.color,
-                  contours: [e.paths],),
-              onTap: () => _showEsriCard(e),),)
+                strokeWidth: 2,
+                strokeColor: e.strokeColor,
+                color: e.color,
+                contours: [e.paths],
+              ),
+              onTap: () => _showEsriCard(e),
+            ),
+          )
           .toList() ??
       [];
 
@@ -541,10 +556,13 @@ class LayersControls extends _$LayersControls {
         .onError((error, stackTrace) {
       onError();
       return [];
-    }).timeout(duration, onTimeout: () {
-      onError();
-      return [];
-    },);
+    }).timeout(
+      duration,
+      onTimeout: () {
+        onError();
+        return [];
+      },
+    );
     await _removeAll();
     await ref
         .read(mapObjectManagerProvider(named: mapLayerName).notifier)

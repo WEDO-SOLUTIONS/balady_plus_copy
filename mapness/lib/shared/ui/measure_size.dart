@@ -31,9 +31,7 @@ class MeasureSize extends SingleChildRenderObjectWidget {
   final OnWidgetSizeChange onChange;
 
   @override
-  RenderObject createRenderObject(BuildContext context) {
-    return MeasureSizeRenderObject(onChange);
-  }
+  RenderObject createRenderObject(BuildContext context) => MeasureSizeRenderObject(onChange);
 
   @override
   void updateRenderObject(

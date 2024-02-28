@@ -1,13 +1,12 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/_features/stories/data/story_service.dart';
 import 'package:mapness/_features/stories/presentation/story_refresh_button.dart';
 import 'package:mapness/_features/stories/presentation/story_thumbnails.dart';
 import 'package:mapness/_features/stories/stories.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-
-import 'package:mapness/_features/common/providers/network_status.dart';
 
 class StoriesWidget extends ConsumerStatefulWidget {
   const StoriesWidget({super.key});

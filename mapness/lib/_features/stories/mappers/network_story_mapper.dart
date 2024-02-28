@@ -7,33 +7,26 @@ import 'package:mapness/_features/stories/domain/story_data.dart';
 import 'package:mapness/_features/stories/domain/thumbnail/story_thumbnail_data.dart';
 
 extension NetworkStoryResponseMapper on NetworkStoriesResponse {
-  List<StoryData> toDomain() {
-    return stories.map((e) => e.toDomain()).toList();
-  }
+  List<StoryData> toDomain() => stories.map((e) => e.toDomain()).toList();
 }
 
 extension NetworkStoryMapper on NetworkStory {
-  StoryData toDomain() {
-    return StoryData(
+  StoryData toDomain() => StoryData(
       storyId: id,
       frames: frames.map((e) => e.toDomain(id)).toList(),
       thumbnail: preview.toDomain(),
     );
-  }
 }
 
 extension NetworkStoryPreviewMapper on NetworkStoryPreview {
-  StoryThumbnailData toDomain() {
-    return StoryThumbnailData(
+  StoryThumbnailData toDomain() => StoryThumbnailData(
       imageUrl: image.url,
       title: title,
     );
-  }
 }
 
 extension NetworkStoryFrameMapper on NetworkStoryFrame {
-  StoryFrameData toDomain(String storyId) {
-    return StoryFrameData(
+  StoryFrameData toDomain(String storyId) => StoryFrameData(
       isWatched: false,
       title: title,
       imageUrl: background.url,
@@ -44,15 +37,12 @@ extension NetworkStoryFrameMapper on NetworkStoryFrame {
       descriptionStyle: style.description.toDomain(),
       titleStyle: style.title.toDomain(),
     );
-  }
 }
 
 extension NetworkStoryTextStyleMapper on NetworkStoryTextStyle {
-  StoryTextStyle toDomain() {
-    return StoryTextStyle(
+  StoryTextStyle toDomain() => StoryTextStyle(
       color: color.toDomain(),
     );
-  }
 }
 
 extension ColorMapper on NetowrkColor {
@@ -67,13 +57,11 @@ extension ColorMapper on NetowrkColor {
 }
 
 extension NetworkStoryPageActionMapper on NetworkStoryPageAction {
-  StoryFrameAction? toDomain() {
-    return StoryFrameAction(
+  StoryFrameAction? toDomain() => StoryFrameAction(
       title: title,
       // TODO(someone): support deeplinks in native platforms
       deeplinkUrl: link.url.replaceFirst('balady:/', ''),
       textStyle: style.textStyle.toDomain(),
       backgroundColor: style.backgroundColor.toDomain(),
     );
-  }
 }

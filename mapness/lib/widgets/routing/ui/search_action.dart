@@ -13,8 +13,7 @@ class SearchActions extends StatelessWidget {
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -35,7 +34,6 @@ class SearchActions extends StatelessWidget {
         itemCount: children.length,
       ),
     );
-  }
 }
 
 class SearchActionRow extends StatelessWidget {
@@ -47,8 +45,7 @@ class SearchActionRow extends StatelessWidget {
   final String title;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context) => Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 16,
       ),
@@ -90,5 +87,4 @@ class SearchActionRow extends StatelessWidget {
         ],
       ),
     );
-  }
 }

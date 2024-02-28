@@ -67,7 +67,7 @@ class _MapPageState extends ConsumerState<MapPage>
     return DgisMap(
       key: ValueKey(_keyIndex),
       androidUseExpensive: true,
-      onMapCreated: (DgisMapController controller) async {
+      onMapCreated: (controller) async {
         await dgisController.onMapCreated(controller);
       },
     );

@@ -5,6 +5,7 @@ import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/pages/kiblah/providers/fake_compass.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_bearing.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_haptics.dart';
 import 'package:mapness/pages/kiblah/ui/radar_widget.dart';
@@ -12,8 +13,6 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/compass.dart';
 import 'package:mapness/shared/ui/gradient_stroke.dart';
-
-import 'package:mapness/pages/kiblah/providers/fake_compass.dart';
 
 class KiblahCompass extends ConsumerWidget {
   const KiblahCompass({
@@ -177,7 +176,6 @@ class KiblahCompass extends ConsumerWidget {
 }
 
 class _KaabaIcon extends StatelessWidget {
-
   const _KaabaIcon({required this.isCorrect});
   final bool isCorrect;
 

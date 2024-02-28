@@ -79,8 +79,7 @@ class MapRequestParams {
     return verifyingKey;
   }
 
-  Map<String, dynamic> toMap() {
-    return {
+  Map<String, dynamic> toMap() => {
       'outFields': (layer != null && pointsDetails == true)
           ? layer?.outFieldsLong.join(',')
           : layer?.outFieldsShort.join(','),
@@ -96,5 +95,4 @@ class MapRequestParams {
             '${northEastLatitude?.toStringAsFixed(3)}',
       'resultRecordCount': layer?.resultRecordCount ?? 0,
     };
-  }
 }

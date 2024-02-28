@@ -15,10 +15,8 @@ class StoryThumbnails extends StatelessWidget {
   final void Function(String storyId) onThumbnailPressed;
 
   @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Column(
+  Widget build(BuildContext context) => LayoutBuilder(
+      builder: (context, constraints) => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             // const StoryThumbnailLabel(title: 'جديدنا'),
@@ -52,8 +50,6 @@ class StoryThumbnails extends StatelessWidget {
               ),
             ),
           ],
-        );
-      },
+        ),
     );
-  }
 }

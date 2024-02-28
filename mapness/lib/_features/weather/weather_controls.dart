@@ -5,11 +5,10 @@ import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/_features/weather/domain/enum/weather_enum.dart';
+import 'package:mapness/_features/weather/provider/weather_map_controller.dart';
 import 'package:mapness/_features/weather/provider/weather_map_controls.dart';
 import 'package:mapness/_features/weather/widgets/weather_state_icon.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-
-import 'package:mapness/_features/weather/provider/weather_map_controller.dart';
 
 class WeatherControls extends ConsumerWidget {
   const WeatherControls({
@@ -40,9 +39,10 @@ class WeatherControls extends ConsumerWidget {
                     children: [
                       const Spacer(),
                       AnimatedOpacity(
-                          opacity: mapControls.controlsVisible ? 1 : 0,
-                          duration: const Duration(milliseconds: 150),
-                          child: const Legend(),),
+                        opacity: mapControls.controlsVisible ? 1 : 0,
+                        duration: const Duration(milliseconds: 150),
+                        child: const Legend(),
+                      ),
                       SizedBox(
                         height: mapControls.extent,
                       ),

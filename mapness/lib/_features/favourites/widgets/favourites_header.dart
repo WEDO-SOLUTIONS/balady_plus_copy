@@ -18,8 +18,7 @@ class FavouritesHeader extends StatelessWidget {
   final void Function() onDeleteAllTap;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context) => Padding(
       padding: const EdgeInsets.only(left: 16, bottom: 16, right: 16),
       child: Stack(
         alignment: Alignment.center,
@@ -75,5 +74,4 @@ class FavouritesHeader extends StatelessWidget {
         ],
       ),
     );
-  }
 }

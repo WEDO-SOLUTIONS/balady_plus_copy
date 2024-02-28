@@ -32,8 +32,7 @@ class _IndoorControl extends StatelessWidget {
   final void Function(IndoorLevel) onSelect;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       children: state.levels.reversed
           .mapIndexed(
             (index, e) => MapButton(
@@ -61,5 +60,4 @@ class _IndoorControl extends StatelessWidget {
           )
           .toList(),
     );
-  }
 }

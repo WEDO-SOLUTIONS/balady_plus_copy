@@ -13,12 +13,10 @@ class RoutingSearchHeaderDelegate extends SliverPersistentHeaderDelegate {
   final DraggableScrollableController draggableScrollableController;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return DashboardHeader(
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) => DashboardHeader(
       placeholder: placeholder,
       draggableScrollableController: draggableScrollableController,
     );
-  }
 
   @override
   double get maxExtent => 84;
@@ -39,8 +37,7 @@ class DashboardHeader extends ConsumerWidget {
   final DraggableScrollableController draggableScrollableController;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+  Widget build(BuildContext context, WidgetRef ref) => Container(
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -79,5 +76,4 @@ class DashboardHeader extends ConsumerWidget {
         ],
       ),
     );
-  }
 }

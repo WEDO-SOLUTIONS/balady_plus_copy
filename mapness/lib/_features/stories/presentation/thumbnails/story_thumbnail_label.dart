@@ -8,8 +8,7 @@ class StoryThumbnailLabel extends StatelessWidget {
   final String title;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context) => Padding(
       padding: const EdgeInsets.only(bottom: 12, right: 16),
       child: Align(
         alignment: Alignment.centerRight,
@@ -19,5 +18,4 @@ class StoryThumbnailLabel extends StatelessWidget {
         ),
       ),
     );
-  }
 }

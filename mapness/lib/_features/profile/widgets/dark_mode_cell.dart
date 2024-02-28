@@ -59,7 +59,7 @@ class DarkModeCell extends ConsumerWidget {
                     IgnorePointer(
                       child: CupertinoSwitch(
                         activeColor: context.color.text_and_icons_status_accent,
-                        onChanged: (bool value) {},
+                        onChanged: (value) {},
                         value: darkMode,
                       ),
                     ),

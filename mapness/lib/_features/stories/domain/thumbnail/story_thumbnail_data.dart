@@ -10,10 +10,8 @@ class StoryThumbnailData {
   StoryThumbnailData copyWith({
     String? title,
     String? imageUrl,
-  }) {
-    return StoryThumbnailData(
+  }) => StoryThumbnailData(
       title: title ?? this.title,
       imageUrl: imageUrl ?? this.imageUrl,
     );
-  }
 }

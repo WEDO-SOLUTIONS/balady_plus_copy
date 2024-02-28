@@ -33,7 +33,7 @@ class DismissibleTransitionState extends State<DismissibleTransition>
         curve: Curves.easeInOutCubic,
       ),
     )..addStatusListener(
-        (AnimationStatus status) {
+        (status) {
           if (status == AnimationStatus.dismissed) {
             widget.onDismiss();
           }
@@ -47,8 +47,7 @@ class DismissibleTransitionState extends State<DismissibleTransition>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onVerticalDragUpdate: (details) {
         _controller.value -=
             details.delta.dy / MediaQuery.of(context).size.height;
@@ -66,8 +65,7 @@ class DismissibleTransitionState extends State<DismissibleTransition>
       },
       child: AnimatedBuilder(
         animation: _opacityAnimation,
-        builder: (context, child) {
-          return Stack(
+        builder: (context, child) => Stack(
             fit: StackFit.expand,
             children: [
               Opacity(
@@ -91,10 +89,8 @@ class DismissibleTransitionState extends State<DismissibleTransition>
                 child: child,
               ),
             ],
-          );
-        },
+          ),
         child: widget.child,
       ),
     );
-  }
 }

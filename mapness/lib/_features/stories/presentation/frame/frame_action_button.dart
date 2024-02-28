@@ -15,8 +15,7 @@ class FrameActionButton extends StatelessWidget {
   final StoryTextStyle? textStyle;
 
   @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
+  Widget build(BuildContext context) => ElevatedButton(
       style: ElevatedButton.styleFrom(
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -33,5 +32,4 @@ class FrameActionButton extends StatelessWidget {
             ),
       ),
     );
-  }
 }

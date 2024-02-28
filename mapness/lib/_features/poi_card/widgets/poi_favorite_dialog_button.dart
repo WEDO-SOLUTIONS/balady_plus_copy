@@ -16,8 +16,7 @@ class PoiFavoriteDialogButton extends StatelessWidget {
   final bool showBorder;
 
   @override
-  Widget build(BuildContext context) {
-    return Ink(
+  Widget build(BuildContext context) => Ink(
       decoration: showBorder
           ? BoxDecoration(
               border: Border(
@@ -60,5 +59,4 @@ class PoiFavoriteDialogButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }

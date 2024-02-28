@@ -8,9 +8,7 @@ part 'highlight.g.dart';
 @riverpod
 class Highlight extends _$Highlight {
   @override
-  List<DgisObjectIdMessage> build() {
-    return [];
-  }
+  List<DgisObjectIdMessage> build() => [];
 
   Future<void> addHighlight(DgisObjectIdMessage objectId) async {
     state = [...state, objectId];

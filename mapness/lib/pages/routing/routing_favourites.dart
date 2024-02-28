@@ -9,8 +9,7 @@ class RoutingFavouritesPage extends StatelessWidget {
   const RoutingFavouritesPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       children: [
         SafeArea(
           bottom: false,
@@ -62,5 +61,4 @@ class RoutingFavouritesPage extends StatelessWidget {
         ),
       ],
     );
-  }
 }

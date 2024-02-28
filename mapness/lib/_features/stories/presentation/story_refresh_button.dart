@@ -6,8 +6,7 @@ class StoryRefreshButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
+  Widget build(BuildContext context) => Center(
       child: Material(
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
@@ -21,5 +20,4 @@ class StoryRefreshButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }

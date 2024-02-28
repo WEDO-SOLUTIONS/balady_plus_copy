@@ -19,8 +19,7 @@ class FrameProgressIndicator extends StatelessWidget {
   final double progress;
 
   @override
-  Widget build(BuildContext context) {
-    return Directionality(
+  Widget build(BuildContext context) => Directionality(
       textDirection: Directionality.of(context),
       child: Padding(
         padding: const EdgeInsets.only(top: 8, left: 16, right: 16),
@@ -63,5 +62,4 @@ class FrameProgressIndicator extends StatelessWidget {
         ),
       ),
     );
-  }
 }

@@ -8,8 +8,7 @@ class LoginCard extends StatelessWidget {
   const LoginCard({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
+  Widget build(BuildContext context) => ClipRRect(
       borderRadius: BorderRadius.circular(8),
       child: Material(
         child: Ink.image(
@@ -69,5 +68,4 @@ class LoginCard extends StatelessWidget {
         ),
       ),
     );
-  }
 }

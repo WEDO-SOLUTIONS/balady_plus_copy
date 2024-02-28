@@ -166,11 +166,9 @@ class ExpansionTileController {
   ///  * [of], a similar function to this one that throws if no [CustomExpansionTile]
   ///    encloses the given context. Also includes some sample code in its
   ///    documentation.
-  static ExpansionTileController? maybeOf(BuildContext context) {
-    return context
+  static ExpansionTileController? maybeOf(BuildContext context) => context
         .findAncestorStateOfType<_CustomExpansionTileState>()
         ?._tileController;
-  }
 }
 
 /// A single-line [ListTile] with an expansion arrow icon that expands or collapses
@@ -551,7 +549,7 @@ class _CustomExpansionTileState extends State<CustomExpansionTile>
       if (_isExpanded) {
         _animationController.forward();
       } else {
-        _animationController.reverse().then<void>((void value) {
+        _animationController.reverse().then<void>((value) {
           if (!mounted) {
             return;
           }

@@ -14,8 +14,7 @@ class NavButton extends StatelessWidget {
   final String icon;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: const BoxDecoration(
@@ -36,5 +35,4 @@ class NavButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }

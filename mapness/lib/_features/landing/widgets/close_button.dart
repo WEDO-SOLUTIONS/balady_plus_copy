@@ -9,8 +9,7 @@ class CloseButton extends StatelessWidget {
   final void Function() onTap;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
@@ -29,5 +28,4 @@ class CloseButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }

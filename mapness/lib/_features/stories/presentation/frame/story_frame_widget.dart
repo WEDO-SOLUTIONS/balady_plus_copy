@@ -134,8 +134,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       child: Directionality(
         textDirection: Directionality.of(context),
         child: Stack(
@@ -223,5 +222,4 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
         ),
       ),
     );
-  }
 }

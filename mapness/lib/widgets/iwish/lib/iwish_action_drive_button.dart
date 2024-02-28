@@ -15,8 +15,7 @@ class IwishActionDriveButton extends StatelessWidget {
   final String label;
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       color: context.color.stroke_accent,
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
@@ -44,5 +43,4 @@ class IwishActionDriveButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }

@@ -18,12 +18,10 @@ class _ModalScopeStatus extends InheritedWidget {
   final Route<dynamic> route;
 
   @override
-  bool updateShouldNotify(_ModalScopeStatus old) {
-    return isCurrent != old.isCurrent ||
+  bool updateShouldNotify(_ModalScopeStatus old) => isCurrent != old.isCurrent ||
         canPop != old.canPop ||
         impliesAppBarDismissal != old.impliesAppBarDismissal ||
         route != old.route;
-  }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder description) {
@@ -113,14 +111,10 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
     super.dispose();
   }
 
-  bool get _shouldIgnoreFocusRequest {
-    return widget.route.animation?.status == AnimationStatus.reverse ||
+  bool get _shouldIgnoreFocusRequest => widget.route.animation?.status == AnimationStatus.reverse ||
         (widget.route.navigator?.userGestureInProgress ?? false);
-  }
 
-  bool get _shouldRequestFocus {
-    return widget.route.navigator!.widget.requestFocus;
-  }
+  bool get _shouldRequestFocus => widget.route.navigator!.widget.requestFocus;
 
   // This should be called to wrap any changes to route.isCurrent, route.canPop,
   // and route.offstage.
@@ -135,10 +129,9 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
+  Widget build(BuildContext context) => AnimatedBuilder(
       animation: widget.route.restorationScopeId,
-      builder: (BuildContext context, Widget? child) {
+      builder: (context, child) {
         assert(child != null);
         return RestorationScope(
           restorationId: widget.route.restorationScopeId.value,
@@ -157,8 +150,7 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
           child: PageStorage(
             bucket: widget.route._storageBucket, // immutable
             child: Builder(
-              builder: (BuildContext context) {
-                return Actions(
+              builder: (context) => Actions(
                   actions: const <Type, Action<Intent>>{
                     // DismissIntent: _DismissModalAction(context),
                   },
@@ -169,8 +161,7 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
                       child: RepaintBoundary(
                         child: AnimatedBuilder(
                           animation: _listenable, // immutable
-                          builder: (BuildContext context, Widget? child) {
-                            return widget.route.buildTransitions(
+                          builder: (context, child) => widget.route.buildTransitions(
                               context,
                               widget.route.animation!,
                               widget.route.secondaryAnimation!,
@@ -182,7 +173,7 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
                                 animation: widget.route.navigator
                                         ?.userGestureInProgressNotifier ??
                                     ValueNotifier<bool>(false),
-                                builder: (BuildContext context, Widget? child) {
+                                builder: (context, child) {
                                   final ignoreEvents =
                                       _shouldIgnoreFocusRequest;
                                   focusScopeNode.canRequestFocus =
@@ -194,32 +185,27 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
                                 },
                                 child: child,
                               ),
-                            );
-                          },
+                            ),
                           child: _page ??= RepaintBoundary(
                             key: widget.route._subtreeKey, // immutable
                             child: Builder(
-                              builder: (BuildContext context) {
-                                return widget.route.buildPage(
+                              builder: (context) => widget.route.buildPage(
                                   context,
                                   widget.route.animation!,
                                   widget.route.secondaryAnimation!,
-                                );
-                              },
+                                ),
                             ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                );
-              },
+                ),
             ),
           ),
         ),
       ),
     );
-  }
 }
 
 abstract class ModalRoute<T> extends TransitionRoute<T>
@@ -247,13 +233,9 @@ abstract class ModalRoute<T> extends TransitionRoute<T>
     }
   }
 
-  static RoutePredicate withName(String name) {
-    return (Route<dynamic> route) {
-      return !route.willHandlePopInternally &&
+  static RoutePredicate withName(String name) => (route) => !route.willHandlePopInternally &&
           route is ModalRoute &&
           route.settings.name == name;
-    };
-  }
 
   Widget buildPage(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation,);
@@ -263,9 +245,7 @@ abstract class ModalRoute<T> extends TransitionRoute<T>
     Animation<double> animation,
     Animation<double> secondaryAnimation,
     Widget child,
-  ) {
-    return child;
-  }
+  ) => child;
 
   @override
   void install() {
@@ -350,9 +330,7 @@ abstract class ModalRoute<T> extends TransitionRoute<T>
   }
 
   @protected
-  bool get hasScopedWillPopCallback {
-    return _willPopCallbacks.isNotEmpty;
-  }
+  bool get hasScopedWillPopCallback => _willPopCallbacks.isNotEmpty;
 
   @override
   void didChangePrevious(Route<dynamic>? previousRoute) {
@@ -386,8 +364,7 @@ abstract class ModalRoute<T> extends TransitionRoute<T>
 
   Widget? _modalScopeCache;
 
-  Widget _buildModalScope(BuildContext context) {
-    return _modalScopeCache ??= Semantics(
+  Widget _buildModalScope(BuildContext context) => _modalScopeCache ??= Semantics(
       sortKey: const OrdinalSortKey(0),
       child: _ModalScope<T>(
         key: _scopeKey,
@@ -395,17 +372,14 @@ abstract class ModalRoute<T> extends TransitionRoute<T>
         // _ModalScope calls buildTransitions() and buildChild(), defined above
       ),
     );
-  }
 
   late OverlayEntry _modalScope;
 
   @override
-  Iterable<OverlayEntry> createOverlayEntries() {
-    return <OverlayEntry>[
+  Iterable<OverlayEntry> createOverlayEntries() => <OverlayEntry>[
       _modalScope =
           OverlayEntry(builder: _buildModalScope, maintainState: maintainState),
     ];
-  }
 
   @override
   String toString() => '${objectRuntimeType(this, 'ModalRoute')}($settings)';
@@ -442,7 +416,5 @@ class TransculentPage<T> extends Page<T> {
   final Widget child;
 
   @override
-  Route<T> createRoute(BuildContext context) {
-    return TRoute<T>(this);
-  }
+  Route<T> createRoute(BuildContext context) => TRoute<T>(this);
 }

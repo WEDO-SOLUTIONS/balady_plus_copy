@@ -27,7 +27,7 @@ class QuickFilters extends StatelessWidget {
           padding: padding,
           separatorBuilder: (_, __) => const SizedBox(width: 8),
           itemCount: filters.length,
-          itemBuilder: (BuildContext context, int index) {
+          itemBuilder: (context, index) {
             final item = filters[index];
             return QuickFilter(
               item: item,

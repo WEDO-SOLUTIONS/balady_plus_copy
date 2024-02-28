@@ -11,8 +11,7 @@ class LanguagePicker extends StatelessWidget {
   const LanguagePicker({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const Column(
+  Widget build(BuildContext context) => const Column(
       children: [
         LanguageRow(
           language: Language.arabic,
@@ -24,7 +23,6 @@ class LanguagePicker extends StatelessWidget {
         ),
       ],
     );
-  }
 }
 
 class LanguageRow extends ConsumerWidget {

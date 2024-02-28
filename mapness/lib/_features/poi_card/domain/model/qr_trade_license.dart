@@ -4,12 +4,10 @@
 class StatusDetails {
   StatusDetails({required this.code, required this.message});
 
-  factory StatusDetails.fromJson(Map<String, dynamic> json) {
-    return StatusDetails(
+  factory StatusDetails.fromJson(Map<String, dynamic> json) => StatusDetails(
       code: json['code'] as int,
       message: json['message'] as String,
     );
-  }
   final int code;
   final String message;
 }
@@ -33,8 +31,7 @@ class QrLicenseMessage {
     // required this.attachmentsInfo,
   });
 
-  factory QrLicenseMessage.fromJson(Map<String, dynamic> json) {
-    return QrLicenseMessage(
+  factory QrLicenseMessage.fromJson(Map<String, dynamic> json) => QrLicenseMessage(
       requestId: json['requestId'] as int,
       shopName: json['shopName'] as String,
       mobile: json['mobile'] as String?,
@@ -53,7 +50,6 @@ class QrLicenseMessage {
       // attachmentsInfo: json[
       //     'attachmentsInfo'], // Adjust this based on the actual data structure
     );
-  }
   final int requestId;
   final String shopName;
   final String? mobile;
@@ -77,8 +73,7 @@ class LicenseInfo {
     required this.currentRequestType,
   });
 
-  factory LicenseInfo.fromJson(Map<String, dynamic> json) {
-    return LicenseInfo(
+  factory LicenseInfo.fromJson(Map<String, dynamic> json) => LicenseInfo(
       licenseId: json['licenseId'] as int,
       issueDate: json['issueDate'] as int,
       expiryDate: json['expiryDate'] as int,
@@ -86,7 +81,6 @@ class LicenseInfo {
       currentRequestType:
           CurrentRequestType.fromJson(json['currentRequestType']),
     );
-  }
   final int licenseId;
   final int issueDate;
   final int expiryDate;
@@ -97,12 +91,10 @@ class LicenseInfo {
 class Status {
   Status({required this.id, required this.name});
 
-  factory Status.fromJson(Map<String, dynamic> json) {
-    return Status(
+  factory Status.fromJson(Map<String, dynamic> json) => Status(
       id: json['id'] as String,
       name: json['name'] as String,
     );
-  }
   final String id;
   final String name;
 }
@@ -110,12 +102,10 @@ class Status {
 class CurrentRequestType {
   CurrentRequestType({required this.id, required this.name});
 
-  factory CurrentRequestType.fromJson(Map<String, dynamic> json) {
-    return CurrentRequestType(
+  factory CurrentRequestType.fromJson(Map<String, dynamic> json) => CurrentRequestType(
       id: json['id'] as String,
       name: json['name'] as String,
     );
-  }
   final String id;
   final String name;
 }
@@ -136,8 +126,7 @@ class NationalAddressInfo {
     required this.streetEname,
   });
 
-  factory NationalAddressInfo.fromJson(Map<String, dynamic> json) {
-    return NationalAddressInfo(
+  factory NationalAddressInfo.fromJson(Map<String, dynamic> json) => NationalAddressInfo(
       buildingNumber: json['buildingNumber'],
       // Adjust this based on the actual data
       additionalNumber: json['additionalNumber'],
@@ -158,7 +147,6 @@ class NationalAddressInfo {
       // Adjust this based on the actual data
       streetEname: json['streetEname'], // Adjust this based on the actual data
     );
-  }
   final dynamic
       buildingNumber; // You might want to change the type to match the actual data
   final dynamic
@@ -199,8 +187,7 @@ class SiteDetailsInfo {
     required this.longitude,
   });
 
-  factory SiteDetailsInfo.fromJson(Map<String, dynamic> json) {
-    return SiteDetailsInfo(
+  factory SiteDetailsInfo.fromJson(Map<String, dynamic> json) => SiteDetailsInfo(
       subMunicipalityGisCode: json['subMunicipalityGisCode'] as String,
       streetCode: json['streetCode'],
       // Adjust this based on the actual data
@@ -220,7 +207,6 @@ class SiteDetailsInfo {
       // Adjust this based on the actual data
       longitude: json['longitude'], // Adjust this based on the actual data
     );
-  }
   final String subMunicipalityGisCode;
   final dynamic
       streetCode; // You might want to change the type to match the actual data
@@ -254,8 +240,7 @@ class WorkingTimesInfo {
     required this.secondToTime,
   });
 
-  factory WorkingTimesInfo.fromJson(Map<String, dynamic> json) {
-    return WorkingTimesInfo(
+  factory WorkingTimesInfo.fromJson(Map<String, dynamic> json) => WorkingTimesInfo(
       dayId: json['dayId'] as int,
       dayName: json['dayName'] as String,
       openShiftOption: json['openShiftOption'] as String,
@@ -268,7 +253,6 @@ class WorkingTimesInfo {
       secondToTime:
           json['secondToTime'], // Adjust this based on the actual data
     );
-  }
   final int dayId;
   final String dayName;
   final String openShiftOption;

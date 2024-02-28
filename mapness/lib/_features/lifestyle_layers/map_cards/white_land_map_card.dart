@@ -26,8 +26,7 @@ class WhiteLandMapCard extends StatelessWidget {
   final Function()? onClose;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       // height: 160,
       padding: const EdgeInsets.all(16),
       decoration: ShapeDecoration(
@@ -100,5 +99,4 @@ class WhiteLandMapCard extends StatelessWidget {
         ],
       ),
     );
-  }
 }

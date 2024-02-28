@@ -4,18 +4,17 @@ import 'package:dio/dio.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_repository.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/map_requests_params.dart';
+import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
 
 part 'layers_details.g.dart';
 
 @riverpod
 class LayersDetails extends _$LayersDetails {
   @override
-  Future<PointLayersData?> build(PointLayersData e) async {
-    return await _showObjectDetails(e);
-  }
+  Future<PointLayersData?> build(PointLayersData e) async =>
+      await _showObjectDetails(e);
 
   Future<PointLayersData?> _showObjectDetails(PointLayersData layerData) async {
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
@@ -31,12 +30,14 @@ class LayersDetails extends _$LayersDetails {
     );
 
     return switch (layerType) {
-      GISMapLayers.Opportunities =>
-        (await controller.getEsriPoints(params: requestParams,cancelToken: CancelToken()))?.first,
+      GISMapLayers.Opportunities => (await controller.getEsriPoints(
+              params: requestParams, cancelToken: CancelToken()))
+          ?.first,
       GISMapLayers.BSWhiteParcelS =>
-        (await controller.getWhiteLands(requestParams,CancelToken()))?.first,
-      GISMapLayers.BSAimtithalBuildingsCertificateL =>
-        (await controller.buildingComplianceCertificate(requestParams,CancelToken()))?.first,
+        (await controller.getWhiteLands(requestParams, CancelToken()))?.first,
+      GISMapLayers.BSAimtithalBuildingsCertificateL => (await controller
+              .buildingComplianceCertificate(requestParams, CancelToken()))
+          ?.first,
       _ => null,
     };
   }

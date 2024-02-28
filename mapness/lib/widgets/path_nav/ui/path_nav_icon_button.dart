@@ -13,8 +13,7 @@ class PathNavIconButton extends StatelessWidget {
   final String iconPath;
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       color: context.color.surface_base_primary,
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
@@ -40,5 +39,4 @@ class PathNavIconButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }

@@ -13,8 +13,7 @@ class PathNavMessageWidget extends StatelessWidget {
   final PathNavMessage message;
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       color: switch (message.state) {
         _State.error => NonThemeColor.color1,
         _State.reroute => NonThemeColor.color3,
@@ -58,7 +57,6 @@ class PathNavMessageWidget extends StatelessWidget {
         ),
       ),
     );
-  }
 }
 
 enum PathNavManeuverState {

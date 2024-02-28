@@ -36,7 +36,5 @@ extension LocalizedName on SsoUserInfo {
     return names.last;
   }
 
-  String getLocalizedFirstAndLastName(Language lang) {
-    return '${getLocalizedFirstName(lang)} ${getLocalizedLastName(lang)}';
-  }
+  String getLocalizedFirstAndLastName(Language lang) => '${getLocalizedFirstName(lang)} ${getLocalizedLastName(lang)}';
 }

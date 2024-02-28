@@ -13,12 +13,10 @@ class MapSearchHeaderDelegate extends SliverPersistentHeaderDelegate {
   final VoidCallback onClose;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return DashboardHeader(
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) => DashboardHeader(
       requestFocus: requestFocus,
       onClose: onClose,
     );
-  }
 
   @override
   double get maxExtent => 84;
@@ -39,8 +37,7 @@ class DashboardHeader extends ConsumerWidget {
   final VoidCallback onClose;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+  Widget build(BuildContext context, WidgetRef ref) => Container(
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -79,5 +76,4 @@ class DashboardHeader extends ConsumerWidget {
         ],
       ),
     );
-  }
 }

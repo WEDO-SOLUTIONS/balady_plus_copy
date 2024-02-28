@@ -64,10 +64,6 @@ class DebugServerUrl extends ConsumerWidget {
           ),
         ],
       );
-    }, error: (_) {
-      return const SizedBox.shrink();
-    }, loading: (_) {
-      return const SizedBox.shrink();
-    },);
+    }, error: (_) => const SizedBox.shrink(), loading: (_) => const SizedBox.shrink(),);
   }
 }

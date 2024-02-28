@@ -9,8 +9,7 @@ class PrayerCard extends StatelessWidget {
   const PrayerCard({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
+  Widget build(BuildContext context) => ClipRRect(
       borderRadius: BorderRadius.circular(8),
       child: Material(
         child: Ink.image(
@@ -61,5 +60,4 @@ class PrayerCard extends StatelessWidget {
         ),
       ),
     );
-  }
 }

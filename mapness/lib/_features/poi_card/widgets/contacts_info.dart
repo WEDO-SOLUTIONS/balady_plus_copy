@@ -31,8 +31,7 @@ class _ContactsInfoState extends State<ContactsInfo> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return contactInfoWidgets.isEmpty
+  Widget build(BuildContext context) => contactInfoWidgets.isEmpty
         ? const SizedBox.shrink()
         : CardContent(
             child: ListView.separated(
@@ -43,10 +42,8 @@ class _ContactsInfoState extends State<ContactsInfo> {
             separatorBuilder: (ctx, index) => const Divider(indent: 24),
             itemCount: contactInfoWidgets.length,
           ),);
-  }
 
-  List<Widget> prepareWidgets() {
-    return widget.data.getContactsInfoModels().map((contactsModel) {
+  List<Widget> prepareWidgets() => widget.data.getContactsInfoModels().map((contactsModel) {
       final text = contactsModel.displayText;
       var displayText = text;
       if (contactsModel.type == ContactsInfoType.website) {
@@ -115,5 +112,4 @@ class _ContactsInfoState extends State<ContactsInfo> {
         ),
       );
     }).toList();
-  }
 }

@@ -12,14 +12,13 @@ import 'package:mapness/_features/landing/widgets/layers_control.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
 import 'package:mapness/_features/landing/widgets/search_in_area.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
+import 'package:mapness/_features/weather/widgets/weather_control.dart';
 import 'package:mapness/app/routes/kiblah.dart';
 import 'package:mapness/app/routes/weather.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
-
-import 'package:mapness/_features/weather/widgets/weather_control.dart';
 
 class MapControls extends ConsumerWidget {
   const MapControls({
@@ -64,8 +63,8 @@ class MapControls extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             WeatherControl(
-                                onTap: () =>
-                                    const WeatherRoute().push(context),),
+                              onTap: () => const WeatherRoute().push(context),
+                            ),
                             const SizedBox(height: 8),
                             const HappinesControl(),
                             const Spacer(),

@@ -3,23 +3,19 @@ import 'package:mapness/_features/stories/domain/frame/story_text_style.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 extension StoryFrameDataX on StoryFrameData {
-  String titleOrFailback(AppLocalizations locale) {
-    return switch (storyId) {
+  String titleOrFailback(AppLocalizations locale) => switch (storyId) {
       'route1' => locale.whatCanTheNavigatorDo,
       'route2' => locale.theShortestRoute,
       'route3' => locale.focusOnTheRoad,
       _ => title,
     };
-  }
 
-  String? descriptionOrFailback(AppLocalizations locale) {
-    return switch (storyId) {
+  String? descriptionOrFailback(AppLocalizations locale) => switch (storyId) {
       'route1' => locale.route1description,
       'route2' => locale.route2description,
       'route3' => locale.route3description,
       _ => description,
     };
-  }
 }
 
 class StoryFrameData {
@@ -61,8 +57,7 @@ class StoryFrameData {
     StoryFrameAction? action,
     int? duration,
     bool? isAssetImage,
-  }) {
-    return StoryFrameData(
+  }) => StoryFrameData(
       isAssetImage: isAssetImage ?? this.isAssetImage,
       storyId: storyId ?? this.storyId,
       title: title ?? this.title,
@@ -75,5 +70,4 @@ class StoryFrameData {
       action: action ?? this.action,
       duration: duration ?? this.duration,
     );
-  }
 }

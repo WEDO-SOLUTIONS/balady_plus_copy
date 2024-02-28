@@ -4,11 +4,9 @@ import 'package:mapness/_features/favourites/mappers/favourite_item_place_mapper
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 
 extension FavouritesResponseMapper on proto.FavouritesResponse {
-  FavouritesState toDomain() {
-    return FavouritesState(
+  FavouritesState toDomain() => FavouritesState(
       work: places.work.toDomain(),
       home: places.home.toDomain(),
       items: items.map((e) => e.toDomain()).toList(),
     );
-  }
 }

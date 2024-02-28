@@ -72,11 +72,7 @@ class BuildingComplianceCertificate extends PointLayersData {
   String? STREETNAME;
   final List<List<GeoPointMessage>>? pathsGoogle;
 
-  String getMunAndDis() {
-    return "${MUNICIPALITYNAME ?? ""},${DISTRICTNAME ?? ""}";
-  }
+  String getMunAndDis() => "${MUNICIPALITYNAME ?? ""},${DISTRICTNAME ?? ""}";
 
-  String getStreetName() {
-    return STREETNAME ?? '';
-  }
+  String getStreetName() => STREETNAME ?? '';
 }

@@ -30,9 +30,7 @@ class RadarWidgetState extends State<RadarWidget>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return FutureBuilder<FragmentProgram>(
+  Widget build(BuildContext context) => LayoutBuilder(builder: (context, constraints) => FutureBuilder<FragmentProgram>(
         future: _initShader(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -65,13 +63,9 @@ class RadarWidgetState extends State<RadarWidget>
             );
           }
         },
-      );
-    },);
-  }
+      ),);
 
-  Future<FragmentProgram> _initShader() {
-    return FragmentProgram.fromAsset(
+  Future<FragmentProgram> _initShader() => FragmentProgram.fromAsset(
       'shaders/radar.frag',
     );
-  }
 }

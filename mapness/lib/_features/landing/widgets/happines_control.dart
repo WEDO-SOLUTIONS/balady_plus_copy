@@ -10,8 +10,7 @@ class HappinesControl extends ConsumerWidget {
   const HappinesControl({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return MapButton(
+  Widget build(BuildContext context, WidgetRef ref) => MapButton(
       onTap: () => _openHappiness(context, ref),
       child: SvgPicture.asset(
         'assets/icons/svg/ic_like.svg',
@@ -19,7 +18,6 @@ class HappinesControl extends ConsumerWidget {
         colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
       ),
     );
-  }
 
   Future<void> _openHappiness(BuildContext context, WidgetRef ref) async {
     await CommonFunctions.authOrOpen(context, callback: () {

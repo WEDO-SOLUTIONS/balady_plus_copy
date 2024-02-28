@@ -49,9 +49,7 @@ class _HappinessRepository extends _$HappinessRepository {
   }
 
   @override
-  Future<bool> build() async {
-    return false;
-  }
+  Future<bool> build() async => false;
 }
 
 final happinessRepositoryProvider = _happinessRepositoryProvider;

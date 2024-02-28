@@ -2,7 +2,6 @@ import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 
 class PointLayersData {
-
   PointLayersData({
     required this.id,
     required this.name,
@@ -33,7 +32,7 @@ enum LayersType {
 List<GeoPointMessage> getList(List list) {
   final paths = <GeoPointMessage>[];
   for (final pointList in list) {
-    for (final point in pointList) {
+    for (final point in pointList as Iterable) {
       paths.add(
         GeoPointMessage(
           latitude: double.parse(point[1].toString()),
@@ -48,7 +47,7 @@ List<GeoPointMessage> getList(List list) {
 List<GeoPointMessage> getPolyLines(List list) {
   final paths = <GeoPointMessage>[];
   for (final pointList in list) {
-    for (final point in pointList) {
+    for (final point in pointList as Iterable) {
       paths.add(
         GeoPointMessage(
           latitude: double.parse(point[1].toString()),
@@ -60,14 +59,12 @@ List<GeoPointMessage> getPolyLines(List list) {
   return paths;
 }
 
-
-
 List<List<GeoPointMessage>> getGoogleList(List list) {
   final paths = <List<GeoPointMessage>>[];
   for (final pointList in list) {
     final inside = <GeoPointMessage>[];
 
-    for (final point in pointList) {
+    for (final point in pointList as Iterable) {
       inside.add(
         GeoPointMessage(
           latitude: double.parse(point[1].toString()),

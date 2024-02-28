@@ -6,8 +6,7 @@ class CloseStoryButton extends StatelessWidget {
   final VoidCallback? onPressed;
 
   @override
-  Widget build(BuildContext context) {
-    return InkWell(
+  Widget build(BuildContext context) => InkWell(
       onTap: onPressed ?? () => Navigator.of(context).pop(),
       child: Container(
         width: 40,
@@ -20,5 +19,4 @@ class CloseStoryButton extends StatelessWidget {
         child: const Icon(Icons.close, color: Colors.white, size: 24),
       ),
     );
-  }
 }

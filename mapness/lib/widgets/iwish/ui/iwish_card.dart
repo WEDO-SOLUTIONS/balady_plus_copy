@@ -14,8 +14,7 @@ class IwishCard extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
@@ -40,5 +39,4 @@ class IwishCard extends StatelessWidget {
         ),
       ),
     );
-  }
 }

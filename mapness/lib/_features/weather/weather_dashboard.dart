@@ -74,8 +74,7 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
       minChildSize: .1,
       snap: true,
       snapSizes: [.1, _headerExtent, 1],
-      builder: (BuildContext context, ScrollController scrollController) {
-        return Directionality(
+      builder: (context, scrollController) => Directionality(
           textDirection: TextDirection.rtl,
           child: Container(
             // padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -104,7 +103,7 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
                 SliverList.separated(
 
                   itemCount: weatherData?.forecast?.forecastday?.length ?? 0,
-                  itemBuilder: (BuildContext context, int index) =>
+                  itemBuilder: (context, index) =>
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: WeatherDayCard(
@@ -113,7 +112,7 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
                     onExpansionChanged: (b) {},
                   ),
                       ),
-                  separatorBuilder: (BuildContext context, int index) =>
+                  separatorBuilder: (context, index) =>
                       const SizedBox(
                     height: 12,
                   ),
@@ -121,8 +120,7 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
               ],
             ),
           ),
-        );
-      },
+        ),
     );
   }
 }

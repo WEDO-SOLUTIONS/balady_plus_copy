@@ -181,13 +181,11 @@ class ConditionsModel extends Condition {
   });
 
   //generate from json
-  static ConditionsModel fromMap(Map<String, dynamic> json) {
-    return ConditionsModel(
+  static ConditionsModel fromMap(Map<String, dynamic> json) => ConditionsModel(
       code: json['code'],
       icon: json['icon'],
       text: json['text'],
     );
-  }
 }
 
 class ForecastModel extends Forecast {
@@ -244,9 +242,7 @@ class ForecastDayModel extends ForecastDay {
     Day day,
   ) {
     final hourData = json['hour'] as List<dynamic>?;
-    final hours = hourData?.map<HourModel>((hour) {
-      return HourModel.fromMap(hour);
-    }).toList();
+    final hours = hourData?.map<HourModel>((hour) => HourModel.fromMap(hour)).toList();
 
     return ForecastDayModel(
       date: json['date'],
@@ -271,8 +267,7 @@ class AstroModel extends Astro {
   });
 
   //generate from json
-  static AstroModel fromMap(Map<String, dynamic> json) {
-    return AstroModel(
+  static AstroModel fromMap(Map<String, dynamic> json) => AstroModel(
       isMoonUp: json['is_moon_up'],
       isSunUp: json['is_sun_up'],
       moonIllumination: json['moon_illumination'],
@@ -282,7 +277,6 @@ class AstroModel extends Astro {
       sunrise: json['sunrise'],
       sunset: json['sunset'],
     );
-  }
 }
 
 class DayModel extends Day {

@@ -15,11 +15,9 @@ class WeatherRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return const TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
       child: WeatherPage(),
     );
-  }
 }
 
 final $weatherRoutes = $appRoutes;

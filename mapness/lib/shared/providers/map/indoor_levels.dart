@@ -13,12 +13,10 @@ class LevelsState {
   LevelsState copyWith({
     List<IndoorLevel>? levels,
     int? active,
-  }) {
-    return LevelsState(
+  }) => LevelsState(
       levels ?? this.levels,
       active ?? this.active,
     );
-  }
 }
 
 @riverpod

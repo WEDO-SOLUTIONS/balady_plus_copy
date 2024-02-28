@@ -20,8 +20,7 @@ class HappinessMapRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
       child: Align(
         alignment: Alignment.bottomCenter,
         child: HappinesOverlayContent(
@@ -30,7 +29,6 @@ class HappinessMapRoute extends GoRouteData {
         ),
       ),
     );
-  }
 }
 
 class HappinessMapCommentRoute extends GoRouteData {
@@ -48,13 +46,11 @@ class HappinessMapCommentRoute extends GoRouteData {
 TransculentPage<void> _happinesTransition({
   required BuildContext context,
   required Widget child,
-}) {
-  return TransculentPage(
+}) => TransculentPage(
     child: Directionality(
       textDirection: Directionality.of(context),
       child: Align(alignment: Alignment.bottomCenter, child: child),
     ),
   );
-}
 
 final $happinesMapRoutes = $appRoutes;

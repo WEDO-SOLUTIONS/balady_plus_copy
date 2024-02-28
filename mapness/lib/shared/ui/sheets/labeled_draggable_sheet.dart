@@ -15,8 +15,7 @@ class LabeledDraggableSheet extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(12),
       child: Padding(
@@ -59,5 +58,4 @@ class LabeledDraggableSheet extends StatelessWidget {
         ),
       ),
     );
-  }
 }
