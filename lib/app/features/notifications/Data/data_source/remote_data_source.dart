@@ -30,12 +30,12 @@ class NotificationRemoteDataSourceImplementation implements NotificationRemoteDa
     try {
       response = await webService.dio.post(
         ApiUrl.updateNotificationSettings(),
-        data:request
+        data:request.toJson()
       );
       final data = response.data;
 
 
-      var parsedResult = data != null ? NotificationResponse.fromJson(data["data"]["result"]) : null;
+      var parsedResult = data != null ? NotificationResponse.fromJson(data["data"]) : null;
       final decodedResponse = ResponseBodyModel<NotificationResponse>.fromMap(
           response.data,
           parsedResult: parsedResult);

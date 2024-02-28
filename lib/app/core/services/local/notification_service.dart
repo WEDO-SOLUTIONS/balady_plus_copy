@@ -149,22 +149,11 @@ class NotificationService {
       if (value != null && value.isNotEmpty) {
         CommonProperties.fcmToken = value;
 
-        NotificationManager manager = sl();
+        Future.delayed(const Duration(seconds: 15), () {
+          CommonFunctions.updateNotificationSettings(value);
+        });
 
 
-        DeviceDetails details = sl();
-        Device device = Device();
-        device.typeId = GeneralKey.typeId;
-        device.id = details.deviceId;
-        device.osTypeId = details.deviceOs;
-
-        PackageDetails info =  sl();
-        NotificationRequest request = NotificationRequest();
-        request.fcmToken = value;
-        request.appId = GeneralKey.appId;
-        request.device = device;
-        request.appVersion = info.version;
-        manager.updateNotificationSettings(request);
       }
 
     });

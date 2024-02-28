@@ -7,6 +7,7 @@ class NotificationManager{
 
 
   NotificationRepositoryImplementation repository;
+  int counter =0;
    NotificationManager({
      required this.repository,
 });
@@ -17,10 +18,19 @@ class NotificationManager{
     final failureOrSuccess = await repository.updateNotificationSettings(request);
     failureOrSuccess.fold(
           (failure) {
-            print(failure);
+          if(counter <3)
+            {
+              updateNotificationSettings(request);
+
+            }
+          else
+            {
+              counter = 0;
+            }
+
       },
           (result) {
-        print(result);
+            counter = 0;
       },
     );
   }
