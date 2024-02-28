@@ -1,4 +1,6 @@
 ## 3.9.2(1) - Current
+
+- BALADY-1324 [Marketing] should show a descriptive message when location permission is off and user try to navigate
 - BALADY-1430: [Landing Page] remove pop-up from Foundation Day
 - BALADY-1412: Update SDK Version to 10.2.1
 - BALADY-1136: [Navi] street direction card localizationat
@@ -6,12 +8,14 @@
 - BALADY-1422: [Navi] Road restriction. Add selection State
 
 ## 3.9.0(4)
+
 - BALADY-1377 [Profile] change Help Center Contact Info Email
 - BALADY-1318 [Marketing][Navi] wrong ETA label direction
 - BALADY-1379 [Navi] add function to create route to the point B for 42
 - BALADY-1324 [Marketing] should show a descriptive message when location permission is off and user try to navigate
 
 ## 3.9.0(3)
+
 - BALADY-1357 [Quick Filters] quick filters in opened dashboard do not work
 - BALADY-951: [UIkit] Components Library - Layouting
 - BALADY-941: [UIkit] Components Library - Icons
