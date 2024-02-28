@@ -6,9 +6,9 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:share_plus/share_plus.dart';
 
 class JobShareButton extends ConsumerWidget {
+  const JobShareButton({required this.lat, required this.lon, super.key});
   final double lat;
   final double lon;
-  const JobShareButton({required this.lat, required this.lon, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,6 +33,6 @@ class JobShareButton extends ConsumerWidget {
                 Share.share('balady://poi-map?dgis-object-id=$object');
               },
             ),
-        orElse: () => const SizedBox.shrink());
+        orElse: () => const SizedBox.shrink(),);
   }
 }

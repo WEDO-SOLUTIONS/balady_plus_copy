@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class DismissibleTransition extends StatefulWidget {
-  final Widget child;
-
   const DismissibleTransition({
-    super.key,
     required this.onDismiss,
     required this.child,
+    super.key,
   });
+  final Widget child;
 
   final void Function() onDismiss;
 
@@ -28,18 +27,18 @@ class DismissibleTransitionState extends State<DismissibleTransition>
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    _opacityAnimation = Tween(begin: 0.0, end: 1.0).animate(
+    _opacityAnimation = (Tween(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: _controller,
         curve: Curves.easeInOutCubic,
       ),
     )..addStatusListener(
-        (AnimationStatus status) {
+        (status) {
           if (status == AnimationStatus.dismissed) {
             widget.onDismiss();
           }
         },
-      );
+      )) as Animation<double>;
     _controller.forward();
   }
 
@@ -48,8 +47,7 @@ class DismissibleTransitionState extends State<DismissibleTransition>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onVerticalDragUpdate: (details) {
         _controller.value -=
             details.delta.dy / MediaQuery.of(context).size.height;
@@ -67,13 +65,13 @@ class DismissibleTransitionState extends State<DismissibleTransition>
       },
       child: AnimatedBuilder(
         animation: _opacityAnimation,
-        builder: (context, child) {
-          return Stack(
+        builder: (context, child) => Stack(
             fit: StackFit.expand,
             children: [
               Opacity(
                 opacity: _opacityAnimation.value,
-                child: Container(color: context.color.text_and_icons_base_primary),
+                child:
+                    Container(color: context.color.text_and_icons_base_primary),
               ),
               Transform(
                 transform: Matrix4.identity()
@@ -81,7 +79,6 @@ class DismissibleTransitionState extends State<DismissibleTransition>
                     0.0,
                     MediaQuery.of(context).size.height *
                         (1 - _opacityAnimation.value),
-                    0.0,
                   )
                   ..scale(
                     0.8 + 0.2 * _opacityAnimation.value,
@@ -89,13 +86,11 @@ class DismissibleTransitionState extends State<DismissibleTransition>
                     0.8 + 0.2 * _opacityAnimation.value,
                   ),
                 origin: Offset(MediaQuery.of(context).size.width * 0.5, 0),
-                child: child!,
+                child: child,
               ),
             ],
-          );
-        },
+          ),
         child: widget.child,
       ),
     );
-  }
 }

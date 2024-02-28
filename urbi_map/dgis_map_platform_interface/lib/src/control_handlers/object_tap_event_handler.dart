@@ -150,9 +150,14 @@ class ObjectTapEventHandler {
   void roadEventTapEvent(Map<dynamic, dynamic> map) {
     final startTime = DateTime.fromMillisecondsSinceEpoch(map["startTime"]);
     final finishTime = DateTime.fromMillisecondsSinceEpoch(map["finishTime"]);
+    final dgisObjectMap = map["dgisObjectId"];
 
     _objectTapController.sink.add(
       RoadEventTapEvent(
+        DgisObjectId(
+          objectId: dgisObjectMap["objectId"],
+          entranceId: dgisObjectMap["entranceId"],
+        ),
         map["title"],
         map["description"],
         startTime,

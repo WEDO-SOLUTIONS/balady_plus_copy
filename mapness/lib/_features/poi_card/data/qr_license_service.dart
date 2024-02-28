@@ -1,18 +1,16 @@
-import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class QrLicenseService {
-  final Dio dio;
 
   QrLicenseService({required this.dio}) {
 
     (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
-        (HttpClient client) {
+        (client) {
       client.badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
+          (cert, host, port) => true;
       return client;
     };
 
@@ -21,10 +19,10 @@ class QrLicenseService {
     dio.options.sendTimeout = const Duration(milliseconds: 60000);
     dio.options.headers = {};
     dio.interceptors.add(PrettyDioLogger(
-      responseBody: true,
       requestHeader: true,
       requestBody: true,
-      responseHeader: true
-    ));
+      responseHeader: true,
+    ),);
   }
+  final Dio dio;
 }

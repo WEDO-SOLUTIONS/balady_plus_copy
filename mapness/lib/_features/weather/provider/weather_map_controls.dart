@@ -4,25 +4,21 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'weather_map_controls.g.dart';
 
 class WeatherMapControlsState {
+
+  WeatherMapControlsState(this.extent, this.controlsVisible);
   final double extent;
   final bool controlsVisible;
 
-  WeatherMapControlsState(this.extent, this.controlsVisible);
-
-  WeatherMapControlsState copy({double? extent, bool? controlsVisible}) {
-    return WeatherMapControlsState(
+  WeatherMapControlsState copy({double? extent, bool? controlsVisible}) => WeatherMapControlsState(
       extent ?? this.extent,
       controlsVisible ?? this.controlsVisible,
     );
-  }
 }
 
 @riverpod
 class WeatherMapControls extends _$WeatherMapControls {
   @override
-  WeatherMapControlsState build() {
-    return WeatherMapControlsState(weatherHeaderSize, true);
-  }
+  WeatherMapControlsState build() => WeatherMapControlsState(weatherHeaderSize, true);
 
   void update({double? extent, bool? controlsVisible}) {
     state = state.copy(

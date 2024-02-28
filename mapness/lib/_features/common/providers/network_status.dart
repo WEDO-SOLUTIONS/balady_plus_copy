@@ -9,9 +9,7 @@ class NetworkStatus extends _$NetworkStatus {
   ConnectivityResult build() {
     final connectivitySubscription =
         Connectivity().onConnectivityChanged.listen(_connectivityListener);
-    ref.onDispose(() {
-      connectivitySubscription.cancel();
-    });
+    ref.onDispose(connectivitySubscription.cancel);
 
     return ConnectivityResult.none;
   }

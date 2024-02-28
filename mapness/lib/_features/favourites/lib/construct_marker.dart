@@ -18,7 +18,7 @@ Marker constructMarker(FavouriteItem item, String iconAsset, GoRouter router) =>
           width: 24,
         ),
       ),
-      onTap: () async => (String? idStr) async {
+      onTap: () async => (idStr) async {
         final id = int.tryParse(idStr ?? '');
         if (id == null) {
           return;

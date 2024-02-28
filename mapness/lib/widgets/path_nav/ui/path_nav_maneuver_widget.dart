@@ -4,16 +4,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_maneuver.dart';
 
 class PathNavManeuverWidget extends StatelessWidget {
-  final PathNavManeuver maneuver;
 
   const PathNavManeuverWidget({
-    super.key,
-    required this.maneuver,
+    required this.maneuver, super.key,
   });
+  final PathNavManeuver maneuver;
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(16),
       child: Container(
@@ -28,7 +26,6 @@ class PathNavManeuverWidget extends StatelessWidget {
           color: Colors.white,
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -43,7 +40,7 @@ class PathNavManeuverWidget extends StatelessWidget {
                       BlendMode.srcATop,
                     ),
                   ),
-                const SizedBox(width: 8.0),
+                const SizedBox(width: 8),
                 Text(
                   maneuver.distance,
                   style: const TextStyle(
@@ -51,7 +48,7 @@ class PathNavManeuverWidget extends StatelessWidget {
                     fontSize: 26,
                   ),
                 ),
-                const SizedBox(width: 2.0),
+                const SizedBox(width: 2),
                 Text(
                   maneuver.unit,
                   style: const TextStyle(
@@ -61,7 +58,7 @@ class PathNavManeuverWidget extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 4.0),
+            const SizedBox(height: 4),
             Text(
               maneuver.roadName,
               maxLines: 2,
@@ -75,5 +72,4 @@ class PathNavManeuverWidget extends StatelessWidget {
         ),
       ),
     );
-  }
 }

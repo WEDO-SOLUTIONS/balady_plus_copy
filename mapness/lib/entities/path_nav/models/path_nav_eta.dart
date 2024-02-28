@@ -1,11 +1,6 @@
 import 'package:mapness/features/path_nav/lib/enums.dart';
 
 class PathNavEta {
-  final String timeEta;
-  final TimeUnits timeEtaUnits;
-  final String distanceEta;
-  final DistanceUnits distanceEtaUnits;
-  final String arrivalTime;
 
   const PathNavEta({
     required this.timeEta,
@@ -14,4 +9,9 @@ class PathNavEta {
     required this.distanceEtaUnits,
     required this.arrivalTime,
   });
+  final String timeEta;
+  final TimeUnits timeEtaUnits;
+  final String distanceEta;
+  final DistanceUnits distanceEtaUnits;
+  final String arrivalTime;
 }

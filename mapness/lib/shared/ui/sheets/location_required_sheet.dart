@@ -13,9 +13,9 @@ part 'location_required_sheet.g.dart';
   path: '/request_location',
 )
 class LocationErrorSheet extends GoRouteData {
-  final String? routeOnClose;
 
   const LocationErrorSheet({this.routeOnClose});
+  final String? routeOnClose;
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 

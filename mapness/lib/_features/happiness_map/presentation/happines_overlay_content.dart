@@ -4,14 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/happiness_map/happines_map_bottom_sheet.dart';
-import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 
 class HappinesOverlayContent extends ConsumerStatefulWidget {
+  const HappinesOverlayContent({required this.isBottomSheetOpened, super.key});
+
   /// does bottom sheet opened or not initially. Does not affect on bottom sheet state afterwards
   final bool isBottomSheetOpened;
-
-  const HappinesOverlayContent({required this.isBottomSheetOpened, super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -30,14 +30,14 @@ class _HapinessOverlayContentState
 
   @override
   void deactivate() {
-    ref
-        .read(cameraPositionProvider.notifier)
-        .setPadding(CameraSetPaddingMessage(
-          leftPadding: 0,
-          topPadding: 0,
-          rightPadding: 0,
-          bottomPadding: 0,
-        ));
+    ref.read(cameraPositionProvider.notifier).setPadding(
+          CameraSetPaddingMessage(
+            leftPadding: 0,
+            topPadding: 0,
+            rightPadding: 0,
+            bottomPadding: 0,
+          ),
+        );
     super.deactivate();
   }
 
@@ -75,14 +75,16 @@ class _HapinessOverlayContentState
                 final navbarSize =
                     48 + MediaQuery.of(context).viewPadding.bottom;
 
-                cameraController.setPadding(CameraSetPaddingMessage(
-                  leftPadding: 0,
-                  topPadding: 0,
-                  rightPadding: 0,
-                  bottomPadding:
-                      (height * maxHeight * pixelSize - navbarSize * pixelSize)
-                          .floor(),
-                ));
+                cameraController.setPadding(
+                  CameraSetPaddingMessage(
+                    leftPadding: 0,
+                    topPadding: 0,
+                    rightPadding: 0,
+                    bottomPadding: (height * maxHeight * pixelSize -
+                            navbarSize * pixelSize)
+                        .floor(),
+                  ),
+                );
                 Future.delayed(
                   Duration.zero,
                   () => this.height.value = height * maxHeight,

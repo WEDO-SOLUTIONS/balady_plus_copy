@@ -14,31 +14,34 @@ abstract class LifestyleDataSource {
 }
 
 class _LifestyleDataSource implements LifestyleDataSource {
-  final LifestyleLayersService service;
-
   _LifestyleDataSource({required this.service});
+  final LifestyleLayersService service;
 
   @override
   Future<List<dynamic>?> getEsriPoints(
     MapRequestParams params,
     CancelToken? cancelToken,
   ) async {
-    var points;
+    Response points;
     try {
-      var verifyingKey = params.getVerifyingKey();
+      final verifyingKey = params.getVerifyingKey();
       points = await service.dio.get(
         params.getUrl(),
-        options: Options(headers: {
-          if (verifyingKey != null) 'verifyingKEY': verifyingKey,
-        }),cancelToken: cancelToken,
+        options: Options(
+          headers: {
+            if (verifyingKey != null) 'verifyingKEY': verifyingKey,
+          },
+        ),
+        cancelToken: cancelToken,
       );
 
-      return points.data['data']['result']['features'];
+      return points.data['data']['result']['features']
+          as Future<List<dynamic>?>;
     } on DioException catch (error) {
-      print("[getEsriMarkers] DioError $error");
+      print('[getEsriMarkers] DioError $error');
       return null;
     } catch (error) {
-      print("[getEsriMarkers] $error");
+      print('[getEsriMarkers] $error');
       return null;
     }
   }

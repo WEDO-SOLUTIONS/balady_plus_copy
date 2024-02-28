@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mapness/shared/ui/loading/loading_big.dart';
 
 class LoadingSheet extends StatelessWidget {
+  const LoadingSheet({super.key, this.text});
   final String? text;
-  const LoadingSheet({Key? key, this.text}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => Material(

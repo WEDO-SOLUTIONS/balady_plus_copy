@@ -29,7 +29,9 @@ class JobStatistic extends _$JobStatistic {
     final response = await dio.get(jobsUrl);
 
     final jobResponse = JobBaseResponse<JobStatisticModel>.fromJson(
-        response.data, JobStatisticModel.fromJson);
+      response.data as Map<String, dynamic>,
+      JobStatisticModel.fromJson,
+    );
 
     final jobStatistic = jobResponse.data?.result;
     mixpanel?.track(_metricEventName);

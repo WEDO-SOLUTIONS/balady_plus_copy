@@ -22,7 +22,7 @@ extension FormattedDuration on int {
     final remainingMinutes = minutes % 60;
 
     if (hours > 0) {
-      String time = '$hours ${l10n.hrs}';
+      var time = '$hours ${l10n.hrs}';
       if (remainingMinutes > 0) {
         time += ' $remainingMinutes ${l10n.min}';
       }

@@ -40,7 +40,7 @@ extension IwishItemResponseMapper on pb.IWishObject {
                 title: variant.title,
                 preview: variant.preview.image.url,
                 photos: photos(variant.photos),
-              ))
+              ),)
           .toList(),
       metadata: IwishMetadata(
         areaName: metadata.areaName,

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-import 'loading_circular.dart';
+import 'package:mapness/shared/ui/loading/loading_circular.dart';
 
 class LoadingBig extends StatelessWidget {
-  final String? title;
   const LoadingBig({super.key, this.title});
+  final String? title;
 
   @override
   Widget build(BuildContext context) => Material(

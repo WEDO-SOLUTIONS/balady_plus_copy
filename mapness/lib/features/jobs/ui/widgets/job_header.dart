@@ -17,7 +17,7 @@ class JobHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(
-          BuildContext context, double shrinkOffset, bool overlapsContent) =>
+          BuildContext context, double shrinkOffset, bool overlapsContent,) =>
       JobHeader(
         draggableScrollableController: draggableScrollableController,
       );

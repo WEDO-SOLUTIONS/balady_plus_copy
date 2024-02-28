@@ -16,13 +16,11 @@ extension FavouriteItemPlaceMapper on proto.FavouriteItemPlace {
     );
   }
 
-  static proto.FavouriteItemPlace fromDomain(FavouriteItem item) {
-    return proto.FavouriteItemPlace(
+  static proto.FavouriteItemPlace fromDomain(FavouriteItem item) => proto.FavouriteItemPlace(
       title: item.title,
       subtitle: item.subtitle,
       entity: item.entity == null
           ? null
           : FavouriteItemPlaceEntityMapper.fromDomain(item.entity!),
     );
-  }
 }

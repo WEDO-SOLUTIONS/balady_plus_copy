@@ -18,13 +18,13 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
 class RoutingPointsPage extends StatelessWidget {
-  /// open page with collapsed bottom sheet
-  final bool collapseInitially;
-
   const RoutingPointsPage({
     required this.collapseInitially,
     super.key,
   });
+
+  /// open page with collapsed bottom sheet
+  final bool collapseInitially;
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
@@ -36,14 +36,13 @@ class RoutingPointsPage extends StatelessWidget {
 }
 
 class RoutingPointsSheet extends ConsumerStatefulWidget {
-  final double biggestHeight;
-  final bool collapseInitially;
-
   const RoutingPointsSheet({
     required this.biggestHeight,
     required this.collapseInitially,
     super.key,
   });
+  final double biggestHeight;
+  final bool collapseInitially;
 
   @override
   ConsumerState<RoutingPointsSheet> createState() => _RoutingPointsSheetState();
@@ -82,7 +81,8 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
         {'objectId': event.dgisObjectId.objectId},
       );
       if (context.mounted) {
-        PoiMapRoute.open(ref.read(goRouterProvider), event.dgisObjectId.objectId);
+        PoiMapRoute.open(
+            ref.read(goRouterProvider), event.dgisObjectId.objectId);
       }
     } else if (event is RoadEventTapEvent) {
       EventsRoute.open(context, event);
@@ -115,14 +115,14 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(16.0),
-                  topLeft: Radius.circular(16.0),
+                  topRight: Radius.circular(16),
+                  topLeft: Radius.circular(16),
                 ),
               ),
               child: Material(
                 borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(16.0),
-                  topLeft: Radius.circular(16.0),
+                  topRight: Radius.circular(16),
+                  topLeft: Radius.circular(16),
                 ),
                 color: NonThemeColor.color11,
                 child: CustomScrollView(
@@ -134,9 +134,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
                     SliverPersistentHeader(
                       delegate: RoutingHeaderDelegate(
                         points: points,
-                        updatePoints: (newPoitns) {
-                          _updatePoints(newPoitns);
-                        },
+                        updatePoints: _updatePoints,
                       ),
                       pinned: true,
                     ),
@@ -154,9 +152,15 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
                             RoutingRoutesRoute(
                               startLatitude: points[0].latitude,
                               startLongitude: points[0].longitude,
+                              startObjectId: points[0].objectId,
+                              startEntranceId: points[0].entranceId,
+                              startLevelId: points[0].levelId,
                               startLabel: points[0].title(context.l10n) ?? '',
                               finishLatitude: points[1].latitude,
                               finishLongitude: points[1].longitude,
+                              finishObjectId: points[1].objectId,
+                              finishEntranceId: points[1].entranceId,
+                              finishLevelId: points[1].levelId,
                               finishLabel: points[1].title(context.l10n) ?? '',
                             ).go(context);
                           }
@@ -180,7 +184,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
                           );
                         },
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -199,9 +203,15 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
       RoutingRoutesRoute(
         startLatitude: points[0].latitude,
         startLongitude: points[0].longitude,
+        startObjectId: points[0].objectId,
+        startEntranceId: points[0].entranceId,
+        startLevelId: points[0].levelId,
         startLabel: points[0].title(context.l10n) ?? '',
         finishLatitude: points[1].latitude,
         finishLongitude: points[1].longitude,
+        finishObjectId: points[1].objectId,
+        finishEntranceId: points[1].entranceId,
+        finishLevelId: points[1].levelId,
         finishLabel: points[1].title(context.l10n) ?? '',
       ).go(context);
     }

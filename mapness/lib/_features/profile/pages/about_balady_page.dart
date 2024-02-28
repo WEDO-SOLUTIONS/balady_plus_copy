@@ -25,12 +25,7 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
     _controller = YoutubePlayerController(
       initialVideoId: '4iRVvB1iZAc',
       flags: const YoutubePlayerFlags(
-        mute: false,
         autoPlay: false,
-        disableDragSeek: false,
-        loop: false,
-        isLive: false,
-        forceHD: false,
         enableCaption: false,
       ),
     );
@@ -67,7 +62,7 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
               SafeArea(
                 bottom: false,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
                       SizedBox(
@@ -116,7 +111,7 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   // ignore: prefer_const_constructors
@@ -133,7 +128,7 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
                 height: 16,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
                     Expanded(

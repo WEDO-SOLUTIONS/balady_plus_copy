@@ -9,18 +9,14 @@ import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class StoryThumbnailWidget extends ConsumerWidget {
+
+  const StoryThumbnailWidget({
+    required this.onPress, required this.title, required this.imageUrl, required this.isWatched, super.key,
+  });
   final String title;
   final String imageUrl;
   final bool isWatched;
   final VoidCallback onPress;
-
-  const StoryThumbnailWidget({
-    super.key,
-    required this.onPress,
-    required this.title,
-    required this.imageUrl,
-    required this.isWatched,
-  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -91,7 +87,7 @@ class StoryThumbnailWidget extends ConsumerWidget {
                               NonThemeColor.color55.withOpacity(0),
                               NonThemeColor.color56.withOpacity(0.66),
                             ],
-                        }),
+                        },),
                   ),
                   child: Column(
                     children: [
@@ -107,7 +103,7 @@ class StoryThumbnailWidget extends ConsumerWidget {
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

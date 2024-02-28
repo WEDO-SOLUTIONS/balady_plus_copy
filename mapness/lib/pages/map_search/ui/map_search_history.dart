@@ -31,7 +31,8 @@ class MapSearchHistory extends ConsumerWidget {
               ),
             );
 
-            PoiMapRoute.open(ref.read(goRouterProvider), int.parse(item.objectId!));
+            PoiMapRoute.open(
+                ref.read(goRouterProvider), int.parse(item.objectId!),);
             // ignore: avoid_catches_without_on_clauses
           } catch (e) {
             final result = await showDialog(
@@ -74,7 +75,7 @@ class MapSearchHistory extends ConsumerWidget {
                 .read(searchHistoryProvider(scope.value).notifier)
                 .delete(item);
 
-            if (result) {
+            if (result as bool) {
               ref
                   .read(searchQueryProvider(scope.value).notifier)
                   .update(item.title);

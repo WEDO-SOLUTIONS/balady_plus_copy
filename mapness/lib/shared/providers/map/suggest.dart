@@ -7,7 +7,7 @@ part 'suggest.g.dart';
 @riverpod
 class SuggestQuery extends _$SuggestQuery {
   @override
-  String build() => "";
+  String build() => '';
 
   void update(String value) {
     state = value;

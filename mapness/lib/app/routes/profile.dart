@@ -38,16 +38,14 @@ part 'profile.g.dart';
   ],
 )
 class ProfileRoute extends GoRouteData {
-  static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   const ProfileRoute();
+  static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return const TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
       child: ProfilePage(),
     );
-  }
 }
 
 class SettingsRoute extends GoRouteData {
@@ -69,7 +67,7 @@ class ImageEditorRoute extends GoRouteData {
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    var extra = state.extra as Uint8List;
+    final extra = state.extra! as Uint8List;
 
     return TransculentPage(
       child: ImageEditorPage(extra),

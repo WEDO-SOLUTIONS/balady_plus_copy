@@ -1,8 +1,4 @@
 class PathNavManeuver {
-  final String? iconPath;
-  final String roadName;
-  final String distance;
-  final String unit;
 
   const PathNavManeuver({
     required this.iconPath,
@@ -10,4 +6,8 @@ class PathNavManeuver {
     required this.distance,
     required this.unit,
   });
+  final String? iconPath;
+  final String roadName;
+  final String distance;
+  final String unit;
 }

@@ -5,7 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'navigator_voice.g.dart';
 
-const String _prefsKey = "navigator.voice";
+const String _prefsKey = 'navigator.voice';
 
 @riverpod
 class NavigatorVoice extends _$NavigatorVoice {

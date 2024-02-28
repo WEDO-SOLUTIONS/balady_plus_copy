@@ -4,6 +4,14 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 /// widget contains scrollable common content layout for [DgisBottomSheet]: fixed header and scrollable body
 class DgisBottomSheetScrollableContent extends StatelessWidget {
+
+  const DgisBottomSheetScrollableContent({
+    required this.header,
+    required this.body,
+    super.key,
+    this.controller,
+    this.bodyPadding = const EdgeInsets.all(8),
+  });
   /// Pinned header, has handle and paddings
   final Widget header;
 
@@ -14,14 +22,6 @@ class DgisBottomSheetScrollableContent extends StatelessWidget {
   final EdgeInsetsGeometry bodyPadding;
 
   final ScrollController? controller;
-
-  const DgisBottomSheetScrollableContent({
-    required this.header,
-    required this.body,
-    super.key,
-    this.controller,
-    this.bodyPadding = const EdgeInsets.all(8),
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class DgisBottomSheetScrollableContent extends StatelessWidget {
             child: Container(
               color: backgroundColor,
             ),
-          )
+          ),
         ],
       ),
     );

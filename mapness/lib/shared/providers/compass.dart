@@ -8,7 +8,7 @@ class Compass extends _$Compass {
   @override
   double? build() {
     final compassSubscription = FlutterCompass.events?.listen((event) {
-      double bearing = event.heading ?? 0;
+      var bearing = event.heading ?? 0;
       if (bearing < 0) {
         // fix wrong bearing
         bearing += 360;

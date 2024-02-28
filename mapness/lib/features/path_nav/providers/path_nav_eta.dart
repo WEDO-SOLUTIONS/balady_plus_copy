@@ -28,9 +28,7 @@ class _PathNavEta extends _$PathNavEta {
         ),
       );
     });
-    ref.onDispose(() {
-      subspcription.cancel();
-    });
+    ref.onDispose(subspcription.cancel);
     return null;
   }
 }

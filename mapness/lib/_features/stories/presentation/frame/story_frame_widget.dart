@@ -9,17 +9,6 @@ import 'package:mapness/_features/stories/presentation/frame/story_frame_control
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class StoryFrameWidget extends StatefulWidget {
-  final StoryFrameData frame;
-  final int frameIndex;
-  final int frameLength;
-  final int duration;
-  final StoryFrameController? controller;
-
-  final VoidCallback onNext;
-  final VoidCallback onPrevious;
-  final VoidCallback onClose;
-
-  final void Function(StoryFrameAction action)? onActionPressed;
 
   const StoryFrameWidget({
     required this.duration,
@@ -33,6 +22,17 @@ class StoryFrameWidget extends StatefulWidget {
     this.onActionPressed,
     this.controller,
   });
+  final StoryFrameData frame;
+  final int frameIndex;
+  final int frameLength;
+  final int duration;
+  final StoryFrameController? controller;
+
+  final VoidCallback onNext;
+  final VoidCallback onPrevious;
+  final VoidCallback onClose;
+
+  final void Function(StoryFrameAction action)? onActionPressed;
 
   @override
   State<StoryFrameWidget> createState() => _StoryFrameWidgetState();
@@ -65,7 +65,6 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
       switch (_progress.status) {
         case AnimationStatus.completed:
           widget.onNext();
-          break;
         default:
           break;
       }
@@ -135,8 +134,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       child: Directionality(
         textDirection: Directionality.of(context),
         child: Stack(
@@ -219,10 +217,9 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                     ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
     );
-  }
 }

@@ -6,9 +6,7 @@ part 'package_info.g.dart';
 @Riverpod(keepAlive: true)
 class _PackageInfo extends _$PackageInfo {
   @override
-  Future<PackageInfo> build() async {
-    return PackageInfo.fromPlatform();
-  }
+  Future<PackageInfo> build() async => PackageInfo.fromPlatform();
 }
 
 final packageInfoProvider = _packageInfoProvider;
