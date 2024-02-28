@@ -91,6 +91,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
 
     return LayoutBuilder(
       builder: (context, constraints) => widgets.RoutesCarousel(
+        navType: widget.navType,
         pageController: _pageController,
         routes: routes,
         onActiveChanged: (index) {
