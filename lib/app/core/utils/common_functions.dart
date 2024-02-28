@@ -42,6 +42,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../app.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
+import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/presentation/dialogs/location_backgorund_consent.dart';
 import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
 import '../../features/_shared_feature_/presentation/pages/pdf_view.dart';
@@ -49,22 +50,15 @@ import '../../features/_shared_feature_/presentation/widgets/custom_popups_widge
 import '../../features/calendar/presentation/bloc/calendar_bloc.dart';
 import '../../features/entry_point/domain/use_cases/get_cookie.dart';
 import '../../features/events/presentation/bloc/events_bloc.dart';
+import '../../features/notifications/Data/model/notification_request.dart';
+import '../../features/notifications/manager/notification_manager.dart';
 import '../../features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../../features/profile_features/delegators/domain/entities/user_profile_entity.dart';
 import '../../features/vd/domain/entities/gis/gis_params.dart';
 import '../../features/vd/domain/entities/gis/gis_response.dart';
 import '../../features/vd/presentation/dialogs/vd_all_types_dialog.dart';
 import './utils_exports.dart'
-    show
-        AppColor,
-        AppConfig,
-        AppLanguage,
-        BlocStatus,
-        EnvType,
-        MimeType,
-        RouteName,
-        UIHelper,
-        WithDelay;
+    show AppColor, AppConfig, AppLanguage, BlocStatus, EnvType, GeneralKey, MimeType, RouteName, UIHelper, WithDelay;
 import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/presentation/dialogs/camera_permission_dialog.dart';
 import '../../features/_shared_feature_/presentation/dialogs/location_permission_dialog.dart';
@@ -178,7 +172,34 @@ Map<String, String> carEnPlateLetters = {
 };
 
 class CommonFunctions {
-  static EventTransformer<Event> debounce<Event>([Duration? duration]) =>
+
+
+  static void updateNotificationSettings(String fcm ) async {
+
+
+
+    NotificationManager manager = sl();
+
+
+    DeviceDetails details = sl();
+    Device device = Device();
+    device.typeId = GeneralKey.typeId;
+    device.id = details.deviceId;
+    device.osTypeId = details.deviceOs;
+
+    PackageDetails info =  sl();
+    NotificationRequest request = NotificationRequest();
+    request.fcmToken = fcm;
+    request.appId = GeneralKey.appId;
+    request.device = device;
+    request.appVersion = info.version;
+    manager.updateNotificationSettings(request);
+  }
+
+
+
+
+    static EventTransformer<Event> debounce<Event>([Duration? duration]) =>
       (events, mapper) =>
           events.debounce(duration ?? UIHelper.duration).switchMap(mapper);
 

@@ -790,7 +790,7 @@ class ApiUrl {
 
 
   static String updateNotificationSettings() =>
-      '/v1/notifications-services/devices';
+      '/v1/iam-services/ext/devices';
 
 
 

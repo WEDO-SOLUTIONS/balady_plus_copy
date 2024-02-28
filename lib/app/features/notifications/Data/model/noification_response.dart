@@ -3,13 +3,13 @@ class NotificationResponse {
     this.data,});
 
   NotificationResponse.fromJson(dynamic json) {
-    data = json['data'];
+    data = json['result'];
   }
   bool? data;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    map['data'] = data;
+    map['result'] = data;
     return map;
   }
 
