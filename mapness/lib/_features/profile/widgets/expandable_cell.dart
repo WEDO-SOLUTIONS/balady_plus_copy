@@ -21,13 +21,11 @@ class ExpandableCell extends StatelessWidget {
   final Widget content;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context) => Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: ExpansionWidget(
         titleBuilder:
-            (animationValue, easeInValue, isExpanded, toggleFunction) {
-          return Material(
+            (animationValue, easeInValue, isExpanded, toggleFunction) => Material(
             color: context.color.surface_base_secondary,
             borderRadius: BorderRadius.only(
               topLeft: const Radius.circular(8),
@@ -116,8 +114,7 @@ class ExpandableCell extends StatelessWidget {
                 ),
               ),
             ),
-          );
-        },
+          ),
         content: Container(
           width: double.infinity,
           decoration: const BoxDecoration(
@@ -131,5 +128,4 @@ class ExpandableCell extends StatelessWidget {
         ),
       ),
     );
-  }
 }

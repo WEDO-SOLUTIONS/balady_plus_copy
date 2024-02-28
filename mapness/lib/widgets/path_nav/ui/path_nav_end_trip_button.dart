@@ -34,5 +34,4 @@ class PathNavEndTripButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }

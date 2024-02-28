@@ -11,15 +11,13 @@ class UserStatePicker extends StatelessWidget {
   const UserStatePicker({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const Column(
+  Widget build(BuildContext context) => const Column(
       children: [
         UserStateRow(userState: UserState.guest),
         UserStateRow(userState: UserState.personal),
         UserStateRow(userState: UserState.business),
       ],
     );
-  }
 }
 
 class UserStateRow extends ConsumerWidget {

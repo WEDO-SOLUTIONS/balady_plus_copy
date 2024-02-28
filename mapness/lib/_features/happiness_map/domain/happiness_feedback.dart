@@ -27,14 +27,12 @@ class HappinessState {
     Coordinates? coordinates,
     List<String>? tags,
     String? comment,
-  }) {
-    return HappinessState(
+  }) => HappinessState(
       feedback: feedback ?? this.feedback,
       coordinates: coordinates ?? this.coordinates,
       tags: UnmodifiableListView(tags ?? this.tags),
       comment: comment ?? this.comment,
     );
-  }
 }
 
 enum HappinessFeedback { like, dislike }

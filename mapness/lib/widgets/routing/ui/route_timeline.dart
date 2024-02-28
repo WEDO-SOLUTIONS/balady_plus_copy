@@ -16,8 +16,7 @@ class RouteTimeline extends StatelessWidget {
   final List<String> labels;
 
   @override
-  Widget build(BuildContext context) {
-    return FixedTimeline(
+  Widget build(BuildContext context) => FixedTimeline(
       theme: TimelineTheme.of(context).copyWith(
         nodePosition: 0,
         indicatorPosition: 0.5,
@@ -35,7 +34,6 @@ class RouteTimeline extends StatelessWidget {
           )
           .toList(),
     );
-  }
 }
 
 class RouteTimelineRow extends StatelessWidget {
@@ -48,8 +46,7 @@ class RouteTimelineRow extends StatelessWidget {
   final String point;
 
   @override
-  Widget build(BuildContext context) {
-    return TimelineTile(
+  Widget build(BuildContext context) => TimelineTile(
       contents: Padding(
         padding: EdgeInsets.only(
           right: 8,
@@ -89,5 +86,4 @@ class RouteTimelineRow extends StatelessWidget {
               ),
       ),
     );
-  }
 }

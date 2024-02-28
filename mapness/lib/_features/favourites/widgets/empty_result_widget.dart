@@ -11,8 +11,7 @@ class EmptyResultWidget extends StatelessWidget {
   final String text;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       children: [
         SvgPicture.asset('assets/images_svg/empty_search.svg',
             package: PackageConfig.packageName,
@@ -29,5 +28,4 @@ class EmptyResultWidget extends StatelessWidget {
         ),
       ],
     );
-  }
 }

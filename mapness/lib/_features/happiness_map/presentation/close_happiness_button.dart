@@ -9,8 +9,7 @@ class CloseHappinessButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
-  Widget build(BuildContext context) {
-    return InkWell(
+  Widget build(BuildContext context) => InkWell(
       onTap: onPressed,
       child: Container(
         padding: const EdgeInsets.all(10),
@@ -30,5 +29,4 @@ class CloseHappinessButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }

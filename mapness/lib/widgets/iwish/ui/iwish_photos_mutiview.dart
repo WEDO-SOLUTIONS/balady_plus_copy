@@ -6,8 +6,7 @@ class PhotosMutiview extends StatelessWidget {
   final List<String> photos;
 
   @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
+  Widget build(BuildContext context) => ClipRRect(
       borderRadius: BorderRadius.circular(8),
       child: SizedBox(
         height: 100,
@@ -52,5 +51,4 @@ class PhotosMutiview extends StatelessWidget {
         ),
       ),
     );
-  }
 }

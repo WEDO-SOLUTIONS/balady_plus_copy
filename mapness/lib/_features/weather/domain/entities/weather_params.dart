@@ -22,8 +22,7 @@ class WeatherParams {
     double? longitude,
     double? latitude,
     int? numberOfDays,
-  }) {
-    return WeatherParams(
+  }) => WeatherParams(
       longitude: longitude ?? this.longitude,
       latitude: latitude ?? this.latitude,
       numberOfDays: numberOfDays ?? this.numberOfDays,
@@ -31,7 +30,6 @@ class WeatherParams {
       languageCode: languageCode,
       domain: domain,
     );
-  }
 
   String? getVerifyingKey() {
     String verifyingKey;

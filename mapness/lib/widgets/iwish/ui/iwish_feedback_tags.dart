@@ -19,8 +19,7 @@ class IwishFeedbackTags extends StatelessWidget {
   final tagsGroup = AutoSizeGroup();
 
   @override
-  Widget build(BuildContext context) {
-    return GridView.count(
+  Widget build(BuildContext context) => GridView.count(
       shrinkWrap: true,
       crossAxisCount: 3,
       mainAxisSpacing: 10,
@@ -96,5 +95,4 @@ class IwishFeedbackTags extends StatelessWidget {
           )
           .toList(),
     );
-  }
 }

@@ -36,8 +36,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Dismissible(
+  Widget build(BuildContext context) => Dismissible(
       onDismissed: (_) => onDelete(),
       direction: widget.isDeletable
           ? DismissDirection.horizontal
@@ -116,5 +115,4 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
         ),
       ),
     );
-  }
 }

@@ -7,10 +7,8 @@ extension DeleteFavouriteItemsRequestItemMapper
   static proto.DeleteFavouriteItemsRequest_Item fromDomain(
     FavouriteItem item,
     FavouriteItemMarkerType markerType,
-  ) {
-    return proto.DeleteFavouriteItemsRequest_Item(
+  ) => proto.DeleteFavouriteItemsRequest_Item(
       type: FavouriteItemMarkerTypeMapper.fromDomain(markerType),
       id: item.id,
     );
-  }
 }

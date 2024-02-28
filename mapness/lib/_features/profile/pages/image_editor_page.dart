@@ -24,8 +24,7 @@ class _ImageEditorPageState extends ConsumerState<ImageEditorPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
+  Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Directionality(
         textDirection: Directionality.of(context),
@@ -90,5 +89,4 @@ class _ImageEditorPageState extends ConsumerState<ImageEditorPage> {
         ),
       ),
     );
-  }
 }

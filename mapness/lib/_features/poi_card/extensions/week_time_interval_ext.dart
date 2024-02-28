@@ -30,7 +30,5 @@ extension WeekTimeIntervalData on WeekTimeIntervalMessage {
     return '$startTime-$finishTime';
   }
 
-  String displayWeekDayName(AppLocalizations locale) {
-    return startTime.weekDay.displayName(locale);
-  }
+  String displayWeekDayName(AppLocalizations locale) => startTime.weekDay.displayName(locale);
 }

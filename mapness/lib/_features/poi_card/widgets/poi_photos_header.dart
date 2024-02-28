@@ -1,13 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_photos_row.dart';
+import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
 class PoiPhotosHeader extends ConsumerWidget {
-
   const PoiPhotosHeader({
     required this.expansion,
     required this.objectId,

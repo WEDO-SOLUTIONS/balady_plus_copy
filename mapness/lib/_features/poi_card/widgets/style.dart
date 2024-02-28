@@ -17,8 +17,7 @@ const gapHeight = 16.0;
 Widget buildText({
   required double fontSize, required FontWeight fontWeight, required Color color, String? text,
   int? maxLines,
-}) {
-  return text == null
+}) => text == null
       ? const SizedBox.shrink()
       : Text(
           text,
@@ -32,7 +31,6 @@ Widget buildText({
           textAlign: TextAlign.start,
           // textDirection: TextDirection.ltr,
         );
-}
 
 const borderRadius = BorderRadius.all(
   Radius.circular(8),
@@ -49,10 +47,8 @@ Widget buildIconButton({
   Color? colorIcon,
   Color? colorButton,
   int flex = 1,
-}) {
-  return Builder(
-    builder: (context) {
-      return Flexible(
+}) => Builder(
+    builder: (context) => Flexible(
         flex: flex,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -96,10 +92,8 @@ Widget buildIconButton({
             ),
           ),
         ),
-      );
-    },
+      ),
   );
-}
 
 SvgPicture timeIcon(Color color) => SvgPicture.asset(
       'assets/icons/svg/ic_time.svg',

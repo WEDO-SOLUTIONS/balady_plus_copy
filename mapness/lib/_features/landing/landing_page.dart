@@ -1,25 +1,20 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/landing/controls.dart' as controls;
 import 'package:mapness/_features/landing/dashboard.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
-import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -113,8 +108,6 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       ..watch(mapObjectManagerProvider(named: mapLayerName).notifier)
       // ref.watch(iwishMarkersProvider.select((value) => null));
       ..watch(mapObjectManagerProvider(named: MapnessConsts.mapLayerName));
-
-    final colorScheme = ref.read(colorSchemeProvider.notifier);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,

@@ -45,8 +45,7 @@ class SsoCredentialView extends ConsumerWidget {
 }
 
 Widget _infoItem(BuildContext context,
-    {required String title, required String value,}) {
-  return Row(
+    {required String title, required String value,}) => Row(
     children: [
       Expanded(
         child: Column(
@@ -75,4 +74,3 @@ Widget _infoItem(BuildContext context,
       ),
     ],
   );
-}

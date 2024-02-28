@@ -17,8 +17,7 @@ class _BugButtonState extends State<BugButton> {
   Offset position = const Offset(100, 100);
 
   @override
-  Widget build(BuildContext context) {
-    return Positioned(
+  Widget build(BuildContext context) => Positioned(
       left: position.dx,
       top: position.dy,
       child: GestureDetector(
@@ -54,5 +53,4 @@ class _BugButtonState extends State<BugButton> {
         ),
       ),
     );
-  }
 }

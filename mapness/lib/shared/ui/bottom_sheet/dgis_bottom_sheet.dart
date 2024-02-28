@@ -9,10 +9,9 @@ import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_theme.dart';
 import 'package:mapness/shared/ui/bottom_sheet/lib/scroll_listeners.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/dgis_handle.dart';
-import 'package:mapness/shared/ui/bottom_sheet/ui/widget_size_notifier.dart';
-
 import 'package:mapness/shared/ui/bottom_sheet/ui/disable_overscroll_behavior.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/vertival_scroll_listener.dart';
+import 'package:mapness/shared/ui/bottom_sheet/ui/widget_size_notifier.dart';
 
 // Map controls builder type
 typedef MapControlsBuilder = Widget Function(
@@ -38,7 +37,6 @@ enum Expansion {
 }
 
 class DgisBottomSheet extends StatefulWidget {
-
   DgisBottomSheet({
     required this.initialExpansion,
     required this.availableExpansions,
@@ -184,7 +182,9 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
       'Calculating background opacity: _visibleHeight=$_visibleHeight, _maxVisibleHeight=$_maxVisibleHeight, preMaxVisibleHeight=$preMaxVisibleHeight',
     );
     return max(
-            0, min(_visibleHeight, _maxVisibleHeight) - preMaxVisibleHeight,) /
+          0,
+          min(_visibleHeight, _maxVisibleHeight) - preMaxVisibleHeight,
+        ) /
         (_maxVisibleHeight - preMaxVisibleHeight);
   }
 
@@ -384,7 +384,8 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
                           _screenHeight = newScreenHeight;
                           _printDebugLog('_screenHeight=$_screenHeight');
                           _printDebugLog(
-                              '_maxVisibleHeight=$_maxVisibleHeight',);
+                            '_maxVisibleHeight=$_maxVisibleHeight',
+                          );
 
                           _visibleHeight =
                               min(_visibleHeight, _maxVisibleHeight);
@@ -669,8 +670,10 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
     }
   }
 
-  double _visibleHeightByExpansion(Expansion expansion,
-      [DgisBottomSheet? widget,]) {
+  double _visibleHeightByExpansion(
+    Expansion expansion, [
+    DgisBottomSheet? widget,
+  ]) {
     widget ??= this.widget;
     var visibleHeight = 0.0;
     switch (expansion) {
@@ -748,7 +751,8 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
           expansion != Expansion.expanded &&
           position.pixels > 0) {
         _printDebugLog(
-            'setExpansion. First start with scrollableBodyPixelsAnimation',);
+          'setExpansion. First start with scrollableBodyPixelsAnimation',
+        );
         final visibleHeightDelta = _visibleHeight - visibleHeight;
 
         visibleHeightAnimationIntervalBegin =
@@ -805,7 +809,8 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
 
       await animationController.forward().whenComplete(() {
         _printDebugLog(
-            'animation complete, _visibleHeight=$_visibleHeight, visibleHeightAnimation=${visibleHeightAnimation.isCompleted}',);
+          'animation complete, _visibleHeight=$_visibleHeight, visibleHeightAnimation=${visibleHeightAnimation.isCompleted}',
+        );
         setState(() {
           _hasActiveAnimation = false;
         });

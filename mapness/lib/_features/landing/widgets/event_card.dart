@@ -14,8 +14,7 @@ class EventCard extends StatelessWidget {
   final String id;
 
   @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
+  Widget build(BuildContext context) => ClipRRect(
       borderRadius: BorderRadius.circular(8),
       child: Material(
         child: Ink.image(
@@ -64,5 +63,4 @@ class EventCard extends StatelessWidget {
         ),
       ),
     );
-  }
 }

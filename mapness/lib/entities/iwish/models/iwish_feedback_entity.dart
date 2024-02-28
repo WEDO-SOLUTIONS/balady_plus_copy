@@ -15,11 +15,9 @@ class IwishFeedbackEntity {
     Set<String>? tags,
     String? comment,
     IwishFeedbackMoodType? mood,
-  }) {
-    return IwishFeedbackEntity(
+  }) => IwishFeedbackEntity(
       tags: tags ?? this.tags,
       comment: comment ?? this.comment,
       mood: mood ?? this.mood,
     );
-  }
 }

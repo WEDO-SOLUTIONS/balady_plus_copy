@@ -1,25 +1,22 @@
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/weather/domain/enum/weather_enum.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/search.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
-
-import 'package:mapness/shared/providers/map/search.dart';
 
 part 'weather_map_controller.g.dart';
 
 class WeatherMapState {
-
   WeatherMapState({required this.type, this.isEnabled});
   final WeatherMapType type;
   final bool? isEnabled;
 
-  WeatherMapState copy({WeatherMapType? type, bool? isEnabled}) {
-    return WeatherMapState(
-      type: type ?? this.type,
-      isEnabled: isEnabled ?? this.isEnabled,
-    );
-  }
+  WeatherMapState copy({WeatherMapType? type, bool? isEnabled}) =>
+      WeatherMapState(
+        type: type ?? this.type,
+        isEnabled: isEnabled ?? this.isEnabled,
+      );
 }
 
 @riverpod
@@ -38,10 +35,11 @@ class WeatherMapController extends _$WeatherMapController {
 
       final result = await dgisController?.toggleHeatmap(
         message: WeatherMapMessage(
-            type: type,
-            layerName: type?.layerName(),
-            rasterTileUri: type?.tileSourceUri(),
-            enabled: enable,),
+          type: type,
+          layerName: type?.layerName(),
+          rasterTileUri: type?.tileSourceUri(),
+          enabled: enable,
+        ),
       );
       state = state.copy(type: type, isEnabled: result);
 
@@ -70,7 +68,8 @@ class WeatherMapController extends _$WeatherMapController {
   }
 
   void toggleWeatherMap({
-    required bool enable, WeatherMapType? type,
+    required bool enable,
+    WeatherMapType? type,
   }) {
     sub.add((type ?? WeatherMapType.temperature, enable));
   }

@@ -37,8 +37,7 @@ class _OpeningHoursState extends State<OpeningHours> {
   }
 
   List<Widget>? convertWeekTimeInterval(
-      BuildContext context, List<OpenHours>? openingHours,) {
-    return openingHours?.map((e) {
+      BuildContext context, List<OpenHours>? openingHours,) => openingHours?.map((e) {
       final weekDay = e.weekDay;
 
       final textStyle = Theme.of(context)
@@ -70,7 +69,6 @@ class _OpeningHoursState extends State<OpeningHours> {
         ],
       );
     }).toList();
-  }
 
   @override
   Widget build(BuildContext context) {

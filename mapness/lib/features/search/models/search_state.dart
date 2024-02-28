@@ -24,12 +24,10 @@ extension SearchStateMap on SearchState {
     required T Function() history,
     required T Function(SuggestResultMessage suggest) suggest,
     required T Function(SearchResultMessage results) results,
-  }) {
-    return switch (this) {
+  }) => switch (this) {
       SearchStateEmpty() => empty(),
       SearchStateHistory() => history(),
       SearchStateSuggest(suggest: final value) => suggest(value),
       SearchStateResults(results: final value) => results(value),
     };
-  }
 }

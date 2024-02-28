@@ -34,8 +34,7 @@ class IwishCarousel extends ConsumerWidget {
       loading: () => LoadingSheet(text: context.l10n.loading),
       data: (data) => CarouselSlider.builder(
         itemCount: data.length,
-        itemBuilder: (context, index, realIndex) {
-          return Consumer(
+        itemBuilder: (context, index, realIndex) => Consumer(
             builder: (context, ref, child) {
               final iwishState = ref.watch(iwishEntityProvider(data[index].id));
               return iwishState.when(
@@ -60,8 +59,7 @@ class IwishCarousel extends ConsumerWidget {
                 ),
               );
             },
-          );
-        },
+          ),
         options: CarouselOptions(
           onPageChanged: (index, reason) => _highlighOnMap(data[index].id),
           enableInfiniteScroll: false,

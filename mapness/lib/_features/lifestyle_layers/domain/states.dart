@@ -17,11 +17,9 @@ class IndoorState {
     bool? hasLevels,
     List<IndoorLevel>? levelNames,
     int? activeLevel,
-  }) {
-    return IndoorState(
+  }) => IndoorState(
       hasLevels: hasLevels ?? this.hasLevels,
       levelNames: levelNames ?? this.levelNames,
       activeIndex: activeLevel ?? activeIndex,
     );
-  }
 }

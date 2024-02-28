@@ -9,7 +9,10 @@ List<BuildingComplianceCertificate> buildingComplianceCertificateFromJson(
   List list,
 ) =>
     List<BuildingComplianceCertificate>.from(
-      list.map(BuildingComplianceCertificate.fromJson),
+      list.map(
+        (e) =>
+            BuildingComplianceCertificate.fromJson(e as Map<String, dynamic>),
+      ),
     );
 
 class BuildingComplianceCertificate extends PointLayersData {
@@ -72,11 +75,7 @@ class BuildingComplianceCertificate extends PointLayersData {
   String? STREETNAME;
   final List<List<GeoPointMessage>>? pathsGoogle;
 
-  String getMunAndDis() {
-    return "${MUNICIPALITYNAME ?? ""},${DISTRICTNAME ?? ""}";
-  }
+  String getMunAndDis() => "${MUNICIPALITYNAME ?? ""},${DISTRICTNAME ?? ""}";
 
-  String getStreetName() {
-    return STREETNAME ?? '';
-  }
+  String getStreetName() => STREETNAME ?? '';
 }

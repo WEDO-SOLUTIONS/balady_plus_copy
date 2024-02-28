@@ -73,11 +73,9 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
         return widget.itemBuilder(context, results[index]);
       },
       itemCount: results.length + (_hasNext ? 1 : 0),
-      separatorBuilder: (BuildContext context, int index) {
-        return const SizedBox(
+      separatorBuilder: (context, index) => const SizedBox(
           height: 16,
-        );
-      },
+        ),
     );
   }
 }

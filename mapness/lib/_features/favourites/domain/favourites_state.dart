@@ -11,11 +11,9 @@ class FavouritesState {
     List<FavouriteItem>? items,
     FavouriteItem? home,
     FavouriteItem? work,
-  }) {
-    return FavouritesState(
+  }) => FavouritesState(
       items: items ?? this.items,
       home: home ?? this.home,
       work: work ?? this.work,
     );
-  }
 }

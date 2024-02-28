@@ -16,14 +16,12 @@ class JobsMapRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return const TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
       child: Align(
         alignment: Alignment.bottomCenter,
         child: JobOverlayContent(),
       ),
     );
-  }
 }
 
 @TypedGoRoute<JobsMapDetail>(
@@ -37,14 +35,12 @@ class JobsMapDetail extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
       child: Align(
         alignment: Alignment.bottomCenter,
         child: JobDetailOverlay(jobId: jobId),
       ),
     );
-  }
 }
 
 final $jobsMapRoutes = $appRoutes;

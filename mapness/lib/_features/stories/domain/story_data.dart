@@ -17,11 +17,9 @@ class StoryData {
     List<StoryFrameData>? frames,
     String? storyId,
     StoryThumbnailData? thumbnail,
-  }) {
-    return StoryData(
+  }) => StoryData(
       frames: frames ?? this.frames,
       storyId: storyId ?? this.storyId,
       thumbnail: thumbnail ?? this.thumbnail,
     );
-  }
 }

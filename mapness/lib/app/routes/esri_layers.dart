@@ -28,13 +28,11 @@ class EsriLayersRoute extends GoRouteData {
   }
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return const TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
       child: LayersSheet(
         key: Key('ESRI CARD WIDGET'),
       ),
     );
-  }
 }
 
 final $layersRoutes = $appRoutes;

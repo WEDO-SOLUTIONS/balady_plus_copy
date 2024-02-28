@@ -9,8 +9,7 @@ class AppCloseButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       child: Ink(
         decoration: BoxDecoration(
           color: context.color.surface_base_primary,
@@ -29,7 +28,6 @@ class AppCloseButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }
 
 class CustomCloseButton extends StatelessWidget {
@@ -41,8 +39,7 @@ class CustomCloseButton extends StatelessWidget {
   );
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context) => Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Material(
         borderRadius: borderRadius,
@@ -69,5 +66,4 @@ class CustomCloseButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }

@@ -181,13 +181,11 @@ class ConditionsModel extends Condition {
   });
 
   //generate from json
-  static ConditionsModel fromMap(Map<String, dynamic> json) {
-    return ConditionsModel(
+  static ConditionsModel fromMap(Map<String, dynamic> json) => ConditionsModel(
       code: json['code'],
       icon: json['icon'],
       text: json['text'],
     );
-  }
 }
 
 class ForecastModel extends Forecast {
@@ -195,7 +193,7 @@ class ForecastModel extends Forecast {
 
   static ForecastModel fromJson(Map<String, dynamic> json) {
     final forecastDayData = json['forecastday'];
-    var decodedForecastDayResponse;
+    var decodedForecastDayResponse = null;
     if (forecastDayData != null) {
       decodedForecastDayResponse =
           forecastDayData.map<ForecastDay>((forecastDay) {
@@ -203,7 +201,7 @@ class ForecastModel extends Forecast {
         final astroData = forecastDay['astro'];
 
         var dayConditionData;
-        ConditionsModel decodedDayConditionResponse;
+        ConditionsModel? decodedDayConditionResponse = null;
         dayConditionData = dayData['condition'];
         if (dayConditionData != null) {
           decodedDayConditionResponse =
@@ -244,9 +242,7 @@ class ForecastDayModel extends ForecastDay {
     Day day,
   ) {
     final hourData = json['hour'] as List<dynamic>?;
-    final hours = hourData?.map<HourModel>((hour) {
-      return HourModel.fromMap(hour);
-    }).toList();
+    final hours = hourData?.map<HourModel>((hour) => HourModel.fromMap(hour)).toList();
 
     return ForecastDayModel(
       date: json['date'],
@@ -271,8 +267,7 @@ class AstroModel extends Astro {
   });
 
   //generate from json
-  static AstroModel fromMap(Map<String, dynamic> json) {
-    return AstroModel(
+  static AstroModel fromMap(Map<String, dynamic> json) => AstroModel(
       isMoonUp: json['is_moon_up'],
       isSunUp: json['is_sun_up'],
       moonIllumination: json['moon_illumination'],
@@ -282,7 +277,6 @@ class AstroModel extends Astro {
       sunrise: json['sunrise'],
       sunset: json['sunset'],
     );
-  }
 }
 
 class DayModel extends Day {
@@ -447,25 +441,25 @@ class LocationModel extends Location {
 AllWeatherInfoModel mapper(Map<String, dynamic>? json) {
   try {
     final data = json?['data']?['result'];
-    AlertsModel alertModel;
+    AlertsModel? alertModel = null;
     final alertsData = data?['alerts'];
     if (alertsData != null) {
       alertModel = AlertsModel.fromJson(alertsData);
     }
 
-    LocationModel locationModel;
+    LocationModel? locationModel = null;
     final locationData = data?['location'];
     if (locationData != null) {
       locationModel = LocationModel.fromJson(locationData);
     }
 
-    ForecastModel forecastModel;
+    ForecastModel? forecastModel = null;
     final forecastData = data?['forecast'];
     if (forecastData != null) {
       forecastModel = ForecastModel.fromJson(forecastData);
     }
 
-    CurrentModel conditionModel;
+    CurrentModel? conditionModel = null;
     final currentData = data?['current'];
     if (currentData != null) {
       final currentCondition = currentData['condition'];

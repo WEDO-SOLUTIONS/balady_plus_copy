@@ -7,8 +7,7 @@ extension IwishMarkerMapper on IwishMarker {
   Marker toMarker(
     final bool isSelected,
     final Function(IwishMarker) onMarkerTap,
-  ) {
-    return Marker(
+  ) => Marker(
       id: "$iwishMarkerPrefix$id",
       options: MarkerOptionsMessage(
         position: GeoPointWithElevationMessage(
@@ -42,5 +41,4 @@ extension IwishMarkerMapper on IwishMarker {
       ),
       onTap: () => onMarkerTap(this),
     );
-  }
 }

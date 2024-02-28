@@ -16,8 +16,7 @@ class LoadingShimmerImage extends StatelessWidget {
   final void Function(String name,bool? isAsset)? onImageTap;
 
   @override
-  Widget build(BuildContext context) {
-    return LoadingImage(
+  Widget build(BuildContext context) => LoadingImage(
       onImageTap: onImageTap,
       fit: fit,
       imageUrl: imageUrl,
@@ -28,5 +27,4 @@ class LoadingShimmerImage extends StatelessWidget {
       ),
       onImageReady: onImageReady,
     );
-  }
 }

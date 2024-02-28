@@ -9,6 +9,8 @@ import 'package:mapness/_features/landing/widgets/compliance_card.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_header.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_profile.dart';
 import 'package:mapness/_features/landing/widgets/events_home_card_wrapper.dart';
+import 'package:mapness/_features/landing/widgets/interesting_places_cards.dart';
+import 'package:mapness/_features/landing/widgets/shopping_malls_cards.dart';
 import 'package:mapness/_features/landing/widgets/snap_and_send_card.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/stories/data/story_service.dart';
@@ -16,9 +18,6 @@ import 'package:mapness/_features/stories/stories.dart';
 import 'package:mapness/_features/stories/stories_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-
-import 'package:mapness/_features/landing/widgets/interesting_places_cards.dart';
-import 'package:mapness/_features/landing/widgets/shopping_malls_cards.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({
@@ -169,7 +168,8 @@ class _DashboardState extends ConsumerState<Dashboard> {
                             EventsHomeCardWrapper(
                               colorScheme: ref.read(colorSchemeProvider),
                               key: ValueKey(
-                                  'events_home_card_wrapper_${direction.name}',),
+                                'events_home_card_wrapper_${direction.name}',
+                              ),
                             ),
                             const SizedBox(
                               height: 20,

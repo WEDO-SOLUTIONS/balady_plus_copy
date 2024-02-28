@@ -7,9 +7,12 @@ import 'package:mapness/features/routing/ui/brief_route_widgets.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class RouteButton extends ConsumerWidget {
-
-  const RouteButton(
-      {required this.latitude, required this.longitude, this.label, super.key,});
+  const RouteButton({
+    required this.latitude,
+    required this.longitude,
+    this.label,
+    super.key,
+  });
   final double latitude;
   final double longitude;
   final String? label;
@@ -37,9 +40,15 @@ class RouteButton extends ConsumerWidget {
                   finishLabel: label ?? '',
                   finishLatitude: latitude,
                   finishLongitude: longitude,
+                  finishObjectId: data.id?.objectId,
+                  finishEntranceId: data.id?.entranceId,
+                  finishLevelId: null,
                   startLabel: context.l10n.myLocation,
                   startLatitude: null,
                   startLongitude: null,
+                  startObjectId: null,
+                  startEntranceId: null,
+                  startLevelId: null,
                 ).push(context);
               },
             ),

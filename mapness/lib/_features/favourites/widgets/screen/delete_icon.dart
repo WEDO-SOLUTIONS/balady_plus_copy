@@ -7,8 +7,7 @@ class DeleteIcon extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
-  Widget build(BuildContext context) {
-    return InkWell(
+  Widget build(BuildContext context) => InkWell(
       onTap: onPressed,
       child: SvgPicture.asset(
         'assets/icons/svg/ic_minus_circle_red.svg',
@@ -17,5 +16,4 @@ class DeleteIcon extends StatelessWidget {
         height: 24,
       ),
     );
-  }
 }

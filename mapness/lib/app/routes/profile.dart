@@ -43,11 +43,9 @@ class ProfileRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return const TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
       child: ProfilePage(),
     );
-  }
 }
 
 class SettingsRoute extends GoRouteData {

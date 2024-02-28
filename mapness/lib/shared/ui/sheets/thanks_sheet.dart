@@ -17,8 +17,7 @@ class ThanksSheet extends StatelessWidget {
   final String? buttonLabel;
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(16),
       child: Padding(
@@ -51,5 +50,4 @@ class ThanksSheet extends StatelessWidget {
         ),
       ),
     );
-  }
 }

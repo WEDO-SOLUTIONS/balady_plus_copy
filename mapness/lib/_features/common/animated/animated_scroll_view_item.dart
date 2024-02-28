@@ -38,10 +38,8 @@ class _AnimatedScrollViewItemState extends State<AnimatedScrollViewItem> with Si
   }
 
   @override
-  Widget build(BuildContext context) {
-    return ScaleTransition(
+  Widget build(BuildContext context) => ScaleTransition(
       scale: _scaleAnimation,
       child: widget.child,
     );
-  }
 }

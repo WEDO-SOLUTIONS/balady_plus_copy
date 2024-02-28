@@ -31,10 +31,10 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
       ..setBackgroundColor(NonThemeColor.color70)
       ..setNavigationDelegate(
         NavigationDelegate(
-          onProgress: (int progress) {},
-          onPageStarted: (String url) {},
-          onPageFinished: (String url) {},
-          onWebResourceError: (WebResourceError error) {},
+          onProgress: (progress) {},
+          onPageStarted: (url) {},
+          onPageFinished: (url) {},
+          onWebResourceError: (error) {},
         ),
       )
       ..loadRequest(
@@ -46,8 +46,7 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
+  Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Directionality(
         textDirection: Directionality.of(context),
@@ -123,5 +122,4 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
         ),
       ),
     );
-  }
 }

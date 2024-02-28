@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/routing/route_point.dart';
@@ -10,8 +11,6 @@ import 'package:mapness/pages/routing/ui/routing_history.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/widgets/routing/ui/search_action.dart';
-
-import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 
 const _searchScope = 'RoutingSearch';
 

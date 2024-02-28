@@ -19,8 +19,7 @@ class LabeledElevatedButton extends StatelessWidget {
   final EdgeInsets? padding;
 
   @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
+  Widget build(BuildContext context) => ElevatedButton(
       onPressed: enabled ? onPressed : null,
       style: ElevatedButton.styleFrom(
         backgroundColor: backgroundColor ?? context.color.stroke_accent,
@@ -39,5 +38,4 @@ class LabeledElevatedButton extends StatelessWidget {
             .copyWith(color: textColor ?? Colors.white),
       ),
     );
-  }
 }

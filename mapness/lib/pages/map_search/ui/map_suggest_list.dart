@@ -23,21 +23,17 @@ class MapSuggestList extends ConsumerWidget {
         bottom: 16,
       ),
       physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) {
-        return SuggestItem(
+      itemBuilder: (context, index) => SuggestItem(
           suggest: suggests[index],
           onObjectTap: (object) {
             PoiMapRoute.open(ref.read(goRouterProvider), object.id!.objectId);
           },
-        );
-      },
+        ),
       itemCount: suggests.length,
-      separatorBuilder: (BuildContext context, int index) {
-        return const Padding(
+      separatorBuilder: (context, index) => const Padding(
           padding: EdgeInsetsDirectional.only(start: 52),
           child: Divider(),
-        );
-      },
+        ),
     );
   }
 }

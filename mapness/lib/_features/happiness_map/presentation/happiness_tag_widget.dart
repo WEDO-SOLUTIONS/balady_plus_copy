@@ -19,8 +19,7 @@ class HappinessTagWidget extends StatelessWidget {
   final AutoSizeGroup tagSizeGroup;
 
   @override
-  Widget build(BuildContext context) {
-    return Ink(
+  Widget build(BuildContext context) => Ink(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
@@ -59,5 +58,4 @@ class HappinessTagWidget extends StatelessWidget {
         ),
       ),
     );
-  }
 }

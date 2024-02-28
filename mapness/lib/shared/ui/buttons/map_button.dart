@@ -29,8 +29,7 @@ class _MapButtonState extends State<MapButton> {
   bool _pressed = false;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: widget.onTap,
       onTapUp: (details) {
         setState(() {
@@ -77,5 +76,4 @@ class _MapButtonState extends State<MapButton> {
         ),
       ),
     );
-  }
 }

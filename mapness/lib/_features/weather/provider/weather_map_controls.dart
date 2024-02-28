@@ -9,20 +9,16 @@ class WeatherMapControlsState {
   final double extent;
   final bool controlsVisible;
 
-  WeatherMapControlsState copy({double? extent, bool? controlsVisible}) {
-    return WeatherMapControlsState(
+  WeatherMapControlsState copy({double? extent, bool? controlsVisible}) => WeatherMapControlsState(
       extent ?? this.extent,
       controlsVisible ?? this.controlsVisible,
     );
-  }
 }
 
 @riverpod
 class WeatherMapControls extends _$WeatherMapControls {
   @override
-  WeatherMapControlsState build() {
-    return WeatherMapControlsState(weatherHeaderSize, true);
-  }
+  WeatherMapControlsState build() => WeatherMapControlsState(weatherHeaderSize, true);
 
   void update({double? extent, bool? controlsVisible}) {
     state = state.copy(

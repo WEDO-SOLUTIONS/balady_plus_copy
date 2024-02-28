@@ -83,9 +83,7 @@ class SsoUserInfo {
     return ' ';
   }
 
-  String getFirstAndLastName() {
-    return "${givenName ?? ''} ${familyName ?? ''}";
-  }
+  String getFirstAndLastName() => "${givenName ?? ''} ${familyName ?? ''}";
 
   String getIdType() {
     if (idNo != null) {
@@ -125,13 +123,9 @@ class SsoUserInfo {
     return email;
   }
 
-  String getPhone() {
-    return phone != null
+  String getPhone() => phone != null
         ? (!phone!.startsWith('0') ? '0${phone!}' : phone!)
         : '';
-  }
 
-  String getGender() {
-    return sex == '1' ? 'male' : 'female';
-  }
+  String getGender() => sex == '1' ? 'male' : 'female';
 }

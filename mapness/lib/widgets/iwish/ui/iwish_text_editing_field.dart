@@ -34,8 +34,7 @@ class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return TextField(
+  Widget build(BuildContext context) => TextField(
       minLines: 11,
       maxLines: 11,
       controller: _controller,
@@ -54,5 +53,4 @@ class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
         contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
       ),
     );
-  }
 }

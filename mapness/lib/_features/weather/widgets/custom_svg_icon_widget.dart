@@ -22,8 +22,7 @@ class CustomSvgIconWidget extends StatelessWidget {
   final BoxFit? iconFit;
 
   @override
-  Widget build(BuildContext context) {
-    return SvgPicture.asset(
+  Widget build(BuildContext context) => SvgPicture.asset(
       iconPath,
       color: iconColor,
       width: iconWidth ?? iconSize,
@@ -31,7 +30,6 @@ class CustomSvgIconWidget extends StatelessWidget {
       alignment: iconAlignment ?? Alignment.center,
       fit: iconFit ?? BoxFit.contain,
     );
-  }
 }
 
 class CustomSvgIconWithBackgroundWidget extends StatelessWidget {
@@ -61,8 +59,7 @@ class CustomSvgIconWithBackgroundWidget extends StatelessWidget {
   final BoxShape backgroundShape;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       width: width,
       height: height,
       decoration: BoxDecoration(
@@ -79,5 +76,4 @@ class CustomSvgIconWithBackgroundWidget extends StatelessWidget {
         fit: iconFit,
       ),
     );
-  }
 }

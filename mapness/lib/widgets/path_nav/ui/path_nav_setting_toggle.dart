@@ -17,8 +17,7 @@ class PathNavSettingToggle extends StatelessWidget {
   final void Function(bool)? onChanged;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -53,5 +52,4 @@ class PathNavSettingToggle extends StatelessWidget {
         ],
       ),
     );
-  }
 }

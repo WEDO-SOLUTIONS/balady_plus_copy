@@ -12,8 +12,7 @@ class IwishActionIconButton extends StatelessWidget {
   final VoidCallback? onPressed;
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       color: context.color.surface_base_primary,
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
@@ -27,5 +26,4 @@ class IwishActionIconButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }

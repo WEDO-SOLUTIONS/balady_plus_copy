@@ -9,8 +9,7 @@ class Description extends StatelessWidget {
   final String text;
 
   @override
-  Widget build(BuildContext context) {
-    return CardContent(
+  Widget build(BuildContext context) => CardContent(
       child: Padding(
         padding: const EdgeInsets.symmetric(
           vertical: 2,
@@ -46,5 +45,4 @@ class Description extends StatelessWidget {
         ),
       ),
     );
-  }
 }

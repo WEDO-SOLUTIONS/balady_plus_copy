@@ -18,12 +18,10 @@ class PathNavSpeedInfo {
     int? speed,
     int? speedLimit,
     bool? speedExceed,
-  }) {
-    return PathNavSpeedInfo(
+  }) => PathNavSpeedInfo(
       direction: direction ?? this.direction,
       speed: speed ?? this.speed,
       speedLimit: speedLimit ?? this.speedLimit,
       speedExceed: speedExceed ?? this.speedExceed,
     );
-  }
 }

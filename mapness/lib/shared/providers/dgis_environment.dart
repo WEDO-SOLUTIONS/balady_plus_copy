@@ -1,7 +1,6 @@
 import 'package:mapness/shared/config/environment_config.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import 'package:mapness/shared/providers/hive.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'dgis_environment.g.dart';
 

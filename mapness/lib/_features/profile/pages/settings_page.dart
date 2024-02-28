@@ -7,12 +7,11 @@ import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/profile/widgets/dark_mode_cell.dart';
 import 'package:mapness/_features/profile/widgets/expandable_cell.dart';
+import 'package:mapness/_features/profile/widgets/language_picker.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
-
-import 'package:mapness/_features/profile/widgets/language_picker.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
@@ -63,7 +62,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                   height: 24,
                                   width: 24,
                                   package: PackageConfig.packageName,
-                                  colorFilter:  ColorFilter.mode(
+                                  colorFilter: ColorFilter.mode(
                                     context.color.text_and_icons_base_primary,
                                     BlendMode.srcIn,
                                   ),
@@ -87,7 +86,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             style: Theme.of(context)
                                 .extension<ThemeTextStyles>()!
                                 .accentM
-                                .copyWith(color: context.color.text_and_icons_base_primary),
+                                .copyWith(
+                                    color: context
+                                        .color.text_and_icons_base_primary),
                           ),
                         ),
                         const Spacer(),
@@ -126,8 +127,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             .extension<ThemeTextStyles>()!
                             .textXS
                             .copyWith(
-                                color:
-                                    context.color.text_and_icons_base_primary.withOpacity(0.36),),
+                              color: context.color.text_and_icons_base_primary
+                                  .withOpacity(0.36),
+                            ),
                       ),
                     ],
                   ),
@@ -149,8 +151,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             .extension<ThemeTextStyles>()!
                             .textXS
                             .copyWith(
-                                color:
-                                    context.color.text_and_icons_base_primary.withOpacity(0.36),),
+                              color: context.color.text_and_icons_base_primary
+                                  .withOpacity(0.36),
+                            ),
                       ),
                     ],
                   ),

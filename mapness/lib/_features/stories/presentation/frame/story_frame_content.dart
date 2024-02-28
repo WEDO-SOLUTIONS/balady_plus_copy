@@ -11,8 +11,7 @@ class StoryFrameContent extends StatelessWidget {
   final StoryFrameData frame;
 
   @override
-  Widget build(BuildContext context) {
-    return SafeArea(
+  Widget build(BuildContext context) => SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -60,5 +59,4 @@ class StoryFrameContent extends StatelessWidget {
         ],
       ),
     );
-  }
 }

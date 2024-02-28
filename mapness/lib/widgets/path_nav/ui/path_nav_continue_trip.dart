@@ -12,8 +12,7 @@ class PathNavContinueTrip extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       color: context.color.stroke_accent,
       borderRadius: BorderRadius.circular(16),
       child: InkWell(
@@ -69,5 +68,4 @@ class PathNavContinueTrip extends StatelessWidget {
         ),
       ),
     );
-  }
 }

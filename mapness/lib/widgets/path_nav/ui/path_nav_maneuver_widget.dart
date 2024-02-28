@@ -11,8 +11,7 @@ class PathNavManeuverWidget extends StatelessWidget {
   final PathNavManeuver maneuver;
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(16),
       child: Container(
@@ -73,5 +72,4 @@ class PathNavManeuverWidget extends StatelessWidget {
         ),
       ),
     );
-  }
 }

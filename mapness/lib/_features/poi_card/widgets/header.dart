@@ -90,8 +90,7 @@ class PoiHeader extends ConsumerWidget {
   Widget _scrollHandle() =>
       Center(
           child: Builder(
-              builder: (context) {
-                return Container(
+              builder: (context) => Container(
                   decoration: BoxDecoration(
                     borderRadius: borderRadius,
                     color: context.color.text_and_icons_base_primary
@@ -99,8 +98,7 @@ class PoiHeader extends ConsumerWidget {
                   ),
                   height: 4,
                   width: 40,
-                );
-              },
+                ),
           ),);
 
   Widget _subTitle(BuildContext context, String text, PoiModel data) =>
@@ -181,8 +179,7 @@ class PoiHeader extends ConsumerWidget {
 
   Widget _buildcloseButton() =>
       Builder(
-        builder: (context) {
-          return Padding(
+        builder: (context) => Padding(
             padding: const EdgeInsets.only(bottom: 16),
             child: Material(
               borderRadius: borderRadius,
@@ -211,7 +208,6 @@ class PoiHeader extends ConsumerWidget {
                 ),
               ),
             ),
-          );
-        },
+          ),
       );
 }

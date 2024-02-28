@@ -13,8 +13,7 @@ class SigninScreen extends ConsumerWidget {
   const SigninScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
+  Widget build(BuildContext context, WidgetRef ref) => Scaffold(
       body: Stack(
         children: [
           const Positioned.fill(
@@ -78,10 +77,8 @@ class SigninScreen extends ConsumerWidget {
         ],
       ),
     );
-  }
 
-  Widget _buildcloseButton(BuildContext context, WidgetRef ref) {
-    return Padding(
+  Widget _buildcloseButton(BuildContext context, WidgetRef ref) => Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Material(
         color: Colors.transparent,
@@ -109,5 +106,4 @@ class SigninScreen extends ConsumerWidget {
         ),
       ),
     );
-  }
 }
