@@ -8,7 +8,7 @@ import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
-import 'package:mapness/shared/ui/loading/inline_loading_indicator.dart';
+import 'package:mapness/shared/ui/loading/loading_small.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 
 class RoutesCarousel extends ConsumerWidget {
@@ -22,7 +22,7 @@ class RoutesCarousel extends ConsumerWidget {
     super.key,
   });
 
-  final RouteSearchOptionsMessage navType;
+final RouteSearchOptionsMessage navType;
   final PageController pageController;
   final AsyncValue<List<RouteInfo>> routes;
   final Function(int) onActiveChanged;
@@ -88,7 +88,7 @@ class RoutesCarousel extends ConsumerWidget {
                   ),
                   child: const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: InlineLoadingIndicator(),
+                    child: LoadingSmall(),
                   ),
                 ),
               ),
@@ -105,8 +105,7 @@ class RouteCell extends ConsumerWidget {
   const RouteCell({
     required this.route,
     required this.startNavigation,
-    required this.navType,
-    super.key,
+    super.key, required this.navType,
   });
 
   final RouteSearchOptionsMessage navType;
@@ -123,7 +122,7 @@ class RouteCell extends ConsumerWidget {
     const averageCaloriesPerMinute = 4.6;
 
     final steps = ((distance / 1000) * averageHumanStepsByKm).toInt();
-    final calories = (distance * averageCaloriesPerMinute).toInt();
+    final calories = (duration * averageCaloriesPerMinute).toInt();
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -197,36 +196,33 @@ class RouteCell extends ConsumerWidget {
                   ),
                 ],
               ),
-              if (navType == RouteSearchOptionsMessage.pedestrian)
-                Row(
-                  children: [
-                    Calories(
-                      title: context.l10n.steps,
-                      count: steps,
-                      icon: SvgPicture.asset(
-                        'assets/icons/svg/steps.svg',
-                        package: PackageConfig.packageName,
-                        height: 16,
-                        width: 16,
-                      ),
+              if (navType == RouteSearchOptionsMessage.pedestrian) Row(
+                children: [
+                  HealthInfo(
+                    title: context.l10n.steps,
+                    count: steps,
+                    icon: SvgPicture.asset(
+                      'assets/icons/svg/steps.svg',
+                      package: PackageConfig.packageName,
+                      height: 16,
+                      width: 16,
                     ),
-                    const SizedBox(
-                      width: 8,
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  HealthInfo(
+                    title: context.l10n.calories,
+                    count: calories,
+                    icon: SvgPicture.asset(
+                      'assets/icons/svg/calories.svg',
+                      package: PackageConfig.packageName,
+                      height: 16,
+                      width: 16,
                     ),
-                    Calories(
-                      title: context.l10n.calories,
-                      count: calories,
-                      icon: SvgPicture.asset(
-                        'assets/icons/svg/calories.svg',
-                        package: PackageConfig.packageName,
-                        height: 16,
-                        width: 16,
-                      ),
-                    ),
-                  ],
-                )
-              else
-                const SizedBox.shrink(),
+                  ),
+                ],
+              ) else SizedBox.shrink(),
             ],
           ),
         ),
@@ -235,34 +231,36 @@ class RouteCell extends ConsumerWidget {
   }
 }
 
-class Calories extends StatelessWidget {
+class HealthInfo extends StatelessWidget {
   final String title;
   final int count;
   final Widget icon;
 
-  const Calories({
+  const HealthInfo({
+    super.key,
     required this.title,
     required this.count,
     required this.icon,
-    super.key,
   });
 
   @override
-  Widget build(BuildContext context) => Row(
-        children: [
-          icon,
-          const SizedBox(width: 3),
-          Text(
-            title,
-            style: context.textStyle.textS
-                .copyWith(color: context.color.text_and_icons_base_primary),
-          ),
-          const SizedBox(width: 3),
-          Text(
-            '$count',
-            style: context.textStyle.textS
-                .copyWith(color: context.color.text_and_icons_base_tertiary),
-          ),
-        ],
-      );
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        icon,
+        SizedBox(width: 3),
+        Text(
+          title,
+          style: context.textStyle.textS
+              .copyWith(color: context.color.text_and_icons_base_primary),
+        ),
+        SizedBox(width: 3),
+        Text(
+          '$count',
+          style: context.textStyle.textS
+              .copyWith(color: context.color.text_and_icons_base_tertiary),
+        ),
+      ],
+    );
+  }
 }
