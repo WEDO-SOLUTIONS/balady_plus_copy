@@ -49,27 +49,27 @@ class PathNavManeuverWidget extends StatelessWidget {
                 const SizedBox(width: 8),
                 Text(
                   maneuver.distance,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 26,
-                  ),
+                  style: Theme.of(context)
+                      .extension<ThemeTextStyles>()!
+                      .headingL
+                      .copyWith(height: 0.7),
                 ),
                 const SizedBox(width: 2),
                 Text(
                   maneuver.unit,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 26,
-                  ),
+                  style: Theme.of(context).extension<ThemeTextStyles>()!.textS,
                 ),
               ],
             ),
-            const SizedBox(height: 4),
-            Text(
-              maneuver.roadName,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).extension<ThemeTextStyles>()!.textS,
+            const SizedBox(height: 4.0),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+              child: Text(
+                maneuver.roadName,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).extension<ThemeTextStyles>()!.textS,
+              ),
             ),
           ],
         ),
