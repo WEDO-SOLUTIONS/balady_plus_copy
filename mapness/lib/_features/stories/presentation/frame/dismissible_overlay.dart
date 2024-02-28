@@ -27,7 +27,7 @@ class DismissibleTransitionState extends State<DismissibleTransition>
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    _opacityAnimation = (Tween(begin: 0, end: 1).animate(
+    _opacityAnimation = (Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _controller,
         curve: Curves.easeInOutCubic,
@@ -38,7 +38,7 @@ class DismissibleTransitionState extends State<DismissibleTransition>
             widget.onDismiss();
           }
         },
-      )) as Animation<double>;
+      ));
     _controller.forward();
   }
 
@@ -48,24 +48,24 @@ class DismissibleTransitionState extends State<DismissibleTransition>
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-      onVerticalDragUpdate: (details) {
-        _controller.value -=
-            details.delta.dy / MediaQuery.of(context).size.height;
-      },
-      onVerticalDragEnd: (details) {
-        final predictedValue = _controller.value -
-            details.velocity.pixelsPerSecond.dy *
-                0.25 /
-                MediaQuery.of(context).size.height;
-        if (predictedValue < 0.6) {
-          _controller.reverse(from: _controller.value);
-        } else {
-          _controller.forward(from: _controller.value);
-        }
-      },
-      child: AnimatedBuilder(
-        animation: _opacityAnimation,
-        builder: (context, child) => Stack(
+        onVerticalDragUpdate: (details) {
+          _controller.value -=
+              details.delta.dy / MediaQuery.of(context).size.height;
+        },
+        onVerticalDragEnd: (details) {
+          final predictedValue = _controller.value -
+              details.velocity.pixelsPerSecond.dy *
+                  0.25 /
+                  MediaQuery.of(context).size.height;
+          if (predictedValue < 0.6) {
+            _controller.reverse(from: _controller.value);
+          } else {
+            _controller.forward(from: _controller.value);
+          }
+        },
+        child: AnimatedBuilder(
+          animation: _opacityAnimation,
+          builder: (context, child) => Stack(
             fit: StackFit.expand,
             children: [
               Opacity(
@@ -90,7 +90,7 @@ class DismissibleTransitionState extends State<DismissibleTransition>
               ),
             ],
           ),
-        child: widget.child,
-      ),
-    );
+          child: widget.child,
+        ),
+      );
 }
