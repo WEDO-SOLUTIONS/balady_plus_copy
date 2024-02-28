@@ -173,8 +173,8 @@ class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
                       const ObjectionReaason(),
                       Constants.verticalSpaceSmall,
 
-                      //   const ObjectionFeedBack(),
-                      //  Constants.verticalSpaceSmall,
+                      const ObjectionFeedBack(),
+                      Constants.verticalSpaceSmall,
                     ]),
                   ),
                 ),
@@ -464,11 +464,13 @@ class _ObjectionFeedBackState extends State<ObjectionFeedBack> {
                               });
                             },
                             onRefresh: () {
-                              context.read<ObjectionsDetailsBloc>().add(
-                                  GetObjectionDetailsEvent(
-                                      params: state.details
-                                              ?.objectionRequestNumber ??
-                                          "",));
+                              context
+                                  .read<ObjectionsDetailsBloc>()
+                                  .add(GetObjectionDetailsEvent(
+                                    params:
+                                        state.details?.objectionRequestNumber ??
+                                            "",
+                                  ));
                             },
                           );
 
