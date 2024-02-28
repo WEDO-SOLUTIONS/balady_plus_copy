@@ -6,6 +6,7 @@
 - BALADY-1136: [Navi] street direction card localizationat
 - BALADY-765: [POI] Marker of location should be on the top of every layers
 - BALADY-1422: [Navi] Road restriction. Add selection State
+- BALADY-1406: [Navi] long address in Navi clue needs second line 
 
 ## 3.9.0(4)
 

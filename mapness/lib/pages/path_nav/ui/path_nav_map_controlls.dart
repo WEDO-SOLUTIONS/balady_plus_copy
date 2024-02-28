@@ -19,7 +19,6 @@ class PathNavMapControlls extends ConsumerWidget {
   final RouteSearchOptionsMessage navType;
 
   const PathNavMapControlls({required this.navType, super.key});
-  final RouteSearchOptionsMessage navType;
 
   @override
   // ignore: prefer_expression_function_bodies
