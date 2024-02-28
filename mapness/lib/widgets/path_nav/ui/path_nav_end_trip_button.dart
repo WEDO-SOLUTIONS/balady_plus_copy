@@ -10,6 +10,7 @@ class PathNavEndTripButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
+      color: Colors.transparent,
       child: Ink(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
