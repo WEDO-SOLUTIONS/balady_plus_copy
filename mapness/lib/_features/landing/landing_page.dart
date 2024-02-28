@@ -29,7 +29,6 @@ import 'package:mapness/shared/providers/map/object_manager.dart';
 enum LangingFocusMaker { iwish, mosques }
 
 class LandingPage extends ConsumerStatefulWidget {
-
   const LandingPage({this.focusMaker, super.key});
   final LangingFocusMaker? focusMaker;
 
@@ -74,15 +73,17 @@ class _LandingPageState extends ConsumerState<LandingPage> {
         }();
       case LangingFocusMaker.mosques:
         Future.delayed(Duration.zero, () {
-          ref.read(searchByRubricsQueryProvider.notifier).update((
-            QuickFilter(
-              rubrics: [13374],
-              title: 'المساجد',
-              uiIcon: 'assets/icons/svg/quick_filters/ic_quick_mosques.svg',
-              mapIcon: 'assets/icons/svg/quick_filters/mosques_pin.svg',
+          ref.read(searchByRubricsQueryProvider.notifier).update(
+            (
+              QuickFilter(
+                rubrics: [13374],
+                title: 'المساجد',
+                uiIcon: 'assets/icons/svg/quick_filters/ic_quick_mosques.svg',
+                mapIcon: 'assets/icons/svg/quick_filters/mosques_pin.svg',
+              ),
+              1
             ),
-            1
-          ),);
+          );
         });
       // ignore: no_default_cases
       default:
@@ -133,22 +134,6 @@ class _LandingPageState extends ConsumerState<LandingPage> {
                   initWithMinSize: widget.focusMaker == LangingFocusMaker.iwish,
                 ),
               ),
-              FutureBuilder(
-                future: colorScheme.needToShowBanner(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData && snapshot.data == true && needToShow) {
-                    return MyWidget(
-                      onClose: () {
-                        colorScheme.hideBanner();
-                        setState(() {
-                          needToShow = false;
-                        });
-                      },
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
             ],
           ),
         ),
@@ -173,65 +158,4 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       EventsRoute.open(context, event);
     }
   }
-}
-
-class MyWidget extends StatelessWidget {
-
-  const MyWidget({super.key, this.onClose});
-  final void Function()? onClose;
-
-  @override
-  Widget build(BuildContext context) => Stack(
-        children: [
-          GestureDetector(
-            onTap: () => onClose?.call(),
-          ),
-          BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Stack(
-                  children: [
-                    const Image(
-                      fit: BoxFit.fitWidth,
-                      image: AssetImage(
-                        'assets/images/foundation_day_banner.png',
-                        package: PackageConfig.packageName,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Material(
-                        borderRadius: borderRadius,
-                        child: InkWell(
-                          borderRadius: borderRadius,
-                          onTap: () => onClose?.call(),
-                          child: Container(
-                            height: 40,
-                            width: 40,
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(8),
-                              ),
-                              color: const Color(0xff6B4E45).withAlpha(15),
-                            ),
-                            padding: const EdgeInsets.all(8),
-                            child: SvgPicture.asset(
-                              'assets/icons/svg/ic_search_close.svg',
-                              semanticsLabel: 'MinApps Screen',
-                              package: PackageConfig.packageName,
-                              color: const Color(0xff6B4E45),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      );
 }
