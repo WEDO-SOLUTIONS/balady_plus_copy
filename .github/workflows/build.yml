@@ -112,6 +112,7 @@ jobs:
           cd urbi_map/dgis_map
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
+          mkdir -p android/_delete_me_ ios/_DELETE_ME_
           curl -u "balady-developers:${BALADY_DEVELOPERS_PASS}" -O https://artifactory.2gis.dev/vendor-ios-release/10.2.1/Release/DGisFullSDK.zip
           rm -rf ios/_DELETE_ME_/DGis.xcframework
           unzip DGisFullSDK.zip -d ios/_DELETE_ME_
