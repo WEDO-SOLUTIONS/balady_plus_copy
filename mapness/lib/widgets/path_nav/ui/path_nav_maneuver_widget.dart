@@ -1,4 +1,7 @@
+// ignore_for_file: prefer_expression_function_bodies
+
 import 'package:balady_uikit/colors/non_theme_colors.dart';
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_maneuver.dart';
@@ -6,7 +9,8 @@ import 'package:mapness/entities/path_nav/models/path_nav_maneuver.dart';
 class PathNavManeuverWidget extends StatelessWidget {
 
   const PathNavManeuverWidget({
-    required this.maneuver, super.key,
+    required this.maneuver,
+    super.key,
   });
   final PathNavManeuver maneuver;
 
@@ -15,6 +19,7 @@ class PathNavManeuverWidget extends StatelessWidget {
       color: Colors.white,
       borderRadius: BorderRadius.circular(16),
       child: Container(
+        constraints: const BoxConstraints(maxWidth: 174, minWidth: 136),
         padding: const EdgeInsets.only(
           top: 8,
           bottom: 16,
@@ -28,6 +33,7 @@ class PathNavManeuverWidget extends StatelessWidget {
         child: Column(
           children: [
             Row(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 if (maneuver.iconPath != null)
@@ -63,10 +69,7 @@ class PathNavManeuverWidget extends StatelessWidget {
               maneuver.roadName,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 14,
-              ),
+              style: Theme.of(context).extension<ThemeTextStyles>()!.textS,
             ),
           ],
         ),
