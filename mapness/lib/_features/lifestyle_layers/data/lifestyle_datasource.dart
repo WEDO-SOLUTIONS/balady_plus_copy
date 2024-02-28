@@ -35,8 +35,7 @@ class _LifestyleDataSource implements LifestyleDataSource {
         cancelToken: cancelToken,
       );
 
-      return points.data['data']['result']['features']
-          as Future<List<dynamic>?>;
+      return points.data['data']['result']['features'] as List<dynamic>?;
     } on DioException catch (error) {
       print('[getEsriMarkers] DioError $error');
       return null;
