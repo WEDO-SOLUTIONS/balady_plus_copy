@@ -108,6 +108,8 @@ jobs:
           flutter pub run pigeon --input pigeons/messages.dart
 
       - name: 🤖🔨 Development setup dgis_map
+        env: # Set the secret as an environment variable
+          BALADY_DEVELOPERS_PASS: ${{ secrets.BALADY_DEVELOPERS_PASS }}
         run: |
           cd urbi_map/dgis_map
           flutter pub get
