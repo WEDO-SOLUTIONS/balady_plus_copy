@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/routing/transculent_page.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
 import 'package:permission_handler/permission_handler.dart' as perm;
@@ -36,10 +37,9 @@ class LocationErrorSheet extends GoRouteData {
                 onClose: () => routeOnClose != null
                     ? context.go(routeOnClose!)
                     : context.pop(),
-                errorTitle: 'We lost you =(',
-                errorContent: 'It is necessary to enable '
-                    'the GPS in the device settings',
-                buttonLabel: 'Give access',
+                errorTitle: context.l10n.locationDialogErrorTitle,
+                errorContent: context.l10n.locationDialogErrorContent,
+                buttonLabel: context.l10n.locationDialogButtonLabel,
                 assetImage: 'assets/images/location_required.png',
                 package: PackageConfig.packageName,
                 onRetry: () async {
