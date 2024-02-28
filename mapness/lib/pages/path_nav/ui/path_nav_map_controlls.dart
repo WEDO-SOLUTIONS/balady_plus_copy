@@ -1,4 +1,4 @@
-import 'package:dgis_map_platform_interface/src/pigeons/messages.g.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
@@ -8,23 +8,25 @@ import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_speed_info.dart';
 import 'package:mapness/shared/providers/app_features.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_follow_control.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_maneuver_widget.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_message_widget.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_speed_info_widget.dart';
 
-class PathNavMapControlls extends StatelessWidget {
+class PathNavMapControlls extends ConsumerWidget {
+  final RouteSearchOptionsMessage navType;
 
   const PathNavMapControlls({required this.navType, super.key});
-  final RouteSearchOptionsMessage navType;
 
   @override
   // ignore: prefer_expression_function_bodies
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isArabic = ref.watch(appLanguageProvider) == Language.arabic;
     return Directionality(
       /// do not mirror map controls since most of people are right-handed
-      textDirection: TextDirection.ltr,
+      textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -34,16 +36,6 @@ class PathNavMapControlls extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                /// speed info
-                if (navType == RouteSearchOptionsMessage.pedestrian) const Spacer(),
-                if (navType != RouteSearchOptionsMessage.pedestrian)
-                  Consumer(
-                    builder: (context, ref, child) {
-                      final info = ref.watch(pathNavSpeedInfoProvider);
-                      return PathNavSpeedInfoWidget(info: info);
-                    },
-                  ),
-
                 /// maneuver or message
                 Consumer(
                   builder: (context, ref, child) {
@@ -60,6 +52,17 @@ class PathNavMapControlls extends StatelessWidget {
                     );
                   },
                 ),
+
+                /// speed info
+                if (navType == RouteSearchOptionsMessage.pedestrian)
+                  const Spacer(),
+                if (navType != RouteSearchOptionsMessage.pedestrian)
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final info = ref.watch(pathNavSpeedInfoProvider);
+                      return PathNavSpeedInfoWidget(info: info);
+                    },
+                  ),
               ],
             ),
           ),
