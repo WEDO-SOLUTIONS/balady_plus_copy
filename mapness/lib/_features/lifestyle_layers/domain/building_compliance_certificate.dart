@@ -9,7 +9,10 @@ List<BuildingComplianceCertificate> buildingComplianceCertificateFromJson(
   List list,
 ) =>
     List<BuildingComplianceCertificate>.from(
-      list.map(BuildingComplianceCertificate.fromJson),
+      list.map(
+        (e) =>
+            BuildingComplianceCertificate.fromJson(e as Map<String, dynamic>),
+      ),
     );
 
 class BuildingComplianceCertificate extends PointLayersData {

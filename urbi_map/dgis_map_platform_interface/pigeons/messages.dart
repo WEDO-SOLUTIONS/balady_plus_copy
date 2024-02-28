@@ -469,20 +469,28 @@ enum RouteSearchOptionsMessage {
   taxi
 }
 
+class RouteEditorRoutePointMessage {
+  RouteEditorRoutePointMessage(
+    this.point,
+    this.objectId,
+    this.levelId,
+  );
+
+  final GeoPointMessage point;
+  final DgisObjectIdMessage? objectId;
+  final int? levelId;
+}
+
 class RouteEditorRouteParamsMessage {
   RouteEditorRouteParamsMessage(
     this.startPoint,
     this.finishPoint,
-    // TODO: not yet supported
-    // this.intermediatePoints,
     this.options,
   );
 
-  final GeoPointMessage? startPoint;
-  final GeoPointMessage? finishPoint;
+  final RouteEditorRoutePointMessage? startPoint;
+  final RouteEditorRoutePointMessage? finishPoint;
 
-  // TODO: not yet supported
-  // final List<RouteSearchPointMessage> intermediatePoints;
   final RouteSearchOptionsMessage options;
 }
 

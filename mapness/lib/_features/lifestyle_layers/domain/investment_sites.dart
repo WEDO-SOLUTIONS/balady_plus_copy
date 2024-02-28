@@ -6,7 +6,9 @@ import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
 
 List<InvestmentSites> investmentSitesFromJson(List list) =>
-    List<InvestmentSites>.from(list.map(InvestmentSites.fromJson));
+    List<InvestmentSites>.from(
+      list.map((e) => InvestmentSites.fromJson(e as Map<String, dynamic>)),
+    );
 
 class InvestmentSites extends PointLayersData {
   InvestmentSites({

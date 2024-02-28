@@ -45,7 +45,7 @@ class QrLicenseMessage {
           NationalAddressInfo.fromJson(json['nationalAddressInfo']),
       // siteDetailsInfo: SiteDetailsInfo.fromJson(json['siteDetailsInfo']),
       workingTimesInfo: (json['workingTimesInfo'] as List<dynamic>)
-          .map(WorkingTimesInfo.fromJson)
+          .map((e) => WorkingTimesInfo.fromJson(e as Map<String, dynamic>))
           .toList(),
       // attachmentsInfo: json[
       //     'attachmentsInfo'], // Adjust this based on the actual data structure

@@ -5,8 +5,9 @@ import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
 
-List<WhiteLands> whiteLandsFromJson(List list) =>
-    List<WhiteLands>.from(list.map(WhiteLands.fromJson));
+List<WhiteLands> whiteLandsFromJson(List list) => List<WhiteLands>.from(
+      list.map((e) => WhiteLands.fromJson(e as Map<String, dynamic>)),
+    );
 
 class WhiteLands extends PointLayersData {
   WhiteLands({
