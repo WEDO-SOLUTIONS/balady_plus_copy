@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_links/app_links.dart';
@@ -19,12 +20,16 @@ import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
 import 'package:mapness/_features/debug_overlay/debug_overlay.dart';
 import 'package:mapness/app/router.dart';
+import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
+import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/widgets/map/map_page.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -196,7 +201,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     final appLink = await _appLinks.getInitialAppLink();
     if (appLink != null) {
-      openAppLink(appLink);
+      await openAppLink(appLink);
     }
 
     _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
@@ -207,8 +212,64 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     });
   }
 
-  void openAppLink(Uri uri) {
-    ref.read(goRouterProvider).push(uri.fragment);
+  Future<void> openAppLink(Uri uri) async {
+    final url = Uri.parse(uri.fragment);
+    final momrahId = url.queryParameters['momrah-id'];
+    final lat = url.queryParameters['lat'];
+    final lon = url.queryParameters['lon'];
+
+    if (lat != null && lon != null) {
+      final vendorConfig = await ref.read(vendorConfigProvider.future);
+      final dio = ref.read(baseDioProvider);
+
+      final key =
+          vendorConfig['dgis/native-sdk/keys/user_web_api_key_for_on_premise'];
+      final catalogApi = vendorConfig['Modules/directory/webapi_url'];
+
+      final geocoderResponse = await dio.get(
+        '$catalogApi/3.0/items/geocode?lon=$lon&lat=$lat&fields=items.point&key=$key',
+      );
+      final geocoderData = json.decode(geocoderResponse.toString());
+      final items = geocoderData['result']['items'] as List<dynamic>;
+      final geocoderBest = items[0] as Map<String, dynamic>;
+
+      await ref.read(goRouterProvider).push(
+            PoiMapRoute(
+              dgisObjectId: int.parse(geocoderBest['id']),
+            ).location,
+          );
+      return;
+    } else if (momrahId != null) {
+      final env = await ref.read(dgisEnvironmentProvider.future);
+      final dio = ref.read(baseDioProvider);
+
+      final twins = await dio.get(
+          '${env.twinsApi}/twins/search/partners?key=dfdd94df-49f9-45df-84ec-e8870ebdb9a0&partner_code=momrah&partner_id=$momrahId');
+      final twinsData = json.decode(twins.toString());
+
+      final Map<String, dynamic>? result =
+          (twinsData['result']['items'] as List<dynamic>).firstOrNull;
+
+      if (result == null) {
+        return;
+      }
+
+      final Map<String, dynamic>? dgisTwin =
+          (result['twins'] as List<dynamic>).firstOrNull;
+
+      if (dgisTwin == null) {
+        return;
+      }
+
+      await ref.read(goRouterProvider).push(
+            PoiMapRoute(
+              dgisObjectId: int.parse(dgisTwin['dgis_id']),
+            ).location,
+          );
+      return;
+    }
+
+    await ref.read(goRouterProvider).push(url.toString());
   }
 }
 

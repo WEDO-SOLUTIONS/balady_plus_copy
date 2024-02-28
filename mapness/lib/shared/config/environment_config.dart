@@ -10,12 +10,12 @@ extension DgisEnvExt on DgisEnv {
 }
 
 class EnvironmentConfig {
-
   EnvironmentConfig({
     required this.url,
     required this.meteoblue,
     required this.weatherApi,
     required this.jobsApi,
+    required this.twinsApi,
     this.proxy,
   });
 
@@ -25,6 +25,7 @@ class EnvironmentConfig {
         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
         weatherApi: 'https://sa1.ops.2gis.dev/',
         jobsApi: 'https://sa1.ops.2gis.dev/v1/recruitment-services',
+        twinsApi: 'https://momrah-twins-api.public-poc.urbi.ae/v1',
       );
 
   factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
@@ -32,6 +33,8 @@ class EnvironmentConfig {
         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
         weatherApi: 'https://apiservicesstg.balady.gov.sa/',
         jobsApi: 'https://apiservicesstg.balady.gov.sa/v1/recruitment-services',
+        twinsApi:
+            'https://apiservicesstg.balady.gov.sa/v1/urbi-services/twins-api/v1',
       );
 
   factory EnvironmentConfig.momrahProd() => EnvironmentConfig(
@@ -39,6 +42,8 @@ class EnvironmentConfig {
         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
         weatherApi: 'https://apiservices.balady.gov.sa/',
         jobsApi: 'https://apiservices.balady.gov.sa/v1/recruitment-services',
+        twinsApi:
+            'https://apiservices.balady.gov.sa/v1/urbi-services/twins-api/v1',
       );
 
   factory EnvironmentConfig.urbiPreProd() => EnvironmentConfig(
@@ -47,10 +52,12 @@ class EnvironmentConfig {
         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
         weatherApi: 'https://sa1.ops.2gis.dev/',
         jobsApi: 'https://sa1.ops.2gis.dev/v1/recruitment-services',
+        twinsApi: 'https://momrah-twins-api.public-poc.urbi.ae/v1',
       );
   final String url;
   final String meteoblue;
   final String weatherApi;
   final String jobsApi;
+  final String twinsApi;
   final String? proxy;
 }
