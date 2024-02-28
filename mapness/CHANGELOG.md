@@ -1,5 +1,5 @@
 ## 3.9.2(1) - Current
-
+- BALADY-1430: [Landing Page] remove pop-up from Foundation Day
 - BALADY-1412: Update SDK Version to 10.2.1
 - BALADY-1136: [Navi] street direction card localizationat
 - BALADY-765: [POI] Marker of location should be on the top of every layers
