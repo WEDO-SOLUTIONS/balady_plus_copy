@@ -35,6 +35,7 @@ class RelationState extends Equatable {
         serviceProviderId: serviceProviderId ?? this.serviceProviderId,
         subServiceName: subServiceName ?? this.subServiceName,
         serviceProviderName: serviceProviderName ?? this.serviceProviderName,
+        subServiceId: subServiceId ?? this.subServiceId,
         errorMessage: errorMessage ?? this.errorMessage);
   }
 
