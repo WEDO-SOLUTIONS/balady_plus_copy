@@ -118,10 +118,8 @@ Map<String, dynamic> servicesConfig = {
     },*/
   ],
   "municipal_services": [
-
-
     {
-      "id":  11134,
+      "id": 11134,
       "icon": "license_query",
       "3d_icon": null,
       "order": 6,
@@ -129,8 +127,16 @@ Map<String, dynamic> servicesConfig = {
       "requireLogin": true,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.commercialLicenseOverView},
-      "ar": {"title": "CommerciallicenseQuery", "description": null, "tag": null},
-      "en": {"title": "CommerciallicenseQuery", "description": null, "tag": null}
+      "ar": {
+        "title": "CommerciallicenseQuery",
+        "description": null,
+        "tag": null
+      },
+      "en": {
+        "title": "CommerciallicenseQuery",
+        "description": null,
+        "tag": null
+      }
     },
     {
       "id": 201,
@@ -684,18 +690,18 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "supporter", "description": null, "tag": null},
       "en": {"title": "supporter", "description": null, "tag": null}
     },
-     {
-      "id": 407,
-      "icon": "chat_bot",
-      "3d_icon": null,
-      "order": 13,
-      "isNew": false,
-      "isImportant": false,
-      "requireLogin": true,
-      "action": {"type": "page", "value": RouteName.chatbot},
-      "ar": {"title": "municipal_advisor", "description": null, "tag": null},
-      "en": {"title": "municipal_advisor", "description": null, "tag": null}
-    },
+    //  {
+    //   "id": 407,
+    //   "icon": "chat_bot",
+    //   "3d_icon": null,
+    //   "order": 13,
+    //   "isNew": false,
+    //   "isImportant": false,
+    //   "requireLogin": true,
+    //   "action": {"type": "page", "value": RouteName.chatbot},
+    //   "ar": {"title": "municipal_advisor", "description": null, "tag": null},
+    //   "en": {"title": "municipal_advisor", "description": null, "tag": null}
+    // },
     /*{
       "id": 7,
       "icon": "municpal_toppaco",
