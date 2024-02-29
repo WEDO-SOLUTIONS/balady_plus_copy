@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:mapness/_features/poi_card/domain/dto/dgis_photos_dto.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'poi_photo_provider.g.dart';
@@ -14,12 +15,16 @@ class PoiPhoto extends _$PoiPhoto {
   Future<DgisPhotosDto> build(int objectId) async {
     final dio = ref.watch(baseDioProvider);
     final locale = ref.watch(appLanguageProvider);
+    final env = await ref.watch(dgisEnvironmentProvider.future);
+
+    final baseApiUrl = env.baseApiDomain;
 
     /// Ручка без пагинации, данных может быть много, поэтому отменяем запрос при диспозе
     final cancelToken = CancelToken();
     ref.onDispose(cancelToken.cancel);
+
     final response = await dio.get(
-      'https://api.photo.urbi.ae/3.0/objects/$objectId/albums/all/photos',
+      'https://api.photo.$baseApiUrl/3.0/objects/$objectId/albums/all/photos',
       queryParameters: {
         'key': 'eTei6feebievaeh',
         'locale': switch (locale) {
