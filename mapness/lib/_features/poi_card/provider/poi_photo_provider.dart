@@ -19,7 +19,7 @@ class PoiPhoto extends _$PoiPhoto {
     final cancelToken = CancelToken();
     ref.onDispose(cancelToken.cancel);
     final response = await dio.get(
-      'https://api.photo.2gis.com/3.0/objects/$objectId/albums/all/photos',
+      'https://api.photo.urbi.ae/3.0/objects/$objectId/albums/all/photos',
       queryParameters: {
         'key': 'eTei6feebievaeh',
         'locale': switch (locale) {
