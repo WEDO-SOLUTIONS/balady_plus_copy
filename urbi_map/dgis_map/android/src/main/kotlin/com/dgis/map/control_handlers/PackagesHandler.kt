@@ -21,13 +21,14 @@ class PackagesHandler(
     private val installTasks = mutableListOf<InstallTask>()
 
     init {
-        packageManager.checkForUpdates()
         closeables.add(
             packageManager.packagesChannel.connect { checkInstallTasks() }
         )
         closeables.add(
             voiceManager.voicesChannel.connect { checkInstallTasks() }
         )
+        packageManager.autoupdateEnabled = true
+        packageManager.checkForUpdates()
     }
 
     private enum class Events {
