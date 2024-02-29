@@ -41,9 +41,8 @@ class ServiceCardDescWidget extends StatelessWidget {
               return isLoading
                   ? const CustomLoadingWidget()
                   : viewModel.servicesCardsDetails != null
-                      ?
-                      SizedBox.expand(
-                child: Column(
+                      ? SizedBox.expand(
+                          child: Column(
                             children: [
                               Expanded(
                                 flex: 47,
@@ -530,38 +529,31 @@ class ServiceCardDescWidget extends StatelessWidget {
                               ),
                             ],
                           ),
-              )
-                      :
-
-              Center(
-                child: Expanded(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: MediaQuery.of(context)
-                            .viewPadding
-                            .top,
-                      ),
-                       Row(
-                        children: [
-                          BackButton(color: Colors.white),
-                          Text('error'.tr(),
-                            style: AppStyle.violationCreateTitle
-                                .copyWith(color: Colors.white),
+                        )
+                      : SizedBox.expand(
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: MediaQuery.of(context).viewPadding.top,
+                              ),
+                              Row(
+                                children: [
+                                  BackButton(color: Colors.white),
+                                  Text(
+                                    'error'.tr(),
+                                    style: AppStyle.violationCreateTitle
+                                        .copyWith(color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                              ReloadWidget(
+                                onTab: () {
+                                  viewModel.getServicesCards();
+                                },
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-
-                      ReloadWidget(
-
-                                  onTab: () {
-                                    viewModel.getServicesCards();
-                                  },
-                                ),
-                    ],
-                  ),
-                ),
-              );
+                        );
             },
           ),
         ),
