@@ -116,7 +116,6 @@ jobs:
           BALADY_DEVELOPERS_PASS: ${{ secrets.BALADY_DEVELOPERS_PASS }}
         run: |
           cd urbi_map/dgis_map
-          flutter clean
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
           mkdir -p android/_delete_me_ ios/_DELETE_ME_
