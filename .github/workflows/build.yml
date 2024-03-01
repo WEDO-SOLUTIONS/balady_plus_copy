@@ -77,6 +77,10 @@ jobs:
       - name: ⬇️ Checkout repository
         uses: actions/checkout@v4
 
+      # GITHUB_REF_SLUG
+      - name: Inject slug git variables
+        uses: rlespinasse/github-slug-action@v4
+
       - name: ⚙️ Setup Flutter
         uses: subosito/flutter-action@v2
         with:
