@@ -68,27 +68,25 @@ class _DashboardState extends ConsumerState<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(searchByRubricsQueryProvider, (previous, next) {
-      if (next != null) {
-        _draggableScrollableController.animateTo(
-          _headerExtent,
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.linear,
-        );
-      }
-    });
-
-    //TODO: fix it later
-    // ignore: cascade_invocations
-    ref.listen(layersControlsProvider, (previous, next) {
-      if (next.layersVisible) {
-        _draggableScrollableController.animateTo(
-          _headerExtent,
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.linear,
-        );
-      }
-    });
+    ref
+      ..listen(searchByRubricsQueryProvider, (previous, next) {
+        if (next != null) {
+          _draggableScrollableController.animateTo(
+            _headerExtent,
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.linear,
+          );
+        }
+      })
+      ..listen(layersControlsProvider, (previous, next) {
+        if (next.layersVisible) {
+          _draggableScrollableController.animateTo(
+            _headerExtent,
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.linear,
+          );
+        }
+      });
 
     final direction = ref.watch(uiDirectionProvider);
 

@@ -7,6 +7,7 @@
 - BALADY-765: [POI] Marker of location should be on the top of every layers
 - BALADY-1422: [Navi] Road restriction. Add selection State
 - BALADY-1406: [Navi] long address in Navi clue needs second line 
+- BALADY-1442: [Landing Page] Calendar & Prayer Times displays in Arabic while app is in English
 
 ## 3.9.0(4)
 
