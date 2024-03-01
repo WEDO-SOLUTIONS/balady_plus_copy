@@ -8,7 +8,7 @@ import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
-import 'package:mapness/shared/ui/loading/loading_small.dart';
+import 'package:mapness/shared/ui/loading/inline_loading_indicator.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 
 class RoutesCarousel extends ConsumerWidget {
@@ -22,7 +22,7 @@ class RoutesCarousel extends ConsumerWidget {
     super.key,
   });
 
-final RouteSearchOptionsMessage navType;
+  final RouteSearchOptionsMessage navType;
   final PageController pageController;
   final AsyncValue<List<RouteInfo>> routes;
   final Function(int) onActiveChanged;
@@ -88,7 +88,7 @@ final RouteSearchOptionsMessage navType;
                   ),
                   child: const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: LoadingSmall(),
+                    child: InlineLoadingIndicator(),
                   ),
                 ),
               ),
@@ -105,7 +105,8 @@ class RouteCell extends ConsumerWidget {
   const RouteCell({
     required this.route,
     required this.startNavigation,
-    super.key, required this.navType,
+    required this.navType,
+    super.key,
   });
 
   final RouteSearchOptionsMessage navType;
@@ -196,33 +197,36 @@ class RouteCell extends ConsumerWidget {
                   ),
                 ],
               ),
-              if (navType == RouteSearchOptionsMessage.pedestrian) Row(
-                children: [
-                  HealthInfo(
-                    title: context.l10n.steps,
-                    count: steps,
-                    icon: SvgPicture.asset(
-                      'assets/icons/svg/steps.svg',
-                      package: PackageConfig.packageName,
-                      height: 16,
-                      width: 16,
+              if (navType == RouteSearchOptionsMessage.pedestrian)
+                Row(
+                  children: [
+                    HealthInfo(
+                      title: context.l10n.steps,
+                      count: steps,
+                      icon: SvgPicture.asset(
+                        'assets/icons/svg/steps.svg',
+                        package: PackageConfig.packageName,
+                        height: 16,
+                        width: 16,
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  HealthInfo(
-                    title: context.l10n.calories,
-                    count: calories,
-                    icon: SvgPicture.asset(
-                      'assets/icons/svg/calories.svg',
-                      package: PackageConfig.packageName,
-                      height: 16,
-                      width: 16,
+                    const SizedBox(
+                      width: 8,
                     ),
-                  ),
-                ],
-              ) else SizedBox.shrink(),
+                    HealthInfo(
+                      title: context.l10n.calories,
+                      count: calories,
+                      icon: SvgPicture.asset(
+                        'assets/icons/svg/calories.svg',
+                        package: PackageConfig.packageName,
+                        height: 16,
+                        width: 16,
+                      ),
+                    ),
+                  ],
+                )
+              else
+                const SizedBox.shrink(),
             ],
           ),
         ),
@@ -237,30 +241,28 @@ class HealthInfo extends StatelessWidget {
   final Widget icon;
 
   const HealthInfo({
-    super.key,
     required this.title,
     required this.count,
     required this.icon,
+    super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        icon,
-        SizedBox(width: 3),
-        Text(
-          title,
-          style: context.textStyle.textS
-              .copyWith(color: context.color.text_and_icons_base_primary),
-        ),
-        SizedBox(width: 3),
-        Text(
-          '$count',
-          style: context.textStyle.textS
-              .copyWith(color: context.color.text_and_icons_base_tertiary),
-        ),
-      ],
-    );
-  }
+  Widget build(BuildContext context) => Row(
+        children: [
+          icon,
+          const SizedBox(width: 3),
+          Text(
+            title,
+            style: context.textStyle.textS
+                .copyWith(color: context.color.text_and_icons_base_primary),
+          ),
+          const SizedBox(width: 3),
+          Text(
+            '$count',
+            style: context.textStyle.textS
+                .copyWith(color: context.color.text_and_icons_base_tertiary),
+          ),
+        ],
+      );
 }
