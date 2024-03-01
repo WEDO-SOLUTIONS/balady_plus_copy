@@ -149,7 +149,7 @@ jobs:
         run: |
           export CI_GIT_COMMIT=$(git --no-pager show -s --format='%s')
           flutter build apk --target lib/main_urbi_pre.dart --dart-define=GIT_BRANCH="${GITHUB_REF_SLUG}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=urbi-pre-prod
-          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/urbi-pre-${GITHUB_REF_SLUG}
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/urbi-pre-${GITHUB_REF_SLUG}.apk
           flutter build apk --target lib/main_prod.dart --dart-define=GIT_BRANCH="${GITHUB_REF_SLUG}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=momrah-prod
           mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/momrah-prod-${GITHUB_REF_SLUG}.apk
 
