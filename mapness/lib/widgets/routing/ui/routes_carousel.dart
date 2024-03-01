@@ -123,7 +123,7 @@ class RouteCell extends ConsumerWidget {
     const averageCaloriesPerMinute = 4.6;
 
     final steps = ((distance / 1000) * averageHumanStepsByKm).toInt();
-    final calories = (duration * averageCaloriesPerMinute).toInt();
+    final calories = ((duration / 60.0) * averageCaloriesPerMinute).toInt();
 
     return Padding(
       padding: const EdgeInsets.symmetric(
