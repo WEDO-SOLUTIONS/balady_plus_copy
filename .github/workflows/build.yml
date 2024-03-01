@@ -157,13 +157,13 @@ jobs:
       - name: 🤖🔨 Upload Urbi Pre Prod apk
         uses: actions/upload-artifact@v4
         with:
-          name: app-urbi-pre-prod.apk
+          name: urbi-pre-${{ env.GITHUB_REF_SLUG }}.apk
           path: build/app/outputs/flutter-apk/urbi-pre-${{ env.GITHUB_REF_SLUG }}.apk
 
       - name: 🤖🔨 Upload Momrah Prod apk
         uses: actions/upload-artifact@v4
         with:
-          name: app-momrah-prod.apk
+          name: momrah-prod-${{ env.GITHUB_REF_SLUG }}.apk
           path: build/app/outputs/flutter-apk/momrah-prod-${{ env.GITHUB_REF_SLUG }}.apk
 
   # notify:
