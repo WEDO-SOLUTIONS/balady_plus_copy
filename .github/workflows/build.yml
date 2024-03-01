@@ -144,24 +144,23 @@ jobs:
 
       - name: 🤖🔨 Build Android app
         run: |
-          export CI_GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
           export CI_GIT_COMMIT=$(git --no-pager show -s --format='%s')
-          flutter build apk --target lib/main_urbi_pre.dart --dart-define=GIT_BRANCH="${CI_GIT_BRANCH}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=urbi-pre-prod
-          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-urbi-pre-prod.apk
-          flutter build apk --target lib/main_prod.dart --dart-define=GIT_BRANCH="${CI_GIT_BRANCH}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=momrah-prod
-          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-momrah-prod.apk
+          flutter build apk --target lib/main_urbi_pre.dart --dart-define=GIT_BRANCH="${GITHUB_REF_SLUG}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=urbi-pre-prod
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/urbi-pre-${GITHUB_REF_SLUG}
+          flutter build apk --target lib/main_prod.dart --dart-define=GIT_BRANCH="${GITHUB_REF_SLUG}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=momrah-prod
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/momrah-prod-${GITHUB_REF_SLUG}.apk
 
       - name: 🤖🔨 Upload Urbi Pre Prod apk
         uses: actions/upload-artifact@v4
         with:
           name: app-urbi-pre-prod.apk
-          path: build/app/outputs/flutter-apk/app-urbi-pre-prod.apk
+          path: build/app/outputs/flutter-apk/urbi-pre-${GITHUB_REF_SLUG}.apk
 
       - name: 🤖🔨 Upload Momrah Prod apk
         uses: actions/upload-artifact@v4
         with:
           name: app-momrah-prod.apk
-          path: build/app/outputs/flutter-apk/app-momrah-prod.apk
+          path: build/app/outputs/flutter-apk/momrah-prod-${GITHUB_REF_SLUG}.apk
 
   # notify:
   #   name: Notify
