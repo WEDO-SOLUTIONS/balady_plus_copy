@@ -133,6 +133,7 @@ download-sdk:
     unzip DGisFullSDK.zip -d urbi_map/dgis_map/ios/_DELETE_ME_
     rm DGisFullSDK.zip
     curl -u "balady-developers:4Itn0|w3" -O https://artifactory.2gis.dev/vendor-maven-release/ru/dgis/sdk/sdk-full/10.2.1/sdk-full-10.2.1.aar
+    mkdir -p urbi_map/dgis_map/android/_delete_me_
     mv sdk-full-10.2.1.aar urbi_map/dgis_map/android/_delete_me_/sdk-full-latest.aar
 
 ios-release: apply-patches prebuild ios_setup && unapply-patches
