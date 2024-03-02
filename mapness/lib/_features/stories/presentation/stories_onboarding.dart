@@ -9,9 +9,6 @@ import 'package:mapness/_features/stories/presentation/frame/story_frame_control
 import 'package:mapness/_features/stories/presentation/frame/story_frames_player.dart';
 
 class StoriesOnboarding extends ConsumerStatefulWidget {
-  final VoidCallback onClose;
-  final String initialStoryId;
-  final StoryTypes type;
 
   const StoriesOnboarding({
     required this.initialStoryId,
@@ -19,6 +16,9 @@ class StoriesOnboarding extends ConsumerStatefulWidget {
     this.type = StoryTypes.route,
     super.key,
   });
+  final VoidCallback onClose;
+  final String initialStoryId;
+  final StoryTypes type;
 
   @override
   ConsumerState<StoriesOnboarding> createState() => _StoriesOnboardingState();
@@ -85,7 +85,6 @@ class _StoriesOnboardingState extends ConsumerState<StoriesOnboarding> {
     switch (action.action) {
       case StoryAction.next:
         _frameController.nextPage?.call();
-        break;
       default:
         onClose();
         break;

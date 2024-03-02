@@ -3,12 +3,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
 
 class DeleteIcon extends StatelessWidget {
+  const DeleteIcon({required this.onPressed, super.key});
   final VoidCallback onPressed;
-  const DeleteIcon({Key? key, required this.onPressed}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return InkWell(
+  Widget build(BuildContext context) => InkWell(
       onTap: onPressed,
       child: SvgPicture.asset(
         'assets/icons/svg/ic_minus_circle_red.svg',
@@ -17,5 +16,4 @@ class DeleteIcon extends StatelessWidget {
         height: 24,
       ),
     );
-  }
 }

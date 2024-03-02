@@ -4,7 +4,7 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
 class DebugNavigationControll extends ConsumerWidget {
-  const DebugNavigationControll({Key? key}) : super(key: key);
+  const DebugNavigationControll({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -12,6 +12,6 @@ class DebugNavigationControll extends ConsumerWidget {
 
     return LabeledElevatedButton(
         onPressed: () => controller.value?.startNavigationSimulation(),
-        label: 'start navigation simulation');
+        label: 'start navigation simulation',);
   }
 }

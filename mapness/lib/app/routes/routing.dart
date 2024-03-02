@@ -72,17 +72,31 @@ class RoutingRoutesRoute extends GoRouteData {
   const RoutingRoutesRoute({
     required this.startLatitude,
     required this.startLongitude,
+    required this.startObjectId,
+    required this.startEntranceId,
+    required this.startLevelId,
     required this.startLabel,
     required this.finishLatitude,
     required this.finishLongitude,
+    required this.finishObjectId,
+    required this.finishEntranceId,
+    required this.finishLevelId,
     required this.finishLabel,
   });
 
+  // query params in go_router is a fucking mess
   final double? startLatitude;
   final double? startLongitude;
+  final int? startObjectId;
+  final int? startEntranceId;
+  final int? startLevelId;
   final String startLabel;
+
   final double? finishLatitude;
   final double? finishLongitude;
+  final int? finishObjectId;
+  final int? finishEntranceId;
+  final int? finishLevelId;
   final String finishLabel;
 
   RouteParamsPoint? get startPoint {
@@ -90,6 +104,9 @@ class RoutingRoutesRoute extends GoRouteData {
       return RouteParamsPoint(
         latitude: startLatitude!,
         longitude: startLongitude!,
+        objectId: startObjectId,
+        entraceId: startEntranceId,
+        levelId: startLevelId,
       );
     }
 
@@ -101,6 +118,9 @@ class RoutingRoutesRoute extends GoRouteData {
       return RouteParamsPoint(
         latitude: finishLatitude!,
         longitude: finishLongitude!,
+        objectId: finishObjectId,
+        entraceId: finishEntranceId,
+        levelId: finishLevelId,
       );
     }
 

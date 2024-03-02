@@ -6,12 +6,12 @@ import 'package:balady_uikit/colors/app_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 class EventsHomeCardWrapper extends StatefulWidget {
-  final AppColorScheme colorScheme;
 
   const EventsHomeCardWrapper({
     required this.colorScheme,
     super.key,
   });
+  final AppColorScheme colorScheme;
 
   @override
   State<EventsHomeCardWrapper> createState() => _EventsHomeCardWrapperState();

@@ -7,17 +7,14 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 // TODO: rewrite according to UIKit
 class NavButton extends StatelessWidget {
   const NavButton({
-    super.key,
-    required this.onTap,
-    required this.icon,
+    required this.onTap, required this.icon, super.key,
   });
 
   final void Function() onTap;
   final String icon;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: const BoxDecoration(
@@ -26,7 +23,7 @@ class NavButton extends StatelessWidget {
           ),
           color: NonThemeColor.color11,
         ),
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8),
         child: SvgPicture.asset(
           icon,
           package: PackageConfig.packageName,
@@ -38,5 +35,4 @@ class NavButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }

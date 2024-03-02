@@ -56,11 +56,14 @@ class EventItemCard extends StatelessWidget {
               if (colorScheme == AppColorScheme.brown)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(14),
-                  child: Image.asset(
-                    'assets/images/event_card_item_mask.png',
-                    package: PackageConfig.packageName,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: 200,
+                    child: Image.asset(
+                      'assets/images/event_card_item_mask.png',
+                      package: PackageConfig.packageName,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               Container(

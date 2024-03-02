@@ -7,12 +7,12 @@ import 'package:mapness/_features/weather/provider/current_weather_provider.dart
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-import '../../../shared/ui/buttons/map_button.dart';
+import 'package:mapness/shared/ui/buttons/map_button.dart';
 
 class WeatherControl extends ConsumerWidget {
-  final VoidCallback? onTap;
 
   const WeatherControl({this.onTap, super.key});
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,20 +23,18 @@ class WeatherControl extends ConsumerWidget {
         data: weatherData,
         onTap: () {
           onTap?.call();
-        });
+        },);
   }
 
   MapButton buildContent({
     required BuildContext context,
-    AllWeatherInfoModel? data,
-    required VoidCallback onTap,
+    required VoidCallback onTap, AllWeatherInfoModel? data,
   }) {
-    var tempC2 = data?.current?.tempC;
-    var temp = tempC2 == null ? '30°' : '${tempC2.toInt()}°';
+    final tempC2 = data?.current?.tempC;
+    final temp = tempC2 == null ? '30°' : '${tempC2.toInt()}°';
     return MapButton(
       onTap: onTap,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SvgPicture.asset(
             'assets/icons/svg/ic_weather_sun.svg',
@@ -45,7 +43,7 @@ class WeatherControl extends ConsumerWidget {
             height: 8,
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 2.0),
+            padding: const EdgeInsets.only(left: 2),
             child: Text(
               temp,
               textDirection: TextDirection.ltr,

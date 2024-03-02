@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
+import 'package:mapness/_features/lifestyle_layers/map_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
@@ -13,8 +14,6 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
-
-import 'map_controls.dart';
 
 class LayersSheet extends ConsumerStatefulWidget {
   const LayersSheet({super.key});
@@ -49,9 +48,9 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
 
   @override
   Widget build(BuildContext context) {
-    var watch = ref.watch(layersControlsProvider.notifier);
-    var state = ref.watch(layersControlsProvider);
-    var lang = ref.watch(appLanguageProvider);
+    final watch = ref.watch(layersControlsProvider.notifier);
+    final state = ref.watch(layersControlsProvider);
+    final lang = ref.watch(appLanguageProvider);
 
     return Stack(
       alignment: Alignment.bottomCenter,
@@ -60,7 +59,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
         DraggableScrollableSheet(
           controller: _draggableScrollableController,
           initialChildSize: .6,
-          minChildSize: .0,
+          minChildSize: 0,
           maxChildSize: .6,
           snapSizes: const [.0, .3, .6],
           snap: true,
@@ -74,7 +73,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(16.0),
+                  top: Radius.circular(16),
                 ),
               ),
               child: Stack(
@@ -94,7 +93,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                               decoration: BoxDecoration(
                                 color: context.color.surface_base_primary,
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(24)),
+                                    const BorderRadius.all(Radius.circular(24)),
                               ),
                             ),
                             const SizedBox(
@@ -111,20 +110,20 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                                 const Spacer(),
                                 CustomCloseButton(
                                   onClose: () => context.pop(),
-                                )
+                                ),
                               ],
                             ),
                             const SizedBox(
                               height: 16,
                             ),
-                          ]),
+                          ],),
                         ),
                       ),
                       SliverList.separated(
                         separatorBuilder: (_, __) => const SizedBox(height: 16),
                         itemCount: LayerType.values.length,
                         itemBuilder: (_, index) {
-                          var value = LayerType.values[index];
+                          final value = LayerType.values[index];
 
                           return FilterRow(
                             value: value,
@@ -144,7 +143,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                                 watch.handleTap(value);
                               }
                             },
-                            isSelected: state.selectedType == (value),
+                            isSelected: state.selectedType == value,
                           );
                         },
                       ),
@@ -154,7 +153,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                     Center(
                         child: CircularProgressIndicator(
                       color: context.color.text_and_icons_status_accent,
-                    )),
+                    ),),
                 ],
               ),
             ),
@@ -166,16 +165,13 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
 }
 
 class FilterRow extends StatelessWidget {
+
+  const FilterRow({
+    required this.value, required this.onTap, required this.isSelected, super.key,
+  });
   final LayerType value;
   final Function() onTap;
   final bool isSelected;
-
-  const FilterRow({
-    super.key,
-    required this.value,
-    required this.onTap,
-    required this.isSelected,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -192,13 +188,13 @@ class FilterRow extends StatelessWidget {
         borderRadius: borderRadius,
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(10),
           child: Row(
             children: [
               SvgPicture.asset(
                 value.iconPath(),
                 semanticsLabel: 'MinApps Screen',
-                package: "mapness",
+                package: 'mapness',
                 color: isSelected
                     ? context.color.stroke_accent
                     : const Color.fromRGBO(30, 42, 54, 0.5),

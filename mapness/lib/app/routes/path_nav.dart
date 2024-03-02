@@ -24,7 +24,7 @@ class PathNavRoute extends GoRouteData {
         context: context,
         child: PathNavPage(
           navType: navType,
-        ));
+        ),);
   }
 
   static void open(GoRouter router, RouteSearchOptionsMessage navType) {

@@ -32,23 +32,25 @@ class _DGisNetwork extends _$DGisNetwork {
     final uuid = ref.watch(uuidProviderProvider);
     final version = ref.watch(packageInfoProvider).value?.version;
 
-    final dio = Dio(BaseOptions(
-      responseType: ResponseType.bytes,
-      baseUrl: url,
-      sendTimeout: timeout,
-      receiveTimeout: timeout,
-      connectTimeout: timeout,
-      headers: {
-        'Content-Type': 'application/protobuf',
-        'Accept': 'application/protobuf',
-        'X-Device-ID': uuid,
-        'X-Device-Platform': Platform.isIOS ? "ios" : "android",
-        "X-App-Version": version ?? "1.0.0",
-        "X-Locale": appLanguage == Language.arabic ? "ar_SA" : "en_SA",
-        "X-Language": appLanguage == Language.arabic ? "ar" : "en",
-      },
-      // validateStatus: (status) => status != null && status < 500,
-    ));
+    final dio = Dio(
+      BaseOptions(
+        responseType: ResponseType.bytes,
+        baseUrl: url,
+        sendTimeout: timeout,
+        receiveTimeout: timeout,
+        connectTimeout: timeout,
+        headers: {
+          'Content-Type': 'application/protobuf',
+          'Accept': 'application/protobuf',
+          'X-Device-ID': uuid,
+          'X-Device-Platform': Platform.isIOS ? 'ios' : 'android',
+          'X-App-Version': version ?? '1.0.0',
+          'X-Locale': appLanguage == Language.arabic ? 'ar_SA' : 'en_SA',
+          'X-Language': appLanguage == Language.arabic ? 'ar' : 'en',
+        },
+        // validateStatus: (status) => status != null && status < 500,
+      ),
+    );
     dio.interceptors.addAll(
       [
         PrettyDioLogger(
@@ -65,7 +67,7 @@ class _DGisNetwork extends _$DGisNetwork {
             connectTimeout: timeout,
           ),
         ),
-        _dioCacheManager.interceptor,
+        _dioCacheManager.interceptor as Interceptor,
         RetryInterceptor(
           dio: dio,
           logPrint: (message) {

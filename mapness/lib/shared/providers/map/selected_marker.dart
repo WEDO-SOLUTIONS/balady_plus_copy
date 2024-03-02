@@ -23,14 +23,14 @@ class SelectedMarker extends _$SelectedMarker {
 
   Future<void> removeMarker(String id) async {
     final read = ref.read(
-        mapObjectManagerProvider(named: selectedMarkerManagerId).notifier);
+        mapObjectManagerProvider(named: selectedMarkerManagerId).notifier,);
     await read.removeMarkerById(id);
     state = null;
   }
 
   Future<void> removeAllMarkers() async {
     final read = ref.read(
-        mapObjectManagerProvider(named: selectedMarkerManagerId).notifier);
+        mapObjectManagerProvider(named: selectedMarkerManagerId).notifier,);
     await read.removeAllMarkers();
     state = null;
   }

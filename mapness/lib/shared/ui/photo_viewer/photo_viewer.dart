@@ -4,6 +4,12 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 class PhotoViewer extends StatefulWidget {
+
+  const PhotoViewer({
+    required this.photoPaths,
+    required this.currentPhotoIndex,
+    super.key,
+  });
   final List<String>? photoPaths;
   final int currentPhotoIndex;
 
@@ -23,12 +29,6 @@ class PhotoViewer extends StatefulWidget {
       ),
     );
   }
-
-  const PhotoViewer({
-    required this.photoPaths,
-    required this.currentPhotoIndex,
-    super.key,
-  });
 
   @override
   State<PhotoViewer> createState() => _PhotoViewerState();

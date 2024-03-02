@@ -1,11 +1,10 @@
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../models/search_state.dart';
 
 part 'search.g.dart';
 
@@ -73,12 +72,13 @@ class Search extends _$Search {
     await _searchOperation?.cancel();
     final dgisController = await ref.read(dgisControllerProvider.future);
 
-    final searchOperation =
-        CancelableOperation.fromFuture(dgisController.search(
-      query,
-      sortingType: SortingTypeMessage.byDistance,
-      spatialRestriction: saRestrictions,
-    ));
+    final searchOperation = CancelableOperation.fromFuture(
+      dgisController.search(
+        query,
+        sortingType: SortingTypeMessage.byDistance,
+        spatialRestriction: saRestrictions,
+      ),
+    );
     _searchOperation = searchOperation;
     final results = await searchOperation.value;
     state = (results.firstPage?.items.isEmpty ?? true)
@@ -96,12 +96,13 @@ class Search extends _$Search {
     await _searchOperation?.cancel();
     final dgisController = await ref.read(dgisControllerProvider.future);
 
-    final searchOperation =
-        CancelableOperation.fromFuture(dgisController.searchByQuery(
-      query,
-      sortingType: SortingTypeMessage.byDistance,
-      spatialRestriction: saRestrictions,
-    ));
+    final searchOperation = CancelableOperation.fromFuture(
+      dgisController.searchByQuery(
+        query,
+        sortingType: SortingTypeMessage.byDistance,
+        spatialRestriction: saRestrictions,
+      ),
+    );
     _searchOperation = searchOperation;
     final results = await searchOperation.value;
     state = (results.firstPage?.items.isEmpty ?? true)

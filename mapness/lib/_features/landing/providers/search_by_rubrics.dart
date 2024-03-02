@@ -93,7 +93,7 @@ class SearchByRubrics extends _$SearchByRubrics {
           id: markerInfo?.objectId?.objectId.toString() ?? 'invalid',
           onTap: () {
             PoiMapRoute.open(
-                ref.read(goRouterProvider), markerInfo.objectId!.objectId);
+                ref.read(goRouterProvider), markerInfo.objectId!.objectId,);
           },
           options: MarkerOptionsMessage(
             position: markerInfo!.geoPoint,

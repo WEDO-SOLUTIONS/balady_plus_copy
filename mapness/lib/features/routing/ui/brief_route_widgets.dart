@@ -36,7 +36,7 @@ class BriefRouteButton extends ConsumerWidget {
       startPoint: startPoint,
       finishPoint: finishPoint,
       navType: routeType,
-    ));
+    ),);
 
     return appFeatures.naviEnabled
         ? Padding(
@@ -85,7 +85,7 @@ class BriefRouteInfo extends ConsumerWidget {
       startPoint: startPoint,
       finishPoint: finishPoint,
       navType: routeType,
-    ));
+    ),);
 
     return (briefInfo != null && appFeatures.naviEnabled)
         ? _BriefRouteInfo(
@@ -148,7 +148,7 @@ class _BriefRouteInfo extends StatelessWidget {
       );
 
   String getBriefRouteDescription(
-      List<BriefRouteInfoMessage> briefInfo, AppLocalizations l10n) {
+      List<BriefRouteInfoMessage> briefInfo, AppLocalizations l10n,) {
     final int = briefInfo.first.duration.toInt();
     final duration = Duration(seconds: int);
     final inMinutes = duration.inMinutes;

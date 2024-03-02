@@ -5,18 +5,15 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PathNavIconButton extends StatelessWidget {
+
+  const PathNavIconButton({
+    required this.onPressed, required this.iconPath, super.key,
+  });
   final VoidCallback onPressed;
   final String iconPath;
 
-  const PathNavIconButton({
-    super.key,
-    required this.onPressed,
-    required this.iconPath,
-  });
-
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       color: context.color.surface_base_primary,
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
@@ -42,5 +39,4 @@ class PathNavIconButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }

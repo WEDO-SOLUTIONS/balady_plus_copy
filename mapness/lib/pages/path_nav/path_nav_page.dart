@@ -16,12 +16,12 @@ import 'package:mapness/widgets/path_nav/ui/path_nav_continue_trip.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class PathNavPage extends ConsumerStatefulWidget {
-  final RouteSearchOptionsMessage navType;
 
   const PathNavPage({
     required this.navType,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
+  final RouteSearchOptionsMessage navType;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => PathNavPageState();
@@ -33,7 +33,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
 
   late StreamSubscription? _naviEventsListener;
 
-  final ValueNotifier<double> _bgOpacity = ValueNotifier(0.0);
+  final ValueNotifier<double> _bgOpacity = ValueNotifier(0);
 
   void _setNavigationState(PathNavState value) {
     setState(() {
@@ -99,7 +99,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
               child: SafeArea(
                   child: PathNavMapControlls(
                 navType: widget.navType,
-              )),
+              ),),
             ),
 
             /// shadow bg + tap observer

@@ -40,7 +40,7 @@ class RoutingSuggestList extends ConsumerWidget {
       itemCount: suggests.length,
       separatorBuilder: (context, index) => const Padding(
         padding: EdgeInsetsDirectional.only(
-          start: 52.0,
+          start: 52,
         ),
         child: Divider(),
       ),

@@ -1,11 +1,6 @@
 import 'dart:ui';
 
 class FavouriteSearchItem {
-  final String distance;
-  final String name;
-  final String address;
-  final String workingHours;
-  final Color workingHoursColor;
 
   FavouriteSearchItem({
     required this.distance,
@@ -14,4 +9,9 @@ class FavouriteSearchItem {
     required this.workingHours,
     required this.workingHoursColor,
   });
+  final String distance;
+  final String name;
+  final String address;
+  final String workingHours;
+  final Color workingHoursColor;
 }

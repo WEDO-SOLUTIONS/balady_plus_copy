@@ -4,8 +4,7 @@ import 'package:mapness/shared/config/package_config.dart';
 
 class BugButton extends StatefulWidget {
   const BugButton({
-    super.key,
-    required this.onTap,
+    required this.onTap, super.key,
   });
 
   final void Function() onTap;
@@ -18,8 +17,7 @@ class _BugButtonState extends State<BugButton> {
   Offset position = const Offset(100, 100);
 
   @override
-  Widget build(BuildContext context) {
-    return Positioned(
+  Widget build(BuildContext context) => Positioned(
       left: position.dx,
       top: position.dy,
       child: GestureDetector(
@@ -38,16 +36,13 @@ class _BugButtonState extends State<BugButton> {
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.07),
-                spreadRadius: 0,
                 blurRadius: 1,
-                offset: const Offset(0, 0),
               ),
               BoxShadow(
                 color: Colors.black.withOpacity(0.05),
                 blurRadius: 4,
-                spreadRadius: 0,
                 offset: const Offset(0, 2),
-              )
+              ),
             ],
           ),
           padding: const EdgeInsets.all(8),
@@ -58,5 +53,4 @@ class _BugButtonState extends State<BugButton> {
         ),
       ),
     );
-  }
 }

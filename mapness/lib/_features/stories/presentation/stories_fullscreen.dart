@@ -7,11 +7,6 @@ import 'package:mapness/_features/stories/domain/frame/story_frame_action.dart';
 import 'package:mapness/_features/stories/presentation/frame/story_frames_player.dart';
 
 class StoriesFullscreen extends ConsumerStatefulWidget {
-  final VoidCallback onClose;
-  final String initialStoryId;
-
-  /// TODO(Demezy): rewrite to router
-  final void Function(String) handleDeeplink;
 
   const StoriesFullscreen({
     required this.handleDeeplink,
@@ -19,6 +14,11 @@ class StoriesFullscreen extends ConsumerStatefulWidget {
     required this.onClose,
     super.key,
   });
+  final VoidCallback onClose;
+  final String initialStoryId;
+
+  /// TODO(Demezy): rewrite to router
+  final void Function(String) handleDeeplink;
 
   @override
   ConsumerState<StoriesFullscreen> createState() => _StoriesFullscreenState();

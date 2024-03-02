@@ -12,9 +12,7 @@ import 'package:provider/provider.dart';
 
 class RoutingSearchResults extends ConsumerWidget {
   const RoutingSearchResults({
-    super.key,
-    required this.results,
-    required this.scrollController,
+    required this.results, required this.scrollController, super.key,
   });
 
   final SearchResultMessage results;

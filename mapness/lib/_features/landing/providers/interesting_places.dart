@@ -30,9 +30,7 @@ class InterestingPlaces extends _$InterestingPlaces {
       await _update(dio, event?.visibleRect);
     });
 
-    ref.onDispose(() {
-      subscription.cancel();
-    });
+    ref.onDispose(subscription.cancel);
 
     await _update(dio);
     return state.value ?? [];
@@ -55,8 +53,9 @@ class InterestingPlaces extends _$InterestingPlaces {
             : '/interesting-places',
         options: defaultCacheOptions,
       );
-      final places = proto.InterestingPlacesResponse.fromBuffer(response.data)
-          .interestingPlaces;
+      final places =
+          proto.InterestingPlacesResponse.fromBuffer(response.data as List<int>)
+              .interestingPlaces;
       return places;
       // ignore: avoid_catches_without_on_clauses
     } catch (error) {

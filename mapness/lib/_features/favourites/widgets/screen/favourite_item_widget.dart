@@ -7,11 +7,6 @@ import 'package:mapness/_features/favourites/widgets/screen/delete_icon.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class FavouriteItemWidget extends StatefulWidget {
-  final VoidCallback onDelete;
-  final VoidCallback onTap;
-  final FavouriteItem item;
-  final bool isEditing;
-  final bool isDeletable;
 
   FavouriteItemWidget({
     required this.onDelete,
@@ -20,13 +15,18 @@ class FavouriteItemWidget extends StatefulWidget {
     required this.isEditing,
     this.isDeletable = true,
   }) : super(key: Key(item.id));
+  final VoidCallback onDelete;
+  final VoidCallback onTap;
+  final FavouriteItem item;
+  final bool isEditing;
+  final bool isDeletable;
 
   @override
   State<FavouriteItemWidget> createState() => _FavouriteItemWidgetState();
 }
 
 class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
-  var isDismissed = false;
+  bool isDismissed = false;
 
   void onDelete() {
     setState(() {
@@ -36,8 +36,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Dismissible(
+  Widget build(BuildContext context) => Dismissible(
       onDismissed: (_) => onDelete(),
       direction: widget.isDeletable
           ? DismissDirection.horizontal
@@ -116,5 +115,4 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
         ),
       ),
     );
-  }
 }

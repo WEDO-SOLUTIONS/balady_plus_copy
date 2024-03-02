@@ -34,6 +34,7 @@ class PackagesHandler {
             self.voiceManager.voicesChannel.sink(receiveValue: checkInstallTasks)
         )
         
+        self.packageManager.autoupdateEnabled = true
         self.packageManager.checkForUpdates()
     }
     

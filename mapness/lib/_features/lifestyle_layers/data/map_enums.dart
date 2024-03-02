@@ -6,7 +6,7 @@ enum GISMapLayers {
       // icon: Constants.bulidingLayerIcon,
       // selectedIcon: Constants.bulidingSelectedLayerIcon,
       outFieldsShort: [],
-      outFieldsLong: []),
+      outFieldsLong: [],),
 
   Resturants(
       layerId: 1,
@@ -14,30 +14,30 @@ enum GISMapLayers {
       // icon: Constants.restaurantLayerIcon,
       // selectedIcon: Constants.restaurantLayerIcon,
       outFieldsShort: [
-        "OBJECTID",
-        "XCOORDINATE",
-        "YCOORDINATE",
-        "STREET_NAME",
-        "ACTIVITY_DETAILED_DESCRIPTION",
-        "TRADENAME",
-        "REGION_ID",
-        "AMANA_ID",
-        "DISTRICT_ID",
-        "CITY_ID",
-        "SUNDAY",
-        "MONDAY",
-        "TUESDAY",
-        "WEDNESDAY",
-        "THURSDAY",
-        "FRIDAY",
-        "SATURDAY",
-        "RATE",
-        "OPENSTATUS",
-        "REVIEW",
+        'OBJECTID',
+        'XCOORDINATE',
+        'YCOORDINATE',
+        'STREET_NAME',
+        'ACTIVITY_DETAILED_DESCRIPTION',
+        'TRADENAME',
+        'REGION_ID',
+        'AMANA_ID',
+        'DISTRICT_ID',
+        'CITY_ID',
+        'SUNDAY',
+        'MONDAY',
+        'TUESDAY',
+        'WEDNESDAY',
+        'THURSDAY',
+        'FRIDAY',
+        'SATURDAY',
+        'RATE',
+        'OPENSTATUS',
+        'REVIEW',
       ],
       outFieldsLong: [
-        "*"
-      ]),
+        '*',
+      ],),
 
   Opportunities(
       layerId: 2,
@@ -45,7 +45,7 @@ enum GISMapLayers {
       // icon: Constants.furasLayerIcon,
       // selectedIcon: Constants.furasSelectedLayerIcon,
       outFieldsShort: [
-        "OBJECTID",
+        'OBJECTID',
         // "STATUS",
         // "OPPORTUNITYNUMBER",
         // "ID",
@@ -63,8 +63,8 @@ enum GISMapLayers {
         // "REGION_ID"
       ],
       outFieldsLong: [
-        "*"
-      ]),
+        '*',
+      ],),
 
   Digging(
       layerId: 5,
@@ -72,25 +72,25 @@ enum GISMapLayers {
       // icon: Constants.diggingLayerIcon,
       // selectedIcon: Constants.diggingSelectedLayerIcon,
       outFieldsShort: [
-        "STREET_CLOSE_TYPE",
-        "PROJECT_NAME",
-        "OBJECTID",
-        "SITE_NAME",
-        "WORKSTARTDATE",
-        "PATHLENGTH",
-        "WORKENDDATE",
-        "NAME_AR"
+        'STREET_CLOSE_TYPE',
+        'PROJECT_NAME',
+        'OBJECTID',
+        'SITE_NAME',
+        'WORKSTARTDATE',
+        'PATHLENGTH',
+        'WORKENDDATE',
+        'NAME_AR',
       ],
       outFieldsLong: [
-        "STREET_CLOSE_TYPE",
-        "PROJECT_NAME",
-        "OBJECTID",
-        "SITE_NAME",
-        "WORKSTARTDATE",
-        "PATHLENGTH"
-            "WORKENDDATE",
-        "NAME_AR"
-      ]),
+        'STREET_CLOSE_TYPE',
+        'PROJECT_NAME',
+        'OBJECTID',
+        'SITE_NAME',
+        'WORKSTARTDATE',
+        'PATHLENGTH'
+            'WORKENDDATE',
+        'NAME_AR',
+      ],),
 
   BSAimtithalBuildingsCertificateL(
       layerId: 7,
@@ -98,7 +98,7 @@ enum GISMapLayers {
       // icon: Constants.imtethalLayerIcon,
       // selectedIcon: Constants.imtethalSelectedLayerIcon,
       outFieldsShort: [
-        "OBJECTID",
+        'OBJECTID',
         // "PRIORITYAREA",
         // "STARTDATE",
         // "TARGETBUILDINGTYPE",
@@ -111,22 +111,8 @@ enum GISMapLayers {
         // "STREETWIDTH"
       ],
       outFieldsLong: [
-        "*"
-      ],
-      // outFieldsLong: [
-      //   "OBJECTID",
-      //   "PRIORITYAREA",
-      //   "STARTDATE",
-      //   "TARGETBUILDINGTYPE",
-      //   "STAGENO",
-      //   "AMANANAME",
-      //   "STREETNAME",
-      //   "MUNICIPALITYNAME",
-      //   "DISTRICTNAME",
-      //   "STREETTYPE",
-      //   "STREETWIDTH"
-      // ],
-      resultRecordCount: 100),
+        '*',
+      ],),
 
   /*VDPriorityAreaRouteS(layerId: 8, outFieldsShort: [
     "OBJECTID",
@@ -152,11 +138,11 @@ enum GISMapLayers {
       // icon: Constants.landsLayerIcon,
       // selectedIcon: Constants.landsSelectedLayerIcon,
       outFieldsShort: [
-        "OBJECTID",
+        'OBJECTID',
         // "AMANANAME",
         // "MUNNAME",
         // "PARCELCODE",
-        "STATUS",
+        'STATUS',
         // "STREETNAME",
         // "PARCELAREA",
         // "CITYNAME",
@@ -165,22 +151,8 @@ enum GISMapLayers {
         // "PHASE",
       ],
       outFieldsLong: [
-        "*"
-      ],
-      // outFieldsLong: [
-      //   "OBJECTID",
-      //   "AMANANAME",
-      //   "MUNNAME",
-      //   "PARCELCODE",
-      //   "STATUS",
-      //   "STREETNAME",
-      //   "PARCELAREA",
-      //   "CITYNAME",
-      //   "PARCELNO",
-      //   "PARCELLENGTH",
-      //   "PHASE",
-      // ],
-      resultRecordCount: 100),
+        '*',
+      ],),
 
   CadastralParcels(
       layerId: 10,
@@ -188,11 +160,11 @@ enum GISMapLayers {
       // icon: Constants.landsLayerIcon,
       // selectedIcon: Constants.landsSelectedLayerIcon,
       outFieldsShort: [
-        "SUBTYPEDESCRIPTION",
-        "OBJECTID",
+        'SUBTYPEDESCRIPTION',
+        'OBJECTID',
       ],
       outFieldsLong: [],
-      resultRecordCount: 50),
+      resultRecordCount: 50,),
 
   CadastralParcelsLand(
       layerId: 9,
@@ -201,25 +173,25 @@ enum GISMapLayers {
       // icon: Constants.landsLayerIcon,
       // selectedIcon: Constants.landsSelectedLayerIcon,
       outFieldsShort: [
-        "OBJECTID",
-        "BLOCK_ID",
-        "SUBDIVISIONPARCELNUMBER",
-        "SUBDIVISIONPLAN_ID"
+        'OBJECTID',
+        'BLOCK_ID',
+        'SUBDIVISIONPARCELNUMBER',
+        'SUBDIVISIONPLAN_ID',
       ],
       outFieldsLong: [
-        "OBJECTID",
-        "BLOCK_ID",
-        "SUBDIVISIONPARCELNUMBER",
-        "SUBDIVISIONPLAN_ID"
-      ]),
+        'OBJECTID',
+        'BLOCK_ID',
+        'SUBDIVISIONPARCELNUMBER',
+        'SUBDIVISIONPLAN_ID',
+      ],),
 
   Events(
       layerId: 13,
       cardHeight: 180,
       // icon: Constants.restaurantLayerIcon,
       // selectedIcon: Constants.restaurantLayerIcon,
-      outFieldsShort: ["*"],
-      outFieldsLong: ["*"]),
+      outFieldsShort: ['*'],
+      outFieldsLong: ['*'],),
   ;
 
   const GISMapLayers(
@@ -229,7 +201,7 @@ enum GISMapLayers {
       // required this.icon,
       // required this.selectedIcon,
       required this.cardHeight,
-      this.resultRecordCount = 100});
+      this.resultRecordCount = 100,});
   final int layerId;
 
   final int resultRecordCount;

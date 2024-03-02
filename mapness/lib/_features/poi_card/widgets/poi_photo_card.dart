@@ -9,9 +9,9 @@ import 'package:mapness/widgets/messages/errror_message.dart';
 import 'package:shimmer/shimmer.dart';
 
 class PoiPhotoCard extends ConsumerWidget {
-  final PoiModel model;
 
   const PoiPhotoCard({required this.model, super.key});
+  final PoiModel model;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -8,12 +8,12 @@ import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 class RoutingMapControls extends ConsumerWidget {
-  final double? bottomExtent;
 
   const RoutingMapControls({
     this.bottomExtent,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
+  final double? bottomExtent;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => SafeArea(
