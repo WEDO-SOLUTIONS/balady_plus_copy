@@ -7,8 +7,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class SearchField extends StatefulWidget {
   const SearchField({
-    super.key,
-    required this.placeholder,
+    required this.placeholder, super.key,
     this.controller,
     this.focusNode,
     this.onChanged,
@@ -53,7 +52,6 @@ class _SearchFieldState extends State<SearchField> {
             },
             onSubmitted: widget.onSubmitted,
             controller: widget.controller,
-            maxLines: 1,
             textAlignVertical: TextAlignVertical.center,
             decoration: InputDecoration(
               filled: true,
@@ -62,8 +60,6 @@ class _SearchFieldState extends State<SearchField> {
               contentPadding: const EdgeInsets.only(
                 right: 8,
                 left: 38,
-                top: 0,
-                bottom: 0,
               ),
               border: OutlineInputBorder(
                 borderSide: BorderSide.none,
@@ -80,9 +76,9 @@ class _SearchFieldState extends State<SearchField> {
         Align(
           alignment: Alignment.centerRight,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8),
             child: SvgPicture.asset(
-              "assets/icons/svg/ic_routing_circle.svg",
+              'assets/icons/svg/ic_routing_circle.svg',
               colorFilter: ColorFilter.mode(
                 context.color.text_and_icons_status_accent,
                 BlendMode.srcATop,
@@ -100,14 +96,14 @@ class _SearchFieldState extends State<SearchField> {
                   _clearVisible.value = false;
                   widget.focusNode?.requestFocus();
                   widget.controller?.clear();
-                  widget.onChanged?.call("");
+                  widget.onChanged?.call('');
                 },
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8),
                     child: SvgPicture.asset(
-                      "assets/icons/svg/ic_search_clear.svg",
+                      'assets/icons/svg/ic_search_clear.svg',
                       package: PackageConfig.packageName,
                     ),
                   ),
@@ -117,7 +113,7 @@ class _SearchFieldState extends State<SearchField> {
 
             return const SizedBox.shrink();
           },
-        )
+        ),
       ],
     );
   }

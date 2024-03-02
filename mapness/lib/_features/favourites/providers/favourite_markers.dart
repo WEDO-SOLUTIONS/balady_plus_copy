@@ -1,5 +1,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
+import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/lib/construct_marker.dart';
 import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
@@ -19,15 +20,16 @@ class FavouriteToggle extends _$FavouriteToggle {
   bool build() {
     final sharedPrefs = ref.watch(sharedPrefsProvider);
     final string = sharedPrefs.getString(MapnessConsts.activeLayerKey);
-    final bool = string ==
-        LayerType.favourites.name;
+    final bool = string == LayerType.favourites.name;
     return bool;
   }
 
   Future<void> enable() async {
     final sharedPrefs = ref.read(sharedPrefsProvider);
     await sharedPrefs.setString(
-        MapnessConsts.activeLayerKey, LayerType.favourites.name);
+      MapnessConsts.activeLayerKey,
+      LayerType.favourites.name,
+    );
     ref.invalidateSelf();
   }
 
@@ -42,8 +44,8 @@ class FavouriteToggle extends _$FavouriteToggle {
   Future<void> toggle() async {
     final sharedPrefs = ref.read(sharedPrefsProvider);
     final name = LayerType.favourites.name;
-    final currentState = sharedPrefs.getString(MapnessConsts.activeLayerKey) ==
-        name;
+    final currentState =
+        sharedPrefs.getString(MapnessConsts.activeLayerKey) == name;
     if (currentState) {
       await sharedPrefs.remove(MapnessConsts.activeLayerKey);
     } else {
@@ -77,33 +79,33 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
     final markers = <Marker>[];
     final favItems = favItemsAsync.requireValue;
 
-    for (var element in favItems?.items ?? []) {
+    for (final element in favItems.items ?? []) {
       markers.add(
         constructMarker(
-          element,
-          "packages/mapness/assets/icons/svg/ic_fav_pin.svg",
+          element as FavouriteItem,
+          'packages/mapness/assets/icons/svg/ic_fav_pin.svg',
           router,
         ),
       );
     }
 
     /// add home if exists
-    if (favItems?.home != null) {
+    if (favItems.home != null) {
       markers.add(
         constructMarker(
-          favItems!.home!,
-          "packages/mapness/assets/icons/svg/ic_home_pin.svg",
+          favItems.home!,
+          'packages/mapness/assets/icons/svg/ic_home_pin.svg',
           router,
         ),
       );
     }
 
     /// add work if exists
-    if (favItems?.work != null) {
+    if (favItems.work != null) {
       markers.add(
         constructMarker(
-          favItems!.work!,
-          "packages/mapness/assets/icons/svg/ic_work_pin.svg",
+          favItems.work!,
+          'packages/mapness/assets/icons/svg/ic_work_pin.svg',
           router,
         ),
       );

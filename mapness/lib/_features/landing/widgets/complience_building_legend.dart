@@ -8,9 +8,9 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
 class ComplienceBuildingLegend extends ConsumerWidget {
-  final sizeGroupItems = AutoSizeGroup();
 
-  ComplienceBuildingLegend({Key? key}) : super(key: key);
+  ComplienceBuildingLegend({super.key});
+  final sizeGroupItems = AutoSizeGroup();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -65,10 +65,6 @@ class ComplienceBuildingLegend extends ConsumerWidget {
 }
 
 class _LegendItem extends StatelessWidget {
-  final Color color;
-  final Color borderColor;
-  final String text;
-  final AutoSizeGroup group;
 
   const _LegendItem({
     required this.color,
@@ -76,6 +72,10 @@ class _LegendItem extends StatelessWidget {
     required this.text,
     required this.group,
   });
+  final Color color;
+  final Color borderColor;
+  final String text;
+  final AutoSizeGroup group;
 
   @override
   Widget build(BuildContext context) {

@@ -5,7 +5,6 @@ import 'package:hive/hive.dart';
 import 'package:mapness/_features/stories/data/stories_repo.dart';
 import 'package:mapness/_features/stories/domain/story_data.dart';
 import 'package:mapness/_features/stories/mappers/network_story_mapper.dart';
-import 'package:mapness/_generated/protocol/protocol.pb.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -65,7 +64,7 @@ class StoryService extends _$StoryService {
 
   @override
   Future<List<StoryData>> build() async {
-    final StoriesResponse storiesNetwork =
+    final storiesNetwork =
         await ref.watch(storiesRepoProvider.future);
     final networkStories = storiesNetwork.toDomain();
 

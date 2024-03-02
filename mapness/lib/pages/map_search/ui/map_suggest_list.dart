@@ -7,8 +7,7 @@ import 'package:mapness/features/search/ui/suggest_item.dart';
 
 class MapSuggestList extends ConsumerWidget {
   const MapSuggestList({
-    super.key,
-    required this.suggest,
+    required this.suggest, super.key,
   });
 
   final SuggestResultMessage suggest;
@@ -19,27 +18,22 @@ class MapSuggestList extends ConsumerWidget {
 
     return ListView.separated(
       shrinkWrap: true,
-      scrollDirection: Axis.vertical,
       padding: const EdgeInsetsDirectional.only(
         start: 16,
         bottom: 16,
       ),
       physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) {
-        return SuggestItem(
+      itemBuilder: (context, index) => SuggestItem(
           suggest: suggests[index],
           onObjectTap: (object) {
             PoiMapRoute.open(ref.read(goRouterProvider), object.id!.objectId);
           },
-        );
-      },
+        ),
       itemCount: suggests.length,
-      separatorBuilder: (BuildContext context, int index) {
-        return const Padding(
-          padding: EdgeInsetsDirectional.only(start: 52.0),
+      separatorBuilder: (context, index) => const Padding(
+          padding: EdgeInsetsDirectional.only(start: 52),
           child: Divider(),
-        );
-      },
+        ),
     );
   }
 }

@@ -36,21 +36,13 @@ class DgisScrollController extends ScrollController {
 class DgisScrollPosition extends ScrollPositionWithSingleContext {
   DgisScrollPosition({
     required DgisDraggableScrollableListener listener,
-    required ScrollPhysics physics,
-    required ScrollContext context,
-    double initialPixels = 0.0,
-    bool keepScrollOffset = true,
-    ScrollPosition? oldPosition,
-    String? debugLabel,
-  })  : _listener = listener,
-        super(
-          physics: physics,
-          context: context,
-          initialPixels: initialPixels,
-          keepScrollOffset: keepScrollOffset,
-          oldPosition: oldPosition,
-          debugLabel: debugLabel,
-        ) {
+    required super.physics,
+    required super.context,
+    double super.initialPixels,
+    super.keepScrollOffset,
+    super.oldPosition,
+    super.debugLabel,
+  })  : _listener = listener {
     _listener.position = this;
   }
 

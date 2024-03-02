@@ -7,9 +7,7 @@ enum SsoEnvironmentType { dev, staging, production }
 @riverpod
 class SsoEnvironment extends _$SsoEnvironment {
   @override
-  SsoEnvironmentType build() {
-    return SsoEnvironmentType.dev;
-  }
+  SsoEnvironmentType build() => SsoEnvironmentType.dev;
 }
 
 @riverpod
@@ -26,13 +24,13 @@ const _ssoCredential = {
     '1005830086',
     'P@ssw0rd',
     '0000',
-  )
+  ),
 };
 
 class Credential {
+
+  const Credential(this.username, this.password, this.otp);
   final String username;
   final String password;
   final String otp;
-
-  const Credential(this.username, this.password, this.otp);
 }

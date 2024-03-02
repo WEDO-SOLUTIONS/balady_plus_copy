@@ -8,10 +8,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class RouteEditor extends StatelessWidget {
   const RouteEditor({
-    super.key,
-    required this.points,
-    required this.onReorder,
-    required this.onTap,
+    required this.points, required this.onReorder, required this.onTap, super.key,
   });
 
   final List<RoutePoint> points;
@@ -19,8 +16,7 @@ class RouteEditor extends StatelessWidget {
   final Function(int) onTap;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       decoration: BoxDecoration(
         color: NonThemeColor.color51,
         borderRadius: BorderRadius.circular(12),
@@ -33,8 +29,7 @@ class RouteEditor extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             buildDefaultDragHandles: false,
             onReorder: onReorder,
-            itemBuilder: (BuildContext context, int index) {
-              return Directionality(
+            itemBuilder: (context, index) => Directionality(
                 key: ValueKey(points[index].title),
                 textDirection: TextDirection.rtl,
                 child: Material(
@@ -52,8 +47,7 @@ class RouteEditor extends StatelessWidget {
                     ),
                   ),
                 ),
-              );
-            },
+              ),
             itemCount: points.length,
           ),
           const Padding(
@@ -62,20 +56,15 @@ class RouteEditor extends StatelessWidget {
               height: 1,
               color: NonThemeColor.color53,
             ),
-          )
+          ),
         ],
       ),
     );
-  }
 }
 
 class DestinationRow extends StatelessWidget {
   const DestinationRow({
-    super.key,
-    required this.color,
-    required this.value,
-    required this.icon,
-    required this.index,
+    required this.color, required this.value, required this.icon, required this.index, super.key,
   });
 
   final Color color;
@@ -84,8 +73,7 @@ class DestinationRow extends StatelessWidget {
   final int index;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context) => Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 16,
         vertical: 14,
@@ -128,7 +116,7 @@ class DestinationRow extends StatelessWidget {
               width: 24,
               height: 24,
               child: SvgPicture.asset(
-                "assets/icons/svg/ic_drag_indicator.svg",
+                'assets/icons/svg/ic_drag_indicator.svg',
                 package: PackageConfig.packageName,
               ),
             ),
@@ -136,5 +124,4 @@ class DestinationRow extends StatelessWidget {
         ],
       ),
     );
-  }
 }

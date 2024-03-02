@@ -13,12 +13,10 @@ class RoutingSearchHeaderDelegate extends SliverPersistentHeaderDelegate {
   final DraggableScrollableController draggableScrollableController;
 
   @override
-  Widget build(context, double shrinkOffset, bool overlapsContent) {
-    return DashboardHeader(
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) => DashboardHeader(
       placeholder: placeholder,
       draggableScrollableController: draggableScrollableController,
     );
-  }
 
   @override
   double get maxExtent => 84;
@@ -32,22 +30,19 @@ class RoutingSearchHeaderDelegate extends SliverPersistentHeaderDelegate {
 
 class DashboardHeader extends ConsumerWidget {
   const DashboardHeader({
-    super.key,
-    required this.placeholder,
-    required this.draggableScrollableController,
+    required this.placeholder, required this.draggableScrollableController, super.key,
   });
 
   final String placeholder;
   final DraggableScrollableController draggableScrollableController;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+  Widget build(BuildContext context, WidgetRef ref) => Container(
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
-          topRight: Radius.circular(16.0),
-          topLeft: Radius.circular(16.0),
+          topRight: Radius.circular(16),
+          topLeft: Radius.circular(16),
         ),
       ),
       child: Column(
@@ -61,7 +56,7 @@ class DashboardHeader extends ConsumerWidget {
               width: 26,
               decoration:  BoxDecoration(
                 color: context.color.surface_base_primary,
-                borderRadius: BorderRadius.all(Radius.circular(24)),
+                borderRadius: const BorderRadius.all(Radius.circular(24)),
               ),
             ),
           ),
@@ -69,7 +64,7 @@ class DashboardHeader extends ConsumerWidget {
             height: 8,
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: RoutingSearchBar(
               placeholder: placeholder,
               draggableScrollableController: draggableScrollableController,
@@ -81,5 +76,4 @@ class DashboardHeader extends ConsumerWidget {
         ],
       ),
     );
-  }
 }

@@ -4,16 +4,14 @@ import 'package:mapness/_features/stories/domain/frame/story_frame_data.dart';
 import 'package:mapness/_features/stories/presentation/story_localizations.dart';
 
 class StoryFrameContent extends StatelessWidget {
-  final StoryFrameData frame;
 
   const StoryFrameContent({
-    super.key,
-    required this.frame,
+    required this.frame, super.key,
   });
+  final StoryFrameData frame;
 
   @override
-  Widget build(BuildContext context) {
-    return SafeArea(
+  Widget build(BuildContext context) => SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -46,7 +44,7 @@ class StoryFrameContent extends StatelessWidget {
                 if (frame.description != null)
                   Text(
                     frame.descriptionOrFailback(
-                            StoryLocalizations.of(context)!.locale) ??
+                            StoryLocalizations.of(context)!.locale,) ??
                         '',
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
@@ -61,5 +59,4 @@ class StoryFrameContent extends StatelessWidget {
         ],
       ),
     );
-  }
 }

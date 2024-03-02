@@ -43,12 +43,13 @@ class _IwishEntity extends _$IwishEntity {
         '/iwish/$iwishId/feedback',
         data: request.writeToBuffer(),
       );
-      final response = pb.IWishItemResponse.fromBuffer(raw.data);
+      final response = pb.IWishItemResponse.fromBuffer(raw.data as List<int>);
       state = AsyncData(response.object.toDomain());
       return true;
     } on DioException catch (e) {
       if (kDebugMode) {
-        final error = pb.ErrorResponse.fromBuffer(e.response?.data);
+        final error =
+            pb.ErrorResponse.fromBuffer(e.response?.data as List<int>);
         print(error.toDebugString());
       }
     }
@@ -62,7 +63,8 @@ class _IwishEntity extends _$IwishEntity {
 
     final raw = await dio.get('iwish/$iwishId');
 
-    final response = pb.IWishItemResponse.fromBuffer(raw.data).object;
+    final response =
+        pb.IWishItemResponse.fromBuffer(raw.data as List<int>).object;
     final point = response.location.point;
     debugPrint('${response.toProto3Json()}');
 

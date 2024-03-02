@@ -29,14 +29,19 @@ class JobList extends _$JobList {
       final env = await ref.read(dgisEnvironmentProvider.future);
       final jobsUrl = '${env.jobsApi}/published/jobs';
 
-      final response = await dio.get(jobsUrl, queryParameters: {
-        'page-no': _page,
-        'page-size': _size,
-        'sort': sort,
-      });
+      final response = await dio.get(
+        jobsUrl,
+        queryParameters: {
+          'page-no': _page,
+          'page-size': _size,
+          'sort': sort,
+        },
+      );
 
       final jobResponse = JobBaseResponse<JobListModel>.fromJson(
-          response.data, JobListModel.fromJson);
+        response.data as Map<String, dynamic>,
+        JobListModel.fromJson,
+      );
 
       final jobList = jobResponse.data?.result;
       if (jobResponse.isSuccess) {

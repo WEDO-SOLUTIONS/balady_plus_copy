@@ -12,6 +12,8 @@ part 'events.g.dart';
 )
 class EventsRoute extends GoRouteData {
   const EventsRoute({
+    required this.objectId,
+    required this.entranceId,
     required this.title,
     required this.description,
     required this.startTime,
@@ -20,6 +22,8 @@ class EventsRoute extends GoRouteData {
     required this.longitude,
   });
 
+  final int objectId;
+  final int entranceId;
   final String title;
   final String description;
   final DateTime? startTime;
@@ -31,6 +35,8 @@ class EventsRoute extends GoRouteData {
 
   static void open(BuildContext context, RoadEventTapEvent event) {
     final eventsRoute = EventsRoute(
+      objectId: event.id.objectId,
+      entranceId: event.id.entranceId,
       title: event.title,
       description: event.description,
       startTime: event.startTime,
@@ -60,6 +66,10 @@ class EventsRoute extends GoRouteData {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: RoadClosurePage(
+                  id: DgisObjectId(
+                    objectId: objectId,
+                    entranceId: entranceId,
+                  ),
                   title: title,
                   description: description,
                   startTime: startTime,

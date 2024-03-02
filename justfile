@@ -60,11 +60,18 @@ open_built:
 build_pigeon:
     #!/bin/bash
     set -euo pipefail
-    cd urbi_map/dgis_map_platform_interface/
+
+    cd urbi_map
+    fvm flutter pub get
+    fvm dart run build_runner build --delete-conflicting-outputs || true
+
+    cd dgis_map_platform_interface/
+    fvm flutter pub get
+    fvm dart run build_runner build --delete-conflicting-outputs || true
 
     print_style '' 'yellow' '> build pigeons...'
-    # fvm flutter pub run pigeon --input pigeons/messages.dart
-    ./pigeon.sh
+    mkdir -p mkdir lib/src/pigeons/ ../dgis_map/android/src/main/kotlin/com/dgis/map/map_api/
+    fvm dart pub run pigeon --input pigeons/messages.dart
     print_style '' 'yellow' '< pigeons ready'
 
 run:
@@ -119,6 +126,15 @@ ios_setup:
 
 dev-env-setup:
     ./mapness/scripts/dev-env-setup.sh
+
+download-sdk:
+    curl -u "balady-developers:4Itn0|w3" -O https://artifactory.2gis.dev/vendor-ios-release/10.2.2/Release/DGisFullSDK.zip
+    rm -rf urbi_map/dgis_map/ios/_DELETE_ME_/DGis.xcframework
+    unzip DGisFullSDK.zip -d urbi_map/dgis_map/ios/_DELETE_ME_
+    rm DGisFullSDK.zip
+    curl -u "balady-developers:4Itn0|w3" -O https://artifactory.2gis.dev/vendor-maven-release/ru/dgis/sdk/sdk-full/10.2.2/sdk-full-10.2.2.aar
+    mkdir -p urbi_map/dgis_map/android/_delete_me_
+    mv sdk-full-10.2.2.aar urbi_map/dgis_map/android/_delete_me_/sdk-full-latest.aar
 
 ios-release: apply-patches prebuild ios_setup && unapply-patches
     #!/usr/bin/env bash

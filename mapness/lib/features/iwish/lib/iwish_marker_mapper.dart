@@ -7,8 +7,7 @@ extension IwishMarkerMapper on IwishMarker {
   Marker toMarker(
     final bool isSelected,
     final Function(IwishMarker) onMarkerTap,
-  ) {
-    return Marker(
+  ) => Marker(
       id: "$iwishMarkerPrefix$id",
       options: MarkerOptionsMessage(
         position: GeoPointWithElevationMessage(
@@ -20,11 +19,11 @@ extension IwishMarkerMapper on IwishMarker {
           // TODO(demezy): place here logic when backend will provide state
           path: switch ((isSelected, state)) {
             (true, _) =>
-              "packages/mapness/assets/icons/svg/ic_iwish_marker_selected.svg",
+              'packages/mapness/assets/icons/svg/ic_iwish_marker_selected.svg',
             (_, IwishState.completed) =>
-              "packages/mapness/assets/icons/svg/ic_iwish_marker_completed.svg",
+              'packages/mapness/assets/icons/svg/ic_iwish_marker_completed.svg',
             (_, _) =>
-              "packages/mapness/assets/icons/svg/ic_iwish_marker_planned.svg",
+              'packages/mapness/assets/icons/svg/ic_iwish_marker_planned.svg',
           },
           width: 30,
         ),
@@ -42,5 +41,4 @@ extension IwishMarkerMapper on IwishMarker {
       ),
       onTap: () => onMarkerTap(this),
     );
-  }
 }

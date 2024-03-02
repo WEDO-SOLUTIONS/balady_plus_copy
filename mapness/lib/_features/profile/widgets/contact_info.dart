@@ -14,7 +14,7 @@ class ContactInfo extends StatelessWidget {
             border: false,
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Container(
               color: context.color.surface_base_secondary,
               child: Padding(
@@ -33,7 +33,7 @@ class ContactInfo extends StatelessWidget {
             border: false,
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Container(
               color: context.color.surface_base_secondary,
               child: Padding(
@@ -75,14 +75,14 @@ class ContactRow extends StatelessWidget {
                 border ? const Radius.circular(12) : const Radius.circular(0),
             bottomRight: (border
                 ? const Radius.circular(12)
-                : const Radius.circular(0))),
+                : const Radius.circular(0)),),
         child: InkWell(
           borderRadius: BorderRadius.only(
               bottomLeft:
                   border ? const Radius.circular(12) : const Radius.circular(0),
               bottomRight: (border
                   ? const Radius.circular(12)
-                  : const Radius.circular(0))),
+                  : const Radius.circular(0)),),
           onTap: () {},
           child: Padding(
             padding: const EdgeInsets.symmetric(
@@ -100,7 +100,7 @@ class ContactRow extends StatelessWidget {
                           .extension<ThemeTextStyles>()!
                           .textM
                           .copyWith(
-                              color: context.color.text_and_icons_base_primary),
+                              color: context.color.text_and_icons_base_primary,),
                     ),
                     Text(
                       subtitle,
@@ -109,7 +109,7 @@ class ContactRow extends StatelessWidget {
                           .textS
                           .copyWith(
                               color: context.color.text_and_icons_base_primary
-                                  .withOpacity(0.36)),
+                                  .withOpacity(0.36),),
                     ),
                   ],
                 ),

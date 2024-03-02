@@ -16,14 +16,14 @@ import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 class PoiCardMapControls extends ConsumerStatefulWidget {
-  final double biggestHeight;
-  final ScrollController scrollController;
 
   const PoiCardMapControls({
     required this.biggestHeight,
     required this.scrollController,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
+  final double biggestHeight;
+  final ScrollController scrollController;
 
   @override
   ConsumerState<PoiCardMapControls> createState() => _PoiCardMapControlsState();
@@ -80,7 +80,7 @@ class _PoiCardMapControlsState extends ConsumerState<PoiCardMapControls> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           WeatherControl(
-                              onTap: () => const WeatherRoute().push(context)),
+                              onTap: () => const WeatherRoute().push(context),),
                           const SizedBox(height: 8),
                           const HappinesControl(),
                           const Spacer(),

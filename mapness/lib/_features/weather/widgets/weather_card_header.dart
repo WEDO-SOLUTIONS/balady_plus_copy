@@ -25,7 +25,7 @@ class WeatherCardHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(
-          BuildContext context, double shrinkOffset, bool overlapsContent) =>
+          BuildContext context, double shrinkOffset, bool overlapsContent,) =>
       DashboardHeader(
         draggableScrollableController: draggableScrollableController,
       );
@@ -89,9 +89,6 @@ class DashboardHeader extends ConsumerWidget {
 }
 
 class Data extends ConsumerWidget {
-  final AllWeatherInfoModel? allWeatherInfo;
-  final Locale locale;
-  final Function()? onTap;
 
   const Data({
     required this.onTap,
@@ -99,6 +96,9 @@ class Data extends ConsumerWidget {
     required this.locale,
     super.key,
   });
+  final AllWeatherInfoModel? allWeatherInfo;
+  final Locale locale;
+  final Function()? onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -123,8 +123,8 @@ class Data extends ConsumerWidget {
         // color: context.color.surface_base_primary,
         color: Colors.white,
         borderRadius: BorderRadius.only(
-          topRight: Radius.circular(16.0),
-          topLeft: Radius.circular(16.0),
+          topRight: Radius.circular(16),
+          topLeft: Radius.circular(16),
         ),
       ),
       child: Directionality(
@@ -143,7 +143,7 @@ class Data extends ConsumerWidget {
               _closeButton(onTap: () async {
                 await ref.switchOffWeatherLayers();
                 context.pop();
-              }),
+              },),
 
               ///settings
               ///cityname
@@ -154,7 +154,7 @@ class Data extends ConsumerWidget {
                     .accentL
                     .copyWith(fontSize: 19, color: Colors.black),
               ),
-            ]),
+            ],),
             const SizedBox(
               height: 16,
             ),
@@ -163,7 +163,7 @@ class Data extends ConsumerWidget {
               child: Container(
                   decoration: BoxDecoration(
                       color: context.color.surface_base_secondary,
-                      borderRadius: BorderRadius.circular(16)),
+                      borderRadius: BorderRadius.circular(16),),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -274,7 +274,7 @@ class Data extends ConsumerWidget {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(8),
                         child: Row(children: [
                           buildButton(
                               desc: Text(
@@ -282,7 +282,7 @@ class Data extends ConsumerWidget {
                                 style: textStyle,
                                 maxLines: 1,
                               ),
-                              assetName: 'assets/icons/svg/weather/wind.svg'),
+                              assetName: 'assets/icons/svg/weather/wind.svg',),
                           buildButton(
                               desc: Text(
                                 '${pressureMb}Mb',
@@ -290,7 +290,7 @@ class Data extends ConsumerWidget {
                                 maxLines: 1,
                               ),
                               assetName:
-                                  'assets/icons/svg/weather/pressure.svg'),
+                                  'assets/icons/svg/weather/pressure.svg',),
                           buildButton(
                               desc: Text(
                                 '$humidity%',
@@ -298,11 +298,11 @@ class Data extends ConsumerWidget {
                                 maxLines: 1,
                               ),
                               assetName:
-                                  'assets/icons/svg/weather/humidity.svg'),
-                        ]),
+                                  'assets/icons/svg/weather/humidity.svg',),
+                        ],),
                       ),
                     ],
-                  )),
+                  ),),
             ),
           ],
         ),
@@ -325,7 +325,7 @@ class Data extends ConsumerWidget {
                 ),
                 color: context.color.surface_base_primary,
               ),
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8),
               child: SvgPicture.asset(
                 'assets/icons/svg/ic_search_close.svg',
                 semanticsLabel: 'MinApps Screen',

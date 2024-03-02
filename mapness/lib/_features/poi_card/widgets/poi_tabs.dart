@@ -7,14 +7,14 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 
 class PoiTabs extends ConsumerStatefulWidget {
-  final PoiModel model;
-  final TabController tabController;
 
   const PoiTabs({
     required this.tabController,
     required this.model,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
+  final PoiModel model;
+  final TabController tabController;
 
   @override
   ConsumerState<PoiTabs> createState() => _PoiTabsState();
@@ -81,12 +81,12 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
 }
 
 class _PoiTabItem extends StatelessWidget {
+  const _PoiTabItem(
+      {required this.title, this.isActive, this.onTap, this.count,});
   final bool? isActive;
   final VoidCallback? onTap;
   final String title;
   final int? count;
-  const _PoiTabItem(
-      {required this.title, this.isActive, this.onTap, this.count});
 
   @override
   Widget build(BuildContext context) => Container(
@@ -103,7 +103,7 @@ class _PoiTabItem extends StatelessWidget {
                     color: Colors.black.withOpacity(0.05),
                     blurRadius: 4,
                     offset: const Offset(0, 2),
-                  )
+                  ),
                 ]
               : null,
         ),
@@ -115,7 +115,7 @@ class _PoiTabItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(6),
             onTap: onTap,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Center(
                 child: Row(
                   children: [
@@ -133,7 +133,7 @@ class _PoiTabItem extends StatelessWidget {
                     if (count != null)
                       Padding(
                         padding: const EdgeInsetsDirectional.only(
-                          start: 6.0,
+                          start: 6,
                         ),
                         child: Container(
                           padding: const EdgeInsets.symmetric(

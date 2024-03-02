@@ -13,9 +13,8 @@ abstract class QrLicenseDataSource {
 }
 
 class _QrLicenseDataSource implements QrLicenseDataSource {
-  final QrLicenseService service;
-
   _QrLicenseDataSource({required this.service});
+  final QrLicenseService service;
 
   @override
   Future<Map<String, dynamic>?> getLicenseInfo({
@@ -29,17 +28,19 @@ class _QrLicenseDataSource implements QrLicenseDataSource {
 
       result = await service.dio.get(
         url,
-        options: Options(headers: {
-          if (verifyingKEY != null) 'verifyingKEY': verifyingKEY,
-          'Cookie': cookie,
-        }),
+        options: Options(
+          headers: {
+            if (verifyingKEY != null) 'verifyingKEY': verifyingKEY,
+            'Cookie': cookie,
+          },
+        ),
       );
 
-      return result.data['data']['result'];
+      return result.data['data']['result'] as Map<String, dynamic>;
     } on DioException catch (error) {
-      print("[licenseDetails] DioError $error");
+      print('[licenseDetails] DioError $error');
     } catch (error) {
-      print("[licenseDetails] $error");
+      print('[licenseDetails] $error');
     }
     return null;
   }

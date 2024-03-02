@@ -9,12 +9,12 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 
 class JobCard extends ConsumerWidget {
-  final JobModel jobModel;
 
   const JobCard({
     required this.jobModel,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
+  final JobModel jobModel;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -70,7 +70,7 @@ class JobCard extends ConsumerWidget {
               ),
               if (jobModel.description != null)
                 Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
+                  padding: const EdgeInsets.only(top: 4),
                   child: Text(
                     jobModel.description ?? '',
                     style: Theme.of(context)
@@ -90,7 +90,7 @@ class JobCard extends ConsumerWidget {
                     latitude: latitude,
                     longitude: longitude,
                   ),
-                )
+                ),
             ],
           ),
         ),

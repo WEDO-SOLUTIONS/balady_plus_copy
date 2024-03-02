@@ -27,13 +27,11 @@ class _IwishFeedback extends _$IwishFeedback {
   }
 
   @override
-  Future<IwishFeedbackEntity> build(String iwishId) async {
-    return IwishFeedbackEntity(
+  Future<IwishFeedbackEntity> build(String iwishId) async => IwishFeedbackEntity(
       tags: {},
       comment: null,
       mood: null,
     );
-  }
 
   Future<void> submitFeedback() async {
     final oldState = state;

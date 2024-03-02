@@ -9,8 +9,7 @@ class _BriefRouteInfo extends _$BriefRouteInfo {
   @override
   List<BriefRouteInfoMessage>? build({
     required RouteSearchPointMessage? finishPoint,
-    RouteSearchPointMessage? startPoint,
-    required RouteSearchOptionsMessage navType,
+    required RouteSearchOptionsMessage navType, RouteSearchPointMessage? startPoint,
   }) {
     final controller = ref.watch(dgisControllerProvider);
     controller.value

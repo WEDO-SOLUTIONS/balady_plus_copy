@@ -8,9 +8,9 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class UnautorizedProfile extends ConsumerWidget {
-  final VoidCallback? onConnect;
 
   const UnautorizedProfile({super.key, this.onConnect});
+  final VoidCallback? onConnect;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Container(
@@ -57,7 +57,7 @@ class UnautorizedProfile extends ConsumerWidget {
               height: 16,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Material(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
@@ -76,7 +76,7 @@ class UnautorizedProfile extends ConsumerWidget {
                               .accentM
                               .copyWith(
                                   color: context
-                                      .color.text_and_icons_status_accent),
+                                      .color.text_and_icons_status_accent,),
                         ),
                       ],
                     ),

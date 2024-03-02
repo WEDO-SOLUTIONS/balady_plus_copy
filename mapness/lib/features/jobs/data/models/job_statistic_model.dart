@@ -3,8 +3,6 @@ import 'package:flutter/foundation.dart';
 //TODO(Scroollocker): change to equatable
 @immutable
 class JobStatisticModel {
-  final int? jobsCount;
-  final int? providersCount;
 
   const JobStatisticModel({
     this.jobsCount,
@@ -16,6 +14,8 @@ class JobStatisticModel {
         jobsCount: json['jobsCount'] as int?,
         providersCount: json['providersCount'] as int?,
       );
+  final int? jobsCount;
+  final int? providersCount;
 
   @override
   bool operator ==(Object other) {

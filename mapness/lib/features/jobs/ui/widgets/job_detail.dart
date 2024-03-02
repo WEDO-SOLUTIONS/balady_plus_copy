@@ -14,11 +14,11 @@ import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/app_features.dart';
 
 class JobDetail extends ConsumerStatefulWidget {
-  final String jobId;
   const JobDetail({
     required this.jobId,
     super.key,
   });
+  final String jobId;
 
   @override
   ConsumerState<JobDetail> createState() => _JobDetailState();
@@ -66,7 +66,7 @@ class _JobDetailState extends ConsumerState<JobDetail> {
                       const SizedBox(height: 16),
                       _JobInfoWidget(
                           title: context.l10n.published,
-                          data: _publishDate(data.publishDate ?? '')),
+                          data: _publishDate(data.publishDate ?? ''),),
                       const SizedBox(height: 16),
                       _JobInfoWidget(
                         title: context.l10n.coordinates,
@@ -81,7 +81,7 @@ class _JobDetailState extends ConsumerState<JobDetail> {
                 ),
                 Container(
                   padding: const EdgeInsetsDirectional.only(
-                      top: 8, bottom: 16, start: 16, end: 16),
+                      top: 8, bottom: 16, start: 16, end: 16,),
                   decoration: const BoxDecoration(
                     color: Colors.white,
                   ),
@@ -100,7 +100,7 @@ class _JobDetailState extends ConsumerState<JobDetail> {
                           longitude != null)
                         Padding(
                           padding:
-                              const EdgeInsetsDirectional.only(start: 16.0),
+                              const EdgeInsetsDirectional.only(start: 16),
                           child: JobShareButton(
                             lat: latitude,
                             lon: longitude,
@@ -111,27 +111,27 @@ class _JobDetailState extends ConsumerState<JobDetail> {
                           longitude != null)
                         Padding(
                           padding:
-                              const EdgeInsetsDirectional.only(start: 16.0),
+                              const EdgeInsetsDirectional.only(start: 16),
                           child: RouteButton(
                             latitude: latitude,
                             longitude: longitude,
                             label: data.name ?? '',
                           ),
-                        )
+                        ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 16),
               ],
             );
-          }),
+          },),
     );
   }
 
   String _publishDate(String date) {
-    final DateTime publishDate = DateTime.parse(date);
-    final DateTime currentDate = DateTime.now();
-    final Duration difference = currentDate.difference(publishDate);
+    final publishDate = DateTime.parse(date);
+    final currentDate = DateTime.now();
+    final difference = currentDate.difference(publishDate);
 
     String formattedDate;
     if (difference.inDays == 0) {
@@ -149,9 +149,9 @@ class _JobDetailState extends ConsumerState<JobDetail> {
 }
 
 class _JobDetailCard extends StatelessWidget {
-  final JobModel model;
 
   const _JobDetailCard({required this.model});
+  final JobModel model;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -252,9 +252,9 @@ class _JobDetailCard extends StatelessWidget {
 }
 
 class _JobContactsWidget extends StatelessWidget {
-  final JobModel model;
 
   const _JobContactsWidget({required this.model});
+  final JobModel model;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -276,7 +276,7 @@ class _JobContactsWidget extends StatelessWidget {
                   height: 18,
                   package: 'mapness',
                   colorFilter:  ColorFilter.mode(
-                      context.color.stroke_accent, BlendMode.srcIn),
+                      context.color.stroke_accent, BlendMode.srcIn,),
                 ),
                 const SizedBox(
                   width: 12,
@@ -313,7 +313,7 @@ class _JobContactsWidget extends StatelessWidget {
                   height: 24,
                   package: 'mapness',
                   colorFilter:  ColorFilter.mode(
-                      context.color.stroke_accent, BlendMode.srcIn),
+                      context.color.stroke_accent, BlendMode.srcIn,),
                 ),
                 const SizedBox(
                   width: 12,
@@ -341,13 +341,13 @@ class _JobContactsWidget extends StatelessWidget {
 }
 
 class _JobInfoWidget extends StatelessWidget {
-  final String title;
-  final String data;
 
   const _JobInfoWidget({
     required this.title,
     required this.data,
   });
+  final String title;
+  final String data;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -381,9 +381,9 @@ class _JobInfoWidget extends StatelessWidget {
 }
 
 class _JobLicenseWidget extends StatelessWidget {
-  final JobModel job;
 
   const _JobLicenseWidget({required this.job});
+  final JobModel job;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -423,7 +423,7 @@ class _JobLicenseWidget extends StatelessWidget {
                           .extension<ThemeTextStyles>()!
                           .textS
                           .apply(
-                              color: context.color.text_and_icons_base_primary.withOpacity(.5)),
+                              color: context.color.text_and_icons_base_primary.withOpacity(.5),),
                     ),
                   ],
                 ),
