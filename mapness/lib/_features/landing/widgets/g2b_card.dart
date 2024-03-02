@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 
 class G2BCard extends StatelessWidget {
   const G2BCard({
-    super.key,
-    required this.title,
-    required this.subtitle,
-    required this.color,
-    required this.onTap,
+    required this.title, required this.subtitle, required this.color, required this.onTap, super.key,
   });
 
   final String title;
@@ -16,8 +12,7 @@ class G2BCard extends StatelessWidget {
   final void Function() onTap;
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       color: color,
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
@@ -57,5 +52,4 @@ class G2BCard extends StatelessWidget {
         ),
       ),
     );
-  }
 }

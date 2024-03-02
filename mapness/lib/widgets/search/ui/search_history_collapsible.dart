@@ -35,7 +35,7 @@ class _MapSearchHistoryCollapsibleState
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             ListView.separated(
@@ -104,7 +104,7 @@ class _MapSearchHistoryCollapsibleState
               separatorBuilder: (context, index) => Container(
                 color: Colors.white,
                 child:  Padding(
-                  padding: EdgeInsetsDirectional.only(start: 56),
+                  padding: const EdgeInsetsDirectional.only(start: 56),
                   child: Divider(
                     thickness: 1,
                     height: 2,
@@ -117,7 +117,7 @@ class _MapSearchHistoryCollapsibleState
               Container(
                 color: Colors.white,
                 child:  Padding(
-                  padding: EdgeInsetsDirectional.only(start: 56),
+                  padding: const EdgeInsetsDirectional.only(start: 56),
                   child: Divider(
                     thickness: 1,
                     height: 2,
@@ -173,7 +173,7 @@ class _MapSearchHistoryCollapsibleState
                   ),
                 ),
               ),
-            ]
+            ],
           ],
         ),
       );
@@ -186,7 +186,7 @@ class _ShowMore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12.0),
+        padding: const EdgeInsets.symmetric(vertical: 12),
         child: Row(
           children: [
             SvgPicture.asset(

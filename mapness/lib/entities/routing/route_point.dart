@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
@@ -20,6 +18,12 @@ sealed class RoutePoint {
   double? get latitude;
 
   double? get longitude;
+
+  int? get objectId;
+
+  int? get entranceId;
+
+  int? get levelId;
 }
 
 class RoutePointMyLocation extends RoutePoint {
@@ -36,16 +40,25 @@ class RoutePointMyLocation extends RoutePoint {
   double? get longitude => null;
 
   @override
+  int? get objectId => null;
+
+  @override
+  int? get entranceId => null;
+
+  @override
+  int? get levelId => null;
+
+  @override
   String? title(AppLocalizations locale) => locale.myLocation;
 
   @override
-  Color titleColor(BuildContext context) => context.color.text_and_icons_base_primary;
+  Color titleColor(BuildContext context) =>
+      context.color.text_and_icons_base_primary;
 }
 
 class RoutePointCoordinates extends RoutePoint {
-  final GeoPointMessage coords;
-
   RoutePointCoordinates(this.coords);
+  final GeoPointMessage coords;
 
   @override
   String get icon => 'assets/icons/svg/ic_routing_circle.svg';
@@ -60,17 +73,26 @@ class RoutePointCoordinates extends RoutePoint {
   double? get longitude => coords.longitude;
 
   @override
+  int? get entranceId => null;
+
+  @override
+  int? get levelId => null;
+
+  @override
+  int? get objectId => null;
+
+  @override
   String? title(AppLocalizations locale) =>
       '${coords.latitude.toStringAsFixed(5)}, ${coords.longitude.toStringAsFixed(5)}';
 
   @override
-  Color titleColor(BuildContext context) => context.color.text_and_icons_base_primary;
+  Color titleColor(BuildContext context) =>
+      context.color.text_and_icons_base_primary;
 }
 
 class RoutePointDirectoryObject extends RoutePoint {
-  final DirectoryObjectMessage? object;
-
   RoutePointDirectoryObject(this.object);
+  final DirectoryObjectMessage? object;
 
   @override
   String get icon => 'assets/icons/svg/ic_routing_circle.svg';
@@ -85,18 +107,26 @@ class RoutePointDirectoryObject extends RoutePoint {
   double? get longitude => object?.markerPosition?.longitude;
 
   @override
+  int? get objectId => object?.id?.objectId;
+
+  @override
+  int? get entranceId => object?.id?.entranceId;
+
+  @override
+  int? get levelId => object?.levelId;
+
+  @override
   String? title(AppLocalizations locale) => object?.title;
 
   @override
-  Color titleColor(BuildContext context) =>
-      object == null ? context.color.text_and_icons_base_tertiary :
-      context.color.text_and_icons_base_primary;
+  Color titleColor(BuildContext context) => object == null
+      ? context.color.text_and_icons_base_tertiary
+      : context.color.text_and_icons_base_primary;
 }
 
 class RoutePointFavouriteItem extends RoutePoint {
-  final FavouriteItem? item;
-
   RoutePointFavouriteItem(this.item);
+  final FavouriteItem? item;
 
   @override
   String get icon => 'assets/icons/svg/ic_routing_circle.svg';
@@ -111,9 +141,19 @@ class RoutePointFavouriteItem extends RoutePoint {
   double? get longitude => item?.coordinates.longitude;
 
   @override
+  int? get objectId => null;
+
+  @override
+  int? get entranceId => null;
+
+  @override
+  int? get levelId => null;
+
+  @override
   String? title(AppLocalizations locale) => item?.title;
 
   @override
-  Color titleColor(BuildContext context) =>
-      item == null ? context.color.text_and_icons_base_tertiary : context.color.text_and_icons_base_primary;
+  Color titleColor(BuildContext context) => item == null
+      ? context.color.text_and_icons_base_tertiary
+      : context.color.text_and_icons_base_primary;
 }

@@ -11,21 +11,18 @@ class UserStatePicker extends StatelessWidget {
   const UserStatePicker({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const Column(
+  Widget build(BuildContext context) => const Column(
       children: [
         UserStateRow(userState: UserState.guest),
         UserStateRow(userState: UserState.personal),
-        UserStateRow(userState: UserState.business)
+        UserStateRow(userState: UserState.business),
       ],
     );
-  }
 }
 
 class UserStateRow extends ConsumerWidget {
   const UserStateRow({
-    super.key,
-    required this.userState,
+    required this.userState, super.key,
   });
 
   final UserState userState;
@@ -51,8 +48,8 @@ class UserStateRow extends ConsumerWidget {
             children: [
               SvgPicture.asset(
                 currentLanguage == userState
-                    ? "assets/icons/svg/ic_radio_on.svg"
-                    : "assets/icons/svg/ic_radio_off.svg",
+                    ? 'assets/icons/svg/ic_radio_on.svg'
+                    : 'assets/icons/svg/ic_radio_off.svg',
                 height: 24,
                 width: 24,
                 package: PackageConfig.packageName,

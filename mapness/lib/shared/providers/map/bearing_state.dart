@@ -7,13 +7,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'bearing_state.g.dart';
 
 class Bearing {
-  final double angle;
-  final double bearing;
 
   Bearing({
     required this.bearing,
     required this.angle,
   });
+  final double angle;
+  final double bearing;
 }
 
 @riverpod

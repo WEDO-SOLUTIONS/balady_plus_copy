@@ -43,7 +43,5 @@ class SearchPagination extends _$SearchPagination {
     return true;
   }
 
-  List<DirectoryObjectMessage> _mapPage(PageMessage message) {
-    return message.items.whereType<DirectoryObjectMessage>().toList();
-  }
+  List<DirectoryObjectMessage> _mapPage(PageMessage message) => message.items.whereType<DirectoryObjectMessage>().toList();
 }

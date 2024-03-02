@@ -1,14 +1,14 @@
 // todo: move to entities
 class LayersState {
-  final bool layersVisible;
-  final LayerType? selectedType;
-  final bool isLoading;
 
   LayersState({
     required this.isLoading,
     required this.layersVisible,
     required this.selectedType,
   });
+  final bool layersVisible;
+  final LayerType? selectedType;
+  final bool isLoading;
 
   LayersState copyWith({
     bool? layersVisible,

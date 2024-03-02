@@ -9,6 +9,16 @@ import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
 class ErrorSheetV2 extends StatelessWidget {
+
+  const ErrorSheetV2({
+    required this.onRetry, super.key,
+    this.buttonLabel,
+    this.onClose,
+    this.errorTitle,
+    this.errorContent,
+    this.assetImage,
+    this.package,
+  });
   /// action how to recover state
   final VoidCallback onRetry;
 
@@ -22,17 +32,6 @@ class ErrorSheetV2 extends StatelessWidget {
   final String? errorContent;
   final String? assetImage;
   final String? package;
-
-  const ErrorSheetV2({
-    super.key,
-    required this.onRetry,
-    this.buttonLabel,
-    this.onClose,
-    this.errorTitle,
-    this.errorContent,
-    this.assetImage,
-    this.package,
-  });
 
   @override
   Widget build(BuildContext context) {

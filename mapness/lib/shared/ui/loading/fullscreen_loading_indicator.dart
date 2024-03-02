@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-import 'loading_circular.dart';
+import 'package:mapness/shared/ui/loading/loading_circular.dart';
 
-class LoadingBig extends StatelessWidget {
+class FullscreenLoadingIndicator extends StatelessWidget {
+  const FullscreenLoadingIndicator({super.key, this.title});
   final String? title;
-  const LoadingBig({super.key, this.title});
+
+  static const _defaultSize = 99.0;
 
   @override
   Widget build(BuildContext context) => Material(
@@ -15,7 +17,7 @@ class LoadingBig extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const LoadingCircular(
-              size: 99,
+              size: _defaultSize,
             ),
             const SizedBox(height: 32),
             Text(

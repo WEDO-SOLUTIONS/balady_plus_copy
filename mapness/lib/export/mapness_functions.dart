@@ -20,9 +20,15 @@ class MapnessFunctions {
       startLatitude: startPoint?.latitude,
       startLongitude: startPoint?.longitude,
       startLabel: startPoint?.label ?? appLocalizations.myLocation,
+      startObjectId: null,
+      startEntranceId: null,
+      startLevelId: null,
       finishLatitude: finishPoint.latitude,
       finishLongitude: finishPoint.longitude,
       finishLabel: finishPoint.label,
+      finishObjectId: null,
+      finishEntranceId: null,
+      finishLevelId: null,
     );
 
     // final mapnessRoutes = $appRoutes

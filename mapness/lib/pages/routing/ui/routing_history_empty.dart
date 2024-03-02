@@ -6,8 +6,7 @@ class RoutingHistoryEmpty extends StatelessWidget {
   const RoutingHistoryEmpty({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context) => Padding(
       padding: const EdgeInsets.all(16),
       child: Container(
         decoration: BoxDecoration(
@@ -31,5 +30,4 @@ class RoutingHistoryEmpty extends StatelessWidget {
         ),
       ),
     );
-  }
 }

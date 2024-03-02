@@ -6,7 +6,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
 class DashboardProfile extends ConsumerWidget {
-  const DashboardProfile({Key? key}) : super(key: key);
+  const DashboardProfile({super.key});
 
   String _greeting(BuildContext context) {
     final hour = DateTime.now().hour;
@@ -24,7 +24,7 @@ class DashboardProfile extends ConsumerWidget {
     final userData = ref.watch(authProvider);
     final lang = ref.watch(appLanguageProvider);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: userData.maybeWhen(
           orElse: () => Text(
                 _greeting(context),
@@ -55,7 +55,7 @@ class DashboardProfile extends ConsumerWidget {
                   .apply(color: context.color.stroke_accent),
               textAlign: TextAlign.end,
             );
-          }),
+          },),
     );
   }
 }

@@ -15,7 +15,7 @@ class SearchHistoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         child: Row(
           children: [
             SvgPicture.asset(
@@ -44,7 +44,7 @@ class SearchHistoryItem extends StatelessWidget {
                           .extension<ThemeTextStyles>()!
                           .textM
                           .copyWith(
-                              color: context.color.text_and_icons_base_primary),
+                              color: context.color.text_and_icons_base_primary,),
                     ),
                   ),
                   if (result.address.isNotEmpty)
@@ -56,11 +56,11 @@ class SearchHistoryItem extends StatelessWidget {
                           .textM
                           .copyWith(
                               color:
-                                  context.color.text_and_icons_base_tertiary),
+                                  context.color.text_and_icons_base_tertiary,),
                     ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       );

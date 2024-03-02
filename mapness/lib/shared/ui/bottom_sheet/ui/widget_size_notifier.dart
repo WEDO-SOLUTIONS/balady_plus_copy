@@ -3,13 +3,13 @@ import 'package:flutter/rendering.dart';
 
 /// Виджет который нотифицирует об изменении [child] [Size]
 class WidgetSizeNotifier extends SingleChildRenderObjectWidget {
-  final ValueChanged<Size> onSizeChanged;
 
   const WidgetSizeNotifier({
     required this.onSizeChanged,
-    required Widget child,
-    Key? key,
-  }) : super(key: key, child: child);
+    required Widget super.child,
+    super.key,
+  });
+  final ValueChanged<Size> onSizeChanged;
 
   @override
   DgisRenderWidgetSizeNotifier createRenderObject(BuildContext context) =>

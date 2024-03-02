@@ -59,7 +59,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                   zoom: 17,
                   tilt: 0,
                   bearing: 0,
-                ));
+                ),);
           }
         }
       },
@@ -91,7 +91,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                           Spacer(),
                           FollowControl(
                             onlyFollowDirection: false,
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -197,7 +197,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                               case DGisNearestObject(object: final object):
                                 context.pop(RoutePointDirectoryObject(
                                   object,
-                                ));
+                                ),);
                               case CooridnatesNearestObject(
                                   geoPoint: final geoPoint
                                 ):

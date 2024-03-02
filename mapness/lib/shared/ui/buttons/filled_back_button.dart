@@ -4,8 +4,8 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class FilledBackButton extends StatelessWidget {
-  final VoidCallback onClose;
   const FilledBackButton({required this.onClose, super.key});
+  final VoidCallback onClose;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -20,7 +20,7 @@ class FilledBackButton extends StatelessWidget {
             color: Colors.black.withOpacity(0.05),
             blurRadius: 4,
             offset: const Offset(0, 2),
-          )
+          ),
         ],
       ),
       child: Material(
@@ -49,5 +49,5 @@ class FilledBackButton extends StatelessWidget {
                 ],
               ),
             ),
-          )));
+          ),),);
 }

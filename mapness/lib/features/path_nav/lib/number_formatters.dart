@@ -1,4 +1,4 @@
-import 'enums.dart';
+import 'package:mapness/features/path_nav/lib/enums.dart';
 
 /// @nodoc
 extension FormattedDistance on double {
@@ -28,6 +28,4 @@ extension FormatDuration on int {
   }
 }
 
-String _formatInt(int value) {
-  return value.toString().padLeft(2, '0');
-}
+String _formatInt(int value) => value.toString().padLeft(2, '0');

@@ -5,13 +5,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'zoom_state.g.dart';
 
 class Zoom {
-  final bool zoomInEnabled;
-  final bool zoomOutEnabled;
 
   Zoom({
     required this.zoomInEnabled,
     required this.zoomOutEnabled,
   });
+  final bool zoomInEnabled;
+  final bool zoomOutEnabled;
 
   Zoom copyWith({
     bool? zoomInEnabled,

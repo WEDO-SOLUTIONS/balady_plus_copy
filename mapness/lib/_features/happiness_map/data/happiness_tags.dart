@@ -17,13 +17,13 @@ class HappinessTagsWithIcons extends _$HappinessTagsWithIcons {
   @override
   List<HappinessTag> build() {
     final tags = [
-      ("visual_aesthetic", "ic_eye.svg", "Visual\naesthetic"),
-      ("parks", "ic_trees.svg", "Parks"),
-      ("buildings", "ic_building.svg", "Buildings"),
-      ("streets", "ic_car_side.svg", "Streets"),
-      ("comfort", "ic_comment-heart.svg", "Comfort"),
-      ("lighting", "ic_lightbulb-alt.svg", "Lighting"),
-      ("cleanness", "ic_trash-alt.svg", "Clean"),
+      ('visual_aesthetic', 'ic_eye.svg', 'Visual\naesthetic'),
+      ('parks', 'ic_trees.svg', 'Parks'),
+      ('buildings', 'ic_building.svg', 'Buildings'),
+      ('streets', 'ic_car_side.svg', 'Streets'),
+      ('comfort', 'ic_comment-heart.svg', 'Comfort'),
+      ('lighting', 'ic_lightbulb-alt.svg', 'Lighting'),
+      ('cleanness', 'ic_trash-alt.svg', 'Clean'),
     ];
 
     return tags.map(
@@ -31,7 +31,7 @@ class HappinessTagsWithIcons extends _$HappinessTagsWithIcons {
         final (code, path, title) = tag;
         return HappinessTag(
           code: code,
-          iconAsset: "assets/icons/svg/$path",
+          iconAsset: 'assets/icons/svg/$path',
           title: title,
         );
       },

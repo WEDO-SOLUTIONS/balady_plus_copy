@@ -16,12 +16,10 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
     );
   }
 
-  List<ContactsInfoModel> getContactsInfoModels() {
-    return contactInfos
+  List<ContactsInfoModel> getContactsInfoModels() => contactInfos
         .whereNotNull()
         .map(
           (e) => e.contactsInfo(),
         )
         .toList();
-  }
 }

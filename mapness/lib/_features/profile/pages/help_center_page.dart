@@ -32,7 +32,7 @@ class HelpCenterPage extends ConsumerWidget {
               SafeArea(
                 bottom: false,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
                       SizedBox(
@@ -84,7 +84,7 @@ class HelpCenterPage extends ConsumerWidget {
                 height: 16,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: SizedBox(
                   height: 52,
                   child: Material(
@@ -96,11 +96,11 @@ class HelpCenterPage extends ConsumerWidget {
                       },
                       borderRadius: BorderRadius.circular(12),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
                         child: Row(
                           children: [
                             const SizedBox(
-                              width: 16.0,
+                              width: 16,
                             ),
                             SvgPicture.asset(
                               'assets/images_svg/help_website.svg',
@@ -113,7 +113,7 @@ class HelpCenterPage extends ConsumerWidget {
                               ),
                             ),
                             const SizedBox(
-                              width: 12.0,
+                              width: 12,
                             ),
                             Text(
                               context.l10n.baladyWebsite,
@@ -136,7 +136,7 @@ class HelpCenterPage extends ConsumerWidget {
                               ),
                             ),
                             const SizedBox(
-                              width: 16.0,
+                              width: 16,
                             ),
                           ],
                         ),
@@ -150,7 +150,7 @@ class HelpCenterPage extends ConsumerWidget {
               ),
               ExpandableCell(
                 title: context.l10n.contactInformation,
-                icon: "assets/images_svg/help_contact.svg",
+                icon: 'assets/images_svg/help_contact.svg',
                 content: const ContactInfo(),
               ),
 

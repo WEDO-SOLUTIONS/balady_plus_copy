@@ -26,14 +26,13 @@ class IndoorControl extends ConsumerWidget {
 
 class _IndoorControl extends StatelessWidget {
   const _IndoorControl(
-      {super.key, required this.state, required this.onSelect});
+      {required this.state, required this.onSelect,});
 
   final LevelsState state;
   final void Function(IndoorLevel) onSelect;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       children: state.levels.reversed
           .mapIndexed(
             (index, e) => MapButton(
@@ -61,5 +60,4 @@ class _IndoorControl extends StatelessWidget {
           )
           .toList(),
     );
-  }
 }

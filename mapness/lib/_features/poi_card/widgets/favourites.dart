@@ -6,14 +6,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/favorite_card.dart';
-import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class Favourites extends ConsumerWidget {
-  final DirectoryObjectMessage? data;
 
   const Favourites(this.data, {super.key});
+  final DirectoryObjectMessage? data;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,15 +22,15 @@ class Favourites extends ConsumerWidget {
       data: (result) {
         final value = result.value;
 
-        final isFavourite = value?.items.firstWhereOrNull(
+        final isFavourite = value.items.firstWhereOrNull(
           (element) {
             final objectId = data?.id?.objectId;
             return element.entity?.id == '$objectId';
           },
         );
 
-        final showHome = value?.home?.id == '${data?.id?.objectId}';
-        final showWork = value?.work?.id == '${data?.id?.objectId}';
+        final showHome = value.home?.id == '${data?.id?.objectId}';
+        final showWork = value.work?.id == '${data?.id?.objectId}';
 
         return Column(
           children: [
@@ -48,7 +47,7 @@ class Favourites extends ConsumerWidget {
 }
 
 class WorkCard extends StatelessWidget {
-  const WorkCard({Key? key}) : super(key: key);
+  const WorkCard({super.key});
 
   @override
   Widget build(BuildContext context) => CardContent(
@@ -81,7 +80,7 @@ class WorkCard extends StatelessWidget {
 }
 
 class HomeCard extends StatelessWidget {
-  const HomeCard({Key? key}) : super(key: key);
+  const HomeCard({super.key});
 
   @override
   Widget build(BuildContext context) => CardContent(

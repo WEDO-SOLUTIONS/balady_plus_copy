@@ -10,14 +10,12 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ContactsInfo extends StatefulWidget {
-  final PoiCardViewModel viewModel;
-  final DirectoryObjectMessage data;
 
   const ContactsInfo({
-    super.key,
-    required this.viewModel,
-    required this.data,
+    required this.viewModel, required this.data, super.key,
   });
+  final PoiCardViewModel viewModel;
+  final DirectoryObjectMessage data;
 
   @override
   State<ContactsInfo> createState() => _ContactsInfoState();
@@ -33,8 +31,7 @@ class _ContactsInfoState extends State<ContactsInfo> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return contactInfoWidgets.isEmpty
+  Widget build(BuildContext context) => contactInfoWidgets.isEmpty
         ? const SizedBox.shrink()
         : CardContent(
             child: ListView.separated(
@@ -44,23 +41,21 @@ class _ContactsInfoState extends State<ContactsInfo> {
             itemBuilder: (ctx, i) => contactInfoWidgets[i],
             separatorBuilder: (ctx, index) => const Divider(indent: 24),
             itemCount: contactInfoWidgets.length,
-          ));
-  }
+          ),);
 
-  List<Widget> prepareWidgets() {
-    return widget.data.getContactsInfoModels().map((contactsModel) {
-      var text = contactsModel.displayText;
+  List<Widget> prepareWidgets() => widget.data.getContactsInfoModels().map((contactsModel) {
+      final text = contactsModel.displayText;
       var displayText = text;
       if (contactsModel.type == ContactsInfoType.website) {
         if (text != null) {
-          displayText = RegExp("^(?:https?:\/\/)?(?:ftp:\/\/)?(?:www\.)?([^\/]+)")
+          displayText = RegExp('^(?:https?://)?(?:ftp://)?(?:www.)?([^/]+)')
               .stringMatch(text);
         }
       }
 
       return GestureDetector(
         onTap: () {
-          var value = contactsModel.value;
+          final value = contactsModel.value;
           if (value != null) {
             switch (contactsModel.type) {
               case ContactsInfoType.phone:
@@ -89,7 +84,6 @@ class _ContactsInfoState extends State<ContactsInfo> {
               Flexible(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Directionality(
                       textDirection: TextDirection.ltr,
@@ -98,7 +92,7 @@ class _ContactsInfoState extends State<ContactsInfo> {
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
                           color: context.color.text_and_icons_base_primary,
-                          maxLines: 1),
+                          maxLines: 1,),
                     ),
                     Directionality(
                       textDirection: TextDirection.ltr,
@@ -109,14 +103,13 @@ class _ContactsInfoState extends State<ContactsInfo> {
                         fontWeight: FontWeight.w400,
                         color: context.color.text_and_icons_base_primary.withOpacity(.5),
                       ),
-                    )
+                    ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
       );
     }).toList();
-  }
 }

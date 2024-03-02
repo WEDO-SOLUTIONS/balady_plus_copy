@@ -9,18 +9,18 @@ import 'package:shimmer/shimmer.dart';
 const double headerSize = 100;
 
 class JobDetailHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final String jobId;
 
   JobDetailHeaderDelegate({
     required this.jobId,
     required this.draggableScrollableController,
   });
+  final String jobId;
 
   final DraggableScrollableController draggableScrollableController;
 
   @override
   Widget build(
-          BuildContext context, double shrinkOffset, bool overlapsContent) =>
+          BuildContext context, double shrinkOffset, bool overlapsContent,) =>
       DashboardHeader(
         jobId: jobId,
         draggableScrollableController: draggableScrollableController,
@@ -37,13 +37,13 @@ class JobDetailHeaderDelegate extends SliverPersistentHeaderDelegate {
 }
 
 class DashboardHeader extends ConsumerWidget {
-  final String jobId;
 
   const DashboardHeader({
     required this.jobId,
     required this.draggableScrollableController,
     super.key,
   });
+  final String jobId;
 
   final DraggableScrollableController draggableScrollableController;
 

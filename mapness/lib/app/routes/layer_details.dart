@@ -11,6 +11,8 @@ part 'layer_details.g.dart';
   path: LayerDetailsRoute.path,
 )
 class LayerDetailsRoute extends GoRouteData {
+
+  LayerDetailsRoute();
 static const path = '/layer-details';
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
@@ -18,7 +20,7 @@ static const path = '/layer-details';
     final layerDetailsRoute = LayerDetailsRoute();
     final location = layerDetailsRoute.location;
     final matches = router.routerDelegate.currentConfiguration.matches;
-    final extra = {"data": e};
+    final extra = {'data': e};
     if (matches.last.matchedLocation == path) {
       router.pushReplacement(location, extra: extra);
     } else {
@@ -26,16 +28,14 @@ static const path = '/layer-details';
     }
   }
 
-  LayerDetailsRoute();
-
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    var extra = state.extra as Map<String, dynamic>?;
-    var data = extra?['data'] as PointLayersData?;
+    final extra = state.extra as Map<String, dynamic>?;
+    final data = extra?['data'] as PointLayersData?;
     return TransculentPage(
       child: LayersDetailsWidget(
         data: data,
-        key: const Key("LayerDetailsRoute"),
+        key: const Key('LayerDetailsRoute'),
       ),
     );
   }

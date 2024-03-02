@@ -29,7 +29,7 @@ class ColorScheme extends _$ColorScheme {
 
   Future<bool> needToShowBanner() async {
     final hive = await ref.read(hiveProvider('foundation_day').future);
-    return hive.get('foundation_day_dialog', defaultValue: true);
+    return hive.get('foundation_day_dialog', defaultValue: true) as bool;
   }
 
   Future<void> hideBanner() async {

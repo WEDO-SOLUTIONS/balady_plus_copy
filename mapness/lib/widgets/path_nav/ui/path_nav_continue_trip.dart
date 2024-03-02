@@ -4,18 +4,15 @@ import 'package:mapness/entities/path_nav/models/path_nav_eta.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PathNavContinueTrip extends StatelessWidget {
+
+  const PathNavContinueTrip({
+    required this.onPressed, required this.eta, super.key,
+  });
   final PathNavEta? eta;
   final VoidCallback onPressed;
 
-  const PathNavContinueTrip({
-    super.key,
-    required this.onPressed,
-    required this.eta,
-  });
-
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       color: context.color.stroke_accent,
       borderRadius: BorderRadius.circular(16),
       child: InkWell(
@@ -65,11 +62,10 @@ class PathNavContinueTrip extends StatelessWidget {
                         ),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),
       ),
     );
-  }
 }

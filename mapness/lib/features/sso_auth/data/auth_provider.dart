@@ -15,31 +15,31 @@ part 'auth_provider.g.dart';
 @riverpod
 class Auth extends _$Auth {
   Future<void> doAuth() async {
-    ref.read(urbiMetricsProvider.notifier).logEvent("Auth/doAuth");
-    mixpanel?.timeEvent("Auth: doAuth");
+    ref.read(urbiMetricsProvider.notifier).logEvent('Auth/doAuth');
+    mixpanel?.timeEvent('Auth: doAuth');
     await CommonFunctions.onLogin();
     ref.invalidateSelf();
     ref.invalidate(favouriteRepositoryProvider);
-    mixpanel?.track("Auth: doAuth");
+    mixpanel?.track('Auth: doAuth');
   }
 
   Future<void> logOut() async {
-    ref.read(urbiMetricsProvider.notifier).logEvent("Auth/logOut");
-    mixpanel?.timeEvent("Auth: logOut");
+    ref.read(urbiMetricsProvider.notifier).logEvent('Auth/logOut');
+    mixpanel?.timeEvent('Auth: logOut');
     await sl<EntryPointCubit>().clearAuth();
     ref.invalidateSelf();
-    mixpanel?.track("Auth: logOut");
+    mixpanel?.track('Auth: logOut');
     mixpanel?.reset();
-    FlutterUxcam.setUserIdentity(null);
+    await FlutterUxcam.setUserIdentity(null);
     ref.read(profileImageProvider.notifier).clear();
   }
 
   Future<void> tokenExpireLogout() async {
-    ref.read(urbiMetricsProvider.notifier).logEvent("Auth/tokenExpireLogout");
-    mixpanel?.timeEvent("Auth: tokenExpireLogout");
+    ref.read(urbiMetricsProvider.notifier).logEvent('Auth/tokenExpireLogout');
+    mixpanel?.timeEvent('Auth: tokenExpireLogout');
     await sl<EntryPointCubit>().autoLogout();
     ref.invalidateSelf();
-    mixpanel?.track("Auth: logtokenExpireLogoutOut");
+    mixpanel?.track('Auth: logtokenExpireLogoutOut');
   }
 
   @override
@@ -54,14 +54,12 @@ class Auth extends _$Auth {
     final authSubscription = sl<EntryPointCubit>().stream.listen((event) {
       state = AsyncValue.data(event.userInfo);
     });
-    ref.onDispose(() {
-      authSubscription.cancel();
-    });
+    ref.onDispose(authSubscription.cancel);
 
     final userId = CommonProperties.userInfo?.idNo;
-    mixpanel?.identify("$userId");
+    mixpanel?.identify('$userId');
 
-    FlutterUxcam.setUserIdentity(userId);
+    await FlutterUxcam.setUserIdentity(userId);
     return CommonProperties.userInfo;
   }
 }

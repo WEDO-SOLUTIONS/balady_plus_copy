@@ -5,7 +5,7 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_continue_trip.dart';
 
 class ContinueButton extends ConsumerWidget {
-  const ContinueButton({Key? key}) : super(key: key);
+  const ContinueButton({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

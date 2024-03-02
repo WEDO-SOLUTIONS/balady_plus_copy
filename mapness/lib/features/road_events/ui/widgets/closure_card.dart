@@ -5,16 +5,16 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
 class ClosureCard extends StatelessWidget {
-  final String title;
-  final String description;
-
-  final String? workDuration;
 
   const ClosureCard(
       {required this.title,
       required this.description,
       super.key,
-      this.workDuration});
+      this.workDuration,});
+  final String title;
+  final String description;
+
+  final String? workDuration;
 
   @override
   Widget build(BuildContext context) => SafeArea(
