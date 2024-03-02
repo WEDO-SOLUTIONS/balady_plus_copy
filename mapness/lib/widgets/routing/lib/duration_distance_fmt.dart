@@ -8,7 +8,7 @@ extension FormattedDistance on double {
       final kilometers = this / 1000.0;
       return '${kilometers.toStringAsFixed(1)} ${l10n.km}';
     } else {
-      return '$this ${l10n.meter}';
+      return '${toStringAsFixed(0)} ${l10n.meter}';
     }
   }
 }
