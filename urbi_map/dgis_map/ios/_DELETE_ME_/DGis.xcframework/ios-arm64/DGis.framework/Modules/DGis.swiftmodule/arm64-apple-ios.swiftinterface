@@ -228,24 +228,24 @@ extension DGis.GeoPoint {
   }
 }
 extension DGis.GeoRect {
-  public var isDegenerate: Swift.Bool {
-    get
-  }
-}
-extension DGis.GeoRect {
   public func contains(rect2: DGis.GeoRect) -> Swift.Bool
 }
 extension DGis.GeoRect {
   public func contains(point: DGis.GeoPoint) -> Swift.Bool
 }
 extension DGis.GeoRect {
-  public func intersects(rect2: DGis.GeoRect) -> Swift.Bool
-}
-extension DGis.GeoRect {
   public func expand(rect2: DGis.GeoRect) -> DGis.GeoRect
 }
 extension DGis.GeoRect {
   public func expand(point: DGis.GeoPoint) -> DGis.GeoRect
+}
+extension DGis.GeoRect {
+  public var isDegenerate: Swift.Bool {
+    get
+  }
+}
+extension DGis.GeoRect {
+  public func intersects(rect2: DGis.GeoRect) -> Swift.Bool
 }
 public struct ApartmentRange : Swift.Hashable {
   public var start: Swift.String
@@ -1988,6 +1988,9 @@ public enum MyLocationMapObjectMarkerType : Swift.UInt32 {
   @objc deinit
 }
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers final public class RoadEventMapObject : DGis.MapObject {
+  final public var id: DGis.DgisObjectId {
+    get
+  }
   final public var event: DGis.RoadEvent {
     get
   }
@@ -2287,7 +2290,14 @@ public enum RoadEventDisplayCategory : Swift.UInt32 {
     get
     set(types)
   }
+  final public var highlightedObjectsChannel: DGis.StatefulChannel<[DGis.DgisObjectId]> {
+    get
+  }
+  final public var highlightedObjects: [DGis.DgisObjectId] {
+    get
+  }
   convenience public init(context: DGis.Context)
+  final public func setHighlighted(directoryObjectIds: [DGis.DgisObjectId], highlighted: Swift.Bool)
   @objc deinit
 }
 public struct RoadEventDisplayCategoryOptionSet : Swift.OptionSet, Swift.Hashable {
@@ -2952,6 +2962,16 @@ public struct MarkerOptions {
   public var iconAnimationMode: DGis.AnimationMode
   public init(position: DGis.GeoPointWithElevation, icon: DGis.Image?, iconMapDirection: DGis.MapDirection? = nil, anchor: DGis.Anchor = Anchor(x: 0.5, y: 0.5), text: Swift.String? = nil, textStyle: DGis.TextStyle? = nil, iconOpacity: DGis.Opacity = Opacity(value: 1), visible: Swift.Bool = true, draggable: Swift.Bool = false, iconWidth: DGis.LogicalPixel = LogicalPixel(value: 0), userData: Any = (), zIndex: DGis.ZIndex = ZIndex(value: 0), animatedAppearance: Swift.Bool = true, levelId: DGis.LevelId? = nil, iconAnimationMode: DGis.AnimationMode = AnimationMode.normal)
 }
+public struct DashedStrokeCircleOptions : Swift.Hashable {
+  public var dashLength: DGis.LogicalPixel
+  public var dashSpaceLength: DGis.LogicalPixel
+  public init(dashLength: DGis.LogicalPixel = LogicalPixel(value: 5), dashSpaceLength: DGis.LogicalPixel = LogicalPixel(value: 2))
+  public func hash(into hasher: inout Swift.Hasher)
+  public static func == (a: DGis.DashedStrokeCircleOptions, b: DGis.DashedStrokeCircleOptions) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+}
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers final public class Circle : DGis.SimpleMapObject {
   final public var position: DGis.GeoPoint {
     get
@@ -2971,6 +2991,10 @@ public struct MarkerOptions {
     get
     set(color)
   }
+  final public var dashedStrokeOptions: DGis.DashedStrokeCircleOptions? {
+    get
+    set(options)
+  }
   convenience public init(options: DGis.CircleOptions) throws
   final public func setPosition(position: DGis.GeoPoint) throws
   final public func setRadius(radius: DGis.Meter) throws
@@ -2982,11 +3006,12 @@ public struct CircleOptions {
   public var color: DGis.Color
   public var strokeWidth: DGis.LogicalPixel
   public var strokeColor: DGis.Color
+  public var dashedStrokeOptions: DGis.DashedStrokeCircleOptions?
   public var visible: Swift.Bool
   public var userData: Any
   public var zIndex: DGis.ZIndex
   public var levelId: DGis.LevelId?
-  public init(position: DGis.GeoPoint, radius: DGis.Meter, color: DGis.Color = Color(), strokeWidth: DGis.LogicalPixel = LogicalPixel(value: 0), strokeColor: DGis.Color = Color(), visible: Swift.Bool = true, userData: Any = (), zIndex: DGis.ZIndex = ZIndex(value: 0), levelId: DGis.LevelId? = nil)
+  public init(position: DGis.GeoPoint, radius: DGis.Meter, color: DGis.Color = Color(), strokeWidth: DGis.LogicalPixel = LogicalPixel(value: 0), strokeColor: DGis.Color = Color(), dashedStrokeOptions: DGis.DashedStrokeCircleOptions? = nil, visible: Swift.Bool = true, userData: Any = (), zIndex: DGis.ZIndex = ZIndex(value: 0), levelId: DGis.LevelId? = nil)
 }
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers final public class Polygon : DGis.SimpleMapObject {
   final public var contours: [[DGis.GeoPoint]] {
@@ -6781,6 +6806,7 @@ public struct TruckPassZonePass : Swift.Hashable {
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers final public class Territory : DGis.Package {
   @objc deinit
 }
+public func calculateClosestPoint(routeGeometry: DGis.GeoPointRouteAttribute, point: DGis.GeoPoint) -> DGis.RoutePoint?
 public func remainingRouteGeometry(fullRouteGeometry: DGis.GeoPointRouteAttribute, currentRoutePoint: DGis.RoutePoint) -> DGis.GeoPointRouteAttribute
 public func routeMatchesTruckPassZonePasses(truckPassZoneIds: DGis.TruckPassZoneIdRouteLongAttribute, passZonePasses: [DGis.TruckPassZonePass]) -> Swift.Bool
 public func getRoadMacroGraph(context: DGis.Context) -> DGis.RoadMacroGraph
