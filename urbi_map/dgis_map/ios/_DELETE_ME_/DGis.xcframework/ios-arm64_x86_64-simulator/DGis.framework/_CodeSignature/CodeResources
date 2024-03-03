@@ -6,7 +6,7 @@
 	<dict>
 		<key>Assets.car</key>
 		<data>
-		Jr12taJcvSZ9C1O/4L5LYrfP35w=
+		p7O6r+pK1O1fji+tZIrdcElgzEw=
 		</data>
 		<key>Assets/ru.dgis.sdk/certificates/2GIS_Domain_Secure_CA_1.der</key>
 		<data>
@@ -46,31 +46,31 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		3zJcSyflX37zIL+scTfSb1EfnqQ=
+		JfC5+NdnLf/IMPSpQ0zOul2JmHc=
 		</data>
 		<key>Modules/DGis.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		LU9+1z+omU52liR+O8QMQEcsMqk=
+		zr5R6YO36CKV+F2qDHxLppTT8m8=
 		</data>
 		<key>Modules/DGis.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		vSO+7PumaTOZdePauEPrXKZnYOs=
+		51Wz0GS6dmDAbWKdXateWypWgNc=
 		</data>
 		<key>Modules/DGis.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		fEXHbe2RxaClckGHiItx8VT9dz4=
+		pkwqU6VXE+CKj0aPNwQYCn74MgA=
 		</data>
 		<key>Modules/DGis.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		kvAhVZLLyNSBf0MgurUuE4lFu+M=
+		Q5OS1lxUvaimtwRI7JfP4jtl0pA=
 		</data>
 		<key>Modules/DGis.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		fEXHbe2RxaClckGHiItx8VT9dz4=
+		pkwqU6VXE+CKj0aPNwQYCn74MgA=
 		</data>
 		<key>Modules/DGis.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		dKGmSAR+QlUbHTXBZEJ1mRbf6Qk=
+		Vwes7QXJNScaaPSeXJ7YNPC9K8U=
 		</data>
 		<key>PreinstalledData/files/Common_resources-2023.11.547.2gis</key>
 		<data>
@@ -157,7 +157,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			RLrQhoyuJYKE7U+sPHHr0jgV+0F94nejw8GrS4TPpEw=
+			iEvfRbvYzq1vkkWRiFI3VwLFTSdOlpZ7la8PqO+iL5M=
 			</data>
 		</dict>
 		<key>Assets/ru.dgis.sdk/certificates/2GIS_Domain_Secure_CA_1.der</key>
@@ -227,42 +227,42 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			9dTrRlT5WbZgutK1MIBGP9diAKD1xz9s3LyElNWORt0=
+			pyWhSeu6oXTTLn8+TryTbGl2jTl0tBEnDJPPS53Gnos=
 			</data>
 		</dict>
 		<key>Modules/DGis.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			aoXANRjCVkxP+mWeBmLa8jxij2vMKot0PYyVCCdg93I=
+			mmgSNOAICsH8tVahvVY4+z6oto9n5VFruHPF6sTedo0=
 			</data>
 		</dict>
 		<key>Modules/DGis.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			x/cwafZcFXg9//8rLD2CzWkiaoGEEReFNHV5hGIKWFA=
+			OkPnUCfG29DyUa4BT7Zbuu8fvud1Lkztn+iXqmvZkok=
 			</data>
 		</dict>
 		<key>Modules/DGis.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			nnBB4TnXOsosSsdjrE7BvkkXHarWKGPeBjJALzV+Gjg=
+			wjxwp/kogoUQ255F2DiKTdJuLguhbHHmkIN5C2uvMGM=
 			</data>
 		</dict>
 		<key>Modules/DGis.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			x/cwafZcFXg9//8rLD2CzWkiaoGEEReFNHV5hGIKWFA=
+			OkPnUCfG29DyUa4BT7Zbuu8fvud1Lkztn+iXqmvZkok=
 			</data>
 		</dict>
 		<key>Modules/DGis.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			QiBpos8JsMvZDpQt1k90adMjruVrdhgw61x0D4OTPeY=
+			/2sXeCT6UzkpHa4mQLUnIeAETyyqSqCsowxkVEDsWt4=
 			</data>
 		</dict>
 		<key>PreinstalledData/files/Common_resources-2023.11.547.2gis</key>
