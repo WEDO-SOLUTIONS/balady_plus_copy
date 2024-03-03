@@ -219,6 +219,43 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     if ( token != null && token.token != null && token.token!.isNotEmpty) {
       final failureOrSuccess = await _refreshToken(refreshToken);
 
+      return await failureOrSuccess.fold((failure) {}, (success) async {
+        SSOToken token = SSOToken(
+            token: success.accessToken,
+            refreshToken: success.refreshToken,
+            idToken: success.idToken,
+            expirationTime: success.accessTokenExpirationDateTime.toString());
+        final failureOrSuccess = await _saveAuth(token);
+        failureOrSuccess.fold((f) {
+          emit(state.copyWith(
+            status: AuthStatus.notAuthenticated,
+            errorMessage: ("errors_server_error_1".tr()),
+          ));
+          return false;
+        }, (s) {
+
+
+
+          emit(state.copyWith(
+            status: AuthStatus.notAuthenticated,
+            token: token,
+            errorMessage: "",
+          ));
+
+          if(CommonProperties.fcmToken != null && CommonProperties.fcmToken!.isNotEmpty) {
+            CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
+          }
+          return true;
+        });
+      });
+    }
+    else
+      {
+         await autoLogout();
+      }
+
+
+
       return await failureOrSuccess.fold((failure) async {
 
         await autoLogout();
