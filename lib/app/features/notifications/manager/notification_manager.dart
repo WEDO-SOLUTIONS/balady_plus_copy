@@ -18,7 +18,7 @@ class NotificationManager{
     final failureOrSuccess = await repository.updateNotificationSettings(request);
     failureOrSuccess.fold(
           (failure) {
-          if(counter <3)
+          if(counter <2)
             {
               updateNotificationSettings(request);
 

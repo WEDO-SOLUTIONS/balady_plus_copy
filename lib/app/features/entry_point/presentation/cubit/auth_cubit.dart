@@ -219,7 +219,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     if ( token != null && token.token != null && token.token!.isNotEmpty) {
       final failureOrSuccess = await _refreshToken(refreshToken);
 
-      return await failureOrSuccess.fold((failure) {}, (success) async {
+      return await failureOrSuccess.fold((failure) async {
+
+        await autoLogout();
+
+      }, (success) async {
         SSOToken token = SSOToken(
             token: success.accessToken,
             refreshToken: success.refreshToken,
