@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
@@ -24,10 +23,9 @@ class CommercialLicenseQueryDetails extends StatefulWidget {
 
 class _CommercialLicenseQueryDetailsState
     extends State<CommercialLicenseQueryDetails> {
-
   CommercialLicenseQueryDetailsCubit? bloc;
   bool showDays = false;
-String? commercialLicenseNumber;
+  String? commercialLicenseNumber;
 
   @override
   void initState() {
@@ -36,66 +34,53 @@ String? commercialLicenseNumber;
     // commercialLicenseNumber = 45079837078;
     // unifiedFacilityNumber = 7008360062;
 
-
     Future.microtask(() {
       setState(() {
         commercialLicenseNumber = "${bloc!.commercialLicenseNumber}#";
       });
-      bloc!.getCommercialLicenseQueryDetails(bloc!.commercialLicenseNumber, bloc!.unifiedFacilityNumber);
-
+      bloc!.getCommercialLicenseQueryDetails(
+          bloc!.commercialLicenseNumber, bloc!.unifiedFacilityNumber);
     });
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     return BlocProvider(
-      create: (_){
-        bloc= ModalRoute.of(context)!
-            .settings
-            .arguments as CommercialLicenseQueryDetailsCubit;
+      create: (_) {
+        bloc = ModalRoute.of(context)!.settings.arguments
+            as CommercialLicenseQueryDetailsCubit;
 
         return bloc!;
       },
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: DefaultAppBarWidget(
-          titleWidget:
-          RichText(
-        text: TextSpan(
-
-        children: [
-          TextSpan(text: 'query'.tr(), style: AppStyle.complianceTitleStyle),
-        const WidgetSpan(child: SizedBox(width: 10,)),
-        TextSpan(text: commercialLicenseNumber, style: AppStyle.listTitleTextStyle),
-        ],
-      ),
-    )
-          ,
-
+          titleWidget: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                    text: 'query'.tr(), style: AppStyle.complianceTitleStyle),
+                const WidgetSpan(
+                    child: SizedBox(
+                  width: 10,
+                )),
+                TextSpan(
+                    text: commercialLicenseNumber,
+                    style: AppStyle.listTitleTextStyle),
+              ],
+            ),
+          ),
         ),
-
-
-
-
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: getBody(),
         ),
       ),
     );
-
-
   }
 
-
-
-
-
-  Widget getBody()
-  {
-    return  BlocConsumer<CommercialLicenseQueryDetailsCubit,
+  Widget getBody() {
+    return BlocConsumer<CommercialLicenseQueryDetailsCubit,
         CommercialLicenseQueryDetailsState>(
       listenWhen: (previous, current) => previous.status != current.status,
       listener: (_, state) async {
@@ -114,7 +99,8 @@ String? commercialLicenseNumber;
             ),
           );
         } else if (state.commercialLicenceQueryDetails != null) {
-          final commercialLicenceQueryDetails = state.commercialLicenceQueryDetails!;
+          final commercialLicenceQueryDetails =
+              state.commercialLicenceQueryDetails!;
           return SingleChildScrollView(
             child: Column(
               children: [
@@ -132,7 +118,9 @@ String? commercialLicenseNumber;
                         child: Row(
                           children: [
                             CustomTextWidget(
-                              commercialLicenceQueryDetails.licenseStatus?.name ?? "",
+                              commercialLicenceQueryDetails
+                                      .licenseStatus?.name ??
+                                  "",
                               textStyle: AppStyle.tagTextStyle,
                             ),
                           ],
@@ -148,7 +136,9 @@ String? commercialLicenseNumber;
                   children: [
                     CardParameter(
                       title: 'crNumbers'.tr(),
-                      value: commercialLicenceQueryDetails.licenseNumber.toString() ?? '',
+                      value: commercialLicenceQueryDetails.licenseNumber
+                              .toString() ??
+                          '',
                       bgColor: AppColor.mystic,
                     ),
                     CardParameter(
@@ -162,188 +152,190 @@ String? commercialLicenseNumber;
                       bgColor: AppColor.mystic,
                     ),
 
-                    commercialLicenceQueryDetails.shopNameAr  != null? CardParameter(
-                      title: 'license_shop_name_ar'.tr(),
-                      value: commercialLicenceQueryDetails.shopNameAr ?? '',
-                      bgColor: AppColor.mystic,
-                    ):Container(),
+                    commercialLicenceQueryDetails.shopNameAr != null
+                        ? CardParameter(
+                            title: 'license_shop_name_ar'.tr(),
+                            value:
+                                commercialLicenceQueryDetails.shopNameAr ?? '',
+                            bgColor: AppColor.mystic,
+                          )
+                        : Container(),
                     /////////////////////
-                    commercialLicenceQueryDetails.shopNameEn  != null?
-                        CardParameter(
-                      title: 'license_shop_name_en'.tr(),
-                      value: commercialLicenceQueryDetails.shopNameEn ?? '',
-                      bgColor: AppColor.mystic,
-                    ):Container(),
+                    commercialLicenceQueryDetails.shopNameEn != null
+                        ? CardParameter(
+                            title: 'license_shop_name_en'.tr(),
+                            value:
+                                commercialLicenceQueryDetails.shopNameEn ?? '',
+                            bgColor: AppColor.mystic,
+                          )
+                        : Container(),
                     CardParameter(
                       title: 'city'.tr(),
-                      value: commercialLicenceQueryDetails.city?.name?? '',
+                      value: commercialLicenceQueryDetails.city?.name ?? '',
                       bgColor: AppColor.mystic,
                     ),
-                    commercialLicenceQueryDetails.district != null ?
-                    CardParameter(
-                      title: 'district'.tr(),
-                      value: commercialLicenceQueryDetails.district?.name ?? '',
-                      bgColor: AppColor.mystic,
-                    ):Container(),
+                    commercialLicenceQueryDetails.district != null
+                        ? CardParameter(
+                            title: 'district'.tr(),
+                            value:
+                                commercialLicenceQueryDetails.district?.name ??
+                                    '',
+                            bgColor: AppColor.mystic,
+                          )
+                        : Container(),
                     const SizedBox(height: 16),
-                    commercialLicenceQueryDetails.x !=
-                        null &&
-                        commercialLicenceQueryDetails
-                            .y !=
-                            null
-                        ?
-                    SizedBox(
-                      height: 250,
-                      child: Stack(
-                        children:
-                        [
-
-                          GoogleMap(
-                          initialCameraPosition: CameraPosition(
-                              target: LatLng(
-                                double.parse(
-                                    commercialLicenceQueryDetails
-                                        .y!),
-                                double.parse(
-                                    commercialLicenceQueryDetails
-                                        .x!),
+                    commercialLicenceQueryDetails.x != null &&
+                            commercialLicenceQueryDetails.y != null
+                        ? SizedBox(
+                            height: 250,
+                            child: Stack(children: [
+                              GoogleMap(
+                                initialCameraPosition: CameraPosition(
+                                    target: LatLng(
+                                      double.parse(
+                                          commercialLicenceQueryDetails.y!),
+                                      double.parse(
+                                          commercialLicenceQueryDetails.x!),
+                                    ),
+                                    zoom: 16),
+                                markers: {
+                                  Marker(
+                                    markerId: const MarkerId('position'),
+                                    position: LatLng(
+                                      double.parse(
+                                          commercialLicenceQueryDetails.y!),
+                                      double.parse(
+                                          commercialLicenceQueryDetails.x!),
+                                    ),
+                                  )
+                                },
+                                zoomControlsEnabled: false,
+                                zoomGesturesEnabled: false,
+                                scrollGesturesEnabled: false,
                               ),
-                              zoom: 16),
-                          markers: {
-                            Marker(
-                              markerId: const MarkerId('position'),
-                              position: LatLng(
-                                double.parse(
-                                    commercialLicenceQueryDetails
-                                        .y!),
-                                double.parse(
-                                    commercialLicenceQueryDetails
-                                        .x!),
+                              Positioned(
+                                bottom: 20,
+                                left: 20,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    navigateTo(
+                                        double.parse(
+                                            commercialLicenceQueryDetails.y!),
+                                        double.parse(
+                                            commercialLicenceQueryDetails.x!));
+                                  },
+                                  child: const Image(
+                                      height: 40,
+                                      width: 40,
+                                      image: AssetImage(IconPath.direction)),
+                                ),
                               ),
-                            )
-                          },
-                          zoomControlsEnabled: false,
-                          zoomGesturesEnabled: false,
-                          scrollGesturesEnabled: false,
-                        ),
-                          Positioned(
-                            bottom: 20,
-                            left: 20,
-                            child: GestureDetector(
-                              onTap: (){
-                                navigateTo(double.parse(
-                                    commercialLicenceQueryDetails
-                                        .y!),
-                                    double.parse(
-                                        commercialLicenceQueryDetails
-                                            .x!));
-                              },
-                              child: const Image(
-                                height: 40,
-                                  width: 40,
-                                  image: AssetImage(IconPath.direction)),
-                            ),
-                          ),
-        ]
-                      ),
-                    )
+                            ]),
+                          )
                         : const SizedBox(),
-
-
                   ],
                 ),
                 commercialLicenceQueryDetails.mainActivity != null
                     ? ExpandableCard(
-                  title: 'activity_info'.tr(),
-                  icon: IconPath.editIcon,
-                  children: [
-                    CardParameter(
-                      title: 'isicNumber'.tr(),
-                      value: commercialLicenceQueryDetails.mainActivity!.isicNumber.toString(),
-                      bgColor: AppColor.mystic,
-                    ),
-                    CardParameter(
-                      // from whats
-                      title: 'isicName'.tr(),
-                      value: commercialLicenceQueryDetails.mainActivity!.isicName.toString(),
-                      bgColor: AppColor.mystic,
-                    ),
-                    (commercialLicenceQueryDetails.additionalActivities!=null && commercialLicenceQueryDetails
-                        .additionalActivities!.isNotEmpty )
-                        ?
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 20,),
-                        CustomTextWidget(
-                          'additional_activity_info'.tr(),
-                          textStyle: AppStyle.cardTitleTextStle.copyWith(fontSize: 16),
-                          maxLines: 2,
-                        ),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics:
-                          const NeverScrollableScrollPhysics(),
-                          itemCount: commercialLicenceQueryDetails
-                              .additionalActivities!.length,
-                          itemBuilder: (_, index) {
-                            LicenseActivity activity = commercialLicenceQueryDetails.additionalActivities![index];
-                            return
-                              ExpandableCard(
-                                title: activity.detailedActivityName!,
-                                bgColor: AppColor.lightGray,
-                                children: [
-
-                                  CardParameter(
-                                    title: 'extra_isicNumber'.tr(),
-                                    value: activity.isicNumber.toString(),
-                                    bgColor: AppColor.lightGray,
-                                  ),
-                                  const Divider(height: 2,color:AppColor.blackModern200Light ,),
-                                  CardParameter(
-                                    // from whats
-                                    title: 'extra_isicName'.tr(),
-                                    value:activity.isicName.toString(),
-                                    bgColor: AppColor.lightGray,
-                                  ),
-                                ],
-
-                              );
-
-
-                          },
-                        ),
-                      ],
-                    )
-                        : const SizedBox(),
-
-
-                  ],
-                )
+                        title: 'activity_info'.tr(),
+                        icon: IconPath.editIcon,
+                        children: [
+                          CardParameter(
+                            title: 'isicNumber'.tr(),
+                            value: commercialLicenceQueryDetails
+                                .mainActivity!.isicNumber
+                                .toString(),
+                            bgColor: AppColor.mystic,
+                          ),
+                          CardParameter(
+                            // from whats
+                            title: 'isicName'.tr(),
+                            value: commercialLicenceQueryDetails
+                                .mainActivity!.isicName
+                                .toString(),
+                            bgColor: AppColor.mystic,
+                          ),
+                          (commercialLicenceQueryDetails.additionalActivities !=
+                                      null &&
+                                  commercialLicenceQueryDetails
+                                      .additionalActivities!.isNotEmpty)
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    CustomTextWidget(
+                                      'additional_activity_info'.tr(),
+                                      textStyle: AppStyle.cardTitleTextStle
+                                          .copyWith(fontSize: 16),
+                                      maxLines: 2,
+                                    ),
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: commercialLicenceQueryDetails
+                                          .additionalActivities!.length,
+                                      itemBuilder: (_, index) {
+                                        LicenseActivity activity =
+                                            commercialLicenceQueryDetails
+                                                .additionalActivities![index];
+                                        return ExpandableCard(
+                                          title: activity.detailedActivityName!,
+                                          bgColor: AppColor.lightGray,
+                                          children: [
+                                            CardParameter(
+                                              title: 'extra_isicNumber'.tr(),
+                                              value: activity.isicNumber
+                                                  .toString(),
+                                              bgColor: AppColor.lightGray,
+                                            ),
+                                            const Divider(
+                                              height: 2,
+                                              color:
+                                                  AppColor.blackModern200Light,
+                                            ),
+                                            CardParameter(
+                                              // from whats
+                                              title: 'extra_isicName'.tr(),
+                                              value:
+                                                  activity.isicName.toString(),
+                                              bgColor: AppColor.lightGray,
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                )
+                              : const SizedBox(),
+                        ],
+                      )
                     : const SizedBox(),
-
-
-
-                if (
-                commercialLicenceQueryDetails.workTimes != null)
+                if (commercialLicenceQueryDetails.workTimes != null)
                   Column(
-                  children: [
-                    const SizedBox(height: 20,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const SizedBox(width: 8),
-                        CustomTextWidget(
-                          'personal_contact_info'.tr(),
-                          textStyle: AppStyle.cardTitleTextStle.copyWith(fontSize: 16),
-                          maxLines: 2,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10,),
-                  ],
-                ),
-
+                    children: [
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const SizedBox(width: 8),
+                          CustomTextWidget(
+                            'personal_contact_info'.tr(),
+                            textStyle: AppStyle.cardTitleTextStle
+                                .copyWith(fontSize: 16),
+                            maxLines: 2,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  ),
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
@@ -352,50 +344,48 @@ String? commercialLicenseNumber;
                       color: AppColor.white),
                   child: Column(
                     children: [
-
-                      if (
-                      commercialLicenceQueryDetails.workTimes != null)
+                      if (commercialLicenceQueryDetails.workTimes != null)
                         WorkingHourDetailsUpdate(
-                          openNow: commercialLicenceQueryDetails.checkIsOpenNow(),
-                          todayWorkingHours: commercialLicenceQueryDetails.getTodayWorkingHours(),
-                          workingHours: (commercialLicenceQueryDetails.workTimes!),
-                          customerServiceNumber: commercialLicenceQueryDetails.customerServicePhoneNumber!,
+                          openNow:
+                              commercialLicenceQueryDetails.checkIsOpenNow(),
+                          todayWorkingHours: commercialLicenceQueryDetails
+                              .getTodayWorkingHours(),
+                          workingHours:
+                              (commercialLicenceQueryDetails.workTimes!),
+                          customerServiceNumber: commercialLicenceQueryDetails
+                              .customerServicePhoneNumber!,
                         ),
-
                     ],
                   ),
                 ),
-
-
-                if (commercialLicenceQueryDetails.website != null && commercialLicenceQueryDetails.website!.isNotEmpty) ...[
+                if (commercialLicenceQueryDetails.website != null &&
+                    commercialLicenceQueryDetails.website!.isNotEmpty) ...[
                   const CustomVerticalSpace(height: 20),
                   LabelIconSubtitleComponent(
-                    padding: const EdgeInsetsDirectional.only(start: 20,top: 10,bottom: 10),
+                    padding: const EdgeInsetsDirectional.only(
+                        start: 20, top: 10, bottom: 10),
                     text: ('website').tr(),
                     icon: IconPath.qrWebIcon,
                     subtitle: commercialLicenceQueryDetails.website,
-                    onPress: () async{
+                    onPress: () async {
                       try {
                         String url = commercialLicenceQueryDetails.website!;
-                        if(url.contains("https")==false || url.contains("http")==false)
-                          {
-                            url = "https://$url";
-                          }
-
+                        if (url.contains("https") == false ||
+                            url.contains("http") == false) {
+                          url = "https://$url";
+                        }
 
                         await launchUrl(Uri.parse(url));
-                      } catch (ex) {
-
-                      }
-
-
+                      } catch (ex) {}
                     },
                   )
                 ],
-                if (commercialLicenceQueryDetails.phone != null && commercialLicenceQueryDetails.phone!.isNotEmpty) ...[
+                if (commercialLicenceQueryDetails.phone != null &&
+                    commercialLicenceQueryDetails.phone!.isNotEmpty) ...[
                   const CustomVerticalSpace(height: 20),
                   LabelIconSubtitleComponent(
-                    padding: const EdgeInsetsDirectional.only(start: 20,top: 10,bottom: 10),
+                    padding: const EdgeInsetsDirectional.only(
+                        start: 20, top: 10, bottom: 10),
                     text: ('contact_number').tr(),
                     icon: IconPath.qrCallIcon,
                     subtitle: commercialLicenceQueryDetails.phone,
@@ -404,17 +394,14 @@ String? commercialLicenseNumber;
                     },
                   )
                 ],
-
                 const SizedBox(height: 20),
-              SocailContactWidget(twitterContact:commercialLicenceQueryDetails.twitter,
-                snapchatContact:commercialLicenceQueryDetails.snapchat,
-                instegramContact:commercialLicenceQueryDetails.instagram,
-                facebookContact: commercialLicenceQueryDetails.facebook,
-                whatsappContact: commercialLicenceQueryDetails.whatsApp, ),
-
-
-
-
+                SocailContactWidget(
+                  twitterContact: commercialLicenceQueryDetails.twitter,
+                  snapchatContact: commercialLicenceQueryDetails.snapchat,
+                  instegramContact: commercialLicenceQueryDetails.instagram,
+                  facebookContact: commercialLicenceQueryDetails.facebook,
+                  whatsappContact: commercialLicenceQueryDetails.whatsApp,
+                ),
                 const SizedBox(height: 24),
               ],
             ),
@@ -422,15 +409,16 @@ String? commercialLicenseNumber;
         }
         return Center(
           child: ReloadWidget(
+            errorMessage: "no_data_found".tr(),
             onTab: () {
-              bloc!.getCommercialLicenseQueryDetails(bloc!.commercialLicenseNumber, bloc!.unifiedFacilityNumber);
+              bloc!.getCommercialLicenseQueryDetails(
+                  bloc!.commercialLicenseNumber, bloc!.unifiedFacilityNumber);
             },
           ),
         );
       },
     );
   }
-
 
   //  void navigateTo(double lat, double lng) async {
   //   var uri = Uri.parse("google.navigation:q=$lat,$lng&mode=d");
@@ -442,12 +430,11 @@ String? commercialLicenseNumber;
   //   }
   // }
 
-
   static Future<void> navigateTo(double lat, double lng) async {
     String url = '';
     String urlAppleMaps = '';
     if (Platform.isAndroid) {
-     // url = 'https://www.google.com/maps/search/?api=1&query=$lat,$lng&mode=d';
+      // url = 'https://www.google.com/maps/search/?api=1&query=$lat,$lng&mode=d';
       url = "google.navigation:q=$lat,$lng&mode=d";
       if (await canLaunchUrl(Uri.parse(url))) {
         await launchUrl(Uri.parse(url));
@@ -466,5 +453,4 @@ String? commercialLicenseNumber;
       }
     }
   }
-
 }
