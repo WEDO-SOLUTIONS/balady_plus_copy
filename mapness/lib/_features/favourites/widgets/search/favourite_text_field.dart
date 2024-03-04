@@ -7,8 +7,8 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/suggest.dart';
 
 class FavouriteTextField extends ConsumerStatefulWidget {
+  const FavouriteTextField({super.key,this.hintText});
   final String? hintText;
-  const FavouriteTextField({Key? key,this.hintText}) : super(key: key);
 
   @override
   ConsumerState<FavouriteTextField> createState() => _FavouriteTextFieldState();
@@ -82,7 +82,7 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
           Align(
             alignment: Alignment.centerRight,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8),
               child: SvgPicture.asset(
                 'assets/icons/svg/ic_dashboard_search.svg',
                 semanticsLabel: 'MinApps Screen',
@@ -104,7 +104,7 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8),
                   child: SvgPicture.asset(
                     'assets/icons/svg/ic_search_clear.svg',
                     semanticsLabel: 'MinApps Screen',
@@ -112,7 +112,7 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
                   ),
                 ),
               ),
-            )
+            ),
         ],
       ),
     );

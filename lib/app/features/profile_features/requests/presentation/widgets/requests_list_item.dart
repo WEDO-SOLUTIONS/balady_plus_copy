@@ -93,9 +93,7 @@ class RequestsListItem extends StatelessWidget {
                 ScreenTage.request.name,
                 // all request of health license open in one screen this reason
                 // to send requestMainTypeId if 1300 -> health license
-                typeId: request.requestMainTypeId == "1300"
-                    ? int.parse(request.requestMainTypeId ?? '')
-                    : request.requestTypeId,
+                typeId: request.requestTypeId,
               );
               if (RouteName.inappWebview == routeName) {
                 CommonFunctions.openBaldyWithRefreshCookie(
@@ -106,7 +104,9 @@ class RequestsListItem extends StatelessWidget {
                   routeName,
                   arguments: {
                     "requestNumber": request.requestNumber.toString(),
-                    "redirectUrl": request.redirectUrl
+                    "objectionRequestNumber":
+                        request.requestNumberAsText.toString(),
+                    "redirectUrl": request.redirectUrl,
                   },
                 );
               }

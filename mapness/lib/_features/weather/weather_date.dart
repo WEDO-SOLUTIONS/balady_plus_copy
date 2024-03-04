@@ -8,12 +8,12 @@ class WeatherDateFormatter {
 
   //get today day
   static String getToday(Locale locale) {
-    final DateTime now = DateTime.now();
+    final now = DateTime.now();
     return DateFormat('EEEE', locale.languageCode).format(now);
   }
 
   static String getDay(String date, Locale locale) {
-    final DateTime dateTime = DateTime.parse(date);
+    final dateTime = DateTime.parse(date);
     return DateFormat('EEEE', locale.languageCode).format(dateTime);
   }
 

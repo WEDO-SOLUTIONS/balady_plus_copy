@@ -12,9 +12,7 @@ class _CameraState extends _$CameraState {
     final cameraStateSubscription =
         dgisController.value!.cameraStateEvents.listen(_cameraStateListener);
     ref.onDispose(
-      () {
-        cameraStateSubscription.cancel();
-      },
+      cameraStateSubscription.cancel,
     );
 
     return CameraState.free;

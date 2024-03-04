@@ -4120,5 +4120,10 @@
   "calendar_type": "Calendar type",
   "no_events": "Sorry, there are no events now",
   "calendar_type_appmt": "Appointment",
-  "calendar_type_invoice": "Invoice not paid"
+  "calendar_type_invoice": "Invoice not paid",
+  "no_data_found":"No Data Found", 
+
+
+  "commercial_licenseـquery_title": "Insert the following"
+
 }

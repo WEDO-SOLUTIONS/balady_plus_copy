@@ -90,7 +90,8 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       child: Stack(
         children: [
           RoutingMapControls(
-              bottomExtent: MediaQuery.of(context).size.height * 0.35),
+            bottomExtent: MediaQuery.of(context).size.height * 0.35,
+          ),
           DraggableScrollableSheet(
             controller: _controller,
             initialChildSize: 0.35,
@@ -100,8 +101,8 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(16.0),
-                  topLeft: Radius.circular(16.0),
+                  topRight: Radius.circular(16),
+                  topLeft: Radius.circular(16),
                 ),
               ),
               child: Material(
@@ -110,8 +111,8 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(16.0),
-                      topLeft: Radius.circular(16.0),
+                      topRight: Radius.circular(16),
+                      topLeft: Radius.circular(16),
                     ),
                   ),
                   child: SafeArea(
@@ -128,7 +129,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                             decoration: BoxDecoration(
                               color: context.color.surface_base_primary,
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(24)),
+                                  const BorderRadius.all(Radius.circular(24)),
                             ),
                           ),
                         ),
@@ -186,7 +187,9 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                             points: points,
                             startNavigation: () {
                               PathNavRoute.open(
-                                  ref.watch(goRouterProvider), navType);
+                                ref.watch(goRouterProvider),
+                                navType,
+                              );
                             },
                             navType: navType,
                           ),
@@ -216,15 +219,14 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
 }
 
 class _RouteTabBar extends ConsumerWidget {
-  final void Function(RouteSearchOptionsMessage) onChanged;
-  final RouteSearchOptionsMessage active;
-  final List<RouteParamsPoint?> points;
-
   const _RouteTabBar({
     required this.onChanged,
     required this.active,
     required this.points,
   });
+  final void Function(RouteSearchOptionsMessage) onChanged;
+  final RouteSearchOptionsMessage active;
+  final List<RouteParamsPoint?> points;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -253,7 +255,7 @@ class _RouteTabBar extends ConsumerWidget {
               (e) => RouteTypeSwitch(
                 iconAsset: e.icon,
                 title: active == e
-                    ? routeDuration?.ceil().formatDuration(context.l10n)
+                    ? routeDuration?.formatDuration(context.l10n)
                     : null,
                 onPressed: () => onChanged(e),
                 isChoosed: active == e,

@@ -5,11 +5,11 @@ import 'package:mapness/features/jobs/ui/job_detail_sheet.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 
 class JobDetailOverlay extends ConsumerStatefulWidget {
-  final String jobId;
   const JobDetailOverlay({
     required this.jobId,
     super.key,
   });
+  final String jobId;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>

@@ -9,9 +9,9 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dar
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class FavouritesToggle extends ConsumerWidget {
-  final bool isEditing;
 
-  const FavouritesToggle({required this.isEditing, Key? key}) : super(key: key);
+  const FavouritesToggle({required this.isEditing, super.key});
+  final bool isEditing;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,7 +24,6 @@ class FavouritesToggle extends ConsumerWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             context.l10n.showFavoritesOnMap,

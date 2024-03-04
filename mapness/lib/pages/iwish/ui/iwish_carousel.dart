@@ -13,9 +13,9 @@ import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_card.dart';
 
 class IwishCarousel extends ConsumerWidget {
-  final String? initialId;
 
   const IwishCarousel({this.initialId, super.key});
+  final String? initialId;
 
   void _highlighOnMap(String iwishId) {
     // TODO: implement
@@ -34,8 +34,7 @@ class IwishCarousel extends ConsumerWidget {
       loading: () => LoadingSheet(text: context.l10n.loading),
       data: (data) => CarouselSlider.builder(
         itemCount: data.length,
-        itemBuilder: (context, index, realIndex) {
-          return Consumer(
+        itemBuilder: (context, index, realIndex) => Consumer(
             builder: (context, ref, child) {
               final iwishState = ref.watch(iwishEntityProvider(data[index].id));
               return iwishState.when(
@@ -60,12 +59,11 @@ class IwishCarousel extends ConsumerWidget {
                 ),
               );
             },
-          );
-        },
+          ),
         options: CarouselOptions(
           onPageChanged: (index, reason) => _highlighOnMap(data[index].id),
           enableInfiniteScroll: false,
-          viewportFraction: (1 - 16 / 375),
+          viewportFraction: 1 - 16 / 375,
           initialPage: initialId == null
               ? 0
               : data.indexWhere((element) => element.id == initialId),

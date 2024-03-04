@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/providers/map/follow_state.dart';
 
-import '../../../shared/ui/buttons/map_button.dart';
+import 'package:mapness/shared/ui/buttons/map_button.dart';
 
 class FollowControl extends ConsumerWidget {
   const FollowControl({

@@ -25,8 +25,8 @@ class TrafficControl extends ConsumerWidget {
           height: 28,
           child: SvgPicture.asset(
             isEnabled
-                ? "assets/icons/svg/ic_traffic_active.svg"
-                : "assets/icons/svg/ic_traffic.svg",
+                ? 'assets/icons/svg/ic_traffic_active.svg'
+                : 'assets/icons/svg/ic_traffic.svg',
             package: PackageConfig.packageName,
             width: 28,
             height: 28,

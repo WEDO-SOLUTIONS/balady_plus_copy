@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class EtaInfoWidget extends StatelessWidget {
-  final String? title;
-  final String? subtitle;
 
   const EtaInfoWidget({
     required this.title,
     required this.subtitle,
     super.key,
   });
+  final String? title;
+  final String? subtitle;
 
   @override
   Widget build(BuildContext context) => Material(

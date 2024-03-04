@@ -49,14 +49,12 @@ class _HappinessManager extends _$HappinessManager {
   }
 
   @override
-  HappinessState build() {
-    return HappinessState(
+  HappinessState build() => HappinessState(
       feedback: null,
       coordinates: Coordinates.zero,
       tags: [],
       comment: '',
     );
-  }
 }
 
 final happinessManagerProvider = _happinessManagerProvider;

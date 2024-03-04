@@ -90,7 +90,7 @@ class EventDetailsResponse {
   }
 
   String getTime() {
-    return "${startTime?.replaceAll("AM", "am".tr()).replaceAll("PM", "pm".tr())} - ${endTime?.replaceAll("AM", "am".tr()).replaceAll("PM", "am".tr())}";
+    return "${startTime?.replaceAll("AM", "am".tr()).replaceAll("PM", "pm".tr())} - ${endTime?.replaceAll("AM", "am".tr()).replaceAll("PM", "pm".tr())}";
   }
 
   DateTime? getStartDateFull() {

@@ -23,30 +23,37 @@ class RoutingFavourites extends ConsumerWidget {
     final favourites = [
       if (showBookmark)
         FilterItem(
-            filterType: FilterType.favourites,
-            icon: 'assets/icons/svg/quick_filters/ic_quick_bookmark.svg',
-            onTap: () async {
-              if (showBookmark) {
-                await CommonFunctions.authOrOpen(context, callback: () async {
+          filterType: FilterType.favourites,
+          icon: 'assets/icons/svg/quick_filters/ic_quick_bookmark.svg',
+          onTap: () async {
+            if (showBookmark) {
+              await CommonFunctions.authOrOpen(
+                context,
+                callback: () async {
                   final result =
                       await const FavouritesPickerRoute().push(context);
 
                   if (result != null) {
-                    onFavouriteTap(result);
+                    onFavouriteTap(result as FavouriteItem);
                   }
                   return;
-                });
-              }
-            }),
+                },
+              );
+            }
+          },
+        ),
       FilterItem(
-          filterType: FilterType.home,
-          title: context.l10n.home,
-          icon: 'assets/icons/svg/quick_filters/ic_quick_home.svg',
-          onTap: () async {
-            final favouritesState = await ref.read(favouriteRepositoryProvider.future);
-            final home = favouritesState.home;
-            if (home == null) {
-              await CommonFunctions.authOrOpen(context, callback: () async {
+        filterType: FilterType.home,
+        title: context.l10n.home,
+        icon: 'assets/icons/svg/quick_filters/ic_quick_home.svg',
+        onTap: () async {
+          final favouritesState =
+              await ref.read(favouriteRepositoryProvider.future);
+          final home = favouritesState.home;
+          if (home == null) {
+            await CommonFunctions.authOrOpen(
+              context,
+              callback: () async {
                 await const FavouritesSearchRoute(
                   markerType: FavouriteItemMarkerType.home,
                 ).push(context);
@@ -55,20 +62,25 @@ class RoutingFavourites extends ConsumerWidget {
                     await ref.read(favouriteRepositoryProvider.future);
 
                 onFavouriteTap(favouritesState.home!);
-              });
-            } else {
-              onFavouriteTap(home);
-            }
-          }),
+              },
+            );
+          } else {
+            onFavouriteTap(home);
+          }
+        },
+      ),
       FilterItem(
-          filterType: FilterType.work,
-          title: context.l10n.work,
-          icon: 'assets/icons/svg/quick_filters/ic_quick_work.svg',
-          onTap: () async {
-            final favouritesState = await ref.read(favouriteRepositoryProvider.future);
-            final work = favouritesState.work;
-            if (work == null) {
-              await CommonFunctions.authOrOpen(context, callback: () async {
+        filterType: FilterType.work,
+        title: context.l10n.work,
+        icon: 'assets/icons/svg/quick_filters/ic_quick_work.svg',
+        onTap: () async {
+          final favouritesState =
+              await ref.read(favouriteRepositoryProvider.future);
+          final work = favouritesState.work;
+          if (work == null) {
+            await CommonFunctions.authOrOpen(
+              context,
+              callback: () async {
                 await const FavouritesSearchRoute(
                   markerType: FavouriteItemMarkerType.work,
                 ).push(context);
@@ -79,11 +91,13 @@ class RoutingFavourites extends ConsumerWidget {
                 onFavouriteTap(
                   favouritesState.work!,
                 );
-              });
-            } else {
-              onFavouriteTap(work);
-            }
-          }),
+              },
+            );
+          } else {
+            onFavouriteTap(work);
+          }
+        },
+      ),
     ];
 
     return widgets.QuickFilters(

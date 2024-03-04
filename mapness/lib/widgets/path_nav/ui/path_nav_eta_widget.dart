@@ -5,12 +5,12 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/path_nav/lib/eta_info_widget.dart';
 
 class PathNavEtaWidget extends StatelessWidget {
-  final PathNavEta? eta;
 
   const PathNavEtaWidget({
     required this.eta,
     super.key,
   });
+  final PathNavEta? eta;
 
   @override
   Widget build(BuildContext context) => Row(

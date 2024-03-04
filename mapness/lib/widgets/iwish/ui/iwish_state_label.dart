@@ -6,9 +6,9 @@ import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class IwishStateLabel extends StatelessWidget {
-  final IwishState state;
 
-  const IwishStateLabel({super.key, required this.state});
+  const IwishStateLabel({required this.state, super.key});
+  final IwishState state;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -28,7 +28,7 @@ class IwishStateLabel extends StatelessWidget {
                     IwishState.unknown => Colors.grey,
                     IwishState.planned => NonThemeColor.color20,
                     IwishState.completed => NonThemeColor.color3,
-                  }),
+                  },),
         ),
       );
 }

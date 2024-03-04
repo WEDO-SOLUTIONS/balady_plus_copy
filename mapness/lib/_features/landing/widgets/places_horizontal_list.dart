@@ -1,5 +1,5 @@
 import 'package:balady_uikit/typography/text_theme_styles.dart';
-import 'package:flutter/material.dart' hide SearchBar, ScrollPosition;
+import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:mapness/_features/landing/providers/interesting_places.dart';
 import 'package:mapness/_features/landing/widgets/poi_card.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
@@ -28,8 +28,8 @@ class PlacesHorizontalList extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(
-                right: 16.0,
-                left: 16.0,
+                right: 16,
+                left: 16,
               ),
               child: Text(
                 title,

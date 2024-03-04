@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
 class DgisHandle extends StatelessWidget {
-  const DgisHandle({Key? key}) : super(key: key);
+  const DgisHandle({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       height: 4,
       width: 40,
       decoration: BoxDecoration(
@@ -13,5 +12,4 @@ class DgisHandle extends StatelessWidget {
         borderRadius: BorderRadius.circular(2),
       ),
     );
-  }
 }

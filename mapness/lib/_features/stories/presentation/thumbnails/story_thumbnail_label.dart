@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 
 
 class StoryThumbnailLabel extends StatelessWidget {
+  const StoryThumbnailLabel({required this.title, super.key});
   final String title;
-  const StoryThumbnailLabel({super.key, required this.title});
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context) => Padding(
       padding: const EdgeInsets.only(bottom: 12, right: 16),
       child: Align(
         alignment: Alignment.centerRight,
@@ -19,5 +18,4 @@ class StoryThumbnailLabel extends StatelessWidget {
         ),
       ),
     );
-  }
 }

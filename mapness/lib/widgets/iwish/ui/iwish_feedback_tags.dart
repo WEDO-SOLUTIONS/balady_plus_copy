@@ -9,21 +9,17 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class IwishFeedbackTags extends StatelessWidget {
+
+  IwishFeedbackTags({
+    required this.tags, required this.selectedTags, required this.onTagToggled, super.key,
+  });
   final List<IwishFeedbackTag> tags;
   final Set<String> selectedTags;
   final void Function(String id) onTagToggled;
   final tagsGroup = AutoSizeGroup();
 
-  IwishFeedbackTags({
-    super.key,
-    required this.tags,
-    required this.selectedTags,
-    required this.onTagToggled,
-  });
-
   @override
-  Widget build(BuildContext context) {
-    return GridView.count(
+  Widget build(BuildContext context) => GridView.count(
       shrinkWrap: true,
       crossAxisCount: 3,
       mainAxisSpacing: 10,
@@ -99,5 +95,4 @@ class IwishFeedbackTags extends StatelessWidget {
           )
           .toList(),
     );
-  }
 }

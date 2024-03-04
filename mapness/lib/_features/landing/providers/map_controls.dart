@@ -34,9 +34,7 @@ class MapControlsStateMosque extends MapControlsState {
 @riverpod
 class MapControls extends _$MapControls {
   @override
-  MapControlsState build() {
-    return MapControlsStateIdle();
-  }
+  MapControlsState build() => MapControlsStateIdle();
 
   void update(MapControlsState value) => state = value;
 }

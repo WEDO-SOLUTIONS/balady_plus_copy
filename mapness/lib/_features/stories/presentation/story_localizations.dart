@@ -2,20 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 class StoryLocalizations extends InheritedWidget {
-  final AppLocalizations locale;
 
   const StoryLocalizations({
-    super.key,
-    required this.locale,
-    required Widget child,
-  }) : super(child: child);
+    required this.locale, required super.child, super.key,
+  });
+  final AppLocalizations locale;
 
-  static StoryLocalizations? of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<StoryLocalizations>();
-  }
+  static StoryLocalizations? of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<StoryLocalizations>();
 
   @override
-  bool updateShouldNotify(StoryLocalizations oldWidget) {
-    return locale != oldWidget.locale;
-  }
+  bool updateShouldNotify(StoryLocalizations oldWidget) => locale != oldWidget.locale;
 }

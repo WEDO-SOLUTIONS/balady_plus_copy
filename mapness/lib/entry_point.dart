@@ -1,10 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_links/app_links.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_uikit/colors/app_color_scheme.dart';
 import 'package:balady_uikit/colors/app_colors_theme.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
@@ -19,19 +19,22 @@ import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
 import 'package:mapness/_features/debug_overlay/debug_overlay.dart';
+import 'package:mapness/app/router.dart';
+import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
+import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/widgets/map/map_page.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:share_plus/share_plus.dart';
-
-import 'app/router.dart';
 
 Mixpanel? mixpanel;
 
@@ -71,12 +74,11 @@ class MapnessProviderScope extends StatelessWidget {
 }
 
 class MapnessEntryPoint extends ConsumerStatefulWidget {
-  final void Function(DgisMapController) mapCreated;
-
   const MapnessEntryPoint({
     required this.mapCreated,
     super.key,
   });
+  final void Function(DgisMapController) mapCreated;
 
   @override
   ConsumerState<MapnessEntryPoint> createState() => _MapnessEntryPointState();
@@ -134,42 +136,44 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
             height: MediaQuery.of(context).size.height,
             child: const MapPage(),
           ),
-          Consumer(builder: (context, ref, child) {
-            final colorScheme = ref.watch(colorSchemeProvider);
+          Consumer(
+            builder: (context, ref, child) {
+              final colorScheme = ref.watch(colorSchemeProvider);
 
-            return MaterialApp.router(
-              routerConfig: goRouter,
-              theme: ThemeData(
-                primarySwatch: const MaterialColor(
-                  0xFF4CA5B4,
-                  <int, Color>{
-                    50: Color(0xFF89cfbe),
-                    100: Color(0xFF89cfbe),
-                    200: Color(0xFF89cfbe),
-                    300: Color(0xFF89cfbe),
-                    400: Color(0xFF89cfbe),
-                    500: Color(0xFF89cfbe),
-                    600: Color(0xFF89cfbe),
-                    700: Color(0xFF89cfbe),
-                    800: Color(0xFF89cfbe),
-                    900: Color(0xFF89cfbe),
-                  },
+              return MaterialApp.router(
+                routerConfig: goRouter,
+                theme: ThemeData(
+                  primarySwatch: const MaterialColor(
+                    0xFF4CA5B4,
+                    <int, Color>{
+                      50: Color(0xFF89cfbe),
+                      100: Color(0xFF89cfbe),
+                      200: Color(0xFF89cfbe),
+                      300: Color(0xFF89cfbe),
+                      400: Color(0xFF89cfbe),
+                      500: Color(0xFF89cfbe),
+                      600: Color(0xFF89cfbe),
+                      700: Color(0xFF89cfbe),
+                      800: Color(0xFF89cfbe),
+                      900: Color(0xFF89cfbe),
+                    },
+                  ),
+                  // unselectedWidgetColor: context.color.text_and_icons_base_primary,
+                  scaffoldBackgroundColor: Colors.transparent,
+                  dividerColor: Colors.grey[400],
+                  useMaterial3: false,
+                  extensions: <ThemeExtension<dynamic>>[
+                    ThemeTextStyles.arabic(isDark: false),
+                    AppColorsThemeExt.palette(colorScheme, isDark: false)
+                  ],
                 ),
-                // unselectedWidgetColor: context.color.text_and_icons_base_primary,
-                scaffoldBackgroundColor: Colors.transparent,
-                dividerColor: Colors.grey[400],
-                useMaterial3: false,
-                extensions: <ThemeExtension<dynamic>>[
-                  ThemeTextStyles.arabic(isDark: false),
-                  AppColorsThemeExt.palette(colorScheme, isDark: false),
-                ],
-              ),
-              locale: language.locale,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              debugShowCheckedModeBanner: false,
-            );
-          }),
+                locale: language.locale,
+                localizationsDelegates: AppLocalizations.localizationsDelegates,
+                supportedLocales: AppLocalizations.supportedLocales,
+                debugShowCheckedModeBanner: false,
+              );
+            },
+          ),
         ],
       ),
     );
@@ -181,7 +185,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       trackAutomaticEvents: true,
     );
     mixpanel?.setLoggingEnabled(true);
-    final FlutterUxConfig config = FlutterUxConfig(
+    final config = FlutterUxConfig(
       enableAdvancedGestureRecognition: true,
       enableCrashHandling: true,
       enableMultiSessionRecord: true,
@@ -197,7 +201,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     final appLink = await _appLinks.getInitialAppLink();
     if (appLink != null) {
-      openAppLink(appLink);
+      await openAppLink(appLink);
     }
 
     _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
@@ -208,8 +212,64 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     });
   }
 
-  void openAppLink(Uri uri) {
-    ref.read(goRouterProvider).push(uri.fragment);
+  Future<void> openAppLink(Uri uri) async {
+    final url = Uri.parse(uri.fragment);
+    final momrahId = url.queryParameters['momrah-id'];
+    final lat = url.queryParameters['lat'];
+    final lon = url.queryParameters['lon'];
+
+    if (lat != null && lon != null) {
+      final vendorConfig = await ref.read(vendorConfigProvider.future);
+      final dio = ref.read(baseDioProvider);
+
+      final key =
+          vendorConfig['dgis/native-sdk/keys/user_web_api_key_for_on_premise'];
+      final catalogApi = vendorConfig['Modules/directory/webapi_url'];
+
+      final geocoderResponse = await dio.get(
+        '$catalogApi/3.0/items/geocode?lon=$lon&lat=$lat&fields=items.point&key=$key',
+      );
+      final geocoderData = json.decode(geocoderResponse.toString());
+      final items = geocoderData['result']['items'] as List<dynamic>;
+      final geocoderBest = items[0] as Map<String, dynamic>;
+
+      await ref.read(goRouterProvider).push(
+            PoiMapRoute(
+              dgisObjectId: int.parse(geocoderBest['id']),
+            ).location,
+          );
+      return;
+    } else if (momrahId != null) {
+      final env = await ref.read(dgisEnvironmentProvider.future);
+      final dio = ref.read(baseDioProvider);
+
+      final twins = await dio.get(
+          '${env.twinsApi}/twins/search/partners?key=dfdd94df-49f9-45df-84ec-e8870ebdb9a0&partner_code=momrah&partner_id=$momrahId');
+      final twinsData = json.decode(twins.toString());
+
+      final Map<String, dynamic>? result =
+          (twinsData['result']['items'] as List<dynamic>).firstOrNull;
+
+      if (result == null) {
+        return;
+      }
+
+      final Map<String, dynamic>? dgisTwin =
+          (result['twins'] as List<dynamic>).firstOrNull;
+
+      if (dgisTwin == null) {
+        return;
+      }
+
+      await ref.read(goRouterProvider).push(
+            PoiMapRoute(
+              dgisObjectId: int.parse(dgisTwin['dgis_id']),
+            ).location,
+          );
+      return;
+    }
+
+    await ref.read(goRouterProvider).push(url.toString());
   }
 }
 

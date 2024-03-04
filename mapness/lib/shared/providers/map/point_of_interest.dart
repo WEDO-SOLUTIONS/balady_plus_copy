@@ -13,11 +13,11 @@ part 'point_of_interest.g.dart';
 const poiPinId = 'poi_pin_id';
 
 class PoiModel {
-  final DirectoryObjectMessage? directoryObjectMessage;
 
   PoiModel({
     required this.directoryObjectMessage,
   });
+  final DirectoryObjectMessage? directoryObjectMessage;
 }
 
 @riverpod
@@ -90,7 +90,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     final box = viewPort?.getBounds();
 
     // Check if point is in viewport
-    final bool isInViewPort = box != null &&
+    final isInViewPort = box != null &&
         await dgisController.value!.contains(
           GeoRectMessage(
             northEast: GeoPointMessage(latitude: box.maxY, longitude: box.maxX),

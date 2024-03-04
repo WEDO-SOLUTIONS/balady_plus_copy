@@ -7,8 +7,8 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ProfileHeader extends ConsumerStatefulWidget {
-  final VoidCallback? onBackPress;
   const ProfileHeader({super.key, this.onBackPress});
+  final VoidCallback? onBackPress;
 
   @override
   ConsumerState<ProfileHeader> createState() => _ProfileHeaderState();

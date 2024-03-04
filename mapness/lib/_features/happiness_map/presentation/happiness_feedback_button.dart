@@ -1,21 +1,20 @@
 import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
+import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class HappinesFeedbackButton extends StatelessWidget {
-  final HappinessFeedback type;
-  final HappinessFeedback? state;
-  final void Function(HappinessFeedback) onPressed;
-
   const HappinesFeedbackButton({
-    super.key,
     required this.type,
     required this.state,
     required this.onPressed,
+    super.key,
   });
+  final HappinessFeedback type;
+  final HappinessFeedback? state;
+  final void Function(HappinessFeedback) onPressed;
 
   @override
   Widget build(BuildContext context) {

@@ -1,8 +1,7 @@
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 extension DateTimeExt on DateTime {
-  String weekDayName(AppLocalizations locale) {
-    return switch (weekday) {
+  String weekDayName(AppLocalizations locale) => switch (weekday) {
       1 => locale.monday,
       2 => locale.tuesday,
       3 => locale.wednesday,
@@ -12,10 +11,8 @@ extension DateTimeExt on DateTime {
       7 => locale.sunday,
       _ => '',
     };
-  }
 
-  static List<String> getAllWeekDayNames(AppLocalizations locale) {
-    return [
+  static List<String> getAllWeekDayNames(AppLocalizations locale) => [
       locale.sunday,
       locale.monday,
       locale.tuesday,
@@ -24,5 +21,4 @@ extension DateTimeExt on DateTime {
       locale.friday,
       locale.saturday,
     ];
-  }
 }

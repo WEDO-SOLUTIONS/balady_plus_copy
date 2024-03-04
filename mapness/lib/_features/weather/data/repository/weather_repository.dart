@@ -26,7 +26,6 @@ class WeatherRepository extends _$WeatherRepository {
       latitude: latitude,
       longitude: longitude,
       numberOfDays: numberOfDays,
-      alert: "yes",
       languageCode: locale.languageCode,
       domain: env.weatherApi,
       proxy: env.proxy,

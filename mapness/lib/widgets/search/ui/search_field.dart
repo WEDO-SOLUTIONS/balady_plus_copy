@@ -83,7 +83,7 @@ class _SearchFieldState extends State<SearchField> {
           alignment:
               context.isRTL ? Alignment.centerRight : Alignment.centerLeft,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8),
             child: SvgPicture.asset(
               'assets/icons/svg/ic_dashboard_search.svg',
               width: 24,
@@ -110,7 +110,7 @@ class _SearchFieldState extends State<SearchField> {
                 child: Align(
                   alignment: AlignmentDirectional.centerEnd,
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8),
                     child: SvgPicture.asset(
                       'assets/icons/svg/ic_search_clear.svg',
                       package: PackageConfig.packageName,
@@ -122,7 +122,7 @@ class _SearchFieldState extends State<SearchField> {
 
             return const SizedBox.shrink();
           },
-        )
+        ),
       ],
     );
   }
