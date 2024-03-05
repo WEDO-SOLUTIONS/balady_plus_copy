@@ -65,6 +65,10 @@ class DeceasedCardWidget extends StatelessWidget {
                       iconWidth: 18,
                     ),
                   ),
+                if (!showDelete)
+                  const SizedBox(
+                    height: 18,
+                  )
               ],
             ),
             Container(

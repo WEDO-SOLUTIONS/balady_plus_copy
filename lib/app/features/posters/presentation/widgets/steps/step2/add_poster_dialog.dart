@@ -49,6 +49,7 @@ class _AddPosterDialogState extends State<AddPosterDialog> {
   String? posterName;
   double? length;
   double? width;
+  int? discountPercentage;
 
   final TextEditingController _area = TextEditingController();
 
@@ -64,6 +65,7 @@ class _AddPosterDialogState extends State<AddPosterDialog> {
       _area.text = ((length ?? 0) * (width ?? 0)).toString();
       attachments = widget.item?.attachedDocuments;
       posterName = widget.item?.name;
+      discountPercentage = widget.item?.discountPercentage;
     }
   }
 
@@ -197,6 +199,24 @@ class _AddPosterDialogState extends State<AddPosterDialog> {
                         ),
                       ],
                     ),
+                    // ToDo: Remove the poster CR
+                    /* if (posterType?.id == 1951) ...[
+                      const SizedBox(
+                        height: 32,
+                      ),
+                      CustomTextFieldWidget(
+                        label: "posters_percentage_discount".tr(),
+                        keyboardType: TextInputType.number,
+                        initialValue: discountPercentage != null
+                            ? discountPercentage.toString()
+                            : null,
+                        onChanged: (String? value) {
+                          setState(() {
+                            discountPercentage = int.tryParse(value ?? "");
+                          });
+                        },
+                      )
+                    ],*/
                     const SizedBox(
                       height: 32,
                     ),
@@ -280,6 +300,7 @@ class _AddPosterDialogState extends State<AddPosterDialog> {
                               length: length,
                               width: width,
                               name: posterName,
+                              discountPercentage: discountPercentage,
                               attachedDocuments: attachments,
                               posterType: posterType);
 
@@ -311,6 +332,9 @@ class _AddPosterDialogState extends State<AddPosterDialog> {
       if (element.mandatory == true && element.filePath == null)
         isValid = false;
     });
+
+//ToDo: Remove Poster CR
+    // if (posterType?.id == 1951 && discountPercentage == null) isValid = false;
 
     return isValid;
   }

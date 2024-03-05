@@ -38,13 +38,13 @@ class EkramInquiryCemetryBloc
     ));
 
     emitter(state.copyWith(
-      status: BlocStatus.success,
-      errorMsg: "",
-      muslim: Nullable(true),
-      laundryExist: Nullable(null),
-      selectedDistrcit: Nullable(null),
-      selectedCity: Nullable(null),
-    ));
+        status: BlocStatus.success,
+        errorMsg: "",
+        muslim: Nullable(true),
+        laundryExist: Nullable(null),
+        selectedDistrcit: Nullable(null),
+        selectedCity: Nullable(null),
+        distrcts: []));
   }
 
   Future<void> _changeLaundryExistHandler(
@@ -96,10 +96,10 @@ class EkramInquiryCemetryBloc
     failureOrSuccess.fold((l) {
       if (l == NoDataFoundFailure())
         emitter(state.copyWith(
-          status: BlocStatus.success,
-          distrcts: [],
-          selectedCity: Nullable(e.city),
-        ));
+            status: BlocStatus.success,
+            distrcts: [],
+            selectedCity: Nullable(e.city),
+            selectedDistrcit: Nullable(null)));
       else {
         emitter(
           state.copyWith(
@@ -109,11 +109,11 @@ class EkramInquiryCemetryBloc
       }
     }, (r) {
       emitter(state.copyWith(
-        status: BlocStatus.success,
-        distrcts: r,
-        selectedCity: Nullable(e.city),
-        errorMsg: "",
-      ));
+          status: BlocStatus.success,
+          distrcts: r,
+          selectedCity: Nullable(e.city),
+          errorMsg: "",
+          selectedDistrcit: Nullable(null)));
     });
   }
 

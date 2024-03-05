@@ -30,7 +30,7 @@ class JobsAroundCard extends ConsumerWidget {
             children: [
               Text(context.l10n.jobsAraundYou,
                   style:
-                      Theme.of(context).extension<ThemeTextStyles>()!.accentL),
+                      Theme.of(context).extension<ThemeTextStyles>()!.accentL,),
               const SizedBox(height: 12),
               Stack(
                 children: [
@@ -57,7 +57,7 @@ class JobsAroundCard extends ConsumerWidget {
                           ),
                           const SizedBox(
                             width: 38,
-                          )
+                          ),
                         ],
                       ),
                       data: (jobs) => Row(

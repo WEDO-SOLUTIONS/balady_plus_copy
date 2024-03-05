@@ -1,7 +1,8 @@
 import 'dart:io';
-import 'dart:ui';
 
+import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -59,7 +60,15 @@ class AppLanguage extends _$AppLanguage {
     final sharedPrefs = ref.read(sharedPrefsProvider);
 
     final language = Language.fromString(sharedPrefs.getString(_prefsKey));
-    CommonFunctions.changeLanguage(lang: language.baladyCompat);
+    // Because the 3d party code use context, we need wait for the context to be available
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(
+          NavigationService.navigatorKey.currentContext == null
+              // wait for 5 seconds to get the context
+              ? const Duration(seconds: 5)
+              : Duration.zero,
+          () => CommonFunctions.changeLanguage(lang: language.baladyCompat));
+    });
 
     return language;
   }

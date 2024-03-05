@@ -23,6 +23,7 @@ class DeceasedRequiredTransferWidget extends StatelessWidget {
               trans("is_deaceased_requrie_special_transfer"),
               fontColor: AppColor.blackModern700Light,
               fontSize: 16.0,
+              maxLines: 2,
               textAlign: TextAlign.start,
               fontWeight: AppFontWeight.bold,
             ),

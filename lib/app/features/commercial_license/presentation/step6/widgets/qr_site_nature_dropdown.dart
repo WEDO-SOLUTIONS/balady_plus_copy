@@ -29,7 +29,7 @@ class QrSiteNatureDropDown extends StatelessWidget {
             //  dialogKeyName: DialogName.reasonCancelDialog,
             // currentRouteName: RouteName.commercialLicenseApplyCancel,
             child: GenericBottomSheetList<QrLookUpItem>(
-              title: "طبيعة المبنى".tr(),
+              title: "BuildingNature".tr(),
               items: state.siteNature ?? [],
               selectedValue: state.selectedSiteNature,
               onTap: (item) {

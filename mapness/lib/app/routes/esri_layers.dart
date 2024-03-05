@@ -10,14 +10,14 @@ part 'esri_layers.g.dart';
   path: EsriLayersRoute.path,
 )
 class EsriLayersRoute extends GoRouteData {
+
+  const EsriLayersRoute();
   static const path = '/esri-layers';
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
-  const EsriLayersRoute();
-
   static open(BuildContext context) {
-    final route = EsriLayersRoute();
+    const route = EsriLayersRoute();
     final router = GoRouter.of(context);
     final matches = router.routerDelegate.currentConfiguration.matches;
     if (matches.last.matchedLocation == path) {
@@ -28,13 +28,11 @@ class EsriLayersRoute extends GoRouteData {
   }
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return const TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
       child: LayersSheet(
-        key: Key("ESRI CARD WIDGET"),
+        key: Key('ESRI CARD WIDGET'),
       ),
     );
-  }
 }
 
 final $layersRoutes = $appRoutes;

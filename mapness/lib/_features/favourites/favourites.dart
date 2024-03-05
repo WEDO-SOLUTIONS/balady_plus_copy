@@ -16,7 +16,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 
 class Favourites extends ConsumerStatefulWidget {
-  const Favourites({Key? key}) : super(key: key);
+  const Favourites({super.key});
 
   @override
   ConsumerState<Favourites> createState() => _FavouritesState();
@@ -62,7 +62,6 @@ class _FavouritesState extends ConsumerState<Favourites> {
             textDirection: TextDirection.rtl,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.max,
               children: [
                 Container(
                   color: NonThemeColor.color48,
@@ -121,7 +120,7 @@ class _FavouritesState extends ConsumerState<Favourites> {
                   decoration: ShapeDecoration(
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
+                        borderRadius: BorderRadius.circular(8),),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -129,40 +128,40 @@ class _FavouritesState extends ConsumerState<Favourites> {
                       FavouritesToggle(isEditing: isEditing),
                       const SizedBox(height: 8),
                       PinnedPlaceWidget(
-                        key: Key('home${state?.home?.id}'),
-                        title: state?.home?.title ?? context.l10n.home,
+                        key: Key('home${state.home?.id}'),
+                        title: state.home?.title ?? context.l10n.home,
                         address:
-                            state?.home?.subtitle ?? context.l10n.addAddress,
+                            state.home?.subtitle ?? context.l10n.addAddress,
                         iconAsset: 'assets/icons/svg/ic_home.svg',
-                        isEditing: isEditing && state?.home != null,
-                        isAdded: state?.home != null,
-                        onDelete: () => _deleteItem(state!.home!),
-                        onTap: state?.home == null
+                        isEditing: isEditing && state.home != null,
+                        isAdded: state.home != null,
+                        onDelete: () => _deleteItem(state.home!),
+                        onTap: state.home == null
                             ? () => const FavouritesSearchRoute(
                                   markerType: FavouriteItemMarkerType.home,
                                 ).push(context)
                             : () => PoiMapRoute(
                                   dgisObjectId:
-                                      int.parse(state!.home!.entity!.id),
+                                      int.parse(state.home!.entity!.id),
                                 ).replace(context),
                       ),
                       const SizedBox(height: 8),
                       PinnedPlaceWidget(
-                        key: Key('work${state?.work?.id}'),
-                        title: state?.work?.title ?? context.l10n.work,
+                        key: Key('work${state.work?.id}'),
+                        title: state.work?.title ?? context.l10n.work,
                         address:
-                            state?.work?.subtitle ?? context.l10n.addAddress,
+                            state.work?.subtitle ?? context.l10n.addAddress,
                         iconAsset: 'assets/icons/svg/ic_case.svg',
-                        isEditing: isEditing && state?.work != null,
-                        isAdded: state?.work != null,
-                        onDelete: () => _deleteItem(state!.work!),
-                        onTap: state?.work == null
+                        isEditing: isEditing && state.work != null,
+                        isAdded: state.work != null,
+                        onDelete: () => _deleteItem(state.work!),
+                        onTap: state.work == null
                             ? () => const FavouritesSearchRoute(
                                   markerType: FavouriteItemMarkerType.work,
                                 ).push(context)
                             : () => PoiMapRoute(
                                   dgisObjectId:
-                                      int.parse(state!.work!.entity!.id),
+                                      int.parse(state.work!.entity!.id),
                                 ).replace(context),
                       ),
                     ],
@@ -171,7 +170,7 @@ class _FavouritesState extends ConsumerState<Favourites> {
                 Expanded(
                   child: Container(
                     color: context.color.surface_base_primary,
-                    child: state?.items.isEmpty == true
+                    child: state.items.isEmpty == true
                         ? Padding(
                             padding: const EdgeInsets.only(
                               left: 16,
@@ -192,11 +191,11 @@ class _FavouritesState extends ConsumerState<Favourites> {
                               right: 16,
                               top: 16,
                             ),
-                            itemCount: state?.items.length ?? 0,
+                            itemCount: state.items.length ?? 0,
                             separatorBuilder: (_, __) =>
                                 const SizedBox(height: 8),
                             itemBuilder: (_, index) {
-                              final item = state!.items[index];
+                              final item = state.items[index];
 
                               /// item
                               return FavouriteItemWidget(

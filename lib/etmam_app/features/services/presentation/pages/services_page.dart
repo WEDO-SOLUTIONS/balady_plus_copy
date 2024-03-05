@@ -104,7 +104,7 @@ class _ServicesPageState extends State<ServicesPage> {
               preferredSize:
                   Size.fromHeight(180 - MediaQuery.of(context).padding.top),
               child: CustomAppBarProvidersList(
-                title: 'مكاتب ${args.response?.serviceName ?? ''}',
+                title: '${args.response?.serviceName ?? ''}',
                 bottomWidget: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
                   child: SearchTextFieldWidget(

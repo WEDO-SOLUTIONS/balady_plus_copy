@@ -20,8 +20,8 @@ import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 class MapControls extends ConsumerWidget {
   const MapControls({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,7 +48,7 @@ class MapControls extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         WeatherControl(
-                            onTap: () => const WeatherRoute().push(context)),
+                            onTap: () => const WeatherRoute().push(context),),
                         const SizedBox(height: 8),
                         const HappinesControl(),
                         const Spacer(),
@@ -105,7 +105,7 @@ class MapControls extends ConsumerWidget {
             child: Directionality(
               textDirection: ref.watch(uiDirectionProvider),
               child: const Padding(
-                padding: EdgeInsets.only(bottom: 12.0),
+                padding: EdgeInsets.only(bottom: 12),
                 child: MapQuickFilters(
                   forMap: true,
                 ),

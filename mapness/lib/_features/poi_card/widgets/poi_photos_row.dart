@@ -4,18 +4,16 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/image/loading_image/loading_shimmer_image.dart';
+import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/shared/ui/photo_viewer/photo_viewer.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../provider/poi_photo_provider.dart';
-
 class PoiPhotosRow extends ConsumerWidget {
-  final int objectId;
-
   const PoiPhotosRow({
     required this.objectId,
     super.key,
   });
+  final int objectId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

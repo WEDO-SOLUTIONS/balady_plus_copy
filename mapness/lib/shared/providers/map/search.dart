@@ -10,9 +10,7 @@ class Search extends _$Search {
 
   @override
   List<DirectoryObjectMessage> build() {
-    ref.onDispose(() {
-      _dispose();
-    });
+    ref.onDispose(_dispose);
 
     return [];
   }
@@ -65,12 +63,12 @@ class Search extends _$Search {
   }) async {
     final dgisController = ref.read(dgisControllerProvider);
 
-    List<Marker> markers = [];
+    final markers = <Marker>[];
     for (final markerInfo
-        in (result?.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty())) {
+        in result?.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
       markers.add(
         Marker(
-          id: markerInfo?.objectId?.objectId.toString() ?? "invalid",
+          id: markerInfo?.objectId?.objectId.toString() ?? 'invalid',
           onTap: () {
             onTap?.call(markerInfo.objectId);
             // ref
@@ -81,7 +79,7 @@ class Search extends _$Search {
             position: markerInfo!.geoPoint,
             icon: icon ??
                 MarkerIconMessage(
-                  path: "packages/mapness/assets/icons/svg/ic_marker.svg",
+                  path: 'packages/mapness/assets/icons/svg/ic_marker.svg',
                   width: 24,
                 ),
           ),
@@ -120,7 +118,7 @@ class Search extends _$Search {
     _currentPage = page;
     state = [
       ...state,
-      ...page.items.whereType<DirectoryObjectMessage>().toList(),
+      ...page.items.whereType<DirectoryObjectMessage>(),
     ];
     return true;
   }

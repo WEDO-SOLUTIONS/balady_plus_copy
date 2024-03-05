@@ -105,7 +105,7 @@ class OrderCardWidget extends StatelessWidget {
                     children: [
                       Expanded(
                         child: HeaderWithDescription(
-                          details: orderType ?? "",
+                          details: (orderType ?? ""),
                           header: trans('etmam_order_type'),
                         ),
                       ),

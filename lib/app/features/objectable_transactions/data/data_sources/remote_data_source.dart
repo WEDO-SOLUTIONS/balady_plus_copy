@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/objectable_transactions/domain/entities/enquiry_objection_reply_params.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/validate_objection_params.dart';
 import 'package:dio/dio.dart' show DioError, Options;
 import 'package:localize_and_translate/localize_and_translate.dart'
@@ -10,6 +11,7 @@ import '../../../../core/utils/utils_exports.dart' show ApiUrl, Log, WithDelay;
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show ResponseBodyModel;
 import '../../../objections/data/models/objection_details_model.dart';
+import '../../domain/entities/objection_enquiry_details.dart';
 import '../../domain/entities/transaction_details_params.dart';
 import '../../objections_exports.dart'
     show
@@ -45,6 +47,11 @@ abstract class RequestsRemoteDataSource {
       TransactionDetailsParams params);
 
   Future<bool> validateObjectableTransaction(ValidateObjectionParams params);
+
+  Future<ObjectionEnquiryDetails> getEnquiryObjectionDetails(String id);
+
+  Future<dynamic> replyEnquiryObjectionDetails(
+      EnquiryObjectionReplyDetails request);
 }
 
 class RequestsRemoteDataSourceImplementation
@@ -405,6 +412,84 @@ class RequestsRemoteDataSourceImplementation
         dioError: error,
       );
     } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<ObjectionEnquiryDetails> getEnquiryObjectionDetails(String id) async {
+    var response;
+    try {
+      response = await webService.dio.get(
+        ApiUrl.objectionEnquiryDetails(id),
+      );
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return ObjectionEnquiryDetails.fromJson(result);
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<dynamic> replyEnquiryObjectionDetails(
+      EnquiryObjectionReplyDetails request) async {
+    var response;
+    try {
+      response = await webService.dio
+          .post(ApiUrl.createEnquiryDetails, data: request.toJson());
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return true;
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;

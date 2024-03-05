@@ -27,8 +27,10 @@ class JobDetail extends _$JobDetail {
     final jobsUrl = '${env.jobsApi}/jobs/$id';
     final response = await dio.get(jobsUrl);
 
-    final jobResponse =
-        JobBaseResponse<JobModel>.fromJson(response.data, JobModel.fromJson);
+    final jobResponse = JobBaseResponse<JobModel>.fromJson(
+      response.data as Map<String, dynamic>,
+      JobModel.fromJson,
+    );
 
     final jobDetail = jobResponse.data?.result;
     mixpanel?.track(_metricEventName);

@@ -2,6 +2,8 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/_features/poi_card/enums/pot_tabs_type.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/provider/poi_card_provider.dart';
@@ -9,8 +11,12 @@ import 'package:mapness/_features/poi_card/widgets/about.dart';
 import 'package:mapness/_features/poi_card/widgets/contacts_info.dart';
 import 'package:mapness/_features/poi_card/widgets/description.dart';
 import 'package:mapness/_features/poi_card/widgets/favourites.dart';
+import 'package:mapness/_features/poi_card/widgets/footer.dart';
 import 'package:mapness/_features/poi_card/widgets/header.dart';
 import 'package:mapness/_features/poi_card/widgets/opening_hours.dart';
+import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
+import 'package:mapness/_features/poi_card/widgets/poi_photo_card.dart';
+import 'package:mapness/_features/poi_card/widgets/poi_photos_header.dart';
 import 'package:mapness/_features/poi_card/widgets/qr_license_info.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/poi_card/widgets/trade_license.dart';
@@ -20,29 +26,21 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
+import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_scrollable_content.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 
-import '../../shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
-import 'domain/model/poi_camera_config.dart';
-import 'enums/pot_tabs_type.dart';
-import 'widgets/footer.dart';
-import 'widgets/poi_card_map_controls.dart';
-import 'widgets/poi_photo_card.dart';
-import 'widgets/poi_photos_header.dart';
-
 class PoiCardWidget extends StatelessWidget {
-  final DgisObjectIdMessage objectId;
-  final PoiCameraConfig? cameraConfig;
-  final LatLng? closestPoint;
-
   const PoiCardWidget({
     required this.objectId,
     required this.closestPoint,
     super.key,
     this.cameraConfig,
   });
+  final DgisObjectIdMessage objectId;
+  final PoiCameraConfig? cameraConfig;
+  final LatLng? closestPoint;
 
   @override
   // ignore: prefer_expression_function_bodies
@@ -62,13 +60,6 @@ class PoiCardWidget extends StatelessWidget {
 }
 
 class _Content extends ConsumerStatefulWidget {
-  final DgisObjectIdMessage objectId;
-  final PoiCameraConfig? cameraConfig;
-
-  final double biggestHeight;
-  final double biggestWidth;
-  final LatLng? closestPoint;
-
   const _Content({
     required this.biggestHeight,
     required this.biggestWidth,
@@ -76,6 +67,12 @@ class _Content extends ConsumerStatefulWidget {
     required this.closestPoint,
     this.cameraConfig,
   });
+  final DgisObjectIdMessage objectId;
+  final PoiCameraConfig? cameraConfig;
+
+  final double biggestHeight;
+  final double biggestWidth;
+  final LatLng? closestPoint;
 
   @override
   ConsumerState<_Content> createState() => _ContentState();
@@ -104,10 +101,8 @@ class _ContentState extends ConsumerState<_Content>
           switch (_tabController.index) {
             case 0:
               _tabType.value = PoiTabsType.info;
-              break;
             case 1:
               _tabType.value = PoiTabsType.photos;
-              break;
           }
         }
       },

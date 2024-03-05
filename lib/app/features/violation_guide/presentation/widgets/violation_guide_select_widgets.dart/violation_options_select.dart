@@ -24,10 +24,13 @@ class ViolationSelectOptionsWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        width: 321,
         padding: const EdgeInsets.symmetric(
           vertical: 24,
-          horizontal: 0,
+          horizontal: 16,
+        ),
+        margin: const EdgeInsets.symmetric(
+          vertical: 16,
+          horizontal: 16,
         ),
         decoration: BoxDecoration(
           color: const Color.fromRGBO(255, 255, 255, 0.15),
@@ -60,6 +63,7 @@ class ViolationSelectOptionsWidget extends StatelessWidget {
             ),
             CustomTextWidget(
               subtitle,
+              maxLines: 10,
               textStyle: AppStyle.violationSelectOptionSubtitleStyle,
             ),
           ],

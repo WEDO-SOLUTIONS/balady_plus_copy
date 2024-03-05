@@ -91,7 +91,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                                       .extension<ThemeTextStyles>()
                                       ?.accentS
                                       .copyWith(color: Colors.black87),
-                                )
+                                ),
                               ],
                             ),
                           ),
@@ -106,13 +106,13 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                     ],
                   ),
                   const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    padding: EdgeInsets.symmetric(vertical: 8),
                     child: Divider(
                       color: Colors.black54,
                     ),
                   ),
-                  LabeledElevatedButton(
-                    onPressed: () => MapnessLogger.share(),
+                  const LabeledElevatedButton(
+                    onPressed: MapnessLogger.share,
                     label: 'Export logs',
                   ),
                   Text(

@@ -13,6 +13,7 @@ import '../../../events/domain/entities/search_events/search_events_params.dart'
 import '../../../events/domain/usecase/get_search_events.dart';
 import '../../../map_page/data/model/investment_details_response.dart';
 import '../../../map_page/data/model/rental_details_response.dart';
+import '../../../weather_alerts/presentation/bloc/weather_alerts_cubit.dart';
 
 class BaladyServices {
   final WebService webService;
@@ -47,6 +48,34 @@ class BaladyServices {
     if (investmentDetailsResponse != null) {
       NavigationService.navigatorKey.currentState!.pushNamed(
           RouteName.investmentPage,
+          arguments: investmentDetailsResponse);
+    }
+    return investmentDetailsResponse;
+  }
+
+  Future<InvestmentDetailsResponse?> getDirectRentalDetails(String id) async {
+    EasyLoading.show();
+
+    bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
+    InvestmentDetailsResponse? investmentDetailsResponse;
+    try {
+      final response = await webService.dio.get(
+        sl<EnvType>().domain + "v1/ims/direct-rental-opportunities" + "/$id",
+        options: Options(headers: {
+          'Authorization':
+              "Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}",
+        }),
+      );
+
+      investmentDetailsResponse =
+          InvestmentDetailsResponse.fromJson(response.data);
+    } catch (ex) {}
+
+    EasyLoading.dismiss();
+
+    if (investmentDetailsResponse != null) {
+      NavigationService.navigatorKey.currentState!.pushNamed(
+          RouteName.DirectRentalPage,
           arguments: investmentDetailsResponse);
     }
     return investmentDetailsResponse;
@@ -102,4 +131,18 @@ class BaladyServices {
           .tr()
           .replaceAll("{}", CommonProperties.userLocationGIS!.cityName!)
       : "search_map_text".tr();
+
+  static enableLocationTracking(bool check) {
+    sharedPrefs.setLocationConsent(check);
+
+    if (check == true) {
+      sl<WeatherAlertsCubit>().startTracking();
+    } else {
+      sl<WeatherAlertsCubit>().stopTracking();
+    }
+  }
+
+  static bool getLocationTrackingStatus() {
+    return sharedPrefs.getLocationConsent() ?? false;
+  }
 }

@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_favorite_dialog_button.dart';
-import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
@@ -12,19 +11,19 @@ import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 
 class PoiFavoriteDialog extends ConsumerStatefulWidget {
-  final FavouriteItem favItem;
 
   const PoiFavoriteDialog({
     required this.favItem,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
+  final FavouriteItem favItem;
 
   @override
   ConsumerState<PoiFavoriteDialog> createState() => _PoiFavoriteDialogState();
 }
 
 class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
-  void _awaitPop(Future<void> future) async {
+  Future<void> _awaitPop(Future<void> future) async {
     await future;
 
     if (context.mounted) Navigator.of(context).pop();
@@ -45,9 +44,9 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
     }
 
     final fav = favState.requireValue;
-    final showHome = fav?.home == null;
-    final showWork = fav?.work == null;
-    final isFavourite = fav?.items.firstWhereOrNull(
+    final showHome = fav.home == null;
+    final showWork = fav.work == null;
+    final isFavourite = fav.items.firstWhereOrNull(
           (element) =>
               element.entity?.id == widget.favItem.entity?.id &&
               widget.favItem.entity?.id != null,
@@ -100,7 +99,7 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
               backgroundColor: Colors.white,
               onPressed: () => Navigator.of(context).pop(),
               label: context.l10n.cancel,
-            )
+            ),
           ],
         ),
       ),
@@ -112,7 +111,7 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
       final favNotifier = ref.read(favouriteRepositoryProvider.notifier);
       _awaitPop(isFavourite
           ? favNotifier.delete(widget.favItem)
-          : favNotifier.addItem(widget.favItem));
-    });
+          : favNotifier.addItem(widget.favItem),);
+    },);
   }
 }

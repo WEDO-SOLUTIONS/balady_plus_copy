@@ -8,7 +8,9 @@ import com.dgis.map.map_api.Messages.GeoPointMessage
 import com.dgis.map.map_api.Messages.RouteEditorRouteParamsMessage
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Context
+import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.Future
+import ru.dgis.sdk.LevelId
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
@@ -89,7 +91,19 @@ class RouteHandler(
                 RouteSearchPoint(GeoPoint(it.latitude, it.longitude))
             }
         } else {
-            RouteSearchPoint(GeoPoint(params.startPoint!!.latitude, params.startPoint!!.longitude))
+            RouteSearchPoint(
+                coordinates = GeoPoint(
+                    params.startPoint!!.point.latitude,
+                    params.startPoint!!.point.longitude
+                ),
+                objectId = DgisObjectId(
+                    objectId = params.startPoint!!.objectId?.objectId ?: 0,
+                    entranceId = params.startPoint!!.objectId?.entranceId ?: 0,
+                ),
+                levelId = params.startPoint!!.levelId?.let {
+                    LevelId(it)
+                }
+            )
         }
         val finishPoint = if (params.finishPoint == null) {
             locationSource.lastLocation?.let {
@@ -97,10 +111,17 @@ class RouteHandler(
             }
         } else {
             RouteSearchPoint(
-                GeoPoint(
-                    params.finishPoint!!.latitude,
-                    params.finishPoint!!.longitude
-                )
+                coordinates = GeoPoint(
+                    params.finishPoint!!.point.latitude,
+                    params.finishPoint!!.point.longitude
+                ),
+                objectId = DgisObjectId(
+                        objectId = params.finishPoint!!.objectId?.objectId ?: 0,
+                        entranceId = params.finishPoint!!.objectId?.entranceId ?: 0,
+                ),
+                levelId = params.finishPoint!!.levelId?.let {
+                    LevelId(it)
+                }
             )
         }
 

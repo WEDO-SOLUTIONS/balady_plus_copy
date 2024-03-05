@@ -52,7 +52,7 @@ class KiblahHeader extends ConsumerWidget {
                 .extension<ThemeTextStyles>()!
                 .textL
                 .copyWith(color: Colors.white),
-          )
+          ),
         ],
       ),
     );

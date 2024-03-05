@@ -10,22 +10,20 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 enum ImageState { loading, loaded, error }
 
 class LoadingImage extends ConsumerStatefulWidget {
+
+  const LoadingImage({
+    required this.imageUrl, required this.loadingWidget, super.key,
+    this.onImageReady,
+    this.fit,
+    this.onImageTap,
+    this.isAssetImg = false,
+  });
   final String imageUrl;
   final Widget loadingWidget;
   final BoxFit? fit;
   final VoidCallback? onImageReady;
   final bool? isAssetImg;
   final Function(String name, bool? isAsset)? onImageTap;
-
-  const LoadingImage({
-    Key? key,
-    required this.imageUrl,
-    this.onImageReady,
-    required this.loadingWidget,
-    this.fit,
-    this.onImageTap,
-    this.isAssetImg = false,
-  }) : super(key: key);
 
   @override
   ConsumerState<LoadingImage> createState() => _LoadingImageState();
@@ -52,7 +50,7 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
 
   Future<void> loadImage(BuildContext context) async {
     /// await for image to be ready
-    bool failed = false;
+    var failed = false;
     if (widget.isAssetImg == false) {
       await precacheImage(
         NetworkImage(widget.imageUrl),

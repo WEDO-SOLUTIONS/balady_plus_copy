@@ -218,7 +218,7 @@ class NewAppointmentViewModel extends BaseViewModel {
   }
 
   Future<bool> getMunicipalities({bool showLoad = false}) async {
-    if (municipalitiesList.isNotEmpty) return true;
+    // if (municipalitiesList.isNotEmpty) return true;
     if (showLoad) showLoading();
     Tuple3<bool?, String?, Municipality?> response =
         await _repository.getMunicipalities();
@@ -568,12 +568,12 @@ class NewAppointmentViewModel extends BaseViewModel {
 
   Future<bool> getLookUpListCategory() async {
     bool isSuccess = false;
-    if (categoryTypeResponse?.data?.result != null &&
-        categoryTypeResponse!.data!.result!.isNotEmpty) {
-      isSuccess = true;
-    } else {
-      isSuccess = await getLookUpList("service-category");
-    }
+    // if (categoryTypeResponse?.data?.result != null &&
+    //     categoryTypeResponse!.data!.result!.isNotEmpty) {
+    //   isSuccess = true;
+    // } else {
+    isSuccess = await getLookUpList("service-category");
+    // }
     if (isSuccess) {
       setCatetgories(categoryTypeResponse);
       if (categoryTypeResponse != null) {

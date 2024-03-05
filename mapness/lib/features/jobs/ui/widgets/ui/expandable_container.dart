@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ExpandableContainer extends StatefulWidget {
-  final String title;
-  final String data;
 
   const ExpandableContainer({
     required this.title,
     required this.data,
     super.key,
   });
+  final String title;
+  final String data;
 
   @override
   ExpandableContainerState createState() => ExpandableContainerState();
@@ -50,7 +50,7 @@ class ExpandableContainerState extends State<ExpandableContainer> {
                   ),
                 ),
               ],
-            ));
+            ),);
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       width: double.infinity,

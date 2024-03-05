@@ -8,6 +8,7 @@ import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_fe
 import 'package:flutter/material.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppColorsTheme, AppFontWeight, IconPath;
+import 'custom_text_widget.dart';
 
 class CityWidget extends StatelessWidget {
   final String cityName;
@@ -35,7 +36,6 @@ class CityWidget extends StatelessWidget {
             //crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                height: 68,
                 width: 68,
                 margin: const EdgeInsetsDirectional.only(end: 10),
                 decoration: BoxDecoration(
@@ -72,14 +72,15 @@ class CityWidget extends StatelessWidget {
               ),
               const CustomVerticalSpace(height: 4),
               SizedBox(
-                width: 50,
+                //  width: 50,
                 child: Center(
-                  child: CustomTextWidget(
+                  child: CustomAutoSizeTextWidget(
                     cityName,
                     textAlign: TextAlign.center,
-                    fontSize: 13,
-                    maxLines: 3,
-                    //  textOverflow: TextOverflow.,
+                    maxFontSize: 13,
+                    minFontSize: 9,
+                    maxLines: 1,
+                    // textOverflow: TextOverflow.ellipsis,
                     fontWeight: AppFontWeight.medium,
                     fontColor:
                         isSelected ? AppColor.darkTurquoise : AppColor.black,

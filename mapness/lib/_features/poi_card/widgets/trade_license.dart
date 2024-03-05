@@ -2,14 +2,13 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
-import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class TradeLicense extends StatelessWidget {
-  final TradeLicenseMessage? tradeLicense;
 
   const TradeLicense(this.tradeLicense, {super.key});
+  final TradeLicenseMessage? tradeLicense;
 
   @override
   Widget build(BuildContext context) {

@@ -7,15 +7,13 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class SearchActions extends StatelessWidget {
   const SearchActions({
-    super.key,
-    required this.children,
+    required this.children, super.key,
   });
 
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -36,22 +34,18 @@ class SearchActions extends StatelessWidget {
         itemCount: children.length,
       ),
     );
-  }
 }
 
 class SearchActionRow extends StatelessWidget {
   const SearchActionRow({
-    super.key,
-    required this.icon,
-    required this.title,
+    required this.icon, required this.title, super.key,
   });
 
   final String icon;
   final String title;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context) => Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 16,
       ),
@@ -93,5 +87,4 @@ class SearchActionRow extends StatelessWidget {
         ],
       ),
     );
-  }
 }

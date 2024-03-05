@@ -7,12 +7,11 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
 class PersonalData extends ConsumerWidget {
-  final SsoUserInfo userInfo;
 
   const PersonalData({
-    super.key,
-    required this.userInfo,
+    required this.userInfo, super.key,
   });
+  final SsoUserInfo userInfo;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -53,7 +52,7 @@ class PersonalData extends ConsumerWidget {
               ),
             ),
             PersonalDataRow(
-              title: userInfo.mail ?? "",
+              title: userInfo.mail ?? '',
               subtitle: context.l10n.email,
             ),
             Padding(
@@ -65,7 +64,7 @@ class PersonalData extends ConsumerWidget {
               ),
             ),
             PersonalDataRow(
-              title: userInfo.dob ?? "",
+              title: userInfo.dob ?? '',
               subtitle: context.l10n.dateOfBirth,
             ),
             Padding(
@@ -77,7 +76,7 @@ class PersonalData extends ConsumerWidget {
               ),
             ),
             PersonalDataRow(
-              title: userInfo.arName ?? "",
+              title: userInfo.arName ?? '',
               subtitle: context.l10n.arabicFullName,
             ),
             Padding(
@@ -89,7 +88,7 @@ class PersonalData extends ConsumerWidget {
               ),
             ),
             PersonalDataRow(
-              title: userInfo.enName ?? "",
+              title: userInfo.enName ?? '',
               subtitle: context.l10n.englishFullName,
             ),
             Padding(
@@ -101,7 +100,7 @@ class PersonalData extends ConsumerWidget {
               ),
             ),
             PersonalDataRow(
-              title: userInfo.nationality ?? "",
+              title: userInfo.nationality ?? '',
               subtitle: context.l10n.nationality,
             ),
           ],
@@ -113,9 +112,7 @@ class PersonalData extends ConsumerWidget {
 
 class PersonalDataRow extends StatelessWidget {
   const PersonalDataRow({
-    super.key,
-    required this.title,
-    required this.subtitle,
+    required this.title, required this.subtitle, super.key,
   });
 
   final String title;

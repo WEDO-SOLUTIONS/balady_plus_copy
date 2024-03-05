@@ -37,7 +37,7 @@ class EtmamSubServicePageCardWidget extends StatelessWidget {
               Radius.circular(16),
             ),
           ),
-          margin: const EdgeInsets.only(bottom: Constants.smallPadding),
+          // margin: const EdgeInsets.only(bottom: Constants.smallPadding),
           padding: const EdgeInsets.symmetric(
             horizontal: Constants.semiMediumPadding,
             vertical: Constants.mediumPadding,
@@ -62,7 +62,7 @@ class EtmamSubServicePageCardWidget extends StatelessWidget {
                       fontColor: AppColor.black,
                       fontSize: 14.0,
                       fontWeight: AppFontWeight.bold,
-                      maxLines: 2,
+                      maxLines: 5,
                     ),
                   ],
                 ),

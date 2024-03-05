@@ -3,26 +3,32 @@ import UIKit
 import DGis
 
 class DgisPluginApi: NSObject, PluginApi {
+    var registrar: FlutterPluginRegistrar
+    
+    init(registrar: FlutterPluginRegistrar) {
+        self.registrar = registrar
+    }
 
     func initializeMessage(_ message: LogOptionsMessage?, configMessage: VendorConfigMessage, completion: @escaping (FlutterError?) -> Void) {
         initializeDGis(logOptions: message?.logOptions, configMessage: configMessage)
         completion(nil)
     }
     
-    private func initializeDGis(logOptions: LogOptions?,configMessage: VendorConfigMessage) {
+    private func initializeDGis(logOptions: LogOptions?, configMessage: VendorConfigMessage) {
         let vendorConfigName: String
             switch configMessage {
             case .urbiPreProd:
-                vendorConfigName = "urbi-pre-prod-vendor-config"
+                vendorConfigName = "assets/maps/configs/urbi-pre-prod-vendor-config.jsonx"
             case .momrahProd:
-                vendorConfigName = "momrah-prod-vendor-config"
+                vendorConfigName = "assets/maps/configs/momrah-prod-vendor-config.jsonx"
             case .momrahStg:
-                vendorConfigName = "momrah-staging-vendor-config"
+                vendorConfigName = "assets/maps/configs/momrah-staging-vendor-config.jsonx"
             @unknown default:
-                vendorConfigName = "momrah-prod-vendor-config"
+                vendorConfigName = "assets/maps/configs/momrah-prod-vendor-config.jsonx"
             }
+        let vendorResource = registrar.lookupKey(forAsset: vendorConfigName)
+        let vendorConfigPath = Bundle.main.path(forResource: vendorResource, ofType: nil)
         
-        let vendorConfigPath = Bundle.main.path(forResource: vendorConfigName, ofType: "jsonx")
         let vendorConfigFile = vendorConfigPath.map { File(path: $0) }
         let vendorConfig = vendorConfigPath.flatMap(VendorConfig.from)
         
@@ -47,6 +53,6 @@ public class SwiftDgisMapPlugin: NSObject, FlutterPlugin {
         let factory = DgisMapViewFactory(registrar: registrar)
 
         registrar.register(factory, withId: self.flutterViewId)
-        PluginApiSetup(registrar.messenger(), DgisPluginApi.init())
+        PluginApiSetup(registrar.messenger(), DgisPluginApi.init(registrar: registrar))
     }
 }

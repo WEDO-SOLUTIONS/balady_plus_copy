@@ -6,6 +6,7 @@ import com.dgis.map.extensions.toLogOptions
 import com.dgis.map.map_api.Messages
 import com.dgis.map.map_api.Messages.MapApi
 import com.dgis.map.map_api.Messages.PluginApi
+import io.flutter.FlutterInjector
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -32,14 +33,19 @@ class DgisMapPlugin : FlutterPlugin, PluginApi, ActivityAware {
                                logOptions: LogOptions?,
                                message: Messages.VendorConfigMessage?){
        val vendorConfigFile = when (message) {
-            Messages.VendorConfigMessage.URBI_PRE_PROD -> "urbi-pre-prod-vendor-config.jsonx"
-            Messages.VendorConfigMessage.MOMRAH_PROD -> "momrah-prod-vendor-config.jsonx"
-            Messages.VendorConfigMessage.MOMRAH_STG -> "momrah-staging-vendor-config.jsonx"
-            null -> "momrah-prod-vendor-config.jsonx"
+            Messages.VendorConfigMessage.URBI_PRE_PROD -> "assets/maps/configs/urbi-pre-prod-vendor-config.jsonx"
+            Messages.VendorConfigMessage.MOMRAH_PROD -> "assets/maps/configs/momrah-prod-vendor-config.jsonx"
+            Messages.VendorConfigMessage.MOMRAH_STG -> "assets/maps/configs/momrah-staging-vendor-config.jsonx"
+            null -> "assets/maps/configs/momrah-prod-vendor-config.jsonx"
         }
+        val vendorAsset = FlutterInjector
+            .instance()
+            .flutterLoader()
+            .getLookupKeyForAsset(vendorConfigFile)
+
         val vendorContent = context
                 .assets
-                .open(vendorConfigFile)
+                .open(vendorAsset)
                 .bufferedReader()
                 .use(BufferedReader::readText)
         vendorConfig = vendorContent.let { VendorConfig.from(it) }
@@ -47,7 +53,7 @@ class DgisMapPlugin : FlutterPlugin, PluginApi, ActivityAware {
             appContext,
             logOptions = logOptions ?: LogOptions(),
             vendorConfig = VendorConfig(
-                fromAsset = VendorConfigFromAsset(vendorConfigFile)
+                fromAsset = VendorConfigFromAsset(vendorAsset)
             )
         )
     }

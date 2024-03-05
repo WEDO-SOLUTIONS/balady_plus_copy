@@ -14,27 +14,27 @@ class GradientStroke extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Rect innerRect = Rect.fromLTRB(
+    final innerRect = Rect.fromLTRB(
       strokeWidth,
       strokeWidth,
       size.width - strokeWidth,
       size.height - strokeWidth,
     );
-    Rect outerRect = Offset.zero & size;
+    final outerRect = Offset.zero & size;
 
-    RRect innerRoundedRect =
+    final innerRoundedRect =
         RRect.fromRectAndRadius(innerRect, Radius.circular(borderRadius));
-    RRect outerRoundedRect =
+    final outerRoundedRect =
         RRect.fromRectAndRadius(outerRect, Radius.circular(borderRadius));
 
     p.shader = gradient.createShader(outerRect);
-    Path borderPath = _calculateBorderPath(outerRoundedRect, innerRoundedRect);
+    final borderPath = _calculateBorderPath(outerRoundedRect, innerRoundedRect);
     canvas.drawPath(borderPath, p);
   }
 
   Path _calculateBorderPath(RRect outerRect, RRect innerRect) {
-    Path outerRectPath = Path()..addRRect(outerRect);
-    Path innerRectPath = Path()..addRRect(innerRect);
+    final outerRectPath = Path()..addRRect(outerRect);
+    final innerRectPath = Path()..addRRect(innerRect);
     return Path.combine(PathOperation.difference, outerRectPath, innerRectPath);
   }
 

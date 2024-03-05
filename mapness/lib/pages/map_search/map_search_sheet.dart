@@ -117,7 +117,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
     );
     await searchObjectManager.removeAllMarkers();
     if (searchState is SearchStateResults) {
-      final List<Marker> markers = [];
+      final markers = <Marker>[];
       for (final markerInfo in searchState.results.itemMarkerInfos ??
           List<ItemMarkerInfoMessage>.empty()) {
         markers.add(
@@ -126,7 +126,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
                 context.l10n.invalid,
             onTap: () {
               PoiMapRoute.open(
-                  ref.read(goRouterProvider), markerInfo.objectId!.objectId);
+                  ref.read(goRouterProvider), markerInfo.objectId!.objectId,);
             },
             options: MarkerOptionsMessage(
               position: markerInfo!.geoPoint,
@@ -184,7 +184,7 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
       ..listen<RouteState?>(currentRouteProvider, _currentRouteListener);
 
     final closable = ref.watch(searchProvider(searchScope)
-            .select((value) => value is! SearchStateResults)) ||
+            .select((value) => value is! SearchStateResults),) ||
         closing;
 
     return Directionality(

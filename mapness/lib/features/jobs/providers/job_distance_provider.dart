@@ -41,7 +41,7 @@ class JobDistance extends _$JobDistance {
         final briefPoint = responseDistance.first;
 
         final result = await dgisController.findBriefRouteInfos(
-            options: RouteSearchOptionsMessage.car, finishPoint: briefPoint);
+            options: RouteSearchOptionsMessage.car, finishPoint: briefPoint,);
 
         return JobDistanceInfo(
           briefMessages: result.whereType<BriefRouteInfoMessage>().toList(),

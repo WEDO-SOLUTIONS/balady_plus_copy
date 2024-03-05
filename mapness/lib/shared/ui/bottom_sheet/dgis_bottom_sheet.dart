@@ -9,10 +9,9 @@ import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_theme.dart';
 import 'package:mapness/shared/ui/bottom_sheet/lib/scroll_listeners.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/dgis_handle.dart';
+import 'package:mapness/shared/ui/bottom_sheet/ui/disable_overscroll_behavior.dart';
+import 'package:mapness/shared/ui/bottom_sheet/ui/vertival_scroll_listener.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/widget_size_notifier.dart';
-
-import 'ui/disable_overscroll_behavior.dart';
-import 'ui/vertival_scroll_listener.dart';
 
 // Map controls builder type
 typedef MapControlsBuilder = Widget Function(
@@ -38,6 +37,52 @@ enum Expansion {
 }
 
 class DgisBottomSheet extends StatefulWidget {
+  DgisBottomSheet({
+    required this.initialExpansion,
+    required this.availableExpansions,
+    this.collapsedHeight,
+    this.body,
+    this.actions,
+    this.scrollableBody,
+    this.middleHeight,
+    this.onExpansionChanged,
+    this.onVisibleHeightChanged,
+    this.printDebugLogs = false,
+    this.showHandle = false,
+    this.showBarrier = true,
+    super.key,
+    this.scrollHeader,
+    this.hiddenHeight = 0,
+    this.controller,
+    this.mapControlsBuilder,
+  })  : assert(
+          !availableExpansions.contains(Expansion.collapsed) ||
+              collapsedHeight != null && collapsedHeight > 0,
+          'You should provide collapsedHeight Expansion.collapsed which should be greater than 0',
+        ),
+        assert(
+          !availableExpansions.contains(Expansion.middle) ||
+              middleHeight != null && middleHeight > 0,
+          'You should provide middleHeight Expansion.middle which should be greater than 0',
+        ),
+        assert(
+          !availableExpansions.contains(Expansion.collapsed) ||
+              !availableExpansions.contains(Expansion.middle) ||
+              collapsedHeight! < middleHeight!,
+          'CollapsedHeight should be less than middleHeight',
+        ),
+        assert(
+          body != null || scrollableBody != null,
+          'You must provide body or scrollableBody',
+        ),
+        assert(
+          body == null || scrollableBody == null,
+          "You can't provide both body and scrollableBody simultaneously",
+        ),
+        assert(
+          availableExpansions.isNotEmpty,
+          "AvailableExpansions can't be empty",
+        );
   final double? middleHeight;
   final double? collapsedHeight;
   final double hiddenHeight;
@@ -67,54 +112,6 @@ class DgisBottomSheet extends StatefulWidget {
   final void Function(Expansion expansion, {bool byUser})? onExpansionChanged;
   final ValueChanged<double>? onVisibleHeightChanged;
   final bool printDebugLogs;
-
-  DgisBottomSheet({
-    required this.initialExpansion,
-    required this.availableExpansions,
-    this.collapsedHeight,
-    this.body,
-    this.actions,
-    this.scrollableBody,
-    this.middleHeight,
-    this.onExpansionChanged,
-    this.onVisibleHeightChanged,
-    this.printDebugLogs = false,
-    this.showHandle = false,
-    this.showBarrier = true,
-    Key? key,
-    this.scrollHeader,
-    this.hiddenHeight = 0,
-    this.controller,
-    this.mapControlsBuilder,
-  })  : assert(
-          !availableExpansions.contains(Expansion.collapsed) ||
-              collapsedHeight != null && collapsedHeight > 0,
-          'You should provide collapsedHeight Expansion.collapsed which should be greater than 0',
-        ),
-        assert(
-          !availableExpansions.contains(Expansion.middle) ||
-              middleHeight != null && middleHeight > 0,
-          'You should provide middleHeight Expansion.middle which should be greater than 0',
-        ),
-        assert(
-          !availableExpansions.contains(Expansion.collapsed) ||
-              !availableExpansions.contains(Expansion.middle) ||
-              collapsedHeight! < middleHeight!,
-          'CollapsedHeight should be less than middleHeight',
-        ),
-        assert(
-          body != null || scrollableBody != null,
-          'You must provide body or scrollableBody',
-        ),
-        assert(
-          body == null || scrollableBody == null,
-          'You can\'t provide both body and scrollableBody simultaneously',
-        ),
-        assert(
-          availableExpansions.isNotEmpty,
-          'AvailableExpansions can\'t be empty',
-        ),
-        super(key: key);
 
   @override
   State<DgisBottomSheet> createState() => _DgisBottomSheetState();
@@ -185,7 +182,9 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
       'Calculating background opacity: _visibleHeight=$_visibleHeight, _maxVisibleHeight=$_maxVisibleHeight, preMaxVisibleHeight=$preMaxVisibleHeight',
     );
     return max(
-            0, min(_visibleHeight, _maxVisibleHeight) - preMaxVisibleHeight) /
+          0,
+          min(_visibleHeight, _maxVisibleHeight) - preMaxVisibleHeight,
+        ) /
         (_maxVisibleHeight - preMaxVisibleHeight);
   }
 
@@ -223,7 +222,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
     final minStageHeigth = [
       widget.collapsedHeight,
       widget.middleHeight,
-      _maxVisibleHeight
+      _maxVisibleHeight,
     ].whereNotNull().fold(double.infinity, min);
 
     /// if greater then nearest available dimension return action height
@@ -385,7 +384,8 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
                           _screenHeight = newScreenHeight;
                           _printDebugLog('_screenHeight=$_screenHeight');
                           _printDebugLog(
-                              '_maxVisibleHeight=$_maxVisibleHeight');
+                            '_maxVisibleHeight=$_maxVisibleHeight',
+                          );
 
                           _visibleHeight =
                               min(_visibleHeight, _maxVisibleHeight);
@@ -670,23 +670,21 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
     }
   }
 
-  double _visibleHeightByExpansion(Expansion expansion,
-      [DgisBottomSheet? widget]) {
+  double _visibleHeightByExpansion(
+    Expansion expansion, [
+    DgisBottomSheet? widget,
+  ]) {
     widget ??= this.widget;
     var visibleHeight = 0.0;
     switch (expansion) {
       case Expansion.expanded:
         visibleHeight = _maxVisibleHeight;
-        break;
       case Expansion.middle:
         visibleHeight = widget.middleHeight!;
-        break;
       case Expansion.collapsed:
         visibleHeight = widget.collapsedHeight!;
-        break;
       case Expansion.hidden:
         visibleHeight = widget.hiddenHeight;
-        break;
     }
 
     return min(visibleHeight, _maxVisibleHeight);
@@ -753,7 +751,8 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
           expansion != Expansion.expanded &&
           position.pixels > 0) {
         _printDebugLog(
-            'setExpansion. First start with scrollableBodyPixelsAnimation');
+          'setExpansion. First start with scrollableBodyPixelsAnimation',
+        );
         final visibleHeightDelta = _visibleHeight - visibleHeight;
 
         visibleHeightAnimationIntervalBegin =
@@ -771,7 +770,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
           CurvedAnimation(
             parent: animationController,
             curve: Interval(
-              0.0,
+              0,
               visibleHeightAnimationIntervalBegin,
             ),
           ),
@@ -810,7 +809,8 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
 
       await animationController.forward().whenComplete(() {
         _printDebugLog(
-            'animation complete, _visibleHeight=$_visibleHeight, visibleHeightAnimation=${visibleHeightAnimation.isCompleted}');
+          'animation complete, _visibleHeight=$_visibleHeight, visibleHeightAnimation=${visibleHeightAnimation.isCompleted}',
+        );
         setState(() {
           _hasActiveAnimation = false;
         });

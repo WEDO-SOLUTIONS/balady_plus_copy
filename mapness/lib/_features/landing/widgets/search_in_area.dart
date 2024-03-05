@@ -14,7 +14,7 @@ class SearchInArea extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final visible = ref.watch(searchInRectProvider.select(
       (value) => value.$2,
-    ));
+    ),);
 
     return visible
         ? MapButton(
