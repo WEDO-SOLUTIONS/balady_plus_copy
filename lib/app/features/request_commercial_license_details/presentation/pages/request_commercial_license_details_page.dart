@@ -72,7 +72,7 @@ class RequestCommercialLicenseDetailsPage extends StatelessWidget {
                           create: (BuildContext context) =>
                               RequestCommercialLicenseActionViewModel(
                             webService: sl(),
-                            requestId: data['requestNumber'],
+                            requestId: int.parse(data['requestNumber']),
                             requestTypeId:
                                 state.requestCommercialLicenseDetails!.typeId,
                             reasonCancel: state.requestCommercialLicenseDetails!
