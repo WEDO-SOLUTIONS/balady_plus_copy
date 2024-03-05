@@ -44,10 +44,11 @@ class ViolationsListItem extends StatelessWidget {
                   textStyle: AppStyle.requestNumberTextStle,
                 ),
               ),
-              HomeTag(
-                title: violations.billStatusName ?? '',
-                backgroundColor: AppColor.secondary100Light,
-              ),
+              if ((violations.billStatusName ?? "").isNotEmpty)
+                HomeTag(
+                  title: violations.billStatusName ?? '',
+                  backgroundColor: AppColor.secondary100Light,
+                ),
             ],
           ),
           Padding(
@@ -64,7 +65,7 @@ class ViolationsListItem extends StatelessWidget {
               children: [
                 ViolationsParameter(
                   title: 'violationBillNo'.tr(),
-                  value: violations.billNumber??'',
+                  value: violations.billNumber ?? '',
                 ),
                 ViolationsParameter(
                   title: 'issueViolationDate'.tr(),
@@ -75,7 +76,8 @@ class ViolationsListItem extends StatelessWidget {
                 ViolationsParameter(
                   title: 'objectionLastApplyDate'.tr(),
                   value: violations.objectionLastApplyDate != null
-                      ? DateFormat.yMd().format(violations.objectionLastApplyDate!)
+                      ? DateFormat.yMd()
+                          .format(violations.objectionLastApplyDate!)
                       : "",
                 ),
                 ViolationsParameter(
@@ -98,7 +100,6 @@ class ViolationsListItem extends StatelessWidget {
               //       flex: 10,
               //       child: ElevatedButtonWidget.applyObjection(
               //           onPressed: () => onApply())),
-
             ],
           ),
         ],

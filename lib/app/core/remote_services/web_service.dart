@@ -744,6 +744,8 @@ class WebService {
           'Basic ' + base64Encode(utf8.encode('$username:$password'));
     }
     try {
+      print(requestUrl);
+      print(data);
       var response =
           await http.post(Uri.parse(requestUrl), body: data, headers: {
         'Content-type': 'application/json',

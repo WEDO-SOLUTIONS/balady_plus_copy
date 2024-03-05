@@ -333,7 +333,7 @@ class DeceasedInfo extends StatelessWidget {
           ),
 
           FieldData(
-            title: Helpers.translatingWord("burialCity"),
+            title: Helpers.translatingWord("burial_city"),
             subTitle: burialCity,
           ),
           const CustomVerticalSpace(

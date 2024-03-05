@@ -1,0 +1,108 @@
+"navi.better_route_bar.caption" = "There is a better route";
+
+"navi.better_route_bar.title_faster" = "Found a route %d min faster";
+
+"navi.better_route_bar.title_longer" = "Found a route %d min longer";
+
+"navi.better_route_bar.title_same" = "Found a route. Same time";
+
+"navi.better_route_bar.cancel" = "Cancel";
+
+"navi.message.update_route" = "Update the route";
+
+"navi.message.lost_gps" = "GPS signal is lost";
+
+"navi.message.finish" = "You have arrived!";
+
+"navi.eta.arrival" = "arrival";
+
+"navi.eta.free_roam_title" = "Manage the trip";
+
+"navi.exit" = "End the trip";
+
+"navi.road.exit" = "Exit";
+
+"navi.additional.maneuver.then" = "Then";
+
+"navi.dashboard.action.view_route" = "View route";
+
+"navi.dashboard.voice_settings_title" = "Sound settings";
+
+"navi.dashboard.voice_settings_subtitle_on" = "Maneuvers turned on";
+
+"navi.dashboard.voice_settings_subtitle_off" = "Maneuvers turned off";
+
+"navi.dashboard.floor_name" = "%@ floor";
+
+"navi.dashboard.indoor_navigation_title" = "Indoor navigation";
+
+"navi.finish.dashboard.parking_action_title" = "Parking lots";
+
+"navi.route_overview.title" = "Continue the trip";
+
+"timeinterval.min" = "min";
+
+"timeinterval.m" = "m";
+
+"timeinterval.hour" = "h";
+
+"distance.m" = "m";
+
+"distance.km" = "km";
+
+"speed.kmph" = "km/h";
+
+"route.search.result.notfound.title" = "Route not found.\nTry changing the start\nor the end point of the route.";
+
+"route.preview.pedestrian_path_comment" = "on foot";
+
+"route.details.start_point_name" = "Route start";
+
+"route.details.start_point_image_name" = "card_ppnot_point_a";
+
+"route.details.finish_point_name" = "Route finish";
+
+"route.details.finish_point_image_name" = "card_ppnot_point_b";
+
+"route.details.finish_point_subtitle" = "You have arrived!";
+
+"route.details.get_off_after" = "Get off after";
+
+"route.details.public_transport_type_bus" = "Bus";
+
+"route.details.public_transport_type_trolleybus" = "Trolleybus";
+
+"route.details.public_transport_type_tram" = "Tram";
+
+"route.details.public_transport_type_shuttle_bus" = "Shuttle bus";
+
+"route.details.public_transport_type_metro" = "Metro";
+
+"route.details.public_transport_type_suburban_train" = "Suburban train";
+
+"route.details.public_transport_type_funicular_railway" = "Funicular railway";
+
+"route.details.public_transport_type_monorail" = "Monorail";
+
+"route.details.public_transport_type_waterway" = "Waterway transport";
+
+"route.details.public_transport_type_cable_car" = "Cable car";
+
+"route.details.public_transport_type_speed_tram" = "Speed tram";
+
+"route.details.public_transport_type_premetro" = "Premetro";
+
+"route.details.public_transport_type_light_metro" = "Light metro";
+
+"route.details.public_transport_type_aeroexpress" = "Aeroexpress";
+
+"route.details.public_transport_type_mcc" = "MCC";
+
+"route.details.public_transport_type_mcd" = "MCD";
+
+"route.details.station.entrance_number_title_format" = "Exit No.%@";
+
+"route.details.station.entrance_title" = "Exit";
+
+"route.details.empty.view.title" = "Try to count your steps —\ndoctors recommend\nto make at least 10000 steps a day!";
+

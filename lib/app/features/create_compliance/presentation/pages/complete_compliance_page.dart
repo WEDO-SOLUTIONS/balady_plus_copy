@@ -32,7 +32,7 @@ class _CompleteCompliancePageState extends State<CompleteCompliancePage> {
       ..add(const GetMainUsagesEvent())
       ..add(const GetOwnerShipTypesEvent())
       ..add(const GetReciptTypesEvent())
-      ..add(const GetEngOfficesListEvent())
+      // ..add(const GetEngOfficesListEvent())
       ..add(GetLicensesEvent());
 
     WidgetsBinding.instance!.addPostFrameCallback((_) {

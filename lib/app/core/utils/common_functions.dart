@@ -91,6 +91,7 @@ import '../services/services_exports.dart'
         NavigationService,
         NoParams,
         WebService;
+import 'constants/apis/api_headers.dart';
 import 'constants/dialog_names.dart';
 import 'constants/ux_cam_events.dart';
 import 'enums/enums.dart';
@@ -860,10 +861,17 @@ class CommonFunctions {
         hoursFromAS12 = hoursFromAS12 - 12;
       }
 
-      if (fromTime.period == DayPeriod.pm) return "$hoursFromAS12:$minuteStr م";
+      if (fromTime.period == DayPeriod.pm)
+        return "$hoursFromAS12:$minuteStr " + "pm".tr();
 
       if (fromTime.period == DayPeriod.am) {
-        return "$hoursFromAS12:$minuteStr ص";
+        if (isAppAR == false) {
+          return "$hoursFromAS12:$minuteStr ص"
+              .replaceAll("ص", ("am").tr())
+              .replaceAll("م", ("pm").tr());
+        } else {
+          return "$hoursFromAS12:$minuteStr ص";
+        }
       }
     }
     return "";
@@ -911,6 +919,10 @@ class CommonFunctions {
       } else if (fromTime.period == DayPeriod.pm &&
           toTime.period == DayPeriod.pm) {
         time = "$hoursFromAS12:$minuteFromStr - $hoursToAS12:$minuteToStr م";
+
+        if (isAppAR == false) {
+          time = time.replaceAll("ص", ("am").tr()).replaceAll("م", ("pm").tr());
+        }
         return time;
       } else {
         String from = "";
@@ -926,6 +938,11 @@ class CommonFunctions {
         if (toTime.period == DayPeriod.pm) to = "$hoursToAS12:$minuteToStr م";
 
         if (toTime.period == DayPeriod.am) to = "$hoursToAS12:$minuteToStr ص";
+
+        if (isAppAR == false) {
+          from = from.replaceAll("ص", ("am").tr()).replaceAll("م", ("pm").tr());
+          to = to.replaceAll("ص", ("am").tr()).replaceAll("م", ("pm").tr());
+        }
 
         return "$from - $to";
       }
@@ -987,7 +1004,8 @@ class CommonFunctions {
       throw 'Could not launch $convertUrl';
   }
 
-  static openBaldyWithRefreshCookie(String? redirectUrl) async {
+  static openBaldyWithRefreshCookie(String? redirectUrl,
+      {bool pushReplacement = false}) async {
     if (redirectUrl == null) return;
     EasyLoading.show();
     GetCookie getCookie = GetCookie(repository: sl());
@@ -996,14 +1014,25 @@ class CommonFunctions {
     failureOrSuccessForCookie.fold((l) {
       CommonFunctions.showError("server_error_1".tr());
     }, (r) async {
-      NavigationService.navigatorKey.currentState?.pushNamed(
-        RouteName.inappWebview,
-        arguments: (
-          requestNum: 'request'.tr(),
-          url: redirectUrl,
-          isObjections: false
-        ),
-      );
+      if (!pushReplacement) {
+        NavigationService.navigatorKey.currentState?.pushNamed(
+          RouteName.inappWebview,
+          arguments: (
+            requestNum: 'request'.tr(),
+            url: redirectUrl,
+            isObjections: false
+          ),
+        );
+      } else {
+        NavigationService.navigatorKey.currentState?.pushReplacementNamed(
+          RouteName.inappWebview,
+          arguments: (
+            requestNum: 'request'.tr(),
+            url: redirectUrl,
+            isObjections: false
+          ),
+        );
+      }
     });
   }
 
@@ -1147,20 +1176,25 @@ class CommonFunctions {
     } catch (ex) {}
   }
 
-  static void showApigeeFile(String fileUrl, String fileName) async {
+  static void showApigeeFile(String fileUrl, String fileName,
+      {int? serviceId}) async {
     print(fileName);
     try {
       if (fileName.toLowerCase().contains(".png") ||
           fileName.toLowerCase().contains(".jpeg") ||
           fileName.toLowerCase().contains(".jpg")) {
-        //MM
-        print("HEETT");
-        NavigationService.navigatorKey.currentState!
-            .pushNamed(RouteName.apigeeImageFullScreen, arguments: fileUrl);
+        if (serviceId == 2) {
+          NavigationService.navigatorKey.currentState!
+              .pushNamed(RouteName.dmsImageFullScreen, arguments: fileUrl);
+        } else {
+          NavigationService.navigatorKey.currentState!
+              .pushNamed(RouteName.apigeeImageFullScreen, arguments: fileUrl);
+        }
       } else {
         try {
           EasyLoading.show();
-          File fileDownloaded = await createFileOfPdfUrl(fileUrl, fileName);
+          File fileDownloaded =
+              await createFileOfPdfUrl(fileUrl, fileName, serviceId: serviceId);
           EasyLoading.dismiss();
 
           /*  if (fileName.toLowerCase().contains(".pdf")) {
@@ -1187,8 +1221,8 @@ class CommonFunctions {
     }
   }
 
-  static Future<File> createFileOfPdfUrl(
-      String fileUrl, String fileName) async {
+  static Future<File> createFileOfPdfUrl(String fileUrl, String fileName,
+      {int? serviceId}) async {
     final url = fileUrl;
     Dio dio = Dio();
     dio.options.baseUrl = RemoteConfig.apigeeURL;
@@ -1198,16 +1232,20 @@ class CommonFunctions {
 
     dio.options.sendTimeout = const Duration(milliseconds: 60000);
     dio.addSentry();
-
     dio.options.responseType = ResponseType.bytes;
     dio.interceptors.add(AppInterceptors());
     ;
-    Response r = await WebService(dio: dio).dio.getUri(Uri.parse(url));
+    print("SERVCE $serviceId");
+
+    Response r = await WebService(dio: dio).dio.getUri(Uri.parse(url),
+        options: Options(
+            headers: {if (serviceId != null) "X-Service-Id": serviceId}));
     String extension =
         r.headers["Content-Type"].toString().split("/")[1].replaceAll("]", "");
-    print(r.headers["Content-Type"]);
+
     String dir = (await getTemporaryDirectory()).path;
     File file = new File('$dir/$fileName.$extension');
+
     await file.writeAsBytes(r.data);
     return file;
   }
@@ -1286,16 +1324,16 @@ class CommonFunctions {
   }
 
   static showBackGroundLocationConsent() async {
-    if (Platform.isAndroid) {
-      bool? consetnt = sharedPrefs.getLocationConsent();
-      if (consetnt != null) return;
-      await Future.delayed(const Duration(seconds: 10));
+    //if (Platform.isAndroid) {
+    bool? consetnt = sharedPrefs.getLocationConsent();
+    if (consetnt != null) return;
+    await Future.delayed(const Duration(seconds: 10));
 
-      showDialog(
-        context: NavigationService.navigatorKey.currentContext!,
-        builder: (ctx) => const LocationBackgroundConsentDialog(),
-      );
-    }
+    showDialog(
+      context: NavigationService.navigatorKey.currentContext!,
+      builder: (ctx) => const LocationBackgroundConsentDialog(),
+    );
+    //  }
   }
 
   static String getIssueCrWarning1() {
@@ -1320,6 +1358,23 @@ class CommonFunctions {
     } else {
       return '<p class="m-0 ng-star-inserted">Dear beneficiary, you can review the compliance requirements list for commercial signs by visiting the following link<a target="_balnk" href="https://balady.gov.sa/Services/DownloadUserGuide/218"> Compliance requirements list for commercial signs</a></p>';
     }
+  }
+
+  static String getDMSUrl(String id) {
+    return RemoteConfig.apigeeURL + "/v1/dms-mobile/files/$id";
+  }
+
+  static bool isFoundationDay() {
+    return false;
+    DateTime today = DateTime.now();
+
+    int todayDay = today.day;
+    int todayMonth = today.month;
+    int todayYear = today.year;
+    var allowedDays = [20, 21, 22, 23, 24, 25];
+    if (allowedDays.contains(todayDay) && todayMonth == 2 && todayYear == 2024)
+      return true;
+    return false;
   }
 }
 

@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/balady_calender/presentation/pages/balady_calendar_page.dart';
 import 'package:balady_plus/app/features/comercial_license_renew/presentation/commercial_license/screens/submit_application_successfully_renew.dart';
 import 'package:balady_plus/app/features/comercial_license_renew/renew_commercial_license_exports.dart'
     show RenewStartService, RenewCommercialLicenseScreen;
@@ -78,6 +79,9 @@ import '../../features/commercial_license/presentation/issue_start_service_scree
 import '../../features/commercial_license/presentation/step3/page/cr_map_page.dart';
 import '../../features/commercial_license/presentation/step6/page/commercial_otp_screen.dart';
 import '../../features/commercial_license/presentation/submit_application_successfully_new.dart';
+import '../../features/commercial_license_inquery/persentation/commercial_license_overview/commercial_license_overview_screen.dart';
+import '../../features/commercial_license_inquery/persentation/commercial_license_query/commercial_license_query_screen.dart';
+import '../../features/commercial_license_inquery/persentation/commercial_license_query_Details/commercial_license_query_details.dart';
 import '../../features/create_compliance/presentation/pages/compliance_details_page.dart';
 import '../../features/create_compliance/presentation/pages/map_page/complinace_map_page.dart';
 import '../../features/create_compliance/presentation/pages/non_compliance_screen.dart';
@@ -128,6 +132,7 @@ import '../../features/self_ratiing/presentation/pages/self_rating_result_page.d
 import '../../features/self_ratiing/presentation/pages/self_rating_section_page.dart';
 import '../../features/services/presentation/pages/all_services_page.dart';
 import '../../features/services/presentation/pages/dashboard_page/presentation/pages/profile_page.dart';
+import '../../features/unknow/pages/direct_page.dart';
 import '../../features/unknow/pages/investment_page.dart';
 import '../../features/unknow/pages/temp_rental_page.dart';
 import '../../features/_shared_feature_/presentation/pages/view_dms_image_screen.dart';
@@ -356,6 +361,7 @@ class Routes {
         RouteName.AppointmentsListScreen: (context) =>
             const AppointmentsListScreen(),
 
+        RouteName.baladyCalendarPage: (context) => const BaladyCalendarPage(),
         RouteName.splash: (context) => const SplashPage(),
         RouteName.etmamMainPage: (context) => const EtmamMainPage(),
         RouteName.etmamMainPageCitySelector: (context) =>
@@ -409,39 +415,40 @@ class Routes {
 
         RouteName.qrFacilityRatingRoute: (context) => FacilityRatingScreen(),
 
-        RouteName.qrFacilityScreenRoute: (context) => FacilityScreen(),
+        RouteName.qrFacilityScreenRoute: (context) => const FacilityScreen(),
 
-        RouteName.qrScreenRoute: (context) => QrScreen(),
+        RouteName.qrScreenRoute: (context) => const QrScreen(),
 
-        RouteName.qrPhotosRoute: (context) => FacilityPhotosScreen(),
+        RouteName.qrPhotosRoute: (context) => const FacilityPhotosScreen(),
 
         RouteName.forceUpdateRoute: (context) => ForceUpdatePage(),
 
-        RouteName.QAPage: (context) => QAPage(),
+        RouteName.QAPage: (context) => const QAPage(),
 
 //? Quran
-        RouteName.quranScreen: (context) => QuranPage(),
-        RouteName.menuQuranPage: (context) => MenuQuranPage(),
-        RouteName.quranBookMarkPage: (context) => QuranBookMarkPage(),
+        RouteName.quranScreen: (context) => const QuranPage(),
+        RouteName.menuQuranPage: (context) => const MenuQuranPage(),
+        RouteName.quranBookMarkPage: (context) => const QuranBookMarkPage(),
 
-        RouteName.quranDoaaPage: (context) => QuranDoaaPage(),
+        RouteName.quranDoaaPage: (context) => const QuranDoaaPage(),
 
-        RouteName.quranSearchPage: (context) => QuranSearchPage(),
+        RouteName.quranSearchPage: (context) => const QuranSearchPage(),
 
-        RouteName.ZmZmPointsPage: (context) => ZmZmPointsPage(),
+        RouteName.ZmZmPointsPage: (context) => const ZmZmPointsPage(),
         RouteName.createCompliancePage: (context) =>
-            CreateComplianceLocationPage(),
+            const CreateComplianceLocationPage(),
 
-        RouteName.inappWebview: (context) => InAppWebViewPage(),
+        RouteName.inappWebview: (context) => const InAppWebViewPage(),
 
-        RouteName.dmsImageFullScreen: (context) => ViewDMSImageScreen(),
-        RouteName.apigeeImageFullScreen: (context) => ViewAPIGEEImageScreen(),
+        RouteName.dmsImageFullScreen: (context) => const ViewDMSImageScreen(),
+        RouteName.apigeeImageFullScreen: (context) =>
+            const ViewAPIGEEImageScreen(),
 
-        RouteName.serviceCards: (context) => ServiceCardsPage(),
+        RouteName.serviceCards: (context) => const ServiceCardsPage(),
 
         //? General Services
 
-        RouteName.prayerTimes: (context) => PrayerTimesPage(),
+        RouteName.prayerTimes: (context) => const PrayerTimesPage(),
 
         RouteName.qiblahCompass: (context) => const QiblahWebViewPage(),
 
@@ -450,39 +457,44 @@ class Routes {
         //! Setting
         //? personalInformation page
 
-        RouteName.personalInformation: (context) => PersonalInformationPage(),
+        RouteName.personalInformation: (context) =>
+            const PersonalInformationPage(),
 
         RouteName.invoiceDetails: (context) => InvoiceDetailsPage(),
 
-        RouteName.createObjectionDetails: (context) => CreateObjectionPage(),
+        RouteName.createObjectionDetails: (context) =>
+            const CreateObjectionPage(),
 
         // -------  VD ---------
 
         RouteName.vdCameraPage: (context) => VDCameraPage(),
 
-        RouteName.vdCreateVDDetailsPage: (context) => CreateVDDetailsPage(),
+        RouteName.vdCreateVDDetailsPage: (context) =>
+            const CreateVDDetailsPage(),
 
         RouteName.vdMapRoute: (context) => VDMapScreen(),
 
         RouteName.vdGuestOtpScreen: (context) => VDGuestOtpScreen(),
 
-        RouteName.successRoute: (context) => SuccessScreen(),
+        RouteName.successRoute: (context) => const SuccessScreen(),
         // ------ Commercial License -----
 
-        RouteName.commercialLicensePage: (context) => CommercialLicenseScreen(),
+        RouteName.commercialLicensePage: (context) =>
+            const CommercialLicenseScreen(),
         RouteName.commercialLicenseServicePage: (context) =>
-            IssueStartService(),
+            const IssueStartService(),
 
         // ------ Wallet -----
 
-        RouteName.walletPage: (context) => WalletScreen(),
+        RouteName.walletPage: (context) => const WalletScreen(),
 
         RouteName.businessLicensePage: (context) => BusinessLicenseScreen(),
 
         // ------ Violations -------
-        RouteName.violationsPage: (context) => ViolationsPage(),
+        RouteName.violationsPage: (context) => const ViolationsPage(),
 
-        RouteName.violationDetailsPage: (context) => ViolationsDetailsPage(),
+        RouteName.violationDetailsPage: (context) =>
+            const ViolationsDetailsPage(),
 
         RouteName.transactionDetailsPage: (context) =>
             const TransactionsDetailsPage(),
@@ -493,6 +505,7 @@ class Routes {
         RouteName.weatherMainPage: (context) => const WeatherMainPage(),
 
         RouteName.investmentPage: (context) => const InvestmentPage(),
+        RouteName.DirectRentalPage: (context) => const DirectRentalPage(),
 
         RouteName.tempRentalPage: (context) => const TempRentalPage(),
 
@@ -576,19 +589,24 @@ class Routes {
             const AthkarEntityContent(),
 
         RouteName.complinaceMapView: (context) => ComplinaceMapScreen(),
-        RouteName.selfRatingMainPage: (context) => SelfRatingMainPage(),
-        RouteName.SelfRatingSectionPage: (context) => SelfRatingSectionPage(),
-        RouteName.selfRatingResultPage: (context) => SelfRatingResultPage(),
+        RouteName.selfRatingMainPage: (context) => const SelfRatingMainPage(),
+        RouteName.SelfRatingSectionPage: (context) =>
+            const SelfRatingSectionPage(),
+        RouteName.selfRatingResultPage: (context) =>
+            const SelfRatingResultPage(),
 
-        RouteName.complianceDetailsPage: (context) => ComplianceDetailsPage(),
-        RouteName.nonComplianceScreen: (context) => NonComplianceScreen(),
+        RouteName.complianceDetailsPage: (context) =>
+            const ComplianceDetailsPage(),
+        RouteName.nonComplianceScreen: (context) => const NonComplianceScreen(),
 
-        RouteName.submitCompliancePage: (context) => SubmitCompliancePage(),
+        RouteName.submitCompliancePage: (context) =>
+            const SubmitCompliancePage(),
         RouteName.submitComplianceOTPPage: (context) => ComplianceOtpScreen(),
 
-        RouteName.eventsMainPage: (context) => EventsMainPage(),
+        RouteName.eventsMainPage: (context) => const EventsMainPage(),
 
-        RouteName.eventsDetailsPage: (context) => SingleEventDescriptionPage(),
+        RouteName.eventsDetailsPage: (context) =>
+            const SingleEventDescriptionPage(),
         RouteName.calendarMainPage: (context) => const MainPageCalendar(),
         RouteName.calendarDetailsPage: (context) => const CalendarDetailsPage(),
 
@@ -749,6 +767,10 @@ class Routes {
         RouteName.jodDonationPage: (context) => const JodDonationPage(),
 
         RouteName.chatbot: (context) => const ChatBotScreen(),
+
+        RouteName.commercialLicenseOverView: (context) => const CommercialLicenseOverviewScreen(),
+        RouteName.commercialLicenseQuery: (context) => const CommercialLicenseQueryScreen(),
+       RouteName.commercialLicenseQueryDetails: (context) => const CommercialLicenseQueryDetails(),
       };
 }
 

@@ -14,6 +14,8 @@ import '../../objections_exports.dart'
         UploadFileParams,
         CreateObjectionResponse,
         CreateObjectionParams;
+import '../entities/enquiry_objection_reply_params.dart';
+import '../entities/objection_enquiry_details.dart';
 import '../entities/transaction_details.dart';
 import '../entities/transaction_details_params.dart';
 import '../entities/validate_objection_params.dart';
@@ -42,4 +44,10 @@ abstract class RequestsRepository {
 
   Future<Either<Failure, bool>> validateObjectableTransaction(
       ValidateObjectionParams params);
+
+  Future<Either<Failure, ObjectionEnquiryDetails>> getEnquiryObjectionDetails(
+      String id);
+
+  Future<Either<Failure, dynamic>> replyEnquiryObjectionDetails(
+      EnquiryObjectionReplyDetails request);
 }

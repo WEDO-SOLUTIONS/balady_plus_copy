@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/routes_type.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:flutter/material.dart';
@@ -82,13 +83,15 @@ class _TransactionsDetailsPageState extends State<TransactionsDetailsPage> {
                               CustomSvgIconWidget(
                                   IconPath.informationCircleIcon),
                               CustomHorizontalSpace(width: 12),
-                              CustomTextWidget(
-                                "objectionPeriodExpired".tr(),
-                                fontColor: AppColor.orange800,
-                                fontWeight: AppFontWeight.medium,
-                                fontSize: 13,
-                                maxLines: 1,
-                                textOverflow: TextOverflow.ellipsis,
+                              Flexible(
+                                child: CustomTextWidget(
+                                  "objectionPeriodExpired".tr(),
+                                  fontColor: AppColor.orange800,
+                                  fontWeight: AppFontWeight.medium,
+                                  fontSize: 13,
+                                  maxLines: 3,
+                                  textOverflow: TextOverflow.ellipsis,
+                                ),
                               ),
                             ],
                           )),
@@ -386,7 +389,7 @@ class ViolationClauses extends StatelessWidget {
                                                     .nonComplianceSubClauses![i]
                                                     .attachments!
                                                     .length,
-                                                itemBuilder: (ctx, i) {
+                                                itemBuilder: (ctx, j) {
                                                   return ObjectionAttachmentItem(
                                                       file: ReasonAttachment(
                                                           contentLocation: state
@@ -396,7 +399,7 @@ class ViolationClauses extends StatelessWidget {
                                                                   .nonComplianceSubClauses![
                                                                       i]
                                                                   .attachments![
-                                                                      index]
+                                                                      j]
                                                                   .contentLocation ??
                                                               "",
                                                           fileName: state
@@ -406,7 +409,7 @@ class ViolationClauses extends StatelessWidget {
                                                                   .nonComplianceSubClauses![
                                                                       i]
                                                                   .attachments![
-                                                                      index]
+                                                                      j]
                                                                   .fileName ??
                                                               ""));
                                                 },
@@ -443,9 +446,12 @@ class ObjectionsData extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () {
-                  context.read<TransactionDetailsBloc>().add(
-                      GetTransactionDetailsEvent(
-                          params: state.details?.objectionRequestNumber ?? ""));
+                  Navigator.of(context).pushNamed(
+                    RouteName.objectionsDetailsPage,
+                    arguments: {
+                      "objectionRequestNumber": state.details?.objectionRequestNumber ?? "",
+                    },
+                  );
                 },
                 child: FieldData(
                   title: ("transaction_details_objection_number").tr(),

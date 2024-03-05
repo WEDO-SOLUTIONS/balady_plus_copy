@@ -59,7 +59,7 @@ class _ChangeCityDialogState extends State<ChangeCityDialog> {
   @override
   void dispose() {
     super.dispose();
-    sl<CityBloc>().add(SearchForCityEvent(text: ""));
+    // sl<CityBloc>().add(SearchForCityEvent(text: ""));
   }
 }
 
@@ -86,9 +86,11 @@ class _CityListState extends State<CityList> {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        sl<CityBloc>().add(GetMoreCitiesEvent());
+        sl<CityBloc>().add(const GetMoreCitiesEvent());
       }
     });
+    print("Selected ID ${CommonProperties.cityId}");
+    selectedId = CommonProperties.cityId;
   }
 
   @override
@@ -102,7 +104,7 @@ class _CityListState extends State<CityList> {
                   state.status == BlocStatus.loadMore ||
                   state.status == BlocStatus.loadingShimmer) ...[
                 SearchWidget(
-                  hint: trans('city_search_hint'),
+                  hint: trans('search'),
                   onChange: /* () {},*/
                       (text) {
                     sl<CityBloc>().add(SearchForCityEvent(text: text));
@@ -160,6 +162,7 @@ class _CityListState extends State<CityList> {
                     },
                     btnText: trans('choose_city'))
               ],
+              if (state.status == BlocStatus.loading) CustomLoadingWidget(),
               if (state.status == BlocStatus.failure)
                 ReloadWidget(
                   widgetHeight: 100,

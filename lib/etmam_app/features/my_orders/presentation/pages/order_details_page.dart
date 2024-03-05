@@ -69,7 +69,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         builder: (context, state) {
           return Scaffold(
             appBar: DefaultAppBarWidget(
-              title: "طلب ${state.response?.number}#",
+              title: "${"request".tr()} ${state.response?.number}#",
               actions: [
                 if ((state.response?.actionsOnOrder != null &&
                     (state.response?.actionsOnOrder?.length ?? 0) > 0))
