@@ -33,10 +33,8 @@ class UXCamEvents {
 
 // ChatBot
   static String openChatBotScreen = "Open_Chat_Bot_Screen"; //Done
-  static String sendMessageChatBotScreen =
-      "Send_Message_Chat_Bot_Screen"; //Done
-  static String responseMessageChatBotScreen =
-      "Response_Message_Chat_Bot_Screen"; //Done
+  static String sendMessageChatBotScreen = "Send_Message_Chat_Bot_Screen"; //Done
+  static String responseMessageChatBotScreen = "Response_Message_Chat_Bot_Screen"; //Done
   static String closeChatBotScreen = "Close_Chat_Bot_Screen"; //Done
 
 // Events
@@ -806,4 +804,15 @@ class UXCamEvents {
       "DashBoard_Click_Dashboard_Event";
   static String DashBoard_Click_Dashboard_Filter_Event =
       "DashBoard_Click_Dashboard_Filter_Event";
+
+
+
+
+
+  static String startCardServiceQueryLicenseService =
+      "Start_Card_Service_QueryLicenseService"; //Done
+  static String startServiceQueryLicenseService =
+      "Start_Service_QueryLicenseService"; //Done
+  static String finishServiceQueryLicenseService =
+      "Finish_Service_QueryLicenseService"; //Done
 }

@@ -49,6 +49,9 @@ class ServiceIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var context = NavigationService.navigatorKey.currentContext!;
+    Color iconColor = CommonFunctions.isFoundationDay()
+        ? Color(0xff6B4E45)
+        : Color(0xff1E928F);
     return InkWell(
         onTap: () async {
           if (service.action.type == ServiceAction.pageRoute) {
@@ -259,8 +262,11 @@ class ServiceIcon extends StatelessWidget {
                 CommonFunctions.sendUXCamEvent(
                     UXCamEvents.startServiceMobileStores);
               }
-
-              CommonFunctions.openBaladyWebView(service.action.value);
+              String url = service.action.value;
+              if (!CommonFunctions.isAppAR) {
+                url = url.replaceAll("/ar/", "/en/");
+              }
+              CommonFunctions.openBaladyWebView(url);
             } else {
               showDialog(
                   context: context,
@@ -308,7 +314,7 @@ class ServiceIcon extends StatelessWidget {
                 child: DrawIconBasedTypeWidget(
                   icon: IconPath.serviceIcon(service.iconName),
                   iconSize: 28,
-                  iconColor: const Color(0xff1E928F),
+                  iconColor: iconColor,
                 ),
               ),
               const SizedBox(

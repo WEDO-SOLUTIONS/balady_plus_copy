@@ -1,8 +1,7 @@
+import 'package:mapness/pages/kiblah/providers/kaaba_bearing.dart';
+import 'package:mapness/shared/providers/compass.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vibration/vibration.dart';
-
-import '../../../shared/providers/compass.dart';
-import 'kaaba_bearing.dart';
 
 part 'kaaba_haptics.g.dart';
 

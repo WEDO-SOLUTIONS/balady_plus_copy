@@ -7,12 +7,11 @@ import 'package:mapness/entities/path_nav/models/path_nav_speed_info.dart';
 import 'package:mapness/widgets/path_nav/lib/navi_direction_icon_extension.dart';
 
 class PathNavSpeedInfoWidget extends StatelessWidget {
-  final PathNavSpeedInfo info;
 
   const PathNavSpeedInfoWidget({
-    super.key,
-    required this.info,
+    required this.info, super.key,
   });
+  final PathNavSpeedInfo info;
 
   @override
   Widget build(BuildContext context) {

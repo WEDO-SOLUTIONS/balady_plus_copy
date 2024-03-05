@@ -169,7 +169,8 @@ class AppColorsThemeExt extends ThemeExtension<AppColorsThemeExt> {
     );
   }
 
-  static palette(AppColorScheme scheme, {required bool isDark}) {
+  static AppColorsThemeExt palette(AppColorScheme scheme,
+      {required bool isDark}) {
     final Dark = scheme == AppColorScheme.brown
         ? foundationScheme.Dark()
         : defaultScheme.Dark();

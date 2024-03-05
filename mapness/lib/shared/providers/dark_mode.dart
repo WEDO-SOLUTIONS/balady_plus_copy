@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'dark_mode.g.dart';
 
-const _prefsKey = "settings.darkMode";
+const _prefsKey = 'settings.darkMode';
 
 @Riverpod(keepAlive: true)
 class DarkMode extends _$DarkMode {

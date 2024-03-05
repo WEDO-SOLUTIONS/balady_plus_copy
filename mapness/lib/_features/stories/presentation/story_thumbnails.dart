@@ -7,20 +7,16 @@ import 'package:mapness/_features/stories/domain/story_data.dart';
 import 'package:mapness/_features/stories/presentation/thumbnails/story_thumbnail_widget.dart';
 
 class StoryThumbnails extends StatelessWidget {
+
+  const StoryThumbnails({
+    required this.onThumbnailPressed, required this.stories, super.key,
+  });
   final List<StoryData> stories;
   final void Function(String storyId) onThumbnailPressed;
 
-  const StoryThumbnails({
-    super.key,
-    required this.onThumbnailPressed,
-    required this.stories,
-  });
-
   @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Column(
+  Widget build(BuildContext context) => LayoutBuilder(
+      builder: (context, constraints) => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             // const StoryThumbnailLabel(title: 'جديدنا'),
@@ -52,10 +48,8 @@ class StoryThumbnails extends StatelessWidget {
                       const SizedBox(width: 8),
                 ),
               ),
-            )
+            ),
           ],
-        );
-      },
+        ),
     );
-  }
 }

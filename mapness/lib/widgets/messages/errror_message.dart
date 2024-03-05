@@ -6,8 +6,8 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
 class ErrorMessage extends StatelessWidget {
-  final VoidCallback? onRetry;
   const ErrorMessage({super.key, this.onRetry});
+  final VoidCallback? onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class ErrorMessage extends StatelessWidget {
         LabeledElevatedButton(
           onPressed: onRetry ?? () {},
           label: context.l10n.reload,
-        )
+        ),
       ],
     );
   }

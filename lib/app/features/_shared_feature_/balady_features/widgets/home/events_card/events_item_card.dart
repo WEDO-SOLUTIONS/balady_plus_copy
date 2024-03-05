@@ -102,8 +102,7 @@ class EventItemCard extends StatelessWidget {
                         ),
                       ),
                       Date(
-                        day: item.getStartDay(),
-                        month: item.getStartMonth(),
+                        text: item.getDate(),
                       ),
                       const CustomVerticalSpace(height: 6),
                       Row(
@@ -173,14 +172,13 @@ class IconName extends StatelessWidget {
 }
 
 class Date extends StatelessWidget {
-  final String day;
-  final String month;
-  const Date({super.key, required this.day, required this.month});
+  final String text;
+  const Date({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
     return Text(
-      "$day $month",
+      "$text",
       style: Theme.of(context).extension<ThemeTextStyles>()?.textS.copyWith(
             color: const Color(0xCCFFFFFF),
           ),

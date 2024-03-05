@@ -4,6 +4,7 @@ import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
+import 'package:mapness/_features/happiness_map/data/happines_manager.dart';
 import 'package:mapness/_features/happiness_map/data/happiness_repository.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/_features/happiness_map/presentation/close_happiness_button.dart';
@@ -17,19 +18,16 @@ import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 import 'package:mapness/shared/ui/sheets/thanks_sheet.dart';
 
-import 'data/happines_manager.dart';
-
 class HappinessBottomSheet extends ConsumerStatefulWidget {
-  final bool isOpenedInitially;
-  final void Function(double height) onHeightChange;
-
   const HappinessBottomSheet({
     required this.isOpenedInitially,
     required this.onHeightChange,
     required this.onClose,
     required this.biggestHeight,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
+  final bool isOpenedInitially;
+  final void Function(double height) onHeightChange;
 
   final VoidCallback onClose;
   final double biggestHeight;
@@ -118,8 +116,8 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
-            topRight: Radius.circular(16.0),
-            topLeft: Radius.circular(16.0),
+            topRight: Radius.circular(16),
+            topLeft: Radius.circular(16),
           ),
         ),
         child: ListView(
@@ -146,7 +144,8 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                       width: 26,
                       decoration: BoxDecoration(
                         color: context.color.surface_base_primary,
-                        borderRadius: BorderRadius.all(Radius.circular(24)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(24)),
                       ),
                     ),
                     const SizedBox(
@@ -169,7 +168,8 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                                         .extension<ThemeTextStyles>()!
                                         .headingS
                                         .copyWith(
-                                          color: context.color.text_and_icons_base_primary,
+                                          color: context.color
+                                              .text_and_icons_base_primary,
                                         ),
                                   ),
                                 ),
@@ -224,7 +224,9 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                                           .extension<ThemeTextStyles>()!
                                           .textM
                                           .copyWith(
-                                              color: context.color.text_and_icons_base_primary),
+                                            color: context.color
+                                                .text_and_icons_base_primary,
+                                          ),
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
@@ -233,7 +235,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                               const SizedBox(height: 16),
                               HappinessSubmitButton(onPress: onSubmit),
                               const SizedBox(height: 21),
-                            ]
+                            ],
                           ],
                         ),
                       ),

@@ -63,7 +63,7 @@ class _NotesFieldsSection extends State<NotesFieldsSection> {
               },
             ),
             Align(
-              alignment: Alignment.topLeft,
+              alignment: AlignmentDirectional.topEnd,
               child: IconButton(
                 padding: EdgeInsets.only(bottom: 32),
                 icon: Icon(

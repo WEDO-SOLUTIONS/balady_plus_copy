@@ -8,9 +8,9 @@ import 'package:mapness/shared/lib/make_address.dart';
 
 class SuggestItem extends StatelessWidget {
   const SuggestItem({
-    super.key,
     required this.suggest,
     required this.onTap,
+    super.key,
   });
 
   final SuggestMessage suggest;
@@ -18,15 +18,15 @@ class SuggestItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String icon = "";
+    var icon = '';
     String? address;
     if (suggest.handler.incompleteTextHandler != null) {
-      icon = "text";
+      icon = 'text';
     } else if (suggest.handler.objectHandler != null) {
-      icon = "object";
+      icon = 'object';
       address = suggest.handler.objectHandler!.item.makeAddress();
     } else if (suggest.handler.performSearchHandler != null) {
-      icon = "search";
+      icon = 'search';
     }
 
     return Material(
@@ -34,11 +34,11 @@ class SuggestItem extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          padding: const EdgeInsets.symmetric(vertical: 8),
           child: Row(
             children: [
               SvgPicture.asset(
-                "assets/icons/svg/ic_suggest_$icon.svg",
+                'assets/icons/svg/ic_suggest_$icon.svg',
                 package: PackageConfig.packageName,
                 color: context.color.text_and_icons_status_accent,
               ),
@@ -66,12 +66,14 @@ class SuggestItem extends StatelessWidget {
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
                               .textM
-                              .copyWith(color: context.color.text_and_icons_base_tertiary),
+                              .copyWith(
+                                  color: context
+                                      .color.text_and_icons_base_tertiary,),
                         ),
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -81,18 +83,18 @@ class SuggestItem extends StatelessWidget {
 }
 
 // Temporary solution without highlighting
-List<TextSpan> buildSuggestTitle(BuildContext context, suggest) {
+List<TextSpan> buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
   final prefixMapping = {
-    ", region": "منطقة",
-    ", governorate": "محافظة",
-    ", city": "مدينة",
-    ", district area": "محافظة",
-    ", district": "حى",
-    ", street": "شارع",
-    ", buildings": "مبنى",
-    ", park": "بارك",
+    ', region': 'منطقة',
+    ', governorate': 'محافظة',
+    ', city': 'مدينة',
+    ', district area': 'محافظة',
+    ', district': 'حى',
+    ', street': 'شارع',
+    ', buildings': 'مبنى',
+    ', park': 'بارك',
   };
-  String title = suggest.title.text;
+  var title = suggest.title.text;
   prefixMapping.forEach((key, replacement) {
     if (title.contains(key)) {
       title = "$replacement ${title.replaceAll(key, "")}";
@@ -106,6 +108,6 @@ List<TextSpan> buildSuggestTitle(BuildContext context, suggest) {
           .extension<ThemeTextStyles>()!
           .textM
           .copyWith(color: context.color.text_and_icons_base_primary),
-    )
+    ),
   ];
 }

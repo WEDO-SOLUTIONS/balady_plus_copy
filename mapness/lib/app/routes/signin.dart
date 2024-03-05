@@ -15,11 +15,9 @@ class SignInRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return const TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => const TransculentPage(
       child: SigninScreen(),
     );
-  }
 }
 
 final $SignInRoutes = $appRoutes;

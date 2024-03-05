@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
@@ -31,6 +30,7 @@ import '../../domain/entities/transaction_details_params.dart';
 
 import '../objections_details_bloc/objection_details_bloc.dart';
 import '../widgets/create_objection_page/objection_attachment_item.dart';
+import '../widgets/objection_feedback_widget.dart';
 
 class ObjectionsDetailsPage extends StatefulWidget {
   const ObjectionsDetailsPage({
@@ -52,11 +52,15 @@ class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    ObjectionDetails? params =
-        ModalRoute.of(context)!.settings.arguments as ObjectionDetails;
+    Map? data = ModalRoute.of(context)!.settings.arguments as Map?;
 
     return BlocProvider(
-      create: (context) => ObjectionsDetailsBloc(details: params),
+      create: (context) => ObjectionsDetailsBloc()
+        ..add(
+          GetObjectionDetailsEvent(
+            params: data?['objectionRequestNumber'] ?? '',
+          ),
+        ),
       child: BlocConsumer<ObjectionsDetailsBloc, ObjectionDetailsState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure) {
@@ -167,14 +171,16 @@ class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
                       Constants.verticalSpaceSmall,
 
                       const ObjectionReaason(),
+                      Constants.verticalSpaceSmall,
 
+                      const ObjectionFeedBack(),
                       Constants.verticalSpaceSmall,
                     ]),
                   ),
                 ),
               ),
               if (state.status == BlocStatus.loading)
-                CustomCircularLoadingWidget(),
+                const CustomCircularLoadingWidget(),
             ],
           );
         },
@@ -381,6 +387,7 @@ class ObjectionReaason extends StatelessWidget {
 
 class AttachmentWidget extends StatelessWidget {
   final String attachment;
+
   const AttachmentWidget({Key? key, required this.attachment})
       : super(key: key);
 
@@ -416,5 +423,64 @@ class AttachmentWidget extends StatelessWidget {
             CustomHorizontalSpace(width: 12),
           ],
         ));
+  }
+}
+
+class ObjectionFeedBack extends StatefulWidget {
+  const ObjectionFeedBack({Key? key}) : super(key: key);
+
+  @override
+  State<ObjectionFeedBack> createState() => _ObjectionFeedBackState();
+}
+
+class _ObjectionFeedBackState extends State<ObjectionFeedBack> {
+  int expandedIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ObjectionsDetailsBloc, ObjectionDetailsState>(
+      builder: (context, state) {
+        return (state.details?.enquiryList?.isNotEmpty ?? false)
+            ? CustomExpansionPanelWidget(
+                underline: false,
+                title: ("objection_enquiry_requests").tr(),
+                leading: SvgPicture.asset(IconPath.vdSummuryDesc),
+                children: [
+                  MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: state.details?.enquiryList?.length,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (ctx, index) {
+                          return ObjectionFeedBackWidget(
+                            index: index,
+                            item: state.details!.enquiryList![index],
+                            isExpanded: index == expandedIndex,
+                            onExpand: () {
+                              setState(() {
+                                expandedIndex = index;
+                              });
+                            },
+                            onRefresh: () {
+                              context
+                                  .read<ObjectionsDetailsBloc>()
+                                  .add(GetObjectionDetailsEvent(
+                                    params:
+                                        state.details?.objectionRequestNumber ??
+                                            "",
+                                  ));
+                            },
+                          );
+
+                          ;
+                        }),
+                  )
+                ],
+              )
+            : Container();
+      },
+    );
   }
 }

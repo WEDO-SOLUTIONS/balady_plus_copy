@@ -11,9 +11,7 @@ import 'package:provider/provider.dart';
 
 class RoutingSearchContent extends ConsumerWidget {
   const RoutingSearchContent({
-    super.key,
-    required this.scrollController,
-    required this.showMyLocation,
+    required this.scrollController, required this.showMyLocation, super.key,
   });
 
   final bool showMyLocation;

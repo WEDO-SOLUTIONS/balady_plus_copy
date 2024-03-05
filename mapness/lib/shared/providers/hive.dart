@@ -9,9 +9,7 @@ class _Hive extends _$Hive {
   Future<Box<dynamic>> build(String boxName) async {
     final box = await Hive.openBox(boxName);
 
-    ref.onDispose(() {
-      box.close();
-    });
+    ref.onDispose(box.close);
     return box;
   }
 }

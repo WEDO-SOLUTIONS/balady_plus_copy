@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -19,7 +20,9 @@ class EstehkamNumberTextField extends StatelessWidget {
           hintText: "compliance_estehkam_number".tr(),
           value: state.ownershipText,
           keyboardType: TextInputType.text,
-          inputFormatters: [],
+          inputFormatters: [
+            FilteringTextInputFormatter.deny(RegExp('[٠١٢٣٤٥٦٧٨٩]')),
+          ],
           onChanged: (String? text) {
             context
                 .read<ComplianceBloc>()

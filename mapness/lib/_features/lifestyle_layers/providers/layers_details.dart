@@ -4,25 +4,24 @@ import 'package:dio/dio.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_repository.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/map_requests_params.dart';
+import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../domain/point_layers_data.dart';
 
 part 'layers_details.g.dart';
 
 @riverpod
 class LayersDetails extends _$LayersDetails {
   @override
-  Future<PointLayersData?> build(PointLayersData e) async {
-    return await _showObjectDetails(e);
-  }
+  Future<PointLayersData?> build(PointLayersData e) async =>
+      await _showObjectDetails(e);
 
   Future<PointLayersData?> _showObjectDetails(PointLayersData layerData) async {
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
     final env = await ref.read(dgisEnvironmentProvider.future);
 
-    var layerType = layerData.layerType;
-    var requestParams = MapRequestParams(
+    final layerType = layerData.layerType;
+    final requestParams = MapRequestParams(
       layer: layerType,
       domain: env.url,
       proxy: env.proxy,
@@ -31,12 +30,14 @@ class LayersDetails extends _$LayersDetails {
     );
 
     return switch (layerType) {
-      GISMapLayers.Opportunities =>
-        (await controller.getEsriPoints(params: requestParams,cancelToken: CancelToken()))?.first,
+      GISMapLayers.Opportunities => (await controller.getEsriPoints(
+              params: requestParams, cancelToken: CancelToken()))
+          ?.first,
       GISMapLayers.BSWhiteParcelS =>
-        (await controller.getWhiteLands(requestParams,CancelToken()))?.first,
-      GISMapLayers.BSAimtithalBuildingsCertificateL =>
-        (await controller.buildingComplianceCertificate(requestParams,CancelToken()))?.first,
+        (await controller.getWhiteLands(requestParams, CancelToken()))?.first,
+      GISMapLayers.BSAimtithalBuildingsCertificateL => (await controller
+              .buildingComplianceCertificate(requestParams, CancelToken()))
+          ?.first,
       _ => null,
     };
   }

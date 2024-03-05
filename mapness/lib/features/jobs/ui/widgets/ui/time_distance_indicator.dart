@@ -8,13 +8,13 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class TimeDistanceIndicator extends ConsumerWidget {
-  final double latitude;
-  final double longitude;
   const TimeDistanceIndicator({
     required this.latitude,
     required this.longitude,
     super.key,
   });
+  final double latitude;
+  final double longitude;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -11,6 +11,7 @@ import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/route_names.dart';
 import '../../../../core/utils/constants/ux_cam_events.dart';
+import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
@@ -118,35 +119,24 @@ class _FacilityDialogState extends State<FacilityDialog> {
                       fontSize: 16,
                     ),
                     Constants.verticalSpaceMedium,
-                    EnhancedCustomElevatedButtonWidget(
-                      btnPressed: () async {
-                        await BottomSheetDialog.showDraggableSheet(context,
-                            child: BottomSheetWithActions(
-                              title: ("review").tr() +
-                                  " " +
-                                  (widget.facilityName ?? ""),
-                              body: FacilityRatingScreen(),
-                            ));
-                      },
-                      btnText: ("review").tr(),
-                      btnTextSize: 16,
-                      btnTextWeight: AppFontWeight.bold,
-                      btnHeight: 56,
-                      btnColor: AppColor.primary900Light,
-                    ),
+                    ElevatedButtonWidget.primaryCustom(
+                        onPressed: () async {
+                          await BottomSheetDialog.showDraggableSheet(context,
+                              child: BottomSheetWithActions(
+                                title: ("review").tr() +
+                                    " " +
+                                    (widget.facilityName ?? ""),
+                                body: FacilityRatingScreen(),
+                              ));
+                        },
+                        text: ("review").tr()),
                     Constants.verticalSpaceSmall,
-                    EnhancedCustomElevatedButtonWidget(
-                      btnPressed: () {
-                        widget.onIncidentScreen();
-                      },
-                      btnText: ("submit_incident_facility").tr(),
-                      btnTextSize: 16,
-                      btnHeight: 56,
-                      btnTextWeight: AppFontWeight.bold,
-                      btnTextColor: Color(0xffDC2828),
-                      btnBorderColor: Color(0xffDC2828),
-                      btnColor: AppColor.white,
-                    ),
+                    ElevatedButtonWidget.primaryCustomBorder(
+                        onPressed: () {
+                          widget.onIncidentScreen();
+                        },
+                        color: Color(0xffDC2828),
+                        text: ("submit_incident_facility").tr()),
                     Constants.verticalSpaceSmall,
                     DrawLineWidget(
                         lineColor:
@@ -156,10 +146,13 @@ class _FacilityDialogState extends State<FacilityDialog> {
                         NavigationService.navigatorKey.currentState!
                             .pushNamed(RouteName.qrFacilityScreenRoute);
                       },
-                      icon: Image.asset(
-                        IconPath.qrbackIconIcon,
-                        height: 18,
-                        width: 18,
+                      icon: RotatedBox(
+                        quarterTurns: CommonFunctions.isAppAR ? 0 : 2,
+                        child: Image.asset(
+                          IconPath.qrbackIconIcon,
+                          height: 18,
+                          width: 18,
+                        ),
                       ),
                       btnTextSize: 16,
                       padding: const EdgeInsets.symmetric(

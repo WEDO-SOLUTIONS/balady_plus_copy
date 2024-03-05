@@ -6,10 +6,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'current_route_provider.g.dart';
 
 class RouteState {
-  final String? currentPath;
-  final String? previousPath;
 
   RouteState({this.currentPath, this.previousPath});
+  final String? currentPath;
+  final String? previousPath;
 }
 
 @riverpod

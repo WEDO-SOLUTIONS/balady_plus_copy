@@ -14,7 +14,7 @@ class RoutingHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(
-          BuildContext context, double shrinkOffset, bool overlapsContent) =>
+          BuildContext context, double shrinkOffset, bool overlapsContent,) =>
       RoutingHeader(
         points: points,
         updatePoints: updatePoints,
@@ -48,8 +48,8 @@ class RoutingHeader extends StatelessWidget {
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
-            topRight: Radius.circular(16.0),
-            topLeft: Radius.circular(16.0),
+            topRight: Radius.circular(16),
+            topLeft: Radius.circular(16),
           ),
         ),
         child: Column(
@@ -63,7 +63,7 @@ class RoutingHeader extends StatelessWidget {
                 width: 40,
                 decoration: BoxDecoration(
                   color: context.color.surface_base_primary,
-                  borderRadius: BorderRadius.all(Radius.circular(24)),
+                  borderRadius: const BorderRadius.all(Radius.circular(24)),
                 ),
               ),
             ),
@@ -71,7 +71,7 @@ class RoutingHeader extends StatelessWidget {
               height: 6,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: RouteEditor(
                 points: points,
                 onTap: (index) => RoutingSearchRoute(

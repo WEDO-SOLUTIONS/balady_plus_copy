@@ -1,5 +1,5 @@
 class SearchScope {
-  final String value;
 
   SearchScope(this.value);
+  final String value;
 }

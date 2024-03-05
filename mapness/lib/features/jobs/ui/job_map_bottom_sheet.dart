@@ -1,5 +1,5 @@
 import 'package:dgis_map/library.dart';
-import 'package:flutter/material.dart' hide SearchBar, ScrollPosition;
+import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/routes/jobs_map.dart';
 import 'package:mapness/features/jobs/data/models/job_list_model.dart';
@@ -88,9 +88,9 @@ class _JobMapBottomSheetState extends ConsumerState<JobMapBottomSheet> {
           child: Container(
             decoration: BoxDecoration(
               color: context.color.surface_base_primary,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(16.0),
-                topLeft: Radius.circular(16.0),
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(16),
+                topLeft: Radius.circular(16),
               ),
             ),
             child: jobsList.maybeWhen(
@@ -133,7 +133,7 @@ class _JobMapBottomSheetState extends ConsumerState<JobMapBottomSheet> {
       return;
     }
 
-    final List<Marker> markers = [];
+    final markers = <Marker>[];
     for (final record in records) {
       final lon = double.tryParse(record.location?.longitude ?? '');
       final lat = double.tryParse(record.location?.latitude ?? '');
@@ -215,7 +215,7 @@ class _JobMapBottomSheetState extends ConsumerState<JobMapBottomSheet> {
 
     final currentRoute = ref.read(currentRouteProvider);
     if (currentRoute?.currentPath != null &&
-        RegExp(r'/job/.*/detail').hasMatch(currentRoute!.currentPath!)) {
+        RegExp('/job/.*/detail').hasMatch(currentRoute!.currentPath!)) {
       JobsMapDetail(jobId: jobId).pushReplacement(context);
       return;
     }

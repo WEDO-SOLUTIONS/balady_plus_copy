@@ -5,12 +5,11 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class CloseHappinessButton extends StatelessWidget {
+  const CloseHappinessButton({required this.onPressed, super.key});
   final VoidCallback onPressed;
-  const CloseHappinessButton({super.key, required this.onPressed});
 
   @override
-  Widget build(BuildContext context) {
-    return InkWell(
+  Widget build(BuildContext context) => InkWell(
       onTap: onPressed,
       child: Container(
         padding: const EdgeInsets.all(10),
@@ -30,5 +29,4 @@ class CloseHappinessButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class LoadingCircular extends StatelessWidget {
-  final double? size;
 
   const LoadingCircular({super.key, this.size});
+  final double? size;
 
   @override
   Widget build(BuildContext context) => SizedBox(

@@ -4,15 +4,12 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/weather/weather_controls.dart';
 import 'package:mapness/_features/weather/weather_dashboard.dart';
 import 'package:mapness/_features/weather/wiidget_ref_extension.dart';
-import 'package:mapness/app/routes/poi_map.dart';
-import 'package:mapness/shared/routing/current_route_provider.dart';
 
 class WeatherPage extends ConsumerStatefulWidget {
-  const WeatherPage({Key? key}) : super(key: key);
+  const WeatherPage({super.key});
 
   @override
   ConsumerState<WeatherPage> createState() => _WeatherPageState();
@@ -37,8 +34,7 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
+  Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: SafeArea(
         bottom: false,
@@ -49,19 +45,16 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
             child: Stack(
               children: [
                 const WeatherControls(),
-                LayoutBuilder(builder: (context, constraints) {
-                  return WeatherDashboard(
+                LayoutBuilder(builder: (context, constraints) => WeatherDashboard(
                     biggestHeight: constraints.biggest.height,
                     biggestWidth: constraints.biggest.width,
-                  );
-                }),
+                  ),),
               ],
             ),
           ),
         ),
       ),
     );
-  }
 }
 
 class WeatherPageContent extends StatefulWidget {
@@ -73,7 +66,5 @@ class WeatherPageContent extends StatefulWidget {
 
 class _WeatherPageContentState extends State<WeatherPageContent> {
   @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
+  Widget build(BuildContext context) => const Placeholder();
 }

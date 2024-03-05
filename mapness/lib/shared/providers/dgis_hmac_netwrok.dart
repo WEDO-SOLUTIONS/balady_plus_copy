@@ -37,7 +37,7 @@ class DgisHmacNetwrok extends _$DgisHmacNetwrok {
         'X-Language': appLanguage == Language.arabic ? 'ar' : 'en',
         'X-Proxy-Host': env.proxy,
       },
-    ))
+    ),)
       ..interceptors.addAll([
         AuthTokenInterceptor.tokenInterceptor(
           ref,
@@ -56,7 +56,7 @@ class DgisHmacNetwrok extends _$DgisHmacNetwrok {
 
             final isHttp = options.path.startsWith('http');
 
-            String baseUrl = '';
+            var baseUrl = '';
 
             if (hasProxy) {
               baseUrl =

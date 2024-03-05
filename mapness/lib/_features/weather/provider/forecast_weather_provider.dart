@@ -13,14 +13,14 @@ class _ForecastWeather extends _$ForecastWeather {
   @override
   AllWeatherInfoModel? build() {
     final cancelToken = CancelToken();
-    var controller = ref.watch(dgisControllerProvider).value;
-    var repository = ref.watch(weatherRepository.notifier);
+    final controller = ref.watch(dgisControllerProvider).value;
+    final repository = ref.watch(weatherRepository.notifier);
 
     controller?.getCameraPosition().then((value) async => _onEvent(
           value,
           repository,
           cancelToken,
-        ));
+        ),);
 
     final subscription = controller?.cameraPositionEvents
         .debounceTime(const Duration(seconds: 1))
@@ -28,7 +28,7 @@ class _ForecastWeather extends _$ForecastWeather {
               value,
               repository,
               cancelToken,
-            ));
+            ),);
 
     ref.onDispose(() {
       subscription?.cancel();

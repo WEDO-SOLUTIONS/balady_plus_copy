@@ -8,9 +8,9 @@ import 'package:mapness/shared/ui/sheets/labeled_draggable_sheet.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_text_editing_field.dart';
 
 class IwishFeedbackComment extends ConsumerStatefulWidget {
-  final String iwishId;
 
   const IwishFeedbackComment({required this.iwishId, super.key});
+  final String iwishId;
 
   @override
   ConsumerState<IwishFeedbackComment> createState() =>

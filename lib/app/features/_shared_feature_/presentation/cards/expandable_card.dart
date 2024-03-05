@@ -10,14 +10,16 @@ class ExpandableCard extends StatefulWidget {
   final String? badgeTitle;
   final List<Widget> children;
   final bool isExpandedByDefault;
+  Color ? bgColor;
 
-  const ExpandableCard({
+   ExpandableCard({
     super.key,
     required this.title,
-    required this.icon,
+     this.icon,
     required this.children,
     this.isExpandedByDefault = false,
     this.badgeTitle,
+    this.bgColor
   });
 
   @override
@@ -38,9 +40,9 @@ class _ExpandableCardState extends State<ExpandableCard> {
     return Container(
       margin: const EdgeInsets.only(top: 16),
       padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
+      decoration:  BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(16)),
-        color: AppColor.white,
+        color: widget.bgColor?? AppColor.white,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

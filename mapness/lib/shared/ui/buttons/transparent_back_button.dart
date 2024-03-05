@@ -4,8 +4,8 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class TransparentBackButton extends StatelessWidget {
-  final VoidCallback onClose;
   const TransparentBackButton({required this.onClose, super.key});
+  final VoidCallback onClose;
 
   @override
   Widget build(BuildContext context) => Material(
