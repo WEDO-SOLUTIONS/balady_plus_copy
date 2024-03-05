@@ -203,6 +203,7 @@ class CustomTapWidgetForLongDialog extends StatefulWidget {
   final bool showHintAsTitle;
   final double? marginBottom;
   final bool isLoading;
+  final bool? isButtonDisabled;
 
   CustomTapWidgetForLongDialog(
       {Key? key,
@@ -216,7 +217,8 @@ class CustomTapWidgetForLongDialog extends StatefulWidget {
       this.errorText,
       this.isLoading = false,
       this.showOptional = false,
-      this.showHintAsTitle = false})
+      this.showHintAsTitle = false,
+      this.isButtonDisabled})
       : super(key: key);
 
   @override
@@ -247,6 +249,7 @@ class _CustomTapWidgetForLongDialog
                             widget.onChangeType(item),
                         items: widget.items,
                         selectedItem: widget.value,
+                        isButtonDisabled: widget.isButtonDisabled,
                         title:
                             widget.showHintAsTitle ? widget.hint : widget.label,
                         searchHint: widget.searchHint ?? ("searchFor").tr(),

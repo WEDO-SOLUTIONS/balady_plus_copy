@@ -36,20 +36,22 @@ class Poster {
   final String? name;
   final int? typeId;
   final double? width;
+  final int? discountPercentage;
 
-  Poster({
-    this.attachedDocuments,
-    this.length,
-    this.name,
-    this.typeId,
-    this.width,
-  });
+  Poster(
+      {this.attachedDocuments,
+      this.length,
+      this.name,
+      this.typeId,
+      this.width,
+      this.discountPercentage});
 
   factory Poster.fromJson(Map<String, dynamic> json) => Poster(
         attachedDocuments: json["attachedDocuments"] == null
             ? []
             : List<String>.from(json["attachedDocuments"]!.map((x) => x)),
         length: json["length"],
+        discountPercentage: json["discountPercentage"],
         name: json["name"],
         typeId: json["typeId"],
         width: json["width"],
@@ -63,5 +65,6 @@ class Poster {
         "name": name,
         "typeId": typeId,
         "width": width,
+        // "discountPercentage": discountPercentage //ToDo: Remove Poster CR.
       };
 }

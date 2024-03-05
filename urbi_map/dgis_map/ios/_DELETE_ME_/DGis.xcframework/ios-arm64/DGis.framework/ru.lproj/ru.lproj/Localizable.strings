@@ -1,0 +1,57 @@
+"road.event.card.date.just_now" = "Только что";
+
+"road.event.card.date.from" = "С %@";
+
+"road.event.card.date.to" = "До %@";
+
+"road.event.card.row.all" = "Левый, средний, правый ряд";
+
+"road.event.card.row.center" = "Средний ряд";
+
+"road.event.card.row.center_right" = "Правый и средний ряд";
+
+"road.event.card.row.left" = "Левый ряд";
+
+"road.event.card.row.left_center" = "Левый и средний ряд";
+
+"road.event.card.row.left_right" = "Левый и правый ряд";
+
+"road.event.card.row.right" = "Правый ряд";
+
+"road.event.card.action.delete" = "Удалить событие";
+
+"road.event.creation.header.cancel" = "Отмена";
+
+"road.event.creation.header.submit" = "Отправить";
+
+"road.event.creation.header.title" = "Событие";
+
+"road.event.creation.comment.cell.placeholder" = "Комментарий к событию";
+
+"road.event.creation.event.title.carAccident" = "ДТП";
+
+"road.event.creation.event.title.emergencyWork" = "Дорожные работы";
+
+"road.event.creation.event.title.cameras" = "Камеры";
+
+"road.event.creation.event.title.comment" = "Сообщения на карте";
+
+"road.event.creation.event.title.roadOverlapping" = "Перекрытия";
+
+"road.event.creation.event.title.other" = "Прочее";
+
+"road.event.creation.lanes.which_lane" = "В каком ряду?";
+
+"road.event.card.action.result.success" = "Спасибо!";
+
+"road.event.card.action.result.failed" = "Что-то пошло не так.";
+
+"road.event.creation.result.success" = "Событие добавлено";
+
+"road.event.creation.result.failed" = "Не получилось добавить событие, попробуйте позже";
+
+"road.event.creation.result.banned" = "Вы временно заблокированы в связи с подозрительной активностью";
+
+"road.event.creation.result.unauthorized" = "Не получилось добавить событие, авторизуйтесь";
+
+"road.event.creation.result.forbiddenByUserLocation" = "Вы находитесь слишком далеко";

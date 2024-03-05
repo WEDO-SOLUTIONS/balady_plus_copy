@@ -105,12 +105,12 @@ class _SubmitApplicationSuccessfullyCancelState
                       onPressed: () async {
                         Navigator.of(context).popAndPushNamed(
                           RouteName.invoiceDetails,
-                          arguments: (
-                            submitResponse.payUrl.toString(),
-                            submitResponse.crNumber,
-                            submitResponse.crType,
-                            "SADAD",
-                          ),
+                          arguments: {
+                            "payUrl": submitResponse.payUrl.toString(),
+                            "crNumber": submitResponse.crNumber,
+                            "crType": submitResponse.crType,
+                            "xSourceApp": "SADAD",
+                          },
                         );
                       },
                     )

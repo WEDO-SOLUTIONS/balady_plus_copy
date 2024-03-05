@@ -7,12 +7,6 @@ abstract class TransactionDetailsEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class GetTransactionDetailsEvent extends TransactionDetailsEvent {
-  final String params;
-  final bool apply;
-  GetTransactionDetailsEvent({required this.params, this.apply = false});
-}
-
 class GetObjectionDetailsEvent extends TransactionDetailsEvent {
   final String params;
   GetObjectionDetailsEvent({required this.params});

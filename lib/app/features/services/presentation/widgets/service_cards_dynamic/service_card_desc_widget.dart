@@ -35,14 +35,14 @@ class ServiceCardDescWidget extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: SizedBox.expand(
-            child: Selector<ServiceDataViewModel, bool>(
-              selector: (_, provider) => provider.isLoading,
-              builder: (context, isLoading, child) {
-                return isLoading
-                    ? const CustomLoadingWidget()
-                    : viewModel.servicesCardsDetails != null
-                        ? Column(
+          child: Selector<ServiceDataViewModel, bool>(
+            selector: (_, provider) => provider.isLoading,
+            builder: (context, isLoading, child) {
+              return isLoading
+                  ? const CustomLoadingWidget()
+                  : viewModel.servicesCardsDetails != null
+                      ? SizedBox.expand(
+                          child: Column(
                             children: [
                               Expanded(
                                 flex: 47,
@@ -90,8 +90,17 @@ class ServiceCardDescWidget extends StatelessWidget {
                                           padding: const EdgeInsets.all(8.0),
                                           child: Text(
                                             viewModel.servicesCardsDetails!
-                                                    .fieldDescriptionService ??
-                                                '',
+                                                            .fieldDescriptionService !=
+                                                        null &&
+                                                    viewModel
+                                                        .servicesCardsDetails!
+                                                        .fieldDescriptionService!
+                                                        .isNotEmpty
+                                                ? viewModel
+                                                    .servicesCardsDetails!
+                                                    .fieldDescriptionService!
+                                                    .replaceAll("<br />", "")
+                                                : "",
                                             style: AppStyle
                                                 .resultsLastDescription
                                                 .copyWith(
@@ -528,14 +537,33 @@ class ServiceCardDescWidget extends StatelessWidget {
                                 ),
                               ),
                             ],
-                          )
-                        : ReloadWidget(
-                            onTab: () {
-                              viewModel.getServicesCards();
-                            },
-                          );
-              },
-            ),
+                          ),
+                        )
+                      : SizedBox.expand(
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: MediaQuery.of(context).viewPadding.top,
+                              ),
+                              Row(
+                                children: [
+                                  BackButton(color: Colors.white),
+                                  Text(
+                                    'error'.tr(),
+                                    style: AppStyle.violationCreateTitle
+                                        .copyWith(color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                              ReloadWidget(
+                                onTab: () {
+                                  viewModel.getServicesCards();
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+            },
           ),
         ),
       ],

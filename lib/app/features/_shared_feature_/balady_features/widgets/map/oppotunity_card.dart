@@ -60,6 +60,8 @@ class OpprtunityMapCard extends StatelessWidget {
           //      "02-21-003709-106", "TempRental");
 
           await sl<BaladyServices>().getTempRentalDetails(id!, "TempRental");
+        } else if (type == "Dirct Rental") {
+          await sl<BaladyServices>().getDirectRentalDetails(opprtunityNumber!);
         } else {
           //"01-22-003709-21394"
           await sl<BaladyServices>()
@@ -194,7 +196,7 @@ class OpprtunityMapCard extends StatelessWidget {
                                 fontSize: 10,
                                 priceFontSize: 12,
                                 isFree: isFree,
-                                isDirectRental: type == "DirectRental",
+                                isDirectRental: type == "Dirct Rental",
                               ),
                             ),
                           ],
@@ -321,7 +323,9 @@ class RentOrInvestWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(7),
       child: Text(
-        type == "Investment" ? ('investment').tr() : ('rent').tr(),
+        type == "Investment" || type == "Dirct Rental"
+            ? ('investment').tr()
+            : ('rent').tr(),
         style: AppStyle.cardTitleTextStle.copyWith(
             fontSize: 12,
             color: type == "Investment"

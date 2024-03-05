@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
@@ -15,13 +14,11 @@ import '../../../../core/utils/constants/route_names.dart';
 import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
-import '../../../_shared_feature_/presentation/under_testing/custom_expansion_panel_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/details_header.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../home_page/presentation/widgets/home_tag.dart';
-import '../../../profile_features/incidents/presentation/widgets/attachment_list_widget.dart';
 import '../../../vd/presentation/widgets/summery_widgets/field_data.dart';
 import '../bloc/compliance_bloc.dart';
 import '../bloc/compliance_event.dart';
@@ -51,17 +48,22 @@ class _ComplianceDetailsPageState extends State<ComplianceDetailsPage> {
     super.initState();
 
     CommonFunctions.sendUXCamEvent(
-        UXCamEvents.My_Requests_Compliance_Details_Request_Event);
+      UXCamEvents.My_Requests_Compliance_Details_Request_Event,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    (String, String?) request =
-        ModalRoute.of(context)!.settings.arguments as (String, String?);
+    Map data = ModalRoute.of(context)!.settings.arguments as Map;
 
     return BlocProvider(
-      create: (context) =>
-          ComplianceBloc()..add(GetRequestDetails(requestId: request.$1)),
+      create: (context) => ComplianceBloc()
+        ..add(
+          GetRequestDetails(
+            requestId: data['requestNumber'],
+            redirectUrl: data['redirectUrl'],
+          ),
+        ),
       child: BlocListener<ComplianceBloc, ComplianceState>(
         listener: (context, state) {},
         child: BlocBuilder<ComplianceBloc, ComplianceState>(
@@ -79,7 +81,8 @@ class _ComplianceDetailsPageState extends State<ComplianceDetailsPage> {
                     ? () async {
                         await BottomSheetDialog.showDraggableSheet(context,
                             isFullHeight: false,
-                            height: 250, //MM
+                            height: 250,
+                            //MM
                             dialogKeyName:
                                 DialogName.complianceRequestActionsDialog,
                             currentRouteName: RouteName.complianceDetailsPage,
@@ -100,7 +103,8 @@ class _ComplianceDetailsPageState extends State<ComplianceDetailsPage> {
                                     } else {
                                       CommonFunctions
                                           .openBaldyWithRefreshCookie(
-                                              request.$2);
+                                        data['redirectUrl'],
+                                      );
                                     }
                                   },
                                   child: FieldData(
@@ -196,9 +200,12 @@ class _ComplianceDetailsPageState extends State<ComplianceDetailsPage> {
                   if (state.detailsStatus == BlocRequestStatus.failure)
                     ReloadWidget(
                       onTab: () {
-                        context
-                            .read<ComplianceBloc>()
-                            .add(GetRequestDetails(requestId: request.$1));
+                        context.read<ComplianceBloc>().add(
+                              GetRequestDetails(
+                                requestId: data['requestNumber'],
+                                redirectUrl: data['redirectUrl'],
+                              ),
+                            );
                       },
                     ),
                   /* if (state.requestDetails?.statusId == 1)

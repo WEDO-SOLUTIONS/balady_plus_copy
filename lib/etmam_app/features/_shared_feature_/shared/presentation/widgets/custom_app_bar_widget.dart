@@ -2,6 +2,7 @@ import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     show AppColor, AppColorsTheme, AppFontWeight, IconPath;
 import 'package:flutter/material.dart';
 
+import '../../../../../../app/core/utils/common_functions.dart';
 import '../../shared_feature_exports.dart'
     show CustomSvgIconWidget, CustomTextWidget;
 
@@ -54,10 +55,15 @@ class _CustomAppBar extends State<CustomAppBar> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon: CustomSvgIconWidget(
-                widget.withCloseImg ? IconPath.close : IconPath.appbarBackArrow,
-                iconSize: widget.withCloseImg ? 16 : 24,
-                //  iconColor: AppColorsTheme.primary700, //MM
+              icon: RotatedBox(
+                quarterTurns: CommonFunctions.isAppAR ? 0 : 2,
+                child: CustomSvgIconWidget(
+                  widget.withCloseImg
+                      ? IconPath.close
+                      : IconPath.appbarBackArrow,
+                  iconSize: widget.withCloseImg ? 16 : 24,
+                  //  iconColor: AppColorsTheme.primary700, //MM
+                ),
               ))
           : null,
       actions: [

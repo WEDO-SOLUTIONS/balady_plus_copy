@@ -53,6 +53,8 @@ class _CityContainerWidgetState extends State<EtmamCitiesContainerWidget> {
         context.read<CityBloc>().add(GetMoreCitiesEvent());
       }
     });
+
+    context.read<CityBloc>().add(const GetCitiesEvent());
   }
 
   @override
@@ -84,7 +86,7 @@ class _CityContainerWidgetState extends State<EtmamCitiesContainerWidget> {
                   const CustomVerticalSpace(height: 24),
                   CustomTextFieldWidget(
                     label: "",
-                    hintText: trans('city_search_hint'),
+                    hintText: trans('search'),
                     controller: _controller,
                     maxLines: 1,
                     borderType: BorderType.outline,
@@ -136,12 +138,11 @@ class _CityContainerWidgetState extends State<EtmamCitiesContainerWidget> {
                     const CustomLoadingWidget(),
                   CustomPrimaryButton(
                     onPressed: () {
-                      //   sharedPrefs.setIsFirstLaunch(false);
-                      sl<CityBloc>().add(SelectCityEvent(
-                          item: state.searchedItems?[selectedIndex],
-                          subServiceid: args?.$2));
-                      //    Navigator.of(context).pushReplacementNamed(
-                      //        EtmamRoutesNames.bottomNavigation);
+                      if (state.providersStatus != BlocStatus.loading) {
+                        sl<CityBloc>().add(SelectCityEvent(
+                            item: state.searchedItems?[selectedIndex],
+                            subServiceid: args?.$2));
+                      }
                     },
                     btnText: trans('choose_city'),
                     isBtnDisabled: selectedIndex < 0,

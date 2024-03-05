@@ -49,6 +49,8 @@ class RemoteConfig {
 
   static List<String> get MSRAllowedMuncipalites =>
       _RemoteConfig.MSRAllowedMuncipalites[env]!;
+
+  static String get ewaaUrl => _RemoteConfig.ewaaUrl[env]!;
 }
 
 //! First solution
@@ -65,7 +67,8 @@ class _RemoteConfig {
     stgVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
     preVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
     prodVal: "TU9NUkEgTW9iaWxlIFRlYW0gMjAyMg==",
-    urbiPreVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
+    urbiPreVal:
+        "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
   );
 
   static final apigeeURL = _initValues<String>(
@@ -263,10 +266,12 @@ class _RemoteConfig {
     stgVal: "BIGipServerssoappdev.momra.gov.sa.app~ssoappdev.momra.gov.sa_pool",
     preVal: "BIGipServerssoappstg.momra.gov.sa.app~ssoappstg.momra.gov.sa_pool",
     prodVal: "BIGipServerssoapp.balady.gov.sa.app~ssoapp.balady.gov.sa_pool",
-    urbiPreVal: "BIGipServerssoappstg.momra.gov.sa.app~ssoappstg.momra.gov.sa_pool",
+    urbiPreVal:
+        "BIGipServerssoappstg.momra.gov.sa.app~ssoappstg.momra.gov.sa_pool",
   );
 
-  static final MSRAllowedMuncipalites = _initValues<List<String>>(devVal: [
+  static final MSRAllowedMuncipalites = _initValues<List<String>>(
+    devVal: [
       "007",
       "010",
       "016",
@@ -282,7 +287,8 @@ class _RemoteConfig {
       "018",
       "003",
       "005"
-  ], stgVal: [
+    ],
+    stgVal: [
       "007",
       "010",
       "016",
@@ -298,7 +304,8 @@ class _RemoteConfig {
       "018",
       "003",
       "005"
-  ], preVal: [
+    ],
+    preVal: [
       "007",
       "010",
       "016",
@@ -314,7 +321,8 @@ class _RemoteConfig {
       "018",
       "003",
       "005"
-  ], prodVal: [
+    ],
+    prodVal: [
       "007",
       "010",
       "016",
@@ -330,7 +338,8 @@ class _RemoteConfig {
       "018",
       "003",
       "005"
-  ],urbiPreVal: [
+    ],
+    urbiPreVal: [
       "007",
       "010",
       "016",
@@ -346,8 +355,17 @@ class _RemoteConfig {
       "018",
       "003",
       "005"
-  ],);
+    ],
 
+
+  );
+  static final ewaaUrl = _initValues<String>(
+    devVal: "https://stgfees.momra.gov.sa/ewaa",
+    stgVal: "https://stgfees.momra.gov.sa/ewaa",
+    preVal: "https://stgfees.momra.gov.sa/ewaa",
+    prodVal: "https://fees.balady.gov.sa/ewaa",
+    urbiPreVal: "https://fees.balady.gov.sa/ewaa",
+  );
   static Map<EnvType, T> _initValues<T>({
     dynamic devVal,
     dynamic stgVal,

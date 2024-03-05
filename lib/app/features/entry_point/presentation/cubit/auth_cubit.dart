@@ -108,8 +108,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     });
     refreshAPIGeeToken();
 
-    sl<WeatherAlertsCubit>().startTracking();
-    CommonFunctions.showBackGroundLocationConsent();
+    // sl<WeatherAlertsCubit>().startTracking();
+    // CommonFunctions.showBackGroundLocationConsent();
     //getUserLocationData();
   }
 

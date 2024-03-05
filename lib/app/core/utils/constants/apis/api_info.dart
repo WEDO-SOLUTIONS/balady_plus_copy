@@ -153,6 +153,11 @@ class ApiUrl {
   static String objectionPermitUrl(String transactionId) =>
       '/v1/balady-dashboard/permit-detail-url-transaction-number/$transactionId';
 
+  static String objectionEnquiryDetails(String enquiryId) =>
+      '/v1/objection-services/feedbacks/$enquiryId';
+
+  static String createEnquiryDetails = '/v1/objection-services/feedbacks';
+
 //! VD
   static const gis = '/v1/crm/bcg/gis-info';
   static const vdCategories = '/v1/crm/bcg/categories';
@@ -764,9 +769,38 @@ class ApiUrl {
 
   static const paymentURL = 'v1/payment-gateway/payment';
 
-  static const chatBot = 'v1/chatbot-services/chat';
+
+  static const chatBot = 'v1/chatbot-services/chat'; // not use this now
+  static const chatBotStream = 'v1/chatbot-services/chat-stream';
+  static const chatBotEnabled = 'v1/chatbot-services/service-enabled';
+
+
+  static const String submitRating =
+      '/v1/balady-commercial-services/rating/submit';
 
   static const weatherAlerts = 'v1/mater-services/notifications/locations';
+
+
+//commercial license query
+  static String getCommercialLicenseData(int licenseNumber,unifiedFacilityNumber) =>
+      '/v1/balady-commercial-services/licenses/$licenseNumber/by-unn/$unifiedFacilityNumber';
+
+
+
+  //! Balady Calednar
+
+  static const baladyCalendarFilter =
+      'v1/balady-calendar-services/main-filterations';
+
+  static const baladyCalendarEventsCountInYears =
+      'v1/balady-calendar-services/events/count-in-year';
+
+  static const baladyCalendarEventsCountInMonths =
+      'v1/balady-calendar-services/events/count-in-months-by-year';
+
+  static const baladyCalendarEvents =
+      'v1/balady-calendar-services/events/by-year';
+
   //! POST
 
   //! Delete
