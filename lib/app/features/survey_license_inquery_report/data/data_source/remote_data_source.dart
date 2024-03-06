@@ -42,12 +42,6 @@ class SurveyInqueryRemoteDataSourceImplementation implements SurveyInqueryRemote
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-
-
-
-      // final result = ResponseBodyModel.fromMap(data).data?.result;
-      // CommercialLicenseDataModel commercialLicencedata = CommercialLicenseDataModel.fromJson(result!);
-      // return  commercialLicencedata;
     } on DioError catch (error) {
       // "DioError $error".errorLog();
       if (error is NoDataFoundException) {

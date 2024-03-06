@@ -1,71 +1,85 @@
-import 'package:balady_plus/app/features/commercial_license_inquery/domain/entity/commercial_license_data_entity.dart';
 
-import '../../../facility_qr/data/qr_details_response.dart';
+import '../../../survey_license_inquery_report/data/model/survey_inquery_data_model.dart';
 import '../../domain/entity/construction_license_inquery_data_entity.dart';
 
 class ConstructionLicenseDataModel extends ConstructionLicenseData {
   ConstructionLicenseDataModel({
-    super.licenseNumber,
-    super.licenseStatus,
-    super.entityType,
-    super.workerType,
-    super.shopNameAr,
-    super.shopNameEn,
-    super.city,
-    super.district,
-    super.x,
-    super.y,
-    super.mainActivity,
-    super.additionalActivities,
-    super.customerServicePhoneNumber,
-    super.email,
-    super.phone,
-    super.website,
-    super.facebook,
-    super.twitter,
-    super.instagram,
-    super.snapchat,
-    super.whatsApp,
-    super.workTimes,
-  });
+    super.licenseId,
+    super.oldLicenseId,
+    super.licenseIssueDate,
+    super.statusId,
+    super.statusName,
+    super.licenseType,
+    super.buildingTypeId,
+    super.buildingTypeName,
+    super.surveyReport,});
 
 
-  ConstructionLicenseDataModel.fromJson(Map<String, dynamic> json){
-    licenseNumber = json['licenseNumber'];
-   // licenseStatus =InfoModel.fromJson(json['licenseStatus']);
-    entityType = json['entityType'];
-    workerType = json['workerType'];
-    shopNameAr = json['shopNameAr'];
-    shopNameEn = json['shopNameEn'];
-    // if(json['city'] != null)
-    //   {
-    //     city = InfoModel.fromJson(json['city']);
-    //   }
-    // if(json['district'] != null) {
-    //   district = InfoModel.fromJson(json['district']);
-    // }
-    x = json['x'];
-    y = json['y'];
-    // mainActivity = ActivityModel.fromJson(json['mainActivity']);
-    // additionalActivities = List.from(json['additionalActivities']).map((e)=>ActivityModel.fromJson(e)).toList();
-    // customerServicePhoneNumber =json['customerServicePhoneNumber'];
-    email = json['email'];
-    phone = json['phone'];
-    website = json['website'];
-    facebook = json['facebook'];
-    instagram = json['instagram'];
-    twitter = json['twitter'];
-    snapchat = json['snapchat'];
-    whatsApp = json['whatsApp'];
+  ConstructionLicenseDataModel.fromJson(dynamic json) {
+    licenseId = json['licenseId'];
+    oldLicenseId = json['oldLicenseId'];
+    licenseIssueDate = json['licenseIssueDate'];
+    statusId = json['statusId'];
+    statusName = json['statusName'];
+    licenseType = json['licenseType'];
+    buildingTypeId = json['buildingTypeId'];
+    buildingTypeName = json['buildingTypeName'];
+    surveyReport = json['surveyReport'] != null ? SurveyReportDataModel.fromJson(json['surveyReport']) : null;
+  }
 
-    workTimes= json["workTimes"] == null
-        ? null : WorkTimes.fromJson(json["workTimes"]);
+ 
+}
 
+
+class SurveyReportDataModel  extends SurveyReport{
+  SurveyReportDataModel({
+    super.licenseId,
+    super.oldLicenseId,
+    super.licenseIssueDate,
+    super.purposeId,
+    super.purposeName,
+    super.mainBuildingClassId,
+    super.mainBuildingClassName,
+    super.subBuildingClassId,
+    super.subBuildingClassName,
+    super.parcels,
+    super.municipalityId,
+    super.municipalityName,
+    super.subMunicipalityId,
+    super.subMunicipalityName,
+    super.districtId,
+    super.districtName,
+    super.mapNumber,});
+
+  SurveyReportDataModel.fromJson(dynamic json) {
+    licenseId = json['licenseId'];
+    oldLicenseId = json['oldLicenseId'];
+    licenseIssueDate = json['licenseIssueDate'];
+    purposeId = json['purposeId'];
+    purposeName = json['purposeName'];
+    mainBuildingClassId = json['mainBuildingClassId'];
+    mainBuildingClassName = json['mainBuildingClassName'];
+    subBuildingClassId = json['subBuildingClassId'];
+    subBuildingClassName = json['subBuildingClassName'];
+    if (json['parcels'] != null) {
+      parcels = [];
+      json['parcels'].forEach((v) {
+        parcels?.add(ParcelDataModel.fromJson(v));
+      });
+    }
+    municipalityId = json['municipalityId'];
+    municipalityName = json['municipalityName'];
+    subMunicipalityId = json['subMunicipalityId'];
+    subMunicipalityName = json['subMunicipalityName'];
+    districtId = json['districtId'];
+    districtName = json['districtName'];
+    mapNumber = json['mapNumber'];
   }
 
 
 
 
-
 }
+
+
 
