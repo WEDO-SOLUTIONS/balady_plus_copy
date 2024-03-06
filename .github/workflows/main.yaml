@@ -70,27 +70,39 @@ jobs:
   build:
     name: Build Android
     if: github.event.pull_request.draft == false
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     timeout-minutes: 60
     steps:
       - name: ⬇️ Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      # GITHUB_REF_SLUG
+      - name: Inject slug git variables
+        uses: rlespinasse/github-slug-action@v4
+
       - name: ⚙️ Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.10.3"
           channel: "stable"
           cache: true
+
       - name: ⚙️ Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: "zulu"
           java-version: "17.x"
           cache: "gradle"
         id: java
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Add Android ABI filter
         run: |
           git apply .github/workflows/abi_filter.patch
+
       - name: 🤖🔨 Development setup dgis_map_platform_interface
         run: |
           cd urbi_map/dgis_map_platform_interface
@@ -98,16 +110,28 @@ jobs:
           mkdir ../dgis_map/android/src/main/kotlin/com/dgis/map/map_api
           flutter pub get
           flutter pub run pigeon --input pigeons/messages.dart
+
       - name: 🤖🔨 Development setup dgis_map
+        env: # Set the secret as an environment variable
+          BALADY_DEVELOPERS_PASS: ${{ secrets.BALADY_DEVELOPERS_PASS }}
         run: |
           cd urbi_map/dgis_map
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
+          mkdir -p android/_delete_me_ ios/_DELETE_ME_
+          curl -u "balady-developers:${BALADY_DEVELOPERS_PASS}" -O https://artifactory.2gis.dev/vendor-ios-release/10.2.1/Release/DGisFullSDK.zip
+          rm -rf ios/_DELETE_ME_/DGis.xcframework
+          unzip DGisFullSDK.zip -d ios/_DELETE_ME_
+          rm DGisFullSDK.zip
+          curl -u "balady-developers:${BALADY_DEVELOPERS_PASS}" -O https://artifactory.2gis.dev/vendor-maven-release/ru/dgis/sdk/sdk-full/10.2.1/sdk-full-10.2.1.aar
+          mv sdk-full-10.2.1.aar android/_delete_me_/sdk-full-latest.aar
+
       - name: 🤖🔨 Development setup mapness
         run: |
           cd mapness
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
+
       - name: 🤖🔨 Download strings from Localazy
         uses: localazy/download@v1
         with:
@@ -117,25 +141,30 @@ jobs:
       - name: 🤖🔨 Generate dart locale bindings
         run: |
           cd mapness
-          sudo mkdir -p lib/l10n/generated
-          sudo chmod -R 777 lib/l10n/
+          # FIXME: Workaround, see https://github.com/localazy/download/issues/3
+          sudo chown github:github -R lib/l10n
+          mkdir -p lib/l10n/generated
           flutter gen-l10n
+
       - name: 🤖🔨 Build Android app
         run: |
-          flutter build apk --target lib/main_urbi_pre.dart --dart-define=GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)" --dart-define=GIT_COMMIT="$(git --no-pager show -s --format='%s')" --dart-define=VENDOR_CONFIG=urbi-pre-prod
-          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-urbi-pre-prod.apk
-          #flutter build apk --target lib/main_prod.dart --dart-define=GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)" --dart-define=GIT_COMMIT="$(git --no-pager show -s --format='%s')" --dart-define=VENDOR_CONFIG=momrah-prod
-          #mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-momrah-prod.apk
+          export CI_GIT_COMMIT=$(git --no-pager show -s --format='%s')
+          flutter build apk --target lib/main_urbi_pre.dart --dart-define=GIT_BRANCH="${GITHUB_REF_SLUG}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=urbi-pre-prod
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/urbi-pre-${GITHUB_REF_SLUG}.apk
+          flutter build apk --target lib/main_prod.dart --dart-define=GIT_BRANCH="${GITHUB_REF_SLUG}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=momrah-prod
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/momrah-prod-${GITHUB_REF_SLUG}.apk
+
       - name: 🤖🔨 Upload Urbi Pre Prod apk
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: app-urbi-pre-prod.apk
-          path: build/app/outputs/flutter-apk/app-urbi-pre-prod.apk
-      #- name: 🤖🔨 Upload Momrah Prod apk
-      #uses: actions/upload-artifact@v3
-      #with:
-      #name: app-momrah-prod.apk
-      #path: build/app/outputs/flutter-apk/app-momrah-prod.apk
+          name: urbi-pre-${{ env.GITHUB_REF_SLUG }}.apk
+          path: build/app/outputs/flutter-apk/urbi-pre-${{ env.GITHUB_REF_SLUG }}.apk
+
+      - name: 🤖🔨 Upload Momrah Prod apk
+        uses: actions/upload-artifact@v4
+        with:
+          name: momrah-prod-${{ env.GITHUB_REF_SLUG }}.apk
+          path: build/app/outputs/flutter-apk/momrah-prod-${{ env.GITHUB_REF_SLUG }}.apk
 
   # notify:
   #   name: Notify
