@@ -1,25 +1,27 @@
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
-import 'package:balady_plus/app/features/notifications/Data/model/notifications_list/notifications_list_response.dart';
-import 'package:balady_plus/app/features/notifications/Data/model/notifications_list/notifications_message_item.dart';
-import 'package:balady_plus/app/features/notifications/Data/model/notifications_list/search_notifications_params.dart';
+import 'package:balady_plus/app/features/notifications/data/model/notifications_list/notifications_list_response.dart';
+import 'package:balady_plus/app/features/notifications/data/model/notifications_list/search_notifications_params.dart';
+import 'package:balady_plus/app/features/notifications/domain/entities/set_notifications_profile_products_params.dart';
 import 'package:balady_plus/app/features/notifications/domain/repositories/notification_repository.dart';
-
 import 'package:dartz/dartz.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
-import '../data_source/remote_data_source.dart';
+import '../../domain/entities/set_notifications_profile_params.dart';
+import '../data_source/notifications_remote_data_source.dart';
 import '../model/noification_response.dart';
 import '../model/notification_request.dart';
+import '../model/notifications_settings_list/notifications_settings_list_response.dart';
 
-
-class NotificationRepositoryImplementation implements NotificationsRepository, NotificationsListRepository {
-  final NotificationRemoteDataSource remoteDataSource;
+class NotificationRepositoryImplementation
+    implements NotificationsRepository, NotificationsListRepository {
+  final NotificationsRemoteDataSource remoteDataSource;
 
   NotificationRepositoryImplementation({
     required this.remoteDataSource,
   });
 
   @override
-  Future<Either<Failure, ResponseBodyModel<NotificationResponse>>> updateNotificationSettings( NotificationRequest request) async {
+  Future<Either<Failure, ResponseBodyModel<NotificationResponse>>>
+      updateNotificationSettings(NotificationRequest request) async {
     try {
       final data = await remoteDataSource.updateNotificationSettings(request);
       return Right(data);
@@ -30,16 +32,11 @@ class NotificationRepositoryImplementation implements NotificationsRepository, N
     }
   }
 
-
-
-
-
-
-
   //For NotificationsListRepository
   @override
-  Future<Either<Failure, NotificationsListResponse>> getNotificationsMessagesList(
-      {required SearchNotificationsParams request}) async {
+  Future<Either<Failure, NotificationsListResponse>>
+      getNotificationsMessagesList(
+          {required SearchNotificationsParams request}) async {
     try {
       final data = await remoteDataSource.getNotificationsMessagesList(request);
       return Right(data);
@@ -50,6 +47,49 @@ class NotificationRepositoryImplementation implements NotificationsRepository, N
     }
   }
 
+  //For NotificationsListRepository
+  @override
+  Future<Either<Failure, NotificationsSettingsList>>
+      getNotificationsSettingsList(
+          {required String notificationChannelId}) async {
+    try {
+      final data = await remoteDataSource.getNotificationsSettingsList(
+          notificationChannelId: notificationChannelId);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
 
+  //For NotificationsListRepository
+  @override
+  Future<Either<Failure, int>> setNotificationsProfile(
+      {required SetNotificationsProfileParams params}) async {
+    try {
+      final data =
+          await remoteDataSource.setNotificationsProfile(params: params);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
 
+  //For NotificationsListRepository
+  @override
+  Future<Either<Failure, int>> setNotificationsProfileProducts(
+      {required SetNotificationsProfileProductsParams params}) async {
+    try {
+      final data = await remoteDataSource.setNotificationsProfileProducts(
+          params: params);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
 }

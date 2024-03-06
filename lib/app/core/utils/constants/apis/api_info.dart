@@ -819,6 +819,9 @@ class ApiUrl {
   //! Notifications
 
   static const notificationsMessagesList = 'v1/notificationsMessagesList';
+    static const notificationsSettingsList = 'v1/notifications-hub-services/fe/profiles';
+  static const setProductsNotificationsSettings = 'v1/notifications-hub-services/fe/profile/products';
+  static const setProfileNotificationsSettings = 'v1/notifications-hub-services/fe/profiles';
 
   //! POST
 

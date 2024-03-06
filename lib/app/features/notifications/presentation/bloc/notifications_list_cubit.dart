@@ -1,8 +1,8 @@
 import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/errors/failures.dart';
-import 'package:balady_plus/app/features/notifications/Data/model/notifications_list/notifications_list_response.dart';
-import 'package:balady_plus/app/features/notifications/Data/model/notifications_list/notifications_message_item.dart';
-import 'package:balady_plus/app/features/notifications/Data/model/notifications_list/search_notifications_params.dart';
+import 'package:balady_plus/app/features/notifications/data/model/notifications_list/notifications_list_response.dart';
+import 'package:balady_plus/app/features/notifications/data/model/notifications_list/notifications_message_item.dart';
+import 'package:balady_plus/app/features/notifications/data/model/notifications_list/search_notifications_params.dart';
 import 'package:balady_plus/app/features/notifications/domain/repositories/notification_repository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';

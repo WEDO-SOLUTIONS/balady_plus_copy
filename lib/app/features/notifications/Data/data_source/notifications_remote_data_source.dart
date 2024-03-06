@@ -14,7 +14,7 @@ import '../../domain/entities/set_notifications_profile_products_params.dart';
 import '../model/noification_response.dart';
 import '../model/notification_request.dart';
 
-abstract class NotificationsDataSource {
+abstract class NotificationsRemoteDataSource {
   Future<ResponseBodyModel<NotificationResponse>> updateNotificationSettings(
       NotificationRequest request);
 
@@ -34,7 +34,7 @@ abstract class NotificationsDataSource {
 }
 
 class NotificationRemoteDataSourceImplementation
-    implements NotificationsDataSource {
+    implements NotificationsRemoteDataSource {
   final WebService webService;
 
   NotificationRemoteDataSourceImplementation({required this.webService});

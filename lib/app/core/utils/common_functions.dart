@@ -40,6 +40,8 @@ import 'package:url_launcher/url_launcher.dart'
     show LaunchMode, canLaunchUrl, launchUrl;
 import 'package:uuid/uuid.dart';
 
+import 'package:balady_plus/app/features/notifications/data/model/notification_request.dart';
+
 import '../../app.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
 import '../../features/_shared_feature_/data/entities/package_details.dart';
@@ -50,7 +52,6 @@ import '../../features/_shared_feature_/presentation/widgets/custom_popups_widge
 import '../../features/calendar/presentation/bloc/calendar_bloc.dart';
 import '../../features/entry_point/domain/use_cases/get_cookie.dart';
 import '../../features/events/presentation/bloc/events_bloc.dart';
-import '../../features/notifications/Data/model/notification_request.dart';
 import '../../features/notifications/manager/notification_manager.dart';
 import '../../features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../../features/profile_features/delegators/domain/entities/user_profile_entity.dart';
