@@ -4122,8 +4122,7 @@
   "calendar_type_appmt": "Appointment",
   "calendar_type_invoice": "Invoice not paid",
   "no_data_found":"No Data Found", 
-
-
-  "commercial_licenseـquery_title": "Insert the following"
-
+  "commercial_licenseـquery_title": "Insert the following",
+  "enable_disable_notifications": "You can enable or disable notifications from here",
+  "manage_notification": "Manage notifications for services"
 }

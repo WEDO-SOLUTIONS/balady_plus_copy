@@ -1,4 +1,4 @@
-import 'package:balady_plus/app/features/notifications/Data/model/notifications_list/notifications_message_item.dart';
+import 'package:balady_plus/app/features/notifications/data/model/notifications_list/notifications_message_item.dart';
 import 'package:equatable/equatable.dart';
 
 class NotificationsListResponse extends Equatable {

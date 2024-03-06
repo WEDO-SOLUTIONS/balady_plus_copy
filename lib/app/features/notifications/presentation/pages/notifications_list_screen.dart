@@ -1,6 +1,6 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
-import 'package:balady_plus/app/features/notifications/Data/model/notifications_list/search_notifications_params.dart';
+import 'package:balady_plus/app/features/notifications/data/model/notifications_list/search_notifications_params.dart';
 import 'package:balady_plus/app/features/notifications/presentation/bloc/notifications_list_cubit.dart';
 import 'package:balady_plus/app/features/notifications/presentation/widgets/actions_appbar/action_show_filter_widget.dart';
 import 'package:balady_plus/app/features/notifications/presentation/widgets/actions_appbar/action_show_type_date_widget.dart';
@@ -24,9 +24,7 @@ class NotificationsListScreen extends StatelessWidget {
         create: (_) {
           return NotificationsListCubit(
             baladyCalendarRepository: sl(),
-            params: SearchNotificationsParams(
-
-            ),
+            params: SearchNotificationsParams(),
           );
         },
         child: Scaffold(
