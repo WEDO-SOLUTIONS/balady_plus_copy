@@ -4,14 +4,14 @@ part of 'construction_license_inquery_details_cubit.dart';
 
 class ConstructionLicenseInqueryDetailsState extends Equatable {
   final BlocRequestStatus status;
-  final ConstructionLicenseDataModel? commercialLicenceQueryDetails;
+  final ConstructionLicenseDataModel? licenceQueryDetails;
   //error message
   final String? errorMessage;
 
 
   const ConstructionLicenseInqueryDetailsState({
     this.status = BlocRequestStatus.initial,
-    this.commercialLicenceQueryDetails,
+    this.licenceQueryDetails,
     this.errorMessage,
   });
 
@@ -24,7 +24,7 @@ class ConstructionLicenseInqueryDetailsState extends Equatable {
   }) {
     return ConstructionLicenseInqueryDetailsState(
       status: status ?? this.status,
-      commercialLicenceQueryDetails: commercialLicenceDetails ?? this.commercialLicenceQueryDetails,
+      licenceQueryDetails: commercialLicenceDetails ?? this.licenceQueryDetails,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
@@ -32,7 +32,7 @@ class ConstructionLicenseInqueryDetailsState extends Equatable {
   @override
   List<Object?> get props => [
     status,
-    commercialLicenceQueryDetails,
+    licenceQueryDetails,
     errorMessage,
   ];
 

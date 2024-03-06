@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../survey_license_inquery_report/domain/entity/survey_inquery_data_entity.dart';
 import '../../domain/entity/construction_license_inquery_data_entity.dart';
 import '../bloc/construction_license_inquery_details_cubit.dart';
 
@@ -75,6 +76,7 @@ class _ConstructionLicenseInqueryDetailsState
     );
   }
 
+
   Widget getBody() {
     return BlocConsumer<ConstructionLicenseInqueryDetailsCubit,
         ConstructionLicenseInqueryDetailsState>(
@@ -94,224 +96,259 @@ class _ConstructionLicenseInqueryDetailsState
               child: const ShimmerEffectWidget(),
             ),
           );
-        } else if (state.commercialLicenceQueryDetails != null) {
-          final commercialLicenceQueryDetails =
-              state.commercialLicenceQueryDetails!;
+        } else if (state.licenceQueryDetails != null) {
+          final licenceQueryDetails =
+          state.licenceQueryDetails!;
           return SingleChildScrollView(
             child: Column(
               children: [
-                Row(
-                  children: [
-                    const Spacer(),
-                    Container(
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: AppColor.primary50Light,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Row(
-                          children: [
-                            CustomTextWidget(
-                              commercialLicenceQueryDetails
-                                      .licenseStatus?.name ??
-                                  "",
-                              textStyle: AppStyle.tagTextStyle,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+
                 ExpandableCard(
-                  title: 'license_info'.tr(),
+                  title: 'license_details'.tr(),
                   icon: IconPath.editIcon,
                   isExpandedByDefault: false,
                   children: [
                     CardParameter(
-                      title: 'crNumbers'.tr(),
-                      value: commercialLicenceQueryDetails.licenseNumber
-                              .toString() ??
+                      title: 'unified_license_number'.tr(),
+                      value: licenceQueryDetails.licenseId
+                          .toString() ??
                           '',
                       bgColor: AppColor.mystic,
                     ),
                     CardParameter(
-                      title: 'facilityType'.tr(),
-                      value: commercialLicenceQueryDetails.entityType ?? '',
+                      title: 'license_number_municipality'.tr(),
+                      value: licenceQueryDetails.oldLicenseId ?? '',
                       bgColor: AppColor.mystic,
                     ),
                     CardParameter(
-                      title: 'employee_type'.tr(),
-                      value: commercialLicenceQueryDetails.workerType ?? "",
+                      title: 'license_issue_date'.tr(),
+                      value: licenceQueryDetails.licenseIssueDate ?? "",
                       bgColor: AppColor.mystic,
                     ),
 
-                    commercialLicenceQueryDetails.shopNameAr != null
-                        ? CardParameter(
-                            title: 'license_shop_name_ar'.tr(),
-                            value:
-                                commercialLicenceQueryDetails.shopNameAr ?? '',
-                            bgColor: AppColor.mystic,
-                          )
-                        : Container(),
-                    /////////////////////
-                    commercialLicenceQueryDetails.shopNameEn != null
-                        ? CardParameter(
-                            title: 'license_shop_name_en'.tr(),
-                            value:
-                                commercialLicenceQueryDetails.shopNameEn ?? '',
-                            bgColor: AppColor.mystic,
-                          )
-                        : Container(),
+
                     CardParameter(
-                      title: 'city'.tr(),
-                      value: commercialLicenceQueryDetails.city?.name ?? '',
+                      title: 'license_status'.tr(),
+                      value:
+                      licenceQueryDetails.statusName ?? '',
                       bgColor: AppColor.mystic,
                     ),
-                    commercialLicenceQueryDetails.district != null
-                        ? CardParameter(
-                            title: 'district'.tr(),
-                            value:
-                                commercialLicenceQueryDetails.district?.name ??
-                                    '',
-                            bgColor: AppColor.mystic,
-                          )
-                        : Container(),
-                    const SizedBox(height: 16),
-                    commercialLicenceQueryDetails.x != null &&
-                            commercialLicenceQueryDetails.y != null
-                        ? SizedBox(
-                            height: 250,
-                            child: Stack(children: [
-                              GoogleMap(
-                                initialCameraPosition: CameraPosition(
-                                    target: LatLng(
-                                      double.parse(
-                                          commercialLicenceQueryDetails.y!),
-                                      double.parse(
-                                          commercialLicenceQueryDetails.x!),
-                                    ),
-                                    zoom: 16),
-                                markers: {
-                                  Marker(
-                                    markerId: const MarkerId('position'),
-                                    position: LatLng(
-                                      double.parse(
-                                          commercialLicenceQueryDetails.y!),
-                                      double.parse(
-                                          commercialLicenceQueryDetails.x!),
-                                    ),
-                                  )
-                                },
-                                zoomControlsEnabled: false,
-                                zoomGesturesEnabled: false,
-                                scrollGesturesEnabled: false,
-                              ),
-                              Positioned(
-                                bottom: 20,
-                                left: 20,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    navigateTo(
-                                        double.parse(
-                                            commercialLicenceQueryDetails.y!),
-                                        double.parse(
-                                            commercialLicenceQueryDetails.x!));
-                                  },
-                                  child: const Image(
-                                      height: 40,
-                                      width: 40,
-                                      image: AssetImage(IconPath.direction)),
-                                ),
-                              ),
-                            ]),
-                          )
-                        : const SizedBox(),
+                    CardParameter(
+                      title: 'building_type'.tr(),
+                      value: licenceQueryDetails.buildingTypeName ?? '',
+                      bgColor: AppColor.mystic,
+                    ),
+
+                    licenceQueryDetails
+                        .surveyReport != null ?
+                    CardParameter(
+                      // from whats
+                      title: 'compliance_main_usage'.tr(),
+                      value: licenceQueryDetails
+                          .surveyReport!.mainBuildingClassName!
+                          .toString(),
+                      bgColor: AppColor.mystic,
+                    ):Container(),
+                    licenceQueryDetails
+                        .surveyReport != null ?
+                    CardParameter(
+                      // from whats
+                      title: 'compliance_sub_usage'.tr(),
+                      value: licenceQueryDetails
+                          .surveyReport!.subBuildingClassName
+                          .toString(),
+                      bgColor: AppColor.mystic,
+                    ):Container(),
+
+                    // const SizedBox(height: 16),
+                    // licenceQueryDetails.x != null &&
+                    //         licenceQueryDetails.y != null
+                    //     ? SizedBox(
+                    //         height: 250,
+                    //         child: Stack(children: [
+                    //           GoogleMap(
+                    //             initialCameraPosition: CameraPosition(
+                    //                 target: LatLng(
+                    //                   double.parse(
+                    //                       licenceQueryDetails.y!),
+                    //                   double.parse(
+                    //                       licenceQueryDetails.x!),
+                    //                 ),
+                    //                 zoom: 16),
+                    //             markers: {
+                    //               Marker(
+                    //                 markerId: const MarkerId('position'),
+                    //                 position: LatLng(
+                    //                   double.parse(
+                    //                       licenceQueryDetails.y!),
+                    //                   double.parse(
+                    //                       licenceQueryDetails.x!),
+                    //                 ),
+                    //               )
+                    //             },
+                    //             zoomControlsEnabled: false,
+                    //             zoomGesturesEnabled: false,
+                    //             scrollGesturesEnabled: false,
+                    //           ),
+                    //           Positioned(
+                    //             bottom: 20,
+                    //             left: 20,
+                    //             child: GestureDetector(
+                    //               onTap: () {
+                    //                 navigateTo(
+                    //                     double.parse(
+                    //                         licenceQueryDetails.y!),
+                    //                     double.parse(
+                    //                         licenceQueryDetails.x!));
+                    //               },
+                    //               child: const Image(
+                    //                   height: 40,
+                    //                   width: 40,
+                    //                   image: AssetImage(IconPath.direction)),
+                    //             ),
+                    //           ),
+                    //         ]),
+                    //       )
+                    //     : const SizedBox(),
                   ],
                 ),
-                commercialLicenceQueryDetails.mainActivity != null
-                    ? ExpandableCard(
-                        title: 'activity_info'.tr(),
-                        icon: IconPath.editIcon,
-                        children: [
-                          CardParameter(
-                            title: 'isicNumber'.tr(),
-                            value: commercialLicenceQueryDetails
-                                .mainActivity!.isicNumber
-                                .toString(),
-                            bgColor: AppColor.mystic,
-                          ),
-                          CardParameter(
-                            // from whats
-                            title: 'isicName'.tr(),
-                            value: commercialLicenceQueryDetails
-                                .mainActivity!.isicName
-                                .toString(),
-                            bgColor: AppColor.mystic,
-                          ),
-                          (commercialLicenceQueryDetails.additionalActivities !=
-                                      null &&
-                                  commercialLicenceQueryDetails
-                                      .additionalActivities!.isNotEmpty)
-                              ?
-                          Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    CustomTextWidget(
-                                      'additional_activity_info'.tr(),
-                                      textStyle: AppStyle.cardTitleTextStle
-                                          .copyWith(fontSize: 16),
-                                      maxLines: 2,
-                                    ),
-                                    ListView.builder(
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      itemCount: commercialLicenceQueryDetails
-                                          .additionalActivities!.length,
-                                      itemBuilder: (_, index) {
-                                        LicenseActivity activity =
-                                            commercialLicenceQueryDetails
-                                                .additionalActivities![index];
-                                        return ExpandableCard(
-                                          title: activity.detailedActivityName!,
-                                          bgColor: AppColor.lightGray,
-                                          children: [
-                                            CardParameter(
-                                              title: 'extra_isicNumber'.tr(),
-                                              value: activity.isicNumber
-                                                  .toString(),
-                                              bgColor: AppColor.lightGray,
-                                            ),
-                                            const Divider(
-                                              height: 2,
-                                              color:
-                                                  AppColor.blackModern200Light,
-                                            ),
-                                            CardParameter(
-                                              // from whats
-                                              title: 'extra_isicName'.tr(),
-                                              value:
-                                                  activity.isicName.toString(),
-                                              bgColor: AppColor.lightGray,
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                )
-                              : const SizedBox(),
-                        ],
-                      )
-                    : const SizedBox(),
-                const SizedBox(height: 20),
+                licenceQueryDetails
+                    .surveyReport != null ?
+                ExpandableCard(
+                  title: 'step3Title'.tr(),
+                  icon: IconPath.editIcon,
+                  children: [
+                    CardParameter(
+                      title: 'municipality'.tr(),
+                      value: licenceQueryDetails
+                          .surveyReport!.municipalityName
+                          .toString(),
+                      bgColor: AppColor.mystic,
+                    ),
+                    CardParameter(
+                      // from whats
+                      title: 'sub_municipality'.tr(),
+                      value: licenceQueryDetails
+                          .surveyReport!.subMunicipalityName
+                          .toString(),
+                      bgColor: AppColor.mystic,
+                    ),
 
+                    CardParameter(
+                      // from whats
+                      title: 'district'.tr(),
+                      value: licenceQueryDetails
+                          .surveyReport!.districtName
+                          .toString(),
+                      bgColor: AppColor.mystic,
+                    ),
+
+                    CardParameter(
+                      // from whats
+                      title: 'planNumber'.tr(),
+                      value: licenceQueryDetails
+                          .surveyReport!.mapNumber
+                          .toString(),
+                      bgColor: AppColor.mystic,
+                    ),
+
+                    CardParameter(
+                      // from whats
+                      title: 'compliance_main_usage'.tr(),
+                      value: licenceQueryDetails
+                          .surveyReport!.mainBuildingClassName
+                          .toString(),
+                      bgColor: AppColor.mystic,
+                    ),
+
+                    CardParameter(
+                      // from whats
+                      title: 'compliance_sub_usage'.tr(),
+                      value: licenceQueryDetails
+                          .surveyReport!.subBuildingClassName
+                          .toString(),
+                      bgColor: AppColor.mystic,
+                    ),
+
+
+                  ],
+                ):Container(),
+
+                (licenceQueryDetails.surveyReport != null&&licenceQueryDetails.surveyReport!.parcels !=
+                    null &&
+                    licenceQueryDetails
+                        .surveyReport!.parcels!.isNotEmpty)?
+                ExpandableCard(
+                  title: 'land_information'.tr(),
+                  icon: IconPath.editIcon,
+                  children: [
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 20,
+                        ),
+
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics:
+                          const NeverScrollableScrollPhysics(),
+                          itemCount: licenceQueryDetails
+                              .surveyReport!.parcels!.length,
+                          itemBuilder: (_, index) {
+                            Parcel activity =
+                            licenceQueryDetails
+                                .surveyReport!.parcels![index];
+                            return ExpandableCard(
+                              title: "${"land".tr()}{$index}",
+                              bgColor: AppColor.lightGray,
+                              children: [
+
+
+                                CardParameter(
+                                  title: 'landNo'.tr(),
+                                  value: activity.landNo
+                                      .toString(),
+                                  bgColor: AppColor.lightGray,
+                                ),
+                                const Divider(
+                                  height: 2,
+                                  color:
+                                  AppColor.blackModern200Light,
+                                ),
+                                CardParameter(
+                                  // from whats
+                                  title: 'area_natural'.tr(),
+                                  value:
+                                  activity.area.toString(),
+                                  bgColor: AppColor.lightGray,
+                                ),
+                                const Divider(
+                                  height: 2,
+                                  color:
+                                  AppColor.blackModern200Light,
+                                ),
+                                CardParameter(
+                                  // from whats
+                                  title: 'area_schema'.tr(),
+                                  value:
+                                  activity.areaAccordingToScheme.toString(),
+                                  bgColor: AppColor.lightGray,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ],
+                    )
+                    ,
+                  ],
+                ):Container(),
+
+
+
+                const SizedBox(height: 24),
               ],
             ),
           );
@@ -328,6 +365,8 @@ class _ConstructionLicenseInqueryDetailsState
       },
     );
   }
+
+
 
 
 

@@ -3870,7 +3870,10 @@
     "land_information":"بيانات قطع الاراضي",
     "land": "قطعة ارض ",
    "area_natural" :"المساحة حسب الطبيعة",
-    "area_schema":"المساحة حسب وثيقة الملكية"
+    "area_schema":"المساحة حسب وثيقة الملكية",
+    "license_details": "بيانات الرخصة الأساسية",
+    "license_number_municipality": "رقم الرخصة من الأمانة",
+    "building_type":"نوع البناء"
 
 
 
