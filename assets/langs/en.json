@@ -4121,9 +4121,8 @@
   "no_events": "Sorry, there are no events now",
   "calendar_type_appmt": "Appointment",
   "calendar_type_invoice": "Invoice not paid",
-  "no_data_found":"No Data Found", 
-
-
-  "commercial_licenseـquery_title": "Insert the following"
-
+  "no_data_found":"No Data Found",
+  "commercial_licenseـquery_title": "Insert the following",
+  "survey_report_inquery": "Inquiry about a survey report",
+  "inquiry_construction_license": "Inquiry about a construction license"
 }

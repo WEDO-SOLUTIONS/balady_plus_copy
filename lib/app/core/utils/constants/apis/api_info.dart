@@ -786,6 +786,13 @@ class ApiUrl {
       '/v1/balady-commercial-services/licenses/$licenseNumber/by-unn/$unifiedFacilityNumber';
 
 
+  //Construction License Inquery
+  static String getConstructionLicenseData(int licenseNumber,String date) =>
+      '/v1/balady-commercial-services/licenses/$licenseNumber/by-unn/$date';
+
+  //Survey license inquery
+  static String getSurveyLicenseData(int licenseNumber,String date) =>
+      '/v1/balady-commercial-services/licenses/$licenseNumber/by-unn/$date';
 
   //! Balady Calednar
 
