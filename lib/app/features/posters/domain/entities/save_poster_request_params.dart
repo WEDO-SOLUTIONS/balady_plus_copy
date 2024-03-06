@@ -65,6 +65,6 @@ class Poster {
         "name": name,
         "typeId": typeId,
         "width": width,
-        // "discountPercentage": discountPercentage //ToDo: Remove Poster CR.
+        "discountPercentage": discountPercentage
       };
 }
