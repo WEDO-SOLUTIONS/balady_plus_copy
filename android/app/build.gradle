@@ -75,20 +75,25 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            signingConfig signingConfigs.release
-proguardFiles getDefaultProguardFile(
+            signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : null
+            applicationVariants.all { variant ->
+                variant.outputs.all { output ->
+                    output.outputFileName = "app-release.apk"
+                }
+            }
+            proguardFiles getDefaultProguardFile(
                     'proguard-android-optimize.txt'),
                     'proguard-rules.pro'            
         }
          debug {
             minifyEnabled true
-             proguardFiles getDefaultProguardFile(
+            proguardFiles getDefaultProguardFile(
                     'proguard-android-optimize.txt'),
                     'proguard-rules.pro'
         }
     }    
 
-     lintOptions {
+    lintOptions {
        checkReleaseBuilds false
        abortOnError false
     }
