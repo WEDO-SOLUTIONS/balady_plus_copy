@@ -118,6 +118,50 @@ Map<String, dynamic> servicesConfig = {
     },*/
   ],
   "municipal_services": [
+
+    {
+      "id": 11124,
+      "icon": "license_query",
+      "3d_icon": null,
+      "order": 6,
+      "isNew": false,
+      "requireLogin": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": RouteName.constructionLicenseOverView},
+      "ar": {
+        "title": "inquiry_construction_license",
+        "description": null,
+        "tag": null
+      },
+      "en": {
+        "title": "inquiry_construction_license",
+        "description": null,
+        "tag": null
+      }
+    },
+
+
+    {
+      "id": 11632,
+      "icon": "license_query",
+      "3d_icon": null,
+      "order": 6,
+      "isNew": false,
+      "requireLogin": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": RouteName.surveyReportInqueryOverView},
+      "ar": {
+        "title": "survey_report_inquery",
+        "description": null,
+        "tag": null
+      },
+      "en": {
+        "title": "survey_report_inquery",
+        "description": null,
+        "tag": null
+      }
+    },
+
     {
       "id": 11134,
       "icon": "license_query",

@@ -3673,7 +3673,7 @@
     "complaince_service_name": "إصدار شهادة امتثال المباني",
     "complaince_service_desc": "هي خدمة يتم من خلالها إصدار شهادة امتثال للمبنى تفيد بالتزام المبنى بمجموعة من الاشتراطات التي أقرتها وزارة الشؤون البلدية والقروية والإسكان وذلك للحد من مظاهر التشوه البصري في المباني التجارية والسكنية والارتقاء بجودة المشهد الحضري في المدن",
     "complaince_service_req_1": "يجب أن يكون مقدم الطلب هو المالك للمبنى أو مفوض من مالك المبنى بتفويض إليكتروني ساري وصادر من بلدي.",
-    "complaince_service_req_2": "يجب أن يكون لدى مقدم الطلب رخصة إنشائية أو صك ملكية.",
+    "complaince_service_req_2": "يجب أن يكون لدى مقدم الطلب رخصة إنشائية أو مستند الإنتفاع بالمبني .",
     "complaince_applying_benf": "من خلال المستفيد بنفسه (بدون مكتب هندسي)",
     "complaince_applying_benf_step_1": "تسجيل الدخول عبر تطبيق بلدي.",
     "complaince_applying_benf_step_2": "الدخول على خدمة إصدار شهادة امتثال المباني.",
@@ -3848,10 +3848,31 @@
     "crNumbers": "رقم الرخصة",
     "balady_calendar_hijri": "هجري",
     "balady_calendar_gregorian": "ميلادي",
-    "no_data_found":"لا يوجد بيانات", 
+    "no_data_found":"لا يوجد بيانات",
+    "commercial_licenseـquery_title": "يرجى إدخال البيانات التالية",
+
+
+    "survey_report_inquery": "الاستعلام عن تقرير مساحي",
+    "inquiry_construction_license": "الاستعلام عن رخصة إنشائية",
+    "license_issue_date":"تاريخ إصدار الرخصة",
+    "license_typeـerror": "الرجاء إدخال نوع الرخصة",
+    "unified_license_number_error": "الرجاءإدخال رقم الرخصةالموحد",
+    "license_date_error": "الرجاءإدخال تاريخ إصدار الرخصة",
+    "survey_number": "رقم التقرير المساحي",
+    "survey_propose": "الغرض من التقريرالمساحي",
+    "issue_date_error": "الرجاء إدخال تاريخ الاصدار",
+    "survey_number_error": "الرجاء إدخال رقم التقرير المساحي",
+    "survey_proposeـerror": "الرجاء إدخال الغرض من التقرير المساحي",
+    "survey_inquery_details": "بيانات التقرير المساحي",
+    "old_survey_number": "رقم التقرير المساحي القديم من الأمانة ",
+    "survey_date": "تاريخ التقرير المساحي",
+    "survey_source":"مصدر التقرير المساحي",
+    "land_information":"بيانات قطع الاراضي",
+    "land": "قطعة ارض ",
+   "area_natural" :"المساحة حسب الطبيعة",
+    "area_schema":"المساحة حسب وثيقة الملكية"
 
 
 
-    "commercial_licenseـquery_title": "يرجى إدخال البيانات التالية"
 
 }
