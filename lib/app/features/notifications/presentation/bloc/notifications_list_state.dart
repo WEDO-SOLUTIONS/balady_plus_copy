@@ -18,6 +18,11 @@ final class LoadingEventsListState extends NotificationsListState {
   List<Object?> get props => throw UnimplementedError();
 }
 
+final class EmptyNotificationsListState extends NotificationsListState {
+  @override
+  List<Object?> get props => throw UnimplementedError();
+}
+
 final class FailureNotificationsListState extends NotificationsListState {
   final String filerMessage;
 

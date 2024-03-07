@@ -16,7 +16,7 @@ class NotificationManager {
     failureOrSuccess.fold(
       (failure) {
         if (counter < 2) {
-          updateNotificationSettings(request);
+          // updateNotificationSettings(request);
         } else {
           counter = 0;
         }

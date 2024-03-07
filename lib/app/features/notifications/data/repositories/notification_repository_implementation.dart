@@ -1,4 +1,6 @@
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
+import 'package:balady_plus/app/features/notifications/data/model/notifications_list/deleted_notifications_params.dart';
+import 'package:balady_plus/app/features/notifications/data/model/notifications_list/mark_read_notifications_params.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notifications_list/notifications_list_response.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notifications_list/search_notifications_params.dart';
 import 'package:balady_plus/app/features/notifications/domain/entities/set_notifications_profile_products_params.dart';
@@ -35,10 +37,36 @@ class NotificationRepositoryImplementation
   //For NotificationsListRepository
   @override
   Future<Either<Failure, NotificationsListResponse>>
-      getNotificationsMessagesList(
-          {required SearchNotificationsParams request}) async {
+  getNotificationsMessagesList(
+      {required SearchNotificationsParams request}) async {
     try {
       final data = await remoteDataSource.getNotificationsMessagesList(request);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+  @override
+  Future<Either<Failure, bool>>
+  markReadNotificationsMessages(
+      {required MarkReadNotificationsParams request}) async {
+    try {
+      final data = await remoteDataSource.markReadNotificationsMessages(request);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+  @override
+  Future<Either<Failure, bool>>
+  deletedNotificationsMessages(
+      {required DeletedNotificationsParams request}) async {
+    try {
+      final data = await remoteDataSource.deletedNotificationsMessages(request);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());

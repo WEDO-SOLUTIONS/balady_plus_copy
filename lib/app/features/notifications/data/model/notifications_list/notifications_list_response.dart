@@ -17,9 +17,9 @@ class NotificationsListResponse extends Equatable {
 
   factory NotificationsListResponse.fromJson(Map<String, dynamic> json) =>
       NotificationsListResponse(
-        totalItemsCount: json['totalItemCount'] ?? 0,
+        totalItemsCount: json['totalItemsCount'] ?? 0,
         // pageSize: json['pageSize'] as int?,
-        totalPageCount: json['totalPageCount'] ?? 0,
+        totalPageCount: json['totalPagesCount'] ?? 0,
         listMessages: json['items'] != null
             ? (json['items'] as List<dynamic>)
                 .map((e) => NotificationsMessageItem.fromJson(

@@ -2,6 +2,8 @@ import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
 import 'package:balady_plus/app/features/notifications/data/model/noification_response.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notification_request.dart';
+import 'package:balady_plus/app/features/notifications/data/model/notifications_list/deleted_notifications_params.dart';
+import 'package:balady_plus/app/features/notifications/data/model/notifications_list/mark_read_notifications_params.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notifications_list/notifications_list_response.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notifications_list/search_notifications_params.dart';
 import 'package:dartz/dartz.dart';
@@ -20,7 +22,17 @@ abstract class NotificationsListRepository {
   Future<Either<Failure, NotificationsListResponse>>
       getNotificationsMessagesList(
           {required SearchNotificationsParams request});
+
+  Future<Either<Failure, bool>>
+  markReadNotificationsMessages(
+      {required MarkReadNotificationsParams request});
+
+  Future<Either<Failure, bool>>
+  deletedNotificationsMessages(
+      {required DeletedNotificationsParams request});
 }
+
+
 abstract class NotificationsSettingsListRepository {
   Future<Either<Failure, NotificationsSettingsList>>
       getNotificationsSettingsList(

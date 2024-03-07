@@ -1,13 +1,16 @@
+import 'package:balady_plus/app/features/notifications/data/model/notifications_list/notifications_message_item.dart';
 import 'package:balady_plus/app/features/notifications/presentation/widgets/notifications_items_widget/expandable_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:intl/intl.dart';
 
 class NotificationsItemWidget extends StatelessWidget {
-  // final List<CalendarEventItem> listEvents;
+  final NotificationsMessageItem message;
 
   const NotificationsItemWidget({
     super.key,
+    required this.message,
   });
 
   @override
@@ -38,7 +41,7 @@ class NotificationsItemWidget extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          "تم اصدار الفتورة",
+                          message.subject ,
                           style: AppStyle.signInFullTextStyle
                               .copyWith(fontWeight: FontWeight.w600),
                         ),
@@ -53,7 +56,7 @@ class NotificationsItemWidget extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 5),
                             child: Text(
-                              "تنبية",
+                              message.eventType.name,
                               style:
                                   AppStyle.nearbyItemSubTitleTextStyle.copyWith(
                                 fontWeight: FontWeight.bold,
@@ -64,7 +67,7 @@ class NotificationsItemWidget extends StatelessWidget {
                         ),
                         const Spacer(),
                         Text(
-                          " 5:31  صباحا , اليوم",
+                          "${DateFormat("hh",).format(message.eventTime)} , ${DateFormat("hh",).format(message.eventTime)}",
                           style: AppStyle.nearbyItemSubTitleTextStyle.copyWith(
                             fontWeight: FontWeight.w500,
                             fontSize: 11,
@@ -73,14 +76,8 @@ class NotificationsItemWidget extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const ExpandableTextWidget(
-                      text:
-                      "نأمل منك تحديث بيانات رخصة رقم 349350349 تجنبًا للغرامات"
-                          "اسم المالك: محمد فهد الحربي"
-                          "\nرقم الرخصة: 349350349"
-                          "\nتاريخ رصد المخالفة: 04/01/2024"
-                          "سبب المخالفة: عدم مطابقة بيانات الرخصة للأنشطة المضافة \n",
-
+                    ExpandableTextWidget(
+                      text: message.body,
                     ),
                   ],
                 ),

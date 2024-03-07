@@ -3,6 +3,8 @@ import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
 import 'package:balady_plus/app/core/utils/extensions/delay.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
+import 'package:balady_plus/app/features/notifications/data/model/notifications_list/deleted_notifications_params.dart';
+import 'package:balady_plus/app/features/notifications/data/model/notifications_list/mark_read_notifications_params.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notifications_list/notifications_list_response.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notifications_list/search_notifications_params.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notifications_settings_list/notifications_settings_list_response.dart';
@@ -21,6 +23,8 @@ abstract class NotificationsRemoteDataSource {
   //For List Screen
   Future<NotificationsListResponse> getNotificationsMessagesList(
       SearchNotificationsParams request);
+  Future<bool> markReadNotificationsMessages(MarkReadNotificationsParams request);
+  Future<bool> deletedNotificationsMessages(DeletedNotificationsParams request);
 
   //Notifications settings list
   Future<NotificationsSettingsList> getNotificationsSettingsList(
@@ -86,18 +90,86 @@ class NotificationRemoteDataSourceImplementation
     }
   }
 
+  //Notifications settings list
   @override
   Future<NotificationsListResponse> getNotificationsMessagesList(
       SearchNotificationsParams request) async {
     var response;
     try {
-      response = await webService.dio.post(
+      response = await webService.dio.get(
         ApiUrl.notificationsMessagesList,
-        data: request.toJson(),
+        queryParameters: request.toJson(),
       );
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
       return NotificationsListResponse.fromJson(result);
+    } on DioException catch (error) {
+      // "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: ex.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+  }
+  @override
+  Future<bool> markReadNotificationsMessages(
+      MarkReadNotificationsParams request) async {
+    var response;
+    try {
+      response = await webService.dio.post(
+        ApiUrl.notificationsMessagesList,
+        queryParameters: request.toJson(),
+      );
+      return true;
+    } on DioException catch (error) {
+      // "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: ex.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+  }
+  @override
+  Future<bool> deletedNotificationsMessages(DeletedNotificationsParams request) async {
+    var response;
+    try {
+      response = await webService.dio.post(
+        ApiUrl.notificationsMessagesList,
+        queryParameters: request.toJson(),
+      );
+      return true;
     } on DioException catch (error) {
       // "DioError $error".errorLog();
       if (error is NoDataFoundException) {

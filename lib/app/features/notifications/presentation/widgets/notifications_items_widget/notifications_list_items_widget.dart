@@ -1,8 +1,11 @@
+import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/notifications/presentation/bloc/notifications_list_cubit.dart';
 import 'package:balady_plus/app/features/notifications/presentation/widgets/notifications_items_widget/notifications_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class ListItemsEventsWidget extends StatelessWidget {
   const ListItemsEventsWidget({super.key});
@@ -22,6 +25,20 @@ class ListItemsEventsWidget extends StatelessWidget {
             onTab: () => cubit.getNotificationsMessagesList(cubit.params),
           );
         }
+
+        if (state is EmptyNotificationsListState) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(IconPath.noEvents),
+                const SizedBox(height: 10),
+                Text('no_notifications'.tr())
+              ],
+            ),
+          );
+        }
+
         /////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////
         // View Loading In after list item in list
@@ -31,7 +48,7 @@ class ListItemsEventsWidget extends StatelessWidget {
             itemBuilder: (BuildContext context, int index) {
               return index == state.listMessages.length
                   ? const Center(child: CircularProgressIndicator())
-                  : const NotificationsItemWidget();
+                  : NotificationsItemWidget(message: state.listMessages[index]);
             },
             controller: scrollController
               ..addListener(
@@ -49,7 +66,7 @@ class ListItemsEventsWidget extends StatelessWidget {
           return ListView.builder(
             padding: const EdgeInsets.all(12.0),
             itemBuilder: (BuildContext context, int index) {
-              return const NotificationsItemWidget();
+              return NotificationsItemWidget(message:state.listMessages[index]);
             },
             itemCount: state.listMessages.length,
           );
