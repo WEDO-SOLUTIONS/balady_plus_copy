@@ -44,9 +44,7 @@ class QuickFilters extends ConsumerWidget {
       FilterItem(
         filterType: FilterType.favourites,
         icon: 'assets/icons/svg/quick_filters/ic_quick_bookmark.svg',
-        onTap: () {
-          onFavouritesBookmarkTap();
-        },
+        onTap: onFavouritesBookmarkTap,
       ),
       if (favouritesState.valueOrNull?.home != null && naviFeature.naviEnabled)
         FilterItem(
@@ -116,15 +114,24 @@ class QuickFilters extends ConsumerWidget {
   }
 
   void _showRouting(
-      AppFeatures naviFeature, FavouriteItem point, BuildContext context) {
+    AppFeatures naviFeature,
+    FavouriteItem point,
+    BuildContext context,
+  ) {
     if (naviFeature.naviEnabled) {
       RoutingRoutesRoute(
         finishLabel: point.title,
         finishLatitude: point.coordinates.latitude,
         finishLongitude: point.coordinates.longitude,
+        finishLevelId: null,
+        finishObjectId: null,
+        finishEntranceId: null,
         startLabel: context.l10n.myLocation,
         startLatitude: null,
         startLongitude: null,
+        startObjectId: null,
+        startEntranceId: null,
+        startLevelId: null,
       ).push(context);
     }
   }

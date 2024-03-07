@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/_features/poi_card/poi_card_widget.dart';
+import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/shared/routing/transculent_page.dart';
-
-import 'iwish.dart';
 
 part 'poi_map.g.dart';
 
@@ -14,6 +13,14 @@ part 'poi_map.g.dart';
   path: PoiMapRoute.path,
 )
 class PoiMapRoute extends GoRouteData {
+  const PoiMapRoute({
+    required this.dgisObjectId,
+    this.zoom,
+    this.bearing,
+    this.tilt,
+    this.lat,
+    this.lng,
+  });
   static const path = '/poi-map';
   final int dgisObjectId;
   final double? zoom;
@@ -23,15 +30,6 @@ class PoiMapRoute extends GoRouteData {
   final double? lng;
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
-
-  const PoiMapRoute({
-    required this.dgisObjectId,
-    this.zoom,
-    this.bearing,
-    this.tilt,
-    this.lat,
-    this.lng,
-  });
 
   static void open(
     GoRouter router,

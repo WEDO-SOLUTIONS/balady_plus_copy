@@ -2,8 +2,7 @@ import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 
 extension FavouriteItemPlaceEntityMapper on proto.FavouriteItemPlace_Entity {
-  FavouriteItemEntity toDomain() {
-    return FavouriteItemEntity(
+  FavouriteItemEntity toDomain() => FavouriteItemEntity(
       id: id,
       sourceType: switch (sourceType) {
         proto.EntitySourceType.ENTITY_SOURCE_UNKNOWN =>
@@ -12,12 +11,10 @@ extension FavouriteItemPlaceEntityMapper on proto.FavouriteItemPlace_Entity {
         _ => throw UnimplementedError(),
       },
     );
-  }
 
   static proto.FavouriteItemPlace_Entity fromDomain(
     FavouriteItemEntity entity,
-  ) {
-    return proto.FavouriteItemPlace_Entity(
+  ) => proto.FavouriteItemPlace_Entity(
       id: entity.id,
       sourceType: switch (entity.sourceType) {
         EntitySourceType.unknown =>
@@ -25,5 +22,4 @@ extension FavouriteItemPlaceEntityMapper on proto.FavouriteItemPlace_Entity {
         EntitySourceType.urbi => proto.EntitySourceType.ENTITY_SOURCE_URBI,
       },
     );
-  }
 }

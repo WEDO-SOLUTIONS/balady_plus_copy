@@ -56,7 +56,7 @@ class FavouritesPicker extends ConsumerWidget {
                   children: [
                     Align(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
                         child: Text(
                           context.l10n.favourites,
                           style: Theme.of(context)
@@ -99,7 +99,7 @@ class FavouritesPicker extends ConsumerWidget {
           Expanded(
             child: Container(
               color: context.color.surface_base_primary,
-              child: state?.items.isEmpty ?? false
+              child: state.items.isEmpty ?? false
                   ? Padding(
                       padding: const EdgeInsets.only(
                         left: 16,
@@ -120,10 +120,10 @@ class FavouritesPicker extends ConsumerWidget {
                         right: 16,
                         top: 16,
                       ),
-                      itemCount: state?.items.length ?? 0,
+                      itemCount: state.items.length ?? 0,
                       separatorBuilder: (_, __) => const SizedBox(height: 8),
                       itemBuilder: (_, index) {
-                        final item = state!.items[index];
+                        final item = state.items[index];
 
                         /// item
                         return FavouriteItemWidget(

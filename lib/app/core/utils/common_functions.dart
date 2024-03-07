@@ -40,6 +40,8 @@ import 'package:url_launcher/url_launcher.dart'
     show LaunchMode, canLaunchUrl, launchUrl;
 import 'package:uuid/uuid.dart';
 
+import 'package:balady_plus/app/features/notifications/data/model/notification_request.dart';
+
 import '../../app.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
 import '../../features/_shared_feature_/data/entities/package_details.dart';
@@ -50,7 +52,6 @@ import '../../features/_shared_feature_/presentation/widgets/custom_popups_widge
 import '../../features/calendar/presentation/bloc/calendar_bloc.dart';
 import '../../features/entry_point/domain/use_cases/get_cookie.dart';
 import '../../features/events/presentation/bloc/events_bloc.dart';
-import '../../features/notifications/Data/model/notification_request.dart';
 import '../../features/notifications/manager/notification_manager.dart';
 import '../../features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../../features/profile_features/delegators/domain/entities/user_profile_entity.dart';
@@ -886,15 +887,13 @@ class CommonFunctions {
         return "$hoursFromAS12:$minuteStr " + "pm".tr();
 
       if (fromTime.period == DayPeriod.am) {
-
-
-        if(isAppAR == false) {
-          return "$hoursFromAS12:$minuteStr ص".replaceAll("ص", ("am").tr()).replaceAll("م", ("pm").tr());
+        if (isAppAR == false) {
+          return "$hoursFromAS12:$minuteStr ص"
+              .replaceAll("ص", ("am").tr())
+              .replaceAll("م", ("pm").tr());
+        } else {
+          return "$hoursFromAS12:$minuteStr ص";
         }
-        else
-          {
-            return "$hoursFromAS12:$minuteStr ص";
-          }
       }
     }
     return "";
@@ -962,13 +961,10 @@ class CommonFunctions {
 
         if (toTime.period == DayPeriod.am) to = "$hoursToAS12:$minuteToStr ص";
 
-
         if (isAppAR == false) {
           from = from.replaceAll("ص", ("am").tr()).replaceAll("م", ("pm").tr());
           to = to.replaceAll("ص", ("am").tr()).replaceAll("م", ("pm").tr());
         }
-
-
 
         return "$from - $to";
       }
@@ -1030,7 +1026,8 @@ class CommonFunctions {
       throw 'Could not launch $convertUrl';
   }
 
-  static openBaldyWithRefreshCookie(String? redirectUrl,{bool pushReplacement = false}) async {
+  static openBaldyWithRefreshCookie(String? redirectUrl,
+      {bool pushReplacement = false}) async {
     if (redirectUrl == null) return;
     EasyLoading.show();
     GetCookie getCookie = GetCookie(repository: sl());
@@ -1039,22 +1036,22 @@ class CommonFunctions {
     failureOrSuccessForCookie.fold((l) {
       CommonFunctions.showError("server_error_1".tr());
     }, (r) async {
-      if(!pushReplacement) {
+      if (!pushReplacement) {
         NavigationService.navigatorKey.currentState?.pushNamed(
           RouteName.inappWebview,
           arguments: (
-          requestNum: 'request'.tr(),
-          url: redirectUrl,
-          isObjections: false
+            requestNum: 'request'.tr(),
+            url: redirectUrl,
+            isObjections: false
           ),
         );
       } else {
         NavigationService.navigatorKey.currentState?.pushReplacementNamed(
           RouteName.inappWebview,
           arguments: (
-          requestNum: 'request'.tr(),
-          url: redirectUrl,
-          isObjections: false
+            requestNum: 'request'.tr(),
+            url: redirectUrl,
+            isObjections: false
           ),
         );
       }
@@ -1390,6 +1387,7 @@ class CommonFunctions {
   }
 
   static bool isFoundationDay() {
+    return false;
     DateTime today = DateTime.now();
 
     int todayDay = today.day;

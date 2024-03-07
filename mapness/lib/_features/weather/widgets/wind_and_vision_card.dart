@@ -21,7 +21,7 @@ class WindAndWeatherCard extends ConsumerWidget {
       ),
       child: Center(
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(12),
           child: Directionality(
             textDirection: TextDirection.ltr,
             child: Row(
@@ -30,7 +30,7 @@ class WindAndWeatherCard extends ConsumerWidget {
                 Row(
                   children: [
                     SvgPicture.asset(
-                      "assets/icons/svg/weather/wind_speed.svg",
+                      'assets/icons/svg/weather/wind_speed.svg',
                       width: 21,
                       height: 21,
                       color: Colors.white,
@@ -53,10 +53,9 @@ class WindAndWeatherCard extends ConsumerWidget {
                   ],
                 ),
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SvgPicture.asset(
-                      "assets/icons/svg/weather/humedity.svg",
+                      'assets/icons/svg/weather/humedity.svg',
                       width: 15,
                       height: 15,
                       color: Colors.white,
@@ -69,7 +68,7 @@ class WindAndWeatherCard extends ConsumerWidget {
                       child: Text(
                         allWeatherInfo?.current?.humidity
                             .toString() ??
-                            "",
+                            '',
                         // fontWeight: FontWeight.bold,
                         // fontSize: 14,
                         // fontColor: Colors.white,
@@ -80,7 +79,7 @@ class WindAndWeatherCard extends ConsumerWidget {
                 Row(
                   children: [
                     SvgPicture.asset(
-                      "assets/icons/svg/weather/eye.svg",
+                      'assets/icons/svg/weather/eye.svg',
                       width: 21,
                       height: 21,
                       color: Colors.white,

@@ -74,12 +74,11 @@ class ProfileImage extends _$ProfileImage {
   }
 
   Future<Uint8List> _comporessList(Uint8List list) async {
-    var result = await FlutterImageCompress.compressWithList(
+    final result = await FlutterImageCompress.compressWithList(
       list,
       minHeight: 200,
       minWidth: 200,
       quality: 40,
-      rotate: 0,
     );
     print(list.length);
     print(result.length);
@@ -91,19 +90,19 @@ class ProfileImage extends _$ProfileImage {
   Future<String> _uploadImage(Uint8List bytes) async {
     bytes = await _comporessList(bytes);
     // start the timer for the event "Image Upload"
-    ref.read(urbiMetricsProvider.notifier).logEvent("Profile_Image_Upload");
-    mixpanel?.timeEvent("Profile Image Upload");
+    ref.read(urbiMetricsProvider.notifier).logEvent('Profile_Image_Upload');
+    mixpanel?.timeEvent('Profile Image Upload');
 
     final dio = await ref.read(dGisNetworkProvider.future);
     try {
       final response = await dio.post(
-        "/profile/photo",
+        '/profile/photo',
         data: bytes,
       );
-      print("response: ${response.statusMessage}");
+      print('response: ${response.statusMessage}');
 
-      final result = proto.Profile_Photo.fromBuffer(response.data);
-      mixpanel?.track("Profile Image Upload");
+      final result = proto.Profile_Photo.fromBuffer(response.data as List<int>);
+      mixpanel?.track('Profile Image Upload');
       return result.image.url;
     } catch (error, trace) {
       _log(error, trace);
@@ -118,7 +117,7 @@ class ProfileImage extends _$ProfileImage {
       if (url.isEmpty) {
         final profileResponse = await dio.get('/profile');
         final profileData =
-            proto.ProfileResponse.fromBuffer(profileResponse.data);
+            proto.ProfileResponse.fromBuffer(profileResponse.data as List<int>);
         url = profileData.profile.photo.image.url;
       }
 
@@ -134,7 +133,7 @@ class ProfileImage extends _$ProfileImage {
           followRedirects: false,
         ),
       );
-      return response.data;
+      return response.data as Uint8List;
     } catch (error, trace) {
       _log(error, trace);
       rethrow;

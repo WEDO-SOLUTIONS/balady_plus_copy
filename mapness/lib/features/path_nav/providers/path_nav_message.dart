@@ -24,13 +24,11 @@ class _PathNavMessage extends _$PathNavMessage {
             state: PathNavManeuverState.error,
             comment: 'GPS Signal lost',
           );
-          break;
         case NaviMessageEventState.routeResearch:
           state = const PathNavMessage(
             state: PathNavManeuverState.reroute,
             comment: 'rerouting',
           );
-          break;
         case NaviMessageEventState.none:
           state = null;
       }

@@ -811,6 +811,18 @@ class ApiUrl {
   static const baladyCalendarEvents =
       'v1/balady-calendar-services/events/by-year';
 
+
+
+
+
+
+  //! Notifications
+
+  static const notificationsMessagesList = 'v1/notifications-hub-services/fe/messages-list';
+    static const notificationsSettingsList = 'v1/notifications-hub-services/fe/profiles';
+  static const setProductsNotificationsSettings = 'v1/notifications-hub-services/fe/profile/products';
+  static const setProfileNotificationsSettings = 'v1/notifications-hub-services/fe/profiles';
+
   //! POST
 
   //! Delete

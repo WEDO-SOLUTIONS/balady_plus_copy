@@ -1,4 +1,4 @@
-import 'package:balady_plus/app/features/notifications/presentation/widgets/notifications_settings/notifications_settings.dart';
+import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_settings/notifications_settings.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +74,7 @@ class _NotificationsCellState extends State<NotificationsCell> {
           child: Row(
             children: [
               Text(
-                'يمكنك من هنا أو إلغاء تفعيل الإشعار',
+                'enable_disable_notifications'.tr(),
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
                     .textXS
@@ -103,7 +103,7 @@ class _NotificationsCellState extends State<NotificationsCell> {
                         color: Colors.red,
                       ),
                       Text(
-                        'إدارة الإشعارات للخدمات',
+                        'manage_notification'.tr(),
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
                             .textXS

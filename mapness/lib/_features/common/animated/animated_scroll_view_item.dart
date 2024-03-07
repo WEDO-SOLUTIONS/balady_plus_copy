@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 
 class AnimatedScrollViewItem extends StatefulWidget {
   const AnimatedScrollViewItem({
-    Key? key,
-    required this.child,
-  }) : super(key: key);
+    required this.child, super.key,
+  });
 
   final Widget child;
 
@@ -39,10 +38,8 @@ class _AnimatedScrollViewItemState extends State<AnimatedScrollViewItem> with Si
   }
 
   @override
-  Widget build(BuildContext context) {
-    return ScaleTransition(
+  Widget build(BuildContext context) => ScaleTransition(
       scale: _scaleAnimation,
       child: widget.child,
     );
-  }
 }

@@ -6,11 +6,11 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'app_features.g.dart';
 
 class AppFeatures {
-  final bool naviEnabled;
 
   AppFeatures({
     required this.naviEnabled,
   });
+  final bool naviEnabled;
 }
 
 const _prefsKey = 'settings.features';

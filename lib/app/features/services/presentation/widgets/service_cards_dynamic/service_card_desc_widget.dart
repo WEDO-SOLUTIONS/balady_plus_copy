@@ -90,8 +90,17 @@ class ServiceCardDescWidget extends StatelessWidget {
                                           padding: const EdgeInsets.all(8.0),
                                           child: Text(
                                             viewModel.servicesCardsDetails!
-                                                    .fieldDescriptionService ??
-                                                '',
+                                                            .fieldDescriptionService !=
+                                                        null &&
+                                                    viewModel
+                                                        .servicesCardsDetails!
+                                                        .fieldDescriptionService!
+                                                        .isNotEmpty
+                                                ? viewModel
+                                                    .servicesCardsDetails!
+                                                    .fieldDescriptionService!
+                                                    .replaceAll("<br />", "")
+                                                : "",
                                             style: AppStyle
                                                 .resultsLastDescription
                                                 .copyWith(

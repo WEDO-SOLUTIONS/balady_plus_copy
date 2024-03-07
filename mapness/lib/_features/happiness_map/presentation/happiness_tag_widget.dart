@@ -8,31 +8,25 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class HappinessTagWidget extends StatelessWidget {
+
+  const HappinessTagWidget({
+    required this.onPressed, required this.isSelected, required this.title, required this.iconAsset, required this.tagSizeGroup, super.key,
+  });
   final String title;
   final String iconAsset;
   final void Function() onPressed;
   final bool isSelected;
   final AutoSizeGroup tagSizeGroup;
 
-  const HappinessTagWidget({
-    super.key,
-    required this.onPressed,
-    required this.isSelected,
-    required this.title,
-    required this.iconAsset,
-    required this.tagSizeGroup,
-  });
-
   @override
-  Widget build(BuildContext context) {
-    return Ink(
+  Widget build(BuildContext context) => Ink(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
             color:
             isSelected ? context.color.stroke_accent : context.color
                 .surface_base_primary,
-            width: 2),
+            width: 2,),
         color: NonThemeColor.color37,
       ),
       child: InkWell(
@@ -58,11 +52,10 @@ class HappinessTagWidget extends StatelessWidget {
                     .extension<ThemeTextStyles>()!
                     .accentXS
                     .copyWith(color: context.color.text_and_icons_base_primary),
-              )
+              ),
             ],
           ),
         ),
       ),
     );
-  }
 }

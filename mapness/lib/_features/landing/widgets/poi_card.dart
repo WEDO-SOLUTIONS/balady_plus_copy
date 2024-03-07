@@ -47,7 +47,7 @@ class PoiCard extends ConsumerWidget {
                   height: 200,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 13, vertical: 15),
+                        horizontal: 13, vertical: 15,),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -68,7 +68,7 @@ class PoiCard extends ConsumerWidget {
                               .extension<ThemeTextStyles>()!
                               .textS
                               .copyWith(color: Colors.white.withOpacity(0.8)),
-                        )
+                        ),
                       ],
                     ),
                   ),

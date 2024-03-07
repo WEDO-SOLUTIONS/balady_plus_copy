@@ -12,12 +12,12 @@ class DebugServerUrl extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final envProvider = ref.watch(dgisEnvironmentProvider);
     return envProvider.map(data: (data) {
-      var env = data.value;
+      final env = data.value;
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Experimental! may be expensive",
+            'Experimental! may be expensive',
             style: Theme.of(context)
                 .extension<ThemeTextStyles>()
                 ?.textS
@@ -61,13 +61,9 @@ class DebugServerUrl extends ConsumerWidget {
                 label: 'Momrah Prod',
               ),
             ],
-          )
+          ),
         ],
       );
-    }, error: (_) {
-      return const SizedBox.shrink();
-    }, loading: (_) {
-      return const SizedBox.shrink();
-    });
+    }, error: (_) => const SizedBox.shrink(), loading: (_) => const SizedBox.shrink(),);
   }
 }

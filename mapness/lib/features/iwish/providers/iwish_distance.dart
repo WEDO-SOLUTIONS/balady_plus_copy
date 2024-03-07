@@ -6,9 +6,7 @@ part 'iwish_distance.g.dart';
 @riverpod
 class _IwishDistance extends _$IwishDistance {
   @override
-  String build(IwishEntity entity) {
-    return '10 km';
-  }
+  String build(IwishEntity entity) => '10 km';
 }
 
 const iwishDistanceProvider = _iwishDistanceProvider;

@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
 
 class JobBaseResponse<T> {
-  final StatusModel? statusDetails;
-  final JobResponseModel<T>? data;
 
   const JobBaseResponse({
     this.data,
@@ -10,17 +8,19 @@ class JobBaseResponse<T> {
   });
 
   factory JobBaseResponse.fromJson(Map<String, dynamic> json,
-          T Function(Map<String, dynamic>) fromJson) =>
+          T Function(Map<String, dynamic>) fromJson,) =>
       JobBaseResponse(
         statusDetails: json['statusDetails'] != null
             ? StatusModel.fromJson(
-                json['statusDetails'] as Map<String, dynamic>)
+                json['statusDetails'] as Map<String, dynamic>,)
             : null,
         data: json['data'] != null
             ? JobResponseModel.fromJson(
-                json['data'] as Map<String, dynamic>, fromJson)
+                json['data'] as Map<String, dynamic>, fromJson,)
             : null,
       );
+  final StatusModel? statusDetails;
+  final JobResponseModel<T>? data;
 
   bool get isSuccess => statusDetails?.code == 200 && data?.responseCode == '1';
   String? get message => statusDetails?.message;
@@ -29,8 +29,6 @@ class JobBaseResponse<T> {
 //TODO(Scroollocker): change to equatable
 @immutable
 class StatusModel {
-  final int? code;
-  final String? message;
 
   const StatusModel({
     this.code,
@@ -41,6 +39,8 @@ class StatusModel {
         code: json['code'] as int?,
         message: json['message'] as String?,
       );
+  final int? code;
+  final String? message;
 
   @override
   bool operator ==(Object other) {
@@ -59,10 +59,6 @@ class StatusModel {
 
 @immutable
 class JobResponseModel<T> {
-  final String? responseCode;
-  final String? responseMessage;
-  final String? responseId;
-  final T? result;
 
   const JobResponseModel({
     this.responseCode,
@@ -72,7 +68,7 @@ class JobResponseModel<T> {
   });
 
   factory JobResponseModel.fromJson(Map<String, dynamic> json,
-          T Function(Map<String, dynamic>) fromJson) =>
+          T Function(Map<String, dynamic>) fromJson,) =>
       JobResponseModel(
         responseCode: json['responseCode'] as String?,
         responseMessage: json['responseMessage'] as String?,
@@ -81,6 +77,10 @@ class JobResponseModel<T> {
             ? fromJson(json['result'] as Map<String, dynamic>)
             : null,
       );
+  final String? responseCode;
+  final String? responseMessage;
+  final String? responseId;
+  final T? result;
 
   @override
   bool operator ==(Object other) {

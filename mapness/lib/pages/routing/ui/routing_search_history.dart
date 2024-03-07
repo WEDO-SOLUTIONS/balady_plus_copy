@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/entities/routing/route_point.dart';
@@ -79,17 +80,22 @@ class RoutingSearchHistory extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(12),
                   child: InkWell(
                     onTap: () async {
-                      await CommonFunctions.authOrOpen(context,
-                          callback: () async {
-                        final result =
-                            await const FavouritesPickerRoute().push(context);
+                      await CommonFunctions.authOrOpen(
+                        context,
+                        callback: () async {
+                          if (!context.mounted) return;
+                          final result =
+                              // ignore: inference_failure_on_function_invocation
+                              await const FavouritesPickerRoute().push(context);
 
-                        if (result != null) {
-                          context.pop(
-                            RoutePointFavouriteItem(result),
-                          );
-                        }
-                      });
+                          if (result != null) {
+                            // ignore: use_build_context_synchronously
+                            context.pop(
+                              RoutePointFavouriteItem(result as FavouriteItem?),
+                            );
+                          }
+                        },
+                      );
                     },
                     child: SearchActionRow(
                       icon: 'assets/icons/svg/ic_actions_fav.svg',

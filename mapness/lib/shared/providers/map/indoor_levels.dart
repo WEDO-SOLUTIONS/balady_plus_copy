@@ -5,24 +5,23 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'indoor_levels.g.dart';
 
 class LevelsState {
-  final List<IndoorLevel> levels;
-  final int active;
 
   LevelsState(this.levels, this.active);
+  final List<IndoorLevel> levels;
+  final int active;
 
   LevelsState copyWith({
     List<IndoorLevel>? levels,
     int? active,
-  }) {
-    return LevelsState(
+  }) => LevelsState(
       levels ?? this.levels,
       active ?? this.active,
     );
-  }
 }
 
 @riverpod
 class IndoorLevels extends _$IndoorLevels {
+  @override
   LevelsState? build() {
     final dgisController = ref.watch(dgisControllerProvider);
     final levelsSubscription =

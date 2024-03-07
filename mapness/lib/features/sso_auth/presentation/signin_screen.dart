@@ -13,8 +13,7 @@ class SigninScreen extends ConsumerWidget {
   const SigninScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
+  Widget build(BuildContext context, WidgetRef ref) => Scaffold(
       body: Stack(
         children: [
           const Positioned.fill(
@@ -55,10 +54,10 @@ class SigninScreen extends ConsumerWidget {
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
                       .textM
-                      .apply(color: Colors.white)),
+                      .apply(color: Colors.white),),
               const SizedBox(height: 16),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints.expand(height: 48),
                   child: LabeledElevatedButton(
@@ -74,14 +73,12 @@ class SigninScreen extends ConsumerWidget {
                 ),
               ),
             ],
-          ))),
+          ),),),
         ],
       ),
     );
-  }
 
-  Widget _buildcloseButton(BuildContext context, WidgetRef ref) {
-    return Padding(
+  Widget _buildcloseButton(BuildContext context, WidgetRef ref) => Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Material(
         color: Colors.transparent,
@@ -98,9 +95,9 @@ class SigninScreen extends ConsumerWidget {
               ),
               color: context.color.text_and_icons_base_primary.withOpacity(0.05),
             ),
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8),
             child: SvgPicture.asset(
-              "assets/icons/svg/ic_search_close.svg",
+              'assets/icons/svg/ic_search_close.svg',
               semanticsLabel: 'MinApps Screen',
               package: PackageConfig.packageName,
               color: Colors.white,
@@ -109,5 +106,4 @@ class SigninScreen extends ConsumerWidget {
         ),
       ),
     );
-  }
 }

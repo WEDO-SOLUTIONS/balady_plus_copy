@@ -4,9 +4,9 @@ import 'package:mapness/features/jobs/ui/widgets/ui/close_button.dart';
 import 'package:mapness/features/jobs/ui/widgets/ui/scroll_handler.dart';
 
 class HeaderWrapper extends StatelessWidget {
-  final Widget child;
 
   const HeaderWrapper({required this.child, super.key});
+  final Widget child;
 
   @override
   Widget build(BuildContext context) => Stack(children: [
@@ -25,5 +25,5 @@ class HeaderWrapper extends StatelessWidget {
             onTap: () => context.pop(),
           ),
         ),
-      ]);
+      ],);
 }

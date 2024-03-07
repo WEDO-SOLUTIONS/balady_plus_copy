@@ -21,53 +21,61 @@ abstract class WeatherRemoteDataSource {
 }
 
 class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
+  _WeatherRemoteDataSource({required this.webServiceWeather});
   final WebServiceWeather webServiceWeather;
 
-  _WeatherRemoteDataSource({required this.webServiceWeather});
-
   @override
-  Future<Map<String, dynamic>?>? getCurrentWeatherData(
-      {required WeatherParams params, required CancelToken cancelToken}) async {
-    mixpanel?.timeEvent("WebServiceWeather: getCurrentWeatherData");
-    String weatherAPI = '/v1/current.json?';
+  Future<Map<String, dynamic>?>? getCurrentWeatherData({
+    required WeatherParams params,
+    required CancelToken cancelToken,
+  }) async {
+    mixpanel?.timeEvent('WebServiceWeather: getCurrentWeatherData');
+    const weatherAPI = '/v1/current.json?';
     try {
-      var map = params.toMap();
+      final map = params.toMap();
       final response = await webServiceWeather.dio.get(
         weatherAPI,
         queryParameters: map,
         cancelToken: cancelToken,
       );
-      mixpanel?.track("WebServiceWeather: getCurrentWeatherData");
-      return response.data;
+      mixpanel?.track('WebServiceWeather: getCurrentWeatherData');
+      return response.data as Map<String, dynamic>;
     } on DioException catch (e) {
-      log("WEATHER API DioException $e");
+      log('WEATHER API DioException $e');
     } catch (e) {
-      log("WEATHER API EXCEPTION $e");
+      log('WEATHER API EXCEPTION $e');
     }
     return null;
   }
 
   @override
-  Future<Map<String, dynamic>?>? getForecastWeatherData(
-      {required WeatherParams params, required CancelToken cancelToken}) async {
-    mixpanel?.timeEvent("WebServiceWeather: getForecastData");
-    String weatherAPI = 'v1/weather-services/forecast?';
+  Future<Map<String, dynamic>?>? getForecastWeatherData({
+    required WeatherParams params,
+    required CancelToken cancelToken,
+  }) async {
+    mixpanel?.timeEvent('WebServiceWeather: getForecastData');
+    const weatherAPI = 'v1/weather-services/forecast?';
     try {
-      final response = await webServiceWeather.dio.get(weatherAPI,
-          queryParameters: params.toMap(),
-          options: Options(headers: {
-            "Accept-Language": params.languageCode,
+      final response = await webServiceWeather.dio.get(
+        weatherAPI,
+        queryParameters: params.toMap(),
+        options: Options(
+          headers: {
+            'Accept-Language': params.languageCode,
             ApiHeader.requiresToken.eName: false,
-            ApiHeader.verifyingKEY.name: params.getVerifyingKey()
-          }),cancelToken: cancelToken);
-      mixpanel?.track("WebServiceWeather: getForecastData");
-      return response.data;
+            ApiHeader.verifyingKEY.name: params.getVerifyingKey(),
+          },
+        ),
+        cancelToken: cancelToken,
+      );
+      mixpanel?.track('WebServiceWeather: getForecastData');
+      return response.data as Map<String, dynamic>;
     } on DioException catch (e) {
-      log("WEATHER API DioException $e");
+      log('WEATHER API DioException $e');
     } catch (e) {
-      log("WEATHER API EXCEPTION $e");
+      log('WEATHER API EXCEPTION $e');
     }
-    mixpanel?.track("WebServiceWeather: getForecastData");
+    mixpanel?.track('WebServiceWeather: getForecastData');
     return null;
   }
 }

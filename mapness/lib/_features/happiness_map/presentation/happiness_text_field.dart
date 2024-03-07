@@ -7,7 +7,7 @@ import 'package:mapness/_features/happiness_map/data/happines_manager.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class HappinessTextField extends ConsumerWidget {
-  const HappinessTextField({Key? key}) : super(key: key);
+  const HappinessTextField({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
