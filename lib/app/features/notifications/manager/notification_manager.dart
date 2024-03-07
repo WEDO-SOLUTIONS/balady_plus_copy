@@ -20,7 +20,9 @@ class NotificationManager{
           (failure) {
           if(counter <2)
             {
+              counter++;
               updateNotificationSettings(request);
+
 
             }
           else
