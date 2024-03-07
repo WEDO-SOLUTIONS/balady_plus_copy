@@ -54,35 +54,35 @@ class _JodDonationPageState extends State<JodDonationPage> {
                 builder: (context, provider, child) {
                   return !provider.isLoading
                       ? DropDownWithTitle(
-                    title: "region".tr(),
-                    selectedValue: provider.region?.text,
-                    status: null,
-                    onRetry: () {
-                      // context.read<ComplianceBloc>().add(
-                      //   const GetMainUsagesEvent(),
-                      // );
-                    },
-                    onTap: () {
-                      BottomSheetDialog.showDraggableSheet(
-                        context,
-                        dialogKeyName: DialogName.reasonCancelDialog,
-                        currentRouteName: RouteName.jodDonationPage,
-                        child: GenericBottomSheetList<Regions>(
-                          title: "region".tr(),
-                          items: provider.regions ?? [],
-                          selectedValue: provider.region,
-                          onTap: (item) {
-                            provider.selectedRegion(item);
-                            Navigator.pop(context);
+                          title: "city_region".tr(),
+                          selectedValue: provider.region?.text,
+                          status: null,
+                          onRetry: () {
+                            // context.read<ComplianceBloc>().add(
+                            //   const GetMainUsagesEvent(),
+                            // );
                           },
-                        ),
-                      );
-                    },
-                  )
+                          onTap: () {
+                            BottomSheetDialog.showDraggableSheet(
+                              context,
+                              dialogKeyName: DialogName.reasonCancelDialog,
+                              currentRouteName: RouteName.jodDonationPage,
+                              child: GenericBottomSheetList<Regions>(
+                                title: "city_region".tr(),
+                                items: provider.regions ?? [],
+                                selectedValue: provider.region,
+                                onTap: (item) {
+                                  provider.selectedRegion(item);
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            );
+                          },
+                        )
                       : const ShimmerEffectWidget(
-                    height: 55,
-                    borderRadius: 6,
-                  );
+                          height: 55,
+                          borderRadius: 6,
+                        );
                 },
               ),
               const SizedBox(height: 16),
@@ -202,7 +202,7 @@ class _JodDonationPageState extends State<JodDonationPage> {
                 child: ElevatedButtonWidget.primaryCustom(
                   onPressed: () async {
                     NavigatorState navigator = Navigator.of(context);
-                    if(provider.region != null) {
+                    if (provider.region != null) {
                       if ((provider.amount != null && provider.amount != 0)) {
                         String? url = await provider
                             .getJoodEskanServicesGenerateDonationUrl();
@@ -213,14 +213,15 @@ class _JodDonationPageState extends State<JodDonationPage> {
                           navigator.pushNamed(
                             RouteName.inappWebview,
                             arguments: (
-                            requestNum: "jod".tr(),
-                            url: url,
-                            isObjections: false,
+                              requestNum: "jod".tr(),
+                              url: url,
+                              isObjections: false,
                             ),
                           );
                         }
                       } else {
-                        CommonFunctions.showError('you_must_choose_amount'.tr());
+                        CommonFunctions.showError(
+                            'you_must_choose_amount'.tr());
                       }
                     } else {
                       CommonFunctions.showError('select_regions'.tr());

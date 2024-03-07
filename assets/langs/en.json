@@ -4128,6 +4128,6 @@
 
 
 
-  "select_region": "Please select region"
-
+  "city_region": "City/Region",
+  "select_region": "please select city/region"
 }
