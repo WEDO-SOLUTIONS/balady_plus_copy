@@ -3861,8 +3861,8 @@
     "issue_commercial_conclusion_applicant_data_type": "صفة مقدم الطلب"  , 
 
     "issue_commercial_conclusion_activity_data": "بيانات أنشطة المحل", 
-    "issue_commercial_conclusion_activity_data_isic":  "اسم ورمز النشاط الآيزيك الأساسي للرخصة", 
-    "issue_commercial_conclusion_activity_data_detailed":  "اسم ورمز النشاط التفصيلي الأساسي للرخصة", 
+    "issue_commercial_conclusion_activity_data_isic":  "اسم النشاط الآيزيك الأساسي للرخصة", 
+    "issue_commercial_conclusion_activity_data_detailed":  "اسم النشاط الآيزيك التفصيلي للرخصة", 
     "issue_commercial_conclusion_activity_data_area" :"مساحة المحل", 
     "issue_commercial_conclusion_activity_data_main_area" :"مساحة النشاط الرئيسي", 
     "issue_commercial_conclusion_activity_data_marsom":"المرسوم الملكي", 
@@ -3943,7 +3943,9 @@
     "issue_commercial_attachment":"المرفقات", 
     "issue_commercial_request_flow":"مسار الطلب", 
     "issue_commercial_calculator":"حاسبة الرسوم", 
-    "issue_commercial_print":"طباعة"
+    "issue_commercial_print":"طباعة", 
+    "OWNER_MANAGER":"مالك/مدير", 
+    "DELEGATOR":"مفوض"
 
 
 

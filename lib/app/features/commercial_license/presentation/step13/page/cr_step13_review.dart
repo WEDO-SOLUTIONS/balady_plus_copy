@@ -94,8 +94,9 @@ class _CRStep13ReviewState extends State<CRStep13Review> {
                                 title:
                                     "issue_commercial_conclusion_applicant_data_type"
                                         .tr(),
-                                subTitle:
-                                    state.conclusion?.submitter?.submitterType),
+                                subTitle: state
+                                    .conclusion?.submitter?.submitterType
+                                    ?.tr()),
                           ],
                         ),
                         const SizedBox(height: 14),
@@ -572,14 +573,21 @@ class _CRStep13ReviewState extends State<CRStep13Review> {
                             if (state.conclusion?.salamaInfo?.documentDesc !=
                                     null &&
                                 state.conclusion?.salamaInfo?.workFlow ==
-                                    "NORMAL")
+                                    "NORMAL") ...[
                               FieldData(
-                                  title: state.conclusion?.salamaInfo
+                                  title: "fire_approval_type".tr(),
+                                  subTitle: state.conclusion?.salamaInfo
                                           ?.documentName ??
-                                      "",
+                                      ""),
+                              SizedBox(
+                                height: 16,
+                              ),
+                              FieldData(
+                                  title: "",
                                   subTitle: state.conclusion?.salamaInfo
                                           ?.documentDesc ??
                                       ""),
+                            ],
                             if (state
                                     .conclusion?.salamaInfo?.salamaBillNumber !=
                                 null)
@@ -626,19 +634,18 @@ class _CRStep13ReviewState extends State<CRStep13Review> {
                           ],
                         ),
                         const SizedBox(height: 14),
-                        if (state.conclusion?.sendToGeneralSecurityText != null)
-                          CustomExpansionPanelWidget(
-                            title: "issue_commercial_general_security".tr(),
-                            leading: SvgPicture.asset(IconPath.vdSummuryDesc),
-                            children: [
-                              FieldData(
-                                  title: state
-                                          .conclusion?.sendToGeneralSecurityText
-                                          ?.toString() ??
-                                      "",
-                                  subTitle: ""),
-                            ],
-                          ),
+                        CustomExpansionPanelWidget(
+                          title: "issue_commercial_general_security".tr(),
+                          leading: SvgPicture.asset(IconPath.vdSummuryDesc),
+                          children: [
+                            FieldData(
+                                title: state
+                                        .conclusion?.sendToGeneralSecurityText
+                                        ?.toString() ??
+                                    "",
+                                subTitle: ""),
+                          ],
+                        ),
                         const SizedBox(height: 24),
                         CustomExpansionPanelWidget(
                           title: "issue_commercial_attachment".tr(),
@@ -654,8 +661,10 @@ class _CRStep13ReviewState extends State<CRStep13Review> {
                                             .attachUrl !=
                                         null
                                     ? AttachmentShowWidget(
-                                        fileName: state.conclusion
-                                                ?.attachments?[index].name ??
+                                        fileName: state
+                                                .conclusion
+                                                ?.attachments?[index]
+                                                .attachDescription ??
                                             '',
                                         name: state.conclusion
                                                 ?.attachments?[index].name ??
