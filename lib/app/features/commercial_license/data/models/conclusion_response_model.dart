@@ -571,7 +571,7 @@ class MainActivity {
             ? null
             : ContractType.fromJson(json["workerType"]),
         area: json["area"]?.toDouble(),
-        accommodationType: json["mall"] == null
+        accommodationType: json["accommodationType"] == null
             ? null
             : ContractType.fromJson(json["accommodationType"]),
         unitCount: json["unitCount"],
