@@ -137,7 +137,7 @@ class _SurveyReportInqueryDetailsState
                         : Container(),
                     CardParameter(
                       title: 'survey_source'.tr(),
-                      value: licenceQueryDetails.districtName ?? '',
+                      value: licenceQueryDetails.source ?? '',
                       bgColor: AppColor.mystic,
                     ),
 

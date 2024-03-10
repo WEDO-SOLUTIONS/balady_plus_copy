@@ -22,6 +22,7 @@ class SurveyInqueryData {
   String? subMunicipalityName;
   int? districtId;
   String? districtName;
+  String? source;
   String? mapNumber;
 
   SurveyInqueryData({
@@ -41,6 +42,7 @@ class SurveyInqueryData {
     this.subMunicipalityName,
     this.districtId,
     this.districtName,
+    this.source,
     this.mapNumber,
   });
 

@@ -16,6 +16,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/common_functions.dart';
+import '../../../../core/utils/constants/remote_config.dart';
 import '../../../../core/utils/constants/ux_cam_events.dart';
 
 class SurveyReportOverviewScreen extends StatefulWidget {
@@ -26,10 +27,12 @@ class SurveyReportOverviewScreen extends StatefulWidget {
 }
 
 class _SurveyReportOverviewScreenState extends State<SurveyReportOverviewScreen> {
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
     CommonFunctions.sendEventToAnalytics(AppEvents.queryCommercialLicenseOpen);
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.startCardServiceQueryLicenseService);
@@ -39,12 +42,13 @@ class _SurveyReportOverviewScreenState extends State<SurveyReportOverviewScreen>
   Widget build(BuildContext context) {
 
 
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
           create: (BuildContext context) => ServiceDataViewModel(
             webService: sl(),
-            serviceId: 11428,
+            serviceId:  RemoteConfig.MunicipalServicesIDs["survey_report_inquery"]["id"],
           ),
         ),
       ],
