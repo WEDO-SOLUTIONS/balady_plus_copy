@@ -13,19 +13,37 @@ import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../commercial_license_exports.dart';
+import '../../../data/models/conclusion_response_model.dart';
 import '../../../domain/entities/cr_submit_request.dart';
+import '../../../domain/use_cases/get_commercial_conclusion.dart';
 import '../../../domain/use_cases/submit_cr.dart';
 
 part 'cr_step13_review_state.dart';
 
 class CrStep13ReviewDataCubit extends Cubit<CrStep13ReviewState> {
   final SubmitCR _submitCR;
+  final GetCommercialConclusion _getCommercialConclusion;
 
   CrStep13ReviewDataCubit()
       : _submitCR = SubmitCR(repository: sl()),
+        _getCommercialConclusion = GetCommercialConclusion(repository: sl()),
         super(const CrStep13ReviewState());
 
   void onSelectSaddadYear(IsicActivity isicActivity) async {}
+
+  void getConclusion() async {
+    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+    final response = await _getCommercialConclusion(requestId);
+    response.fold(
+        (failure) => emit(state.copyWith(
+              status: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) {
+      emit(state.copyWith(status: BlocStatus.success, conclusion: success));
+    });
+  }
 
   void save() async {
     CommonFunctions.sendUXCamEvent(

@@ -3176,7 +3176,7 @@
     "detailedActivityName": "النشاط التفصيلي",
     "total_area_activity": "المساحة الكلية للنشاط",
     "basic_activity_area": "مساحة النشاط الأساس",
-    "list_additional_activities": "قائمة الانشطة الاضافية",
+    "list_additional_activities": "قائمة الانشطة الاضافية", 
     "plaest_data_paintings": "بيانات المحل واللوحات",
     "locationInfo": "بيانات الموقع الجغرافي",
     "municipalityName": "الامانة",
@@ -3847,8 +3847,134 @@
     "close_status": "مغلق",
     "crNumbers": "رقم الرخصة",
     "balady_calendar_hijri": "هجري",
-    "balady_calendar_gregorian": "ميلادي",
-    "no_data_found":"لا يوجد بيانات", 
+    "balady_calendar_gregorian": "ميلادي", 
+
+
+    "issue_commercial_conclusion_owner_data": "بيانات مالك الرخصة", 
+    "issue_commercial_conclusion_owner_data_name": "اسم المنشأة",
+    "issue_commercial_conclusion_owner_data_cr": "الرقم الموحد للمنشأة (سجل تجاري/رقم 700)",
+
+    "issue_commercial_conclusion_applicant_data": "بيانات مقدم الطلب",
+
+    "issue_commercial_conclusion_applicant_data_name": "اسم مقدم الطلب",
+    "issue_commercial_conclusion_applicant_data_id": "هوية مقدم الطلب",
+    "issue_commercial_conclusion_applicant_data_type": "صفة مقدم الطلب"  , 
+
+    "issue_commercial_conclusion_activity_data": "بيانات أنشطة المحل", 
+    "issue_commercial_conclusion_activity_data_isic":  "اسم النشاط الآيزيك الأساسي للرخصة", 
+    "issue_commercial_conclusion_activity_data_detailed":  "اسم النشاط الآيزيك التفصيلي للرخصة", 
+    "issue_commercial_conclusion_activity_data_area" :"مساحة المحل", 
+    "issue_commercial_conclusion_activity_data_main_area" :"مساحة النشاط الرئيسي", 
+    "issue_commercial_conclusion_activity_data_marsom":"المرسوم الملكي", 
+    "issue_commercial_conclusion_activity_facility":"نوع المنشأة", 
+
+    "issue_commercial_conclusion_activity_worker":"نوع العاملين", 
+    "issue_commercial_conclusion_activity_accomadate_type" : "فئة الفندق" ,
+    "issue_commercial_conclusion_activity_accomadate_unit":"عدد الوحدات", 
+
+    "issue_commercial_conclusion_addetinlal_activity":"قائمة الأنشطة التفصيلية", 
+
+
+
+    "issue_commercial_conclusion_addetinlal_activity_name":"اسم النشاط الآيزيك الاضافي", 
+    "issue_commercial_conclusion_addetinlal_activity_code":"رمز النشاط الآيزيك الاضافي", 
+    "issue_commercial_conclusion_addetinlal_activity_detailed_name":"اسم النشاط التفصيلي الاضافي", 
+    "issue_commercial_conclusion_addetinlal_activity_detailed_code":"رمز النشاط التفصيلي الاضافي", 
+    "issue_commercial_conclusion_addetinlal_activity_area":"مساحة النشاط", 
+
+
+
+    "issue_commercial_conclusion_license_location":"موقع الرخصة", 
+    "issue_commercial_conclusion_license_municipality":"الأمانة", 
+    "issue_commercial_conclusion_license_city":"المدينة",   
+    "issue_commercial_conclusion_license_sub_municipality":"البلدية", 
+    "issue_commercial_conclusion_license_district":"الحي",  
+    "issue_commercial_conclusion_license_street":"الشارع", 
+    "issue_commercial_conclusion_license_map_no":"رقم المخطط", 
+    "issue_commercial_conclusion_license_plane_no":"رقم قطعة الأرض", 
+    "issue_commercial_conclusion_license_y":"الاحداثي الرأسي", 
+    "issue_commercial_conclusion_license_x":"الاحداثي الافقي", 
+    "issue_commercial_shop_info":"بيانات المحل", 
+    "issue_commercial_shop_info_name":"اسم المحل", 
+    "issue_commercial_shop_info_no":"رقم المحل", 
+    "issue_commercial_shop_block":"رقم العقار", 
+    "issue_commercial_shop_holes":"عدد الفتحات", 
+    "issue_commercial_shop_floors":"عدد الأدوار في المحل", 
+    "issue_commercial_shop_cameras_no":"عدد الكاميرات في المحل", 
+    "issue_commercial_shop_has_elevator":"هل يوجد مصعد في المحل", 
+    "issue_commercial_shop_inside_petrol":"هل يوجد داخل محطة وقود", 
+    "issue_commercial_shop_inside_mall":"هل يقع المحل في مركز تجاري", 
+    "issue_commercial_shop_mall_name":"اسم المركز التجاري", 
+    "issue_commercial_shop_mall_floor":"الطابق في المركز التجاري", 
+    "issue_commercial_clean_data":"بيانات النظافة", 
+    "issue_commercial_board_data":"بيانات اللوحات", 
+    "issue_commercial_board_type":"نوع اللوحة", 
+    "issue_commercial_board_area":"مساحة اللوحة", 
+    "issue_commercial_location":"بيانات اثبات الموقع", 
+    "issue_commercial_location_type":"نوع اثبات الموقع", 
+
+    "issue_commercial_location_type_deed_name":"(الصك) رقم عقد التملك", 
+    "issue_commercial_location_type_deed_number":"تاريخ عقد التملك", 
+
+
+    "issue_commercial_location_type_investment_number":"رقم العقد بالأمانة", 
+    "issue_commercial_location_type_investment_name":"مسمي العقد", 
+    "issue_commercial_location_type_investment_type":"نوع العقد", 
+
+    
+
+    "issue_commercial_location_type_tenancy_no":"رقم العقد", 
+    "issue_commercial_location_type_tenancy_ve":"رقم النسخة", 
+    "issue_commercial_location_type_tenancy_rep":"رقم هوية ممثل المستأجر", 
+    "issue_commercial_location_type_tenancy_date":"تاريخ نهاية العقد", 
+
+
+    "issue_commercial_location_type_clean_no":"رقم العقد", 
+    "issue_commercial_location_type_clean_date":"تاريخ نهاية العقد", 
+
+
+    "issue_commercial_civil":"بيانات الدفاع المدني", 
+    "issue_commercial_civil_bill":"فاتورة أدوات سلامة", 
+    "issue_commercial_civil_report":"تقرير فني", 
+    "issue_commercial_civil_permit":"تصريح سلامة", 
+
+    "issue_commercial_approvals":"الموافقات الحكومية", 
+    "issue_commercial_general_security":"الأمن العام", 
+    "issue_commercial_attachment":"المرفقات", 
+    "issue_commercial_request_flow":"مسار الطلب", 
+    "issue_commercial_calculator":"حاسبة الرسوم", 
+    "issue_commercial_print":"طباعة", 
+    "OWNER_MANAGER":"مالك/مدير", 
+    "DELEGATOR":"مفوض", 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
