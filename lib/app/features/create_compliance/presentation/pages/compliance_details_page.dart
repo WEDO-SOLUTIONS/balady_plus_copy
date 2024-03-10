@@ -57,7 +57,7 @@ class _ComplianceDetailsPageState extends State<ComplianceDetailsPage> {
     Map data = ModalRoute.of(context)!.settings.arguments as Map;
 
     return BlocProvider(
-      create: (context) => ComplianceBloc()
+      create: (context) => ComplianceBloc(showDetails: true)
         ..add(
           GetRequestDetails(
             requestId: data['requestNumber'],

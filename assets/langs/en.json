@@ -4124,6 +4124,10 @@
   "no_data_found":"No Data Found", 
 
 
-  "commercial_licenseـquery_title": "Insert the following"
+  "commercial_licenseـquery_title": "Insert the following", 
+
+  "submitter_compliance_text":"Compliance status of the Submitter: ", 
+
+  "emp_compliance_text":"Compliance status of the Employee: " 
 
 }

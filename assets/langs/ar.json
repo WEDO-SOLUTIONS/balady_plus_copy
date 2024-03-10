@@ -3852,6 +3852,10 @@
 
 
 
-    "commercial_licenseـquery_title": "يرجى إدخال البيانات التالية"
+    "commercial_licenseـquery_title": "يرجى إدخال البيانات التالية", 
+
+    "submitter_compliance_text":"حالة الامتثال من مقدم الطلب: ", 
+
+    "emp_compliance_text":"حالة الامتثال من المراقب: " 
 
 }
