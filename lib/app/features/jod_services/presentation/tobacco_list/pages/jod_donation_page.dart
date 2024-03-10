@@ -224,7 +224,7 @@ class _JodDonationPageState extends State<JodDonationPage> {
                             'you_must_choose_amount'.tr());
                       }
                     } else {
-                      CommonFunctions.showError('select_regions'.tr());
+                      CommonFunctions.showError('select_region'.tr());
                     }
                   },
                   text: 'donate'.tr(),
