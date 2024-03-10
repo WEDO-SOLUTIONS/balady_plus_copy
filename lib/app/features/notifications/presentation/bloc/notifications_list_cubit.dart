@@ -40,12 +40,13 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
       );
       failureOrSuccess.fold(
         (failure) {
-          if (failure is NoDataFoundException) {
-            emit(FailureNotificationsListState(
-                filerMessage: "no_data_shown".tr()));
+          if (failure is NoDataFoundException || failure is NoDataFoundException) {
+            emit(EmptyNotificationsListState());
           } else if (failure is ServerFailure) {
             emit(FailureNotificationsListState(
                 filerMessage: failure.errorMessage));
+          } else {
+            emit(FailureNotificationsListState(filerMessage: "error"));
           }
         },
         (listMessages) {
@@ -55,7 +56,7 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
           }
           type += listMessages.listMessages;
           if ((listMessages.totalPageCount - 1) == params.page) {
-            if(type.isEmpty){
+            if (type.isEmpty) {
               emit(EmptyNotificationsListState());
             } else {
               emit(SucceedEventsListState(listMessages: type));
@@ -90,12 +91,14 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
       );
       failureOrSuccess.fold(
         (failure) {
-          // if (failure is NoDataFoundException) {
+          // if (failure is NoDataFoundException || failure is NoDataFoundException) {
           //   emit(FailureNotificationsListState(
           //       filerMessage: "no_data_shown".tr()));
           // } else if (failure is ServerFailure) {
           //   emit(FailureNotificationsListState(
           //       filerMessage: failure.errorMessage));
+          // } else {
+          //   emit(FailureNotificationsListState(filerMessage: "error"));
           // }
         },
         (done) {
@@ -117,12 +120,13 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
       );
       failureOrSuccess.fold(
         (failure) {
-          if (failure is NoDataFoundException) {
-            emit(FailureNotificationsListState(
-                filerMessage: "no_data_shown".tr()));
+          if (failure is NoDataFoundException || failure is NoDataFoundException) {
+            emit(EmptyNotificationsListState());
           } else if (failure is ServerFailure) {
             emit(FailureNotificationsListState(
                 filerMessage: failure.errorMessage));
+          } else {
+            emit(FailureNotificationsListState(filerMessage: "error"));
           }
         },
         (done) {
