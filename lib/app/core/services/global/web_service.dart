@@ -155,6 +155,11 @@ class AppInterceptors extends Interceptor {
           .putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
     }
     options.headers.putIfAbsent("x-channel-id", () => "MOBILE");
+    options.headers.putIfAbsent("x-correlation-id", () => CommonFunctions.generateGUID());
+    options.headers.putIfAbsent("x-actor-type-id", () => "user");
+
+
+
     options.headers.removeWhere((key, value) => key == "requiresToken");
     //if (options.headers['Authorization'] == null) {
 
