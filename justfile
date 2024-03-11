@@ -154,13 +154,18 @@ ios-release: apply-patches prebuild ios_setup && unapply-patches
     momrahTeam='9VKA788PDD'
     baladyTeam='USDCL8J49X'
 
+    appDisplayNameProd='$(APP_DISPLAY_NAME)';
+    appDisplayNameDev='Balady Dev';
+
     set -euxo pipefail
     sed -i '' "s/$momrahBundle/$baladyBundle/" ios/Runner.xcodeproj/project.pbxproj
     sed -i '' "s/$momrahTeam/$baladyTeam/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$appDisplayNameProd/$appDisplayNameDev/" ios/Runner/Info.plist
     git apply mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not apply sdk key patch'
     fvm flutter build ipa --target lib/main_dev.dart --flavor dev
     sed -i '' "s/$baladyBundle/$momrahBundle/" ios/Runner.xcodeproj/project.pbxproj
     sed -i '' "s/$baladyTeam/$momrahTeam/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$appDisplayNameDev/$appDisplayNameProd/" ios/Runner/Info.plist
     git apply -R mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not unapply sdk key patch'
     open build/ios/archive/Runner.xcarchive
 
@@ -182,12 +187,16 @@ ios-ad-hoc version: apply-patches prebuild ios_setup && unapply-patches
     provisionProfileNone='PROVISIONING_PROFILE_SPECIFIER = "";'
     provisionProfileAdHoc='PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";'
 
+    appDisplayNameProd='$(APP_DISPLAY_NAME)';
+    appDisplayNameDev='Balady Dev';
+
     set -euxo pipefail
     sed -i '' "s/$momrahBundle/$baladyBundle/" ios/Runner.xcodeproj/project.pbxproj
     sed -i '' "s/$momrahTeam/$baladyTeam/" ios/Runner.xcodeproj/project.pbxproj
     sed -i '' "s/$codeSignAutomatic/$codeSignManual/" ios/Runner.xcodeproj/project.pbxproj
     sed -i '' "s/$codeSignIdentityDevelopment/$codeSignIdentityDistribution/" ios/Runner.xcodeproj/project.pbxproj
     sed -i '' "s/$provisionProfileNone/$provisionProfileAdHoc/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$appDisplayNameProd/$appDisplayNameDev/" ios/Runner/Info.plist
     git apply mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not apply sdk key patch'
     fvm flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_dev.dart --flavor dev
     sed -i '' "s/$baladyBundle/$momrahBundle/" ios/Runner.xcodeproj/project.pbxproj
@@ -195,6 +204,7 @@ ios-ad-hoc version: apply-patches prebuild ios_setup && unapply-patches
     sed -i '' "s/$codeSignManual/$codeSignAutomatic/" ios/Runner.xcodeproj/project.pbxproj
     sed -i '' "s/$codeSignIdentityDistribution/$codeSignIdentityDevelopment/" ios/Runner.xcodeproj/project.pbxproj
     sed -i '' "s/$provisionProfileAdHoc/$provisionProfileNone/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$appDisplayNameDev/$appDisplayNameProd/" ios/Runner/Info.plist
     git apply -R mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not unapply sdk key patch'
     curl -u balady-dev:aJKaE08Dyk5gnsTk -X PUT -F file=@build/ios/ipa/balady_plus.ipa https://ts.csc.sibsutis.ru/builds/{{ version }}
 
