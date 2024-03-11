@@ -768,6 +768,8 @@ class ApiUrl {
 
   static String joodEskanGenerateDonation =
       "v1/joodeskan-services/generate-donation-url";
+  static String joodEskanRegions = "v1/joodeskan-services/regions";
+
 
   static const paymentURL = 'v1/payment-gateway/payment';
 
