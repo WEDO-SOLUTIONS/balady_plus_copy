@@ -153,9 +153,24 @@ ios-release: apply-patches prebuild ios_setup && unapply-patches
 
     set -euxo pipefail
     sed -i '' "s/$momrahBundle/$baladyBundle/" ios/Runner.xcodeproj/project.pbxproj
-    fvm flutter build ipa --target lib/main_stg.dart --flavor stg
+    git apply mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not apply sdk key patch'
+    fvm flutter build ipa --target lib/main_dev.dart --flavor dev
     sed -i '' "s/$baladyBundle/$momrahBundle/" ios/Runner.xcodeproj/project.pbxproj
+    git apply -R mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not unapply sdk key patch'
     open build/ios/archive/Runner.xcarchive
+
+ios-ad-hoc version: apply-patches prebuild ios_setup && unapply-patches
+    #!/usr/bin/env bash
+    momrahBundle='momra.balady.ios'
+    baladyBundle='xyz.amoriodi.balady'
+
+    set -euxo pipefail
+    sed -i '' "s/$momrahBundle/$baladyBundle/" ios/Runner.xcodeproj/project.pbxproj
+    git apply mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not apply sdk key patch'
+    fvm flutter build ipa --release --flavor dev --export-options-plist ios/ad_hoc_options.plist
+    curl -u balady-dev:aJKaE08Dyk5gnsTk -X PUT -F file=@build/ios/ipa/balady_plus.ipa https://ts.csc.sibsutis.ru/builds/{{ version }}
+    git apply -R mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not unapply sdk key patch'
+    sed -i '' "s/$baladyBundle/$momrahBundle/" ios/Runner.xcodeproj/project.pbxproj
 
 apk-release version: apply-patches prebuild && unapply-patches open_built 
     #!/usr/bin/env bash
