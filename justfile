@@ -151,26 +151,52 @@ ios-release: apply-patches prebuild ios_setup && unapply-patches
     momrahBundle='momra.balady.ios'
     baladyBundle='xyz.amoriodi.balady'
 
+    momrahTeam='9VKA788PDD'
+    baladyTeam='USDCL8J49X'
+
     set -euxo pipefail
     sed -i '' "s/$momrahBundle/$baladyBundle/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$momrahTeam/$baladyTeam/" ios/Runner.xcodeproj/project.pbxproj
     git apply mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not apply sdk key patch'
     fvm flutter build ipa --target lib/main_dev.dart --flavor dev
     sed -i '' "s/$baladyBundle/$momrahBundle/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$baladyTeam/$momrahTeam/" ios/Runner.xcodeproj/project.pbxproj
     git apply -R mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not unapply sdk key patch'
     open build/ios/archive/Runner.xcarchive
 
 ios-ad-hoc version: apply-patches prebuild ios_setup && unapply-patches
     #!/usr/bin/env bash
+    # One day fuckin' flutter will not ignore export options....
     momrahBundle='momra.balady.ios'
     baladyBundle='xyz.amoriodi.balady'
 
+    momrahTeam='9VKA788PDD'
+    baladyTeam='USDCL8J49X'
+
+    codeSignAutomatic='CODE_SIGN_STYLE = Automatic;'
+    codeSignManual='CODE_SIGN_STYLE = Manual;'
+
+    codeSignIdentityDevelopment='CODE_SIGN_IDENTITY = "Apple Development";'
+    codeSignIdentityDistribution='CODE_SIGN_IDENTITY = "iPhone Distribution";'
+
+    provisionProfileNone='PROVISIONING_PROFILE_SPECIFIER = "";'
+    provisionProfileAdHoc='PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";'
+
     set -euxo pipefail
     sed -i '' "s/$momrahBundle/$baladyBundle/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$momrahTeam/$baladyTeam/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$codeSignAutomatic/$codeSignManual/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$codeSignIdentityDevelopment/$codeSignIdentityDistribution/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$provisionProfileNone/$provisionProfileAdHoc/" ios/Runner.xcodeproj/project.pbxproj
     git apply mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not apply sdk key patch'
-    fvm flutter build ipa --release --flavor dev --export-options-plist ios/ad_hoc_options.plist
-    curl -u balady-dev:aJKaE08Dyk5gnsTk -X PUT -F file=@build/ios/ipa/balady_plus.ipa https://ts.csc.sibsutis.ru/builds/{{ version }}
-    git apply -R mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not unapply sdk key patch'
+    fvm flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_dev.dart --flavor dev
     sed -i '' "s/$baladyBundle/$momrahBundle/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$baladyTeam/$momrahTeam/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$codeSignManual/$codeSignAutomatic/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$codeSignIdentityDistribution/$codeSignIdentityDevelopment/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$provisionProfileAdHoc/$provisionProfileNone/" ios/Runner.xcodeproj/project.pbxproj
+    git apply -R mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not unapply sdk key patch'
+    curl -u balady-dev:aJKaE08Dyk5gnsTk -X PUT -F file=@build/ios/ipa/balady_plus.ipa https://ts.csc.sibsutis.ru/builds/{{ version }}
 
 apk-release version: apply-patches prebuild && unapply-patches open_built 
     #!/usr/bin/env bash
