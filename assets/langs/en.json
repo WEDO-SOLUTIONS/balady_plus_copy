@@ -3416,7 +3416,7 @@
   "complaince_service_name": "Issuance of Building Compliance Licensing",
   "complaince_service_desc": "It is a service through which a certificate of compliance is issued to the building stating that the building complies with a set of requirements approved by the Ministry of Municipal and Rural Affairs and Housing in order to reduce visual distortion in commercial and residential buildings and to improve the quality of the urban landscape in cities.",
   "complaince_service_req_1": "The applicant must be the owner of the building or an authorized person by the owner of the building with a valid electronic authorization issued by Balady",
-  "complaince_service_req_2": "The applicant must have a construction permit or a title deed",
+  "complaince_service_req_2": "The applicant must have a construction permit or Occupancy document",
   "complaince_applying_benf": "Directly by the beneficiary (without an engineering office)",
   "complaince_applying_benf_step_1": "Login through Balady App",
   "complaince_applying_benf_step_2": "Access the service of Issuing a Building Compliance Licensing",
@@ -4128,6 +4128,10 @@
 
   "submitter_compliance_text":"Compliance status of the Submitter: ", 
 
-  "emp_compliance_text":"Compliance status of the Employee: " 
+  "emp_compliance_text":"Compliance status of the Employee: " , 
 
+
+
+  "city_region": "City/Region",
+  "select_region": "please select city/region"
 }
