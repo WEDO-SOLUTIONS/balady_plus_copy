@@ -593,15 +593,17 @@ class _CRStep13ReviewState extends State<CRStep13Review> {
                                 null)
                               FieldData(
                                   title: "issue_commercial_civil_bill".tr(),
-                                  subTitle: state.conclusion?.salamaInfo
-                                      ?.salamaBillNumber),
+                                  subTitle: state
+                                      .conclusion?.salamaInfo?.salamaBillNumber
+                                      ?.toString()),
                             if (state.conclusion?.salamaInfo
                                     ?.salamaPermitNumber !=
                                 null)
                               FieldData(
                                   title: "issue_commercial_civil_permit".tr(),
                                   subTitle: state.conclusion?.salamaInfo
-                                      ?.salamaPermitNumber),
+                                      ?.salamaPermitNumber
+                                      ?.toString()),
                             if (state.conclusion?.salamaInfo
                                     ?.salamaReportNumber !=
                                 null)
