@@ -12,7 +12,7 @@ import 'package:mapness/_features/poi_card/widgets/about.dart';
 import 'package:mapness/_features/poi_card/widgets/contacts_info.dart';
 import 'package:mapness/_features/poi_card/widgets/description.dart';
 import 'package:mapness/_features/poi_card/widgets/favourites.dart';
-import 'package:mapness/_features/poi_card/widgets/footer.dart';
+import 'package:mapness/_features/poi_card/widgets/footer/footer.dart';
 import 'package:mapness/_features/poi_card/widgets/header.dart';
 import 'package:mapness/_features/poi_card/widgets/opening_hours.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
@@ -247,7 +247,7 @@ class _ContentState extends ConsumerState<_Content>
           objectId: objectId,
           expansion: _expansion,
         ),
-        actions: PoiCardFooter(
+        actions: PoiCardFooter2(
           data: data,
           viewModel: viewModel,
           onEntranceTap: () {
