@@ -7,10 +7,10 @@ import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../commercial_license_cancel/presentation/commercial_license_cancel/widgets/widget_title_invoice.dart';
-import '../../../../commercial_license_details/presentation/widgets/attachment_show_widget.dart';
 import '../../../../vd/presentation/widgets/summery_widgets/field_data.dart';
 import '../../../commercial_license_exports.dart';
 import '../bloc/cr_step13_review_cubit.dart';
+import 'attachment_show_widget.dart';
 
 class CRStep13Review extends StatefulWidget {
   const CRStep13Review({Key? key}) : super(key: key);
@@ -442,8 +442,11 @@ class _CRStep13ReviewState extends State<CRStep13Review> {
                                             ?.deedInfo?.deedNumber ??
                                         ""),
                                 if (state.conclusion?.contractInfo?.deedInfo
-                                        ?.deedDate !=
-                                    null)
+                                            ?.deedDate !=
+                                        null &&
+                                    state.conclusion?.contractInfo?.contractType
+                                            ?.id !=
+                                        "DEED_SERVICE")
                                   FieldData(
                                       title:
                                           "issue_commercial_location_type_deed_number"
@@ -663,13 +666,13 @@ class _CRStep13ReviewState extends State<CRStep13Review> {
                                             .attachUrl !=
                                         null
                                     ? AttachmentShowWidget(
-                                        fileName: state
+                                        fileName: state.conclusion
+                                                ?.attachments?[index].name ??
+                                            '',
+                                        name: state
                                                 .conclusion
                                                 ?.attachments?[index]
                                                 .attachDescription ??
-                                            '',
-                                        name: state.conclusion
-                                                ?.attachments?[index].name ??
                                             '',
                                         filePath: state
                                                 .conclusion
