@@ -352,6 +352,22 @@ static const DirectRentalPage = 'DirectRentalPage';
   static const commercialLicenseQueryDetails =
       'QueryCommercialLicense_query_details_Screen';
 
+
+  static const surveyReportInqueryOverView =
+      'SurveyReportOverview_Screen';
+  static const surveyReportInquery =
+      'SurveyReportInquery_Screen';
+  static const surveyReportInqueryDetails =
+      'SurveyReportInqueryDetails_Screen';
+
+  static const constructionLicenseOverView =
+      'ConstructionLicenseOverView_Screen';
+  static const constructionLicenseInquery =
+      'constructionLicenseInquery_Screen';
+  static const constructionLicenseInqueryDetails =
+      'constructionLicenseInqueryDetails_Screen';
+
+
 }
 
 class EtmamRoutesNames {
