@@ -397,6 +397,8 @@ class ApiUrl {
   static String requestDetailsCommercial(int requestId) =>
       "/v1/balady-commercial-services/request/$requestId";
 
+  static String requestConclusionCommercial(int requestId) =>
+      "/v1/balady-commercial-services/request-conclusion/$requestId";
 //! Renew Commercial Service
   static String validateBeforeApply(int requestId) =>
       'v1/balady-commercial-services/mobile/renew-request/validate-before-apply/$requestId';
@@ -766,23 +768,23 @@ class ApiUrl {
 
   static String joodEskanGenerateDonation =
       "v1/joodeskan-services/generate-donation-url";
+  static String joodEskanRegions = "v1/joodeskan-services/regions";
+
 
   static const paymentURL = 'v1/payment-gateway/payment';
-
 
   static const chatBot = 'v1/chatbot-services/chat'; // not use this now
   static const chatBotStream = 'v1/chatbot-services/chat-stream';
   static const chatBotEnabled = 'v1/chatbot-services/service-enabled';
-
 
   static const String submitRating =
       '/v1/balady-commercial-services/rating/submit';
 
   static const weatherAlerts = 'v1/mater-services/notifications/locations';
 
-
 //commercial license query
-  static String getCommercialLicenseData(int licenseNumber,unifiedFacilityNumber) =>
+  static String getCommercialLicenseData(
+          int licenseNumber, unifiedFacilityNumber) =>
       '/v1/balady-commercial-services/licenses/$licenseNumber/by-unn/$unifiedFacilityNumber';
 
 

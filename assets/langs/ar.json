@@ -3673,7 +3673,7 @@
     "complaince_service_name": "إصدار شهادة امتثال المباني",
     "complaince_service_desc": "هي خدمة يتم من خلالها إصدار شهادة امتثال للمبنى تفيد بالتزام المبنى بمجموعة من الاشتراطات التي أقرتها وزارة الشؤون البلدية والقروية والإسكان وذلك للحد من مظاهر التشوه البصري في المباني التجارية والسكنية والارتقاء بجودة المشهد الحضري في المدن",
     "complaince_service_req_1": "يجب أن يكون مقدم الطلب هو المالك للمبنى أو مفوض من مالك المبنى بتفويض إليكتروني ساري وصادر من بلدي.",
-    "complaince_service_req_2": "يجب أن يكون لدى مقدم الطلب رخصة إنشائية أو مستند الإنتفاع بالمبني .",
+    "complaince_service_req_2": "يجب أن يكون لدى مقدم الطلب رخصة إنشائية أو صك ملكية.",
     "complaince_applying_benf": "من خلال المستفيد بنفسه (بدون مكتب هندسي)",
     "complaince_applying_benf_step_1": "تسجيل الدخول عبر تطبيق بلدي.",
     "complaince_applying_benf_step_2": "الدخول على خدمة إصدار شهادة امتثال المباني.",
@@ -3848,6 +3848,32 @@
     "crNumbers": "رقم الرخصة",
     "balady_calendar_hijri": "هجري",
     "balady_calendar_gregorian": "ميلادي",
+
+
+    "issue_commercial_conclusion_owner_data": "بيانات مالك الرخصة",
+    "issue_commercial_conclusion_owner_data_name": "اسم المنشأة",
+    "issue_commercial_conclusion_owner_data_cr": "الرقم الموحد للمنشأة (سجل تجاري/رقم 700)",
+
+    "issue_commercial_conclusion_applicant_data": "بيانات مقدم الطلب",
+
+    "issue_commercial_conclusion_applicant_data_name": "اسم مقدم الطلب",
+    "issue_commercial_conclusion_applicant_data_id": "هوية مقدم الطلب",
+    "issue_commercial_conclusion_applicant_data_type": "صفة مقدم الطلب"  ,
+
+    "issue_commercial_conclusion_activity_data": "بيانات أنشطة المحل",
+    "issue_commercial_conclusion_activity_data_isic":  "اسم النشاط الآيزيك الأساسي للرخصة",
+    "issue_commercial_conclusion_activity_data_detailed":  "اسم النشاط الآيزيك التفصيلي للرخصة",
+    "issue_commercial_conclusion_activity_data_area" :"مساحة المحل",
+    "issue_commercial_conclusion_activity_data_main_area" :"مساحة النشاط الرئيسي",
+    "issue_commercial_conclusion_activity_data_marsom":"المرسوم الملكي",
+    "issue_commercial_conclusion_activity_facility":"نوع المنشأة",
+
+    "issue_commercial_conclusion_activity_worker":"نوع العاملين",
+    "issue_commercial_conclusion_activity_accomadate_type" : "فئة الفندق" ,
+    "issue_commercial_conclusion_activity_accomadate_unit":"عدد الوحدات",
+
+    "issue_commercial_conclusion_addetinlal_activity":"قائمة الأنشطة التفصيلية",
+    "balady_calendar_gregorian": "ميلادي",
     "no_data_found":"لا يوجد بيانات",
     "commercial_licenseـquery_title": "يرجى إدخال البيانات التالية",
 
@@ -3876,6 +3902,117 @@
     "building_type":"نوع البناء"
 
 
+    "issue_commercial_conclusion_addetinlal_activity_name":"اسم النشاط الآيزيك الاضافي",
+    "issue_commercial_conclusion_addetinlal_activity_code":"رمز النشاط الآيزيك الاضافي",
+    "issue_commercial_conclusion_addetinlal_activity_detailed_name":"اسم النشاط التفصيلي الاضافي",
+    "issue_commercial_conclusion_addetinlal_activity_detailed_code":"رمز النشاط التفصيلي الاضافي",
+    "issue_commercial_conclusion_addetinlal_activity_area":"مساحة النشاط",
 
 
+
+
+    "issue_commercial_conclusion_license_location":"موقع الرخصة",
+    "issue_commercial_conclusion_license_municipality":"الأمانة",
+    "issue_commercial_conclusion_license_city":"المدينة",
+    "issue_commercial_conclusion_license_sub_municipality":"البلدية",
+    "issue_commercial_conclusion_license_district":"الحي",
+    "issue_commercial_conclusion_license_street":"الشارع",
+    "issue_commercial_conclusion_license_map_no":"رقم المخطط",
+    "issue_commercial_conclusion_license_plane_no":"رقم قطعة الأرض",
+    "issue_commercial_conclusion_license_y":"الاحداثي الرأسي",
+    "issue_commercial_conclusion_license_x":"الاحداثي الافقي",
+    "issue_commercial_shop_info":"بيانات المحل",
+    "issue_commercial_shop_info_name":"اسم المحل",
+    "issue_commercial_shop_info_no":"رقم المحل",
+    "issue_commercial_shop_block":"رقم العقار",
+    "issue_commercial_shop_holes":"عدد الفتحات",
+    "issue_commercial_shop_floors":"عدد الأدوار في المحل",
+    "issue_commercial_shop_cameras_no":"عدد الكاميرات في المحل",
+    "issue_commercial_shop_has_elevator":"هل يوجد مصعد في المحل",
+    "issue_commercial_shop_inside_petrol":"هل يوجد داخل محطة وقود",
+    "issue_commercial_shop_inside_mall":"هل يقع المحل في مركز تجاري",
+    "issue_commercial_shop_mall_name":"اسم المركز التجاري",
+    "issue_commercial_shop_mall_floor":"الطابق في المركز التجاري",
+    "issue_commercial_clean_data":"بيانات النظافة",
+    "issue_commercial_board_data":"بيانات اللوحات",
+    "issue_commercial_board_type":"نوع اللوحة",
+    "issue_commercial_board_area":"مساحة اللوحة",
+    "issue_commercial_location":"بيانات اثبات الموقع",
+    "issue_commercial_location_type":"نوع اثبات الموقع",
+
+    "issue_commercial_location_type_deed_name":"رقم عقد التملك (الصك)",
+    "issue_commercial_location_type_deed_number":"تاريخ عقد التملك",
+
+
+    "issue_commercial_location_type_investment_number":"رقم العقد بالأمانة",
+    "issue_commercial_location_type_investment_name":"مسمي العقد",
+    "issue_commercial_location_type_investment_type":"نوع العقد",
+
+
+
+    "issue_commercial_location_type_tenancy_no":"رقم العقد",
+    "issue_commercial_location_type_tenancy_ve":"رقم النسخة",
+    "issue_commercial_location_type_tenancy_rep":"رقم هوية ممثل المستأجر",
+    "issue_commercial_location_type_tenancy_date":"تاريخ نهاية العقد",
+
+
+    "issue_commercial_location_type_clean_no":"رقم العقد",
+    "issue_commercial_location_type_clean_date":"تاريخ نهاية العقد",
+
+
+    "issue_commercial_civil":"بيانات الدفاع المدني",
+    "issue_commercial_civil_bill":"فاتورة أدوات سلامة",
+    "issue_commercial_civil_report":"تقرير فني",
+    "issue_commercial_civil_permit":"تصريح سلامة",
+
+    "issue_commercial_approvals":"الموافقات الحكومية",
+    "issue_commercial_general_security":"الأمن العام",
+    "issue_commercial_attachment":"المرفقات",
+    "issue_commercial_request_flow":"مسار الطلب",
+    "issue_commercial_calculator":"حاسبة الرسوم",
+    "issue_commercial_print":"طباعة",
+    "OWNER_MANAGER":"مالك/مدير",
+    "DELEGATOR":"مفوض",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    "commercial_licenseـquery_title": "يرجى إدخال البيانات التالية",
+
+    "submitter_compliance_text":"حالة الامتثال من مقدم الطلب: ",
+
+    "emp_compliance_text":"حالة الامتثال من المراقب: " ,
+
+
+
+    "city_region": "المدينة/المنطقة",
+    "select_region": "من فضلك اختار المدينة/المنطقة"
 }
