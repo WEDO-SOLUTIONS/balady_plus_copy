@@ -4120,10 +4120,6 @@
   "calendar_type": "Calendar type",
   "no_events": "Sorry, there are no events now",
   "calendar_type_appmt": "Appointment",
-  "calendar_type_invoice": "Invoice not paid",
-
-
-
   "rating_chat_bot_title": "How do you evaluate the smart assistant?",
   "chat_bot_not_working_title": "Sorry, the service is currently unavailable",
   "chat_bot_not_working_message": "We apologize for the inconvenience. The current service is experiencing technical difficulties, and we are working diligently to resolve the issue. Please try again later. Thank you for your understanding."
@@ -4220,7 +4216,6 @@
   "issue_commercial_civil_bill":"فاتورة أدوات سلامة",
   "issue_commercial_civil_report":"تقرير فني",
   "issue_commercial_civil_permit":"تصريح سلامة",
-
   "issue_commercial_approvals":"الموافقات الحكومية",
   "issue_commercial_general_security":"الأمن العام",
   "issue_commercial_attachment":"المرفقات",
