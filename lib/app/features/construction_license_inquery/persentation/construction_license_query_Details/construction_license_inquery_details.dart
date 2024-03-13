@@ -115,11 +115,12 @@ class _ConstructionLicenseInqueryDetailsState
                           '',
                       bgColor: AppColor.mystic,
                     ),
+                    licenceQueryDetails.oldLicenseId != null?
                     CardParameter(
                       title: 'license_number_municipality'.tr(),
                       value: licenceQueryDetails.oldLicenseId ?? '',
                       bgColor: AppColor.mystic,
-                    ),
+                    ):Container(),
                     CardParameter(
                       title: 'license_issue_date'.tr(),
                       value: licenceQueryDetails.licenseIssueDate ?? "",
@@ -160,56 +161,6 @@ class _ConstructionLicenseInqueryDetailsState
                       bgColor: AppColor.mystic,
                     ):Container(),
 
-                    // const SizedBox(height: 16),
-                    // licenceQueryDetails.x != null &&
-                    //         licenceQueryDetails.y != null
-                    //     ? SizedBox(
-                    //         height: 250,
-                    //         child: Stack(children: [
-                    //           GoogleMap(
-                    //             initialCameraPosition: CameraPosition(
-                    //                 target: LatLng(
-                    //                   double.parse(
-                    //                       licenceQueryDetails.y!),
-                    //                   double.parse(
-                    //                       licenceQueryDetails.x!),
-                    //                 ),
-                    //                 zoom: 16),
-                    //             markers: {
-                    //               Marker(
-                    //                 markerId: const MarkerId('position'),
-                    //                 position: LatLng(
-                    //                   double.parse(
-                    //                       licenceQueryDetails.y!),
-                    //                   double.parse(
-                    //                       licenceQueryDetails.x!),
-                    //                 ),
-                    //               )
-                    //             },
-                    //             zoomControlsEnabled: false,
-                    //             zoomGesturesEnabled: false,
-                    //             scrollGesturesEnabled: false,
-                    //           ),
-                    //           Positioned(
-                    //             bottom: 20,
-                    //             left: 20,
-                    //             child: GestureDetector(
-                    //               onTap: () {
-                    //                 navigateTo(
-                    //                     double.parse(
-                    //                         licenceQueryDetails.y!),
-                    //                     double.parse(
-                    //                         licenceQueryDetails.x!));
-                    //               },
-                    //               child: const Image(
-                    //                   height: 40,
-                    //                   width: 40,
-                    //                   image: AssetImage(IconPath.direction)),
-                    //             ),
-                    //           ),
-                    //         ]),
-                    //       )
-                    //     : const SizedBox(),
                   ],
                 ),
                 licenceQueryDetails
@@ -271,6 +222,58 @@ class _ConstructionLicenseInqueryDetailsState
                     ),
 
 
+                    const SizedBox(height: 16),
+                    licenceQueryDetails.surveyReport?.x != null &&
+                            licenceQueryDetails.surveyReport?.y != null
+                        ? SizedBox(
+                            height: 250,
+                            child: Stack(children: [
+                              GoogleMap(
+                                initialCameraPosition: CameraPosition(
+                                    target: LatLng(
+                                      double.parse(
+                                          licenceQueryDetails.surveyReport!.y!),
+                                      double.parse(
+                                          licenceQueryDetails.surveyReport!.x!),
+                                    ),
+                                    zoom: 16),
+                                markers: {
+                                  Marker(
+                                    markerId: const MarkerId('position'),
+                                    position: LatLng(
+                                      double.parse(
+                                          licenceQueryDetails.surveyReport!.y!),
+                                      double.parse(
+                                          licenceQueryDetails.surveyReport!.x!),
+                                    ),
+                                  )
+                                },
+                                zoomControlsEnabled: false,
+                                zoomGesturesEnabled: false,
+                                scrollGesturesEnabled: false,
+                              ),
+                              Positioned(
+                                bottom: 20,
+                                left: 20,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    navigateTo(
+                                        double.parse(
+                                            licenceQueryDetails.surveyReport!.y!),
+                                        double.parse(
+                                            licenceQueryDetails.surveyReport!.x!));
+                                  },
+                                  child: const Image(
+                                      height: 40,
+                                      width: 40,
+                                      image: AssetImage(IconPath.direction)),
+                                ),
+                              ),
+                            ]),
+                          )
+                        : const SizedBox(),
+
+
                   ],
                 ):Container(),
 
@@ -301,7 +304,7 @@ class _ConstructionLicenseInqueryDetailsState
                             licenceQueryDetails
                                 .surveyReport!.parcels![index];
                             return ExpandableCard(
-                              title: "${"land".tr()}{$index}",
+                              title: "${"land".tr()} ${index+1}",
                               bgColor: AppColor.lightGray,
                               children: [
 

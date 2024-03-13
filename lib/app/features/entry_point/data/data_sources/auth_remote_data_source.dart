@@ -69,6 +69,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
             'profile',
             'offline_access',
             'EmployeeAdminstration.Api',
+
           ],
         ),
       );
