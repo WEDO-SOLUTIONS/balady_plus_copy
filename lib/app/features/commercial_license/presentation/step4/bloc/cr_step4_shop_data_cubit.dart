@@ -377,6 +377,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
         shopName: state.shopName,
         shopUnitNumber: state.shopUnitNumber,
         holesCount: state.holesCount,
+        blockNumber: state.blockNumber,
         floorCount: state.floorCount,
         noOfCameras: state.noOfCameras,
         existInMall: state.existInMall,
