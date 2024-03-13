@@ -6,14 +6,12 @@ import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
-import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/widgets/footer/footer_style.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_favorite_dialog.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/features/routing/ui/brief_route_widgets.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
-import 'package:mapness/shared/providers/map/point_of_interest.dart';
 
 part 'widgets/phone_item.dart';
 part 'widgets/entrance_item.dart';
@@ -23,9 +21,16 @@ part 'widgets/favourite_item.dart';
 part 'widgets/wrapper.dart';
 
 class PoiCardFooter2 extends ConsumerWidget {
+  final DirectoryObjectMessage data;
+  final void Function() share;
+  final void Function() callPhone;
+  final void Function() onEntranceTap;
+  late final RouteSearchPointMessage _finishPoint;
+
   PoiCardFooter2({
     required this.data,
-    required this.viewModel,
+    required this.share,
+    required this.callPhone,
     required this.onEntranceTap,
     super.key,
   }) {
@@ -34,22 +39,13 @@ class PoiCardFooter2 extends ConsumerWidget {
       objectId: data.id!,
     );
   }
-  final DirectoryObjectMessage data;
-  final PoiCardViewModel viewModel;
-  final void Function() onEntranceTap;
-  late final RouteSearchPointMessage _finishPoint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final model = PoiModel(directoryObjectMessage: data);
+    final objectId = data.id?.objectId;
 
-    final objectMessage = model.directoryObjectMessage;
-    final hasEntrances = objectMessage?.entrances.isNotEmpty == true;
-    final hasContacts = objectMessage?.contactInfos.isNotEmpty == true;
-    final carIconFlex = (hasEntrances || hasContacts) ? 3 : 2;
-
-    /// redraw footer if fav repo changes. Do not remove, entail bug with multi fav add!
-
+    final hasEntrances = data.entrances.isNotEmpty == true;
+    final hasContacts = data.contactInfos.isNotEmpty == true;
     final hasContactsAndHasEntrances = hasContacts && hasEntrances;
 
     if (hasContactsAndHasEntrances) {
@@ -57,28 +53,29 @@ class PoiCardFooter2 extends ConsumerWidget {
         children: [
           _FavouriveItem(
             objectMessage: data,
-            objectId: model.directoryObjectMessage?.id?.objectId,
+            objectId: objectId,
           ),
           _ShareItem(
             hasContactsAndHasEntrances: hasContactsAndHasEntrances,
             flex: 2,
-            onTap: () => viewModel.share(objectMessage),
+            onTap: share,
           ),
           _CarItem(
             finishPoint: _finishPoint,
-            objectMessage: objectMessage,
+            objectMessage: data,
             flex: 2,
           ),
         ],
       );
     }
 
+    final carIconFlex = (hasEntrances || hasContacts) ? 3 : 2;
     return _Wrapper(
       children: [
         _ShareItem(
           hasContactsAndHasEntrances: hasContactsAndHasEntrances,
           flex: 2,
-          onTap: () => viewModel.share(objectMessage),
+          onTap: share,
         ),
         if (hasEntrances)
           _EntranceItem(
@@ -89,15 +86,15 @@ class PoiCardFooter2 extends ConsumerWidget {
           _PhoneItem(
             hasContacts: hasContacts,
             flex: 2,
-            onTap: () => viewModel.callPhone(data: objectMessage),
+            onTap: callPhone,
           ),
         _FavouriveItem(
           objectMessage: data,
-          objectId: model.directoryObjectMessage?.id?.objectId,
+          objectId: objectId,
         ),
         _CarItem(
           finishPoint: _finishPoint,
-          objectMessage: objectMessage,
+          objectMessage: data,
           flex: carIconFlex,
         ),
       ],

@@ -12,6 +12,7 @@ class _FavouriveItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    /// redraw footer if fav repo changes. Do not remove, entail bug with multi fav add!
     ref.watch(favouriteRepositoryProvider).valueOrNull;
     final provider = ref.watch(favouriteRepositoryProvider.notifier);
     final isFavourite = provider.isFavourite(objectId);
