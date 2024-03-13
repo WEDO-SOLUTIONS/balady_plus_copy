@@ -249,10 +249,9 @@ class _ContentState extends ConsumerState<_Content>
         ),
         actions: PoiCardFooter2(
           data: data,
-          viewModel: viewModel,
-          onEntranceTap: () {
-            showEntrance(data);
-          },
+          share: () => viewModel.share(objectId: objectId),
+          callPhone: () => viewModel.callPhone(data: data),
+          onEntranceTap: () => showEntrance(data),
         ),
         scrollableBody: (context, controller) =>
             DgisBottomSheetScrollableContent(

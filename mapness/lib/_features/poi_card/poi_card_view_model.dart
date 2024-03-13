@@ -9,7 +9,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PoiCardViewModel {
-
   PoiCardViewModel({
     required this.ref,
   });
@@ -30,8 +29,12 @@ class PoiCardViewModel {
     }
   }
 
-  void share(DirectoryObjectMessage? data) {
-    Share.share('balady://poi-map?dgis-object-id=${data?.id?.objectId}');
+  void share({required int? objectId}) {
+    if (objectId != null) {
+      Share.share('balady://poi-map?dgis-object-id=$objectId');
+    } else {
+      onError();
+    }
   }
 
   Future<void> sendEmail(String value) async {
@@ -62,7 +65,6 @@ class PoiCardViewModel {
       await launchUrl(Uri(scheme: 'tel', path: value));
     }
   }
-
 
   // void removeFromFavourite(FavouriteItem data) {
   //   ref.read(favouriteRepositoryProvider.notifier).delete(data);
