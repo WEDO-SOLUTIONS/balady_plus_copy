@@ -3554,8 +3554,8 @@
   "pledges_submit_commercial_description": "I confirm and pledge the accuracy of all data and attachments uploaded to the application, and I'm totally responsibe for any false and malicious reports according to regulations and instructions in the event that it turns out to be otherwise.",
   "acknowledge_pledge": "I confirm and pledge that all information above are correct",
   "return_home_page": "Back to home page",
-  "select_rating": "Rating selection",
-  "done_send_rating": "Sending your rating was done successfully",
+  "select_rating": "Rate the service",
+  "done_send_rating": "Your rating has been submitted successfully",
   "show_details": "Showing details",
   "activityCancellationDate": "Activity cancellation date",
   "exit_order": "Exist order",
@@ -4120,6 +4120,13 @@
   "calendar_type": "Calendar type",
   "no_events": "Sorry, there are no events now",
   "calendar_type_appmt": "Appointment",
+  "calendar_type_invoice": "Invoice not paid",
+
+
+
+  "rating_chat_bot_title": "How do you evaluate the smart assistant?",
+  "chat_bot_not_working_title": "Sorry, the service is currently unavailable",
+  "chat_bot_not_working_message": "We apologize for the inconvenience. The current service is experiencing technical difficulties, and we are working diligently to resolve the issue. Please try again later. Thank you for your understanding."
   "calendar_type_invoice": "Invoice not paid",
   "commercial_licenseـquery_title": "Insert the following",
   "submitter_compliance_text":"Compliance status of the Submitter: ",
