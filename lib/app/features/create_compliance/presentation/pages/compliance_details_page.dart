@@ -32,6 +32,7 @@ import '../widgets/summery_widgets/step3_summury_widget.dart';
 import '../widgets/summery_widgets/step4_summury_widget.dart';
 import '../widgets/summery_widgets/step5_summury_widget.dart';
 import '../widgets/summery_widgets/step6_summury_widget.dart';
+import '../widgets/summery_widgets/step7_summury_widget.dart';
 import 'complete_compliance_page.dart';
 
 class ComplianceDetailsPage extends StatefulWidget {
@@ -57,7 +58,7 @@ class _ComplianceDetailsPageState extends State<ComplianceDetailsPage> {
     Map data = ModalRoute.of(context)!.settings.arguments as Map;
 
     return BlocProvider(
-      create: (context) => ComplianceBloc()
+      create: (context) => ComplianceBloc(showDetails: true)
         ..add(
           GetRequestDetails(
             requestId: data['requestNumber'],
@@ -190,6 +191,8 @@ class _ComplianceDetailsPageState extends State<ComplianceDetailsPage> {
                               Step5SummeryWidget(),
                             CustomVerticalSpace(height: 16),
                             Step6SummeryWidget(),
+                            CustomVerticalSpace(height: 16),
+                            Step7SummeryWidget(),
                             CustomVerticalSpace(height: 16),
                           ],
                         ))),
