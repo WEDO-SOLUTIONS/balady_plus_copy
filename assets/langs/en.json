@@ -4124,5 +4124,10 @@
   "no_data_found":"No Data Found", 
   "commercial_licenseـquery_title": "Insert the following",
   "enable_disable_notifications": "You can enable or disable notifications from here",
-  "manage_notification": "Manage notifications for services"
+  "manage_notification": "Manage notifications for services",
+
+
+  "make_all_read":"Mark all as read",
+  "delete_all": "Delete all",
+  "locale": "en"
 }

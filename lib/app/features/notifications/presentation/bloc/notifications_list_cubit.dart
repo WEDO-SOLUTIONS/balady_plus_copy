@@ -9,18 +9,20 @@ import 'package:balady_plus/app/features/notifications/domain/repositories/notif
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 part 'notifications_list_state.dart';
 
 class NotificationsListCubit extends Cubit<NotificationsListState> {
-  final NotificationsListRepository baladyCalendarRepository;
+  final NotificationsListRepository listRepository;
   final SearchNotificationsParams params;
 
   NotificationsListCubit({
-    required this.baladyCalendarRepository,
+    required this.listRepository,
     required this.params,
   }) : super(InitialNotificationsListState()) {
+    Jiffy.setLocale("locale".tr());
     getNotificationsMessagesList(params);
   }
 
@@ -35,12 +37,13 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
         emit(LoadingEventsListState());
       }
       Either<Failure, NotificationsListResponse> failureOrSuccess =
-          await baladyCalendarRepository.getNotificationsMessagesList(
+          await listRepository.getNotificationsMessagesList(
         request: params,
       );
       failureOrSuccess.fold(
         (failure) {
-          if (failure is NoDataFoundException || failure is NoDataFoundException) {
+          if (failure is NoDataFoundException ||
+              failure is NoDataFoundException) {
             emit(EmptyNotificationsListState());
           } else if (failure is ServerFailure) {
             emit(FailureNotificationsListState(
@@ -75,52 +78,51 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
     }
   }
 
-  Future<void> markReadNotificationsMessages(
-    MarkReadNotificationsParams params,
-  ) async {
+  Future<void> markReadNotificationsMessages() async {
     NotificationsListState stateType = state;
-    if (stateType is InitialNotificationsListState ||
-        stateType is SucceedWithPaginationNotificationsListState ||
-        stateType is FailureNotificationsListState) {
-      if (stateType is! SucceedWithPaginationNotificationsListState) {
-        emit(LoadingEventsListState());
-      }
+    if (stateType is! LoadingEventsListState) {
+      emit(LoadingEventsListState());
       Either<Failure, bool> failureOrSuccess =
-          await baladyCalendarRepository.markReadNotificationsMessages(
-        request: params,
+          await listRepository.markReadNotificationsMessages(
+        request: MarkReadNotificationsParams(
+          all: true,
+          read: true,
+        ),
       );
       failureOrSuccess.fold(
         (failure) {
-          // if (failure is NoDataFoundException || failure is NoDataFoundException) {
-          //   emit(FailureNotificationsListState(
-          //       filerMessage: "no_data_shown".tr()));
-          // } else if (failure is ServerFailure) {
-          //   emit(FailureNotificationsListState(
-          //       filerMessage: failure.errorMessage));
-          // } else {
-          //   emit(FailureNotificationsListState(filerMessage: "error"));
-          // }
+          if (failure is NoDataFoundException || failure is NoDataFoundException) {
+            emit(FailureNotificationsListState(
+                filerMessage: "no_data_shown".tr()));
+          } else if (failure is ServerFailure) {
+            emit(FailureNotificationsListState(
+                filerMessage: failure.errorMessage));
+          } else {
+            emit(FailureNotificationsListState(filerMessage: "error"));
+          }
         },
         (done) {
-          getNotificationsMessagesList(this.params);
+          emit(InitialNotificationsListState());
+          getNotificationsMessagesList(params);
         },
       );
     }
   }
 
-  Future<void> deletedNotificationsMessages(
-    DeletedNotificationsParams params,
-  ) async {
+  Future<void> deletedNotificationsMessages() async {
     NotificationsListState stateType = state;
     if (stateType is! LoadingEventsListState) {
       emit(LoadingEventsListState());
       Either<Failure, bool> failureOrSuccess =
-          await baladyCalendarRepository.deletedNotificationsMessages(
-        request: params,
+          await listRepository.deletedNotificationsMessages(
+        request: DeletedNotificationsParams(
+          all: true,
+        ),
       );
       failureOrSuccess.fold(
         (failure) {
-          if (failure is NoDataFoundException || failure is NoDataFoundException) {
+          if (failure is NoDataFoundException ||
+              failure is NoDataFoundException) {
             emit(EmptyNotificationsListState());
           } else if (failure is ServerFailure) {
             emit(FailureNotificationsListState(

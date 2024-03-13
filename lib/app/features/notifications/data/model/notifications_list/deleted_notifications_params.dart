@@ -5,14 +5,14 @@ class DeletedNotificationsParams {
   List<String>? messages;
 
   DeletedNotificationsParams({
-    required this.channelId,
+    this.channelId = "mobile",
     required this.all,
     this.messages,
   });
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> data = {
-      "notificationId": "mobile-mobile",
+      "channelId": channelId,
       "all": all,
     };
     if(messages != null) {

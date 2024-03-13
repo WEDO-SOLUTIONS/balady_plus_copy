@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/errors/errors_exports.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notifications_list/deleted_notifications_params.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notifications_list/mark_read_notifications_params.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notifications_list/notifications_list_response.dart';
+import 'package:balady_plus/app/features/notifications/data/model/notifications_list/notifications_message_item.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notifications_list/search_notifications_params.dart';
 import 'package:balady_plus/app/features/notifications/domain/entities/set_notifications_profile_products_params.dart';
 import 'package:balady_plus/app/features/notifications/domain/repositories/notification_repository.dart';
@@ -14,7 +15,7 @@ import '../model/notification_request.dart';
 import '../model/notifications_settings_list/notifications_settings_list_response.dart';
 
 class NotificationRepositoryImplementation
-    implements NotificationsRepository, NotificationsListRepository {
+    implements NotificationsRepository, NotificationsListRepository, NotificationsFilterRepository {
   final NotificationsRemoteDataSource remoteDataSource;
 
   NotificationRepositoryImplementation({
@@ -67,6 +68,30 @@ class NotificationRepositoryImplementation
       {required DeletedNotificationsParams request}) async {
     try {
       final data = await remoteDataSource.deletedNotificationsMessages(request);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  // For Filter Widgets
+  @override
+  Future<Either<Failure, List<NotificationType>>> getNotificationsProducts() async {
+    try {
+      final data = await remoteDataSource.getNotificationsProducts();
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+  @override
+  Future<Either<Failure, List<NotificationType>>> getNotificationsServicesProducts({required  String productId}) async {
+    try {
+      final data = await remoteDataSource.getNotificationsServicesProducts(productId: productId);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());

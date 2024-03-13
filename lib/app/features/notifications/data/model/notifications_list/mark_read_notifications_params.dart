@@ -6,7 +6,7 @@ class MarkReadNotificationsParams {
   List<String>? messages;
 
   MarkReadNotificationsParams({
-    required this.channelId,
+    this.channelId = "mobile",
     required this.all,
     required this.read,
     this.messages,
@@ -14,7 +14,7 @@ class MarkReadNotificationsParams {
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> data = {
-      "notificationId": "mobile-mobile",
+      "channelId": channelId,
       "all": all,
       "read": read,
     };

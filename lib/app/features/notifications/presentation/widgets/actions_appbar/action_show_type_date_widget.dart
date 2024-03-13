@@ -1,13 +1,17 @@
 import 'package:app_popup_menu/app_popup_menu.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/features/notifications/presentation/bloc/notifications_list_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class ActionShowTypeDateWidget extends StatelessWidget {
   const ActionShowTypeDateWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
+    NotificationsListCubit cubit = context.watch<NotificationsListCubit>();
     return AppPopupMenu<int>(
       menuItems:  [
         PopupMenuItem(
@@ -17,7 +21,7 @@ class ActionShowTypeDateWidget extends StatelessWidget {
             children: [
               SvgPicture.asset(IconPath.check),
               const SizedBox(width: 12),
-              const Text('تحديد الكل كمقروء'),
+              Text('make_all_read'.tr()),
             ],
           ),
         ),
@@ -28,14 +32,22 @@ class ActionShowTypeDateWidget extends StatelessWidget {
             children: [
               SvgPicture.asset(IconPath.trash01),
               const SizedBox(width: 12),
-              const Text('حذف الكل'),
+              Text('delete_all'.tr()),
             ],
           ),
         ),
       ],
       initialValue: 0,
       onSelected: (int value) {
-
+        print(value);
+        switch(value) {
+          case 1:
+            cubit.markReadNotificationsMessages();
+            break;
+          case 2:
+            cubit.deletedNotificationsMessages();
+            break;
+        }
       },
       onCanceled: () {
 

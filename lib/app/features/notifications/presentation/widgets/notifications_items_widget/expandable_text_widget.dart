@@ -4,10 +4,12 @@ import 'package:provider/provider.dart';
 
 class ExpandableTextWidget extends StatelessWidget {
   final String text;
+  final void Function()? onTap;
 
   const ExpandableTextWidget({
     super.key,
     required this.text,
+    this.onTap,
   });
 
   @override
@@ -17,11 +19,14 @@ class ExpandableTextWidget extends StatelessWidget {
       child: Selector<ExpandableTextProvider, bool>(
         selector: (_, provider) => provider.isExpandable,
         builder: (contextProvider, isExpandable, _) {
-          ExpandableTextProvider provider = Provider.of<ExpandableTextProvider>(contextProvider);
+          ExpandableTextProvider provider =
+              Provider.of<ExpandableTextProvider>(contextProvider);
           return InkWell(
             onTap: () {
               provider.expandableText();
-              // contextProvider.read()<ExpandableTextProvider>().expandableText();
+              if(onTap != null) {
+                onTap!();
+              }
             },
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +34,10 @@ class ExpandableTextWidget extends StatelessWidget {
               children: [
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.all(4.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6.0,
+                      vertical: 8,
+                    ),
                     child: Text(
                       text,
                       style: AppStyle.nearbyItemSubTitleTextStyle.copyWith(

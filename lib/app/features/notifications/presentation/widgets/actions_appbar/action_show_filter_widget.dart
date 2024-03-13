@@ -3,6 +3,8 @@ import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
+import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
+import 'package:balady_plus/app/features/notifications/presentation/bloc/notifications_list_cubit.dart';
 import 'package:balady_plus/app/features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:balady_plus/app/features/profile_features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import 'package:balady_plus/app/features/profile_features/delegators/presentation/widgets/delegator_list.dart';
@@ -18,35 +20,21 @@ class ActionShowFilterWidget extends StatelessWidget {
     context.read<DelegatorsCubit>().getDelegators();
     context.read<DelegatorsCubit>().getAgents();
     DashboardBloc bloc = BlocProvider.of<DashboardBloc>(context);
+    NotificationsListCubit cubit = context.watch<NotificationsListCubit>();
+
     return IconButton(
-      onPressed: () async {
+      onPressed: () {
         if (CommonProperties.isLoggedIn) {
-          await BottomSheetDialog.showDraggableSheet(
-            context,
-            dialogKeyName: DialogName.delegatorsDialog,
-            currentRouteName: "ServicesPage",
-            child: DelegatorList(
-              delegatorsCubit: context.read<DelegatorsCubit>(),
-            ),
-          );
-          bloc.add(DashboardEventInitial());
+          showDialogParsona(bloc, cubit,context);
         } else {
           showDialog(
             context: context,
             builder: (ctx) => NeedLoginDialog(
-              onSuccessLogin: (bool? isSuccess) async {
+              onSuccessLogin: (bool? isSuccess) {
                 if (isSuccess ?? false) {
                   context.read<DelegatorsCubit>().getDelegators();
                   context.read<DelegatorsCubit>().getAgents();
-                  await BottomSheetDialog.showDraggableSheet(
-                    context,
-                    dialogKeyName: DialogName.delegatorsDialog,
-                    currentRouteName: "ServicesPage",
-                    child: DelegatorList(
-                      delegatorsCubit: context.read<DelegatorsCubit>(),
-                    ),
-                  );
-                  bloc.add(DashboardEventInitial());
+                  showDialogParsona(bloc, cubit,context);
                 }
               },
             ),
@@ -57,4 +45,43 @@ class ActionShowFilterWidget extends StatelessWidget {
     );
   }
 
+  void showDialogParsona(
+    DashboardBloc bloc,
+    NotificationsListCubit cubit,
+    BuildContext context,
+  ) async {
+    await BottomSheetDialog.showDraggableSheet(
+      context,
+      dialogKeyName: DialogName.delegatorsDialog,
+      currentRouteName: "ServicesPage",
+      child: DelegatorList(
+        delegatorsCubit: context.read<DelegatorsCubit>(),
+      ),
+    );
+    bloc.add(DashboardEventInitial());
+
+    // EntryPointCubit auth = context.read<EntryPointCubit>();
+    // final selectedAgent = auth.state.selectedAgent;
+    // final selectedDelegator = auth.state.selectedDelegator;
+    // if (selectedAgent != null) {
+    //   return EventsCommonParams(
+    //     typeUser: UserType.agency,
+    //     agencyInRequestDto: AgencyInRequestDto(
+    //       agencyNumber: selectedAgent.agencyNumber!,
+    //       ownerNumber: selectedAgent.ownerNumber!,
+    //       ownerTypeId: selectedAgent.ownerTypeId!,
+    //     ),
+    //   );
+    // } else if (selectedDelegator != null) {
+    //   return EventsCommonParams(
+    //     typeUser: UserType.delegator,
+    //     ownerNumber: selectedDelegator.crNumber,
+    //     ownerTypeId: selectedDelegator.crType,
+    //     unifiedNationalNumber: selectedDelegator.unifiedNationalNumber!,
+    //     relationTypeeId: int.tryParse(selectedDelegator.relationTypeId),
+    //   );
+    // } else {
+    //   return EventsCommonParams(typeUser: UserType.owner);
+    // }
+  }
 }

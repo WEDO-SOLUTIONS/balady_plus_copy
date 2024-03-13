@@ -5,6 +5,7 @@ import 'package:balady_plus/app/features/notifications/data/model/notification_r
 import 'package:balady_plus/app/features/notifications/data/model/notifications_list/deleted_notifications_params.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notifications_list/mark_read_notifications_params.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notifications_list/notifications_list_response.dart';
+import 'package:balady_plus/app/features/notifications/data/model/notifications_list/notifications_message_item.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notifications_list/search_notifications_params.dart';
 import 'package:dartz/dartz.dart';
 
@@ -31,6 +32,14 @@ abstract class NotificationsListRepository {
   deletedNotificationsMessages(
       {required DeletedNotificationsParams request});
 }
+
+//For filter Widgets
+abstract class NotificationsFilterRepository {
+  Future<Either<Failure, List<NotificationType>>> getNotificationsProducts();
+
+  Future<Either<Failure, List<NotificationType>>> getNotificationsServicesProducts({required String productId});
+}
+
 
 
 abstract class NotificationsSettingsListRepository {
