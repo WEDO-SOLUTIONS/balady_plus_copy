@@ -768,26 +768,21 @@ class ApiUrl {
       "v1/joodeskan-services/generate-donation-url";
   static String joodEskanRegions = "v1/joodeskan-services/regions";
 
-
   static const paymentURL = 'v1/payment-gateway/payment';
-
 
   static const chatBot = 'v1/chatbot-services/chat'; // not use this now
   static const chatBotStream = 'v1/chatbot-services/chat-stream';
   static const chatBotEnabled = 'v1/chatbot-services/service-enabled';
-
 
   static const String submitRating =
       '/v1/balady-commercial-services/rating/submit';
 
   static const weatherAlerts = 'v1/mater-services/notifications/locations';
 
-
 //commercial license query
-  static String getCommercialLicenseData(int licenseNumber,unifiedFacilityNumber) =>
+  static String getCommercialLicenseData(
+          int licenseNumber, unifiedFacilityNumber) =>
       '/v1/balady-commercial-services/licenses/$licenseNumber/by-unn/$unifiedFacilityNumber';
-
-
 
   //! Balady Calednar
 
@@ -802,6 +797,12 @@ class ApiUrl {
 
   static const baladyCalendarEvents =
       'v1/balady-calendar-services/events/by-year';
+
+//! Appointments New APIs
+  static getAppointmentById(String id) =>
+      'v1/appointments-mobile-services/appointments/$id';
+
+  static const saveAppointment = "v1/appointments-mobile-services/appointments";
 
   //! POST
 

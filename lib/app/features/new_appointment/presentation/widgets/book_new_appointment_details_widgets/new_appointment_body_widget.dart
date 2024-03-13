@@ -10,8 +10,10 @@ import 'package:provider/provider.dart';
 import '../../../../../core/utils/constants/constants.dart';
 import '../../../../../core/utils/extensions/arabic_number_text_input_formatter.dart';
 import '../../../../_shared_feature_/data/entities/drop_down_item.dart';
+import '../../../../_shared_feature_/presentation/widgets/check_boxes/text_field_with_check_btn.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_tooltip_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/radio_buttons/custom_radio_button_widget copy.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../core/models/service_config_reseponse.dart';
@@ -240,12 +242,72 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             model.validateForm();
           },
         ),
-        CustomVerticalSpace(height: 16),
+        const CustomVerticalSpace(height: 16),
         if (model.serviceConfigResponse?.getDepartmentName() != null)
           FieldData(
               title: ("bookNewAppointmentAppointmentAreaWord").tr(),
               subTitle: model.serviceConfigResponse?.getDepartmentName()),
-        CustomVerticalSpace(height: 16),
+        const CustomVerticalSpace(height: 16),
+
+        if (model.dataModel.selectedMunicipalityItem?.id == "-1") ...[
+          TextWithCheckBtn(
+            title: "realEstateRequestId".tr(),
+            hint: "realEstateRequestId".tr(),
+            textInputType: TextInputType.text,
+            backgroundColor: Colors.transparent,
+            controller: model.dataModel.realEstateRequestIdController,
+            validate: (String? t) {},
+            isValidate: false,
+            currentValue: model.dataModel.realEstateRequestId,
+            verify: () {},
+            onTextChanged: (value) {
+              model.dataModel.realEstateRequestId = value;
+              model.validateForm();
+            },
+            showToolTip: true,
+            toolTipMessage: "realEstateRequestIdNote".tr(),
+          ),
+          const CustomVerticalSpace(height: 16),
+          CustomTextFieldWidget(
+            controller: model.dataModel.realEstateSurveyIdController,
+            fillColor: Colors.transparent,
+            label: ("realEstateSurveyId").tr(),
+            hintText: ("realEstateSurveyId").tr(),
+            maxLines: 1,
+            keyboardType: TextInputType.text,
+            inputFormatters: [],
+            onValidate: (text) {
+              if (text.toString().isEmpty) {
+                return ('text_field_error').tr();
+              }
+              return null;
+            },
+            textInputAction: TextInputAction.done,
+            onChanged: (text) {
+              model.dataModel.realEstateSurveyId = text;
+              model.validateForm();
+            },
+          ),
+          const CustomVerticalSpace(height: 16),
+          CustomTextFieldWidget(
+            controller: model.dataModel.realEstateIdController,
+            fillColor: Colors.transparent,
+            label: ("realEstateId").tr(),
+            hintText: ("realEstateId").tr(),
+            maxLines: 1,
+            keyboardType: TextInputType.text,
+            inputFormatters: [],
+            onValidate: (text) {
+              return null;
+            },
+            textInputAction: TextInputAction.done,
+            onChanged: (text) {
+              model.dataModel.realEstateId = text;
+              model.validateForm();
+            },
+          ),
+          const CustomVerticalSpace(height: 16),
+        ],
 
         CustomTextFieldWidget(
           controller: model.dataModel.descController,

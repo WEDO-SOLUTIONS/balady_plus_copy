@@ -13,6 +13,7 @@ import '../../../shared_feature_exports.dart'
         CustomVerticalSpace,
         LabelTextWithOptional,
         WidgetLabel;
+import '../custom_tooltip_widget.dart';
 
 class CustomTextFieldWidget extends StatelessWidget {
   final bool enabled;
@@ -74,6 +75,8 @@ class CustomTextFieldWidget extends StatelessWidget {
   final void Function(PointerDownEvent)? onTapOutside;
   final String? Function(String?)? onValidate;
   final bool showOptional;
+  final bool showToolTip;
+  final String? toolTipMessage;
 
   const CustomTextFieldWidget(
       {super.key,
@@ -134,7 +137,9 @@ class CustomTextFieldWidget extends StatelessWidget {
       this.onTap,
       this.onValidate,
       this.spacerSize,
-      this.onTapOutside});
+      this.onTapOutside,
+      this.showToolTip = false,
+      this.toolTipMessage});
 
   @override
   Widget build(BuildContext context) {
@@ -152,6 +157,12 @@ class CustomTextFieldWidget extends StatelessWidget {
                 labelStyle: labelStyle,
               ),
             ),
+            if (showToolTip) ...[
+              CustomTooltipWidget(
+                message: toolTipMessage ?? "",
+                child: const Icon(Icons.info_outline),
+              ),
+            ],
             if (showOptional == true) ...[
               const SizedBox(
                 width: 4,

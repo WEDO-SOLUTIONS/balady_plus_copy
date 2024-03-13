@@ -40,6 +40,12 @@ class NewAppointmentViewModel extends BaseViewModel {
   final _repository = locator<AppointmentRepository>();
   final TextEditingController descController = TextEditingController();
   final TextEditingController transactionNoController = TextEditingController();
+  final TextEditingController realEstateSurveyIdController =
+      TextEditingController();
+  final TextEditingController realEstateIdController = TextEditingController();
+  final TextEditingController realEstateRequestIdController =
+      TextEditingController();
+
   final TextEditingController otherServiceNameController =
       TextEditingController();
 
@@ -121,10 +127,18 @@ class NewAppointmentViewModel extends BaseViewModel {
   LookUpList? specialConditionTypeList;
   List<VisitType>? appointmentTypeList;
 
+  String? realEstateSurveyId;
+  String? realEstateId;
+  String? realEstateRequestId;
+
   init() {
     editedItem = null;
     descController.text = "";
     transactionNoController.text = "";
+    realEstateSurveyIdController.text = "";
+    realEstateIdController.text = "";
+    realEstateRequestIdController.text = "";
+
     // municipalitiesResponse = null;
     municipalityType = null;
     selectedMunicipalityItem = null;
@@ -145,6 +159,11 @@ class NewAppointmentViewModel extends BaseViewModel {
 
     //notes = null;
     appointmentDetails = null;
+
+    realEstateSurveyId = null;
+    realEstateId = null;
+    realEstateRequestId = null;
+
     transactionNo = null;
     serviceName = null;
     appointmentTypeItem = null;
@@ -420,7 +439,13 @@ class NewAppointmentViewModel extends BaseViewModel {
       "visitLinked": withPreviousTransaction,
       "visitTime": selectedTime!.timeKey,
       "visitTopic": "",
-      "visitType": appointmentTypeItem!.id
+      "visitType": appointmentTypeItem!.id,
+
+      if (selectedMunicipalityItem?.id == "-1") ...{
+        "realEstateSurveyId": realEstateSurveyId,
+        "realEstateId": realEstateId,
+        "realEstateRequestId": realEstateRequestId
+      }
     });
     hideLoading();
     if (response.item1 != null &&
@@ -478,7 +503,12 @@ class NewAppointmentViewModel extends BaseViewModel {
         "visitLinked": withPreviousTransaction,
         "visitTime": selectedTime!.timeKey,
         "visitTopic": "",
-        "visitType": appointmentTypeItem!.id
+        "visitType": appointmentTypeItem!.id,
+        if (selectedMunicipalityItem?.id == "-1") ...{
+          "realEstateSurveyId": realEstateSurveyId,
+          "realEstateId": realEstateId,
+          "realEstateRequestId": realEstateRequestId
+        }
       }, editedItem!.id!);
       hideLoading();
       if (response.item1 == true) {
@@ -728,11 +758,16 @@ class NewAppointmentViewModel extends BaseViewModel {
 
       transactionNo = editedItem?.prevTrnNo;
       appointmentDetails = editedItem?.appointmentDetails;
-
+      realEstateSurveyId = editedItem?.realEstateSurveyId;
+      realEstateId = editedItem?.realEstateId;
+      realEstateRequestId = editedItem?.realEstateRequestId;
       descController.text = appointmentDetails ?? "";
       transactionNoController.text = transactionNo ?? "";
 
-      print("aaaaaaaaaa ${editedItem?.attachments?.length}");
+      realEstateSurveyIdController.text = realEstateSurveyId ?? "";
+      realEstateIdController.text = realEstateId ?? "";
+      realEstateRequestIdController.text = realEstateRequestId ?? "";
+
       atttachmentItems = editedItem?.attachments?.map((e) {
             return AttachmentItemModel(
                 attachmentBase64: Uint8List(1),
@@ -742,7 +777,6 @@ class NewAppointmentViewModel extends BaseViewModel {
                 updatable: e.updatable);
           }).toList() ??
           [];
-      print("aaaaaaaaaa dd ${editedItem?.attachments?.length}");
 
       if (editedItem?.specialConditionId != null) {
         if (editedItem?.specialConditionId.toString() ==

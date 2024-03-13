@@ -11,9 +11,10 @@ import '../../../../../../core/errors/exceptions.dart';
 import '../../../../../../core/remote_services/api_constants.dart';
 import '../../../../../../core/remote_services/web_service.dart';
 import '../../../../../../core/services/global/web_service.dart' as webService;
-
+import '../../../../../../core/services/global/web_service.dart' as web;
 import '../../../../../../core/services/local/helpers.dart';
 import '../../../../../../core/utils/common_functions.dart';
+import '../../../../../../core/utils/constants/apis/api_info.dart';
 import '../../models/appointment_details_model.dart';
 import '../../models/available_dates_response.dart';
 import '../../models/available_times_response.dart';
@@ -330,30 +331,26 @@ class AppointmentRepository {
   Future<Tuple3<bool?, String?, AppointmentDetails?>> getAppointmentDetails(
       int appointmentId) async {
     String query = appointmentId.toString();
-    final body = await webServices
-        .getApigeeRequest(ApiConstants.AppointmentDetails, relativePath: query);
-    bool state = body['state'];
-    dynamic data = body['data'];
 
-    AppointmentDetails? result;
-    String error = body['error'] ?? ("errors_server_error_1").tr();
+    var res;
+
     try {
-      AppointmentDetails response =
-          AppointmentDetails.fromJson(json.decode(data));
-      result = response;
-      if (!state) {
-        error = result.data?.responseMessage ?? error;
-      }
+      res =
+          await sl<web.WebService>().dio.get(ApiUrl.getAppointmentById(query));
+
+      AppointmentDetails response = AppointmentDetails.fromJson(res.data);
+
+      return Tuple3<bool?, String?, AppointmentDetails?>(true, "", response);
+    } on DioException catch (error) {
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
-      try {
-        Helpers.sendLog(
-            url: ApiConstants.AppointmentDetails,
-            qeuryParms: query,
-            data: data,
-            errorMsg: ex.toString());
-      } catch (ex) {}
+      return Tuple3<bool?, String?, AppointmentDetails?>(
+          false, ex.toString(), null);
     }
-    return Tuple3<bool?, String?, AppointmentDetails?>(state, error, result);
   }
 
   Future<Tuple4<bool?, String?, Uint8List?, String?>> printAppointment(
@@ -459,6 +456,28 @@ class AppointmentRepository {
 
   Future<Tuple3<bool?, String?, SaveAppointmentResponse?>> updateAppointment(
       var reqBody, int id) async {
+    var res;
+
+    try {
+      res = await sl<web.WebService>()
+          .dio
+          .put(ApiUrl.getAppointmentById(id.toString()), data: reqBody);
+
+      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
+          true, "", SaveAppointmentResponse());
+    } on DioException catch (error) {
+      ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
+          false, error.toString(), null);
+    } catch (ex) {
+      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
+          false, ex.toString(), null);
+    }
+
     try {
       final response = await sl<webService.WebService>()
           .dio
@@ -487,6 +506,31 @@ class AppointmentRepository {
 
   Future<Tuple3<bool?, String?, SaveAppointmentResponse?>> saveAppointment(
       var reqBody) async {
+    var res;
+
+    try {
+      res = await sl<web.WebService>()
+          .dio
+          .post(ApiUrl.saveAppointment, data: reqBody);
+
+      SaveAppointmentResponse response =
+          SaveAppointmentResponse.fromJson(res.data);
+
+      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
+          true, "", response);
+    } on DioException catch (error) {
+      ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
+          false, error.toString(), null);
+    } catch (ex) {
+      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
+          false, ex.toString(), null);
+    }
+
     final body = await webServices
         .postApigeeRequest(ApiConstants.AppointmentSave, body: reqBody);
     bool state = body['state'];
