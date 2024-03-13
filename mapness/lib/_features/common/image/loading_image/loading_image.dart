@@ -10,9 +10,10 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 enum ImageState { loading, loaded, error }
 
 class LoadingImage extends ConsumerStatefulWidget {
-
   const LoadingImage({
-    required this.imageUrl, required this.loadingWidget, super.key,
+    required this.imageUrl,
+    required this.loadingWidget,
+    super.key,
     this.onImageReady,
     this.fit,
     this.onImageTap,
@@ -23,7 +24,7 @@ class LoadingImage extends ConsumerStatefulWidget {
   final BoxFit? fit;
   final VoidCallback? onImageReady;
   final bool? isAssetImg;
-  final Function(String name, bool? isAsset)? onImageTap;
+  final Function(String name, {bool? isAsset})? onImageTap;
 
   @override
   ConsumerState<LoadingImage> createState() => _LoadingImageState();
@@ -83,32 +84,35 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
       },
     );
 
-    return switch (state) {
-      ImageState.error => Container(
-          color: context.color.surface_base_primary,
-          child: Center(
-            child: StoryRefreshButton(
-              onPressed: () {
-                loadImage(context);
-              },
-            ),
-          ),
-        ),
-      ImageState.loaded => GestureDetector(
-          onTap: () {
-            widget.onImageTap?.call(widget.imageUrl, widget.isAssetImg);
-          },
-          child: widget.isAssetImg == true
-              ? Image.asset(
-                  widget.imageUrl,
-                  fit: widget.fit,
-                )
-              : Image.network(
-                  widget.imageUrl,
-                  fit: widget.fit,
+    return AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child: switch (state) {
+          ImageState.error => Container(
+              color: context.color.surface_base_primary,
+              child: Center(
+                child: StoryRefreshButton(
+                  onPressed: () {
+                    loadImage(context);
+                  },
                 ),
-        ),
-      ImageState.loading => widget.loadingWidget,
-    };
+              ),
+            ),
+          ImageState.loaded => GestureDetector(
+              onTap: () {
+                widget.onImageTap
+                    ?.call(widget.imageUrl, isAsset: widget.isAssetImg);
+              },
+              child: widget.isAssetImg == true
+                  ? Image.asset(
+                      widget.imageUrl,
+                      fit: widget.fit,
+                    )
+                  : Image.network(
+                      widget.imageUrl,
+                      fit: widget.fit,
+                    ),
+            ),
+          ImageState.loading => widget.loadingWidget,
+        });
   }
 }
