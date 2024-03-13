@@ -788,11 +788,11 @@ class ApiUrl {
 
   //Construction License Inquery
   static String getConstructionLicenseData(int licenseNumber,String date) =>
-      '/v1/balady-construction-services/mobile/inquiry/building-licenses/{$licenseNumber}/{$date}';
+      '/v1/balady-construction-services/mobile/inquiry/building-licenses/$licenseNumber/$date';
 
   //Survey license inquery
   static String getSurveyLicenseData(int licenseNumber,String date) =>
-      '/v1/balady-construction-services/mobile/inquiry/area-reports/{$licenseNumber}/{$date}';
+      '/v1/balady-construction-services/mobile/inquiry/area-reports/$licenseNumber/$date';
 
   //! Balady Calednar
 

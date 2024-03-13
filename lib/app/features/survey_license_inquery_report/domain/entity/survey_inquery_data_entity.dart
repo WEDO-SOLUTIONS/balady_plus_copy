@@ -24,6 +24,8 @@ class SurveyInqueryData {
   String? districtName;
   String? source;
   String? mapNumber;
+  String? x;
+  String? y;
 
   SurveyInqueryData({
     this.licenseId,
@@ -44,6 +46,8 @@ class SurveyInqueryData {
     this.districtName,
     this.source,
     this.mapNumber,
+    this.x,
+    this.y,
   });
 
 
@@ -53,7 +57,7 @@ class SurveyInqueryData {
 class Parcel {
   int? id;
   int? area;
-  int? areaAccordingToScheme;
+  double? areaAccordingToScheme;
   String? landNo;
 
   Parcel({

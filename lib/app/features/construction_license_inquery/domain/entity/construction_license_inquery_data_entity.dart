@@ -17,6 +17,7 @@ class ConstructionLicenseData {
   String? buildingTypeName;
   SurveyReport? surveyReport;
 
+
   ConstructionLicenseData({
     this.licenseId,
     this.oldLicenseId,
@@ -27,6 +28,7 @@ class ConstructionLicenseData {
     this.buildingTypeId,
     this.buildingTypeName,
     this.surveyReport,
+
   });
 
 
@@ -54,6 +56,8 @@ class SurveyReport {
   int? districtId;
   String? districtName;
   String? mapNumber;
+  String? x;
+  String? y;
 
   SurveyReport({
     this.licenseId,
@@ -73,6 +77,8 @@ class SurveyReport {
     this.districtId,
     this.districtName,
     this.mapNumber,
+    this.x,
+    this.y
   });
 
 }

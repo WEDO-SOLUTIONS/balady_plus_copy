@@ -159,7 +159,10 @@ class _ConstructionLicenseInqueryScreenState extends State<ConstructionLicenseIn
                                   if (date != null) {
 
                                     setState(() {
-                                      _licenseDateController.text = date.fullDate();
+
+                                      setState(() {
+                                        _licenseDateController.text = "${date.hYear}/${date.hMonth.toString().padLeft(2,'0')}/${date.hDay.toString().padLeft(2,'0')}";;
+                                      });
                                     });
 
                                     // bloc.add(
@@ -224,7 +227,7 @@ class _ConstructionLicenseInqueryScreenState extends State<ConstructionLicenseIn
 
                 NavigatorState navigator = Navigator.of(context);
 
-
+                String date =  _licenseDateController.text.toString().replaceAll("/", "");
                 navigator.pushNamed(
                   RouteName.constructionLicenseInqueryDetails,
                   arguments: ConstructionLicenseInqueryDetailsCubit(
@@ -235,7 +238,7 @@ class _ConstructionLicenseInqueryScreenState extends State<ConstructionLicenseIn
                               webService: sl())),
                     ),
                       int.parse(_licenseNumberController.text),
-                      _licenseDateController.text
+                      date
                   ),
                 );
 

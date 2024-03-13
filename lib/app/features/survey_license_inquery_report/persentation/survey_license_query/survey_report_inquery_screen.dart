@@ -2,6 +2,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/b
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hijri/hijri_calendar.dart';
+import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/common_functions.dart';
@@ -150,14 +151,13 @@ class _SurveyReportInqueryScreenState extends State<SurveyReportInqueryScreen> {
                                 selectedTextStyle: const TextStyle(
                                     color: AppColor.primary900Light),
                                 onConfirm: (picker, value) {
-                                  final date = (picker.adapter
-                                  as hijri_picker
-                                      .DateTimePickerAdapter)
-                                      .value;
+                                  final date = (picker.adapter as hijri_picker.DateTimePickerAdapter).value;
                                   if (date != null) {
 
+
                                     setState(() {
-                                      _licenseDateController.text = date.fullDate();
+
+                                      _licenseDateController.text = "${date.hYear}/${date.hMonth.toString().padLeft(2,'0')}/${date.hDay.toString().padLeft(2,'0')}";;
                                     });
 
                                     // bloc.add(
@@ -223,8 +223,9 @@ class _SurveyReportInqueryScreenState extends State<SurveyReportInqueryScreen> {
                 NavigatorState navigator = Navigator.of(context);
 
 
+                String date =  _licenseDateController.text.toString().replaceAll("/", "");
                 navigator.pushNamed(
-                  RouteName.commercialLicenseQueryDetails,
+                  RouteName.surveyReportInqueryDetails,
                   arguments: SurveyReportInqueryDetailsCubit(
                       GetSurveyInqueryData(
                         repository: SurveyInqueryRepositoryImplementation(
@@ -232,8 +233,9 @@ class _SurveyReportInqueryScreenState extends State<SurveyReportInqueryScreen> {
                             SurveyInqueryRemoteDataSourceImplementation(
                                 webService: sl())),
                       ),
-                      int.parse(_licenseNumberController.text),
-                      _licenseDateController.text
+                      int.parse(_licenseNumberController.text.toString().trim()),
+                      date
+
                   ),
                 );
 

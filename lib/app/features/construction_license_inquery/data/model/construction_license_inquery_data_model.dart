@@ -49,7 +49,10 @@ class SurveyReportDataModel  extends SurveyReport{
     super.subMunicipalityName,
     super.districtId,
     super.districtName,
-    super.mapNumber,});
+    super.mapNumber,
+    super.x,
+    super.y
+  });
 
   SurveyReportDataModel.fromJson(dynamic json) {
     licenseId = json['licenseId'];
@@ -74,6 +77,8 @@ class SurveyReportDataModel  extends SurveyReport{
     districtId = json['districtId'];
     districtName = json['districtName'];
     mapNumber = json['mapNumber'];
+    x = json['x'];
+    y = json['y'];
   }
 
 

@@ -115,11 +115,12 @@ class _SurveyReportInqueryDetailsState
                           '',
                       bgColor: AppColor.mystic,
                     ),
+                    licenceQueryDetails.oldLicenseId != null?
                     CardParameter(
                       title: 'old_survey_number'.tr(),
                       value: licenceQueryDetails.oldLicenseId ?? '',
                       bgColor: AppColor.mystic,
-                    ),
+                    ):Container(),
                     CardParameter(
                       title: 'survey_date'.tr(),
                       value: licenceQueryDetails.licenseIssueDate ?? "",
@@ -142,57 +143,7 @@ class _SurveyReportInqueryDetailsState
                     ),
 
 
-                    // const SizedBox(height: 16),
-                    // licenceQueryDetails.x != null &&
-                    //         licenceQueryDetails.y != null
-                    //     ? SizedBox(
-                    //         height: 250,
-                    //         child: Stack(children: [
-                    //           GoogleMap(
-                    //             initialCameraPosition: CameraPosition(
-                    //                 target: LatLng(
-                    //                   double.parse(
-                    //                       licenceQueryDetails.y!),
-                    //                   double.parse(
-                    //                       licenceQueryDetails.x!),
-                    //                 ),
-                    //                 zoom: 16),
-                    //             markers: {
-                    //               Marker(
-                    //                 markerId: const MarkerId('position'),
-                    //                 position: LatLng(
-                    //                   double.parse(
-                    //                       licenceQueryDetails.y!),
-                    //                   double.parse(
-                    //                       licenceQueryDetails.x!),
-                    //                 ),
-                    //               )
-                    //             },
-                    //             zoomControlsEnabled: false,
-                    //             zoomGesturesEnabled: false,
-                    //             scrollGesturesEnabled: false,
-                    //           ),
-                    //           Positioned(
-                    //             bottom: 20,
-                    //             left: 20,
-                    //             child: GestureDetector(
-                    //               onTap: () {
-                    //                 navigateTo(
-                    //                     double.parse(
-                    //                         licenceQueryDetails.y!),
-                    //                     double.parse(
-                    //                         licenceQueryDetails.x!));
-                    //               },
-                    //               child: const Image(
-                    //                   height: 40,
-                    //                   width: 40,
-                    //                   image: AssetImage(IconPath.direction)),
-                    //             ),
-                    //           ),
-                    //         ]),
-                    //       )
-                    //     : const SizedBox(),
-                  ],
+                 ],
                 ),
              ExpandableCard(
                         title: 'step3Title'.tr(),
@@ -231,7 +182,8 @@ class _SurveyReportInqueryDetailsState
                                 .toString(),
                             bgColor: AppColor.mystic,
                           ),
-
+                          licenceQueryDetails
+                              .mainBuildingClassName != null ?
                           CardParameter(
                             // from whats
                             title: 'compliance_main_usage'.tr(),
@@ -239,8 +191,10 @@ class _SurveyReportInqueryDetailsState
                                 .mainBuildingClassName
                                 .toString(),
                             bgColor: AppColor.mystic,
-                          ),
+                          ):Container(),
 
+                          licenceQueryDetails
+                              .subBuildingClassName != null?
                           CardParameter(
                             // from whats
                             title: 'compliance_sub_usage'.tr(),
@@ -248,7 +202,61 @@ class _SurveyReportInqueryDetailsState
                                 .subBuildingClassName
                                 .toString(),
                             bgColor: AppColor.mystic,
-                          ),
+                          ):Container(),
+
+
+                          const SizedBox(height: 16),
+                          licenceQueryDetails.x != null &&
+                                  licenceQueryDetails.y != null
+                              ? SizedBox(
+                                  height: 250,
+                                  child: Stack(children: [
+                                    GoogleMap(
+                                      initialCameraPosition: CameraPosition(
+                                          target: LatLng(
+                                            double.parse(
+                                                licenceQueryDetails.y!),
+                                            double.parse(
+                                                licenceQueryDetails.x!),
+                                          ),
+                                          zoom: 16),
+                                      markers: {
+                                        Marker(
+                                          markerId: const MarkerId('position'),
+                                          position: LatLng(
+                                            double.parse(
+                                                licenceQueryDetails.y!),
+                                            double.parse(
+                                                licenceQueryDetails.x!),
+                                          ),
+                                        )
+                                      },
+                                      zoomControlsEnabled: false,
+                                      zoomGesturesEnabled: false,
+                                      scrollGesturesEnabled: false,
+                                    ),
+                                    Positioned(
+                                      bottom: 20,
+                                      left: 20,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          navigateTo(
+                                              double.parse(
+                                                  licenceQueryDetails.y!),
+                                              double.parse(
+                                                  licenceQueryDetails.x!));
+                                        },
+                                        child: const Image(
+                                            height: 40,
+                                            width: 40,
+                                            image: AssetImage(IconPath.direction)),
+                                      ),
+                                    ),
+                                  ]),
+                                )
+                              : const SizedBox(),
+
+
 
 
                         ],
@@ -281,7 +289,7 @@ class _SurveyReportInqueryDetailsState
                             licenceQueryDetails
                                 .parcels![index];
                             return ExpandableCard(
-                              title: "${"land".tr()}{$index}",
+                              title: "${"land".tr()} ${index+1}",
                               bgColor: AppColor.lightGray,
                               children: [
 

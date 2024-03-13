@@ -20,7 +20,9 @@ class SurveyDataModel extends SurveyInqueryData {
     super.districtId,
     super.districtName,
     super.source,
-    super.mapNumber
+    super.mapNumber,
+    super.x,
+    super.y
   });
 
 
@@ -49,6 +51,8 @@ class SurveyDataModel extends SurveyInqueryData {
     districtName = json['districtName'];
     source = json['source'];
     mapNumber = json['mapNumber'];
+    x = json['x'];
+    y = json['y'];
 
 
   }
