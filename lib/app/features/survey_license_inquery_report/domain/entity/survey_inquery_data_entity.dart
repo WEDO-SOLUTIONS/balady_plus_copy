@@ -9,6 +9,7 @@ class SurveyInqueryData {
   int? licenseId;
   String? oldLicenseId;
   String? licenseIssueDate;
+  String? licenseIssueDateDesc;
   int? purposeId;
   String? purposeName;
   int? mainBuildingClassId;
@@ -31,6 +32,7 @@ class SurveyInqueryData {
     this.licenseId,
     this.oldLicenseId,
     this.licenseIssueDate,
+    this.licenseIssueDateDesc,
     this.purposeId,
     this.purposeName,
     this.mainBuildingClassId,

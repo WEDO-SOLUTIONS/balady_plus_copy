@@ -6,6 +6,7 @@ class SurveyDataModel extends SurveyInqueryData {
     super.licenseId,
     super.oldLicenseId,
     super.licenseIssueDate,
+    super.licenseIssueDateDesc,
     super.purposeId,
     super.purposeName,
     super.mainBuildingClassId,
@@ -31,6 +32,7 @@ class SurveyDataModel extends SurveyInqueryData {
     licenseId = json['licenseId'];
     oldLicenseId = json['oldLicenseId'];
     licenseIssueDate = json['licenseIssueDate'];
+    licenseIssueDateDesc = json['licenseIssueDateDesc'];
     purposeId = json['purposeId'];
     purposeName = json['purposeName'];
     mainBuildingClassId = json['mainBuildingClassId'];

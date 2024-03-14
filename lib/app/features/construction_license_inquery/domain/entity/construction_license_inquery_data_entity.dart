@@ -16,17 +16,23 @@ class ConstructionLicenseData {
   int? buildingTypeId;
   String? buildingTypeName;
   SurveyReport? surveyReport;
+  String? licenseIssueDateDesc;
+  String? x;
+  String? y;
 
 
   ConstructionLicenseData({
     this.licenseId,
     this.oldLicenseId,
     this.licenseIssueDate,
+    this.licenseIssueDateDesc,
     this.statusId,
     this.statusName,
     this.licenseType,
     this.buildingTypeId,
     this.buildingTypeName,
+    this.x,
+    this.y,
     this.surveyReport,
 
   });
@@ -42,6 +48,7 @@ class SurveyReport {
   int? licenseId;
   String? oldLicenseId;
   String? licenseIssueDate;
+  String? licenseIssueDateDesc;
   int? purposeId;
   String? purposeName;
   int? mainBuildingClassId;
@@ -56,13 +63,13 @@ class SurveyReport {
   int? districtId;
   String? districtName;
   String? mapNumber;
-  String? x;
-  String? y;
+
 
   SurveyReport({
     this.licenseId,
     this.oldLicenseId,
     this.licenseIssueDate,
+    this.licenseIssueDateDesc,
     this.purposeId,
     this.purposeName,
     this.mainBuildingClassId,
@@ -77,8 +84,7 @@ class SurveyReport {
     this.districtId,
     this.districtName,
     this.mapNumber,
-    this.x,
-    this.y
+
   });
 
 }
