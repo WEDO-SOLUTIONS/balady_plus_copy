@@ -25,7 +25,7 @@ class ActionShowFilterWidget extends StatelessWidget {
     return IconButton(
       onPressed: () {
         if (CommonProperties.isLoggedIn) {
-          showDialogParsona(bloc, cubit,context);
+          showDialogParsona(bloc, cubit, context);
         } else {
           showDialog(
             context: context,
@@ -34,7 +34,7 @@ class ActionShowFilterWidget extends StatelessWidget {
                 if (isSuccess ?? false) {
                   context.read<DelegatorsCubit>().getDelegators();
                   context.read<DelegatorsCubit>().getAgents();
-                  showDialogParsona(bloc, cubit,context);
+                  showDialogParsona(bloc, cubit, context);
                 }
               },
             ),
@@ -59,29 +59,43 @@ class ActionShowFilterWidget extends StatelessWidget {
       ),
     );
     bloc.add(DashboardEventInitial());
-
-    // EntryPointCubit auth = context.read<EntryPointCubit>();
-    // final selectedAgent = auth.state.selectedAgent;
-    // final selectedDelegator = auth.state.selectedDelegator;
-    // if (selectedAgent != null) {
-    //   return EventsCommonParams(
-    //     typeUser: UserType.agency,
-    //     agencyInRequestDto: AgencyInRequestDto(
-    //       agencyNumber: selectedAgent.agencyNumber!,
-    //       ownerNumber: selectedAgent.ownerNumber!,
-    //       ownerTypeId: selectedAgent.ownerTypeId!,
-    //     ),
-    //   );
-    // } else if (selectedDelegator != null) {
-    //   return EventsCommonParams(
-    //     typeUser: UserType.delegator,
-    //     ownerNumber: selectedDelegator.crNumber,
-    //     ownerTypeId: selectedDelegator.crType,
-    //     unifiedNationalNumber: selectedDelegator.unifiedNationalNumber!,
-    //     relationTypeeId: int.tryParse(selectedDelegator.relationTypeId),
-    //   );
-    // } else {
-    //   return EventsCommonParams(typeUser: UserType.owner);
-    // }
+    EntryPointCubit auth = context.read<EntryPointCubit>();
+    final selectedAgent = auth.state.selectedAgent;
+    final selectedDelegator = auth.state.selectedDelegator;
+    if (selectedAgent != null) {
+      cubit.params.persoana = {
+        "typeId": "person",
+        "ids": [
+          {
+            "typeId": "identity-number",
+            "value": selectedAgent.ownerNumber,
+            "sourceId": "moi",
+            "attributes": {"type": selectedAgent.ownerTypeId}
+          }
+        ]
+      };
+    } else if (selectedDelegator != null) {
+      cubit.params.persoana = {
+        "typeId": "cr",
+        "ids": [
+          {
+            "typeId": "national-number",
+            "value": selectedDelegator.unifiedNationalNumber,
+            "sourceId": "mci"
+          }
+        ]
+      };
+    } else if (auth.state.userInfo != null){
+      cubit.params.persoana = {
+        "typeId": "person",
+        "ids": [
+          {
+            "typeId": "identity-number",
+            "value": auth.state.userInfo!.idNo,
+            "sourceId": "moi",
+          }
+        ]
+      };
+    }
   }
 }

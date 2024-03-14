@@ -62,7 +62,7 @@ class NotificationsFiltersTypesWidget extends StatelessWidget {
                       );
                     },
                   ),
-                  state.selectedProduct != null
+                  state.selectedProduct != null && state.listServices.isNotEmpty
                       ? DropDownWithTitle(
                           title: "services".tr(),
                           selectedValue: state.selectedServices?.text,

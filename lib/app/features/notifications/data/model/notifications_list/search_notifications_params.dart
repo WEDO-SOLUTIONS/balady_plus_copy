@@ -1,3 +1,5 @@
+import 'package:balady_plus/app/core/utils/common_functions.dart';
+
 class SearchNotificationsParams {
   //////////////////////////////////////
   String? serviceId;
@@ -8,6 +10,7 @@ class SearchNotificationsParams {
   int page;
   int pageSize;
   //////////////////////////////////////
+  Map<String, dynamic>? persoana;
 
   SearchNotificationsParams({
     this.serviceId,
@@ -25,7 +28,7 @@ class SearchNotificationsParams {
         productId: productId ?? this.productId,
       );
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJsonQueryParameters() {
     Map<String, dynamic> data = {
       "notification-channel-id": "mobile",
       "page": page,
@@ -37,6 +40,10 @@ class SearchNotificationsParams {
     if (productId != null) {
       data["product-id"] = productId;
     }
+    if(persoana != null) {
+      data.addAll(persoana!);
+    }
     return data;
   }
+
 }
