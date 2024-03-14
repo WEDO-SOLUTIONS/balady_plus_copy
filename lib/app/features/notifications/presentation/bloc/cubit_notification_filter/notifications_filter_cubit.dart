@@ -52,21 +52,14 @@ class NotificationsFilterCubit extends Cubit<NotificationsFilterState> {
         await filterRepository.getNotificationsServicesProducts(
       productId: product.id,
     );
-    // failureOrSuccess.fold(
-    //   (failure) {
-    //     if (failure is NoDataFoundException) {
-    //       emit(states.copyWith(listServices: const []));
-    //     } else if (failure is ServerFailure) {
-    //       emit(FailureNotificationsFilterState(
-    //           errorMessage: failure.errorMessage));
-    //     } else {
-    //       emit(FailureNotificationsFilterState(errorMessage: "error"));
-    //     }
-    //   },
-    //   (listMessages) {
-    //     emit(states.copyWith(listServices: listMessages));
-    //   },
-    // );
+    failureOrSuccess.fold(
+      (failure) {
+        emit(states.copyWith(selectedProduct: product,listServices: []));
+      },
+      (listMessages) {
+        emit(states.copyWith(selectedProduct: product,listServices: listMessages));
+      },
+    );
   }
 
   void selectedServices({required service}) {
