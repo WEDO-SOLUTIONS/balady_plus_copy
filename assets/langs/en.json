@@ -4129,7 +4129,9 @@
   "emp_compliance_text":"Compliance status of the Employee: " ,
 
 
-  "issue_commercial_conclusion_owner_data": "بيانات مالك الرخصة",
+
+
+  "issue_commercial_conclusion_owner_data": "بيانات مالك الرخصة", 
   "issue_commercial_conclusion_owner_data_name": "اسم المنشأة",
   "issue_commercial_conclusion_owner_data_cr": "الرقم الموحد للمنشأة (سجل تجاري/رقم 700)",
 
