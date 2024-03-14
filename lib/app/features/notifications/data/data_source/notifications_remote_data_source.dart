@@ -55,7 +55,8 @@ class NotificationRemoteDataSourceImplementation
   final Map<String, dynamic> dataHeaders = {
     "x-actor-type-id": "user",
     "x-actor-context-id": "beneficiaries",
-    "x-platform-id": 44
+    "x-platform-id": "super-app",
+    "x-channel-id": "backend"
   };
 
   NotificationRemoteDataSourceImplementation({required this.webService});
@@ -307,12 +308,11 @@ class NotificationRemoteDataSourceImplementation
   Future<NotificationsSettingsList> getNotificationsSettingsList(
       {required String notificationChannelId}) async {
     var response;
-
+    dataHeaders['x-correlation-id'] = CommonFunctions.generateGUID();
     try {
-      response = await webService.dio.get(
-        ApiUrl.notificationsSettingsList,
-        queryParameters: {'notification-channel-id': notificationChannelId},
-      );
+      response = await webService.dio.get(ApiUrl.notificationsSettingsList,
+          queryParameters: {'notification-channel-id': notificationChannelId},
+          options: Options(headers: dataHeaders));
       final data = response.data;
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
@@ -346,13 +346,15 @@ class NotificationRemoteDataSourceImplementation
   @override
   Future<bool> setNotificationsProfile(
       {required SetNotificationsProfileParams params}) async {
+    dataHeaders['x-correlation-id'] = CommonFunctions.generateGUID();
+
     Response? response;
 
     try {
       response = await webService.dio.post(
-        ApiUrl.setProfileNotificationsSettings,
-        data: params.toJson(),
-      );
+          ApiUrl.setProfileNotificationsSettings,
+          data: params.toJson(),
+          options: Options(headers: dataHeaders));
       return response.statusCode == 200 ? true : false;
     } on DioException catch (error) {
       if (error is NoDataFoundException) {
@@ -382,13 +384,13 @@ class NotificationRemoteDataSourceImplementation
   @override
   Future<bool> setNotificationsProfileProducts(
       {required SetNotificationsProfileProductsParams params}) async {
+    dataHeaders['x-correlation-id'] = CommonFunctions.generateGUID();
     Response? response;
-
     try {
       response = await webService.dio.post(
-        ApiUrl.setProductsNotificationsSettings,
-        data: params.toJson(),
-      );
+          ApiUrl.setProductsNotificationsSettings,
+          data: params.toJson(),
+          options: Options(headers: dataHeaders));
       return response.statusCode == 200 ? true : false;
     } on DioException catch (error) {
       if (error is NoDataFoundException) {
