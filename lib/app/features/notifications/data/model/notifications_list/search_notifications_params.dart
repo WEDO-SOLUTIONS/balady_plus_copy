@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 
 class SearchNotificationsParams {
+  String? query;
   //////////////////////////////////////
   String? serviceId;
   String? productId;
@@ -44,8 +45,8 @@ class SearchNotificationsParams {
     if (productId != null) {
       data["product-id"] = productId;
     }
-    if (persoana != null) {
-      data.addAll(persoana!);
+    if (query != null && query!.isNotEmpty) {
+      data["query"] = query;
     }
     return data;
   }
