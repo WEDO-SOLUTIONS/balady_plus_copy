@@ -123,8 +123,12 @@ class EmptyListWidget extends StatelessWidget {
               height: imgHeight,
             ),
             const CustomVerticalSpace(height: 48),
-            CustomTextWidget(title ?? "",
-                fontSize: 17, fontColor: AppColor.black800),
+            CustomTextWidget(
+              title ?? "",
+              fontSize: 17,
+              fontColor: AppColor.black800,
+              maxLines: 2,
+            ),
             const CustomVerticalSpace(height: 13),
             CustomTextWidget(
               desc ?? "",
