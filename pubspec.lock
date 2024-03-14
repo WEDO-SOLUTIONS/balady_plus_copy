@@ -1431,10 +1431,11 @@ packages:
   localize_and_translate:
     dependency: "direct main"
     description:
-      name: localize_and_translate
-      sha256: "1bda3672a0dd1bde718d308a34e8e71b2c9f7e7700360d66820d8c761039a828"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: "4.1.2-dev-fixes"
+      resolved-ref: "416d383670ce952adbd0207acb324e7c1f9ed1c5"
+      url: "https://github.com/Demezy/localize_and_translate"
+    source: git
     version: "4.1.2-dev"
   logging:
     dependency: transitive

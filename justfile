@@ -206,7 +206,7 @@ ios-ad-hoc version: apply-patches prebuild ios_setup && unapply-patches
     sed -i '' "s/$provisionProfileAdHoc/$provisionProfileNone/" ios/Runner.xcodeproj/project.pbxproj
     sed -i '' "s/$appDisplayNameDev/$appDisplayNameProd/" ios/Runner/Info.plist
     git apply -R mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not unapply sdk key patch'
-    curl -u balady-dev:aJKaE08Dyk5gnsTk -X PUT -F file=@build/ios/ipa/balady_plus.ipa https://ts.csc.sibsutis.ru/builds/{{ version }}
+    curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImEuc3RyaXpobmV2QHVyYmkuYWUifQ.DgmqmgZ-DeQfBt0R36s7nftEkk-XnFr6VVi2syD-jTE" -X PUT -F file=@build/ios/ipa/balady_plus.ipa https://baladyapp-builds.urbi.ae/builds/{{ version }}
 
 apk-release version: apply-patches prebuild && unapply-patches open_built 
     #!/usr/bin/env bash
