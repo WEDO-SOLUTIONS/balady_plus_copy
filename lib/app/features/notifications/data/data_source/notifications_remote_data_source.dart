@@ -307,16 +307,14 @@ class NotificationRemoteDataSourceImplementation
   @override
   Future<NotificationsSettingsList> getNotificationsSettingsList(
       {required String notificationChannelId}) async {
-    var response;
+    Response? response;
     dataHeaders['x-correlation-id'] = CommonFunctions.generateGUID();
     try {
       response = await webService.dio.get(ApiUrl.notificationsSettingsList,
           queryParameters: {'notification-channel-id': notificationChannelId},
           options: Options(headers: dataHeaders));
       final data = response.data;
-
       final result = ResponseBodyModel.fromMap(data).data?.result;
-
       return NotificationsSettingsList.fromJson(result);
     } on DioException catch (error) {
       if (error is NoDataFoundException) {
@@ -347,9 +345,7 @@ class NotificationRemoteDataSourceImplementation
   Future<bool> setNotificationsProfile(
       {required SetNotificationsProfileParams params}) async {
     dataHeaders['x-correlation-id'] = CommonFunctions.generateGUID();
-
     Response? response;
-
     try {
       response = await webService.dio.post(
           ApiUrl.setProfileNotificationsSettings,

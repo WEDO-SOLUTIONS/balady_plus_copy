@@ -1,10 +1,11 @@
 import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import '../../../../../core/errors/exceptions.dart';
-import '../../../data/model/notifications_settings_list/notifications_settings_list_response.dart';
-import '../../../domain/entities/set_notifications_profile_params.dart';
-import '../../../domain/repositories/notification_repository.dart';
+
+import '../../../../core/errors/exceptions.dart';
+import '../../../notifications/data/model/notifications_settings_list/notifications_settings_list_response.dart';
+import '../../../notifications/domain/entities/set_notifications_profile_params.dart';
+import '../../../notifications/domain/repositories/notification_repository.dart';
 part 'notifications_setting_state.dart';
 
 class NotificationsSettingCubit extends Cubit<NotificationsSettingState> {
