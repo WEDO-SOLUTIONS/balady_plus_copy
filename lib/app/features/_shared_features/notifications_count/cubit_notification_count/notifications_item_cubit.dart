@@ -1,27 +1,56 @@
-import 'package:balady_plus/app/core/errors/failures.dart';
+import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
-import 'package:balady_plus/app/features/notifications/data/model/notifications_list/mark_read_notifications_params.dart';
-import 'package:balady_plus/app/features/notifications/domain/repositories/notification_repository.dart';
-import 'package:dartz/dartz.dart';
+import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 part 'notifications_item_state.dart';
 
-class NotificationsItemCubit extends Cubit<SucceedCountState> {
+class NotificationsCountCubit extends Cubit<SucceedCountState> {
   final WebService webService;
 
-  NotificationsItemCubit({
+  NotificationsCountCubit({
     required this.webService,
-  }) : super(const SucceedCountState(count: null));
+  }) : super(const SucceedCountState(count: null)){
+    getUnreadMessages();
+  }
 
   Future<void> getUnreadMessages() async {
-    var response = await webService.dio.get(
-      ApiUrl.notificationsUnreadMessages,
-      queryParameters: {"status-id": 2},
-    );
-
-    emit(SucceedCountState(count: count));
+    var response;
+    try {
+      // dataHeaders['x-correlation-id'] = CommonFunctions.generateGUID();
+      response = await webService.dio.get(
+        ApiUrl.notificationsUnreadMessages,
+        queryParameters: {"status-id": 2},
+      );
+      final data = response.data;
+      final int result = ResponseBodyModel.fromMap(data).data?.result;
+      emit(SucceedCountState(count: result));
+    } on DioException catch (error) {
+      // "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: ex.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
   }
 }

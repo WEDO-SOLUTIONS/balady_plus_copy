@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/features/_shared_features/notifications_count/cubit_notification_count/notifications_item_cubit.dart';
 import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_settings/notifications_settings.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,151 +12,18 @@ import '../../../notifications/data/repositories/notification_repository_impleme
 import '../../../notifications/domain/entities/set_notifications_profile_params.dart';
 import '../../../notifications/presentation/bloc/notifications_settings/notifications_setting_cubit.dart';
 
-class NotificationsSettingCell extends StatefulWidget {
+class NotificationsSettingCell extends StatelessWidget {
   const NotificationsSettingCell({super.key});
 
-  @override
-  State<NotificationsSettingCell> createState() =>
-      _NotificationsSettingCellState();
-}
-
-class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) {
-        NotificationRepositoryImplementation
-            notificationRepositoryImplementation = sl();
-        return NotificationsSettingCubit(
-            notificationsSettingsListRepository:
-                notificationRepositoryImplementation,
-            notificationId: 'mobile');
+        return NotificationsCountCubit(webService: sl());
       },
-      child: BlocBuilder<NotificationsSettingCubit, NotificationsSettingState>(
+      child: BlocBuilder<NotificationsCountCubit, SucceedCountState>(
         builder: (contextCubit, state) {
-          NotificationsSettingCubit cubit =
-              contextCubit.watch<NotificationsSettingCubit>();
-          if (state is InitialNotificationsSettingsState ||
-              state is LoadingEventsSettingsState) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (state is FailureNotificationsSettingsState) {
-            return ReloadWidget(
-              onTab: () {
-                cubit.getNotificationSetting(cubit.notificationId);
-              },
-            );
-          }
-          if (state is SucceedEventsNotificationState) {
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                  ),
-                  child: Material(
-                    borderRadius: BorderRadius.circular(8),
-                    color: const Color(0xFFF5F7FA),
-                    child: InkWell(
-                      onTap: () {
-                        cubit.setNotificationsProfile(
-                            SetNotificationsProfileParams(
-                                enabled: !state.isChecked,
-                                channelId: 'mobile',
-                                applicationId: 'super-app'),
-                            !state.isChecked);
-                      },
-                      borderRadius: BorderRadius.circular(8),
-                      child: SizedBox(
-                        height: 48,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Row(
-                            children: [
-                              const SizedBox(
-                                width: 12,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 2.0),
-                                child: Text(
-                                  'notifications'.tr(),
-                                  style: Theme.of(context)
-                                      .extension<ThemeTextStyles>()!
-                                      .textM
-                                      .copyWith(color: const Color(0xFF1E2A36)),
-                                ),
-                              ),
-                              const Spacer(),
-                              IgnorePointer(
-                                child: CupertinoSwitch(
-                                  onChanged: (bool value) {},
-                                  value: state.isChecked,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'enable_disable_notifications'.tr(),
-                        style: Theme.of(context)
-                            .extension<ThemeTextStyles>()!
-                            .textXS
-                            .copyWith(
-                                color:
-                                    const Color(0xFF1E2A36).withOpacity(0.36)),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                state.isChecked
-                    ? GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => NotificationsSettings(
-                                  notificationsList: cubit
-                                      .notificationsSettingsList
-                                      .categories!)));
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Row(
-                            children: [
-                              SvgPicture.asset(
-                                "assets/icons/svg/profile/settings.svg",
-                                height: 24,
-                                width: 24,
-                                color: Colors.red,
-                              ),
-                              Text(
-                                'manage_notification'.tr(),
-                                style: Theme.of(context)
-                                    .extension<ThemeTextStyles>()!
-                                    .textXS
-                                    .copyWith(color: Colors.red),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    : const SizedBox.shrink(),
-              ],
-            );
-          }
-          return const SizedBox();
+          return  SvgPicture.asset("assetName");
         },
       ),
     );
