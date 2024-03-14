@@ -817,7 +817,7 @@ class ApiUrl {
 
 
   //! Notifications
-
+  static const notificationsUnreadMessages = 'v1/notifications-hub-services/fe/unread-messages';
   static const notificationsMessagesList = 'v1/notifications-hub-services/fe/messages-list';
   static const notificationsMarkRead = 'v1/notifications-hub-services/fe/messages/mark-read';
   static const notificationsDeletedMessages = 'v1/notifications-hub-services/fe/deleted-messages';
