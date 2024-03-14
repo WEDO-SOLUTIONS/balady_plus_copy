@@ -123,7 +123,7 @@ class _ConstructionLicenseInqueryDetailsState
                     ):Container(),
                     CardParameter(
                       title: 'license_issue_date'.tr(),
-                      value: licenceQueryDetails.licenseIssueDate ?? "",
+                      value: licenceQueryDetails.licenseIssueDateDesc ?? "",
                       bgColor: AppColor.mystic,
                     ),
 
@@ -223,8 +223,8 @@ class _ConstructionLicenseInqueryDetailsState
 
 
                     const SizedBox(height: 16),
-                    licenceQueryDetails.surveyReport?.x != null &&
-                            licenceQueryDetails.surveyReport?.y != null
+                    licenceQueryDetails.x != null &&
+                            licenceQueryDetails.y != null
                         ? SizedBox(
                             height: 250,
                             child: Stack(children: [
@@ -232,9 +232,9 @@ class _ConstructionLicenseInqueryDetailsState
                                 initialCameraPosition: CameraPosition(
                                     target: LatLng(
                                       double.parse(
-                                          licenceQueryDetails.surveyReport!.y!),
+                                          licenceQueryDetails.y!),
                                       double.parse(
-                                          licenceQueryDetails.surveyReport!.x!),
+                                          licenceQueryDetails.x!),
                                     ),
                                     zoom: 16),
                                 markers: {
@@ -242,9 +242,9 @@ class _ConstructionLicenseInqueryDetailsState
                                     markerId: const MarkerId('position'),
                                     position: LatLng(
                                       double.parse(
-                                          licenceQueryDetails.surveyReport!.y!),
+                                          licenceQueryDetails.y!),
                                       double.parse(
-                                          licenceQueryDetails.surveyReport!.x!),
+                                          licenceQueryDetails.x!),
                                     ),
                                   )
                                 },
@@ -259,9 +259,9 @@ class _ConstructionLicenseInqueryDetailsState
                                   onTap: () {
                                     navigateTo(
                                         double.parse(
-                                            licenceQueryDetails.surveyReport!.y!),
+                                            licenceQueryDetails.y!),
                                         double.parse(
-                                            licenceQueryDetails.surveyReport!.x!));
+                                            licenceQueryDetails.x!));
                                   },
                                   child: const Image(
                                       height: 40,

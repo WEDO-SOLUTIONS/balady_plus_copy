@@ -7,11 +7,14 @@ class ConstructionLicenseDataModel extends ConstructionLicenseData {
     super.licenseId,
     super.oldLicenseId,
     super.licenseIssueDate,
+    super.licenseIssueDateDesc,
     super.statusId,
     super.statusName,
     super.licenseType,
     super.buildingTypeId,
     super.buildingTypeName,
+    super.x,
+    super.y,
     super.surveyReport,});
 
 
@@ -19,11 +22,14 @@ class ConstructionLicenseDataModel extends ConstructionLicenseData {
     licenseId = json['licenseId'];
     oldLicenseId = json['oldLicenseId'];
     licenseIssueDate = json['licenseIssueDate'];
+    licenseIssueDateDesc = json['licenseIssueDateDesc'];
     statusId = json['statusId'];
     statusName = json['statusName'];
     licenseType = json['licenseType'];
     buildingTypeId = json['buildingTypeId'];
     buildingTypeName = json['buildingTypeName'];
+    x = json['x'];
+    y = json['y'];
     surveyReport = json['surveyReport'] != null ? SurveyReportDataModel.fromJson(json['surveyReport']) : null;
   }
 
@@ -36,6 +42,7 @@ class SurveyReportDataModel  extends SurveyReport{
     super.licenseId,
     super.oldLicenseId,
     super.licenseIssueDate,
+    super.licenseIssueDateDesc,
     super.purposeId,
     super.purposeName,
     super.mainBuildingClassId,
@@ -50,14 +57,14 @@ class SurveyReportDataModel  extends SurveyReport{
     super.districtId,
     super.districtName,
     super.mapNumber,
-    super.x,
-    super.y
+
   });
 
   SurveyReportDataModel.fromJson(dynamic json) {
     licenseId = json['licenseId'];
     oldLicenseId = json['oldLicenseId'];
     licenseIssueDate = json['licenseIssueDate'];
+    licenseIssueDateDesc = json['licenseIssueDateDesc'];
     purposeId = json['purposeId'];
     purposeName = json['purposeName'];
     mainBuildingClassId = json['mainBuildingClassId'];
@@ -77,8 +84,7 @@ class SurveyReportDataModel  extends SurveyReport{
     districtId = json['districtId'];
     districtName = json['districtName'];
     mapNumber = json['mapNumber'];
-    x = json['x'];
-    y = json['y'];
+
   }
 
 

@@ -123,7 +123,7 @@ class _SurveyReportInqueryDetailsState
                     ):Container(),
                     CardParameter(
                       title: 'survey_date'.tr(),
-                      value: licenceQueryDetails.licenseIssueDate ?? "",
+                      value: licenceQueryDetails.licenseIssueDateDesc ?? "",
                       bgColor: AppColor.mystic,
                     ),
 
