@@ -3918,7 +3918,7 @@
 
 
     "issue_commercial_location_type_investment_number":"رقم العقد بالأمانة", 
-    "issue_commercial_location_type_investment_name":"مسمي العقد", 
+    "issue_commercial_location_type_investment_name":"مسمى العقد", 
     "issue_commercial_location_type_investment_type":"نوع العقد", 
 
     
@@ -3945,7 +3945,9 @@
     "issue_commercial_calculator":"حاسبة الرسوم", 
     "issue_commercial_print":"طباعة", 
     "OWNER_MANAGER":"مالك/مدير", 
-    "DELEGATOR":"مفوض"
+    "DELEGATOR":"مفوض", 
+    "issue_commercial_conclusion_request_draft":"مسودة الطلب"
+
 
 
 
