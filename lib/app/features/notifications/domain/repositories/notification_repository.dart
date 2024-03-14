@@ -46,14 +46,15 @@ abstract class NotificationsSettingsListRepository {
   Future<Either<Failure, NotificationsSettingsList>>
       getNotificationsSettingsList(
           {required String notificationChannelId});
-}
-abstract class NotificationsProfileRepository {
-  Future<Either<Failure, int>>
+
+
+  Future<Either<Failure, bool>>
       setNotificationsProfile(
           {required SetNotificationsProfileParams params});
-}
-abstract class NotificationsProfileProductsRepository {
-  Future<Either<Failure, int>>
+
+
+  Future<Either<Failure, bool>>
       setNotificationsProfileProducts(
           {required SetNotificationsProfileProductsParams params});
 }
+

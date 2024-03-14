@@ -155,12 +155,12 @@ class AppInterceptors extends Interceptor {
           .putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
     }
     options.headers.putIfAbsent("x-channel-id", () => "MOBILE");
-    options.headers.putIfAbsent("x-correlation-id", () => CommonFunctions.generateGUID());
+    options.headers
+        .putIfAbsent("x-correlation-id", () => CommonFunctions.generateGUID());
     options.headers.putIfAbsent("x-actor-type-id", () => "user");
     options.headers.putIfAbsent("x-actor-context-id", () => "beneficiaries");
     options.headers.putIfAbsent("x-platform-id", () => 444);
-
-
+    options.headers.putIfAbsent("x-actor-context-id", () => "beneficiaries");
 
     options.headers.removeWhere((key, value) => key == "requiresToken");
     //if (options.headers['Authorization'] == null) {
@@ -194,11 +194,12 @@ class AppInterceptors extends Interceptor {
             if (err.requestOptions.uri.path.contains(ApiUrl.weatherAlerts)) {
               break;
             }
-            final refreshToken = sl<EntryPointCubit>().state.token?.refreshToken;
+            final refreshToken =
+                sl<EntryPointCubit>().state.token?.refreshToken;
             if (refreshToken != null) {
               sl<EntryPointCubit>().refreshToken(refreshToken);
             }
-           // throw UnAuthorizedException(err.requestOptions, err.response);
+          // throw UnAuthorizedException(err.requestOptions, err.response);
           case 404:
             throw RequestNotFoundException(err.requestOptions, err.response);
           case 405:

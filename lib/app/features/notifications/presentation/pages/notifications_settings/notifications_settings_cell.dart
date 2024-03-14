@@ -1,11 +1,19 @@
+import 'package:balady_plus/app/features/notifications/presentation/bloc/notifications_settings/notifications_list_settings_cubit.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import '../../../../../../etmam_app/core/dependency_injection/injection_container.dart';
+import '../../../../../../etmam_app/features/_shared_feature_/shared/presentation/widgets/reload_widget.dart';
 import '../../../../../core/utils/constants/app_style.dart';
+import '../../../data/model/notifications_settings_list/category.dart';
+import '../../../data/repositories/notification_repository_implementation.dart';
+import '../../../domain/entities/set_notifications_profile_products_params.dart';
 
 class NotificationsSettingsCell extends StatefulWidget {
-  const NotificationsSettingsCell({super.key});
+  final Category category;
+  const NotificationsSettingsCell({super.key, required this.category});
 
   @override
   State<NotificationsSettingsCell> createState() =>
@@ -13,69 +21,104 @@ class NotificationsSettingsCell extends StatefulWidget {
 }
 
 class _NotificationsSettingsCellState extends State<NotificationsSettingsCell> {
-  bool checked = false;
-
   @override
   Widget build(BuildContext context) {
-    List<Widget> items = List.generate(
-      5,
-      (index) => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Material(
-          borderRadius: BorderRadius.circular(8),
-          color: const Color(0xFFF5F7FA),
-          child: InkWell(
-            onTap: () {
-              setState(() {
-                checked = !checked;
-              });
-              // ref.read(darkModeProvider.notifier).toggle();
-            },
-            borderRadius: BorderRadius.circular(8),
-            child: SizedBox(
-              height: 48,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                  children: [
-                    const SizedBox(
-                      width: 12,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 2.0),
-                      child: Text(
-                        'notifications'.tr(),
-                        style: Theme.of(context)
-                            .extension<ThemeTextStyles>()!
-                            .textM
-                            .copyWith(color: const Color(0xFF1E2A36)),
-                      ),
-                    ),
-                    const Spacer(),
-                    IgnorePointer(
-                      child: CupertinoSwitch(
-                        onChanged: (bool value) {},
-                        value: checked,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-
     return ExpansionTile(
         shape: const Border(),
         title: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            'mun_title'.tr(),
+            widget.category.name!,
             style: AppStyle.cardTitleTextStle,
           ),
         ),
-        children: items);
+        children: List.generate(
+            widget.category.products!.length,
+            (index) => BlocProvider(
+                  create: (context) {
+                    NotificationRepositoryImplementation
+                        notificationRepositoryImplementation = sl();
+                    return NotificationsListSettingsCubit(
+                        notificationsSettingsListRepository:
+                            notificationRepositoryImplementation,
+                        isChecked: widget.category.products![index].enabled!);
+                  },
+                  child: BlocBuilder<NotificationsListSettingsCubit,
+                      NotificationsListSettingsState>(
+                    builder: (blocContext, state) {
+                      NotificationsListSettingsCubit cubit =
+                          blocContext.watch<NotificationsListSettingsCubit>();
+                      if (state is LoadingEventsSettingsState) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (state is FailureNotificationsSettingsState) {
+                        return ReloadWidget(
+                          onTab: () {
+                            cubit.setNotificationsProfileProducts(
+                                SetNotificationsProfileProductsParams(
+                                    enabled: !cubit.isChecked,
+                                    channelId: 'mobile',
+                                    productId:
+                                        widget.category.products![index].id,
+                                    applicationId: 'super-app'));
+                          },
+                        );
+                      }
+
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Material(
+                          borderRadius: BorderRadius.circular(8),
+                          color: const Color(0xFFF5F7FA),
+                          child: InkWell(
+                            onTap: () {
+                              cubit.setNotificationsProfileProducts(
+                                  SetNotificationsProfileProductsParams(
+                                      enabled: !cubit.isChecked,
+                                      channelId: 'mobile',
+                                      productId:
+                                          widget.category.products![index].id,
+                                      applicationId: 'super-app'));
+                            },
+                            borderRadius: BorderRadius.circular(8),
+                            child: SizedBox(
+                              height: 48,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                child: Row(
+                                  children: [
+                                    const SizedBox(
+                                      width: 12,
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 2.0),
+                                      child: Text(
+                                        widget.category.products![index].name!,
+                                        style: Theme.of(context)
+                                            .extension<ThemeTextStyles>()!
+                                            .textM
+                                            .copyWith(
+                                                color: const Color(0xFF1E2A36)),
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    IgnorePointer(
+                                      child: CupertinoSwitch(
+                                        onChanged: (bool value) {},
+                                        value: cubit.isChecked,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                )));
   }
 }

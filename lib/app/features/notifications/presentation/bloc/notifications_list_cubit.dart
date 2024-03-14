@@ -11,7 +11,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-
 part 'notifications_list_state.dart';
 
 class NotificationsListCubit extends Cubit<NotificationsListState> {

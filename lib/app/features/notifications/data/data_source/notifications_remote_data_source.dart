@@ -24,7 +24,8 @@ abstract class NotificationsRemoteDataSource {
   //For List Screen
   Future<NotificationsListResponse> getNotificationsMessagesList(
       SearchNotificationsParams request);
-  Future<bool> markReadNotificationsMessages(MarkReadNotificationsParams request);
+  Future<bool> markReadNotificationsMessages(
+      MarkReadNotificationsParams request);
   Future<bool> deletedNotificationsMessages(DeletedNotificationsParams request);
   //For List Screen
   Future<List<NotificationType>> getNotificationsProducts();
@@ -36,10 +37,10 @@ abstract class NotificationsRemoteDataSource {
   Future<NotificationsSettingsList> getNotificationsSettingsList(
       {required String notificationChannelId});
 
-  Future<int> setNotificationsProfile(
+  Future<bool> setNotificationsProfile(
       {required SetNotificationsProfileParams params});
 
-  Future<int> setNotificationsProfileProducts(
+  Future<bool> setNotificationsProfileProducts(
       {required SetNotificationsProfileProductsParams params});
 }
 
@@ -133,6 +134,7 @@ class NotificationRemoteDataSourceImplementation
       }
     }
   }
+
   @override
   Future<bool> markReadNotificationsMessages(
       MarkReadNotificationsParams request) async {
@@ -167,8 +169,10 @@ class NotificationRemoteDataSourceImplementation
       }
     }
   }
+
   @override
-  Future<bool> deletedNotificationsMessages(DeletedNotificationsParams request) async {
+  Future<bool> deletedNotificationsMessages(
+      DeletedNotificationsParams request) async {
     var response;
     try {
       response = await webService.dio.delete(
@@ -318,16 +322,16 @@ class NotificationRemoteDataSourceImplementation
   }
 
   @override
-  Future<int> setNotificationsProfile(
+  Future<bool> setNotificationsProfile(
       {required SetNotificationsProfileParams params}) async {
     Response? response;
 
     try {
       response = await webService.dio.post(
         ApiUrl.setProfileNotificationsSettings,
-        queryParameters: params.toJson(),
+        data: params.toJson(),
       );
-      return response.statusCode!;
+      return response.statusCode == 200 ? true : false;
     } on DioException catch (error) {
       if (error is NoDataFoundException) {
         rethrow;
@@ -354,16 +358,16 @@ class NotificationRemoteDataSourceImplementation
   }
 
   @override
-  Future<int> setNotificationsProfileProducts(
+  Future<bool> setNotificationsProfileProducts(
       {required SetNotificationsProfileProductsParams params}) async {
     Response? response;
 
     try {
       response = await webService.dio.post(
         ApiUrl.setProductsNotificationsSettings,
-        queryParameters: params.toJson(),
+        data: params.toJson(),
       );
-      return response.statusCode!;
+      return response.statusCode == 200 ? true : false;
     } on DioException catch (error) {
       if (error is NoDataFoundException) {
         rethrow;

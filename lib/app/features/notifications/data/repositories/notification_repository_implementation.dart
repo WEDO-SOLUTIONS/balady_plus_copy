@@ -15,7 +15,7 @@ import '../model/notification_request.dart';
 import '../model/notifications_settings_list/notifications_settings_list_response.dart';
 
 class NotificationRepositoryImplementation
-    implements NotificationsRepository, NotificationsListRepository, NotificationsFilterRepository {
+    implements NotificationsRepository, NotificationsListRepository , NotificationsSettingsListRepository,NotificationsFilterRepository {
   final NotificationsRemoteDataSource remoteDataSource;
 
   NotificationRepositoryImplementation({
@@ -118,7 +118,7 @@ class NotificationRepositoryImplementation
 
   //For NotificationsListRepository
   @override
-  Future<Either<Failure, int>> setNotificationsProfile(
+  Future<Either<Failure, bool>> setNotificationsProfile(
       {required SetNotificationsProfileParams params}) async {
     try {
       final data =
@@ -133,7 +133,7 @@ class NotificationRepositoryImplementation
 
   //For NotificationsListRepository
   @override
-  Future<Either<Failure, int>> setNotificationsProfileProducts(
+  Future<Either<Failure, bool>> setNotificationsProfileProducts(
       {required SetNotificationsProfileProductsParams params}) async {
     try {
       final data = await remoteDataSource.setNotificationsProfileProducts(
