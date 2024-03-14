@@ -97,5 +97,6 @@ class ActionShowFilterWidget extends StatelessWidget {
         ]
       };
     }
+    cubit.getNotificationsMessagesList();
   }
 }

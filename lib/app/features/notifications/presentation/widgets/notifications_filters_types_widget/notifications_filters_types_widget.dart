@@ -12,7 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class NotificationsFiltersTypesWidget extends StatelessWidget {
-  const NotificationsFiltersTypesWidget({super.key});
+  const NotificationsFiltersTypesWidget({key});
 
   @override
   Widget build(BuildContext context) {
@@ -50,12 +50,11 @@ class NotificationsFiltersTypesWidget extends StatelessWidget {
                           onTap: (item) {
                             cubit.getNotificationsServicesProducts(
                                 product: item);
-                            cubitList.getNotificationsMessagesList(
-                              cubitList.params.copyWith(
-                                productId: item.id,
-                                serviceId: null,
-                              ),
+                            cubitList.params = cubitList.params.copyWith(
+                              productId: item.id,
+                              serviceId: null,
                             );
+                            cubitList.getNotificationsMessagesList();
                             Navigator.pop(context);
                           },
                         ),
@@ -79,11 +78,10 @@ class NotificationsFiltersTypesWidget extends StatelessWidget {
                                 selectedValue: null,
                                 onTap: (item) {
                                   cubit.selectedServices(service: item);
-                                  cubitList.getNotificationsMessagesList(
-                                    cubitList.params.copyWith(
-                                      serviceId: item.id,
-                                    ),
+                                  cubitList.params = cubitList.params.copyWith(
+                                    serviceId: item.id,
                                   );
+                                  cubitList.getNotificationsMessagesList();
                                   Navigator.pop(context);
                                 },
                               ),

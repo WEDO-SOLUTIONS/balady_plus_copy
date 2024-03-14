@@ -15,23 +15,25 @@ part 'notifications_list_state.dart';
 
 class NotificationsListCubit extends Cubit<NotificationsListState> {
   final NotificationsListRepository listRepository;
-  final SearchNotificationsParams params;
+  SearchNotificationsParams params;
 
   NotificationsListCubit({
     required this.listRepository,
     required this.params,
   }) : super(InitialNotificationsListState()) {
     Jiffy.setLocale("locale".tr());
-    getNotificationsMessagesList(params);
+    getNotificationsMessagesList();
   }
 
-  Future<void> getNotificationsMessagesList(
-    SearchNotificationsParams params,
-  ) async {
+  Future<void> getNotificationsMessagesList({bool loadMore = false}) async {
+    if(!loadMore) {
+      params.page = 0;
+    }
+
     NotificationsListState stateType = state;
-    if (stateType is InitialNotificationsListState ||
-        stateType is SucceedWithPaginationNotificationsListState ||
-        stateType is FailureNotificationsListState) {
+    // if (stateType is InitialNotificationsListState ||
+    //     stateType is SucceedWithPaginationNotificationsListState ||
+    //     stateType is FailureNotificationsListState) {
       if (stateType is! SucceedWithPaginationNotificationsListState) {
         emit(LoadingEventsListState());
       }
@@ -74,7 +76,7 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
           params.page++;
         },
       );
-    }
+    // }
   }
 
   Future<void> markReadNotificationsMessages() async {
@@ -86,6 +88,7 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
         request: MarkReadNotificationsParams(
           all: true,
           read: true,
+          persoana: params.persoana,
         ),
       );
       failureOrSuccess.fold(
@@ -102,7 +105,7 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
         },
         (done) {
           emit(InitialNotificationsListState());
-          getNotificationsMessagesList(params);
+          getNotificationsMessagesList();
         },
       );
     }
@@ -116,6 +119,7 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
           await listRepository.deletedNotificationsMessages(
         request: DeletedNotificationsParams(
           all: true,
+          persoana: params.persoana,
         ),
       );
       failureOrSuccess.fold(

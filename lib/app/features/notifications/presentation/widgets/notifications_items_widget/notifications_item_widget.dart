@@ -49,10 +49,14 @@ class NotificationsItemWidget extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Text(
-                            message.subject,
-                            style: AppStyle.signInFullTextStyle.copyWith(
-                              fontWeight: FontWeight.w600,
+                          Flexible(
+                            child: Text(
+                              message.subject,
+                              style: AppStyle.signInFullTextStyle.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                              overflow: TextOverflow.visible,
+                              maxLines: null,
                             ),
                           ),
                           const SizedBox(width: 2),
@@ -76,10 +80,8 @@ class NotificationsItemWidget extends StatelessWidget {
                               ),
                             ),
                           ),
-                          const Spacer(),
                           Text(
                             "${Jiffy.parseFromDateTime(message.eventTime).Hm} ,${Jiffy.parseFromDateTime(message.eventTime).fromNow()}",
-                            //DateFormat("hh",).format(message.eventTime)
                             style:
                                 AppStyle.nearbyItemSubTitleTextStyle.copyWith(
                               fontWeight: FontWeight.w500,
@@ -92,7 +94,9 @@ class NotificationsItemWidget extends StatelessWidget {
                       ExpandableTextWidget(
                         text: message.body,
                         onTap: () {
-                          contextBloc.watch<NotificationsItemCubit>().markReadNotificationsMessages();
+                          if(message.status.id == "2") {
+                            contextBloc.watch<NotificationsItemCubit>().markReadNotificationsMessages();
+                          }
                         },
                       ),
                     ],

@@ -22,7 +22,7 @@ class ListItemsEventsWidget extends StatelessWidget {
         }
         if (state is FailureNotificationsListState) {
           return ReloadWidget(
-            onTab: () => cubit.getNotificationsMessagesList(cubit.params),
+            onTab: () => cubit.getNotificationsMessagesList(),
           );
         }
 
@@ -55,7 +55,7 @@ class ListItemsEventsWidget extends StatelessWidget {
                 () {
                   if (scrollController.position.pixels ==
                       scrollController.position.maxScrollExtent) {
-                    cubit.getNotificationsMessagesList(cubit.params);
+                    cubit.getNotificationsMessagesList(loadMore: true);
                   }
                 },
               ),

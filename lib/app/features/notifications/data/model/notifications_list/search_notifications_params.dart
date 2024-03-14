@@ -4,19 +4,22 @@ class SearchNotificationsParams {
   //////////////////////////////////////
   String? serviceId;
   String? productId;
+
   //////////////////////////////////////
   //////////////////////////////////////
   //////////////////////////////////////
   int page;
   int pageSize;
+
   //////////////////////////////////////
-  Map<String, dynamic>? persoana;
+  Map<String, dynamic> persoana;
 
   SearchNotificationsParams({
     this.serviceId,
     this.productId,
     this.page = 0,
     this.pageSize = 10,
+    required this.persoana,
   });
 
   SearchNotificationsParams copyWith({
@@ -26,6 +29,7 @@ class SearchNotificationsParams {
       SearchNotificationsParams(
         serviceId: serviceId,
         productId: productId ?? this.productId,
+        persoana: persoana,
       );
 
   Map<String, dynamic> toJsonQueryParameters() {
@@ -40,10 +44,9 @@ class SearchNotificationsParams {
     if (productId != null) {
       data["product-id"] = productId;
     }
-    if(persoana != null) {
+    if (persoana != null) {
       data.addAll(persoana!);
     }
     return data;
   }
-
 }

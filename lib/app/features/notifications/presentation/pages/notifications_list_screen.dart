@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
+import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notifications_list/search_notifications_params.dart';
 import 'package:balady_plus/app/features/notifications/data/repositories/notification_repository_implementation.dart';
 import 'package:balady_plus/app/features/notifications/domain/repositories/notification_repository.dart';
@@ -33,9 +34,50 @@ class NotificationsListScreen extends StatelessWidget {
         BlocProvider(
           create: (_) {
             NotificationRepositoryImplementation listRepository = sl();
+            EntryPointCubit auth = context.read<EntryPointCubit>();
+            final selectedAgent = auth.state.selectedAgent;
+            final selectedDelegator = auth.state.selectedDelegator;
+            late Map<String,dynamic> persoana;
+            if (selectedAgent != null) {
+              persoana = {
+                "typeId": "person",
+                "ids": [
+                  {
+                    "typeId": "identity-number",
+                    "value": selectedAgent.ownerNumber,
+                    "sourceId": "moi",
+                    "attributes": {"type": selectedAgent.ownerTypeId}
+                  }
+                ]
+              };
+            } else if (selectedDelegator != null) {
+              persoana = {
+                "typeId": "cr",
+                "ids": [
+                  {
+                    "typeId": "national-number",
+                    "value": selectedDelegator.unifiedNationalNumber,
+                    "sourceId": "mci"
+                  }
+                ]
+              };
+            } else if (auth.state.userInfo != null){
+              persoana = {
+                "typeId": "person",
+                "ids": [
+                  {
+                    "typeId": "identity-number",
+                    "value": auth.state.userInfo!.idNo,
+                    "sourceId": "moi",
+                  }
+                ]
+              };
+            }
             return NotificationsListCubit(
               listRepository: listRepository,
-              params: SearchNotificationsParams(),
+              params: SearchNotificationsParams(
+                  persoana: persoana
+              ),
             );
           },
         ),
