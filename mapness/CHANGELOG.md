@@ -1,6 +1,7 @@
 ## 3.9.6(1) - Current
 
 - BALADY-1464: [Arch] Sync TFS:dev /w Urbi
+- BALADY-548: [iWish] - Incorrect logic of the system button/back gesture on screens 
 
 ## 3.9.2(1)
 
