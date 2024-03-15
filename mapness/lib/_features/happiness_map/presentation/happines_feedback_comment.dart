@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/happiness_map/data/happines_manager.dart';
-import 'package:mapness/app/routes/happines_map.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/shared/ui/sheets/labeled_draggable_sheet.dart';
@@ -20,7 +20,7 @@ class HappinesFeedbackComment extends ConsumerStatefulWidget {
 class _HappinessFeedbackCommentState
     extends ConsumerState<HappinesFeedbackComment> {
   void onClose() {
-    const HappinessMapRoute(bottomSheetOpened: true).replace(context);
+    context.pop();
   }
 
   void onSubmit() {
