@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
-import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
+import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_favorite_dialog_button.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
@@ -11,7 +11,6 @@ import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 
 class PoiFavoriteDialog extends ConsumerStatefulWidget {
-
   const PoiFavoriteDialog({
     required this.favItem,
     super.key,
@@ -26,20 +25,22 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
   Future<void> _awaitPop(Future<void> future) async {
     await future;
 
-    if (context.mounted) Navigator.of(context).pop();
+    if (context.mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final favState = ref.watch(favouriteRepositoryProvider);
-    final favNotifier = ref.read(favouriteRepositoryProvider.notifier);
+    final favState = ref.watch(favouriteCacheProvider);
+    final favNotifier = ref.read(favouriteCacheProvider.notifier);
 
     if (favState.isLoading) {
       return const LoadingSheet();
     }
     if (favState.hasError) {
       return ErrorSheet(
-        onRetry: () => ref.invalidate(favouriteRepositoryProvider),
+        onRetry: () => ref.invalidate(favouriteCacheProvider),
       );
     }
 
@@ -107,11 +108,16 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
   }
 
   Future<void> _onFavTap(bool isFavourite) async {
-    await CommonFunctions.authOrOpen(context, callback: () {
-      final favNotifier = ref.read(favouriteRepositoryProvider.notifier);
-      _awaitPop(isFavourite
-          ? favNotifier.delete(widget.favItem)
-          : favNotifier.addItem(widget.favItem),);
-    },);
+    await CommonFunctions.authOrOpen(
+      context,
+      callback: () {
+        final favNotifier = ref.read(favouriteCacheProvider.notifier);
+        _awaitPop(
+          isFavourite
+              ? favNotifier.deleteItem(widget.favItem)
+              : favNotifier.addItem(widget.favItem),
+        );
+      },
+    );
   }
 }
