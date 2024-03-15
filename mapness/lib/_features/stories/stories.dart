@@ -13,6 +13,8 @@ import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'helper/locale_helper.dart';
+
 class Stories {
   static OverlayEntry? _overlayEntry;
   static final GlobalKey<DismissibleTransitionState> _transitionState =
@@ -76,24 +78,34 @@ class Stories {
       }
     }
 
-    final storyWidget = StoriesFullscreen(
-      onClose: () => _transitionState.currentState?.dismiss(),
-      initialStoryId: id,
-      handleDeeplink: handleDeeplink,
+    final storyWidget = StoryLocalization(
+      l10n: context.l10n,
+      child: StoriesFullscreen(
+        onClose: () => _transitionState.currentState?.dismiss(),
+        initialStoryId: id,
+        handleDeeplink: handleDeeplink,
+      ),
     );
 
     showStory(context, storyWidget);
   }
 
-  static void showOnboarding(BuildContext context, StoryTypes type, String id,
-      {VoidCallback? onClose,}) {
-    final storyWidget = StoriesOnboarding(
-      type: type,
-      initialStoryId: id,
-      onClose: () {
-        _transitionState.currentState?.dismiss();
-        onClose?.call();
-      },
+  static void showOnboarding(
+    BuildContext context,
+    StoryTypes type,
+    String id, {
+    VoidCallback? onClose,
+  }) {
+    final storyWidget = StoryLocalization(
+      l10n: context.l10n,
+      child: StoriesOnboarding(
+        type: type,
+        initialStoryId: id,
+        onClose: () {
+          _transitionState.currentState?.dismiss();
+          onClose?.call();
+        },
+      ),
     );
 
     showStory(context, storyWidget);
