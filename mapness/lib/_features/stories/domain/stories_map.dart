@@ -29,6 +29,7 @@ class StoriesMap {
               deeplinkUrl: 'next',
               action: StoryAction.next,
               title: 'Next',
+              localeTitle: 'next',
               backgroundColor: NonThemeColor.color29,
               textStyle: StoryTextStyle(
                 color: Colors.white,
@@ -48,6 +49,7 @@ class StoriesMap {
               deeplinkUrl: 'next',
               action: StoryAction.next,
               title: 'Next',
+              localeTitle: 'next',
               backgroundColor: NonThemeColor.color29,
               textStyle: StoryTextStyle(
                 color: Colors.white,
@@ -66,6 +68,7 @@ class StoriesMap {
               deeplinkUrl: 'route',
               action: StoryAction.close,
               title: 'Try Now',
+              localeTitle: 'try_now',
               backgroundColor: NonThemeColor.color29,
               textStyle: StoryTextStyle(
                 color: Colors.white,
