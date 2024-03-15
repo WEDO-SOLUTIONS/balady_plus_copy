@@ -48,6 +48,13 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
 
   late bool isLoading = _frame.isAssetImage == false;
 
+  String get actionTitleOrFailback =>
+      switch (widget.frame.action?.localeTitle) {
+        'next' => context.l10n.next,
+        'try_now' => context.l10n.tryNow,
+        _ => widget.frame.action?.title ?? '',
+      };
+
   @override
   void initState() {
     super.initState();
@@ -208,7 +215,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                         left: 16,
                         right: 16,
                         child: FrameActionButton(
-                          title: widget.frame.action!.title,
+                          title: actionTitleOrFailback,
                           onPressed: () =>
                               widget.onActionPressed!(widget.frame.action!),
                           textStyle: widget.frame.action?.textStyle,
