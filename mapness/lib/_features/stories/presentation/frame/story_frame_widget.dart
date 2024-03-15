@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/image/loading_image/loading_image.dart';
 import 'package:mapness/_features/stories/domain/frame/story_frame_action.dart';
 import 'package:mapness/_features/stories/domain/frame/story_frame_data.dart';
+import 'package:mapness/_features/stories/helper/locale_helper.dart';
 import 'package:mapness/_features/stories/presentation/frame/frame_action_button.dart';
 import 'package:mapness/_features/stories/presentation/frame/frame_progress_indicator.dart';
 import 'package:mapness/_features/stories/presentation/frame/story_frame_content.dart';
@@ -48,12 +49,20 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
 
   late bool isLoading = _frame.isAssetImage == false;
 
-  String get actionTitleOrFailback =>
-      switch (widget.frame.action?.localeTitle) {
-        'next' => context.l10n.next,
-        'try_now' => context.l10n.tryNow,
-        _ => widget.frame.action?.title ?? '',
+  String _keyToLocale(String key) => switch (key) {
+        'next' => StoryLocalization.of(context)?.l10n.next ?? '',
+        'try_now' => StoryLocalization.of(context)?.l10n.tryNow ?? '',
+        _ => ''
       };
+
+  String get _actionTitleOrFailback {
+    final action = widget.frame.action;
+    return switch (action) {
+      VerbatimStoryFrameAction() => action.title,
+      LocaleKeyFrameAction() => _keyToLocale(action.titleLocaleKey),
+      null => '',
+    };
+  }
 
   @override
   void initState() {
@@ -215,7 +224,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                         left: 16,
                         right: 16,
                         child: FrameActionButton(
-                          title: actionTitleOrFailback,
+                          title: _actionTitleOrFailback,
                           onPressed: () =>
                               widget.onActionPressed!(widget.frame.action!),
                           textStyle: widget.frame.action?.textStyle,

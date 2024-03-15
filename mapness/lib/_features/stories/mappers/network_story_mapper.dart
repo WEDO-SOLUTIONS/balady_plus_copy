@@ -12,37 +12,37 @@ extension NetworkStoryResponseMapper on NetworkStoriesResponse {
 
 extension NetworkStoryMapper on NetworkStory {
   StoryData toDomain() => StoryData(
-      storyId: id,
-      frames: frames.map((e) => e.toDomain(id)).toList(),
-      thumbnail: preview.toDomain(),
-    );
+        storyId: id,
+        frames: frames.map((e) => e.toDomain(id)).toList(),
+        thumbnail: preview.toDomain(),
+      );
 }
 
 extension NetworkStoryPreviewMapper on NetworkStoryPreview {
   StoryThumbnailData toDomain() => StoryThumbnailData(
-      imageUrl: image.url,
-      title: title,
-    );
+        imageUrl: image.url,
+        title: title,
+      );
 }
 
 extension NetworkStoryFrameMapper on NetworkStoryFrame {
   StoryFrameData toDomain(String storyId) => StoryFrameData(
-      isWatched: false,
-      title: title,
-      imageUrl: background.url,
-      storyId: storyId,
-      description: description,
-      action: actionButton.toDomain(),
-      duration: duration,
-      descriptionStyle: style.description.toDomain(),
-      titleStyle: style.title.toDomain(),
-    );
+        isWatched: false,
+        title: title,
+        imageUrl: background.url,
+        storyId: storyId,
+        description: description,
+        action: actionButton.toDomain(),
+        duration: duration,
+        descriptionStyle: style.description.toDomain(),
+        titleStyle: style.title.toDomain(),
+      );
 }
 
 extension NetworkStoryTextStyleMapper on NetworkStoryTextStyle {
   StoryTextStyle toDomain() => StoryTextStyle(
-      color: color.toDomain(),
-    );
+        color: color.toDomain(),
+      );
 }
 
 extension ColorMapper on NetowrkColor {
@@ -57,11 +57,11 @@ extension ColorMapper on NetowrkColor {
 }
 
 extension NetworkStoryPageActionMapper on NetworkStoryPageAction {
-  StoryFrameAction? toDomain() => StoryFrameAction(
-      title: title,
-      // TODO(someone): support deeplinks in native platforms
-      deeplinkUrl: link.url.replaceFirst('balady:/', ''),
-      textStyle: style.textStyle.toDomain(),
-      backgroundColor: style.backgroundColor.toDomain(),
-    );
+  StoryFrameAction? toDomain() => VerbatimStoryFrameAction(
+        title: title,
+        // TODO(someone): support deeplinks in native platforms
+        deeplinkUrl: link.url.replaceFirst('balady:/', ''),
+        textStyle: style.textStyle.toDomain(),
+        backgroundColor: style.backgroundColor.toDomain(),
+      );
 }
