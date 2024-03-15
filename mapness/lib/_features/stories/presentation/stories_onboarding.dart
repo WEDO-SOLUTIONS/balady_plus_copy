@@ -85,8 +85,10 @@ class _StoriesOnboardingState extends ConsumerState<StoriesOnboarding> {
       case StoryAction.next:
         _frameController.nextPage?.call();
 
-      // ignore: no_default_cases
-      default:
+      case null:
+      case StoryAction.close:
+      case StoryAction.deeplink:
+      case StoryAction.route:
         onClose();
         break;
     }

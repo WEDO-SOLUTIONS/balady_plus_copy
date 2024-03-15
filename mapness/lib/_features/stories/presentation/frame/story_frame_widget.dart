@@ -72,9 +72,9 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
       switch (_progress.status) {
         case AnimationStatus.completed:
           widget.onNext();
-
-        // ignore: no_default_cases
-        default:
+        case AnimationStatus.dismissed:
+        case AnimationStatus.forward:
+        case AnimationStatus.reverse:
           break;
       }
     });
