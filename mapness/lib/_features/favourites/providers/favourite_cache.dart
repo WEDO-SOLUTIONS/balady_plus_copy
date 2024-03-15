@@ -56,6 +56,7 @@ class FavouriteCache extends _$FavouriteCache {
       try {
         await ref.read(favouriteRepositoryProvider.notifier).delete(item);
       } on Exception catch (_) {
+        // if delete fails, save to sync
         final deleteSync = await favoritesBox.get(_keyDeleteSync,
             defaultValue: <FavoriteCacheItem>[]) as List<FavoriteCacheItem>
           ..add(item.toHive());
@@ -66,69 +67,57 @@ class FavouriteCache extends _$FavouriteCache {
   }
 
   Future<void> setHome(FavouriteItem item) async {
-    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+    await deleteItem(item);
+
     state.whenData((value) async {
-      if (value.home != null) {
-        await deleteItem(value.home!);
-      }
-      final newData = FavouritesState(
+      await _addItemToCache(FavouritesState(
         items: value.items,
         work: value.work,
         home: item,
-      );
-
-      state = AsyncValue.data(newData);
-
-      final favoritesBox = await ref.read(hiveProvider(_boxName).future);
-      await favoritesBox.put(_keyHomeWork, newData.toHive());
+      ));
     });
 
-    try {
-      await ref.read(favouriteRepositoryProvider.notifier).setHome(item);
-    } on Exception catch (_) {
-      await favoritesBox.put(_keyAddSync, item.toHive());
-    }
+    await _putData(item);
   }
 
   Future<void> setWork(FavouriteItem item) async {
-    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+    await deleteItem(item);
+
     state.whenData((value) async {
-      if (value.work != null) {
-        await deleteItem(value.work!);
-      }
-      final newData = FavouritesState(
+      await _addItemToCache(FavouritesState(
         items: value.items,
         work: item,
         home: value.home,
-      );
-
-      state = AsyncValue.data(newData);
-
-      await favoritesBox.put(_keyHomeWork, newData.toHive());
+      ));
     });
 
-    try {
-      await ref.read(favouriteRepositoryProvider.notifier).setWork(item);
-    } on Exception catch (_) {
-      await favoritesBox.put(_keyAddSync, item.toHive());
-    }
+    await _putData(item);
   }
 
   Future<void> addItem(FavouriteItem item) async {
-    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+    await deleteItem(item);
+
     state.whenData((value) async {
-      await deleteItem(item);
-      final newData = FavouritesState(
+      await _addItemToCache(FavouritesState(
         items: [...value.items, item],
         work: value.work,
         home: value.home,
-      );
-
-      state = AsyncValue.data(newData);
-
-      await favoritesBox.put(_keyHomeWork, newData.toHive());
+      ));
     });
 
+    await _putData(item);
+  }
+
+  Future<void> _addItemToCache(FavouritesState data) async {
+    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+
+    state = AsyncValue.data(data);
+
+    await favoritesBox.put(_keyHomeWork, data.toHive());
+  }
+
+  Future<void> _putData(FavouriteItem item) async {
+    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
     try {
       await ref.read(favouriteRepositoryProvider.notifier).addItem(item);
     } on Exception catch (_) {
@@ -177,6 +166,7 @@ class FavouriteCache extends _$FavouriteCache {
     final timer = Timer(_cacheFor, link.close);
     ref.onDispose(() => timer.cancel);
 
+    // sync uncommitted changes
     await _sync();
 
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
