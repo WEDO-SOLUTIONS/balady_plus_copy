@@ -333,6 +333,16 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
         isValid = false;
       }*/
 
+      if (dataModel.selectedMunicipalityItem?.id == "-1") {
+        if (dataModel.requestRealStateVerified == false) {
+          isValid = false;
+        }
+
+        if (dataModel.realEstateId?.isEmpty ?? true) {
+          isValid = false;
+        }
+      }
+
       if (isFormValid != isValid) {
         isFormValid = isValid;
         notifyListeners();

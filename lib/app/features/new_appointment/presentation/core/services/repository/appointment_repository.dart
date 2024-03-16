@@ -25,6 +25,7 @@ import '../../models/lookup_list_model.dart';
 import '../../models/main_class_response.dart';
 import '../../models/municipality_model.dart';
 import '../../models/my_appointments_response.dart';
+import '../../models/request_real_state_response_model.dart';
 import '../../models/save_appointment_reseponse.dart';
 import '../../models/service_config_reseponse.dart';
 import '../../models/sub_class_response.dart';
@@ -59,6 +60,12 @@ class AppointmentRepository {
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, LookUpList?>(state, error, result);
+  }
+
+  Future<Tuple3<bool?, String, RequeestRealStateResponseModel?>>
+      checkRealStateRequest(String id) async {
+    return Tuple3<bool?, String, RequeestRealStateResponseModel?>(
+        true, "", RequeestRealStateResponseModel());
   }
 
   Future<Tuple3<bool?, String?, Municipality?>> getMunicipalities() async {

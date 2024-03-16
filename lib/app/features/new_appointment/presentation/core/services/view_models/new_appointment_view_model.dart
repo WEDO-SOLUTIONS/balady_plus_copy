@@ -27,6 +27,7 @@ import '../../models/department_model.dart';
 import '../../models/lookup_list_model.dart';
 import '../../models/main_class_response.dart';
 import '../../models/municipality_model.dart';
+import '../../models/request_real_state_response_model.dart';
 import '../../models/save_appointment_reseponse.dart';
 import '../../models/service_config_reseponse.dart';
 import '../../models/sub_class_response.dart';
@@ -112,6 +113,7 @@ class NewAppointmentViewModel extends BaseViewModel {
 
   bool? isSpecialConditionChecked = false;
   bool isUserOld = false;
+  bool? requestRealStateVerified = false;
 
 // attachments
 
@@ -200,6 +202,7 @@ class NewAppointmentViewModel extends BaseViewModel {
     atttachmentItems = [];
     isSpecialConditionChecked = false;
     isUserOld = false;
+    requestRealStateVerified = false;
     notifyListeners();
   }
 
@@ -347,6 +350,21 @@ class NewAppointmentViewModel extends BaseViewModel {
     return false;
   }
 
+  Future<bool> checkRealStateRequest() async {
+    showLoading();
+    Tuple3<bool?, String?, RequeestRealStateResponseModel?> response =
+        await _repository.checkRealStateRequest(realEstateRequestId ?? "");
+    hideLoading();
+    if (response.item1 != null && response.item1! && response.item3 != null) {
+      requestRealStateVerified = true;
+      return true;
+    } else {
+      showError(response.item2 ?? "");
+    }
+    requestRealStateVerified = false;
+    notifyListeners();
+    return false;
+  }
   /*Future<bool> getAvailableTimes(int serviceId, String date) async {
     showLoading();
     Tuple3<bool?, String?, AvailableTimesResponse?> response =

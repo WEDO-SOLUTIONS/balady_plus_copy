@@ -257,11 +257,12 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             backgroundColor: Colors.transparent,
             controller: model.dataModel.realEstateRequestIdController,
             validate: (String? t) {},
-            isValidate: false,
+            isValidate: model.dataModel.requestRealStateVerified ?? false,
             currentValue: model.dataModel.realEstateRequestId,
             verify: () {},
             onTextChanged: (value) {
               model.dataModel.realEstateRequestId = value;
+              model.dataModel.requestRealStateVerified = false;
               model.validateForm();
             },
             showToolTip: true,
