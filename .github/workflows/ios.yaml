@@ -49,7 +49,7 @@ jobs:
             export CI_IS_PR="pr-"
           fi
           echo "CI_GIT_BRANCH=${CI_GIT_BRANCH}" >> ${GITHUB_ENV}
-          CI_GIT_BRANCH_SLUG=$(echo -n ${CI_GIT_BRANCH} | tr --complement --squeeze-repeats '[:alnum:]' '-')
+          CI_GIT_BRANCH_SLUG=$(echo -n ${CI_GIT_BRANCH} | tr -c -s '[:alnum:]' '-')
           echo "CI_ARTIFACT_SUFFIX=${CI_IS_PR}${CI_GIT_BRANCH_SLUG}" >> ${GITHUB_ENV}
           echo "CI_IS_PR=${CI_IS_PR}" >> ${GITHUB_ENV}
 
