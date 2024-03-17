@@ -379,17 +379,20 @@ class _CRStep13ReviewState extends State<CRStep13Review> {
                                         "issue_commercial_location_type_clean_no"
                                             .tr(),
                                     subTitle: state.conclusion?.cleaningInfo
-                                            ?.contractNumber ??
+                                            ?.contractNumber
+                                            .toString() ??
                                         ""),
                               if (state.conclusion?.cleaningInfo
-                                      ?.cleanContractEndDate !=
+                                      ?.cleanContractEndDate
+                                      .toString() !=
                                   null)
                                 FieldData(
                                     title:
                                         "issue_commercial_location_type_clean_date"
                                             .tr(),
                                     subTitle: state.conclusion?.cleaningInfo
-                                            ?.cleanContractEndDate ??
+                                            ?.cleanContractEndDate
+                                            .toString() ??
                                         ""),
                             ]),
                         const SizedBox(height: 14),
