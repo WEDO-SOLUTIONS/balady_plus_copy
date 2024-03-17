@@ -1,0 +1,76 @@
+# yamllint disable rule:line-length
+---
+name: Build iOS
+
+permissions: write-all
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - "urbi"
+      - "urbi-release-*"
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - ready_for_review
+      - synchronize
+    branches:
+      - "urbi"
+      - "urbi-release-*"
+    paths-ignore:
+      - "**.md"
+      - "doc/**"
+      - ".git/"
+      - ".vscode/"
+
+jobs:
+  build:
+    name: Build iOS
+    if: github.event.pull_request.draft == false
+    runs-on: [self-hosted, macOS, ARM64]
+    timeout-minutes: 60
+    steps:
+      - name: ⬇️ Checkout repository
+        uses: actions/checkout@v4
+
+      # GITHUB_REF_SLUG
+      - name: Inject git variables
+        run: |
+          echo "CI_GIT_COMMIT=$(git --no-pager show -s --format='%s')" >> ${GITHUB_ENV}
+          export CI_GIT_BRANCH=${GITHUB_BASE_REF}
+          export CI_IS_PR=""
+          if [[ ${GITHUB_EVENT_NAME} == "pull_request" ]]; then
+            export CI_GIT_BRANCH=${GITHUB_HEAD_REF}
+            export CI_IS_PR="pr-"
+          fi
+          echo "CI_GIT_BRANCH=${CI_GIT_BRANCH}" >> ${GITHUB_ENV}
+          CI_GIT_BRANCH_SLUG=$(echo -n ${CI_GIT_BRANCH} | tr --complement --squeeze-repeats '[:alnum:]' '-')
+          echo "CI_ARTIFACT_SUFFIX=${CI_IS_PR}${CI_GIT_BRANCH_SLUG}" >> ${GITHUB_ENV}
+          echo "CI_IS_PR=${CI_IS_PR}" >> ${GITHUB_ENV}
+
+      - name: Print environment variables
+        run: |
+          echo $CI_GIT_BRANCH
+          echo $CI_GIT_COMMIT
+          echo $CI_ARTIFACT_SUFFIX
+          echo $CI_IS_PR
+
+      # - name: Send notification to mattermost channel
+      #   env: # Set the secret as an environment variable
+      #     MM_CHANNEL_ID: ${{ secrets.MM_CHANNEL_ID }}
+      #     MM_BOT_TOKEN: ${{ secrets.MM_BOT_TOKEN }}
+      #     MM_DOMAIN: ${{ secrets.MM_DOMAIN }}
+      #   run: |
+      #     is_pr=""
+      #     if [ -n "${CI_IS_PR}" ]; then
+      #       is_pr="Pull Request build;"
+      #     fi
+      #     curl -X POST -H 'Content-type: application/json' -H "Authorization: Bearer ${MM_BOT_TOKEN}" https://${MM_DOMAIN}/api/v4/posts -d "{ \
+      #       \"channel_id\": \"${MM_CHANNEL_ID}\", \
+      #       \"message\": \"[Build](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}): Number ${GITHUB_RUN_ID}; Branch ${CI_GIT_BRANCH}; ${is_pr}\" \
+      #     }"
