@@ -97,9 +97,8 @@ jobs:
           momrahBundle='momra.balady.ios'
           baladyBundle='xyz.amoriodi.balady'
 
-          set -euxo pipefail
           sed -i '' "s/$momrahBundle/$baladyBundle/" ios/Runner.xcodeproj/project.pbxproj
-          fvm flutter build ipa --target lib/main_stg.dart --flavor stg
+          flutter build ipa --target lib/main_stg.dart --flavor stg
 
       # - name: Send notification to mattermost channel
       #   env: # Set the secret as an environment variable
