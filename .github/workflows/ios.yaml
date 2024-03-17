@@ -53,12 +53,52 @@ jobs:
           echo "CI_ARTIFACT_SUFFIX=${CI_IS_PR}${CI_GIT_BRANCH_SLUG}" >> ${GITHUB_ENV}
           echo "CI_IS_PR=${CI_IS_PR}" >> ${GITHUB_ENV}
 
-      - name: Print environment variables
+      - name: Apply ABI filter
         run: |
-          echo $CI_GIT_BRANCH
-          echo $CI_GIT_COMMIT
-          echo $CI_ARTIFACT_SUFFIX
-          echo $CI_IS_PR
+          git apply .github/workflows/abi_filter.patch
+
+      - name: Development setup dgis_map
+        env: # Set the secret as an environment variable
+          BALADY_DEVELOPERS_PASS: ${{ secrets.BALADY_DEVELOPERS_PASS }}
+        run: |
+          cd urbi_map/dgis_map
+          flutter pub get
+          flutter pub run build_runner build --delete-conflicting-outputs
+          mkdir -p ios/_DELETE_ME_
+          curl -u "balady-developers:${BALADY_DEVELOPERS_PASS}" -O https://artifactory.2gis.dev/vendor-ios-release/10.2.1/Release/DGisFullSDK.zip
+          rm -rf ios/_DELETE_ME_/DGis.xcframework
+          unzip DGisFullSDK.zip -d ios/_DELETE_ME_
+          rm DGisFullSDK.zip
+
+      - name: Development setup mapness
+        run: |
+          cd mapness
+          flutter pub get
+          flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.10.3"
+          channel: "stable"
+          cache: true
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "17.x"
+          cache: "gradle"
+        id: java
+
+      - name: Build app
+        run: |
+          momrahBundle='momra.balady.ios'
+          baladyBundle='xyz.amoriodi.balady'
+
+          set -euxo pipefail
+          sed -i '' "s/$momrahBundle/$baladyBundle/" ios/Runner.xcodeproj/project.pbxproj
+          fvm flutter build ipa --target lib/main_stg.dart --flavor stg
 
       # - name: Send notification to mattermost channel
       #   env: # Set the secret as an environment variable
