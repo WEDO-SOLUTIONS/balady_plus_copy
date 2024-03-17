@@ -96,7 +96,8 @@ jobs:
         run: |
           momrahBundle='momra.balady.ios'
           baladyBundle='xyz.amoriodi.balady'
-
+          env
+          which xcodebuild
           sed -i '' "s/$momrahBundle/$baladyBundle/" ios/Runner.xcodeproj/project.pbxproj
           flutter build ipa --target lib/main_stg.dart --flavor stg
 
