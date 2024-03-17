@@ -114,7 +114,7 @@ class NotificationRemoteDataSourceImplementation
       SearchNotificationsParams request) async {
     var response;
     try {
-      dataHeaders.addAll(request.persoana!);
+      dataHeaders.addAll(request.persoana);
       dataHeaders['x-correlation-id'] = CommonFunctions.generateGUID();
       response = await webService.dio.get(
         ApiUrl.notificationsMessagesList,
@@ -385,6 +385,7 @@ class NotificationRemoteDataSourceImplementation
   Future<bool> setNotificationsProfileProducts(
       {required SetNotificationsProfileProductsParams params}) async {
     dataHeaders['x-correlation-id'] = CommonFunctions.generateGUID();
+    dataHeaders['Accept'] = "*/*";
     Response? response;
     try {
       response = await webService.dio.post(
@@ -416,4 +417,5 @@ class NotificationRemoteDataSourceImplementation
       }
     }
   }
+
 }

@@ -20,11 +20,6 @@ class ListItemsEventsWidget extends StatelessWidget {
             state is LoadingEventsListState) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (state is FailureNotificationsListState) {
-          return ReloadWidget(
-            onTab: () => cubit.getNotificationsMessagesList(),
-          );
-        }
 
         if (state is EmptyNotificationsListState) {
           return Center(
@@ -36,6 +31,12 @@ class ListItemsEventsWidget extends StatelessWidget {
                 Text('no_notifications'.tr())
               ],
             ),
+          );
+        }
+
+        if (state is FailureNotificationsListState) {
+          return ReloadWidget(
+            onTab: () => cubit.getNotificationsMessagesList(),
           );
         }
 

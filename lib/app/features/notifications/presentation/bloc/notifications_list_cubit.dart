@@ -43,8 +43,7 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
       );
       failureOrSuccess.fold(
         (failure) {
-          if (failure is NoDataFoundException ||
-              failure is NoDataFoundException) {
+          if (failure is NoDataFoundException || failure is NoDataFoundFailure ) {
             emit(EmptyNotificationsListState());
           } else if (failure is ServerFailure) {
             emit(FailureNotificationsListState(
@@ -93,7 +92,7 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
       );
       failureOrSuccess.fold(
         (failure) {
-          if (failure is NoDataFoundException || failure is NoDataFoundException) {
+          if (failure is NoDataFoundException || failure is NoDataFoundFailure ) {
             emit(FailureNotificationsListState(
                 filerMessage: "no_data_shown".tr()));
           } else if (failure is ServerFailure) {
@@ -124,8 +123,7 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
       );
       failureOrSuccess.fold(
         (failure) {
-          if (failure is NoDataFoundException ||
-              failure is NoDataFoundException) {
+          if (failure is NoDataFoundException || failure is NoDataFoundFailure ) {
             emit(EmptyNotificationsListState());
           } else if (failure is ServerFailure) {
             emit(FailureNotificationsListState(
