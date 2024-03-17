@@ -52,6 +52,7 @@ jobs:
           CI_GIT_BRANCH_SLUG=$(echo -n ${CI_GIT_BRANCH} | tr -c -s '[:alnum:]' '-')
           echo "CI_ARTIFACT_SUFFIX=${CI_IS_PR}${CI_GIT_BRANCH_SLUG}" >> ${GITHUB_ENV}
           echo "CI_IS_PR=${CI_IS_PR}" >> ${GITHUB_ENV}
+          env
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
