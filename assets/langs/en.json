@@ -4251,5 +4251,7 @@
   "area_schema":"Area at Schema",
   "license_details": "License Details",
   "license_number_municipality": "License Number Municipality",
-  "building_type":"Building Type"
+  "building_type":"Building Type", 
+
+  "issue_commercial_conclusion_request_draft": "Request Draft"
 }
