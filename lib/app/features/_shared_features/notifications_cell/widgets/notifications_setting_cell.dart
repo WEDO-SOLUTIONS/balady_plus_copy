@@ -81,12 +81,15 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                                 child: Row(
                                   children: [
                                     SvgPicture.asset(
-                          IconPath.notificationIc2,
-                          colorFilter: const ColorFilter.mode(
-                            AppColor.primary900Light,
-                            BlendMode.srcIn,
-                          ),
-                        ),const SizedBox(
+                                      IconPath.notificationIc2,
+                                      height: 24,
+                                      width: 24,
+                                      colorFilter: const ColorFilter.mode(
+                                        AppColor.primary900Light,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                                    const SizedBox(
                                       width: 12,
                                     ),
                                     Padding(
