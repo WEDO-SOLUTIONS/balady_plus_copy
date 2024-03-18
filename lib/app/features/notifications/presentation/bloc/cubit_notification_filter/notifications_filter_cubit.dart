@@ -37,8 +37,12 @@ class NotificationsFilterCubit extends Cubit<NotificationsFilterState> {
           }
         },
         (listProducts) {
-          emit(SucceedServicesFilterState(
-              listProducts: listProducts, listServices: []));
+          emit(
+            SucceedServicesFilterState(
+              listProducts: listProducts,
+              listServices: [],
+            ),
+          );
         },
       );
     }
@@ -54,10 +58,16 @@ class NotificationsFilterCubit extends Cubit<NotificationsFilterState> {
     );
     failureOrSuccess.fold(
       (failure) {
-        emit(states.copyWith(selectedProduct: product,listServices: []));
+        emit(states.copyWith(selectedProduct: product, listServices: []));
       },
       (listMessages) {
-        emit(states.copyWith(selectedProduct: product,listServices: listMessages));
+        emit(
+          states.copyWith(
+            selectedProduct: product,
+            listServices: listMessages,
+            selectedServices: null,
+          ),
+        );
       },
     );
   }
