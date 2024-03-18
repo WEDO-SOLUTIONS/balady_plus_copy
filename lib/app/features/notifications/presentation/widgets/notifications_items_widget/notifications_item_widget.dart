@@ -26,8 +26,8 @@ class NotificationsItemWidget extends StatelessWidget {
       builder: (BuildContext contextBloc, state) {
         return Card(
           margin: const EdgeInsets.only(bottom: 12),
-          elevation: state.message.status.id == "2" ? 3 : 0,
-          color: state.message.status.id == "2"
+          elevation: state.message.status.id != "read" ? 3 : 0,
+          color: state.message.status.id != "read"
               ? null
               : Colors.white.withOpacity(0.77),
           shape: const RoundedRectangleBorder(
@@ -41,7 +41,7 @@ class NotificationsItemWidget extends StatelessWidget {
               children: [
                 SvgPicture.asset(
                   IconPath.bookIcon,
-                  color: state.message.status.id == "2" ? null : Colors.grey,
+                  color: state.message.status.id != "read" ? null : Colors.grey,
                 ),
                 const SizedBox(width: 2),
                 Expanded(
@@ -55,8 +55,8 @@ class NotificationsItemWidget extends StatelessWidget {
                               style: AppStyle.signInFullTextStyle.copyWith(
                                 fontWeight: FontWeight.w600,
                               ),
-                              overflow: TextOverflow.visible,
-                              maxLines: null,
+                              overflow: TextOverflow.clip,
+                              maxLines: 3,
                             ),
                           ),
                           const SizedBox(width: 2),
@@ -71,7 +71,7 @@ class NotificationsItemWidget extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 5),
                               child: Text(
-                                message.eventType.text,
+                                message.status.text,
                                 style: AppStyle.nearbyItemSubTitleTextStyle
                                     .copyWith(
                                   fontWeight: FontWeight.bold,
@@ -80,13 +80,15 @@ class NotificationsItemWidget extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Text(
-                            "${Jiffy.parseFromDateTime(message.eventTime).Hm} ,${Jiffy.parseFromDateTime(message.eventTime).fromNow()}",
-                            style:
-                                AppStyle.nearbyItemSubTitleTextStyle.copyWith(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 11,
-                              color: AppColor.warmGrey2,
+                          Flexible(
+                            child: Text(
+                              "${Jiffy.parseFromDateTime(message.eventTime).Hm} ,${Jiffy.parseFromDateTime(message.eventTime).fromNow()}",
+                              style:
+                                  AppStyle.nearbyItemSubTitleTextStyle.copyWith(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 11,
+                                color: AppColor.warmGrey2,
+                              ),
                             ),
                           ),
                         ],
@@ -94,7 +96,7 @@ class NotificationsItemWidget extends StatelessWidget {
                       ExpandableTextWidget(
                         text: message.body,
                         onTap: () {
-                          if(message.status.id == "2") {
+                          if(message.status.id != "read") {
                             contextBloc.watch<NotificationsItemCubit>().markReadNotificationsMessages();
                           }
                         },

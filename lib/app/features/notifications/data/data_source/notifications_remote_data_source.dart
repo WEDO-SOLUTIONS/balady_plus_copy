@@ -56,7 +56,8 @@ class NotificationRemoteDataSourceImplementation
     "x-actor-type-id": "user",
     "x-actor-context-id": "beneficiaries",
     "x-platform-id": "super-app",
-    "x-channel-id": "backend"
+    "x-channel-id": "mobile",
+    "notification-channel-id": "mobile",
   };
 
   NotificationRemoteDataSourceImplementation({required this.webService});
@@ -233,7 +234,10 @@ class NotificationRemoteDataSourceImplementation
       dataHeaders['x-correlation-id'] = CommonFunctions.generateGUID();
       response = await webService.dio.get(
         ApiUrl.notificationsProducts,
-        // queryParameters: request.toJson(),
+        queryParameters: {
+          "notification-channel-id": "mobile",
+          "app-id": "super-app",
+        },
         options: Options(headers: dataHeaders),
       );
       final data = response.data;
@@ -272,7 +276,11 @@ class NotificationRemoteDataSourceImplementation
       dataHeaders['x-correlation-id'] = CommonFunctions.generateGUID();
       response = await webService.dio.get(
         ApiUrl.notificationsServices,
-        queryParameters: {'product-id': productId},
+        queryParameters: {
+          'product-id': productId,
+          "notification-channel-id": "mobile",
+          "app-id": "super-app",
+        },
         // data: request.toJson(),
         options: Options(headers: dataHeaders),
       );
@@ -413,5 +421,4 @@ class NotificationRemoteDataSourceImplementation
       }
     }
   }
-
 }

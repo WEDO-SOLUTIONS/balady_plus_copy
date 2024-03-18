@@ -599,7 +599,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "requireLogin": true,
-      "action": {"type": "page", "value": RouteName.notificationsListScreen},
+      "action": {"type": "page", "value": RouteName.baladyCalendarPage},
       "ar": {"title": "balady_calendar", "description": null, "tag": null},
       "en": {"title": "balady_calendar", "description": null, "tag": null}
     },

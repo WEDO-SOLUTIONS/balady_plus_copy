@@ -4,11 +4,15 @@ class DeletedNotificationsParams {
   bool all;
   List<String>? messages;
   Map<String, dynamic>? persoana;
+  String? serviceId;
+  String? productId;
 
   DeletedNotificationsParams({
     this.channelId = "mobile",
     required this.all,
     this.messages,
+    this.serviceId,
+    this.productId,
     this.persoana,
   });
 
@@ -19,6 +23,12 @@ class DeletedNotificationsParams {
     };
     if(messages != null) {
       data["messages"] = messages;
+    }
+    if (serviceId != null) {
+      data["serviceId"] = serviceId;
+    }
+    if (productId != null) {
+      data["productId"] = productId;
     }
     return data;
   }

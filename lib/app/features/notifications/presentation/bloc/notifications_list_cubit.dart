@@ -85,6 +85,8 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
       Either<Failure, bool> failureOrSuccess =
           await listRepository.markReadNotificationsMessages(
         request: MarkReadNotificationsParams(
+          productId: params.productId,
+          serviceId: params.serviceId,
           all: true,
           read: true,
           persoana: params.persoana,
@@ -102,8 +104,9 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
             emit(FailureNotificationsListState(filerMessage: "error"));
           }
         },
-        (done) {
+        (done) async {
           emit(InitialNotificationsListState());
+          await Future.delayed(const Duration(seconds: 2));
           getNotificationsMessagesList();
         },
       );
@@ -117,6 +120,8 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
       Either<Failure, bool> failureOrSuccess =
           await listRepository.deletedNotificationsMessages(
         request: DeletedNotificationsParams(
+          productId: params.productId,
+          serviceId: params.serviceId,
           all: true,
           persoana: params.persoana,
         ),

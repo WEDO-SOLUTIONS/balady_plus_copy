@@ -4,12 +4,16 @@ class MarkReadNotificationsParams {
   bool read;
   List<String>? messages;
   Map<String, dynamic>? persoana;
+  String? serviceId;
+  String? productId;
 
   MarkReadNotificationsParams({
     this.channelId = "mobile",
     required this.all,
     required this.read,
     this.persoana,
+    this.serviceId,
+    this.productId,
     this.messages,
   });
 
@@ -21,6 +25,12 @@ class MarkReadNotificationsParams {
     };
     if (messages != null) {
       data["messages"] = messages;
+    }
+    if (serviceId != null) {
+      data["serviceId"] = serviceId;
+    }
+    if (productId != null) {
+      data["productId"] = productId;
     }
     return data;
   }

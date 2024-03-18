@@ -9,6 +9,7 @@ class NotificationsMessageItem extends Equatable {
   final String subject;
   final String body;
   final DateTime createTime;
+  final DateTime updateTime;
   final bool deleted;
   final NotificationType status;
   final NotificationType eventType;
@@ -25,6 +26,7 @@ class NotificationsMessageItem extends Equatable {
     required this.subject,
     required this.body,
     required this.createTime,
+    required this.updateTime,
     required this.deleted,
     required this.status,
     required this.eventType,
@@ -42,6 +44,7 @@ class NotificationsMessageItem extends Equatable {
         subject: json["subject"] ?? '',
         body: json["body"] ?? '',
         createTime: DateTime.parse(json["createTime"]),
+        updateTime: DateTime.parse(json["updateTime"]),
         deleted: json["deleted"],
         status: NotificationType.fromJson(json["status"]),
         eventType: NotificationType.fromJson(json["eventType"]),
@@ -78,6 +81,7 @@ class NotificationsMessageItem extends Equatable {
       subject: subject,
       body: body,
       createTime: createTime,
+      updateTime: updateTime,
       deleted: deleted,
       eventType: eventType,
     );
