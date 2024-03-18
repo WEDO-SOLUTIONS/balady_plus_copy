@@ -73,6 +73,20 @@ jobs:
         run: |
           git apply .github/workflows/abi_filter.patch
 
+      - name: Development setup mapness
+        run: |
+          flutter pub get
+          cd mapness
+          flutter pub get
+          flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: iOS Setup
+        run: |
+          flutter precache --ios
+          pod repo update || true
+          pod update
+          pod install
+
       - name: Development setup dgis_map
         env: # Set the secret as an environment variable
           BALADY_DEVELOPERS_PASS: ${{ secrets.BALADY_DEVELOPERS_PASS }}
@@ -86,18 +100,11 @@ jobs:
           unzip DGisFullSDK.zip -d ios/_DELETE_ME_
           rm DGisFullSDK.zip
 
-      - name: Development setup mapness
-        run: |
-          cd mapness
-          flutter pub get
-          flutter pub run build_runner build --delete-conflicting-outputs
-
       - name: Build app
         run: |
           momrahBundle='momra.balady.ios'
           baladyBundle='xyz.amoriodi.balady'
-          env
-          which xcodebuild
+
           sed -i '' "s/$momrahBundle/$baladyBundle/" ios/Runner.xcodeproj/project.pbxproj
           flutter build ipa --target lib/main_stg.dart --flavor stg
 
