@@ -365,9 +365,7 @@ class _CRStep13ReviewState extends State<CRStep13Review> {
                             ),
                             children: [
                               FieldData(
-                                  title: state.conclusion?.cleaningInfo
-                                          ?.cleanOptionName ??
-                                      "",
+                                  title: "",
                                   subTitle: state.conclusion?.cleaningInfo
                                           ?.cleanOptionDesc ??
                                       ""),
@@ -383,8 +381,7 @@ class _CRStep13ReviewState extends State<CRStep13Review> {
                                             .toString() ??
                                         ""),
                               if (state.conclusion?.cleaningInfo
-                                      ?.cleanContractEndDate
-                                      .toString() !=
+                                      ?.cleanContractEndDate !=
                                   null)
                                 FieldData(
                                     title:
