@@ -62,10 +62,28 @@ class AppointmentRepository {
     return Tuple3<bool?, String?, LookUpList?>(state, error, result);
   }
 
-  Future<Tuple3<bool?, String, RequeestRealStateResponseModel?>>
+  Future<Tuple3<bool?, String?, RequeestRealStateResponseModel?>>
       checkRealStateRequest(String id) async {
-    return Tuple3<bool?, String, RequeestRealStateResponseModel?>(
-        true, "", RequeestRealStateResponseModel());
+    var res;
+
+    try {
+      res = await sl<web.WebService>().dio.get(ApiUrl.validateRealEstate(id));
+
+      return const Tuple3<bool?, String?, RequeestRealStateResponseModel?>(
+          true, "", null);
+    } on DioException catch (error) {
+      print("ERRRRO ${error.toString()}");
+      ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+      return Tuple3<bool?, String?, RequeestRealStateResponseModel?>(
+          false, error.toString(), null);
+    } catch (ex) {
+      return Tuple3<bool?, String?, RequeestRealStateResponseModel?>(
+          false, ex.toString(), null);
+    }
   }
 
   Future<Tuple3<bool?, String?, Municipality?>> getMunicipalities() async {
@@ -349,11 +367,13 @@ class AppointmentRepository {
 
       return Tuple3<bool?, String?, AppointmentDetails?>(true, "", response);
     } on DioException catch (error) {
-      throw ServerException(
+      ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
+      return Tuple3<bool?, String?, AppointmentDetails?>(
+          false, error.toString(), null);
     } catch (ex) {
       return Tuple3<bool?, String?, AppointmentDetails?>(
           false, ex.toString(), null);

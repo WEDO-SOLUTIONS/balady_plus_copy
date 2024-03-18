@@ -803,6 +803,8 @@ class ApiUrl {
       'v1/appointments-mobile-services/appointments/$id';
 
   static const saveAppointment = "v1/appointments-mobile-services/appointments";
+  static validateRealEstate(String id) =>
+      'v1/appointments-mobile-services/validate-real-estate/$id';
 
   //! POST
 

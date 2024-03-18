@@ -259,7 +259,9 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             validate: (String? t) {},
             isValidate: model.dataModel.requestRealStateVerified ?? false,
             currentValue: model.dataModel.realEstateRequestId,
-            verify: () {},
+            verify: () {
+              model.dataModel.checkRealStateRequest();
+            },
             onTextChanged: (value) {
               model.dataModel.realEstateRequestId = value;
               model.dataModel.requestRealStateVerified = false;
