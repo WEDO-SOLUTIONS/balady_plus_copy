@@ -39,10 +39,11 @@ class NotificationsItemCubit extends Cubit<SucceedMessageState> {
         emit(
           SucceedMessageState(
             message: state.message.copyWith(
-                status: NotificationType(
-              id: 'read',
-              text: 'read',
-            )),
+              status: NotificationType(
+                id: 'read',
+                text: 'read',
+              ),
+            ),
           ),
         );
       },
@@ -50,10 +51,11 @@ class NotificationsItemCubit extends Cubit<SucceedMessageState> {
         emit(
           SucceedMessageState(
             message: state.message.copyWith(
-                status: NotificationType(
-              id: 'read',
-              text: 'read',
-            )),
+              status: NotificationType(
+                id: 'read',
+                text: 'read',
+              ),
+            ),
           ),
         );
       },

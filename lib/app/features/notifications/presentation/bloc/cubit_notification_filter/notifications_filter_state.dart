@@ -68,7 +68,7 @@ final class SucceedServicesFilterState extends SucceedProductsFilterState {
   }) {
     return SucceedServicesFilterState(
       listServices: listServices ?? this.listServices,
-      selectedServices: selectedServices ?? this.selectedServices,
+      selectedServices: selectedServices,
       listProducts: listProducts ?? super.listProducts,
       selectedProduct: selectedProduct ?? super.selectedProduct,
     );

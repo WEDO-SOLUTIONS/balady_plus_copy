@@ -106,7 +106,7 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
         },
         (done) async {
           emit(InitialNotificationsListState());
-          await Future.delayed(const Duration(seconds: 2));
+          await Future.delayed(const Duration(seconds: 4));
           getNotificationsMessagesList();
         },
       );
