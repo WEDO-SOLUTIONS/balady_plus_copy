@@ -103,6 +103,10 @@ android {
             dimension "default"
             resValue "string", "app_name", "بلدي"
         }
+        pre {
+            dimension "default"
+            resValue "string", "app_name", "بلدي"
+        }
     }
 
     lintOptions {
