@@ -1,6 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/poi_card/content_my_location.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/_features/poi_card/poi_card_widget.dart';
 import 'package:mapness/app/routes/iwish.dart';
@@ -67,23 +68,34 @@ class PoiMapRoute extends GoRouteData {
           : null;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) =>
-      TransculentPage(
-        child: PoiCardWidget(
-          key: const Key('POI CARD WIDGET'),
-          cameraConfig: cameraConfig,
-          objectId: DgisObjectIdMessage(
-            objectId: dgisObjectId,
-            entranceId: 0,
-          ),
-          closestPoint: lat != null && lng != null
-              ? LatLng(
-                  latitude: lat!,
-                  longitude: lng!,
-                )
-              : null,
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    final closesPoint = lat != null && lng != null
+        ? LatLng(
+            latitude: lat!,
+            longitude: lng!,
+          )
+        : null;
+    if (dgisObjectId == -1) {
+      return TransculentPage(
+        child: ContentMyLocation(
+          theme: Theme.of(context),
+          key: const Key('POI MY LOCATION CARD WIDGET'),
+          closestPoint: closesPoint,
         ),
       );
+    }
+    return TransculentPage(
+      child: PoiCardWidget(
+        key: const Key('POI CARD WIDGET'),
+        cameraConfig: cameraConfig,
+        objectId: DgisObjectIdMessage(
+          objectId: dgisObjectId,
+          entranceId: 0,
+        ),
+        closestPoint: closesPoint,
+      ),
+    );
+  }
 }
 
 final $poiMapRoutes = $appRoutes;
