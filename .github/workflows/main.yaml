@@ -83,7 +83,7 @@ jobs:
         # uses: rlespinasse/github-slug-action@v4
         run: |
           echo "CI_GIT_COMMIT=$(git --no-pager show -s --format='%s')" >> ${GITHUB_ENV}
-          export CI_GIT_BRANCH=${GITHUB_BASE_REF}
+          export CI_GIT_BRANCH=${GITHUB_REF_NAME}
           export CI_IS_PR=""
           if [[ ${GITHUB_EVENT_NAME} == "pull_request" ]]; then
             export CI_GIT_BRANCH=${GITHUB_HEAD_REF}
