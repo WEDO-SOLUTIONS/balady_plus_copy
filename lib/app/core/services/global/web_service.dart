@@ -155,6 +155,7 @@ class AppInterceptors extends Interceptor {
           .putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
     }
     options.headers.putIfAbsent("x-channel-id", () => "MOBILE");
+
     options.headers.removeWhere((key, value) => key == "requiresToken");
     //if (options.headers['Authorization'] == null) {
 
@@ -187,8 +188,12 @@ class AppInterceptors extends Interceptor {
             if (err.requestOptions.uri.path.contains(ApiUrl.weatherAlerts)) {
               break;
             }
-            sl<EntryPointCubit>().autoLogout();
-            throw UnAuthorizedException(err.requestOptions, err.response);
+            final refreshToken =
+                sl<EntryPointCubit>().state.token?.refreshToken;
+            if (refreshToken != null) {
+              sl<EntryPointCubit>().refreshToken(refreshToken);
+            }
+          // throw UnAuthorizedException(err.requestOptions, err.response);
           case 404:
             throw RequestNotFoundException(err.requestOptions, err.response);
           case 405:

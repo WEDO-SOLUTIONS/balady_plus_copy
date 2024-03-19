@@ -786,6 +786,16 @@ class ApiUrl {
       '/v1/balady-commercial-services/licenses/$licenseNumber/by-unn/$unifiedFacilityNumber';
 
 
+  //Noification APIS
+
+
+  static String updateNotificationSettings() =>
+      '/v1/iam-services/ext/devices';
+
+
+
+
+
 
   //! Balady Calednar
 
@@ -800,6 +810,22 @@ class ApiUrl {
 
   static const baladyCalendarEvents =
       'v1/balady-calendar-services/events/by-year';
+
+
+
+
+
+
+  //! Notifications
+  static const notificationsUnreadMessages = 'v1/notifications-hub-services/fe/unread-messages';
+  static const notificationsMessagesList = 'v1/notifications-hub-services/fe/messages-list';
+  static const notificationsMarkRead = 'v1/notifications-hub-services/fe/messages/mark-read';
+  static const notificationsDeletedMessages = 'v1/notifications-hub-services/fe/deleted-messages';
+  static const notificationsProducts = 'v1/notifications-hub-services/fe/products';
+  static const notificationsServices = 'v1/notifications-hub-services/fe/services';
+  static const notificationsSettingsList = 'v1/notifications-hub-services/fe/profiles';
+  static const setProductsNotificationsSettings = 'v1/notifications-hub-services/fe/profile/products';
+  static const setProfileNotificationsSettings = 'v1/notifications-hub-services/fe/profiles';
 
   //! POST
 
