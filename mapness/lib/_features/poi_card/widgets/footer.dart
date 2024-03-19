@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/domain/extensions/extensions.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
+import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
@@ -187,8 +188,8 @@ class PoiCardFooter extends ConsumerWidget {
     await CommonFunctions.authOrOpen(
       context,
       callback: () {
-        final favState = ref.read(favouriteRepositoryProvider).valueOrNull;
-        final favRepo = ref.read(favouriteRepositoryProvider.notifier);
+        final favState = ref.read(favouriteCacheProvider).valueOrNull;
+        final favRepo = ref.read(favouriteCacheProvider.notifier);
         final objectMessage = data;
 
         final newFav = FavouriteItem(
@@ -204,12 +205,6 @@ class PoiCardFooter extends ConsumerWidget {
             id: objectMessage.id?.objectId.toString() ?? 'id',
           ),
         );
-
-        /// if already in favourites - remove
-        if (favouriteItem != null) {
-          favRepo.delete(favouriteItem);
-          return;
-        }
 
         /// do not show dialog if home and work are set
         if (favState?.home != null && favState?.work != null) {

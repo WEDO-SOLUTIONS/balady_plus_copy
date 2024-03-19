@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
+import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
 import 'package:mapness/_features/favourites/widgets/delete_all/delete_all_content.dart';
 import 'package:mapness/_features/favourites/widgets/empty_result_widget.dart';
@@ -32,18 +33,18 @@ class _FavouritesState extends ConsumerState<Favourites> {
   }
 
   void _deleteItem(FavouriteItem item) {
-    ref.read(favouriteRepositoryProvider.notifier).delete(item);
+    ref.read(favouriteCacheProvider.notifier).deleteItem(item);
   }
 
   @override
   Widget build(BuildContext context) {
-    final asyncState = ref.watch(favouriteRepositoryProvider);
+    final asyncState = ref.watch(favouriteCacheProvider);
     return asyncState.map(
       error: (error) => ErrorSheet(
         buttonLabel: 'Reload',
         onClose: () => context.pop(),
         onRetry: () {
-          ref.invalidate(favouriteRepositoryProvider);
+          ref.invalidate(favouriteCacheProvider);
         },
       ),
       loading: (_) => Material(
@@ -120,7 +121,8 @@ class _FavouritesState extends ConsumerState<Favourites> {
                   decoration: ShapeDecoration(
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
