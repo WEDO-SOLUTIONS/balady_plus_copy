@@ -79,8 +79,20 @@ jobs:
         uses: actions/checkout@v4
 
       # GITHUB_REF_SLUG
-      - name: Inject slug git variables
-        uses: rlespinasse/github-slug-action@v4
+      - name: Inject git variables
+        # uses: rlespinasse/github-slug-action@v4
+        run: |
+          echo "CI_GIT_COMMIT=$(git --no-pager show -s --format='%s')" >> ${GITHUB_ENV}
+          export CI_GIT_BRANCH=${GITHUB_BASE_REF}
+          export CI_IS_PR=""
+          if [[ ${GITHUB_EVENT_NAME} == "pull_request" ]]; then
+            export CI_GIT_BRANCH=${GITHUB_HEAD_REF}
+            export CI_IS_PR="pr-"
+          fi
+          echo "CI_GIT_BRANCH=${CI_GIT_BRANCH}" >> ${GITHUB_ENV}
+          CI_GIT_BRANCH_SLUG=$(echo -n ${CI_GIT_BRANCH} | tr --complement --squeeze-repeats '[:alnum:]' '-')
+          echo "CI_ARTIFACT_SUFFIX=${CI_IS_PR}${CI_GIT_BRANCH_SLUG}" >> ${GITHUB_ENV}
+          echo "CI_IS_PR=${CI_IS_PR}" >> ${GITHUB_ENV}
 
       - name: ⚙️ Setup Flutter
         uses: subosito/flutter-action@v2
@@ -149,46 +161,36 @@ jobs:
 
       - name: 🤖🔨 Build Android app
         run: |
-          export CI_GIT_COMMIT=$(git --no-pager show -s --format='%s')
-          flutter build apk --target lib/main_urbi_pre.dart --dart-define=GIT_BRANCH="${GITHUB_REF_SLUG}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=urbi-pre-prod
-          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/urbi-pre-${GITHUB_REF_SLUG}.apk
-          flutter build apk --target lib/main_prod.dart --dart-define=GIT_BRANCH="${GITHUB_REF_SLUG}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=momrah-prod
-          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/momrah-prod-${GITHUB_REF_SLUG}.apk
+          flutter build apk --target lib/main_urbi_pre.dart --dart-define=GIT_BRANCH="${CI_GIT_BRANCH}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=urbi-pre-prod
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/urbi-pre-${CI_ARTIFACT_SUFFIX}.apk
+          flutter build apk --target lib/main_prod.dart --dart-define=GIT_BRANCH="${CI_GIT_BRANCH}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=momrah-prod
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/momrah-prod-${CI_ARTIFACT_SUFFIX}.apk
 
       - name: 🤖🔨 Upload Urbi Pre Prod apk
         uses: actions/upload-artifact@v4
         with:
-          name: urbi-pre-${{ env.GITHUB_REF_SLUG }}.apk
-          path: build/app/outputs/flutter-apk/urbi-pre-${{ env.GITHUB_REF_SLUG }}.apk
+          name: urbi-pre-${{ env.CI_ARTIFACT_SUFFIX }}.apk
+          compression-level: 0
+          path: build/app/outputs/flutter-apk/urbi-pre-${{ env.CI_ARTIFACT_SUFFIX }}.apk
 
       - name: 🤖🔨 Upload Momrah Prod apk
         uses: actions/upload-artifact@v4
         with:
-          name: momrah-prod-${{ env.GITHUB_REF_SLUG }}.apk
-          path: build/app/outputs/flutter-apk/momrah-prod-${{ env.GITHUB_REF_SLUG }}.apk
+          name: momrah-prod-${{ env.CI_ARTIFACT_SUFFIX }}.apk
+          compression-level: 0
+          path: build/app/outputs/flutter-apk/momrah-prod-${{ env.CI_ARTIFACT_SUFFIX }}.apk
 
-  # notify:
-  #   name: Notify
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: send telegram message on push
-  #       uses: appleboy/telegram-action@master
-  #       with:
-  #         to: -4006528048
-  #         token: 6494211382:AAFAgk78N2uia5XFCtHHLnaIupX3EDznzRs
-  #         message: |
-  #           ${{ github.actor }} created commit:
-  #           Commit message: ${{ github.event.commits[0].message }}
-  #           Repository: ${{ github.repository }}
-  #           See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
-#      - name: 🤖🔨 Build WidgetBook instance
-#        run: |
-#          cd balady_uikit/
-#          flutter pub get
-#          dart run build_runner clean
-#          dart run build_runner build --delete-conflicting-outputs
-#          cd ./example
-#          flutter build web
-#          rm -rf ../../docs
-#          mv build/web ../../docs
-#          ls -l ../../docs
+      - name: Send notification to mattermost channel
+        env: # Set the secret as an environment variable
+          MM_CHANNEL_ID: ${{ secrets.MM_CHANNEL_ID }}
+          MM_BOT_TOKEN: ${{ secrets.MM_BOT_TOKEN }}
+          MM_DOMAIN: ${{ secrets.MM_DOMAIN }}
+        run: |
+          is_pr=""
+          if [ -n "${CI_IS_PR}" ]; then
+            is_pr="Pull Request build;"
+          fi
+          curl -X POST -H 'Content-type: application/json' -H "Authorization: Bearer ${MM_BOT_TOKEN}" https://${MM_DOMAIN}/api/v4/posts -d "{ \
+            \"channel_id\": \"${MM_CHANNEL_ID}\", \
+            \"message\": \"[Build](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) ${GITHUB_RUN_ID}:\nBranch ${CI_GIT_BRANCH};\n${is_pr}\" \
+          }"
