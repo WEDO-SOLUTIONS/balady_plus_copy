@@ -195,7 +195,8 @@ class _ContentState extends ConsumerState<_Content>
         children: [
           Favourites(data),
           About(
-            data,
+            title: data.address?.buildingName ?? data.title,
+            exits: data.entrances.length,
             onEntranceTap: () => showEntrance(data),
           ),
           if (about.isNotEmpty)
