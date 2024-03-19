@@ -208,9 +208,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                                 borderRadius: BorderRadius.circular(8),
                                 child: InkWell(
                                   onTap: () => const HappinessMapCommentRoute()
-                                      .replace(context),
-                                  // IwishFeedbackCommentRoute(iwishId: widget.iwishId)
-                                  //     .replace(context),
+                                      .push(context),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                       vertical: 10,

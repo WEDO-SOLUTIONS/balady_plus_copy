@@ -86,6 +86,8 @@ class _ContentState extends ConsumerState<_Content>
   late final TabController _tabController;
   late final ValueNotifier<PoiTabsType> _tabType;
 
+  late final DgisBottomSheetController _bottomSheetController;
+
   @override
   void initState() {
     super.initState();
@@ -107,6 +109,8 @@ class _ContentState extends ConsumerState<_Content>
         }
       },
     );
+
+    _bottomSheetController = DgisBottomSheetController();
   }
 
   @override
@@ -211,6 +215,7 @@ class _ContentState extends ConsumerState<_Content>
         collapsedHeight: 300,
         middleHeight: 600,
         hiddenHeight: 100,
+        controller: _bottomSheetController,
         mapControlsBuilder:
             (context, scrollController, biggestHeight, smallestHeight) =>
                 PoiCardMapControls(
@@ -277,6 +282,9 @@ class _ContentState extends ConsumerState<_Content>
     final cameraPosition = ref.read(cameraPositionProvider);
 
     if (showEntrances) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _bottomSheetController.animateTo(Expansion.collapsed);
+      });
       for (final entrance in data.entrances) {
         highlightController.addHighlight(entrance!.id);
       }

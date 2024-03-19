@@ -9,7 +9,7 @@ export GIT_COMMIT := replace_regex(`git rev-parse HEAD`, '([a-zA-Z0-9]{8}).*', '
 export VENDOR_CONFIG := env_var_or_default('VENDOR_CONFIG', 'unknown')
 dart_define := "--dart-define=GIT_BRANCH=\"" + GIT_BRANCH + "\" --dart-define=GIT_COMMIT=\"" + GIT_COMMIT + "\" --dart-define=VENDOR_CONFIG=$VENDOR_CONFIG"
 
-prebuild: pubget locale_gen build_pigeon codegen
+prebuild: pubget locale_gen build_pigeon download-sdk codegen
 
 pubget:
     #!/bin/bash
@@ -128,24 +128,85 @@ dev-env-setup:
     ./mapness/scripts/dev-env-setup.sh
 
 download-sdk:
-    curl -u "balady-developers:4Itn0|w3" -O https://artifactory.2gis.dev/vendor-ios-release/10.2.2/Release/DGisFullSDK.zip
+    #!/usr/bin/env bash
+    latestSDK='10.2.2'
+    if [[ $(< .sdk-version) == $latestSDK ]]; then
+        print_style '' 'green' 'SDK already up-to date'
+        exit
+    fi
+
+    print_style '' 'yellow' 'Downloading new SDK release'
+    curl -u "balady-developers:4Itn0|w3" -O https://artifactory.2gis.dev/vendor-ios-release/$latestSDK/Release/DGisFullSDK.zip
     rm -rf urbi_map/dgis_map/ios/_DELETE_ME_/DGis.xcframework
     unzip DGisFullSDK.zip -d urbi_map/dgis_map/ios/_DELETE_ME_
     rm DGisFullSDK.zip
-    curl -u "balady-developers:4Itn0|w3" -O https://artifactory.2gis.dev/vendor-maven-release/ru/dgis/sdk/sdk-full/10.2.2/sdk-full-10.2.2.aar
+    curl -u "balady-developers:4Itn0|w3" -O https://artifactory.2gis.dev/vendor-maven-release/ru/dgis/sdk/sdk-full/$latestSDK/sdk-full-$latestSDK.aar
     mkdir -p urbi_map/dgis_map/android/_delete_me_
-    mv sdk-full-10.2.2.aar urbi_map/dgis_map/android/_delete_me_/sdk-full-latest.aar
+    mv sdk-full-$latestSDK.aar urbi_map/dgis_map/android/_delete_me_/sdk-full-latest.aar
+    print_style '' 'green' 'SDK version saved to .sdk-version'
+    echo $latestSDK > .sdk-version
 
 ios-release: apply-patches prebuild ios_setup && unapply-patches
     #!/usr/bin/env bash
     momrahBundle='momra.balady.ios'
     baladyBundle='xyz.amoriodi.balady'
 
+    momrahTeam='9VKA788PDD'
+    baladyTeam='USDCL8J49X'
+
+    appDisplayNameProd='$(APP_DISPLAY_NAME)';
+    appDisplayNameDev='Balady Dev';
+
     set -euxo pipefail
     sed -i '' "s/$momrahBundle/$baladyBundle/" ios/Runner.xcodeproj/project.pbxproj
-    fvm flutter build ipa --target lib/main_stg.dart --flavor stg
+    sed -i '' "s/$momrahTeam/$baladyTeam/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$appDisplayNameProd/$appDisplayNameDev/" ios/Runner/Info.plist
+    git apply mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not apply sdk key patch'
+    fvm flutter build ipa --target lib/main_dev.dart --flavor dev
     sed -i '' "s/$baladyBundle/$momrahBundle/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$baladyTeam/$momrahTeam/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$appDisplayNameDev/$appDisplayNameProd/" ios/Runner/Info.plist
+    git apply -R mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not unapply sdk key patch'
     open build/ios/archive/Runner.xcarchive
+
+ios-ad-hoc version: apply-patches prebuild ios_setup && unapply-patches
+    #!/usr/bin/env bash
+    # One day fuckin' flutter will not ignore export options....
+    momrahBundle='momra.balady.ios'
+    baladyBundle='xyz.amoriodi.balady'
+
+    momrahTeam='9VKA788PDD'
+    baladyTeam='USDCL8J49X'
+
+    codeSignAutomatic='CODE_SIGN_STYLE = Automatic;'
+    codeSignManual='CODE_SIGN_STYLE = Manual;'
+
+    codeSignIdentityDevelopment='CODE_SIGN_IDENTITY = "Apple Development";'
+    codeSignIdentityDistribution='CODE_SIGN_IDENTITY = "iPhone Distribution";'
+
+    provisionProfileNone='PROVISIONING_PROFILE_SPECIFIER = "";'
+    provisionProfileAdHoc='PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";'
+
+    appDisplayNameProd='$(APP_DISPLAY_NAME)';
+    appDisplayNameDev='Balady Dev';
+
+    set -euxo pipefail
+    sed -i '' "s/$momrahBundle/$baladyBundle/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$momrahTeam/$baladyTeam/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$codeSignAutomatic/$codeSignManual/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$codeSignIdentityDevelopment/$codeSignIdentityDistribution/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$provisionProfileNone/$provisionProfileAdHoc/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$appDisplayNameProd/$appDisplayNameDev/" ios/Runner/Info.plist
+    git apply mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not apply sdk key patch'
+    fvm flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_dev.dart --flavor dev
+    sed -i '' "s/$baladyBundle/$momrahBundle/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$baladyTeam/$momrahTeam/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$codeSignManual/$codeSignAutomatic/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$codeSignIdentityDistribution/$codeSignIdentityDevelopment/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$provisionProfileAdHoc/$provisionProfileNone/" ios/Runner.xcodeproj/project.pbxproj
+    sed -i '' "s/$appDisplayNameDev/$appDisplayNameProd/" ios/Runner/Info.plist
+    git apply -R mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not unapply sdk key patch'
+    curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImEuc3RyaXpobmV2QHVyYmkuYWUifQ.DgmqmgZ-DeQfBt0R36s7nftEkk-XnFr6VVi2syD-jTE" -X PUT -F file=@build/ios/ipa/balady_plus.ipa https://baladyapp-builds.urbi.ae/builds/{{ version }}
 
 apk-release version: apply-patches prebuild && unapply-patches open_built 
     #!/usr/bin/env bash
