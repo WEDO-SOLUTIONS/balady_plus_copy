@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' hide SearchBar, ScrollPosition;
+import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/weather/provider/forecast_weather_provider.dart';
 import 'package:mapness/_features/weather/provider/weather_map_controls.dart';
@@ -7,9 +7,7 @@ import 'package:mapness/_features/weather/widgets/weather_day_card.dart';
 
 class WeatherDashboard extends ConsumerStatefulWidget {
   const WeatherDashboard({
-    super.key,
-    required this.biggestHeight,
-    required this.biggestWidth,
+    required this.biggestHeight, required this.biggestWidth, super.key,
   });
 
   final double biggestHeight;
@@ -31,9 +29,9 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
     _draggableScrollableController = DraggableScrollableController()
       ..addListener(() {
         Future.delayed(Duration.zero, () {
-          var size = _draggableScrollableController.size;
-          var sizeFixed = double.parse(size.toStringAsFixed(2));
-          var headerExtentFixed =
+          final size = _draggableScrollableController.size;
+          final sizeFixed = double.parse(size.toStringAsFixed(2));
+          final headerExtentFixed =
               double.parse(_headerExtent.toStringAsFixed(2));
           final mapControls = ref.read(weatherMapControlsProvider.notifier);
 
@@ -42,7 +40,7 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
               controlsVisible: false,
             );
           } else if (sizeFixed == headerExtentFixed) {
-            var extent = widget.biggestHeight * sizeFixed;
+            final extent = widget.biggestHeight * sizeFixed;
             mapControls.update(
               extent: extent,
               controlsVisible: true,
@@ -50,7 +48,7 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
           } else if (sizeFixed < headerExtentFixed && sizeFixed != .1) {
             mapControls.update(controlsVisible: false);
           } else if (sizeFixed == .1) {
-            var extent = widget.biggestHeight * sizeFixed;
+            final extent = widget.biggestHeight * sizeFixed;
             mapControls.update(
               controlsVisible: true,
               extent: extent,
@@ -74,11 +72,9 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
       controller: _draggableScrollableController,
       initialChildSize: _headerExtent,
       minChildSize: .1,
-      maxChildSize: 1,
       snap: true,
       snapSizes: [.1, _headerExtent, 1],
-      builder: (BuildContext context, ScrollController scrollController) {
-        return Directionality(
+      builder: (context, scrollController) => Directionality(
           textDirection: TextDirection.rtl,
           child: Container(
             // padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -88,8 +84,8 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
               // color: context.color.surface_base_primary,
 
               borderRadius: BorderRadius.only(
-                topRight: Radius.circular(16.0),
-                topLeft: Radius.circular(16.0),
+                topRight: Radius.circular(16),
+                topLeft: Radius.circular(16),
               ),
             ),
             child: CustomScrollView(
@@ -107,7 +103,7 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
                 SliverList.separated(
 
                   itemCount: weatherData?.forecast?.forecastday?.length ?? 0,
-                  itemBuilder: (BuildContext context, int index) =>
+                  itemBuilder: (context, index) =>
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: WeatherDayCard(
@@ -116,7 +112,7 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
                     onExpansionChanged: (b) {},
                   ),
                       ),
-                  separatorBuilder: (BuildContext context, int index) =>
+                  separatorBuilder: (context, index) =>
                       const SizedBox(
                     height: 12,
                   ),
@@ -124,8 +120,7 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
               ],
             ),
           ),
-        );
-      },
+        ),
     );
   }
 }

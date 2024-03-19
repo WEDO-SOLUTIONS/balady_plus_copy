@@ -92,7 +92,7 @@ class RoutingHistory extends ConsumerWidget {
                 await ref
                     .read(searchHistoryProvider(_searchScope).notifier)
                     .delete(item);
-                if (result) {
+                if (result as bool) {
                   searchByQuery(item.title);
                 }
               }

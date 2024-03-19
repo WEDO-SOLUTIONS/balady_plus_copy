@@ -6,7 +6,5 @@ part 'base_dio.g.dart';
 @riverpod
 class BaseDio extends _$BaseDio {
   @override
-  Dio build() {
-    return Dio();
-  }
+  Dio build() => Dio();
 }

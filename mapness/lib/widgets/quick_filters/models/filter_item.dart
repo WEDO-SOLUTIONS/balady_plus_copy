@@ -1,10 +1,7 @@
 class FilterItem {
   FilterItem({
-    this.title,
-    required this.filterType,
-    required this.icon,
+    required this.filterType, required this.icon, required this.onTap, this.title,
     this.index,
-    required this.onTap,
   });
 
   final String? title;

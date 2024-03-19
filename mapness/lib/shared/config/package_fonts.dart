@@ -17,7 +17,7 @@ class PackageFonts {
         fontStyle: fontStyle,
         height: height,
         letterSpacing: letterSpacing,
-        fontFamily: "Frutiger",
+        fontFamily: 'Frutiger',
       );
 
   static TextStyle inter({

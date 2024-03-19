@@ -5,22 +5,22 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class JobButton extends StatelessWidget {
+
+  const JobButton({
+    required this.label,
+    required this.asset,
+    super.key,
+    this.backgroundColor,
+    this.textColor,
+    this.enabled = true,
+    this.onPressed,
+  });
   final String label;
   final String asset;
   final Color? backgroundColor;
   final Color? textColor;
   final bool enabled;
   final VoidCallback? onPressed;
-
-  const JobButton({
-    required this.label,
-    required this.asset,
-    Key? key,
-    this.backgroundColor,
-    this.textColor,
-    this.enabled = true,
-    this.onPressed,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) => ElevatedButton(

@@ -4,26 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:mapness/shared/config/package_config.dart';
 
 class ServiceCard extends StatelessWidget {
-  final VoidCallback? onTap;
-  final bool isNetworkImage;
 
   const ServiceCard({
-    super.key,
-    required this.title,
-    required this.subtitle,
-    required this.image,
+    required this.title, required this.subtitle, required this.image, super.key,
     this.onTap,
     this.isNetworkImage = false,
   });
+  final VoidCallback? onTap;
+  final bool isNetworkImage;
 
   final String title;
   final String subtitle;
   final String image;
 
   @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8.0),
+  Widget build(BuildContext context) => ClipRRect(
+      borderRadius: BorderRadius.circular(8),
       child: Material(
         child: Ink.image(
           image: isNetworkImage
@@ -51,7 +47,7 @@ class ServiceCard extends StatelessWidget {
                     Text(
                       subtitle,
                       style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: Colors.white.withOpacity(0.8)),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -60,5 +56,4 @@ class ServiceCard extends StatelessWidget {
         ),
       ),
     );
-  }
 }

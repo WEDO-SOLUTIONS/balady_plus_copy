@@ -1,6 +1,9 @@
 import 'package:balady_plus/app/core/utils/routes_type.dart';
 import 'package:balady_plus/app/features/balady_calender/data/models/events_details/calendar_event_item.dart';
+import 'package:balady_plus/app/features/balady_calender/presentation/bloc/events_list_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -12,6 +15,7 @@ class ListItemsEventsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    EventsListCubit bloc = context.watch<EventsListCubit>();
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -72,13 +76,10 @@ class ListItemsEventsWidget extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      DateFormat(
-                            ' EEEE dd ',
-                            Localizations.localeOf(context).languageCode,
-                          ).format(event.eventDate!) +
-                          ((event.entityType ?? '') == ScreenTage.appmt.name
-                              ? event.metadata?.time ?? ''
-                              : ''),
+                      (bloc.params.commonParams.commonParams.hijri
+                          ? " ${HijriCalendar.fromDate(event.eventDate!).dayWeName} ${HijriCalendar.fromDate(event.eventDate!).hDay} "
+                          : DateFormat(' EEEE dd ', Localizations.localeOf(context).languageCode,).format(event.eventDate!) )
+                          + ((event.entityType ?? '') == ScreenTage.appmt.name ? event.metadata?.time ?? '' : ''),
                       style: AppStyle.signInFullTextStyle
                           .copyWith(fontWeight: FontWeight.w600),
                     ),

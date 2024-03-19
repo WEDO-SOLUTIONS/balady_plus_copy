@@ -18,9 +18,9 @@ import 'package:mapness/widgets/iwish/ui/iwish_feedback_mood.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_feedback_tags.dart';
 
 class IwishFeedback extends ConsumerStatefulWidget {
-  final String iwishId;
 
-  const IwishFeedback({super.key, required this.iwishId});
+  const IwishFeedback({required this.iwishId, super.key});
+  final String iwishId;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _IwishFeedbackState();
@@ -42,7 +42,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
     }
     if (entityState.hasError || feedbackState.hasError) {
       return ErrorSheet(
-        onRetry: () => feedbackNotifier.submitFeedback(),
+        onRetry: feedbackNotifier.submitFeedback,
         buttonLabel: context.l10n.reload,
         onClose: () => context.pop(),
       );
@@ -72,7 +72,6 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
           : context.l10n.voteWhatDoYouWantToHaveInThePark,
       child: SafeArea(
         top: false,
-        bottom: true,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -80,7 +79,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
             if (isCompleted)
               IwishFeedbackMood(
                 selectedMood: feedback.mood,
-                onMoodSelected: (mood) => feedbackNotifier.updateMood(mood),
+                onMoodSelected: feedbackNotifier.updateMood,
               ),
             if (feedback.mood != null || isPlanned) ...[
               const SizedBox(height: 16),
@@ -116,9 +115,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
               const SizedBox(height: 16),
               LabeledElevatedButton(
                 onPressed: () async {
-                  CommonFunctions.authOrOpen(context, callback: () {
-                    feedbackNotifier.submitFeedback();
-                  });
+                  await CommonFunctions.authOrOpen(context, callback: feedbackNotifier.submitFeedback,);
                 },
                 label: context.l10n.sendFeedback,
               ),

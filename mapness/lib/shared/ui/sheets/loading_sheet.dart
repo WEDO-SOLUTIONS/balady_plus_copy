@@ -1,37 +1,18 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/loading/fullscreen_loading_indicator.dart';
 
 class LoadingSheet extends StatelessWidget {
+  const LoadingSheet({super.key, this.text});
   final String? text;
-  const LoadingSheet({Key? key, this.text}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 16),
-        height: 265,
-        width: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-             CircularProgressIndicator(
-                color: context.color.text_and_icons_status_accent,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              text ?? context.l10n.loading,
-              style: Theme.of(context)
-                  .extension<ThemeTextStyles>()!
-                  .textL
-                  .copyWith(color: context.color.text_and_icons_base_primary),
-            ),
-          ],
+  Widget build(BuildContext context) => Material(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        child: const SizedBox(
+          height: 265,
+          width: double.infinity,
+          child: FullscreenLoadingIndicator(),
         ),
-      ),
-    );
-  }
+      );
 }

@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/poi_card/domain/model/qr_trade_license.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
-import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class QrLicenseInfo extends StatelessWidget {
-  final QrLicenseMessage? licenseInfo;
 
   const QrLicenseInfo(this.licenseInfo, {super.key});
+  final QrLicenseMessage? licenseInfo;
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +29,6 @@ class QrLicenseInfo extends StatelessWidget {
             SizedBox(
               height: 50,
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   SvgPicture.asset(
                     'assets/icons/svg/poi_card/Truck.svg',
@@ -59,8 +56,6 @@ class QrLicenseInfo extends StatelessWidget {
             SizedBox(
               height: 50,
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   SvgPicture.asset(
                     'assets/icons/svg/poi_card/Accessibility.svg',
@@ -85,7 +80,7 @@ class QrLicenseInfo extends StatelessWidget {
                         style: context.textStyle.textS.copyWith(
                             color: context.color.text_and_icons_base_primary.withOpacity(
                           0.5,
-                        )),
+                        ),),
                       ),
                     ],
                   ),

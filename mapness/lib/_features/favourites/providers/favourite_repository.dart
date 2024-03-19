@@ -62,7 +62,7 @@ class _FavouriteRepository extends _$FavouriteRepository {
       data: request.writeToBuffer(),
     );
     state = AsyncValue.data(
-      proto.FavouritesResponse.fromBuffer(raw.data).toDomain(),
+      proto.FavouritesResponse.fromBuffer(raw.data as List<int>).toDomain(),
     );
   }
 
@@ -92,29 +92,31 @@ class _FavouriteRepository extends _$FavouriteRepository {
     });
     mixpanel?.timeEvent('Favorites: addItems');
     final dio = await ref.read(dGisNetworkProvider.future);
-    final request = proto.AddFavouriteItemsRequest(items: items.map((e) {
-      final FavouriteItemMarkerType itemType;
-      final data = state.requireValue;
-      if (e == data.work) {
-        itemType = FavouriteItemMarkerType.work;
-      } else if (e == data.home) {
-        itemType = FavouriteItemMarkerType.home;
-      } else {
-        itemType = FavouriteItemMarkerType.place;
-      }
-      return AddRequestItemMapper.fromDomain(e, itemType);
-    }));
-    print(request.toString());
+    final request = proto.AddFavouriteItemsRequest(
+      items: items.map((e) {
+        final FavouriteItemMarkerType itemType;
+        final data = state.requireValue;
+        if (e == data.work) {
+          itemType = FavouriteItemMarkerType.work;
+        } else if (e == data.home) {
+          itemType = FavouriteItemMarkerType.home;
+        } else {
+          itemType = FavouriteItemMarkerType.place;
+        }
+        return AddRequestItemMapper.fromDomain(e, itemType);
+      }),
+    );
+    print(request);
     try {
       final raw = await dio.post(
         'favourites',
         data: request.writeToBuffer(),
       );
       state = AsyncValue.data(
-        proto.FavouritesResponse.fromBuffer(raw.data).toDomain(),
+        proto.FavouritesResponse.fromBuffer(raw.data as List<int>).toDomain(),
       );
     } on DioException catch (e) {
-      print(proto.ErrorResponse.fromBuffer(e.response!.data));
+      print(proto.ErrorResponse.fromBuffer(e.response!.data as List<int>));
     }
     mixpanel?.track('Favorites: addItems');
   }
@@ -123,7 +125,7 @@ class _FavouriteRepository extends _$FavouriteRepository {
     mixpanel?.timeEvent('Favorites: fetchFavourites');
     final dio = await ref.watch(dGisNetworkProvider.future);
     final raw = await dio.get('favourites');
-    final response = proto.FavouritesResponse.fromBuffer(raw.data);
+    final response = proto.FavouritesResponse.fromBuffer(raw.data as List<int>);
     mixpanel?.track('Favorites: fetchFavourites');
     return response.toDomain();
   }
@@ -187,7 +189,7 @@ class _FavouriteRepository extends _$FavouriteRepository {
     mixpanel?.timeEvent('Favorites: build');
     final dio = await ref.watch(dGisNetworkProvider.future);
     final raw = await dio.get('favourites');
-    final response = proto.FavouritesResponse.fromBuffer(raw.data);
+    final response = proto.FavouritesResponse.fromBuffer(raw.data as List<int>);
     mixpanel?.track('Favorites: build');
     return response.toDomain();
   }

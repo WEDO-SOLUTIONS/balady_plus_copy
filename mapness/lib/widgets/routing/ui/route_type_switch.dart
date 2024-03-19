@@ -8,10 +8,6 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class RouteTypeSwitch extends ConsumerWidget {
-  final VoidCallback onPressed;
-  final String? title;
-  final String iconAsset;
-  final bool isChoosed;
 
   const RouteTypeSwitch({
     required this.onPressed,
@@ -20,6 +16,10 @@ class RouteTypeSwitch extends ConsumerWidget {
     required this.isChoosed,
     super.key,
   });
+  final VoidCallback onPressed;
+  final String? title;
+  final String iconAsset;
+  final bool isChoosed;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

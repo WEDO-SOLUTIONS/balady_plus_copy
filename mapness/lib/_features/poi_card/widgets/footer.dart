@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/domain/extensions/extensions.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
+import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/_features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
@@ -14,14 +15,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 
-import '../../favourites/providers/favourite_repository.dart';
-
 class PoiCardFooter extends ConsumerWidget {
-  final DirectoryObjectMessage data;
-  final PoiCardViewModel viewModel;
-  final void Function() onEntranceTap;
-  late final RouteSearchPointMessage _finishPoint;
-
   PoiCardFooter({
     required this.data,
     required this.viewModel,
@@ -33,6 +27,10 @@ class PoiCardFooter extends ConsumerWidget {
       objectId: data.id!,
     );
   }
+  final DirectoryObjectMessage data;
+  final PoiCardViewModel viewModel;
+  final void Function() onEntranceTap;
+  late final RouteSearchPointMessage _finishPoint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -90,9 +88,15 @@ class PoiCardFooter extends ConsumerWidget {
                   finishLabel: objectMessage!.title,
                   finishLatitude: objectMessage.markerPosition!.latitude,
                   finishLongitude: objectMessage.markerPosition!.longitude,
+                  finishObjectId: objectMessage.id?.objectId,
+                  finishEntranceId: objectMessage.id?.entranceId,
+                  finishLevelId: objectMessage.levelId,
                   startLabel: context.l10n.myLocation,
                   startLatitude: null,
                   startLongitude: null,
+                  startObjectId: null,
+                  startEntranceId: null,
+                  startLevelId: null,
                 ).pushReplacement(context);
               },
               finishPoint: _finishPoint,
@@ -104,7 +108,7 @@ class PoiCardFooter extends ConsumerWidget {
         ? buildIconButton(
             flex: flex,
             assetName: 'assets/icons/svg/ic_entrance.svg',
-            onTap: () => onEntranceTap(),
+            onTap: onEntranceTap,
             // onTap: () => widget.viewModel.onEntranceTap(objectMessage),
             // desc: (hasContacts == false)
             //     ? Text(

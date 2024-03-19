@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 const Duration _kExpand = Duration(milliseconds: 200);
 
@@ -123,7 +122,7 @@ class ExpansionTileController {
   /// populated by instances of your new inner widgets, and then in
   /// these inner widgets you would use [ExpansionTileController.of].
   static ExpansionTileController of(BuildContext context) {
-    final _CustomExpansionTileState? result =
+    final result =
         context.findAncestorStateOfType<_CustomExpansionTileState>();
     if (result != null) {
       return result._tileController;
@@ -167,11 +166,9 @@ class ExpansionTileController {
   ///  * [of], a similar function to this one that throws if no [CustomExpansionTile]
   ///    encloses the given context. Also includes some sample code in its
   ///    documentation.
-  static ExpansionTileController? maybeOf(BuildContext context) {
-    return context
+  static ExpansionTileController? maybeOf(BuildContext context) => context
         .findAncestorStateOfType<_CustomExpansionTileState>()
         ?._tileController;
-  }
 }
 
 /// A single-line [ListTile] with an expansion arrow icon that expands or collapses
@@ -217,9 +214,8 @@ class CustomExpansionTile extends StatefulWidget {
   /// the tile to reveal or hide the [children]. The [initiallyExpanded] property must
   /// be non-null.
   const CustomExpansionTile({
-    super.key,
+    required this.title, super.key,
     this.leading,
-    required this.title,
     this.subtitle,
     this.onExpansionChanged,
     this.children = const <Widget>[],
@@ -496,7 +492,7 @@ class _CustomExpansionTileState extends State<CustomExpansionTile>
   static final Animatable<double> _easeInTween =
       CurveTween(curve: Curves.easeIn);
   static final Animatable<double> _halfTween =
-      Tween<double>(begin: 0.0, end: 0.5);
+      Tween<double>(begin: 0, end: 0.5);
 
   final ShapeBorderTween _borderTween = ShapeBorderTween();
   final ColorTween _headerColorTween = ColorTween();
@@ -553,7 +549,7 @@ class _CustomExpansionTileState extends State<CustomExpansionTile>
       if (_isExpanded) {
         _animationController.forward();
       } else {
-        _animationController.reverse().then<void>((void value) {
+        _animationController.reverse().then<void>((value) {
           if (!mounted) {
             return;
           }
@@ -573,7 +569,7 @@ class _CustomExpansionTileState extends State<CustomExpansionTile>
 
   // Platform or null affinity defaults to trailing.
   ListTileControlAffinity _effectiveAffinity(
-      ListTileControlAffinity? affinity) {
+      ListTileControlAffinity? affinity,) {
     switch (affinity ?? ListTileControlAffinity.trailing) {
       case ListTileControlAffinity.leading:
         return ListTileControlAffinity.leading;
@@ -610,14 +606,14 @@ class _CustomExpansionTileState extends State<CustomExpansionTile>
   }
 
   Widget _buildChildren(BuildContext context, Widget? child) {
-    final ExpansionTileThemeData expansionTileTheme =
+    final expansionTileTheme =
         ExpansionTileTheme.of(context);
-    final ShapeBorder expansionTileBorder = _border.value ??
+    final expansionTileBorder = _border.value ??
         const Border(
           top: BorderSide(color: Colors.transparent),
           bottom: BorderSide(color: Colors.transparent),
         );
-    final Clip clipBehavior =
+    final clipBehavior =
         widget.clipBehavior ?? expansionTileTheme.clipBehavior ?? Clip.none;
 
     return Container(
@@ -660,10 +656,10 @@ class _CustomExpansionTileState extends State<CustomExpansionTile>
 
   @override
   void didChangeDependencies() {
-    final ThemeData theme = Theme.of(context);
-    final ExpansionTileThemeData expansionTileTheme =
+    final theme = Theme.of(context);
+    final expansionTileTheme =
         ExpansionTileTheme.of(context);
-    final ExpansionTileThemeData defaults = theme.useMaterial3
+    final defaults = theme.useMaterial3
         ? _ExpansionTileDefaultsM3(context)
         : _ExpansionTileDefaultsM2(context);
     _borderTween
@@ -702,10 +698,10 @@ class _CustomExpansionTileState extends State<CustomExpansionTile>
 
   @override
   Widget build(BuildContext context) {
-    final ExpansionTileThemeData expansionTileTheme =
+    final expansionTileTheme =
         ExpansionTileTheme.of(context);
-    final bool closed = !_isExpanded && _animationController.isDismissed;
-    final bool shouldRemoveChildren = closed && !widget.maintainState;
+    final closed = !_isExpanded && _animationController.isDismissed;
+    final shouldRemoveChildren = closed && !widget.maintainState;
 
     final Widget result = Offstage(
       offstage: closed,

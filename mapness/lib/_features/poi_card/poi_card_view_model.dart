@@ -1,8 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/favourites/domain/favourite_item.dart';
-import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/poi_card/enums/contacts_info_type.dart';
 import 'package:mapness/_features/poi_card/extensions/directory_message_ext.dart';
@@ -11,11 +9,11 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PoiCardViewModel {
-  final WidgetRef ref;
 
   PoiCardViewModel({
     required this.ref,
   });
+  final WidgetRef ref;
 
   void onError() => Future(
         () => ref

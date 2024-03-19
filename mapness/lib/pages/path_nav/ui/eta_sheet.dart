@@ -14,14 +14,6 @@ import 'package:mapness/widgets/path_nav/ui/path_nav_icon_button.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_setting_toggle.dart';
 
 class EtaSheet extends ConsumerStatefulWidget {
-  final VoidCallback onEndTripPressed;
-  final VoidCallback onRoutePressed;
-  final double minExtent;
-  final double maxExtent;
-
-  final ValueListenable<PathNavState> navigationState;
-
-  final void Function(double opacity) onBgOpacityChanged;
 
   const EtaSheet({
     required this.minExtent,
@@ -32,6 +24,14 @@ class EtaSheet extends ConsumerStatefulWidget {
     required this.navigationState,
     super.key,
   });
+  final VoidCallback onEndTripPressed;
+  final VoidCallback onRoutePressed;
+  final double minExtent;
+  final double maxExtent;
+
+  final ValueListenable<PathNavState> navigationState;
+
+  final void Function(double opacity) onBgOpacityChanged;
 
   @override
   ConsumerState<EtaSheet> createState() => _EtaSheetState();

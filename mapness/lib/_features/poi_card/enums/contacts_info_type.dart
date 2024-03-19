@@ -15,8 +15,7 @@ enum ContactsInfoType {
 }
 
 extension ContactsInfoTypeExt on ContactsInfoType {
-  String getIconResource() {
-    return switch (this) {
+  String getIconResource() => switch (this) {
       ContactsInfoType.phone => 'assets/icons/svg/ic_phone.svg',
       ContactsInfoType.mobile => 'assets/icons/svg/ic_phone.svg',
       ContactsInfoType.website => 'assets/icons/svg/ic_web.svg',
@@ -31,10 +30,8 @@ extension ContactsInfoTypeExt on ContactsInfoType {
       ContactsInfoType.telegram => 'assets/icons/svg/social/Telegram.svg',
       ContactsInfoType.unknown => 'assets/icons/svg/ic_web.svg',
     };
-  }
 
-  String? getTitle() {
-    return switch (this) {
+  String? getTitle() => switch (this) {
       ContactsInfoType.twitter => 'Twitter',
       ContactsInfoType.instagram => 'Instagram',
       ContactsInfoType.snapchat => 'Snapchat',
@@ -46,10 +43,8 @@ extension ContactsInfoTypeExt on ContactsInfoType {
       ContactsInfoType.unknown => null,
       _ => null,
     };
-  }
 
-  static ContactsInfoType fromString(String typeName) {
-    return switch (typeName) {
+  static ContactsInfoType fromString(String typeName) => switch (typeName) {
       'phone' => ContactsInfoType.phone,
       'website' => ContactsInfoType.website,
       'email' => ContactsInfoType.email,
@@ -64,5 +59,4 @@ extension ContactsInfoTypeExt on ContactsInfoType {
       'telegram' => ContactsInfoType.telegram,
       _ => ContactsInfoType.unknown
     };
-  }
 }

@@ -32,9 +32,7 @@ class _Location extends _$Location {
           );
         },
       );
-      ref.onDispose(() {
-        locationSubscription.cancel();
-      });
+      ref.onDispose(locationSubscription.cancel);
 
       return null;
     });

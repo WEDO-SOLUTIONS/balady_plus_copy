@@ -4,9 +4,6 @@ import 'package:mapness/features/jobs/data/models/job_model.dart';
 //TODO(Scroollocker): change to equatable
 @immutable
 class JobListModel {
-  final List<JobModel>? records;
-  final int? totalRecordsCount;
-  final int? pagesCount;
 
   const JobListModel({
     this.records,
@@ -25,6 +22,9 @@ class JobListModel {
         totalRecordsCount: json['totalRecordsCount'] as int?,
         pagesCount: json['pagesCount'] as int?,
       );
+  final List<JobModel>? records;
+  final int? totalRecordsCount;
+  final int? pagesCount;
 
   @override
   bool operator ==(Object other) {

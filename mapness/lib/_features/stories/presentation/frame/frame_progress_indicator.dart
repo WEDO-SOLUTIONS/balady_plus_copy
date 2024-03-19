@@ -3,27 +3,23 @@ import 'package:mapness/_features/stories/presentation/frame/close_story_button.
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class FrameProgressIndicator extends StatelessWidget {
-  final VoidCallback? onClose;
-  final int frameIndex;
-  final int framesLength;
-  final double progress;
 
   const FrameProgressIndicator({
-    super.key,
+    required this.frameIndex, required this.framesLength, required this.progress, super.key,
     this.onClose,
-    required this.frameIndex,
-    required this.framesLength,
-    required this.progress,
   })  : assert(frameIndex >= 0, 'frameIndex must be greater than 0'),
         assert(framesLength >= 0, 'framesLength must be greater than 0'),
         assert(progress >= 0, 'progress must be greater than 0'),
         assert(progress <= 1, 'progress must be less than 1'),
         assert(frameIndex <= framesLength,
-            'frameIndex must be less than framesLength');
+            'frameIndex must be less than framesLength',);
+  final VoidCallback? onClose;
+  final int frameIndex;
+  final int framesLength;
+  final double progress;
 
   @override
-  Widget build(BuildContext context) {
-    return Directionality(
+  Widget build(BuildContext context) => Directionality(
       textDirection: Directionality.of(context),
       child: Padding(
         padding: const EdgeInsets.only(top: 8, left: 16, right: 16),
@@ -66,5 +62,4 @@ class FrameProgressIndicator extends StatelessWidget {
         ),
       ),
     );
-  }
 }

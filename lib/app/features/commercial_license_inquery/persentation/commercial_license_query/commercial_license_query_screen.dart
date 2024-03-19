@@ -73,22 +73,14 @@ class _CommercialLicenseQueryScreenState extends State<CommercialLicenseQueryScr
 
                       children: [
                         CustomTextWidget(
-                          "user_data_applicant".tr(),
+                          "commercial_licenseـquery_title".tr(),
                           textStyle: AppStyle.complianceTitleStyle,
                           maxLines: 4,
 
                         ),
-
                         const SizedBox(
                           height: 10,
                         ),
-                        CustomTextWidget(
-                          "commercial_desc".tr(),
-                          textStyle: AppStyle.serviceListTitleTextStyle,
-                          maxLines: 4,
-
-                        ),
-
                         const SizedBox(
                           height: 20,
                         ),

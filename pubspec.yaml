@@ -16,7 +16,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 3.9.2+197
+version: 3.9.6+201
 
 environment:
   sdk: ">=3.0.1 <4.0.0"
@@ -170,7 +170,6 @@ dependencies:
   dotted_border: ^2.0.0+3
   sentry_dio: ^7.9.0
   linkable: ^3.0.0
-  
 
   # Map urbi SDK
   dgis_map:
@@ -208,6 +207,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   json_serializable: ^6.7.1
+  very_good_analysis: ^5.1.0
 
 flutter:
   uses-material-design: true
@@ -241,6 +241,7 @@ flutter:
     - assets/images/
     - assets/langs/
     - assets/quran/
+    - assets/maps/configs/
     - assets/maps/styles/
     - assets/maps/icons/
     - assets/maps/icons/card_icon/

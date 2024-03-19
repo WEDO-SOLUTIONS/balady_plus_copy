@@ -865,15 +865,13 @@ class CommonFunctions {
         return "$hoursFromAS12:$minuteStr " + "pm".tr();
 
       if (fromTime.period == DayPeriod.am) {
-
-
-        if(isAppAR == false) {
-          return "$hoursFromAS12:$minuteStr ص".replaceAll("ص", ("am").tr()).replaceAll("م", ("pm").tr());
+        if (isAppAR == false) {
+          return "$hoursFromAS12:$minuteStr ص"
+              .replaceAll("ص", ("am").tr())
+              .replaceAll("م", ("pm").tr());
+        } else {
+          return "$hoursFromAS12:$minuteStr ص";
         }
-        else
-          {
-            return "$hoursFromAS12:$minuteStr ص";
-          }
       }
     }
     return "";
@@ -941,13 +939,10 @@ class CommonFunctions {
 
         if (toTime.period == DayPeriod.am) to = "$hoursToAS12:$minuteToStr ص";
 
-
         if (isAppAR == false) {
           from = from.replaceAll("ص", ("am").tr()).replaceAll("م", ("pm").tr());
           to = to.replaceAll("ص", ("am").tr()).replaceAll("م", ("pm").tr());
         }
-
-
 
         return "$from - $to";
       }
@@ -1009,7 +1004,8 @@ class CommonFunctions {
       throw 'Could not launch $convertUrl';
   }
 
-  static openBaldyWithRefreshCookie(String? redirectUrl,{bool pushReplacement = false}) async {
+  static openBaldyWithRefreshCookie(String? redirectUrl,
+      {bool pushReplacement = false}) async {
     if (redirectUrl == null) return;
     EasyLoading.show();
     GetCookie getCookie = GetCookie(repository: sl());
@@ -1018,22 +1014,22 @@ class CommonFunctions {
     failureOrSuccessForCookie.fold((l) {
       CommonFunctions.showError("server_error_1".tr());
     }, (r) async {
-      if(!pushReplacement) {
+      if (!pushReplacement) {
         NavigationService.navigatorKey.currentState?.pushNamed(
           RouteName.inappWebview,
           arguments: (
-          requestNum: 'request'.tr(),
-          url: redirectUrl,
-          isObjections: false
+            requestNum: 'request'.tr(),
+            url: redirectUrl,
+            isObjections: false
           ),
         );
       } else {
         NavigationService.navigatorKey.currentState?.pushReplacementNamed(
           RouteName.inappWebview,
           arguments: (
-          requestNum: 'request'.tr(),
-          url: redirectUrl,
-          isObjections: false
+            requestNum: 'request'.tr(),
+            url: redirectUrl,
+            isObjections: false
           ),
         );
       }
@@ -1369,6 +1365,7 @@ class CommonFunctions {
   }
 
   static bool isFoundationDay() {
+    return false;
     DateTime today = DateTime.now();
 
     int todayDay = today.day;

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/color_scheme.dart';
 
 class ColorschemeToggler extends ConsumerWidget {
-  const ColorschemeToggler({Key? key}) : super(key: key);
+  const ColorschemeToggler({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

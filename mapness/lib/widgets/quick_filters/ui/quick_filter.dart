@@ -8,9 +8,7 @@ import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 
 class QuickFilter extends StatelessWidget {
   const QuickFilter({
-    super.key,
-    required this.item,
-    required this.selected,
+    required this.item, required this.selected, super.key,
     this.background = NonThemeColor.color11,
   });
 
@@ -62,8 +60,8 @@ class QuickFilter extends StatelessWidget {
                                 ? Colors.white
                                 : context.color.text_and_icons_base_primary,
                           ),
-                    )
-                  ]
+                    ),
+                  ],
                 ],
               ),
             ),

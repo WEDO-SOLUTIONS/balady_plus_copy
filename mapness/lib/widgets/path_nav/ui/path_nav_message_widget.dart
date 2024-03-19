@@ -6,16 +6,14 @@ import 'package:mapness/entities/path_nav/models/path_nav_message.dart';
 typedef _State = PathNavManeuverState;
 
 class PathNavMessageWidget extends StatelessWidget {
-  final PathNavMessage message;
 
   const PathNavMessageWidget({
-    super.key,
-    required this.message,
+    required this.message, super.key,
   });
+  final PathNavMessage message;
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       color: switch (message.state) {
         _State.error => NonThemeColor.color1,
         _State.reroute => NonThemeColor.color3,
@@ -59,7 +57,6 @@ class PathNavMessageWidget extends StatelessWidget {
         ),
       ),
     );
-  }
 }
 
 enum PathNavManeuverState {

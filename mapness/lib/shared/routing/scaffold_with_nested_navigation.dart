@@ -118,7 +118,7 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
                     offset: const Offset(0, -2),
                     blurRadius: 8,
                   ),
-                ]),
+                ],),
                 child: BottomNavigationBar(
                   backgroundColor: Colors.white,
                   elevation: 0,
@@ -183,7 +183,7 @@ class ScaffoldWithNavigationBar extends ConsumerWidget {
                                         ? 'assets/icons/svg/beta_ar.svg'
                                         : 'assets/icons/svg/beta_en.svg',
                                     package: 'mapness',
-                                  )
+                                  ),
                                 ],
                               ),
                             ),
@@ -229,7 +229,7 @@ class _BottomNavigationBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(top: 2.0),
+        padding: const EdgeInsets.only(top: 2),
         child: Column(
           children: [
             iconBuilder?.call(context, selected) ??

@@ -114,7 +114,7 @@ class ComplianceCard extends ConsumerWidget {
                                 ),
                               ),
                             ),
-                          )
+                          ),
                         ],
                       ),
                       const SizedBox(
@@ -202,7 +202,7 @@ class ComplianceCard extends ConsumerWidget {
                                     ),
                               ),
                               TextSpan(
-                                text: " ",
+                                text: ' ',
                                 style: Theme.of(context)
                                     .extension<ThemeTextStyles>()
                                     ?.textS
@@ -215,9 +215,7 @@ class ComplianceCard extends ConsumerWidget {
                               TextSpan(
                                 text: context.l10n.complianceFAQ,
                                 recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    CommonFunctions.openComplianceFaq();
-                                  },
+                                  ..onTap = CommonFunctions.openComplianceFaq,
                                 style: Theme.of(context)
                                     .extension<ThemeTextStyles>()
                                     ?.textS
@@ -227,7 +225,7 @@ class ComplianceCard extends ConsumerWidget {
                                     ),
                               ),
                               TextSpan(
-                                text: " ",
+                                text: ' ',
                                 style: Theme.of(context)
                                     .extension<ThemeTextStyles>()
                                     ?.textS
@@ -249,7 +247,7 @@ class ComplianceCard extends ConsumerWidget {
                                     ),
                               ),
                               TextSpan(
-                                text: " ",
+                                text: ' ',
                                 style: Theme.of(context)
                                     .extension<ThemeTextStyles>()
                                     ?.textS
@@ -262,9 +260,7 @@ class ComplianceCard extends ConsumerWidget {
                               TextSpan(
                                 text: context.l10n.complianceRequirements,
                                 recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    CommonFunctions.openComplianceTerms();
-                                  },
+                                  ..onTap = CommonFunctions.openComplianceTerms,
                                 style: Theme.of(context)
                                     .extension<ThemeTextStyles>()
                                     ?.textS
