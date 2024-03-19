@@ -21,6 +21,7 @@ class ObjectTapHandler {
         static let onPolygonTap = "onPolygonTap"
         static let onPolylineTap = "onPolylineTap"
         static let onClusterTap = "onClusterTap"
+        static let onMyLocationTap = "onMyLocationTap"
     }
     
     private struct PhotoData {
@@ -142,6 +143,11 @@ class ObjectTapHandler {
                 eventChannel.success(mapObject.objectAttributes.mapIo(objectInfo.closestMapPoint))
                 return
             }
+            return
+        case is MyLocationMapObject:
+            guard let myLocation = tappedObject as? MyLocationMapObject else { return }
+            let userData = myLocation.userData
+            self.sendDgisMyLocationEvent(myLocation, objectInfo.closestMapPoint)
             return
         case is DgisMapObject:
             guard let mapObject = tappedObject as? DgisMapObject else { return }
@@ -878,6 +884,18 @@ class ObjectTapHandler {
                 "longitude": position.longitude.value,
             ],
         ] as [String : Any?])
+    }
+
+    private func sendDgisMyLocationEvent(_ myLocation: MyLocationMapObject, _ position: GeoPointWithElevation) {
+        
+        let data = myLocation.userData
+        eventChannel.success([
+            "event": Events.onMyLocationTap,
+            "latlng": [
+                "latitude": position.latitude.value,
+                "longitude": position.longitude.value,
+            ],
+        ] as [String : Any])
     }
     
     func getNearestObjects(completion: @escaping ([RenderedObjectMessage]?, FlutterError?) -> Void) {
