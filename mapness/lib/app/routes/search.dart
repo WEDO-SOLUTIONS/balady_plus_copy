@@ -21,14 +21,12 @@ class SearchRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return TransculentPage(
+  Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
       child: MapSearchSheet(
         initialQuery: initialQuery,
         withClustering: withClustering,
       ),
     );
-  }
 }
 
 final $searchRoutes = $appRoutes;

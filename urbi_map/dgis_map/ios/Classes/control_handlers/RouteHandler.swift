@@ -89,10 +89,19 @@ class RouteHandler {
     func setRouteParams(_ params: RouteEditorRouteParamsMessage) {
         let startPoint: RouteSearchPoint? = {
             if let pStartPoint = params.startPoint {
-                return RouteSearchPoint(coordinates: GeoPoint(
-                    latitude: pStartPoint.latitude.doubleValue,
-                    longitude: pStartPoint.longitude.doubleValue
-                ))
+                return RouteSearchPoint(
+                    coordinates: GeoPoint(
+                        latitude: pStartPoint.point.latitude.doubleValue,
+                        longitude: pStartPoint.point.longitude.doubleValue
+                    ),
+                    objectId: DgisObjectId(
+                        objectId: pStartPoint.objectId?.objectId.uint64Value ?? 0,
+                        entranceId: pStartPoint.objectId?.entranceId.uint64Value ?? 0
+                    ),
+                    levelId: pStartPoint.levelId.map {
+                        LevelId(value: $0.uint64Value)
+                    }
+                )
             } else if let lastLocation = positioningService.locationProvider?.lastLocation?.coordinate {
                 return RouteSearchPoint(coordinates: GeoPoint(
                     latitude: lastLocation.latitude,
@@ -105,10 +114,19 @@ class RouteHandler {
         
         let finishPoint: RouteSearchPoint? = {
             if let pFinishPoint = params.finishPoint {
-                return RouteSearchPoint(coordinates: GeoPoint(
-                    latitude: pFinishPoint.latitude.doubleValue,
-                    longitude: pFinishPoint.longitude.doubleValue
-                ))
+                return RouteSearchPoint(
+                    coordinates: GeoPoint(
+                        latitude: pFinishPoint.point.latitude.doubleValue,
+                        longitude: pFinishPoint.point.longitude.doubleValue
+                    ),
+                    objectId: DgisObjectId(
+                        objectId: pFinishPoint.objectId?.objectId.uint64Value ?? 0,
+                        entranceId: pFinishPoint.objectId?.entranceId.uint64Value ?? 0
+                    ),
+                    levelId: pFinishPoint.levelId.map {
+                        LevelId(value: $0.uint64Value)
+                    }
+                )
             } else if let lastLocation = positioningService.locationProvider?.lastLocation?.coordinate {
                 return RouteSearchPoint(coordinates: GeoPoint(
                     latitude: lastLocation.latitude,

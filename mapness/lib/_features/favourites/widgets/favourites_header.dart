@@ -9,11 +9,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class FavouritesHeader extends StatelessWidget {
   const FavouritesHeader({
-    super.key,
-    required this.isEditing,
-    required this.onEditTap,
-    required this.onDoneTap,
-    required this.onDeleteAllTap,
+    required this.isEditing, required this.onEditTap, required this.onDoneTap, required this.onDeleteAllTap, super.key,
   });
 
   final bool isEditing;
@@ -22,9 +18,8 @@ class FavouritesHeader extends StatelessWidget {
   final void Function() onDeleteAllTap;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16.0, bottom: 16.0, right: 16.0),
+  Widget build(BuildContext context) => Padding(
+      padding: const EdgeInsets.only(left: 16, bottom: 16, right: 16),
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -37,15 +32,13 @@ class FavouritesHeader extends StatelessWidget {
           ),
           Row(
             children: [
-              isEditing
-                  ? GestureDetector(
+              if (isEditing) GestureDetector(
                       onTap: onDeleteAllTap,
                       child: Text(
                         context.l10n.deleteAll,
                         style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: context.color.text_and_icons_base_primary),
                       ),
-                    )
-                  : Material(
+                    ) else Material(
                       borderRadius: BorderRadius.circular(8),
                       color: NonThemeColor.color11,
                       child: InkWell(
@@ -75,11 +68,10 @@ class FavouritesHeader extends StatelessWidget {
                   isEditing ? context.l10n.done : context.l10n.edit,
                   style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: context.color.text_and_icons_base_primary),
                 ),
-              )
+              ),
             ],
           ),
         ],
       ),
     );
-  }
 }

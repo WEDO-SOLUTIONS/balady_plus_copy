@@ -6,9 +6,7 @@ import 'package:mapness/shared/lib/make_address.dart';
 
 class SearchItem extends StatelessWidget {
   const SearchItem({
-    super.key,
-    required this.result,
-    required this.onTap,
+    required this.result, required this.onTap, super.key,
   });
 
   final DirectoryObjectMessage result;
@@ -18,16 +16,16 @@ class SearchItem extends StatelessWidget {
   Widget build(
     BuildContext context,
   ) {
-    String subtitle = result.subtitle;
+    var subtitle = result.subtitle;
     final prefixMapping = {
-      "Region": "منطقة",
-      "Governorate": "محافظة",
-      "City": "مدينة",
-      "District area": "محافظة",
-      "District": "حى",
-      "Street": "شارع",
-      "Buildings": "مبنى",
-      "Park": "بارك",
+      'Region': 'منطقة',
+      'Governorate': 'محافظة',
+      'City': 'مدينة',
+      'District area': 'محافظة',
+      'District': 'حى',
+      'Street': 'شارع',
+      'Buildings': 'مبنى',
+      'Park': 'بارك',
     };
     if (prefixMapping.containsKey(subtitle)) {
       subtitle = prefixMapping[subtitle]!;

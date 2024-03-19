@@ -6,16 +6,13 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
 class IwishInfo extends StatelessWidget {
+
+  const IwishInfo({
+    required this.iwish, required this.distance, required this.onClose, super.key,
+  });
   final IwishEntity iwish;
   final String distance;
   final VoidCallback onClose;
-
-  const IwishInfo({
-    super.key,
-    required this.iwish,
-    required this.distance,
-    required this.onClose,
-  });
 
   @override
   Widget build(BuildContext context) {

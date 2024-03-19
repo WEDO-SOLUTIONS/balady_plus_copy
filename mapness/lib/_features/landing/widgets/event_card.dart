@@ -5,11 +5,7 @@ import 'package:flutter/material.dart';
 
 class EventCard extends StatelessWidget {
   const EventCard({
-    super.key,
-    required this.title,
-    required this.subtitle,
-    required this.imageUrl,
-    required this.id,
+    required this.title, required this.subtitle, required this.imageUrl, required this.id, super.key,
   });
 
   final String title;
@@ -18,8 +14,7 @@ class EventCard extends StatelessWidget {
   final String id;
 
   @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
+  Widget build(BuildContext context) => ClipRRect(
       borderRadius: BorderRadius.circular(8),
       child: Material(
         child: Ink.image(
@@ -59,7 +54,7 @@ class EventCard extends StatelessWidget {
                           .extension<ThemeTextStyles>()!
                           .textS
                           .copyWith(color: Colors.white.withOpacity(0.8)),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -68,5 +63,4 @@ class EventCard extends StatelessWidget {
         ),
       ),
     );
-  }
 }

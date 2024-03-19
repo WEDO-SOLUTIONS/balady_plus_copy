@@ -3,9 +3,9 @@ import 'package:mapness/_features/common/image/loading_image/loading_shimmer_ima
 import 'package:mapness/shared/ui/photo_viewer/photo_viewer.dart';
 
 class IwishPhotosRow extends StatelessWidget {
-  final List<String> photos;
 
-  const IwishPhotosRow({super.key, required this.photos});
+  const IwishPhotosRow({required this.photos, super.key});
+  final List<String> photos;
 
   @override
   Widget build(BuildContext context) => SizedBox(

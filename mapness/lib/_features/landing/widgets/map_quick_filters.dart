@@ -131,7 +131,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
 
     isCoordComputed = true;
 
-    double zoom = await GeoUtils.zoomByMarkersNearby(
+    var zoom = await GeoUtils.zoomByMarkersNearby(
       markers: markers,
       position: location!,
     );
@@ -153,7 +153,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
           tilt: cameraPosition.tilt,
           bearing: cameraPosition.bearing,
           zoom: zoom,
-        ));
+        ),);
 
     isZoomInteracted = true;
   }

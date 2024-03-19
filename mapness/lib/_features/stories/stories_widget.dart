@@ -1,17 +1,15 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/_features/stories/data/story_service.dart';
 import 'package:mapness/_features/stories/presentation/story_refresh_button.dart';
 import 'package:mapness/_features/stories/presentation/story_thumbnails.dart';
 import 'package:mapness/_features/stories/stories.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
-import '../common/providers/network_status.dart';
-
 class StoriesWidget extends ConsumerStatefulWidget {
-  const StoriesWidget({Key? key}) : super(key: key);
+  const StoriesWidget({super.key});
 
   @override
   ConsumerState<StoriesWidget> createState() => _StoriesWidgetState();
@@ -25,8 +23,7 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
   }
 
   void _precacheFirstFrame() {
-    final storiesAsync = ref.read(storyServiceProvider);
-    storiesAsync.whenData((data) {
+    ref.read(storyServiceProvider).whenData((data) {
       for (final story in data) {
         final firstFrame = story.frames.first;
         precacheImage(NetworkImage(firstFrame.imageUrl), context);
@@ -34,7 +31,7 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
     });
   }
 
-  openStory(BuildContext context, String id) {
+  void openStory(BuildContext context, String id) {
     ref.read(urbiMetricsProvider.notifier).logEvent(
       'Stories/open_story',
       {'id': id},
@@ -54,14 +51,12 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
 
     return Directionality(
       textDirection: Directionality.of(context),
-      child: thumbnails.when(
+      child: thumbnails.maybeWhen(
         data: (data) => StoryThumbnails(
           onThumbnailPressed: (id) => openStory(context, id),
           stories: data.toList(),
         ),
-        loading: () =>  Center(child: CircularProgressIndicator(
-          color: context.color.text_and_icons_status_accent,
-        )),
+        orElse: () => const SizedBox.shrink(),
         error: (_, __) => StoryRefreshButton(
           onPressed: () {
             ref.read(urbiMetricsProvider.notifier).logEvent('Stories/refresh');

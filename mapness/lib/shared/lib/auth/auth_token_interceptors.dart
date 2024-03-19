@@ -6,7 +6,7 @@ import 'package:mapness/features/sso_auth/data/token_provider.dart';
 
 class AuthTokenInterceptor {
   static QueuedInterceptorsWrapper tokenInterceptor(
-          AutoDisposeAsyncNotifierProviderRef ref, BaseOptions baseOptions) =>
+          AutoDisposeAsyncNotifierProviderRef ref, BaseOptions baseOptions,) =>
       QueuedInterceptorsWrapper(
         onRequest: (options, handler) async {
           final token = await ref.read(tokenProvider.future);
@@ -46,7 +46,7 @@ class AuthTokenInterceptor {
             if (e is DioException && e.response?.statusCode == 401) {
               //LogOut and Redirect to login
               await ref.read(authProvider.notifier).tokenExpireLogout();
-              ref.read(goRouterProvider).push('/signin');
+              await ref.read(goRouterProvider).push('/signin');
             } else if (e is DioException) {
               handler.reject(e);
             } else {

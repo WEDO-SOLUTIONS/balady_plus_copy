@@ -5,13 +5,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'follow_state.g.dart';
 
 class Follow {
-  final bool enabled;
-  final LocationFollowType type;
 
   Follow({
     required this.enabled,
     required this.type,
   });
+  final bool enabled;
+  final LocationFollowType type;
 
   Follow copyWith({
     bool? enabled,

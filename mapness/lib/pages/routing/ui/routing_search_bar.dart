@@ -59,7 +59,7 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
                     ),
                   )
                 : const SizedBox.shrink(),
-          )
+          ),
         ],
       );
 }

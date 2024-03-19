@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 
 class StoryRefreshButton extends StatelessWidget {
+
+  const StoryRefreshButton({required this.onPressed, super.key});
   final VoidCallback onPressed;
 
-  const StoryRefreshButton({Key? key, required this.onPressed})
-      : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
-    return Center(
+  Widget build(BuildContext context) => Center(
       child: Material(
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
@@ -22,5 +20,4 @@ class StoryRefreshButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }

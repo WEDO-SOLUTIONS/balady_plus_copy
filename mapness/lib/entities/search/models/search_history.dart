@@ -9,18 +9,6 @@ part 'search_history.g.dart';
 
 @HiveType(typeId: 1)
 class SearchHistoryItem {
-  @HiveField(0)
-  final String title;
-
-  @HiveField(1)
-  final String address;
-
-  /// String because Hive have problems with int
-  @HiveField(2)
-  final String? objectId;
-
-  @HiveField(3)
-  final String? entranceId;
 
   SearchHistoryItem({
     required this.title,
@@ -38,6 +26,18 @@ class SearchHistoryItem {
         objectId: object.id?.objectId.toString(),
         entranceId: object.id?.entranceId.toString(),
       );
+  @HiveField(0)
+  final String title;
+
+  @HiveField(1)
+  final String address;
+
+  /// String because Hive have problems with int
+  @HiveField(2)
+  final String? objectId;
+
+  @HiveField(3)
+  final String? entranceId;
 
   String get hashKey =>
       'history-${objectId ?? 0}-${entranceId ?? 0}-${sha1.convert(utf8.encode(title))}-${sha1.convert(utf8.encode(address))}';

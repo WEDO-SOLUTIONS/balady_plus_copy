@@ -60,7 +60,7 @@ class _ComplianceDetailsPageState extends State<ComplianceDetailsPage> {
       create: (context) => ComplianceBloc()
         ..add(
           GetRequestDetails(
-            requestId: data['requestId'],
+            requestId: data['requestNumber'],
             redirectUrl: data['redirectUrl'],
           ),
         ),
@@ -202,7 +202,7 @@ class _ComplianceDetailsPageState extends State<ComplianceDetailsPage> {
                       onTab: () {
                         context.read<ComplianceBloc>().add(
                               GetRequestDetails(
-                                requestId: data['requestId'],
+                                requestId: data['requestNumber'],
                                 redirectUrl: data['redirectUrl'],
                               ),
                             );

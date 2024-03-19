@@ -22,9 +22,7 @@ class Token extends _$Token {
     final subscription = sl<EntryPointCubit>().stream.listen((state) {
       _setToken(CommonProperties.token);
     });
-    ref.onDispose(() {
-      subscription.cancel();
-    });
+    ref.onDispose(subscription.cancel);
     await sl<EntryPointCubit>().checkifTokenExpired();
     return Future.value(CommonProperties.token);
   }

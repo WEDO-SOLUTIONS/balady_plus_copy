@@ -15,9 +15,7 @@ class FakeCompass extends _$FakeCompass {
       },
     );
 
-    ref.onDispose(() {
-      compassSubscription.cancel();
-    });
+    ref.onDispose(compassSubscription.cancel);
 
     return 0;
   }

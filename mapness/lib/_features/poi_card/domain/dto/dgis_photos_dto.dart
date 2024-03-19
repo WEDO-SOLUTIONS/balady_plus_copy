@@ -4,31 +4,19 @@ part 'dgis_photos_dto.g.dart';
 
 @JsonSerializable()
 class DgisPhotosDto {
-  List<Album> albums;
-  List<Item> items;
 
   DgisPhotosDto({required this.albums, required this.items});
 
   factory DgisPhotosDto.fromJson(Map<String, dynamic> json) =>
       _$DgisPhotosDtoFromJson(json);
+  List<Album> albums;
+  List<Item> items;
 
   Map<String, dynamic> toJson() => _$DgisPhotosDtoToJson(this);
 }
 
 @JsonSerializable()
 class Item {
-  String id;
-  String url;
-  String? realObjectType;
-  int height;
-  int width;
-  PreviewUrls? previewUrls;
-  // Copyright? copyright;
-  // Owner? owner;
-  // String? creationTime;
-  // String? modificationTime;
-  @JsonKey(defaultValue: false)
-  bool isPinned;
 
   Item({
     required this.id,
@@ -45,14 +33,24 @@ class Item {
   });
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
+  String id;
+  String url;
+  String? realObjectType;
+  int height;
+  int width;
+  PreviewUrls? previewUrls;
+  // Copyright? copyright;
+  // Owner? owner;
+  // String? creationTime;
+  // String? modificationTime;
+  @JsonKey(defaultValue: false)
+  bool isPinned;
 
   Map<String, dynamic> toJson() => _$ItemToJson(this);
 }
 
 @JsonSerializable()
 class PreviewUrls {
-  @JsonKey(name: '100x100')
-  String? small;
   // String? medium;
 
   PreviewUrls({
@@ -62,19 +60,14 @@ class PreviewUrls {
 
   factory PreviewUrls.fromJson(Map<String, dynamic> json) =>
       _$PreviewUrlsFromJson(json);
+  @JsonKey(name: '100x100')
+  String? small;
 
   Map<String, dynamic> toJson() => _$PreviewUrlsToJson(this);
 }
 
 @JsonSerializable()
 class Copyright {
-  String type;
-  String value;
-  String? url;
-  String? providerIcon;
-  String code;
-  String icon;
-  String title;
 
   Copyright({
     required this.type,
@@ -88,16 +81,19 @@ class Copyright {
 
   factory Copyright.fromJson(Map<String, dynamic> json) =>
       _$CopyrightFromJson(json);
+  String type;
+  String value;
+  String? url;
+  String? providerIcon;
+  String code;
+  String icon;
+  String title;
 
   Map<String, dynamic> toJson() => _$CopyrightToJson(this);
 }
 
 @JsonSerializable()
 class Owner {
-  String id;
-  String publicId;
-  String name;
-  String avatar;
 
   Owner({
     required this.id,
@@ -107,19 +103,23 @@ class Owner {
   });
 
   factory Owner.fromJson(Map<String, dynamic> json) => _$OwnerFromJson(json);
+  String id;
+  String publicId;
+  String name;
+  String avatar;
 
   Map<String, dynamic> toJson() => _$OwnerToJson(this);
 }
 
 @JsonSerializable()
 class Album {
-  String id;
-  String name;
-  int count;
 
   Album({required this.id, required this.name, required this.count});
 
   factory Album.fromJson(Map<String, dynamic> json) => _$AlbumFromJson(json);
+  String id;
+  String name;
+  int count;
 
   Map<String, dynamic> toJson() => _$AlbumToJson(this);
 }

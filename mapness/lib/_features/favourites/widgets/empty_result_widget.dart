@@ -6,20 +6,17 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class EmptyResultWidget extends StatelessWidget {
+
+  const EmptyResultWidget({required this.text, super.key});
   final String text;
 
-  const EmptyResultWidget({Key? key, required this.text}) : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       children: [
         SvgPicture.asset('assets/images_svg/empty_search.svg',
             package: PackageConfig.packageName,
             width: 240,
-            height: 140,
-            fit: BoxFit.contain,
-            alignment: Alignment.center),
+            height: 140,),
         const SizedBox(height: 10),
         Text(
           text,
@@ -31,5 +28,4 @@ class EmptyResultWidget extends StatelessWidget {
         ),
       ],
     );
-  }
 }

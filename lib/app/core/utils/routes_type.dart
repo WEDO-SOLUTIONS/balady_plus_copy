@@ -24,7 +24,7 @@
 
 //(invoice,appointment,objection,Violations) depaneds on type name,
 // although license depends on maintype.id service,
-// and for requests it depends on 
+// and for requests it depends on
 // string -> tag and return screen name  and some time send intgear -> id
 
 import 'constants/route_names.dart';
@@ -35,7 +35,7 @@ String getScreenName(String tag, {int? typeId}) {
     ////// This depand on mainTypeId or requestMainTypeId
     case 'request':
       switch (typeId) {
-        case 1301 || 1302 || 1303 || 1308:
+        case 1301 || 1302 || 1303 || 1308 || 1300:
           return RouteName.healthRequestDetailsScreen;
         case 1130:
           return RouteName.complianceDetailsPage;
@@ -47,6 +47,9 @@ String getScreenName(String tag, {int? typeId}) {
           return RouteName.permitsRequestDetailsPage;
         case 1026:
           return RouteName.permitsTobaccoRequestDetailsPage;
+
+        case 50001:
+          return RouteName.objectionsDetailsPage;
       }
     case 'license':
       switch (typeId) {

@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -19,28 +18,25 @@ class _ModalScopeStatus extends InheritedWidget {
   final Route<dynamic> route;
 
   @override
-  bool updateShouldNotify(_ModalScopeStatus old) {
-    return isCurrent != old.isCurrent ||
+  bool updateShouldNotify(_ModalScopeStatus old) => isCurrent != old.isCurrent ||
         canPop != old.canPop ||
         impliesAppBarDismissal != old.impliesAppBarDismissal ||
         route != old.route;
-  }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder description) {
     super.debugFillProperties(description);
     description.add(FlagProperty('isCurrent',
-        value: isCurrent, ifTrue: 'active', ifFalse: 'inactive'));
+        value: isCurrent, ifTrue: 'active', ifFalse: 'inactive',),);
     description.add(FlagProperty('canPop', value: canPop, ifTrue: 'can pop'));
     description.add(FlagProperty('impliesAppBarDismissal',
-        value: impliesAppBarDismissal, ifTrue: 'implies app bar dismissal'));
+        value: impliesAppBarDismissal, ifTrue: 'implies app bar dismissal',),);
   }
 }
 
 class _ModalScope<T> extends StatefulWidget {
   const _ModalScope({
-    super.key,
-    required this.route,
+    required this.route, super.key,
   });
 
   final ModalRoute<T> route;
@@ -66,7 +62,7 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
   @override
   void initState() {
     super.initState();
-    final List<Listenable> animations = <Listenable>[
+    final animations = <Listenable>[
       if (widget.route.animation != null) widget.route.animation!,
       if (widget.route.secondaryAnimation != null)
         widget.route.secondaryAnimation!,
@@ -90,7 +86,7 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
 
   void _updateFocusScopeNode() {
     final TraversalEdgeBehavior traversalEdgeBehavior;
-    final ModalRoute<T> route = widget.route;
+    final route = widget.route;
     if (route.traversalEdgeBehavior != null) {
       traversalEdgeBehavior = route.traversalEdgeBehavior!;
     } else {
@@ -115,14 +111,10 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
     super.dispose();
   }
 
-  bool get _shouldIgnoreFocusRequest {
-    return widget.route.animation?.status == AnimationStatus.reverse ||
+  bool get _shouldIgnoreFocusRequest => widget.route.animation?.status == AnimationStatus.reverse ||
         (widget.route.navigator?.userGestureInProgress ?? false);
-  }
 
-  bool get _shouldRequestFocus {
-    return widget.route.navigator!.widget.requestFocus;
-  }
+  bool get _shouldRequestFocus => widget.route.navigator!.widget.requestFocus;
 
   // This should be called to wrap any changes to route.isCurrent, route.canPop,
   // and route.offstage.
@@ -137,10 +129,9 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
+  Widget build(BuildContext context) => AnimatedBuilder(
       animation: widget.route.restorationScopeId,
-      builder: (BuildContext context, Widget? child) {
+      builder: (context, child) {
         assert(child != null);
         return RestorationScope(
           restorationId: widget.route.restorationScopeId.value,
@@ -159,9 +150,8 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
           child: PageStorage(
             bucket: widget.route._storageBucket, // immutable
             child: Builder(
-              builder: (BuildContext context) {
-                return Actions(
-                  actions: <Type, Action<Intent>>{
+              builder: (context) => Actions(
+                  actions: const <Type, Action<Intent>>{
                     // DismissIntent: _DismissModalAction(context),
                   },
                   child: PrimaryScrollController(
@@ -171,8 +161,7 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
                       child: RepaintBoundary(
                         child: AnimatedBuilder(
                           animation: _listenable, // immutable
-                          builder: (BuildContext context, Widget? child) {
-                            return widget.route.buildTransitions(
+                          builder: (context, child) => widget.route.buildTransitions(
                               context,
                               widget.route.animation!,
                               widget.route.secondaryAnimation!,
@@ -184,8 +173,8 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
                                 animation: widget.route.navigator
                                         ?.userGestureInProgressNotifier ??
                                     ValueNotifier<bool>(false),
-                                builder: (BuildContext context, Widget? child) {
-                                  final bool ignoreEvents =
+                                builder: (context, child) {
+                                  final ignoreEvents =
                                       _shouldIgnoreFocusRequest;
                                   focusScopeNode.canRequestFocus =
                                       !ignoreEvents;
@@ -196,32 +185,27 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
                                 },
                                 child: child,
                               ),
-                            );
-                          },
+                            ),
                           child: _page ??= RepaintBoundary(
                             key: widget.route._subtreeKey, // immutable
                             child: Builder(
-                              builder: (BuildContext context) {
-                                return widget.route.buildPage(
+                              builder: (context) => widget.route.buildPage(
                                   context,
                                   widget.route.animation!,
                                   widget.route.secondaryAnimation!,
-                                );
-                              },
+                                ),
                             ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                );
-              },
+                ),
             ),
           ),
         ),
       ),
     );
-  }
 }
 
 abstract class ModalRoute<T> extends TransitionRoute<T>
@@ -235,7 +219,7 @@ abstract class ModalRoute<T> extends TransitionRoute<T>
 
   @optionalTypeArgs
   static ModalRoute<T>? of<T extends Object?>(BuildContext context) {
-    final _ModalScopeStatus? widget =
+    final widget =
         context.dependOnInheritedWidgetOfExactType<_ModalScopeStatus>();
     return widget?.route as ModalRoute<T>?;
   }
@@ -249,25 +233,19 @@ abstract class ModalRoute<T> extends TransitionRoute<T>
     }
   }
 
-  static RoutePredicate withName(String name) {
-    return (Route<dynamic> route) {
-      return !route.willHandlePopInternally &&
+  static RoutePredicate withName(String name) => (route) => !route.willHandlePopInternally &&
           route is ModalRoute &&
           route.settings.name == name;
-    };
-  }
 
   Widget buildPage(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation);
+      Animation<double> secondaryAnimation,);
 
   Widget buildTransitions(
     BuildContext context,
     Animation<double> animation,
     Animation<double> secondaryAnimation,
     Widget child,
-  ) {
-    return child;
-  }
+  ) => child;
 
   @override
   void install() {
@@ -328,9 +306,9 @@ abstract class ModalRoute<T> extends TransitionRoute<T>
 
   @override
   Future<RoutePopDisposition> willPop() async {
-    final _ModalScopeState<T>? scope = _scopeKey.currentState;
+    final scope = _scopeKey.currentState;
     assert(scope != null);
-    for (final WillPopCallback callback
+    for (final callback
         in List<WillPopCallback>.of(_willPopCallbacks)) {
       if (await callback() != true) {
         return RoutePopDisposition.doNotPop;
@@ -341,20 +319,18 @@ abstract class ModalRoute<T> extends TransitionRoute<T>
 
   void addScopedWillPopCallback(WillPopCallback callback) {
     assert(_scopeKey.currentState != null,
-        'Tried to add a willPop callback to a route that is not currently in the tree.');
+        'Tried to add a willPop callback to a route that is not currently in the tree.',);
     _willPopCallbacks.add(callback);
   }
 
   void removeScopedWillPopCallback(WillPopCallback callback) {
     assert(_scopeKey.currentState != null,
-        'Tried to remove a willPop callback from a route that is not currently in the tree.');
+        'Tried to remove a willPop callback from a route that is not currently in the tree.',);
     _willPopCallbacks.remove(callback);
   }
 
   @protected
-  bool get hasScopedWillPopCallback {
-    return _willPopCallbacks.isNotEmpty;
-  }
+  bool get hasScopedWillPopCallback => _willPopCallbacks.isNotEmpty;
 
   @override
   void didChangePrevious(Route<dynamic>? previousRoute) {
@@ -388,26 +364,22 @@ abstract class ModalRoute<T> extends TransitionRoute<T>
 
   Widget? _modalScopeCache;
 
-  Widget _buildModalScope(BuildContext context) {
-    return _modalScopeCache ??= Semantics(
-      sortKey: const OrdinalSortKey(0.0),
+  Widget _buildModalScope(BuildContext context) => _modalScopeCache ??= Semantics(
+      sortKey: const OrdinalSortKey(0),
       child: _ModalScope<T>(
         key: _scopeKey,
         route: this,
         // _ModalScope calls buildTransitions() and buildChild(), defined above
       ),
     );
-  }
 
   late OverlayEntry _modalScope;
 
   @override
-  Iterable<OverlayEntry> createOverlayEntries() {
-    return <OverlayEntry>[
+  Iterable<OverlayEntry> createOverlayEntries() => <OverlayEntry>[
       _modalScope =
           OverlayEntry(builder: _buildModalScope, maintainState: maintainState),
     ];
-  }
 
   @override
   String toString() => '${objectRuntimeType(this, 'ModalRoute')}($settings)';
@@ -437,14 +409,12 @@ class TRoute<T> extends ModalRoute<T> {
 }
 
 class TransculentPage<T> extends Page<T> {
-  final Widget child;
 
   const TransculentPage({
     required this.child,
   });
+  final Widget child;
 
   @override
-  Route<T> createRoute(BuildContext context) {
-    return TRoute<T>(this);
-  }
+  Route<T> createRoute(BuildContext context) => TRoute<T>(this);
 }

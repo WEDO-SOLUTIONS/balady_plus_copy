@@ -31,23 +31,22 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
       ..setBackgroundColor(NonThemeColor.color70)
       ..setNavigationDelegate(
         NavigationDelegate(
-          onProgress: (int progress) {},
-          onPageStarted: (String url) {},
-          onPageFinished: (String url) {},
-          onWebResourceError: (WebResourceError error) {},
+          onProgress: (progress) {},
+          onPageStarted: (url) {},
+          onPageFinished: (url) {},
+          onWebResourceError: (error) {},
         ),
       )
       ..loadRequest(
         Uri.parse(switch (language) {
           Language.arabic => 'https://balady.gov.sa/ar',
           Language.english => 'https://balady.gov.sa/en',
-        }),
+        },),
       );
   }
 
   @override
-  Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
+  Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Directionality(
         textDirection: Directionality.of(context),
@@ -61,7 +60,7 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
               SafeArea(
                 bottom: false,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
                       Consumer(builder: (context, ref, _) {
@@ -95,7 +94,7 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
                             ),
                           ),
                         );
-                      }),
+                      },),
                       const Spacer(),
                       Text(
                         context.l10n.baladyWebsite,
@@ -123,5 +122,4 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
         ),
       ),
     );
-  }
 }

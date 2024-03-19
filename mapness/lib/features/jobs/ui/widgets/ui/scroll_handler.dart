@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class DragHandle extends StatelessWidget {
-  final BorderRadius? borderRadius;
 
   const DragHandle({super.key, this.borderRadius});
+  final BorderRadius? borderRadius;
 
   @override
   Widget build(BuildContext context) => Center(

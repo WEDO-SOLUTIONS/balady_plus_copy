@@ -27,9 +27,7 @@ class DgisController extends _$DgisController {
   Future<DgisMapController> build() {
     _completer = Completer();
 
-    ref.onDispose(() {
-      _visibleRectSubject.close();
-    });
+    ref.onDispose(_visibleRectSubject.close);
 
     return _completer.future;
   }
@@ -96,7 +94,7 @@ class DgisController extends _$DgisController {
 
   /// Setups initial camera location on map.
   Future<void> _setupLocation(DgisMapController controller) async {
-    PermissionStatus locationPermission = await ref.read(
+    var locationPermission = await ref.read(
       permissionsProvider(Permission.location).future,
     );
     final locationNotifier =
@@ -143,9 +141,7 @@ class DgisController extends _$DgisController {
         .listen(_listenVisibleRectangle);
     _visibleRectSubject.add(null);
 
-    ref.onDispose(() {
-      visibleRectSubscription.cancel();
-    });
+    ref.onDispose(visibleRectSubscription.cancel);
   }
 
   void _listenVisibleRectangle(VisibleRectEvent event) {

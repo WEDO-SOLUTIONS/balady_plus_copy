@@ -726,6 +726,10 @@ class ObjectTapHandler(
                 eventSink.success(
                     mapOf(
                         "event" to Events.onRoadEventTap.name,
+                        "dgisObjectId" to mapOf(
+                            "objectId" to event.id.objectId,
+                            "entranceId" to event.id.entranceId,
+                        ),
                         "title" to event.event.name,
                         "description" to event.event.description,
                         "startTime" to event.event.schedule?.startTime?.timeFromEpoch?.inMilliseconds,

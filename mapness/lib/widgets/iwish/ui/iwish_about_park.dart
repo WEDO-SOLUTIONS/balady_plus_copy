@@ -6,14 +6,12 @@ import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class IwishAboutPark extends StatelessWidget {
-  final IwishMetadata metadata;
-  final ParkSize parkSize;
 
   const IwishAboutPark({
-    super.key,
-    required this.metadata,
-    required this.parkSize,
+    required this.metadata, required this.parkSize, super.key,
   });
+  final IwishMetadata metadata;
+  final ParkSize parkSize;
 
   @override
   Widget build(BuildContext context) {

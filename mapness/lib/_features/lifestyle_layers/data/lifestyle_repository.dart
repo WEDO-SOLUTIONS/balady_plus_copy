@@ -21,8 +21,8 @@ class LifestyleRepository extends _$LifestyleRepository {
   Future<List<InvestmentSites>?> getEsriPoints(
       {required MapRequestParams params, CancelToken? cancelToken,}) async {
     try {
-      var response = await dataSource.getEsriPoints(params, cancelToken);
-      var result = investmentSitesFromJson(response as List<dynamic>);
+      final response = await dataSource.getEsriPoints(params, cancelToken);
+      final result = investmentSitesFromJson(response!);
       return result;
     } catch (e) {
       return null;
@@ -44,7 +44,7 @@ class LifestyleRepository extends _$LifestyleRepository {
   Future<List<WhiteLands>?> getWhiteLands(MapRequestParams params,
       CancelToken? cancelToken,) async {
     try {
-      var response = await dataSource.getEsriPoints(params, cancelToken);
+      final response = await dataSource.getEsriPoints(params, cancelToken);
       return whiteLandsFromJson(response ?? []);
     } catch (e) {
       debugPrint('$e');

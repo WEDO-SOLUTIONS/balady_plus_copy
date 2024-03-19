@@ -1,5 +1,5 @@
 import 'package:balady_plus/app/features/_shared_feature_/balady_features/balady_exports.dart';
-import 'package:flutter/material.dart' hide SearchBar, ScrollPosition;
+import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
@@ -9,6 +9,8 @@ import 'package:mapness/_features/landing/widgets/compliance_card.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_header.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_profile.dart';
 import 'package:mapness/_features/landing/widgets/events_home_card_wrapper.dart';
+import 'package:mapness/_features/landing/widgets/interesting_places_cards.dart';
+import 'package:mapness/_features/landing/widgets/shopping_malls_cards.dart';
 import 'package:mapness/_features/landing/widgets/snap_and_send_card.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/stories/data/story_service.dart';
@@ -16,9 +18,6 @@ import 'package:mapness/_features/stories/stories.dart';
 import 'package:mapness/_features/stories/stories_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-
-import 'widgets/interesting_places_cards.dart';
-import 'widgets/shopping_malls_cards.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({
@@ -69,27 +68,25 @@ class _DashboardState extends ConsumerState<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(searchByRubricsQueryProvider, (previous, next) {
-      if (next != null) {
-        _draggableScrollableController.animateTo(
-          _headerExtent,
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.linear,
-        );
-      }
-    });
-
-    //TODO: fix it later
-    // ignore: cascade_invocations
-    ref.listen(layersControlsProvider, (previous, next) {
-      if (next.layersVisible) {
-        _draggableScrollableController.animateTo(
-          _headerExtent,
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.linear,
-        );
-      }
-    });
+    ref
+      ..listen(searchByRubricsQueryProvider, (previous, next) {
+        if (next != null) {
+          _draggableScrollableController.animateTo(
+            _headerExtent,
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.linear,
+          );
+        }
+      })
+      ..listen(layersControlsProvider, (previous, next) {
+        if (next.layersVisible) {
+          _draggableScrollableController.animateTo(
+            _headerExtent,
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.linear,
+          );
+        }
+      });
 
     final direction = ref.watch(uiDirectionProvider);
 
@@ -117,15 +114,15 @@ class _DashboardState extends ConsumerState<Dashboard> {
           textDirection: direction,
           child: ClipRRect(
             borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(16.0),
-              topLeft: Radius.circular(16.0),
+              topRight: Radius.circular(16),
+              topLeft: Radius.circular(16),
             ),
             child: Container(
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(16.0),
-                  topLeft: Radius.circular(16.0),
+                  topRight: Radius.circular(16),
+                  topLeft: Radius.circular(16),
                 ),
               ),
               child: CustomScrollView(
@@ -146,7 +143,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                       Container(
                         color: context.color.surface_base_primary,
                         padding: const EdgeInsets.only(
-                          top: 16.0,
+                          top: 16,
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,7 +166,8 @@ class _DashboardState extends ConsumerState<Dashboard> {
                             EventsHomeCardWrapper(
                               colorScheme: ref.read(colorSchemeProvider),
                               key: ValueKey(
-                                  'events_home_card_wrapper_${direction.name}'),
+                                'events_home_card_wrapper_${direction.name}',
+                              ),
                             ),
                             const SizedBox(
                               height: 20,

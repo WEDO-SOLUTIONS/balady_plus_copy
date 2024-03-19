@@ -50,7 +50,7 @@ DirectoryObjectMessage getMockPoiCardData() {
           number: AddressNumberMessage(number: '123'),
           streetAddress:
               AddressStreetMessage(street: 'شارع 94', number: '2239'),
-        )
+        ),
       ],
     ),
     fullAddressName: FormattedAddressMessage(
@@ -194,7 +194,7 @@ DirectoryObjectMessage getMockPoiCardData() {
             GeoPointMessage(
               latitude: 24.711564057132794,
               longitude: 46.67427162103001,
-            )
+            ),
           ],
           entrancePolylines: [
             [
@@ -309,7 +309,7 @@ OpeningHoursMessage fillOpenHours() {
       // ]),
       WeekTimeIntervalListMessage(values: [
         mondayOpening,
-      ]),
+      ],),
       WeekTimeIntervalListMessage(values: [tuesdayOpening]),
       WeekTimeIntervalListMessage(values: [wednesdayOpening]),
       WeekTimeIntervalListMessage(values: [thursdayOpening]),

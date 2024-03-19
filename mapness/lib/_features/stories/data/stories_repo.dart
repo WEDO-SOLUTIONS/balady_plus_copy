@@ -39,9 +39,7 @@ class StoriesRepo extends _$StoriesRepo {
       state = AsyncValue.data(await _fetch(dio, polygon));
     });
 
-    ref.onDispose(() {
-      subscription.cancel();
-    });
+    ref.onDispose(subscription.cancel);
 
     return _fetch(dio);
   }
@@ -53,7 +51,8 @@ class StoriesRepo extends _$StoriesRepo {
         : 'stories';
 
     final rawResponse = await dio.get(url, options: defaultCacheOptions);
-    final storiesResponse = StoriesResponse.fromBuffer(rawResponse.data);
+    final storiesResponse =
+        StoriesResponse.fromBuffer(rawResponse.data as List<int>);
     mixpanel?.track('StoriesRepo: _fetch');
     return storiesResponse;
   }

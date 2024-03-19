@@ -13,10 +13,10 @@ part 'iwish.g.dart';
 @TypedGoRoute<IwishCardRoute>(path: '/iwish/:iwishId/card')
 @immutable
 class IwishCardRoute extends GoRouteData {
-  static const path = '/iwish';
-  final String iwishId;
 
   const IwishCardRoute({required this.iwishId});
+  static const path = '/iwish';
+  final String iwishId;
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
@@ -41,9 +41,9 @@ class IwishCardRoute extends GoRouteData {
 @TypedGoRoute<IwishFeedbackRoute>(path: '/iwish/:iwishId/feedback')
 @immutable
 class IwishFeedbackRoute extends GoRouteData {
-  final String iwishId;
 
   const IwishFeedbackRoute({required this.iwishId});
+  final String iwishId;
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
@@ -57,9 +57,9 @@ class IwishFeedbackRoute extends GoRouteData {
 @TypedGoRoute<IwishFeedbackCommentRoute>(path: '/iwish/:iwishId/comment')
 @immutable
 class IwishFeedbackCommentRoute extends GoRouteData {
-  final String iwishId;
 
   const IwishFeedbackCommentRoute({required this.iwishId});
+  final String iwishId;
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 

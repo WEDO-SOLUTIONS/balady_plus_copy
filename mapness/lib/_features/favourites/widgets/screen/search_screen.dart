@@ -7,11 +7,6 @@ import 'package:mapness/features/search/ui/search_history.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class SearchScreen extends ConsumerWidget {
-  final VoidCallback onBackTap;
-  final int itemCount;
-  final String? hintText;
-  final Widget Function(BuildContext context, int index) itemBuilder;
-  final void Function(SearchHistoryItem? item)? onHistoryItemTap;
 
   const SearchScreen({
     required this.itemBuilder,
@@ -21,6 +16,11 @@ class SearchScreen extends ConsumerWidget {
     super.key,
     this.onHistoryItemTap,
   });
+  final VoidCallback onBackTap;
+  final int itemCount;
+  final String? hintText;
+  final Widget Function(BuildContext context, int index) itemBuilder;
+  final void Function(SearchHistoryItem? item)? onHistoryItemTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
