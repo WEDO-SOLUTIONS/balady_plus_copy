@@ -42,7 +42,7 @@ jobs:
       - name: Inject git variables
         run: |
           echo "CI_GIT_COMMIT=$(git --no-pager show -s --format='%s')" >> ${GITHUB_ENV}
-          export CI_GIT_BRANCH=${GITHUB_BASE_REF}
+          export CI_GIT_BRANCH=${GITHUB_REF_NAME}
           export CI_IS_PR=""
           if [[ ${GITHUB_EVENT_NAME} == "pull_request" ]]; then
             export CI_GIT_BRANCH=${GITHUB_HEAD_REF}
@@ -100,6 +100,8 @@ jobs:
           rm DGisFullSDK.zip
 
       - name: Build app
+        env:
+          LANG: en_US.UTF-8
         run: |
           momrahBundle='momra.balady.ios'
           baladyBundle='xyz.amoriodi.balady'
@@ -119,5 +121,5 @@ jobs:
       #     fi
       #     curl -X POST -H 'Content-type: application/json' -H "Authorization: Bearer ${MM_BOT_TOKEN}" https://${MM_DOMAIN}/api/v4/posts -d "{ \
       #       \"channel_id\": \"${MM_CHANNEL_ID}\", \
-      #       \"message\": \"[Build](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}): Number ${GITHUB_RUN_ID}; Branch ${CI_GIT_BRANCH}; ${is_pr}\" \
+      #       \"message\": \"[iOS Build](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}): Number ${GITHUB_RUN_ID}; Branch ${CI_GIT_BRANCH}; ${is_pr}\" \
       #     }"
