@@ -333,14 +333,14 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
         isValid = false;
       }*/
 
-      if (dataModel.selectedMunicipalityItem?.id == "-1") {
+      if (dataModel.isRealEstate()) {
         if (dataModel.requestRealStateVerified == false) {
           isValid = false;
         }
 
-        if (dataModel.realEstateId?.isEmpty ?? true) {
+        /* if (dataModel.realEstateId?.isEmpty ?? true) {
           isValid = false;
-        }
+        }*/
       }
 
       if (isFormValid != isValid) {
@@ -427,6 +427,12 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
     attachmentPath = null;
     attachmentBase64 = null;
     attachmentUuid = null;*/
+  }
+
+  void checkRealStateRequest() async {
+    await dataModel.checkRealStateRequest();
+    print("HERE");
+    notifyListeners();
   }
 
   void saveAttachment(

@@ -104,6 +104,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
 
   @override
   Widget build(BuildContext context) {
+    print("HERRR");
     NewAppointmentFirstStepViewModel model =
         Provider.of<NewAppointmentFirstStepViewModel>(context, listen: true);
     return Column(
@@ -249,7 +250,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
               subTitle: model.serviceConfigResponse?.getDepartmentName()),
         const CustomVerticalSpace(height: 16),
 
-        if (model.dataModel.selectedMunicipalityItem?.id == "-1") ...[
+        if (model.dataModel.isRealEstate()) ...[
           TextWithCheckBtn(
             title: "realEstateRequestId".tr(),
             hint: "realEstateRequestId".tr(),
@@ -260,7 +261,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             isValidate: model.dataModel.requestRealStateVerified ?? false,
             currentValue: model.dataModel.realEstateRequestId,
             verify: () {
-              model.dataModel.checkRealStateRequest();
+              model.checkRealStateRequest();
             },
             onTextChanged: (value) {
               model.dataModel.realEstateRequestId = value;

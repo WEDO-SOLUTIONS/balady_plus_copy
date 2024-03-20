@@ -351,18 +351,21 @@ class NewAppointmentViewModel extends BaseViewModel {
   }
 
   Future<bool> checkRealStateRequest() async {
+    if (realEstateRequestId?.isEmpty ?? true) return false;
     showLoading();
     Tuple3<bool?, String?, RequeestRealStateResponseModel?> response =
         await _repository.checkRealStateRequest(realEstateRequestId ?? "");
     hideLoading();
-    if (response.item1 != null && response.item1! && response.item3 != null) {
+    if (response.item1 != null && response.item1!) {
       requestRealStateVerified = true;
+      notifyListeners();
       return true;
     } else {
       showError(response.item2 ?? "");
     }
     requestRealStateVerified = false;
     notifyListeners();
+
     return false;
   }
   /*Future<bool> getAvailableTimes(int serviceId, String date) async {
@@ -459,7 +462,7 @@ class NewAppointmentViewModel extends BaseViewModel {
       "visitTopic": "",
       "visitType": appointmentTypeItem!.id,
 
-      if (selectedMunicipalityItem?.id == "-1") ...{
+      if (isRealEstate()) ...{
         "realEstateSurveyId": realEstateSurveyId,
         "realEstateId": realEstateId,
         "realEstateRequestId": realEstateRequestId
@@ -522,7 +525,7 @@ class NewAppointmentViewModel extends BaseViewModel {
         "visitTime": selectedTime!.timeKey,
         "visitTopic": "",
         "visitType": appointmentTypeItem!.id,
-        if (selectedMunicipalityItem?.id == "-1") ...{
+        if (isRealEstate()) ...{
           "realEstateSurveyId": realEstateSurveyId,
           "realEstateId": realEstateId,
           "realEstateRequestId": realEstateRequestId
@@ -913,5 +916,12 @@ class NewAppointmentViewModel extends BaseViewModel {
       NavigationService.navigatorKey.currentContext!,
       message,
     );
+  }
+
+  bool isRealEstate() {
+    return serviceConfigResponse?.data?.result?.firstOrNull?.realEstate == true;
+    /*&&
+        selectedMunicipalityItem?.id == "-1"*/
+    ;
   }
 }
