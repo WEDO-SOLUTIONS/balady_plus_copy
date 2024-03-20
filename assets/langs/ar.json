@@ -3937,11 +3937,6 @@
   "delete_all": "حذف الكل",
   "locale": "ar",
   "no_notifications": "",
-  "": "",
-
-
-
-
     "issue_commercial_conclusion_owner_data": "بيانات مالك الرخصة",
     "issue_commercial_conclusion_owner_data_name": "اسم المنشأة",
     "issue_commercial_conclusion_owner_data_cr": "الرقم الموحد للمنشأة (سجل تجاري/رقم 700)",
@@ -3959,23 +3954,15 @@
     "issue_commercial_conclusion_activity_data_main_area" :"مساحة النشاط الرئيسي",
     "issue_commercial_conclusion_activity_data_marsom":"المرسوم الملكي",
     "issue_commercial_conclusion_activity_facility":"نوع المنشأة",
-
     "issue_commercial_conclusion_activity_worker":"نوع العاملين",
     "issue_commercial_conclusion_activity_accomadate_type" : "فئة الفندق" ,
     "issue_commercial_conclusion_activity_accomadate_unit":"عدد الوحدات",
-
     "issue_commercial_conclusion_addetinlal_activity":"قائمة الأنشطة التفصيلية",
-
-
-
     "issue_commercial_conclusion_addetinlal_activity_name":"اسم النشاط الآيزيك الاضافي",
     "issue_commercial_conclusion_addetinlal_activity_code":"رمز النشاط الآيزيك الاضافي",
     "issue_commercial_conclusion_addetinlal_activity_detailed_name":"اسم النشاط التفصيلي الاضافي",
     "issue_commercial_conclusion_addetinlal_activity_detailed_code":"رمز النشاط التفصيلي الاضافي",
     "issue_commercial_conclusion_addetinlal_activity_area":"مساحة النشاط",
-
-
-
     "issue_commercial_conclusion_license_location":"موقع الرخصة",
     "issue_commercial_conclusion_license_municipality":"الأمانة",
     "issue_commercial_conclusion_license_city":"المدينة",
@@ -4004,32 +3991,21 @@
     "issue_commercial_board_area":"مساحة اللوحة",
     "issue_commercial_location":"بيانات اثبات الموقع",
     "issue_commercial_location_type":"نوع اثبات الموقع",
-
     "issue_commercial_location_type_deed_name":"رقم عقد التملك (الصك)",
     "issue_commercial_location_type_deed_number":"تاريخ عقد التملك",
-
-
     "issue_commercial_location_type_investment_number":"رقم العقد بالأمانة",
     "issue_commercial_location_type_investment_name":"مسمى العقد",
     "issue_commercial_location_type_investment_type":"نوع العقد",
-
-
-
     "issue_commercial_location_type_tenancy_no":"رقم العقد",
     "issue_commercial_location_type_tenancy_ve":"رقم النسخة",
     "issue_commercial_location_type_tenancy_rep":"رقم هوية ممثل المستأجر",
     "issue_commercial_location_type_tenancy_date":"تاريخ نهاية العقد",
-
-
     "issue_commercial_location_type_clean_no":"رقم العقد",
     "issue_commercial_location_type_clean_date":"تاريخ نهاية العقد",
-
-
     "issue_commercial_civil":"بيانات الدفاع المدني",
     "issue_commercial_civil_bill":"فاتورة أدوات سلامة",
     "issue_commercial_civil_report":"تقرير فني",
     "issue_commercial_civil_permit":"تصريح سلامة",
-
     "issue_commercial_approvals":"الموافقات الحكومية",
     "issue_commercial_general_security":"الأمن العام",
     "issue_commercial_attachment":"المرفقات",
@@ -4039,64 +4015,15 @@
     "OWNER_MANAGER":"مالك/مدير",
     "DELEGATOR":"مفوض",
     "issue_commercial_conclusion_request_draft":"مسودة الرخصة",
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     "commercial_licenseـquery_title": "يرجى إدخال البيانات التالية",
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     "commercial_licenseـquery_title": "يرجى إدخال البيانات التالية",
-
     "submitter_compliance_text":"حالة الامتثال من مقدم الطلب: ",
     "emp_compliance_text":"حالة الامتثال من المراقب: " ,
     "city_region": "المدينة/المنطقة",
     "select_region": "من فضلك اختار المدينة/المنطقة",
     "tranfer_permit": "نقل التصريح",
-    "dont_tranfer_permit": "عدم نقل التصريح"
+    "dont_tranfer_permit": "عدم نقل التصريح",
     "select_region": "من فضلك اختار المدينة/المنطقة",
-
     "realEstateRequestId":"رقم الطلب",
     "realEstateSurveyId":"رقم القرار المساحي",
     "realEstateId":"رقم الهوية العقارية",

@@ -789,17 +789,6 @@ class Routes {
     RouteName.commercialLicenseTransferOverView: (context) => const CommercialLicenseTransferOverviewScreen(),
     RouteName.transferLicensePermits: (context) => const PremitsScreen(),
 
-  
-        RouteName.commercialLicenseOverView: (context) =>
-            const CommercialLicenseOverviewScreen(),
-        RouteName.commercialLicenseQuery: (context) =>
-            const CommercialLicenseQueryScreen(),
-        RouteName.commercialLicenseQueryDetails: (context) =>
-            const CommercialLicenseQueryDetails(),
-
-
-
-
     RouteName.notificationsListScreen: (context) =>
     const NotificationsListScreen(),
     RouteName.notificationsDetailsScreen: (context) =>
