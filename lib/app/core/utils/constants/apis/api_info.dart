@@ -770,7 +770,6 @@ class ApiUrl {
       "v1/joodeskan-services/generate-donation-url";
   static String joodEskanRegions = "v1/joodeskan-services/regions";
 
-
   static const paymentURL = 'v1/payment-gateway/payment';
 
   static const chatBot = 'v1/chatbot-services/chat'; // not use this now
@@ -800,6 +799,14 @@ class ApiUrl {
 
   static const baladyCalendarEvents =
       'v1/balady-calendar-services/events/by-year';
+
+//! Appointments New APIs
+  static getAppointmentById(String id) =>
+      'v1/appointments-mobile-services/appointments/$id';
+
+  static const saveAppointment = "v1/appointments-mobile-services/appointments";
+  static validateRealEstate(String id) =>
+      'v1/appointments-mobile-services/validate-real-estate/$id';
 
   //! POST
 

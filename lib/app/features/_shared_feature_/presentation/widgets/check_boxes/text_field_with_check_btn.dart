@@ -21,6 +21,8 @@ class TextWithCheckBtn extends StatefulWidget {
   final bool enabled;
   final TextInputType? textInputType;
   final double? topPadding;
+  final bool showToolTip;
+  final String? toolTipMessage;
 
   TextWithCheckBtn(
       {required this.title,
@@ -38,7 +40,9 @@ class TextWithCheckBtn extends StatefulWidget {
       required this.validate,
       this.enabled = true,
       this.textInputType,
-      this.topPadding});
+      this.topPadding,
+      this.showToolTip = false,
+      this.toolTipMessage});
   @override
   _TextWithCheckBtnState createState() => _TextWithCheckBtnState();
 }
@@ -59,19 +63,20 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
       alignment: AlignmentDirectional.centerEnd,
       children: <Widget>[
         CustomTextFieldWidget(
-          label: widget.title,
-          controller: widget.controller,
-          fillColor: widget.backgroundColor,
-          focusNode: _focusNode,
-          hintText: widget.hint ?? "",
-          errorText: widget.errorText,
-          keyboardType: widget.textInputType ??
-              TextInputType.numberWithOptions(signed: false),
-          maxLength: widget.maxLength,
-          onValidate: (String? t) => widget.validate(t),
-          enabled: widget.enabled,
-          onChanged: (value) => {widget.onTextChanged(value)},
-        ),
+            label: widget.title,
+            controller: widget.controller,
+            fillColor: widget.backgroundColor,
+            focusNode: _focusNode,
+            hintText: widget.hint ?? "",
+            errorText: widget.errorText,
+            keyboardType: widget.textInputType ??
+                TextInputType.numberWithOptions(signed: false),
+            maxLength: widget.maxLength,
+            onValidate: (String? t) => widget.validate(t),
+            enabled: widget.enabled,
+            onChanged: (value) => {widget.onTextChanged(value)},
+            showToolTip: widget.showToolTip,
+            toolTipMessage: widget.toolTipMessage),
         Padding(
           padding: EdgeInsetsDirectional.only(
               bottom: 0.0,

@@ -4230,5 +4230,11 @@
 
 
   "city_region": "City/Region",
-  "select_region": "please select city/region"
+  "select_region": "please select city/region", 
+
+
+  "realEstateRequestId":"Real Estate Request Id", 
+  "realEstateSurveyId":"Real Estate Survey Id", 
+  "realEstateId":"Real Estate Id", 
+  "realEstateRequestIdNote":"Consolidation service starts with LMS. Segmentation service starts with LSS. Plan sorting service starts with LSBP. Electronic or paper instrument update service. The application number or cadastral decision number is entered."
 }
