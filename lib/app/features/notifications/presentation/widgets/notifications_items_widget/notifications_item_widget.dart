@@ -16,99 +16,107 @@ class NotificationsItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(create: (BuildContext context) {
-      NotificationRepositoryImplementation listRepository = sl();
-      return NotificationsItemCubit(
-        itemRepository: listRepository,
-        message: message,
-      );
-    }, child: BlocBuilder<NotificationsItemCubit, SucceedMessageState>(
-      builder: (BuildContext contextBloc, state) {
-        return Card(
-          margin: const EdgeInsets.only(bottom: 12),
-          elevation: state.message.status.id != "read" ? 3 : 0,
-          color: state.message.status.id != "read"
-              ? null
-              : Colors.white.withOpacity(0.77),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SvgPicture.asset(
-                  IconPath.bookIcon,
-                  color: state.message.status.id != "read" ? null : Colors.grey,
-                ),
-                const SizedBox(width: 2),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              message.subject,
-                              style: AppStyle.signInFullTextStyle.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
-                              overflow: TextOverflow.clip,
-                              maxLines: 3,
-                            ),
-                          ),
-                          const SizedBox(width: 2),
-                          Card(
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(6)),
-                            ),
-                            color: Colors.red.shade800.withAlpha(60),
-                            elevation: 0,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5),
+    return BlocProvider(
+      create: (BuildContext context) {
+        NotificationRepositoryImplementation listRepository = sl();
+        return NotificationsItemCubit(
+          itemRepository: listRepository,
+          message: message,
+        );
+      },
+      child: BlocBuilder<NotificationsItemCubit, SucceedMessageState>(
+        builder: (BuildContext contextBloc, state) {
+          NotificationsItemCubit cubit = contextBloc.watch<NotificationsItemCubit>();
+          return Card(
+            margin: const EdgeInsets.only(bottom: 12),
+            elevation: state.message.status.id != "read" ? 3 : 0,
+            color: state.message.status.id != "read"
+                ? null
+                : Colors.white.withOpacity(0.77),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SvgPicture.asset(
+                    IconPath.bookIcon,
+                    color:
+                        state.message.status.id != "read" ? null : Colors.grey,
+                  ),
+                  const SizedBox(width: 2),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Flexible(
                               child: Text(
-                                message.status.text,
-                                style: AppStyle.nearbyItemSubTitleTextStyle
-                                    .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.red.shade800,
+                                message.subject,
+                                style: AppStyle.signInFullTextStyle.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                overflow: TextOverflow.clip,
+                                maxLines: 3,
+                              ),
+                            ),
+                            const SizedBox(width: 2),
+                            Card(
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(6),
+                                ),
+                              ),
+                              color: Colors.red.shade800.withAlpha(60),
+                              elevation: 0,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 5,
+                                ),
+                                child: Text(
+                                  message.status.text,
+                                  style: AppStyle.nearbyItemSubTitleTextStyle
+                                      .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red.shade800,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          Flexible(
-                            child: Text(
-                              "${Jiffy.parseFromDateTime(message.eventTime).Hm} ,${Jiffy.parseFromDateTime(message.eventTime).fromNow()}",
-                              style:
-                                  AppStyle.nearbyItemSubTitleTextStyle.copyWith(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 11,
-                                color: AppColor.warmGrey2,
+                            Flexible(
+                              child: Text(
+                                "${Jiffy.parseFromDateTime(message.eventTime).Hm} ,${Jiffy.parseFromDateTime(message.eventTime).fromNow()}",
+                                style: AppStyle.nearbyItemSubTitleTextStyle
+                                    .copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 11,
+                                  color: AppColor.warmGrey2,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      ExpandableTextWidget(
-                        text: message.body,
-                        onTap: () {
-                          if(message.status.id != "read") {
-                            contextBloc.watch<NotificationsItemCubit>().markReadNotificationsMessages();
-                          }
-                        },
-                      ),
-                    ],
+                          ],
+                        ),
+                        ExpandableTextWidget(
+                          text: message.body,
+                          onTap: () {
+                            if (message.status.id != "read") {
+                              cubit.markReadNotificationsMessages();
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        );
-      },
-    ));
+          );
+        },
+      ),
+    );
   }
 }
