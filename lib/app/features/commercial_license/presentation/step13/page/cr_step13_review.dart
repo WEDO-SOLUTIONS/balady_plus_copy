@@ -47,7 +47,9 @@ class _CRStep13ReviewState extends State<CRStep13Review> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CRHeaderDesc(header: "review_request".tr()),
+                        CRHeaderDesc(
+                            header: "issue_commercial_conclusion_request_draft"
+                                .tr()),
                         const SizedBox(height: 16),
                         CustomExpansionPanelWidget(
                           title: "issue_commercial_conclusion_owner_data".tr(),
@@ -363,9 +365,7 @@ class _CRStep13ReviewState extends State<CRStep13Review> {
                             ),
                             children: [
                               FieldData(
-                                  title: state.conclusion?.cleaningInfo
-                                          ?.cleanOptionName ??
-                                      "",
+                                  title: "",
                                   subTitle: state.conclusion?.cleaningInfo
                                           ?.cleanOptionDesc ??
                                       ""),
@@ -377,7 +377,8 @@ class _CRStep13ReviewState extends State<CRStep13Review> {
                                         "issue_commercial_location_type_clean_no"
                                             .tr(),
                                     subTitle: state.conclusion?.cleaningInfo
-                                            ?.contractNumber ??
+                                            ?.contractNumber
+                                            .toString() ??
                                         ""),
                               if (state.conclusion?.cleaningInfo
                                       ?.cleanContractEndDate !=
@@ -387,7 +388,8 @@ class _CRStep13ReviewState extends State<CRStep13Review> {
                                         "issue_commercial_location_type_clean_date"
                                             .tr(),
                                     subTitle: state.conclusion?.cleaningInfo
-                                            ?.cleanContractEndDate ??
+                                            ?.cleanContractEndDate
+                                            .toString() ??
                                         ""),
                             ]),
                         const SizedBox(height: 14),
@@ -556,16 +558,19 @@ class _CRStep13ReviewState extends State<CRStep13Review> {
                                         ?.tenancyContractInfo
                                         ?.contractEndDate !=
                                     null)
-                                  FieldData(
-                                      title:
-                                          "issue_commercial_location_type_tenancy_date"
-                                              .tr(),
-                                      subTitle: state
-                                              .conclusion
-                                              ?.contractInfo
-                                              ?.tenancyContractInfo
-                                              ?.contractEndDate ??
-                                          "")
+                                  if (state.conclusion?.contractInfo
+                                          ?.contractType?.id !=
+                                      "EJAR_SERVICE")
+                                    FieldData(
+                                        title:
+                                            "issue_commercial_location_type_tenancy_date"
+                                                .tr(),
+                                        subTitle: state
+                                                .conclusion
+                                                ?.contractInfo
+                                                ?.tenancyContractInfo
+                                                ?.contractEndDate ??
+                                            "")
                               ],
                             ]),
                         const SizedBox(height: 14),
