@@ -1,8 +1,8 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/_features/poi_card/content_my_location.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/_features/poi_card/my_location_poi/content_my_location.dart';
 import 'package:mapness/_features/poi_card/poi_card_widget.dart';
 import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/app/routes/routes.dart';
