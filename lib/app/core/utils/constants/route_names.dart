@@ -368,6 +368,15 @@ static const DirectRentalPage = 'DirectRentalPage';
       'constructionLicenseInqueryDetails_Screen';
 
 
+
+  static const commercialLicenseTransferOverView =
+      'commercialLicenseTransferOverView_Screen';
+  static const transferLicensePermits =
+      'TransferLicensePermits_Screen';
+  // static const constructionLicenseInqueryDetails =
+  //     'constructionLicenseInqueryDetails_Screen';
+
+
 }
 
 class EtmamRoutesNames {

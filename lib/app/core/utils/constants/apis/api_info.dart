@@ -796,6 +796,15 @@ class ApiUrl {
   static String getSurveyLicenseData(int licenseNumber,String date) =>
       '/v1/balady-construction-services/mobile/inquiry/area-reports/$licenseNumber/$date';
 
+
+  static String getLicensePermits(String licenseNumber) =>
+      '/v1/superapp-commercial-ownership-services/license/permits/$licenseNumber';
+
+
+  static String validateNewOwner(String licenseNumber,String crNumber) =>
+      '/v1/superapp-commercial-ownership-services/transfer/validate-new-owner/$licenseNumber?crNumber=$crNumber';
+
+
   //! Balady Calednar
 
   static const baladyCalendarFilter =

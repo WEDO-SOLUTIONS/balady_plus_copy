@@ -38,6 +38,11 @@ class CommercialLicenseActionViewModel extends BaseViewModel {
       final result = ResponseBodyModel.fromMap(data).data?.result;
       actions = allowedActionsListFromJson(result);
 
+
+      // fawzi adding static action
+      AllowedActions obj = AllowedActions(id: 1010, name: 'Commercial transfer');
+      actions.add(obj);
+
       //actions = actions.where((element) => element.id == 1008).toList();
     } on Exception catch (exception) {
       CommonFunctions.sendEvent(

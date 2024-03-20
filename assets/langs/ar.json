@@ -3954,46 +3954,11 @@
     "issue_commercial_print":"طباعة",
     "OWNER_MANAGER":"مالك/مدير",
     "DELEGATOR":"مفوض",
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     "commercial_licenseـquery_title": "يرجى إدخال البيانات التالية",
-
     "submitter_compliance_text":"حالة الامتثال من مقدم الطلب: ",
-
     "emp_compliance_text":"حالة الامتثال من المراقب: " ,
-
-
-
     "city_region": "المدينة/المنطقة",
-    "select_region": "من فضلك اختار المدينة/المنطقة"
+    "select_region": "من فضلك اختار المدينة/المنطقة",
+    "tranfer_permit": "نقل التصريح",
+    "dont_tranfer_permit": "عدم نقل التصريح"
 }
