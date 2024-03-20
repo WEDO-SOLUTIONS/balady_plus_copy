@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/poi_card/ui_kit_tmp/close_button_poi.dart';
-import 'package:mapness/_features/poi_card/ui_kit_tmp/picture_tmp.dart';
+import 'package:mapness/_features/profile/widgets/profile_image_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PoiHeader extends StatelessWidget {
@@ -27,8 +27,9 @@ class PoiHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Picture.large(
-          img: Image.asset('assets/images/profile_bg_placeholder.png'),
+        ProfileImageWidget(
+          dimension: 48,
+          color: context.color.stroke_accent,
         ),
         const SizedBox(width: 12),
         Expanded(
