@@ -961,7 +961,6 @@
   "vhr_title": "Vehicles recovery requests",
   "req_title": "Municipal service requests",
   "tsr_title": "Supporter",
-  "mun_title": "Municipal services",
   "inq_title": "Inquiries",
   "crm_request_classification": "Classification",
   "Maps": "Maps",
@@ -4132,6 +4131,15 @@
   "issue_commercial_conclusion_owner_data": "License Owner Data", 
   "issue_commercial_conclusion_owner_data_name": "Establishment name",
   "issue_commercial_conclusion_owner_data_cr": "Unified establishment number (commercial register/number 700)",
+  "enable_disable_notifications": "You can enable or disable notifications from here",
+  "manage_notification": "Manage notifications for services",
+
+
+  "make_all_read":"Mark all as read",
+  "delete_all": "Delete all",
+  "locale": "en",
+  "no_notifications": "",
+
 
   "issue_commercial_conclusion_applicant_data": "Submitter Data",
 
