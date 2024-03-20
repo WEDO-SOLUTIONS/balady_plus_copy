@@ -1,22 +1,21 @@
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
-import 'package:balady_plus/app/features/commercial_license_details/data/data_sources/remote_data_source.dart';
 import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_licence_details.dart';
-import 'package:balady_plus/app/features/commercial_license_details/domain/entities/commercial_license_details_entity.dart';
-import 'package:balady_plus/app/features/commercial_license_details/domain/repositories/repository.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/data/data_sources/remote_data_source.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/domain/repositories/repository.dart';
 import 'package:dartz/dartz.dart';
 
 
-class CommercialLicenseDetailsRepositoryImplementation implements CommercialLicenseDetailsRepository {
-  final CommercialLicenseDetailsRemoteDataSource remoteDataSource;
+class RequestOwnershipTransferRepositoryImplementation implements RequestOwnershipTransferDetailsRepository {
+  final RequestOwnershipTransferDetailsRemoteDataSource remoteDataSource;
 
-  CommercialLicenseDetailsRepositoryImplementation({
+  RequestOwnershipTransferRepositoryImplementation({
     required this.remoteDataSource,
   });
 
   @override
-  Future<Either<Failure, CommercialLicenceDetails>> getCommercialLicenseDetails(int commercialLicenseId) async {
+  Future<Either<Failure, CommercialLicenceDetails>> getRequestOwnershipTransferDetails(String commercialLicenseId) async {
     try {
-      final data = await remoteDataSource.getCommercialLicenseDetails(commercialLicenseId);
+      final data = await remoteDataSource.getRequestOwnershipTransferDetails(commercialLicenseId);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());

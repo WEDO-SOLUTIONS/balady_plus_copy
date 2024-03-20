@@ -3,18 +3,17 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/commercial_license_attachments_view_model.dart';
-import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/commercial_license_permits_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_licence_details.dart';
-import 'package:balady_plus/app/features/commercial_license_details/presentation/bloc/commercial_license_details_cubit.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/attachment_show_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/commercial_license_permits_widget.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/bloc/request_ownership_transfer_details_cubit.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/mvvm/selected_permits_view_model.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/comliance_request_details_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 class CommercialLicenseDetailsBody extends StatefulWidget {
   const CommercialLicenseDetailsBody({super.key});
@@ -29,20 +28,14 @@ class _CommercialLicenseDetailsBodyState
   @override
   void initState() {
     super.initState();
-    // context.read<CommercialLicenseDetailsCubit>().;
   }
 
   @override
   Widget build(BuildContext context) {
-    CommercialLicenseDetailsCubit bloc =
-        context.watch<CommercialLicenseDetailsCubit>();
+    RequestOwnershipTransferDetailsCubit bloc =
+        context.watch<RequestOwnershipTransferDetailsCubit>();
 
-    // CustomTextWidget(
-    //   '#${license.licenseNumber}'.tr(),
-    //   textStyle: AppStyle.requestNumberTextStle,
-    // )
-    return BlocConsumer<CommercialLicenseDetailsCubit,
-        CommercialLicenseDetailsState>(
+    return BlocConsumer<RequestOwnershipTransferDetailsCubit, RequestOwnershipTransferDetailsState>(
       listenWhen: (previous, current) => previous.status != current.status,
       listener: (_, state) async {
         if (state.status == BlocRequestStatus.submissionGetFailure) {
@@ -63,19 +56,21 @@ class _CommercialLicenseDetailsBodyState
           final commercialLicenceDetails = state.commercialLicenceDetails!;
           return MultiProvider(
             providers: [
+              // This For Get Attachments of License by licenseId
               ChangeNotifierProvider(
                 create: (BuildContext context) {
                   return CommercialLicenseAttachmentsViewModel(
                     webService: sl(),
-                    licenseId: bloc.commercialLicenseId,
+                    licenseId: commercialLicenceDetails.licenseInfo!.licenseId,
                   );
                 },
               ),
+              // This For Get Selected Permits send from sender
               ChangeNotifierProvider(
                 create: (BuildContext context) {
-                  return CommercialLicensePermitsViewModel(
+                  return SelectedPermitsViewModel(
                     webService: sl(),
-                    requestId: commercialLicenceDetails.licenseInfo!.licenseId,
+                    requestId: commercialLicenceDetails.requestId,
                   );
                 },
               ),
@@ -134,10 +129,6 @@ class _CommercialLicenseDetailsBodyState
                         value: commercialLicenceDetails
                             .submitterInfo!.submitterName,
                       ),
-                      // CardParameter( // from whats
-                      //   title: 'applicant_adjective'.tr(),
-                      //   value: "not get",
-                      // ),
                       CardParameter(
                         title: 'submitterIdNumber'.tr(),
                         value: commercialLicenceDetails
@@ -584,19 +575,4 @@ class _CommercialLicenseDetailsBodyState
     );
   }
 
-// List<AttachmentData> getNewModelList(List<AttachmentModel> attachments) {
-//   return attachments
-//       .map(
-//         (attachment) => AttachmentData(
-//           id: attachment.id.toString(),
-//           memo: "attachment",
-//           title: attachment.name ?? '',
-//           fileName: attachment.fileName ?? attachment.name,
-//           filePath: attachment.attachUrl,
-//           isRequired: attachment.isMandatory ?? false,
-//           isUploaded: attachment.updatable ?? false,
-//         ),
-//       )
-//       .toList();
-// }
 }

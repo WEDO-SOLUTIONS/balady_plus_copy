@@ -368,6 +368,12 @@ static const DirectRentalPage = 'DirectRentalPage';
       'constructionLicenseInqueryDetails_Screen';
 
 
+
+  ///// RequestOwnershipTransferDetailsPage
+
+  static const RequestOwnershipTransferDetailsPage = '/requestOwnershipTransferDetailsPage';
+
+
 }
 
 class EtmamRoutesNames {

@@ -17,6 +17,8 @@ import 'package:balady_plus/app/features/commercial_license_details/presentation
 import 'package:balady_plus/app/features/commercial_license_details/presentation/mvvm/commercial_license_action_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/commercial_license_action_sheet.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/commercial_license_details_body.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/domain/repositories/repository.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/bloc/request_ownership_transfer_details_cubit.dart';
 import 'package:balady_plus/app/features/home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,16 +26,16 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
 
-class CommercialLicenseDetailsPage extends StatefulWidget {
-  const CommercialLicenseDetailsPage({super.key});
+class RequestOwnershipTransferDetailsPage extends StatefulWidget {
+  const RequestOwnershipTransferDetailsPage({super.key});
 
   @override
-  State<CommercialLicenseDetailsPage> createState() =>
-      _CommercialLicenseDetailsPageState();
+  State<RequestOwnershipTransferDetailsPage> createState() =>
+      _RequestOwnershipTransferDetailsPageState();
 }
 
-class _CommercialLicenseDetailsPageState
-    extends State<CommercialLicenseDetailsPage> {
+class _RequestOwnershipTransferDetailsPageState
+    extends State<RequestOwnershipTransferDetailsPage> {
   @override
   void initState() {
     // TODO: implement initState
@@ -45,20 +47,18 @@ class _CommercialLicenseDetailsPageState
   @override
   Widget build(BuildContext context) {
     Map data = ModalRoute.of(context)!.settings.arguments as Map;
-    int commercialLicenseId = int.parse(data['licenseNumber']);
+   String requestNumber = data['requestNumber'];
     return BlocProvider(
       create: (context) =>
-        CommercialLicenseDetailsCubit(
-          GetCommercialLicenseDetails(
-            repository:
-            CommercialLicenseDetailsRepositoryImplementation(
-              remoteDataSource:
-              CommercialLicenseDetailsRemoteDataSourceImplementation(
+          RequestOwnershipTransferDetailsCubit(
+            RequestOwnershipTransferDetailsRepository(
+            repository: CommercialLicenseDetailsRepositoryImplementation(
+              remoteDataSource: CommercialLicenseDetailsRemoteDataSourceImplementation(
                 webService: sl(),
               ),
             ),
           ),
-          commercialLicenseId,
+            requestNumber,
         ),
       child: Scaffold(
         appBar: AppBar(
@@ -71,7 +71,7 @@ class _CommercialLicenseDetailsPageState
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               CustomTextWidget(
-                "businessLicense".tr(),
+                "requests".tr(),
                 fontSize: 20,
                 maxLines: 1,
                 textOverflow: TextOverflow.ellipsis,
@@ -79,7 +79,7 @@ class _CommercialLicenseDetailsPageState
                 fontColor: AppColor.blackModern700Light,
               ),
               CustomTextWidget(
-                "#${commercialLicenseId}",
+                "#$requestNumber",
                 fontSize: 14,
                 maxLines: 1,
                 textOverflow: TextOverflow.ellipsis,
@@ -96,60 +96,6 @@ class _CommercialLicenseDetailsPageState
             onPressed: () => Navigator.of(context).pop(),
           ),
           actions: [
-            BlocBuilder<CommercialLicenseDetailsCubit,
-                CommercialLicenseDetailsState>(
-              builder: (_, state) {
-                if (state.status == BlocRequestStatus.submissionGetLoading) {
-                  return const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
-                    child: ShimmerEffectWidget(
-                      width: 40,
-                      height: 30,
-                      borderRadius: 25,
-                    ),
-                  );
-                }
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  child: InkWell(
-                    onTap: () {
-                      if (state.commercialLicenceDetails!.submitterInfo !=
-                              null &&
-                          state.commercialLicenceDetails!.licenseInfo !=
-                              null) {
-                        BottomSheetDialog.showDraggableSheet(
-                          context,
-                          dialogKeyName:
-                              DialogName.commercialLicenseActionSheetDialog,
-                          currentRouteName: RouteName.commercialLicenseDetails,
-                          child: ChangeNotifierProvider(
-                            create: (BuildContext context) =>
-                                CommercialLicenseActionViewModel(
-                                    webService: sl(),
-                                    licenseId: commercialLicenseId,
-                                    submitterInfo: state
-                                        .commercialLicenceDetails!
-                                        .submitterInfo!,
-                                    commercialLicenceDetails:
-                                        state.commercialLicenceDetails!),
-                            child: const CommercialLicenseActionSheet(),
-                          ),
-                          isFullHeight: false,
-                          height: MediaQuery.of(context).size.height * 0.47,
-                        );
-                      }
-                    },
-                    child: const CircleIcon(
-                      backgroundColor: AppColor.primary50Light,
-                      icon: IconPath.settings,
-                      circleSize: 48.0,
-                      iconSize: 30.0,
-                    ),
-                  ),
-                );
-              },
-            ),
           ],
         ),
         body: const Padding(

@@ -3,17 +3,18 @@ import 'package:balady_plus/app/core/services/local/use_case.dart';
 import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_licence_details.dart';
 import 'package:balady_plus/app/features/commercial_license_details/domain/entities/commercial_license_details_entity.dart';
 import 'package:balady_plus/app/features/commercial_license_details/domain/repositories/repository.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/domain/repositories/repository.dart';
 import 'package:dartz/dartz.dart';
 
 
 
-class GetCommercialLicenseDetails extends UseCase<CommercialLicenceDetails,int> {
-  final CommercialLicenseDetailsRepository repository;
+class GetRequestOwnershipTransferDetails extends UseCase<CommercialLicenceDetails,String> {
+  final RequestOwnershipTransferDetailsRepository repository;
 
-  GetCommercialLicenseDetails({required this.repository});
+  GetRequestOwnershipTransferDetails({required this.repository});
 
   @override
-  Future<Either<Failure, CommercialLicenceDetails>> call(commercialLicenseId) async {
-    return await repository.getCommercialLicenseDetails(commercialLicenseId);
+  Future<Either<Failure, CommercialLicenceDetails>> call(params) async {
+    return await repository.getRequestOwnershipTransferDetails(params);
   }
 }

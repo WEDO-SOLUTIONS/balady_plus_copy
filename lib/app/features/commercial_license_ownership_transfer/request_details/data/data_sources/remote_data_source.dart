@@ -10,26 +10,26 @@ import 'package:dio/src/response.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
-abstract class CommercialLicenseDetailsRemoteDataSource {
-  Future<CommercialLicenceDetails> getCommercialLicenseDetails(
-    int commercialLicenseId,
+abstract class RequestOwnershipTransferDetailsRemoteDataSource {
+  Future<CommercialLicenceDetails> getRequestOwnershipTransferDetails(
+    String commercialLicenseId,
   );
 }
 
-class CommercialLicenseDetailsRemoteDataSourceImplementation
-    implements CommercialLicenseDetailsRemoteDataSource {
+class RequestOwnershipTransferRemoteDataSourceImplementation
+    implements RequestOwnershipTransferDetailsRemoteDataSource {
   final WebService webService;
 
-  CommercialLicenseDetailsRemoteDataSourceImplementation(
+  RequestOwnershipTransferRemoteDataSourceImplementation(
       {required this.webService});
 
   @override
-  Future<CommercialLicenceDetails> getCommercialLicenseDetails(
-      int commercialLicenseId) async {
+  Future<CommercialLicenceDetails> getRequestOwnershipTransferDetails(
+      String commercialLicenseId) async {
     Response? response;
     try {
       response = await webService.dio.get(
-        ApiUrl.getCommercialLicenseDetails(commercialLicenseId),
+        ApiUrl.getCommercialLicenseDetails(int.parse(commercialLicenseId)),
       );
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
