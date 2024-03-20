@@ -83,6 +83,7 @@ jobs:
         env:
           LANG: en_US.UTF-8
         run: |
+          cd ios
           echo FLUTTER PRECACHE
           flutter precache --ios
           echo POD REPO UPDATE
