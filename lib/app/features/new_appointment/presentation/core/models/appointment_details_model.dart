@@ -7,33 +7,22 @@ import 'dart:convert';
 AppointmentDetails appointmentDetailsFromJson(String str) =>
     AppointmentDetails.fromJson(json.decode(str));
 
-String appointmentDetailsToJson(AppointmentDetails data) =>
-    json.encode(data.toJson());
-
 class AppointmentDetails {
   AppointmentDetails({
     this.statusDetails,
     this.data,
   });
 
-  List<StatusDetail>? statusDetails;
+  StatusDetail? statusDetails;
   Data? data;
 
   factory AppointmentDetails.fromJson(Map<String, dynamic> json) =>
       AppointmentDetails(
         statusDetails: json["statusDetails"] == null
             ? null
-            : List<StatusDetail>.from(
-                json["statusDetails"].map((x) => StatusDetail.fromJson(x))),
+            : StatusDetail.fromJson(json["statusDetails"]),
         data: json["data"] == null ? null : Data.fromJson(json["data"]),
       );
-
-  Map<String, dynamic> toJson() => {
-        "statusDetails": statusDetails == null
-            ? null
-            : List<dynamic>.from(statusDetails!.map((x) => x.toJson())),
-        "data": data == null ? null : data!.toJson(),
-      };
 }
 
 class Data {
@@ -109,7 +98,10 @@ class AppointmentItemInfo {
       this.specialConditionId,
       this.specialConditionName,
       this.visitTypeId,
-      this.visitTypeName});
+      this.visitTypeName,
+      this.realEstateSurveyId,
+      this.realEstateId,
+      this.realEstateRequestId});
 
   int? id;
   String? municipalityId;
@@ -156,6 +148,10 @@ class AppointmentItemInfo {
 
   int? visitTypeId;
   String? visitTypeName;
+
+  String? realEstateSurveyId;
+  String? realEstateId;
+  String? realEstateRequestId;
 
   String getFormattedVisitDate() {
     String originalDateString = visitDate ?? "";
@@ -235,6 +231,9 @@ class AppointmentItemInfo {
       specialConditionName: json["specialConditionName"],
       visitTypeId: json["visitTypeId"],
       visitTypeName: json["visitTypeName"],
+      realEstateSurveyId: json["realEstateSurveyId"],
+      realEstateId: json["realEstateId"],
+      realEstateRequestId: json["realEstateRequestId"],
       attachments: json["attachments"] == null
           ? []
           : List<Attachment>.from(

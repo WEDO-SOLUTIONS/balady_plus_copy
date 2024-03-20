@@ -16,7 +16,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 3.9.6+201
+version: 3.9.9+202
 
 environment:
   sdk: ">=3.0.1 <4.0.0"
@@ -195,6 +195,14 @@ dependencies:
   background_location: ^0.11.8
   preload_page_view: ^0.2.0
   flutter_linkify: ^6.0.0
+  screenshot: ^2.1.0
+
+
+#  Show App Popup Menu form button in poiation
+  app_popup_menu: ^1.0.0
+
+  jiffy:
+
 
 dependency_overrides:
   geolocator_android: ^4.2.2
