@@ -78,7 +78,6 @@ class PoiMapRoute extends GoRouteData {
     if (dgisObjectId == -1) {
       return TransculentPage(
         child: ContentMyLocation(
-          theme: Theme.of(context),
           key: const Key('POI MY LOCATION CARD WIDGET'),
           closestPoint: closesPoint,
         ),
