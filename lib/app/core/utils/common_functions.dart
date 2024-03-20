@@ -1078,7 +1078,11 @@ class CommonFunctions {
     return newStr.isEmpty ? value : newStr;
   }
 
-  static sendEvent({DioError? dioError, Response? response, Exception? ex}) {
+  static sendEvent(
+      {DioError? dioError,
+      Response? response,
+      Exception? ex,
+      String? errorMessage}) {
     try {
       SentryRequest request = SentryRequest(
         url: dioError?.requestOptions.path ?? response?.realUri.path,
@@ -1090,8 +1094,13 @@ class CommonFunctions {
         headers: dioError?.requestOptions.headers.cast() ??
             response?.requestOptions.headers.cast(),
       );
+      String message =
+          (dioError?.response?.data.toString() ?? response?.data.toString()) ??
+              (errorMessage ?? ex.toString());
+
+      message = message.isEmpty ? (errorMessage ?? ex.toString()) : message;
       SentryMessage sentryMessage = SentryMessage(
-        dioError?.response?.data.toString() ?? response?.data.toString() ?? "",
+        message,
       );
 
       SentryUser sentryUser = SentryUser(
@@ -1137,7 +1146,10 @@ class CommonFunctions {
 
         String message = (dioError?.response?.data.toString() ??
                 response?.data.toString()) ??
-            "";
+            (errorMessage ?? ex.toString());
+
+        message = message.isEmpty ? (errorMessage ?? ex.toString()) : message;
+        print("MessageMessage ${message}");
 
         String? URL = (dioError?.requestOptions.path ?? response?.realUri.path);
 

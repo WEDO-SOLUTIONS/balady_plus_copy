@@ -199,8 +199,7 @@ class _AddPosterDialogState extends State<AddPosterDialog> {
                         ),
                       ],
                     ),
-                    // ToDo: Remove the poster CR
-                    /* if (posterType?.id == 1951) ...[
+                    if (posterType?.id == 1951) ...[
                       const SizedBox(
                         height: 32,
                       ),
@@ -216,7 +215,7 @@ class _AddPosterDialogState extends State<AddPosterDialog> {
                           });
                         },
                       )
-                    ],*/
+                    ],
                     const SizedBox(
                       height: 32,
                     ),
@@ -333,8 +332,7 @@ class _AddPosterDialogState extends State<AddPosterDialog> {
         isValid = false;
     });
 
-//ToDo: Remove Poster CR
-    // if (posterType?.id == 1951 && discountPercentage == null) isValid = false;
+    if (posterType?.id == 1951 && discountPercentage == null) isValid = false;
 
     return isValid;
   }

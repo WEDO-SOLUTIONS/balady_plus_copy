@@ -3415,7 +3415,7 @@
   "complaince_service_name": "Issuance of Building Compliance Licensing",
   "complaince_service_desc": "It is a service through which a certificate of compliance is issued to the building stating that the building complies with a set of requirements approved by the Ministry of Municipal and Rural Affairs and Housing in order to reduce visual distortion in commercial and residential buildings and to improve the quality of the urban landscape in cities.",
   "complaince_service_req_1": "The applicant must be the owner of the building or an authorized person by the owner of the building with a valid electronic authorization issued by Balady",
-  "complaince_service_req_2": "The applicant must have a construction permit or a title deed",
+  "complaince_service_req_2": "The applicant must have a construction permit or Occupancy document",
   "complaince_applying_benf": "Directly by the beneficiary (without an engineering office)",
   "complaince_applying_benf_step_1": "Login through Balady App",
   "complaince_applying_benf_step_2": "Access the service of Issuing a Building Compliance Licensing",
@@ -4131,7 +4131,147 @@
   "make_all_read":"Mark all as read",
   "delete_all": "Delete all",
   "locale": "en",
-  "no_notifications": ""
+  "no_notifications": "",
+
+  "rating_chat_bot_title": "How do you evaluate the smart assistant?",
+  "chat_bot_not_working_title": "Sorry, the service is currently unavailable",
+  "chat_bot_not_working_message": "We apologize for the inconvenience. The current service is experiencing technical difficulties, and we are working diligently to resolve the issue. Please try again later. Thank you for your understanding.",
+  "calendar_type_invoice": "Invoice not paid",
+  "commercial_licenseـquery_title": "Insert the following",
+  "submitter_compliance_text":"Compliance status of the Submitter: ",
+  "emp_compliance_text":"Compliance status of the Employee: " ,
 
 
+  "issue_commercial_conclusion_owner_data": "License Owner Data", 
+  "issue_commercial_conclusion_owner_data_name": "Establishment name",
+  "issue_commercial_conclusion_owner_data_cr": "Unified establishment number (commercial register/number 700)",
+
+  "issue_commercial_conclusion_applicant_data": "Submitter Data",
+
+  "issue_commercial_conclusion_applicant_data_name": "Submitter Name",
+  "issue_commercial_conclusion_applicant_data_id": "Submitter ID",
+  "issue_commercial_conclusion_applicant_data_type": "Submitter Type"  , 
+
+  "issue_commercial_conclusion_activity_data": "Shop activities data", 
+  "issue_commercial_conclusion_activity_data_isic":  "ISIC Activity Name", 
+  "issue_commercial_conclusion_activity_data_detailed":  "Detailed Activity Name", 
+  "issue_commercial_conclusion_activity_data_area" :"Shop Area", 
+  "issue_commercial_conclusion_activity_data_main_area" :"Main activity area", 
+  "issue_commercial_conclusion_activity_data_marsom":"The Royal Decree", 
+  "issue_commercial_conclusion_activity_facility":"Establishment Type", 
+
+  "issue_commercial_conclusion_activity_worker":"Worker Type", 
+  "issue_commercial_conclusion_activity_accomadate_type" : "Accommodation Type" ,
+  "issue_commercial_conclusion_activity_accomadate_unit":"Number of units", 
+
+  "issue_commercial_conclusion_addetinlal_activity":"Detailed list of activities", 
+
+
+
+  "issue_commercial_conclusion_addetinlal_activity_name":"Additional ISIC Activity Name", 
+  "issue_commercial_conclusion_addetinlal_activity_code":"Additional ISIC Activity Code", 
+  "issue_commercial_conclusion_addetinlal_activity_detailed_name":"Additional Detailed Activity Name", 
+  "issue_commercial_conclusion_addetinlal_activity_detailed_code":"Additional Detailed Activity Code", 
+  "issue_commercial_conclusion_addetinlal_activity_area":"Activity Area", 
+
+
+  "issue_commercial_conclusion_license_location":"License Location", 
+  "issue_commercial_conclusion_license_municipality":"Municipality", 
+  "issue_commercial_conclusion_license_city":"City",   
+  "issue_commercial_conclusion_license_sub_municipality":"Sub Municipalit", 
+  "issue_commercial_conclusion_license_district":"District",  
+  "issue_commercial_conclusion_license_street":"Street", 
+  "issue_commercial_conclusion_license_map_no":"Plane No", 
+  "issue_commercial_conclusion_license_plane_no":"Land No", 
+  "issue_commercial_conclusion_license_y":"Y", 
+  "issue_commercial_conclusion_license_x":"X", 
+  "issue_commercial_shop_info":"Shop Data", 
+  "issue_commercial_shop_info_name":"Shop Name", 
+  "issue_commercial_shop_info_no":"Shop Number", 
+  "issue_commercial_shop_block":"Building Number", 
+  "issue_commercial_shop_holes":"Holes Count",  
+  "issue_commercial_shop_floors":"Number of floors in the shop", 
+  "issue_commercial_shop_cameras_no":"Number of cameras in the shop", 
+  "issue_commercial_shop_has_elevator":"Is there an elevator in the shop?", 
+  "issue_commercial_shop_inside_petrol":"Is the shop located in a a gas station?", 
+  "issue_commercial_shop_inside_mall":"Is the shop located in a commercial center?", 
+  "issue_commercial_shop_mall_name":"Name of the Commercial Center", 
+  "issue_commercial_shop_mall_floor":"Floor in the Commercial Center", 
+  "issue_commercial_clean_data":"Cleanliness Data", 
+  "issue_commercial_board_data":"Boards Data", 
+  "issue_commercial_board_type":"Board Type", 
+  "issue_commercial_board_area":"Board Area", 
+  "issue_commercial_location":"Proof location data", 
+  "issue_commercial_location_type":"Location proof type", 
+
+  "issue_commercial_location_type_deed_name":"Number of ownership contract", 
+  "issue_commercial_location_type_deed_number":"Date of ownership contract", 
+
+
+  "issue_commercial_location_type_investment_number":"Contract Number in the Municipality", 
+  "issue_commercial_location_type_investment_name":"Contract Name", 
+  "issue_commercial_location_type_investment_type":"Contract Type", 
+
+  
+
+  "issue_commercial_location_type_tenancy_no":"Contract Number", 
+  "issue_commercial_location_type_tenancy_ve":"Version No", 
+  "issue_commercial_location_type_tenancy_rep":"Representative ID No.", 
+  "issue_commercial_location_type_tenancy_date":"Contract Expiry Date", 
+
+
+  "issue_commercial_location_type_clean_no":"Contract Number", 
+  "issue_commercial_location_type_clean_date":"Contract Expiry Date", 
+
+
+  "issue_commercial_civil":"Civil Defense Data", 
+  "issue_commercial_civil_bill":"Salama Bill", 
+  "issue_commercial_civil_report":"Salama Report", 
+  "issue_commercial_civil_permit":"Salama Permit", 
+
+  "issue_commercial_approvals":"Government Approvals", 
+  "issue_commercial_general_security":"Public Security", 
+  "issue_commercial_attachment":"Attachment", 
+  "issue_commercial_request_flow":"Request Path", 
+  "issue_commercial_calculator":"Fees Calculator", 
+  "issue_commercial_print":"Print", 
+  "OWNER_MANAGER":"OWNER/MANAGER", 
+  "DELEGATOR":"DELEGATOR", 
+
+
+
+
+  "city_region": "City/Region",
+  "select_region": "please select city/region",
+  "no_data_found":"No Data Found",
+  "survey_report_inquery": "Inquiry about  Area report",
+  "inquiry_construction_license": "Inquiry about  construction license",
+  "license_issue_date":"License Issue Date",
+  "license_typeـerror": "Please enter license type",
+  "unified_license_number_error": "please enter unified license number",
+  "license_date_error": "please enter license issue date",
+  "survey_number": "Survey Number",
+  "survey_propose": "Survey Propose",
+  "issue_date_error": "please enter license issue date",
+  "survey_number_error": "Please enter survey number",
+  "survey_proposeـerror": "please enter survey propose  ",
+  "survey_inquery_details": "Survey Inquiry Details",
+  "old_survey_number": "Old Survey Number ",
+  "survey_date": "Survey Issue Date ",
+  "survey_source":"Survey Source",
+  "land_information":"Land Information",
+  "land": "land",
+  "area_natural" :"Area at Natural",
+  "area_schema":"Area at Schema",
+  "license_details": "License Details",
+  "license_number_municipality": "License Number Municipality",
+  "building_type":"Building Type", 
+
+  "issue_commercial_conclusion_request_draft": "License Draft", 
+
+
+  "realEstateRequestId":"Real Estate Request Id", 
+  "realEstateSurveyId":"Real Estate Survey Id", 
+  "realEstateId":"Real Estate Id", 
+  "realEstateRequestIdNote":"Consolidation service starts with LMS. Segmentation service starts with LSS. Plan sorting service starts with LSBP. Electronic or paper instrument update service. The application number or cadastral decision number is entered."
 }

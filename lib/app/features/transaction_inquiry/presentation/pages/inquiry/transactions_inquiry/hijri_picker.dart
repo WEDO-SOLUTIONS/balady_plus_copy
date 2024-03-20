@@ -1524,7 +1524,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
 }
 
 int getHijriDaysInMonth(int year, int month) {
-// cause the umm Alquara calenar cannot get days in month between 1356 and 1500
+// cause the umm Alquara calenar cannot get days in month between  and 1500
   if (year < 1356 || year > 1500) return 30;
 
   return HijriCalendar().getDaysInMonth(year, month);

@@ -6,6 +6,7 @@ import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
+import 'package:balady_plus/app/features/jod_services/presentation/models/regions.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 
@@ -13,9 +14,13 @@ class JodDonationViewModel extends BaseViewModel {
   final WebService repository;
   double? amount;
   TextEditingController textController = TextEditingController();
-  JodDonationViewModel(this.repository) ;
 
+  List<Regions>? regions ;
+  Regions? region ;
 
+  JodDonationViewModel(this.repository) {
+    getRegions();
+  }
 
   Future getJoodEskanServicesGenerateDonationUrl () async {
     isLoading = true;
@@ -25,7 +30,7 @@ class JodDonationViewModel extends BaseViewModel {
       Map<String,dynamic> queryParameters = {
         "amount": amount?.toInt(),
         "locale": "ar",
-        // "mobile": "0553655552",
+        "region": region!.code,
         "agentId": 1,
       };
       if(CommonProperties.userInfo != null) {
@@ -59,6 +64,36 @@ class JodDonationViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  Future getRegions () async {
+    isLoading = true;
+    notifyListeners();
+    Response? response;
+    try {
+      response = await repository.dio.get(ApiUrl.joodEskanRegions);
+      final data = response.data;
+      List result = ResponseBodyModel.fromMap(data).data?.result;
+      regions = result.map((e) => Regions.fromMap(e)).toList();
+      isLoading = false;
+      notifyListeners();
+    }  on Exception catch (exception) {
+      CommonFunctions.sendEvent(
+        dioError: exception is DioException ? exception : null,
+        response: response,
+        ex: exception,
+      );
+      showError(exception.toString());
+    } catch (exception) {
+      CommonFunctions.sendEvent(
+        dioError: null,
+        response: response,
+        ex: Exception(exception.toString()),
+      );
+      showError(exception.toString());
+    }
+    isLoading = false;
+    notifyListeners();
+  }
+
   void setAmount(double amount) {
     this.amount = amount;
     textController.text = "$amount";
@@ -67,6 +102,11 @@ class JodDonationViewModel extends BaseViewModel {
 
   void setAmountNotInsertTextFiled(double amount) {
     this.amount = amount;
+    notifyListeners();
+  }
+
+  void selectedRegion(Regions item) {
+    region = item;
     notifyListeners();
   }
 }

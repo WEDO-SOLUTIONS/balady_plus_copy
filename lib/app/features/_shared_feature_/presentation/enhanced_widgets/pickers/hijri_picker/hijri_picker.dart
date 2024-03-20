@@ -1134,7 +1134,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
     this.isNumberMonth = false,
     this.months = monthsListENL,
     this.strAMPM,
-    this.yearBegin = 1300,
+    this.yearBegin = 1320,
     this.yearEnd = 1491,
     this.value,
     this.minValue,
