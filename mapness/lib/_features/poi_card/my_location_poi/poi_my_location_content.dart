@@ -27,10 +27,9 @@ class PoiMyLocationContent extends ConsumerWidget {
           builder: (context) {
             final userData = ref.watch(authProvider).requireValue;
             final language = ref.read(appLanguageProvider);
-            final title =
-                userData?.getLocalizedFirstAndLastName(language) ?? 'Guest';
-            //context.l10n.guest;
-            const subTitle = "It's you";
+            final title = userData?.getLocalizedFirstAndLastName(language) ??
+                context.l10n.guestName;
+            final subTitle = context.l10n.myLocationSubtitle;
 
             return Column(
               mainAxisSize: MainAxisSize.min,
