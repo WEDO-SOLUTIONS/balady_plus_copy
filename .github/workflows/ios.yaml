@@ -80,6 +80,8 @@ jobs:
           flutter pub get
 
       - name: iOS Setup
+        env:
+          LANG: en_US.UTF-8
         run: |
           flutter precache --ios
           pod repo update || true
@@ -89,6 +91,7 @@ jobs:
       - name: Development setup dgis_map
         env: # Set the secret as an environment variable
           BALADY_DEVELOPERS_PASS: ${{ secrets.BALADY_DEVELOPERS_PASS }}
+          LANG: en_US.UTF-8
         run: |
           cd urbi_map/dgis_map
           flutter pub get
