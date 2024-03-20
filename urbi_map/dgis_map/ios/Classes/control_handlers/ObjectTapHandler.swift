@@ -146,8 +146,7 @@ class ObjectTapHandler {
             return
         case is MyLocationMapObject:
             guard let myLocation = tappedObject as? MyLocationMapObject else { return }
-            let userData = myLocation.userData
-            self.sendDgisMyLocationEvent(myLocation, objectInfo.closestMapPoint)
+            self.sendDgisMyLocationEvent(objectInfo.closestMapPoint)
             return
         case is DgisMapObject:
             guard let mapObject = tappedObject as? DgisMapObject else { return }
@@ -886,9 +885,7 @@ class ObjectTapHandler {
         ] as [String : Any?])
     }
 
-    private func sendDgisMyLocationEvent(_ myLocation: MyLocationMapObject, _ position: GeoPointWithElevation) {
-        
-        let data = myLocation.userData
+    private func sendDgisMyLocationEvent(_ position: GeoPointWithElevation) {
         eventChannel.success([
             "event": Events.onMyLocationTap,
             "latlng": [
