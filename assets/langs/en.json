@@ -4129,8 +4129,6 @@
   "emp_compliance_text":"Compliance status of the Employee: " ,
 
 
-
-
   "issue_commercial_conclusion_owner_data": "License Owner Data", 
   "issue_commercial_conclusion_owner_data_name": "Establishment name",
   "issue_commercial_conclusion_owner_data_cr": "Unified establishment number (commercial register/number 700)",
@@ -4226,6 +4224,9 @@
   "issue_commercial_print":"Print", 
   "OWNER_MANAGER":"OWNER/MANAGER", 
   "DELEGATOR":"DELEGATOR", 
+
+
+
 
   "city_region": "City/Region",
   "select_region": "please select city/region",
