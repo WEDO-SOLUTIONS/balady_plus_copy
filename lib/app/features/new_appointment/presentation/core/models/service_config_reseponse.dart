@@ -69,19 +69,19 @@ class Data {
 }
 
 class ServiceConfigItem {
-  ServiceConfigItem({
-    this.id,
-    this.name,
-    this.applyMethod,
-    this.mainClassificationId,
-    this.mainClassification,
-    this.subClassification,
-    this.departmentId,
-    this.departmentName,
-    this.allowDepartmentList,
-    this.allowAddTopic,
-    this.visitType,
-  });
+  ServiceConfigItem(
+      {this.id,
+      this.name,
+      this.applyMethod,
+      this.mainClassificationId,
+      this.mainClassification,
+      this.subClassification,
+      this.departmentId,
+      this.departmentName,
+      this.allowDepartmentList,
+      this.allowAddTopic,
+      this.visitType,
+      this.realEstate});
 
   int? id;
   dynamic name;
@@ -93,6 +93,7 @@ class ServiceConfigItem {
   String? departmentName;
   bool? allowDepartmentList;
   bool? allowAddTopic;
+  bool? realEstate;
   List<VisitType>? visitType;
 
   factory ServiceConfigItem.fromJson(Map<String, dynamic> json) =>
@@ -107,6 +108,7 @@ class ServiceConfigItem {
         departmentName: json["departmentName"],
         allowDepartmentList: json["allowDepartmentList"],
         allowAddTopic: json["allowAddTopic"],
+        realEstate: json["realEstate"],
         visitType: json["visitType"] != null
             ? List<VisitType>.from(
                 json["visitType"].map((x) => VisitType.fromJson(x)))

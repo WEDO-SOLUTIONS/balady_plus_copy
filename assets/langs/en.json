@@ -4254,5 +4254,11 @@
   "license_number_municipality": "License Number Municipality",
   "building_type":"Building Type", 
 
-  "issue_commercial_conclusion_request_draft": "License Draft"
+  "issue_commercial_conclusion_request_draft": "License Draft", 
+
+
+  "realEstateRequestId":"Real Estate Request Id", 
+  "realEstateSurveyId":"Real Estate Survey Id", 
+  "realEstateId":"Real Estate Id", 
+  "realEstateRequestIdNote":"Consolidation service starts with LMS. Segmentation service starts with LSS. Plan sorting service starts with LSBP. Electronic or paper instrument update service. The application number or cadastral decision number is entered."
 }
