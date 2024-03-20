@@ -4,11 +4,15 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
 import 'package:mapness/_features/poi_card/ui_kit_tmp/poi_header.dart';
 import 'package:mapness/_features/poi_card/widgets/footer/footer_style.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
+import 'package:mapness/_features/profile/domain/user_profile_data.dart';
+import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/disable_overscroll_behavior.dart';
 
@@ -22,6 +26,8 @@ class ContentMyLocation extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final viewModel = PoiCardViewModel(ref: ref);
+    _cameraAnimation(ref);
     return Directionality(
       textDirection: switch (ref.watch(appLanguageProvider)) {
         Language.arabic => TextDirection.rtl,
@@ -59,7 +65,11 @@ class ContentMyLocation extends ConsumerWidget {
                         context.pop();
                       },
                     ),
-                    const MyLocationPoiActions(),
+                    MyLocationPoiActions(
+                      onShare: () => viewModel.shareMyLocation(closestPoint),
+                      onCopy: () => viewModel.copyToClipboard(closestPoint),
+                      language: ref.watch(appLanguageProvider),
+                    ),
                   ],
                 );
               }),
@@ -69,11 +79,33 @@ class ContentMyLocation extends ConsumerWidget {
       }),
     );
   }
+
+  void _cameraAnimation(WidgetRef ref) {
+    if (closestPoint != null) {
+      ref.read(cameraPositionProvider.notifier).animateTo(
+            CameraPositionMessage(
+              point: GeoPointMessage(
+                  latitude: closestPoint!.latitude,
+                  longitude: closestPoint!.longitude),
+              zoom: 17,
+              tilt: 0,
+              bearing: 0,
+            ),
+          );
+    }
+  }
 }
 
 class MyLocationPoiActions extends StatelessWidget {
+  final Function()? onShare;
+  final Function()? onCopy;
+  // Tempreary solution: add context.l10n.copy
+  final Language language;
   const MyLocationPoiActions({
+    required this.language,
     super.key,
+    this.onShare,
+    this.onCopy,
   });
 
   @override
@@ -91,15 +123,31 @@ class MyLocationPoiActions extends StatelessWidget {
             children: [
               FooterIconButton(
                 flex: 2,
+                desc: Text(
+                  context.l10n.share,
+                  style: context.textStyle.accentM.copyWith(
+                      color: context.color.text_and_icons_base_inverse_primary),
+                ),
                 assetName: 'assets/icons/svg/ic_share.svg',
-                colorIcon: context.color.text_and_icons_status_accent,
-                onTap: () {}, // () => viewModel.share(objectMessage),
+                colorIcon: context.color.text_and_icons_base_inverse_primary,
+                colorButton: context.color.text_and_icons_status_accent,
+                onTap: onShare,
               ),
               FooterIconButton(
                 flex: 2,
+                desc: Text(
+                  //context.l10n.copy,
+                  switch (language) {
+                    Language.arabic => 'نسخ',
+                    Language.english => 'Copy',
+                  },
+                  style: context.textStyle.accentM.copyWith(
+                    color: context.color.text_and_icons_status_accent,
+                  ),
+                ),
                 assetName: 'assets/icons/svg/ic_copy.svg',
                 colorIcon: context.color.text_and_icons_status_accent,
-                onTap: () {}, // () => viewModel.copy(objectMessage),
+                onTap: onCopy,
               ),
             ],
           ),
@@ -135,11 +183,10 @@ class PoiMyLocationContent extends ConsumerWidget {
         ),
       ),
       child: Builder(builder: (context) {
-        // final address = data.directoryObjectMessage?.address;
-        // final subTitle = data.directoryObjectMessage?.makeAddress() ?? '';
-        const title = 'Guest';
-        //address?.buildingName ?? data.directoryObjectMessage?.title ?? '';
-        //final titleAddition = data.directoryObjectMessage?.titleAddition ?? '';
+        final userData = ref.watch(authProvider).requireValue;
+        final language = ref.read(appLanguageProvider);
+        final title =
+            userData?.getLocalizedFirstAndLastName(language) ?? 'Guest';
 
         return Column(
           mainAxisSize: MainAxisSize.min,

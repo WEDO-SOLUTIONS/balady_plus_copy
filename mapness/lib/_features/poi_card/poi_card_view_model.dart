@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/poi_card/enums/contacts_info_type.dart';
@@ -34,6 +35,25 @@ class PoiCardViewModel {
       Share.share('balady://poi-map?dgis-object-id=$objectId');
     } else {
       onError();
+    }
+  }
+
+  String _myLocationDeepling(LatLng location) =>
+      'balady://poi-map?lat=${location.latitude}&lng=${location.longitude}';
+
+  void shareMyLocation(LatLng? location) {
+    if (location != null) {
+      Share.share(_myLocationDeepling(location));
+    } else {
+      onError();
+    }
+  }
+
+  Future<void> copyToClipboard(LatLng? location) async {
+    if (location != null) {
+      await Clipboard.setData(
+        ClipboardData(text: _myLocationDeepling(location)),
+      );
     }
   }
 
