@@ -1,12 +1,12 @@
-part of 'commercial_license_details_cubit.dart';
+part of 'request_ownership_transfer_details_cubit.dart';
 
-class CommercialLicenseDetailsState extends Equatable {
+class RequestOwnershipTransferDetailsState extends Equatable {
   final BlocRequestStatus status;
   final CommercialLicenceDetails? commercialLicenceDetails;
   //error message
   final String? errorMessage;
 
-  const CommercialLicenseDetailsState({
+  const RequestOwnershipTransferDetailsState({
     this.status = BlocRequestStatus.initial,
     this.commercialLicenceDetails,
     this.errorMessage,
@@ -14,12 +14,12 @@ class CommercialLicenseDetailsState extends Equatable {
 
   String get error => errorMessage ?? '';
 
-  CommercialLicenseDetailsState copyWith({
+  RequestOwnershipTransferDetailsState copyWith({
     BlocRequestStatus? status,
     CommercialLicenceDetails? commercialLicenceDetails,
     String? errorMessage,
   }) {
-    return CommercialLicenseDetailsState(
+    return RequestOwnershipTransferDetailsState(
       status: status ?? this.status,
       commercialLicenceDetails: commercialLicenceDetails ?? this.commercialLicenceDetails,
       errorMessage: errorMessage ?? this.errorMessage,

@@ -6,42 +6,36 @@ import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
-import 'package:balady_plus/app/features/create_compliance/data/models/comliance_request_details_model.dart';
+import 'package:balady_plus/app/features/commercial_license_cancel/data/models/commercial_license_permits.dart';
 import 'package:dio/dio.dart';
 
-class CommercialLicenseAttachmentsViewModel extends BaseViewModel {
+class SelectedPermitsViewModel extends BaseViewModel {
   final WebService webService;
+  final int requestId;
 
-  List<AttachmentModel> attachments = [];
-  final int licenseId;
+  List<CommercialLicensePermits>? permits;
 
-  bool fileDone = true;
-
-  CommercialLicenseAttachmentsViewModel(
-      {required this.webService, required this.licenseId}) {
-    getCommercialLicenseCancelAttachments(licenseId);
+  SelectedPermitsViewModel({
+    required this.webService,
+    required this.requestId,
+  }) {
+    getCommercialLicensePermits();
   }
 
-  Future<void> getCommercialLicenseCancelAttachments(int licenseId) async {
+  Future<void> getCommercialLicensePermits() async {
     Response? response;
     try {
       isLoading = true;
       notifyListeners();
       response = await webService.dio.get(
-        ApiUrl.getLicenseAttachments(licenseId),
+        ApiUrl.commercialLicensePermits(requestId),
       );
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
-      attachments = result.map<AttachmentModel>(
-        (e) {
-          AttachmentModel attachment =
-              AttachmentModel.fromJson(e as Map<String, dynamic>);
-          // if((attachment.isMandatory ?? false) && !(attachment.updatable ?? false)) {
-          //   fileDone = false;
-          // }
-          return attachment;
-        },
-      ).toList();
+      permits = result
+          .map<CommercialLicensePermits>((e) =>
+              CommercialLicensePermits.fromJson(e as Map<String, dynamic>))
+          .toList();
     } on Exception catch (exception) {
       CommonFunctions.sendEvent(
         dioError: exception is DioException ? exception : null,

@@ -368,6 +368,14 @@ static const DirectRentalPage = 'DirectRentalPage';
       'constructionLicenseInqueryDetails_Screen';
 
 
+
+  ///// RequestOwnershipTransferDetailsPage
+
+  static const requestOwnershipTransferDetailsPage = '/requestOwnershipTransferDetailsPage';
+  static const approvalSequenceMainScreen = '/approvalSequenceMainScreen';
+
+
+
   static const commercialLicenseTransferOverView =
       'commercialLicenseTransferOverView_Screen';
   static const transferLicensePermits =
@@ -380,7 +388,6 @@ static const DirectRentalPage = 'DirectRentalPage';
       'notificationsList_Screen';
   static const notificationsDetailsScreen =
       'notificationsDetails_Screen';
-
 
 
 }

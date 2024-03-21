@@ -1,21 +1,25 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/data/models/commercial_license_permits.dart';
-import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/commercial_license_permits_view_model.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/mvvm/selected_permits_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
-class CommercialLicensePermitsWidget extends StatelessWidget {
-  const CommercialLicensePermitsWidget({super.key});
+
+
+//CommercialLicensePermitsWidget :
+//import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/commercial_license_permits_widget.dart';
+// need Set One Widget to the list of Permits
+class SelectedCommercialLicensePermitsWidget extends StatelessWidget {
+  const SelectedCommercialLicensePermitsWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    CommercialLicensePermitsViewModel provider =
-        context.watch<CommercialLicensePermitsViewModel>();
-    return Selector<CommercialLicensePermitsViewModel,
-        List<CommercialLicensePermits>?>(
+    SelectedPermitsViewModel provider =
+        context.watch<SelectedPermitsViewModel>();
+
+    return Selector<SelectedPermitsViewModel, List<CommercialLicensePermits>?>(
       builder: (context, permits, child) {
         return ExpandableCard(
           title: 'permits'.tr(),
