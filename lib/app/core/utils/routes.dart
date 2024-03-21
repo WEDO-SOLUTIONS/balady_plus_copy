@@ -68,6 +68,7 @@ import '../../core/utils/utils_exports.dart'
         ScaleRotatePage,
         SliderUpPage;
 import '../../features/Commercial_license_transfer/persentation/commercail_license_tranfer_overview/commercial_license_transfer_overview_screen.dart';
+import '../../features/Commercial_license_transfer/persentation/license_premits/new_owner.dart';
 import '../../features/Commercial_license_transfer/persentation/license_premits/premits_screens.dart';
 import '../../features/_shared_feature_/presentation/pages/qiblah_webview_page.dart';
 import '../../features/_shared_feature_/presentation/pages/view_apigee_image_screen.dart';
@@ -788,6 +789,10 @@ class Routes {
 
     RouteName.commercialLicenseTransferOverView: (context) => const CommercialLicenseTransferOverviewScreen(),
     RouteName.transferLicensePermits: (context) => const PremitsScreen(),
+    RouteName.newOwner: (context) => const NewOwnerInfoScreen(),
+
+
+
 
     RouteName.notificationsListScreen: (context) =>
     const NotificationsListScreen(),

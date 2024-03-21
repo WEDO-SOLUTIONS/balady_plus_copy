@@ -8,10 +8,13 @@ class LicensePermitsState extends Equatable {
   final String? errorMessage;
 
 
+
   const LicensePermitsState({
     this.status = BlocRequestStatus.initial,
     this.licencePermitsResponse,
     this.errorMessage,
+
+
   });
 
   String get error => errorMessage ?? '';

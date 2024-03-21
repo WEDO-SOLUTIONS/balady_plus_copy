@@ -44,11 +44,16 @@ class CommercialLicenseActionSheet extends StatelessWidget {
                                 (action) => InkWell(
                                   onTap: () {
                                     switch (action.id) {
-
                                       case 1010:
-                                        Navigator.of(context).pushNamed(RouteName.commercialLicenseTransferOverView,arguments: provider.licenseId);
+                                        Navigator.of(context).pushNamed(
+                                          RouteName
+                                              .commercialLicenseTransferOverView,
+                                          arguments: [
+                                            "${provider.licenseId}",
+                                            provider.submitterInfo.crNumber,
+                                          ],
+                                        );
                                         break;
-
 
                                       case 1008:
                                         BottomSheetDialog.showDraggableSheet(

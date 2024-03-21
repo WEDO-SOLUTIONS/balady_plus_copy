@@ -19,7 +19,8 @@ class CommercialLicenseTransferOverviewScreen extends StatefulWidget {
 }
 
 class _CommercialLicenseTransferOverviewScreenState extends State<CommercialLicenseTransferOverviewScreen> {
-  int? licenseNumber;
+  String? licenseNumber;
+  String? crNumber;
 
   @override
   void initState() {
@@ -30,7 +31,10 @@ class _CommercialLicenseTransferOverviewScreenState extends State<CommercialLice
         UXCamEvents.startCardServiceQueryLicenseService);
 
     Future.microtask(() {
-      licenseNumber = ModalRoute.of(context)!.settings.arguments as int;
+       var lst= ModalRoute.of(context)!.settings.arguments as List<String>;
+       licenseNumber = lst[0];
+       crNumber = lst[1];
+
     });
 
   }
@@ -65,7 +69,7 @@ class _CommercialLicenseTransferOverviewScreenState extends State<CommercialLice
                 onPressed: () async {
                   NavigatorState navigator = Navigator.of(context);
                   navigator.pushNamed(RouteName.transferLicensePermits,
-                      arguments:LicensePermitsCubit(GetLicensePermitsData(repository: sl()),"$licenseNumber"),
+                      arguments:LicensePermitsCubit(GetLicensePermitsData(repository: sl()),licenseNumber!),
                   );
 
 

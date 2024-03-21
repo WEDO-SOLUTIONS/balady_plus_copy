@@ -373,6 +373,9 @@ static const DirectRentalPage = 'DirectRentalPage';
   static const transferLicensePermits =
       'transferLicensePermits_Screen';
 
+  static const newOwner =
+      'newOwner_Screen';
+
   static const notificationsListScreen =
       'notificationsList_Screen';
   static const notificationsDetailsScreen =

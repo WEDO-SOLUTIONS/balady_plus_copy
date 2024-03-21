@@ -8,7 +8,7 @@ import '../../../survey_license_inquery_report/domain/entity/survey_inquery_data
 
 class ConstructionLicenseData {
   int? licenseId;
-  String? oldLicenseId;
+  String? oldLicenseId; //null
   String? licenseIssueDate;
   int? statusId;
   String? statusName;
