@@ -1,5 +1,4 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import 'package:balady_plus/app/features/vd/vd_exports.dart'
     show
         CreateVDBloc,
@@ -35,23 +34,7 @@ class PreviousNextButtons extends StatelessWidget {
                     if (!isLastPage) {
                       context.read<CreateVDBloc>().add(GoToNextPageEvent());
                     } else {
-                      // Check user for login
-                      if (CommonProperties.isLoggedIn) {
-                        // Submit incident
-                        context.read<CreateVDBloc>().add(SubmitIncidentEvent());
-                      } else {
-                        // Show login dialog and if success submit incident
-                        showDialog(
-                            context: context,
-                            builder: (ctx) => NeedLoginDialog(
-                                    onSuccessLogin: (bool? isSuccess) {
-                                  if (isSuccess ?? false) {
-                                    context
-                                        .read<CreateVDBloc>()
-                                        .add(SubmitIncidentEvent());
-                                  }
-                                }));
-                      }
+                      context.read<CreateVDBloc>().add(SubmitIncidentEvent());
                     }
                   },
             btnRadius: 8,
