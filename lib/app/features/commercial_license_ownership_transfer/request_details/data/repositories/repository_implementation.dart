@@ -1,5 +1,5 @@
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
-import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_licence_details.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/data/models/commercial_licence_details.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/data/data_sources/remote_data_source.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/domain/repositories/repository.dart';
 import 'package:dartz/dartz.dart';

@@ -1,10 +1,8 @@
-import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
-import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_licence_details.dart';
-import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_license_details_model.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/data/models/commercial_licence_details.dart';
 import 'package:dio/dio.dart' show DioError, DioException;
 import 'package:dio/src/response.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'

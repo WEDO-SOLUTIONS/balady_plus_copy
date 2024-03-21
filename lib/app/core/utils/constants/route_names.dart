@@ -371,7 +371,7 @@ static const DirectRentalPage = 'DirectRentalPage';
 
   ///// RequestOwnershipTransferDetailsPage
 
-  static const RequestOwnershipTransferDetailsPage = '/requestOwnershipTransferDetailsPage';
+  static const requestOwnershipTransferDetailsPage = '/requestOwnershipTransferDetailsPage';
 
 
 }

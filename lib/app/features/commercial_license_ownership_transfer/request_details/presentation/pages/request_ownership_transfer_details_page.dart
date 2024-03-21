@@ -17,7 +17,10 @@ import 'package:balady_plus/app/features/commercial_license_details/presentation
 import 'package:balady_plus/app/features/commercial_license_details/presentation/mvvm/commercial_license_action_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/commercial_license_action_sheet.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/commercial_license_details_body.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/data/data_sources/remote_data_source.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/data/repositories/repository_implementation.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/domain/repositories/repository.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/domain/use_cases/get_request_ownership_transfer_details.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/bloc/request_ownership_transfer_details_cubit.dart';
 import 'package:balady_plus/app/features/home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +41,6 @@ class _RequestOwnershipTransferDetailsPageState
     extends State<RequestOwnershipTransferDetailsPage> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     CommonFunctions.sendUXCamEvent(UXCamEvents.openLicensesDetails);
@@ -51,9 +53,9 @@ class _RequestOwnershipTransferDetailsPageState
     return BlocProvider(
       create: (context) =>
           RequestOwnershipTransferDetailsCubit(
-            RequestOwnershipTransferDetailsRepository(
-            repository: CommercialLicenseDetailsRepositoryImplementation(
-              remoteDataSource: CommercialLicenseDetailsRemoteDataSourceImplementation(
+            GetRequestOwnershipTransferDetails(
+            repository: RequestOwnershipTransferRepositoryImplementation(
+              remoteDataSource: RequestOwnershipTransferRemoteDataSourceImplementation(
                 webService: sl(),
               ),
             ),

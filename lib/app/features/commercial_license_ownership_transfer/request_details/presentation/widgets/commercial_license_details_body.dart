@@ -3,9 +3,9 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/commercial_license_attachments_view_model.dart';
-import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_licence_details.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/attachment_show_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/commercial_license_permits_widget.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/data/models/commercial_licence_details.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/bloc/request_ownership_transfer_details_cubit.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/mvvm/selected_permits_view_model.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/comliance_request_details_model.dart';
@@ -416,10 +416,7 @@ class _CommercialLicenseDetailsBodyState
                                     itemCount: state.commercialLicenceDetails!
                                         .shopInfo!.boardsInfo!.length,
                                     itemBuilder: (_, index) {
-                                      BoardsInfo boardsInfo = state
-                                          .commercialLicenceDetails!
-                                          .shopInfo!
-                                          .boardsInfo![index];
+                                      BoardsInfo boardsInfo = state.commercialLicenceDetails!.shopInfo!.boardsInfo![index];
                                       return Card(
                                         margin: const EdgeInsets.only(top: 16),
                                         color: AppColor.primary100Light,
@@ -533,7 +530,7 @@ class _CommercialLicenseDetailsBodyState
                               fit: BoxFit.fill,
                               headers: {
                                 "Authorization":
-                                    "Bearer " + (CommonProperties.token ?? "")
+                                    "Bearer ${CommonProperties.token}"
                               },
                             ),
 

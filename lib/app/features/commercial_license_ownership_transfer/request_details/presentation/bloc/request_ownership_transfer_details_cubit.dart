@@ -1,6 +1,5 @@
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
-import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_licence_details.dart';
-import 'package:balady_plus/app/features/commercial_license_details/domain/use_cases/get_commercial_license_details.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/data/models/commercial_licence_details.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/domain/use_cases/get_request_ownership_transfer_details.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
