@@ -15,16 +15,16 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
-class CommercialLicenseDetailsBody extends StatefulWidget {
-  const CommercialLicenseDetailsBody({super.key});
+class RequestOwnershipTransferDetailsBody extends StatefulWidget {
+  const RequestOwnershipTransferDetailsBody({super.key});
 
   @override
-  State<CommercialLicenseDetailsBody> createState() =>
-      _CommercialLicenseDetailsBodyState();
+  State<RequestOwnershipTransferDetailsBody> createState() =>
+      _RequestOwnershipTransferDetailsBodyState();
 }
 
-class _CommercialLicenseDetailsBodyState
-    extends State<CommercialLicenseDetailsBody> {
+class _RequestOwnershipTransferDetailsBodyState
+    extends State<RequestOwnershipTransferDetailsBody> {
   @override
   void initState() {
     super.initState();
