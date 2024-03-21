@@ -25,18 +25,6 @@ class _FavouriveItem extends ConsumerWidget {
       assetName: assetName,
       colorIcon: context.color.text_and_icons_status_accent,
       onTap: () => _onFavTap(context: context, item: favouriteItem, ref: ref),
-      // desc: (hasContacts == false)
-      //     ? Text(
-      //         context.l10n.favourites,
-      //         style: Theme.of(context)
-      //             .extension<ThemeTextStyles>()!
-      //             .accentS
-      //             .copyWith(color: context.color.text_and_icons_base_primary.withOpacity(0.5)),
-      //         overflow: TextOverflow.ellipsis,
-      //         maxLines: 1,
-      //         textAlign: TextAlign.start,
-      //       )
-      //     : const SizedBox.shrink(),
     );
   }
 
