@@ -21,8 +21,8 @@ import 'package:provider/provider.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/enhanced_widgets/pickers/hijri_picker/hijri_picker.dart'
     as hijri_picker;
 
-class CommercialLicenseCancelOneScreen extends StatelessWidget {
-  CommercialLicenseCancelOneScreen({Key? key}) : super(key: key);
+class ApprovalSequencePermitsScreen extends StatelessWidget {
+  const ApprovalSequencePermitsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
