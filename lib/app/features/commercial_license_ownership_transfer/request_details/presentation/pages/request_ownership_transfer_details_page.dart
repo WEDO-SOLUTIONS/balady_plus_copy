@@ -2,6 +2,7 @@ import 'package:balady_plus/app/app.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
@@ -123,14 +124,20 @@ class _RequestOwnershipTransferDetailsPageState
                     height: 40,
                     width: double.infinity,
                     child: CustomElevatedButtonWidget(
-                        btnColor: AppColor.primary800Light,
-                        textStyle: AppStyle.elevatedButtonStyle.copyWith(
-                          color: AppColor.blackModern50Light,
-                          fontSize: 12,
-                        ),
-                        btnHeight: 40,
-                        text: "details".tr(),
-                        onPressed: () {}),
+                      btnColor: AppColor.primary800Light,
+                      textStyle: AppStyle.elevatedButtonStyle.copyWith(
+                        color: AppColor.blackModern50Light,
+                        fontSize: 12,
+                      ),
+                      btnHeight: 40,
+                      text: "details".tr(),
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(
+                          RouteName.approvalSequenceMainScreen,
+                          arguments: {},
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),

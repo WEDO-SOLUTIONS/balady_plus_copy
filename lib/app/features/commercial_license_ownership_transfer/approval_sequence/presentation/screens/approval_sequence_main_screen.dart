@@ -2,14 +2,11 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
-import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/blocs/commercial_license_cancel/commercial_license_cancel_bloc.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/request_attachments_view_model.dart';
-import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/screens/commercial_license_cancel_one_screen.dart';
-import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/screens/commercial_license_cancel_two_screen.dart';
-import 'package:balady_plus/app/features/commercial_license_details/presentation/mvvm/commercial_license_reason_cancel_view_model.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/approval_sequence/presentation/screens/approval_sequence_permits_screen.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/approval_sequence/presentation/screens/approval_sequence_shop_info_screen.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
@@ -19,22 +16,22 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
 
-class CommercialLicenseCancelScreen extends StatefulWidget {
-  const CommercialLicenseCancelScreen({Key? key}) : super(key: key);
+class ApprovalSequenceMainScreen extends StatefulWidget {
+  const ApprovalSequenceMainScreen({Key? key}) : super(key: key);
 
   @override
-  State<CommercialLicenseCancelScreen> createState() =>
-      _CommercialLicenseCancelScreenState();
+  State<ApprovalSequenceMainScreen> createState() =>
+      _ApprovalSequenceMainScreenState();
 }
 
-class _CommercialLicenseCancelScreenState
-    extends State<CommercialLicenseCancelScreen> {
+class _ApprovalSequenceMainScreenState
+    extends State<ApprovalSequenceMainScreen> {
   PageController controller = PageController();
   int currentPageValue = 0;
 
   final List<Widget> pagesList = [
-    CommercialLicenseCancelOneScreen(),
-    const CommercialLicenseCancelTwoScreen(),
+    const ApprovalSequencePermitsScreen(),
+    const ApprovalSequenceShopInfoScreen(),
   ];
 
   @override
@@ -71,96 +68,39 @@ class _CommercialLicenseCancelScreenState
               );
             },
           ),
-          ChangeNotifierProvider(
-            create: (BuildContext context) =>
-                CommercialLicenseReasonCancelViewModel(
-              webService: sl(),
-              licenseId: 0000,
-              submitterInfo: null,
-            ),
-          ),
         ],
-        child: MultiBlocProvider(
-          providers: [
-            // BlocProvider(
-            //   create: (context) => CommercialLicenseCancelPagesBloc(),
-            // ),
-            BlocProvider(
-              create: (context) => CommercialLicenseCancelBloc(
-                    webService: sl(),
-                    from: "request",
-                    crNumber: CommonProperties.selectedDelegator!.crNumber!,
-                    crType: CommonProperties.selectedDelegator!.crType,
-                    reasonCancel: data['reasonCancel'],
-                    requestId: data['requestId'],
-                    availableCloseDate: data['availableCloseDate']
-                  ),
+        child: GestureDetector(
+          onTap: () => hideKeyboard(),
+          child: Scaffold(
+            appBar: DetailsAppBarTwo(
+              pageLength: pagesList.length,
+              currentStep: currentPageValue + 1,
+              backOnPress: () {
+                if (currentPageValue > 0) {
+                  setState(() {
+                    currentPageValue--;
+                  });
+                  goToNewPage();
+                } else {
+                  showBackDialog();
+                }
+              },
+              onTapCloseAction: () => showBackDialog(),
+              requestNum: data['requestId'],
             ),
-          ],
-          child: Column(
-            children: [
-              Expanded(
-                child: BlocListener<CommercialLicenseCancelBloc, CommercialLicenseCancelState>(
-                  listener: (BuildContext context, state) {
-                    if (state is CommercialLicenseCancelSucceededState) {
-                      setState(() {
-                        currentPageValue++;
-                      });
-                      goToNewPage();
-                    }
-                    if (state is SubmitCancelRequestSucceededState) {
-                      Navigator.of(context).popAndPushNamed(
-                        RouteName.submitApplicationSuccessfullyCancel,
-                        arguments: (
-                          data['from'],
-                          state.submitResponse,
-                          state.totalCost,
-                        ),
-                      );
-                    }
-                    if (state is CommercialLicenseCancelFailureState) {
-                      // show
-                      CommonFunctions.showError(state.errorMessage);
-                    }
-                  },
-                  child: GestureDetector(
-                    onTap: () => hideKeyboard(),
-                    child: Scaffold(
-                      appBar: DetailsAppBarTwo(
-                        pageLength: pagesList.length,
-                        currentStep: currentPageValue + 1,
-                        backOnPress: () {
-                          if (currentPageValue > 0) {
-                            setState(() {
-                              currentPageValue--;
-                            });
-                            goToNewPage();
-                          } else {
-                            showBackDialog();
-                          }
-                        },
-                        onTapCloseAction: () => showBackDialog(),
-                        requestNum: data['requestId'],
-                      ),
-                      body: PageView.builder(
-                        itemCount: pagesList.length,
-                        scrollDirection: Axis.vertical,
-                        physics: const NeverScrollableScrollPhysics(),
-                        controller: controller,
-                        itemBuilder: (context, position) {
-                          return AnimatedContainer(
-                            curve: Curves.easeIn,
-                            duration: const Duration(milliseconds: 300),
-                            child: pagesList[position],
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              // const PreviousCancelButtons(isBtnDisabled: false),
-            ],
+            body: PageView.builder(
+              itemCount: pagesList.length,
+              scrollDirection: Axis.vertical,
+              physics: const NeverScrollableScrollPhysics(),
+              controller: controller,
+              itemBuilder: (context, position) {
+                return AnimatedContainer(
+                  curve: Curves.easeIn,
+                  duration: const Duration(milliseconds: 300),
+                  child: pagesList[position],
+                );
+              },
+            ),
           ),
         ),
       ),

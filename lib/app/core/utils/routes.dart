@@ -7,6 +7,7 @@ import 'package:balady_plus/app/features/commercial_license_cancel/presentation/
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/submit_application_successfully_cancel/screens/submit_application_successfully_cancel.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/submit_application_successfully_cancel/screens/submit_rating_cancel_screen.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/pages/commercial_license_details_page.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/approval_sequence/presentation/screens/approval_sequence_main_screen.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/pages/request_ownership_transfer_details_page.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/pages/create_compliance_location_confirm_page.dart';
 import 'package:balady_plus/app/features/commercial_license/commercial_license_exports.dart';
@@ -786,6 +787,10 @@ class Routes {
     RouteName.constructionLicenseOverView: (context) => const ConstructionLicenseOverviewScreen(),
     RouteName.constructionLicenseInquery: (context) => const ConstructionLicenseInqueryScreen(),
     RouteName.constructionLicenseInqueryDetails: (context) => const ConstructionLicenseInqueryDetails(),
+
+    ///////////////////////////////////
+
+    RouteName.approvalSequenceMainScreen: (context) => const ApprovalSequenceMainScreen(),
 
     RouteName.requestOwnershipTransferDetailsPage: (context) => const RequestOwnershipTransferDetailsPage(),
 
