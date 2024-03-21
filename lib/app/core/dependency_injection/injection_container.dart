@@ -39,6 +39,9 @@ import 'package:get_it/get_it.dart' show GetIt;
 import 'package:internet_connection_checker/internet_connection_checker.dart'
     show InternetConnectionChecker;
 import 'package:balady_plus/app/core/dependency_injection/features/commercials_tobacco_injection.dart';
+import '../../features/Commercial_license_transfer/data/data_source/remote_data_source.dart';
+import '../../features/Commercial_license_transfer/data/repositories/repository_implementation.dart';
+import '../../features/Commercial_license_transfer/domain/repository/repository.dart';
 import '../../features/_shared_feature_/balady_features/services/services.dart';
 
 import '../../features/_shared_feature_/data/entities/device_details.dart';
@@ -49,6 +52,9 @@ import '../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubi
 import '../../features/force_update/presentation/core/force_update_view_model.dart';
 import '../../features/location/presentation/bloc/location_bloc.dart';
 import '../../features/map_page/data/repositories/layers_repositories.dart';
+import '../../features/notifications/data/data_source/notifications_remote_data_source.dart';
+import '../../features/notifications/data/repositories/notification_repository_implementation.dart';
+import '../../features/notifications/manager/notification_manager.dart';
 import '../../features/unknow/data/repositories/repository_implementation.dart';
 import '../../features/unknow/domain/repositories/repository.dart';
 import '../../features/weather/presentation/bloc/weather_bloc.dart';
@@ -235,17 +241,31 @@ void initialize() {
 
   sl.registerLazySingleton(() => ForceUpdateViewModel());
 
-
-
-  sl.registerLazySingleton<ChatBotDataSources>(() => ChatBotDataSourcesImplementation(webService: sl()));
-  sl.registerLazySingleton<ChatBotRepository>(() => ChatBotRepositoryImplementation(sl()));
+  sl.registerLazySingleton<ChatBotDataSources>(
+      () => ChatBotDataSourcesImplementation(webService: sl()));
+  sl.registerLazySingleton<ChatBotRepository>(
+      () => ChatBotRepositoryImplementation(sl()));
   sl.registerLazySingleton(() => SendQuestionMessageChatBot(sl()));
   // sl.registerLazySingleton(() => SendQuestionMessageChatBot());
   // sl.registerLazySingleton(() => SendQuestionMessageChatBot());
 
-
   //Balady Calendar
-  sl.registerLazySingleton<BaladyCalendarRemoteDataSource>(() => CalendarBaladyRemoteDataSourceImpl(webService: sl()));
-  sl.registerLazySingleton<BaladyCalendarRepository>(() => BaladyCalendarRepositoryImpl(remoteDataSource: sl()));
+  sl.registerLazySingleton<BaladyCalendarRemoteDataSource>(
+      () => CalendarBaladyRemoteDataSourceImpl(webService: sl()));
+  sl.registerLazySingleton<BaladyCalendarRepository>(
+      () => BaladyCalendarRepositoryImpl(remoteDataSource: sl()));
 
+
+
+// transfer license ownership
+  sl.registerLazySingleton<LicensePermitsRemoteDataSource>(() => LicensePermitsRemoteDataSourceImplementation(webService: sl()));
+  sl.registerLazySingleton<TransferLicenseRepository>(() => TransferLicenseRepositoryImplementation(remoteDataSource: sl()));
+
+  //noification
+  sl.registerLazySingleton<NotificationsRemoteDataSource>(
+      () => NotificationRemoteDataSourceImplementation(webService: sl()));
+  sl.registerLazySingleton<NotificationRepositoryImplementation>(
+      () => NotificationRepositoryImplementation(remoteDataSource: sl()));
+  sl.registerLazySingleton<NotificationManager>(
+      () => NotificationManager(repository: sl()));
 }

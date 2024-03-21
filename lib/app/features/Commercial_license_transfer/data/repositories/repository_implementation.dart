@@ -1,0 +1,49 @@
+import 'package:balady_plus/app/core/errors/errors_exports.dart';
+
+import 'package:dartz/dartz.dart';
+import '../../../_shared_feature_/data/models/response_body_model.dart';
+import '../../domain/entity/permits_response_entity.dart';
+import '../../domain/entity/validate_owner_entity.dart';
+import '../../domain/repository/repository.dart';
+import '../data_source/remote_data_source.dart';
+
+
+class TransferLicenseRepositoryImplementation implements TransferLicenseRepository {
+  final LicensePermitsRemoteDataSource remoteDataSource;
+
+  TransferLicenseRepositoryImplementation({
+    required this.remoteDataSource,
+  });
+  
+  @override
+  Future<Either<Failure, ResponseBodyModel<PermitsResponseEntity>>> getLicensePermits(String licenseNumber) async {
+    try {
+      final data = await remoteDataSource.getLicensePermits(licenseNumber);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<ValidateOwnerEntity>>> validateNewOwner(
+      String licenseNumber,  String crNumber) async {
+
+
+    try {
+      final data = await remoteDataSource.validateNewOwner(licenseNumber,crNumber);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+
+
+  }
+
+
+
+}

@@ -14,6 +14,8 @@ import 'package:balady_plus/app/features/athkar/presentation/pages/athkar_entity
 import 'package:balady_plus/app/features/boarding/presentation/pages/boarding_main_page.dart';
 import 'package:balady_plus/app/features/force_update/presentation/pages/forceUpdatePage.dart';
 import 'package:balady_plus/app/features/jod_services/presentation/tobacco_list/pages/jod_donation_page.dart';
+import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_details_screen.dart';
+import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_list_screen.dart';
 import 'package:balady_plus/app/features/profile_features/incidents/presentation/pages/dc_details.dart';
 import 'package:balady_plus/app/features/profile_features/incidents/presentation/pages/incident_details.dart';
 import 'package:balady_plus/app/features/profile_features/about_balady/presentation/screens/about_balady_screen.dart';
@@ -66,6 +68,8 @@ import '../../core/utils/utils_exports.dart'
         RouteName,
         ScaleRotatePage,
         SliderUpPage;
+import '../../features/Commercial_license_transfer/persentation/commercail_license_tranfer_overview/commercial_license_transfer_overview_screen.dart';
+import '../../features/Commercial_license_transfer/persentation/license_premits/premits_screens.dart';
 import '../../features/_shared_feature_/presentation/pages/qiblah_webview_page.dart';
 import '../../features/_shared_feature_/presentation/pages/view_apigee_image_screen.dart';
 import '../../features/calculator/presentation/pages/service_calculator_result_screen.dart';
@@ -784,6 +788,14 @@ class Routes {
     RouteName.constructionLicenseInqueryDetails: (context) => const ConstructionLicenseInqueryDetails(),
 
     RouteName.requestOwnershipTransferDetailsPage: (context) => const RequestOwnershipTransferDetailsPage(),
+
+    RouteName.commercialLicenseTransferOverView: (context) => const CommercialLicenseTransferOverviewScreen(),
+    RouteName.transferLicensePermits: (context) => const PremitsScreen(),
+
+    RouteName.notificationsListScreen: (context) =>
+    const NotificationsListScreen(),
+    RouteName.notificationsDetailsScreen: (context) =>
+    const NotificationsDetailsScreen(),
 
 
   };
