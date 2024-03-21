@@ -8,6 +8,7 @@ import 'package:balady_plus/app/features/commercial_license_details/presentation
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/data/models/commercial_licence_details.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/bloc/request_ownership_transfer_details_cubit.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/mvvm/selected_permits_view_model.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/widgets/selected_commercial_license_permits_widget.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/comliance_request_details_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -480,8 +481,7 @@ class _RequestOwnershipTransferDetailsBodyState
                       : const SizedBox(),
 
                   /////////////////////////////////////////////////
-                  Selector<CommercialLicenseAttachmentsViewModel,
-                      List<AttachmentModel>>(
+                  Selector<CommercialLicenseAttachmentsViewModel, List<AttachmentModel>>(
                     builder: (context, attachments, child) {
                       return ExpandableCard(
                         title: 'data_attachments'.tr(),
@@ -512,7 +512,7 @@ class _RequestOwnershipTransferDetailsBodyState
                     selector: (_, provider) => provider.attachments,
                   ),
                   /////////////////////////////////////////////////
-                  const CommercialLicensePermitsWidget(),
+                  const SelectedCommercialLicensePermitsWidget(),
                   /////////////////////////////////////////////////
                   commercialLicenceDetails.licenseInfo != null &&
                           (state.commercialLicenceDetails!.licenseInfo!

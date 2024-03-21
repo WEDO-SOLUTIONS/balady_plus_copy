@@ -22,8 +22,7 @@ class CommercialLicensePermitsWidget extends StatelessWidget {
           icon: IconPath.element_3Icon,
           children: permits != null
               ? permits
-                  .map((permit) =>
-              Card(
+                  .map((permit) => Card(
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Column(
