@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import 'package:balady_plus/app/features/vd/vd_exports.dart'
     show
         CreateVDBloc,
@@ -10,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../core/utils/enums/enums.dart';
 import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 
 class PreviousNextButtons extends StatelessWidget {
@@ -35,7 +35,23 @@ class PreviousNextButtons extends StatelessWidget {
                     if (!isLastPage) {
                       context.read<CreateVDBloc>().add(GoToNextPageEvent());
                     } else {
-                      context.read<CreateVDBloc>().add(SubmitIncidentEvent());
+                      // Check user for login
+                      if (CommonProperties.isLoggedIn) {
+                        // Submit incident
+                        context.read<CreateVDBloc>().add(SubmitIncidentEvent());
+                      } else {
+                        // Show login dialog and if success submit incident
+                        showDialog(
+                            context: context,
+                            builder: (ctx) => NeedLoginDialog(
+                                    onSuccessLogin: (bool? isSuccess) {
+                                  if (isSuccess ?? false) {
+                                    context
+                                        .read<CreateVDBloc>()
+                                        .add(SubmitIncidentEvent());
+                                  }
+                                }));
+                      }
                     }
                   },
             btnRadius: 8,
