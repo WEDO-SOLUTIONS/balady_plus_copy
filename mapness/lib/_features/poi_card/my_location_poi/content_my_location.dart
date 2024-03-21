@@ -44,9 +44,9 @@ class ContentMyLocation extends ConsumerWidget {
           scrollBehavior: const NeverScrollableConfiguration(),
           availableExpansions: Expansion.values.toSet(),
           initialExpansion: Expansion.middle,
-          collapsedHeight: 150,
-          middleHeight: 180,
-          hiddenHeight: 100,
+          collapsedHeight: 100,
+          middleHeight: 162 + MediaQuery.of(context).padding.bottom,
+          hiddenHeight: 90,
           mapControlsBuilder:
               (context, scrollController, biggestHeight, smallestHeight) =>
                   PoiCardMapControls(
@@ -54,10 +54,7 @@ class ContentMyLocation extends ConsumerWidget {
             biggestHeight: biggestHeight,
           ),
           body: (context) => ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxHeight: 400,
-              maxWidth: 200,
-            ),
+            constraints: const BoxConstraints(maxHeight: 400),
             child: Builder(
               builder: (context) => Column(
                 mainAxisAlignment: MainAxisAlignment.end,
