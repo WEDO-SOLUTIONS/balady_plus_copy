@@ -10,8 +10,10 @@ import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/disable_overscroll_behavior.dart';
+import 'package:mapness/shared/ui/markers/markers.dart';
 
 import '../ui_kit_tmp/poi_header.dart';
 
@@ -78,19 +80,25 @@ class ContentMyLocation extends ConsumerWidget {
     );
   }
 
-  void _cameraAnimation(WidgetRef ref) {
+  Future<void> _cameraAnimation(WidgetRef ref) async {
     if (closestPoint != null) {
-      // TODO(@DmitriiProshutinskii): Add marker on the map
-      // ref.read(selectedMarkerProvider.notifier).showMarker(
-      //       Markers.pinMarker(
-      //         GeoPointWithElevationMessage(
-      //           latitude: closestPoint!.latitude,
-      //           longitude: closestPoint!.longitude,
-      //           elevation: 100,
-      //         ),
-      //       ),
-      //     );
-      ref.read(cameraPositionProvider.notifier).animateTo(
+      final mapObjectManager = ref.watch(
+        mapObjectManagerProvider(
+          named: 'my_location',
+          layerId: '977194',
+        ).notifier,
+      );
+      await mapObjectManager.removeAllMarkers();
+      final marker = Markers.pinMarker(
+        GeoPointWithElevationMessage(
+          latitude: closestPoint!.latitude,
+          longitude: closestPoint!.longitude,
+          elevation: 1,
+        ),
+      );
+      await mapObjectManager.addMarker(marker);
+
+      await ref.read(cameraPositionProvider.notifier).animateTo(
             CameraPositionMessage(
               point: GeoPointMessage(
                   latitude: closestPoint!.latitude,
