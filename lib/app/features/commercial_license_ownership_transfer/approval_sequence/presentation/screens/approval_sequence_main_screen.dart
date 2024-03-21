@@ -5,16 +5,15 @@ import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/request_attachments_view_model.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/approval_sequence/presentation/screens/approval_sequence_attachments_screen.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/approval_sequence/presentation/screens/approval_sequence_permits_screen.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/approval_sequence/presentation/screens/approval_sequence_shop_info_screen.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
-
 
 class ApprovalSequenceMainScreen extends StatefulWidget {
   const ApprovalSequenceMainScreen({Key? key}) : super(key: key);
@@ -29,18 +28,19 @@ class _ApprovalSequenceMainScreenState
   PageController controller = PageController();
   int currentPageValue = 0;
 
-  final List<Widget> pagesList = [
-    const ApprovalSequencePermitsScreen(),
-    const ApprovalSequenceShopInfoScreen(),
-  ];
+  List<Widget> pagesList = [];
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-
+    pagesList = [
+      ApprovalSequencePermitsScreen(goToNewPage: goToNewPage),
+      ApprovalSequenceShopInfoScreen(goToNewPage: goToNewPage),
+      ApprovalSequenceAttachmentsScreen(goToNewPage: goToNewPage),
+    ];
     CommonFunctions.sendUXCamEvent(
-        UXCamEvents.CancelCommercialLicense_Open_Create_Details_Event);
+      UXCamEvents.CancelCommercialLicense_Open_Create_Details_Event,
+    );
   }
 
   @override
@@ -64,7 +64,7 @@ class _ApprovalSequenceMainScreenState
             create: (BuildContext context) {
               return RequestAttachmentsViewModel(
                 webService: sl(),
-                requestId: data['requestId'],
+                requestId: 4312197298,
               );
             },
           ),
