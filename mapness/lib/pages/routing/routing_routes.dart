@@ -163,15 +163,14 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                                 onTap: () {
                                   final routes = ref.read(currentRouteProvider);
 
-                                  if ((routes?.previousPath
-                                              ?.contains('/poi-map') ??
-                                          false) ||
-                                      (routes?.previousPath
-                                              ?.startsWith('/iwish') ??
-                                          false)) {
-                                    const LandingRoute().go(context);
-                                  } else {
-                                    const RoutingRoute().go(context);
+                                  switch (routes?.previousPath) {
+                                    case '/poi-map':
+                                    case '/iwish':
+                                    case '/landing':
+                                      const LandingRoute().go(context);
+                                      break;
+                                    default:
+                                      const RoutingRoute().go(context);
                                   }
                                 },
                                 icon: 'assets/icons/svg/ic_search_close.svg',
