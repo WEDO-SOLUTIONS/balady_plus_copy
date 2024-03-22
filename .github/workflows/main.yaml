@@ -165,6 +165,8 @@ jobs:
           mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/urbi-pre-${CI_ARTIFACT_SUFFIX}.apk
           flutter build apk --target lib/main_prod.dart --dart-define=GIT_BRANCH="${CI_GIT_BRANCH}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=momrah-prod
           mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/momrah-prod-${CI_ARTIFACT_SUFFIX}.apk
+          flutter build apk --target lib/main_stg.dart --dart-define=GIT_BRANCH="${CI_GIT_BRANCH}" --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" --dart-define=VENDOR_CONFIG=momrah-stage
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/momrah-stage-${CI_ARTIFACT_SUFFIX}.apk
 
       - name: 🤖🔨 Upload Urbi Pre Prod apk
         uses: actions/upload-artifact@v4
@@ -180,6 +182,13 @@ jobs:
           compression-level: 0
           path: build/app/outputs/flutter-apk/momrah-prod-${{ env.CI_ARTIFACT_SUFFIX }}.apk
 
+      - name: 🤖🔨 Upload Momrah Stage apk
+        uses: actions/upload-artifact@v4
+        with:
+          name: momrah-stage-${{ env.CI_ARTIFACT_SUFFIX }}.apk
+          compression-level: 0
+          path: build/app/outputs/flutter-apk/momrah-stage-${{ env.CI_ARTIFACT_SUFFIX }}.apk
+
       - name: Send notification to mattermost channel
         env: # Set the secret as an environment variable
           MM_CHANNEL_ID: ${{ secrets.MM_CHANNEL_ID }}
@@ -188,9 +197,14 @@ jobs:
         run: |
           is_pr=""
           if [ -n "${CI_IS_PR}" ]; then
-            is_pr="Pull Request build;"
+            PR_ID=$(echo -n $GITHUB_REF_NAME | tr --complement --squeeze-repeats '[:alnum:]' '-' | sed 's/-merge//')
+            is_pr="**Pull Request**: [${{ github.event.pull_request.title }}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/pull/${PR_ID})\n"
           fi
           curl -X POST -H 'Content-type: application/json' -H "Authorization: Bearer ${MM_BOT_TOKEN}" https://${MM_DOMAIN}/api/v4/posts -d "{ \
             \"channel_id\": \"${MM_CHANNEL_ID}\", \
-            \"message\": \"[Build](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) ${GITHUB_RUN_ID}:\nBranch ${CI_GIT_BRANCH};\n${is_pr}\" \
+            \"message\": \"\
+          ${is_pr}\
+          **Branch**: [${CI_GIT_BRANCH}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/tree/${CI_GIT_BRANCH})\n\
+          **Author**: ${GITHUB_ACTOR}\n\
+          **Android**: [Build](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})\" \
           }"
