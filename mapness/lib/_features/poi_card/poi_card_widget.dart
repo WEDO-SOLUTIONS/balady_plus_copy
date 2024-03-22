@@ -21,6 +21,7 @@ import 'package:mapness/_features/poi_card/widgets/qr_license_info.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/poi_card/widgets/trade_license.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
@@ -206,8 +207,6 @@ class _ContentState extends ConsumerState<_Content>
         Language.arabic => TextDirection.rtl,
         Language.english => TextDirection.ltr,
       },
-
-      /// TODO(Demezy): add support for map controls in bottom sheet
       child: DgisBottomSheet(
         showBarrier: false,
         availableExpansions: Expansion.values.toSet(),
@@ -267,43 +266,81 @@ class _ContentState extends ConsumerState<_Content>
     );
   }
 
-  void showEntrance(DirectoryObjectMessage data) {
-    // _draggableScrollableController.animateTo(
-    //   .3,
-    //   duration: const Duration(milliseconds: 300),
-    //   curve: Curves.easeIn,
-    // );
+  Future<void> showEntrance(DirectoryObjectMessage data) async {
     setState(() {
       showEntrances = !showEntrances;
     });
 
     final highlightController = ref.read(highlightProvider.notifier);
-    final cameraController = ref.read(cameraPositionProvider.notifier);
-    final cameraPosition = ref.read(cameraPositionProvider);
 
     if (showEntrances) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _bottomSheetController.animateTo(Expansion.collapsed);
       });
       for (final entrance in data.entrances) {
-        highlightController.addHighlight(entrance!.id);
+        await highlightController.addHighlight(entrance!.id);
       }
-      final firstEntrancePoint =
-          data.entrances.first?.geometry?.entrancePoints.first;
-      if (firstEntrancePoint != null) {
-        cameraController.animateTo(
-          CameraPositionMessage(
-            point: firstEntrancePoint,
-            zoom: 18,
-            tilt: cameraPosition?.tilt ?? 0,
-            bearing: cameraPosition?.tilt ?? 0,
-          ),
-        );
-      }
+
+      await _animateToEntrance([
+        ...data.entrances
+            .map((e) => e?.geometry?.entrancePoints ?? [])
+            .toList()
+            .expand((element) => element)
+            .toList()
+      ]);
     } else {
       for (final entrance in data.entrances) {
-        highlightController.removeHighlight(entrance!.id);
+        await highlightController.removeHighlight(entrance!.id);
       }
     }
+  }
+
+  Future<void> _animateToEntrance(List<GeoPointMessage?> data) async {
+    if (data.isEmpty) {
+      return;
+    }
+
+    // Remove all null values
+    final points = data.where((element) => element != null);
+
+    if (points.isEmpty) {
+      return;
+    }
+
+    double minDistance = double.infinity;
+    GeoPointMessage? minCoords;
+    // Find the minimum distance to entrance
+    for (final point in points) {
+      final distance = CommonFunctions.distance(
+        point!.latitude,
+        point.longitude,
+        widget.closestPoint?.latitude ?? 0,
+        widget.closestPoint?.longitude ?? 0,
+      );
+      if (distance <= minDistance) {
+        minDistance = distance;
+        minCoords = point;
+      }
+    }
+
+    if (minCoords == null) {
+      return;
+    }
+
+    final cameraController = ref.read(cameraPositionProvider.notifier);
+    final cameraPosition = ref.read(cameraPositionProvider);
+
+    // Animate to the entrance
+    await cameraController.animateTo(
+      CameraPositionMessage(
+        point: GeoPointMessage(
+          latitude: minCoords.latitude,
+          longitude: minCoords.longitude,
+        ),
+        zoom: 18,
+        tilt: cameraPosition?.tilt ?? 0,
+        bearing: cameraPosition?.tilt ?? 0,
+      ),
+    );
   }
 }
