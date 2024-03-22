@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/common_functions.dart' as mapness;
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
 class SnapAndSendCard extends ConsumerWidget {
@@ -85,10 +84,7 @@ class SnapAndSendCard extends ConsumerWidget {
                               horizontal: 14,
                               vertical: 10,
                             ),
-                            onPressed: () {
-                              mapness.CommonFunctions.authOrOpen(context,
-                                  callback: CommonFunctions.openSnapAndSend,);
-                            },
+                            onPressed: CommonFunctions.openSnapAndSend,
                           ),
                         ],
                       ),
