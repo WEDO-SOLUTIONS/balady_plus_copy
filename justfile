@@ -154,7 +154,6 @@ download-sdk:
     print_style '' 'green' 'SDK version saved to .sdk-version'
     echo $latestSDK > .sdk-version
 
-
 codegen_cached:
     #!/bin/bash
     set -euo pipefail
