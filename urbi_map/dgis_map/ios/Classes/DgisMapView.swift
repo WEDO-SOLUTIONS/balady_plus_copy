@@ -64,7 +64,9 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             completion: onEventChannelReady
         )
         
-        MapApiSetup(registrar.messenger(), self)
+        let messenger = ProxyBinaryMessenger(with: registrar.messenger(), channelSuffix: "map_\(viewId)")
+        
+        MapApiSetup(messenger, self)
         createMapView(sdk)
     }
     

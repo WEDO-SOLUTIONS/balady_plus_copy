@@ -16,32 +16,26 @@ import 'package:dgis_map_platform_interface/src/control_handlers/visible_rect_ev
 import 'package:dgis_map_platform_interface/src/control_handlers/zoom_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/navigation/dashboard_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/events/object_tap_events.dart';
-import 'package:flutter/foundation.dart' show Factory, defaultTargetPlatform;
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 import 'control_handlers/navigation/message_event_handler.dart';
 import 'control_handlers/navigation/compass_event_handler.dart';
 import 'control_handlers/route_event_handler.dart';
-
-// This is used in the platform side to register the view.
-const String _viewType = 'com.dgis.map_view';
+import 'proxy_binary_mesenger.dart';
 
 /// An implementation of [DgisMapPlugin] that uses method channels.
-class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
+class DgisMapPlugin extends FlutterMapApi {
   /// The method channel used to interact with the native platform.
-  final _api = MapApi();
+  late MapApi _api;
 
   int? _viewId;
   bool _isInitialized = false;
 
   StreamSubscription? _eventChannelSubscription;
 
-  late final _zoomEventHandler = ZoomEventHandler(_api);
-  late final _locationEventHandler = LocationEventHandler(_api);
-  late final _indoorEventHandler = IndoorEventHandler(_api);
+  late final ZoomEventHandler _zoomEventHandler;
+  late final LocationEventHandler _locationEventHandler;
+  late final IndoorEventHandler _indoorEventHandler;
   late final _objectTapEventHandler = ObjectTapEventHandler();
   late final _visibleRectEventHandler = VisibleRectEventHandler();
   late final _cameraStateEventHandler = CameraStateEventHandler();
@@ -58,114 +52,90 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
       TrafficAndParkingEventHandler();
   late final _packagesHandler = PackageEventHandler();
 
-  @override
   Stream<ZoomControlEnabledEvent> get zoomControlEnabledEvents =>
       _zoomEventHandler.zoomControlEnabledEvents;
 
-  @override
   Stream<LocationEnabledEvent> get locationEnabledEvents =>
       _locationEventHandler.locationEnabledEvents;
 
-  @override
   Stream<LocationFollowEvent> get locationFollowEvents =>
       _locationEventHandler.locationFollowEvents;
 
-  @override
   Stream<IndoorLevelsEvent> get indoorLevelNames =>
       _indoorEventHandler.indoorLevelNames;
 
-  @override
   Stream<IndoorActiveLevelEvent> get indoorActiveIndex =>
       _indoorEventHandler.indoorActiveLevel;
 
-  @override
   Stream<TapEvent> get objectTapEvents =>
       _objectTapEventHandler.objectTapEvents;
 
-  @override
   Stream<VisibleRectEvent> get visibleRectEvents =>
       _visibleRectEventHandler.visibleRectEvents;
 
-  @override
   Stream<CameraPositionMessage> get cameraPositionEvents =>
       _visibleRectEventHandler.cameraPositionEvents;
 
-  @override
   Stream<CameraStateEvent> get cameraStateEvents =>
       _cameraStateEventHandler.cameraStateEvents;
 
-  @override
   Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents =>
       _markerTapEventHandler.markerWithPhotoTapEvents;
 
-  @override
   Stream<ActiveRouteChangedEvent> get activeRouteChangedEvents =>
       _routesEventHandler.activeRouteChangedEvents;
 
-  @override
   Stream<RoutesInfoChangedEvent> get routesInfoChangedEvents =>
       _routesEventHandler.routesInfoChangedEvents;
 
-  @override
   Stream<NavigationEvent> get navigationEvents =>
       _navigationEventHandler.navigationEvents;
 
-  @override
   Stream<NaviDashboardEvent> get naviDashboardEvents =>
       _naviDashboardEventHandler.dashboardEvents;
 
-  @override
   Stream<CompassBearingEvent> get compassBearingEvents =>
       _compassEventHandler.compassBearingEvents;
 
-  @override
   Stream<NaviSpeedEvent> get naviSpeedEvents =>
       _naviSpeedEventHandler.speedEvents;
 
-  @override
   Stream<NaviMessageEvent> get naviMessageEvents =>
       _naviMessageEventHandler.messageEvents;
 
-  @override
   Stream<NaviManeuverEvent> get naviManeuverEvents =>
       _naviManeuverEventHandler.maneuverEvents;
 
-  @override
   Stream<PublicTransportRoutesChangedEvent>
       get publicTransportRoutesChangedEvents =>
           _publicTransportEventHandler.routesChangedEvents;
 
-  @override
   Stream<ParkingStateEvent> get parkingStateEvents =>
       _trafficAndParkingStateEventHandler.parkingStateEvents;
 
-  @override
   Stream<TrafficStateEvent> get trafficStateEvents =>
       _trafficAndParkingStateEventHandler.trafficStateEvents;
 
-  @override
   Stream<PublicTransportActiveRouteChanged>
       get publicTransportActiveRouteChangedEvents =>
           _publicTransportEventHandler.activeRouteChangedEvents;
 
-  @override
   Stream<PackageProgressEvent> get packageProgressEvents =>
       _packagesHandler.packageProgressEvents;
 
-  @override
   Stream<PackageInfoChangedEvent> get packageInfoChangedEvents =>
       _packagesHandler.packagesInfoChangedEvents;
 
-  @override
   Stream<RouteOptionsEvent> get routeOptionsEvent =>
       _navigationEventHandler.routeOptionEvents;
 
-  @override
   bool get isInitialized => _isInitialized;
 
-  @override
   Future<InitializeMessage> initialize(int viewId) async {
     _viewId = viewId;
+
+    final messenger = ProxyBinaryMessenger(suffix: 'map_$viewId');
+    _api = MapApi(binaryMessenger: messenger);
 
     final response = await _api.initialize();
     if (response.wasInitialized) {
@@ -174,12 +144,15 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
       _isInitialized = true;
     }
 
-    FlutterMapApi.setup(this);
+    _zoomEventHandler = ZoomEventHandler(_api);
+    _locationEventHandler = LocationEventHandler(_api);
+    _indoorEventHandler = IndoorEventHandler(_api);
+
+    FlutterMapApi.setup(this, binaryMessenger: messenger);
 
     return response;
   }
 
-  @override
   Future<void> dispose() async {
     await _eventChannelSubscription?.cancel();
     await _zoomEventHandler.dispose();
@@ -196,18 +169,15 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     await _publicTransportEventHandler.dispose();
   }
 
-  @override
   Future<void> onZoomAction(ZoomControlType btn,
       {required bool isPressed}) async {
     return _zoomEventHandler.onZoomAction(btn, isPressed: isPressed);
   }
 
-  @override
   Future<void> toggleFollowState() {
     return _locationEventHandler.toggleFollowState();
   }
 
-  @override
   Future<void> followNavigation() {
     return _api.followNavigation();
   }
@@ -297,80 +267,66 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     );
   }
 
-  @override
   Future<void> selectIndoorLevel(int index) {
     return _indoorEventHandler.selectIndoorLevel(index);
   }
 
-  @override
   Future<void> loadStyles(String asset) {
     return _api.loadStyles(asset);
   }
 
-  @override
   Future<void> overrideLocales(List<String> locales) {
     return _api.overrideLocales(locales);
   }
 
-  @override
   Future<void> setCameraPosition(CameraPositionMessage cameraPosition) {
     return _api.setCameraPosition(cameraPosition);
   }
 
-  @override
   Future<void> setCameraPadding(CameraSetPaddingMessage cameraPadding) {
     return _api.setCameraPadding(cameraPadding);
   }
 
-  @override
   Future<void> moveCamera(CameraPositionMessage cameraPosition, double duration,
       CameraAnimationTypeMessage animationType) {
     return _api.moveCamera(cameraPosition, duration, animationType);
   }
 
-  @override
   Future<CameraPositionMessage> calcPositionForRoute(
       CalcPositionOptionsMessage options) {
     return _api.calcPositionForRoute(options);
   }
 
-  @override
   Future<CameraPositionMessage> calcPositionForMarkers(
       List<String> markers, CalcPositionOptionsMessage options) {
     return _api.calcPositionForMarkers(markers, options);
   }
 
-  @override
   Future<CameraPositionMessage> calcPositionForPolygons(
       List<String> polygons, CalcPositionOptionsMessage options) {
     return _api.calcPositionForPolygons(polygons, options);
   }
 
-  @override
   Future<CameraPositionMessage> calcPositionForPolylines(
       List<String> polylines, CalcPositionOptionsMessage options) {
     return _api.calcPositionForPolylines(polylines, options);
   }
 
-  @override
   Future<CameraPositionMessage> getCameraPosition() {
     return _api.getCameraPosition();
   }
 
-  @override
   Future<List<RenderedObjectMessage>> getNearestObjects() async {
     return (await _api.getNearestObjects())
         .whereType<RenderedObjectMessage>()
         .toList();
   }
 
-  @override
   Future<DirectoryObjectMessage> searchByObjectId(
       DgisObjectIdMessage objectId) {
     return _api.searchByObjectId(objectId);
   }
 
-  @override
   Future<SearchResultMessage> search(
     String queryText, {
     List<SearchCategoryMessage>? categories,
@@ -399,7 +355,6 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     );
   }
 
-  @override
   Future<SearchResultMessage> searchByQuery(
     SearchQueryMessage query, {
     List<GeoPointMessage>? spatialRestriction,
@@ -418,7 +373,6 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     );
   }
 
-  @override
   Future<SearchResultMessage> searchByCategory(
     SearchCategoryMessage category, {
     List<GeoPointMessage>? spatialRestriction,
@@ -437,7 +391,6 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     );
   }
 
-  @override
   Future<SearchResultMessage> searchByRubrics(
     List<int> rubrics, {
     List<GeoPointMessage>? spatialRestriction,
@@ -456,18 +409,14 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     );
   }
 
-  @override
   Future<PageMessage> fetchPrevPage(PageIdMessage pageId) =>
       _api.fetchPrevPage(pageId);
 
-  @override
   Future<PageMessage> fetchNextPage(PageIdMessage pageId) =>
       _api.fetchNextPage(pageId);
 
-  @override
   Future<void> releasePage(PageIdMessage pageId) => _api.releasePage(pageId);
 
-  @override
   Future<SuggestResultMessage> fetchSuggests(
     String queryText, {
     List<SuggestedTypeMessage_>? allowedResultTypes,
@@ -475,18 +424,15 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   }) =>
       _api.fetchSuggests(queryText, allowedResultTypes, searchRect);
 
-  @override
   Future<List<DistanceResponseMessage?>> getDistanceTo(
       List<DistanceRequestMessage> points) {
     return _api.getDistanceTo(points);
   }
 
-  @override
   Future<void> setMarkerOptions(MarkerOptionsMessageOld markerOptions) {
     return _api.setMarkerOptions(markerOptions);
   }
 
-  @override
   Future<void> addMarker(
     Marker marker,
     MapObjectManagerMessage? manager,
@@ -504,7 +450,6 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     );
   }
 
-  @override
   Future<void> addMarkers(
     List<Marker> markers,
     MapObjectManagerMessage? manager,
@@ -528,7 +473,6 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     );
   }
 
-  @override
   Future<void> removeMarker(
     String id,
     MapObjectManagerMessage? manager,
@@ -537,13 +481,11 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     return _api.removeMarker(id, manager);
   }
 
-  @override
   Future<void> removeAllMarkers(MapObjectManagerMessage? manager) {
     _objectTapEventHandler.removeAllMarkerHandlers(manager?.id);
     return _api.removeAllMarkers(manager);
   }
 
-  @override
   Future<MapObjectManagerMessage> createMapObjectManagerWithClustering(
     ClusteringMapObjectManager manager, {
     String? layerId,
@@ -557,7 +499,6 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     return result;
   }
 
-  @override
   Future<MapObjectManagerMessage> createMapObjectManager({
     String? layerId,
   }) async {
@@ -565,7 +506,6 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     return result;
   }
 
-  @override
   Future<void> removeMapObjectManager(
     MapObjectManagerMessage manager,
   ) {
@@ -573,13 +513,11 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     return _api.removeMapObjectManager(manager);
   }
 
-  @override
   Future<void> setMapObjectManagerIsVisible(
       bool isVisible, MapObjectManagerMessage? manager) {
     return _api.setMapObjectManagerIsVisible(isVisible, manager);
   }
 
-  @override
   SimpleClusterOptionsMessage renderCluster(
     MapObjectManagerMessage manager,
     int objectCount,
@@ -587,7 +525,6 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     return _objectTapEventHandler.clusterRenderers[manager.id]!(objectCount);
   }
 
-  @override
   Future<void> addPolygon(
     Polygon polygon,
   ) {
@@ -599,7 +536,6 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     );
   }
 
-  @override
   Future<void> addPolygons(
     List<Polygon> polygons,
   ) {
@@ -618,7 +554,6 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     );
   }
 
-  @override
   Future<void> removePolygon(
     String id,
   ) {
@@ -626,13 +561,11 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     return _api.removePolygon(id);
   }
 
-  @override
   Future<void> removeAllPolygons() {
     _objectTapEventHandler.removeAllPolygonHandlers();
     return _api.removeAllPolygons();
   }
 
-  @override
   Future<void> addPolyline(
     Polyline polyline,
   ) {
@@ -644,7 +577,6 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     );
   }
 
-  @override
   Future<void> addPolylines(
     List<Polyline> polylines,
   ) {
@@ -663,7 +595,6 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     );
   }
 
-  @override
   Future<void> removePolyline(
     String id,
   ) {
@@ -671,77 +602,44 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     return _api.removePolyline(id);
   }
 
-  @override
   Future<void> removeAllPolylines() {
     _objectTapEventHandler.removeAllPolylineHandlers();
     return _api.removeAllPolylines();
   }
 
-  @override
   Future<void> showEsriIOLayer(AddLayerPointObjectsMessage message) {
     return _api.showEsriIOLayer(message);
   }
 
-  @override
   Future<void> removeEsriIOLayer() {
     return _api.removeEsriIOLayer();
   }
 
-  @override
   Future<void> setHighlighted(List<DgisObjectIdMessage> objectIds) {
     return _api.setHighlighted(objectIds);
   }
 
-  @override
   Future<void> onLocationPremissionGranted(
       DesiredAccuracyMessage desiredAccuracy) {
     return _api.onLocationPremissionGranted(desiredAccuracy);
   }
 
-  @override
-  Widget buildView({
-    Key? key,
-    required PlatformViewCreatedCallback onPlatformViewCreated,
-    bool androidUseExpensive = true,
-  }) {
-    return defaultTargetPlatform == TargetPlatform.android
-        ? AndroidView(
-            key: key,
-            viewType: _viewType,
-            onPlatformViewCreated: onPlatformViewCreated,
-            gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
-            hitTestBehavior: PlatformViewHitTestBehavior.opaque,
-            layoutDirection: TextDirection.ltr,
-          )
-        : UiKitView(
-            key: key,
-            viewType: _viewType,
-            layoutDirection: TextDirection.ltr,
-            onPlatformViewCreated: onPlatformViewCreated,
-          );
-  }
-
-  @override
   Future<void> addPanoramasMarkers(AddMarkersWithPhotoMessage markers) {
     return _api.addPanoramasMarkers(markers);
   }
 
-  @override
   Future<void> hidePanoramasMarkers() {
     return _api.hidePanoramasMarkers();
   }
 
-  @override
   Future<void> showPanoramasMarkers() {
     return _api.showPanoramasMarkers();
   }
 
-  @override
   Future<void> removePanoramasMarkers() {
     return _api.removePanoramasMarkers();
   }
 
-  @override
   Future<int> overlappedBy(
     GeoRectMessage outerRect,
     GeoRectMessage innerRect,
@@ -749,112 +647,90 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     return _api.overlappedBy(outerRect, innerRect);
   }
 
-  @override
   Future<bool> contains(GeoRectMessage rect, GeoPointMessage point) {
     return _api.contains(rect, point);
   }
 
-  @override
   Future<bool> containsRect(GeoRectMessage outer, GeoRectMessage inner) {
     return _api.containsRect(outer, inner);
   }
 
-  @override
   Future<double> pointBearing(GeoPointMessage from, GeoPointMessage to) {
     return _api.pointBearing(from, to);
   }
 
-  @override
   Future<void> setRouteParams(RouteEditorRouteParamsMessage params) {
     return _api.setRouteParams(params);
   }
 
-  @override
   Future<void> hideRoutes() {
     return _api.hideRoutes();
   }
 
-  @override
   Future<void> startNavigation() {
     return _api.startNavigation();
   }
 
-  @override
   Future<void> startNavigationSimulation() {
     return _api.startNavigationSimulation();
   }
 
-  @override
   Future<void> stopNavigation() {
     return _api.stopNavigation();
   }
 
-  @override
   Future<void> moveCameraToSelectedPanorama() {
     return _api.moveCameraToSelectedPanorama();
   }
 
-  @override
   Future<void> setPanoramasPaddings(CameraSetPaddingMessage message) {
     return _api.setPanoramasPaddings(message);
   }
 
-  @override
   Future<void> unselectPanorama() {
     return _api.unselectPanorama();
   }
 
-  @override
   Future<void> setPanoramaMarkerAzimuth(MarkerAzimuthMessage message) {
     return _api.setPanoramaMarkerAzimuth(message);
   }
 
-  @override
   Future<void> onCompassClicked() {
     return _api.onCompassClicked();
   }
 
-  @override
   Future<void> startFreeRoam() {
     return _api.startFreeRoam();
   }
 
-  @override
   Future<void> stopFreeRoam() {
     return _api.stopFreeRoam();
   }
 
-  @override
   Future<void> toggleSound({required bool enabled}) {
     return _api.toggleSound(enabled);
   }
 
-  @override
   Future<void> onTrafficAndParkingAttached() {
     return _api.onTrafficAndParkingAttached();
   }
 
-  @override
   Future<void> onTrafficAndParkingDetached() {
     return _api.onTrafficAndParkingDetached();
   }
 
-  @override
   Future<void> onParkingClicked() {
     return _api.onParkingClicked();
   }
 
-  @override
   Future<void> onTrafficClicked() {
     return _api.onTrafficClicked();
   }
 
-  @override
   Future<void> setAppearance(MapAppearanceMessage appearance) {
     return _api.setAppearance(appearance);
   }
 
-  @override
   Future<void> setZoomRestrictions(double? min, double? max) {
     return _api.setZoomRestrictions(min, max);
   }
@@ -863,7 +739,6 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     return _api.setPublicTransportActiveRoute(routeIndex);
   }
 
-  @override
   Future<List<BriefRouteInfoMessage?>> findBriefRouteInfos(
     RouteSearchOptionsMessage routeSearchOptions,
     RouteSearchPointMessage? startPoint,
@@ -876,32 +751,26 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     );
   }
 
-  @override
   Future<List<PackageMessage?>> listPackages() {
     return _api.listPackages();
   }
 
-  @override
   Future<List<PackageMessage?>> listVoices() {
     return _api.listVoices();
   }
 
-  @override
   Future<void> installPackage(String id) {
     return _api.installPackage(id);
   }
 
-  @override
   Future<void> installVoice(String id) {
     return _api.installVoice(id);
   }
 
-  @override
   Future<void> setNavigatorVoice(String id) {
     return _api.setNavigatorVoice(id);
   }
 
-  @override
   Future<bool> toggleHeatmap(WeatherMapMessage message) =>
       _api.toggleHeatmap(message);
 }
