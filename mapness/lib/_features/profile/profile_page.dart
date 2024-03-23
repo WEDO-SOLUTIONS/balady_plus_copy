@@ -1,17 +1,21 @@
 import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
-import 'package:dgis_map/dgis_map.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/profile/domain/user_profile_data.dart';
+import 'package:mapness/_features/profile/widgets/profile_header.dart';
 import 'package:mapness/_features/profile/widgets/profile_image_widget.dart';
+import 'package:mapness/_features/profile/widgets/unathorized_profile.dart';
 import 'package:mapness/app/routes/profile.dart';
-import 'package:mapness/entry_point.dart';
+import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/app_features.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
 final InAppReview inAppReview = InAppReview.instance;
@@ -19,19 +23,6 @@ final InAppReview inAppReview = InAppReview.instance;
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) => DgisMap(
-        key: const ValueKey('MAP2'),
-        routeObserver: MapnessRouteObserver(),
-        androidUseExpensive: true,
-        onMapCreated: (controller) async {
-          await controller.initialize();
-          // await mapViewModel.initialize(controller);
-        },
-      );
-
-  /**
-  @override
   Widget build(BuildContext context, WidgetRef ref) => WillPopScope(
         onWillPop: () async {
           StatefulNavigationShell.of(context).goBranch(
@@ -242,7 +233,6 @@ class ProfilePage extends ConsumerWidget {
           );
         },
       );
-  */
 }
 
 class AuthorizedRow extends ConsumerWidget {
