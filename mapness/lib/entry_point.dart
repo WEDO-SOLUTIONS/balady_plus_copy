@@ -39,6 +39,15 @@ import 'package:share_plus/share_plus.dart';
 
 Mixpanel? mixpanel;
 
+class MapnessRouteObserver extends RouteObserver<ModalRoute<void>> {
+  static final MapnessRouteObserver _instance =
+      MapnessRouteObserver._internal();
+
+  factory MapnessRouteObserver() => _instance;
+
+  MapnessRouteObserver._internal();
+}
+
 class MapnessProviderScope extends StatelessWidget {
   const MapnessProviderScope({
     required this.child,
