@@ -1,7 +1,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
@@ -65,7 +64,6 @@ class _MapPageState extends ConsumerState<MapPage>
     ref.watch(mapObjectManagerProvider(named: selectedMarkerManagerId));
 
     return DgisMap(
-      routeObserver: MapnessRouteObserver(),
       key: ValueKey(_keyIndex),
       androidUseExpensive: true,
       onMapCreated: (controller) async {
