@@ -1,6 +1,6 @@
 library dgis_map_platform_interface;
 
-export 'src/dgis_map_platform_interface.dart' show DgisMapPlugin;
+export 'src/dgis_map_plugin.dart' show DgisMapPlugin;
 
 export 'src/pigeons/messages.g.dart';
 
