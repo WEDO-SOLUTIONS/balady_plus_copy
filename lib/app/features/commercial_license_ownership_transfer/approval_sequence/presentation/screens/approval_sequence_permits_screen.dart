@@ -23,11 +23,15 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/enhanced_
     as hijri_picker;
 
 class ApprovalSequencePermitsScreen extends StatelessWidget {
-  const ApprovalSequencePermitsScreen({Key? key}) : super(key: key);
+  final void Function() goToNewPage;
+
+  const ApprovalSequencePermitsScreen({
+    Key? key,
+    required this.goToNewPage,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       children: [
         const Expanded(
@@ -36,7 +40,9 @@ class ApprovalSequencePermitsScreen extends StatelessWidget {
           ),
         ),
         ButtonInCard(
-          onPressed: () {},
+          onPressed: () {
+            goToNewPage();
+          },
           text: "next".tr(),
         ),
       ],

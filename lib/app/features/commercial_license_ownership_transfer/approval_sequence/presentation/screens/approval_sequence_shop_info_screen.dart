@@ -14,7 +14,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class ApprovalSequenceShopInfoScreen extends StatelessWidget {
-  const ApprovalSequenceShopInfoScreen({Key? key}) : super(key: key);
+  final void Function() goToNewPage;
+  const ApprovalSequenceShopInfoScreen({Key? key, required this.goToNewPage}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
