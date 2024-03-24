@@ -357,6 +357,20 @@ static const DirectRentalPage = 'DirectRentalPage';
   static const notificationsListScreen = 'notifications_list_screen';
   static const notificationsDetailsScreen = 'notifications_details_screen';
 
+  static const surveyReportInqueryOverView =
+      'SurveyReportOverview_Screen';
+  static const surveyReportInquery =
+      'SurveyReportInquery_Screen';
+  static const surveyReportInqueryDetails =
+      'SurveyReportInqueryDetails_Screen';
+
+  static const constructionLicenseOverView =
+      'ConstructionLicenseOverView_Screen';
+  static const constructionLicenseInquery =
+      'constructionLicenseInquery_Screen';
+  static const constructionLicenseInqueryDetails =
+      'constructionLicenseInqueryDetails_Screen';
+
 
 }
 

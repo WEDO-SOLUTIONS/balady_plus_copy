@@ -90,7 +90,8 @@ class CommercialLicenseCancelOneScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 16),
                           bloc.availableCloseDate
-                              ? Column(
+                              ?
+                          Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     CustomTextWidget(

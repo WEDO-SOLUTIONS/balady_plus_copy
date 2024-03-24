@@ -397,6 +397,8 @@ class ApiUrl {
   static String requestDetailsCommercial(int requestId) =>
       "/v1/balady-commercial-services/request/$requestId";
 
+  static String requestConclusionCommercial(int requestId) =>
+      "/v1/balady-commercial-services/request-conclusion/$requestId";
 //! Renew Commercial Service
   static String validateBeforeApply(int requestId) =>
       'v1/balady-commercial-services/mobile/renew-request/validate-before-apply/$requestId';
@@ -766,25 +768,27 @@ class ApiUrl {
 
   static String joodEskanGenerateDonation =
       "v1/joodeskan-services/generate-donation-url";
+  static String joodEskanRegions = "v1/joodeskan-services/regions";
 
   static const paymentURL = 'v1/payment-gateway/payment';
-
 
   static const chatBot = 'v1/chatbot-services/chat'; // not use this now
   static const chatBotStream = 'v1/chatbot-services/chat-stream';
   static const chatBotEnabled = 'v1/chatbot-services/service-enabled';
-
 
   static const String submitRating =
       '/v1/balady-commercial-services/rating/submit';
 
   static const weatherAlerts = 'v1/mater-services/notifications/locations';
 
-
 //commercial license query
-  static String getCommercialLicenseData(int licenseNumber,unifiedFacilityNumber) =>
+  static String getCommercialLicenseData(
+          int licenseNumber, unifiedFacilityNumber) =>
       '/v1/balady-commercial-services/licenses/$licenseNumber/by-unn/$unifiedFacilityNumber';
 
+  //Construction License Inquery
+  static String getConstructionLicenseData(int licenseNumber, String date) =>
+      '/v1/balady-construction-services/mobile/inquiry/building-licenses/$licenseNumber/$date';
 
   //Noification APIS
 
@@ -796,6 +800,9 @@ class ApiUrl {
 
 
 
+  //Survey license inquery
+  static String getSurveyLicenseData(int licenseNumber, String date) =>
+      '/v1/balady-construction-services/mobile/inquiry/area-reports/$licenseNumber/$date';
 
   //! Balady Calednar
 
@@ -826,6 +833,13 @@ class ApiUrl {
   static const notificationsSettingsList = 'v1/notifications-hub-services/fe/profiles';
   static const setProductsNotificationsSettings = 'v1/notifications-hub-services/fe/profile/products';
   static const setProfileNotificationsSettings = 'v1/notifications-hub-services/fe/profiles';
+//! Appointments New APIs
+  static getAppointmentById(String id) =>
+      'v1/appointments-mobile-services/appointments/$id';
+
+  static const saveAppointment = "v1/appointments-mobile-services/appointments";
+  static validateRealEstate(String id) =>
+      'v1/appointments-mobile-services/validate-real-estate/$id';
 
   //! POST
 

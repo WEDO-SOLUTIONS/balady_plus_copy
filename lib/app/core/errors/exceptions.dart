@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart' show DioError, RequestOptions, Response;
 
-import '../utils/utils_exports.dart' show APIResponsesConversion, ApiResponse, CommonFunctions;
+import '../utils/utils_exports.dart'
+    show APIResponsesConversion, ApiResponse, CommonFunctions;
 
 // Global Exceptions
 class ServerException implements Exception {
@@ -9,17 +10,21 @@ class ServerException implements Exception {
   final String? statusMessage;
   final DioError? dioError;
   final Response? response;
-  final dynamic errorCode; 
+  final dynamic errorCode;
   final Exception? exception;
 
   ServerException(this.errorMessage,
       {this.statusCode,
       this.statusMessage,
       this.dioError,
-      this.response,this.errorCode, 
+      this.response,
+      this.errorCode,
       this.exception}) {
     CommonFunctions.sendEvent(
-        dioError: dioError, response: response, ex: exception);
+        dioError: dioError,
+        response: response,
+        ex: exception,
+        errorMessage: errorMessage);
   }
 }
 

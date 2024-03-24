@@ -11,12 +11,13 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 class MessageChatBotProvider extends BaseViewModel {
   final SendQuestionMessageChatBot repository;
+  final ScrollController scrollController;
   final ValueNotifier<ChatBotMessageEntities> message;
   StreamSubscription? listen;
 
   MessageChatBotProvider({
     required this.repository,
-    required this.message,
+    required this.message, required this.scrollController,
   }) {
     sendQuestion(message.value.question);
   }
@@ -26,6 +27,7 @@ class MessageChatBotProvider extends BaseViewModel {
     isLoading = true;
     notifyListeners();
     try {
+      scrollControllerAction();
       message.value = message.value.copyWith(answer: '');
       Either<Failure, Stream> response;
       response = await repository.repository.sendQuestionMessageSSE(
@@ -41,6 +43,7 @@ class MessageChatBotProvider extends BaseViewModel {
           message.notifyListeners();
           isLoading = false;
           notifyListeners();
+          scrollControllerAction();
         },
         (stream) {
           if(!isClose) {
@@ -50,6 +53,7 @@ class MessageChatBotProvider extends BaseViewModel {
                 // answer: message.value.answer + [messageType]
               );
               message.notifyListeners();
+              scrollControllerAction();
             });
             listen!.onDone(() {
               message.value = message.value.copyWith(
@@ -58,6 +62,7 @@ class MessageChatBotProvider extends BaseViewModel {
               isLoading = false;
               notifyListeners();
               listen!.cancel();
+              scrollControllerAction();
             });
             listen!.onError((error) {
               // message.value.answer.add(error.toString());
@@ -69,6 +74,7 @@ class MessageChatBotProvider extends BaseViewModel {
               isLoading = false;
               notifyListeners();
               listen!.cancel();
+              scrollControllerAction();
             });
             message.value = message.value.copyWith(timeStampReceived: DateTime.now());
             message.notifyListeners();
@@ -104,5 +110,16 @@ class MessageChatBotProvider extends BaseViewModel {
     isLoading = false;
     isClose = true;
     notifyListeners();
+  }
+
+
+  void scrollControllerAction () {
+    if (scrollController.position.maxScrollExtent > scrollController.offset ) {
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent + 100 ,
+        curve: Curves.linear,
+        duration: const Duration(milliseconds: 550),
+      );
+    }
   }
 }
