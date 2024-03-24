@@ -82,7 +82,7 @@ class NotificationsItemWidget extends StatelessWidget {
                           ),
                           Flexible(
                             child: Text(
-                              "${Jiffy.parseFromDateTime(message.eventTime).Hm} ,${Jiffy.parseFromDateTime(message.eventTime).fromNow()}",
+                              "${Jiffy.parseFromDateTime(message.createTime).Hm} ,${Jiffy.parseFromDateTime(message.eventTime).fromNow()}",
                               style:
                                   AppStyle.nearbyItemSubTitleTextStyle.copyWith(
                                 fontWeight: FontWeight.w500,
