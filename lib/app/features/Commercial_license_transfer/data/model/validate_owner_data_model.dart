@@ -15,7 +15,8 @@ class ValidateOwnerDataModel extends ValidateOwnerEntity {
     responseCode = json['responseCode'];
     responseMessage = json['responseMessage'];
     responseId = json['responseId'];
-    result = json['result'];
+    if(json['result'] != null)
+    result = json['result']["data"];
   }
 
 }

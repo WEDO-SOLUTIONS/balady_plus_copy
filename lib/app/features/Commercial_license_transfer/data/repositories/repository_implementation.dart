@@ -38,7 +38,7 @@ class TransferLicenseRepositoryImplementation implements TransferLicenseReposito
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
     } on ServerException catch (error) {
-      return Left(ServerFailure(error.errorMessage));
+      return Left(ServerFailure(error.errorMessage,statusCode: error.statusCode,errorCode: error.errorCode));
     }
 
 

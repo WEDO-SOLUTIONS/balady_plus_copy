@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/app_style.dart';
@@ -20,18 +19,20 @@ import '../../../_shared_feature_/presentation/widgets/shimmer_effect_widget.dar
 
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../domain/entity/permits_response_entity.dart';
-import '../bloc/license_permits_cubit.dart';
+import '../bloc/license_tranfer_cubit.dart';
+import '../interface/step_interface.dart';
 
 class PremitsScreen extends StatefulWidget {
-  const PremitsScreen({Key? key}) : super(key: key);
+  StepInterface stepInterface;
+   PremitsScreen({Key? key,required this.stepInterface}) : super(key: key);
 
   @override
   State<PremitsScreen> createState() => _PremitsScreenState();
 }
 
 class _PremitsScreenState extends State<PremitsScreen> {
-  LicensePermitsCubit? bloc;
-  String? licenseNumber;
+  LicenseTransferCubit? bloc;
+
   bool isAgree = false;
   List<int> lstPermits = [];
 
@@ -40,41 +41,23 @@ class _PremitsScreenState extends State<PremitsScreen> {
     super.initState();
 
     Future.microtask(() {
-      setState(() {
-        licenseNumber = bloc!.licenseNumber;
-      });
-      bloc!.getLicensePermitsDetails(bloc!.licenseNumber);
+      bloc= context.read<LicenseTransferCubit>();
+      bloc!.getLicensePermitsDetails(bloc!.licenseNumber!);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) {
-        bloc =
-            ModalRoute.of(context)!.settings.arguments as LicensePermitsCubit;
 
-        return bloc!;
-      },
-      child: Scaffold(
-        backgroundColor: AppColor.scaffoldBackground,
-        resizeToAvoidBottomInset: true,
-        appBar: DefaultAppBarWidget(
-          title: "back".tr(),
-          showBack: true,
-        ),
-        body: getBody(),
-      ),
-    );
+
+    return getBody();
+
   }
 
   Widget getBody() {
-    return BlocConsumer<LicensePermitsCubit, LicensePermitsState>(
+    return BlocConsumer<LicenseTransferCubit, LicenseTransferState>(
       listenWhen: (previous, current) => previous.status != current.status,
       listener: (_, state) async {
-        // if (state.status == BlocRequestStatus.submissionGetFailure) {
-        //   MessageDialog.showErrorNotification(msg: state.error);
-        // }
       },
       builder: (context, state) {
         if (state.status == BlocRequestStatus.submissionGetLoading) {
@@ -89,7 +72,7 @@ class _PremitsScreenState extends State<PremitsScreen> {
         } else if (state.licencePermitsResponse != null) {
           final permitResponse = state.licencePermitsResponse!;
           return Padding(
-            padding: const EdgeInsets.only(left: 15.0, right: 15, top: 20),
+            padding: const EdgeInsets.only(left: 15.0, right: 15, top: 0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,7 +102,7 @@ class _PremitsScreenState extends State<PremitsScreen> {
                       ],
                     ),
                     AppColor.grayLight),
-                const SizedBox(height: 10),
+                const SizedBox(height: 0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -318,9 +301,7 @@ class _PremitsScreenState extends State<PremitsScreen> {
                       if(isAgree)
                         {
                           bloc?.request.lstPermits = lstPermits;
-
-                          NavigatorState navigator = Navigator.of(context);
-                          navigator.pushNamed(RouteName.newOwner);
+                          widget.stepInterface.nextPage();
 
                         }
                       else
@@ -341,7 +322,7 @@ class _PremitsScreenState extends State<PremitsScreen> {
           child: ReloadWidget(
             errorMessage: "no_data_found".tr(),
             onTab: () {
-              bloc!.getLicensePermitsDetails(bloc!.licenseNumber);
+              bloc!.getLicensePermitsDetails(bloc!.licenseNumber!);
             },
           ),
         );

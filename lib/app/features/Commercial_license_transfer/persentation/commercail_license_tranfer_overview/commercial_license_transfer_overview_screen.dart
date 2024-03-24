@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/ux_cam_events.dart';
-import '../bloc/license_permits_cubit.dart';
+import '../bloc/license_tranfer_cubit.dart';
 
 class CommercialLicenseTransferOverviewScreen extends StatefulWidget {
   const CommercialLicenseTransferOverviewScreen({Key? key}) : super(key: key);
@@ -20,7 +20,7 @@ class CommercialLicenseTransferOverviewScreen extends StatefulWidget {
 
 class _CommercialLicenseTransferOverviewScreenState extends State<CommercialLicenseTransferOverviewScreen> {
   String? licenseNumber;
-  String? crNumber;
+
 
   @override
   void initState() {
@@ -31,9 +31,9 @@ class _CommercialLicenseTransferOverviewScreenState extends State<CommercialLice
         UXCamEvents.startCardServiceQueryLicenseService);
 
     Future.microtask(() {
-       var lst= ModalRoute.of(context)!.settings.arguments as List<String>;
-       licenseNumber = lst[0];
-       crNumber = lst[1];
+      licenseNumber= ModalRoute.of(context)!.settings.arguments as String;
+
+
 
     });
 
@@ -68,9 +68,7 @@ class _CommercialLicenseTransferOverviewScreenState extends State<CommercialLice
               child: ElevatedButtonWidget.startService(
                 onPressed: () async {
                   NavigatorState navigator = Navigator.of(context);
-                  navigator.pushNamed(RouteName.transferLicensePermits,
-                      arguments:LicensePermitsCubit(GetLicensePermitsData(repository: sl()),licenseNumber!),
-                  );
+                  navigator.pushNamed(RouteName.homeSequence, arguments:licenseNumber);
 
 
                 },

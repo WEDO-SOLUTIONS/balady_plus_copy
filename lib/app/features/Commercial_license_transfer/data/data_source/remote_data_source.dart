@@ -57,9 +57,9 @@ class LicensePermitsRemoteDataSourceImplementation implements LicensePermitsRemo
 
     } on DioError catch (error) {
       // "DioError $error".errorLog();
-      if (error is NoDataFoundException) {
-        rethrow;
-      }
+      // if (error is NoDataFoundException) {
+      //   rethrow;
+      // }
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -95,7 +95,7 @@ class LicensePermitsRemoteDataSourceImplementation implements LicensePermitsRemo
       final data = response.data;
 
 
-      var parsedResult = data != null ? ValidateOwnerDataModel.fromJson(data["data"]["result"]) : null;
+      var parsedResult = data != null ? ValidateOwnerDataModel.fromJson(data["data"]) : null;
       final decodedResponse = ResponseBodyModel<ValidateOwnerDataModel>.fromMap(
           response.data,
           parsedResult: parsedResult);
@@ -106,9 +106,9 @@ class LicensePermitsRemoteDataSourceImplementation implements LicensePermitsRemo
 
     } on DioError catch (error) {
       // "DioError $error".errorLog();
-      if (error is NoDataFoundException) {
-        rethrow;
-      }
+      // if (error is NoDataFoundException) {
+      //   rethrow;
+      // }
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
