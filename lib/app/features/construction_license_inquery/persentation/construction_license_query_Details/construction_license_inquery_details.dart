@@ -115,7 +115,7 @@ class _ConstructionLicenseInqueryDetailsState
                           '',
                       bgColor: AppColor.mystic,
                     ),
-                    licenceQueryDetails.oldLicenseId != null?
+                    licenceQueryDetails.oldLicenseId != null || licenceQueryDetails.oldLicenseId != 0?
                     CardParameter(
                       title: 'license_number_municipality'.tr(),
                       value: licenceQueryDetails.oldLicenseId ?? '',
@@ -141,7 +141,8 @@ class _ConstructionLicenseInqueryDetailsState
                     ),
 
                     licenceQueryDetails
-                        .surveyReport != null ?
+                        .surveyReport != null && licenceQueryDetails
+                        .surveyReport!.mainBuildingClassName != null?
                     CardParameter(
                       // from whats
                       title: 'compliance_main_usage'.tr(),
@@ -151,7 +152,8 @@ class _ConstructionLicenseInqueryDetailsState
                       bgColor: AppColor.mystic,
                     ):Container(),
                     licenceQueryDetails
-                        .surveyReport != null ?
+                        .surveyReport != null && licenceQueryDetails
+                        .surveyReport!.subBuildingClassName != null ?
                     CardParameter(
                       // from whats
                       title: 'compliance_sub_usage'.tr(),
@@ -185,6 +187,8 @@ class _ConstructionLicenseInqueryDetailsState
                       bgColor: AppColor.mystic,
                     ),
 
+                    licenceQueryDetails
+                        .surveyReport!.districtName != null?
                     CardParameter(
                       // from whats
                       title: 'district'.tr(),
@@ -192,8 +196,10 @@ class _ConstructionLicenseInqueryDetailsState
                           .surveyReport!.districtName
                           .toString(),
                       bgColor: AppColor.mystic,
-                    ),
+                    ):Container(),
 
+                    licenceQueryDetails
+                        .surveyReport!.mapNumber != null?
                     CardParameter(
                       // from whats
                       title: 'planNumber'.tr(),
@@ -201,7 +207,7 @@ class _ConstructionLicenseInqueryDetailsState
                           .surveyReport!.mapNumber
                           .toString(),
                       bgColor: AppColor.mystic,
-                    ),
+                    ):Container(),
 
                     CardParameter(
                       // from whats
@@ -308,18 +314,20 @@ class _ConstructionLicenseInqueryDetailsState
                               bgColor: AppColor.lightGray,
                               children: [
 
-
+                                activity.landNo != null?
                                 CardParameter(
                                   title: 'landNo'.tr(),
                                   value: activity.landNo
                                       .toString(),
                                   bgColor: AppColor.lightGray,
-                                ),
+                                ):Container(),
+                                activity.landNo != null     ?
                                 const Divider(
                                   height: 2,
                                   color:
                                   AppColor.blackModern200Light,
-                                ),
+                                ):Container(),
+
                                 CardParameter(
                                   // from whats
                                   title: 'area_natural'.tr(),
@@ -332,13 +340,14 @@ class _ConstructionLicenseInqueryDetailsState
                                   color:
                                   AppColor.blackModern200Light,
                                 ),
+                                activity.areaAccordingToScheme != 0?
                                 CardParameter(
                                   // from whats
                                   title: 'area_schema'.tr(),
                                   value:
                                   activity.areaAccordingToScheme.toString(),
                                   bgColor: AppColor.lightGray,
-                                ),
+                                ):Container(),
                               ],
                             );
                           },
