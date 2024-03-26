@@ -810,6 +810,8 @@ class ApiUrl {
   static String validateNewOwner(String licenseNumber,String crNumber) =>
       '/v1/superapp-commercial-ownership-services/transfer/validate-new-owner/$licenseNumber?crNumber=$crNumber';
 
+  static String  validateLicenseTrnasfer (String licenseNumber) =>
+      "/v1/superapp-commercial-ownership-services/transfer/validate-license/$licenseNumber";
 
   //! Balady Calednar
 

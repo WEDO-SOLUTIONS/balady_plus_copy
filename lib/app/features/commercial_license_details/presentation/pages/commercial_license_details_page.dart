@@ -23,6 +23,8 @@ import 'package:provider/provider.dart';
 
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/ux_cam_events.dart';
+import '../../../Commercial_license_transfer/domain/use_cases/get_validate_license.dart';
+import '../../../Commercial_license_transfer/persentation/bloc/license_tranfer_cubit.dart';
 
 class CommercialLicenseDetailsPage extends StatefulWidget {
   const CommercialLicenseDetailsPage({super.key});
@@ -34,6 +36,8 @@ class CommercialLicenseDetailsPage extends StatefulWidget {
 
 class _CommercialLicenseDetailsPageState
     extends State<CommercialLicenseDetailsPage> {
+  LicenseTransferCubit? bloc;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -46,20 +50,29 @@ class _CommercialLicenseDetailsPageState
   Widget build(BuildContext context) {
     Map data = ModalRoute.of(context)!.settings.arguments as Map;
     int commercialLicenseId = int.parse(data['licenseNumber']);
-    return BlocProvider(
-      create: (context) =>
-        CommercialLicenseDetailsCubit(
-          GetCommercialLicenseDetails(
-            repository:
-            CommercialLicenseDetailsRepositoryImplementation(
-              remoteDataSource:
-              CommercialLicenseDetailsRemoteDataSourceImplementation(
-                webService: sl(),
-              ),
-            ),
-          ),
-          commercialLicenseId,
-        ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+            create: (context) => CommercialLicenseDetailsCubit(
+                  GetCommercialLicenseDetails(
+                    repository:
+                        CommercialLicenseDetailsRepositoryImplementation(
+                      remoteDataSource:
+                          CommercialLicenseDetailsRemoteDataSourceImplementation(
+                        webService: sl(),
+                      ),
+                    ),
+                  ),
+                  commercialLicenseId,
+                )),
+        BlocProvider(
+          create: (_) {
+            bloc = LicenseTransferCubit(
+                null, null, GetValidateLicense(repository: sl()));
+            return bloc!;
+          },
+        )
+      ],
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: AppColor.scaffoldBackground,
@@ -116,8 +129,7 @@ class _CommercialLicenseDetailsPageState
                     onTap: () {
                       if (state.commercialLicenceDetails!.submitterInfo !=
                               null &&
-                          state.commercialLicenceDetails!.licenseInfo !=
-                              null) {
+                          state.commercialLicenceDetails!.licenseInfo != null) {
                         BottomSheetDialog.showDraggableSheet(
                           context,
                           dialogKeyName:
@@ -133,7 +145,7 @@ class _CommercialLicenseDetailsPageState
                                         .submitterInfo!,
                                     commercialLicenceDetails:
                                         state.commercialLicenceDetails!),
-                            child: const CommercialLicenseActionSheet(),
+                            child:  CommercialLicenseActionSheet(licenseTransferCubit:bloc!),
                           ),
                           isFullHeight: false,
                           height: MediaQuery.of(context).size.height * 0.47,
@@ -152,10 +164,35 @@ class _CommercialLicenseDetailsPageState
             ),
           ],
         ),
-        body: const Padding(
-          padding: EdgeInsets.all(16),
-          child: CommercialLicenseDetailsBody(),
-        ),
+        body: BlocConsumer<LicenseTransferCubit, LicenseTransferState>(
+            listenWhen: (previous, current) =>
+                previous.status != current.status,
+            listener: (_, state) async {
+              if (state.status.isSubmissionGetFailure) {
+                CommonFunctions.showError(state.error);
+              } else if (state.status.isSubmissionGetSuccess) {
+
+                Navigator.of(context).pushNamed(
+                  RouteName.commercialLicenseTransferOverView,
+                  arguments: "$commercialLicenseId",
+                );
+              }
+            },
+            builder: (context, state) {
+                return  Stack(
+                    alignment : AlignmentDirectional.topCenter,
+                  children: [
+
+                    const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: CommercialLicenseDetailsBody(),
+                    ),
+                    state.status == BlocRequestStatus.submissionGetLoading? const CircularProgressIndicator(): Container(),
+
+                  ],
+                );
+            //  }
+            }),
       ),
     );
   }

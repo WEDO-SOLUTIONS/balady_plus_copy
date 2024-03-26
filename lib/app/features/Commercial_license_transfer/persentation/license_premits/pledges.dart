@@ -170,8 +170,8 @@ class _PledgesScreenState extends State<PledgesScreen> {
 
                           if(isAgree)
                           {
-                            bloc?.request.lstPermits = lstPermits;
-                            widget.stepInterface.nextPage();
+
+                          //  widget.stepInterface.nextPage();
 
                           }
                           else

@@ -119,7 +119,10 @@ class AppInterceptors extends Interceptor {
       options.headers.putIfAbsent("x-platform-id", () => "baladyservices");
       options.headers.putIfAbsent(ApiHeaders.xCorrelationId, () => xCorrelationId);
     }
+    if(options.uri.toString().toLowerCase().contains("validate-license")) {
+    options.headers.putIfAbsent( ApiHeaders.xSubmitterRelation, () => "HIMSELF");
 
+}
     if (await networkConnection.isConnected == false) {
       "Request-Rejected because 'Network-Disconnected'".errorLog();
       return handler.reject(NoInternetConnectionException(options));
@@ -254,4 +257,5 @@ class ApiHeaders {
   static const xSessionId = "x-session-id";
   static const xUserProfileId = "x-user-profile-id";
   static const xCorrelationId = "x-correlation-id";
+  static const xSubmitterRelation = "x-submitter-relation";
 }

@@ -13,6 +13,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 import '../../domain/entity/permits_response_entity.dart';
 import '../model/permits_response_data_model.dart';
+import '../model/validate_license_data_model.dart';
 import '../model/validate_owner_data_model.dart';
 
 abstract class LicensePermitsRemoteDataSource {
@@ -21,6 +22,12 @@ abstract class LicensePermitsRemoteDataSource {
       );
   Future<ResponseBodyModel<ValidateOwnerDataModel>> validateNewOwner(
       String licenseNumber,String crNumber);
+
+  Future<ResponseBodyModel<ValidateLicenseDataModel>> validateLicense(
+      String licenseNumber);
+
+
+
 }
 
 class LicensePermitsRemoteDataSourceImplementation implements LicensePermitsRemoteDataSource {
@@ -35,16 +42,14 @@ class LicensePermitsRemoteDataSourceImplementation implements LicensePermitsRemo
       String licenseNumber) async {
     var response;
     try {
-      // response = await webService.dio.get(
-      //   ApiUrl.getLicensePermits(licenseNumber),
-      // );
-     // final data = response.data;
+      response = await webService.dio.get(
+        ApiUrl.getLicensePermits(licenseNumber),
+      );
+     final data = response.data;
 
-
-
-      String jso = await rootBundle.loadString("assets/permit.json");
-      var data = json.decode(jso);
-
+      //
+      // String jso = await rootBundle.loadString("assets/permit.json");
+      // var data = json.decode(jso);
 
       var parsedResult = data != null ? PermitsResponseDataModel.fromJson(data["data"]) : null;
       final decodedResponse = ResponseBodyModel<PermitsResponseDataModel>.fromMap(
@@ -97,6 +102,56 @@ class LicensePermitsRemoteDataSourceImplementation implements LicensePermitsRemo
 
       var parsedResult = data != null ? ValidateOwnerDataModel.fromJson(data["data"]) : null;
       final decodedResponse = ResponseBodyModel<ValidateOwnerDataModel>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+
+
+
+    } on DioError catch (error) {
+      // "DioError $error".errorLog();
+      // if (error is NoDataFoundException) {
+      //   rethrow;
+      // }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      // "Catched $ex".errorLog();
+
+
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: ex.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+  }
+
+
+
+  @override
+  Future<ResponseBodyModel<ValidateLicenseDataModel>> validateLicense(
+      String licenseNumber) async {
+    var response;
+    try {
+      response = await webService.dio.get(
+        ApiUrl.validateLicenseTrnasfer(licenseNumber),
+      );
+      final data = response.data;
+
+
+      var parsedResult = data != null ? ValidateLicenseDataModel.fromJson(data["data"]) : null;
+      final decodedResponse = ResponseBodyModel<ValidateLicenseDataModel>.fromMap(
           response.data,
           parsedResult: parsedResult);
 

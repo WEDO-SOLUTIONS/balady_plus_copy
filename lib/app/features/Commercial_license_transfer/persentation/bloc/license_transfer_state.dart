@@ -6,6 +6,8 @@ class LicenseTransferState extends Equatable {
   final BlocRequestStatus status;
   final PermitsResponseDataModel? licencePermitsResponse;
   final ValidateOwnerDataModel? validateOwnerDataModel;
+  final ValidateLicenseDataModel? validateLicenseDataModel;
+
   final String? errorMessage;
 
 
@@ -14,6 +16,7 @@ class LicenseTransferState extends Equatable {
     this.status = BlocRequestStatus.initial,
     this.licencePermitsResponse,
     this.validateOwnerDataModel,
+    this.validateLicenseDataModel,
     this.errorMessage,
 
 
@@ -25,12 +28,20 @@ class LicenseTransferState extends Equatable {
     BlocRequestStatus? status,
     PermitsResponseDataModel? permits,
     ValidateOwnerDataModel? validateOwner,
+    ValidateLicenseDataModel? validateLicense,
     String? errorMessage,
   }) {
     if(permits != null) {
       return LicenseTransferState(
         status: status ?? this.status,
         licencePermitsResponse: permits ,
+        errorMessage: errorMessage ?? this.errorMessage,
+      );
+    }
+    if(validateLicense != null) {
+      return LicenseTransferState(
+        status: status ?? this.status,
+        validateLicenseDataModel: validateLicense,
         errorMessage: errorMessage ?? this.errorMessage,
       );
     }

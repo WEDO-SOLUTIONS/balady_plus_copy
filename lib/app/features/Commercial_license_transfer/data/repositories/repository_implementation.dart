@@ -6,6 +6,7 @@ import '../../domain/entity/permits_response_entity.dart';
 import '../../domain/entity/validate_owner_entity.dart';
 import '../../domain/repository/repository.dart';
 import '../data_source/remote_data_source.dart';
+import '../model/validate_license_data_model.dart';
 
 
 class TransferLicenseRepositoryImplementation implements TransferLicenseRepository {
@@ -42,6 +43,19 @@ class TransferLicenseRepositoryImplementation implements TransferLicenseReposito
     }
 
 
+  }
+
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<ValidateLicenseDataModel>>> validateLicense(String licenseNumber) async {
+    try {
+      final data = await remoteDataSource.validateLicense(licenseNumber);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
   }
 
 
