@@ -314,7 +314,7 @@ class _SurveyReportInqueryDetailsState
                                   color:
                                   AppColor.blackModern200Light,
                                 ):Container(),
-                                activity.area != 0?
+                                activity.area != null&&  activity.area != 0?
                                 CardParameter(
                                   // from whats
                                   title: 'area_natural'.tr(),
@@ -327,7 +327,7 @@ class _SurveyReportInqueryDetailsState
                                   color:
                                   AppColor.blackModern200Light,
                                 ):Container(),
-                                activity.areaAccordingToScheme != 0?
+                                activity.areaAccordingToScheme != null && activity.areaAccordingToScheme != 0?
                                 CardParameter(
                                   // from whats
                                   title: 'area_schema'.tr(),

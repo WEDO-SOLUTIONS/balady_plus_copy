@@ -171,13 +171,17 @@ class _ConstructionLicenseInqueryDetailsState
                   title: 'step3Title'.tr(),
                   icon: IconPath.editIcon,
                   children: [
+                    licenceQueryDetails
+                        .surveyReport!.municipalityName != null?
                     CardParameter(
                       title: 'municipality'.tr(),
                       value: licenceQueryDetails
                           .surveyReport!.municipalityName
                           .toString(),
                       bgColor: AppColor.mystic,
-                    ),
+                    ):Container(),
+                    licenceQueryDetails
+                        .surveyReport!.subMunicipalityName != null?
                     CardParameter(
                       // from whats
                       title: 'sub_municipality'.tr(),
@@ -185,7 +189,8 @@ class _ConstructionLicenseInqueryDetailsState
                           .surveyReport!.subMunicipalityName
                           .toString(),
                       bgColor: AppColor.mystic,
-                    ),
+                    ):Container(),
+
 
                     licenceQueryDetails
                         .surveyReport!.districtName != null?
@@ -208,7 +213,8 @@ class _ConstructionLicenseInqueryDetailsState
                           .toString(),
                       bgColor: AppColor.mystic,
                     ):Container(),
-
+                    licenceQueryDetails
+                        .surveyReport!.mainBuildingClassName != null?
                     CardParameter(
                       // from whats
                       title: 'compliance_main_usage'.tr(),
@@ -216,8 +222,10 @@ class _ConstructionLicenseInqueryDetailsState
                           .surveyReport!.mainBuildingClassName
                           .toString(),
                       bgColor: AppColor.mystic,
-                    ),
-
+                    ):Container(),
+                    licenceQueryDetails
+                        .surveyReport!.subBuildingClassName
+                    != null?
                     CardParameter(
                       // from whats
                       title: 'compliance_sub_usage'.tr(),
@@ -225,7 +233,7 @@ class _ConstructionLicenseInqueryDetailsState
                           .surveyReport!.subBuildingClassName
                           .toString(),
                       bgColor: AppColor.mystic,
-                    ),
+                    ):Container(),
 
 
                     const SizedBox(height: 16),
@@ -328,7 +336,7 @@ class _ConstructionLicenseInqueryDetailsState
                                   AppColor.blackModern200Light,
                                 ):Container(),
 
-                                activity.area != 0?
+                                activity.area != null && activity.area != 0?
                                 CardParameter(
                                   // from whats
                                   title: 'area_natural'.tr(),
@@ -340,7 +348,7 @@ class _ConstructionLicenseInqueryDetailsState
                                   height: 2,
                                   color: AppColor.blackModern200Light,
                                 ):Container(),
-                                activity.areaAccordingToScheme != 0?
+                                activity.areaAccordingToScheme != null&&activity.areaAccordingToScheme != 0 ?
                                 CardParameter(
                                   // from whats
                                   title: 'area_schema'.tr(),
