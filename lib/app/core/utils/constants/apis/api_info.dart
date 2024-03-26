@@ -795,19 +795,17 @@ class ApiUrl {
       '/v1/balady-construction-services/mobile/inquiry/area-reports/$licenseNumber/$date';
   //Noification APIS
 
+  static String updateNotificationSettings() => '/v1/iam-services/ext/devices';
 
-  static String updateNotificationSettings() =>
-      '/v1/iam-services/ext/devices';
+//! commercial ownership services
 
-
-
-
+  static String getOwnershipCommercialLicenseDetails(int licenseId) =>
+      '/v1/superapp-commercial-ownership-services/license/details/$licenseId';
 
   static String getLicensePermits(String licenseNumber) =>
       '/v1/superapp-commercial-ownership-services/license/permits/$licenseNumber';
 
-
-  static String validateNewOwner(String licenseNumber,String crNumber) =>
+  static String validateNewOwner(String licenseNumber, String crNumber) =>
       '/v1/superapp-commercial-ownership-services/transfer/validate-new-owner/$licenseNumber?crNumber=$crNumber';
 
   static String  validateLicenseTrnasfer (String licenseNumber) =>
@@ -835,20 +833,25 @@ class ApiUrl {
   static validateRealEstate(String id) =>
       'v1/appointments-mobile-services/validate-real-estate/$id';
 
-
-
-
-
   //! Notifications
-  static const notificationsUnreadMessages = 'v1/notifications-hub-services/fe/unread-messages';
-  static const notificationsMessagesList = 'v1/notifications-hub-services/fe/messages-list';
-  static const notificationsMarkRead = 'v1/notifications-hub-services/fe/messages/mark-read';
-  static const notificationsDeletedMessages = 'v1/notifications-hub-services/fe/deleted-messages';
-  static const notificationsProducts = 'v1/notifications-hub-services/fe/products';
-  static const notificationsServices = 'v1/notifications-hub-services/fe/services';
-  static const notificationsSettingsList = 'v1/notifications-hub-services/fe/profiles';
-  static const setProductsNotificationsSettings = 'v1/notifications-hub-services/fe/profile/products';
-  static const setProfileNotificationsSettings = 'v1/notifications-hub-services/fe/profiles';
+  static const notificationsUnreadMessages =
+      'v1/notifications-hub-services/fe/unread-messages';
+  static const notificationsMessagesList =
+      'v1/notifications-hub-services/fe/messages-list';
+  static const notificationsMarkRead =
+      'v1/notifications-hub-services/fe/messages/mark-read';
+  static const notificationsDeletedMessages =
+      'v1/notifications-hub-services/fe/deleted-messages';
+  static const notificationsProducts =
+      'v1/notifications-hub-services/fe/products';
+  static const notificationsServices =
+      'v1/notifications-hub-services/fe/services';
+  static const notificationsSettingsList =
+      'v1/notifications-hub-services/fe/profiles';
+  static const setProductsNotificationsSettings =
+      'v1/notifications-hub-services/fe/profile/products';
+  static const setProfileNotificationsSettings =
+      'v1/notifications-hub-services/fe/profiles';
 
   //! POST
 

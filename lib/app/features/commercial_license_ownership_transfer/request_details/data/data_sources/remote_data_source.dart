@@ -27,7 +27,8 @@ class RequestOwnershipTransferRemoteDataSourceImplementation
     Response? response;
     try {
       response = await webService.dio.get(
-        ApiUrl.getCommercialLicenseDetails(int.parse(commercialLicenseId)),
+        ApiUrl.getOwnershipCommercialLicenseDetails(
+            int.parse(commercialLicenseId)),
       );
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
