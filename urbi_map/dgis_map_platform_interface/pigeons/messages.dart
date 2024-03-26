@@ -1240,16 +1240,22 @@ abstract class MapApi {
   void removeAllPolygons(MapObjectManagerMessage? manager);
 
   @async
-  void addPolyline(PolylineMessage polyline);
+  void addPolyline(
+    PolylineMessage polyline,
+    MapObjectManagerMessage? manager,
+  );
 
   @async
-  void addPolylines(List<PolylineMessage> polylines);
+  void addPolylines(
+    List<PolylineMessage> polylines,
+    MapObjectManagerMessage? manager,
+  );
 
   @async
-  void removePolyline(String id);
+  void removePolyline(String id, MapObjectManagerMessage? manager);
 
   @async
-  void removeAllPolylines();
+  void removeAllPolylines(MapObjectManagerMessage? manager);
 
   @async
   void setHighlighted(List<DgisObjectIdMessage> objectIds);

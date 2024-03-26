@@ -371,10 +371,10 @@ class DgisMapController {
 
   /// Remove all markers, polygons, polylines
   /// that were added with [addMarker], [addPolygons], [addPolyline].
-  Future<void> removeAll() async {
-    await _instance.removeAllMarkers(null);
-    await _instance.removeAllPolygons(null);
-    await _instance.removeAllPolylines();
+  Future<void> removeAll({MapObjectManagerMessage? toManager}) async {
+    await _instance.removeAllMarkers(toManager);
+    await _instance.removeAllPolygons(toManager);
+    await _instance.removeAllPolylines(toManager);
   }
 
   /// Add polygon to map.
@@ -397,18 +397,29 @@ class DgisMapController {
       _instance.removeAllPolygons(fromManager);
 
   /// Add polyline to map.
-  Future<void> addPolyline(Polyline polyline) =>
-      _instance.addPolyline(polyline);
+  Future<void> addPolyline(
+    Polyline polyline, {
+    MapObjectManagerMessage? toManager,
+  }) =>
+      _instance.addPolyline(polyline, toManager);
 
   /// Add several polylines to map.
-  Future<void> addPolylines(List<Polyline> polyline) =>
-      _instance.addPolylines(polyline);
+  Future<void> addPolylines(
+    List<Polyline> polyline, {
+    MapObjectManagerMessage? toManager,
+  }) =>
+      _instance.addPolylines(polyline, toManager);
 
   /// Remove polyline by id.
-  Future<void> removePolyline(String id) => _instance.removePolyline(id);
+  Future<void> removePolyline(
+    String id, {
+    MapObjectManagerMessage? fromManager,
+  }) =>
+      _instance.removePolyline(id, fromManager);
 
   /// Remove all polyline added with [addPolyline].
-  Future<void> removeAllPolylines() => _instance.removeAllPolylines();
+  Future<void> removeAllPolylines({MapObjectManagerMessage? fromManager}) =>
+      _instance.removeAllPolylines(fromManager);
 
   /// Hightlighs objects by it's id.
   Future<void> setHighlighted(List<DgisObjectIdMessage> objectIds) =>
