@@ -71,10 +71,13 @@ class HealthCertMessageRiyadhDialog extends StatelessWidget {
                 Constants.verticalSpaceLarge,
                 EnhancedCustomElevatedButtonWidget(
                   btnPressed: () {
+                    Navigator.of(context).pop(true);
                     if (isRenew) {
-                      CommonFunctions.externalLaunch("");
+                      CommonFunctions.externalLaunch(
+                          "https://eservices.alriyadh.gov.sa/Pages/ServicesRedirect.aspx?ServiceCode=2&MainServiceCode=4");
                     } else {
-                      CommonFunctions.externalLaunch("");
+                      CommonFunctions.externalLaunch(
+                          "https://eservices.alriyadh.gov.sa/Pages/ServicesRedirect.aspx?ServiceCode=1&MainServiceCode=4");
                     }
                   },
                   btnText: Helpers.translatingWord("health_cert_riyadh_agree"),

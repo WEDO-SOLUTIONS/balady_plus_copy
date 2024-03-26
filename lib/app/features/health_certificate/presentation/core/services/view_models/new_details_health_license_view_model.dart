@@ -131,19 +131,35 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
               response.item3?.isSuccessfull != null &&
               response.item3!.isSuccessfull!) {
             isGISSuccess = true;
+            //   dataModel.gisLocationResult = response.item3!;
           }
+          print("HFRSDFVDSVCDSVDSVDS");
           if (isGISSuccess) {
             bool isValidMunicipality =
                 await dataModel.validateHealthCertificate(response.item3);
 
             bool isCitiesRetrived = isCenterRequired()
-                ? await getCities(
-                    gisLocationResult?.MUNICIPALITYUNIQUECODE ?? "")
+                ? await getCities(response.item3?.MUNICIPALITYUNIQUECODE ?? "")
                 : true;
 
-            bool isInRiyadh = gisLocationResult?.adminMunicipalityId == "004";
+            bool isInRiyadh = response.item3?.adminMunicipalityId == "004";
 
-            if (isGISSuccess &&
+            if (isInRiyadh) {
+              showDialog(
+                  context: NavigationService.navigatorKey.currentState!.context,
+                  barrierDismissible: true,
+                  builder: (ctx) => Dialog(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0)),
+                      child: HealthCertMessageRiyadhDialog(
+                        isRenew: dataModel.isRenew,
+                      ))).then((value) {
+                if (value == true) {
+                  navigation.currentState?.pop();
+                  navigation.currentState?.pop();
+                }
+              });
+            } else if (isGISSuccess &&
                 isValidMunicipality &&
                 isCitiesRetrived &&
                 !isInRiyadh) {
@@ -164,16 +180,6 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
               //address.add(getAddress());
               notifyListeners();
               navigation.currentState?.pop();
-            } else if (isInRiyadh) {
-              showDialog(
-                  context: NavigationService.navigatorKey.currentState!.context,
-                  barrierDismissible: true,
-                  builder: (ctx) => Dialog(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0)),
-                      child: HealthCertMessageRiyadhDialog(
-                        isRenew: dataModel.isRenew,
-                      )));
             }
           } else {
             if (response.item2 != null) showError(response.item2!);

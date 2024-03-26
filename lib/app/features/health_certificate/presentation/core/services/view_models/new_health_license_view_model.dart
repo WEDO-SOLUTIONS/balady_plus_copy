@@ -81,7 +81,7 @@ class HealthLicenseViewModel extends BaseViewModel {
     if (response.item3 != null &&
         response.item3?.isSuccessfull != null &&
         response.item3!.isSuccessfull!) {
-      //  gisLocationResult = response.item3;
+      gisLocationResult = response.item3;
       //  return true;
     }
     // return false;
