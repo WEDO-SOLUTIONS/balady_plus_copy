@@ -1225,16 +1225,19 @@ abstract class MapApi {
   );
 
   @async
-  void addPolygon(PolygonMessage polygon);
+  void addPolygon(PolygonMessage polygon, MapObjectManagerMessage? manager);
 
   @async
-  void addPolygons(List<PolygonMessage> polygons);
+  void addPolygons(
+    List<PolygonMessage> polygons,
+    MapObjectManagerMessage? manager,
+  );
 
   @async
-  void removePolygon(String id);
+  void removePolygon(String id, MapObjectManagerMessage? manager);
 
   @async
-  void removeAllPolygons();
+  void removeAllPolygons(MapObjectManagerMessage? manager);
 
   @async
   void addPolyline(PolylineMessage polyline);

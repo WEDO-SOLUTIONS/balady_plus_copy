@@ -68,7 +68,7 @@ class ObjectTapHandler {
 
     private var markers: Dictionary<String, (Marker, String?)> = [:]
     private var managers: Dictionary<String, MapObjectManager> = [:]
-    private var polygons: Dictionary<String, Polygon> = [:]
+    private var polygons: Dictionary<String, (Polygon, String?)> = [:]
     private var polylines: Dictionary<String, Polyline> = [:]
     private var clusters: Dictionary<String, SimpleClusterObject> = [:]
     private var panoramasMarkers: Array<Marker> = []
@@ -447,19 +447,24 @@ class ObjectTapHandler {
         return nil
     }
     
-    func addPolygon(_ polygon: PolygonMessage, completion: @escaping (FlutterError?) -> Void) {
+    /// Polygons
+    func addPolygon(_ polygon: PolygonMessage, to manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
         guard let polygonObject = mapPolygon(polygon, completion: completion) else {
             return
         }
         
         self.objectsQueue.sync {
-            self.polygons[polygon.id] = polygonObject
-            self.mapObjectManager.addObject(item: polygonObject)
+            self.polygons[polygon.id] = (polygonObject, manager?.id)
+            if let managerId = manager?.id, let manager = self.managers[managerId] {
+                manager.addObject(item: polygonObject)
+            } else {
+                self.mapObjectManager.addObject(item: polygonObject)
+            }
             completion(nil)
         }
     }
     
-    func addPolygons(_ polygons: [PolygonMessage], completion: @escaping (FlutterError?) -> Void) {
+    func addPolygons(_ polygons: [PolygonMessage], to manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
         var polygonObjects = [String:Polygon]()
         for polygon in polygons {
             guard let polygonObject = mapPolygon(polygon, completion: completion) else {
@@ -470,18 +475,38 @@ class ObjectTapHandler {
         
         self.objectsQueue.sync {
             polygonObjects.forEach { id, object in
-                self.polygons[id] = object
+                self.polygons[id] = (object, manager?.id)
             }
-            self.mapObjectManager.addObjects(objects: Array(polygonObjects.values))
+            if let managerId = manager?.id, let manager = self.managers[managerId] {
+                manager.addObjects(objects: Array(polygonObjects.values))
+            } else {
+                self.mapObjectManager.addObjects(objects: Array(polygonObjects.values))
+            }
             completion(nil)
         }
     }
     
-    func removePolygon(_ id: String, completion: @escaping (FlutterError?) -> Void) {
+    func removePolygon(_ id: String, from manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
         self.objectsQueue.sync {
             if let polygonObject = self.polygons.removeValue(forKey: id) {
-                self.mapObjectManager.removeObject(item: polygonObject)
+                if let markerId = manager?.id, let manager = self.managers[markerId] {
+                    manager.removeObject(item: polygonObject.0)
+                } else {
+                    self.mapObjectManager.removeObject(item: polygonObject.0)
+                }
                 completion(nil)
+            }
+        }
+    }
+    
+    func removeAllPolygons(from manager: MapObjectManagerMessage?) {
+        self.objectsQueue.sync {
+            if let managerId = manager?.id, let manager = self.managers[managerId] {
+                manager.removeAll()
+                self.polygons = polygons.filter { $0.value.1 == managerId }
+            } else {
+                self.mapObjectManager.removeAll()
+                self.polygons.removeAll()
             }
         }
     }
@@ -611,12 +636,7 @@ class ObjectTapHandler {
         }
     }
     
-    func removeAllPolygons() {
-        self.objectsQueue.sync {
-            self.mapObjectManager.removeObjects(objects: Array(self.polygons.values))
-            self.polygons.removeAll()
-        }
-    }
+
     
     func removeAllPolylines() {
         self.objectsQueue.sync {
@@ -743,7 +763,7 @@ class ObjectTapHandler {
     
     func calcPosition(polygons: [String], options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
         calcPosition(
-            objects: polygons.compactMap { self.polygons[$0] },
+            objects: polygons.compactMap { self.polygons[$0]?.0 },
             options: options,
             completion: completion
         )

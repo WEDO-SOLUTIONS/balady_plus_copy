@@ -31,30 +31,18 @@ class MapObjectManager extends _$MapObjectManager {
     return manager;
   }
 
-  Future<void> removeAllMarkers() async {
-    await ref.read(dgisControllerProvider).value?.removeAllMarkers(
-          fromManager: await future,
+  /// -- MARKER --
+
+  Future<void> addMarker(Marker marker) async {
+    await ref.read(dgisControllerProvider).value?.addMarker(
+          marker,
+          toManager: await future,
         );
-  }
-
-  Future<void> addPolyLines(List<Polyline> polylines) async {
-    await ref.read(dgisControllerProvider).value?.addPolylines(polylines);
-  }
-
-  Future<void> addPolygons(List<Polygon> polygons) async {
-    await ref.read(dgisControllerProvider).value?.addPolygons(polygons);
   }
 
   Future<void> addMarkers(List<Marker> markers) async {
     await ref.read(dgisControllerProvider).value?.addMarkers(
           markers,
-          toManager: await future,
-        );
-  }
-
-  Future<void> addMarker(Marker marker) async {
-    await ref.read(dgisControllerProvider).value?.addMarker(
-          marker,
           toManager: await future,
         );
   }
@@ -66,11 +54,34 @@ class MapObjectManager extends _$MapObjectManager {
         );
   }
 
+  Future<void> removeAllMarkers() async {
+    await ref.read(dgisControllerProvider).value?.removeAllMarkers(
+          fromManager: await future,
+        );
+  }
+
+  /// --- POLYLINE ---
+
+  Future<void> addPolyLines(List<Polyline> polylines) async {
+    await ref.read(dgisControllerProvider).value?.addPolylines(polylines);
+  }
+
   Future<void> removeAllPolyLines() async {
     await ref.read(dgisControllerProvider).value?.removeAllPolylines();
   }
 
+  /// --- POLYGON ---
+
+  Future<void> addPolygons(List<Polygon> polygons) async {
+    await ref.read(dgisControllerProvider).value?.addPolygons(
+          polygons,
+          toManager: await future,
+        );
+  }
+
   Future<void> removeAllPolygons() async {
-    await ref.read(dgisControllerProvider).value?.removeAllPolygons();
+    await ref.read(dgisControllerProvider).value?.removeAllPolygons(
+          fromManager: await future,
+        );
   }
 }

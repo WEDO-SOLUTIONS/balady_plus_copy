@@ -373,22 +373,28 @@ class DgisMapController {
   /// that were added with [addMarker], [addPolygons], [addPolyline].
   Future<void> removeAll() async {
     await _instance.removeAllMarkers(null);
-    await _instance.removeAllPolygons();
+    await _instance.removeAllPolygons(null);
     await _instance.removeAllPolylines();
   }
 
   /// Add polygon to map.
-  Future<void> addPolygon(Polygon polygon) => _instance.addPolygon(polygon);
+  Future<void> addPolygon(Polygon polygon,
+          {MapObjectManagerMessage? toManager}) =>
+      _instance.addPolygon(polygon, toManager);
 
   /// Add several polygons to map.
-  Future<void> addPolygons(List<Polygon> polygons) =>
-      _instance.addPolygons(polygons);
+  Future<void> addPolygons(List<Polygon> polygons,
+          {MapObjectManagerMessage? toManager}) =>
+      _instance.addPolygons(polygons, toManager);
 
   /// Remove polygon by id.
-  Future<void> removePolygon(String id) => _instance.removePolygon(id);
+  Future<void> removePolygon(String id,
+          {MapObjectManagerMessage? fromManager}) =>
+      _instance.removePolygon(id, fromManager);
 
   /// Remove all polygons added with [addPolygon].
-  Future<void> removeAllPolygons() => _instance.removeAllPolygons();
+  Future<void> removeAllPolygons({MapObjectManagerMessage? fromManager}) =>
+      _instance.removeAllPolygons(fromManager);
 
   /// Add polyline to map.
   Future<void> addPolyline(Polyline polyline) =>
