@@ -149,13 +149,17 @@ class _SurveyReportInqueryDetailsState
                         title: 'step3Title'.tr(),
                         icon: IconPath.editIcon,
                         children: [
+                          licenceQueryDetails
+                              .municipalityName != null?
                           CardParameter(
                             title: 'municipality'.tr(),
                             value: licenceQueryDetails
                                 .municipalityName
                                 .toString(),
                             bgColor: AppColor.mystic,
-                          ),
+                          ):Container(),
+                          licenceQueryDetails
+                              .subMunicipalityName != null?
                           CardParameter(
                             // from whats
                             title: 'sub_municipality'.tr(),
@@ -163,8 +167,10 @@ class _SurveyReportInqueryDetailsState
                                 .subMunicipalityName
                                 .toString(),
                             bgColor: AppColor.mystic,
-                          ),
+                          ):Container(),
 
+                          licenceQueryDetails
+                              .districtName !=null?
                           CardParameter(
                             // from whats
                             title: 'district'.tr(),
@@ -172,8 +178,10 @@ class _SurveyReportInqueryDetailsState
                                 .districtName
                                 .toString(),
                             bgColor: AppColor.mystic,
-                          ),
+                          ):Container(),
 
+                          licenceQueryDetails
+                              .mapNumber != null?
                           CardParameter(
                             // from whats
                             title: 'planNumber'.tr(),
@@ -181,7 +189,7 @@ class _SurveyReportInqueryDetailsState
                                 .mapNumber
                                 .toString(),
                             bgColor: AppColor.mystic,
-                          ),
+                          ):Container(),
                           licenceQueryDetails
                               .mainBuildingClassName != null ?
                           CardParameter(
@@ -293,37 +301,40 @@ class _SurveyReportInqueryDetailsState
                               bgColor: AppColor.lightGray,
                               children: [
 
-
+                                activity.landNo != null?
                                 CardParameter(
                                   title: 'landNo'.tr(),
                                   value: activity.landNo
                                       .toString(),
                                   bgColor: AppColor.lightGray,
-                                ),
+                                ):Container(),
+                                activity.landNo != null?
                                 const Divider(
                                   height: 2,
                                   color:
                                   AppColor.blackModern200Light,
-                                ),
+                                ):Container(),
+                                activity.area != 0?
                                 CardParameter(
                                   // from whats
                                   title: 'area_natural'.tr(),
-                                  value:
-                                  activity.area.toString(),
+                                  value: activity.area.toString(),
                                   bgColor: AppColor.lightGray,
-                                ),
+                                ):Container(),
+                                activity.area != 0?
                                 const Divider(
                                   height: 2,
                                   color:
                                   AppColor.blackModern200Light,
-                                ),
+                                ):Container(),
+                                activity.areaAccordingToScheme != 0?
                                 CardParameter(
                                   // from whats
                                   title: 'area_schema'.tr(),
                                   value:
                                   activity.areaAccordingToScheme.toString(),
                                   bgColor: AppColor.lightGray,
-                                ),
+                                ):Container(),
                               ],
                             );
                           },

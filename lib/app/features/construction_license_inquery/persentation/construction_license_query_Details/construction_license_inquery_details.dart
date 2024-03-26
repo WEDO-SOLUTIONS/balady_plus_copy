@@ -328,18 +328,18 @@ class _ConstructionLicenseInqueryDetailsState
                                   AppColor.blackModern200Light,
                                 ):Container(),
 
+                                activity.area != 0?
                                 CardParameter(
                                   // from whats
                                   title: 'area_natural'.tr(),
-                                  value:
-                                  activity.area.toString(),
+                                  value: activity.area.toString(),
                                   bgColor: AppColor.lightGray,
-                                ),
+                                ):Container(),
+                                activity.area != 0?
                                 const Divider(
                                   height: 2,
-                                  color:
-                                  AppColor.blackModern200Light,
-                                ),
+                                  color: AppColor.blackModern200Light,
+                                ):Container(),
                                 activity.areaAccordingToScheme != 0?
                                 CardParameter(
                                   // from whats
