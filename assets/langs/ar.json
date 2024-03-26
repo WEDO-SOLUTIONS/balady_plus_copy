@@ -2503,7 +2503,7 @@
     "viewLicenseDetails": "عرض تفاصيل الرخصة",
     "wallet": "المحفظة",
     "theBusinessLicense": "الرخص التجارية",
-    "healthCertificates": "الشهادات الصحية",
+    "healthCertificates": "الشهادات الصحية الرقمية",
     "businessLicense": "رخصة تجارية",
     "createdAt": "أصدرت",
     "name": "الاسم",
@@ -3994,5 +3994,11 @@
     "realEstateRequestId":"رقم الطلب", 
     "realEstateSurveyId":"رقم القرار المساحي", 
     "realEstateId":"رقم الهوية العقارية", 
-    "realEstateRequestIdNote":"خدمة الدمج يبدأ ب LMS خدمة التجزئة يبدأ ب LSS خدمة فرز مخطط يبدأ ب LSBP خدمة تحديث صك الكتروني أو ورقي يتم ادخال رقم الطلب أو رقم القرار المساحي"
+    "realEstateRequestIdNote":"خدمة الدمج يبدأ ب LMS خدمة التجزئة يبدأ ب LSS خدمة فرز مخطط يبدأ ب LSBP خدمة تحديث صك الكتروني أو ورقي يتم ادخال رقم الطلب أو رقم القرار المساحي", 
+
+
+    "health_cert_riyadh_new":"اصدار", 
+    "health_cert_riyadh_renew":"تجديد", 
+    "health_cert_riyadh_agree":"موافق"
+
 }

@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 
 import '../../../../../../core/base/base_view_model.dart';
+import '../../../../../../core/services/local/navigation_services.dart';
 import '../../../../../transaction_inquiry/presentation/core/models/gis_location_result.dart';
 import '../../../../../transaction_inquiry/presentation/core/models/selected_location.dart';
+import '../../../dialogs/health_cert_message_riyadh_dialog.dart';
 import '../../../widgets/map_screen.dart';
 import '../../models/cr_information.dart';
 import '../../models/license_for_health_information_response.dart';
@@ -139,7 +141,12 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
                     gisLocationResult?.MUNICIPALITYUNIQUECODE ?? "")
                 : true;
 
-            if (isGISSuccess && isValidMunicipality && isCitiesRetrived) {
+            bool isInRiyadh = gisLocationResult?.adminMunicipalityId == "004";
+
+            if (isGISSuccess &&
+                isValidMunicipality &&
+                isCitiesRetrived &&
+                !isInRiyadh) {
               this.selectedLocation = selectedLocation;
               shopHasLicense = "0";
               noLicenseReason = "0";
@@ -157,6 +164,16 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
               //address.add(getAddress());
               notifyListeners();
               navigation.currentState?.pop();
+            } else if (isInRiyadh) {
+              showDialog(
+                  context: NavigationService.navigatorKey.currentState!.context,
+                  barrierDismissible: true,
+                  builder: (ctx) => Dialog(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0)),
+                      child: HealthCertMessageRiyadhDialog(
+                        isRenew: dataModel.isRenew,
+                      )));
             }
           } else {
             if (response.item2 != null) showError(response.item2!);
