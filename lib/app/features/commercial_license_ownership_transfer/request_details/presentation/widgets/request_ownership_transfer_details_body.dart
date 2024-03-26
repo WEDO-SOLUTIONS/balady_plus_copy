@@ -555,7 +555,7 @@ class _RequestOwnershipTransferDetailsBodyState
                         )
                       : const SizedBox(),
                   /////////////////////////////////////////////////
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 200),
                 ],
               ),
             ),
