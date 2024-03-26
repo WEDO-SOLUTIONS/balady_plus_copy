@@ -23,7 +23,7 @@ class ObjectTapEventHandler {
 
   final Map<String, TapIdPair> markerHandlers = {};
   final Map<String, TapIdPair> polygonHandlers = {};
-  final Map<String, OnObjectTap> polylineHandlers = {};
+  final Map<String, TapIdPair> polylineHandlers = {};
   final Map<String, ClusterRenderer> clusterRenderers = {};
   final Map<String, OnClusterTap> clusterHandlers = {};
 
@@ -120,8 +120,8 @@ class ObjectTapEventHandler {
   }
 
   /// --- POLYLINE ---
-  void addPolylineHandler(String id, OnObjectTap onTap) {
-    polylineHandlers[id] = onTap;
+  void addPolylineHandler(String id, OnObjectTap onTap, String? managerId) {
+    polylineHandlers[id] = TapIdPair(onTap, managerId);
   }
 
   void removePolylineHandler(String id) {
@@ -133,7 +133,7 @@ class ObjectTapEventHandler {
   }
 
   void polylineTapEvent(Map<dynamic, dynamic> map) {
-    polylineHandlers[map["id"]]?.call();
+    polylineHandlers[map["id"]]?.tap.call();
   }
 
   /// --- TAP EVENTS ---

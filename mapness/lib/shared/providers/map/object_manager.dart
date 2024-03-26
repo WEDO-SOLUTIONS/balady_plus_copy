@@ -63,11 +63,16 @@ class MapObjectManager extends _$MapObjectManager {
   /// --- POLYLINE ---
 
   Future<void> addPolyLines(List<Polyline> polylines) async {
-    await ref.read(dgisControllerProvider).value?.addPolylines(polylines);
+    await ref.read(dgisControllerProvider).value?.addPolylines(
+          polylines,
+          toManager: await future,
+        );
   }
 
   Future<void> removeAllPolyLines() async {
-    await ref.read(dgisControllerProvider).value?.removeAllPolylines();
+    await ref.read(dgisControllerProvider).value?.removeAllPolylines(
+          fromManager: await future,
+        );
   }
 
   /// --- POLYGON ---
@@ -83,5 +88,11 @@ class MapObjectManager extends _$MapObjectManager {
     await ref.read(dgisControllerProvider).value?.removeAllPolygons(
           fromManager: await future,
         );
+  }
+
+  Future<void> removeAll() async {
+    await removeAllMarkers();
+    await removeAllPolygons();
+    await removeAllPolyLines();
   }
 }

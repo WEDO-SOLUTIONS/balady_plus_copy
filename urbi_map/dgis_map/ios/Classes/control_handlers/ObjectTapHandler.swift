@@ -69,7 +69,7 @@ class ObjectTapHandler {
     private var markers: Dictionary<String, (Marker, String?)> = [:]
     private var managers: Dictionary<String, MapObjectManager> = [:]
     private var polygons: Dictionary<String, (Polygon, String?)> = [:]
-    private var polylines: Dictionary<String, Polyline> = [:]
+    private var polylines: Dictionary<String, (Polyline, String?)> = [:]
     private var clusters: Dictionary<String, SimpleClusterObject> = [:]
     private var panoramasMarkers: Array<Marker> = []
     private var ioLayerMarkers: Array<Marker> = []
@@ -447,7 +447,7 @@ class ObjectTapHandler {
         return nil
     }
     
-    /// Polygons
+    //MARK:  Polygons
     func addPolygon(_ polygon: PolygonMessage, to manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
         guard let polygonObject = mapPolygon(polygon, completion: completion) else {
             return
@@ -489,7 +489,7 @@ class ObjectTapHandler {
     func removePolygon(_ id: String, from manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
         self.objectsQueue.sync {
             if let polygonObject = self.polygons.removeValue(forKey: id) {
-                if let markerId = manager?.id, let manager = self.managers[markerId] {
+                if let managerId = manager?.id, let manager = self.managers[managerId] {
                     manager.removeObject(item: polygonObject.0)
                 } else {
                     self.mapObjectManager.removeObject(item: polygonObject.0)
@@ -510,6 +510,8 @@ class ObjectTapHandler {
             }
         }
     }
+    
+    // MARK: Polyline
     
     private func mapPolyline(_ polyline: PolylineMessage, completion: @escaping (FlutterError?) -> Void) -> Polyline? {
         let options = PolylineOptions(
@@ -543,19 +545,23 @@ class ObjectTapHandler {
         return nil
     }
     
-    func addPolyline(_ polyline: PolylineMessage, completion: @escaping (FlutterError?) -> Void) {
+    func addPolyline(_ polyline: PolylineMessage, to manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
         guard let polylineObject = mapPolyline(polyline, completion: completion) else {
             return
         }
         
         self.objectsQueue.sync {
-            self.polylines[polyline.id] = polylineObject
-            self.mapObjectManager.addObject(item: polylineObject)
+            self.polylines[polyline.id] = (polylineObject, manager?.id)
+            if let managerId = manager?.id, let manager = self.managers[managerId] {
+                manager.addObject(item: polylineObject)
+            } else {
+                self.mapObjectManager.addObject(item: polylineObject)
+            }
             completion(nil)
         }
     }
     
-    func addPolylines(_ polylines: [PolylineMessage], completion: @escaping (FlutterError?) -> Void) {
+    func addPolylines(_ polylines: [PolylineMessage], to manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
         var polylineObjects = [String:Polyline]()
         for polyline in polylines {
             guard let polylineObject = mapPolyline(polyline, completion: completion) else {
@@ -566,19 +572,40 @@ class ObjectTapHandler {
         
         self.objectsQueue.sync {
             polylineObjects.forEach { id, object in
-                self.polylines[id] = object
+                self.polylines[id] = (object, manager?.id)
             }
-            self.mapObjectManager.addObjects(objects: Array(polylineObjects.values))
+            if let managerId = manager?.id, let manager = self.managers[managerId] {
+                manager.addObjects(objects: Array(polylineObjects.values))
+            } else {
+                self.mapObjectManager.addObjects(objects: Array(polylineObjects.values))
+            }
             completion(nil)
         }
     }
     
-    func removePolyline(_ id: String, completion: @escaping (FlutterError?) -> Void) {
+    func removePolyline(_ id: String, from manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
         self.objectsQueue.sync {
             if let polylineObject = self.polylines.removeValue(forKey: id) {
-                self.mapObjectManager.removeObject(item: polylineObject)
+                if let managerId = manager?.id, let manager = self.managers[managerId] {
+                    manager.removeObject(item: polylineObject.0)
+                } else {
+                    self.mapObjectManager.removeObject(item: polylineObject.0)
+                }
                 completion(nil)
             }
+        }
+    }
+    
+    func removeAllPolylines(from manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
+        self.objectsQueue.sync {
+            if let managerId = manager?.id, let manager = self.managers[managerId] {
+                manager.removeAll()
+                self.polylines = polylines.filter {$0.value.1 == managerId}
+            } else {
+                self.mapObjectManager.removeAll()
+                self.polylines.removeAll()
+            }
+            completion(nil)
         }
     }
     
@@ -638,12 +665,7 @@ class ObjectTapHandler {
     
 
     
-    func removeAllPolylines() {
-        self.objectsQueue.sync {
-            self.mapObjectManager.removeObjects(objects: Array(self.polylines.values))
-            self.polylines.removeAll()
-        }
-    }
+
     
     func setHighlighted(_ objects: [DgisObjectId], _ completion: @escaping (FlutterError?) -> Void) {
         for source in map.sources {
@@ -771,7 +793,7 @@ class ObjectTapHandler {
     
     func calcPosition(polylines: [String], options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
         calcPosition(
-            objects: polylines.compactMap { self.polylines[$0] },
+            objects: polylines.compactMap { self.polylines[$0]?.0 },
             options: options,
             completion: completion
         )
