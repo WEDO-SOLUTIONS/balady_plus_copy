@@ -55,12 +55,14 @@ class IwishPlaceCard extends ConsumerWidget {
             return SafeArea(
               bottom: false,
               child: DraggableScrollableSheet(
-                minChildSize: 0.4,
-                initialChildSize: 0.4,
+                initialChildSize: 0.25,
                 builder: (context, scrollController) => Column(
                   children: [
-                    IwishPhotosRow(photos: entity.photos),
-                    const SizedBox(height: 8),
+                    if (entity.photos.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: IwishPhotosRow(photos: entity.photos),
+                      ),
                     Expanded(
                       child: Material(
                         borderRadius: const BorderRadius.vertical(
