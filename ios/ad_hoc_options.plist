@@ -10,7 +10,7 @@
 	<string>ad-hoc</string>
 	<key>provisioningProfiles</key>
 	<dict>
-		<key>xyz.amoriodi.balady</key>
+		<key>ae.urbi.balady</key>
 		<string>Balady Ad Hoc</string>
 	</dict>
 	<key>signingCertificate</key>
@@ -20,7 +20,7 @@
 	<key>stripSwiftSymbols</key>
 	<true/>
 	<key>teamID</key>
-	<string>USDCL8J49X</string>
+	<string>A34FT8KT4H</string>
 	<key>thinning</key>
 	<string>&lt;none&gt;</string>
 </dict>
