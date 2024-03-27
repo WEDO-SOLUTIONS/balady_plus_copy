@@ -3,9 +3,11 @@ import 'package:balady_plus/app/core/errors/errors_exports.dart';
 import 'package:dartz/dartz.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
 import '../../domain/entity/permits_response_entity.dart';
+import '../../domain/entity/transfer_license_request.dart';
 import '../../domain/entity/validate_owner_entity.dart';
 import '../../domain/repository/repository.dart';
 import '../data_source/remote_data_source.dart';
+import '../model/apply_request_data_model.dart';
 import '../model/validate_license_data_model.dart';
 
 
@@ -58,6 +60,16 @@ class TransferLicenseRepositoryImplementation implements TransferLicenseReposito
     }
   }
 
-
+  @override
+  Future<Either<Failure, ResponseBodyModel<ApplyRequestDataModel>>> sendToNewOwner( String licenseNumber,TransferLicenseRequest request) async {
+    try {
+      final data = await remoteDataSource.sendToNewOwner(licenseNumber,request);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
 
 }

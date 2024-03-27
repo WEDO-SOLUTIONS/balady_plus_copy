@@ -811,6 +811,9 @@ class ApiUrl {
   static String  validateLicenseTrnasfer (String licenseNumber) =>
       "/v1/superapp-commercial-ownership-services/transfer/validate-license/$licenseNumber";
 
+  static String  sendToNewOwner (String licenseNumber) =>
+      "/v1/superapp-commercial-ownership-services/transfer/send-to-new-owner/$licenseNumber";
+
   //! Balady Calednar
 
   static const baladyCalendarFilter =

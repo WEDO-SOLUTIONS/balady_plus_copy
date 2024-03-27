@@ -4,6 +4,7 @@ import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/features/Commercial_license_transfer/domain/use_cases/get_validate_license.dart';
 import 'package:balady_plus/app/features/Commercial_license_transfer/persentation/license_premits/pledges.dart';
 import 'package:balady_plus/app/features/Commercial_license_transfer/persentation/license_premits/premits_screens.dart';
+import 'package:balady_plus/app/features/Commercial_license_transfer/persentation/license_premits/sucessfull_page.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart';
@@ -16,6 +17,7 @@ import 'package:provider/provider.dart';
 
 import '../../domain/use_cases/get_license_permits_data.dart';
 import '../../domain/use_cases/get_validate_new_owner.dart';
+import '../../domain/use_cases/post_to_new_owner.dart';
 import '../bloc/license_tranfer_cubit.dart';
 import '../interface/step_interface.dart';
 
@@ -42,6 +44,7 @@ class _HomeSequenceScreenState extends State<HomeSequenceScreen> implements Step
     PremitsScreen(stepInterface:this),
     NewOwnerInfoScreen(stepInterface:this),
     PledgesScreen(stepInterface:this),
+    SucessfullScreen(stepInterface:this),
   ];
 
   @override
@@ -78,7 +81,7 @@ class _HomeSequenceScreenState extends State<HomeSequenceScreen> implements Step
       child: BlocProvider(
         create: (_) {
 
-          bloc = LicenseTransferCubit(GetLicensePermitsData(repository: sl()),GetValidateNewOwner(repository: sl()),GetValidateLicense(repository:  sl()));
+          bloc = LicenseTransferCubit(GetLicensePermitsData(repository: sl()),GetValidateNewOwner(repository: sl()),GetValidateLicense(repository:  sl()),PostToNewOwner(repository:  sl()));
 
           // bloc =
           // ModalRoute.of(context)!.settings.arguments as LicensePermitsCubit;

@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/features/Commercial_license_transfer/domain/entity/transfer_license_request.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -57,6 +58,18 @@ class _PledgesScreenState extends State<PledgesScreen> {
     return BlocConsumer<LicenseTransferCubit, LicenseTransferState>(
       listenWhen: (previous, current) => previous.status != current.status,
       listener: (_, state) async {
+
+
+        if (state.status.isSubmissionGetFailure) {
+          CommonFunctions.showError(state.error);
+        } else if (state.status.isSubmissionGetSuccess && state.applyRequestDataModel != null) {
+
+
+          var x = state.applyRequestDataModel?.result;
+          widget.stepInterface.nextPage();
+        }
+
+
       },
       builder: (context, state) {
 
@@ -171,7 +184,7 @@ class _PledgesScreenState extends State<PledgesScreen> {
                           if(isAgree)
                           {
 
-                          //  widget.stepInterface.nextPage();
+                          bloc?.sendToNewOwner(bloc!.licenseNumber!,bloc!.request);
 
                           }
                           else

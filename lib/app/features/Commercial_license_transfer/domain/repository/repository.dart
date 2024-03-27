@@ -2,6 +2,8 @@ import 'package:balady_plus/app/features/Commercial_license_transfer/domain/enti
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
+import '../entity/apply_request_entity.dart';
+import '../entity/transfer_license_request.dart';
 import '../entity/validate_license_entity.dart';
 import '../entity/validate_owner_entity.dart';
 
@@ -20,6 +22,10 @@ abstract class TransferLicenseRepository {
   Future<Either<Failure, ResponseBodyModel<ValidateLicenseEntity>>> validateLicense(
       String licenseNumber
       );
+
+  Future<Either<Failure, ResponseBodyModel<ApplyRequestEntity>>> sendToNewOwner(
+      String licenseNumber,TransferLicenseRequest request);
+
 
 
 }

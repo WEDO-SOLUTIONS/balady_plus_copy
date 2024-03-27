@@ -52,6 +52,7 @@ class _NewOwnerInfoScreenState extends State<NewOwnerInfoScreen> {
             CommonFunctions.showError(state.error);
           } else if (state.status.isSubmissionGetSuccess && state.validateOwnerDataModel != null) {
 
+            bloc?.request.crNumber = _crNumberController.text;
             widget.stepInterface.nextPage();
           }
         },
@@ -145,8 +146,7 @@ class _NewOwnerInfoScreenState extends State<NewOwnerInfoScreen> {
 
               if (_formKey.currentState!.validate()) {
 
-                bloc?.validateNewOwner("45069833878", _crNumberController.text);
-
+                bloc?.validateNewOwner(bloc!.licenseNumber!, _crNumberController.text);
 
               }
 

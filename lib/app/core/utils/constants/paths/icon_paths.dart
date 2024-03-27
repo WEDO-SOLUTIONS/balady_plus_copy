@@ -40,6 +40,7 @@ class IconPath {
   static const star = '${_svgIconPath}Star$_svg';
   static const dangerIcon = '${_svgIconPath}danger_red$_svg';
   static const msgBoxIcon = '${_svgIconPath}msg_box_icon$_svg';
+  static const successfullIcon = '${_svgIconPath}sucess$_svg';
 
   static const walletNoFees = '${_svgIconPath}wallet_no_fees$_svg';
   static const switchProfileIcon = '${_svgIconPath}profile-2user$_svg';

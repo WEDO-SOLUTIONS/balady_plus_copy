@@ -7,6 +7,7 @@ class LicenseTransferState extends Equatable {
   final PermitsResponseDataModel? licencePermitsResponse;
   final ValidateOwnerDataModel? validateOwnerDataModel;
   final ValidateLicenseDataModel? validateLicenseDataModel;
+  final ApplyRequestDataModel? applyRequestDataModel;
 
   final String? errorMessage;
 
@@ -17,6 +18,7 @@ class LicenseTransferState extends Equatable {
     this.licencePermitsResponse,
     this.validateOwnerDataModel,
     this.validateLicenseDataModel,
+    this.applyRequestDataModel,
     this.errorMessage,
 
 
@@ -29,6 +31,7 @@ class LicenseTransferState extends Equatable {
     PermitsResponseDataModel? permits,
     ValidateOwnerDataModel? validateOwner,
     ValidateLicenseDataModel? validateLicense,
+    ApplyRequestDataModel? applyDataModel,
     String? errorMessage,
   }) {
     if(permits != null) {
@@ -38,13 +41,21 @@ class LicenseTransferState extends Equatable {
         errorMessage: errorMessage ?? this.errorMessage,
       );
     }
-    if(validateLicense != null) {
+    else if(validateLicense != null) {
       return LicenseTransferState(
         status: status ?? this.status,
         validateLicenseDataModel: validateLicense,
         errorMessage: errorMessage ?? this.errorMessage,
       );
     }
+    else if(applyDataModel != null) {
+      return LicenseTransferState(
+        status: status ?? this.status,
+        applyRequestDataModel: applyDataModel,
+        errorMessage: errorMessage ?? this.errorMessage,
+      );
+    }
+
     else
       {
         return LicenseTransferState(

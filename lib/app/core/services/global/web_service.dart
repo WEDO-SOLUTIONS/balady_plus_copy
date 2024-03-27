@@ -119,8 +119,11 @@ class AppInterceptors extends Interceptor {
       options.headers.putIfAbsent("x-platform-id", () => "baladyservices");
       options.headers.putIfAbsent(ApiHeaders.xCorrelationId, () => xCorrelationId);
     }
-    if(options.uri.toString().toLowerCase().contains("validate-license")) {
-    options.headers.putIfAbsent( ApiHeaders.xSubmitterRelation, () => "HIMSELF");
+    if(options.uri.toString().toLowerCase().contains("validate-license")
+        ||options.uri.toString().toLowerCase().contains("license/permits")
+    ||options.uri.toString().toLowerCase().contains("send-to-new-owner")) {
+
+    options.headers.putIfAbsent( ApiHeaders.xSubmitterRelation, () => CommonProperties.selectedDelegator?.getRole() ?? "HIMSELF");
 
 }
     if (await networkConnection.isConnected == false) {

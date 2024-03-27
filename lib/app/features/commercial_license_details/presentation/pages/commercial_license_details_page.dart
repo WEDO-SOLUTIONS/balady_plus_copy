@@ -68,7 +68,7 @@ class _CommercialLicenseDetailsPageState
         BlocProvider(
           create: (_) {
             bloc = LicenseTransferCubit(
-                null, null, GetValidateLicense(repository: sl()));
+                null, null, GetValidateLicense(repository: sl()),null);
             return bloc!;
           },
         )
@@ -177,6 +177,7 @@ class _CommercialLicenseDetailsPageState
                   arguments: "$commercialLicenseId",
                 );
               }
+
             },
             builder: (context, state) {
                 return  Stack(

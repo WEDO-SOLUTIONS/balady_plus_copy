@@ -1,19 +1,21 @@
+
 class TransferLicenseRequest {
-
-
-  String? mobileNumber;
-  String? crNumber;
-  String? submitterBirthDate;
-  List<int>? lstPermits ;
-
-
-
-
   TransferLicenseRequest({
-    this.mobileNumber,
     this.crNumber,
-    this.submitterBirthDate,
-    this.lstPermits
-   });
+    this.selectedPermits,});
+
+  TransferLicenseRequest.fromJson(dynamic json) {
+    crNumber = json['crNumber'];
+    selectedPermits = json['selectedPermits'] != null ? json['selectedPermits'].cast<int>() : [];
+  }
+  String? crNumber;
+  List<int>? selectedPermits;
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['crNumber'] = crNumber;
+    map['selectedPermits'] = selectedPermits;
+    return map;
+  }
 
 }

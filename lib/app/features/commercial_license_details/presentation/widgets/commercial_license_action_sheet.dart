@@ -54,8 +54,8 @@ class CommercialLicenseActionSheet extends StatelessWidget {
 
 
                                         //fawzi static license id
-                                  //     licenseTransferCubit.validateLicense("${provider.licenseId}");
-                                        licenseTransferCubit.validateLicense("45069833878");
+                                       licenseTransferCubit.validateLicense("${provider.licenseId}");
+                                      //  licenseTransferCubit.validateLicense("45019775725");
 
 
 

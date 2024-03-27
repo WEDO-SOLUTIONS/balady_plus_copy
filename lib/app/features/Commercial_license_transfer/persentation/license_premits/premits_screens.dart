@@ -259,6 +259,7 @@ class _PremitsScreenState extends State<PremitsScreen> {
                     },
                   ),
                 ) :const Spacer(),
+                permitResponse.term != null?
                 getCardView(
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -282,7 +283,7 @@ class _PremitsScreenState extends State<PremitsScreen> {
                         ),
                       ],
                     ),
-                    AppColor.grayLight),
+                    AppColor.grayLight):Container(),
                 const SizedBox(
                   height: 5,
                 ),
@@ -298,9 +299,9 @@ class _PremitsScreenState extends State<PremitsScreen> {
                   child: ElevatedButtonWidget.next(
                     onPressed: () {
 
-                      if(isAgree)
+                      if(isAgree || permitResponse.term == null )
                         {
-                          bloc?.request.lstPermits = lstPermits;
+                          bloc?.request.selectedPermits = lstPermits;
                           widget.stepInterface.nextPage();
 
                         }
