@@ -24,13 +24,13 @@ class CommonFunctions {
 
   static Future<void> call(String? number) async {
     if (number != null && number.isNotEmpty) {
-      await CommonFunctions.launch('tel://$number');
+      await CommonFunctions.launch('tel:$number');
     }
   }
 
   static Future<void> email(String? mail) async {
     if (mail != null && mail.isNotEmpty) {
-      await CommonFunctions.launch('mailto://$mail');
+      await CommonFunctions.launch('mailto:$mail');
     }
   }
 
