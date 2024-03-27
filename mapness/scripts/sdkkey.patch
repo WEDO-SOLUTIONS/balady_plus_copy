@@ -1,11 +1,11 @@
 diff --git a/ios/dgissdk.key b/ios/dgissdk.key
-index a9195b1d9..5b03a6e1f 100644
+index a9195b1d9..7db6e5ab1 100644
 --- a/ios/dgissdk.key
 +++ b/ios/dgissdk.key
 @@ -1,2 +1,2 @@
 -QMSAIdVo5n8q8YmpLino72IPzrF+fT1YpzO2StRpbIcWasFIR1c6VIbs4XewsOgCVMMa+A1eghaUFc8Ou3LbSrSj7RkXkyfhrwqS31Ws9UfXuXg/TkUZV5V57Smk9H94a9I9s8B597iEvYP01qQIgGUHuH7J5KqwVA+PpnVFORyqYlLfq6Rhs9rCfalJDfTq6+OZPbAN4Wgl+EOsxMHGI+UGPGZWYMHXgG6+PmInOz+p0cSxxLLGdbDZnQYy76HY/OeiaKMI6FT/EYAB8LxI3MDfTjGDegQ24N+mQLws77/9oKArpRoa5PgYl3f63cseLWGUtym0TulTwDGGp2rlAQ==
 -{"key":"a7d30173-f888-4835-b342-0741a8a4b18c","service":{"properties":{"public":{},"partner":{"oldKey":"a7d30173-f888-4835-b342-0741a8a4b18c","hideCopyright":true}},"features":["onlineMap","onlineDirectory","offlineMap","offlineDirectory","onPremise","navigation"],"is_active":true,"status":{"code":"ok"},"updated_at":"2023-10-12T09:29:47.634645Z"},"restrictions":{"app_id":"momra.balady.ios"},"is_active":true,"created_at":"2023-07-11T11:09:36.000771Z","updated_at":"2024-02-01T08:42:18.673607Z","deactivation_time":"2025-01-31T12:00:00Z"}
 \ No newline at end of file
-+LY7ZiNGPlPDVGi7Pz+7eM7q/jJWjJ+zd8thJef9PHYRi7d+GLjEOtE3HRXoZbF3Yin/HfSQHaIRUcPBTTVCdkWd5fbWtdkIzuixjpjFQ3Ak1/y8r0wDKN8iWp32XANBBmZS1m+yHkNEFbGA97MvRVHUvaQXdlmuC67YbRE6TBSPuiBxmmPeHtBH8Jk3YGd2d4fxkVhCwCE/SpzwYRP7dU3sETw4J8KjbIqbnfYwB+tpzVwrsHcGmnwGb1mglLrHXQh/wzAhkBMTPhkUQSVXGIYrZYWopAW5L32FSce7VDo03tHptanZfxfrw6oEModLB6i5h2cJPvPnZn+gygxCOPg==
-+{"key":"46f74c8d-0bd0-4924-b6a5-738db2471adb","service":{"properties":{"public":{},"partner":{"hideCopyright":true}},"features":["onlineMap","onlineDirectory","navigation","onPremise"],"is_active":true,"status":{"code":"ok"},"updated_at":"2024-03-23T09:48:40.614361Z"},"restrictions":{"app_id":"ae.urbi.balady-dev","territory":{"segments":{"list":[216,218,219,220,222,223,224,225,226,227,228,229,230,250,65536,69869,69878,69879]}}},"is_active":true,"created_at":"2024-03-23T09:46:17.409546Z","updated_at":"2024-03-23T09:48:40.614361Z","deactivation_time":"2025-01-31T12:00:00Z"}
++Wc1Kpr3/mohFCxJreE0ra+lcfZ2GkSJOkA2O44NZ81SEptF4yILBY8Hkdv16d+YhVu2UXoq1cvvaU11R36mn1iT7MsOFCXIFSO2oLihIEYxAU8w4GmiqHvbITOSnhMfJHiieBz0V/0ag+R1l4fMrMtOshRhrGhX/ylTpoQe4wnqjVbFQyG3ZYkkrHliV8SsLkuZfGtE5ZrhULTfw/zF4KfzIWJCQQQ+gnuUHBXXcIh6LmtH0VtTo8o/0GCG5pX9uOAk0FzC/gMBAUs7sDKEP8kMF2C/7+N/gTFAhuz9LzR8tXhyYcaosBYA4qORQYNdIJmdKzYTfRZ+A09XCFPwgxA==
++{"key":"974111fa-16b4-4185-a22e-fcc38e1dc298","service":{"properties":{"public":{},"partner":{}},"features":["onlineMap","onlineDirectory"],"is_active":true,"status":{"code":"ok"},"updated_at":"2024-03-27T10:19:27.61772Z"},"restrictions":{"app_id":"ae.urbi.balady","territory":{"segments":{"list":[216,218,219,220,222,223,224,225,226,227,228,229,230,250,65536,69869,69872,69878,69879]}}},"is_active":true,"created_at":"2024-03-27T10:16:22.971576Z","updated_at":"2024-03-27T10:32:11.043437Z","deactivation_time":"2025-01-31T12:00:00Z"}
 \ No newline at end of file
