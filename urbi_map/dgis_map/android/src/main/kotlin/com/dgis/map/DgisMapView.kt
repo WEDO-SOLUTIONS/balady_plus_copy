@@ -493,20 +493,19 @@ class DgisMapView(
     }
 
     override fun addMarker(marker: MarkerMessage, manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
-        objectTapHandler?.addMarker(marker, manager, result)
+        objectTapHandler?.addMarker(marker, manager?.id, result)
     }
 
     override fun addMarkers(markers: List<MarkerMessage>, manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
-        objectTapHandler?.addMarkers(markers, manager, result)
+        objectTapHandler?.addMarkers(markers, manager?.id, result)
     }
 
     override fun removeMarker(id: String, manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
-        objectTapHandler?.removeMarker(id, manager, result)
+        objectTapHandler?.removeMarker(id, manager?.id, result)
     }
 
     override fun removeAllMarkers(manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
-        objectTapHandler?.removeAllMarkers(manager)
-        result?.success(null)
+        objectTapHandler?.removeAllMarkers(manager?.id, result)
     }
     // --- MAP OBJECT ---
     override fun createMapObjectManagerWithClustering(
@@ -550,37 +549,35 @@ class DgisMapView(
     }
     // --- POLYGON ---
     override fun addPolygon(polygon: PolygonMessage, manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
-        objectTapHandler?.addPolygon(polygon, manager, result)
+        objectTapHandler?.addPolygon(polygon, manager?.id, result)
     }
 
     override fun addPolygons(polygons: List<PolygonMessage>, manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
-        objectTapHandler?.addPolygons(polygons,manager, result)
+        objectTapHandler?.addPolygons(polygons,manager?.id, result)
     }
 
     override fun removePolygon(id: String,manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
-        objectTapHandler?.removePolygon(id, manager, result)
+        objectTapHandler?.removePolygon(id, manager?.id, result)
     }
 
     override fun removeAllPolygons(manager: MapObjectManagerMessage?,result: Messages.Result<Void>?) {
-        objectTapHandler?.removeAllPolygons(manager)
-        result?.success(null)
+        objectTapHandler?.removeAllPolygons(manager?.id, result)
     }
     // --- POLYLINE ---
     override fun addPolyline(polyline: PolylineMessage,manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
-        objectTapHandler?.addPolyline(polyline, manager, result)
+        objectTapHandler?.addPolyline(polyline, manager?.id, result)
     }
 
     override fun addPolylines(polylines: List<PolylineMessage>,manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
-        objectTapHandler?.addPolylines(polylines, manager, result)
+        objectTapHandler?.addPolylines(polylines, manager?.id, result)
     }
 
     override fun removePolyline(id: String,manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
-        objectTapHandler?.removePolyline(id, manager, result)
+        objectTapHandler?.removePolyline(id, manager?.id, result)
     }
 
-    override fun removeAllPolylines(manager: MapObjectManagerMessage?,result: Messages.Result<Void>?) {
-        objectTapHandler?.removeAllPolylines(manager)
-        result?.success(null)
+    override fun removeAllPolylines(manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
+        objectTapHandler?.removeAllPolylines(manager?.id, result)
     }
 
     override fun setRouteParams(
@@ -758,8 +755,7 @@ class DgisMapView(
     }
 
     override fun removeEsriIOLayer(result: Messages.Result<Void>?) {
-        objectTapHandler?.removeAllMarkers(null)
-        result?.success(null)
+        objectTapHandler?.removeAllMarkers(null, result)
     }
 
     override fun moveCameraToSelectedPanorama(result: Messages.Result<Void>?) {
