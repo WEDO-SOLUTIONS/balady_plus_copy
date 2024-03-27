@@ -3954,28 +3954,9 @@
   "issue_commercial_location_type_clean_no": "رقم العقد",
   "issue_commercial_location_type_clean_date": "تاريخ نهاية العقد",
 
-  "issue_commercial_civil": "بيانات الدفاع المدني",
-  "issue_commercial_civil_bill": "فاتورة أدوات سلامة",
-  "issue_commercial_civil_report": "تقرير فني",
-  "issue_commercial_civil_permit": "تصريح سلامة",
 
-  "issue_commercial_approvals": "الموافقات الحكومية",
-  "issue_commercial_general_security": "الأمن العام",
-  "issue_commercial_attachment": "المرفقات",
-  "issue_commercial_request_flow": "مسار الطلب",
-  "issue_commercial_calculator": "حاسبة الرسوم",
-  "issue_commercial_print": "طباعة",
-  "OWNER_MANAGER": "مالك/مدير",
-  "DELEGATOR": "مفوض",
-  "issue_commercial_conclusion_request_draft": "مسودة الرخصة",
 
-  "commercial_licenseـquery_title": "يرجى إدخال البيانات التالية",
 
-  "commercial_licenseـquery_title": "يرجى إدخال البيانات التالية",
-
-  "submitter_compliance_text": "حالة الامتثال من مقدم الطلب: ",
-
-  "emp_compliance_text": "حالة الامتثال من المراقب: ",
 
   "city_region": "المدينة/المنطقة",
   "select_region": "من فضلك اختار المدينة/المنطقة",
@@ -3983,5 +3964,32 @@
   "realEstateRequestId": "رقم الطلب",
   "realEstateSurveyId": "رقم القرار المساحي",
   "realEstateId": "رقم الهوية العقارية",
-  "realEstateRequestIdNote": "خدمة الدمج يبدأ ب LMS خدمة التجزئة يبدأ ب LSS خدمة فرز مخطط يبدأ ب LSBP خدمة تحديث صك الكتروني أو ورقي يتم ادخال رقم الطلب أو رقم القرار المساحي"
+  "realEstateRequestIdNote": "خدمة الدمج يبدأ ب LMS خدمة التجزئة يبدأ ب LSS خدمة فرز مخطط يبدأ ب LSBP خدمة تحديث صك الكتروني أو ورقي يتم ادخال رقم الطلب أو رقم القرار المساحي", 
+
+
+    "issue_commercial_civil":"بيانات الدفاع المدني", 
+    "issue_commercial_civil_bill":"فاتورة أدوات سلامة", 
+    "issue_commercial_civil_report":"تقرير فني", 
+    "issue_commercial_civil_permit":"تصريح سلامة", 
+
+    "issue_commercial_approvals":"الموافقات الحكومية", 
+    "issue_commercial_general_security":"الأمن العام", 
+    "issue_commercial_attachment":"المرفقات", 
+    "issue_commercial_request_flow":"مسار الطلب", 
+    "issue_commercial_calculator":"حاسبة الرسوم", 
+    "issue_commercial_print":"طباعة", 
+    "OWNER_MANAGER":"مالك/مدير", 
+    "DELEGATOR":"مفوض", 
+    "issue_commercial_conclusion_request_draft":"مسودة الرخصة", 
+
+
+    "commercial_licenseـquery_title": "يرجى إدخال البيانات التالية", 
+
+    "submitter_compliance_text":"حالة الامتثال من مقدم الطلب: ", 
+
+    "emp_compliance_text":"حالة الامتثال من المراقب: " , 
+
+
+    "objection_enquiry_none":"عفوا لا يوجد طلبات إفادة من لجنة نظر الإعتراضات والشكاوى"
+
 }

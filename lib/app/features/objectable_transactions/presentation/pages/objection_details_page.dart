@@ -440,13 +440,13 @@ class _ObjectionFeedBackState extends State<ObjectionFeedBack> {
   Widget build(BuildContext context) {
     return BlocBuilder<ObjectionsDetailsBloc, ObjectionDetailsState>(
       builder: (context, state) {
-        return (state.details?.enquiryList?.isNotEmpty ?? false)
-            ? CustomExpansionPanelWidget(
-                underline: false,
-                title: ("objection_enquiry_requests").tr(),
-                leading: SvgPicture.asset(IconPath.vdSummuryDesc),
-                children: [
-                  MediaQuery.removePadding(
+        return CustomExpansionPanelWidget(
+          underline: false,
+          title: ("objection_enquiry_requests").tr(),
+          leading: SvgPicture.asset(IconPath.vdSummuryDesc),
+          children: [
+            ((state.details?.enquiryList?.isNotEmpty ?? false))
+                ? MediaQuery.removePadding(
                     context: context,
                     removeTop: true,
                     child: ListView.builder(
@@ -473,13 +473,14 @@ class _ObjectionFeedBackState extends State<ObjectionFeedBack> {
                                   ));
                             },
                           );
-
-                          ;
                         }),
                   )
-                ],
-              )
-            : Container();
+                : CustomTextWidget(
+                    "objection_enquiry_none".tr(),
+                    fontColor: AppColor.blackModern500Light,
+                  )
+          ],
+        );
       },
     );
   }
