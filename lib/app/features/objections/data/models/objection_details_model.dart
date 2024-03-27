@@ -22,6 +22,7 @@ class ObjectionDetailsModel extends ObjectionDetails {
       super.objectionReasonsList,
       super.enquiryList,
       super.requestStatusId,
+      super.serviceTypeId,
       super.objectionServiceName});
 
   factory ObjectionDetailsModel.fromJson(Map<String, dynamic> json) =>
@@ -63,6 +64,7 @@ class ObjectionDetailsModel extends ObjectionDetails {
               : List<EnquiryItemModel>.from(json["EnquiryList"]!
                   .map((x) => EnquiryItemModel.fromJson(x))),
           requestStatusId: json["RequestStatusId"],
+          serviceTypeId: json["ServiceTypeId"],
           objectionServiceName: json["ObjectionServiceName"]);
 
   @override

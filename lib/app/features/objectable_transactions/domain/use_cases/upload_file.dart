@@ -13,7 +13,8 @@ class UploadFile extends UseCase<UploadFileResponse, AttachmentItem> {
   Future<Either<Failure, UploadFileResponse>> call(AttachmentItem item) async {
     UploadFileParams params = UploadFileParams(
         attachStream: item.base64, filePath: item.filePath, index: item.index);
-    String fileName = params.filePath?.split('/').last ?? "";
+    String fileName =
+        params.filePath?.split('/').last.replaceAll("أ", "ا") ?? "";
     String memo = fileName;
     int extensionIndex = fileName.lastIndexOf(".");
     if (extensionIndex != -1 && extensionIndex != 0) {

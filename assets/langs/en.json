@@ -4236,5 +4236,7 @@
   "realEstateRequestId":"Real Estate Request Id", 
   "realEstateSurveyId":"Real Estate Survey Id", 
   "realEstateId":"Real Estate Id", 
-  "realEstateRequestIdNote":"Consolidation service starts with LMS. Segmentation service starts with LSS. Plan sorting service starts with LSBP. Electronic or paper instrument update service. The application number or cadastral decision number is entered."
+  "realEstateRequestIdNote":"Consolidation service starts with LMS. Segmentation service starts with LSS. Plan sorting service starts with LSBP. Electronic or paper instrument update service. The application number or cadastral decision number is entered.", 
+  "objection_enquiry_none": "Sorry, there are no Enquiry Requests from the Objections and Complaints Review Committee"
+
 }

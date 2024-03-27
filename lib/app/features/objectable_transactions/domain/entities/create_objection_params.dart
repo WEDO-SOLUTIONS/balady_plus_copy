@@ -16,6 +16,8 @@ class CreateObjectionParams {
   String? objectedTransactionDisplayNumber;
 
   List<CreateObjectionReasonsParams>? reasons;
+  final dynamic licenseNumber;
+  final dynamic licenseTypeID;
 
   CreateObjectionParams(
       {this.municipalityID,
@@ -29,7 +31,9 @@ class CreateObjectionParams {
       this.commercialRecord,
       this.facilityUniqueID,
       this.objectedTransactionDisplayNumber,
-      this.serviceTypeId});
+      this.serviceTypeId,
+      this.licenseNumber,
+      this.licenseTypeID});
   Map<String, dynamic> toMap() {
     return {
       "MainRequestData": {
@@ -45,7 +49,9 @@ class CreateObjectionParams {
         if (submitterRole != "001") "CommercialRecord": commercialRecord,
         "FacilityUniqueID": facilityUniqueID,
         "ObjectedTransactionId": objectedTransactionId,
-        "ObjectedTransactionDisplayNumber": objectedTransactionDisplayNumber
+        "ObjectedTransactionDisplayNumber": objectedTransactionDisplayNumber,
+        "LicenseNumber": licenseNumber,
+        "LicenseTypeID": licenseTypeID
       },
       if (reasons != null)
         "ObjectionReasonList": reasons!

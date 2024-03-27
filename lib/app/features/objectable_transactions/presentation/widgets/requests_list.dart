@@ -155,20 +155,40 @@ class _RequestsListState extends State<RequestsList> {
               item: item,
               applicationId: item.applicationId ?? "13",
               id: item.transactionNumber ?? "")));
-    } else if (serviceTypeId == "1") {
-      if (contentTypeId == "permit") {
+    } else if (item.applicationId == "1003") {
+      if (serviceTypeId == "1") {
+        if (contentTypeId == "permit") {
+          CommonFunctions.openBaladyWebView(
+              "${RemoteConfig.baladyCommercialUrl}/Permits/PermitsDetails/Index/${item.hashingTransactionNumber}/${item.hashingOriginalServiceId}",
+              isObjections: true);
+        } else {
+          CommonFunctions.openBaladyWebView(
+              "${RemoteConfig.baladyBaseUrl}/dashboardclient/requests/details/${item.hashingTransactionNumber}",
+              isObjections: true);
+        }
+      } else if (serviceTypeId == "2") {
         CommonFunctions.openBaladyWebView(
-            "${RemoteConfig.baladyCommercialUrl}/Permits/PermitsDetails/Index/${item.hashingTransactionNumber}/${item.hashingOriginalServiceId}",
-            isObjections: true);
-      } else {
-        CommonFunctions.openBaladyWebView(
-            "${RemoteConfig.baladyBaseUrl}/dashboardclient/requests/details/${item.hashingTransactionNumber}",
+            "${RemoteConfig.baladyBaseUrl}/dashboardclient/licenses/details/${item.hashingTransactionNumber}",
             isObjections: true);
       }
-    } else if (serviceTypeId == "2") {
-      CommonFunctions.openBaladyWebView(
-          "${RemoteConfig.baladyBaseUrl}/dashboardclient/licenses/details/${item.hashingTransactionNumber}",
-          isObjections: true);
+    } else if (item.applicationId == "1200") {
+      var typeName = serviceTypeId == "1" ? 'requests' : "licenses";
+      CommonFunctions.openBaladyWebView(RemoteConfig.baladyBaseUrl +
+          "/dashboardclient/" +
+          typeName +
+          '/construction-details/' +
+          (item.hashingTransactionNumber ?? "") +
+          '/requestType/' +
+          "1200");
+    } else if (item.applicationId == "1100") {
+      var typeName = serviceTypeId == "1" ? 'requests' : "licenses";
+      CommonFunctions.openBaladyWebView(RemoteConfig.baladyBaseUrl +
+          "/dashboardclient/" +
+          typeName +
+          '/construction-details/' +
+          (item.hashingTransactionNumber ?? "") +
+          '/requestType/' +
+          "1100");
     }
   }
 

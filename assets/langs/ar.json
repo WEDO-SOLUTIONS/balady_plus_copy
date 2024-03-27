@@ -3949,37 +3949,6 @@
     "issue_commercial_conclusion_request_draft":"مسودة الرخصة", 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     "commercial_licenseـquery_title": "يرجى إدخال البيانات التالية", 
 
     "submitter_compliance_text":"حالة الامتثال من مقدم الطلب: ", 
@@ -3994,5 +3963,7 @@
     "realEstateRequestId":"رقم الطلب", 
     "realEstateSurveyId":"رقم القرار المساحي", 
     "realEstateId":"رقم الهوية العقارية", 
-    "realEstateRequestIdNote":"خدمة الدمج يبدأ ب LMS خدمة التجزئة يبدأ ب LSS خدمة فرز مخطط يبدأ ب LSBP خدمة تحديث صك الكتروني أو ورقي يتم ادخال رقم الطلب أو رقم القرار المساحي"
+    "realEstateRequestIdNote":"خدمة الدمج يبدأ ب LMS خدمة التجزئة يبدأ ب LSS خدمة فرز مخطط يبدأ ب LSBP خدمة تحديث صك الكتروني أو ورقي يتم ادخال رقم الطلب أو رقم القرار المساحي", 
+    "objection_enquiry_none":"عفوا لا يوجد طلبات إفادة من لجنة نظر الإعتراضات والشكاوى"
+
 }
