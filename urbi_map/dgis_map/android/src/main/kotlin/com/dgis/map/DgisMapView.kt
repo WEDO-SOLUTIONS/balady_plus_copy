@@ -481,7 +481,7 @@ class DgisMapView(
                 result = result
         )
     }
-
+    // --- MARKER ---
     override fun setMarkerOptions(options: MarkerOptionsMessageOld, result: Messages.Result<Void>?) {
         objectTapHandler?.setMarkerOptions(
                 svgAsset = options.svgAsset,
@@ -508,7 +508,7 @@ class DgisMapView(
         objectTapHandler?.removeAllMarkers(manager)
         result?.success(null)
     }
-
+    // --- MAP OBJECT ---
     override fun createMapObjectManagerWithClustering(
             message: ClusteringMapObjectManagerOptionsMessage,
             layerId: String?,
@@ -548,38 +548,38 @@ class DgisMapView(
         objectTapHandler?.releaseCluster(id)
         result?.success(null)
     }
-
-    override fun addPolygon(polygon: PolygonMessage, result: Messages.Result<Void>?) {
-        objectTapHandler?.addPolygon(polygon, result)
+    // --- POLYGON ---
+    override fun addPolygon(polygon: PolygonMessage, manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
+        objectTapHandler?.addPolygon(polygon, manager, result)
     }
 
-    override fun addPolygons(polygons: List<PolygonMessage>, result: Messages.Result<Void>?) {
-        objectTapHandler?.addPolygons(polygons, result)
+    override fun addPolygons(polygons: List<PolygonMessage>, manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
+        objectTapHandler?.addPolygons(polygons,manager, result)
     }
 
-    override fun removePolygon(id: String, result: Messages.Result<Void>?) {
-        objectTapHandler?.removePolygon(id, result)
+    override fun removePolygon(id: String,manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
+        objectTapHandler?.removePolygon(id, manager, result)
     }
 
-    override fun removeAllPolygons(result: Messages.Result<Void>?) {
-        objectTapHandler?.removeAllPolygons()
+    override fun removeAllPolygons(manager: MapObjectManagerMessage?,result: Messages.Result<Void>?) {
+        objectTapHandler?.removeAllPolygons(manager)
         result?.success(null)
     }
-
-    override fun addPolyline(polyline: PolylineMessage, result: Messages.Result<Void>?) {
-        objectTapHandler?.addPolyline(polyline, result)
+    // --- POLYLINE ---
+    override fun addPolyline(polyline: PolylineMessage,manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
+        objectTapHandler?.addPolyline(polyline, manager, result)
     }
 
-    override fun addPolylines(polylines: List<PolylineMessage>, result: Messages.Result<Void>?) {
-        objectTapHandler?.addPolylines(polylines, result)
+    override fun addPolylines(polylines: List<PolylineMessage>,manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
+        objectTapHandler?.addPolylines(polylines, manager, result)
     }
 
-    override fun removePolyline(id: String, result: Messages.Result<Void>?) {
-        objectTapHandler?.removePolyline(id, result)
+    override fun removePolyline(id: String,manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
+        objectTapHandler?.removePolyline(id, manager, result)
     }
 
-    override fun removeAllPolylines(result: Messages.Result<Void>?) {
-        objectTapHandler?.removeAllPolylines()
+    override fun removeAllPolylines(manager: MapObjectManagerMessage?,result: Messages.Result<Void>?) {
+        objectTapHandler?.removeAllPolylines(manager)
         result?.success(null)
     }
 
