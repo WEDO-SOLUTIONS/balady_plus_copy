@@ -20,6 +20,7 @@ class ComplainceGISResponse extends Equatable {
   final String? regionCode;
   final dynamic imageUrl;
   final String? guid;
+  final bool? targetBuilding;
 
   ComplainceGISResponse(
       {this.amanaCode,
@@ -39,7 +40,8 @@ class ComplainceGISResponse extends Equatable {
       this.region,
       this.regionCode,
       this.imageUrl,
-      this.guid});
+      this.guid,
+      this.targetBuilding});
 
   factory ComplainceGISResponse.fromJson(Map<String, dynamic> json) {
     return ComplainceGISResponse(
@@ -60,6 +62,7 @@ class ComplainceGISResponse extends Equatable {
         region: json["Region"],
         regionCode: json["RegionCode"],
         imageUrl: json["ImageUrl"],
+        targetBuilding: json["TargetBuilding"],
         guid: json["ParcelBuilding"]?[0]?["GUID"]);
   }
 
@@ -82,7 +85,8 @@ class ComplainceGISResponse extends Equatable {
         region,
         regionCode,
         imageUrl,
-        guid
+        guid,
+        targetBuilding
       ];
 
   String getFullAddress({

@@ -21,7 +21,8 @@ class ComplainceGISResponseModel extends ComplainceGISResponse {
       super.region,
       super.regionCode,
       super.imageUrl,
-      super.guid});
+      super.guid,
+      super.targetBuilding});
 
   factory ComplainceGISResponseModel.fromJson(Map<String, dynamic> json) =>
       ComplainceGISResponseModel(
