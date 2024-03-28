@@ -117,15 +117,12 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
                     btnHeight: 56,
                     text: "show_request".tr(),
                     onPressed: (){
-                    //  Navigator.popUntil(context,  ModalRoute.withName( RouteName.licenses));
-                     // Navigator.of(context).pushNamedAndRemoveUntil( RouteName.requests,ModalRoute.withName( RouteName.licenses));
-                      Navigator.of(context).pushNamed(
+                    Navigator.of(context).pushNamed(
                         RouteName.requestOwnershipTransferDetailsPage,
                         arguments: {
                           "requestNumber": requestId ,
-                          "objectionRequestNumber":
-                          "$requestId",
-                          "redirectUrl":"",
+                          "isReadonly":true
+
                         },
                       );
 

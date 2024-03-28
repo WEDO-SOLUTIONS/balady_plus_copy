@@ -43,6 +43,7 @@ class _RequestOwnershipTransferDetailsPageState
   Widget build(BuildContext context) {
     Map data = ModalRoute.of(context)!.settings.arguments as Map;
     String requestNumber =  data['requestNumber'];
+    bool isReadonly =  data['isReadonly'];
     return BlocProvider(
       create: (context) {
         RequestOwnershipTransferRepositoryImplementation
@@ -140,6 +141,8 @@ class _RequestOwnershipTransferDetailsPageState
                       ),
                     ),
                   ),
+                  isReadonly == true?
+                  Container():
                   BlocBuilder<RequestOwnershipTransferDetailsCubit,
                       RequestOwnershipTransferDetailsState>(
                     builder: (blocContext, state) {
