@@ -175,7 +175,7 @@ class ObjectTapHandler(
         if (managerId != null && managers[managerId] != null) {
             return managers[managerId]!!
         }
-        return mapObjectManager
+        return this.mapObjectManager
     }
 
     private fun <T: SimpleMapObject>getObjectsFromPair(objects: MutableMap<String, Pair<T, String?>>):  List<SimpleMapObject> {
@@ -329,9 +329,9 @@ class ObjectTapHandler(
         }
     }
 
-    fun removeMapObjectManager(message: MapObjectManagerMessage, result: Result<Void>?) {
+    fun removeMapObjectManager(manager: MapObjectManagerMessage, result: Result<Void>?) {
         mapObjectsExecutorService.submit {
-            this.managers.remove(message.id).also {
+            this.managers.remove(manager.id).also {
                 result?.success(null)
             }
         }
@@ -341,11 +341,7 @@ class ObjectTapHandler(
         isVisible: Boolean,
         manager: MapObjectManagerMessage?,
     ) {
-        if (manager != null) {
-            this.managers[manager.id]?.isVisible = isVisible
-        } else {
-            this.mapObjectManager.isVisible = isVisible
-        }
+        getManager(manager?.id).isVisible = isVisible
     }
 
     /// --- CLUSTER ---
