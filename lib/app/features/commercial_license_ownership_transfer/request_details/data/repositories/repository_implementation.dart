@@ -4,8 +4,10 @@ import 'package:balady_plus/app/features/commercial_license_ownership_transfer/r
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/domain/repositories/repository.dart';
 import 'package:dartz/dartz.dart';
 
-
-class RequestOwnershipTransferRepositoryImplementation implements RequestOwnershipTransferDetailsRepository {
+class RequestOwnershipTransferRepositoryImplementation
+    implements
+        RequestOwnershipTransferDetailsRepository,
+        AcceptOrRejectRequestOwnershipTransferRepository {
   final RequestOwnershipTransferDetailsRemoteDataSource remoteDataSource;
 
   RequestOwnershipTransferRepositoryImplementation({
@@ -13,9 +15,11 @@ class RequestOwnershipTransferRepositoryImplementation implements RequestOwnersh
   });
 
   @override
-  Future<Either<Failure, CommercialLicenceDetails>> getRequestOwnershipTransferDetails(String commercialLicenseId) async {
+  Future<Either<Failure, CommercialLicenceDetails>>
+      getRequestOwnershipTransferDetails(String commercialLicenseId) async {
     try {
-      final data = await remoteDataSource.getRequestOwnershipTransferDetails(commercialLicenseId);
+      final data = await remoteDataSource
+          .getRequestOwnershipTransferDetails(commercialLicenseId);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -24,6 +28,29 @@ class RequestOwnershipTransferRepositoryImplementation implements RequestOwnersh
     }
   }
 
+  Future<Either<Failure, bool>> acceptCommercialRequestTransfer(
+      String commercialLicenseId) async {
+    try {
+      final data = await remoteDataSource
+          .acceptCommercialRequestTransfer(commercialLicenseId);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
 
-
+  Future<Either<Failure, bool>> rejectCommercialRequestTransfer(
+      String commercialLicenseId) async {
+    try {
+      final data = await remoteDataSource
+          .rejectCommercialRequestTransfer(commercialLicenseId);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
 }

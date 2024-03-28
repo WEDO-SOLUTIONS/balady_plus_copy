@@ -4,19 +4,28 @@ import 'package:balady_plus/app/features/commercial_license_ownership_transfer/r
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../domain/repositories/repository.dart';
 
 part 'request_ownership_transfer_details_state.dart';
 
-class RequestOwnershipTransferDetailsCubit extends Cubit<RequestOwnershipTransferDetailsState> {
-  final GetRequestOwnershipTransferDetails getCommercialLicenseDetails;
-  final String commercialLicenseId;
+class RequestOwnershipTransferDetailsCubit
+    extends Cubit<RequestOwnershipTransferDetailsState> {
+  // final GetRequestOwnershipTransferDetails getCommercialLicenseDetails;
+  final RequestOwnershipTransferDetailsRepository
+      requestOwnershipTransferDetailsRepository;
+  final AcceptOrRejectRequestOwnershipTransferRepository
+      acceptOrRejectRequestOwnershipTransferRepository;
+  final String commercialDetailsId;
 
   RequestOwnershipTransferDetailsCubit(
-    this.getCommercialLicenseDetails,
-    this.commercialLicenseId,
-  ) : super(const RequestOwnershipTransferDetailsState()){
+      {
+      // this.getCommercialLicenseDetails,
+      required this.commercialDetailsId,
+      required this.requestOwnershipTransferDetailsRepository,
+      required this.acceptOrRejectRequestOwnershipTransferRepository})
+      : super(const RequestOwnershipTransferDetailsState()) {
     getCommercialLicenseDetailsById(
-      commercialLicenseId,
+      commercialDetailsId,
     );
   }
 
@@ -24,7 +33,8 @@ class RequestOwnershipTransferDetailsCubit extends Cubit<RequestOwnershipTransfe
     emit(
       state.copyWith(status: BlocRequestStatus.submissionGetLoading),
     );
-    final failureOrSuccess = await getCommercialLicenseDetails(id);
+    final failureOrSuccess = await requestOwnershipTransferDetailsRepository
+        .getRequestOwnershipTransferDetails(id);
     failureOrSuccess.fold(
       (failure) {
         emit(
@@ -41,6 +51,50 @@ class RequestOwnershipTransferDetailsCubit extends Cubit<RequestOwnershipTransfe
             commercialLicenceDetails: commercialLicenceDetails,
           ),
         );
+      },
+    );
+  }
+
+  Future<void> acceptCommercialRequestTransfer(String id) async {
+    emit(
+      state.copyWith(status: BlocRequestStatus.submissionGetLoading),
+    );
+    final failureOrSuccess =
+        await acceptOrRejectRequestOwnershipTransferRepository
+            .acceptCommercialRequestTransfer(id);
+    failureOrSuccess.fold(
+      (failure) {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetFailure,
+            errorMessage: failure.toString(),
+          ),
+        );
+      },
+      (statusCode) {
+        emit(const SucceedAcceptOrRejectOwnershipTransferState());
+      },
+    );
+  }
+
+  Future<void> rejectCommercialRequestTransfer(String id) async {
+    emit(
+      state.copyWith(status: BlocRequestStatus.submissionGetLoading),
+    );
+    final failureOrSuccess =
+        await acceptOrRejectRequestOwnershipTransferRepository
+            .rejectCommercialRequestTransfer(id);
+    failureOrSuccess.fold(
+      (failure) {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetFailure,
+            errorMessage: failure.toString(),
+          ),
+        );
+      },
+      (statusCode) {
+        emit(const SucceedAcceptOrRejectOwnershipTransferState());
       },
     );
   }

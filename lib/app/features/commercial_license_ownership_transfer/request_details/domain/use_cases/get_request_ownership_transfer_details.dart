@@ -6,13 +6,13 @@ import 'package:dartz/dartz.dart';
 
 
 
-class GetRequestOwnershipTransferDetails extends UseCase<CommercialLicenceDetails,String> {
-  final RequestOwnershipTransferDetailsRepository repository;
+// class GetRequestOwnershipTransferDetails extends UseCase<CommercialLicenceDetails,String> {
+//   final RequestOwnershipTransferDetailsRepository repository;
 
-  GetRequestOwnershipTransferDetails({required this.repository});
+//   GetRequestOwnershipTransferDetails({required this.repository});
 
-  @override
-  Future<Either<Failure, CommercialLicenceDetails>> call(params) async {
-    return await repository.getRequestOwnershipTransferDetails(params);
-  }
-}
+//   @override
+//   Future<Either<Failure, CommercialLicenceDetails>> call(params) async {
+//     return await repository.getRequestOwnershipTransferDetails(params);
+//   }
+// }

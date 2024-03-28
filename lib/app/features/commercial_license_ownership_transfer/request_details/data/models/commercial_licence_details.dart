@@ -313,7 +313,7 @@ class ActivityInfo {
 
   // bool foreignInvistor;
   // int workerTypeId;
-  // String workerTypeName;
+  String workerTypeName;
   // dynamic activityChangeReason;
   // bool showAtmFeesOption;
   // bool atmFeesPaid;
@@ -325,7 +325,7 @@ class ActivityInfo {
     required this.additionalActivities,
     // required this.foreignInvistor,
     // required this.workerTypeId,
-    // required this.workerTypeName,
+    required this.workerTypeName,
     // required this.activityChangeReason,
     // required this.showAtmFeesOption,
     // required this.atmFeesPaid,
@@ -343,7 +343,7 @@ class ActivityInfo {
             : null,
         // foreignInvistor: json["foreignInvistor"],
         // workerTypeId: json["workerTypeId"],
-        // workerTypeName: json["workerTypeName"],
+        workerTypeName: json["workerTypeName"],
         // activityChangeReason: json["activityChangeReason"],
         // showAtmFeesOption: json["showAtmFeesOption"],
         // atmFeesPaid: json["atmFeesPaid"],
@@ -703,7 +703,7 @@ class ShopInfo {
   // dynamic slamaReportOptions;
   int? slamaReportNumber;
 
-  // dynamic cleanContractInfo;
+  dynamic cleanContractInfo;
   // CleanContractOptions cleanContractOptions;
   // bool showActivityCancellationDate;
   // dynamic activityCancellationDate;
@@ -741,7 +741,7 @@ class ShopInfo {
     // required this.endorsementText,
     // required this.slamaReportOptions,
     required this.slamaReportNumber,
-    // required this.cleanContractInfo,
+    required this.cleanContractInfo,
     // required this.cleanContractOptions,
     // required this.showActivityCancellationDate,
     // required this.activityCancellationDate,
@@ -784,7 +784,7 @@ class ShopInfo {
         // endorsementText: json["endorsementText"],
         // slamaReportOptions: json["slamaReportOptions"],
         slamaReportNumber: json["slamaReportNumber"],
-        // cleanContractInfo: json["cleanContractInfo"],
+        cleanContractInfo: json["cleanContractInfo"],
         // cleanContractOptions: CleanContractOptions.fromJson(json["cleanContractOptions"]),
         // showActivityCancellationDate: json["showActivityCancellationDate"],
         // activityCancellationDate: json["activityCancellationDate"],
@@ -926,7 +926,7 @@ class ContractInfoResponseDto {
 // }
 
 class SubmitterInfo {
-  // String entityType;
+  String entityType;
   String submitterType;
   String crNumber;
 
@@ -938,7 +938,7 @@ class SubmitterInfo {
   // int gender;
   String submitterName;
 
-  // String entityName;
+  String entityName;
   // dynamic crIssueDate;
   // String crSource;
   // String genderDesc;
@@ -946,7 +946,7 @@ class SubmitterInfo {
   // int crEntityType;
 
   SubmitterInfo({
-    // required this.entityType,
+    required this.entityType,
     required this.submitterType,
     required this.crNumber,
     required this.crType,
@@ -955,7 +955,7 @@ class SubmitterInfo {
     // required this.mobile,
     // required this.gender,
     required this.submitterName,
-    // required this.entityName,
+    required this.entityName,
     // required this.crIssueDate,
     // required this.crSource,
     // required this.genderDesc,
@@ -964,7 +964,7 @@ class SubmitterInfo {
   });
 
   factory SubmitterInfo.fromJson(Map<String, dynamic> json) => SubmitterInfo(
-        // entityType: json["entityType"],
+        entityType: json["entityType"],
         submitterType: json["submitterType"] ?? '',
         crNumber: json["crNumber"] ?? '',
         crType: json["crType"] ?? '',
@@ -973,7 +973,7 @@ class SubmitterInfo {
         // mobile: json["mobile"],
         // gender: json["gender"],
         submitterName: json["submitterName"] ?? '',
-        // entityName: json["entityName"],
+        entityName: json["entityName"],
         // crIssueDate: json["crIssueDate"],
         // crSource: json["crSource"],
         // genderDesc: json["genderDesc"],

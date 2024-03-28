@@ -799,8 +799,14 @@ class ApiUrl {
 
 //! commercial ownership services
 
-  static String getOwnershipCommercialLicenseDetails(int licenseId) =>
-      '/v1/superapp-commercial-ownership-services/license/details/$licenseId';
+  static String getOwnershipCommercialRequestDetails(int requestId) =>
+      '/v1/superapp-commercial-ownership-services/request/$requestId';
+      
+  static String acceptCommercialRequestTransfer(int requestId) =>
+      '/v1/superapp-commercial-ownership-services/transfer/accept/by-new-owner/$requestId';
+
+  static String rejectCommercialRequestTransfer(int requestId) =>
+      '/v1/superapp-commercial-ownership-services/transfer/reject/by-new-owner/$requestId';
 
   static String getLicensePermits(String licenseNumber) =>
       '/v1/superapp-commercial-ownership-services/license/permits/$licenseNumber';

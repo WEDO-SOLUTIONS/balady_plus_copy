@@ -49,6 +49,9 @@ import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, DropDownItem, FileInfo;
 import '../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
+import '../../features/commercial_license_ownership_transfer/request_details/data/data_sources/remote_data_source.dart';
+import '../../features/commercial_license_ownership_transfer/request_details/data/repositories/repository_implementation.dart';
+import '../../features/commercial_license_ownership_transfer/request_details/domain/repositories/repository.dart';
 import '../../features/force_update/presentation/core/force_update_view_model.dart';
 import '../../features/location/presentation/bloc/location_bloc.dart';
 import '../../features/map_page/data/repositories/layers_repositories.dart';
@@ -255,11 +258,19 @@ void initialize() {
   sl.registerLazySingleton<BaladyCalendarRepository>(
       () => BaladyCalendarRepositoryImpl(remoteDataSource: sl()));
 
-
-
 // transfer license ownership
-  sl.registerLazySingleton<LicensePermitsRemoteDataSource>(() => LicensePermitsRemoteDataSourceImplementation(webService: sl()));
-  sl.registerLazySingleton<TransferLicenseRepository>(() => TransferLicenseRepositoryImplementation(remoteDataSource: sl()));
+  sl.registerLazySingleton<LicensePermitsRemoteDataSource>(
+      () => LicensePermitsRemoteDataSourceImplementation(webService: sl()));
+  sl.registerLazySingleton<TransferLicenseRepository>(
+      () => TransferLicenseRepositoryImplementation(remoteDataSource: sl()));
+
+  //transfer request ownership
+  sl.registerLazySingleton<RequestOwnershipTransferRepositoryImplementation>(
+      () => RequestOwnershipTransferRepositoryImplementation(
+          remoteDataSource: sl()));
+  sl.registerLazySingleton<RequestOwnershipTransferDetailsRemoteDataSource>(
+      () => RequestOwnershipTransferRemoteDataSourceImplementation(
+          webService: sl()));
 
   //noification
   sl.registerLazySingleton<NotificationsRemoteDataSource>(

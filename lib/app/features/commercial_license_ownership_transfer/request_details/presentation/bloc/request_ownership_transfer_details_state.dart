@@ -33,3 +33,11 @@ class RequestOwnershipTransferDetailsState extends Equatable {
         errorMessage,
       ];
 }
+
+final class SucceedAcceptOrRejectOwnershipTransferState extends RequestOwnershipTransferDetailsState {
+
+  const SucceedAcceptOrRejectOwnershipTransferState();
+
+  @override
+  List<Object?> get props => [];
+}
