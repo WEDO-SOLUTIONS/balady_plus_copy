@@ -65,7 +65,7 @@ class NotificationsItemWidget extends StatelessWidget {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(6)),
                             ),
-                            color: Colors.red.shade800.withAlpha(60),
+                            color: state.message.status.id == "read" ? Colors.green.shade800.withAlpha(60): Colors.red.shade800.withAlpha(60) ,
                             elevation: 0,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
@@ -75,7 +75,7 @@ class NotificationsItemWidget extends StatelessWidget {
                                 style: AppStyle.nearbyItemSubTitleTextStyle
                                     .copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.red.shade800,
+                                  color: state.message.status.id == "read" ? Colors.green.shade800 : Colors.red.shade800,
                                 ),
                               ),
                             ),
