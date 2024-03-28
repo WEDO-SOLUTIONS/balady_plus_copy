@@ -198,6 +198,27 @@ class ObjectTapHandler {
         completion(nil)
     }
     
+    // MARK: Handlers
+    
+    private func getManager(_ managerId: String?) -> MapObjectManager {
+        if let id = managerId, let manager = self.managers[id] {
+            return manager
+        }
+        return self.mapObjectManager
+    }
+    
+    private func removeAllObjects<T: DGis.SimpleMapObject>(_ managerId: String?,_ objects: inout Dictionary<String, (T, String?)>, completion: @escaping (FlutterError?) -> Void) {
+        self.objectsQueue.sync {
+            getManager(managerId).removeAll()
+            let filtered = objects.filter { $0.value.1 == managerId }
+            objects.removeAll()
+            objects.merge(filtered) { (_, new) in new }
+            completion(nil)
+        }
+    }
+    
+    // MARK: Marker
+    
     func mapMarker(_ marker: MarkerMessage, completion: @escaping (FlutterError?) -> Void) -> Marker? {
         var markerImage: Image? = nil
         if let icon = marker.options.icon?.path {
@@ -258,23 +279,19 @@ class ObjectTapHandler {
         return nil
     }
     
-    func addMarker(_ marker: MarkerMessage, to manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
+    func addMarker(_ marker: MarkerMessage, to managerId: String?, completion: @escaping (FlutterError?) -> Void) {
         guard let markerObject = mapMarker(marker, completion: completion) else {
             return
         }
         
         self.objectsQueue.sync {
-            self.markers[marker.id] = (markerObject, manager?.id)
-            if let managerId = manager?.id, let manager = self.managers[managerId] {
-                manager.addObject(item: markerObject)
-            } else {
-                self.mapObjectManager.addObject(item: markerObject)
-            }
+            self.markers[marker.id] = (markerObject, managerId)
+            getManager(managerId).addObject(item: markerObject)
             completion(nil)
         }
     }
     
-    func addMarkers(_ markers: [MarkerMessage], to manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
+    func addMarkers(_ markers: [MarkerMessage], to managerId: String?, completion: @escaping (FlutterError?) -> Void) {
         var markerObjects = [String:Marker]()
         for marker in markers {
             guard let markerObject = mapMarker(marker, completion: completion) else {
@@ -285,29 +302,27 @@ class ObjectTapHandler {
         
         self.objectsQueue.sync {
             markerObjects.forEach { id, object in
-                self.markers[id] = (object, manager?.id)
+                self.markers[id] = (object, managerId)
             }
-            if let managerId = manager?.id, let manager = self.managers[managerId] {
-                manager.addObjects(objects: Array(markerObjects.values))
-            } else {
-                self.mapObjectManager.addObjects(objects: Array(markerObjects.values))
-            }
+            getManager(managerId).addObjects(objects: Array(markerObjects.values))
             completion(nil)
         }
     }
     
-    func removeMarker(_ id: String, from manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
+    func removeMarker(_ id: String, from managerId: String?, completion: @escaping (FlutterError?) -> Void) {
         self.objectsQueue.sync {
             if let markerObject = self.markers.removeValue(forKey: id) {
-                if let managerId = manager?.id, let manager = self.managers[managerId] {
-                    manager.removeObject(item: markerObject.0)
-                } else {
-                    self.mapObjectManager.removeObject(item: markerObject.0)
-                }
+                getManager(managerId).removeObject(item: markerObject.0)
                 completion(nil)
             }
         }
     }
+    
+    func removeAllMarkers(from managerId: String?, completion: @escaping (FlutterError?) -> Void) {
+        removeAllObjects(managerId, &self.markers, completion: completion)
+    }
+    
+    // MARK: Cluster
     
     func createClusteringMapObjectManager(_ options: ClusteringMapObjectManagerOptionsMessage, _ layerId: String?, completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
         let managerId = UUID().uuidString
@@ -332,31 +347,6 @@ class ObjectTapHandler {
         self.objectsQueue.sync {
             self.managers[managerId] = manager
             completion(managerMessage, nil)
-        }
-    }
-    
-    func createMapObjectManager(_ layerId: String?, completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
-        let managerId = UUID().uuidString
-        let managerMessage = MapObjectManagerMessage.make(withId: managerId)
-        
-        let manager = MapObjectManager.withGeneralization(
-            map: self.map,
-            logicalPixel: LogicalPixel(value: 40),
-            maxZoom: Zoom(value: 18),
-            layerId: layerId
-        )
-        self.objectsQueue.sync {
-            self.managers[managerId] = manager
-            completion(managerMessage, nil)
-        }
-    }
-
-    
-    func removeMapObjectManager(_ manager: MapObjectManagerMessage, completion: @escaping (FlutterError?) -> Void) {
-        self.objectsQueue.sync {
-            if self.managers.removeValue(forKey: manager.id) != nil {
-                completion(nil)
-            }
         }
     }
     
@@ -400,15 +390,40 @@ class ObjectTapHandler {
         cluster.setIcon(icon: markerImage)
     }
     
-    func setMapObjectManagerIsVisible(_ isVisible: Bool, for manager: MapObjectManagerMessage?) {
+    // MARK: Map Object
+    
+    func createMapObjectManager(_ layerId: String?, completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
+        let managerId = UUID().uuidString
+        let managerMessage = MapObjectManagerMessage.make(withId: managerId)
+        
+        let manager = MapObjectManager.withGeneralization(
+            map: self.map,
+            logicalPixel: LogicalPixel(value: 40),
+            maxZoom: Zoom(value: 18),
+            layerId: layerId
+        )
         self.objectsQueue.sync {
-            if let managerId = manager?.id, let manager = self.managers[managerId] {
-                manager.isVisible = isVisible
-            } else {
-                self.mapObjectManager.isVisible = isVisible
+            self.managers[managerId] = manager
+            completion(managerMessage, nil)
+        }
+    }
+
+    func removeMapObjectManager(_ manager: MapObjectManagerMessage, completion: @escaping (FlutterError?) -> Void) {
+        self.objectsQueue.sync {
+            if self.managers.removeValue(forKey: manager.id) != nil {
+                completion(nil)
             }
         }
     }
+    
+    func setMapObjectManagerIsVisible(_ isVisible: Bool, for managerId: String?,  completion: @escaping (FlutterError?) -> Void) {
+        self.objectsQueue.sync {
+            getManager(managerId).isVisible = isVisible
+            completion(nil)
+        }
+    }
+    
+    //MARK:  Polygons
     
     private func mapPolygon(_ polygon: PolygonMessage, completion: @escaping (FlutterError?) -> Void) -> Polygon? {
         let options = PolygonOptions(
@@ -447,24 +462,19 @@ class ObjectTapHandler {
         return nil
     }
     
-    //MARK:  Polygons
-    func addPolygon(_ polygon: PolygonMessage, to manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
+    func addPolygon(_ polygon: PolygonMessage, to managerId: String?, completion: @escaping (FlutterError?) -> Void) {
         guard let polygonObject = mapPolygon(polygon, completion: completion) else {
             return
         }
         
         self.objectsQueue.sync {
-            self.polygons[polygon.id] = (polygonObject, manager?.id)
-            if let managerId = manager?.id, let manager = self.managers[managerId] {
-                manager.addObject(item: polygonObject)
-            } else {
-                self.mapObjectManager.addObject(item: polygonObject)
-            }
+            self.polygons[polygon.id] = (polygonObject, managerId)
+            getManager(managerId).addObject(item: polygonObject)
             completion(nil)
         }
     }
     
-    func addPolygons(_ polygons: [PolygonMessage], to manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
+    func addPolygons(_ polygons: [PolygonMessage], to managerId: String?, completion: @escaping (FlutterError?) -> Void) {
         var polygonObjects = [String:Polygon]()
         for polygon in polygons {
             guard let polygonObject = mapPolygon(polygon, completion: completion) else {
@@ -475,40 +485,24 @@ class ObjectTapHandler {
         
         self.objectsQueue.sync {
             polygonObjects.forEach { id, object in
-                self.polygons[id] = (object, manager?.id)
+                self.polygons[id] = (object, managerId)
             }
-            if let managerId = manager?.id, let manager = self.managers[managerId] {
-                manager.addObjects(objects: Array(polygonObjects.values))
-            } else {
-                self.mapObjectManager.addObjects(objects: Array(polygonObjects.values))
-            }
+            getManager(managerId).addObjects(objects: Array(polygonObjects.values))
             completion(nil)
         }
     }
     
-    func removePolygon(_ id: String, from manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
+    func removePolygon(_ id: String, from managerId: String?, completion: @escaping (FlutterError?) -> Void) {
         self.objectsQueue.sync {
             if let polygonObject = self.polygons.removeValue(forKey: id) {
-                if let managerId = manager?.id, let manager = self.managers[managerId] {
-                    manager.removeObject(item: polygonObject.0)
-                } else {
-                    self.mapObjectManager.removeObject(item: polygonObject.0)
-                }
+                getManager(managerId).removeObject(item: polygonObject.0)
                 completion(nil)
             }
         }
     }
     
-    func removeAllPolygons(from manager: MapObjectManagerMessage?) {
-        self.objectsQueue.sync {
-            if let managerId = manager?.id, let manager = self.managers[managerId] {
-                manager.removeAll()
-                self.polygons = polygons.filter { $0.value.1 == managerId }
-            } else {
-                self.mapObjectManager.removeAll()
-                self.polygons.removeAll()
-            }
-        }
+    func removeAllPolygons(from managerId: String?, completion: @escaping (FlutterError?) -> Void) {
+        removeAllObjects(managerId, &self.polygons, completion: completion)
     }
     
     // MARK: Polyline
@@ -545,23 +539,19 @@ class ObjectTapHandler {
         return nil
     }
     
-    func addPolyline(_ polyline: PolylineMessage, to manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
+    func addPolyline(_ polyline: PolylineMessage, to managerId: String?, completion: @escaping (FlutterError?) -> Void) {
         guard let polylineObject = mapPolyline(polyline, completion: completion) else {
             return
         }
         
         self.objectsQueue.sync {
-            self.polylines[polyline.id] = (polylineObject, manager?.id)
-            if let managerId = manager?.id, let manager = self.managers[managerId] {
-                manager.addObject(item: polylineObject)
-            } else {
-                self.mapObjectManager.addObject(item: polylineObject)
-            }
+            self.polylines[polyline.id] = (polylineObject, managerId)
+            getManager(managerId).addObject(item: polylineObject)
             completion(nil)
         }
     }
     
-    func addPolylines(_ polylines: [PolylineMessage], to manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
+    func addPolylines(_ polylines: [PolylineMessage], to managerId: String?, completion: @escaping (FlutterError?) -> Void) {
         var polylineObjects = [String:Polyline]()
         for polyline in polylines {
             guard let polylineObject = mapPolyline(polyline, completion: completion) else {
@@ -572,42 +562,27 @@ class ObjectTapHandler {
         
         self.objectsQueue.sync {
             polylineObjects.forEach { id, object in
-                self.polylines[id] = (object, manager?.id)
+                self.polylines[id] = (object, managerId)
             }
-            if let managerId = manager?.id, let manager = self.managers[managerId] {
-                manager.addObjects(objects: Array(polylineObjects.values))
-            } else {
-                self.mapObjectManager.addObjects(objects: Array(polylineObjects.values))
-            }
+            getManager(managerId).addObjects(objects: Array(polylineObjects.values))
             completion(nil)
         }
     }
     
-    func removePolyline(_ id: String, from manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
+    func removePolyline(_ id: String, from managerId: String?, completion: @escaping (FlutterError?) -> Void) {
         self.objectsQueue.sync {
             if let polylineObject = self.polylines.removeValue(forKey: id) {
-                if let managerId = manager?.id, let manager = self.managers[managerId] {
-                    manager.removeObject(item: polylineObject.0)
-                } else {
-                    self.mapObjectManager.removeObject(item: polylineObject.0)
-                }
+                getManager(managerId).removeObject(item: polylineObject.0)
                 completion(nil)
             }
         }
     }
     
-    func removeAllPolylines(from manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
-        self.objectsQueue.sync {
-            if let managerId = manager?.id, let manager = self.managers[managerId] {
-                manager.removeAll()
-                self.polylines = polylines.filter {$0.value.1 == managerId}
-            } else {
-                self.mapObjectManager.removeAll()
-                self.polylines.removeAll()
-            }
-            completion(nil)
-        }
+    func removeAllPolylines(from managerId: String?, completion: @escaping (FlutterError?) -> Void) {
+        removeAllObjects(managerId, &self.polylines, completion: completion)
     }
+    
+    // MARK: Other
     
     func addIoMarkers(_ message: AddLayerPointObjectsMessage, _ completion: @escaping (FlutterError?) -> Void) {
         guard let markerImage = self.markerImage, let iconWidth = self.iconWidth else {
@@ -650,22 +625,6 @@ class ObjectTapHandler {
             completion(nil)
         }
     }
-    
-    func removeAllMarkers(from manager: MapObjectManagerMessage?) {
-        self.objectsQueue.sync {
-            if let managerId = manager?.id, let manager = self.managers[managerId] {
-                manager.removeAll()
-                self.markers = markers.filter { $0.value.1 == managerId }
-            } else {
-                self.mapObjectManager.removeAll()
-                self.markers.removeAll()
-            }
-        }
-    }
-    
-
-    
-
     
     func setHighlighted(_ objects: [DgisObjectId], _ completion: @escaping (FlutterError?) -> Void) {
         for source in map.sources {

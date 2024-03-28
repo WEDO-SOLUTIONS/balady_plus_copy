@@ -1210,7 +1210,7 @@ abstract class MapApi {
   );
 
   @async
-  void removeMapObjectManager(MapObjectManagerMessage id);
+  void removeMapObjectManager(MapObjectManagerMessage manager);
 
   @async
   void setClusterIcon(String id, String icon);

@@ -524,10 +524,10 @@ class DgisMapView(
     }
 
     override fun removeMapObjectManager(
-            id: MapObjectManagerMessage,
+            manager: MapObjectManagerMessage,
             result: Messages.Result<Void>?
     ) {
-        objectTapHandler?.removeMapObjectManager(id, result)
+        objectTapHandler?.removeMapObjectManager(manager, result)
     }
 
     override fun setMapObjectManagerIsVisible(
