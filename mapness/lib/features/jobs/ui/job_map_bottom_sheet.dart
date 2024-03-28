@@ -150,7 +150,7 @@ class _JobMapBottomSheetState extends ConsumerState<JobMapBottomSheet> {
             position: GeoPointWithElevationMessage(
               longitude: lon,
               latitude: lat,
-              elevation: 0,
+              elevation: 1,
             ),
             icon: MarkerIconMessage(
               path: 'packages/mapness/assets/icons/svg/job_pin.svg',
