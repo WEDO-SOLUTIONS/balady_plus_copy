@@ -1,5 +1,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
@@ -20,6 +21,7 @@ import 'package:mapness/_features/poi_card/widgets/poi_photos_header.dart';
 import 'package:mapness/_features/poi_card/widgets/qr_license_info.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/_features/poi_card/widgets/trade_license.dart';
+import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -30,6 +32,7 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet_scrollable_content.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
+import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 
 class PoiCardWidget extends StatelessWidget {
@@ -123,6 +126,7 @@ class _ContentState extends ConsumerState<_Content>
 
   @override
   Widget build(BuildContext context) {
+    final locale = context.l10n;
     final viewModel = PoiCardViewModel(ref: ref);
     final viewModelProvider = poiCardProviderProvider(
       widget.objectId,
@@ -145,6 +149,22 @@ class _ContentState extends ConsumerState<_Content>
 
     /// error handling or invalid data
     if (state.hasError || objectId == null || data == null) {
+      if (state.error is PlatformException &&
+          (state.error! as PlatformException).code == 'NotFoundException') {
+        return Column(
+          children: [
+            const Spacer(flex: 3),
+            ErrorSheetV2(
+              errorTitle: locale.poiObjectNotFoundTitle,
+              errorContent: locale.poiObjectNotFoundContent,
+              buttonLabel: locale.poiObjectNotFoundButtonLabel,
+              assetImage: 'assets/images_svg/happy_face.svg',
+              package: PackageConfig.packageName,
+              onRetry: () => context.pop(),
+            )
+          ],
+        );
+      }
       return Column(
         children: [
           const Spacer(flex: 3),
