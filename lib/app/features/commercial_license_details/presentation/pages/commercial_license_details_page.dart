@@ -169,13 +169,23 @@ class _CommercialLicenseDetailsPageState
                 previous.status != current.status,
             listener: (_, state) async {
               if (state.status.isSubmissionGetFailure) {
-                CommonFunctions.showError(state.error);
+                 CommonFunctions.showError(state.error);
+
+                // Navigator.of(context).pushNamed(
+                //   RouteName.SucessfullScreen,
+                //   arguments: commercialLicenseId,
+                // );
+
+
               } else if (state.status.isSubmissionGetSuccess) {
 
                 Navigator.of(context).pushNamed(
                   RouteName.commercialLicenseTransferOverView,
                   arguments: "$commercialLicenseId",
                 );
+
+
+
               }
 
             },

@@ -2,8 +2,8 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/features/Commercial_license_transfer/domain/use_cases/get_validate_license.dart';
-import 'package:balady_plus/app/features/Commercial_license_transfer/persentation/license_premits/pledges.dart';
-import 'package:balady_plus/app/features/Commercial_license_transfer/persentation/license_premits/premits_screens.dart';
+import 'package:balady_plus/app/features/Commercial_license_transfer/persentation/license_premits/request_sequence_pledges.dart';
+import 'package:balady_plus/app/features/Commercial_license_transfer/persentation/license_premits/request_sequence_premits.dart';
 import 'package:balady_plus/app/features/Commercial_license_transfer/persentation/license_premits/sucessfull_page.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
@@ -21,18 +21,18 @@ import '../../domain/use_cases/post_to_new_owner.dart';
 import '../bloc/license_tranfer_cubit.dart';
 import '../interface/step_interface.dart';
 
-import 'new_owner.dart';
+import 'request_sequence_new_owner.dart';
 
 
-class HomeSequenceScreen extends StatefulWidget {
-  const HomeSequenceScreen({Key? key}) : super(key: key);
+class RequestSequenceHomeScreen extends StatefulWidget {
+  const RequestSequenceHomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeSequenceScreen> createState() =>
-      _HomeSequenceScreenState();
+  State<RequestSequenceHomeScreen> createState() =>
+      _RequestSequenceHomeScreenState();
 }
 
-class _HomeSequenceScreenState extends State<HomeSequenceScreen> implements StepInterface {
+class _RequestSequenceHomeScreenState extends State<RequestSequenceHomeScreen> implements StepInterface {
   PageController controller = PageController();
   int currentPageValue = 0;
 
@@ -41,10 +41,9 @@ class _HomeSequenceScreenState extends State<HomeSequenceScreen> implements Step
 
 
   late List<Widget>? pagesList = [
-    PremitsScreen(stepInterface:this),
-    NewOwnerInfoScreen(stepInterface:this),
-    PledgesScreen(stepInterface:this),
-    SucessfullScreen(stepInterface:this),
+    ReuestSequencePremitsScreen(stepInterface:this),
+    RquestSequenceNewOwnerInfoScreen(stepInterface:this),
+    RequestSequencePledgesScreen(stepInterface:this),
   ];
 
   @override

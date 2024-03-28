@@ -16,14 +16,14 @@ import '../bloc/license_tranfer_cubit.dart';
 import '../interface/step_interface.dart';
 
 
-class NewOwnerInfoScreen extends StatefulWidget {
+class RquestSequenceNewOwnerInfoScreen extends StatefulWidget {
   StepInterface stepInterface;
-   NewOwnerInfoScreen({Key? key,required this.stepInterface}) : super(key: key);
+   RquestSequenceNewOwnerInfoScreen({Key? key,required this.stepInterface}) : super(key: key);
   @override
-  State<NewOwnerInfoScreen> createState() => _NewOwnerInfoScreenState();
+  State<RquestSequenceNewOwnerInfoScreen> createState() => _RquestSequenceNewOwnerInfoScreenState();
 }
 
-class _NewOwnerInfoScreenState extends State<NewOwnerInfoScreen> {
+class _RquestSequenceNewOwnerInfoScreenState extends State<RquestSequenceNewOwnerInfoScreen> {
 
   final TextEditingController _crNumberController = TextEditingController();
   final FocusNode _crNumberDescFocusNode = FocusNode();

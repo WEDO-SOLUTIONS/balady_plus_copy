@@ -23,15 +23,15 @@ import '../../domain/entity/permits_response_entity.dart';
 import '../bloc/license_tranfer_cubit.dart';
 import '../interface/step_interface.dart';
 
-class PledgesScreen extends StatefulWidget {
+class RequestSequencePledgesScreen extends StatefulWidget {
   StepInterface stepInterface;
-  PledgesScreen({Key? key,required this.stepInterface}) : super(key: key);
+  RequestSequencePledgesScreen({Key? key,required this.stepInterface}) : super(key: key);
 
   @override
-  State<PledgesScreen> createState() => _PledgesScreenState();
+  State<RequestSequencePledgesScreen> createState() => _RequestSequencePledgesScreenState();
 }
 
-class _PledgesScreenState extends State<PledgesScreen> {
+class _RequestSequencePledgesScreenState extends State<RequestSequencePledgesScreen> {
   LicenseTransferCubit? bloc;
 
   bool isAgree = false;
@@ -63,10 +63,11 @@ class _PledgesScreenState extends State<PledgesScreen> {
         if (state.status.isSubmissionGetFailure) {
           CommonFunctions.showError(state.error);
         } else if (state.status.isSubmissionGetSuccess && state.applyRequestDataModel != null) {
-
-
-          var x = state.applyRequestDataModel?.result;
-          widget.stepInterface.nextPage();
+          Navigator.of(context).pop(true);
+          Navigator.of(context).pushNamed(
+            RouteName.SucessfullScreen,
+            arguments: "${state.applyRequestDataModel?.result}",
+          );
         }
 
 

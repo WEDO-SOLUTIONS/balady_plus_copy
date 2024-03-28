@@ -22,15 +22,15 @@ import '../../domain/entity/permits_response_entity.dart';
 import '../bloc/license_tranfer_cubit.dart';
 import '../interface/step_interface.dart';
 
-class PremitsScreen extends StatefulWidget {
+class ReuestSequencePremitsScreen extends StatefulWidget {
   StepInterface stepInterface;
-   PremitsScreen({Key? key,required this.stepInterface}) : super(key: key);
+   ReuestSequencePremitsScreen({Key? key,required this.stepInterface}) : super(key: key);
 
   @override
-  State<PremitsScreen> createState() => _PremitsScreenState();
+  State<ReuestSequencePremitsScreen> createState() => _ReuestSequencePremitsScreenState();
 }
 
-class _PremitsScreenState extends State<PremitsScreen> {
+class _ReuestSequencePremitsScreenState extends State<ReuestSequencePremitsScreen> {
   LicenseTransferCubit? bloc;
 
   bool isAgree = false;
@@ -82,6 +82,7 @@ class _PremitsScreenState extends State<PremitsScreen> {
                   textStyle: AppStyle.complianceTitleStyle,
                   maxLines: 4,
                 ),
+                permitResponse.permits != null && permitResponse.permits!.isNotEmpty ?
                 getCardView(
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,8 +102,8 @@ class _PremitsScreenState extends State<PremitsScreen> {
                         ),
                       ],
                     ),
-                    AppColor.grayLight),
-                const SizedBox(height: 0),
+                    AppColor.grayLight):Container(),
+                permitResponse.permits != null && permitResponse.permits!.isNotEmpty ?
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -135,8 +136,8 @@ class _PremitsScreenState extends State<PremitsScreen> {
                       },
                     ),
                   ],
-                ),
-                permitResponse.permits != null ?
+                ):Container(),
+                permitResponse.permits != null&& permitResponse.permits!.isNotEmpty ?
                 Expanded(
                   child: ListView.builder(
                     shrinkWrap: true,
@@ -330,6 +331,7 @@ class _PremitsScreenState extends State<PremitsScreen> {
       },
     );
   }
+
 
   Widget getCardView(Widget child, Color bgcolor) {
     return Container(

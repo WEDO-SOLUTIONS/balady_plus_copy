@@ -49,7 +49,7 @@ class _CommercialLicenseTransferOverviewScreenState extends State<CommercialLice
         ChangeNotifierProvider(
           create: (BuildContext context) => ServiceDataViewModel(
             webService: sl(),
-            serviceId: 11124,
+            serviceId: 10502,
           ),
         ),
       ],

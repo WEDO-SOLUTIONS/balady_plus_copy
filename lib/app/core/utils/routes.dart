@@ -70,9 +70,10 @@ import '../../core/utils/utils_exports.dart'
         ScaleRotatePage,
         SliderUpPage;
 import '../../features/Commercial_license_transfer/persentation/commercail_license_tranfer_overview/commercial_license_transfer_overview_screen.dart';
-import '../../features/Commercial_license_transfer/persentation/license_premits/home_sequence.dart';
-import '../../features/Commercial_license_transfer/persentation/license_premits/new_owner.dart';
-import '../../features/Commercial_license_transfer/persentation/license_premits/premits_screens.dart';
+import '../../features/Commercial_license_transfer/persentation/license_premits/request_sequence_home.dart';
+import '../../features/Commercial_license_transfer/persentation/license_premits/request_sequence_new_owner.dart';
+import '../../features/Commercial_license_transfer/persentation/license_premits/request_sequence_premits.dart';
+import '../../features/Commercial_license_transfer/persentation/license_premits/sucessfull_page.dart';
 import '../../features/_shared_feature_/presentation/pages/qiblah_webview_page.dart';
 import '../../features/_shared_feature_/presentation/pages/view_apigee_image_screen.dart';
 import '../../features/calculator/presentation/pages/service_calculator_result_screen.dart';
@@ -798,8 +799,8 @@ class Routes {
 
     RouteName.commercialLicenseTransferOverView: (context) => const CommercialLicenseTransferOverviewScreen(),
     // RouteName.transferLicensePermits: (context) => const PremitsScreen(),
-    // RouteName.newOwner: (context) => const NewOwnerInfoScreen(),
-    RouteName.homeSequence: (context) => const HomeSequenceScreen(),
+     RouteName.SucessfullScreen: (context) =>  SucessfullScreen(),
+    RouteName.homeSequence: (context) => const RequestSequenceHomeScreen(),
 
 
 

@@ -38,7 +38,7 @@ class _RequestOwnershipTransferDetailsPageState
   @override
   Widget build(BuildContext context) {
     Map data = ModalRoute.of(context)!.settings.arguments as Map;
-    String requestNumber = "42062690928"; //data['requestNumber'];
+    String requestNumber =  data['requestNumber'];
     return BlocProvider(
       create: (context) => RequestOwnershipTransferDetailsCubit(
         GetRequestOwnershipTransferDetails(
