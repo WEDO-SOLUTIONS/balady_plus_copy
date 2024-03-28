@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'selected_marker.g.dart';
 
 const selectedMarkerManagerId = 'selected-marker';
+const _layerId = '977194';
 
 // TODO(@alexstrnik): переписать немного
 @riverpod
@@ -13,8 +14,11 @@ class SelectedMarker extends _$SelectedMarker {
   Marker? build() => null;
 
   Future<void> showMarker(Marker marker) async {
-    final mapObjectManager = ref.read(
-      mapObjectManagerProvider(named: selectedMarkerManagerId).notifier,
+    final mapObjectManager = ref.watch(
+      mapObjectManagerProvider(
+        named: selectedMarkerManagerId,
+        layerId: _layerId,
+      ).notifier,
     );
     await mapObjectManager.removeAllMarkers();
     await mapObjectManager.addMarker(marker);
@@ -22,16 +26,24 @@ class SelectedMarker extends _$SelectedMarker {
   }
 
   Future<void> removeMarker(String id) async {
-    final read = ref.read(
-        mapObjectManagerProvider(named: selectedMarkerManagerId).notifier,);
-    await read.removeMarkerById(id);
+    final mapObjectManager = ref.read(
+      mapObjectManagerProvider(
+        named: selectedMarkerManagerId,
+        layerId: _layerId,
+      ).notifier,
+    );
+    await mapObjectManager.removeMarkerById(id);
     state = null;
   }
 
   Future<void> removeAllMarkers() async {
-    final read = ref.read(
-        mapObjectManagerProvider(named: selectedMarkerManagerId).notifier,);
-    await read.removeAllMarkers();
+    final mapObjectManager = ref.read(
+      mapObjectManagerProvider(
+        named: selectedMarkerManagerId,
+        layerId: _layerId,
+      ).notifier,
+    );
+    await mapObjectManager.removeAllMarkers();
     state = null;
   }
 }
