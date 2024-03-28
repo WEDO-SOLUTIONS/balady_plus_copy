@@ -14,7 +14,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 class CommercialLicenseDetailsBody extends StatefulWidget {
   const CommercialLicenseDetailsBody({super.key});
@@ -75,7 +74,7 @@ class _CommercialLicenseDetailsBodyState
                 create: (BuildContext context) {
                   return CommercialLicensePermitsViewModel(
                     webService: sl(),
-                    requestId: commercialLicenceDetails.licenseInfo!.licenseId,
+                    requestId: commercialLicenceDetails.licenseInfo!.licenseId??0,
                   );
                 },
               ),
@@ -109,7 +108,7 @@ class _CommercialLicenseDetailsBodyState
                             children: [
                               CustomTextWidget(
                                 commercialLicenceDetails
-                                    .licenseInfo!.statusDesc,
+                                    .licenseInfo!.statusDesc??"",
                                 textStyle: AppStyle.tagTextStyle,
                               ),
                             ],
@@ -132,7 +131,7 @@ class _CommercialLicenseDetailsBodyState
                       CardParameter(
                         title: 'submitterName'.tr(),
                         value: commercialLicenceDetails
-                            .submitterInfo!.submitterName,
+                            .submitterInfo!.submitterName??"",
                       ),
                       // CardParameter( // from whats
                       //   title: 'applicant_adjective'.tr(),
@@ -259,29 +258,29 @@ class _CommercialLicenseDetailsBodyState
                             CardParameter(
                               title: 'region'.tr(),
                               value: commercialLicenceDetails
-                                  .locationInfo!.regionName,
+                                  .locationInfo!.regionName??"",
                             ),
                             CardParameter(
                               // from whats
                               title: 'municipalityName'.tr(),
                               value: commercialLicenceDetails
-                                  .locationInfo!.municipalityName,
+                                  .locationInfo!.municipalityName??""
                             ),
                             CardParameter(
                               // from whats
                               title: 'subMunicipalityName'.tr(),
                               value: commercialLicenceDetails
-                                  .locationInfo!.subMunicipalityName,
+                                  .locationInfo!.subMunicipalityName??"",
                             ),
                             CardParameter(
                               title: 'district'.tr(),
                               value: commercialLicenceDetails
-                                  .locationInfo!.districtName,
+                                  .locationInfo!.districtName??"",
                             ),
                             CardParameter(
                               title: 'street'.tr(),
                               value: commercialLicenceDetails
-                                  .locationInfo!.streetName,
+                                  .locationInfo!.streetName??"",
                             ),
                             CardParameter(
                               title: 'latitude'.tr(),
@@ -396,20 +395,20 @@ class _CommercialLicenseDetailsBodyState
                                         title: 'contractType'.tr(),
                                         value: commercialLicenceDetails
                                             .shopInfo!.contractInfoResponseDto!
-                                            .getDisplayContractTypeName(),
+                                            .getDisplayContractTypeName()??"",
                                       ),
                                       CardParameter(
                                         title: 'contractNumber'.tr(),
                                         value: commercialLicenceDetails
                                             .shopInfo!
                                             .contractInfoResponseDto!
-                                            .contractNumber,
+                                            .contractNumber??"",
                                       ),
                                       CardParameter(
                                         title: 'contractOption'.tr(),
                                         value: (commercialLicenceDetails
                                             .shopInfo!.contractInfoResponseDto!
-                                            .getDisplayCleanContractName()),
+                                            .getDisplayCleanContractName()??""),
                                       ),
                                     ],
                                   )
@@ -425,7 +424,7 @@ class _CommercialLicenseDetailsBodyState
                                     itemCount: state.commercialLicenceDetails!
                                         .shopInfo!.boardsInfo!.length,
                                     itemBuilder: (_, index) {
-                                      BoardsInfo boardsInfo = state
+                                      BoardsInfomation boardsInfo = state
                                           .commercialLicenceDetails!
                                           .shopInfo!
                                           .boardsInfo![index];
@@ -455,7 +454,7 @@ class _CommercialLicenseDetailsBodyState
                                               ),
                                               const SizedBox(height: 4),
                                               CustomTextWidget(
-                                                boardsInfo.typeName,
+                                                boardsInfo.typeName??"",
                                                 textStyle: AppStyle
                                                     .costTextStyle
                                                     .copyWith(
@@ -584,19 +583,5 @@ class _CommercialLicenseDetailsBodyState
     );
   }
 
-// List<AttachmentData> getNewModelList(List<AttachmentModel> attachments) {
-//   return attachments
-//       .map(
-//         (attachment) => AttachmentData(
-//           id: attachment.id.toString(),
-//           memo: "attachment",
-//           title: attachment.name ?? '',
-//           fileName: attachment.fileName ?? attachment.name,
-//           filePath: attachment.attachUrl,
-//           isRequired: attachment.isMandatory ?? false,
-//           isUploaded: attachment.updatable ?? false,
-//         ),
-//       )
-//       .toList();
-// }
+
 }
