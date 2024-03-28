@@ -9,6 +9,7 @@ import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/pages/path_nav/ui/eta_sheet.dart';
 import 'package:mapness/pages/path_nav/ui/path_nav_map_controlls.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
@@ -16,7 +17,6 @@ import 'package:mapness/widgets/path_nav/ui/path_nav_continue_trip.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class PathNavPage extends ConsumerStatefulWidget {
-
   const PathNavPage({
     required this.navType,
     super.key,
@@ -83,6 +83,22 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
     }
   }
 
+  Future<void> _moveCameraToUser() async {
+    final position = ref.read(locationProvider);
+    final cameraProvider = ref.read(cameraPositionProvider.notifier);
+
+    if (position != null) {
+      await cameraProvider.animateTo(
+        CameraPositionMessage(
+          point: position,
+          zoom: 17.5,
+          tilt: 0,
+          bearing: 0,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
@@ -97,9 +113,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
             Positioned.fill(
               bottom: 68,
               child: SafeArea(
-                  child: PathNavMapControlls(
-                navType: widget.navType,
-              ),),
+                child: PathNavMapControlls(
+                  navType: widget.navType,
+                ),
+              ),
             ),
 
             /// shadow bg + tap observer
@@ -158,6 +175,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
                         _setNavigationState(PathNavState.running);
                         final dgisController =
                             await ref.read(dgisControllerProvider.future);
+
+                        await _moveCameraToUser();
+
                         await dgisController.followNavigation();
                       },
                       eta: eta,
