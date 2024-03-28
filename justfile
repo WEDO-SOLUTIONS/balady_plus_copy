@@ -154,3 +154,11 @@ download-sdk:
     print_style '' 'green' 'SDK version saved to .sdk-version'
     echo $latestSDK > .sdk-version
 
+
+codegen_cached:
+    #!/bin/bash
+    set -euo pipefail
+    print_style '' 'yellow' '> generate code...'
+    cd mapness
+    fvm dart run cached_build_runner build || true
+    print_style '' 'yellow' '< code generated'
