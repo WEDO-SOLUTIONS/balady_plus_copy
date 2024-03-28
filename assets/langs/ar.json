@@ -3961,10 +3961,6 @@
   "city_region": "المدينة/المنطقة",
   "select_region": "من فضلك اختار المدينة/المنطقة",
 
-  "realEstateRequestId": "رقم الطلب",
-  "realEstateSurveyId": "رقم القرار المساحي",
-  "realEstateId": "رقم الهوية العقارية",
-  "realEstateRequestIdNote": "خدمة الدمج يبدأ ب LMS خدمة التجزئة يبدأ ب LSS خدمة فرز مخطط يبدأ ب LSBP خدمة تحديث صك الكتروني أو ورقي يتم ادخال رقم الطلب أو رقم القرار المساحي", 
 
 
     "issue_commercial_civil":"بيانات الدفاع المدني", 
@@ -3982,14 +3978,25 @@
     "DELEGATOR":"مفوض", 
     "issue_commercial_conclusion_request_draft":"مسودة الرخصة", 
 
-
-    "commercial_licenseـquery_title": "يرجى إدخال البيانات التالية", 
-
     "submitter_compliance_text":"حالة الامتثال من مقدم الطلب: ", 
 
     "emp_compliance_text":"حالة الامتثال من المراقب: " , 
 
 
-    "objection_enquiry_none":"عفوا لا يوجد طلبات إفادة من لجنة نظر الإعتراضات والشكاوى"
+    "objection_enquiry_none":"عفوا لا يوجد طلبات إفادة من لجنة نظر الإعتراضات والشكاوى", 
+
+    "realEstateRequestId":"رقم الطلب", 
+    "realEstateSurveyId":"رقم القرار المساحي", 
+    "realEstateId":"رقم الهوية العقارية", 
+    "realEstateRequestIdNote":"خدمة الدمج يبدأ ب LMS خدمة التجزئة يبدأ ب LSS خدمة فرز مخطط يبدأ ب LSBP خدمة تحديث صك الكتروني أو ورقي يتم ادخال رقم الطلب أو رقم القرار المساحي", 
+
+
+    "health_cert_riyadh_new":"عزيزي المستفيد لاصدار الشهادة الصحية", 
+    "health_cert_riyadh_renew":"عزيزي المستفيد لتجديد الشهادة الصحية", 
+    "health_cert_riyadh_agree":"اضغط هنا", 
+
+
+    "municipal_cert_riyadh_new":"عزيزي المستفيد لطلب خدمة بلدية", 
+    "municipal_cert_riyadh_agree":"اضغط هنا"
 
 }
