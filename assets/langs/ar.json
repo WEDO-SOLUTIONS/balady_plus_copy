@@ -3964,6 +3964,17 @@
     "realEstateSurveyId":"رقم القرار المساحي", 
     "realEstateId":"رقم الهوية العقارية", 
     "realEstateRequestIdNote":"خدمة الدمج يبدأ ب LMS خدمة التجزئة يبدأ ب LSS خدمة فرز مخطط يبدأ ب LSBP خدمة تحديث صك الكتروني أو ورقي يتم ادخال رقم الطلب أو رقم القرار المساحي", 
-    "objection_enquiry_none":"عفوا لا يوجد طلبات إفادة من لجنة نظر الإعتراضات والشكاوى"
+    "objection_enquiry_none":"عفوا لا يوجد طلبات إفادة من لجنة نظر الإعتراضات والشكاوى", 
+
+
+
+    "health_cert_riyadh_new":"عزيزي المستفيد لاصدار الشهادة الصحية", 
+    "health_cert_riyadh_renew":"عزيزي المستفيد لتجديد الشهادة الصحية", 
+    "health_cert_riyadh_agree":"اضغط هنا", 
+
+
+    "municipal_cert_riyadh_new":"عزيزي المستفيد لطلب خدمة بلدية", 
+    "municipal_cert_riyadh_agree":"اضغط هنا", 
+    "objection_download_commite_decision":"تحميل نسخة من قرار لجنة نظر الإعتراضات"
 
 }

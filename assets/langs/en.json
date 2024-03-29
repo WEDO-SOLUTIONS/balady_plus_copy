@@ -4237,6 +4237,17 @@
   "realEstateSurveyId":"Real Estate Survey Id", 
   "realEstateId":"Real Estate Id", 
   "realEstateRequestIdNote":"Consolidation service starts with LMS. Segmentation service starts with LSS. Plan sorting service starts with LSBP. Electronic or paper instrument update service. The application number or cadastral decision number is entered.", 
-  "objection_enquiry_none": "Sorry, there are no Enquiry Requests from the Objections and Complaints Review Committee"
+  "objection_enquiry_none": "Sorry, there are no Enquiry Requests from the Objections and Complaints Review Committee", 
+
+  "health_cert_riyadh_new":"Dear beneficiary, to issue a health certificate.", 
+  "health_cert_riyadh_renew":"Dear beneficiary, to renew the health certificate", 
+  "health_cert_riyadh_agree":"Click here", 
+
+
+  "municipal_cert_riyadh_new":"Dear beneficiary, to request a municipal service", 
+  "municipal_cert_riyadh_agree":"Click here", 
+  "objection_download_commite_decision":"Download a copy of the decision of the Objections Review Committee"
+
+
 
 }
