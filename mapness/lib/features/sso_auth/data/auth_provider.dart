@@ -18,8 +18,9 @@ class Auth extends _$Auth {
     ref.read(urbiMetricsProvider.notifier).logEvent('Auth/doAuth');
     mixpanel?.timeEvent('Auth: doAuth');
     await CommonFunctions.onLogin();
-    ref.invalidateSelf();
-    ref.invalidate(favouriteRepositoryProvider);
+    ref
+      ..invalidateSelf()
+      ..invalidate(favouriteRepositoryProvider);
     mixpanel?.track('Auth: doAuth');
   }
 
@@ -53,6 +54,9 @@ class Auth extends _$Auth {
 
     final authSubscription = sl<EntryPointCubit>().stream.listen((event) {
       state = AsyncValue.data(event.userInfo);
+      ref
+        ..invalidate(favouriteRepositoryProvider)
+        ..invalidate(profileImageProvider);
     });
     ref.onDispose(authSubscription.cancel);
 

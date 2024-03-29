@@ -13,7 +13,8 @@ class DgisStreamHandler: NSObject, FlutterStreamHandler {
 
         let eventChannel = FlutterEventChannel(
             name: "com.dgis.map_view_events_\(viewId)",
-            binaryMessenger: messenger)
+            binaryMessenger: messenger
+        )
         eventChannel.setStreamHandler(self)
     }
     

@@ -19,6 +19,7 @@ import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
 import 'package:mapness/_features/debug_overlay/debug_overlay.dart';
+import 'package:mapness/_features/favourites/entity/models/favorite_cache_item.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
@@ -37,6 +38,15 @@ import 'package:provider/provider.dart' as provider;
 import 'package:share_plus/share_plus.dart';
 
 Mixpanel? mixpanel;
+
+class MapnessRouteObserver extends RouteObserver<ModalRoute<void>> {
+  static final MapnessRouteObserver _instance =
+      MapnessRouteObserver._internal();
+
+  factory MapnessRouteObserver() => _instance;
+
+  MapnessRouteObserver._internal();
+}
 
 class MapnessProviderScope extends StatelessWidget {
   const MapnessProviderScope({
@@ -289,9 +299,15 @@ Future<void> setupMapness(EnvType envType) async {
   );
 
   await Hive.initFlutter();
-  Hive.registerAdapter(
-    SearchHistoryItemAdapter(),
-  );
+
+  // Initialize hive adapters
+  Hive
+    ..registerAdapter(SearchHistoryItemAdapter())
+    ..registerAdapter(FavoriteCacheItemAdapter())
+    ..registerAdapter(HiveCoordinatesAdapter())
+    ..registerAdapter(HiveFavouriteItemEntityAdapter())
+    ..registerAdapter(FavoriteCacheStateAdapter());
+
   final box = await Hive.openBox('envType');
   final env = switch (envType) {
     EnvType.dev => 'dev',

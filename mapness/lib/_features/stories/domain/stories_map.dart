@@ -25,10 +25,10 @@ class StoriesMap {
             isWatched: false,
             isAssetImage: true,
             duration: 10,
-            action: StoryFrameAction(
+            action: LocaleKeyFrameAction(
               deeplinkUrl: 'next',
               action: StoryAction.next,
-              title: 'Next',
+              titleLocaleKey: 'next',
               backgroundColor: NonThemeColor.color29,
               textStyle: StoryTextStyle(
                 color: Colors.white,
@@ -44,10 +44,10 @@ class StoriesMap {
             isAssetImage: true,
             isWatched: false,
             duration: 10,
-            action: StoryFrameAction(
+            action: LocaleKeyFrameAction(
               deeplinkUrl: 'next',
               action: StoryAction.next,
-              title: 'Next',
+              titleLocaleKey: 'next',
               backgroundColor: NonThemeColor.color29,
               textStyle: StoryTextStyle(
                 color: Colors.white,
@@ -62,10 +62,10 @@ class StoriesMap {
             isWatched: false,
             isAssetImage: true,
             duration: 10,
-            action: StoryFrameAction(
+            action: LocaleKeyFrameAction(
               deeplinkUrl: 'route',
               action: StoryAction.close,
-              title: 'Try Now',
+              titleLocaleKey: 'try_now',
               backgroundColor: NonThemeColor.color29,
               textStyle: StoryTextStyle(
                 color: Colors.white,

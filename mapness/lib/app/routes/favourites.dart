@@ -6,7 +6,6 @@ import 'package:mapness/_features/favourites/favourites_picker.dart';
 import 'package:mapness/_features/favourites/favourites_search.dart';
 import 'package:mapness/_features/favourites/widgets/delete_all/delete_all_content.dart';
 import 'package:mapness/app/routes/routes.dart';
-
 import 'package:mapness/features/search/ui/search_scope.dart';
 
 part 'favourites.g.dart';
@@ -35,7 +34,6 @@ class FavouritesRoute extends GoRouteData {
 }
 
 class FavouritesSearchRoute extends GoRouteData {
-
   const FavouritesSearchRoute({required this.markerType});
   final FavouriteItemMarkerType markerType;
 
@@ -43,13 +41,17 @@ class FavouritesSearchRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) => SearchScope(
-      named: 'MapSearch',
-      child: FavouritesSearch(
+        named: 'MapSearch',
+        child: Material(
+          child: FavouritesSearch(
             markerType: FavouriteItemMarkerType.values.firstWhere(
-          (element) => element.name == state.uri.queryParameters['marker-type'],
-          orElse: () => FavouriteItemMarkerType.place,
-        ),),
-    );
+              (element) =>
+                  element.name == state.uri.queryParameters['marker-type'],
+              orElse: () => FavouriteItemMarkerType.place,
+            ),
+          ),
+        ),
+      );
 }
 
 class FavouritesDeleteAllRoute extends GoRouteData {
