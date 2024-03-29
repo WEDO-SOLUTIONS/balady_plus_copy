@@ -32,14 +32,15 @@ class PoiCardViewModel {
 
   void share({required int? objectId}) {
     if (objectId != null) {
-      Share.share('balady://poi-map?dgis-object-id=$objectId');
+      Share.share(
+          'https://apps.balady.gov.sa/#/poi-map?dgis-object-id=$objectId');
     } else {
       onError();
     }
   }
 
   String _myLocationDeepling(LatLng location) =>
-      'balady://poi-map?lat=${location.latitude}&lng=${location.longitude}';
+      'https://apps.balady.gov.sa/#/poi-map?lat=${location.latitude}&lon=${location.longitude}&type=my-location';
 
   void shareMyLocation(LatLng? location) {
     if (location != null) {
@@ -85,28 +86,6 @@ class PoiCardViewModel {
       await launchUrl(Uri(scheme: 'tel', path: value));
     }
   }
-
-  // void removeFromFavourite(FavouriteItem data) {
-  //   ref.read(favouriteRepositoryProvider.notifier).delete(data);
-  // }
-  //
-  // void addToFavourites(DirectoryObjectMessage data) {
-  //   ref.read(favouriteRepositoryProvider.notifier).addItem(
-  //         FavouriteItem(
-  //           coordinates: Coordinates(
-  //             latitude: data.markerPosition?.latitude ?? 24.712301,
-  //             longitude: data.markerPosition?.longitude ?? 46.674175,
-  //           ),
-  //           id: '${data.id?.objectId ?? 'id'}',
-  //           subtitle: data.subtitle,
-  //           title: data.title,
-  //           entity: FavouriteItemEntity(
-  //             id: '${data.id?.objectId ?? '70030076201324251'}',
-  //             sourceType: EntitySourceType.urbi,
-  //           ),
-  //         ),
-  //       );
-  // }
 
   void resetMapControlsState() {
     ref.read(mapControlsProvider.notifier).update(
