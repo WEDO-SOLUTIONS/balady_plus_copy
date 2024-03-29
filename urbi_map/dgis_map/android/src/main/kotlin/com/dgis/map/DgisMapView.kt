@@ -79,7 +79,8 @@ class DgisMapView(
     private val closables = mutableListOf<AutoCloseable>()
 
     init {
-        MapApi.setup(binaryMessenger, this)
+        val messenger = ProxyBinaryMessenger(binaryMessenger, nameSuffix = "map_$id")
+        MapApi.setup(messenger, this)
     }
 
     override fun getView() = mapView

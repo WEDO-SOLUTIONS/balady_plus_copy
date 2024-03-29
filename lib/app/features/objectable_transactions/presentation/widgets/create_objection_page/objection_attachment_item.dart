@@ -27,8 +27,11 @@ import '../../../../objections/domain/entities/objection_details.dart';
 
 class ObjectionAttachmentItem extends StatefulWidget {
   ReasonAttachment file;
+  String? name;
+  double? width;
 
-  ObjectionAttachmentItem({Key? key, required this.file}) : super(key: key);
+  ObjectionAttachmentItem({Key? key, required this.file, this.name, this.width})
+      : super(key: key);
 
   @override
   _ObjectionAttachmentItemState createState() =>
@@ -44,6 +47,7 @@ class _ObjectionAttachmentItemState extends State<ObjectionAttachmentItem> {
       },
       child: Container(
           height: 56,
+          width: widget.width,
           padding: EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: Color(0x80E6EFEF),
@@ -68,7 +72,7 @@ class _ObjectionAttachmentItemState extends State<ObjectionAttachmentItem> {
               CustomHorizontalSpace(width: 8),
               Flexible(
                 child: CustomTextWidget(
-                  widget.file.fileName ?? "",
+                  widget.name ?? (widget.file.fileName ?? ""),
                   fontColor: AppColor.blackModern700Light,
                   fontSize: 12,
                   maxLines: 1,
@@ -155,7 +159,9 @@ class _ObjectionAttachmentItemState extends State<ObjectionAttachmentItem> {
 
     dio.interceptors.add(AppInterceptors());
     ;
-    Response r = await WebService(dio: dio).dio.getUri(Uri.parse(url));
+    Response r = await WebService(dio: dio)
+        .dio
+        .getUri(Uri.parse(url), options: Options(headers: {"X-Service-Id": 2}));
 
     String dir = (await getTemporaryDirectory()).path;
     File file = new File('$dir/$filename');

@@ -23,7 +23,6 @@ final InAppReview inAppReview = InAppReview.instance;
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
 
-  @override
   Widget build(BuildContext context, WidgetRef ref) => WillPopScope(
         onWillPop: () async {
           StatefulNavigationShell.of(context).goBranch(

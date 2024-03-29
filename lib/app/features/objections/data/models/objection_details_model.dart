@@ -22,6 +22,7 @@ class ObjectionDetailsModel extends ObjectionDetails {
       super.objectionReasonsList,
       super.enquiryList,
       super.requestStatusId,
+      super.serviceTypeId,
       super.objectionServiceName});
 
   factory ObjectionDetailsModel.fromJson(Map<String, dynamic> json) =>
@@ -63,6 +64,7 @@ class ObjectionDetailsModel extends ObjectionDetails {
               : List<EnquiryItemModel>.from(json["EnquiryList"]!
                   .map((x) => EnquiryItemModel.fromJson(x))),
           requestStatusId: json["RequestStatusId"],
+          serviceTypeId: json["ServiceTypeId"],
           objectionServiceName: json["ObjectionServiceName"]);
 
   @override
@@ -91,18 +93,39 @@ class ObjectionDetailsModel extends ObjectionDetails {
 }
 
 class CommitteeDecisionModel extends CommitteeDecision {
-  CommitteeDecisionModel({
-    super.decisionId,
-    super.decisionDate,
-    super.decision,
-  });
+  CommitteeDecisionModel(
+      {super.decisionId,
+      super.decisionDate,
+      super.decision,
+      super.decisionPdf});
 
   factory CommitteeDecisionModel.fromJson(Map<String, dynamic> json) =>
       CommitteeDecisionModel(
         decisionId: json["DecisionID"],
         decisionDate: json["DecisionDate"],
         decision: json["Decision"],
+        decisionPdf: json["DecisionPDF"] == null
+            ? null
+            : DecisionPdfModel.fromJson(json["DecisionPDF"]),
       );
+}
+
+class DecisionPdfModel extends DecisionPdf {
+  DecisionPdfModel({
+    super.contentLocation,
+    super.fileName,
+  });
+
+  factory DecisionPdfModel.fromJson(Map<String, dynamic> json) =>
+      DecisionPdfModel(
+        contentLocation: json["ContentLocation"],
+        fileName: json["FileName"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "ContentLocation": contentLocation,
+        "FileName": fileName,
+      };
 }
 
 class RequestSubmitterDataModel extends RequestSubmitterData {

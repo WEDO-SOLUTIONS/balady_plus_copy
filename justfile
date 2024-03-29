@@ -9,7 +9,13 @@ export GIT_COMMIT := replace_regex(`git rev-parse HEAD`, '([a-zA-Z0-9]{8}).*', '
 export VENDOR_CONFIG := env_var_or_default('VENDOR_CONFIG', 'unknown')
 dart_define := "--dart-define=GIT_BRANCH=\"" + GIT_BRANCH + "\" --dart-define=GIT_COMMIT=\"" + GIT_COMMIT + "\" --dart-define=VENDOR_CONFIG=$VENDOR_CONFIG"
 
-prebuild: pubget locale_gen build_pigeon codegen
+# everything regarding release
+import 'justscripts/release.just'
+
+# local overrides feel free to add any there
+import? 'justscripts/local.just'
+
+prebuild: pubget locale_gen build_pigeon download-sdk codegen
 
 pubget:
     #!/bin/bash
@@ -55,6 +61,8 @@ codegen-watch:
     fvm dart run build_runner watch --delete-conflicting-outputs || true
 
 open_built:
+    print_style '' 'yellow' 'Open built folder with:'
+    print_style 'bold' 'cyan' 'just open_built'
     open build/app/outputs/flutter-apk
 
 build_pigeon:
@@ -128,48 +136,29 @@ dev-env-setup:
     ./mapness/scripts/dev-env-setup.sh
 
 download-sdk:
-    curl -u "balady-developers:4Itn0|w3" -O https://artifactory.2gis.dev/vendor-ios-release/10.2.2/Release/DGisFullSDK.zip
+    #!/usr/bin/env bash
+    latestSDK='10.2.2'
+    if [[ $(< .sdk-version) == $latestSDK ]]; then
+        print_style '' 'green' 'SDK already up-to date'
+        exit
+    fi
+
+    print_style '' 'yellow' 'Downloading new SDK release'
+    curl -u "balady-developers:4Itn0|w3" -O https://artifactory.2gis.dev/vendor-ios-release/$latestSDK/Release/DGisFullSDK.zip
     rm -rf urbi_map/dgis_map/ios/_DELETE_ME_/DGis.xcframework
     unzip DGisFullSDK.zip -d urbi_map/dgis_map/ios/_DELETE_ME_
     rm DGisFullSDK.zip
-    curl -u "balady-developers:4Itn0|w3" -O https://artifactory.2gis.dev/vendor-maven-release/ru/dgis/sdk/sdk-full/10.2.2/sdk-full-10.2.2.aar
+    curl -u "balady-developers:4Itn0|w3" -O https://artifactory.2gis.dev/vendor-maven-release/ru/dgis/sdk/sdk-full/$latestSDK/sdk-full-$latestSDK.aar
     mkdir -p urbi_map/dgis_map/android/_delete_me_
-    mv sdk-full-10.2.2.aar urbi_map/dgis_map/android/_delete_me_/sdk-full-latest.aar
+    mv sdk-full-$latestSDK.aar urbi_map/dgis_map/android/_delete_me_/sdk-full-latest.aar
+    print_style '' 'green' 'SDK version saved to .sdk-version'
+    echo $latestSDK > .sdk-version
 
-ios-release: apply-patches prebuild ios_setup && unapply-patches
-    #!/usr/bin/env bash
-    momrahBundle='momra.balady.ios'
-    baladyBundle='xyz.amoriodi.balady'
 
-    set -euxo pipefail
-    sed -i '' "s/$momrahBundle/$baladyBundle/" ios/Runner.xcodeproj/project.pbxproj
-    fvm flutter build ipa --target lib/main_stg.dart --flavor stg
-    sed -i '' "s/$baladyBundle/$momrahBundle/" ios/Runner.xcodeproj/project.pbxproj
-    open build/ios/archive/Runner.xcarchive
-
-apk-release version: apply-patches prebuild && unapply-patches open_built 
-    #!/usr/bin/env bash
+codegen_cached:
+    #!/bin/bash
     set -euo pipefail
-
-    print_style '' 'yellow' 'build urbi pre'
-    VENDOR_CONFIG="urbi-pre-prod"
-    fvm flutter build apk --target lib/main_urbi_pre.dart {{ dart_define }}
-    mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/urbi-pre-{{ version }}.apk
-    print_style '' 'cyan' 'urbi pre ready!'
-
-    print_style '' 'yellow' 'build momrah prod'
-    VENDOR_CONFIG="momrah-prod"
-    fvm flutter build apk --target lib/main_prod.dart {{ dart_define }}
-    mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/momrah-prod-{{ version }}.apk
-    print_style '' 'cyan' 'momrah prod ready!'
-
-    print_style '' 'yellow' 'build momrah stage'
-    VENDOR_CONFIG="momrah-stage"
-    # fvm flutter build apk --target lib/main_stg.dart --debug {{ dart_define }}
-    # mv build/app/outputs/flutter-apk/app-debug.apk build/app/outputs/flutter-apk/momrah-stage-debug-{{ version }}.apk
-    fvm flutter build apk --target lib/main_stg.dart {{ dart_define }}
-    mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/momrah-stage-{{ version }}.apk
-    print_style '' 'cyan' 'momrah stage ready!'
-
-    print_style '' 'green' 'done, you may open build with:'
-    print_style 'bold' 'yellow' 'just open_built'
+    print_style '' 'yellow' '> generate code...'
+    cd mapness
+    fvm dart run cached_build_runner build || true
+    print_style '' 'yellow' '< code generated'

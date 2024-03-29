@@ -21,8 +21,7 @@ class Initializer {
     // di: dependency injection
 
     // Initialize hive and open all needed boxes
-    await HiveManager.initializeHive();
-
+   // await HiveManager.initializeHive();
     await registerDeviceDetails();
     await registerPackageDetails();
 
@@ -50,6 +49,8 @@ class Initializer {
         deviceId = info.identifierForVendor ?? "2"; //UUID for iOS
         deviceOs = "iOS";
       }
+
+
     } on PlatformException catch (_) {}
 
     final details = sl<DeviceDetails>().copyWith(

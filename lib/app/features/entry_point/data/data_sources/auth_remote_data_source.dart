@@ -69,7 +69,11 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
             'profile',
             'offline_access',
             'EmployeeAdminstration.Api',
+
           ],
+
+          // fawzi add extra pram to login
+          //  additionalParameters: {"appId":"BaladySuperApp","fcmToken":CommonProperties.fcmToken!,"deviceId":CommonProperties.deviceId!}
         ),
       );
       response?.accessToken.actionLog();

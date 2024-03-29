@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/domain/extensions/extensions.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
-import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
+import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/_features/favourites/widgets/screen/search_screen.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/make_address.dart';
@@ -13,7 +13,6 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/suggest.dart';
 
 class FavouritesSearch extends ConsumerStatefulWidget {
-
   const FavouritesSearch({required this.markerType, super.key});
   final FavouriteItemMarkerType markerType;
 
@@ -87,7 +86,9 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
                               .textS
-                              .copyWith(color: context.color.text_and_icons_base_primary),
+                              .copyWith(
+                                  color: context
+                                      .color.text_and_icons_base_primary),
                         ),
                         Text(
                           item.makeAddress(),
@@ -96,7 +97,9 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
                               .textS
-                              .copyWith(color: context.color.text_and_icons_base_primary),
+                              .copyWith(
+                                  color: context
+                                      .color.text_and_icons_base_primary),
                         ),
                         if (item.workStatus != null)
                           Text(
@@ -107,7 +110,8 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
                                 .copyWith(
                                   color: item.workStatus!.isOpen
                                       ? context.color.stroke_accent
-                                      : context.color.text_and_icons_base_primary,
+                                      : context
+                                          .color.text_and_icons_base_primary,
                                 ),
                           ),
                       ],
@@ -134,7 +138,7 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
     DirectoryObjectMessage item,
   ) async {
     final favItem = item.mapToFavourite();
-    final repo = ref.watch(favouriteRepositoryProvider.notifier);
+    final repo = ref.read(favouriteCacheProvider.notifier);
     await switch (widget.markerType) {
       FavouriteItemMarkerType.unknown ||
       FavouriteItemMarkerType.place =>

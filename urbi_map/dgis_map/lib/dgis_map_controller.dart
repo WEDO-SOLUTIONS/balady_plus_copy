@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
 
-final _instance = DgisMapPlugin.instance;
-
 /// Class to comunicate with plugin. Every method can throw [PlatformException] whenever something
 /// goes wrong on platform side.
 class DgisMapController {
@@ -16,6 +14,7 @@ class DgisMapController {
   final int _viewId;
 
   final _evergisFilters = <dynamic>[];
+  final _instance = DgisMapPlugin();
 
   /// Zoom controls availability
   Stream<ZoomControlEnabledEvent> get zoomControlEnabledEvents =>

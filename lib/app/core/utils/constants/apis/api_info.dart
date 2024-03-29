@@ -786,6 +786,24 @@ class ApiUrl {
           int licenseNumber, unifiedFacilityNumber) =>
       '/v1/balady-commercial-services/licenses/$licenseNumber/by-unn/$unifiedFacilityNumber';
 
+  //Construction License Inquery
+  static String getConstructionLicenseData(int licenseNumber, String date) =>
+      '/v1/balady-construction-services/mobile/inquiry/building-licenses/$licenseNumber/$date';
+
+  //Noification APIS
+
+
+  static String updateNotificationSettings() =>
+      '/v1/iam-services/ext/devices';
+
+
+
+
+
+  //Survey license inquery
+  static String getSurveyLicenseData(int licenseNumber, String date) =>
+      '/v1/balady-construction-services/mobile/inquiry/area-reports/$licenseNumber/$date';
+
   //! Balady Calednar
 
   static const baladyCalendarFilter =
@@ -800,6 +818,21 @@ class ApiUrl {
   static const baladyCalendarEvents =
       'v1/balady-calendar-services/events/by-year';
 
+
+
+
+
+
+  //! Notifications
+  static const notificationsUnreadMessages = 'v1/notifications-hub-services/fe/unread-messages';
+  static const notificationsMessagesList = 'v1/notifications-hub-services/fe/messages-list';
+  static const notificationsMarkRead = 'v1/notifications-hub-services/fe/messages/mark-read';
+  static const notificationsDeletedMessages = 'v1/notifications-hub-services/fe/deleted-messages';
+  static const notificationsProducts = 'v1/notifications-hub-services/fe/products';
+  static const notificationsServices = 'v1/notifications-hub-services/fe/services';
+  static const notificationsSettingsList = 'v1/notifications-hub-services/fe/profiles';
+  static const setProductsNotificationsSettings = 'v1/notifications-hub-services/fe/profile/products';
+  static const setProfileNotificationsSettings = 'v1/notifications-hub-services/fe/profiles';
 //! Appointments New APIs
   static getAppointmentById(String id) =>
       'v1/appointments-mobile-services/appointments/$id';

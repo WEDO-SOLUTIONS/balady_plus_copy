@@ -38,7 +38,8 @@ class _WalletScreenState extends State<WalletScreen> {
         listener: (context, state) {},
         builder: (context, state) {
           return Scaffold(
-            appBar: DefaultAppBarWidget(title: "wallet".tr()),
+            appBar: DefaultAppBarWidget(
+                title: "bottomNavigationBarDigitalWalletWord".tr()),
             body: Stack(
               children: [
                 if (state.status == BlocStatus.success &&

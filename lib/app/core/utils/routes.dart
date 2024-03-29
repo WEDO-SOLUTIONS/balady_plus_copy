@@ -13,6 +13,8 @@ import 'package:balady_plus/app/features/athkar/presentation/pages/athkar_entity
 import 'package:balady_plus/app/features/boarding/presentation/pages/boarding_main_page.dart';
 import 'package:balady_plus/app/features/force_update/presentation/pages/forceUpdatePage.dart';
 import 'package:balady_plus/app/features/jod_services/presentation/tobacco_list/pages/jod_donation_page.dart';
+import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_details_screen.dart';
+import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_list_screen.dart';
 import 'package:balady_plus/app/features/profile_features/incidents/presentation/pages/dc_details.dart';
 import 'package:balady_plus/app/features/profile_features/incidents/presentation/pages/incident_details.dart';
 import 'package:balady_plus/app/features/profile_features/about_balady/presentation/screens/about_balady_screen.dart';
@@ -54,10 +56,6 @@ import '../../../etmam_app/features/dynamic_form/presentation/pages/bidding_type
 import '../../../etmam_app/features/dynamic_form/presentation/pages/edit_bidding_form_page.dart';
 import '../../../etmam_app/features/home/presentation/pages/etmam_main_city_page.dart';
 import '../../../etmam_app/features/home/presentation/pages/etmam_main_page.dart';
-
-//import '../../../etmam_app/features/my_orders/presentation/pages/delete_orders_page.dart';
-//import '../../../etmam_app/features/my_orders/presentation/pages/request_details_page.dart';
-//import '../../../etmam_app/features/my_orders/presentation/pages/request_offers_page.dart';
 import '../../../etmam_app/features/my_orders/presentation/pages/delete_orders_page.dart';
 import '../../../etmam_app/features/my_orders/presentation/pages/request_details_page.dart';
 import '../../core/utils/utils_exports.dart'
@@ -82,6 +80,9 @@ import '../../features/commercial_license/presentation/submit_application_succes
 import '../../features/commercial_license_inquery/persentation/commercial_license_overview/commercial_license_overview_screen.dart';
 import '../../features/commercial_license_inquery/persentation/commercial_license_query/commercial_license_query_screen.dart';
 import '../../features/commercial_license_inquery/persentation/commercial_license_query_Details/commercial_license_query_details.dart';
+import '../../features/construction_license_inquery/persentation/construction_license_overview/construction_license_overview_screen.dart';
+import '../../features/construction_license_inquery/persentation/construction_license_query/construction_license_inquery_screen.dart';
+import '../../features/construction_license_inquery/persentation/construction_license_query_Details/construction_license_inquery_details.dart';
 import '../../features/create_compliance/presentation/pages/compliance_details_page.dart';
 import '../../features/create_compliance/presentation/pages/map_page/complinace_map_page.dart';
 import '../../features/create_compliance/presentation/pages/non_compliance_screen.dart';
@@ -132,6 +133,9 @@ import '../../features/self_ratiing/presentation/pages/self_rating_result_page.d
 import '../../features/self_ratiing/presentation/pages/self_rating_section_page.dart';
 import '../../features/services/presentation/pages/all_services_page.dart';
 import '../../features/services/presentation/pages/dashboard_page/presentation/pages/profile_page.dart';
+import '../../features/survey_license_inquery_report/persentation/survey_license_overview/survey_report_overview_screen.dart';
+import '../../features/survey_license_inquery_report/persentation/survey_license_query/survey_report_inquery_screen.dart';
+import '../../features/survey_license_inquery_report/persentation/survey_license_query_Details/survey_report_inquery_details.dart';
 import '../../features/unknow/pages/direct_page.dart';
 import '../../features/unknow/pages/investment_page.dart';
 import '../../features/unknow/pages/temp_rental_page.dart';
@@ -768,9 +772,30 @@ class Routes {
 
         RouteName.chatbot: (context) => const ChatBotScreen(),
 
-        RouteName.commercialLicenseOverView: (context) => const CommercialLicenseOverviewScreen(),
-        RouteName.commercialLicenseQuery: (context) => const CommercialLicenseQueryScreen(),
-       RouteName.commercialLicenseQueryDetails: (context) => const CommercialLicenseQueryDetails(),
+        RouteName.commercialLicenseOverView: (context) =>
+            const CommercialLicenseOverviewScreen(),
+        RouteName.commercialLicenseQuery: (context) =>
+            const CommercialLicenseQueryScreen(),
+        RouteName.commercialLicenseQueryDetails: (context) =>
+            const CommercialLicenseQueryDetails(),
+
+        RouteName.surveyReportInqueryOverView: (context) =>
+            const SurveyReportOverviewScreen(),
+        RouteName.surveyReportInquery: (context) =>
+            const SurveyReportInqueryScreen(),
+        RouteName.surveyReportInqueryDetails: (context) =>
+            const SurveyReportInqueryDetails(),
+
+        RouteName.constructionLicenseOverView: (context) =>
+            const ConstructionLicenseOverviewScreen(),
+        RouteName.constructionLicenseInquery: (context) =>
+            const ConstructionLicenseInqueryScreen(),
+        RouteName.constructionLicenseInqueryDetails: (context) =>
+            const ConstructionLicenseInqueryDetails(),
+        RouteName.notificationsListScreen: (context) =>
+            const NotificationsListScreen(),
+        RouteName.notificationsDetailsScreen: (context) =>
+            const NotificationsDetailsScreen(),
       };
 }
 

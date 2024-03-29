@@ -961,7 +961,6 @@
   "vhr_title": "Vehicles recovery requests",
   "req_title": "Municipal service requests",
   "tsr_title": "Supporter",
-  "mun_title": "Municipal services",
   "inq_title": "Inquiries",
   "crm_request_classification": "Classification",
   "Maps": "Maps",
@@ -2465,7 +2464,7 @@
   "viewLicenseDetails": "View license details",
   "wallet": "Portfolio",
   "theBusinessLicense": "Commercial licenses",
-  "healthCertificates": "Health certificates",
+  "healthCertificates": "Digital Health certificates",
   "businessLicense": "Commercial license",
   "createdAt": "Issued by",
   "name": "Name",
@@ -3554,8 +3553,8 @@
   "pledges_submit_commercial_description": "I confirm and pledge the accuracy of all data and attachments uploaded to the application, and I'm totally responsibe for any false and malicious reports according to regulations and instructions in the event that it turns out to be otherwise.",
   "acknowledge_pledge": "I confirm and pledge that all information above are correct",
   "return_home_page": "Back to home page",
-  "select_rating": "Rating selection",
-  "done_send_rating": "Sending your rating was done successfully",
+  "select_rating": "Rate the service",
+  "done_send_rating": "Your rating has been submitted successfully",
   "show_details": "Showing details",
   "activityCancellationDate": "Activity cancellation date",
   "exit_order": "Exist order",
@@ -4120,11 +4119,24 @@
   "calendar_type": "Calendar type",
   "no_events": "Sorry, there are no events now",
   "calendar_type_appmt": "Appointment",
-  "calendar_type_invoice": "Invoice not paid", 
+  "rating_chat_bot_title": "How do you evaluate the smart assistant?",
+  "chat_bot_not_working_title": "Sorry, the service is currently unavailable",
+  "chat_bot_not_working_message": "We apologize for the inconvenience. The current service is experiencing technical difficulties, and we are working diligently to resolve the issue. Please try again later. Thank you for your understanding.",
+  "calendar_type_invoice": "Invoice not paid",
+
+  "enable_disable_notifications": "You can enable or disable notifications from here",
+  "manage_notification": "Manage notifications for services",
 
 
-  "commercial_licenseـquery_title": "Insert the following", 
-"issue_commercial_conclusion_request_draft":"Request Draft", 
+  "make_all_read":"Mark all as read",
+  "delete_all": "Delete all",
+  "locale": "en",
+  "no_notifications": "",
+
+  "commercial_licenseـquery_title": "Insert the following",
+  "submitter_compliance_text":"Compliance status of the Submitter: ",
+  "emp_compliance_text":"Compliance status of the Employee: " ,
+
 
   "issue_commercial_conclusion_owner_data": "License Owner Data", 
   "issue_commercial_conclusion_owner_data_name": "Establishment name",
@@ -4220,21 +4232,55 @@
   "issue_commercial_calculator":"Fees Calculator", 
   "issue_commercial_print":"Print", 
   "OWNER_MANAGER":"OWNER/MANAGER", 
-  "DELEGATOR":"DELEGATOR",
+  "DELEGATOR":"DELEGATOR", 
 
-
-  "submitter_compliance_text":"Compliance status of the Submitter: ", 
-
-  "emp_compliance_text":"Compliance status of the Employee: " , 
 
 
 
   "city_region": "City/Region",
-  "select_region": "please select city/region", 
+  "select_region": "please select city/region",
+  "no_data_found":"No Data Found",
+  "survey_report_inquery": "Inquiry about  Area report",
+  "inquiry_construction_license": "Inquiry about  construction license",
+  "license_issue_date":"License Issue Date",
+  "license_typeـerror": "Please enter license type",
+  "unified_license_number_error": "please enter unified license number",
+  "license_date_error": "please enter license issue date",
+  "survey_number": "Survey Number",
+  "survey_propose": "Survey Propose",
+  "issue_date_error": "please enter license issue date",
+  "survey_number_error": "Please enter survey number",
+  "survey_proposeـerror": "please enter survey propose  ",
+  "survey_inquery_details": "Survey Inquiry Details",
+  "old_survey_number": "Old Survey Number ",
+  "survey_date": "Survey Issue Date ",
+  "survey_source":"Survey Source",
+  "land_information":"Land Information",
+  "land": "land",
+  "area_natural" :"Area at Natural",
+  "area_schema":"Area at Schema",
+  "license_details": "License Details",
+  "license_number_municipality": "License Number Municipality",
+  "building_type":"Building Type", 
+
+  "issue_commercial_conclusion_request_draft": "License Draft", 
 
 
   "realEstateRequestId":"Real Estate Request Id", 
   "realEstateSurveyId":"Real Estate Survey Id", 
   "realEstateId":"Real Estate Id", 
-  "realEstateRequestIdNote":"Consolidation service starts with LMS. Segmentation service starts with LSS. Plan sorting service starts with LSBP. Electronic or paper instrument update service. The application number or cadastral decision number is entered."
+  "realEstateRequestIdNote":"Consolidation service starts with LMS. Segmentation service starts with LSS. Plan sorting service starts with LSBP. Electronic or paper instrument update service. The application number or cadastral decision number is entered.", 
+  "objection_enquiry_none": "Sorry, there are no Enquiry Requests from the Objections and Complaints Review Committee", 
+
+  "health_cert_riyadh_new":"Dear beneficiary, to issue a health certificate.", 
+  "health_cert_riyadh_renew":"Dear beneficiary, to renew the health certificate", 
+  "health_cert_riyadh_agree":"Click here", 
+
+
+  "municipal_cert_riyadh_new":"Dear beneficiary, to request a municipal service", 
+  "municipal_cert_riyadh_agree":"Click here", 
+  "objection_download_commite_decision":"Download a copy of the decision of the Objections Review Committee"
+
+
+
 }

@@ -65,6 +65,7 @@ class _CommercialLicenseOverviewScreenState extends State<CommercialLicenseOverv
                 onPressed: () async {
                   NavigatorState navigator = Navigator.of(context);
 
+                  //CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
                     navigator.pushNamed(RouteName.commercialLicenseQuery);
                     // CommonFunctions.sendUXCamEvent(
                     //     UXCamEvents.startServiceQueryLicenseService);
