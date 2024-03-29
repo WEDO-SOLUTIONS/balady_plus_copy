@@ -310,6 +310,22 @@ class CommiteDetails extends StatelessWidget {
                 title: ("objection_details_commite_desc").tr(),
                 subTitle: state.details?.committeeDecision?.decision,
               ),
+              SizedBox(
+                height: 8,
+              ),
+              if (state.details?.committeeDecision?.decisionPdf
+                      ?.contentLocation !=
+                  null)
+                ObjectionAttachmentItem(
+                    width: double.infinity,
+                    name: "objection_download_commite_decision".tr(),
+                    file: ReasonAttachment(
+                        contentLocation: state.details?.committeeDecision
+                                ?.decisionPdf?.contentLocation ??
+                            "",
+                        fileName: state.details?.committeeDecision?.decisionPdf
+                                ?.fileName ??
+                            ""))
             ]);
       },
     );
