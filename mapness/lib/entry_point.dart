@@ -1,5 +1,6 @@
+// ignore_for_file: always_put_control_body_on_new_line
+
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_links/app_links.dart';
@@ -227,59 +228,112 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final momrahId = url.queryParameters['momrah-id'];
     final lat = url.queryParameters['lat'];
     final lon = url.queryParameters['lon'];
+    final type = url.queryParameters['type'];
 
     if (lat != null && lon != null) {
-      final vendorConfig = await ref.read(vendorConfigProvider.future);
-      final dio = ref.read(baseDioProvider);
-
-      final key =
-          vendorConfig['dgis/native-sdk/keys/user_web_api_key_for_on_premise'];
-      final catalogApi = vendorConfig['Modules/directory/webapi_url'];
-
-      final geocoderResponse = await dio.get(
-        '$catalogApi/3.0/items/geocode?lon=$lon&lat=$lat&fields=items.point&key=$key',
-      );
-      final geocoderData = json.decode(geocoderResponse.toString());
-      final items = geocoderData['result']['items'] as List<dynamic>;
-      final geocoderBest = items[0] as Map<String, dynamic>;
-
-      await ref.read(goRouterProvider).push(
-            PoiMapRoute(
-              dgisObjectId: int.parse(geocoderBest['id']),
-            ).location,
-          );
-      return;
+      if (type != null && type == 'my-location') {
+        await _myLocationDeepLinkHandler(double.parse(lat), double.parse(lon));
+      } else {
+        await _poiDeepLinkHandler(double.parse(lat), double.parse(lon));
+      }
     } else if (momrahId != null) {
-      final env = await ref.read(dgisEnvironmentProvider.future);
-      final dio = ref.read(baseDioProvider);
-
-      final twins = await dio.get(
-          '${env.twinsApi}/twins/search/partners?key=dfdd94df-49f9-45df-84ec-e8870ebdb9a0&partner_code=momrah&partner_id=$momrahId');
-      final twinsData = json.decode(twins.toString());
-
-      final Map<String, dynamic>? result =
-          (twinsData['result']['items'] as List<dynamic>).firstOrNull;
-
-      if (result == null) {
-        return;
-      }
-
-      final Map<String, dynamic>? dgisTwin =
-          (result['twins'] as List<dynamic>).firstOrNull;
-
-      if (dgisTwin == null) {
-        return;
-      }
-
-      await ref.read(goRouterProvider).push(
-            PoiMapRoute(
-              dgisObjectId: int.parse(dgisTwin['dgis_id']),
-            ).location,
-          );
-      return;
+      await _momrahDeepLinkHandler(momrahId);
+    } else {
+      await ref.read(goRouterProvider).push(url.toString());
     }
+  }
 
-    await ref.read(goRouterProvider).push(url.toString());
+  Future<void> _poiDeepLinkHandler(double latitude, double longitude) async {
+    const vendorConfigKey =
+        'dgis/native-sdk/keys/user_web_api_key_for_on_premise';
+    const catalogKey = 'Modules/directory/webapi_url';
+
+    final vendorConfig = await ref.read(vendorConfigProvider.future);
+    final dio = ref.read(baseDioProvider);
+
+    final catalogApi = vendorConfig[catalogKey];
+    final key = vendorConfig[vendorConfigKey];
+
+    final geocodeUrl = '$catalogApi/3.0/items/geocode';
+
+    final geocoderResponse = await dio.get(
+      geocodeUrl,
+      queryParameters: {
+        'lon': longitude,
+        'lat': latitude,
+        'fields': 'items.point',
+        'key': key,
+      },
+    );
+    final data = geocoderResponse.data as Map<String, dynamic>;
+
+    if (!data.containsKey('result')) return;
+
+    final result = data['result'] as Map<String, dynamic>;
+    if (!result.containsKey('items')) return;
+
+    final items = result['items'] as List<dynamic>;
+    if (items.isEmpty) return;
+
+    final geocoderBest = items.first as Map<String, dynamic>;
+    if (!geocoderBest.containsKey('id')) return;
+
+    final dgisId = int.tryParse(geocoderBest['id']);
+    if (dgisId == null) return;
+
+    PoiMapRoute.open(
+      ref.read(goRouterProvider),
+      dgisId,
+    );
+  }
+
+  Future<void> _myLocationDeepLinkHandler(
+      double latitude, double longitude) async {
+    final latLng = LatLng(latitude: latitude, longitude: longitude);
+    PoiMapRoute.open(
+      ref.read(goRouterProvider),
+      -1,
+      latLng: latLng,
+    );
+  }
+
+  Future<void> _momrahDeepLinkHandler(String momrahId) async {
+    final env = await ref.read(dgisEnvironmentProvider.future);
+    final dio = ref.read(baseDioProvider);
+
+    final twinsUrl = '${env.twinsApi}/twins/search/partners';
+
+    final twinsResponse = await dio.get(twinsUrl, queryParameters: {
+      'key': 'dfdd94df-49f9-45df-84ec-e8870ebdb9a0',
+      'partner_code': 'momrah',
+      'partner_id': momrahId,
+    });
+    final data = twinsResponse.data as Map<String, dynamic>;
+
+    if (!data.containsKey('result')) return;
+
+    final result = data['result'] as Map<String, dynamic>;
+    if (!result.containsKey('items')) return;
+
+    final items = result['items'] as List<dynamic>;
+    if (items.isEmpty) return;
+
+    final item = items.first as Map<String, dynamic>;
+    if (!item.containsKey('twins')) return;
+
+    final twins = item['twins'] as List<dynamic>;
+    if (twins.isEmpty) return;
+
+    final twin = twins.first as Map<String, dynamic>;
+    if (!twin.containsKey('dgis_id')) return;
+
+    final dgisId = int.tryParse(twin['dgis_id']);
+    if (dgisId == null) return;
+
+    PoiMapRoute.open(
+      ref.read(goRouterProvider),
+      dgisId,
+    );
   }
 }
 
