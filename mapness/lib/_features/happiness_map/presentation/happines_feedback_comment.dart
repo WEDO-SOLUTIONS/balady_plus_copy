@@ -19,17 +19,23 @@ class HappinesFeedbackComment extends ConsumerStatefulWidget {
 
 class _HappinessFeedbackCommentState
     extends ConsumerState<HappinesFeedbackComment> {
+  String _comment = '';
+
   void onClose() {
     context.pop();
   }
 
   void onSubmit() {
-    ref.read(happinessManagerProvider.notifier).updateComment(comment);
+    ref.read(happinessManagerProvider.notifier).updateComment(_comment);
 
     onClose();
   }
 
-  String comment = '';
+  @override
+  void initState() {
+    super.initState();
+    _comment = ref.read(happinessManagerProvider).comment;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +45,6 @@ class _HappinessFeedbackCommentState
     /// keep provider alive
     ref.watch(happinessManagerProvider.select((value) => null));
 
-    final state = ref.read(happinessManagerProvider);
-
     return LabeledDraggableSheet(
       onClose: onClose,
       title: context.l10n.shareYourFeelings,
@@ -49,8 +53,8 @@ class _HappinessFeedbackCommentState
         mainAxisSize: MainAxisSize.min,
         children: [
           IwishTextEditingField(
-            onChanged: (text) => comment = text,
-            initialValue: state.comment,
+            onChanged: (text) => _comment = text,
+            initialValue: _comment,
           ),
           const SizedBox(height: 16),
           LabeledElevatedButton(
