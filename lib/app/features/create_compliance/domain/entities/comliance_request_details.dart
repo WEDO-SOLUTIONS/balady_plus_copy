@@ -49,7 +49,9 @@ class ComplianceRequestDetails extends Equatable {
   final List<dynamic>? requestOwnersDto;
   final dynamic etmamOrderResponseDto;
   final bool? usageDisable;
+  final bool? isRequestReturnedFromMunicipality;
   final List<MainEmtithalItemsDto>? mainEmtithalItemsDto;
+  final List<ApplicantNote>? applicantNotes;
 
   ComplianceRequestDetails(
       {this.requestId,
@@ -97,11 +99,29 @@ class ComplianceRequestDetails extends Equatable {
       this.requestOwnersDto,
       this.etmamOrderResponseDto,
       this.usageDisable,
-      this.mainEmtithalItemsDto});
+      this.mainEmtithalItemsDto,
+      this.isRequestReturnedFromMunicipality,
+      this.applicantNotes});
 
   @override
   // TODO: implement props
   List<Object?> get props => [];
+}
+
+class ApplicantNote {
+  final String? note;
+  final String? date;
+  final String? statusName;
+  final String? author;
+  final AttachmentDto? noteAttachment;
+
+  ApplicantNote({
+    this.note,
+    this.date,
+    this.statusName,
+    this.author,
+    this.noteAttachment,
+  });
 }
 
 class Attachment {
@@ -139,15 +159,23 @@ class EmtithalItem {
   final String? momItemId;
   final String? itemDesc;
   bool? submitterAnswer;
-  final dynamic empAnswer;
+  final bool? empAnswer;
 
-  EmtithalItem({
-    this.itemId,
-    this.momItemId,
-    this.itemDesc,
-    this.submitterAnswer,
-    this.empAnswer,
-  });
+  final List<ItemData>? itemData;
+  final bool? showNotApplicable;
+  final bool? mandToAttach;
+  final AttachmentDto? attachmentDto;
+
+  EmtithalItem(
+      {this.itemId,
+      this.momItemId,
+      this.itemDesc,
+      this.submitterAnswer,
+      this.empAnswer,
+      this.itemData,
+      this.showNotApplicable,
+      this.mandToAttach,
+      this.attachmentDto});
 }
 
 class LocationResponseInfoDto {
@@ -172,6 +200,7 @@ class LocationResponseInfoDto {
   final dynamic isLocationCorrect;
   final dynamic guid;
   final LandsInfo? landsInfo;
+  final bool? emtithalMand;
 
   LocationResponseInfoDto(
       {this.municipalityId,
@@ -194,7 +223,8 @@ class LocationResponseInfoDto {
       //  this.landArea,
       this.isLocationCorrect,
       this.guid,
-      this.landsInfo});
+      this.landsInfo,
+      this.emtithalMand});
 
   String getFullAddress({
     bool includeStreetName = true,
@@ -420,24 +450,6 @@ class MainEmtithalItemsDto {
     this.mainItemDesc,
     this.subEmtithalItems,
   });
-
-  factory MainEmtithalItemsDto.fromJson(Map<String, dynamic> json) =>
-      MainEmtithalItemsDto(
-        mainItemId: json["mainItemId"],
-        mainItemDesc: json["mainItemDesc"],
-        subEmtithalItems: json["subEmtithalItems"] == null
-            ? []
-            : List<SubEmtithalItem>.from(json["subEmtithalItems"]!
-                .map((x) => SubEmtithalItem.fromJson(x))),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "mainItemId": mainItemId,
-        "mainItemDesc": mainItemDesc,
-        "subEmtithalItems": subEmtithalItems == null
-            ? []
-            : List<dynamic>.from(subEmtithalItems!.map((x) => x.toJson())),
-      };
 }
 
 class SubEmtithalItem {
@@ -446,31 +458,73 @@ class SubEmtithalItem {
   final String? itemDesc;
   final bool? submitterAnswer;
   final bool? empAnswer;
+  final List<ItemData>? itemData;
+  final bool? showNotApplicable;
+  final bool? mandToAttach;
+  final AttachmentDto? attachmentDto;
 
-  SubEmtithalItem({
-    this.itemId,
-    this.momItemId,
-    this.itemDesc,
-    this.submitterAnswer,
-    this.empAnswer,
+  SubEmtithalItem(
+      {this.itemId,
+      this.momItemId,
+      this.itemDesc,
+      this.submitterAnswer,
+      this.empAnswer,
+      this.itemData,
+      this.showNotApplicable,
+      this.mandToAttach,
+      this.attachmentDto});
+}
+
+class AttachmentDto {
+  final dynamic id;
+  final dynamic name;
+  final String? allowedFilesExtension;
+  final bool? isMandatory;
+  final bool? attached;
+  final bool? approved;
+  final dynamic attachUrl;
+  final dynamic notes;
+  final bool? updatable;
+  final int? maxSize;
+  final dynamic attachDescription;
+  final dynamic fileName;
+
+  AttachmentDto({
+    this.id,
+    this.name,
+    this.allowedFilesExtension,
+    this.isMandatory,
+    this.attached,
+    this.approved,
+    this.attachUrl,
+    this.notes,
+    this.updatable,
+    this.maxSize,
+    this.attachDescription,
+    this.fileName,
   });
+}
 
-  factory SubEmtithalItem.fromJson(Map<String, dynamic> json) =>
-      SubEmtithalItem(
-        itemId: json["itemId"],
-        momItemId: json["momItemId"],
-        itemDesc: json["itemDesc"],
-        submitterAnswer: json["submitterAnswer"],
-        empAnswer: json["empAnswer"],
-      );
+class ItemData {
+  final String? note;
+  final bool? isLastNote;
+  final int? answer;
+  final int? statusId;
+  final String? statusName;
+  final bool? isBaladiaSource;
+  final String? date;
+  final AttachmentDto? attachment;
 
-  Map<String, dynamic> toJson() => {
-        "itemId": itemId,
-        "momItemId": momItemId,
-        "itemDesc": itemDesc,
-        "submitterAnswer": submitterAnswer,
-        "empAnswer": empAnswer,
-      };
+  ItemData({
+    this.note,
+    this.isLastNote,
+    this.answer,
+    this.statusId,
+    this.statusName,
+    this.isBaladiaSource,
+    this.date,
+    this.attachment,
+  });
 }
 
 class LandsInfo {

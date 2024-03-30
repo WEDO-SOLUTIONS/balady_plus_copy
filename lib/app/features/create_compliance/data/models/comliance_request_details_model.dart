@@ -49,6 +49,8 @@ class ComplianceRequestDetailsModel extends ComplianceRequestDetails {
       super.requestOwnersDto,
       super.etmamOrderResponseDto,
       super.usageDisable,
+      super.isRequestReturnedFromMunicipality,
+      super.applicantNotes,
       super.mainEmtithalItemsDto});
 
   factory ComplianceRequestDetailsModel.fromJson(Map<String, dynamic> json) {
@@ -125,7 +127,13 @@ class ComplianceRequestDetailsModel extends ComplianceRequestDetails {
           : List<MainEmtithalItemsDtoModel>.from(json["mainEmtithalItemsDto"]!
               .map((x) => MainEmtithalItemsDtoModel.fromJson(x))),
       etmamOrderResponseDto: json["etmamOrderResponseDto"],
+      isRequestReturnedFromMunicipality:
+          json["isRequestReturnedFromMunicipality"],
       usageDisable: json["usageDisable"],
+      applicantNotes: json["applicantNotes"] == null
+          ? []
+          : List<ApplicantNoteModel>.from(json["applicantNotes"]!
+              .map((x) => ApplicantNoteModel.fromJson(x))),
     );
 
     List<EmtithalItem> emtithalItems = [];
@@ -137,7 +145,11 @@ class ComplianceRequestDetailsModel extends ComplianceRequestDetails {
             submitterAnswer: element.submitterAnswer,
             itemDesc: element.itemDesc,
             itemId: element.itemId,
-            momItemId: element.momItemId);
+            momItemId: element.momItemId,
+            itemData: element.itemData,
+            showNotApplicable: element.showNotApplicable,
+            mandToAttach: element.mandToAttach,
+            attachmentDto: element.attachmentDto);
         emtithalItems.add(item);
       });
     });
@@ -148,6 +160,27 @@ class ComplianceRequestDetailsModel extends ComplianceRequestDetails {
 
   @override
   List<Object?> get props => [];
+}
+
+class ApplicantNoteModel extends ApplicantNote {
+  ApplicantNoteModel({
+    super.note,
+    super.date,
+    super.statusName,
+    super.author,
+    super.noteAttachment,
+  });
+
+  factory ApplicantNoteModel.fromJson(Map<String, dynamic> json) =>
+      ApplicantNoteModel(
+        note: json["note"],
+        date: json["date"],
+        statusName: json["statusName"],
+        author: json["author"],
+        noteAttachment: json["noteAttachment"] == null
+            ? null
+            : AttachmentDtoModel.fromJson(json["noteAttachment"]),
+      );
 }
 
 class AttachmentModel extends Attachment {
@@ -222,31 +255,32 @@ class LocationResponseInfoDtoModel extends LocationResponseInfoDto {
       super.y,
       super.isLocationCorrect,
       super.guid,
-      super.landsInfo});
+      super.landsInfo,
+      super.emtithalMand});
 
   factory LocationResponseInfoDtoModel.fromJson(Map<String, dynamic> json) =>
       LocationResponseInfoDtoModel(
-        municipalityId: json["municipalityId"],
-        amanahId: json["amanahId"],
-        municipalityName: json["municipalityName"],
-        subMunicipalityId: json["subMunicipalityId"],
-        baladiaId: json["baladiaId"],
-        subMunicipalityName: json["subMunicipalityName"],
-        districtId: json["districtId"],
-        districtName: json["districtName"],
-        cityId: json["cityId"],
-        cityName: json["cityName"],
-        streetId: json["streetId"],
-        streetName: json["streetName"],
-        mapNumber: json["mapNumber"],
-        mapName: json["mapName"],
-        x: json["x"],
-        y: json["y"],
-        landsInfo:
-            json["landsInfo"] != null ? LandsInfoModel.fromJson(json) : null,
-        isLocationCorrect: json["isLocationCorrect"],
-        guid: json["guid"],
-      );
+          municipalityId: json["municipalityId"],
+          amanahId: json["amanahId"],
+          municipalityName: json["municipalityName"],
+          subMunicipalityId: json["subMunicipalityId"],
+          baladiaId: json["baladiaId"],
+          subMunicipalityName: json["subMunicipalityName"],
+          districtId: json["districtId"],
+          districtName: json["districtName"],
+          cityId: json["cityId"],
+          cityName: json["cityName"],
+          streetId: json["streetId"],
+          streetName: json["streetName"],
+          mapNumber: json["mapNumber"],
+          mapName: json["mapName"],
+          x: json["x"],
+          y: json["y"],
+          landsInfo:
+              json["landsInfo"] != null ? LandsInfoModel.fromJson(json) : null,
+          isLocationCorrect: json["isLocationCorrect"],
+          guid: json["guid"],
+          emtithalMand: json["emtithalMand"]);
 }
 
 class LandsInfoModel extends LandsInfo {
@@ -367,13 +401,16 @@ class MainEmtithalItemsDtoModel extends MainEmtithalItemsDto {
 }
 
 class SubEmtithalItemModel extends SubEmtithalItem {
-  SubEmtithalItemModel({
-    super.itemId,
-    super.momItemId,
-    super.itemDesc,
-    super.submitterAnswer,
-    super.empAnswer,
-  });
+  SubEmtithalItemModel(
+      {super.itemId,
+      super.momItemId,
+      super.itemDesc,
+      super.submitterAnswer,
+      super.empAnswer,
+      super.attachmentDto,
+      super.itemData,
+      super.mandToAttach,
+      super.showNotApplicable});
 
   factory SubEmtithalItemModel.fromJson(Map<String, dynamic> json) =>
       SubEmtithalItemModel(
@@ -382,5 +419,73 @@ class SubEmtithalItemModel extends SubEmtithalItem {
         itemDesc: json["itemDesc"],
         submitterAnswer: json["submitterAnswer"],
         empAnswer: json["empAnswer"],
+        showNotApplicable: json["showNotApplicable"],
+        mandToAttach: json["mandToAttach"],
+        attachmentDto: json["attachmentDto"] == null
+            ? null
+            : AttachmentDtoModel.fromJson(json["attachmentDto"]),
+        itemData: json["itemData"] == null
+            ? []
+            : List<ItemDataModel>.from(
+                json["itemData"]!.map((x) => ItemDataModel.fromJson(x))),
+      );
+}
+
+class ItemDataModel extends ItemData {
+  ItemDataModel({
+    super.note,
+    super.isLastNote,
+    super.answer,
+    super.statusId,
+    super.statusName,
+    super.isBaladiaSource,
+    super.date,
+    super.attachment,
+  });
+
+  factory ItemDataModel.fromJson(Map<String, dynamic> json) => ItemDataModel(
+        note: json["note"],
+        isLastNote: json["isLastNote"],
+        answer: json["answer"],
+        statusId: json["statusId"],
+        statusName: json["statusName"],
+        isBaladiaSource: json["isBaladiaSource"],
+        date: json["date"],
+        attachment: json["attachment"] == null
+            ? null
+            : AttachmentDtoModel.fromJson(json["attachment"]),
+      );
+}
+
+class AttachmentDtoModel extends AttachmentDto {
+  AttachmentDtoModel({
+    super.id,
+    super.name,
+    super.allowedFilesExtension,
+    super.isMandatory,
+    super.attached,
+    super.approved,
+    super.attachUrl,
+    super.notes,
+    super.updatable,
+    super.maxSize,
+    super.attachDescription,
+    super.fileName,
+  });
+
+  factory AttachmentDtoModel.fromJson(Map<String, dynamic> json) =>
+      AttachmentDtoModel(
+        id: json["id"],
+        name: json["name"],
+        allowedFilesExtension: json["allowedFilesExtension"],
+        isMandatory: json["isMandatory"],
+        attached: json["attached"],
+        approved: json["approved"],
+        attachUrl: json["attachUrl"],
+        notes: json["notes"],
+        updatable: json["updatable"],
+        maxSize: json["maxSize"],
+        attachDescription: json["attachDescription"],
+        fileName: json["fileName"],
       );
 }
