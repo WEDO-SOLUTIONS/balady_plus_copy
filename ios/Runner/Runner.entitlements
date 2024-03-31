@@ -8,6 +8,7 @@
 	<array>
 		<string>applinks:*.balady.gov.sa</string>
 		<string>applinks:apps.balady.gov.sa</string>
+		<string>applinks:apps.balady.gov.sa?mode=developer</string>
 	</array>
 </dict>
 </plist>
