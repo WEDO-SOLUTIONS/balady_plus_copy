@@ -16,11 +16,9 @@ import '../models/request_permits_model/permit.dart';
 import '../models/request_permits_model/request_permits_model.dart';
 
 abstract class RequestPermitsRemoteDataSource {
-  Future<List<Permit>?> getRequestPermits(
-      int requestNumber);
+  Future<RequestPermitsModel> getRequestPermits(int requestNumber);
 
-  Future<bool>
-      saveSelectedRequestPermits(int requestNumber);
+  Future<bool> saveSelectedRequestPermits(int requestNumber);
 
   Future<bool> saveShopInfo(int requestNumber);
 }
@@ -32,18 +30,17 @@ class RequestPermitsRemoteDataSourceImplementation
   RequestPermitsRemoteDataSourceImplementation({required this.webService});
 
   @override
-  Future<List<Permit>?> getRequestPermits(int requestNumber) async {
+  Future<RequestPermitsModel> getRequestPermits(int requestNumber) async {
     Response? response;
 
     try {
-      response = await webService.dio.get(
-        ApiUrl.getRequestPermits(requestNumber)
-      );
+      response =
+          await webService.dio.get(ApiUrl.getRequestPermits(requestNumber));
       final data = response.data;
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
-      return RequestPermitsModel.fromJson(result).permits;
+      return RequestPermitsModel.fromJson(result);
     } on DioException catch (error) {
       if (error is NoDataFoundException) {
         rethrow;
@@ -74,12 +71,11 @@ class RequestPermitsRemoteDataSourceImplementation
     Response? response;
 
     try {
-      response = await webService.dio.post(
-        ApiUrl.saveSelectedRequestPermits(requestNumber)
-      );
+      response = await webService.dio
+          .post(ApiUrl.saveSelectedRequestPermits(requestNumber));
       final data = response.data;
 
-       final statusCode = ResponseBodyModel.fromMap(data).statusDetails!.code;
+      final statusCode = ResponseBodyModel.fromMap(data).statusDetails!.code;
       if (statusCode == 200) {
         return true;
       } else {
@@ -111,17 +107,15 @@ class RequestPermitsRemoteDataSourceImplementation
   }
 
   @override
-  Future<bool> saveShopInfo(
-      int requestNumber) async {
+  Future<bool> saveShopInfo(int requestNumber) async {
     Response? response;
 
     try {
-      response = await webService.dio.post(
-        ApiUrl.transferShopInfo(requestNumber)
-      );
+      response =
+          await webService.dio.post(ApiUrl.transferShopInfo(requestNumber));
       final data = response.data;
 
-       final statusCode = ResponseBodyModel.fromMap(data).statusDetails!.code;
+      final statusCode = ResponseBodyModel.fromMap(data).statusDetails!.code;
       if (statusCode == 200) {
         return true;
       } else {
@@ -150,4 +144,5 @@ class RequestPermitsRemoteDataSourceImplementation
         );
       }
     }
-      }}
+  }
+}

@@ -16,38 +16,12 @@ class RequestApprovalSequenceRepositoryImplementation
   RequestApprovalSequenceRepositoryImplementation({
     required this.remoteDataSource,
   });
-  
+
   @override
-  Future<Either<Failure, List<Permit>?>> getRequestPermits(int requestNumber) async {
+  Future<Either<Failure, RequestPermitsModel>> getRequestPermits(
+      int requestNumber) async {
     try {
-      final data = await remoteDataSource
-          .getRequestPermits(requestNumber);
-      return Right(data);
-    } on NoDataFoundException {
-      return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
-      return Left(ServerFailure(error.errorMessage));
-    }
-  }
-  
-  @override
-  Future<Either<Failure, bool>> saveSelectedRequestPermits(int requestNumber) async {
-    try {
-      final data = await remoteDataSource
-          .saveSelectedRequestPermits(requestNumber);
-      return Right(data);
-    } on NoDataFoundException {
-      return Left(NoDataFoundFailure());
-    } on ServerException catch (error) {
-      return Left(ServerFailure(error.errorMessage));
-    }
-  }
-  
-  @override
-  Future<Either<Failure, bool>> saveShopInfo(int requestNumber) async {
-    try {
-      final data = await remoteDataSource
-          .saveShopInfo(requestNumber);
+      final data = await remoteDataSource.getRequestPermits(requestNumber);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -56,4 +30,29 @@ class RequestApprovalSequenceRepositoryImplementation
     }
   }
 
+  @override
+  Future<Either<Failure, bool>> saveSelectedRequestPermits(
+      int requestNumber) async {
+    try {
+      final data =
+          await remoteDataSource.saveSelectedRequestPermits(requestNumber);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
     }
+  }
+
+  @override
+  Future<Either<Failure, bool>> saveShopInfo(int requestNumber) async {
+    try {
+      final data = await remoteDataSource.saveShopInfo(requestNumber);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+}

@@ -21,6 +21,8 @@ import '../../../../Commercial_license_transfer/domain/use_cases/post_to_new_own
 import '../../../../Commercial_license_transfer/persentation/bloc/license_tranfer_cubit.dart';
 import '../../../../Commercial_license_transfer/persentation/interface/step_interface.dart';
 import '../../../../Commercial_license_transfer/persentation/license_premits/request_sequence_new_owner.dart';
+import '../../data/repositories/repository_implementation.dart';
+import '../blocs/request_approval_sequence_cubit.dart';
 import 'approval_sequence_permits_screen.dart';
 
 class ApprovalSequenceMainScreen extends StatefulWidget {
@@ -36,11 +38,11 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
   PageController controller = PageController();
   int currentPageValue = 0;
 
-  LicenseTransferCubit? bloc;
-  String? licenseNumber;
+  RequestApprovalSequenceCubit? bloc;
+  int? requestNumber;
 
   late List<Widget>? pagesList = [
-    // ApprovalSequencePermitsScreen(stepInterface: this),
+    ApprovalSequencePermitsScreen(stepInterface: this),
     RquestSequenceNewOwnerInfoScreen(stepInterface: this),
     RequestSequencePledgesScreen(stepInterface: this),
   ];
@@ -52,9 +54,9 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
 
     Future.microtask(() {
       setState(() {
-        licenseNumber = ModalRoute.of(context)!.settings.arguments as String;
+        requestNumber = ModalRoute.of(context)!.settings.arguments as int;
       });
-      bloc?.licenseNumber = licenseNumber;
+      bloc?.requestNumber = requestNumber;
     });
   }
 
@@ -74,15 +76,12 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
       },
       child: BlocProvider(
         create: (_) {
-          bloc = LicenseTransferCubit(
-              GetLicensePermitsData(repository: sl()),
-              GetValidateNewOwner(repository: sl()),
-              GetValidateLicense(repository: sl()),
-              PostToNewOwner(repository: sl()));
-
-          // bloc =
-          // ModalRoute.of(context)!.settings.arguments as LicensePermitsCubit;
-          return bloc!;
+          RequestApprovalSequenceRepositoryImplementation
+              requestApprovalSequenceRepositoryImplementation = sl();
+          return RequestApprovalSequenceCubit(
+              requestApprovalSequenceRepository:
+                  requestApprovalSequenceRepositoryImplementation,
+              isChecked: false);
         },
         child: GestureDetector(
           onTap: () => hideKeyboard(),
@@ -101,7 +100,7 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
                 }
               },
               onTapCloseAction: () => showBackDialog(),
-              requestNum: licenseNumber != null ? int.parse(licenseNumber!) : 0,
+              requestNum: bloc!.requestNumber,
             ),
             body: PageView.builder(
               itemCount: pagesList!.length,

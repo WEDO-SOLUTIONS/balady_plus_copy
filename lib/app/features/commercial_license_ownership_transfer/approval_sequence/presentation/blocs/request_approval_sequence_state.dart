@@ -1,6 +1,5 @@
 part of 'request_approval_sequence_cubit.dart';
 
-
 class RequestApprovalSequenceState extends Equatable {
   @override
   List<Object?> get props => throw UnimplementedError();
@@ -34,14 +33,10 @@ final class FailureState extends RequestApprovalSequenceState {
 }
 
 final class SucceedState extends RequestApprovalSequenceState {
-  final List<Permit> permitsList;
+  final RequestPermitsModel permitsList;
 
   SucceedState({required this.permitsList});
 
   @override
-  List<Object?> get props => [permitsList, permitsList.length];
+  List<Object?> get props => [permitsList];
 }
-
-
-
-

@@ -15,11 +15,12 @@ part 'request_approval_sequence_state.dart';
 class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
   RequestApprovalSequenceRepository requestApprovalSequenceRepository;
   int? requestNumber;
-    bool isChecked;
-
+  bool isChecked;
 
   //  TransferLicenseRequest request= TransferLicenseRequest();
-  RequestApprovalSequenceCubit(this.requestApprovalSequenceRepository,this.isChecked)
+  RequestApprovalSequenceCubit(
+      {required this.requestApprovalSequenceRepository,
+      required this.isChecked})
       : super(RequestApprovalSequenceState()) {
     getRequestPermits;
   }
