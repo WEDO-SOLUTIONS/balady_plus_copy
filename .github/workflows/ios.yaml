@@ -61,10 +61,6 @@ jobs:
           channel: "stable"
           cache: true
 
-      - name: Apply ABI filter
-        run: |
-          git apply .github/workflows/abi_filter.patch
-
       - name: Development setup mapness
         run: |
           flutter pub get
