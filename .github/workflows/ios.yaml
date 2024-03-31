@@ -102,48 +102,97 @@ jobs:
       - name: Build app
         env:
           LANG: en_US.UTF-8
+          FILE_BALADY_CER: ${{ secrets.FILE_BALADY_CER }}
+          FILE_BALADY_MOBILEPROVISION: ${{ secrets.FILE_BALADY_MOBILEPROVISION }}
+          FILE_BALADY_P12: ${{ secrets.FILE_BALADY_P12 }}
         run: |
-          security find-identity -p codesigning login.keychain
+          momrahBundle='momra.balady.ios'
+          urbiBundle='ae.urbi.balady'
 
-          # momrahBundle='momra.balady.ios'
-          # baladyBundle='xyz.amoriodi.balady'
+          momrahTeam='9VKA788PDD'
+          urbiTeam='A34FT8KT4H'
 
-          # momrahTeam='9VKA788PDD'
-          # baladyTeam='USDCL8J49X'
+          codeSignAutomatic='CODE_SIGN_STYLE = Automatic;'
+          codeSignManual='CODE_SIGN_STYLE = Manual;'
 
-          # codeSignAutomatic='CODE_SIGN_STYLE = Automatic;'
-          # codeSignManual='CODE_SIGN_STYLE = Manual;'
+          codeSignIdentityDevelopment='CODE_SIGN_IDENTITY = "Apple Development";'
+          codeSignIdentityDistribution='CODE_SIGN_IDENTITY = "iPhone Distribution";'
 
-          # codeSignIdentityDevelopment='CODE_SIGN_IDENTITY = "Apple Development";'
-          # codeSignIdentityDistribution='CODE_SIGN_IDENTITY = "iPhone Distribution";'
+          provisionProfileNone='PROVISIONING_PROFILE_SPECIFIER = "";'
+          provisionProfileAdHoc='PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";'
 
-          # provisionProfileNone='PROVISIONING_PROFILE_SPECIFIER = "";'
-          # provisionProfileAdHoc='PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";'
+          appDisplayNameProd='$(APP_DISPLAY_NAME)';
+          appDisplayNameDev='Balady Dev';
 
-          # appDisplayNameProd='$(APP_DISPLAY_NAME)';
-          # appDisplayNameDev='Balady Dev';
+          sed -i '' "s/$momrahBundle/$urbiBundle/" ios/Runner.xcodeproj/project.pbxproj
+          sed -i '' "s/$momrahTeam/$urbiTeam/" ios/Runner.xcodeproj/project.pbxproj
+          sed -i '' "s/$codeSignAutomatic/$codeSignManual/" ios/Runner.xcodeproj/project.pbxproj
+          sed -i '' "s/$codeSignIdentityDevelopment/$codeSignIdentityDistribution/" ios/Runner.xcodeproj/project.pbxproj
+          sed -i '' "s/$provisionProfileNone/$provisionProfileAdHoc/" ios/Runner.xcodeproj/project.pbxproj
+          sed -i '' "s/$appDisplayNameProd/$appDisplayNameDev/" ios/Runner/Info.plist
+          git apply mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not apply sdk key patch'
+          git apply mapness/scripts/icon.patch || print_style '' 'red' 'could not apply ios icon patch'
 
-          # sed -i '' "s/$momrahBundle/$baladyBundle/" ios/Runner.xcodeproj/project.pbxproj
-          # sed -i '' "s/$momrahTeam/$baladyTeam/" ios/Runner.xcodeproj/project.pbxproj
-          # sed -i '' "s/$codeSignAutomatic/$codeSignManual/" ios/Runner.xcodeproj/project.pbxproj
-          # sed -i '' "s/$codeSignIdentityDevelopment/$codeSignIdentityDistribution/" ios/Runner.xcodeproj/project.pbxproj
-          # sed -i '' "s/$provisionProfileNone/$provisionProfileAdHoc/" ios/Runner.xcodeproj/project.pbxproj
-          # sed -i '' "s/$appDisplayNameProd/$appDisplayNameDev/" ios/Runner/Info.plist
-          # git apply mapness/scripts/sdkkey.patch
+          KC="$HOME/Library/Keychains/build.keychain"
+          KC_PASS='build-pass'
+          LKC='login.keychain'
+          TMP="$PWD/TMP"
+          KEY="$TMP/balady.p12"
+          CERT="$TMP/balady.cer"
+          PROFILE="$TMP/balady.mobileprovision"
+          PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning Profiles/"
+          APPLE_CERTS=(
+              "AppleWWDRCAG2.cer"
+              "AppleWWDRCAG3.cer"
+              "AppleWWDRCAG4.cer"
+              "AppleWWDRCAG5.cer"
+              "AppleWWDRCAG6.cer"
+              "AppleWWDRCAG7.cer"
+              "AppleWWDRCAG8.cer"
+              "DeveloperIDG2CA.cer"
+          )
 
-          # flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_dev.dart --flavor dev
+          # Presetup
+          mkdir -p "$PROFILES_DIR"
+          mkdir -p $TMP
+          base64 -d $FILE_BALADY_CER -o $CERT
+          base64 -d $FILE_BALADY_P12 -o $KEY
+          base64 -d $FILE_BALADY_MOBILEPROVISION -o $PROFILE
 
-      # - name: Send notification to mattermost channel
-      #   env: # Set the secret as an environment variable
-      #     MM_CHANNEL_ID: ${{ secrets.MM_CHANNEL_ID }}
-      #     MM_BOT_TOKEN: ${{ secrets.MM_BOT_TOKEN }}
-      #     MM_DOMAIN: ${{ secrets.MM_DOMAIN }}
-      #   run: |
-      #     is_pr=""
-      #     if [ -n "${CI_IS_PR}" ]; then
-      #       is_pr="Pull Request build;"
-      #     fi
-      #     curl -X POST -H 'Content-type: application/json' -H "Authorization: Bearer ${MM_BOT_TOKEN}" https://${MM_DOMAIN}/api/v4/posts -d "{ \
-      #       \"channel_id\": \"${MM_CHANNEL_ID}\", \
-      #       \"message\": \"[iOS Build](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}): Number ${GITHUB_RUN_ID}; Branch ${CI_GIT_BRANCH}; ${is_pr}\" \
-      #     }"
+          # Setup keychain
+          security create-keychain -p $KC_PASS $KC
+          security list-keychains -d user -s $KC
+
+          curl https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -o $TMP/AppleWWDRCA.cer
+          security import $TMP/AppleWWDRCA.cer -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+
+          for APPLE_CERT in ${APPLE_CERTS[@]}; do
+              curl https://www.apple.com/certificateauthority/$APPLE_CERT -o $TMP/$APPLE_CERT
+              security import $TMP/$APPLE_CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+          done
+
+          security import $KEY -k $KC -t priv -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+          security import $CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+
+          security default-keychain -d user -s $KC
+          security set-keychain-settings $KC
+          security set-key-partition-list -S apple-tool:,apple: -k $KC_PASS $KC
+          security unlock-keychain -p $KC_PASS $KC
+
+          # Install profile
+          security cms -D -i $PROFILE -k $KC > $TMP/provision.plist
+          UUID=`/usr/libexec/PlistBuddy -c 'print UUID' $TMP/provision.plist`
+
+          cp $PROFILE "$PROFILES_DIR"$UUID.mobileprovision
+
+          # Build
+          fvm flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_dev.dart --flavor dev
+          curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImEuc3RyaXpobmV2QHVyYmkuYWUifQ.DgmqmgZ-DeQfBt0R36s7nftEkk-XnFr6VVi2syD-jTE" -X PUT -F file=@build/ios/ipa/balady_plus.ipa https://baladyapp-builds.urbi.ae/builds/${CI_ARTIFACT_SUFFIX}
+
+          # Cleanup
+          security list-keychains -d user -s $LKC
+          security default-keychain -d user -s $LKC
+          security delete-keychain $KC
+
+          rm "$PROFILES_DIR"$UUID.mobileprovision
+          rm -rf $TMP
