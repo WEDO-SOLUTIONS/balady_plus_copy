@@ -6,7 +6,7 @@ import '../../data/models/request_permits_model/permit.dart';
 import '../../data/models/request_permits_model/request_permits_model.dart';
 
 abstract class RequestApprovalSequenceRepository {
-  Future<Either<Failure, List<Permit>?>> getRequestPermits(
+  Future<Either<Failure, RequestPermitsModel>> getRequestPermits(
     int requestNumber,
   );
   Future<Either<Failure, bool>> saveSelectedRequestPermits(

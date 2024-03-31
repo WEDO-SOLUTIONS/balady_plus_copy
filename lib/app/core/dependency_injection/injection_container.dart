@@ -49,6 +49,7 @@ import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, DropDownItem, FileInfo;
 import '../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
+import '../../features/commercial_license_ownership_transfer/approval_sequence/data/repositories/repository_implementation.dart';
 import '../../features/commercial_license_ownership_transfer/request_details/data/data_sources/remote_data_source.dart';
 import '../../features/commercial_license_ownership_transfer/request_details/data/repositories/repository_implementation.dart';
 import '../../features/commercial_license_ownership_transfer/request_details/domain/repositories/repository.dart';
@@ -270,6 +271,9 @@ void initialize() {
           webService: sl()));
   sl.registerLazySingleton<RequestOwnershipTransferRepositoryImplementation>(
       () => RequestOwnershipTransferRepositoryImplementation(
+          remoteDataSource: sl()));
+  sl.registerLazySingleton<RequestApprovalSequenceRepositoryImplementation>(
+      () => RequestApprovalSequenceRepositoryImplementation(
           remoteDataSource: sl()));
 
   //noification
