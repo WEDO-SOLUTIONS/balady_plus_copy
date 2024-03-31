@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class NotificationsItemWidget extends StatelessWidget {
   final NotificationsMessageItem message;
@@ -65,17 +66,17 @@ class NotificationsItemWidget extends StatelessWidget {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(6)),
                             ),
-                            color: Colors.red.shade800.withAlpha(60),
+                            color: state.message.status.id == "read" ? Colors.green.shade800.withAlpha(60): Colors.red.shade800.withAlpha(60) ,
                             elevation: 0,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 5),
                               child: Text(
-                                message.status.text,
+                                state.message.status.id == "read" ? ('notification_read').tr() :'notification_unread'.tr() ,
                                 style: AppStyle.nearbyItemSubTitleTextStyle
                                     .copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.red.shade800,
+                                  color: state.message.status.id == "read" ? Colors.green.shade800 : Colors.red.shade800,
                                 ),
                               ),
                             ),
@@ -97,7 +98,7 @@ class NotificationsItemWidget extends StatelessWidget {
                         text: message.body,
                         onTap: () {
                           if(message.status.id != "read") {
-                            contextBloc.watch<NotificationsItemCubit>().markReadNotificationsMessages();
+                            contextBloc.read<NotificationsItemCubit>().markReadNotificationsMessages();
                           }
                         },
                       ),

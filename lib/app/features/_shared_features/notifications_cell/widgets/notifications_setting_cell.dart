@@ -26,6 +26,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
   @override
   Widget build(BuildContext context) {
     EntryPointCubit auth = context.read<EntryPointCubit>();
+    bool manageNotificationClicked = false;
     return auth.state.userInfo == null
         ? const SizedBox.shrink()
         : BlocProvider(
@@ -54,6 +55,18 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                   );
                 }
                 if (state is SucceedEventsNotificationState) {
+                  if (manageNotificationClicked)
+                   {
+                          manageNotificationClicked = false;
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                 Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => NotificationsSettings(
+                                        notificationsList: cubit
+                                            .notificationsSettingsList
+                                            .categories!)));    
+                                  });                                                       
+                   }
+                 
                   return Column(
                     children: [
                       Padding(
@@ -143,11 +156,13 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                       state.isChecked
                           ? GestureDetector(
                               onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
+                                manageNotificationClicked = true;
+                                cubit.getNotificationSetting(cubit.notificationId);
+                               /* Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => NotificationsSettings(
                                         notificationsList: cubit
                                             .notificationsSettingsList
-                                            .categories!)));
+                                            .categories!)));*/
                               },
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
