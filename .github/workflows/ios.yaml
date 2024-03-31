@@ -104,13 +104,12 @@ jobs:
         uses: TLizer/action-with-post-step@v1.1.0
         with:
           main: |
-            KC="$HOME/Library/Keychains/build.keychain"
+            KC="$RUNNER_TEMP/build.keychain"
             KC_PASS='build-pass'
             LKC='login.keychain'
-            TMP="$PWD/TMP"
-            KEY="$TMP/balady.p12"
-            CERT="$TMP/balady.cer"
-            PROFILE="$TMP/balady.mobileprovision"
+            KEY="$RUNNER_TEMP/balady.p12"
+            CERT="$RUNNER_TEMP/balady.cer"
+            PROFILE="$RUNNER_TEMP/balady.mobileprovision"
             PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning Profiles/"
             APPLE_CERTS=(
                 "AppleWWDRCAG2.cer"
@@ -138,12 +137,12 @@ jobs:
             security create-keychain -p $KC_PASS $KC
             security list-keychains -d user -s $KC
 
-            curl https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -o $TMP/AppleWWDRCA.cer
-            security import $TMP/AppleWWDRCA.cer -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+            curl https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -o $RUNNER_TEMP/AppleWWDRCA.cer
+            security import $RUNNER_TEMP/AppleWWDRCA.cer -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
 
             for APPLE_CERT in ${APPLE_CERTS[@]}; do
-                curl https://www.apple.com/certificateauthority/$APPLE_CERT -o $TMP/$APPLE_CERT
-                security import $TMP/$APPLE_CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+                curl https://www.apple.com/certificateauthority/$APPLE_CERT -o $RUNNER_TEMP/$APPLE_CERT
+                security import $RUNNER_TEMP/$APPLE_CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
             done
 
             security import $KEY -k $KC -t priv -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
@@ -155,16 +154,15 @@ jobs:
             security set-key-partition-list -S apple-tool:,apple: -k $KC_PASS $KC
 
             # Install profile
-            security cms -D -i $PROFILE -k $KC > $TMP/provision.plist
-            UUID=`/usr/libexec/PlistBuddy -c 'print UUID' $TMP/provision.plist`
+            security cms -D -i $PROFILE -k $KC > $RUNNER_TEMP/provision.plist
+            UUID=`/usr/libexec/PlistBuddy -c 'print UUID' $RUNNER_TEMP/provision.plist`
 
             cp $PROFILE "$PROFILES_DIR"$UUID.mobileprovision
 
             security find-identity -p codesigning
           post: |
             LKC='login.keychain'
-            KC="$HOME/Library/Keychains/build.keychain"
-            TMP="$PWD/TMP"
+            KC="$RUNNER_TEMP/build.keychain"
             PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning Profiles/"
 
             security list-keychains -d user -s $LKC
@@ -172,7 +170,6 @@ jobs:
             security delete-keychain $KC
 
             rm -rf "$PROFILES_DIR"
-            rm -rf $TMP
 
       - name: Build app
         run: |
