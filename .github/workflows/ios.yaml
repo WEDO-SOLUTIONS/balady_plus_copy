@@ -147,6 +147,7 @@ jobs:
 
             security default-keychain -d user -s $KC
             security set-keychain-settings $KC
+            security unlock-keychain -p $KC_PASS $KC
             security set-key-partition-list -S apple-tool:,apple: -k $KC_PASS $KC
 
             # Install profile
@@ -155,6 +156,7 @@ jobs:
 
             cp $PROFILE "$PROFILES_DIR"$UUID.mobileprovision
           post: |
+            LKC='login.keychain'
             KC="$HOME/Library/Keychains/build.keychain"
             TMP="$PWD/TMP"
             PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning Profiles/"
