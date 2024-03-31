@@ -151,9 +151,9 @@ jobs:
           # Presetup
           mkdir -p "$PROFILES_DIR"
           mkdir -p $TMP
-          base64 -d $FILE_BALADY_CER -o $CERT
-          base64 -d $FILE_BALADY_P12 -o $KEY
-          base64 -d $FILE_BALADY_MOBILEPROVISION -o $PROFILE
+          echo "$FILE_BALADY_CER" | base64 -d -o $CERT
+          echo "$FILE_BALADY_P12" | base64 -d -o $KEY
+          echo "$FILE_BALADY_MOBILEPROVISION" | base64 -d -o $PROFILE
 
           # Setup keychain
           security create-keychain -p $KC_PASS $KC
