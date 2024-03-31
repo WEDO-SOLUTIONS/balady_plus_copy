@@ -14,7 +14,7 @@ class NotificationsCountCubit extends Cubit<SucceedCountState> {
 
   NotificationsCountCubit({
     required this.webService,
-  }) : super(const SucceedCountState(count: null)){
+  }) : super(const SucceedCountState(count: null)) {
     getUnreadMessages();
   }
 

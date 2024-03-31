@@ -6,7 +6,6 @@ String eventsParamsToJson(EventsDetailsParams data) =>
     json.encode(data.toJson());
 
 class EventsDetailsParams {
-
   EventsCountInMonthsParams commonParams;
   //////////////////////////////////////
   int page;
@@ -24,7 +23,7 @@ class EventsDetailsParams {
     int? size,
   }) =>
       EventsDetailsParams(
-        commonParams: commonParams ??  this.commonParams,
+        commonParams: commonParams ?? this.commonParams,
         page: page ?? this.page,
         size: size ?? this.size,
       );
@@ -35,5 +34,4 @@ class EventsDetailsParams {
     data["size"] = size;
     return data;
   }
-
 }

@@ -5,7 +5,8 @@ import '../../../../core/services/local/use_case.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
 import '../repository/repository.dart';
 
-class GetLicensePermitsData extends UseCase<ResponseBodyModel<PermitsResponseEntity>, (String,)> {
+class GetLicensePermitsData
+    extends UseCase<ResponseBodyModel<PermitsResponseEntity>, (String,)> {
   final TransferLicenseRepository repository;
 
   GetLicensePermitsData({required this.repository});

@@ -13,7 +13,8 @@ abstract class CommercialLicenseDetailsRemoteDataSource {
   );
 }
 
-class CommercialLicenseDetailsRemoteDataSourceImplementation implements CommercialLicenseDetailsRemoteDataSource {
+class CommercialLicenseDetailsRemoteDataSourceImplementation
+    implements CommercialLicenseDetailsRemoteDataSource {
   final WebService webService;
 
   CommercialLicenseDetailsRemoteDataSourceImplementation(
@@ -29,8 +30,9 @@ class CommercialLicenseDetailsRemoteDataSourceImplementation implements Commerci
       );
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
-      CommercialLicenceDetails commercialLicenceDetails = CommercialLicenceDetails.fromJson(result!);
-      return  commercialLicenceDetails;
+      CommercialLicenceDetails commercialLicenceDetails =
+          CommercialLicenceDetails.fromJson(result!);
+      return commercialLicenceDetails;
     } on DioError catch (error) {
       // "DioError $error".errorLog();
       if (error is NoDataFoundException) {

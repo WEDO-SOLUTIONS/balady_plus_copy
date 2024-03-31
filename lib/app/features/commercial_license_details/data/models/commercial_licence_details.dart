@@ -4,8 +4,6 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-
-
 class CommercialLicenceDetails {
   CommercialLicenceDetails({
     this.requestId,
@@ -79,7 +77,8 @@ class CommercialLicenceDetails {
     this.observationProviderType,
     this.salamaDetails,
     this.licenseCancellationInfo,
-    this.licenseAllowedPermitsInfo,});
+    this.licenseAllowedPermitsInfo,
+  });
 
   CommercialLicenceDetails.fromJson(dynamic json) {
     requestId = json['requestId'];
@@ -104,8 +103,12 @@ class CommercialLicenceDetails {
     notes = json['notes'];
     employeeNotes = json['employeeNotes'];
     clientNotes = json['clientNotes'];
-    licenseInfo = json['licenseInfo'] != null ? LicenseInfo.fromJson(json['licenseInfo']) : null;
-    salamaInfo = json['salamaInfo'] != null ? SalamaInfo.fromJson(json['salamaInfo']) : null;
+    licenseInfo = json['licenseInfo'] != null
+        ? LicenseInfo.fromJson(json['licenseInfo'])
+        : null;
+    salamaInfo = json['salamaInfo'] != null
+        ? SalamaInfo.fromJson(json['salamaInfo'])
+        : null;
     objectionNotesInfo = json['objectionNotesInfo'];
     warningMessages = json['warningMessages'];
     warningInfo = json['warningInfo'];
@@ -134,7 +137,11 @@ class CommercialLicenceDetails {
     endorsementText = json['endorsementText'];
     refuseShopReviewsList = json['refuseShopReviewsList'];
     etmamOrderInfo = json['etmamOrderInfo'];
-    licenceHoldInfoStatusResponseDto = json['licenceHoldInfoStatusResponseDto'] != null ? LicenceHoldInfoStatusResponseDto.fromJson(json['licenceHoldInfoStatusResponseDto']) : null;
+    licenceHoldInfoStatusResponseDto =
+        json['licenceHoldInfoStatusResponseDto'] != null
+            ? LicenceHoldInfoStatusResponseDto.fromJson(
+                json['licenceHoldInfoStatusResponseDto'])
+            : null;
     boardContractSetting = json['boardContractSetting'];
     selectedBoardContractOption = json['selectedBoardContractOption'];
     boardContractNumber = json['boardContractNumber'];
@@ -146,15 +153,23 @@ class CommercialLicenceDetails {
     requestNotesList = json['requestNotesList'];
     notificationHubAllowed = json['notificationHubAllowed'];
     commercialOwnershipResponseDto = json['commercialOwnershipResponseDto'];
-    commercialCleanContractResponseDto = json['commercialCleanContractResponseDto'];
+    commercialCleanContractResponseDto =
+        json['commercialCleanContractResponseDto'];
     commercialSalamaResponseDto = json['commercialSalamaResponseDto'];
     craft = json['craft'];
     craftMessage = json['craftMessage'];
     contactInfo = json['contactInfo'];
-    activityInfo = json['activityInfo'] != null ? ActivityInfo.fromJson(json['activityInfo']) : null;
-    locationInfo = json['locationInfo'] != null ? LocationInfo.fromJson(json['locationInfo']) : null;
-    submitterInfo = json['submitterInfo'] != null ? SubmitterInfo.fromJson(json['submitterInfo']) : null;
-    shopInfo = json['shopInfo'] != null ? ShopInfo.fromJson(json['shopInfo']) : null;
+    activityInfo = json['activityInfo'] != null
+        ? ActivityInfo.fromJson(json['activityInfo'])
+        : null;
+    locationInfo = json['locationInfo'] != null
+        ? LocationInfo.fromJson(json['locationInfo'])
+        : null;
+    submitterInfo = json['submitterInfo'] != null
+        ? SubmitterInfo.fromJson(json['submitterInfo'])
+        : null;
+    shopInfo =
+        json['shopInfo'] != null ? ShopInfo.fromJson(json['shopInfo']) : null;
     if (json['billsInfo'] != null) {
       billsInfo = [];
       json['billsInfo'].forEach((v) {
@@ -245,8 +260,6 @@ class CommercialLicenceDetails {
   dynamic salamaDetails;
   dynamic licenseCancellationInfo;
   List<LicenseAllowedPermitsInfo>? licenseAllowedPermitsInfo;
-
-
 }
 
 class LicenseAllowedPermitsInfo {
@@ -254,12 +267,15 @@ class LicenseAllowedPermitsInfo {
     this.id,
     this.name,
     this.baladyWorkFlow,
-    this.withFees,});
+    this.withFees,
+  });
 
   LicenseAllowedPermitsInfo.fromJson(dynamic json) {
     id = json['id'];
     name = json['name'];
-    baladyWorkFlow = json['baladyWorkFlow'] != null ? BaladyWorkFlow.fromJson(json['baladyWorkFlow']) : null;
+    baladyWorkFlow = json['baladyWorkFlow'] != null
+        ? BaladyWorkFlow.fromJson(json['baladyWorkFlow'])
+        : null;
     withFees = json['withFees'];
   }
   int? id;
@@ -277,13 +293,13 @@ class LicenseAllowedPermitsInfo {
     map['withFees'] = withFees;
     return map;
   }
-
 }
 
 class BaladyWorkFlow {
   BaladyWorkFlow({
     this.id,
-    this.name,});
+    this.name,
+  });
 
   BaladyWorkFlow.fromJson(dynamic json) {
     id = json['id'];
@@ -298,7 +314,6 @@ class BaladyWorkFlow {
     map['name'] = name;
     return map;
   }
-
 }
 
 class BillsInfo {
@@ -307,7 +322,8 @@ class BillsInfo {
     this.billAmount,
     this.paymentDate,
     this.isSadadPaid,
-    this.billFees,});
+    this.billFees,
+  });
 
   BillsInfo.fromJson(dynamic json) {
     billNumber = json['billNumber'];
@@ -338,14 +354,14 @@ class BillsInfo {
     }
     return map;
   }
-
 }
 
 class BillFees {
   BillFees({
     this.costItemValue,
     this.costItemTypeId,
-    this.costItemDescription,});
+    this.costItemDescription,
+  });
 
   BillFees.fromJson(dynamic json) {
     costItemValue = json['costItemValue'];
@@ -363,7 +379,6 @@ class BillFees {
     map['costItemDescription'] = costItemDescription;
     return map;
   }
-
 }
 
 class ShopInfo {
@@ -406,7 +421,8 @@ class ShopInfo {
     this.salamaPermitNumber,
     this.licenseBrand,
     this.insidePetrolStation,
-    this.noOfCameras,});
+    this.noOfCameras,
+  });
 
   ShopInfo.fromJson(dynamic json) {
     shopName = json['shopName'];
@@ -431,18 +447,26 @@ class ShopInfo {
         boardsInfo?.add(BoardsInfomation.fromJson(v));
       });
     }
-    contractInfoResponseDto = json['contractInfoResponseDto'] != null ? ContractInfoResponseDto.fromJson(json['contractInfoResponseDto']) : null;
+    contractInfoResponseDto = json['contractInfoResponseDto'] != null
+        ? ContractInfoResponseDto.fromJson(json['contractInfoResponseDto'])
+        : null;
     showShopOwnership = json['showShopOwnership'];
-    slamaBillOptions = json['slamaBillOptions'] != null ? json['slamaBillOptions'].cast<String>() : [];
+    slamaBillOptions = json['slamaBillOptions'] != null
+        ? json['slamaBillOptions'].cast<String>()
+        : [];
     cameraBillOptions = json['cameraBillOptions'];
     endorsementText = json['endorsementText'];
-    slamaReportOptions = json['slamaReportOptions'] != null ? json['slamaReportOptions'].cast<String>() : [];
+    slamaReportOptions = json['slamaReportOptions'] != null
+        ? json['slamaReportOptions'].cast<String>()
+        : [];
     slamaReportNumber = json['slamaReportNumber'];
     isFawryWithSalamaBill = json['isFawryWithSalamaBill'];
     isFawryWithSalamaReport = json['isFawryWithSalamaReport'];
     isSalamaPermitMandatory = json['isSalamaPermitMandatory'];
     cleanContractInfo = json['cleanContractInfo'];
-    cleanContractOptions = json['cleanContractOptions'] != null ? CleanContractOptions.fromJson(json['cleanContractOptions']) : null;
+    cleanContractOptions = json['cleanContractOptions'] != null
+        ? CleanContractOptions.fromJson(json['cleanContractOptions'])
+        : null;
     showActivityCancellationDate = json['showActivityCancellationDate'];
     activityCancellationDate = json['activityCancellationDate'];
     mallDto = json['mallDto'];
@@ -543,13 +567,13 @@ class ShopInfo {
     map['noOfCameras'] = noOfCameras;
     return map;
   }
-
 }
 
 class CleanContractOptions {
   CleanContractOptions({
     this.cleanOption,
-    this.contractOption,});
+    this.contractOption,
+  });
 
   CleanContractOptions.fromJson(dynamic json) {
     cleanOption = json['cleanOption'];
@@ -564,7 +588,6 @@ class CleanContractOptions {
     map['contractOption'] = contractOption;
     return map;
   }
-
 }
 
 class ContractInfoResponseDto {
@@ -576,7 +599,8 @@ class ContractInfoResponseDto {
     this.contractDate,
     this.contractNumber,
     this.contractOptionsResponseDto,
-    this.investmentContractNumber,});
+    this.investmentContractNumber,
+  });
 
   ContractInfoResponseDto.fromJson(dynamic json) {
     contractType = json['contractType'];
@@ -585,7 +609,10 @@ class ContractInfoResponseDto {
     deedInfoResponse = json['deedInfoResponse'];
     contractDate = json['contractDate'];
     contractNumber = json['contractNumber'];
-    contractOptionsResponseDto = json['contractOptionsResponseDto'] != null ? ContractOptionsResponseDto.fromJson(json['contractOptionsResponseDto']) : null;
+    contractOptionsResponseDto = json['contractOptionsResponseDto'] != null
+        ? ContractOptionsResponseDto.fromJson(
+            json['contractOptionsResponseDto'])
+        : null;
     investmentContractNumber = json['investmentContractNumber'];
   }
   String? contractType;
@@ -645,20 +672,23 @@ class ContractInfoResponseDto {
 
     return contractType;
   }
-
-
 }
 
 class ContractOptionsResponseDto {
   ContractOptionsResponseDto({
     this.ejarOptions,
     this.deedOptions,
-    this.investOptions,});
+    this.investOptions,
+  });
 
   ContractOptionsResponseDto.fromJson(dynamic json) {
-    ejarOptions = json['ejarOptions'] != null ? json['ejarOptions'].cast<String>() : [];
-    deedOptions = json['deedOptions'] != null ? json['deedOptions'].cast<String>() : [];
-    investOptions = json['investOptions'] != null ? json['investOptions'].cast<String>() : [];
+    ejarOptions =
+        json['ejarOptions'] != null ? json['ejarOptions'].cast<String>() : [];
+    deedOptions =
+        json['deedOptions'] != null ? json['deedOptions'].cast<String>() : [];
+    investOptions = json['investOptions'] != null
+        ? json['investOptions'].cast<String>()
+        : [];
   }
   List<String>? ejarOptions;
   List<String>? deedOptions;
@@ -671,14 +701,14 @@ class ContractOptionsResponseDto {
     map['investOptions'] = investOptions;
     return map;
   }
-
 }
 
 class BoardsInfomation {
   BoardsInfomation({
     this.typeId,
     this.typeName,
-    this.area,});
+    this.area,
+  });
 
   BoardsInfomation.fromJson(dynamic json) {
     typeId = json['typeId'];
@@ -696,27 +726,27 @@ class BoardsInfomation {
     map['area'] = area;
     return map;
   }
-
 }
 
 class SubmitterInfo {
   SubmitterInfo({
-      this.entityType,
-      this.submitterType,
-      this.crNumber,
-      this.crType,
-      this.submitterIdNumber,
-      this.submitterBirthDate,
-      this.mobile,
-      this.gender,
-      this.crTypeId,
-      this.submitterName,
-      this.entityName,
-      this.crIssueDate,
-      this.crSource,
-      this.genderDesc,
-      this.submitterIdType,
-      this.crEntityType,});
+    this.entityType,
+    this.submitterType,
+    this.crNumber,
+    this.crType,
+    this.submitterIdNumber,
+    this.submitterBirthDate,
+    this.mobile,
+    this.gender,
+    this.crTypeId,
+    this.submitterName,
+    this.entityName,
+    this.crIssueDate,
+    this.crSource,
+    this.genderDesc,
+    this.submitterIdType,
+    this.crEntityType,
+  });
 
   SubmitterInfo.fromJson(dynamic json) {
     entityType = json['entityType'];
@@ -773,7 +803,6 @@ class SubmitterInfo {
     map['crEntityType'] = crEntityType;
     return map;
   }
-
 }
 
 class LocationInfo {
@@ -794,7 +823,8 @@ class LocationInfo {
     this.regionId,
     this.regionName,
     this.vehiclePathDesc,
-    this.krokiUrl,});
+    this.krokiUrl,
+  });
 
   LocationInfo.fromJson(dynamic json) {
     subMunicipalityGisCode = json['subMunicipalityGisCode'];
@@ -854,7 +884,6 @@ class LocationInfo {
     map['krokiUrl'] = krokiUrl;
     return map;
   }
-
 }
 
 class ActivityInfo {
@@ -869,10 +898,13 @@ class ActivityInfo {
     this.atmFeesPaid,
     this.atmActivity,
     this.inHomogenusActivities,
-    this.salamaWorkflowWarningMessage,});
+    this.salamaWorkflowWarningMessage,
+  });
 
   ActivityInfo.fromJson(dynamic json) {
-    mainActivity = json['mainActivity'] != null ? MainActivity.fromJson(json['mainActivity']) : null;
+    mainActivity = json['mainActivity'] != null
+        ? MainActivity.fromJson(json['mainActivity'])
+        : null;
     additionalActivities = json['additionalActivities'];
     foreignInvistor = json['foreignInvistor'];
     workerTypeId = json['workerTypeId'];
@@ -913,7 +945,6 @@ class ActivityInfo {
     map['salamaWorkflowWarningMessage'] = salamaWorkflowWarningMessage;
     return map;
   }
-
 }
 
 class MainActivity {
@@ -935,7 +966,8 @@ class MainActivity {
     this.maxArea,
     this.facilityId,
     this.facilityName,
-    this.salamaWorkflow,});
+    this.salamaWorkflow,
+  });
 
   MainActivity.fromJson(dynamic json) {
     detailedActivityId = json['detailedActivityId'];
@@ -950,7 +982,9 @@ class MainActivity {
     minYears = json['minYears'];
     maxYears = json['maxYears'];
     removed = json['removed'];
-    activitySettingDto = json['activitySettingDto'] != null ? ActivitySettingDto.fromJson(json['activitySettingDto']) : null;
+    activitySettingDto = json['activitySettingDto'] != null
+        ? ActivitySettingDto.fromJson(json['activitySettingDto'])
+        : null;
     minArea = json['minArea'];
     maxArea = json['maxArea'];
     facilityId = json['facilityId'];
@@ -1000,7 +1034,6 @@ class MainActivity {
     map['salamaWorkflow'] = salamaWorkflow;
     return map;
   }
-
 }
 
 class ActivitySettingDto {
@@ -1010,7 +1043,8 @@ class ActivitySettingDto {
     this.pathType,
     this.foodActivity,
     this.ownershipType,
-    this.requestFlow,});
+    this.requestFlow,
+  });
 
   ActivitySettingDto.fromJson(dynamic json) {
     entityType = json['entityType'];
@@ -1037,7 +1071,6 @@ class ActivitySettingDto {
     map['requestFlow'] = requestFlow;
     return map;
   }
-
 }
 
 class LicenceHoldInfoStatusResponseDto {
@@ -1047,7 +1080,8 @@ class LicenceHoldInfoStatusResponseDto {
     this.holdReason,
     this.holdType,
     this.holdedSevices,
-    this.holdSource,});
+    this.holdSource,
+  });
 
   LicenceHoldInfoStatusResponseDto.fromJson(dynamic json) {
     hold = json['hold'];
@@ -1074,7 +1108,6 @@ class LicenceHoldInfoStatusResponseDto {
     map['holdSource'] = holdSource;
     return map;
   }
-
 }
 
 class SalamaInfo {
@@ -1082,7 +1115,8 @@ class SalamaInfo {
     this.salamaIssueDate,
     this.salamaIssueNo,
     this.salamaApprovedCenterId,
-    this.salamaApprovedCenterName,});
+    this.salamaApprovedCenterName,
+  });
 
   SalamaInfo.fromJson(dynamic json) {
     salamaIssueDate = json['salamaIssueDate'];
@@ -1103,7 +1137,6 @@ class SalamaInfo {
     map['salamaApprovedCenterName'] = salamaApprovedCenterName;
     return map;
   }
-
 }
 
 class LicenseInfo {
@@ -1121,7 +1154,8 @@ class LicenseInfo {
     this.printUrl,
     this.qrCodeUrl,
     this.qrRequestId,
-    this.statusDesc,});
+    this.statusDesc,
+  });
 
   LicenseInfo.fromJson(dynamic json) {
     licenseEndDate = json['licenseEndDate'];
@@ -1172,9 +1206,4 @@ class LicenseInfo {
     map['statusDesc'] = statusDesc;
     return map;
   }
-
 }
-
-
-
-

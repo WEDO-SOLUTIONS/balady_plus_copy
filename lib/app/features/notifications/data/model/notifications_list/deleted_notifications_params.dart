@@ -1,4 +1,3 @@
-
 class DeletedNotificationsParams {
   String channelId;
   bool all;
@@ -21,7 +20,7 @@ class DeletedNotificationsParams {
       "channelId": channelId,
       "all": all,
     };
-    if(messages != null) {
+    if (messages != null) {
       data["messages"] = messages;
     }
     if (serviceId != null) {
@@ -33,4 +32,3 @@ class DeletedNotificationsParams {
     return data;
   }
 }
-

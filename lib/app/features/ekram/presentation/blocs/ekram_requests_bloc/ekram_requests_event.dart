@@ -41,7 +41,6 @@ class ShowFilterEvent extends EkramRequestsEvent {
   ShowFilterEvent();
 }
 
-
 class GetCemetryRequestsEvent extends EkramRequestsEvent {
   GetCemetryRequestsEvent();
 }

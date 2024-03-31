@@ -37,7 +37,7 @@ class NotificationsListScreen extends StatelessWidget {
             EntryPointCubit auth = context.read<EntryPointCubit>();
             final selectedAgent = auth.state.selectedAgent;
             final selectedDelegator = auth.state.selectedDelegator;
-            late Map<String,dynamic> persoana;
+            late Map<String, dynamic> persoana;
             if (selectedAgent != null) {
               persoana = {
                 "typeId": "person",
@@ -61,7 +61,7 @@ class NotificationsListScreen extends StatelessWidget {
                   }
                 ]
               };
-            } else if (auth.state.userInfo != null){
+            } else if (auth.state.userInfo != null) {
               persoana = {
                 "typeId": "person",
                 "ids": [
@@ -75,9 +75,7 @@ class NotificationsListScreen extends StatelessWidget {
             }
             return NotificationsListCubit(
               listRepository: listRepository,
-              params: SearchNotificationsParams(
-                  persoana: persoana
-              ),
+              params: SearchNotificationsParams(persoana: persoana),
             );
           },
         ),

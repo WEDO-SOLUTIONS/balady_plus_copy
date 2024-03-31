@@ -59,7 +59,17 @@ import '../../features/vd/domain/entities/gis/gis_params.dart';
 import '../../features/vd/domain/entities/gis/gis_response.dart';
 import '../../features/vd/presentation/dialogs/vd_all_types_dialog.dart';
 import './utils_exports.dart'
-    show AppColor, AppConfig, AppLanguage, BlocStatus, EnvType, GeneralKey, MimeType, RouteName, UIHelper, WithDelay;
+    show
+        AppColor,
+        AppConfig,
+        AppLanguage,
+        BlocStatus,
+        EnvType,
+        GeneralKey,
+        MimeType,
+        RouteName,
+        UIHelper,
+        WithDelay;
 import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/presentation/dialogs/camera_permission_dialog.dart';
 import '../../features/_shared_feature_/presentation/dialogs/location_permission_dialog.dart';
@@ -173,14 +183,8 @@ Map<String, String> carEnPlateLetters = {
 };
 
 class CommonFunctions {
-
-
-  static void updateNotificationSettings(String fcm ) async {
-
-
-
+  static void updateNotificationSettings(String fcm) async {
     NotificationManager manager = sl();
-
 
     DeviceDetails details = sl();
     Device device = Device();
@@ -188,7 +192,7 @@ class CommonFunctions {
     device.id = details.deviceId;
     device.osTypeId = details.deviceOs;
 
-    PackageDetails info =  sl();
+    PackageDetails info = sl();
     NotificationRequest request = NotificationRequest();
     request.fcmToken = fcm;
     request.appId = GeneralKey.appId;
@@ -197,10 +201,7 @@ class CommonFunctions {
     manager.updateNotificationSettings(request);
   }
 
-
-
-
-    static EventTransformer<Event> debounce<Event>([Duration? duration]) =>
+  static EventTransformer<Event> debounce<Event>([Duration? duration]) =>
       (events, mapper) =>
           events.debounce(duration ?? UIHelper.duration).switchMap(mapper);
 

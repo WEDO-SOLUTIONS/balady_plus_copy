@@ -19,28 +19,23 @@ import '../model/validate_license_data_model.dart';
 import '../model/validate_owner_data_model.dart';
 
 abstract class LicensePermitsRemoteDataSource {
-  Future< ResponseBodyModel<PermitsResponseDataModel>> getLicensePermits(
-      String licenseNumber
-      );
+  Future<ResponseBodyModel<PermitsResponseDataModel>> getLicensePermits(
+      String licenseNumber);
   Future<ResponseBodyModel<ValidateOwnerDataModel>> validateNewOwner(
-      String licenseNumber,String crNumber);
+      String licenseNumber, String crNumber);
 
   Future<ResponseBodyModel<ValidateLicenseDataModel>> validateLicense(
       String licenseNumber);
 
   Future<ResponseBodyModel<ApplyRequestDataModel>> sendToNewOwner(
-      String licenseNumber,TransferLicenseRequest request);
-
-
-
+      String licenseNumber, TransferLicenseRequest request);
 }
 
-class LicensePermitsRemoteDataSourceImplementation implements LicensePermitsRemoteDataSource {
+class LicensePermitsRemoteDataSourceImplementation
+    implements LicensePermitsRemoteDataSource {
   final WebService webService;
 
-  LicensePermitsRemoteDataSourceImplementation(
-      {required this.webService});
-
+  LicensePermitsRemoteDataSourceImplementation({required this.webService});
 
   @override
   Future<ResponseBodyModel<PermitsResponseDataModel>> getLicensePermits(
@@ -50,17 +45,16 @@ class LicensePermitsRemoteDataSourceImplementation implements LicensePermitsRemo
       response = await webService.dio.get(
         ApiUrl.getLicensePermits(licenseNumber),
       );
-     final data = response.data;
+      final data = response.data;
 
-      var parsedResult = data != null ? PermitsResponseDataModel.fromJson(data["data"]["result"]) : null;
-      final decodedResponse = ResponseBodyModel<PermitsResponseDataModel>.fromMap(
-          data,
-          parsedResult: parsedResult);
+      var parsedResult = data != null
+          ? PermitsResponseDataModel.fromJson(data["data"]["result"])
+          : null;
+      final decodedResponse =
+          ResponseBodyModel<PermitsResponseDataModel>.fromMap(data,
+              parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-
-
-
     } on DioError catch (error) {
       // "DioError $error".errorLog();
       // if (error is NoDataFoundException) {
@@ -73,7 +67,6 @@ class LicensePermitsRemoteDataSourceImplementation implements LicensePermitsRemo
       );
     } catch (ex) {
       // "Catched $ex".errorLog();
-
 
       if (ex is ServerException) {
         rethrow;
@@ -89,27 +82,23 @@ class LicensePermitsRemoteDataSourceImplementation implements LicensePermitsRemo
     }
   }
 
-
   @override
   Future<ResponseBodyModel<ValidateOwnerDataModel>> validateNewOwner(
-      String licenseNumber,String crNumber) async {
+      String licenseNumber, String crNumber) async {
     var response;
     try {
       response = await webService.dio.get(
-        ApiUrl.validateNewOwner(licenseNumber,crNumber),
+        ApiUrl.validateNewOwner(licenseNumber, crNumber),
       );
       final data = response.data;
 
-
-      var parsedResult = data != null ? ValidateOwnerDataModel.fromJson(data["data"]) : null;
+      var parsedResult =
+          data != null ? ValidateOwnerDataModel.fromJson(data["data"]) : null;
       final decodedResponse = ResponseBodyModel<ValidateOwnerDataModel>.fromMap(
           response.data,
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-
-
-
     } on DioError catch (error) {
       // "DioError $error".errorLog();
       // if (error is NoDataFoundException) {
@@ -122,7 +111,6 @@ class LicensePermitsRemoteDataSourceImplementation implements LicensePermitsRemo
       );
     } catch (ex) {
       // "Catched $ex".errorLog();
-
 
       if (ex is ServerException) {
         rethrow;
@@ -137,7 +125,6 @@ class LicensePermitsRemoteDataSourceImplementation implements LicensePermitsRemo
       }
     }
   }
-
 
   @override
   Future<ResponseBodyModel<ValidateLicenseDataModel>> validateLicense(
@@ -149,16 +136,13 @@ class LicensePermitsRemoteDataSourceImplementation implements LicensePermitsRemo
       );
       final data = response.data;
 
-
-      var parsedResult = data != null ? ValidateLicenseDataModel.fromJson(data["data"]) : null;
-      final decodedResponse = ResponseBodyModel<ValidateLicenseDataModel>.fromMap(
-          response.data,
-          parsedResult: parsedResult);
+      var parsedResult =
+          data != null ? ValidateLicenseDataModel.fromJson(data["data"]) : null;
+      final decodedResponse =
+          ResponseBodyModel<ValidateLicenseDataModel>.fromMap(response.data,
+              parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-
-
-
     } on DioError catch (error) {
       // "DioError $error".errorLog();
       // if (error is NoDataFoundException) {
@@ -171,7 +155,6 @@ class LicensePermitsRemoteDataSourceImplementation implements LicensePermitsRemo
       );
     } catch (ex) {
       // "Catched $ex".errorLog();
-
 
       if (ex is ServerException) {
         rethrow;
@@ -187,31 +170,22 @@ class LicensePermitsRemoteDataSourceImplementation implements LicensePermitsRemo
     }
   }
 
-
-
   @override
   Future<ResponseBodyModel<ApplyRequestDataModel>> sendToNewOwner(
-      String licenseNumber,TransferLicenseRequest request) async {
+      String licenseNumber, TransferLicenseRequest request) async {
     var response;
     try {
-
-      response = await webService.dio.post(
-        ApiUrl.sendToNewOwner(licenseNumber),
-        data: request.toJson()
-
-      );
+      response = await webService.dio
+          .post(ApiUrl.sendToNewOwner(licenseNumber), data: request.toJson());
       final data = response.data;
 
-
-      var parsedResult = data != null ? ApplyRequestDataModel.fromJson(data["data"]) : null;
+      var parsedResult =
+          data != null ? ApplyRequestDataModel.fromJson(data["data"]) : null;
       final decodedResponse = ResponseBodyModel<ApplyRequestDataModel>.fromMap(
           response.data,
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-
-
-
     } on DioError catch (error) {
       // "DioError $error".errorLog();
       // if (error is NoDataFoundException) {
@@ -224,7 +198,6 @@ class LicensePermitsRemoteDataSourceImplementation implements LicensePermitsRemo
       );
     } catch (ex) {
       // "Catched $ex".errorLog();
-
 
       if (ex is ServerException) {
         rethrow;
@@ -239,6 +212,4 @@ class LicensePermitsRemoteDataSourceImplementation implements LicensePermitsRemo
       }
     }
   }
-
-
 }

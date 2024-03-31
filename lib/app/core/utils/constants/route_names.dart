@@ -172,7 +172,7 @@ class RouteName {
 
   static const investmentPage = '/investmentPage';
   static const tempRentalPage = '/tempRentalPage';
-static const DirectRentalPage = 'DirectRentalPage'; 
+  static const DirectRentalPage = 'DirectRentalPage';
   // Visual distortion
   static const visualDistortionPage = '/visualDistortionPage';
   static const visualDistortionDetailsPage = '/visualDistortionDetailsPage';
@@ -341,39 +341,29 @@ static const DirectRentalPage = 'DirectRentalPage';
   static const jodDonationPage = 'JodDonationPage';
   static const chatbot = '/chatbot';
 
-
-
-
-
-  static const commercialLicenseOverView =
-      'OverviewCommercialLicense_Screen';
-  static const commercialLicenseQuery =
-      'QueryCommercialLicense_Screen';
+  static const commercialLicenseOverView = 'OverviewCommercialLicense_Screen';
+  static const commercialLicenseQuery = 'QueryCommercialLicense_Screen';
   static const commercialLicenseQueryDetails =
       'QueryCommercialLicense_query_details_Screen';
 
-
-  static const surveyReportInqueryOverView =
-      'SurveyReportOverview_Screen';
-  static const surveyReportInquery =
-      'SurveyReportInquery_Screen';
-  static const surveyReportInqueryDetails =
-      'SurveyReportInqueryDetails_Screen';
+  static const surveyReportInqueryOverView = 'SurveyReportOverview_Screen';
+  static const surveyReportInquery = 'SurveyReportInquery_Screen';
+  static const surveyReportInqueryDetails = 'SurveyReportInqueryDetails_Screen';
 
   static const constructionLicenseOverView =
       'ConstructionLicenseOverView_Screen';
-  static const constructionLicenseInquery =
-      'constructionLicenseInquery_Screen';
+  static const constructionLicenseInquery = 'constructionLicenseInquery_Screen';
   static const constructionLicenseInqueryDetails =
       'constructionLicenseInqueryDetails_Screen';
 
-
-
   ///// RequestOwnershipTransferDetailsPage
 
-  static const requestOwnershipTransferDetailsPage = '/requestOwnershipTransferDetailsPage';
+  static const requestOwnershipTransferDetailsPage =
+      '/requestOwnershipTransferDetailsPage';
   static const approvalSequenceMainScreen = '/approvalSequenceMainScreen';
 
+  static const commercialLicenseTransferOverView =
+      'commercialLicenseTransferOverView_Screen';
   static const approvalSequenceShopLocationScreen = '/ApprovalSequenceShopLocationScreen';
 
 
@@ -383,12 +373,8 @@ static const DirectRentalPage = 'DirectRentalPage';
   static const newOwner = 'newOwner_Screen';
   static const SucessfullScreen = 'Sucessfull_Screen';
 
-  static const notificationsListScreen =
-      'notificationsList_Screen';
-  static const notificationsDetailsScreen =
-      'notificationsDetails_Screen';
-
-
+  static const notificationsListScreen = 'notificationsList_Screen';
+  static const notificationsDetailsScreen = 'notificationsDetails_Screen';
 }
 
 class EtmamRoutesNames {
@@ -457,7 +443,4 @@ class EtmamRoutesNames {
   static const editBiddingForm = '/EditBiddingForm';
 
   static const biddingReleationTypes = '/biddingReleationTypes';
-
-
-
 }

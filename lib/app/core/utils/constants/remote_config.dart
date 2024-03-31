@@ -47,9 +47,8 @@ class RemoteConfig {
 
   static EnvType get env => sl<EnvType>();
 
-  static  List<String> get MSRAllowedMuncipalites =>
+  static List<String> get MSRAllowedMuncipalites =>
       _RemoteConfig.MSRAllowedMuncipalites[env]!;
-
 
   static Map<String, dynamic> get MunicipalServicesIDs =>
       _RemoteConfig.municipal_services_IDS[env]!;
@@ -362,87 +361,56 @@ class _RemoteConfig {
     ],
   );
 
-
   static final municipal_services_IDS = _initValues<Map<String, dynamic>>(
     devVal: {
-
       "survey_report_inquery": {
         "id": 11428,
         "Key_name": "license_query",
-
       },
-
       "inquiry_construction_license": {
         "id": 11124,
         "Key_name": "license_query",
-
       },
-
-
     },
     stgVal: {
-
       "survey_report_inquery": {
         "id": 11428,
         "Key_name": "license_query",
-
       },
-
       "inquiry_construction_license": {
         "id": 11124,
         "Key_name": "license_query",
-
       },
-
-
     },
     preVal: {
-
       "survey_report_inquery": {
         "id": 11428,
         "Key_name": "license_query",
-
       },
-
       "inquiry_construction_license": {
         "id": 11124,
         "Key_name": "license_query",
-
       },
-
-
     },
     prodVal: {
-
       "survey_report_inquery": {
         "id": 11632,
         "Key_name": "license_query",
-
       },
-
       "inquiry_construction_license": {
         "id": 11124,
         "Key_name": "license_query",
-
       },
-
-
     },
     urbiPreVal: {
-
       "survey_report_inquery": {
         "id": 11428,
         "Key_name": "license_query",
-
       },
-
       "inquiry_construction_license": {
         "id": 11124,
         "Key_name": "license_query",
-
       },
-
-
     },
   );
 

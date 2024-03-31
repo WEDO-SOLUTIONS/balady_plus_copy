@@ -15,7 +15,6 @@ class CreateViolationObjectionPage extends StatefulWidget {
 }
 
 class _CreateObjectionPageState extends State<CreateViolationObjectionPage> {
-
   @override
   void initState() {
     super.initState();
@@ -23,8 +22,9 @@ class _CreateObjectionPageState extends State<CreateViolationObjectionPage> {
 
   @override
   Widget build(BuildContext context) {
-   CreateViolationObjectionPageParams params = ModalRoute.of(context)!.settings.arguments
-        as CreateViolationObjectionPageParams;
+    CreateViolationObjectionPageParams params = ModalRoute.of(context)!
+        .settings
+        .arguments as CreateViolationObjectionPageParams;
 
     return BlocProvider(
       create: (context) => CreateObjectionBloc(

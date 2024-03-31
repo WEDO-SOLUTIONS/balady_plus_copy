@@ -1,12 +1,14 @@
-
 class TransferLicenseRequest {
   TransferLicenseRequest({
     this.crNumber,
-    this.selectedPermits,});
+    this.selectedPermits,
+  });
 
   TransferLicenseRequest.fromJson(dynamic json) {
     crNumber = json['crNumber'];
-    selectedPermits = json['selectedPermits'] != null ? json['selectedPermits'].cast<int>() : [];
+    selectedPermits = json['selectedPermits'] != null
+        ? json['selectedPermits'].cast<int>()
+        : [];
   }
   String? crNumber;
   List<int>? selectedPermits;
@@ -17,5 +19,4 @@ class TransferLicenseRequest {
     map['selectedPermits'] = selectedPermits;
     return map;
   }
-
 }

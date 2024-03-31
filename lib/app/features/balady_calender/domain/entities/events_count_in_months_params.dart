@@ -15,7 +15,7 @@ class EventsCountInMonthsParams {
     int? year,
   }) =>
       EventsCountInMonthsParams(
-        commonParams: commonParams ??  this.commonParams,
+        commonParams: commonParams ?? this.commonParams,
         year: year ?? this.year,
       );
 

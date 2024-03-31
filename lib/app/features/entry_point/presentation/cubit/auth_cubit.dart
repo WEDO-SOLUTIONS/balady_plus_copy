@@ -199,10 +199,10 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       }
     });
 
-    if(CommonProperties.fcmToken != null && CommonProperties.fcmToken!.isNotEmpty) {
+    if (CommonProperties.fcmToken != null &&
+        CommonProperties.fcmToken!.isNotEmpty) {
       CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
     }
-
 
     EasyLoading.dismiss();
     // getUserLocationData();
@@ -212,16 +212,13 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> refreshToken(String refreshToken) async {
-
     SSOToken? token = state.token;
 
-
-    if ( token != null && token.token != null && token.token!.isNotEmpty) {
+    if (token != null && token.token != null && token.token!.isNotEmpty) {
       final failureOrSuccess = await _refreshToken(refreshToken);
 
       return await failureOrSuccess.fold((failure) async {
         await autoLogout();
-
       }, (success) async {
         SSOToken token = SSOToken(
             token: success.accessToken,
@@ -236,31 +233,23 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           ));
           return false;
         }, (s) {
-
-
-
           emit(state.copyWith(
             status: AuthStatus.notAuthenticated,
             token: token,
             errorMessage: "",
           ));
 
-          if(CommonProperties.fcmToken != null && CommonProperties.fcmToken!.isNotEmpty) {
-            CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
+          if (CommonProperties.fcmToken != null &&
+              CommonProperties.fcmToken!.isNotEmpty) {
+            CommonFunctions.updateNotificationSettings(
+                CommonProperties.fcmToken!);
           }
           return true;
         });
       });
+    } else {
+      await autoLogout();
     }
-    else
-      {
-         await autoLogout();
-      }
-
-
-
-
-
   }
 
   Future<bool> refreshAPIGeeToken() async {
@@ -320,7 +309,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       ));
     });
 
-    if(CommonProperties.fcmToken != null && CommonProperties.fcmToken!.isNotEmpty) {
+    if (CommonProperties.fcmToken != null &&
+        CommonProperties.fcmToken!.isNotEmpty) {
       CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
     }
   }
@@ -342,12 +332,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     // Fix White screen on startup
     // Helpers.backToHome();
 
-    if(CommonProperties.fcmToken != null && CommonProperties.fcmToken!.isNotEmpty) {
+    if (CommonProperties.fcmToken != null &&
+        CommonProperties.fcmToken!.isNotEmpty) {
       CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
     }
     CommonFunctions.showError("session_ended_error".tr());
-
-
   }
 
   Future<void> refreshSSOProfile() async {

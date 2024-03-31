@@ -56,9 +56,7 @@ class RequestOwnershipTransferDetailsCubit
   }
 
   Future<void> acceptCommercialRequestTransfer(String id) async {
-    emit(
-      state.copyWith(status: BlocRequestStatus.submissionGetLoading),
-    );
+    emit(LoadingAcceptOrRejectOwnershipTransferState());
     final failureOrSuccess =
         await acceptOrRejectRequestOwnershipTransferRepository
             .acceptCommercialRequestTransfer(id);
@@ -78,9 +76,7 @@ class RequestOwnershipTransferDetailsCubit
   }
 
   Future<void> rejectCommercialRequestTransfer(String id) async {
-    emit(
-      state.copyWith(status: BlocRequestStatus.submissionGetLoading),
-    );
+    emit(LoadingAcceptOrRejectOwnershipTransferState());
     final failureOrSuccess =
         await acceptOrRejectRequestOwnershipTransferRepository
             .rejectCommercialRequestTransfer(id);

@@ -1,5 +1,3 @@
-
-
 List<CancellationReason> allowedActionsListFromJson(List list) =>
     List<CancellationReason>.from(
       list.map(
@@ -18,7 +16,8 @@ class CancellationReason {
     required this.text,
   });
 
-  factory CancellationReason.fromJson(Map<String, dynamic> json) => CancellationReason(
+  factory CancellationReason.fromJson(Map<String, dynamic> json) =>
+      CancellationReason(
         // ename: json["ename"],
         id: json["id"],
         text: json["name"],
@@ -35,5 +34,3 @@ class CancellationReason {
     return text;
   }
 }
-
-

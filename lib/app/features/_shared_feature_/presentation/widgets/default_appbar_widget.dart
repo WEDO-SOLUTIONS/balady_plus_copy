@@ -16,7 +16,7 @@ class DefaultAppBarWidget extends StatelessWidget
   final bool showBack;
   Widget? titleWidget;
 
-   DefaultAppBarWidget(
+  DefaultAppBarWidget(
       {super.key,
       this.title,
       this.bottom,
@@ -25,8 +25,7 @@ class DefaultAppBarWidget extends StatelessWidget
       this.x = false,
       this.onBack,
       this.flexibleSpace,
-      this.titleWidget
-      });
+      this.titleWidget});
 
   @override
   Widget build(BuildContext context) {
@@ -49,16 +48,15 @@ class DefaultAppBarWidget extends StatelessWidget
           : null,
       titleSpacing: Navigator.canPop(context) ? 0 : 16,
       centerTitle: false,
-      title:
-      titleWidget??
-      CustomTextWidget(
-        title ?? "",
-        fontSize: 20,
-        maxLines: 3,
-        textOverflow: TextOverflow.ellipsis,
-        fontWeight: AppFontWeight.bold,
-        fontColor: AppColor.blackModern700Light,
-      ),
+      title: titleWidget ??
+          CustomTextWidget(
+            title ?? "",
+            fontSize: 20,
+            maxLines: 3,
+            textOverflow: TextOverflow.ellipsis,
+            fontWeight: AppFontWeight.bold,
+            fontColor: AppColor.blackModern700Light,
+          ),
       bottom: bottom,
       actions: actions,
       flexibleSpace: flexibleSpace ??

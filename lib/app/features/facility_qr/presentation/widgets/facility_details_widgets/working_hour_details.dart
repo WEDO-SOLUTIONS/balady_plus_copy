@@ -239,5 +239,4 @@ class _WorkingHourDetailsState extends State<WorkingHourDetails> {
       ),
     );
   }
-
 }

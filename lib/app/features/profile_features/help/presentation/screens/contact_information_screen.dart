@@ -9,7 +9,7 @@ class ContactInformationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:  DefaultAppBarWidget(title: "معلومات التواصل"),
+      appBar: DefaultAppBarWidget(title: "معلومات التواصل"),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         margin: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),

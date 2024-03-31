@@ -25,13 +25,16 @@ import '../interface/step_interface.dart';
 
 class RequestSequencePledgesScreen extends StatefulWidget {
   StepInterface stepInterface;
-  RequestSequencePledgesScreen({Key? key,required this.stepInterface}) : super(key: key);
+  RequestSequencePledgesScreen({Key? key, required this.stepInterface})
+      : super(key: key);
 
   @override
-  State<RequestSequencePledgesScreen> createState() => _RequestSequencePledgesScreenState();
+  State<RequestSequencePledgesScreen> createState() =>
+      _RequestSequencePledgesScreenState();
 }
 
-class _RequestSequencePledgesScreenState extends State<RequestSequencePledgesScreen> {
+class _RequestSequencePledgesScreenState
+    extends State<RequestSequencePledgesScreen> {
   LicenseTransferCubit? bloc;
 
   bool isAgree = false;
@@ -42,50 +45,41 @@ class _RequestSequencePledgesScreenState extends State<RequestSequencePledgesScr
     super.initState();
 
     Future.microtask(() {
-      bloc= context.read<LicenseTransferCubit>();
+      bloc = context.read<LicenseTransferCubit>();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
-
     return getBody();
-
   }
 
   Widget getBody() {
     return BlocConsumer<LicenseTransferCubit, LicenseTransferState>(
       listenWhen: (previous, current) => previous.status != current.status,
       listener: (_, state) async {
-
-
         if (state.status.isSubmissionGetFailure) {
           CommonFunctions.showError(state.error);
-        } else if (state.status.isSubmissionGetSuccess && state.applyRequestDataModel != null) {
+        } else if (state.status.isSubmissionGetSuccess &&
+            state.applyRequestDataModel != null) {
           Navigator.of(context).pop(true);
           Navigator.of(context).pushNamed(
             RouteName.SucessfullScreen,
             arguments: "${state.applyRequestDataModel?.result}",
           );
         }
-
-
       },
       builder: (context, state) {
-
-          return
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 15),
-                  child: getCardView(
-                      Column(
-                        children: [
-                          Row(
-
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 15.0, right: 15),
+              child: getCardView(
+                  Column(
+                    children: [
+                      Row(
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           const DrawIconBasedTypeWidget(
@@ -96,23 +90,25 @@ class _RequestSequencePledgesScreenState extends State<RequestSequencePledgesScr
                           Text(
                             "Pledges".tr(),
                             style: AppStyle.personalInfoParameterValueTextStyle
-                                .copyWith(fontSize: 15,height: 1.5),
+                                .copyWith(fontSize: 15, height: 1.5),
                           ),
                         ],
                       ),
-
-                          const SizedBox(height: 10,),
-                          Text(
-                            "pledges_condtions".tr(),
-                            style: AppStyle.personalInfoParameterValueTextStyle
-                                .copyWith(fontSize: 12,height: 1.5),
-                          ),
-
-                          const SizedBox(height: 10,),
-                          getCardView(
-                              Row(
-                                mainAxisSize: MainAxisSize.max,
-                          //  crossAxisAlignment: CrossAxisAlignment.start,
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "pledges_condtions".tr(),
+                        style: AppStyle.personalInfoParameterValueTextStyle
+                            .copyWith(fontSize: 12, height: 1.5),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      getCardView(
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            //  crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Checkbox(
                                   value: isAgree,
@@ -126,91 +122,80 @@ class _RequestSequencePledgesScreenState extends State<RequestSequencePledgesScr
                               Center(
                                 child: Text(
                                   "cr_consent_conditions_check".tr(),
-                                  style: AppStyle.personalInfoParameterValueTextStyle
+                                  style: AppStyle
+                                      .personalInfoParameterValueTextStyle
                                       .copyWith(fontSize: 12),
                                 ),
                               ),
                             ],
                           ),
-                              AppColor.grayLight,
-                              const EdgeInsets.only(left: 10, right: 10, bottom: 5, top: 5)
-                          ),
-
-                        ],
-                      ),
-                      AppColor.white,
-                      null
-                      ),
-                ),
-
-               const Spacer(),
-                Container(
-                  decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(36),
-                        topRight: Radius.circular(36),
-                      ),
-                      color: Colors.white),
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
-                  child: Column(
-                    children: [
-
-                      getCardView(
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              const DrawIconBasedTypeWidget(
-                                icon: IconPath.infoCircle,
-                                iconSize: 20,
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  "exclude".tr(),
-                                  style: AppStyle.personalInfoParameterValueTextStyle
-                                      .copyWith(fontSize: 12,height: 1.5),
-                                ),
-                              ),
-                            ],
-                          ),
                           AppColor.grayLight,
-                          null
-                      ),
-                      const SizedBox(height: 20,),
-                      ElevatedButtonWidget.applyRequest(
-                        onPressed: () {
-
-                          if(isAgree)
-                          {
-
-                          bloc?.sendToNewOwner(bloc!.licenseNumber!,bloc!.request);
-
-                          }
-                          else
-                          {
-                            CommonFunctions.showError("terms_error".tr());
-
-                          }
-
-
-                        },
-                      ),
+                          const EdgeInsets.only(
+                              left: 10, right: 10, bottom: 5, top: 5)),
                     ],
                   ),
-                ),
-              ],
-            );
-
-
+                  AppColor.white,
+                  null),
+            ),
+            const Spacer(),
+            Container(
+              decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(36),
+                    topRight: Radius.circular(36),
+                  ),
+                  color: Colors.white),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
+              child: Column(
+                children: [
+                  getCardView(
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          const DrawIconBasedTypeWidget(
+                            icon: IconPath.infoCircle,
+                            iconSize: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              "exclude".tr(),
+                              style: AppStyle
+                                  .personalInfoParameterValueTextStyle
+                                  .copyWith(fontSize: 12, height: 1.5),
+                            ),
+                          ),
+                        ],
+                      ),
+                      AppColor.grayLight,
+                      null),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ElevatedButtonWidget.applyRequest(
+                    onPressed: () {
+                      if (isAgree) {
+                        bloc?.sendToNewOwner(
+                            bloc!.licenseNumber!, bloc!.request);
+                      } else {
+                        CommonFunctions.showError("terms_error".tr());
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
       },
     );
   }
 
   Widget getCardView(Widget child, Color bgcolor, EdgeInsetsGeometry? padding) {
     return Container(
-      padding: padding ?? const EdgeInsets.only(left: 10, right: 10, bottom: 20, top: 20),
+      padding: padding ??
+          const EdgeInsets.only(left: 10, right: 10, bottom: 20, top: 20),
       margin: const EdgeInsets.only(top: 15),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
@@ -219,7 +204,4 @@ class _RequestSequencePledgesScreenState extends State<RequestSequencePledgesScr
       child: child,
     );
   }
-
-
-
 }

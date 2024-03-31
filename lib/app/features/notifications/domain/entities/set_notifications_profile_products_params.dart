@@ -11,7 +11,6 @@ class SetNotificationsProfileProductsParams {
     this.productId,
   });
 
-
   Map<String, dynamic> toJson() => {
         'enabled': enabled,
         'channelId': channelId,

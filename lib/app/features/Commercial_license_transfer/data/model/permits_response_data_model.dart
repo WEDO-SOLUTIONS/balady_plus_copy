@@ -1,16 +1,10 @@
-
-
-
 import '../../domain/entity/permits_response_entity.dart';
 
-
-
-class PermitsResponseDataModel extends PermitsResponseEntity{
-
-
+class PermitsResponseDataModel extends PermitsResponseEntity {
   PermitsResponseDataModel({
     super.permits,
-    super.term,});
+    super.term,
+  });
 
   PermitsResponseDataModel.fromJson(dynamic json) {
     if (json['permits'] != null) {
@@ -21,25 +15,17 @@ class PermitsResponseDataModel extends PermitsResponseEntity{
     }
     term = json['term'];
   }
-
-
-
-
 }
-
-
 
 class PermitDataModel extends PermitEntity {
   PermitDataModel({
-  super.accepted,
-  super.expirationDate,
-  super.id,
-  super.permitNumber,
-  super.permitName,
-  super.selected,});
-
-
-
+    super.accepted,
+    super.expirationDate,
+    super.id,
+    super.permitNumber,
+    super.permitName,
+    super.selected,
+  });
 
   PermitDataModel.fromJson(dynamic json) {
     accepted = json['accepted'];
@@ -49,9 +35,4 @@ class PermitDataModel extends PermitEntity {
     permitName = json['permitName'];
     selected = json['selected'];
   }
- 
 }
-
-
-
-

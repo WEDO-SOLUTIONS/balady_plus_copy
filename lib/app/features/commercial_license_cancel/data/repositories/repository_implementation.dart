@@ -4,8 +4,8 @@ import 'package:balady_plus/app/features/commercial_license_details/data/models/
 import 'package:balady_plus/app/features/commercial_license_details/domain/repositories/repository.dart';
 import 'package:dartz/dartz.dart';
 
-
-class CommercialLicenseDetailsRepositoryImplementation implements CommercialLicenseDetailsRepository {
+class CommercialLicenseDetailsRepositoryImplementation
+    implements CommercialLicenseDetailsRepository {
   final CommercialLicenseDetailsRemoteDataSource remoteDataSource;
 
   CommercialLicenseDetailsRepositoryImplementation({
@@ -13,9 +13,11 @@ class CommercialLicenseDetailsRepositoryImplementation implements CommercialLice
   });
 
   @override
-  Future<Either<Failure, CommercialLicenceDetails>> getCommercialLicenseDetails(int commercialLicenseId) async {
+  Future<Either<Failure, CommercialLicenceDetails>> getCommercialLicenseDetails(
+      int commercialLicenseId) async {
     try {
-      final data = await remoteDataSource.getCommercialLicenseDetails(commercialLicenseId);
+      final data = await remoteDataSource
+          .getCommercialLicenseDetails(commercialLicenseId);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -23,7 +25,4 @@ class CommercialLicenseDetailsRepositoryImplementation implements CommercialLice
       return Left(ServerFailure(error.errorMessage));
     }
   }
-
-
-
 }

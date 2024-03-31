@@ -6,18 +6,18 @@ import '../../domain/entity/survey_inquery_data_entity.dart';
 import '../../domain/repository/repository.dart';
 import '../data_source/remote_data_source.dart';
 
-
 class SurveyInqueryRepositoryImplementation implements SurveyInqueryRepository {
   final SurveyInqueryRemoteDataSource remoteDataSource;
 
   SurveyInqueryRepositoryImplementation({
     required this.remoteDataSource,
   });
-  
+
   @override
-  Future<Either<Failure, ResponseBodyModel<SurveyInqueryData>>> getLicenseData( int licenseNumber,String date) async {
+  Future<Either<Failure, ResponseBodyModel<SurveyInqueryData>>> getLicenseData(
+      int licenseNumber, String date) async {
     try {
-      final data = await remoteDataSource.getLicenseData(  licenseNumber,date);
+      final data = await remoteDataSource.getLicenseData(licenseNumber, date);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -25,7 +25,4 @@ class SurveyInqueryRepositoryImplementation implements SurveyInqueryRepository {
       return Left(ServerFailure(error.errorMessage));
     }
   }
-
-
-
 }

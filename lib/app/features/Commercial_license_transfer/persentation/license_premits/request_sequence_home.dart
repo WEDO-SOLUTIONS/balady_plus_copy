@@ -23,7 +23,6 @@ import '../interface/step_interface.dart';
 
 import 'request_sequence_new_owner.dart';
 
-
 class RequestSequenceHomeScreen extends StatefulWidget {
   const RequestSequenceHomeScreen({Key? key}) : super(key: key);
 
@@ -32,18 +31,18 @@ class RequestSequenceHomeScreen extends StatefulWidget {
       _RequestSequenceHomeScreenState();
 }
 
-class _RequestSequenceHomeScreenState extends State<RequestSequenceHomeScreen> implements StepInterface {
+class _RequestSequenceHomeScreenState extends State<RequestSequenceHomeScreen>
+    implements StepInterface {
   PageController controller = PageController();
   int currentPageValue = 0;
 
   LicenseTransferCubit? bloc;
   String? licenseNumber;
 
-
   late List<Widget>? pagesList = [
-    ReuestSequencePremitsScreen(stepInterface:this),
-    RquestSequenceNewOwnerInfoScreen(stepInterface:this),
-    RequestSequencePledgesScreen(stepInterface:this),
+    ReuestSequencePremitsScreen(stepInterface: this),
+    RquestSequenceNewOwnerInfoScreen(stepInterface: this),
+    RequestSequencePledgesScreen(stepInterface: this),
   ];
 
   @override
@@ -51,20 +50,16 @@ class _RequestSequenceHomeScreenState extends State<RequestSequenceHomeScreen> i
     // TODO: implement initState
     super.initState();
 
-
     Future.microtask(() {
       setState(() {
-
-        licenseNumber= ModalRoute.of(context)!.settings.arguments as String;
+        licenseNumber = ModalRoute.of(context)!.settings.arguments as String;
       });
       bloc?.licenseNumber = licenseNumber;
-
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
     return WillPopScope(
       onWillPop: () async {
         if (currentPageValue < 0) {
@@ -79,8 +74,11 @@ class _RequestSequenceHomeScreenState extends State<RequestSequenceHomeScreen> i
       },
       child: BlocProvider(
         create: (_) {
-
-          bloc = LicenseTransferCubit(GetLicensePermitsData(repository: sl()),GetValidateNewOwner(repository: sl()),GetValidateLicense(repository:  sl()),PostToNewOwner(repository:  sl()));
+          bloc = LicenseTransferCubit(
+              GetLicensePermitsData(repository: sl()),
+              GetValidateNewOwner(repository: sl()),
+              GetValidateLicense(repository: sl()),
+              PostToNewOwner(repository: sl()));
 
           // bloc =
           // ModalRoute.of(context)!.settings.arguments as LicensePermitsCubit;
@@ -103,7 +101,7 @@ class _RequestSequenceHomeScreenState extends State<RequestSequenceHomeScreen> i
                 }
               },
               onTapCloseAction: () => showBackDialog(),
-              requestNum: licenseNumber != null ? int.parse(licenseNumber!):0,
+              requestNum: licenseNumber != null ? int.parse(licenseNumber!) : 0,
             ),
             body: PageView.builder(
               itemCount: pagesList!.length,

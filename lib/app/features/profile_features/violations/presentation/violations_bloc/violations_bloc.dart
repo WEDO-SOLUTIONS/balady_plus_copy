@@ -4,18 +4,28 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/errors_exports.dart'
     show NoDataFoundFailure, ServerFailure;
-import '../../../../../core/services/services_exports.dart'
-    show  NoParams;
+import '../../../../../core/services/services_exports.dart' show NoParams;
 import '../../../../../core/utils/utils_exports.dart'
-    show BlocRequestStatus, CommonProperties, DateForm, Nullable, PaginationConstants, SortType;
+    show
+        BlocRequestStatus,
+        CommonProperties,
+        DateForm,
+        Nullable,
+        PaginationConstants,
+        SortType;
 import '../../violations_exports.dart'
-    show GetInvoiceStatuses, GetViolationsStatuses, InvoiceStatusesEntity, ViolationsEntity, ViolationsPrams, ViolationsStatusEntity;
+    show
+        GetInvoiceStatuses,
+        GetViolationsStatuses,
+        InvoiceStatusesEntity,
+        ViolationsEntity,
+        ViolationsPrams,
+        ViolationsStatusEntity;
 
 part 'violations_event.dart';
 part 'violations_state.dart';
 
-class ViolationsBloc
-    extends Bloc<ViolationsEvent, ViolationsState> {
+class ViolationsBloc extends Bloc<ViolationsEvent, ViolationsState> {
   final GetInvoiceStatuses _getInvoiceStatuses;
   final GetViolationsStatuses _getViolationsStatuses;
   final GetViolations _getViolations;
@@ -25,7 +35,6 @@ class ViolationsBloc
         _getViolationsStatuses = GetViolationsStatuses(repository: sl()),
         _getViolations = GetViolations(repository: sl()),
         super(const ViolationsState()) {
-
     on<ViolationsSortChangedEvent>((event, emit) async {
       emit(
         state.copyWith(
@@ -38,7 +47,7 @@ class ViolationsBloc
       emit(
         state.copyWith(
             licenseNumberQuery:
-            Nullable(event.query.isEmpty ? null : event.query)),
+                Nullable(event.query.isEmpty ? null : event.query)),
       );
     });
 
@@ -46,13 +55,14 @@ class ViolationsBloc
       emit(
         state.copyWith(
             invoiceNumberQuery:
-            Nullable(event.query.isEmpty ? null : event.query)),
+                Nullable(event.query.isEmpty ? null : event.query)),
       );
     });
 
     on<GetViolationsEvent>((event, emit) async {
       emit(
-        state.copyWith(violationsStatus: BlocRequestStatus.submissionGetLoading),
+        state.copyWith(
+            violationsStatus: BlocRequestStatus.submissionGetLoading),
       );
 
       final unifiedNationalNumber =
@@ -69,14 +79,16 @@ class ViolationsBloc
           violationInvoiceNumber: state.invoiceNumberQuery,
           licenseNumber: state.licenseNumberQuery,
           violationInvoiceStatusId: state.selectedInvoiceStatus?.id.toString(),
-          violationIssueDate: state.selectedViolationIssueDate?.toIso8601String(),
-          violationLastApplyDate: state.selectedObjectionLastApplyDate?.toIso8601String(),
+          violationIssueDate:
+              state.selectedViolationIssueDate?.toIso8601String(),
+          violationLastApplyDate:
+              state.selectedObjectionLastApplyDate?.toIso8601String(),
           violationStatusId: state.selectedViolationStatus?.id.toString(),
         ),
       );
 
       failureOrSuccess.fold(
-            (failure) {
+        (failure) {
           if (failure is NoDataFoundFailure) {
             emit(
               state.copyWith(
@@ -94,7 +106,7 @@ class ViolationsBloc
             ),
           );
         },
-            (violations) {
+        (violations) {
           List<ViolationsEntity> newViolations = [];
           if (state.page != 0) {
             newViolations.addAll(state.violations);

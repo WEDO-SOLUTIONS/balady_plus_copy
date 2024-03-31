@@ -68,7 +68,7 @@ class _CommercialLicenseDetailsPageState
         BlocProvider(
           create: (_) {
             bloc = LicenseTransferCubit(
-                null, null, GetValidateLicense(repository: sl()),null);
+                null, null, GetValidateLicense(repository: sl()), null);
             return bloc!;
           },
         )
@@ -145,7 +145,8 @@ class _CommercialLicenseDetailsPageState
                                         .submitterInfo!,
                                     commercialLicenceDetails:
                                         state.commercialLicenceDetails!),
-                            child:  CommercialLicenseActionSheet(licenseTransferCubit:bloc!),
+                            child: CommercialLicenseActionSheet(
+                                licenseTransferCubit: bloc!),
                           ),
                           isFullHeight: false,
                           height: MediaQuery.of(context).size.height * 0.47,
@@ -169,34 +170,28 @@ class _CommercialLicenseDetailsPageState
                 previous.status != current.status,
             listener: (_, state) async {
               if (state.status.isSubmissionGetFailure) {
-                 CommonFunctions.showError(state.error);
-
+                CommonFunctions.showError(state.error);
               } else if (state.status.isSubmissionGetSuccess) {
-
                 Navigator.of(context).pushNamed(
                   RouteName.commercialLicenseTransferOverView,
                   arguments: "$commercialLicenseId",
                 );
-
-
-
               }
-
             },
             builder: (context, state) {
-                return  Stack(
-                    alignment : AlignmentDirectional.topCenter,
-                  children: [
-
-                    const Padding(
-                      padding: EdgeInsets.all(16),
-                      child: CommercialLicenseDetailsBody(),
-                    ),
-                    state.status == BlocRequestStatus.submissionGetLoading? const CircularProgressIndicator(): Container(),
-
-                  ],
-                );
-            //  }
+              return Stack(
+                alignment: AlignmentDirectional.topCenter,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: CommercialLicenseDetailsBody(),
+                  ),
+                  state.status == BlocRequestStatus.submissionGetLoading
+                      ? const CircularProgressIndicator()
+                      : Container(),
+                ],
+              );
+              //  }
             }),
       ),
     );

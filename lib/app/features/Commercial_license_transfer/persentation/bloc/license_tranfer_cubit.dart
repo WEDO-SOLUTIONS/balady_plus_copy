@@ -15,30 +15,27 @@ import '../../domain/use_cases/post_to_new_owner.dart';
 part 'license_transfer_state.dart';
 
 class LicenseTransferCubit extends Cubit<LicenseTransferState> {
-   GetLicensePermitsData? getLicensePermitsData;
-   GetValidateNewOwner? getValidateNewOwner;
-   GetValidateLicense? getValidateLicense;
-   PostToNewOwner? postToNewOwner;
+  GetLicensePermitsData? getLicensePermitsData;
+  GetValidateNewOwner? getValidateNewOwner;
+  GetValidateLicense? getValidateLicense;
+  PostToNewOwner? postToNewOwner;
 
+  String? licenseNumber;
+  String? crNumber;
 
+  TransferLicenseRequest request = TransferLicenseRequest();
 
-   String? licenseNumber;
-   String? crNumber;
+  LicenseTransferCubit(this.getLicensePermitsData, this.getValidateNewOwner,
+      this.getValidateLicense, this.postToNewOwner)
+      : super(const LicenseTransferState()) {}
 
-   TransferLicenseRequest request= TransferLicenseRequest();
-
-
-  LicenseTransferCubit(this.getLicensePermitsData,this.getValidateNewOwner,this.getValidateLicense,this.postToNewOwner) : super( const LicenseTransferState()){
-
-  }
-
-  Future<void> getLicensePermitsDetails( String licenseNumber) async {
+  Future<void> getLicensePermitsDetails(String licenseNumber) async {
     emit(
       state.copyWith(status: BlocRequestStatus.submissionGetLoading),
     );
     final failureOrSuccess = await getLicensePermitsData!((licenseNumber,));
     failureOrSuccess.fold(
-          (failure) {
+      (failure) {
         emit(
           state.copyWith(
             status: BlocRequestStatus.submissionGetFailure,
@@ -46,101 +43,93 @@ class LicenseTransferCubit extends Cubit<LicenseTransferState> {
           ),
         );
       },
-          (licensePermitResponse) {
+      (licensePermitResponse) {
         emit(
           state.copyWith(
             status: BlocRequestStatus.submissionGetSuccess,
-            permits: (licensePermitResponse.data!.result) as PermitsResponseDataModel ,
+            permits: (licensePermitResponse.data!.result)
+                as PermitsResponseDataModel,
           ),
         );
       },
     );
   }
 
-   Future<void> validateNewOwner( String licenseNumber,String crNumber) async {
-     emit(
-       state.copyWith(status: BlocRequestStatus.submissionGetLoading),
-     );
-     final failureOrSuccess = await getValidateNewOwner!((licenseNumber,crNumber));
-     failureOrSuccess.fold(
-           (failure) {
+  Future<void> validateNewOwner(String licenseNumber, String crNumber) async {
+    emit(
+      state.copyWith(status: BlocRequestStatus.submissionGetLoading),
+    );
+    final failureOrSuccess =
+        await getValidateNewOwner!((licenseNumber, crNumber));
+    failureOrSuccess.fold(
+      (failure) {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetFailure,
+            errorMessage: (failure as ServerFailure).errorMessage,
+          ),
+        );
+      },
+      (response) {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetSuccess,
+            validateOwner: (response.data!.result) as ValidateOwnerDataModel,
+          ),
+        );
+      },
+    );
+  }
 
+  Future<void> validateLicense(String licenseNumber) async {
+    emit(
+      state.copyWith(status: BlocRequestStatus.submissionGetLoading),
+    );
+    final failureOrSuccess = await getValidateLicense!((licenseNumber,));
+    failureOrSuccess.fold(
+      (failure) {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetFailure,
+            errorMessage: (failure as ServerFailure).errorMessage,
+          ),
+        );
+      },
+      (response) {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetSuccess,
+            validateLicense:
+                (response.data!.result) as ValidateLicenseDataModel,
+          ),
+        );
+      },
+    );
+  }
 
-
-         emit(
-           state.copyWith(
-             status: BlocRequestStatus.submissionGetFailure,
-             errorMessage: (failure as ServerFailure).errorMessage,
-           ),
-         );
-       },
-           (response) {
-         emit(
-           state.copyWith(
-             status: BlocRequestStatus.submissionGetSuccess,
-             validateOwner: (response.data!.result) as ValidateOwnerDataModel ,
-           ),
-         );
-       },
-     );
-   }
-
-
-   Future<void> validateLicense( String licenseNumber) async {
-     emit(
-       state.copyWith(status: BlocRequestStatus.submissionGetLoading),
-     );
-     final failureOrSuccess = await getValidateLicense!((licenseNumber,));
-     failureOrSuccess.fold(
-           (failure) {
-
-
-
-         emit(
-           state.copyWith(
-             status: BlocRequestStatus.submissionGetFailure,
-             errorMessage: (failure as ServerFailure).errorMessage,
-           ),
-         );
-       },
-           (response) {
-         emit(
-           state.copyWith(
-             status: BlocRequestStatus.submissionGetSuccess,
-             validateLicense: (response.data!.result) as ValidateLicenseDataModel ,
-           ),
-         );
-       },
-     );
-   }
-
-   Future<void> sendToNewOwner(String licenseNumber,TransferLicenseRequest request)async {
-     emit(
-       state.copyWith(status: BlocRequestStatus.submissionGetLoading),
-     );
-     final failureOrSuccess = await postToNewOwner!((licenseNumber,request));
-     failureOrSuccess.fold(
-           (failure) {
-
-
-
-         emit(
-           state.copyWith(
-             status: BlocRequestStatus.submissionGetFailure,
-             errorMessage: (failure as ServerFailure).errorMessage,
-           ),
-         );
-       },
-           (response) {
-         emit(
-           state.copyWith(
-             status: BlocRequestStatus.submissionGetSuccess,
-             applyDataModel: (response.data!.result) as ApplyRequestDataModel ,
-           ),
-         );
-       },
-     );
-   }
-
-
+  Future<void> sendToNewOwner(
+      String licenseNumber, TransferLicenseRequest request) async {
+    emit(
+      state.copyWith(status: BlocRequestStatus.submissionGetLoading),
+    );
+    final failureOrSuccess = await postToNewOwner!((licenseNumber, request));
+    failureOrSuccess.fold(
+      (failure) {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetFailure,
+            errorMessage: (failure as ServerFailure).errorMessage,
+          ),
+        );
+      },
+      (response) {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetSuccess,
+            applyDataModel: (response.data!.result) as ApplyRequestDataModel,
+          ),
+        );
+      },
+    );
+  }
 }

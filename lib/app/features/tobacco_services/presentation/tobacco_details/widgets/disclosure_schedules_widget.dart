@@ -84,7 +84,9 @@ class DisclosureSchedulesWidget extends StatelessWidget {
                                                     .facilityInfo
                                                     .registrationNumber !=
                                                 null) {
-                                              CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceTobaccoDisclosed);
+                                              CommonFunctions.sendUXCamEvent(
+                                                  UXCamEvents
+                                                      .startServiceTobaccoDisclosed);
 
                                               TobaccoDisclosedViewModel?
                                                   viewModel =
@@ -118,7 +120,8 @@ class DisclosureSchedulesWidget extends StatelessWidget {
                                                     .getUserFacilitiesDetails();
                                               } else {
                                                 CommonFunctions.sendUXCamEvent(
-                                                  UXCamEvents.closeServiceTobaccoDisclosed,
+                                                  UXCamEvents
+                                                      .closeServiceTobaccoDisclosed,
                                                 );
                                               }
                                             } else {

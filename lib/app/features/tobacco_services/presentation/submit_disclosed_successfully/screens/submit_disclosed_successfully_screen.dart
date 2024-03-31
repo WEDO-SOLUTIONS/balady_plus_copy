@@ -13,14 +13,15 @@ class SubmitDisclosedSuccessfullyScreen extends StatefulWidget {
   const SubmitDisclosedSuccessfullyScreen({Key? key}) : super(key: key);
 
   @override
-  State<SubmitDisclosedSuccessfullyScreen> createState() => _SubmitDisclosedSuccessfullyScreenState();
+  State<SubmitDisclosedSuccessfullyScreen> createState() =>
+      _SubmitDisclosedSuccessfullyScreenState();
 }
 
-class _SubmitDisclosedSuccessfullyScreenState extends State<SubmitDisclosedSuccessfullyScreen> {
+class _SubmitDisclosedSuccessfullyScreenState
+    extends State<SubmitDisclosedSuccessfullyScreen> {
   @override
   void initState() {
     super.initState();
-
 
     CommonFunctions.sendUXCamEvent(
       UXCamEvents.openConfirmTobaccoDisclosedScreen,

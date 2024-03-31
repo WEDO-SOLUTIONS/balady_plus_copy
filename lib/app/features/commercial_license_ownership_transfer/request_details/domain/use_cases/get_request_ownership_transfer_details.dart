@@ -4,8 +4,6 @@ import 'package:balady_plus/app/features/commercial_license_ownership_transfer/r
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/domain/repositories/repository.dart';
 import 'package:dartz/dartz.dart';
 
-
-
 // class GetRequestOwnershipTransferDetails extends UseCase<CommercialLicenceDetails,String> {
 //   final RequestOwnershipTransferDetailsRepository repository;
 

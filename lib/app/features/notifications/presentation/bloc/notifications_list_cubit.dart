@@ -26,7 +26,7 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
   }
 
   Future<void> getNotificationsMessagesList({bool loadMore = false}) async {
-    if(!loadMore) {
+    if (!loadMore) {
       params.page = 0;
     }
 
@@ -34,47 +34,47 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
     // if (stateType is InitialNotificationsListState ||
     //     stateType is SucceedWithPaginationNotificationsListState ||
     //     stateType is FailureNotificationsListState) {
-      if (stateType is! SucceedWithPaginationNotificationsListState) {
-        emit(LoadingEventsListState());
-      }
-      Either<Failure, NotificationsListResponse> failureOrSuccess =
-          await listRepository.getNotificationsMessagesList(
-        request: params,
-      );
-      failureOrSuccess.fold(
-        (failure) {
-          if (failure is NoDataFoundException || failure is NoDataFoundFailure ) {
+    if (stateType is! SucceedWithPaginationNotificationsListState) {
+      emit(LoadingEventsListState());
+    }
+    Either<Failure, NotificationsListResponse> failureOrSuccess =
+        await listRepository.getNotificationsMessagesList(
+      request: params,
+    );
+    failureOrSuccess.fold(
+      (failure) {
+        if (failure is NoDataFoundException || failure is NoDataFoundFailure) {
+          emit(EmptyNotificationsListState());
+        } else if (failure is ServerFailure) {
+          emit(FailureNotificationsListState(
+              filerMessage: failure.errorMessage));
+        } else {
+          emit(FailureNotificationsListState(filerMessage: "error"));
+        }
+      },
+      (listMessages) {
+        List<NotificationsMessageItem> type = [];
+        if (stateType is SucceedWithPaginationNotificationsListState) {
+          type = stateType.listMessages;
+        }
+        type += listMessages.listMessages;
+        if ((listMessages.totalPageCount - 1) == params.page) {
+          if (type.isEmpty) {
             emit(EmptyNotificationsListState());
-          } else if (failure is ServerFailure) {
-            emit(FailureNotificationsListState(
-                filerMessage: failure.errorMessage));
           } else {
-            emit(FailureNotificationsListState(filerMessage: "error"));
+            emit(SucceedEventsListState(listMessages: type));
           }
-        },
-        (listMessages) {
-          List<NotificationsMessageItem> type = [];
-          if (stateType is SucceedWithPaginationNotificationsListState) {
-            type = stateType.listMessages;
-          }
-          type += listMessages.listMessages;
-          if ((listMessages.totalPageCount - 1) == params.page) {
-            if (type.isEmpty) {
-              emit(EmptyNotificationsListState());
-            } else {
-              emit(SucceedEventsListState(listMessages: type));
-            }
-          } else {
-            emit(
-              SucceedWithPaginationNotificationsListState(
-                page: params.page,
-                listMonths: type,
-              ),
-            );
-          }
-          params.page++;
-        },
-      );
+        } else {
+          emit(
+            SucceedWithPaginationNotificationsListState(
+              page: params.page,
+              listMonths: type,
+            ),
+          );
+        }
+        params.page++;
+      },
+    );
     // }
   }
 
@@ -94,7 +94,8 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
       );
       failureOrSuccess.fold(
         (failure) {
-          if (failure is NoDataFoundException || failure is NoDataFoundFailure ) {
+          if (failure is NoDataFoundException ||
+              failure is NoDataFoundFailure) {
             emit(FailureNotificationsListState(
                 filerMessage: "no_data_shown".tr()));
           } else if (failure is ServerFailure) {
@@ -128,7 +129,8 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
       );
       failureOrSuccess.fold(
         (failure) {
-          if (failure is NoDataFoundException || failure is NoDataFoundFailure ) {
+          if (failure is NoDataFoundException ||
+              failure is NoDataFoundFailure) {
             emit(EmptyNotificationsListState());
           } else if (failure is ServerFailure) {
             emit(FailureNotificationsListState(

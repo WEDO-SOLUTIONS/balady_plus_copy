@@ -10,16 +10,17 @@ import '../data_source/remote_data_source.dart';
 import '../model/apply_request_data_model.dart';
 import '../model/validate_license_data_model.dart';
 
-
-class TransferLicenseRepositoryImplementation implements TransferLicenseRepository {
+class TransferLicenseRepositoryImplementation
+    implements TransferLicenseRepository {
   final LicensePermitsRemoteDataSource remoteDataSource;
 
   TransferLicenseRepositoryImplementation({
     required this.remoteDataSource,
   });
-  
+
   @override
-  Future<Either<Failure, ResponseBodyModel<PermitsResponseEntity>>> getLicensePermits(String licenseNumber) async {
+  Future<Either<Failure, ResponseBodyModel<PermitsResponseEntity>>>
+      getLicensePermits(String licenseNumber) async {
     try {
       final data = await remoteDataSource.getLicensePermits(licenseNumber);
       return Right(data);
@@ -31,25 +32,23 @@ class TransferLicenseRepositoryImplementation implements TransferLicenseReposito
   }
 
   @override
-  Future<Either<Failure, ResponseBodyModel<ValidateOwnerEntity>>> validateNewOwner(
-      String licenseNumber,  String crNumber) async {
-
-
+  Future<Either<Failure, ResponseBodyModel<ValidateOwnerEntity>>>
+      validateNewOwner(String licenseNumber, String crNumber) async {
     try {
-      final data = await remoteDataSource.validateNewOwner(licenseNumber,crNumber);
+      final data =
+          await remoteDataSource.validateNewOwner(licenseNumber, crNumber);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
     } on ServerException catch (error) {
-      return Left(ServerFailure(error.errorMessage,statusCode: error.statusCode,errorCode: error.errorCode));
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
     }
-
-
   }
 
-
   @override
-  Future<Either<Failure, ResponseBodyModel<ValidateLicenseDataModel>>> validateLicense(String licenseNumber) async {
+  Future<Either<Failure, ResponseBodyModel<ValidateLicenseDataModel>>>
+      validateLicense(String licenseNumber) async {
     try {
       final data = await remoteDataSource.validateLicense(licenseNumber);
       return Right(data);
@@ -61,9 +60,12 @@ class TransferLicenseRepositoryImplementation implements TransferLicenseReposito
   }
 
   @override
-  Future<Either<Failure, ResponseBodyModel<ApplyRequestDataModel>>> sendToNewOwner( String licenseNumber,TransferLicenseRequest request) async {
+  Future<Either<Failure, ResponseBodyModel<ApplyRequestDataModel>>>
+      sendToNewOwner(
+          String licenseNumber, TransferLicenseRequest request) async {
     try {
-      final data = await remoteDataSource.sendToNewOwner(licenseNumber,request);
+      final data =
+          await remoteDataSource.sendToNewOwner(licenseNumber, request);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -71,5 +73,4 @@ class TransferLicenseRepositoryImplementation implements TransferLicenseReposito
       return Left(ServerFailure(error.errorMessage));
     }
   }
-
 }

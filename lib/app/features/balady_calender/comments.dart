@@ -1,6 +1,3 @@
-
-
-
 /*
 ------------------- Balady Calender -------------------
 
@@ -16,42 +13,13 @@ When get any events if any type normal or can make objection Will Open
 */
 // The Ref Of Screen And Type get from API
 //   request    ->
-  ///RouteName.invoiceDetails,
+///RouteName.invoiceDetails,
 
-
-  // license    -> ,
-  // invoice    -> ,
-  // appit      -> ,
-  // violations -> ,
+// license    -> ,
+// invoice    -> ,
+// appit      -> ,
+// violations -> ,
 //
 //
 // next plan Add events for life style :
 //
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

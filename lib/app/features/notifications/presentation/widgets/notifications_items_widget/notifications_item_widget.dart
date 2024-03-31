@@ -96,8 +96,10 @@ class NotificationsItemWidget extends StatelessWidget {
                       ExpandableTextWidget(
                         text: message.body,
                         onTap: () {
-                          if(message.status.id != "read") {
-                            contextBloc.watch<NotificationsItemCubit>().markReadNotificationsMessages();
+                          if (message.status.id != "read") {
+                            contextBloc
+                                .watch<NotificationsItemCubit>()
+                                .markReadNotificationsMessages();
                           }
                         },
                       ),

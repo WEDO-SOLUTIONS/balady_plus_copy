@@ -15,12 +15,10 @@ class NotificationTypeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return GestureDetector(
-      onTap: () {
-      },
+      onTap: () {},
       child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 4,vertical: 8),
+        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
         color: isSelected ? AppColor.primary700Light : AppColor.white10,
         elevation: isSelected ? 2 : 0,
         shape: const RoundedRectangleBorder(
@@ -29,7 +27,7 @@ class NotificationTypeWidget extends StatelessWidget {
         child: SizedBox(
           height: 40,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0,vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -40,7 +38,7 @@ class NotificationTypeWidget extends StatelessWidget {
                     color: isSelected ? Colors.white : Colors.grey,
                   ),
                 ),
-                const SizedBox(width: 4,height: double.maxFinite),
+                const SizedBox(width: 4, height: double.maxFinite),
                 Text(
                   '($count)',
                   style: AppStyle.serviceTitleStyle.copyWith(

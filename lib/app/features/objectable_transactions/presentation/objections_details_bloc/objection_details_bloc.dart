@@ -35,8 +35,6 @@ class ObjectionsDetailsBloc
         cancelObjection = CancelObjection(repository: sl()),
         getObjectablePermit = GetObjectablePermit(repository: sl()),
         super(ObjectionDetailsState()) {
-
-
     on<ObjectionDetailsEvent>((event, emit) {});
 
     on<GetObjectionDetailsEvent>(_getObjectionDetailsHandler);
@@ -107,7 +105,8 @@ class ObjectionsDetailsBloc
       ));
 
       CommonFunctions.showSuccess("objctions_cancelled");
-      add(GetObjectionDetailsEvent(params: state.details?.objectionRequestNumber ?? ""));
+      add(GetObjectionDetailsEvent(
+          params: state.details?.objectionRequestNumber ?? ""));
     });
   }
 
@@ -157,6 +156,4 @@ class ObjectionsDetailsBloc
   hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();
   }
-
-
 }

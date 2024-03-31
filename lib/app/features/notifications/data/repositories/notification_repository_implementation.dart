@@ -15,7 +15,11 @@ import '../model/notification_request.dart';
 import '../model/notifications_settings_list/notifications_settings_list_response.dart';
 
 class NotificationRepositoryImplementation
-    implements NotificationsRepository, NotificationsListRepository , NotificationsSettingsListRepository,NotificationsFilterRepository {
+    implements
+        NotificationsRepository,
+        NotificationsListRepository,
+        NotificationsSettingsListRepository,
+        NotificationsFilterRepository {
   final NotificationsRemoteDataSource remoteDataSource;
 
   NotificationRepositoryImplementation({
@@ -38,8 +42,8 @@ class NotificationRepositoryImplementation
   //For NotificationsListRepository
   @override
   Future<Either<Failure, NotificationsListResponse>>
-  getNotificationsMessagesList(
-      {required SearchNotificationsParams request}) async {
+      getNotificationsMessagesList(
+          {required SearchNotificationsParams request}) async {
     try {
       final data = await remoteDataSource.getNotificationsMessagesList(request);
       return Right(data);
@@ -49,12 +53,13 @@ class NotificationRepositoryImplementation
       return Left(ServerFailure(error.errorMessage));
     }
   }
+
   @override
-  Future<Either<Failure, bool>>
-  markReadNotificationsMessages(
+  Future<Either<Failure, bool>> markReadNotificationsMessages(
       {required MarkReadNotificationsParams request}) async {
     try {
-      final data = await remoteDataSource.markReadNotificationsMessages(request);
+      final data =
+          await remoteDataSource.markReadNotificationsMessages(request);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -62,9 +67,9 @@ class NotificationRepositoryImplementation
       return Left(ServerFailure(error.errorMessage));
     }
   }
+
   @override
-  Future<Either<Failure, bool>>
-  deletedNotificationsMessages(
+  Future<Either<Failure, bool>> deletedNotificationsMessages(
       {required DeletedNotificationsParams request}) async {
     try {
       final data = await remoteDataSource.deletedNotificationsMessages(request);
@@ -78,7 +83,8 @@ class NotificationRepositoryImplementation
 
   // For Filter Widgets
   @override
-  Future<Either<Failure, List<NotificationType>>> getNotificationsProducts() async {
+  Future<Either<Failure, List<NotificationType>>>
+      getNotificationsProducts() async {
     try {
       final data = await remoteDataSource.getNotificationsProducts();
       return Right(data);
@@ -88,10 +94,13 @@ class NotificationRepositoryImplementation
       return Left(ServerFailure(error.errorMessage));
     }
   }
+
   @override
-  Future<Either<Failure, List<NotificationType>>> getNotificationsServicesProducts({required  String productId}) async {
+  Future<Either<Failure, List<NotificationType>>>
+      getNotificationsServicesProducts({required String productId}) async {
     try {
-      final data = await remoteDataSource.getNotificationsServicesProducts(productId: productId);
+      final data = await remoteDataSource.getNotificationsServicesProducts(
+          productId: productId);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());

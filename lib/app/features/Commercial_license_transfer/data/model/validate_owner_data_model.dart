@@ -1,4 +1,3 @@
-
 import '../../domain/entity/validate_owner_entity.dart';
 
 class ValidateOwnerDataModel extends ValidateOwnerEntity {
@@ -6,19 +5,15 @@ class ValidateOwnerDataModel extends ValidateOwnerEntity {
     super.responseCode,
     super.responseMessage,
     super.responseId,
-    super.result,});
-
-
-
+    super.result,
+  });
 
   ValidateOwnerDataModel.fromJson(dynamic json) {
     responseCode = json['responseCode'];
     responseMessage = json['responseMessage'];
     responseId = json['responseId'];
-    if(json['result'] != null) {
-
+    if (json['result'] != null) {
       result = json['result'];
     }
   }
-
 }

@@ -92,13 +92,16 @@ class TobaccoListItem extends StatelessWidget {
           ),
           ElevatedButtonWidget.choose(
             onPressed: () async {
-              if (facility.registrationNumber != null && (CommonProperties.selectedDelegator?.crNumber != null || CommonProperties.userInfo!.idNo != null)) {
+              if (facility.registrationNumber != null &&
+                  (CommonProperties.selectedDelegator?.crNumber != null ||
+                      CommonProperties.userInfo!.idNo != null)) {
                 Navigator.pushNamed(
                   context,
                   RouteName.tobaccoDetails,
                   arguments: TobaccoDetailsViewModel(
                     provider.repository,
-                    CommonProperties.selectedDelegator?.crNumber ?? CommonProperties.userInfo!.idNo!,
+                    CommonProperties.selectedDelegator?.crNumber ??
+                        CommonProperties.userInfo!.idNo!,
                     facility.registrationNumber!,
                   ),
                 );

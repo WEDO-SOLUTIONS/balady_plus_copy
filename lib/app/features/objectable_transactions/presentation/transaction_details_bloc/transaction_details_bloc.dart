@@ -72,7 +72,6 @@ class TransactionDetailsBloc
     });
   }
 
-
   Future<void> _validateObjectableTransaction(
       ValidateObjectionDetailsTransactions e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));

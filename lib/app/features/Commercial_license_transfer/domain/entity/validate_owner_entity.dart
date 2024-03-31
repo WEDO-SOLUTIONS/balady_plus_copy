@@ -4,18 +4,10 @@ class ValidateOwnerEntity {
   String? responseId;
   bool? result;
 
-
   ValidateOwnerEntity({
-      this.responseCode, 
-      this.responseMessage, 
-      this.responseId, 
-      this.result,});
-
-
-
-
-
-
-
-
+    this.responseCode,
+    this.responseMessage,
+    this.responseId,
+    this.result,
+  });
 }

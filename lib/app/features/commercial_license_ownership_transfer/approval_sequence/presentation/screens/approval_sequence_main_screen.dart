@@ -3,9 +3,9 @@ import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/features/Commercial_license_transfer/domain/use_cases/get_validate_license.dart';
 import 'package:balady_plus/app/features/Commercial_license_transfer/persentation/license_premits/request_sequence_pledges.dart';
+import 'package:balady_plus/app/features/Commercial_license_transfer/persentation/license_premits/request_sequence_premits.dart';
+import 'package:balady_plus/app/features/Commercial_license_transfer/persentation/license_premits/sucessfull_page.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
-import 'package:balady_plus/app/features/commercial_license/presentation/commercial_license/blocs/commercial_license_bloc.dart';
-import 'package:balady_plus/app/features/commercial_license/presentation/step4/bloc/cr_step4_shop_data_cubit.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +13,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:provider/provider.dart';
+
 import '../../../../Commercial_license_transfer/domain/use_cases/get_license_permits_data.dart';
 import '../../../../Commercial_license_transfer/domain/use_cases/get_validate_new_owner.dart';
 import '../../../../Commercial_license_transfer/domain/use_cases/post_to_new_owner.dart';
@@ -20,7 +22,6 @@ import '../../../../Commercial_license_transfer/persentation/bloc/license_tranfe
 import '../../../../Commercial_license_transfer/persentation/interface/step_interface.dart';
 import '../../../../Commercial_license_transfer/persentation/license_premits/request_sequence_new_owner.dart';
 import 'approval_sequence_permits_screen.dart';
-import 'approval_sequence_shop-location.dart';
 
 class ApprovalSequenceMainScreen extends StatefulWidget {
   const ApprovalSequenceMainScreen({Key? key}) : super(key: key);
@@ -39,8 +40,7 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
   String? licenseNumber;
 
   late List<Widget>? pagesList = [
-    ApprovalSequenceShopLocationScreen(),
-    ApprovalSequencePermitsScreen(stepInterface: this),
+    // ApprovalSequencePermitsScreen(stepInterface: this),
     RquestSequenceNewOwnerInfoScreen(stepInterface: this),
     RequestSequencePledgesScreen(stepInterface: this),
   ];
@@ -72,28 +72,18 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
           return (await showBackDialog());
         }
       },
-      child: MultiBlocProvider(
+      child: BlocProvider(
+        create: (_) {
+          bloc = LicenseTransferCubit(
+              GetLicensePermitsData(repository: sl()),
+              GetValidateNewOwner(repository: sl()),
+              GetValidateLicense(repository: sl()),
+              PostToNewOwner(repository: sl()));
 
-        providers: [
-          BlocProvider.value(
-            value: sl<CommercialLicenseBloc>(),
-          ),
-          BlocProvider(
-            create: (context) => CrStep4ShopDataCubit(),
-          ),
-
-          BlocProvider(
-            create: (context)  {
-            bloc = LicenseTransferCubit(
-            GetLicensePermitsData(repository: sl()),
-            GetValidateNewOwner(repository: sl()),
-            GetValidateLicense(repository: sl()),
-            PostToNewOwner(repository: sl()));
-            return bloc!;
-          },
-          ),
-
-        ],
+          // bloc =
+          // ModalRoute.of(context)!.settings.arguments as LicensePermitsCubit;
+          return bloc!;
+        },
         child: GestureDetector(
           onTap: () => hideKeyboard(),
           child: Scaffold(

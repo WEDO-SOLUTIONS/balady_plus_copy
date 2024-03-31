@@ -82,23 +82,23 @@ class CommercialLicenseReasonCancelSheet extends StatelessWidget {
                 text: 'start_cancellation_request'.tr(),
                 onPressed: !provider.isLoading
                     ? () async {
-                  if (provider.reasonCancel != null) {
-                    Navigator.pop(context);
-                    Navigator.pushNamed(
-                      context,
-                      RouteName.commercialLicenseApplyCancel,
-                      arguments: ApplyCancelViewModel(
-                        webService: sl(),
-                        licenseId: provider.licenseId,
-                        reasonCancel: provider.reasonCancel!,
-                        submitterInfo: provider.submitterInfo!,
-                      ),
-                    );
-                  } else {
-                    CommonFunctions.showError(
-                        'select_cancellation_reason'.tr());
-                  }
-                }
+                        if (provider.reasonCancel != null) {
+                          Navigator.pop(context);
+                          Navigator.pushNamed(
+                            context,
+                            RouteName.commercialLicenseApplyCancel,
+                            arguments: ApplyCancelViewModel(
+                              webService: sl(),
+                              licenseId: provider.licenseId,
+                              reasonCancel: provider.reasonCancel!,
+                              submitterInfo: provider.submitterInfo!,
+                            ),
+                          );
+                        } else {
+                          CommonFunctions.showError(
+                              'select_cancellation_reason'.tr());
+                        }
+                      }
                     : () {},
               );
             },

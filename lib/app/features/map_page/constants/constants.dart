@@ -33,8 +33,7 @@ class Constants {
   static const String diggingLayerIcon =
       "assets/maps/icons/gis_layers_icons/digging.svg";
 
-        static const String eventLayerIcon =
-      "assets/maps/icons/ticket.svg";
+  static const String eventLayerIcon = "assets/maps/icons/ticket.svg";
 
   static const String diggingSelectedLayerIcon =
       "assets/maps/icons/gis_layers_icons/digging_selected.svg";

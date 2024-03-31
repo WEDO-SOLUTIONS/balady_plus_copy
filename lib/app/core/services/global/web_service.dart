@@ -100,32 +100,35 @@ class AppInterceptors extends Interceptor {
         options.uri.toString().toLowerCase().contains("biddings-services")) {
       var headers = {
         ApiHeaders.xFeappId: EtmamCommonProperties.CommonProperties.appName,
-        ApiHeaders.xFeAppVersion: EtmamCommonProperties.CommonProperties.appVersion,
+        ApiHeaders.xFeAppVersion:
+            EtmamCommonProperties.CommonProperties.appVersion,
         ApiHeaders.xFeDeviceId: EtmamCommonProperties.CommonProperties.deviceId,
         ApiHeaders.xFeDeviceOs: EtmamCommonProperties.CommonProperties.deviceOs,
         ApiHeaders.xSessionId: EtmamCommonProperties.CommonProperties.sessionId,
-        ApiHeaders.xCorrelationId: EtmamCommonProperties.CommonFunctions.generateGUID(),
+        ApiHeaders.xCorrelationId:
+            EtmamCommonProperties.CommonFunctions.generateGUID(),
         if (EtmamCommonProperties.CommonProperties.profileId != null)
-          ApiHeaders.xUserProfileId: EtmamCommonProperties.CommonProperties.profileId
+          ApiHeaders.xUserProfileId:
+              EtmamCommonProperties.CommonProperties.profileId
       };
       options.headers.addAll(headers);
     }
 
-    String? xCorrelationId ;
+    String? xCorrelationId;
 
-    if(options.uri.toString().toLowerCase().contains("building-licenses")||
+    if (options.uri.toString().toLowerCase().contains("building-licenses") ||
         options.uri.toString().toLowerCase().contains("area-reports")) {
-      xCorrelationId= EtmamCommonProperties.CommonFunctions.generateGUID();
+      xCorrelationId = EtmamCommonProperties.CommonFunctions.generateGUID();
       options.headers.putIfAbsent("x-platform-id", () => "baladyservices");
-      options.headers.putIfAbsent(ApiHeaders.xCorrelationId, () => xCorrelationId);
+      options.headers
+          .putIfAbsent(ApiHeaders.xCorrelationId, () => xCorrelationId);
     }
-    if(options.uri.toString().toLowerCase().contains("validate-license")
-        ||options.uri.toString().toLowerCase().contains("license/permits")
-    ||options.uri.toString().toLowerCase().contains("send-to-new-owner")) {
-
-    options.headers.putIfAbsent( ApiHeaders.xSubmitterRelation, () => CommonProperties.selectedDelegator?.getRole() ?? "HIMSELF");
-
-}
+    if (options.uri.toString().toLowerCase().contains("validate-license") ||
+        options.uri.toString().toLowerCase().contains("license/permits") ||
+        options.uri.toString().toLowerCase().contains("send-to-new-owner")) {
+      options.headers.putIfAbsent(ApiHeaders.xSubmitterRelation,
+          () => CommonProperties.selectedDelegator?.getRole() ?? "HIMSELF");
+    }
     if (await networkConnection.isConnected == false) {
       "Request-Rejected because 'Network-Disconnected'".errorLog();
       return handler.reject(NoInternetConnectionException(options));
@@ -133,9 +136,6 @@ class AppInterceptors extends Interceptor {
 
     String url = options.uri.toString();
     final method = options.method;
-
-
-
 
     if (options.headers['Authorization'] == null &&
         CommonProperties.isLoggedIn &&
@@ -151,28 +151,20 @@ class AppInterceptors extends Interceptor {
       options.headers.remove("Authorization");
 
     if (options.data is! FormData) {
-
-
-      final verifyingKEY = CommonFunctions.hashRequest(
-        url,
-        method,
-        body: (options.data != null &&
-                !options.uri.toString().contains("bcg/upload-file"))
-            ? json.encode(options.data)
-            : null,
-        authorization: !options.uri.toString().contains("bcg/upload-file")
-            ? options.headers.containsKey("Authorization")
-            : false,
-        corelationId: xCorrelationId
-      );
-
-
+      final verifyingKEY = CommonFunctions.hashRequest(url, method,
+          body: (options.data != null &&
+                  !options.uri.toString().contains("bcg/upload-file"))
+              ? json.encode(options.data)
+              : null,
+          authorization: !options.uri.toString().contains("bcg/upload-file")
+              ? options.headers.containsKey("Authorization")
+              : false,
+          corelationId: xCorrelationId);
 
       options.headers
           .putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
     }
     options.headers.putIfAbsent("x-channel-id", () => "MOBILE");
-
 
     options.headers.removeWhere((key, value) => key == "requiresToken");
     //if (options.headers['Authorization'] == null) {

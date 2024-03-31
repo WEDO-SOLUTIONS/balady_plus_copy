@@ -23,7 +23,6 @@ class TobaccoListPage extends StatefulWidget {
 class _TobaccoListPageState extends State<TobaccoListPage> {
   late TobaccoListViewModel provider;
 
-
   @override
   void initState() {
     super.initState();
@@ -36,7 +35,6 @@ class _TobaccoListPageState extends State<TobaccoListPage> {
     );
     CommonFunctions.sendUXCamEvent(UXCamEvents.openFacilityListScreen);
   }
-
 
   @override
   Widget build(BuildContext context) {

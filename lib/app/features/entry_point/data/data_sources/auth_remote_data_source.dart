@@ -69,7 +69,6 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
             'profile',
             'offline_access',
             'EmployeeAdminstration.Api',
-
           ],
 
           // fawzi add extra pram to login

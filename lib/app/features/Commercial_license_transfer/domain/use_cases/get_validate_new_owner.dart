@@ -6,13 +6,13 @@ import '../entity/validate_owner_entity.dart';
 import '../repository/repository.dart';
 
 class GetValidateNewOwner
-    extends UseCase<ResponseBodyModel<ValidateOwnerEntity>, (String,String)> {
+    extends UseCase<ResponseBodyModel<ValidateOwnerEntity>, (String, String)> {
   final TransferLicenseRepository repository;
 
   GetValidateNewOwner({required this.repository});
   @override
   Future<Either<Failure, ResponseBodyModel<ValidateOwnerEntity>>> call(
-      (String,String) params) async {
-    return await repository.validateNewOwner(params.$1,params.$2);
+      (String, String) params) async {
+    return await repository.validateNewOwner(params.$1, params.$2);
   }
 }

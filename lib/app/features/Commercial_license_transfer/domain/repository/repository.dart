@@ -7,25 +7,16 @@ import '../entity/transfer_license_request.dart';
 import '../entity/validate_license_entity.dart';
 import '../entity/validate_owner_entity.dart';
 
-
 abstract class TransferLicenseRepository {
-  Future<Either<Failure, ResponseBodyModel<PermitsResponseEntity>>> getLicensePermits(
-      String licenseNumber
-      );
+  Future<Either<Failure, ResponseBodyModel<PermitsResponseEntity>>>
+      getLicensePermits(String licenseNumber);
 
+  Future<Either<Failure, ResponseBodyModel<ValidateOwnerEntity>>>
+      validateNewOwner(String licenseNumber, String crNumber);
 
-  Future<Either<Failure, ResponseBodyModel<ValidateOwnerEntity>>> validateNewOwner(
-      String licenseNumber,  String crNumber
-      );
-
-
-  Future<Either<Failure, ResponseBodyModel<ValidateLicenseEntity>>> validateLicense(
-      String licenseNumber
-      );
+  Future<Either<Failure, ResponseBodyModel<ValidateLicenseEntity>>>
+      validateLicense(String licenseNumber);
 
   Future<Either<Failure, ResponseBodyModel<ApplyRequestEntity>>> sendToNewOwner(
-      String licenseNumber,TransferLicenseRequest request);
-
-
-
+      String licenseNumber, TransferLicenseRequest request);
 }

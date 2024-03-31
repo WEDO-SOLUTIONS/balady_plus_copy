@@ -16,12 +16,11 @@ BoardList _$BoardListFromJson(Map<String, dynamic> json) {
   return BoardList(
       boardTypeId: json["BoardTypeId"],
       width: json["Width"],
-      length: json["Length"]
-  );
+      length: json["Length"]);
 }
 
 Map<String, dynamic> _$BoardListToJson(BoardList instance) => <String, dynamic>{
-  "BoardTypeId": instance.boardTypeId,
-  "Width": instance.width,
-  "Length":instance.length
-};
+      "BoardTypeId": instance.boardTypeId,
+      "Width": instance.width,
+      "Length": instance.length
+    };

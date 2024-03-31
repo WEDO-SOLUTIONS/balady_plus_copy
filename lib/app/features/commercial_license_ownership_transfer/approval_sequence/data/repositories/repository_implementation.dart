@@ -4,18 +4,50 @@ import 'package:balady_plus/app/features/commercial_license_details/data/models/
 import 'package:balady_plus/app/features/commercial_license_details/domain/repositories/repository.dart';
 import 'package:dartz/dartz.dart';
 
+import '../../domain/repositories/repository.dart';
+import '../data_sources/remote_data_source.dart';
+import '../models/request_permits_model/permit.dart';
+import '../models/request_permits_model/request_permits_model.dart';
 
-class CommercialLicenseDetailsRepositoryImplementation implements CommercialLicenseDetailsRepository {
-  final CommercialLicenseDetailsRemoteDataSource remoteDataSource;
+class RequestApprovalSequenceRepositoryImplementation
+    implements RequestApprovalSequenceRepository {
+  final RequestPermitsRemoteDataSource remoteDataSource;
 
-  CommercialLicenseDetailsRepositoryImplementation({
+  RequestApprovalSequenceRepositoryImplementation({
     required this.remoteDataSource,
   });
-
+  
   @override
-  Future<Either<Failure, CommercialLicenceDetails>> getCommercialLicenseDetails(int commercialLicenseId) async {
+  Future<Either<Failure, List<Permit>?>> getRequestPermits(int requestNumber) async {
     try {
-      final data = await remoteDataSource.getCommercialLicenseDetails(commercialLicenseId);
+      final data = await remoteDataSource
+          .getRequestPermits(requestNumber);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+  
+  @override
+  Future<Either<Failure, bool>> saveSelectedRequestPermits(int requestNumber) async {
+    try {
+      final data = await remoteDataSource
+          .saveSelectedRequestPermits(requestNumber);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+  
+  @override
+  Future<Either<Failure, bool>> saveShopInfo(int requestNumber) async {
+    try {
+      final data = await remoteDataSource
+          .saveShopInfo(requestNumber);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -24,6 +56,4 @@ class CommercialLicenseDetailsRepositoryImplementation implements CommercialLice
     }
   }
 
-
-
-}
+    }

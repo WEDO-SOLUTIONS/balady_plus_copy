@@ -152,10 +152,7 @@ class NotificationService {
         Future.delayed(const Duration(seconds: 15), () {
           CommonFunctions.updateNotificationSettings(value);
         });
-
-
       }
-
     });
     // FirebaseMessaging.instance.subscribeToTopic("all").then((value) {});
     FirebaseMessaging.instance
@@ -204,7 +201,6 @@ class NotificationService {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-
       NavigationService.pushNamed(routeName: RouteName.notificationsListScreen);
 
       print("open notication clciked");

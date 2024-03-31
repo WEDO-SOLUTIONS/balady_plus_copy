@@ -14,12 +14,11 @@ class BottomNavigationModel {
 
   factory BottomNavigationModel.fromJson(Map<String, dynamic> json) =>
       BottomNavigationModel(
-        id: json['id'],
-        labelKey: json['labelKey'],
-        label: json['label'],
-        icon: json['icon'],
-        activeIcon: json['activeIcon']
-      );
+          id: json['id'],
+          labelKey: json['labelKey'],
+          label: json['label'],
+          icon: json['icon'],
+          activeIcon: json['activeIcon']);
 
   static List<BottomNavigationModel> getListOfBottomNavigationsFromListOfJsons(
           List<dynamic> json) =>

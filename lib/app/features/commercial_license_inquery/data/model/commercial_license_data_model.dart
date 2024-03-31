@@ -28,26 +28,26 @@ class CommercialLicenseDataModel extends CommercialLicenseData {
     super.workTimes,
   });
 
-
-  CommercialLicenseDataModel.fromJson(Map<String, dynamic> json){
+  CommercialLicenseDataModel.fromJson(Map<String, dynamic> json) {
     licenseNumber = json['licenseNumber'];
-    licenseStatus =InfoModel.fromJson(json['licenseStatus']);
+    licenseStatus = InfoModel.fromJson(json['licenseStatus']);
     entityType = json['entityType'];
     workerType = json['workerType'];
     shopNameAr = json['shopNameAr'];
     shopNameEn = json['shopNameEn'];
-    if(json['city'] != null)
-      {
-        city = InfoModel.fromJson(json['city']);
-      }
-    if(json['district'] != null) {
+    if (json['city'] != null) {
+      city = InfoModel.fromJson(json['city']);
+    }
+    if (json['district'] != null) {
       district = InfoModel.fromJson(json['district']);
     }
     x = json['x'];
     y = json['y'];
     mainActivity = ActivityModel.fromJson(json['mainActivity']);
-    additionalActivities = List.from(json['additionalActivities']).map((e)=>ActivityModel.fromJson(e)).toList();
-    customerServicePhoneNumber =json['customerServicePhoneNumber'];
+    additionalActivities = List.from(json['additionalActivities'])
+        .map((e) => ActivityModel.fromJson(e))
+        .toList();
+    customerServicePhoneNumber = json['customerServicePhoneNumber'];
     email = json['email'];
     phone = json['phone'];
     website = json['website'];
@@ -57,18 +57,13 @@ class CommercialLicenseDataModel extends CommercialLicenseData {
     snapchat = json['snapchat'];
     whatsApp = json['whatsApp'];
 
-    workTimes= json["workTimes"] == null
-        ? null : WorkTimes.fromJson(json["workTimes"]);
-
+    workTimes = json["workTimes"] == null
+        ? null
+        : WorkTimes.fromJson(json["workTimes"]);
   }
-
-
-
-
-
 }
 
-class ActivityModel extends LicenseActivity  {
+class ActivityModel extends LicenseActivity {
   ActivityModel({
     super.isicNumber,
     super.isicName,
@@ -76,34 +71,22 @@ class ActivityModel extends LicenseActivity  {
     super.detailedActivityName,
   });
 
-
-  ActivityModel.fromJson(Map<String, dynamic> json){
+  ActivityModel.fromJson(Map<String, dynamic> json) {
     isicNumber = json['isicNumber'];
     isicName = json['isicName'];
     detailedActivityId = json['detailedActivityId'];
     detailedActivityName = json['detailedActivityName'];
   }
-
-
 }
 
-class InfoModel  extends Info{
-  InfoModel({
-    super.id,
-    super.name
-  });
+class InfoModel extends Info {
+  InfoModel({super.id, super.name});
 
-
-  InfoModel.fromJson(Map<String, dynamic> json){
+  InfoModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
-
   }
-
-
 }
-
-
 
 // class WorkTimesModel  extends WorkTimes{
 //   WorkTimesModel({

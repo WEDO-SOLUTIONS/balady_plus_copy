@@ -1,5 +1,3 @@
-
-
 List<AllowedActions> allowedActionsListFromJson(List list) =>
     List<AllowedActions>.from(
       list.map(
@@ -31,8 +29,7 @@ class AllowedActions {
       };
 }
 
-
 List<AllowedActions> listAllowedActions = [
-  AllowedActions( id: 1,name: 'الغاء'),
-  AllowedActions( id: 2,name: 'الغاء'),
+  AllowedActions(id: 1, name: 'الغاء'),
+  AllowedActions(id: 2, name: 'الغاء'),
 ];

@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 
 class ObjectableTransactionsEntity extends Equatable {
- final String? transactionNumber;
+  final String? transactionNumber;
   final DateTime? objectionLastApplyDate;
   final DateTime? violationIssueDate;
   final dynamic violationStatusName;
@@ -37,9 +37,7 @@ class ObjectableTransactionsEntity extends Equatable {
   final dynamic originalServiceId;
   final String? hashingOriginalServiceId;
 
-  const ObjectableTransactionsEntity(
-      {
-
+  const ObjectableTransactionsEntity({
     this.transactionNumber,
     this.objectionLastApplyDate,
     this.violationIssueDate,
@@ -74,8 +72,7 @@ class ObjectableTransactionsEntity extends Equatable {
     this.contentTypeName,
     this.originalServiceId,
     this.hashingOriginalServiceId,
-
-      });
+  });
 
   String get objectionLastApplyDateStr => objectionLastApplyDate != null
       ? DateFormat.yMd().format(objectionLastApplyDate!)

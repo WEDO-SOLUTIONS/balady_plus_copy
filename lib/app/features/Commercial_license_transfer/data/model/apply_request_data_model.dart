@@ -1,4 +1,3 @@
-
 import '../../domain/entity/apply_request_entity.dart';
 
 class ApplyRequestDataModel extends ApplyRequestEntity {
@@ -6,19 +5,15 @@ class ApplyRequestDataModel extends ApplyRequestEntity {
     super.responseCode,
     super.responseMessage,
     super.responseId,
-    super.result,});
-
-
-
+    super.result,
+  });
 
   ApplyRequestDataModel.fromJson(dynamic json) {
     responseCode = json['responseCode'];
     responseMessage = json['responseMessage'];
     responseId = json['responseId'];
-    if(json['result'] != null) {
-
+    if (json['result'] != null) {
       result = json['result'];
     }
   }
-
 }

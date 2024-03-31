@@ -21,7 +21,7 @@ class ObjectionDetails {
   final RequestSubmitterData? requestSubmitterData;
   final String? objectionTypeId;
   final List<ObjectionReason>? objectionReasonsList;
-final List<EnquiryItem>? enquiryList; 
+  final List<EnquiryItem>? enquiryList;
   final String? requestStatusId;
   final String? objectionServiceName;
   String? hashingRequestNumber;
@@ -49,9 +49,8 @@ final List<EnquiryItem>? enquiryList;
       this.requestStatusId,
       this.objectionServiceName,
       this.hashingRequestNumber,
-      this.serviceTypeId, this.enquiryList
-      
-      });
+      this.serviceTypeId,
+      this.enquiryList});
 
   String get getLastUpdatedDate =>
       lastUpdatedDate != null ? DateFormat.yMd().format(lastUpdatedDate!) : "";

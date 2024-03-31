@@ -51,17 +51,17 @@ class CommercialLicenseCancelTwoScreen extends StatelessWidget {
                             )
                           : const SizedBox(),
                       Column(
-                        children: viewModel.attachments
-                            .map(
-                              (attachment) {
-                                return attachment.attachUrl?.isNotEmpty ?? false ? AttachmentShowWidget(
-                                  fileName: attachment.fileName ?? '',
-                                  name: attachment.name ?? '',
-                                  filePath: attachment.attachUrl ?? '',
-                                ) : const SizedBox();
-                              },
-                            )
-                            .toList(),
+                        children: viewModel.attachments.map(
+                          (attachment) {
+                            return attachment.attachUrl?.isNotEmpty ?? false
+                                ? AttachmentShowWidget(
+                                    fileName: attachment.fileName ?? '',
+                                    name: attachment.name ?? '',
+                                    filePath: attachment.attachUrl ?? '',
+                                  )
+                                : const SizedBox();
+                          },
+                        ).toList(),
                       ),
                     ],
                   ),

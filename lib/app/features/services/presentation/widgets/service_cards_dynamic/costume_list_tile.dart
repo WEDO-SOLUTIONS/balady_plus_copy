@@ -13,7 +13,8 @@ class CostumeListTile extends StatelessWidget {
     required this.title,
     this.onTap,
     this.leading,
-    this.trailing, this.showDivider = true ,
+    this.trailing,
+    this.showDivider = true,
   });
 
   @override
@@ -28,9 +29,10 @@ class CostumeListTile extends StatelessWidget {
               children: [
                 leading != null
                     ? Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 12, 0),
-                  child: leading!,
-                )
+                        padding:
+                            const EdgeInsetsDirectional.fromSTEB(0, 0, 12, 0),
+                        child: leading!,
+                      )
                     : const SizedBox(),
                 Flexible(
                   fit: FlexFit.tight,
@@ -38,19 +40,22 @@ class CostumeListTile extends StatelessWidget {
                 ),
                 trailing != null
                     ? Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
-                  child: trailing!,
-                )
+                        padding:
+                            const EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
+                        child: trailing!,
+                      )
                     : const SizedBox(),
               ],
             ),
           ),
         ),
-        showDivider ?  const Divider(
-          color: AppColor.blackModern100Light,
-          height: 12,
-          thickness: 1,
-        ) : const SizedBox(),
+        showDivider
+            ? const Divider(
+                color: AppColor.blackModern100Light,
+                height: 12,
+                thickness: 1,
+              )
+            : const SizedBox(),
       ],
     );
   }

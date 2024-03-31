@@ -5,7 +5,6 @@ import 'package:balady_plus/app/features/chatbot/domain/entities/chat_bot_messag
 import 'package:balady_plus/app/features/chatbot/domain/repositories/chat_bot_repository.dart';
 import 'package:dartz/dartz.dart';
 
-
 class SendQuestionMessageChatBot extends UseCase<ChatBotMessageModel, String> {
   final ChatBotRepository repository;
 
@@ -15,9 +14,7 @@ class SendQuestionMessageChatBot extends UseCase<ChatBotMessageModel, String> {
   Future<Either<Failure, ChatBotMessageModel>> call(String params) async {
     return await repository.sendQuestionMessage(question: params);
   }
-
 }
-
 
 class SendQuestionMessageChatBotSSE extends UseCase<Stream, String> {
   final ChatBotRepository repository;
@@ -29,7 +26,6 @@ class SendQuestionMessageChatBotSSE extends UseCase<Stream, String> {
     return await repository.sendQuestionMessageSSE(question: params);
   }
 }
-
 
 // class SendQuestionMessageChatBot extends UseCase<ChatBotMessageModel, String> {
 //   final ChatBotRepository repository;

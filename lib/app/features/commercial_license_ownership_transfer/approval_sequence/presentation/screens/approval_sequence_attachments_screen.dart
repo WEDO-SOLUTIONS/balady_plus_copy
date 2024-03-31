@@ -8,7 +8,8 @@ import 'package:provider/provider.dart';
 
 class ApprovalSequenceAttachmentsScreen extends StatelessWidget {
   final void Function() goToNewPage;
-  const ApprovalSequenceAttachmentsScreen({Key? key, required this.goToNewPage}) : super(key: key);
+  const ApprovalSequenceAttachmentsScreen({Key? key, required this.goToNewPage})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,34 +1,30 @@
-
 import '../../domain/entity/survey_inquery_data_entity.dart';
 
 class SurveyDataModel extends SurveyInqueryData {
-  SurveyDataModel({
-    super.licenseId,
-    super.oldLicenseId,
-    super.licenseIssueDate,
-    super.licenseIssueDateDesc,
-    super.purposeId,
-    super.purposeName,
-    super.mainBuildingClassId,
-    super.mainBuildingClassName,
-    super.subBuildingClassId,
-    super.subBuildingClassName,
-    super.parcels,
-    super.municipalityId,
-    super.municipalityName,
-    super.subMunicipalityId,
-    super.subMunicipalityName,
-    super.districtId,
-    super.districtName,
-    super.source,
-    super.mapNumber,
-    super.x,
-    super.y
-  });
+  SurveyDataModel(
+      {super.licenseId,
+      super.oldLicenseId,
+      super.licenseIssueDate,
+      super.licenseIssueDateDesc,
+      super.purposeId,
+      super.purposeName,
+      super.mainBuildingClassId,
+      super.mainBuildingClassName,
+      super.subBuildingClassId,
+      super.subBuildingClassName,
+      super.parcels,
+      super.municipalityId,
+      super.municipalityName,
+      super.subMunicipalityId,
+      super.subMunicipalityName,
+      super.districtId,
+      super.districtName,
+      super.source,
+      super.mapNumber,
+      super.x,
+      super.y});
 
-
-  SurveyDataModel.fromJson(Map<String, dynamic> json){
-
+  SurveyDataModel.fromJson(Map<String, dynamic> json) {
     licenseId = json['licenseId'];
     oldLicenseId = json['oldLicenseId'];
     licenseIssueDate = json['licenseIssueDate'];
@@ -55,14 +51,10 @@ class SurveyDataModel extends SurveyInqueryData {
     mapNumber = json['mapNumber'];
     x = json['x'];
     y = json['y'];
-
-
   }
-
 }
 
 class ParcelDataModel extends Parcel {
-
   ParcelDataModel({
     super.id,
     super.area,
@@ -76,7 +68,4 @@ class ParcelDataModel extends Parcel {
     areaAccordingToScheme = json['areaAccordingToScheme'];
     landNo = json['landNo'];
   }
-
-
 }
-

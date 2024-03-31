@@ -54,7 +54,6 @@ class ChangeIsIndieHotelEvent extends PermitTobaccoLicenseEvent {
   const ChangeIsIndieHotelEvent({this.value});
 }
 
-
 class ChangeHotelLicenseNumber extends PermitTobaccoLicenseEvent {
   final String? value;
   const ChangeHotelLicenseNumber({this.value});
