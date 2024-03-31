@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../_shared_feature_/data/entities/file_data_item.dart';
 import '../../../vd/domain/entities/gis/gis_params.dart';
 import 'dart:convert' as c;
 
@@ -158,13 +160,16 @@ class EmtithalItem {
   final String? itemId;
   final String? momItemId;
   final String? itemDesc;
-  bool? submitterAnswer;
-  final bool? empAnswer;
+  int? submitterAnswer;
+  final int? empAnswer;
+  String? notes;
 
   final List<ItemData>? itemData;
   final bool? showNotApplicable;
   final bool? mandToAttach;
   final AttachmentDto? attachmentDto;
+  FileDataItem? file;
+  bool? edit;
 
   EmtithalItem(
       {this.itemId,
@@ -175,7 +180,65 @@ class EmtithalItem {
       this.itemData,
       this.showNotApplicable,
       this.mandToAttach,
-      this.attachmentDto});
+      this.attachmentDto,
+      this.file,
+      this.notes,
+      this.edit});
+
+  String? getCurrentAnswer() {
+    int? ans;
+    if (submitterAnswer == null && empAnswer != null) {
+      ans = empAnswer;
+    } else {
+      ans = submitterAnswer;
+    }
+
+    switch (ans) {
+      case 0:
+        return "no".tr();
+      case 1:
+        return "yes".tr();
+      case 2:
+        return "Not_Applicable".tr();
+    }
+  }
+
+  bool isAttachmentRequired(bool isReturned) {
+    if (isReturned) {
+      if (submitterAnswer == 1) {
+        return true;
+      } else if (submitterAnswer == 2) {
+        return false;
+      }
+    } else {
+      return false;
+    }
+    return false;
+  }
+
+  bool isNoteRequired(bool isReturned) {
+    if (isReturned) {
+      if (submitterAnswer == 1 || submitterAnswer == 2) {
+        return true;
+      }
+    } else {
+      if (submitterAnswer == 2) return true;
+      return false;
+    }
+    return false;
+  }
+
+  bool showNoteAndAttachments(bool isReturned) {
+    if (isReturned) {
+      if ((submitterAnswer == 1 && (empAnswer != null && empAnswer != 1)) ||
+          submitterAnswer == 2) {
+        return true;
+      }
+    } else {
+      if (submitterAnswer == 2) return true;
+    }
+    return false;
+  }
 }
 
 class LocationResponseInfoDto {
@@ -456,8 +519,8 @@ class SubEmtithalItem {
   final String? itemId;
   final String? momItemId;
   final String? itemDesc;
-  final bool? submitterAnswer;
-  final bool? empAnswer;
+  final int? submitterAnswer;
+  final int? empAnswer;
   final List<ItemData>? itemData;
   final bool? showNotApplicable;
   final bool? mandToAttach;
@@ -525,6 +588,17 @@ class ItemData {
     this.date,
     this.attachment,
   });
+
+  String? getCurrentAnswer() {
+    switch (answer) {
+      case 0:
+        return "no".tr();
+      case 1:
+        return "yes".tr();
+      case 2:
+        return "Not_Applicable".tr();
+    }
+  }
 }
 
 class LandsInfo {

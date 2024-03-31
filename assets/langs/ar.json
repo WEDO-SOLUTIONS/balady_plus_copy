@@ -3999,6 +3999,24 @@
 
     "municipal_cert_riyadh_new":"عزيزي المستفيد لطلب خدمة بلدية", 
     "municipal_cert_riyadh_agree":"اضغط هنا", 
-    "objection_download_commite_decision":"تحميل نسخة من قرار لجنة نظر الإعتراضات"
+    "objection_download_commite_decision":"تحميل نسخة من قرار لجنة نظر الإعتراضات", 
+
+    "complaince_save_clause":"حفظ البند", 
+
+    "complaince_edit_clause":"تعديل البند", 
+    "compliance_cancel_request_msg":"المبني غير ملزم بإصدار شهادة امتثال المباني في هذه المرحلة، هل تريد استكمال الطلب او الإلغاء", 
+
+    "compliance_cancel_request_confirm":"استكمال الطلب ", 
+    "compliance_cancel_request_cancel":"الغاء", 
+    "compliance_show_prevoius_notes":"عرض الملاحظات السابقة", 
+    "compliance_claues_status":"حالة البند", 
+    "prevoius_notes":"الملاحظات السابقة", 
+    "note_source":"مصدر الملاحظة", 
+    "compliance_submitter_reply":"رد مقدم الطلب", 
+    "compliance_office_reply":"رد الامانة / البلدية", 
+    "complinace_clause":"بند"
+
+
+
 
 }

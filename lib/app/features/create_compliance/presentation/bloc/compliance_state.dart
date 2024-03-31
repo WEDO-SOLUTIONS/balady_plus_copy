@@ -11,9 +11,6 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:collection/collection.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
-import '../../../../core/utils/common_functions.dart';
-import '../../../../core/utils/enums/date_form.dart';
-import '../../../../core/utils/nullable.dart';
 import 'package:balady_plus/app/features/transaction_inquiry/presentation/core/models/attachment_model.dart';
 import '../../../_shared_feature_/data/entities/validators/phone_number_validation.dart';
 import '../../data/models/apply_create_compliance_request_model.dart';
@@ -60,7 +57,6 @@ class ComplianceState extends Equatable {
   final String? ownershipDate;
   final DateForm? form;
   final ComplianceEngOfficeDetails? engOfficeDetails;
-
   final ComplinaecLicensesReponse? licenes;
   final ComplianceLisenseItem? selectedLicense;
   final ComplainceGISResponse? gisResponse;
@@ -78,6 +74,9 @@ class ComplianceState extends Equatable {
   final ComplianceDeedInfo? deedInfo;
   final LandSubsidyContract? landSubsidyContract;
   final bool? showEksanId;
+  final String? applicantNotes;
+  final bool? showDetails;
+
   PhoneNumberValidation get phoneValidator => contactMobileNumber == null
       ? PhoneNumberValidation.pure()
       : PhoneNumberValidation.dirty(value: contactMobileNumber);
@@ -130,7 +129,9 @@ class ComplianceState extends Equatable {
       this.reciptLists,
       this.deedInfo,
       this.landSubsidyContract,
-      this.showEksanId});
+      this.showEksanId,
+      this.applicantNotes,
+      this.showDetails});
   ComplianceState copyWith(
       {final BlocStatus? status,
       final int? currentStep,
@@ -176,7 +177,9 @@ class ComplianceState extends Equatable {
       final ComplinaceLookUpResponse? reciptLists,
       final Nullable<ComplianceDeedInfo?>? deedInfo,
       final Nullable<LandSubsidyContract?>? landSubsidyContract,
-      final bool? showEksanId}) {
+      final bool? showEksanId,
+      final String? applicantNotes,
+      final bool? showDetails}) {
     return ComplianceState(
         status: status ?? this.status,
         contactMobileNumber: contactMobileNumber ?? this.contactMobileNumber,
@@ -245,7 +248,9 @@ class ComplianceState extends Equatable {
         landSubsidyContract: landSubsidyContract == null
             ? this.landSubsidyContract
             : landSubsidyContract.value,
-        showEksanId: showEksanId ?? this.showEksanId);
+        applicantNotes: applicantNotes ?? this.applicantNotes,
+        showEksanId: showEksanId ?? this.showEksanId,
+        showDetails: showDetails ?? this.showDetails);
   }
 
   bool isNextButtonEnabled() {

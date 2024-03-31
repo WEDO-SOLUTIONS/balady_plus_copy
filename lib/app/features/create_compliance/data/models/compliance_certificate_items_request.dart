@@ -13,7 +13,7 @@ class ComplianceCertificateItemsRequest {
 }
 
 class ComplianceCertificateItem extends Equatable {
-  final bool? itemAnswer;
+  final int? itemAnswer;
   final String? itemId;
 
   const ComplianceCertificateItem({this.itemAnswer, this.itemId});

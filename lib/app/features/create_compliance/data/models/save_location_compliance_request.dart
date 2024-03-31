@@ -21,6 +21,7 @@ class SaveLocationComplianceRequest extends Equatable {
   final String? guid;
   final int? requsestId;
   final bool? isLicense;
+  final bool? isEmtithalMand;
 
   const SaveLocationComplianceRequest(
       {this.mainUsageCode,
@@ -39,7 +40,8 @@ class SaveLocationComplianceRequest extends Equatable {
       this.landArea,
       this.guid,
       this.requsestId,
-      this.isLicense});
+      this.isLicense,
+      this.isEmtithalMand});
 
   @override
   List<Object?> get props => [
@@ -59,7 +61,8 @@ class SaveLocationComplianceRequest extends Equatable {
         landArea,
         guid,
         requsestId,
-        isLicense
+        isLicense,
+        isEmtithalMand
       ];
 
   Map<String, dynamic> toMap() {
@@ -81,6 +84,7 @@ class SaveLocationComplianceRequest extends Equatable {
           'landNumber': landNumber,
           'landArea': landArea,
           'guid': guid,
+          'isEmtithalMand': isEmtithalMand
         }
     };
   }

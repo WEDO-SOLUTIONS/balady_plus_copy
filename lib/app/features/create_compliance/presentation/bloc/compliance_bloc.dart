@@ -19,6 +19,7 @@ import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/enums.dart';
 import '../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../data/models/apply_create_compliance_request_model.dart';
+import '../../data/models/compliance_certificate_item_request.dart';
 import '../../data/models/compliance_certificate_items_request.dart';
 import '../../data/models/save_contract_info_request.dart';
 import '../../data/models/save_location_compliance_request.dart';
@@ -30,6 +31,7 @@ import '../../domain/entities/complinace_licenses_response.dart';
 import '../../domain/entities/land_subsidy_contract_request.dart';
 import '../../domain/entities/ownership_doc_type_response.dart';
 import '../../domain/use_cases/apply_compliance.dart';
+import '../../domain/use_cases/cancel_compliance_certificate.dart';
 import '../../domain/use_cases/download_compliance_certificate.dart';
 import '../../domain/use_cases/get_compliance_details.dart';
 import '../../domain/use_cases/get_compliance_engoffices.dart';
@@ -44,11 +46,14 @@ import '../../domain/use_cases/get_land_contract.dart';
 import '../../domain/use_cases/get_ownership_types.dart';
 import '../../domain/use_cases/get_recipt_types.dart';
 import '../../domain/use_cases/save_attachment.dart';
+import '../../domain/use_cases/save_compliance_certificate_item.dart';
 import '../../domain/use_cases/save_compliance_certificate_items.dart';
 import '../../domain/use_cases/save_compliance_contract.dart';
 import '../../domain/use_cases/save_compliance_location.dart';
 import '../../domain/use_cases/send_otp.dart';
 import '../../domain/use_cases/submit_compliance_request.dart';
+import '../../domain/use_cases/upload_clause_attachment.dart';
+import '../../domain/use_cases/validate_compliance_certificate_items.dart';
 import '../../domain/use_cases/verify_otp.dart';
 import '../dialogs/exit_draft_dialog.dart';
 import '../dialogs/save_draft_dialog.dart';
@@ -58,6 +63,7 @@ import '../widgets/compliance_submission/fifth_submit_step.dart';
 import '../widgets/compliance_submission/first_submit_step_compliance.dart';
 import '../widgets/compliance_submission/fourth_step_compliance.dart';
 import '../widgets/compliance_submission/second_submit_step_compliance.dart';
+import '../widgets/compliance_submission/sixth_submit_step.dart';
 import '../widgets/compliance_submission/third_submit_step_compliance.dart';
 import '../widgets/compliance_submission/usage_submit_step_compliance.dart';
 
@@ -71,6 +77,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     UsageSubmissionCompliance(),
     FourthStepCompliance(),
     FifthComplianceSubmitStep(),
+    SixthComplianceSubmitStep(),
     CreateComplianceSummurySection()
   ];
 
@@ -93,6 +100,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
   final GetComplianceSubUsages _getComplianceSubUsages;
   final GetOwnerShipTypes _getOwnerShipTypes;
   final SaveComplianceCertificateItems _saveComplianceCertificateItems;
+  final SaveComplianceCertificateItem _saveComplianceCertificateItem;
   final SaveContractCompliance _saveContractCompliance;
   final SubmitComplianceRequest _submitComplianceRequest;
   final SaveLocationCompliance _saveLocationCompliance;
@@ -106,6 +114,9 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
   final GetReciptTypes _getReciptTypes;
   final GetDeedInfo _getDeedInfo;
   final GetLandContract _getLandContract;
+  final UploadClauseAttachment _uploadClauseAttachment;
+  final ValidateComplianceCertificateItem _validateComplianceCertificateItem;
+  final CancelComplianceCertificate _cancelComplianceCertificate;
   final bool? showDetails;
 
   ComplianceBloc({this.showDetails})
@@ -120,6 +131,8 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
         _getOwnerShipTypes = GetOwnerShipTypes(repository: sl()),
         _saveComplianceCertificateItems =
             SaveComplianceCertificateItems(repository: sl()),
+        _saveComplianceCertificateItem =
+            SaveComplianceCertificateItem(repository: sl()),
         _saveContractCompliance = SaveContractCompliance(repository: sl()),
         _submitComplianceRequest = SubmitComplianceRequest(repository: sl()),
         _saveLocationCompliance = SaveLocationCompliance(repository: sl()),
@@ -134,10 +147,15 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
         _getDeedInfo = GetDeedInfo(repository: sl()),
         _getLandContract = GetLandContract(repository: sl()),
         _getReciptTypes = GetReciptTypes(repository: sl()),
+        _uploadClauseAttachment = UploadClauseAttachment(repository: sl()),
+        _validateComplianceCertificateItem =
+            ValidateComplianceCertificateItem(repository: sl()),
+        _cancelComplianceCertificate =
+            CancelComplianceCertificate(repository: sl()),
         super(ComplianceState(
-          status: BlocStatus.initial,
-          currentStep: 0,
-        )) {
+            status: BlocStatus.initial,
+            currentStep: 0,
+            showDetails: showDetails)) {
     on<ComplianceEvent>((event, emit) {
       emit(state);
     });
@@ -175,12 +193,20 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
 
     on<GetComplianceDeedInfoEvent>(_getDeedInfoHandler);
     on<GetComplianceLandContractEvent>(_getLandContractHandler);
+    on<SaveImtethalItemEvent>(_saveImtethalPoint);
+    on<CancelComplianceCertificateEvent>(_cancelComplainceCertificate);
+    on<ChangeApplicantNotesEvent>(_changeApplicantNotesHandler);
   }
 
   Future<void> _pageChangeHandler(ChangePageEvent e, Emitter emitter) async {
     emitter(state.copyWith(currentStep: e.index, errorMessage: ""));
     pageController.jumpToPage((e.index).toInt());
     sendEventPage((e.index).toInt());
+  }
+
+  Future<void> _changeApplicantNotesHandler(
+      ChangeApplicantNotesEvent e, Emitter emitter) async {
+    emitter(state.copyWith(applicantNotes: e.text));
   }
 
   Future<void> _updateFormFields(UpdateFieldsEvent e, Emitter emitter) async {
@@ -324,24 +350,24 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       );
     } else {
       request = SaveLocationComplianceRequest(
-        mainUsageCode: state.selectedMainUsage?.id,
-        subUsageCode: state.selectedSubUsage?.id,
-        municipalityId: state.gisResponse?.amanaCode,
-        subMunicipalityId: state.gisResponse?.municipalityCode,
-        districtId: state.gisResponse?.districtCode,
-        cityId: state.gisResponse?.cityCode,
-        streetId: state.gisResponse?.streetCode,
-        streetName: state.gisResponse?.streetName,
-        mapNumber: state.gisResponse?.planNo,
-        mapName: state.gisResponse?.planName,
-        x: state.gisParams?.x.toString(),
-        y: state.gisParams?.y.toString(),
-        landNumber: state.gisResponse?.parcelNo,
-        landArea: state.gisResponse?.area,
-        isLicense: state.documentTypeSelection == 1,
-        guid: state.gisResponse?.guid,
-        requsestId: state.requestId,
-      );
+          mainUsageCode: state.selectedMainUsage?.id,
+          subUsageCode: state.selectedSubUsage?.id,
+          municipalityId: state.gisResponse?.amanaCode,
+          subMunicipalityId: state.gisResponse?.municipalityCode,
+          districtId: state.gisResponse?.districtCode,
+          cityId: state.gisResponse?.cityCode,
+          streetId: state.gisResponse?.streetCode,
+          streetName: state.gisResponse?.streetName,
+          mapNumber: state.gisResponse?.planNo,
+          mapName: state.gisResponse?.planName,
+          x: state.gisParams?.x.toString(),
+          y: state.gisParams?.y.toString(),
+          landNumber: state.gisResponse?.parcelNo,
+          landArea: state.gisResponse?.area,
+          isLicense: state.documentTypeSelection == 1,
+          guid: state.gisResponse?.guid,
+          requsestId: state.requestId,
+          isEmtithalMand: state.gisResponse?.isEmtithalMand);
     }
     final failOrSuccess = await _saveLocationCompliance(request);
 
@@ -1054,26 +1080,11 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       status: BlocStatus.loading,
     ));
 
-    final failOrSuccess = await _saveComplianceCertificateItems(
-        ComplianceCertificateItemsRequest(
-            requestId: state.requestId,
-            items: (state.requestDetails?.emtithalItems ?? [])
-                .map((e) => ComplianceCertificateItem(
-                    itemAnswer: e.submitterAnswer, itemId: e.itemId))
-                .toList()));
+    final failOrSuccess = await _validateComplianceCertificateItem(
+      state.requestId!,
+    );
 
     failOrSuccess.fold((l) {
-      if ((l as ServerFailure).errorCode == "2" &&
-          state.requestDetails?.emtithalItems?.firstWhereOrNull(
-                  (element) => element.submitterAnswer == false) !=
-              null &&
-          e.save != true) {
-        bool Function(Route<dynamic>) predicate =
-            ModalRoute.withName(RouteName.bottomNavigation);
-        NavigationService.navigatorKey.currentState!
-            .pushNamed(RouteName.nonComplianceScreen);
-      }
-
       emitter(state.copyWith(
         errorMessage: (l as ServerFailure).errorMessage,
         status: BlocStatus.failure,
@@ -1082,23 +1093,109 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       emitter(state.copyWith(
         status: BlocStatus.success,
       ));
-      if (e.save == true) {
-        bool Function(Route<dynamic>) predicate =
-            ModalRoute.withName(RouteName.bottomNavigation);
-        NavigationService.navigatorKey.currentState!.popUntil((predicate));
-      } else {
-        int nextPage = state.currentStep + 1;
-        emitter(state.copyWith(
-          status: BlocStatus.performing,
-        ));
-        emitter(state.copyWith(
-            status: BlocStatus.success,
-            currentStep: nextPage,
-            errorMessage: ""));
-        pageController.jumpToPage(nextPage);
-        sendEventPage(nextPage);
-      }
+
+      int nextPage = state.currentStep + 1;
+      emitter(state.copyWith(
+        status: BlocStatus.performing,
+      ));
+      emitter(state.copyWith(
+          status: BlocStatus.success, currentStep: nextPage, errorMessage: ""));
+      pageController.jumpToPage(nextPage);
+      sendEventPage(nextPage);
     });
+  }
+
+  Future<void> _cancelComplainceCertificate(
+      CancelComplianceCertificateEvent e, Emitter emitter) async {
+    emitter(state.copyWith(
+      status: BlocStatus.loading,
+    ));
+
+    final failOrSuccess = await _cancelComplianceCertificate(
+      state.requestId!,
+    );
+
+    failOrSuccess.fold((l) {
+      emitter(state.copyWith(
+        errorMessage: (l as ServerFailure).errorMessage,
+        status: BlocStatus.failure,
+      ));
+    }, (r) async {
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+      ));
+
+      bool Function(Route<dynamic>) predicate =
+          ModalRoute.withName(RouteName.bottomNavigation);
+      NavigationService.navigatorKey.currentState!.popUntil((predicate));
+    });
+  }
+
+  Future<void> _saveImtethalPoint(
+      SaveImtethalItemEvent e, Emitter emitter) async {
+    emitter(state.copyWith(
+      status: BlocStatus.loading,
+    ));
+
+    if (e.item.file != null && e.item.file?.isUploaded != true) {
+      final failOrSuccess =
+          await _uploadClauseAttachment((e.item.file!, state.requestId!));
+
+      failOrSuccess.fold((l) {
+        emitter(state.copyWith(
+          errorMessage: (l as ServerFailure).errorMessage,
+          status: BlocStatus.failure,
+        ));
+      }, (r) async {
+        emitter(state.copyWith(
+          errorMessage: "",
+          status: BlocStatus.success,
+        ));
+        final failOrSuccess = await _saveComplianceCertificateItem(
+            ComplianceCertificateItemRequest(
+          requestId: state.requestId,
+          attachmentId: r.fileKey ?? e.item.attachmentDto?.id,
+          itemAnswer: e.item.submitterAnswer,
+          itemId: e.item.itemId,
+          note: e.item.notes,
+        ));
+
+        failOrSuccess.fold((l) {
+          emitter(state.copyWith(
+            errorMessage: (l as ServerFailure).errorMessage,
+            status: BlocStatus.failure,
+          ));
+        }, (r) async {
+          emitter(state.copyWith(status: BlocStatus.performing));
+          ComplianceRequestDetails? details = state.requestDetails;
+          details?.emtithalItems?[e.index].edit = true;
+          emitter(state.copyWith(
+              status: BlocStatus.success, requestDetails: details));
+        });
+      });
+    } else {
+      final failOrSuccess =
+          await _saveComplianceCertificateItem(ComplianceCertificateItemRequest(
+        requestId: state.requestId,
+        attachmentId: null,
+        itemAnswer: e.item.submitterAnswer,
+        itemId: e.item.itemId,
+        note: e.item.notes,
+      ));
+
+      failOrSuccess.fold((l) {
+        emitter(state.copyWith(
+          errorMessage: (l as ServerFailure).errorMessage,
+          status: BlocStatus.failure,
+        ));
+      }, (r) async {
+        emitter(state.copyWith(status: BlocStatus.performing));
+        ComplianceRequestDetails? details = state.requestDetails;
+        details?.emtithalItems?[e.index].edit = true;
+        emitter(state.copyWith(
+            status: BlocStatus.success, requestDetails: details));
+      });
+    }
   }
 
   Future<void> _submitRequest(SubmitComplianceEvent e, Emitter emitter) async {
@@ -1108,8 +1205,8 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     emitter(state.copyWith(
       status: BlocStatus.loading,
     ));
-    final failOrSuccess =
-        await _submitComplianceRequest(state.requestId.toString());
+    final failOrSuccess = await _submitComplianceRequest(
+        (state.requestId.toString(), state.applicantNotes ?? ""));
     failOrSuccess.fold((l) {
       emitter(state.copyWith(
         errorMessage: (l as ServerFailure).errorMessage,

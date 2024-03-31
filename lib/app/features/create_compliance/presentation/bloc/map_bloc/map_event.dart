@@ -29,3 +29,8 @@ class SelectLocationEvent extends MapEvent {
   LatLng location;
   SelectLocationEvent({required this.location});
 }
+
+
+class CancelComplianceCertificateEvent extends MapEvent {
+  CancelComplianceCertificateEvent();
+}

@@ -458,6 +458,17 @@ class ApiUrl {
   static const String saveComplianceCertificateItems =
       '/v1/compliance-certificate-mobile-services/save-compliance-certificate-items/';
 
+  static String saveComplianceCertificateItem(int requestId) =>
+      "/v1/compliance-certificate-mobile-services/requests/$requestId/compliance-clauses";
+
+  static String validateComplianceCertificate(int requestId) =>
+      "/v1/compliance-certificate-mobile-services/requests/$requestId/compliance-clauses/validate";
+
+  static String cancelComplianceCertificate(int requestId) =>
+      "/v1/compliance-certificate-mobile-services/requests/$requestId";
+
+  static String uploadComplianceAttachment(int requestId) =>
+      "/v1/compliance-certificate-mobile-services/requests/$requestId/files/upload";
   static const String submitComplianceRequest =
       '/v1/compliance-certificate-mobile-services/submit-request/';
   static const String deleteComplianceRequest =
@@ -792,13 +803,7 @@ class ApiUrl {
 
   //Noification APIS
 
-
-  static String updateNotificationSettings() =>
-      '/v1/iam-services/ext/devices';
-
-
-
-
+  static String updateNotificationSettings() => '/v1/iam-services/ext/devices';
 
   //Survey license inquery
   static String getSurveyLicenseData(int licenseNumber, String date) =>
@@ -818,21 +823,25 @@ class ApiUrl {
   static const baladyCalendarEvents =
       'v1/balady-calendar-services/events/by-year';
 
-
-
-
-
-
   //! Notifications
-  static const notificationsUnreadMessages = 'v1/notifications-hub-services/fe/unread-messages';
-  static const notificationsMessagesList = 'v1/notifications-hub-services/fe/messages-list';
-  static const notificationsMarkRead = 'v1/notifications-hub-services/fe/messages/mark-read';
-  static const notificationsDeletedMessages = 'v1/notifications-hub-services/fe/deleted-messages';
-  static const notificationsProducts = 'v1/notifications-hub-services/fe/products';
-  static const notificationsServices = 'v1/notifications-hub-services/fe/services';
-  static const notificationsSettingsList = 'v1/notifications-hub-services/fe/profiles';
-  static const setProductsNotificationsSettings = 'v1/notifications-hub-services/fe/profile/products';
-  static const setProfileNotificationsSettings = 'v1/notifications-hub-services/fe/profiles';
+  static const notificationsUnreadMessages =
+      'v1/notifications-hub-services/fe/unread-messages';
+  static const notificationsMessagesList =
+      'v1/notifications-hub-services/fe/messages-list';
+  static const notificationsMarkRead =
+      'v1/notifications-hub-services/fe/messages/mark-read';
+  static const notificationsDeletedMessages =
+      'v1/notifications-hub-services/fe/deleted-messages';
+  static const notificationsProducts =
+      'v1/notifications-hub-services/fe/products';
+  static const notificationsServices =
+      'v1/notifications-hub-services/fe/services';
+  static const notificationsSettingsList =
+      'v1/notifications-hub-services/fe/profiles';
+  static const setProductsNotificationsSettings =
+      'v1/notifications-hub-services/fe/profile/products';
+  static const setProfileNotificationsSettings =
+      'v1/notifications-hub-services/fe/profiles';
 //! Appointments New APIs
   static getAppointmentById(String id) =>
       'v1/appointments-mobile-services/appointments/$id';

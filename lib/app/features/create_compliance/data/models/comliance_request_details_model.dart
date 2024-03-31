@@ -217,13 +217,17 @@ class AttachmentModel extends Attachment {
 }
 
 class EmtithalItemModel extends EmtithalItem {
-  EmtithalItemModel({
-    super.itemId,
-    super.momItemId,
-    super.itemDesc,
-    super.submitterAnswer,
-    super.empAnswer,
-  });
+  EmtithalItemModel(
+      {super.itemId,
+      super.momItemId,
+      super.itemDesc,
+      super.submitterAnswer,
+      super.empAnswer,
+      super.attachmentDto,
+      super.itemData,
+      super.mandToAttach,
+      super.notes,
+      super.showNotApplicable});
 
   factory EmtithalItemModel.fromJson(Map<String, dynamic> json) =>
       EmtithalItemModel(
@@ -232,6 +236,13 @@ class EmtithalItemModel extends EmtithalItem {
         itemDesc: json["itemDesc"],
         submitterAnswer: json["submitterAnswer"],
         empAnswer: json["empAnswer"],
+        showNotApplicable: json["showNotApplicable"],
+        notes: json["notes"],
+        mandToAttach: json["mandToAttach"],
+        itemData: json["itemData"] == null
+            ? []
+            : List<ItemDataModel>.from(
+                json["itemData"]!.map((x) => ItemDataModel.fromJson(x))),
       );
 }
 
