@@ -96,6 +96,11 @@ jobs:
           rm DGisFullSDK.zip
 
       - name: Setup keychain
+        env:
+          LANG: en_US.UTF-8
+          FILE_BALADY_CER: ${{ secrets.FILE_BALADY_CER }}
+          FILE_BALADY_MOBILEPROVISION: ${{ secrets.FILE_BALADY_MOBILEPROVISION }}
+          FILE_BALADY_P12: ${{ secrets.FILE_BALADY_P12 }}
         uses: TLizer/action-with-post-step@v1.1.0
         with:
           main: |
@@ -151,19 +156,18 @@ jobs:
 
             cp $PROFILE "$PROFILES_DIR"$UUID.mobileprovision
           post: |
+            KC="$HOME/Library/Keychains/build.keychain"
+            TMP="$PWD/TMP"
+            PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning Profiles/"
+
             security list-keychains -d user -s $LKC
             security default-keychain -d user -s $LKC
             security delete-keychain $KC
 
-            rm "$PROFILES_DIR"$UUID.mobileprovision
+            rm -rf "$PROFILES_DIR"
             rm -rf $TMP
 
       - name: Build app
-        env:
-          LANG: en_US.UTF-8
-          FILE_BALADY_CER: ${{ secrets.FILE_BALADY_CER }}
-          FILE_BALADY_MOBILEPROVISION: ${{ secrets.FILE_BALADY_MOBILEPROVISION }}
-          FILE_BALADY_P12: ${{ secrets.FILE_BALADY_P12 }}
         run: |
           momrahBundle='momra.balady.ios'
           urbiBundle='ae.urbi.balady'
