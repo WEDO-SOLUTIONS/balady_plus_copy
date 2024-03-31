@@ -43,5 +43,6 @@ class ComplainceGISResponseModel extends ComplainceGISResponse {
           region: json["Region"],
           regionCode: json["RegionCode"],
           imageUrl: json["ImageUrl"],
+          targetBuilding: json["TargetBuilding"],
           guid: json["ParcelBuilding"]?[0]?["GUID"]);
 }

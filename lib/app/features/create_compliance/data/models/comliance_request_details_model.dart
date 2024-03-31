@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:collection/collection.dart';
 
+import '../../../_shared_feature_/data/entities/file_data_item.dart';
 import '../../create_compliance_exports.dart';
 
 class ComplianceRequestDetailsModel extends ComplianceRequestDetails {
@@ -140,6 +142,28 @@ class ComplianceRequestDetailsModel extends ComplianceRequestDetails {
 
     details.mainEmtithalItemsDto?.forEach((element) {
       element.subEmtithalItems?.forEach((element) {
+        ItemData? noteData = element.itemData
+            ?.firstWhereOrNull((element) => element.isLastNote == true);
+
+        FileDataItem? file;
+        String? note;
+        if (noteData != null) {
+          if (noteData.attachment != null &&
+              noteData.attachment?.downloadPath != null) {
+            file = FileDataItem(
+                fileKey: noteData.attachment?.fileKey?.toString(),
+                filePath: noteData.attachment?.downloadPath != null
+                    ? noteData.attachment!.downloadPath.toString()
+                    : "",
+                fileBase64: "",
+                isUploaded: true,
+                fileName: noteData.attachment?.dmsAttachName ?? "");
+          }
+
+          if (noteData.note != null) {
+            note = noteData.note;
+          }
+        }
         EmtithalItem item = EmtithalItem(
             empAnswer: element.empAnswer,
             submitterAnswer: element.submitterAnswer,
@@ -147,8 +171,13 @@ class ComplianceRequestDetailsModel extends ComplianceRequestDetails {
             itemId: element.itemId,
             momItemId: element.momItemId,
             itemData: element.itemData,
+            notes: note,
+            file: file,
             showNotApplicable: element.showNotApplicable,
             mandToAttach: element.mandToAttach,
+            edit: json["isRequestReturnedFromMunicipality"] == true &&
+                    element.submitterAnswer == null ||
+                element.submitterAnswer == null,
             attachmentDto: element.attachmentDto);
         emtithalItems.add(item);
       });
@@ -464,25 +493,26 @@ class ItemDataModel extends ItemData {
         date: json["date"],
         attachment: json["attachment"] == null
             ? null
-            : AttachmentDtoModel.fromJson(json["attachment"]),
+            : ItemDataAttachment.fromJson(json["attachment"]),
       );
 }
 
 class AttachmentDtoModel extends AttachmentDto {
-  AttachmentDtoModel({
-    super.id,
-    super.name,
-    super.allowedFilesExtension,
-    super.isMandatory,
-    super.attached,
-    super.approved,
-    super.attachUrl,
-    super.notes,
-    super.updatable,
-    super.maxSize,
-    super.attachDescription,
-    super.fileName,
-  });
+  AttachmentDtoModel(
+      {super.id,
+      super.name,
+      super.allowedFilesExtension,
+      super.isMandatory,
+      super.attached,
+      super.approved,
+      super.attachUrl,
+      super.notes,
+      super.updatable,
+      super.maxSize,
+      super.attachDescription,
+      super.fileName,
+      super.fileKey,
+      super.downloadPath});
 
   factory AttachmentDtoModel.fromJson(Map<String, dynamic> json) =>
       AttachmentDtoModel(
@@ -499,4 +529,45 @@ class AttachmentDtoModel extends AttachmentDto {
         attachDescription: json["attachDescription"],
         fileName: json["fileName"],
       );
+}
+
+class ItemDataAttachment {
+  final String? fileKey;
+  final String? downloadPath;
+  final String? dmsAttachId;
+  final String? dmsAttachKey;
+  final String? dmsAttachName;
+  final String? dmsAttachExtension;
+  final String? dmsAttachSize;
+
+  ItemDataAttachment({
+    this.fileKey,
+    this.downloadPath,
+    this.dmsAttachId,
+    this.dmsAttachKey,
+    this.dmsAttachName,
+    this.dmsAttachExtension,
+    this.dmsAttachSize,
+  });
+
+  factory ItemDataAttachment.fromJson(Map<String, dynamic> json) =>
+      ItemDataAttachment(
+        fileKey: json["fileKey"],
+        downloadPath: json["downloadPath"],
+        dmsAttachId: json["dmsAttachId"],
+        dmsAttachKey: json["dmsAttachKey"],
+        dmsAttachName: json["dmsAttachName"],
+        dmsAttachExtension: json["dmsAttachExtension"],
+        dmsAttachSize: json["dmsAttachSize"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "fileKey": fileKey,
+        "downloadPath": downloadPath,
+        "dmsAttachId": dmsAttachId,
+        "dmsAttachKey": dmsAttachKey,
+        "dmsAttachName": dmsAttachName,
+        "dmsAttachExtension": dmsAttachExtension,
+        "dmsAttachSize": dmsAttachSize,
+      };
 }

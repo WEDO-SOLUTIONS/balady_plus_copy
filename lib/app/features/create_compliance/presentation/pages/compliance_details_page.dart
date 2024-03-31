@@ -79,7 +79,8 @@ class _ComplianceDetailsPageState extends State<ComplianceDetailsPage> {
                         .read<ComplianceBloc>()
                         .add(DownloadCertificateEvent())
                     : null,
-                procedures: (state.requestDetails?.statusId == 1)
+                procedures: (state.requestDetails?.statusId == 1 ||
+                        state.requestDetails?.statusId == 28)
                     ? () async {
                         await BottomSheetDialog.showDraggableSheet(context,
                             isFullHeight: false,

@@ -69,6 +69,7 @@ class SaveLocationComplianceRequest extends Equatable {
     return <String, dynamic>{
       'mainUsageCode': mainUsageCode,
       'subUsageCode': subUsageCode,
+      'isEmtithalMand': isEmtithalMand,
       if (isLicense != true)
         "geoInfoDto": {
           'municipalityId': municipalityId,
@@ -84,7 +85,6 @@ class SaveLocationComplianceRequest extends Equatable {
           'landNumber': landNumber,
           'landArea': landArea,
           'guid': guid,
-          'isEmtithalMand': isEmtithalMand
         }
     };
   }

@@ -323,6 +323,9 @@ class ComplianceState extends Equatable {
       }
       return isValid;
     } else if ((currentStep == 6)) {
+      if (requestDetails?.isRequestReturnedFromMunicipality == true &&
+          (applicantNotes?.isEmpty ?? true)) return false;
+    } else if ((currentStep == 7)) {
       return agreement ?? false;
     }
     return true;
@@ -479,6 +482,7 @@ class ComplianceState extends Equatable {
         selectedReciptType,
         reciptTypesStatus,
         reciptLists,
-        showEksanId
+        showEksanId,
+        applicantNotes
       ];
 }

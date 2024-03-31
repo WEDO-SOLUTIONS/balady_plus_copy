@@ -54,31 +54,34 @@ class SixthComplianceSubmitStep extends StatelessWidget {
                 SizedBox(
                   height: 32,
                 ),
-                CustomTextWidget(
-                  'prevoius_notes'.tr(),
-                  fontSize: 14,
-                  fontWeight: AppFontWeight.bold,
-                  fontColor: AppColor.blackModern800Light,
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                Container(
-                  child: MediaQuery.removePadding(
-                    context: context,
-                    removeTop: true,
-                    child: ListView.builder(
-                      itemCount: state.requestDetails?.applicantNotes?.length,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (ctx, index) {
-                        return NoteItemWidget(
-                            item:
-                                state.requestDetails!.applicantNotes![index]!);
-                      },
-                    ),
+                if ((state.requestDetails?.applicantNotes?.length ?? 0) >
+                    0) ...[
+                  CustomTextWidget(
+                    'prevoius_notes'.tr(),
+                    fontSize: 14,
+                    fontWeight: AppFontWeight.bold,
+                    fontColor: AppColor.blackModern800Light,
                   ),
-                ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Container(
+                    child: MediaQuery.removePadding(
+                      context: context,
+                      removeTop: true,
+                      child: ListView.builder(
+                        itemCount: state.requestDetails?.applicantNotes?.length,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (ctx, index) {
+                          return NoteItemWidget(
+                              item: state
+                                  .requestDetails!.applicantNotes![index]!);
+                        },
+                      ),
+                    ),
+                  )
+                ],
                 SizedBox(
                   height: 32,
                 ),

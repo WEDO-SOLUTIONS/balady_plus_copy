@@ -37,12 +37,12 @@ class FourthStepCompliance extends StatelessWidget {
                 ),
                 ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: state.requestDetails?.emtithalItems?.length ?? 0,
                   itemBuilder: (ctx, index) {
                     return ComplianceClauseSubmitItem(
-                      isReturned: state.requestDetails!
-                              .isRequestReturnedFromMunicipality ??
+                      isReturned: state.requestDetails
+                              ?.isRequestReturnedFromMunicipality ??
                           false,
                       item: state.requestDetails!.emtithalItems![index],
                       index: index,

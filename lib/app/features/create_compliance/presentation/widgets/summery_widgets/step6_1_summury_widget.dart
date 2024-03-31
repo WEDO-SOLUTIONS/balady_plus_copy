@@ -25,7 +25,7 @@ class Step6_1SummeryWidget extends StatelessWidget {
       builder: (context, state) {
         return CustomExpansionPanelWidget(
           title: state.showDetails == true
-              ? ("replies_on_request").tr()
+              ? ("notes_on_the_requests").tr()
               : "notes".tr(),
           leading: SvgPicture.asset(IconPath.vdSummuryDesc),
           children: [

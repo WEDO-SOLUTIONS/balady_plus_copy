@@ -70,7 +70,6 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         gisResponse: success,
         errorMessage: "",
       ));
-
       if (e.popPage) {
         if (success.amanaCode?.startsWith("004") ?? false) {
           showCustomDialog(ComplianceMunicipalityMSRDialog());

@@ -6,6 +6,7 @@ import 'package:balady_plus/app/features/create_compliance/presentation/widgets/
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:collection/collection.dart';
 
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/common_functions.dart';
@@ -46,15 +47,23 @@ class ComplianceClauseSubmitItem extends StatefulWidget {
 
 class _ComplianceClauseSubmitItemState
     extends State<ComplianceClauseSubmitItem> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _isExpanded = (widget.item.edit == true);
+  }
+
   bool _isExpanded = false;
   @override
   Widget build(BuildContext context) {
-    ItemData? lastNote = widget.item.itemData
-        ?.firstWhere((element) => element.isLastNote == true);
+    ItemData? lastNote = widget.item.itemData?.firstOrNull;
     return Container(
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
+          color: widget.item.edit != true ? AppColor.blackModern200Light : null,
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           border: Border.all(color: const Color(0xffD4D4D8), width: 1)),
       child: Column(
@@ -137,8 +146,10 @@ class _ComplianceClauseSubmitItemState
                         height: MediaQuery.of(context).size.height * 0.05,
                         titleStyle: AppStyle.complianceClausesOptionStyle,
                         onChanged: (int val) {
-                          widget.item.submitterAnswer = 1;
-                          widget.onChange(widget.item);
+                          if (widget.item.edit == true) {
+                            widget.item.submitterAnswer = 1;
+                            widget.onChange(widget.item);
+                          }
                         },
                       ),
                     ),
@@ -153,8 +164,10 @@ class _ComplianceClauseSubmitItemState
                         height: MediaQuery.of(context).size.height * 0.05,
                         titleStyle: AppStyle.complianceClausesOptionStyle,
                         onChanged: (int val) {
-                          widget.item.submitterAnswer = 0;
-                          widget.onChange(widget.item);
+                          if (widget.item.edit == true) {
+                            widget.item.submitterAnswer = 0;
+                            widget.onChange(widget.item);
+                          }
                         },
                       ),
                     ),
@@ -170,8 +183,10 @@ class _ComplianceClauseSubmitItemState
                           height: MediaQuery.of(context).size.height * 0.05,
                           titleStyle: AppStyle.complianceClausesOptionStyle,
                           onChanged: (int val) {
-                            widget.item.submitterAnswer = 2;
-                            widget.onChange(widget.item);
+                            if (widget.item.edit == true) {
+                              widget.item.submitterAnswer = 2;
+                              widget.onChange(widget.item);
+                            }
                           },
                         ),
                       ),
@@ -180,8 +195,20 @@ class _ComplianceClauseSubmitItemState
                 const SizedBox(
                   height: 16,
                 ),
-                if ((widget.item
-                    .showNoteAndAttachments(widget.isReturned))) ...[
+                if ((widget.item.showNoteAndAttachments(widget.isReturned)) &&
+                    widget.item.edit == true) ...[
+                  CustomTextFieldWidget(
+                    label: "notes".tr(),
+                    initialValue: widget.item.notes,
+                    onChanged: (String t) {
+                      widget.item.notes = t;
+                      widget.onChange(widget.item);
+                    },
+                    maxLines: 5,
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
                   if (widget.item.file == null)
                     ElevatedIconButtonWidget.upload(
                       onPressed: () async {
@@ -213,28 +240,25 @@ class _ComplianceClauseSubmitItemState
                   const SizedBox(
                     height: 16,
                   ),
-                  CustomTextFieldWidget(
-                    label: "notes".tr(),
-                    initialValue: widget.item.notes,
-                    onChanged: (String t) {
-                      widget.item.notes = t;
-                    },
-                    maxLines: 5,
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  )
                 ],
                 ElevatedButtonWidget.custom(
-                  isDisabled: widget.item
-                          .showNoteAndAttachments(widget.isReturned) &&
-                      (widget.item.isAttachmentRequired(widget.isReturned) ||
-                          widget.item.isNoteRequired(widget.isReturned)),
-                  text: widget.item.edit == true
+                  isDisabled: widget.item.submitterAnswer == null ||
+                      widget.item.showNoteAndAttachments(widget.isReturned) &&
+                          ((widget.item.isAttachmentRequired(
+                                      widget.isReturned) &&
+                                  widget.item.file == null) ||
+                              (widget.item.isNoteRequired(widget.isReturned)) &&
+                                  (widget.item.notes?.isEmpty ?? true)),
+                  text: widget.item.edit != true
                       ? "complaince_edit_clause".tr()
                       : "complaince_save_clause".tr(),
                   onPressed: () {
-                    widget.onSubmit(widget.item);
+                    if (widget.item.edit == true)
+                      widget.onSubmit(widget.item);
+                    else {
+                      widget.item.edit = true;
+                      widget.onChange(widget.item);
+                    }
                   },
                 ),
                 if (widget.item.itemData?.isNotEmpty ?? false) ...[
@@ -328,10 +352,10 @@ class ComplianceClauseNotesItem extends StatelessWidget {
               )
             ],
           ),
-          if (item.attachment?.attachUrl != null)
+          if (item.attachment?.downloadPath != null)
             ComplainceAttachment(
-              url: item.attachment?.attachUrl?.toString() ?? "",
-              name: item.attachment?.name.toString(),
+              url: item.attachment?.downloadPath?.toString() ?? "",
+              name: item.attachment?.dmsAttachName.toString(),
             ),
         ],
       ),

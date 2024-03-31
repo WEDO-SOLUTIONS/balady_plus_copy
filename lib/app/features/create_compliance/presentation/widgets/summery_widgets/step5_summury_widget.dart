@@ -19,6 +19,7 @@ import '../../dialogs/complince_notes_dialog.dart';
 import '../compliance_clauses_submit_item_widget.dart';
 import '../compliance_submission/sixth_submit_step.dart';
 import 'field_data.dart';
+import 'package:collection/collection.dart';
 
 class Step5SummeryWidget extends StatelessWidget {
   const Step5SummeryWidget({super.key});
@@ -61,8 +62,8 @@ class ComplianceFieldData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ItemData? lastNote =
-        item.itemData?.firstWhere((element) => element.isLastNote == true);
+    ItemData? lastNote = item.itemData
+        ?.firstWhereOrNull((element) => element.isLastNote == true);
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(

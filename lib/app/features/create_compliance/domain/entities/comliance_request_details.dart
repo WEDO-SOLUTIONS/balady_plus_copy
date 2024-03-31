@@ -5,6 +5,8 @@ import '../../../_shared_feature_/data/entities/file_data_item.dart';
 import '../../../vd/domain/entities/gis/gis_params.dart';
 import 'dart:convert' as c;
 
+import '../../data/models/comliance_request_details_model.dart';
+
 class ComplianceRequestDetails extends Equatable {
   final int? requestId;
   final String? requestNote;
@@ -223,7 +225,6 @@ class EmtithalItem {
       }
     } else {
       if (submitterAnswer == 2) return true;
-      return false;
     }
     return false;
   }
@@ -237,6 +238,11 @@ class EmtithalItem {
     } else {
       if (submitterAnswer == 2) return true;
     }
+    return false;
+  }
+
+  bool showEdit(bool isReturned) {
+    if (isReturned && empAnswer == 1) return true;
     return false;
   }
 }
@@ -551,21 +557,24 @@ class AttachmentDto {
   final int? maxSize;
   final dynamic attachDescription;
   final dynamic fileName;
+  final String? fileKey;
+  final String? downloadPath;
 
-  AttachmentDto({
-    this.id,
-    this.name,
-    this.allowedFilesExtension,
-    this.isMandatory,
-    this.attached,
-    this.approved,
-    this.attachUrl,
-    this.notes,
-    this.updatable,
-    this.maxSize,
-    this.attachDescription,
-    this.fileName,
-  });
+  AttachmentDto(
+      {this.id,
+      this.name,
+      this.allowedFilesExtension,
+      this.isMandatory,
+      this.attached,
+      this.approved,
+      this.attachUrl,
+      this.notes,
+      this.updatable,
+      this.maxSize,
+      this.attachDescription,
+      this.fileName,
+      this.fileKey,
+      this.downloadPath});
 }
 
 class ItemData {
@@ -576,7 +585,7 @@ class ItemData {
   final String? statusName;
   final bool? isBaladiaSource;
   final String? date;
-  final AttachmentDto? attachment;
+  final ItemDataAttachment? attachment;
 
   ItemData({
     this.note,

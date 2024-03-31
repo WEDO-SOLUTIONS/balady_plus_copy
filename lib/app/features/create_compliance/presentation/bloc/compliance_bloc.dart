@@ -367,7 +367,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
           isLicense: state.documentTypeSelection == 1,
           guid: state.gisResponse?.guid,
           requsestId: state.requestId,
-          isEmtithalMand: state.gisResponse?.isEmtithalMand);
+          isEmtithalMand: state.gisResponse?.targetBuilding);
     }
     final failOrSuccess = await _saveLocationCompliance(request);
 
@@ -1017,14 +1017,18 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     } else if (state.currentStep == 3) {
       add(SaveLocationData(save: e.save));
     } else if (state.currentStep == 4 && state.benificiaryTypeSelection == 1) {
-      bool valid = state.requestDetails?.emtithalItems?.firstWhereOrNull(
-              (element) => element.submitterAnswer == null) ==
-          null;
-      if (valid)
-        add(SaveImtethalItemsEvent(save: e.save));
-      else {
-        CommonFunctions.showError("please_select_all_complaince_terms".tr());
-      }
+      bool valid =
+          state.requestDetails?.emtithalItems?.firstWhereOrNull((element) {
+                print(element.submitterAnswer);
+                return element.submitterAnswer == null;
+              }) ==
+              null;
+      add(SaveImtethalItemsEvent(save: e.save));
+      //if (valid)
+      //  add(SaveImtethalItemsEvent(save: e.save));
+      /// else {
+      //   CommonFunctions.showError("please_select_all_complaince_terms".tr());
+      //  }
     } else if (state.currentStep == 4 && state.benificiaryTypeSelection == 2) {
       add(SaveContractEvent());
     } else {
@@ -1141,47 +1145,71 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       final failOrSuccess =
           await _uploadClauseAttachment((e.item.file!, state.requestId!));
 
-      failOrSuccess.fold((l) {
+      await failOrSuccess.fold((l) {
         emitter(state.copyWith(
           errorMessage: (l as ServerFailure).errorMessage,
           status: BlocStatus.failure,
         ));
       }, (r) async {
+        emitter(state.copyWith(status: BlocStatus.performing));
+
+        ComplianceRequestDetails? details = state.requestDetails;
+        details?.emtithalItems?[e.index].file = details
+            .emtithalItems?[e.index].file
+            ?.copyWith(isUploaded: true, fileKey: r.fileKey);
+
         emitter(state.copyWith(
-          errorMessage: "",
-          status: BlocStatus.success,
-        ));
+            errorMessage: "",
+            status: BlocStatus.success,
+            requestDetails: details));
         final failOrSuccess = await _saveComplianceCertificateItem(
             ComplianceCertificateItemRequest(
           requestId: state.requestId,
-          attachmentId: r.fileKey ?? e.item.attachmentDto?.id,
+          attachmentId: e.item.showNoteAndAttachments(
+                  details?.isRequestReturnedFromMunicipality ?? false)
+              ? r.fileKey ?? e.item.file?.fileKey
+              : null,
           itemAnswer: e.item.submitterAnswer,
           itemId: e.item.itemId,
-          note: e.item.notes,
+          note: e.item.showNoteAndAttachments(
+                  details?.isRequestReturnedFromMunicipality ?? false)
+              ? e.item.notes
+              : null,
         ));
 
-        failOrSuccess.fold((l) {
+        await failOrSuccess.fold((l) {
           emitter(state.copyWith(
             errorMessage: (l as ServerFailure).errorMessage,
             status: BlocStatus.failure,
           ));
         }, (r) async {
           emitter(state.copyWith(status: BlocStatus.performing));
+
           ComplianceRequestDetails? details = state.requestDetails;
-          details?.emtithalItems?[e.index].edit = true;
+
+          details?.emtithalItems?[e.index].edit = false;
           emitter(state.copyWith(
-              status: BlocStatus.success, requestDetails: details));
+              errorMessage: "",
+              status: BlocStatus.success,
+              requestDetails: details));
         });
       });
     } else {
-      final failOrSuccess =
-          await _saveComplianceCertificateItem(ComplianceCertificateItemRequest(
-        requestId: state.requestId,
-        attachmentId: null,
-        itemAnswer: e.item.submitterAnswer,
-        itemId: e.item.itemId,
-        note: e.item.notes,
-      ));
+      final failOrSuccess = await _saveComplianceCertificateItem(
+          ComplianceCertificateItemRequest(
+              requestId: state.requestId,
+              attachmentId: e.item.showNoteAndAttachments(
+                      state.requestDetails?.isRequestReturnedFromMunicipality ??
+                          false)
+                  ? e.item.file?.fileKey
+                  : null,
+              itemAnswer: e.item.submitterAnswer,
+              itemId: e.item.itemId,
+              note: e.item.showNoteAndAttachments(
+                      state.requestDetails?.isRequestReturnedFromMunicipality ??
+                          false)
+                  ? e.item.notes
+                  : null));
 
       failOrSuccess.fold((l) {
         emitter(state.copyWith(
@@ -1191,9 +1219,11 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       }, (r) async {
         emitter(state.copyWith(status: BlocStatus.performing));
         ComplianceRequestDetails? details = state.requestDetails;
-        details?.emtithalItems?[e.index].edit = true;
+        details?.emtithalItems?[e.index].edit = false;
         emitter(state.copyWith(
-            status: BlocStatus.success, requestDetails: details));
+            errorMessage: "",
+            status: BlocStatus.success,
+            requestDetails: details));
       });
     }
   }
