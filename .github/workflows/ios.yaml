@@ -95,6 +95,69 @@ jobs:
           unzip DGisFullSDK.zip -d ios/_DELETE_ME_
           rm DGisFullSDK.zip
 
+      - name: Setup keychain
+        uses: TLizer/action-with-post-step@v1.1.0
+        with:
+          main: |
+            KC="$HOME/Library/Keychains/build.keychain"
+            KC_PASS='build-pass'
+            LKC='login.keychain'
+            TMP="$PWD/TMP"
+            KEY="$TMP/balady.p12"
+            CERT="$TMP/balady.cer"
+            PROFILE="$TMP/balady.mobileprovision"
+            PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning Profiles/"
+            APPLE_CERTS=(
+                "AppleWWDRCAG2.cer"
+                "AppleWWDRCAG3.cer"
+                "AppleWWDRCAG4.cer"
+                "AppleWWDRCAG5.cer"
+                "AppleWWDRCAG6.cer"
+                "AppleWWDRCAG7.cer"
+                "AppleWWDRCAG8.cer"
+                "DeveloperIDG2CA.cer"
+            )
+
+            # Presetup
+            mkdir -p "$PROFILES_DIR"
+            mkdir -p $TMP
+            echo "$FILE_BALADY_CER" | base64 -d -o $CERT
+            echo "$FILE_BALADY_P12" | base64 -d -o $KEY
+            echo "$FILE_BALADY_MOBILEPROVISION" | base64 -d -o $PROFILE
+
+            # Setup keychain
+            security create-keychain -p $KC_PASS $KC
+            security list-keychains -d user -s $KC
+
+            curl https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -o $TMP/AppleWWDRCA.cer
+            security import $TMP/AppleWWDRCA.cer -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+
+            for APPLE_CERT in ${APPLE_CERTS[@]}; do
+                curl https://www.apple.com/certificateauthority/$APPLE_CERT -o $TMP/$APPLE_CERT
+                security import $TMP/$APPLE_CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+            done
+
+            security import $KEY -k $KC -t priv -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+            security import $CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild || true
+
+            security default-keychain -d user -s $KC
+            security set-keychain-settings $KC
+            security set-key-partition-list -S apple-tool:,apple: -k $KC_PASS $KC
+            security unlock-keychain -p $KC_PASS $KC
+
+            # Install profile
+            security cms -D -i $PROFILE -k $KC > $TMP/provision.plist
+            UUID=`/usr/libexec/PlistBuddy -c 'print UUID' $TMP/provision.plist`
+
+            cp $PROFILE "$PROFILES_DIR"$UUID.mobileprovision
+          post: |
+            security list-keychains -d user -s $LKC
+            security default-keychain -d user -s $LKC
+            security delete-keychain $KC
+
+            rm "$PROFILES_DIR"$UUID.mobileprovision
+            rm -rf $TMP
+
       - name: Build app
         env:
           LANG: en_US.UTF-8
@@ -129,66 +192,6 @@ jobs:
           git apply mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not apply sdk key patch'
           git apply mapness/scripts/icon.patch || print_style '' 'red' 'could not apply ios icon patch'
 
-          KC="$HOME/Library/Keychains/build.keychain"
-          KC_PASS='build-pass'
-          LKC='login.keychain'
-          TMP="$PWD/TMP"
-          KEY="$TMP/balady.p12"
-          CERT="$TMP/balady.cer"
-          PROFILE="$TMP/balady.mobileprovision"
-          PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning Profiles/"
-          APPLE_CERTS=(
-              "AppleWWDRCAG2.cer"
-              "AppleWWDRCAG3.cer"
-              "AppleWWDRCAG4.cer"
-              "AppleWWDRCAG5.cer"
-              "AppleWWDRCAG6.cer"
-              "AppleWWDRCAG7.cer"
-              "AppleWWDRCAG8.cer"
-              "DeveloperIDG2CA.cer"
-          )
-
-          # Presetup
-          mkdir -p "$PROFILES_DIR"
-          mkdir -p $TMP
-          echo "$FILE_BALADY_CER" | base64 -d -o $CERT
-          echo "$FILE_BALADY_P12" | base64 -d -o $KEY
-          echo "$FILE_BALADY_MOBILEPROVISION" | base64 -d -o $PROFILE
-
-          # Setup keychain
-          security create-keychain -p $KC_PASS $KC
-          security list-keychains -d user -s $KC
-
-          curl https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -o $TMP/AppleWWDRCA.cer
-          security import $TMP/AppleWWDRCA.cer -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
-
-          for APPLE_CERT in ${APPLE_CERTS[@]}; do
-              curl https://www.apple.com/certificateauthority/$APPLE_CERT -o $TMP/$APPLE_CERT
-              security import $TMP/$APPLE_CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
-          done
-
-          security import $KEY -k $KC -t priv -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
-          security import $CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild || true
-
-          security default-keychain -d user -s $KC
-          security set-keychain-settings $KC
-          security set-key-partition-list -S apple-tool:,apple: -k $KC_PASS $KC
-          security unlock-keychain -p $KC_PASS $KC
-
-          # Install profile
-          security cms -D -i $PROFILE -k $KC > $TMP/provision.plist
-          UUID=`/usr/libexec/PlistBuddy -c 'print UUID' $TMP/provision.plist`
-
-          cp $PROFILE "$PROFILES_DIR"$UUID.mobileprovision
-
           # Build
           fvm flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_dev.dart --flavor dev
           curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImEuc3RyaXpobmV2QHVyYmkuYWUifQ.DgmqmgZ-DeQfBt0R36s7nftEkk-XnFr6VVi2syD-jTE" -X PUT -F file=@build/ios/ipa/balady_plus.ipa https://baladyapp-builds.urbi.ae/builds/${CI_ARTIFACT_SUFFIX}
-
-          # Cleanup
-          security list-keychains -d user -s $LKC
-          security default-keychain -d user -s $LKC
-          security delete-keychain $KC
-
-          rm "$PROFILES_DIR"$UUID.mobileprovision
-          rm -rf $TMP
