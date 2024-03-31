@@ -108,7 +108,6 @@ jobs:
           KEY="$RUNNER_TEMP/balady.p12"
           CERT="$RUNNER_TEMP/balady.cer"
           PROFILE="$RUNNER_TEMP/balady.mobileprovision"
-          PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning Profiles/"
           APPLE_CERTS=(
               "AppleWWDRCAG2.cer"
               "AppleWWDRCAG3.cer"
@@ -121,7 +120,7 @@ jobs:
           )
 
           # Presetup
-          mkdir -p "$PROFILES_DIR"
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles/
           mkdir -p $TMP
           echo "$FILE_BALADY_CER" | base64 --decode > $CERT
           echo "$FILE_BALADY_P12" | base64 --decode > $KEY
@@ -155,7 +154,7 @@ jobs:
           security cms -D -i $PROFILE -k $KC > $RUNNER_TEMP/provision.plist
           UUID=`/usr/libexec/PlistBuddy -c 'print UUID' $RUNNER_TEMP/provision.plist`
 
-          cp $PROFILE "$PROFILES_DIR"$UUID.mobileprovision
+          cp $PROFILE ~/Library/MobileDevice/Provisioning\ Profiles/$UUID.mobileprovision
 
           security find-identity -p codesigning
 
@@ -202,10 +201,9 @@ jobs:
         run: |
           LKC='login.keychain'
           KC="$RUNNER_TEMP/build.keychain"
-          PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning Profiles/"
 
           security list-keychains -d user -s $LKC
           security default-keychain -d user -s $LKC
           security delete-keychain $KC
 
-          rm -rf "$PROFILES_DIR"
+          rm -rf ~/Library/MobileDevice/Provisioning\ Profiles/
