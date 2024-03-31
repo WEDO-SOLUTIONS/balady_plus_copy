@@ -132,7 +132,7 @@ jobs:
 
             # Setup keychain
             security create-keychain -p $KC_PASS $KC
-            security list-keychains -d github -s $KC
+            security list-keychains -d user -s $KC
 
             curl https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -o $TMP/AppleWWDRCA.cer
             security import $TMP/AppleWWDRCA.cer -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
@@ -145,7 +145,7 @@ jobs:
             security import $KEY -k $KC -t priv -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
             security import $CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild || true
 
-            security default-keychain -d github -s $KC
+            security default-keychain -d user -s $KC
             security set-keychain-settings $KC
             security unlock-keychain -p $KC_PASS $KC
             security set-key-partition-list -S apple-tool:,apple: -k $KC_PASS $KC
@@ -163,8 +163,8 @@ jobs:
             TMP="$PWD/TMP"
             PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning Profiles/"
 
-            security list-keychains -d github -s $LKC
-            security default-keychain -d github -s $LKC
+            security list-keychains -d user -s $LKC
+            security default-keychain -d user -s $LKC
             security delete-keychain $KC
 
             rm -rf "$PROFILES_DIR"
