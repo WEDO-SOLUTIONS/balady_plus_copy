@@ -4132,6 +4132,8 @@
   "delete_all": "Delete all",
   "locale": "en",
   "no_notifications": "",
+  "notification_read": "read",
+  "notification_unread": "unread",
 
   "commercial_licenseـquery_title": "Insert the following",
   "submitter_compliance_text":"Compliance status of the Submitter: ",

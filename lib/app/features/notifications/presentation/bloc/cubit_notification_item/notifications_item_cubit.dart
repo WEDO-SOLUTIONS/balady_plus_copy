@@ -17,21 +17,14 @@ class NotificationsItemCubit extends Cubit<SucceedMessageState> {
   }) : super(SucceedMessageState(message: message));
 
   Future<void> markReadNotificationsMessages() async {
-    emit(
-      SucceedMessageState(
-        message: state.message.copyWith(
-          status: NotificationType(
-            id: 'read',
-            text: 'read',
-          ),
-        ),
-      ),
-    );
+ 
     Either<Failure, bool> failureOrSuccess =
         await itemRepository.markReadNotificationsMessages(
       request: MarkReadNotificationsParams(
-        all: true,
+        channelId: "mobile",
+        all: false,
         read: true,
+        messages: [state.message.id]
       ),
     );
     failureOrSuccess.fold(
@@ -40,8 +33,8 @@ class NotificationsItemCubit extends Cubit<SucceedMessageState> {
           SucceedMessageState(
             message: state.message.copyWith(
               status: NotificationType(
-                id: 'read',
-                text: 'read',
+                id: 'unread',
+                text: 'unread',
               ),
             ),
           ),

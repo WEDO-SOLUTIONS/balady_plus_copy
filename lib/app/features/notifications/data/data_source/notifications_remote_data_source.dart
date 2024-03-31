@@ -158,6 +158,9 @@ class NotificationRemoteDataSourceImplementation
     var response;
     try {
       dataHeaders['x-correlation-id'] = CommonFunctions.generateGUID();
+      dataHeaders['x-platform-id'] = "super-app";
+      dataHeaders['x-channel-id'] = "mobile";
+      dataHeaders['x-actor-type-id'] = "user";
       response = await webService.dio.put(
         ApiUrl.notificationsMarkRead,
         data: request.toJson(),
