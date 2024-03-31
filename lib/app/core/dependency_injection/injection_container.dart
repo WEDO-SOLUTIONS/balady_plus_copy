@@ -266,12 +266,11 @@ void initialize() {
 
   //transfer request ownership
   sl.registerLazySingleton<RequestOwnershipTransferDetailsRemoteDataSource>(
-          () => RequestOwnershipTransferRemoteDataSourceImplementation(
+      () => RequestOwnershipTransferRemoteDataSourceImplementation(
           webService: sl()));
   sl.registerLazySingleton<RequestOwnershipTransferRepositoryImplementation>(
       () => RequestOwnershipTransferRepositoryImplementation(
           remoteDataSource: sl()));
-
 
   //noification
   sl.registerLazySingleton<NotificationsRemoteDataSource>(

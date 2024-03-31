@@ -115,6 +115,7 @@ class _AppWidgetState extends State<AppWidget> {
       ),
     );
   }
+
   void hideKeyboard(BuildContext context) {
     FocusScopeNode currentFocus = FocusScope.of(context);
     if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {

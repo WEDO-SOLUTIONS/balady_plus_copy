@@ -46,7 +46,7 @@ class SubmitRatingCancelScreen extends StatelessWidget {
                     Card(
                       shape: const RoundedRectangleBorder(
                         borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(40)),
+                            BorderRadius.vertical(top: Radius.circular(40)),
                       ),
                       margin: EdgeInsets.zero,
                       child: Selector<SubmitRatingViewModel, int?>(

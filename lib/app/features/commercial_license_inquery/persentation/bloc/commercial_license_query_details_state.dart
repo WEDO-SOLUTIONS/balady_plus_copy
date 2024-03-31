@@ -1,13 +1,10 @@
 part of 'commercial_license_query_details_cubit.dart';
 
-
-
 class CommercialLicenseQueryDetailsState extends Equatable {
   final BlocRequestStatus status;
   final CommercialLicenseDataModel? commercialLicenceQueryDetails;
   //error message
   final String? errorMessage;
-
 
   const CommercialLicenseQueryDetailsState({
     this.status = BlocRequestStatus.initial,
@@ -24,21 +21,16 @@ class CommercialLicenseQueryDetailsState extends Equatable {
   }) {
     return CommercialLicenseQueryDetailsState(
       status: status ?? this.status,
-      commercialLicenceQueryDetails: commercialLicenceDetails ?? this.commercialLicenceQueryDetails,
+      commercialLicenceQueryDetails:
+          commercialLicenceDetails ?? this.commercialLicenceQueryDetails,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 
   @override
   List<Object?> get props => [
-    status,
-    commercialLicenceQueryDetails,
-    errorMessage,
-  ];
-
-
-
-
-
-
+        status,
+        commercialLicenceQueryDetails,
+        errorMessage,
+      ];
 }

@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
-
-
 //CommercialLicensePermitsWidget :
 //import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/commercial_license_permits_widget.dart';
 // need Set One Widget to the list of Permits

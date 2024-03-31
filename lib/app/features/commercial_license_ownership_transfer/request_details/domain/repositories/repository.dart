@@ -3,19 +3,18 @@ import 'package:balady_plus/app/features/commercial_license_ownership_transfer/r
 import 'package:balady_plus/app/features/quran/presentation/bloc/book_mark_bloc/book_mark_bloc.dart';
 import 'package:dartz/dartz.dart';
 
-
-
 abstract class RequestOwnershipTransferDetailsRepository {
-  Future<Either<Failure, CommercialLicenceDetails>> getRequestOwnershipTransferDetails(
-      String commercialLicenseDetailsId,
+  Future<Either<Failure, CommercialLicenceDetails>>
+      getRequestOwnershipTransferDetails(
+    String commercialLicenseDetailsId,
   );
 }
-abstract class AcceptOrRejectRequestOwnershipTransferRepository {
 
+abstract class AcceptOrRejectRequestOwnershipTransferRepository {
   Future<Either<Failure, bool>> acceptCommercialRequestTransfer(
-      String commercialLicenseDetailsId,
+    String commercialLicenseDetailsId,
   );
   Future<Either<Failure, bool>> rejectCommercialRequestTransfer(
-      String commercialLicenseDetailsId,
+    String commercialLicenseDetailsId,
   );
 }

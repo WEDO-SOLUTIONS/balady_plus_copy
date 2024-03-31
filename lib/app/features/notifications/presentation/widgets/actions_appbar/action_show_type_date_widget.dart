@@ -13,7 +13,7 @@ class ActionShowTypeDateWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     NotificationsListCubit cubit = context.watch<NotificationsListCubit>();
     return AppPopupMenu<int>(
-      menuItems:  [
+      menuItems: [
         PopupMenuItem(
           value: 1,
           child: Row(
@@ -40,7 +40,7 @@ class ActionShowTypeDateWidget extends StatelessWidget {
       initialValue: 0,
       onSelected: (int value) {
         print(value);
-        switch(value) {
+        switch (value) {
           case 1:
             cubit.markReadNotificationsMessages();
             break;
@@ -49,16 +49,13 @@ class ActionShowTypeDateWidget extends StatelessWidget {
             break;
         }
       },
-      onCanceled: () {
-
-      },
+      onCanceled: () {},
       tooltip: "",
       elevation: 12,
       icon: SvgPicture.asset(IconPath.dotsVertical),
       offset: const Offset(0, 65),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-
       ),
       color: Colors.white,
     );

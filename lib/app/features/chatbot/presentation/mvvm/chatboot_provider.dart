@@ -15,14 +15,13 @@ class ChatBotProvider extends BaseViewModel {
 
   ScrollController scrollController = ScrollController();
 
-
   ValueNotifier<List<MessageChatBotProvider>> chatBotMessage =
       ValueNotifier<List<MessageChatBotProvider>>([]);
 
   bool isEnabled = false;
   bool isLoadingEnabled = false;
 
-  ChatBotProvider(this.repository, {required  this.sectionId}) {
+  ChatBotProvider(this.repository, {required this.sectionId}) {
     chatBotIsEnabled();
   }
 
@@ -50,9 +49,10 @@ class ChatBotProvider extends BaseViewModel {
           notifyListeners();
         }
 
-        if (scrollController.position.maxScrollExtent > scrollController.offset ) {
+        if (scrollController.position.maxScrollExtent >
+            scrollController.offset) {
           scrollController.animateTo(
-            scrollController.position.maxScrollExtent + 100 ,
+            scrollController.position.maxScrollExtent + 100,
             curve: Curves.linear,
             duration: const Duration(milliseconds: 600),
           );
@@ -82,7 +82,8 @@ class ChatBotProvider extends BaseViewModel {
     isLoadingEnabled = true;
     notifyListeners();
     try {
-      Either<Failure, bool> response = await repository.repository.chatBotIsEnabled();
+      Either<Failure, bool> response =
+          await repository.repository.chatBotIsEnabled();
       response.fold(
         (error) {
           isLoadingEnabled = false;
@@ -93,7 +94,7 @@ class ChatBotProvider extends BaseViewModel {
           isLoadingEnabled = false;
           this.isEnabled = isEnabled;
           notifyListeners();
-          },
+        },
       );
       return;
     } catch (exception) {

@@ -3,9 +3,7 @@ import 'package:balady_plus/app/features/vd/vd_exports.dart' show CategoryItem;
 import '../../../../../core/utils/enums/enums.dart';
 
 class CameraParamsPage {
-
-
-    CategoryItem? selectedCategory;
+  CategoryItem? selectedCategory;
   bool isFromHome;
   String? address;
   double? lat;

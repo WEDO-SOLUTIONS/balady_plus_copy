@@ -801,12 +801,19 @@ class ApiUrl {
 
   static String getOwnershipCommercialRequestDetails(int requestId) =>
       '/v1/superapp-commercial-ownership-services/request/$requestId';
-      
+
   static String acceptCommercialRequestTransfer(int requestId) =>
       '/v1/superapp-commercial-ownership-services/transfer/accept/by-new-owner/$requestId';
 
   static String rejectCommercialRequestTransfer(int requestId) =>
       '/v1/superapp-commercial-ownership-services/transfer/reject/by-new-owner/$requestId';
+
+  static String getRequestPermits(int requestId) =>
+      '/v1/superapp-commercial-ownership-services/transfer/selected/permits/$requestId';
+  static String saveSelectedRequestPermits(int requestId) =>
+      '/v1/superapp-commercial-ownership-services/transfer/selected-permits/by-new-owner/$requestId';
+  static String transferShopInfo(int requestId) =>
+      '/v1/superapp-commercial-ownership-services/transfer/shop-info/$requestId';
 
   static String getLicensePermits(String licenseNumber) =>
       '/v1/superapp-commercial-ownership-services/license/permits/$licenseNumber';
@@ -814,10 +821,10 @@ class ApiUrl {
   static String validateNewOwner(String licenseNumber, String crNumber) =>
       '/v1/superapp-commercial-ownership-services/transfer/validate-new-owner/$licenseNumber?crNumber=$crNumber';
 
-  static String  validateLicenseTrnasfer (String licenseNumber) =>
+  static String validateLicenseTrnasfer(String licenseNumber) =>
       "/v1/superapp-commercial-ownership-services/transfer/validate-license/$licenseNumber";
 
-  static String  sendToNewOwner (String licenseNumber) =>
+  static String sendToNewOwner(String licenseNumber) =>
       "/v1/superapp-commercial-ownership-services/transfer/send-to-new-owner/$licenseNumber";
 
   //! Balady Calednar

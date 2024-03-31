@@ -25,6 +25,4 @@ class GeneralKey {
 
   static const String appId = 'BaladySuperApp';
   static const String typeId = 'Mobile';
-
-
 }

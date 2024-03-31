@@ -30,13 +30,11 @@ class _ConstructionLicenseInqueryDetailsState
   void initState() {
     super.initState();
 
-
     Future.microtask(() {
       setState(() {
         licenseNumber = "${bloc!.licenseNumber}#";
       });
-      bloc!.getLicenseQueryDetails(
-          bloc!.licenseNumber,bloc!.licenseDate);
+      bloc!.getLicenseQueryDetails(bloc!.licenseNumber, bloc!.licenseDate);
     });
   }
 
@@ -62,8 +60,7 @@ class _ConstructionLicenseInqueryDetailsState
                   width: 10,
                 )),
                 TextSpan(
-                    text: licenseNumber,
-                    style: AppStyle.listTitleTextStyle),
+                    text: licenseNumber, style: AppStyle.listTitleTextStyle),
               ],
             ),
           ),
@@ -75,7 +72,6 @@ class _ConstructionLicenseInqueryDetailsState
       ),
     );
   }
-
 
   Widget getBody() {
     return BlocConsumer<ConstructionLicenseInqueryDetailsCubit,
@@ -97,12 +93,10 @@ class _ConstructionLicenseInqueryDetailsState
             ),
           );
         } else if (state.licenceQueryDetails != null) {
-          final licenceQueryDetails =
-          state.licenceQueryDetails!;
+          final licenceQueryDetails = state.licenceQueryDetails!;
           return SingleChildScrollView(
             child: Column(
               children: [
-
                 ExpandableCard(
                   title: 'license_details'.tr(),
                   icon: IconPath.editIcon,
@@ -110,28 +104,24 @@ class _ConstructionLicenseInqueryDetailsState
                   children: [
                     CardParameter(
                       title: 'unified_license_number'.tr(),
-                      value: licenceQueryDetails.licenseId
-                          .toString() ??
-                          '',
+                      value: licenceQueryDetails.licenseId.toString() ?? '',
                       bgColor: AppColor.mystic,
                     ),
-                    licenceQueryDetails.oldLicenseId != null?
-                    CardParameter(
-                      title: 'license_number_municipality'.tr(),
-                      value: licenceQueryDetails.oldLicenseId ?? '',
-                      bgColor: AppColor.mystic,
-                    ):Container(),
+                    licenceQueryDetails.oldLicenseId != null
+                        ? CardParameter(
+                            title: 'license_number_municipality'.tr(),
+                            value: licenceQueryDetails.oldLicenseId ?? '',
+                            bgColor: AppColor.mystic,
+                          )
+                        : Container(),
                     CardParameter(
                       title: 'license_issue_date'.tr(),
                       value: licenceQueryDetails.licenseIssueDateDesc ?? "",
                       bgColor: AppColor.mystic,
                     ),
-
-
                     CardParameter(
                       title: 'license_status'.tr(),
-                      value:
-                      licenceQueryDetails.statusName ?? '',
+                      value: licenceQueryDetails.statusName ?? '',
                       bgColor: AppColor.mystic,
                     ),
                     CardParameter(
@@ -139,218 +129,193 @@ class _ConstructionLicenseInqueryDetailsState
                       value: licenceQueryDetails.buildingTypeName ?? '',
                       bgColor: AppColor.mystic,
                     ),
-
-                    licenceQueryDetails
-                        .surveyReport != null ?
-                    CardParameter(
-                      // from whats
-                      title: 'compliance_main_usage'.tr(),
-                      value: licenceQueryDetails
-                          .surveyReport!.mainBuildingClassName!
-                          .toString(),
-                      bgColor: AppColor.mystic,
-                    ):Container(),
-                    licenceQueryDetails
-                        .surveyReport != null ?
-                    CardParameter(
-                      // from whats
-                      title: 'compliance_sub_usage'.tr(),
-                      value: licenceQueryDetails
-                          .surveyReport!.subBuildingClassName
-                          .toString(),
-                      bgColor: AppColor.mystic,
-                    ):Container(),
-
+                    licenceQueryDetails.surveyReport != null
+                        ? CardParameter(
+                            // from whats
+                            title: 'compliance_main_usage'.tr(),
+                            value: licenceQueryDetails
+                                .surveyReport!.mainBuildingClassName!
+                                .toString(),
+                            bgColor: AppColor.mystic,
+                          )
+                        : Container(),
+                    licenceQueryDetails.surveyReport != null
+                        ? CardParameter(
+                            // from whats
+                            title: 'compliance_sub_usage'.tr(),
+                            value: licenceQueryDetails
+                                .surveyReport!.subBuildingClassName
+                                .toString(),
+                            bgColor: AppColor.mystic,
+                          )
+                        : Container(),
                   ],
                 ),
-                licenceQueryDetails
-                    .surveyReport != null ?
-                ExpandableCard(
-                  title: 'step3Title'.tr(),
-                  icon: IconPath.editIcon,
-                  children: [
-                    CardParameter(
-                      title: 'municipality'.tr(),
-                      value: licenceQueryDetails
-                          .surveyReport!.municipalityName
-                          .toString(),
-                      bgColor: AppColor.mystic,
-                    ),
-                    CardParameter(
-                      // from whats
-                      title: 'sub_municipality'.tr(),
-                      value: licenceQueryDetails
-                          .surveyReport!.subMunicipalityName
-                          .toString(),
-                      bgColor: AppColor.mystic,
-                    ),
-
-                    CardParameter(
-                      // from whats
-                      title: 'district'.tr(),
-                      value: licenceQueryDetails
-                          .surveyReport!.districtName
-                          .toString(),
-                      bgColor: AppColor.mystic,
-                    ),
-
-                    CardParameter(
-                      // from whats
-                      title: 'planNumber'.tr(),
-                      value: licenceQueryDetails
-                          .surveyReport!.mapNumber
-                          .toString(),
-                      bgColor: AppColor.mystic,
-                    ),
-
-                    CardParameter(
-                      // from whats
-                      title: 'compliance_main_usage'.tr(),
-                      value: licenceQueryDetails
-                          .surveyReport!.mainBuildingClassName
-                          .toString(),
-                      bgColor: AppColor.mystic,
-                    ),
-
-                    CardParameter(
-                      // from whats
-                      title: 'compliance_sub_usage'.tr(),
-                      value: licenceQueryDetails
-                          .surveyReport!.subBuildingClassName
-                          .toString(),
-                      bgColor: AppColor.mystic,
-                    ),
-
-
-                    const SizedBox(height: 16),
-                    licenceQueryDetails.x != null &&
-                            licenceQueryDetails.y != null
-                        ? SizedBox(
-                            height: 250,
-                            child: Stack(children: [
-                              GoogleMap(
-                                initialCameraPosition: CameraPosition(
-                                    target: LatLng(
-                                      double.parse(
-                                          licenceQueryDetails.y!),
-                                      double.parse(
-                                          licenceQueryDetails.x!),
+                licenceQueryDetails.surveyReport != null
+                    ? ExpandableCard(
+                        title: 'step3Title'.tr(),
+                        icon: IconPath.editIcon,
+                        children: [
+                          CardParameter(
+                            title: 'municipality'.tr(),
+                            value: licenceQueryDetails
+                                .surveyReport!.municipalityName
+                                .toString(),
+                            bgColor: AppColor.mystic,
+                          ),
+                          CardParameter(
+                            // from whats
+                            title: 'sub_municipality'.tr(),
+                            value: licenceQueryDetails
+                                .surveyReport!.subMunicipalityName
+                                .toString(),
+                            bgColor: AppColor.mystic,
+                          ),
+                          CardParameter(
+                            // from whats
+                            title: 'district'.tr(),
+                            value: licenceQueryDetails
+                                .surveyReport!.districtName
+                                .toString(),
+                            bgColor: AppColor.mystic,
+                          ),
+                          CardParameter(
+                            // from whats
+                            title: 'planNumber'.tr(),
+                            value: licenceQueryDetails.surveyReport!.mapNumber
+                                .toString(),
+                            bgColor: AppColor.mystic,
+                          ),
+                          CardParameter(
+                            // from whats
+                            title: 'compliance_main_usage'.tr(),
+                            value: licenceQueryDetails
+                                .surveyReport!.mainBuildingClassName
+                                .toString(),
+                            bgColor: AppColor.mystic,
+                          ),
+                          CardParameter(
+                            // from whats
+                            title: 'compliance_sub_usage'.tr(),
+                            value: licenceQueryDetails
+                                .surveyReport!.subBuildingClassName
+                                .toString(),
+                            bgColor: AppColor.mystic,
+                          ),
+                          const SizedBox(height: 16),
+                          licenceQueryDetails.x != null &&
+                                  licenceQueryDetails.y != null
+                              ? SizedBox(
+                                  height: 250,
+                                  child: Stack(children: [
+                                    GoogleMap(
+                                      initialCameraPosition: CameraPosition(
+                                          target: LatLng(
+                                            double.parse(
+                                                licenceQueryDetails.y!),
+                                            double.parse(
+                                                licenceQueryDetails.x!),
+                                          ),
+                                          zoom: 16),
+                                      markers: {
+                                        Marker(
+                                          markerId: const MarkerId('position'),
+                                          position: LatLng(
+                                            double.parse(
+                                                licenceQueryDetails.y!),
+                                            double.parse(
+                                                licenceQueryDetails.x!),
+                                          ),
+                                        )
+                                      },
+                                      zoomControlsEnabled: false,
+                                      zoomGesturesEnabled: false,
+                                      scrollGesturesEnabled: false,
                                     ),
-                                    zoom: 16),
-                                markers: {
-                                  Marker(
-                                    markerId: const MarkerId('position'),
-                                    position: LatLng(
-                                      double.parse(
-                                          licenceQueryDetails.y!),
-                                      double.parse(
-                                          licenceQueryDetails.x!),
+                                    Positioned(
+                                      bottom: 20,
+                                      left: 20,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          navigateTo(
+                                              double.parse(
+                                                  licenceQueryDetails.y!),
+                                              double.parse(
+                                                  licenceQueryDetails.x!));
+                                        },
+                                        child: const Image(
+                                            height: 40,
+                                            width: 40,
+                                            image:
+                                                AssetImage(IconPath.direction)),
+                                      ),
                                     ),
-                                  )
+                                  ]),
+                                )
+                              : const SizedBox(),
+                        ],
+                      )
+                    : Container(),
+                (licenceQueryDetails.surveyReport != null &&
+                        licenceQueryDetails.surveyReport!.parcels != null &&
+                        licenceQueryDetails.surveyReport!.parcels!.isNotEmpty)
+                    ? ExpandableCard(
+                        title: 'land_information'.tr(),
+                        icon: IconPath.editIcon,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: licenceQueryDetails
+                                    .surveyReport!.parcels!.length,
+                                itemBuilder: (_, index) {
+                                  Parcel activity = licenceQueryDetails
+                                      .surveyReport!.parcels![index];
+                                  return ExpandableCard(
+                                    title: "${"land".tr()} ${index + 1}",
+                                    bgColor: AppColor.lightGray,
+                                    children: [
+                                      CardParameter(
+                                        title: 'landNo'.tr(),
+                                        value: activity.landNo.toString(),
+                                        bgColor: AppColor.lightGray,
+                                      ),
+                                      const Divider(
+                                        height: 2,
+                                        color: AppColor.blackModern200Light,
+                                      ),
+                                      CardParameter(
+                                        // from whats
+                                        title: 'area_natural'.tr(),
+                                        value: activity.area.toString(),
+                                        bgColor: AppColor.lightGray,
+                                      ),
+                                      const Divider(
+                                        height: 2,
+                                        color: AppColor.blackModern200Light,
+                                      ),
+                                      CardParameter(
+                                        // from whats
+                                        title: 'area_schema'.tr(),
+                                        value: activity.areaAccordingToScheme
+                                            .toString(),
+                                        bgColor: AppColor.lightGray,
+                                      ),
+                                    ],
+                                  );
                                 },
-                                zoomControlsEnabled: false,
-                                zoomGesturesEnabled: false,
-                                scrollGesturesEnabled: false,
                               ),
-                              Positioned(
-                                bottom: 20,
-                                left: 20,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    navigateTo(
-                                        double.parse(
-                                            licenceQueryDetails.y!),
-                                        double.parse(
-                                            licenceQueryDetails.x!));
-                                  },
-                                  child: const Image(
-                                      height: 40,
-                                      width: 40,
-                                      image: AssetImage(IconPath.direction)),
-                                ),
-                              ),
-                            ]),
-                          )
-                        : const SizedBox(),
-
-
-                  ],
-                ):Container(),
-
-                (licenceQueryDetails.surveyReport != null&&licenceQueryDetails.surveyReport!.parcels !=
-                    null &&
-                    licenceQueryDetails
-                        .surveyReport!.parcels!.isNotEmpty)?
-                ExpandableCard(
-                  title: 'land_information'.tr(),
-                  icon: IconPath.editIcon,
-                  children: [
-
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          height: 20,
-                        ),
-
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics:
-                          const NeverScrollableScrollPhysics(),
-                          itemCount: licenceQueryDetails
-                              .surveyReport!.parcels!.length,
-                          itemBuilder: (_, index) {
-                            Parcel activity =
-                            licenceQueryDetails
-                                .surveyReport!.parcels![index];
-                            return ExpandableCard(
-                              title: "${"land".tr()} ${index+1}",
-                              bgColor: AppColor.lightGray,
-                              children: [
-
-
-                                CardParameter(
-                                  title: 'landNo'.tr(),
-                                  value: activity.landNo
-                                      .toString(),
-                                  bgColor: AppColor.lightGray,
-                                ),
-                                const Divider(
-                                  height: 2,
-                                  color:
-                                  AppColor.blackModern200Light,
-                                ),
-                                CardParameter(
-                                  // from whats
-                                  title: 'area_natural'.tr(),
-                                  value:
-                                  activity.area.toString(),
-                                  bgColor: AppColor.lightGray,
-                                ),
-                                const Divider(
-                                  height: 2,
-                                  color:
-                                  AppColor.blackModern200Light,
-                                ),
-                                CardParameter(
-                                  // from whats
-                                  title: 'area_schema'.tr(),
-                                  value:
-                                  activity.areaAccordingToScheme.toString(),
-                                  bgColor: AppColor.lightGray,
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ],
-                    )
-                    ,
-                  ],
-                ):Container(),
-
-
-
+                            ],
+                          ),
+                        ],
+                      )
+                    : Container(),
                 const SizedBox(height: 24),
               ],
             ),
@@ -361,17 +326,13 @@ class _ConstructionLicenseInqueryDetailsState
             errorMessage: "no_data_found".tr(),
             onTab: () {
               bloc!.getLicenseQueryDetails(
-                  bloc!.licenseNumber,bloc!.licenseDate);
+                  bloc!.licenseNumber, bloc!.licenseDate);
             },
           ),
         );
       },
     );
   }
-
-
-
-
 
   static Future<void> navigateTo(double lat, double lng) async {
     String url = '';

@@ -7,14 +7,14 @@ import '../entity/transfer_license_request.dart';
 import '../entity/validate_owner_entity.dart';
 import '../repository/repository.dart';
 
-class PostToNewOwner
-    extends UseCase<ResponseBodyModel<ApplyRequestEntity>, (String,TransferLicenseRequest)> {
+class PostToNewOwner extends UseCase<ResponseBodyModel<ApplyRequestEntity>,
+    (String, TransferLicenseRequest)> {
   final TransferLicenseRepository repository;
 
   PostToNewOwner({required this.repository});
   @override
   Future<Either<Failure, ResponseBodyModel<ApplyRequestEntity>>> call(
-      (String,TransferLicenseRequest) params) async {
-    return await repository.sendToNewOwner(params.$1,params.$2);
+      (String, TransferLicenseRequest) params) async {
+    return await repository.sendToNewOwner(params.$1, params.$2);
   }
 }

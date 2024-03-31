@@ -18,7 +18,7 @@ class UpdatePrintFieldsEvent extends EkramInquiryPrintEvent {
 
   final String? nationalIdForReceiver;
   final LookUpItem? selectedNationalIdTypeForReceiver;
- 
+
   const UpdatePrintFieldsEvent(
       {this.nationalIdForDecassed,
       this.selectedNationalIdTypeForDecassed,

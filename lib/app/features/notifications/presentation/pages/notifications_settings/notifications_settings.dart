@@ -22,28 +22,26 @@ class _NotificationsSettingsState extends State<NotificationsSettings> {
   bool isEnabled = false;
   @override
   Widget build(BuildContext context) {
-    return 
-     Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          iconTheme: const IconThemeData(
-            color: Colors.black, //change your color here
-          ),
-          elevation: 0,
-          title: Text(
-            'settings'.tr(),
-            style: const TextStyle(color: Colors.black),
-          ),
-          backgroundColor: Colors.transparent,
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        iconTheme: const IconThemeData(
+          color: Colors.black, //change your color here
         ),
-        body: ListView.builder(
-            itemCount: widget.notificationsList.length,
-            itemBuilder: ((context, index) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  child: NotificationsSettingsCell(
-                      category: widget.notificationsList[index]),
-                ))),
-      );
-    
+        elevation: 0,
+        title: Text(
+          'settings'.tr(),
+          style: const TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.transparent,
+      ),
+      body: ListView.builder(
+          itemCount: widget.notificationsList.length,
+          itemBuilder: ((context, index) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: NotificationsSettingsCell(
+                    category: widget.notificationsList[index]),
+              ))),
+    );
   }
 }

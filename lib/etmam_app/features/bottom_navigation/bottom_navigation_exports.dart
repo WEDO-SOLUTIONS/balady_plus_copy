@@ -1,8 +1,8 @@
 //! presentation
 
-
 /// data
 export 'data/models/bottom_navigation_model.dart';
+
 /// presentation -> core
 export 'presentation/core/services/bottom_navigation_stream_service.dart';
 export 'presentation/core/services/bottom_navigation_pick_item_service.dart';

@@ -6,7 +6,6 @@
 
 // Widgets
 
-
 /// Domain
 // Entities
 // export 'domain/entities/record_info_entity.dart';
@@ -17,7 +16,6 @@
 // repo
 
 // use cases
-
 
 /// Data
 // data sources

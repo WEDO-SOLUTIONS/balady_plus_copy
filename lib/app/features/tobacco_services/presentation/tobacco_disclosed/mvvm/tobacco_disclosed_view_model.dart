@@ -23,7 +23,7 @@ class TobaccoDisclosedViewModel extends BaseViewModel {
       isLoading = true;
       notifyListeners();
       var response = await repository.uploadDisclosure(disclosureRequest);
-      var data ;
+      var data;
       response.fold(
         (failure) {
           errorMessage = failure.toString();

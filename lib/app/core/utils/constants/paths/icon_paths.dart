@@ -421,7 +421,6 @@ class IconPath {
 
   static const chatBot = '${_pngIconPath}chat_bot$_png';
 
-
   static const baladyCalendar = '${_svgIconPath}balady_calendar$_svg';
   static const filterCalendar = '${_svgIconPath}filter_calendar$_svg';
   static const noEvents = '${_svgIconPath}no_events$_svg';
@@ -430,16 +429,12 @@ class IconPath {
 
   static const direction = '${_pngIconPath}direction$_png';
 
-
   static const bookIcon = '${_svgIconPath}book$_svg';
-
 
   static const users03 = '${_svgIconPath}users_03$_svg';
   static const dotsVertical = '${_svgIconPath}dots_vertical$_svg';
   static const trash01 = '${_svgIconPath}trash_01$_svg';
   static const check = '${_svgIconPath}check$_svg';
-
-
 }
 
 ///Users/abdelrahmanismail/StudioProjects/balady-plus/assets/icons/svg/jod/apple_pay.svg

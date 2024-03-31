@@ -58,8 +58,6 @@ final class SucceedServicesFilterState extends SucceedProductsFilterState {
     selectedProduct,
   }) : super(listProducts: listProducts, selectedProduct: selectedProduct);
 
-
-
   SucceedServicesFilterState copyWith({
     List<NotificationType>? listServices,
     NotificationType? selectedServices,
@@ -74,9 +72,7 @@ final class SucceedServicesFilterState extends SucceedProductsFilterState {
     );
   }
 
-
   @override
   List<Object?> get props =>
-      [listProducts, selectedProduct,listServices, selectedServices];
-
+      [listProducts, selectedProduct, listServices, selectedServices];
 }

@@ -24,12 +24,10 @@ abstract class NotificationsListRepository {
       getNotificationsMessagesList(
           {required SearchNotificationsParams request});
 
-  Future<Either<Failure, bool>>
-  markReadNotificationsMessages(
+  Future<Either<Failure, bool>> markReadNotificationsMessages(
       {required MarkReadNotificationsParams request});
 
-  Future<Either<Failure, bool>>
-  deletedNotificationsMessages(
+  Future<Either<Failure, bool>> deletedNotificationsMessages(
       {required DeletedNotificationsParams request});
 }
 
@@ -37,24 +35,17 @@ abstract class NotificationsListRepository {
 abstract class NotificationsFilterRepository {
   Future<Either<Failure, List<NotificationType>>> getNotificationsProducts();
 
-  Future<Either<Failure, List<NotificationType>>> getNotificationsServicesProducts({required String productId});
+  Future<Either<Failure, List<NotificationType>>>
+      getNotificationsServicesProducts({required String productId});
 }
-
-
 
 abstract class NotificationsSettingsListRepository {
   Future<Either<Failure, NotificationsSettingsList>>
-      getNotificationsSettingsList(
-          {required String notificationChannelId});
+      getNotificationsSettingsList({required String notificationChannelId});
 
+  Future<Either<Failure, bool>> setNotificationsProfile(
+      {required SetNotificationsProfileParams params});
 
-  Future<Either<Failure, bool>>
-      setNotificationsProfile(
-          {required SetNotificationsProfileParams params});
-
-
-  Future<Either<Failure, bool>>
-      setNotificationsProfileProducts(
-          {required SetNotificationsProfileProductsParams params});
+  Future<Either<Failure, bool>> setNotificationsProfileProducts(
+      {required SetNotificationsProfileProductsParams params});
 }
-

@@ -1,7 +1,5 @@
 part of 'license_tranfer_cubit.dart';
 
-
-
 class LicenseTransferState extends Equatable {
   final BlocRequestStatus status;
   final PermitsResponseDataModel? licencePermitsResponse;
@@ -11,8 +9,6 @@ class LicenseTransferState extends Equatable {
 
   final String? errorMessage;
 
-
-
   const LicenseTransferState({
     this.status = BlocRequestStatus.initial,
     this.licencePermitsResponse,
@@ -20,8 +16,6 @@ class LicenseTransferState extends Equatable {
     this.validateLicenseDataModel,
     this.applyRequestDataModel,
     this.errorMessage,
-
-
   });
 
   String get error => errorMessage ?? '';
@@ -34,54 +28,37 @@ class LicenseTransferState extends Equatable {
     ApplyRequestDataModel? applyDataModel,
     String? errorMessage,
   }) {
-    if(permits != null) {
+    if (permits != null) {
       return LicenseTransferState(
         status: status ?? this.status,
-        licencePermitsResponse: permits ,
+        licencePermitsResponse: permits,
         errorMessage: errorMessage ?? this.errorMessage,
       );
-    }
-    else if(validateLicense != null) {
+    } else if (validateLicense != null) {
       return LicenseTransferState(
         status: status ?? this.status,
         validateLicenseDataModel: validateLicense,
         errorMessage: errorMessage ?? this.errorMessage,
       );
-    }
-    else if(applyDataModel != null) {
+    } else if (applyDataModel != null) {
       return LicenseTransferState(
         status: status ?? this.status,
         applyRequestDataModel: applyDataModel,
         errorMessage: errorMessage ?? this.errorMessage,
       );
+    } else {
+      return LicenseTransferState(
+        status: status ?? this.status,
+        validateOwnerDataModel: validateOwner,
+        errorMessage: errorMessage ?? this.errorMessage,
+      );
     }
-
-    else
-      {
-        return LicenseTransferState(
-          status: status ?? this.status,
-          validateOwnerDataModel: validateOwner ,
-          errorMessage: errorMessage ?? this.errorMessage,
-        );
-
-      }
-
   }
-
-
-
-
 
   @override
   List<Object?> get props => [
-    status,
-    licencePermitsResponse,
-    errorMessage,
-  ];
-
-
-
-
-
-
+        status,
+        licencePermitsResponse,
+        errorMessage,
+      ];
 }

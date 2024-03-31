@@ -90,8 +90,7 @@ class CommercialLicenseCancelOneScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 16),
                           bloc.availableCloseDate
-                              ?
-                          Column(
+                              ? Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     CustomTextWidget(
@@ -138,7 +137,7 @@ class CommercialLicenseCancelOneScreen extends StatelessWidget {
                                           onConfirm: (picker, value) {
                                             final date = (picker.adapter
                                                     as hijri_picker
-                                                        .DateTimePickerAdapter)
+                                                    .DateTimePickerAdapter)
                                                 .value;
                                             if (date != null) {
                                               bloc.add(

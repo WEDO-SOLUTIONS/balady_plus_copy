@@ -56,7 +56,7 @@ class _AboutBaladyScreenState extends State<AboutBaladyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:  DefaultAppBarWidget(
+      appBar: DefaultAppBarWidget(
         title: "عن بلدي",
       ),
       body: Container(

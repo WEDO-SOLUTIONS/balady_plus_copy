@@ -1,13 +1,12 @@
 import '../../domain/entity/validate_license_entity.dart';
 
-class ValidateLicenseDataModel extends ValidateLicenseEntity{
-
-
+class ValidateLicenseDataModel extends ValidateLicenseEntity {
   ValidateLicenseDataModel({
     super.responseCode,
     super.responseMessage,
     super.responseId,
-    super.result,});
+    super.result,
+  });
 
   ValidateLicenseDataModel.fromJson(dynamic json) {
     responseCode = json['responseCode'];
@@ -15,8 +14,4 @@ class ValidateLicenseDataModel extends ValidateLicenseEntity{
     responseId = json['responseId'];
     result = json['result'];
   }
-
-
-
-
 }

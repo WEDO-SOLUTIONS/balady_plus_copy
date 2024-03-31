@@ -1,4 +1,3 @@
-
 class SubmitResponse {
   // String message;
   String crNumber;
@@ -21,14 +20,13 @@ class SubmitResponse {
   });
 
   factory SubmitResponse.fromJson(Map<String, dynamic> json) => SubmitResponse(
-    crNumber: '',
-    crType: '',
-    // message: json["message"] ?? '',
-    payUrl: json["payUrl"],
-    // ratingUrl: json["ratingUrl"] ?? '',
-    // redirectToPay: json["redirectToPay"],
-    requestId: json["requestId"],
-    // warningMessages: json["warningMessages"] != null ? List<String>.from(json["warningMessages"].map((x) => x)) : null,
-  );
-
+        crNumber: '',
+        crType: '',
+        // message: json["message"] ?? '',
+        payUrl: json["payUrl"],
+        // ratingUrl: json["ratingUrl"] ?? '',
+        // redirectToPay: json["redirectToPay"],
+        requestId: json["requestId"],
+        // warningMessages: json["warningMessages"] != null ? List<String>.from(json["warningMessages"].map((x) => x)) : null,
+      );
 }

@@ -13,73 +13,62 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
-
-
 class ApprovalSequenceShopLocationScreen extends StatefulWidget {
   final void Function() goToNewPage;
-  const ApprovalSequenceShopLocationScreen({Key? key, required this.goToNewPage}) : super(key: key);
+  const ApprovalSequenceShopLocationScreen(
+      {Key? key, required this.goToNewPage})
+      : super(key: key);
 
   @override
-  State<ApprovalSequenceShopLocationScreen> createState() => _ApprovalSequenceShopLocationScreenState();
+  State<ApprovalSequenceShopLocationScreen> createState() =>
+      _ApprovalSequenceShopLocationScreenState();
 }
 
-class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceShopLocationScreen> {
-
-
+class _ApprovalSequenceShopLocationScreenState
+    extends State<ApprovalSequenceShopLocationScreen> {
   bool isAgree = false;
   List<int> lstPermits = [];
 
   @override
   void initState() {
     super.initState();
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     return getBody();
-
   }
+
   Widget getBody() {
-
-    return
-      Padding(
-        padding: const EdgeInsets.only(left: 15.0,right: 15),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // HorizontalRadioGroup<CRContractOption>(
-              //   groupName: "shop_location".tr(),
-              //   currentItem: state.crContractOption,
-              //   items: [
-              //     if (state.showAttachInvest())
-              //       RadioItem<CRContractOption>(
-              //           radioText: "attach_invest_contract".tr(),
-              //           radioValue: CRContractOption.attach),
-              //     if (state.showServiceInvest())
-              //       RadioItem<CRContractOption>(
-              //           radioText: "user_attach_invest_contract".tr(),
-              //           radioValue: CRContractOption.service),
-              //   ],
-              //   onChanged: (value) {
-              //     context
-              //         .read<RenewCommercialLicenseBloc>()
-              //         .updateCRContractOption(value!);
-              //   },
-              // ),
-            ],
-          ),
+    return Padding(
+      padding: const EdgeInsets.only(left: 15.0, right: 15),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // HorizontalRadioGroup<CRContractOption>(
+            //   groupName: "shop_location".tr(),
+            //   currentItem: state.crContractOption,
+            //   items: [
+            //     if (state.showAttachInvest())
+            //       RadioItem<CRContractOption>(
+            //           radioText: "attach_invest_contract".tr(),
+            //           radioValue: CRContractOption.attach),
+            //     if (state.showServiceInvest())
+            //       RadioItem<CRContractOption>(
+            //           radioText: "user_attach_invest_contract".tr(),
+            //           radioValue: CRContractOption.service),
+            //   ],
+            //   onChanged: (value) {
+            //     context
+            //         .read<RenewCommercialLicenseBloc>()
+            //         .updateCRContractOption(value!);
+            //   },
+            // ),
+          ],
         ),
-      );
-
-
+      ),
+    );
   }
-
-
-
-
 }
-

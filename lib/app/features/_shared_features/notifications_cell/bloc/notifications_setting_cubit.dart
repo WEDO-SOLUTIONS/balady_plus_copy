@@ -38,8 +38,8 @@ class NotificationsSettingCubit extends Cubit<NotificationsSettingState> {
       (notificationsSettingsList) {
         this.notificationsSettingsList = notificationsSettingsList;
         emit(SucceedEventsNotificationState(
-            isChecked: notificationsSettingsList.enabled!,
-            ));
+          isChecked: notificationsSettingsList.enabled!,
+        ));
       },
     );
   }

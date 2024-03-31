@@ -25,9 +25,8 @@ import '../../../Commercial_license_transfer/persentation/bloc/license_tranfer_c
 import '../../../posters/presentation/blocs/posters_license_bloc.dart';
 
 class CommercialLicenseActionSheet extends StatelessWidget {
-
   LicenseTransferCubit licenseTransferCubit;
-   CommercialLicenseActionSheet({super.key,required this.licenseTransferCubit});
+  CommercialLicenseActionSheet({super.key, required this.licenseTransferCubit});
 
   @override
   Widget build(BuildContext context) {
@@ -52,14 +51,10 @@ class CommercialLicenseActionSheet extends StatelessWidget {
                                     switch (action.id) {
                                       case 1006:
 
-
                                         //fawzi static license id
-                                       licenseTransferCubit.validateLicense("${provider.licenseId}");
-                                      //  licenseTransferCubit.validateLicense("45019775725");
-
-
-
-
+                                        licenseTransferCubit.validateLicense(
+                                            "${provider.licenseId}");
+                                        //  licenseTransferCubit.validateLicense("45019775725");
 
                                         break;
 

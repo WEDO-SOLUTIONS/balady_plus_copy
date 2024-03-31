@@ -6,7 +6,8 @@ import '../../../../../core/services/services_exports.dart'
 import '../../violations_exports.dart'
     show ViolationsStatusEntity, ViolationsRepository;
 
-class GetViolationsStatuses extends UseCase<List<ViolationsStatusEntity>, NoParams> {
+class GetViolationsStatuses
+    extends UseCase<List<ViolationsStatusEntity>, NoParams> {
   final ViolationsRepository repository;
 
   GetViolationsStatuses({required this.repository});

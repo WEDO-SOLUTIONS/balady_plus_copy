@@ -5,7 +5,7 @@ class InvoiceStatusesEntity extends Equatable {
   final String name;
 
   const InvoiceStatusesEntity({
-   required this.id,
+    required this.id,
     required this.name,
   });
 

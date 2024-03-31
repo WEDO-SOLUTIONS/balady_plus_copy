@@ -15,16 +15,17 @@ import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.
 import '../bloc/license_tranfer_cubit.dart';
 import '../interface/step_interface.dart';
 
-
 class RquestSequenceNewOwnerInfoScreen extends StatefulWidget {
   StepInterface stepInterface;
-   RquestSequenceNewOwnerInfoScreen({Key? key,required this.stepInterface}) : super(key: key);
+  RquestSequenceNewOwnerInfoScreen({Key? key, required this.stepInterface})
+      : super(key: key);
   @override
-  State<RquestSequenceNewOwnerInfoScreen> createState() => _RquestSequenceNewOwnerInfoScreenState();
+  State<RquestSequenceNewOwnerInfoScreen> createState() =>
+      _RquestSequenceNewOwnerInfoScreenState();
 }
 
-class _RquestSequenceNewOwnerInfoScreenState extends State<RquestSequenceNewOwnerInfoScreen> {
-
+class _RquestSequenceNewOwnerInfoScreenState
+    extends State<RquestSequenceNewOwnerInfoScreen> {
   final TextEditingController _crNumberController = TextEditingController();
   final FocusNode _crNumberDescFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
@@ -35,11 +36,7 @@ class _RquestSequenceNewOwnerInfoScreenState extends State<RquestSequenceNewOwne
     // TODO: implement initState
     super.initState();
     Future.microtask(() {
-
-      bloc= context.read<LicenseTransferCubit>();
-
-  
-
+      bloc = context.read<LicenseTransferCubit>();
     });
   }
 
@@ -50,23 +47,16 @@ class _RquestSequenceNewOwnerInfoScreenState extends State<RquestSequenceNewOwne
         listener: (_, state) async {
           if (state.status.isSubmissionGetFailure) {
             CommonFunctions.showError(state.error);
-          } else if (state.status.isSubmissionGetSuccess && state.validateOwnerDataModel != null) {
-
+          } else if (state.status.isSubmissionGetSuccess &&
+              state.validateOwnerDataModel != null) {
             bloc?.request.crNumber = _crNumberController.text;
             widget.stepInterface.nextPage();
           }
         },
-
-
-        builder: (context, state)
-        {
+        builder: (context, state) {
           return getBody();
-        }
-
-
-    );
+        });
   }
-
 
   Widget getBody() {
     return Column(
@@ -74,7 +64,6 @@ class _RquestSequenceNewOwnerInfoScreenState extends State<RquestSequenceNewOwne
         Expanded(
           child: SingleChildScrollView(
             child: Column(
-
               children: [
                 Container(
                   padding: const EdgeInsets.only(
@@ -84,16 +73,12 @@ class _RquestSequenceNewOwnerInfoScreenState extends State<RquestSequenceNewOwne
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
-
-
                       children: [
                         CustomTextWidget(
                           "new_owner".tr(),
                           textStyle: AppStyle.complianceTitleStyle,
                           maxLines: 4,
-
                         ),
-
                         const SizedBox(
                           height: 20,
                         ),
@@ -107,25 +92,18 @@ class _RquestSequenceNewOwnerInfoScreenState extends State<RquestSequenceNewOwne
                           ],
                           fillColor: Colors.transparent,
                           onValidate: (text) {
-                            if (text
-                                .toString()
-                                .isEmpty) {
+                            if (text.toString().isEmpty) {
                               return ("new_owner_cr_number_error").tr();
                             }
                             return null;
                           },
-
                           textInputAction: TextInputAction.done,
                           spacerSize: 10,
                         ),
-
-
-
                       ],
                     ),
                   ),
                 ),
-
               ],
             ),
           ),
@@ -137,26 +115,15 @@ class _RquestSequenceNewOwnerInfoScreenState extends State<RquestSequenceNewOwne
                 topRight: Radius.circular(36),
               ),
               color: Colors.white),
-          padding: const EdgeInsets.symmetric(
-              horizontal: 18, vertical: 26),
-          child:
-
-          ElevatedButtonWidget.next(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
+          child: ElevatedButtonWidget.next(
             onPressed: () {
-
               if (_formKey.currentState!.validate()) {
-
-                bloc?.validateNewOwner(bloc!.licenseNumber!, _crNumberController.text);
-
+                bloc?.validateNewOwner(
+                    bloc!.licenseNumber!, _crNumberController.text);
               }
-
-
             },
           ),
-
-
-
-
         )
       ],
     );

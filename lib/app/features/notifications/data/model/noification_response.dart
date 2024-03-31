@@ -1,6 +1,7 @@
 class NotificationResponse {
   NotificationResponse({
-    this.data,});
+    this.data,
+  });
 
   NotificationResponse.fromJson(dynamic json) {
     data = json['result'];
@@ -12,5 +13,4 @@ class NotificationResponse {
     map['result'] = data;
     return map;
   }
-
 }

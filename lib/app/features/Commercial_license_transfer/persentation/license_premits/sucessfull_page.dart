@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,7 +18,6 @@ import '../bloc/license_tranfer_cubit.dart';
 import '../interface/step_interface.dart';
 
 class SucessfullScreen extends StatefulWidget {
-
   SucessfullScreen({Key? key}) : super(key: key);
 
   @override
@@ -27,54 +25,38 @@ class SucessfullScreen extends StatefulWidget {
 }
 
 class _SucessfullScreenState extends State<SucessfullScreen> {
-
   String? requestId;
 
   @override
   void initState() {
     super.initState();
-
   }
 
   @override
   Widget build(BuildContext context) {
-
-
-    requestId= ModalRoute.of(context)!.settings.arguments as String;
-    return Scaffold(
-        body: getBody()
-
-
-    );
-
+    requestId = ModalRoute.of(context)!.settings.arguments as String;
+    return Scaffold(body: getBody());
   }
+
   Widget getBody() {
-
-
-
-
-    return
-      Padding(
-        padding: const EdgeInsets.only(left: 15.0,right: 15),
-        child: Stack(
-          children:
-          [
-            Column(
-              children: [
+    return Padding(
+      padding: const EdgeInsets.only(left: 15.0, right: 15),
+      child: Stack(children: [
+        Column(
+          children: [
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-
-                   const DrawIconBasedTypeWidget(
-                    icon:IconPath.successfullIcon,
+                  const DrawIconBasedTypeWidget(
+                    icon: IconPath.successfullIcon,
                     iconSize: 120,
                   ),
                   CustomTextWidget(
                     "vd_request_submit".tr(),
                     textStyle: AppStyle.complianceTitleStyle,
-                    maxLines: 4,),
-
+                    maxLines: 4,
+                  ),
                 ],
               ),
             ),
@@ -83,15 +65,11 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-
-
                   Text(
                     "${"request_number".tr()} $requestId ${"follow_request".tr()}",
                     style: AppStyle.personalInfoParameterValueTextStyle
-                        .copyWith(fontSize: 12,height: 1.5),
+                        .copyWith(fontSize: 12, height: 1.5),
                   ),
-
-
                   CustomElevatedButtonWidget(
                     btnColor: Colors.transparent,
                     textStyle: AppStyle.elevatedButtonStyle.copyWith(
@@ -99,12 +77,10 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
                       fontWeight: FontWeight.w700,
                       fontSize: 16,
                     ),
-
                     btnHeight: 56,
                     text: "service_evaluation".tr(),
-                    onPressed: (){
-
-                    },),
+                    onPressed: () {},
+                  ),
                   Spacer(),
                   CustomElevatedButtonWidget(
                     btnColor: Colors.transparent,
@@ -116,20 +92,19 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
                     btnBorderColor: AppColor.blueSkyLight800,
                     btnHeight: 56,
                     text: "show_request".tr(),
-                    onPressed: (){
-                    Navigator.of(context).pushNamed(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(
                         RouteName.requestOwnershipTransferDetailsPage,
                         arguments: {
-                          "requestNumber": requestId ,
-                          "isReadonly":true
-
+                          "requestNumber": requestId,
+                          "isReadonly": true
                         },
                       );
-
-
-
-                    },),
-                  const SizedBox(height: 10,),
+                    },
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   CustomElevatedButtonWidget(
                     btnColor: AppColor.blueSkyLight800,
                     textStyle: AppStyle.elevatedButtonStyle.copyWith(
@@ -139,42 +114,39 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
                     ),
                     btnHeight: 56,
                     text: "go_to_license".tr(),
-                    onPressed: (){
-                      Navigator.popUntil(context,  ModalRoute.withName( RouteName.licenses));
-                    },),
-
-                  const SizedBox(height: 50,),
+                    onPressed: () {
+                      Navigator.popUntil(
+                          context, ModalRoute.withName(RouteName.licenses));
+                    },
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  ),
                 ],
               ),
-            ),],),
-            Positioned(
-              left:5,
-              top: 70,
-              child: Padding(
-                padding: const EdgeInsetsDirectional.only(end: 10),
-                child: InkWell(
-                  onTap: (){
-
-                    Navigator.popUntil(context,  ModalRoute.withName( RouteName.licenses));
-
-                  },
-                  child: CircleIcon(
-                    icon: Icons.close,
-                    iconColor: AppColor.primary600Light,
-                    backgroundColor: AppColor.geyser.withOpacity(0.4),
-                    iconSize: 18,
-                  ),
-                ),
+            ),
+          ],
+        ),
+        Positioned(
+          left: 5,
+          top: 70,
+          child: Padding(
+            padding: const EdgeInsetsDirectional.only(end: 10),
+            child: InkWell(
+              onTap: () {
+                Navigator.popUntil(
+                    context, ModalRoute.withName(RouteName.licenses));
+              },
+              child: CircleIcon(
+                icon: Icons.close,
+                iconColor: AppColor.primary600Light,
+                backgroundColor: AppColor.geyser.withOpacity(0.4),
+                iconSize: 18,
               ),
             ),
-    ]
+          ),
         ),
-      );
-
-
+      ]),
+    );
   }
-
-
-
-
 }

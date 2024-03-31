@@ -135,5 +135,4 @@ class ImagePath {
 
   static const backgroundServiceCard =
       '${_imagePath}background_service_card$_png';
-
 }

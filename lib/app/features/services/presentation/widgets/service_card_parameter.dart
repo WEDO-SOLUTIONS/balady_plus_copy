@@ -15,7 +15,7 @@ class ServiceCardParameter extends StatelessWidget {
     required this.title,
     required this.iconName,
     required this.value,
-    this.width  = 118,
+    this.width = 118,
   });
 
   @override

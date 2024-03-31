@@ -9,8 +9,6 @@ import 'package:dio/src/response.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
-
-
 abstract class CommercialLicenseDetailsRemoteDataSource {
   Future<CommercialLicenceDetails> getCommercialLicenseDetails(
     int commercialLicenseId,

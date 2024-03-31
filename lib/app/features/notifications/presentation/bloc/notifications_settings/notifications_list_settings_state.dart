@@ -19,7 +19,8 @@ final class LoadingEventsSettingsState extends NotificationsListSettingsState {
   List<Object?> get props => throw UnimplementedError();
 }
 
-final class EmptyNotificationsSettingsState extends NotificationsListSettingsState {
+final class EmptyNotificationsSettingsState
+    extends NotificationsListSettingsState {
   @override
   List<Object?> get props => throw UnimplementedError();
 }
@@ -34,7 +35,8 @@ final class FailureNotificationsSettingsState
   List<Object?> get props => [errorMessage];
 }
 
-final class SucceedEventsNotificationState extends NotificationsListSettingsState {
+final class SucceedEventsNotificationState
+    extends NotificationsListSettingsState {
   final bool isChecked;
 
   SucceedEventsNotificationState({required this.isChecked});

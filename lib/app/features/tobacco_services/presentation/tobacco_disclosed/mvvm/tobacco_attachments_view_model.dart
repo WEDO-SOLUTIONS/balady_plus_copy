@@ -17,7 +17,6 @@ class DisclosedMonthsViewModel extends BaseViewModel {
   String? attachmentId;
   FileDataItem? fileUploaded;
 
-
   DisclosedMonthsViewModel({
     required this.facility,
     required this.disclosureSchedule,
@@ -30,7 +29,7 @@ class DisclosedMonthsViewModel extends BaseViewModel {
     try {
       isLoading = true;
       notifyListeners();
-      var response = await repository.uploadFile( file);
+      var response = await repository.uploadFile(file);
       response.fold(
         (failure) {
           errorMessage = failure.toString();
@@ -59,19 +58,17 @@ class DisclosedMonthsViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-
   //////////////////////////////////////////
   bool reason = false;
 
   // int? removeDisclosureReasonId;
   // String? removeDisclosureComments;
-  String? removeDisclosureComments ;
+  String? removeDisclosureComments;
   void setReason(bool reason) {
     this.reason = reason;
     amount = null;
     notifyListeners();
   }
-
 
   List<ReasonCancel> reasonCancelList = [
     ReasonCancel(id: 101, text: 'المنشاة مغلق'),
@@ -84,7 +81,6 @@ class DisclosedMonthsViewModel extends BaseViewModel {
     reasonCancel = selectReasonCancel;
     notifyListeners();
   }
-
 
   // Future<void> getCommercialLicenseCancellationReasons() async {
   //   Response? response;
@@ -112,7 +108,4 @@ class DisclosedMonthsViewModel extends BaseViewModel {
   //   isLoading = false;
   //   notifyListeners();
   // }
-
-
-
 }

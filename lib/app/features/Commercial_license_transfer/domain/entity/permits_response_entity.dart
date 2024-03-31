@@ -1,15 +1,14 @@
 class PermitsResponseEntity {
-
   List<PermitEntity>? permits;
   String? term;
 
-
-  PermitsResponseEntity({this.permits,this.term,});
+  PermitsResponseEntity({
+    this.permits,
+    this.term,
+  });
 }
 
-
 class PermitEntity {
-
   bool? accepted;
   String? expirationDate;
   int? id;
@@ -17,14 +16,12 @@ class PermitEntity {
   String? permitName;
   bool? selected;
 
-
-
   PermitEntity({
     this.accepted,
     this.expirationDate,
     this.id,
     this.permitNumber,
     this.permitName,
-    this.selected,});
-
+    this.selected,
+  });
 }

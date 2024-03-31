@@ -4,15 +4,15 @@ import 'package:balady_plus/app/features/commercial_license_details/data/models/
 import 'package:balady_plus/app/features/commercial_license_details/domain/repositories/repository.dart';
 import 'package:dartz/dartz.dart';
 
-
-
-class GetCommercialLicenseCancelRequestDetails extends UseCase<CommercialLicenceDetails,int> {
+class GetCommercialLicenseCancelRequestDetails
+    extends UseCase<CommercialLicenceDetails, int> {
   final CommercialLicenseDetailsRepository repository;
 
   GetCommercialLicenseCancelRequestDetails({required this.repository});
 
   @override
-  Future<Either<Failure, CommercialLicenceDetails>> call(commercialLicenseId) async {
+  Future<Either<Failure, CommercialLicenceDetails>> call(
+      commercialLicenseId) async {
     return await repository.getCommercialLicenseDetails(commercialLicenseId);
   }
 }

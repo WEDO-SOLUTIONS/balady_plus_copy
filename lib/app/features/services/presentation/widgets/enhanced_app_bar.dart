@@ -23,7 +23,8 @@ class EnhancedAppBar extends StatelessWidget implements PreferredSizeWidget {
       this.actions,
       this.showBack = true,
       this.x = false,
-      this.onBack, this.titleColor, 
+      this.onBack,
+      this.titleColor,
       this.flexibleSpace});
 
   @override

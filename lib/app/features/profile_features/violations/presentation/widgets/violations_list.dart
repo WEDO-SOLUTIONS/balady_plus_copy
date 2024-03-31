@@ -97,8 +97,11 @@ class _ViolationListState extends State<ViolationList> {
                       context.pushNamedRoute(
                         RouteName.violationDetailsPage,
                         arguments: {
-                          "hashingViolationNumber": state.violations[index].hashingViolationNumber ?? '',
-                          "applicationId": state.violations[index].applicationId ?? ""
+                          "hashingViolationNumber":
+                              state.violations[index].hashingViolationNumber ??
+                                  '',
+                          "applicationId":
+                              state.violations[index].applicationId ?? ""
                         },
                       );
                     },

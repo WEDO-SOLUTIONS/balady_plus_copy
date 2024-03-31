@@ -40,7 +40,7 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
   String? licenseNumber;
 
   late List<Widget>? pagesList = [
-    ApprovalSequencePermitsScreen(stepInterface: this),
+    // ApprovalSequencePermitsScreen(stepInterface: this),
     RquestSequenceNewOwnerInfoScreen(stepInterface: this),
     RequestSequencePledgesScreen(stepInterface: this),
   ];

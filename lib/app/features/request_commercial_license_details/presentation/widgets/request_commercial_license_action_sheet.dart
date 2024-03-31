@@ -51,13 +51,16 @@ class RequestCommercialLicenseActionSheet extends StatelessWidget {
                                           );
                                         } else {
                                           try {
-                                            Navigator.of(context).popAndPushNamed(
+                                            Navigator.of(context)
+                                                .popAndPushNamed(
                                               RouteName.commercialLicenseCancel,
                                               arguments: {
                                                 "from": "request",
                                                 "requestId": provider.requestId,
-                                                "reasonCancel": provider.reasonCancel,
-                                                "availableCloseDate": provider.availableCloseDate,
+                                                "reasonCancel":
+                                                    provider.reasonCancel,
+                                                "availableCloseDate":
+                                                    provider.availableCloseDate,
                                               },
                                             );
                                           } catch (e) {}

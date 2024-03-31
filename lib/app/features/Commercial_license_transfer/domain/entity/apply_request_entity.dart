@@ -4,18 +4,10 @@ class ApplyRequestEntity {
   String? responseId;
   int? result;
 
-
   ApplyRequestEntity({
     this.responseCode,
     this.responseMessage,
     this.responseId,
-    this.result,});
-
-
-
-
-
-
-
-
+    this.result,
+  });
 }

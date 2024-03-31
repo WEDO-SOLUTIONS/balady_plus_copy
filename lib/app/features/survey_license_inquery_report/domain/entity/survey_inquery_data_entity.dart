@@ -1,5 +1,3 @@
-
-
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/common_functions.dart';
@@ -7,7 +5,7 @@ import '../../../facility_qr/data/qr_details_response.dart';
 
 class SurveyInqueryData {
   int? licenseId;
-  String? oldLicenseId;//null
+  String? oldLicenseId; //null
   String? licenseIssueDate;
   String? licenseIssueDateDesc;
   int? purposeId; //null
@@ -51,10 +49,7 @@ class SurveyInqueryData {
     this.x,
     this.y,
   });
-
-
 }
-
 
 class Parcel {
   int? id;
@@ -68,9 +63,4 @@ class Parcel {
     this.areaAccordingToScheme,
     this.landNo,
   });
-
 }
-
-
-
-

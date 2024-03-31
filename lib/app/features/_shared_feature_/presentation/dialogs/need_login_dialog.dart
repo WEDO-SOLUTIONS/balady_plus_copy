@@ -24,7 +24,7 @@ class NeedLoginDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-              padding: const EdgeInsets.symmetric(horizontal: 26,vertical: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 24),
               decoration: BoxDecoration(
                   color: AppColor.white,
                   borderRadius: BorderRadius.circular(12)),

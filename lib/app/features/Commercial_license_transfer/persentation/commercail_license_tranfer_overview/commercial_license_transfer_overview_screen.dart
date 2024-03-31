@@ -15,12 +15,13 @@ class CommercialLicenseTransferOverviewScreen extends StatefulWidget {
   const CommercialLicenseTransferOverviewScreen({Key? key}) : super(key: key);
 
   @override
-  State<CommercialLicenseTransferOverviewScreen> createState() => _CommercialLicenseTransferOverviewScreenState();
+  State<CommercialLicenseTransferOverviewScreen> createState() =>
+      _CommercialLicenseTransferOverviewScreenState();
 }
 
-class _CommercialLicenseTransferOverviewScreenState extends State<CommercialLicenseTransferOverviewScreen> {
+class _CommercialLicenseTransferOverviewScreenState
+    extends State<CommercialLicenseTransferOverviewScreen> {
   String? licenseNumber;
-
 
   @override
   void initState() {
@@ -31,21 +32,14 @@ class _CommercialLicenseTransferOverviewScreenState extends State<CommercialLice
         UXCamEvents.startCardServiceQueryLicenseService);
 
     Future.microtask(() {
-      licenseNumber= ModalRoute.of(context)!.settings.arguments as String;
-
-
-
+      licenseNumber = ModalRoute.of(context)!.settings.arguments as String;
     });
-
   }
 
   @override
   Widget build(BuildContext context) {
-
-
     return MultiProvider(
       providers: [
-
         ChangeNotifierProvider(
           create: (BuildContext context) => ServiceDataViewModel(
             webService: sl(),
@@ -68,9 +62,8 @@ class _CommercialLicenseTransferOverviewScreenState extends State<CommercialLice
               child: ElevatedButtonWidget.startService(
                 onPressed: () async {
                   NavigatorState navigator = Navigator.of(context);
-                  navigator.pushNamed(RouteName.homeSequence, arguments:licenseNumber);
-
-
+                  navigator.pushNamed(RouteName.homeSequence,
+                      arguments: licenseNumber);
                 },
               ),
             )

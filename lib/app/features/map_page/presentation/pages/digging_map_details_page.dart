@@ -23,10 +23,10 @@ class DiggingMapDetailsPage extends StatefulWidget {
 }
 
 class _DiggingMapDetailsPageState extends State<DiggingMapDetailsPage> {
-
   @override
   Widget build(BuildContext context) {
- Excavations   item = ModalRoute.of(context)!.settings.arguments as Excavations;
+    Excavations item =
+        ModalRoute.of(context)!.settings.arguments as Excavations;
 
     return Scaffold(
         body: Stack(

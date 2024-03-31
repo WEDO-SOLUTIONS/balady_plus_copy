@@ -34,7 +34,7 @@ enum PAGE_TYPE {
   contactUs,
   deleteRequestScreen,
   appointmentScreen,
-    updateAppointment,
+  updateAppointment,
 
   coObserver,
   qrDialog,

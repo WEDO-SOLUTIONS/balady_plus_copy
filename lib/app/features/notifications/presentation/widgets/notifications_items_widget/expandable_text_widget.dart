@@ -24,7 +24,7 @@ class ExpandableTextWidget extends StatelessWidget {
           return InkWell(
             onTap: () {
               provider.expandableText();
-              if(onTap != null) {
+              if (onTap != null) {
                 onTap!();
               }
             },

@@ -15,7 +15,8 @@ import 'package:provider/provider.dart';
 
 class ApprovalSequenceShopInfoScreen extends StatelessWidget {
   final void Function() goToNewPage;
-  const ApprovalSequenceShopInfoScreen({Key? key, required this.goToNewPage}) : super(key: key);
+  const ApprovalSequenceShopInfoScreen({Key? key, required this.goToNewPage})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

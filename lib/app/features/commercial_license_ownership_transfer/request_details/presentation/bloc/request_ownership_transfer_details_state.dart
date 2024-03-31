@@ -21,7 +21,8 @@ class RequestOwnershipTransferDetailsState extends Equatable {
   }) {
     return RequestOwnershipTransferDetailsState(
       status: status ?? this.status,
-      commercialLicenceDetails: commercialLicenceDetails ?? this.commercialLicenceDetails,
+      commercialLicenceDetails:
+          commercialLicenceDetails ?? this.commercialLicenceDetails,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
@@ -29,13 +30,19 @@ class RequestOwnershipTransferDetailsState extends Equatable {
   @override
   List<Object?> get props => [
         status,
-    commercialLicenceDetails,
+        commercialLicenceDetails,
         errorMessage,
       ];
 }
 
-final class SucceedAcceptOrRejectOwnershipTransferState extends RequestOwnershipTransferDetailsState {
+final class LoadingAcceptOrRejectOwnershipTransferState
+    extends RequestOwnershipTransferDetailsState {
+  @override
+  List<Object?> get props => throw UnimplementedError();
+}
 
+final class SucceedAcceptOrRejectOwnershipTransferState
+    extends RequestOwnershipTransferDetailsState {
   const SucceedAcceptOrRejectOwnershipTransferState();
 
   @override
