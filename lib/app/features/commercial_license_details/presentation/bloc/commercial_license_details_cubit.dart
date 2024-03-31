@@ -4,6 +4,8 @@ import 'package:balady_plus/app/features/commercial_license_details/domain/use_c
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/errors/exceptions.dart';
+
 
 part 'commercial_license_details_state.dart';
 

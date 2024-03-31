@@ -411,20 +411,6 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
       emit(state.copyWith(status: BlocStatus.success));
     });
 
-    /* final response = await _saveActivityDetails(SubmitActivityDetailRequest(
-        requestId: requestId,
-        workerTypeId: state.workerType!.index,
-        area: state.totalArea ?? 0,
-        detailedActivityId: state.selectedSubActivity!.id!));
-
-    response.fold(
-        (failure) => emit(state.copyWith(
-              status: BlocStatus.failure,
-              errorMessage: (failure as ServerFailure).errorMessage,
-            )), (success) {
-      sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
-      emit(state.copyWith(status: BlocStatus.success));
-    });*/
   }
 
   void salamaReportFawery() async {

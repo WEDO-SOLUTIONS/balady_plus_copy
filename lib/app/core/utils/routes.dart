@@ -87,6 +87,7 @@ import '../../features/commercial_license/presentation/submit_application_succes
 import '../../features/commercial_license_inquery/persentation/commercial_license_overview/commercial_license_overview_screen.dart';
 import '../../features/commercial_license_inquery/persentation/commercial_license_query/commercial_license_query_screen.dart';
 import '../../features/commercial_license_inquery/persentation/commercial_license_query_Details/commercial_license_query_details.dart';
+import '../../features/commercial_license_ownership_transfer/approval_sequence/presentation/screens/approval_sequence_shop-location.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_overview/construction_license_overview_screen.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_query/construction_license_inquery_screen.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_query_Details/construction_license_inquery_details.dart';
@@ -794,6 +795,10 @@ class Routes {
     ///////////////////////////////////
 
     RouteName.approvalSequenceMainScreen: (context) => const ApprovalSequenceMainScreen(),
+    RouteName.approvalSequenceShopLocationScreen: (context) => const ApprovalSequenceShopLocationScreen(),
+
+
+
 
     RouteName.requestOwnershipTransferDetailsPage: (context) => const RequestOwnershipTransferDetailsPage(),
 

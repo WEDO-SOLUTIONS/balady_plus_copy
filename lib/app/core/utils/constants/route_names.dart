@@ -374,6 +374,7 @@ static const DirectRentalPage = 'DirectRentalPage';
   static const requestOwnershipTransferDetailsPage = '/requestOwnershipTransferDetailsPage';
   static const approvalSequenceMainScreen = '/approvalSequenceMainScreen';
 
+  static const approvalSequenceShopLocationScreen = '/ApprovalSequenceShopLocationScreen';
 
 
   static const commercialLicenseTransferOverView = 'commercialLicenseTransferOverView_Screen';

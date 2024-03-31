@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/errors/exceptions.dart';
 import '../../data/model/survey_inquery_data_model.dart';
 import '../../domain/use_cases/get_survey_inquery_data.dart';
 
@@ -30,10 +31,12 @@ class SurveyReportInqueryDetailsCubit extends Cubit<SurveyReportInqueryDetailsSt
     final failureOrSuccess = await getLicenseQueryData((commercialLicenseNumber,date));
     failureOrSuccess.fold(
           (failure) {
+
+
         emit(
           state.copyWith(
             status: BlocRequestStatus.submissionGetFailure,
-            errorMessage: failure.toString(),
+            errorMessage: (failure as ServerException).errorMessage,
           ),
         );
       },
