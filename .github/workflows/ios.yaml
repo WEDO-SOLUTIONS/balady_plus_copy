@@ -101,79 +101,67 @@ jobs:
           FILE_BALADY_CER: ${{ secrets.FILE_BALADY_CER }}
           FILE_BALADY_MOBILEPROVISION: ${{ secrets.FILE_BALADY_MOBILEPROVISION }}
           FILE_BALADY_P12: ${{ secrets.FILE_BALADY_P12 }}
-        uses: TLizer/action-with-post-step@v1.1.0
-        with:
-          main: |
-            KC="$RUNNER_TEMP/build.keychain"
-            KC_PASS='build-pass'
-            LKC='login.keychain'
-            KEY="$RUNNER_TEMP/balady.p12"
-            CERT="$RUNNER_TEMP/balady.cer"
-            PROFILE="$RUNNER_TEMP/balady.mobileprovision"
-            PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning Profiles/"
-            APPLE_CERTS=(
-                "AppleWWDRCAG2.cer"
-                "AppleWWDRCAG3.cer"
-                "AppleWWDRCAG4.cer"
-                "AppleWWDRCAG5.cer"
-                "AppleWWDRCAG6.cer"
-                "AppleWWDRCAG7.cer"
-                "AppleWWDRCAG8.cer"
-                "DeveloperIDG2CA.cer"
-            )
+        run: |
+          KC="$RUNNER_TEMP/build.keychain"
+          KC_PASS='build-pass'
+          LKC='login.keychain'
+          KEY="$RUNNER_TEMP/balady.p12"
+          CERT="$RUNNER_TEMP/balady.cer"
+          PROFILE="$RUNNER_TEMP/balady.mobileprovision"
+          PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning Profiles/"
+          APPLE_CERTS=(
+              "AppleWWDRCAG2.cer"
+              "AppleWWDRCAG3.cer"
+              "AppleWWDRCAG4.cer"
+              "AppleWWDRCAG5.cer"
+              "AppleWWDRCAG6.cer"
+              "AppleWWDRCAG7.cer"
+              "AppleWWDRCAG8.cer"
+              "DeveloperIDG2CA.cer"
+          )
 
-            # Presetup
-            mkdir -p "$PROFILES_DIR"
-            mkdir -p $TMP
-            echo "$FILE_BALADY_CER" | base64 --decode > $CERT
-            echo "$FILE_BALADY_P12" | base64 --decode > $KEY
-            echo "$FILE_BALADY_MOBILEPROVISION" | base64 --decode > $PROFILE
+          # Presetup
+          mkdir -p "$PROFILES_DIR"
+          mkdir -p $TMP
+          echo "$FILE_BALADY_CER" | base64 --decode > $CERT
+          echo "$FILE_BALADY_P12" | base64 --decode > $KEY
+          echo "$FILE_BALADY_MOBILEPROVISION" | base64 --decode > $PROFILE
 
-            md5 $CERT
-            md5 $KEY
-            md5 $PROFILE
+          md5 $CERT
+          md5 $KEY
+          md5 $PROFILE
 
-            # Setup keychain
-            security create-keychain -p $KC_PASS $KC
-            security list-keychains -d user -s $KC
+          # Setup keychain
+          security create-keychain -p $KC_PASS $KC
+          security list-keychains -d user -s $KC
 
-            curl https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -o $RUNNER_TEMP/AppleWWDRCA.cer
-            security import $RUNNER_TEMP/AppleWWDRCA.cer -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+          curl https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -o $RUNNER_TEMP/AppleWWDRCA.cer
+          security import $RUNNER_TEMP/AppleWWDRCA.cer -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
 
-            for APPLE_CERT in ${APPLE_CERTS[@]}; do
-                curl https://www.apple.com/certificateauthority/$APPLE_CERT -o $RUNNER_TEMP/$APPLE_CERT
-                security import $RUNNER_TEMP/$APPLE_CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
-            done
+          for APPLE_CERT in ${APPLE_CERTS[@]}; do
+              curl https://www.apple.com/certificateauthority/$APPLE_CERT -o $RUNNER_TEMP/$APPLE_CERT
+              security import $RUNNER_TEMP/$APPLE_CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+          done
 
-            security import $KEY -k $KC -t priv -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
-            security import $CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild || true
+          security import $KEY -k $KC -t priv -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+          security import $CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild || true
 
-            security default-keychain -d user -s $KC
-            security set-keychain-settings $KC
-            security unlock-keychain -p $KC_PASS $KC
-            security set-key-partition-list -S apple-tool:,apple: -k $KC_PASS $KC
+          security default-keychain -d user -s $KC
+          security set-keychain-settings $KC
+          security unlock-keychain -p $KC_PASS $KC
+          security set-key-partition-list -S apple-tool:,apple: -k $KC_PASS $KC
 
-            # Install profile
-            security cms -D -i $PROFILE -k $KC > $RUNNER_TEMP/provision.plist
-            UUID=`/usr/libexec/PlistBuddy -c 'print UUID' $RUNNER_TEMP/provision.plist`
+          # Install profile
+          security cms -D -i $PROFILE -k $KC > $RUNNER_TEMP/provision.plist
+          UUID=`/usr/libexec/PlistBuddy -c 'print UUID' $RUNNER_TEMP/provision.plist`
 
-            cp $PROFILE "$PROFILES_DIR"$UUID.mobileprovision
+          cp $PROFILE "$PROFILES_DIR"$UUID.mobileprovision
 
-            security find-identity -p codesigning
-          post: |
-            LKC='login.keychain'
-            KC="$RUNNER_TEMP/build.keychain"
-            PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning Profiles/"
-
-            security list-keychains -d user -s $LKC
-            security default-keychain -d user -s $LKC
-            security delete-keychain $KC
-
-            rm -rf "$PROFILES_DIR"
+          security find-identity -p codesigning
 
       - name: Build app
         run: |
-          KC="$HOME/Library/Keychains/build.keychain"
+          KC="$RUNNER_TEMP/build.keychain"
           KC_PASS='build-pass'
 
           momrahBundle='momra.balady.ios'
@@ -209,3 +197,15 @@ jobs:
 
           fvm flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_dev.dart --flavor dev
           curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImEuc3RyaXpobmV2QHVyYmkuYWUifQ.DgmqmgZ-DeQfBt0R36s7nftEkk-XnFr6VVi2syD-jTE" -X PUT -F file=@build/ios/ipa/balady_plus.ipa https://baladyapp-builds.urbi.ae/builds/${CI_ARTIFACT_SUFFIX}
+
+      - name: Cleanup keychain
+        run: |
+          LKC='login.keychain'
+          KC="$RUNNER_TEMP/build.keychain"
+          PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning Profiles/"
+
+          security list-keychains -d user -s $LKC
+          security default-keychain -d user -s $LKC
+          security delete-keychain $KC
+
+          rm -rf "$PROFILES_DIR"
