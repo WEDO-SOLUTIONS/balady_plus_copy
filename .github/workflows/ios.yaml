@@ -121,7 +121,6 @@ jobs:
 
           # Presetup
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles/
-          mkdir -p $TMP
           echo "$FILE_BALADY_CER" | base64 --decode > $CERT
           echo "$FILE_BALADY_P12" | base64 --decode > $KEY
           echo "$FILE_BALADY_MOBILEPROVISION" | base64 --decode > $PROFILE
