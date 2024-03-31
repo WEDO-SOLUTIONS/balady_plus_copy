@@ -54,6 +54,68 @@ jobs:
           echo "CI_IS_PR=${CI_IS_PR}" >> ${GITHUB_ENV}
           echo "PATH=${PATH}:/opt/homebrew/bin" >> ${GITHUB_ENV}
 
+
+          - name: Setup keychain
+          env:
+            LANG: en_US.UTF-8
+            FILE_BALADY_CER: ${{ secrets.FILE_BALADY_CER }}
+            FILE_BALADY_MOBILEPROVISION: ${{ secrets.FILE_BALADY_MOBILEPROVISION }}
+            FILE_BALADY_P12: ${{ secrets.FILE_BALADY_P12 }}
+          run: |
+            KC="$RUNNER_TEMP/build.keychain"
+            KC_PASS='build-pass'
+            KEY="$RUNNER_TEMP/balady.p12"
+            CERT="$RUNNER_TEMP/balady.cer"
+            PROFILE="$RUNNER_TEMP/balady.mobileprovision"
+            APPLE_CERTS=(
+                "AppleWWDRCAG2.cer"
+                "AppleWWDRCAG3.cer"
+                "AppleWWDRCAG4.cer"
+                "AppleWWDRCAG5.cer"
+                "AppleWWDRCAG6.cer"
+                "AppleWWDRCAG7.cer"
+                "AppleWWDRCAG8.cer"
+                "DeveloperIDG2CA.cer"
+            )
+
+            # Presetup
+            mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles/
+            echo "$FILE_BALADY_CER" | base64 --decode > $CERT
+            echo "$FILE_BALADY_P12" | base64 --decode > $KEY
+            echo "$FILE_BALADY_MOBILEPROVISION" | base64 --decode > $PROFILE
+
+            md5 $CERT
+            md5 $KEY
+            md5 $PROFILE
+
+            # Setup keychain
+            security create-keychain -p $KC_PASS $KC
+
+            curl https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -o $RUNNER_TEMP/AppleWWDRCA.cer
+            security import $RUNNER_TEMP/AppleWWDRCA.cer -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild -T /usr/bin/productsign
+
+            for APPLE_CERT in ${APPLE_CERTS[@]}; do
+                curl https://www.apple.com/certificateauthority/$APPLE_CERT -o $RUNNER_TEMP/$APPLE_CERT
+                security import $RUNNER_TEMP/$APPLE_CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild -T /usr/bin/productsign
+            done
+
+            security import $KEY -k $KC -t priv -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild -T /usr/bin/productsign
+            security import $CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild || true
+
+            # security default-keychain -s $KC
+            security unlock-keychain -p $KC_PASS $KC
+            security set-keychain-settings $KC
+            security list-keychains -d user -s $KC
+            security set-key-partition-list -S apple-tool:,apple:,codesign: -k $KC_PASS $KC
+
+            # Install profile
+            security cms -D -i $PROFILE -k $KC > $RUNNER_TEMP/provision.plist
+            UUID=`/usr/libexec/PlistBuddy -c 'print UUID' $RUNNER_TEMP/provision.plist`
+
+            cp $PROFILE ~/Library/MobileDevice/Provisioning\ Profiles/$UUID.mobileprovision
+
+            security find-identity -p codesigning
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -94,67 +156,6 @@ jobs:
           rm -rf ios/_DELETE_ME_/DGis.xcframework
           unzip DGisFullSDK.zip -d ios/_DELETE_ME_
           rm DGisFullSDK.zip
-
-      - name: Setup keychain
-        env:
-          LANG: en_US.UTF-8
-          FILE_BALADY_CER: ${{ secrets.FILE_BALADY_CER }}
-          FILE_BALADY_MOBILEPROVISION: ${{ secrets.FILE_BALADY_MOBILEPROVISION }}
-          FILE_BALADY_P12: ${{ secrets.FILE_BALADY_P12 }}
-        run: |
-          KC="$RUNNER_TEMP/build.keychain"
-          KC_PASS='build-pass'
-          KEY="$RUNNER_TEMP/balady.p12"
-          CERT="$RUNNER_TEMP/balady.cer"
-          PROFILE="$RUNNER_TEMP/balady.mobileprovision"
-          APPLE_CERTS=(
-              "AppleWWDRCAG2.cer"
-              "AppleWWDRCAG3.cer"
-              "AppleWWDRCAG4.cer"
-              "AppleWWDRCAG5.cer"
-              "AppleWWDRCAG6.cer"
-              "AppleWWDRCAG7.cer"
-              "AppleWWDRCAG8.cer"
-              "DeveloperIDG2CA.cer"
-          )
-
-          # Presetup
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles/
-          echo "$FILE_BALADY_CER" | base64 --decode > $CERT
-          echo "$FILE_BALADY_P12" | base64 --decode > $KEY
-          echo "$FILE_BALADY_MOBILEPROVISION" | base64 --decode > $PROFILE
-
-          md5 $CERT
-          md5 $KEY
-          md5 $PROFILE
-
-          # Setup keychain
-          security create-keychain -p $KC_PASS $KC
-
-          curl https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -o $RUNNER_TEMP/AppleWWDRCA.cer
-          security import $RUNNER_TEMP/AppleWWDRCA.cer -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild -T /usr/bin/productsign
-
-          for APPLE_CERT in ${APPLE_CERTS[@]}; do
-              curl https://www.apple.com/certificateauthority/$APPLE_CERT -o $RUNNER_TEMP/$APPLE_CERT
-              security import $RUNNER_TEMP/$APPLE_CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild -T /usr/bin/productsign
-          done
-
-          security import $KEY -k $KC -t priv -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild -T /usr/bin/productsign
-          security import $CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild || true
-
-          security default-keychain -s $KC
-          security unlock-keychain -p $KC_PASS $KC
-          security set-keychain-settings $KC
-          security list-keychains -s $KC
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -k $KC_PASS $KC
-
-          # Install profile
-          security cms -D -i $PROFILE -k $KC > $RUNNER_TEMP/provision.plist
-          UUID=`/usr/libexec/PlistBuddy -c 'print UUID' $RUNNER_TEMP/provision.plist`
-
-          cp $PROFILE ~/Library/MobileDevice/Provisioning\ Profiles/$UUID.mobileprovision
-
-          security find-identity -p codesigning
 
       - name: Build app
         run: |
