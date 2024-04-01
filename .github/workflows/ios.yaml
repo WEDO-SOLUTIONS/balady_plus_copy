@@ -100,9 +100,9 @@ jobs:
           security import $KEY -k $KC -f pkcs12 -A -P 'balady' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild -T /usr/bin/productsign
           security import $CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild -T /usr/bin/productsign || true
 
-          security default-keychain -s $KC
+          security default-keychain -d user -s $KC
           security set-key-partition-list -S apple-tool:,apple:,codesign: -k $KC_PASS $KC
-          security list-keychains -s $KC
+          security list-keychains -d user -s $KC
 
           # Install profile
           security cms -D -i $PROFILE -k $KC > $RUNNER_TEMP/provision.plist
