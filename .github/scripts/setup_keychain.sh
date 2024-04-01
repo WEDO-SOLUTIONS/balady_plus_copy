@@ -21,23 +21,23 @@ echo "$FILE_BALADY_P12" | base64 --decode > $KEY
 echo "$FILE_BALADY_MOBILEPROVISION" | base64 --decode > $PROFILE
 
 # Setup keychain
-security -v create-keychain -p $KC_PASS $KC
+security create-keychain -p $KC_PASS $KC
 security set-keychain-settings -lut 21600 $KC
-security -v unlock-keychain -p $KC_PASS $KC
+security unlock-keychain -p $KC_PASS $KC
 
 curl https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -o $RUNNER_TEMP/AppleWWDRCA.cer
-security import $RUNNER_TEMP/AppleWWDRCA.cer -k $KC -t cert -A -P ''
+security import $RUNNER_TEMP/AppleWWDRCA.cer -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
 
 # curl https://www.apple.com/appleca/AppleIncRootCertificate.cer -o $RUNNER_TEMP/AppleIncRootCertificate.cer
 # security import $RUNNER_TEMP/AppleIncRootCertificate.cer -k $KC -t cert -A -P ''
 
 for APPLE_CERT in ${APPLE_CERTS[@]}; do
     curl https://www.apple.com/certificateauthority/$APPLE_CERT -o $RUNNER_TEMP/$APPLE_CERT
-    security import $RUNNER_TEMP/$APPLE_CERT -k $KC -t cert -A -P ''
+    security import $RUNNER_TEMP/$APPLE_CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
 done
 
-security import $KEY -k $KC -t priv -A -P 'balady'
-security import $CERT -k $KC -t cert -A -P ''
+security import $KEY -k $KC -f pcks12 -A -P 'balady' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+security import $CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
 
 security default-keychain -s $KC
 security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $KC_PASS $KC
