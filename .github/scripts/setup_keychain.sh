@@ -37,10 +37,8 @@ security import $KEY -k $KC -f pkcs12 -A -P 'balady'
 security import $CERT -k $KC -t cert -A -P ''
 
 security default-keychain -s $KC
-security default-keychain -d user -s $KC
 security set-key-partition-list -S apple-tool:,apple:,codesign: -k $KC_PASS $KC
 security list-keychains -s $KC
-security list-keychains -d user -s $KC
 
 # Install profile
 security cms -D -i $PROFILE -k $KC > $RUNNER_TEMP/provision.plist
@@ -48,4 +46,4 @@ UUID=`/usr/libexec/PlistBuddy -c 'print UUID' $RUNNER_TEMP/provision.plist`
 
 cp $PROFILE ~/Library/MobileDevice/Provisioning\ Profiles/$UUID.mobileprovision
 
-security find-identity -p codesigning
+security find-identity
