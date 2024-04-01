@@ -26,21 +26,17 @@ security set-keychain-settings -lut 21600 $KC
 security unlock-keychain -p $KC_PASS $KC
 
 curl https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -o $RUNNER_TEMP/AppleWWDRCA.cer
-security import $RUNNER_TEMP/AppleWWDRCA.cer -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild -T /usr/bin/productsign
+security import $RUNNER_TEMP/AppleWWDRCA.cer -k $KC -t cert -A -P ''
 
 for APPLE_CERT in ${APPLE_CERTS[@]}; do
     curl https://www.apple.com/certificateauthority/$APPLE_CERT -o $RUNNER_TEMP/$APPLE_CERT
-    security import $RUNNER_TEMP/$APPLE_CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild -T /usr/bin/productsign
+    security import $RUNNER_TEMP/$APPLE_CERT -k $KC -t cert -A -P ''
 done
 
-security import $KEY -k $KC -f pkcs12 -A -P 'balady' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild -T /usr/bin/productsign
-security import $CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild -T /usr/bin/productsign || true
+security import $KEY -k $KC -f pkcs12 -A -P 'balady'
+security import $CERT -k $KC -t cert -A -P ''
 
 security default-keychain -s $KC
-security default-keychain -d user -s $KC
-security default-keychain -d system -s $KC
-security default-keychain -d common -s $KC
-security default-keychain -d dynamic -s $KC
 security set-key-partition-list -S apple-tool:,apple:,codesign: -k $KC_PASS $KC
 security list-keychains -s $KC
 
