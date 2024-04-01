@@ -28,8 +28,8 @@ security -v unlock-keychain -p $KC_PASS $KC
 curl https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -o $RUNNER_TEMP/AppleWWDRCA.cer
 security import $RUNNER_TEMP/AppleWWDRCA.cer -k $KC -t cert -A -P ''
 
-curl https://www.apple.com/appleca/AppleIncRootCertificate.cer -o $RUNNER_TEMP/AppleIncRootCertificate.cer
-security import $RUNNER_TEMP/AppleIncRootCertificate.cer -k $KC -t cert -A -P ''
+# curl https://www.apple.com/appleca/AppleIncRootCertificate.cer -o $RUNNER_TEMP/AppleIncRootCertificate.cer
+# security import $RUNNER_TEMP/AppleIncRootCertificate.cer -k $KC -t cert -A -P ''
 
 for APPLE_CERT in ${APPLE_CERTS[@]}; do
     curl https://www.apple.com/certificateauthority/$APPLE_CERT -o $RUNNER_TEMP/$APPLE_CERT
@@ -39,7 +39,7 @@ done
 security import $KEY -k $KC -t priv -A -P 'balady'
 security import $CERT -k $KC -t cert -A -P ''
 
-security default-keychain -d user -s $KC
+security default-keychain -s $KC
 security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $KC_PASS $KC
 security list-keychains -s $KC
 
