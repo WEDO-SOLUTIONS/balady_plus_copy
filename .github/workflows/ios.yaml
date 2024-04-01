@@ -70,39 +70,15 @@ jobs:
           channel: "stable"
           cache: true
 
-      - name: Development setup mapness
-        run: |
-          flutter pub get
-          cd mapness
-          flutter pub get
+      - name: "Setup just"
+        uses: extractions/setup-just@v2
+        with:
+          just-version: "1.4.0"
 
-      - name: iOS Setup
-        env:
-          LANG: en_US.UTF-8
+      - name: "Prebuild"
         run: |
-          cd ios
-          echo FLUTTER PRECACHE
-          flutter precache --ios
-          echo POD REPO UPDATE
-          pod repo update || true
-          echo POD UPDATE
-          pod update
-          echo POD INSTALL
-          pod install
-
-      - name: Development setup dgis_map
-        env: # Set the secret as an environment variable
-          BALADY_DEVELOPERS_PASS: ${{ secrets.BALADY_DEVELOPERS_PASS }}
-          LANG: en_US.UTF-8
-        run: |
-          cd urbi_map/dgis_map
-          flutter pub get
-          flutter pub run build_runner build --delete-conflicting-outputs
-          mkdir -p ios/_DELETE_ME_
-          curl -u "balady-developers:${BALADY_DEVELOPERS_PASS}" -O https://artifactory.2gis.dev/vendor-ios-release/10.2.1/Release/DGisFullSDK.zip
-          rm -rf ios/_DELETE_ME_/DGis.xcframework
-          unzip DGisFullSDK.zip -d ios/_DELETE_ME_
-          rm DGisFullSDK.zip
+          just ios_setup
+          just prebuild
 
       - name: Build app
         run: |
