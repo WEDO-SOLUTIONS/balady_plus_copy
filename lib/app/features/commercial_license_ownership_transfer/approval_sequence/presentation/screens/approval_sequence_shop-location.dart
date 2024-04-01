@@ -32,7 +32,7 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
     // TODO: implement initState
     super.initState();
 
-    //context.read<CrStep4ShopDataCubit>().initForm();
+   // context.read<CrStep4ShopDataCubit>().initForm();
     // context.read<CrStep4ShopDataCubit>().salamaBillFawery();
     // context.read<CrStep4ShopDataCubit>().salamaReportFawery();
     context.read<CrStep4ShopDataCubit>().getDeedOwnerShipsTypes();

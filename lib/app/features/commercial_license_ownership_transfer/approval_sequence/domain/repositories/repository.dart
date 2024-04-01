@@ -15,4 +15,5 @@ abstract class RequestApprovalSequenceRepository {
   Future<Either<Failure, bool>> saveShopInfo(
     int requestNumber,
   );
+
 }

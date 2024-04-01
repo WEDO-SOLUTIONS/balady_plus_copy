@@ -1,7 +1,10 @@
+import 'package:app_popup_menu/app_popup_menu.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/bloc/request_ownership_transfer_details_cubit.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../../etmam_app/core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/exceptions.dart';
 import '../../../../../core/errors/failures.dart';
 import '../../../../Commercial_license_transfer/domain/use_cases/get_license_permits_data.dart';
@@ -47,4 +50,22 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
       },
     );
   }
+
+
+  void getDeedOwnerShipsTypes(BuildContext context) async {
+
+    RequestOwnershipTransferDetailsCubit bloc = sl();
+    var dto = bloc.state.commercialLicenceDetails?.shopInfo?.contractInfoResponseDto;
+
+
+
+
+  }
+
+
+
+
+
+
+
 }

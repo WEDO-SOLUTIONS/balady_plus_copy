@@ -39,7 +39,7 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
   int currentPageValue = 0;
 
   RequestApprovalSequenceCubit? bloc;
-  int? requestNumber;
+  String? requestNumber;
 
   late List<Widget>? pagesList = [
     ApprovalSequencePermitsScreen(stepInterface: this),
@@ -54,9 +54,9 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
 
     Future.microtask(() {
       setState(() {
-        requestNumber = ModalRoute.of(context)!.settings.arguments as int;
+        requestNumber = ModalRoute.of(context)!.settings.arguments as String;
       });
-      bloc?.requestNumber = requestNumber;
+      bloc?.requestNumber = int.parse(requestNumber!);
     });
   }
 
@@ -76,12 +76,14 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
       },
       child: BlocProvider(
         create: (_) {
-          RequestApprovalSequenceRepositoryImplementation
-              requestApprovalSequenceRepositoryImplementation = sl();
-          return RequestApprovalSequenceCubit(
+
+
+          bloc = RequestApprovalSequenceCubit(
               requestApprovalSequenceRepository:
-                  requestApprovalSequenceRepositoryImplementation,
+              sl(),
               isChecked: false);
+
+          return bloc!;
         },
         child: GestureDetector(
           onTap: () => hideKeyboard(),
@@ -100,7 +102,7 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
                 }
               },
               onTapCloseAction: () => showBackDialog(),
-              requestNum: bloc!.requestNumber,
+              requestNum: bloc?.requestNumber,
             ),
             body: PageView.builder(
               itemCount: pagesList!.length,

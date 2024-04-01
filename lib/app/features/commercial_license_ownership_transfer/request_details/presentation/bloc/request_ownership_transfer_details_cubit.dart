@@ -15,18 +15,14 @@ class RequestOwnershipTransferDetailsCubit
       requestOwnershipTransferDetailsRepository;
   final AcceptOrRejectRequestOwnershipTransferRepository
       acceptOrRejectRequestOwnershipTransferRepository;
-  final String commercialDetailsId;
+   String? requestID;
 
   RequestOwnershipTransferDetailsCubit(
       {
-      // this.getCommercialLicenseDetails,
-      required this.commercialDetailsId,
       required this.requestOwnershipTransferDetailsRepository,
       required this.acceptOrRejectRequestOwnershipTransferRepository})
       : super(const RequestOwnershipTransferDetailsState()) {
-    getCommercialLicenseDetailsById(
-      commercialDetailsId,
-    );
+
   }
 
   Future<void> getCommercialLicenseDetailsById(String id) async {

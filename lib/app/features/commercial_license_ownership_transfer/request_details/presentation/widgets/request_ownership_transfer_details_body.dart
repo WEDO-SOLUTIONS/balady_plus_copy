@@ -29,6 +29,8 @@ class _RequestOwnershipTransferDetailsBodyState
   @override
   void initState() {
     super.initState();
+
+
   }
 
   @override
@@ -630,7 +632,7 @@ class _RequestOwnershipTransferDetailsBodyState
         return Center(
           child: ReloadWidget(
             onTab: () {
-              bloc.getCommercialLicenseDetailsById(bloc.commercialDetailsId);
+              bloc.getCommercialLicenseDetailsById(bloc.requestID!);
             },
           ),
         );

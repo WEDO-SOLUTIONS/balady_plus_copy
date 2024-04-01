@@ -125,7 +125,10 @@ class AppInterceptors extends Interceptor {
     }
     if (options.uri.toString().toLowerCase().contains("validate-license") ||
         options.uri.toString().toLowerCase().contains("license/permits") ||
-        options.uri.toString().toLowerCase().contains("send-to-new-owner")) {
+        options.uri.toString().toLowerCase().contains("send-to-new-owner")||
+        options.uri.toString().toLowerCase().contains("selected/permits")
+
+        ) {
       options.headers.putIfAbsent(ApiHeaders.xSubmitterRelation,
           () => CommonProperties.selectedDelegator?.getRole() ?? "HIMSELF");
     }

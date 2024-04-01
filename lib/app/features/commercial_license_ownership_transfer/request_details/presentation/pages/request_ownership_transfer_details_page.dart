@@ -27,27 +27,30 @@ class RequestOwnershipTransferDetailsPage extends StatefulWidget {
 
 class _RequestOwnershipTransferDetailsPageState
     extends State<RequestOwnershipTransferDetailsPage> {
+  RequestOwnershipTransferDetailsCubit? bloc;
   @override
   void initState() {
     super.initState();
+    Future.microtask(() async{
+
+
+      await bloc!.getCommercialLicenseDetailsById(bloc!.requestID!);
+    });
     CommonFunctions.sendUXCamEvent(UXCamEvents.openLicensesDetails);
   }
+
 
   @override
   Widget build(BuildContext context) {
     Map data = ModalRoute.of(context)!.settings.arguments as Map;
     String requestNumber = data['requestNumber'];
     bool? isReadonly = data['isReadonly'];
-    RequestOwnershipTransferRepositoryImplementation
-        notificationRepositoryImplementation = sl();
+
     return BlocProvider(
       create: (context) {
-        return RequestOwnershipTransferDetailsCubit(
-            commercialDetailsId: requestNumber,
-            requestOwnershipTransferDetailsRepository:
-                notificationRepositoryImplementation,
-            acceptOrRejectRequestOwnershipTransferRepository:
-                notificationRepositoryImplementation);
+         bloc = sl();
+        bloc?.requestID = requestNumber;
+        return bloc!;
       },
       child: Scaffold(
         appBar: AppBar(
@@ -152,21 +155,13 @@ class _RequestOwnershipTransferDetailsPageState
                               CustomPopUpsWidgets.showBottomSheet(
                                 context,
                                 child: BlocProvider.value(
-                                  value: RequestOwnershipTransferDetailsCubit(
-                                      commercialDetailsId: requestNumber,
-                                      requestOwnershipTransferDetailsRepository:
-                                          notificationRepositoryImplementation,
-                                      acceptOrRejectRequestOwnershipTransferRepository:
-                                          notificationRepositoryImplementation),
+                                  value: bloc!,
                                   child: BlocBuilder<
                                       RequestOwnershipTransferDetailsCubit,
                                       RequestOwnershipTransferDetailsState>(
                                     builder: (blocContext, state) {
-                                      RequestOwnershipTransferDetailsCubit
-                                          cubit = blocContext.watch<
-                                              RequestOwnershipTransferDetailsCubit>();
-                                      if (state
-                                          is LoadingAcceptOrRejectOwnershipTransferState) {
+
+                                      if (state is LoadingAcceptOrRejectOwnershipTransferState) {
                                         return const Center(
                                             child: CircularProgressIndicator());
                                       }
@@ -237,10 +232,9 @@ class _RequestOwnershipTransferDetailsPageState
                                                     "accept_ownership_transfer"
                                                         .tr(),
                                                 onPressed: () {
-                                                  cubit
-                                                      .acceptCommercialRequestTransfer(
-                                                          cubit
-                                                              .commercialDetailsId)
+
+                                                  bloc!
+                                                      .acceptCommercialRequestTransfer(requestNumber)
                                                       .then((value) =>
                                                           Navigator.of(context)
                                                               .pushNamed(
@@ -249,6 +243,7 @@ class _RequestOwnershipTransferDetailsPageState
                                                             arguments:
                                                                 requestNumber,
                                                           ));
+
                                                 },
                                               ),
                                             ),
@@ -270,10 +265,8 @@ class _RequestOwnershipTransferDetailsPageState
                                                     "reject_ownership_transfer"
                                                         .tr(),
                                                 onPressed: () {
-                                                  cubit
-                                                      .rejectCommercialRequestTransfer(
-                                                          cubit
-                                                              .commercialDetailsId)
+                                                  bloc!
+                                                      .rejectCommercialRequestTransfer(requestNumber)
                                                       .then((value) =>
                                                           Navigator.pop(
                                                               context));
