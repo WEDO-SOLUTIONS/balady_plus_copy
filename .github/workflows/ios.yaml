@@ -202,7 +202,7 @@ jobs:
           KC="$HOME/Library/Keychains/build.keychain"
 
           security list-keychains -s $LKC
-          security default-keychain -s $LKC
+          security default-keychain -d user -s $LKC
           security delete-keychain $KC
 
           rm -rf ~/Library/MobileDevice/Provisioning\ Profiles/
