@@ -57,7 +57,7 @@ jobs:
       - name: Import APP Certificates
         uses: apple-actions/import-codesign-certs@v2
         with:
-          keychain: "$RUNNER_TEMP/${{ github.run_id }}"
+          keychain: "${{ github.run_id }}"
           keychain-password: ${{ github.run_id }}
           p12-file-base64: ${{ secrets.FILE_BALADY_P12 }}
           p12-password: "balady"
@@ -68,7 +68,7 @@ jobs:
           FILE_BALADY_CER: ${{ secrets.FILE_BALADY_CER }}
           FILE_BALADY_MOBILEPROVISION: ${{ secrets.FILE_BALADY_MOBILEPROVISION }}
           FILE_BALADY_P12: ${{ secrets.FILE_BALADY_P12 }}
-          KEYCHAIN: "$RUNNER_TEMP/${{ github.run_id }}"
+          KEYCHAIN: "${{ github.run_id }}"
         run: |
           security find-identity -p codesigning
 
