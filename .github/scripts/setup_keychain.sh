@@ -36,7 +36,7 @@ for APPLE_CERT in ${APPLE_CERTS[@]}; do
     security import $RUNNER_TEMP/$APPLE_CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
 done
 
-security import $KEY -k $KC -f pcks12 -A -P 'balady' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+security import $KEY -k $KC -f pkcs12 -A -P 'balady' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
 security import $CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
 
 security default-keychain -s $KC
