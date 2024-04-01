@@ -22,8 +22,7 @@ echo "$FILE_BALADY_MOBILEPROVISION" | base64 --decode > $PROFILE
 
 # Setup keychain
 security create-keychain -p $KC_PASS $KC
-security set-keychain-settings -lut 21600 $KC
-security unlock-keychain -p $KC_PASS $KC
+security list-keychains -d user -s $KC
 
 curl https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -o $RUNNER_TEMP/AppleWWDRCA.cer
 security import $RUNNER_TEMP/AppleWWDRCA.cer -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
@@ -36,12 +35,13 @@ for APPLE_CERT in ${APPLE_CERTS[@]}; do
     security import $RUNNER_TEMP/$APPLE_CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
 done
 
-security import $KEY -k $KC -f pkcs12 -A -P 'balady' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+security import $KEY -k $KC -t priv -A -P 'balady' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
 security import $CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
 
-security default-keychain -s $KC
-security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $KC_PASS $KC
-security list-keychains -s $KC
+security default-keychain -d user -s $KC
+security set-keychain-settings $KC
+security set-key-partition-list -S apple-tool:,apple: -k $KC_PASS $KC
+security unlock-keychain -p $KC_PASS $KC
 
 # Install profile
 security cms -D -i $PROFILE -k $KC > $RUNNER_TEMP/provision.plist
@@ -49,4 +49,4 @@ UUID=`/usr/libexec/PlistBuddy -c 'print UUID' $RUNNER_TEMP/provision.plist`
 
 cp $PROFILE ~/Library/MobileDevice/Provisioning\ Profiles/$UUID.mobileprovision
 
-security find-identity -p codesigning $KC
+security find-identity -p codesigning
