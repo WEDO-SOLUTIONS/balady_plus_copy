@@ -37,7 +37,7 @@ security import $KEY -k $KC -f pkcs12 -A -P 'balady'
 security import $CERT -k $KC -t cert -A -P ''
 
 security default-keychain -s $KC
-security set-key-partition-list -S apple-tool:,apple:,codesign: -k $KC_PASS $KC
+# security set-key-partition-list -S apple-tool:,apple:,codesign: -k $KC_PASS $KC
 security list-keychains -s $KC
 
 # Install profile
