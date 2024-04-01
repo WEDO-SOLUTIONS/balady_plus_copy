@@ -73,7 +73,7 @@ jobs:
       - name: "Setup just"
         uses: extractions/setup-just@v2
         with:
-          just-version: "1.4.0"
+          just-version: "1.25.2"
 
       - name: "Prebuild"
         run: |
