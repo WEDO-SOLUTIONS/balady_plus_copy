@@ -195,7 +195,7 @@ jobs:
       - name: Cleanup keychain
         if: ${{ always() }}
         run: |
-          LKC='login.keychain'
+          LKC="$HOME/Library/Keychains/login.keychain"
           KC="$HOME/Library/Keychains/build.keychain"
 
           security list-keychains -s $LKC
