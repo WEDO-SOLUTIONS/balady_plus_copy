@@ -54,25 +54,14 @@ jobs:
           echo "CI_IS_PR=${CI_IS_PR}" >> ${GITHUB_ENV}
           echo "PATH=${PATH}:/opt/homebrew/bin" >> ${GITHUB_ENV}
 
-      - name: Import APP Certificates
-        uses: apple-actions/import-codesign-certs@v2
-        with:
-          keychain: "${{ github.run_id }}"
-          keychain-password: ${{ github.run_id }}
-          p12-file-base64: ${{ secrets.FILE_BALADY_P12 }}
-          p12-password: "balady"
-
       - name: Setup keychain
         env:
           LANG: en_US.UTF-8
           FILE_BALADY_CER: ${{ secrets.FILE_BALADY_CER }}
           FILE_BALADY_MOBILEPROVISION: ${{ secrets.FILE_BALADY_MOBILEPROVISION }}
           FILE_BALADY_P12: ${{ secrets.FILE_BALADY_P12 }}
-          KEYCHAIN: "${{ github.run_id }}"
         run: |
-          security find-identity -p codesigning
-
-          KC="$KEYCHAIN.keychain"
+          KC="$HOME/Library/Keychains/build.keychain"
           KC_PASS='build-pass'
           KEY="$RUNNER_TEMP/balady.p12"
           CERT="$RUNNER_TEMP/balady.cer"
@@ -172,7 +161,7 @@ jobs:
 
       - name: Build app
         run: |
-          KC="signing_temp.keychain"
+          KC="$HOME/Library/Keychains/build.keychain"
           KC_PASS='build-pass'
 
           momrahBundle='momra.balady.ios'
@@ -212,7 +201,7 @@ jobs:
       - name: Cleanup keychain
         run: |
           LKC='login.keychain'
-          KC="signing_temp.keychain"
+          KC="$HOME/Library/Keychains/build.keychain"
 
           security list-keychains -s $LKC
           security default-keychain -s $LKC
