@@ -137,7 +137,7 @@ jobs:
           ${is_pr}\
           **Branch**: [${CI_GIT_BRANCH}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/tree/${CI_GIT_BRANCH})\n\
           **Author**: ${GITHUB_ACTOR}\n\
-          **iOS**: [Build](${cat link})\" \
+          **iOS**: [Build]($(cat link))\" \
           }"
 
       - name: Cleanup keychain
