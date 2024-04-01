@@ -117,7 +117,28 @@ jobs:
           security find-identity -p codesigning
 
           fvm flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_dev.dart --flavor dev
-          curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImEuc3RyaXpobmV2QHVyYmkuYWUifQ.DgmqmgZ-DeQfBt0R36s7nftEkk-XnFr6VVi2syD-jTE" -X PUT -F file=@build/ios/ipa/balady_plus.ipa https://baladyapp-builds.urbi.ae/builds/${CI_ARTIFACT_SUFFIX}
+          LINK=`curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImEuc3RyaXpobmV2QHVyYmkuYWUifQ.DgmqmgZ-DeQfBt0R36s7nftEkk-XnFr6VVi2syD-jTE" -X PUT -F file=@build/ios/ipa/balady_plus.ipa https://baladyapp-builds.urbi.ae/builds/${CI_ARTIFACT_SUFFIX}  | jq '.install_link'`
+          echo $LINK > 'link'
+
+      - name: Send notification to mattermost channel
+        env: # Set the secret as an environment variable
+          MM_CHANNEL_ID: ${{ secrets.MM_CHANNEL_ID }}
+          MM_BOT_TOKEN: ${{ secrets.MM_BOT_TOKEN }}
+          MM_DOMAIN: ${{ secrets.MM_DOMAIN }}
+        run: |
+          is_pr=""
+          if [ -n "${CI_IS_PR}" ]; then
+            PR_ID=$(echo -n $GITHUB_REF_NAME | tr --complement --squeeze-repeats '[:alnum:]' '-' | sed 's/-merge//')
+            is_pr="**Pull Request**: [${{ github.event.pull_request.title }}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/pull/${PR_ID})\n"
+          fi
+          curl -X POST -H 'Content-type: application/json' -H "Authorization: Bearer ${MM_BOT_TOKEN}" https://${MM_DOMAIN}/api/v4/posts -d "{ \
+            \"channel_id\": \"${MM_CHANNEL_ID}\", \
+            \"message\": \"\
+          ${is_pr}\
+          **Branch**: [${CI_GIT_BRANCH}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/tree/${CI_GIT_BRANCH})\n\
+          **Author**: ${GITHUB_ACTOR}\n\
+          **iOS**: [Build](${cat link})\" \
+          }"
 
       - name: Cleanup keychain
         if: ${{ always() }}
