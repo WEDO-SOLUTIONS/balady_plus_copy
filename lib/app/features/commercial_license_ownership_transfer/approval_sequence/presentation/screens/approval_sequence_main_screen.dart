@@ -24,6 +24,7 @@ import '../../../../Commercial_license_transfer/persentation/license_premits/req
 import '../../data/repositories/repository_implementation.dart';
 import '../blocs/request_approval_sequence_cubit.dart';
 import 'approval_sequence_permits_screen.dart';
+import 'approval_sequence_shop-location.dart';
 
 class ApprovalSequenceMainScreen extends StatefulWidget {
   const ApprovalSequenceMainScreen({Key? key}) : super(key: key);
@@ -43,8 +44,8 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
 
   late List<Widget>? pagesList = [
     ApprovalSequencePermitsScreen(stepInterface: this),
+    ApprovalSequenceShopLocationScreen(stepInterface: this),
     RquestSequenceNewOwnerInfoScreen(stepInterface: this),
-    RequestSequencePledgesScreen(stepInterface: this),
   ];
 
   @override

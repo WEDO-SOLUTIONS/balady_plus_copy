@@ -1,13 +1,12 @@
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/commercial_license/presentation/commercial_license/blocs/commercial_license_bloc.dart';
 import 'package:balady_plus/app/features/commercial_license/presentation/step4/bloc/cr_step4_shop_data_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../core/utils/enums/enums.dart';
+import '../../../../Commercial_license_transfer/persentation/interface/step_interface.dart';
 import '../../../../_shared_feature_/presentation/widgets/check_boxes/text_field_with_check_btn.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/radio_buttons/vertical_radio_group_component.dart';
@@ -17,9 +16,13 @@ import '../../../../commercial_license/domain/entities/investment_contracts_resp
 import '../../../../commercial_license/presentation/commercial_license/widgets/previous_next_button.dart';
 import '../../../../commercial_license/presentation/step4/widgets/investment_contract_card.dart';
 import '../../../../vd/presentation/widgets/details_widgets/incident_desc_widgets/vd_create_incident_addetional_fields.dart';
+import '../blocs/request_approval_sequence_cubit.dart';
 
 class ApprovalSequenceShopLocationScreen extends StatefulWidget {
-  const ApprovalSequenceShopLocationScreen({Key? key}) : super(key: key);
+
+
+  StepInterface stepInterface;
+   ApprovalSequenceShopLocationScreen({Key? key, required this.stepInterface}) : super(key: key);
 
   @override
   State<ApprovalSequenceShopLocationScreen> createState() => _ApprovalSequenceShopLocationScreenState();
@@ -32,46 +35,40 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
     // TODO: implement initState
     super.initState();
 
-   // context.read<CrStep4ShopDataCubit>().initForm();
-    // context.read<CrStep4ShopDataCubit>().salamaBillFawery();
-    // context.read<CrStep4ShopDataCubit>().salamaReportFawery();
-    context.read<CrStep4ShopDataCubit>().getDeedOwnerShipsTypes();
-    //context.read<CrStep4ShopDataCubit>().getCleanOptions();
-    //context.read<CrStep4ShopDataCubit>().getMalls();
+    Future.microtask(() {
+      context.read<RequestApprovalSequenceCubit>().InitForm();
+      context.read<RequestApprovalSequenceCubit>().getDeedOwnerShipsTypes();
+
+    });
+
+
+
   }
 
   @override
   Widget build(BuildContext context) {
     return getBody();
 
-
-
-
-
-
-
-
-
-
-
-
   }
 
  Widget getBody (){
-    return  BlocConsumer<CrStep4ShopDataCubit, CrStep4ShopDataState>(
+    return  BlocConsumer<RequestApprovalSequenceCubit, RequestApprovalSequenceState>(
         listener: (context, state) {
-          if (state.status == BlocStatus.failure ||
-              state.deedOptionsStatus == BlocStatus.failure
-              // state.cleanOptionsStatus == BlocStatus.failure ||
-              // state.contractsListStatus == BlocStatus.failure ||
-              // state.investmentListStatus == BlocStatus.failure
-          ){
+
+
+
+          if ((state is DTOState &&
+              (state as DTOState).deedOptionsStatus == BlocStatus.failure) ||
+              ((state as DTOState).status == BlocStatus.failure)||
+              (state as DTOState).investmentListStatus == BlocStatus.failure) {
             CommonFunctions.showError(state.errorMessage ?? "");
           }
+
+
         }, builder: (context, state) {
       return Stack(
         children: [
-          if (state.draftStatus == BlocStatus.success)
+          if (state is DTOState)
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -85,285 +82,6 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
 
                           CRHeaderDesc(header: "step4Title".tr()),
                           const SizedBox(height: 16),
-                          // YesNoRadioGroupWidget(
-                          //   groupName: "step4GroupName".tr(),
-                          //   currentValue: state.brand,
-                          //   onChanged: (value) {
-                          //     context
-                          //         .read<CrStep4ShopDataCubit>()
-                          //         .updateFields(brand: value);
-                          //   },
-                          // ),
-                          // CustomTextFieldWidget(
-                          //   label: "step6label1".tr(),
-                          //   hintText: "step6hint1".tr(),
-                          //   bottomMargin: 24,
-                          //   initialValue: state.shopName,
-                          //   onChanged: (value) {
-                          //     context
-                          //         .read<CrStep4ShopDataCubit>()
-                          //         .updateFields(shopName: value);
-                          //   },
-                          // ),
-                          // CustomTextFieldWidget(
-                          //   label: "step6label2".tr(),
-                          //   hintText: "step6hint2".tr(),
-                          //   isDigitsOnly: true,
-                          //   initialValue: state.shopUnitNumber,
-                          //   keyboardType: TextInputType.number,
-                          //   bottomMargin: 24,
-                          //   onChanged: (value) {
-                          //     context
-                          //         .read<CrStep4ShopDataCubit>()
-                          //         .updateFields(shopUnitNumber: value);
-                          //   },
-                          // ),
-                          // CustomTextFieldWidget(
-                          //   label: "step6label3".tr(),
-                          //   hintText: "step6hint3".tr(),
-                          //   isDigitsOnly: true,
-                          //   keyboardType: TextInputType.number,
-                          //   bottomMargin: 24,
-                          //   showOptional: true,
-                          //   initialValue: state.blockNumber,
-                          //   onChanged: (value) {
-                          //     context
-                          //         .read<CrStep4ShopDataCubit>()
-                          //         .updateFields(blockNumber: value);
-                          //   },
-                          // ),
-                          // CustomTextFieldWidget(
-                          //   label: "step4label4".tr(),
-                          //   hintText: "step4hint4".tr(),
-                          //   isDigitsOnly: true,
-                          //   keyboardType: TextInputType.number,
-                          //   bottomMargin: 24,
-                          //   initialValue: state.holesCount,
-                          //   onChanged: (value) {
-                          //     context
-                          //         .read<CrStep4ShopDataCubit>()
-                          //         .updateFields(holesCount: value);
-                          //   },
-                          // ),
-                          // CustomTextFieldWidget(
-                          //   label: "step4label5".tr(),
-                          //   hintText: "step4hint5".tr(),
-                          //   isDigitsOnly: true,
-                          //   keyboardType: TextInputType.number,
-                          //   bottomMargin: 24,
-                          //   initialValue: state.floorCount,
-                          //   onChanged: (value) {
-                          //     context
-                          //         .read<CrStep4ShopDataCubit>()
-                          //         .updateFields(floorCount: value);
-                          //   },
-                          // ),
-                          // CustomTextFieldWidget(
-                          //   label: "step4label6".tr(),
-                          //   hintText: "step4hint6".tr(),
-                          //   isDigitsOnly: true,
-                          //   keyboardType: TextInputType.number,
-                          //   initialValue: state.noOfCameras,
-                          //   bottomMargin: 24,
-                          //   onChanged: (value) {
-                          //     context
-                          //         .read<CrStep4ShopDataCubit>()
-                          //         .updateFields(noOfCameras: value);
-                          //   },
-                          // ),
-                          // if (context
-                          //     .read<CrStep4ShopDataCubit>()
-                          //     .cameraEndorsmentText
-                          //     .isNotEmpty)
-                          //   UndertakingWidget(
-                          //     text: "cr_pleadge_title".tr(),
-                          //     desc: context
-                          //         .read<CrStep4ShopDataCubit>()
-                          //         .cameraEndorsmentText,
-                          //     onChange: (value) {
-                          //       context
-                          //           .read<CrStep4ShopDataCubit>()
-                          //           .updateEndorsmentAgreement(value);
-                          //     },
-                          //     initialValue: state.endorsmentAgreement ?? false,
-                          //   ),
-                          // YesNoRadioGroupWidget(
-                          //   groupName: "step4groupName1".tr(),
-                          //   currentValue: state.hasElevator,
-                          //   onChanged: (value) {
-                          //     context
-                          //         .read<CrStep4ShopDataCubit>()
-                          //         .updateFields(hasElevator: value);
-                          //   },
-                          // ),
-                          // YesNoRadioGroupWidget(
-                          //   groupName: "step4groupName2".tr(),
-                          //   currentValue: state.existInMall,
-                          //   onChanged: (value) {
-                          //     context
-                          //         .read<CrStep4ShopDataCubit>()
-                          //         .updateExistsInMallFields(existInMall: value);
-                          //   },
-                          // ),
-                          // if (state.existInMall == true) ...[
-                          //   MallsDropDown(),
-                          //   CustomTextFieldWidget(
-                          //     label: "step4label8".tr(),
-                          //     hintText: "step4hint8".tr(),
-                          //     isDigitsOnly: true,
-                          //     keyboardType: TextInputType.number,
-                          //     bottomMargin: 24,
-                          //     initialValue: state.floorNumber,
-                          //     onChanged: (value) {
-                          //       context
-                          //           .read<CrStep4ShopDataCubit>()
-                          //           .updateFields(floorNumber: value);
-                          //     },
-                          //   ),
-                          // ],
-                          // IsShopInsidePetroStationWidget(),
-                          // YesNoRadioGroupWidget(
-                          //   groupName: "step4groupName3".tr(),
-                          //   currentValue: state.isCitizenPledgedToClean,
-                          //   onChanged: (value) {
-                          //     if (value != null) {
-                          //       context
-                          //           .read<CrStep4ShopDataCubit>()
-                          //           .updateIsCitizenPledgedToClean(value);
-                          //     }
-                          //   },
-                          // ),
-                          // if (state.isCitizenPledgedToClean == true &&
-                          //     state.cleanContractshowAttach() &&
-                          //     // !state.cleanOptionCLEANCONTRACT() &&
-                          //     !state.cleanOptionBALADIASADAD())
-                          //   HijriCalendarAddetionalField(
-                          //     fieldName: "cr_end_clean_contract".tr(),
-                          //     isMandatory: true,
-                          //     currentVlaue: state.cleanContractEndDate,
-                          //     onChanged: (value) {
-                          //       context
-                          //           .read<CrStep4ShopDataCubit>()
-                          //           .updateCleanContractDate(value ?? "");
-                          //     },
-                          //   ),
-                          // if (state.isCitizenPledgedToClean == true &&
-                          //     (state.cleanContractshowService() &&
-                          //         (state.cleanOptionCLEANCONTRACT() ||
-                          //             state.cleanOptionOPTIONAL())) &&
-                          //     state.contractsListStatus ==
-                          //         BlocStatus.success) ...[
-                          //   ListView.builder(
-                          //       shrinkWrap: true,
-                          //       physics: const NeverScrollableScrollPhysics(),
-                          //       itemCount: state.cleanContractsResponse?.items
-                          //           ?.length ??
-                          //           0,
-                          //       itemBuilder: (ctx, index) {
-                          //         return CleanContractCard(
-                          //             item: state.cleanContractsResponse!
-                          //                 .items![index],
-                          //             onSelect: (CleanContractItem? item) {
-                          //               context
-                          //                   .read<CrStep4ShopDataCubit>()
-                          //                   .selectCleanContract(item);
-                          //             },
-                          //             selected: state.selectedCleanContract);
-                          //       }),
-                          // ],
-                          // if (context
-                          //     .read<CrStep4ShopDataCubit>()
-                          //     .saveLocationResponse
-                          //     ?.showSalamaPermit ==
-                          //     true) ...[
-                          //   YesNoRadioGroupWidget(
-                          //     groupName: "step4groupName4".tr(),
-                          //     currentValue: state.salamaPermitExist,
-                          //     onChanged: (value) {
-                          //       context
-                          //           .read<CrStep4ShopDataCubit>()
-                          //           .updateSalamaPermitExists(
-                          //           salamaPermitExist: value);
-                          //     },
-                          //   ),
-                          //   if (state.isFawryReport == true &&
-                          //       state.salamaPermitExist == false)
-                          //     TextWithCheckBtn(
-                          //       title: "slamaReportNumber".tr(),
-                          //       hint: "slamaReportNumber".tr(),
-                          //       textInputType: TextInputType.text,
-                          //       validate: (String? t) {},
-                          //       isValidate:
-                          //       state.isSalamaReportVerified ?? false,
-                          //       currentValue: state.slamaReportNumber,
-                          //       verify: () {
-                          //         context
-                          //             .read<CrStep4ShopDataCubit>()
-                          //             .verifySalamaReport();
-                          //       },
-                          //       onTextChanged: (value) {
-                          //         context
-                          //             .read<CrStep4ShopDataCubit>()
-                          //             .updateSalamaPermitReport(
-                          //             salamaReportNumber: value);
-                          //       },
-                          //     ),
-                          //   if (state.isFawryBill == true &&
-                          //       state.salamaPermitExist == false)
-                          //     TextWithCheckBtn(
-                          //       title: "bill_number_name".tr(),
-                          //       hint: "write_hint".tr(),
-                          //       validate: (String? t) {},
-                          //       isValidate: state.isSalamaBillVerified ?? false,
-                          //       currentValue: state.slamaBillNumber,
-                          //       topPadding: CommonFunctions.isAppAR ? 0 : 60,
-                          //       verify: () {
-                          //         context
-                          //             .read<CrStep4ShopDataCubit>()
-                          //             .verifySalamaBill();
-                          //       },
-                          //       onTextChanged: (value) {
-                          //         context
-                          //             .read<CrStep4ShopDataCubit>()
-                          //             .updateSalamaPermitBill(
-                          //             salamaBillNumber: value);
-                          //       },
-                          //     ),
-                          //   if (state.salamaPermitExist == true)
-                          //     TextWithCheckBtn(
-                          //       title: "salamaIssueNo".tr(),
-                          //       hint: "salamaIssueNo".tr(),
-                          //       textInputType: TextInputType.text,
-                          //       validate: (String? t) {},
-                          //       isValidate:
-                          //       state.isSalamaPermitVerified ?? false,
-                          //       currentValue: state.salamaPermitNumber,
-                          //       verify: () {
-                          //         context
-                          //             .read<CrStep4ShopDataCubit>()
-                          //             .verifySalamaPermit();
-                          //       },
-                          //       onTextChanged: (value) {
-                          //         context
-                          //             .read<CrStep4ShopDataCubit>()
-                          //             .updateSalamaPermitNumber(
-                          //             salamaPermitNumber: value);
-                          //       },
-                          //     ),
-                          //   const SizedBox(
-                          //     height: 16,
-                          //   ),
-                          // ],
-                          // if (state.crContractType == CRContractType.ejar &&
-                          //     state.crContractOption ==
-                          //         CRContractOption.service)
-                          //   NotesWidget(
-                          //     notes: [CommonFunctions.getIssueCrWarning2()],
-                          //   ),
-                          //
-
-
-
 
                           HorizontalRadioGroup<CRSubmitterType>(
                             groupName: "ekramApplicantType".tr(),
@@ -378,7 +96,7 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                             ],
                             onChanged: (value) {
                               context
-                                  .read<CrStep4ShopDataCubit>()
+                                  .read<RequestApprovalSequenceCubit>()
                                   .updateSubmitterType(value!);
                             },
                           ),
@@ -393,7 +111,7 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                               ],
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<RequestApprovalSequenceCubit>()
                                     .updateCRContractType(value!);
                               },
                             ),
@@ -414,7 +132,7 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                               ],
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<RequestApprovalSequenceCubit>()
                                     .updateCRContractOption(value!);
                               },
                             ),
@@ -431,7 +149,7 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                               initialValue: state.contractNumber,
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<RequestApprovalSequenceCubit>()
                                     .updateContractNumber(value);
                               },
                             ),
@@ -441,11 +159,12 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                               currentVlaue: state.contractDate,
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<RequestApprovalSequenceCubit>()
                                     .updateContractDate(value ?? "");
                               },
                             ),
                           ],
+
                           if (state.crContractType == CRContractType.deed &&
                               state.crSubmitterType == CRSubmitterType.owner &&
                               state.crContractOption ==
@@ -459,7 +178,7 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                               }).toList(),
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<RequestApprovalSequenceCubit>()
                                     .updateDeedInfo(ownershipType: value);
                               },
                             ),
@@ -471,13 +190,15 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                               isValidate: state.deedVerified ?? false,
                               currentValue: state.contractNumber,
                               verify: () {
+
+                                //check contract number
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<RequestApprovalSequenceCubit>()
                                     .getDeedInfoHandler();
                               },
                               onTextChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<RequestApprovalSequenceCubit>()
                                     .updateDeedInfo(deedNumber: value);
                               },
                             ),
@@ -496,7 +217,7 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                               ],
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<RequestApprovalSequenceCubit>()
                                     .updateCRContractType(value!);
                               },
                             ),
@@ -521,7 +242,7 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                               ],
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<RequestApprovalSequenceCubit>()
                                     .updateCRContractOption(value!);
                               },
                             )
@@ -539,7 +260,7 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                               initialValue: state.contractNumber,
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<RequestApprovalSequenceCubit>()
                                     .updateContractNumber(value);
                               },
                             ),
@@ -549,7 +270,7 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                               currentVlaue: state.contractDate,
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<RequestApprovalSequenceCubit>()
                                     .updateContractDate(value ?? "");
                               },
                             ),
@@ -569,7 +290,7 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                               state.ejarInfoRequst?.tenancyContractNumber,
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<RequestApprovalSequenceCubit>()
                                     .updateTenancyInfo(
                                     tenancyContractNumber: value);
                               },
@@ -583,7 +304,7 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                               initialValue: state.ejarInfoRequst?.versionNumber,
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<RequestApprovalSequenceCubit>()
                                     .updateTenancyInfo(versionNumber: value);
                               },
                             ),
@@ -596,7 +317,7 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                               initialValue: state.ejarInfoRequst?.getId(),
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<RequestApprovalSequenceCubit>()
                                     .updateTenancyInfo(id: value);
                               },
                             ),
@@ -606,7 +327,7 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                                     : "verify".tr(),
                                 onPressed: () {
                                   context
-                                      .read<CrStep4ShopDataCubit>()
+                                      .read<RequestApprovalSequenceCubit>()
                                       .getEjarInfoHandler();
                                 }),
                             const CustomVerticalSpace(
@@ -631,7 +352,7 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                               ],
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<RequestApprovalSequenceCubit>()
                                     .updateCRContractOption(value!);
                               },
                             ),
@@ -644,9 +365,9 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                           if (state.crContractType == CRContractType.invest &&
                               state.crSubmitterType == CRSubmitterType.rental &&
                               state.crContractOption ==
-                                  CRContractOption.service &&
+                                  CRContractOption.service && state.investmentListStatus != null &&
                               state.investmentListStatus
-                                  .isSubmissionSuccess) ...[
+                                  !.isSubmissionSuccess) ...[
                             MediaQuery.removePadding(
                               removeTop: true,
                               context: context,
@@ -662,7 +383,7 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                                         onSelect:
                                             (InvestmentContractItem? item) {
                                           context
-                                              .read<CrStep4ShopDataCubit>()
+                                              .read<RequestApprovalSequenceCubit>()
                                               .selectInvestmentContract(item);
                                         },
                                         selected:
@@ -693,7 +414,7 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                           //   onChanged: (value) {
                           //     if (value != null) {
                           //       context
-                          //           .read<CrStep4ShopDataCubit>()
+                          //           .read<RequestApprovalSequenceCubit>()
                           //           .updateBoardContractSetting(value);
                           //     }
                           //   },
@@ -711,7 +432,7 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                           //             item: state.boardContractItems![index],
                           //             onSelect: (BoardContractItem? item) {
                           //               context
-                          //                   .read<CrStep4ShopDataCubit>()
+                          //                   .read<RequestApprovalSequenceCubit>()
                           //                   .selectBoardContractNumber(item!);
                           //             },
                           //             selected: state.boardContractNumber);
@@ -728,27 +449,30 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                     ),
                   ),
                 ),
-                CRPreviousNextButtons(
-                  isBtnDisabled: !state.isFormValid(),
+
+                ElevatedButtonWidget.next(
                   onPressed: () {
-                    context.read<CrStep4ShopDataCubit>().save();
+
                   },
                 ),
+
               ],
             ),
-          if (state.deedOptionsStatus == BlocStatus.failure ||
-              state.cleanOptionsStatus == BlocStatus.failure)
+          if ( state is DTOState&& (state as DTOState).deedOptionsStatus == BlocStatus.failure)
             RetryWidget(
               onRetry: () {
-                context.read<CrStep4ShopDataCubit>().getDeedOwnerShipsTypes();
-                context.read<CrStep4ShopDataCubit>().getCleanOptions();
+                context.read<RequestApprovalSequenceCubit>().getDeedOwnerShipsTypes();
+
               },
             ),
-          if (state.status.isSubmissionLoading ||
-              state.deedOptionsStatus == BlocStatus.loading ||
-              state.cleanOptionsStatus == BlocStatus.loading ||
-              state.contractsListStatus == BlocStatus.loading ||
-              state.investmentListStatus == BlocStatus.loading)
+          // if ((state as DTOState).deedOptionsStatus == BlocStatus.failure)
+          //   RetryWidget(
+          //     onRetry: () {
+          //       context.read<RequestApprovalSequenceCubit>().getDeedOwnerShipsTypes();
+          //       context.read<RequestApprovalSequenceCubit>().getCleanOptions();
+          //     },
+          //   ),
+          if (state == BlocStatus.loading)
             const CustomCircularLoadingWidget(),
         ],
       );

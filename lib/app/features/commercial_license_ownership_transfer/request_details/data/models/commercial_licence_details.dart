@@ -694,7 +694,7 @@ class ShopInfo {
   dynamic salamaBillNumber;
 
   List<BoardsInfo>? boardsInfo;
-  ContractInfoResponseDto? contractInfoResponseDto;
+  ContractInfoDto? contractInfoResponseDto;
 
   // bool showShopOwnership;
   // dynamic slamaBillOptions;
@@ -776,7 +776,7 @@ class ShopInfo {
                 json["boardsInfo"].map((x) => BoardsInfo.fromJson(x)))
             : null,
         contractInfoResponseDto: json["contractInfoResponseDto"] != null
-            ? ContractInfoResponseDto.fromJson(json["contractInfoResponseDto"])
+            ? ContractInfoDto.fromJson(json["contractInfoResponseDto"])
             : null,
         // showShopOwnership: json["showShopOwnership"],
         // slamaBillOptions: json["slamaBillOptions"],
@@ -832,7 +832,7 @@ class BoardsInfo {
 //
 // }
 
-class ContractInfoResponseDto {
+class ContractInfoDto {
   String contractType;
   String contractOption;
 
@@ -841,29 +841,29 @@ class ContractInfoResponseDto {
   // String contractDate;
   String contractNumber;
 
-  // ContractOptionsResponseDto contractOptionsResponseDto;
+  ContractOptionsResponseDto contractOptionsResponseDto;
   // dynamic investmentContractNumber;
 
-  ContractInfoResponseDto({
+  ContractInfoDto({
     required this.contractType,
     required this.contractOption,
     // required this.tenancyContractInfo,
     // required this.deedInfoResponse,
     // required this.contractDate,
     required this.contractNumber,
-    // required this.contractOptionsResponseDto,
+     required this.contractOptionsResponseDto,
     // required this.investmentContractNumber,
   });
 
-  factory ContractInfoResponseDto.fromJson(Map<String, dynamic> json) =>
-      ContractInfoResponseDto(
+  factory ContractInfoDto.fromJson(Map<String, dynamic> json) =>
+      ContractInfoDto(
         contractType: json["contractType"] ?? '',
         contractOption: json["contractOption"] ?? '',
         // tenancyContractInfo: json["tenancyContractInfo"],
         // deedInfoResponse: json["deedInfoResponse"],
         // contractDate: json["contractDate"],
         contractNumber: json["contractNumber"] ?? '',
-        // contractOptionsResponseDto: ContractOptionsResponseDto.fromJson(json["contractOptionsResponseDto"]),
+         contractOptionsResponseDto: ContractOptionsResponseDto.fromJson(json["contractOptionsResponseDto"]),
         // investmentContractNumber: json["investmentContractNumber"],
       );
 
@@ -906,24 +906,24 @@ class ContractInfoResponseDto {
   }
 }
 
-// class ContractOptionsResponseDto {
-//   List<String> ejarOptions;
-//   List<String> deedOptions;
-//   List<String> investOptions;
-//
-//   ContractOptionsResponseDto({
-//     required this.ejarOptions,
-//     required this.deedOptions,
-//     required this.investOptions,
-//   });
-//
-//   factory ContractOptionsResponseDto.fromJson(Map<String, dynamic> json) => ContractOptionsResponseDto(
-//     ejarOptions: List<String>.from(json["ejarOptions"].map((x) => x)),
-//     deedOptions: List<String>.from(json["deedOptions"].map((x) => x)),
-//     investOptions: List<String>.from(json["investOptions"].map((x) => x)),
-//   );
-//
-// }
+class ContractOptionsResponseDto {
+  List<String> ejarOptions;
+  List<String> deedOptions;
+  List<String> investOptions;
+
+  ContractOptionsResponseDto({
+    required this.ejarOptions,
+    required this.deedOptions,
+    required this.investOptions,
+  });
+
+  factory ContractOptionsResponseDto.fromJson(Map<String, dynamic> json) => ContractOptionsResponseDto(
+    ejarOptions: List<String>.from(json["ejarOptions"].map((x) => x)),
+    deedOptions: List<String>.from(json["deedOptions"].map((x) => x)),
+    investOptions: List<String>.from(json["investOptions"].map((x) => x)),
+  );
+
+}
 
 class SubmitterInfo {
   String entityType;

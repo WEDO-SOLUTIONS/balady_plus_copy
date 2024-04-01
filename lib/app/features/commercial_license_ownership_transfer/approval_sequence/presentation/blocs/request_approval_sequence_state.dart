@@ -1,6 +1,7 @@
 part of 'request_approval_sequence_cubit.dart';
 
 class RequestApprovalSequenceState extends Equatable {
+
   @override
   List<Object?> get props => throw UnimplementedError();
 }
@@ -39,4 +40,212 @@ final class SucceedState extends RequestApprovalSequenceState {
 
   @override
   List<Object?> get props => [permitsList];
+}
+
+final class DTOState extends RequestApprovalSequenceState {
+  final CRContractOption? crContractOption ;
+  final CRContractType? crContractType ;
+  final CRSubmitterType? crSubmitterType ;
+  final ContractInfoDto? dto ;
+  final String? contractNumber;
+  final String? contractDate;
+  final DeedInfoRequest? deedInfoRequst;
+  final List<String>? deedOptions;
+  final bool? deedVerified;
+  final EjarInfoRequest? ejarInfoRequst;
+  final bool? ejarVerified;
+  final InvestmentContractResponse? investmentContractResponse;
+  final InvestmentContractItem? selectedInvestmentContract;
+  final BlocStatus? deedOptionsStatus;
+  final BlocStatus? investmentListStatus;
+  final String? errorMessage;
+  final BlocStatus? status;
+
+  DTOState({
+    this.crContractOption,
+    this.crContractType,
+    this.crSubmitterType,
+    this.dto,
+    this.contractNumber,
+    this.contractDate,
+    this.deedInfoRequst,
+    this.deedOptions,
+    this.deedVerified,
+    this.ejarInfoRequst,
+    this.ejarVerified,
+    this.investmentContractResponse,
+    this.selectedInvestmentContract,
+    this.deedOptionsStatus = BlocStatus.initial,
+    this.investmentListStatus = BlocStatus.initial,
+    this.status = BlocStatus.initial,
+    this.errorMessage
+  });
+
+
+
+  DTOState copyWith({
+     CRContractOption? crContractOption ,
+     CRContractType? crContractType ,
+     CRSubmitterType? crSubmitterType,
+     ContractInfoDto? dto ,
+     String? contractNumber,
+     String? contractDate,
+     DeedInfoRequest? deedInfoRequst,
+     List<String>? deedOptions,
+     bool? deedVerified,
+     EjarInfoRequest? ejarInfoRequst,
+     bool? ejarVerified,
+     InvestmentContractResponse? investmentContractResponse,
+     InvestmentContractItem? selectedInvestmentContract,
+     BlocStatus? deedOptionsStatus,
+     BlocStatus? investmentListStatus,
+     String? errorMessage,
+     BlocStatus? status
+  }) {
+
+
+   return DTOState(
+        status: status,
+        ejarVerified:
+        ejarVerified == null ? this.ejarVerified : ejarVerified,
+        deedVerified:
+        deedVerified == null ? this.deedVerified : deedVerified,
+        deedOptionsStatus: deedOptionsStatus ,
+
+        deedOptions: deedOptions ?? this.deedOptions,
+
+        investmentContractResponse:
+        investmentContractResponse ?? this.investmentContractResponse,
+        errorMessage: errorMessage ?? this.errorMessage,
+
+        contractDate:
+        contractDate == null ? this.contractDate : contractDate,
+        contractNumber:
+        contractNumber == null ? this.contractNumber : contractNumber,
+        crSubmitterType: crSubmitterType == null
+            ? this.crSubmitterType
+            : crSubmitterType,
+
+     dto: dto == null
+         ? this.dto
+         : dto,
+        crContractType:
+        crContractType == null ? this.crContractType : crContractType,
+        crContractOption: crContractOption == null
+            ? this.crContractOption
+            : crContractOption,
+
+        investmentListStatus: investmentListStatus,
+        selectedInvestmentContract: selectedInvestmentContract == null
+            ? this.selectedInvestmentContract
+            : selectedInvestmentContract,
+
+        ejarInfoRequst: ejarInfoRequst ?? this.ejarInfoRequst,
+        deedInfoRequst: deedInfoRequst ?? this.deedInfoRequst,
+     );
+
+  }
+
+
+
+  bool showAttachDeed() {
+    if (dto?.contractOptionsResponseDto?.deedOptions
+        ?.contains("ATTACH") ??
+        false) {
+      return true;
+    }
+
+    return false;
+  }
+
+  bool showServicehDeed() {
+    if (dto?.contractOptionsResponseDto?.deedOptions
+        ?.contains("SERVICE") ??
+        false) {
+      return true;
+    }
+
+    return false;
+  }
+
+
+  bool showAttachEjar() {
+    if (dto?.contractOptionsResponseDto?.ejarOptions
+        ?.contains("ATTACH") ??
+        false) {
+      return true;
+    }
+    return false;
+  }
+
+  bool showAttachInvest() {
+    if (dto?.contractOptionsResponseDto?.investOptions
+        ?.contains("ATTACH") ??
+        false) {
+      return true;
+    }
+    return false;
+  }
+
+
+
+  bool showServiceEjar() {
+    if (dto?.contractOptionsResponseDto?.ejarOptions
+        ?.contains("SERVICE") ??
+        false) {
+      return true;
+    }
+    return false;
+  }
+
+  bool showServiceInvest() {
+    if (dto?.contractOptionsResponseDto?.investOptions
+        ?.contains("SERVICE") ??
+        false) {
+      return true;
+    }
+    return false;
+  }
+
+  bool isFormValid() {
+
+
+    if ((crContractOption == CRContractOption.service) &&
+        (crContractType == CRContractType.ejar) &&
+        ejarVerified == false) {
+      return false;
+    }
+    return true;
+
+
+  }
+
+
+  @override
+  List<Object?> get props {
+    return [
+      status,
+
+      errorMessage,
+      contractDate,
+      contractNumber,
+      crSubmitterType,
+      crContractType,
+      crContractOption,
+      crSubmitterType,
+      crContractType,
+      crContractOption,
+      investmentListStatus,
+      investmentContractResponse,
+      selectedInvestmentContract,
+      deedOptionsStatus,
+      deedOptions,
+      ejarVerified,
+      deedVerified,
+      ejarInfoRequst,
+      deedInfoRequst
+    ];
+  }
+
+
 }

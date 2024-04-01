@@ -35,16 +35,16 @@ class RequestOwnershipTransferDetailsState extends Equatable {
       ];
 }
 
-final class LoadingAcceptOrRejectOwnershipTransferState
-    extends RequestOwnershipTransferDetailsState {
-  @override
-  List<Object?> get props => throw UnimplementedError();
-}
-
-final class SucceedAcceptOrRejectOwnershipTransferState
-    extends RequestOwnershipTransferDetailsState {
-  const SucceedAcceptOrRejectOwnershipTransferState();
-
-  @override
-  List<Object?> get props => [];
-}
+// final class LoadingAcceptOrRejectOwnershipTransferState
+//     extends RequestOwnershipTransferDetailsState {
+//   @override
+//   List<Object?> get props => throw UnimplementedError();
+// }
+//
+// final class SucceedAcceptOrRejectOwnershipTransferState
+//     extends RequestOwnershipTransferDetailsState {
+//   const SucceedAcceptOrRejectOwnershipTransferState();
+//
+//   @override
+//   List<Object?> get props => [];
+// }

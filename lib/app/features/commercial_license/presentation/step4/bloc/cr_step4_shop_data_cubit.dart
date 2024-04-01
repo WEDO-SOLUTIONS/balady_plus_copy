@@ -675,8 +675,6 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
     bool isDraft = sl<CommercialLicenseBloc>().state.isDraft ?? false;
     bool draftLoaded = state.draftLoaded ?? false;
 
-    print(isDraft);
-    print(draftLoaded);
     if (draftLoaded == false && isDraft) {
       // if (true) {
       CommercialRequestDetailsResponse? requestData =

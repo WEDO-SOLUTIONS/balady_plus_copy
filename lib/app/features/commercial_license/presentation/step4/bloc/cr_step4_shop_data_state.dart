@@ -310,7 +310,9 @@ class CrStep4ShopDataState extends Equatable {
       BlocStatus? draftStatus,
       Nullable<String?>? currentDistrctId,
       bool? insidePetrolStation}) {
-    return CrStep4ShopDataState(
+    return
+
+      CrStep4ShopDataState(
         status: status ?? this.status,
         ejarVerified:
             ejarVerified == null ? this.ejarVerified : ejarVerified.value,
