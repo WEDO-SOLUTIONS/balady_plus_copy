@@ -61,7 +61,7 @@ jobs:
           FILE_BALADY_MOBILEPROVISION: ${{ secrets.FILE_BALADY_MOBILEPROVISION }}
           FILE_BALADY_P12: ${{ secrets.FILE_BALADY_P12 }}
         run: |
-          KC="$RUNNER_TEMP/build.keychain"
+          KC="build.keychain"
           KC_PASS='build-pass'
           KEY="$RUNNER_TEMP/balady.p12"
           CERT="$RUNNER_TEMP/balady.cer"
@@ -161,7 +161,7 @@ jobs:
 
       - name: Build app
         run: |
-          KC="$RUNNER_TEMP/build.keychain"
+          KC="build.keychain"
           KC_PASS='build-pass'
 
           momrahBundle='momra.balady.ios'
@@ -201,7 +201,7 @@ jobs:
       - name: Cleanup keychain
         run: |
           LKC='login.keychain'
-          KC="$RUNNER_TEMP/build.keychain"
+          KC="build.keychain"
 
           security list-keychains -s $LKC
           security default-keychain -s $LKC
