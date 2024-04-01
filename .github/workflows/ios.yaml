@@ -61,7 +61,6 @@ jobs:
           FILE_BALADY_MOBILEPROVISION: ${{ secrets.FILE_BALADY_MOBILEPROVISION }}
           FILE_BALADY_P12: ${{ secrets.FILE_BALADY_P12 }}
         run: |
-          export HOME=/Users/github
           KC="$HOME/Library/Keychains/build.keychain"
           KC_PASS='build-pass'
           KEY="$RUNNER_TEMP/balady.p12"
