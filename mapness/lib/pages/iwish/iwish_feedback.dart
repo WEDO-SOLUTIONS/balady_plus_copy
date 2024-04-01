@@ -18,7 +18,6 @@ import 'package:mapness/widgets/iwish/ui/iwish_feedback_mood.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_feedback_tags.dart';
 
 class IwishFeedback extends ConsumerStatefulWidget {
-
   const IwishFeedback({required this.iwishId, super.key});
   final String iwishId;
 
@@ -58,18 +57,27 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
       Future.delayed(
         const Duration(seconds: 5),
         () {
-          if (!mounted) return;
-          IwishCardRoute(iwishId: widget.iwishId).replace(context);
+          if (mounted) {
+            IwishCardRoute(iwishId: widget.iwishId).replace(context);
+          }
         },
       );
       return const ThanksSheet();
     }
 
+    final title = isCompleted
+        ? context.l10n.shareYourFeelingsAboutPark
+        : context.l10n.voteWhatDoYouWantToHaveInThePark;
+    final onPressedSubmit = () async {
+      await CommonFunctions.authOrOpen(
+        context,
+        callback: feedbackNotifier.submitFeedback,
+      );
+    };
+
     return LabeledDraggableSheet(
-      onClose: () => context.pop(),
-      title: isCompleted
-          ? context.l10n.shareYourFeelingsAboutPark
-          : context.l10n.voteWhatDoYouWantToHaveInThePark,
+      onClose: context.pop,
+      title: title,
       child: SafeArea(
         top: false,
         child: Column(
@@ -101,22 +109,29 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
                       vertical: 10,
                       horizontal: 16,
                     ),
-                    child: Text(
-                      feedback.comment ?? context.l10n.shareYourFeedback,
-                      style: Theme.of(context)
-                          .extension<ThemeTextStyles>()!
-                          .textM
-                          .copyWith(color: context.color.text_and_icons_base_primary),
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    child: Builder(builder: (context) {
+                      final textStyle =
+                          Theme.of(context).extension<ThemeTextStyles>()!.textM;
+                      final color =
+                          feedback.comment == null || feedback.comment!.isEmpty
+                              ? context.color.text_and_icons_base_tertiary
+                              : context.color.text_and_icons_base_primary;
+                      final style = textStyle.copyWith(color: color);
+                      final text =
+                          feedback.comment ?? context.l10n.shareYourFeedback;
+
+                      return Text(
+                        text,
+                        style: style,
+                        overflow: TextOverflow.ellipsis,
+                      );
+                    }),
                   ),
                 ),
               ),
               const SizedBox(height: 16),
               LabeledElevatedButton(
-                onPressed: () async {
-                  await CommonFunctions.authOrOpen(context, callback: feedbackNotifier.submitFeedback,);
-                },
+                onPressed: onPressedSubmit,
                 label: context.l10n.sendFeedback,
               ),
             ],
