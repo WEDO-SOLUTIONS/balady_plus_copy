@@ -100,7 +100,7 @@ jobs:
           security import $KEY -k $KC -f pkcs12 -A -P 'balady' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild -T /usr/bin/productsign
           security import $CERT -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild -T /usr/bin/productsign || true
 
-          security default-keychain -d user -s $KC
+          security default-keychain -s $KC
           security set-key-partition-list -S apple-tool:,apple:,codesign: -k $KC_PASS $KC
           security list-keychains -s $KC
 
@@ -199,7 +199,7 @@ jobs:
           KC="$HOME/Library/Keychains/build.keychain"
 
           security list-keychains -s $LKC
-          security default-keychain -d user -s $LKC
+          security default-keychain -s $LKC
           security delete-keychain $KC
 
           rm -rf ~/Library/MobileDevice/Provisioning\ Profiles/
