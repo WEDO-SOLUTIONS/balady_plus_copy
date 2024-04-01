@@ -196,6 +196,7 @@ jobs:
           curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImEuc3RyaXpobmV2QHVyYmkuYWUifQ.DgmqmgZ-DeQfBt0R36s7nftEkk-XnFr6VVi2syD-jTE" -X PUT -F file=@build/ios/ipa/balady_plus.ipa https://baladyapp-builds.urbi.ae/builds/${CI_ARTIFACT_SUFFIX}
 
       - name: Cleanup keychain
+        if: ${{ always() }}
         run: |
           LKC='login.keychain'
           KC="$HOME/Library/Keychains/build.keychain"
