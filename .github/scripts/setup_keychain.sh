@@ -33,7 +33,7 @@ for APPLE_CERT in ${APPLE_CERTS[@]}; do
     security import $RUNNER_TEMP/$APPLE_CERT -k $KC -t cert -A -P ''
 done
 
-security import $KEY -k $KC -f pkcs12 -A -P 'balady'
+security import $KEY -k $KC -t priv -A -P 'balady'
 security import $CERT -k $KC -t cert -A -P ''
 
 security default-keychain -d user -s $KC
