@@ -21,9 +21,9 @@ echo "$FILE_BALADY_P12" | base64 --decode > $KEY
 echo "$FILE_BALADY_MOBILEPROVISION" | base64 --decode > $PROFILE
 
 # Setup keychain
-security create-keychain -p $KC_PASS $KC
+security -v create-keychain -p $KC_PASS $KC
 security set-keychain-settings -lut 21600 $KC
-security unlock-keychain -p $KC_PASS $KC
+security -v unlock-keychain -p $KC_PASS $KC
 
 curl https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -o $RUNNER_TEMP/AppleWWDRCA.cer
 security import $RUNNER_TEMP/AppleWWDRCA.cer -k $KC -t cert -A -P ''
@@ -37,7 +37,7 @@ security import $KEY -k $KC -f pkcs12 -A -P 'balady'
 security import $CERT -k $KC -t cert -A -P ''
 
 security default-keychain -s $KC
-# security set-key-partition-list -S apple-tool:,apple:,codesign: -k $KC_PASS $KC
+security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $KC_PASS $KC
 security list-keychains -s $KC
 
 # Install profile
@@ -46,4 +46,4 @@ UUID=`/usr/libexec/PlistBuddy -c 'print UUID' $RUNNER_TEMP/provision.plist`
 
 cp $PROFILE ~/Library/MobileDevice/Provisioning\ Profiles/$UUID.mobileprovision
 
-security find-identity
+security find-identity $KC
