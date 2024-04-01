@@ -58,7 +58,7 @@ jobs:
         uses: apple-actions/import-codesign-certs@v2
         with:
           p12-file-base64: ${{ secrets.FILE_BALADY_P12 }}
-          p12-password: ""
+          p12-password: "balady"
 
       - name: Setup keychain
         env:
