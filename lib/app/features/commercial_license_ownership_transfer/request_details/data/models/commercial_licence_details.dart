@@ -54,7 +54,7 @@ class CommercialLicenceDetails {
   // String selectedBoardContractOption;
   // dynamic boardContractNumber;
   // dynamic modificationReason;
-  // Warnings warnings;
+  Warnings warnings;
   // dynamic requestSource;
   // dynamic rejectionInfo;
   // bool craft;
@@ -123,7 +123,7 @@ class CommercialLicenceDetails {
     // required this.selectedBoardContractOption,
     // required this.boardContractNumber,
     // required this.modificationReason,
-    // required this.warnings,
+    required this.warnings,
     // required this.requestSource,
     // required this.rejectionInfo,
     // required this.craft,
@@ -197,7 +197,7 @@ class CommercialLicenceDetails {
         // selectedBoardContractOption: json["selectedBoardContractOption"],
         // boardContractNumber: json["boardContractNumber"],
         // modificationReason: json["modificationReason"],
-        // warnings: Warnings.fromJson(json["warnings"]),
+        warnings: Warnings.fromJson(json["warnings"]),
         // requestSource: json["requestSource"],
         // rejectionInfo: json["rejectionInfo"],
         // craft: json["craft"],
@@ -982,12 +982,12 @@ class SubmitterInfo {
       );
 }
 
-// class Warnings {
-//   Warnings();
-//
-//   factory Warnings.fromJson(Map<String, dynamic> json) => Warnings(
-//   );
-//
-//   Map<String, dynamic> toJson() => {
-//   };
-// }
+class Warnings {
+  Warnings();
+
+  factory Warnings.fromJson(Map<String, dynamic> json) => Warnings(
+  );
+
+  Map<String, dynamic> toJson() => {
+  };
+}

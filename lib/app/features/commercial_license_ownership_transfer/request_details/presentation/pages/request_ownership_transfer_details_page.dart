@@ -31,14 +31,11 @@ class _RequestOwnershipTransferDetailsPageState
   @override
   void initState() {
     super.initState();
-    Future.microtask(() async{
-
-
+    Future.microtask(() async {
       await bloc!.getCommercialLicenseDetailsById(bloc!.requestID!);
     });
     CommonFunctions.sendUXCamEvent(UXCamEvents.openLicensesDetails);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +45,7 @@ class _RequestOwnershipTransferDetailsPageState
 
     return BlocProvider(
       create: (context) {
-         bloc = sl();
+        bloc = sl();
         bloc?.requestID = requestNumber;
         return bloc!;
       },
@@ -109,35 +106,35 @@ class _RequestOwnershipTransferDetailsPageState
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Container(
-                    height: 80,
-                    width: double.infinity,
-                    margin: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0)),
-                      color: AppColor.blue50Light,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SvgPicture.asset(
-                              IconPath.infoCircle,
-                              colorFilter: const ColorFilter.mode(
-                                AppColor.orange800,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            const Text('sfdsfsdsd'),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Container(
+                  //   height: 80,
+                  //   width: double.infinity,
+                  //   margin: const EdgeInsets.symmetric(horizontal: 20),
+                  //   child: Card(
+                  //     shape: RoundedRectangleBorder(
+                  //         borderRadius: BorderRadius.circular(15.0)),
+                  //     color: AppColor.blue50Light,
+                  //     child: Padding(
+                  //       padding: const EdgeInsets.all(8.0),
+                  //       child: Row(
+                  //         crossAxisAlignment: CrossAxisAlignment.start,
+                  //         children: [
+                  //           SvgPicture.asset(
+                  //             IconPath.infoCircle,
+                  //             colorFilter: const ColorFilter.mode(
+                  //               AppColor.orange800,
+                  //               BlendMode.srcIn,
+                  //             ),
+                  //           ),
+                  //           const SizedBox(
+                  //             width: 5,
+                  //           ),
+                  //           const Text('sfdsfsdsd'),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                   isReadonly ?? false
                       ? Container()
                       : Container(
@@ -160,8 +157,8 @@ class _RequestOwnershipTransferDetailsPageState
                                       RequestOwnershipTransferDetailsCubit,
                                       RequestOwnershipTransferDetailsState>(
                                     builder: (blocContext, state) {
-
-                                      if (state is LoadingAcceptOrRejectOwnershipTransferState) {
+                                      if (state
+                                          is LoadingAcceptOrRejectOwnershipTransferState) {  
                                         return const Center(
                                             child: CircularProgressIndicator());
                                       }
@@ -232,9 +229,9 @@ class _RequestOwnershipTransferDetailsPageState
                                                     "accept_ownership_transfer"
                                                         .tr(),
                                                 onPressed: () {
-
                                                   bloc!
-                                                      .acceptCommercialRequestTransfer(requestNumber)
+                                                      .acceptCommercialRequestTransfer(
+                                                          requestNumber)
                                                       .then((value) =>
                                                           Navigator.of(context)
                                                               .pushNamed(
@@ -243,7 +240,6 @@ class _RequestOwnershipTransferDetailsPageState
                                                             arguments:
                                                                 requestNumber,
                                                           ));
-
                                                 },
                                               ),
                                             ),
@@ -266,7 +262,8 @@ class _RequestOwnershipTransferDetailsPageState
                                                         .tr(),
                                                 onPressed: () {
                                                   bloc!
-                                                      .rejectCommercialRequestTransfer(requestNumber)
+                                                      .rejectCommercialRequestTransfer(
+                                                          requestNumber)
                                                       .then((value) =>
                                                           Navigator.pop(
                                                               context));

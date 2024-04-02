@@ -29,8 +29,6 @@ class _RequestOwnershipTransferDetailsBodyState
   @override
   void initState() {
     super.initState();
-
-
   }
 
   @override

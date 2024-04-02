@@ -64,7 +64,7 @@ class _ApprovalSequencePermitsScreenState
               child: const ShimmerEffectWidget(),
             ),
           );
-        } else if (state is SucceedState) {
+        } else if (state is GetPermitsSucceedState) {
           final permitsList = state.permitsList;
           return Padding(
             padding: const EdgeInsets.only(left: 15.0, right: 15, top: 0),
@@ -100,7 +100,7 @@ class _ApprovalSequencePermitsScreenState
                         ),
                         AppColor.grayLight)
                     : Container(),
-                 permitsList.permits!.isNotEmpty
+                permitsList.permits!.isNotEmpty
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -117,15 +117,15 @@ class _ApprovalSequencePermitsScreenState
                             text: "transfer_all".tr(),
                             onPressed: () {
                               for (var index = 0;
-                                  index <  permitsList.permits!.length;
+                                  index < permitsList.permits!.length;
                                   index++) {
-                                cubit.isChecked = true;
-                                // if (lstPermits.contains(permitResponse
-                                //         .permits![index].permitNumber!) ==
-                                //     false) {
-                                //   lstPermits.add(permitResponse
-                                //       .permits![index].permitNumber!);
-                                // }
+                                if (lstPermits.contains(permitsList
+                                        .permits![index].permitNumber!) ==
+                                    false) {
+                                  lstPermits.add(permitsList
+                                      .permits![index].permitNumber!);
+                                }
+                                permitsList.permits![index].selected = false;
                               }
                               setState(() {});
                             },
@@ -133,14 +133,14 @@ class _ApprovalSequencePermitsScreenState
                         ],
                       )
                     : Container(),
-                 permitsList.permits!.isNotEmpty
+                permitsList.permits!.isNotEmpty
                     ? Expanded(
                         child: ListView.builder(
                           shrinkWrap: true,
                           physics: const ScrollPhysics(),
-                          itemCount:  permitsList.permits!.length,
+                          itemCount: permitsList.permits!.length,
                           itemBuilder: (_, index) {
-                            final permit =  permitsList.permits![index];
+                            final permit = permitsList.permits![index];
                             return Card(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15.0),
@@ -162,16 +162,16 @@ class _ApprovalSequencePermitsScreenState
                                         const Spacer(),
                                         CustomElevatedButtonWidget(
                                           btnBorderColor:
-                                              cubit.isChecked == false
+                                              permit.selected == false
                                                   ? AppColor.white
                                                   : AppColor.blueSkyLight800,
-                                          btnColor: cubit.isChecked == false
+                                          btnColor: permit.selected == false
                                               ? AppColor.blueSkyLight800
                                               : AppColor.white,
                                           textStyle: AppStyle
                                               .elevatedButtonStyle
                                               .copyWith(
-                                            color: cubit.isChecked == false
+                                            color: permit.selected == false
                                                 ? AppColor.white
                                                 : AppColor.blueSkyLight800,
                                             fontWeight: FontWeight.w700,
@@ -180,7 +180,7 @@ class _ApprovalSequencePermitsScreenState
                                           btnPadding: EdgeInsets.all(8.0),
                                           btnHeight: 30,
                                           btnWidth: 20,
-                                          text: cubit.isChecked == false
+                                          text: permit.selected == false
                                               ? "tranfer_permit".tr()
                                               : "dont_tranfer_permit".tr(),
                                           onPressed: () {
@@ -189,13 +189,13 @@ class _ApprovalSequencePermitsScreenState
                                               lstPermits
                                                   .remove(permit.permitNumber!);
                                               setState(() {
-                                                cubit.isChecked = false;
+                                                permit.selected = false;
                                               });
                                             } else {
                                               lstPermits
                                                   .add(permit.permitNumber!);
                                               setState(() {
-                                                cubit.isChecked = true;
+                                                permit.selected = true;
                                               });
                                             }
                                           },
@@ -255,7 +255,7 @@ class _ApprovalSequencePermitsScreenState
                         ),
                       )
                     : const Spacer(),
-                 permitsList.term != null
+                permitsList.term != null
                     ? getCardView(
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -272,7 +272,7 @@ class _ApprovalSequencePermitsScreenState
                                 }),
                             Expanded(
                               child: Text(
-                                 permitsList.term ?? "",
+                                permitsList.term ?? "",
                                 style: AppStyle
                                     .personalInfoParameterValueTextStyle
                                     .copyWith(fontSize: 12),
@@ -296,8 +296,9 @@ class _ApprovalSequencePermitsScreenState
                       const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
                   child: ElevatedButtonWidget.next(
                     onPressed: () {
-                      if (isAgree ||  permitsList.term == null) {
-                        // bloc?.request.selectedPermits = lstPermits;
+                      if (isAgree || permitsList.term == null) {
+                        bloc?.saveSelectedRequestsPermitsRequest
+                            .selectedPermits = lstPermits;
                         widget.stepInterface.nextPage();
                       } else {
                         CommonFunctions.showError("terms_error".tr());

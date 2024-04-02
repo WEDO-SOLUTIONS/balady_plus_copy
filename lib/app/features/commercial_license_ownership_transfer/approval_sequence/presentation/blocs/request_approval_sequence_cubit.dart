@@ -11,6 +11,7 @@ import '../../../../Commercial_license_transfer/domain/use_cases/get_license_per
 import '../../../../Commercial_license_transfer/persentation/bloc/license_tranfer_cubit.dart';
 import '../../data/models/request_permits_model/permit.dart';
 import '../../data/models/request_permits_model/request_permits_model.dart';
+import '../../domain/entities/save_selected_requests_permits_request.dart';
 import '../../domain/repositories/repository.dart';
 
 part 'request_approval_sequence_state.dart';
@@ -19,6 +20,8 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
   RequestApprovalSequenceRepository requestApprovalSequenceRepository;
   int? requestNumber;
   bool isChecked;
+    SaveSelectedRequestsPermitsRequest saveSelectedRequestsPermitsRequest = SaveSelectedRequestsPermitsRequest();
+
 
   //  TransferLicenseRequest request= TransferLicenseRequest();
   RequestApprovalSequenceCubit(
@@ -46,26 +49,61 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
         }
       },
       (requestPermitsModel) {
-        emit(SucceedState(permitsList: requestPermitsModel!));
+        emit(GetPermitsSucceedState(permitsList: requestPermitsModel));
       },
     );
   }
 
-
-  void getDeedOwnerShipsTypes(BuildContext context) async {
-
-    RequestOwnershipTransferDetailsCubit bloc = sl();
-    var dto = bloc.state.commercialLicenceDetails?.shopInfo?.contractInfoResponseDto;
-
-
-
-
+  Future<void> saveSelectedRequestPermits(
+    int requestNumber,
+    SaveSelectedRequestsPermitsRequest saveSelectedRequestsPermitsRequest
+    /*TransferLicenseRequest request*/
+  ) async {
+    emit(LoadingState());
+    final failureOrSuccess = await requestApprovalSequenceRepository
+        .saveSelectedRequestPermits(requestNumber,saveSelectedRequestsPermitsRequest);
+    failureOrSuccess.fold(
+      (failure) {
+        if (failure is NoDataFoundException) {
+          emit(EmptyState());
+        } else if (failure is ServerFailure) {
+          emit(FailureState(failureMessage: failure.errorMessage));
+        } else {
+          emit(FailureState(failureMessage: "error"));
+        }
+      },
+      (success) {
+        emit(SucceedState());
+      },
+    );
   }
 
+  Future<void> saveShopInfo(
+    int requestNumber,
+    /*TransferLicenseRequest request*/
+  ) async {
+    emit(LoadingState());
+    final failureOrSuccess = await requestApprovalSequenceRepository
+        .saveShopInfo(requestNumber);
+    failureOrSuccess.fold(
+      (failure) {
+        if (failure is NoDataFoundException) {
+          emit(EmptyState());
+        } else if (failure is ServerFailure) {
+          emit(FailureState(failureMessage: failure.errorMessage));
+        } else {
+          emit(FailureState(failureMessage: "error"));
+        }
+      },
+      (success) {
+        emit(SucceedState());
+      },
+    );
+  }
 
-
-
-
-
-
+  void getDeedOwnerShipsTypes(BuildContext context) async {
+    RequestOwnershipTransferDetailsCubit bloc = sl();
+    var dto =
+        bloc.state.commercialLicenceDetails?.shopInfo?.contractInfoResponseDto;
+  }
 }
