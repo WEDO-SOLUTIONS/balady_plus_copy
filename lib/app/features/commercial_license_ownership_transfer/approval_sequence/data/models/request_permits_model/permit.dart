@@ -4,7 +4,8 @@ class Permit {
   String? permitEndDate;
   bool? selected;
 
-  Permit({this.permitName, this.permitNumber, this.permitEndDate , this.selected});
+  Permit(
+      {this.permitName, this.permitNumber, this.permitEndDate, this.selected});
 
   factory Permit.fromJson(Map<String, dynamic> json) => Permit(
         permitName: json['permitName'] as dynamic,

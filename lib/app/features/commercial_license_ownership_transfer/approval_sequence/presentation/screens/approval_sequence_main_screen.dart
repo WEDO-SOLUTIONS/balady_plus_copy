@@ -16,6 +16,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../Commercial_license_transfer/persentation/interface/step_interface.dart';
 import '../../../../Commercial_license_transfer/persentation/license_premits/request_sequence_new_owner.dart';
 import '../blocs/request_approval_sequence_cubit.dart';
+import 'approval_sequence_attachments_screen.dart';
 import 'approval_sequence_permits_screen.dart';
 import 'approval_sequence_shop_info_screen.dart';
 import 'approval_sequence_shop-location.dart';
@@ -37,11 +38,10 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
   String? requestNumber;
 
   late List<Widget>? pagesList = [
-    
     ApprovalSequencePermitsScreen(stepInterface: this),
     ApprovalSequenceShopInfoScreen(stepInterface: this),
     ApprovalSequenceShopLocationScreen(stepInterface: this),
-
+    // ApprovalSequenceAttachmentsScreen(stepInterface: this),
   ];
 
   @override

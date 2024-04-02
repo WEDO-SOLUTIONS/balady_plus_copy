@@ -6,16 +6,15 @@ import '../../../../commercial_license/domain/entities/save_shop_details_request
 import '../../data/models/request_permits_model/permit.dart';
 import '../../data/models/request_permits_model/request_permits_model.dart';
 import '../entities/save_selected_requests_permits_request.dart';
+import '../entities/save_shop_info_request.dart';
 
 abstract class RequestApprovalSequenceRepository {
   Future<Either<Failure, RequestPermitsModel>> getRequestPermits(
-    int requestNumber
-  );
-  Future<Either<Failure, bool>> saveSelectedRequestPermits(
-    int requestNumber,SaveSelectedRequestsPermitsRequest saveSelectedRequestsPermitsRequest
-  );
+      int requestNumber);
+  Future<Either<Failure, bool>> saveSelectedRequestPermits(int requestNumber,
+      SaveSelectedRequestsPermitsRequest saveSelectedRequestsPermitsRequest);
   Future<Either<Failure, bool>> saveShopInfo(
-    int requestNumber,
+    int requestNumber,SaveShopInfoRequest params
   );
 
   Future<Either<Failure, bool>> saveShopDetails(SaveShopDetailsRequest req);

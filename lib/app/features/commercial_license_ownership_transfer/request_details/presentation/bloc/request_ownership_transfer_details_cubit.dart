@@ -15,15 +15,12 @@ class RequestOwnershipTransferDetailsCubit
       requestOwnershipTransferDetailsRepository;
   final AcceptOrRejectRequestOwnershipTransferRepository
       acceptOrRejectRequestOwnershipTransferRepository;
-   String? requestID;
+  String? requestID;
 
   RequestOwnershipTransferDetailsCubit(
-      {
-      required this.requestOwnershipTransferDetailsRepository,
+      {required this.requestOwnershipTransferDetailsRepository,
       required this.acceptOrRejectRequestOwnershipTransferRepository})
-      : super(const RequestOwnershipTransferDetailsState()) {
-
-  }
+      : super(const RequestOwnershipTransferDetailsState()) {}
 
   Future<void> getCommercialLicenseDetailsById(String id) async {
     emit(
@@ -52,10 +49,12 @@ class RequestOwnershipTransferDetailsCubit
   }
 
   Future<void> acceptCommercialRequestTransfer(String id) async {
-    emit(state.copyWith(
-      status: BlocRequestStatus.submissionUpdateLoading,
-      errorMessage: null,
-    ),);
+    emit(
+      state.copyWith(
+        status: BlocRequestStatus.submissionUpdateLoading,
+        errorMessage: null,
+      ),
+    );
     final failureOrSuccess =
         await acceptOrRejectRequestOwnershipTransferRepository
             .acceptCommercialRequestTransfer(id);
@@ -74,19 +73,16 @@ class RequestOwnershipTransferDetailsCubit
             status: BlocRequestStatus.submissionUpdateSuccess,
             errorMessage: null,
           ),
-
-
         );
       },
     );
   }
 
   Future<void> rejectCommercialRequestTransfer(String id) async {
-   emit(
-      state.copyWith(
-        status: BlocRequestStatus.submissionUpdateLoading,
-        errorMessage: null,
-      ));
+    emit(state.copyWith(
+      status: BlocRequestStatus.submissionUpdateLoading,
+      errorMessage: null,
+    ));
     final failureOrSuccess =
         await acceptOrRejectRequestOwnershipTransferRepository
             .rejectCommercialRequestTransfer(id);
@@ -100,11 +96,10 @@ class RequestOwnershipTransferDetailsCubit
         );
       },
       (statusCode) {
-        emit(
-            state.copyWith(
-              status: BlocRequestStatus.submissionUpdateSuccess,
-              errorMessage: null,
-            ));
+        emit(state.copyWith(
+          status: BlocRequestStatus.submissionUpdateSuccess,
+          errorMessage: null,
+        ));
       },
     );
   }

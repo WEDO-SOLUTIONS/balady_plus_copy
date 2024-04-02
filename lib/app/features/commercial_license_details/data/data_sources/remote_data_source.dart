@@ -31,10 +31,7 @@ class CommercialLicenseDetailsRemoteDataSourceImplementation
         ApiUrl.getCommercialLicenseDetails(commercialLicenseId),
       );
       final data = response.data;
-      final result = ResponseBodyModel
-          .fromMap(data)
-          .data
-          ?.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
       return CommercialLicenceDetails.fromJson(result!);
     } on DioError catch (error) {
       // "DioError $error".errorLog();
@@ -58,27 +55,24 @@ class CommercialLicenseDetailsRemoteDataSourceImplementation
   }
 }
 
-
-
-
-    // on Exception catch (exception) {
-    //   CommonFunctions.sendEvent(
-    //     dioError: exception is DioException ? exception : null,
-    //     response: response,
-    //     ex: exception,
-    //   );
-    //
-    //   throw ServerException(exception.toString());
-    //
-    // } catch (exception) {
-    //   CommonFunctions.sendEvent(
-    //     dioError: null,
-    //     response: response,
-    //     ex: Exception(exception.toString()),
-    //   );
-    //   throw ServerException(exception.toString());
-    // }
-  //}
+// on Exception catch (exception) {
+//   CommonFunctions.sendEvent(
+//     dioError: exception is DioException ? exception : null,
+//     response: response,
+//     ex: exception,
+//   );
+//
+//   throw ServerException(exception.toString());
+//
+// } catch (exception) {
+//   CommonFunctions.sendEvent(
+//     dioError: null,
+//     response: response,
+//     ex: Exception(exception.toString()),
+//   );
+//   throw ServerException(exception.toString());
+// }
+//}
 
 // @override
 // Future<List<CommercialLicenseDetailsModel>> getInvoiceStatuses() async {
@@ -121,4 +115,3 @@ class CommercialLicenseDetailsRemoteDataSourceImplementation
 //     }
 //   }
 // }
-
