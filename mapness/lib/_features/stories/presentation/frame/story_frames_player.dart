@@ -9,11 +9,14 @@ import 'package:mapness/_features/stories/presentation/frame/story_frame_control
 import 'package:mapness/_features/stories/presentation/frame/story_frame_widget.dart';
 
 class StoryFramesPlayer extends ConsumerStatefulWidget {
-
   const StoryFramesPlayer({
-    required this.story, required this.onNextStory, required this.onPreviousStory, required this.onClose, this.onActionPressed,
+    required this.onClose,
+    required this.onNextStory,
+    required this.onPreviousStory,
+    required this.story,
     super.key,
     this.controller,
+    this.onActionPressed,
     this.onMarkReed,
   });
   final StoryFrameController? controller;
@@ -38,9 +41,13 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
   @override
   void initState() {
     super.initState();
-    currentIndex =
-        widget.story.frames.indexWhere((element) => !element.isWatched);
-    if (currentIndex == -1) currentIndex = 0;
+    currentIndex = max(
+      0,
+      widget.story.frames.indexWhere((element) => !element.isWatched),
+    );
+    ref
+        .read(storyServiceProvider.notifier)
+        .markStoryReeded(widget.story.storyId, currentIndex);
   }
 
   void _nextPage(String storyId, int pageIndex, int maxIndex) {
@@ -51,8 +58,7 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
         currentIndex = 0;
       }
     });
-    final service = ref.read(storyServiceProvider.notifier);
-    service.markStoryReeded(storyId, pageIndex);
+    ref.read(storyServiceProvider.notifier).markStoryReeded(storyId, pageIndex);
     if (pageIndex == maxIndex - 1) {
       widget.onNextStory();
     }
@@ -60,8 +66,7 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
 
   void _previousPage(String storyId, int pageIndex) {
     setState(() {
-      currentIndex--;
-      if (currentIndex < 0) currentIndex = 0;
+      currentIndex = max(currentIndex - 1, 0);
     });
     if (pageIndex == 0) {
       widget.onPreviousStory();
@@ -74,7 +79,9 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
     // precache next 2 images
     final frames = widget.story.frames;
     for (var i = currentIndex; i < min(frames.length, 2); i++) {
-      if (frames[i].isAssetImage == true) continue;
+      if (frames[i].isAssetImage == true) {
+        continue;
+      }
       precacheImage(NetworkImage(frames[i].imageUrl), context);
     }
   }
