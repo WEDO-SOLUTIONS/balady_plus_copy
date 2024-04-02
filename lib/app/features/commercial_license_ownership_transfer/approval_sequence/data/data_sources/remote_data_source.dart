@@ -162,7 +162,7 @@ class RequestPermitsRemoteDataSourceImplementation
 
     try {
       response = await webService.dio.post(
-          ApiUrl.saveShopDetails(
+          ApiUrl.ComercialLicenseTransferShopInfo(
             params.requestId!,
           ),
           data: params.toMap());

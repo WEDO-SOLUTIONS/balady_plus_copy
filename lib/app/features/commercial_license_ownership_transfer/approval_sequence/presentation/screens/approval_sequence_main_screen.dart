@@ -15,6 +15,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../Commercial_license_transfer/persentation/interface/step_interface.dart';
 import '../../../../Commercial_license_transfer/persentation/license_premits/request_sequence_new_owner.dart';
+import '../../../request_details/presentation/bloc/request_ownership_transfer_details_cubit.dart';
 import '../blocs/request_approval_sequence_cubit.dart';
 import 'approval_sequence_attachments_screen.dart';
 import 'approval_sequence_permits_screen.dart';
@@ -36,6 +37,7 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
 
   RequestApprovalSequenceCubit? bloc;
   String? requestNumber;
+  RequestOwnershipTransferDetailsCubit? requestDetailsBloc;
 
   late List<Widget>? pagesList = [
     ApprovalSequencePermitsScreen(stepInterface: this),
@@ -50,10 +52,14 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
     super.initState();
 
     Future.microtask(() {
+      requestDetailsBloc = ModalRoute.of(context)!.settings.arguments as RequestOwnershipTransferDetailsCubit;
+
       setState(() {
-        requestNumber = ModalRoute.of(context)!.settings.arguments as String;
+        requestNumber = requestDetailsBloc?.requestID;
       });
+
       bloc?.requestNumber = int.parse(requestNumber!);
+      bloc?.requestDetailsBloc = requestDetailsBloc;
     });
   }
 

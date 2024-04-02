@@ -15,7 +15,7 @@ final class InitialState implements RequestApprovalSequenceState {
 
 final class LoadingState extends RequestApprovalSequenceState {
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props =>  [];
 }
 
 final class EmptyState extends RequestApprovalSequenceState {

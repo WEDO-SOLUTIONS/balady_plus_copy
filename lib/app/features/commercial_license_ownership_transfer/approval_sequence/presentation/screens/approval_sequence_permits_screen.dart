@@ -54,10 +54,6 @@ class _ApprovalSequencePermitsScreenState
         RequestApprovalSequenceState>(
 
       builder: (blocContext, state) {
-        RequestApprovalSequenceCubit cubit =
-            blocContext.watch<RequestApprovalSequenceCubit>();
-
-
 
         if (state is LoadingState) {
           return ListView.builder(

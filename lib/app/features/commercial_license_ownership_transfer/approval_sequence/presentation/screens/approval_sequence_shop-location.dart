@@ -451,12 +451,12 @@ class _ApprovalSequenceShopLocationScreenState
                       const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
                   child: ElevatedButtonWidget.next(
                     onPressed: () {
-                      if (!state.isFormValid()) {
+                    //  if (!state.isFormValid()) {
                         context.read<RequestApprovalSequenceCubit>().saveData();
                         //  widget.stepInterface.nextPage();
-                      } else {
-                        CommonFunctions.showError("terms_error".tr());
-                      }
+                      // } else {
+                      //   CommonFunctions.showError("terms_error".tr());
+                      // }
                     },
                   ),
                 ),

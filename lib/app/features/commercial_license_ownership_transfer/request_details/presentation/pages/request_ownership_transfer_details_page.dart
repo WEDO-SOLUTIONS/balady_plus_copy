@@ -50,6 +50,7 @@ class _RequestOwnershipTransferDetailsPageState
              requestOwnershipTransferDetailsRepository: sl(), acceptOrRejectRequestOwnershipTransferRepository: sl());
 
         bloc?.requestID = requestNumber;
+
         return bloc!;
       },
       child: Scaffold(
@@ -242,7 +243,7 @@ class _RequestOwnershipTransferDetailsPageState
                                                             RouteName
                                                                 .approvalSequenceMainScreen,
                                                             arguments:
-                                                            requestNumber,
+                                                            bloc,
                                                           );
 
                                                   });

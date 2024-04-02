@@ -13,6 +13,7 @@ import '../../../../_shared_feature_/presentation/widgets/shimmer_effect_widget.
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../commercial_license/presentation/step4/widgets/yes_no_radio_group_widget.dart';
+import '../../domain/entities/save_shop_info_request.dart';
 import '../blocs/request_approval_sequence_cubit.dart';
 
 class ApprovalSequenceShopInfoScreen extends StatefulWidget {
@@ -112,10 +113,9 @@ class _ApprovalSequenceShopInfoScreenState
                 child: ElevatedButtonWidget.next(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      widget.stepInterface.nextPage();
 
-                      // bloc?.validateNewOwner(
-                      //     bloc!.licenseNumber!, _crNumberController.text);
+                      bloc?.saveShopInfo(
+                          bloc!.requestNumber!, SaveShopInfoRequest(shopName: _crNumberController.text,hasBrand: brandChecked),widget.stepInterface);
                     }
                   },
                 ),
