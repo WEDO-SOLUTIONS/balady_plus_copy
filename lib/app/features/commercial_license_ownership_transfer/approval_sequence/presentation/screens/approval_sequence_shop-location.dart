@@ -450,11 +450,33 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                   ),
                 ),
 
-                ElevatedButtonWidget.next(
-                  onPressed: () {
+                SizedBox(height: 20,),
 
-                  },
+
+                Container(
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(36),
+                        topRight: Radius.circular(36),
+                      ),
+                      color: Colors.white),
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
+                  child: ElevatedButtonWidget.next(
+                    onPressed: () {
+                      if(!state.isFormValid()){
+
+                        context.read<RequestApprovalSequenceCubit>().saveData();
+                      //  widget.stepInterface.nextPage();
+                      } else {
+                        CommonFunctions.showError("terms_error".tr());
+                      }
+                    },
+                  ),
                 ),
+
+
+
 
               ],
             ),
@@ -465,13 +487,7 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
 
               },
             ),
-          // if ((state as DTOState).deedOptionsStatus == BlocStatus.failure)
-          //   RetryWidget(
-          //     onRetry: () {
-          //       context.read<RequestApprovalSequenceCubit>().getDeedOwnerShipsTypes();
-          //       context.read<RequestApprovalSequenceCubit>().getCleanOptions();
-          //     },
-          //   ),
+
           if (state == BlocStatus.loading)
             const CustomCircularLoadingWidget(),
         ],

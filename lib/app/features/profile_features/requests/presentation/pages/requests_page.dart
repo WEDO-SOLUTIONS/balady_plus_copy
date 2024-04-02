@@ -77,7 +77,8 @@ class _RequestsPageState extends State<RequestsPage> {
               BlocBuilder<RequestsBloc, RequestsState>(
                 builder: (context, state) {
                   return state.crmRequestType == RequestsType.MUN
-                      ? FilterIcon(
+                      ?
+                  FilterIcon(
                           onTap: () async {
                             context
                                 .read<RequestsBloc>()

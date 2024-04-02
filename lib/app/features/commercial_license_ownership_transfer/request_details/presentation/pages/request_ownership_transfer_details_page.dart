@@ -14,6 +14,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/constants/app_style.dart';
 import '../../../../../core/utils/constants/paths/icon_paths.dart';
+import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/balady_features/widgets/shared/circle_icon.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 
@@ -31,11 +32,8 @@ class _RequestOwnershipTransferDetailsPageState
   @override
   void initState() {
     super.initState();
-    Future.microtask(() async {
-      await bloc!.getCommercialLicenseDetailsById(bloc!.requestID!);
+
     Future.microtask((){
-
-
       bloc!.getCommercialLicenseDetailsById(bloc!.requestID!);
     });
     CommonFunctions.sendUXCamEvent(UXCamEvents.openLicensesDetails);
@@ -46,11 +44,9 @@ class _RequestOwnershipTransferDetailsPageState
     Map data = ModalRoute.of(context)!.settings.arguments as Map;
     String requestNumber = data['requestNumber'];
     bool? isReadonly = data['isReadonly'];
-    var subContext= null;
     return BlocProvider(
       create: (context) {
          bloc = sl();
-         subContext=cont;
         bloc?.requestID = requestNumber;
         return bloc!;
       },
@@ -162,8 +158,7 @@ class _RequestOwnershipTransferDetailsPageState
                                       RequestOwnershipTransferDetailsCubit,
                                       RequestOwnershipTransferDetailsState>(
                                     builder: (blocContext, state) {
-                                      if (state
-                                          is LoadingAcceptOrRejectOwnershipTransferState) {
+                                      if (state.status == BlocRequestStatus.submissionUpdateLoading) {
                                         return const Center(
                                             child: CircularProgressIndicator());
                                       }

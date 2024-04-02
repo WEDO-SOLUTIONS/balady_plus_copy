@@ -303,14 +303,11 @@ class CustomPopUpsWidgets {
             height: isFullHeight
                 ? height ?? screenHeight - screenStatusBarHeight
                 : null,
-            child: BlocProvider(
-              create: (_) {
-                bloc = sl();
-                return bloc!;
-                },
-                child: child
-            ),
+            child: BlocProvider.value(value: bloc!,
+            child: child),
           ),
+
+
         )) ??
         false;
   }

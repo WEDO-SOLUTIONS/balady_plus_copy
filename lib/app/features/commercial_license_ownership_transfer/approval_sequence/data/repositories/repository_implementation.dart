@@ -4,6 +4,7 @@ import 'package:balady_plus/app/features/commercial_license_details/data/models/
 import 'package:balady_plus/app/features/commercial_license_details/domain/repositories/repository.dart';
 import 'package:dartz/dartz.dart';
 
+import '../../../../commercial_license/domain/entities/save_shop_details_request.dart';
 import '../../domain/entities/save_selected_requests_permits_request.dart';
 import '../../domain/repositories/repository.dart';
 import '../data_sources/remote_data_source.dart';
@@ -49,6 +50,20 @@ class RequestApprovalSequenceRepositoryImplementation
   Future<Either<Failure, bool>> saveShopInfo(int requestNumber) async {
     try {
       final data = await remoteDataSource.saveShopInfo(requestNumber);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+
+
+  @override
+  Future<Either<Failure, bool>> saveShopDetails(SaveShopDetailsRequest req) async {
+    try {
+      final data = await remoteDataSource.saveShopDetails( params: req);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());

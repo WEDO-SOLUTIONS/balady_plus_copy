@@ -13,15 +13,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:provider/provider.dart';
-
-import '../../../../Commercial_license_transfer/domain/use_cases/get_license_permits_data.dart';
-import '../../../../Commercial_license_transfer/domain/use_cases/get_validate_new_owner.dart';
-import '../../../../Commercial_license_transfer/domain/use_cases/post_to_new_owner.dart';
-import '../../../../Commercial_license_transfer/persentation/bloc/license_tranfer_cubit.dart';
 import '../../../../Commercial_license_transfer/persentation/interface/step_interface.dart';
 import '../../../../Commercial_license_transfer/persentation/license_premits/request_sequence_new_owner.dart';
-import '../../data/repositories/repository_implementation.dart';
 import '../blocs/request_approval_sequence_cubit.dart';
 import 'approval_sequence_permits_screen.dart';
 import 'approval_sequence_shop_info_screen.dart';
@@ -44,11 +37,11 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
   String? requestNumber;
 
   late List<Widget>? pagesList = [
+    
     ApprovalSequencePermitsScreen(stepInterface: this),
-    ApprovalSequenceShopLocationScreen(stepInterface: this),
-    RquestSequenceNewOwnerInfoScreen(stepInterface: this),
     ApprovalSequenceShopInfoScreen(stepInterface: this),
-    RequestSequencePledgesScreen(stepInterface: this),
+    ApprovalSequenceShopLocationScreen(stepInterface: this),
+
   ];
 
   @override

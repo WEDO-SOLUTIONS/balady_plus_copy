@@ -12,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
+import '../../../../commercial_license/domain/entities/save_shop_details_request.dart';
 import '../../domain/entities/save_selected_requests_permits_request.dart';
 import '../models/request_permits_model/permit.dart';
 import '../models/request_permits_model/request_permits_model.dart';
@@ -22,6 +23,8 @@ abstract class RequestPermitsRemoteDataSource {
   Future<bool> saveSelectedRequestsPermits(int requestNumber , SaveSelectedRequestsPermitsRequest saveSelectedRequestsPermitsRequest);
 
   Future<bool> saveShopInfo(int requestNumber);
+  Future saveShopDetails({required SaveShopDetailsRequest params});
+
 }
 
 class RequestPermitsRemoteDataSourceImplementation
@@ -146,4 +149,54 @@ class RequestPermitsRemoteDataSourceImplementation
       }
     }
   }
+
+
+  @override
+  Future saveShopDetails({required SaveShopDetailsRequest params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(
+          ApiUrl.saveShopDetails(
+            params.requestId!,
+          ),
+          data: params.toMap());
+
+      final decodedResponse =
+      ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: null);
+
+      return null;
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<dynamic>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
 }

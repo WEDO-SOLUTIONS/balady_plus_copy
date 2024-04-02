@@ -312,6 +312,10 @@ class ApiUrl {
   static String saveShopDetails(int requestId) =>
       'v1/balady-commercial-services/new-request/$requestId/shop-details';
 
+  static String ComercialLicenseTransferShopInfo(int requestId) =>
+      'v1/superapp-commercial-ownership-services/transfer/shop-ownership-info/$requestId';
+
+
   static String validateApprovals(int requestId) =>
       'v1/balady-commercial-services/validate-approvals/request/$requestId';
 
