@@ -97,20 +97,23 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
                 ),
               ),
             ),
-          ImageState.loaded => GestureDetector(
-              onTap: () {
-                widget.onImageTap
-                    ?.call(widget.imageUrl, isAsset: widget.isAssetImg);
-              },
-              child: widget.isAssetImg == true
-                  ? Image.asset(
-                      widget.imageUrl,
-                      fit: widget.fit,
-                    )
-                  : Image.network(
-                      widget.imageUrl,
-                      fit: widget.fit,
-                    ),
+          ImageState.loaded => ConstrainedBox(
+              constraints: const BoxConstraints.expand(),
+              child: GestureDetector(
+                onTap: () {
+                  widget.onImageTap
+                      ?.call(widget.imageUrl, isAsset: widget.isAssetImg);
+                },
+                child: widget.isAssetImg == true
+                    ? Image.asset(
+                        widget.imageUrl,
+                        fit: widget.fit,
+                      )
+                    : Image.network(
+                        widget.imageUrl,
+                        fit: widget.fit,
+                      ),
+              ),
             ),
           ImageState.loading => widget.loadingWidget,
         });
