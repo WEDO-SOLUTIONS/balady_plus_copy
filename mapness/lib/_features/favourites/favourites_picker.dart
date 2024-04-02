@@ -63,7 +63,8 @@ class FavouritesPicker extends ConsumerWidget {
                               .extension<ThemeTextStyles>()!
                               .accentM
                               .copyWith(
-                                color: context.color.text_and_icons_base_primary,
+                                color:
+                                    context.color.text_and_icons_base_primary,
                               ),
                         ),
                       ),
@@ -97,46 +98,53 @@ class FavouritesPicker extends ConsumerWidget {
             ),
           ),
           Expanded(
-            child: Container(
-              color: context.color.surface_base_primary,
-              child: state.items.isEmpty ?? false
-                  ? Padding(
-                      padding: const EdgeInsets.only(
-                        left: 16,
-                        right: 16,
-                        top: 63,
-                      ),
-                      child: EmptyResultWidget(
-                        text: context.l10n
-                            .toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon,
-                      ),
-                    )
-                  :
+            child: Material(
+              child: Container(
+                color: context.color.surface_base_primary,
+                child: state.items.isEmpty
+                    ? Padding(
+                        padding: const EdgeInsets.only(
+                          left: 16,
+                          right: 16,
+                          top: 63,
+                        ),
+                        child: EmptyResultWidget(
+                          text: context.l10n
+                              .toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon,
+                        ),
+                      )
+                    :
 
-                  /// items
-                  ListView.separated(
-                      padding: const EdgeInsets.only(
-                        left: 16,
-                        right: 16,
-                        top: 16,
-                      ),
-                      itemCount: state.items.length ?? 0,
-                      separatorBuilder: (_, __) => const SizedBox(height: 8),
-                      itemBuilder: (_, index) {
-                        final item = state.items[index];
+                    /// items
+                    ListView.separated(
+                        padding: const EdgeInsets.only(
+                          left: 16,
+                          right: 16,
+                          top: 16,
+                        ),
+                        itemCount: state.items.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 8),
+                        itemBuilder: (_, index) {
+                          final item = state.items[index];
 
-                        /// item
-                        return FavouriteItemWidget(
-                          onTap: () {
-                            context.pop(item);
-                          },
-                          onDelete: () {},
-                          isEditing: false,
-                          isDeletable: false,
-                          item: item,
-                        );
-                      },
-                    ),
+                          /// item
+                          return Padding(
+                            padding: index == (state.items.length - 1)
+                                ? const EdgeInsets.only(bottom: 8)
+                                : EdgeInsets.zero,
+                            child: FavouriteItemWidget(
+                              onTap: () {
+                                context.pop(item);
+                              },
+                              onDelete: () {},
+                              isEditing: false,
+                              isDeletable: false,
+                              item: item,
+                            ),
+                          );
+                        },
+                      ),
+              ),
             ),
           ),
         ],
