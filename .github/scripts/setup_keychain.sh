@@ -12,6 +12,10 @@ APPLE_CERTS=(
     "AppleWWDRCAG7.cer"
     "AppleWWDRCAG8.cer"
     "DeveloperIDG2CA.cer"
+    "DeveloperIDCA.cer"
+    "DevAuthCA.cer"
+    "AppleRootCA-G2.cer"
+    "AppleRootCA-G3.cer"
 )
 
 # Presetup
