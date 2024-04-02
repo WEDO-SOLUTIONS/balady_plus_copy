@@ -4,6 +4,7 @@ import 'package:balady_plus/app/features/commercial_license_details/data/models/
 import 'package:balady_plus/app/features/commercial_license_details/domain/repositories/repository.dart';
 import 'package:dartz/dartz.dart';
 
+import '../../domain/entities/save_selected_requests_permits_request.dart';
 import '../../domain/repositories/repository.dart';
 import '../data_sources/remote_data_source.dart';
 import '../models/request_permits_model/permit.dart';
@@ -32,10 +33,10 @@ class RequestApprovalSequenceRepositoryImplementation
 
   @override
   Future<Either<Failure, bool>> saveSelectedRequestPermits(
-      int requestNumber) async {
+      int requestNumber ,SaveSelectedRequestsPermitsRequest saveSelectedRequestsPermitsRequest ) async {
     try {
       final data =
-          await remoteDataSource.saveSelectedRequestPermits(requestNumber);
+          await remoteDataSource.saveSelectedRequestsPermits(requestNumber,saveSelectedRequestsPermitsRequest);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());

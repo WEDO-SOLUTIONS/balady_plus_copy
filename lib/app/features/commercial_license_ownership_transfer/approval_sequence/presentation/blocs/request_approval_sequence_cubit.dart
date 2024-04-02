@@ -1,25 +1,17 @@
 import 'package:app_popup_menu/app_popup_menu.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
-import 'package:balady_plus/app/features/commercial_license/domain/use_cases/get_investment_contracts.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/bloc/request_ownership_transfer_details_cubit.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
-import '../../../../../core/dependency_injection/injection_container.dart';
+import '../../../../../../etmam_app/core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/exceptions.dart';
 import '../../../../../core/errors/failures.dart';
-import '../../../../../core/utils/enums/enums.dart';
-import '../../../../commercial_license/data/models/commercial_request_details_response.dart';
-import '../../../../commercial_license/domain/entities/deed_info_request.dart';
-import '../../../../commercial_license/domain/entities/ejar_info_request.dart';
-import '../../../../commercial_license/domain/entities/investment_contracts_request.dart';
-import '../../../../commercial_license/domain/entities/investment_contracts_response.dart';
-import '../../../../commercial_license/domain/use_cases/get_deed_info.dart';
-import '../../../../commercial_license/domain/use_cases/get_deed_options.dart';
-import '../../../../commercial_license/domain/use_cases/get_ejar_info.dart';
-import '../../../request_details/data/models/commercial_licence_details.dart';
+import '../../../../Commercial_license_transfer/domain/use_cases/get_license_permits_data.dart';
+import '../../../../Commercial_license_transfer/persentation/bloc/license_tranfer_cubit.dart';
+import '../../data/models/request_permits_model/permit.dart';
 import '../../data/models/request_permits_model/request_permits_model.dart';
+import '../../domain/entities/save_selected_requests_permits_request.dart';
 import '../../domain/repositories/repository.dart';
 
 part 'request_approval_sequence_state.dart';
@@ -28,6 +20,8 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
   RequestApprovalSequenceRepository requestApprovalSequenceRepository;
   int? requestNumber;
   bool isChecked;
+    SaveSelectedRequestsPermitsRequest saveSelectedRequestsPermitsRequest = SaveSelectedRequestsPermitsRequest();
+
   final GetInvestmentContracts _getInvestmentContracts;
   final GetDeedInfo _getDeedInfo;
   final GetEjarInfo _getEjarInfo;
@@ -71,11 +65,57 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
         }
       },
       (requestPermitsModel) {
-        emit(SucceedState(permitsList: requestPermitsModel!));
+        emit(GetPermitsSucceedState(permitsList: requestPermitsModel));
       },
     );
   }
 
+  Future<void> saveSelectedRequestPermits(
+    int requestNumber,
+    SaveSelectedRequestsPermitsRequest saveSelectedRequestsPermitsRequest
+    /*TransferLicenseRequest request*/
+  ) async {
+    emit(LoadingState());
+    final failureOrSuccess = await requestApprovalSequenceRepository
+        .saveSelectedRequestPermits(requestNumber,saveSelectedRequestsPermitsRequest);
+    failureOrSuccess.fold(
+      (failure) {
+        if (failure is NoDataFoundException) {
+          emit(EmptyState());
+        } else if (failure is ServerFailure) {
+          emit(FailureState(failureMessage: failure.errorMessage));
+        } else {
+          emit(FailureState(failureMessage: "error"));
+        }
+      },
+      (success) {
+        emit(SucceedState());
+      },
+    );
+  }
+
+  Future<void> saveShopInfo(
+    int requestNumber,
+    /*TransferLicenseRequest request*/
+  ) async {
+    emit(LoadingState());
+    final failureOrSuccess = await requestApprovalSequenceRepository
+        .saveShopInfo(requestNumber);
+    failureOrSuccess.fold(
+      (failure) {
+        if (failure is NoDataFoundException) {
+          emit(EmptyState());
+        } else if (failure is ServerFailure) {
+          emit(FailureState(failureMessage: failure.errorMessage));
+        } else {
+          emit(FailureState(failureMessage: "error"));
+        }
+      },
+      (success) {
+        emit(SucceedState());
+      },
+    );
+  }
 
   void InitForm() async {
     RequestOwnershipTransferDetailsCubit bloc = sl();
@@ -130,6 +170,7 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
 
   void getDeedOwnerShipsTypes() async {
 
+  void getDeedOwnerShipsTypes(BuildContext context) async {
     RequestOwnershipTransferDetailsCubit bloc = sl();
     var ST = state as DTOState;
     emit(ST.copyWith(deedOptionsStatus: BlocStatus.loading));
@@ -232,6 +273,8 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
         deedInfoRequst: deedInfoRequst,
         deedVerified: false,
         errorMessage: ""));
+    var dto =
+        bloc.state.commercialLicenceDetails?.shopInfo?.contractInfoResponseDto;
   }
 
 

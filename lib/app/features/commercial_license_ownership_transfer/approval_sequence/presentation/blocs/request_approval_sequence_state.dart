@@ -33,13 +33,18 @@ final class FailureState extends RequestApprovalSequenceState {
   List<Object?> get props => [failureMessage];
 }
 
-final class SucceedState extends RequestApprovalSequenceState {
+final class GetPermitsSucceedState extends RequestApprovalSequenceState {
   final RequestPermitsModel permitsList;
 
-  SucceedState({required this.permitsList});
+  GetPermitsSucceedState({required this.permitsList});
 
   @override
   List<Object?> get props => [permitsList];
+}
+final class SucceedState extends RequestApprovalSequenceState {
+
+  @override
+  List<Object?> get props => throw UnimplementedError();
 }
 
 final class DTOState extends RequestApprovalSequenceState {

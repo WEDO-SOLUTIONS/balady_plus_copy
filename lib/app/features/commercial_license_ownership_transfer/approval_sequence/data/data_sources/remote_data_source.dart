@@ -12,13 +12,14 @@ import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
+import '../../domain/entities/save_selected_requests_permits_request.dart';
 import '../models/request_permits_model/permit.dart';
 import '../models/request_permits_model/request_permits_model.dart';
 
 abstract class RequestPermitsRemoteDataSource {
   Future<RequestPermitsModel> getRequestPermits(int requestNumber);
 
-  Future<bool> saveSelectedRequestPermits(int requestNumber);
+  Future<bool> saveSelectedRequestsPermits(int requestNumber , SaveSelectedRequestsPermitsRequest saveSelectedRequestsPermitsRequest);
 
   Future<bool> saveShopInfo(int requestNumber);
 }
@@ -67,12 +68,12 @@ class RequestPermitsRemoteDataSourceImplementation
   }
 
   @override
-  Future<bool> saveSelectedRequestPermits(int requestNumber) async {
+  Future<bool> saveSelectedRequestsPermits(int requestNumber,SaveSelectedRequestsPermitsRequest saveSelectedRequestsPermitsRequest) async {
     Response? response;
 
     try {
       response = await webService.dio
-          .post(ApiUrl.saveSelectedRequestPermits(requestNumber));
+          .post(ApiUrl.saveSelectedRequestPermits(requestNumber), data: saveSelectedRequestsPermitsRequest.toJson());
       final data = response.data;
 
       final statusCode = ResponseBodyModel.fromMap(data).statusDetails!.code;

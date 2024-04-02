@@ -1,37 +1,151 @@
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
-import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
-import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
-import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/blocs/commercial_license_cancel/commercial_license_cancel_bloc.dart';
-import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/request_attachments_view_model.dart';
-import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/widgets/card_cost_info_widget.dart';
-import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/widgets/card_desc_widget.dart';
-import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/attachment_show_widget.dart';
-import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/widgets/button_in_card.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
-class ApprovalSequenceShopInfoScreen extends StatelessWidget {
-  final void Function() goToNewPage;
-  const ApprovalSequenceShopInfoScreen({Key? key, required this.goToNewPage})
+import '../../../../../core/utils/constants/app_style.dart';
+import '../../../../Commercial_license_transfer/persentation/interface/step_interface.dart';
+import '../../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
+import '../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
+import '../../../../_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
+import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
+import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../../../commercial_license/presentation/step4/widgets/yes_no_radio_group_widget.dart';
+import '../blocs/request_approval_sequence_cubit.dart';
+
+class ApprovalSequenceShopInfoScreen extends StatefulWidget {
+  StepInterface stepInterface;
+  ApprovalSequenceShopInfoScreen({Key? key, required this.stepInterface})
       : super(key: key);
+  @override
+  State<ApprovalSequenceShopInfoScreen> createState() =>
+      _ApprovalSequenceShopInfoScreenState();
+}
+
+class _ApprovalSequenceShopInfoScreenState
+    extends State<ApprovalSequenceShopInfoScreen> {
+  final TextEditingController _crNumberController = TextEditingController();
+  final FocusNode _crNumberDescFocusNode = FocusNode();
+  final _formKey = GlobalKey<FormState>();
+  RequestApprovalSequenceCubit? bloc;
+  bool brandChecked = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.microtask(() {
+      bloc = context.read<RequestApprovalSequenceCubit>();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Expanded(
-          child: Column(
-            children: [],
+    return BlocBuilder<RequestApprovalSequenceCubit,
+        RequestApprovalSequenceState>(
+      builder: (blocContext, state) {
+        RequestApprovalSequenceCubit cubit =
+            blocContext.watch<RequestApprovalSequenceCubit>();
+        if (state is LoadingState) {
+          return ListView.builder(
+            itemCount: 3,
+            itemBuilder: (_, __) => Container(
+              height: 200,
+              margin: const EdgeInsets.only(top: 16),
+              child: const ShimmerEffectWidget(),
+            ),
+          );
+        } else if (state is GetPermitsSucceedState) {
+          return Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.only(
+                            bottom: 30, right: 30, left: 30, top: 0),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomTextWidget(
+                                "issue_commercial_shop_info".tr(),
+                                textStyle: AppStyle.complianceTitleStyle,
+                                maxLines: 4,
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              CustomTextFieldWidget(
+                                label: "${"shopName".tr()} *",
+                                controller: _crNumberController,
+                                focusNode: _crNumberDescFocusNode,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                ],
+                                fillColor: Colors.transparent,
+                                onValidate: (text) {
+                                  if (text.toString().isEmpty) {
+                                    return ("new_owner_cr_number_error").tr();
+                                  }
+                                  return null;
+                                },
+                                textInputAction: TextInputAction.done,
+                                spacerSize: 10,
+                              ),
+                              YesNoRadioGroupWidget(
+                                groupName: "step4GroupName".tr(),
+                                currentValue: brandChecked,
+                                onChanged: (value) {
+                                  setState(() {
+                                    brandChecked = value!;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(36),
+                      topRight: Radius.circular(36),
+                    ),
+                    color: Colors.white),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
+                child: ElevatedButtonWidget.next(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      // bloc?.validateNewOwner(
+                      //     bloc!.licenseNumber!, _crNumberController.text);
+                    }
+                  },
+                ),
+              )
+            ],
+          );
+        }
+        return Center(
+          child: ReloadWidget(
+            errorMessage: "no_data_found".tr(),
+            onTab: () {
+              bloc!.getRequestPermits(bloc!.requestNumber!);
+            },
           ),
-        ),
-        ButtonInCard(
-          onPressed: () {},
-          text: "next".tr(),
-        ),
-      ],
+        );
+      },
     );
   }
 }

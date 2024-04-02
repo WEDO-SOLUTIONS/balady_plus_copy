@@ -24,6 +24,7 @@ import '../../../../Commercial_license_transfer/persentation/license_premits/req
 import '../../data/repositories/repository_implementation.dart';
 import '../blocs/request_approval_sequence_cubit.dart';
 import 'approval_sequence_permits_screen.dart';
+import 'approval_sequence_shop_info_screen.dart';
 import 'approval_sequence_shop-location.dart';
 
 class ApprovalSequenceMainScreen extends StatefulWidget {
@@ -46,6 +47,8 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
     ApprovalSequencePermitsScreen(stepInterface: this),
     ApprovalSequenceShopLocationScreen(stepInterface: this),
     RquestSequenceNewOwnerInfoScreen(stepInterface: this),
+    ApprovalSequenceShopInfoScreen(stepInterface: this),
+    RequestSequencePledgesScreen(stepInterface: this),
   ];
 
   @override
@@ -77,12 +80,8 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
       },
       child: BlocProvider(
         create: (_) {
-
-
           bloc = RequestApprovalSequenceCubit(
-              requestApprovalSequenceRepository:
-              sl(),
-              isChecked: false);
+              requestApprovalSequenceRepository: sl(), isChecked: false);
 
           return bloc!;
         },
