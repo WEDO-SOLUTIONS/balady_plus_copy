@@ -9,6 +9,7 @@ import '../../../../../core/errors/failures.dart';
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/enums/enums.dart';
 
+import '../../../../Commercial_license_transfer/persentation/interface/step_interface.dart';
 import '../../../../commercial_license/domain/entities/deed_info_request.dart';
 import '../../../../commercial_license/domain/entities/ejar_info_request.dart';
 import '../../../../commercial_license/domain/entities/investment_contracts_request.dart';
@@ -78,7 +79,7 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
 
   Future<void> saveSelectedRequestPermits(
     int requestNumber,
-    SaveSelectedRequestsPermitsRequest saveSelectedRequestsPermitsRequest
+    SaveSelectedRequestsPermitsRequest saveSelectedRequestsPermitsRequest,StepInterface stepInterface
     /*TransferLicenseRequest request*/
   ) async {
     emit(LoadingState());
@@ -95,7 +96,8 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
         }
       },
       (success) {
-        emit(SucceedState());
+       // emit(SucceedState());
+        stepInterface.nextPage();
       },
     );
   }

@@ -52,9 +52,13 @@ class _ApprovalSequencePermitsScreenState
   Widget getBody() {
     return BlocBuilder<RequestApprovalSequenceCubit,
         RequestApprovalSequenceState>(
+
       builder: (blocContext, state) {
         RequestApprovalSequenceCubit cubit =
             blocContext.watch<RequestApprovalSequenceCubit>();
+
+
+
         if (state is LoadingState) {
           return ListView.builder(
             itemCount: 3,
@@ -125,7 +129,7 @@ class _ApprovalSequencePermitsScreenState
                                   lstPermits.add(permitsList
                                       .permits![index].permitNumber!);
                                 }
-                                permitsList.permits![index].selected = false;
+                                permitsList.permits![index].selected = true;
                               }
                               setState(() {});
                             },
@@ -299,7 +303,9 @@ class _ApprovalSequencePermitsScreenState
                       if (isAgree || permitsList.term == null) {
                         bloc?.saveSelectedRequestsPermitsRequest
                             .selectedPermits = lstPermits;
-                        widget.stepInterface.nextPage();
+
+                        bloc?.saveSelectedRequestPermits(bloc!.requestNumber!,  bloc!.saveSelectedRequestsPermitsRequest,widget.stepInterface);
+
                       } else {
                         CommonFunctions.showError("terms_error".tr());
                       }

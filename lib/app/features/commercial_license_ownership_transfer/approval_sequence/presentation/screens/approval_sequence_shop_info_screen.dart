@@ -36,28 +36,15 @@ class _ApprovalSequenceShopInfoScreenState
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.microtask(() {
-      bloc = context.read<RequestApprovalSequenceCubit>();
-    });
-  }
 
+  }
   @override
   Widget build(BuildContext context) {
+    bloc = context.read<RequestApprovalSequenceCubit>();
     return BlocBuilder<RequestApprovalSequenceCubit,
         RequestApprovalSequenceState>(
       builder: (blocContext, state) {
-        RequestApprovalSequenceCubit cubit =
-            blocContext.watch<RequestApprovalSequenceCubit>();
-        if (state is LoadingState) {
-          return ListView.builder(
-            itemCount: 3,
-            itemBuilder: (_, __) => Container(
-              height: 200,
-              margin: const EdgeInsets.only(top: 16),
-              child: const ShimmerEffectWidget(),
-            ),
-          );
-        } else if (state is GetPermitsSucceedState) {
+
           return Column(
             children: [
               Expanded(
@@ -85,10 +72,7 @@ class _ApprovalSequenceShopInfoScreenState
                                 label: "${"shopName".tr()} *",
                                 controller: _crNumberController,
                                 focusNode: _crNumberDescFocusNode,
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
+                                keyboardType: TextInputType.text,
                                 fillColor: Colors.transparent,
                                 onValidate: (text) {
                                   if (text.toString().isEmpty) {
@@ -137,15 +121,8 @@ class _ApprovalSequenceShopInfoScreenState
             ],
           );
         }
-        return Center(
-          child: ReloadWidget(
-            errorMessage: "no_data_found".tr(),
-            onTab: () {
-              bloc!.getRequestPermits(bloc!.requestNumber!);
-            },
-          ),
-        );
-      },
+
+
     );
   }
 }

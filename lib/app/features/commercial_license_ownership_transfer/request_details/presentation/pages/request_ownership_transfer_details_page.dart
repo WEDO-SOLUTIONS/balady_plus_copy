@@ -46,7 +46,9 @@ class _RequestOwnershipTransferDetailsPageState
     bool? isReadonly = data['isReadonly'];
     return BlocProvider(
       create: (context) {
-         bloc = sl();
+         bloc = RequestOwnershipTransferDetailsCubit(
+             requestOwnershipTransferDetailsRepository: sl(), acceptOrRejectRequestOwnershipTransferRepository: sl());
+
         bloc?.requestID = requestNumber;
         return bloc!;
       },
@@ -232,14 +234,18 @@ class _RequestOwnershipTransferDetailsPageState
                                                   bloc!
                                                       .acceptCommercialRequestTransfer(
                                                           requestNumber)
-                                                      .then((value) =>
+                                                      .then((value) {
+
+
                                                           Navigator.of(context)
                                                               .pushNamed(
                                                             RouteName
                                                                 .approvalSequenceMainScreen,
                                                             arguments:
-                                                                requestNumber,
-                                                          ));
+                                                            requestNumber,
+                                                          );
+
+                                                  });
                                                 },
                                               ),
                                             ),
