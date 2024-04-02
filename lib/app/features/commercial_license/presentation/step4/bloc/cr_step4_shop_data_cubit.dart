@@ -410,7 +410,6 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
       sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
       emit(state.copyWith(status: BlocStatus.success));
     });
-
   }
 
   void salamaReportFawery() async {

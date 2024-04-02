@@ -17,6 +17,7 @@ import '../../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/balady_features/widgets/shared/circle_icon.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
+import '../../../approval_sequence/presentation/screens/approval_sequence_attachments_screen.dart';
 
 class RequestOwnershipTransferDetailsPage extends StatefulWidget {
   const RequestOwnershipTransferDetailsPage({super.key});
@@ -33,7 +34,7 @@ class _RequestOwnershipTransferDetailsPageState
   void initState() {
     super.initState();
 
-    Future.microtask((){
+    Future.microtask(() {
       bloc!.getCommercialLicenseDetailsById(bloc!.requestID!);
     });
     CommonFunctions.sendUXCamEvent(UXCamEvents.openLicensesDetails);
@@ -46,7 +47,7 @@ class _RequestOwnershipTransferDetailsPageState
     bool? isReadonly = data['isReadonly'];
     return BlocProvider(
       create: (context) {
-         bloc = sl();
+        bloc = sl();
         bloc?.requestID = requestNumber;
         return bloc!;
       },
@@ -143,148 +144,155 @@ class _RequestOwnershipTransferDetailsPageState
                           height: 60,
                           width: double.infinity,
                           child: CustomElevatedButtonWidget(
-                            btnColor: AppColor.blueSkyLight800,
-                            textStyle: AppStyle.elevatedButtonStyle.copyWith(
-                              color: AppColor.blackModern50Light,
-                              fontSize: 20,
-                            ),
-                            text: "respond_to_ownership_transfer".tr(),
-                            onPressed: () {
-                              CustomPopUpsWidgets.showBottomSheet(
-                                context,
-                                child: BlocProvider.value(
-                                  value: bloc!,
-                                  child: BlocBuilder<
-                                      RequestOwnershipTransferDetailsCubit,
-                                      RequestOwnershipTransferDetailsState>(
-                                    builder: (blocContext, state) {
-                                      if (state.status == BlocRequestStatus.submissionUpdateLoading) {
-                                        return const Center(
-                                            child: CircularProgressIndicator());
-                                      }
-                                      return Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Align(
-                                              alignment: Alignment.topLeft,
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: CircleIcon(
-                                                  icon: Icons.close,
-                                                  circleSize: 50,
-                                                  iconColor:
-                                                      AppColor.primary600Light,
-                                                  backgroundColor: AppColor
-                                                      .geyser
-                                                      .withOpacity(0.4),
-                                                  iconSize: 25,
-                                                ),
-                                              ),
-                                            ),
-                                            SvgPicture.asset(
-                                              IconPath.switchProfileIcon,
-                                              width: 100,
-                                              height: 100,
-                                              colorFilter:
-                                                  const ColorFilter.mode(
-                                                AppColor.blueSkyLight800,
-                                                BlendMode.srcIn,
-                                              ),
-                                            ),
-                                            Text(
-                                              'respond_to_ownership_transfer'
-                                                  .tr(),
-                                              style: const TextStyle(
-                                                  fontSize: 28,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(
-                                              'respond_to_ownership_transfer_warning'
-                                                  .tr(),
-                                              textAlign: TextAlign.center,
-                                              style:
-                                                  const TextStyle(fontSize: 20),
-                                            ),
-                                            Container(
-                                              height: 55,
-                                              width: double.infinity,
-                                              child: CustomElevatedButtonWidget(
-                                                btnRadius: 5.0,
-                                                btnColor:
-                                                    AppColor.blueSkyLight800,
-                                                textStyle: AppStyle
-                                                    .elevatedButtonStyle
-                                                    .copyWith(
-                                                  color: AppColor
-                                                      .blackModern50Light,
-                                                  fontSize: 20,
-                                                ),
-                                                btnHeight: 40,
-                                                text:
-                                                    "accept_ownership_transfer"
-                                                        .tr(),
-                                                onPressed: () {
-                                                  bloc!
-                                                      .acceptCommercialRequestTransfer(
-                                                          requestNumber)
-                                                      .then((value) =>
-                                                          Navigator.of(context)
-                                                              .pushNamed(
-                                                            RouteName
-                                                                .approvalSequenceMainScreen,
-                                                            arguments:
-                                                                requestNumber,
-                                                          ));
-                                                },
-                                              ),
-                                            ),
-                                            Container(
-                                              height: 55,
-                                              width: double.infinity,
-                                              child: CustomElevatedButtonWidget(
-                                                btnRadius: 5.0,
-                                                btnBorderColor: Colors.red[900],
-                                                btnColor: Colors.white,
-                                                textStyle: AppStyle
-                                                    .elevatedButtonStyle
-                                                    .copyWith(
-                                                  color: Colors.red[900],
-                                                  fontSize: 20,
-                                                ),
-                                                btnHeight: 40,
-                                                text:
-                                                    "reject_ownership_transfer"
-                                                        .tr(),
-                                                onPressed: () {
-                                                  bloc!
-                                                      .rejectCommercialRequestTransfer(
-                                                          requestNumber)
-                                                      .then((value) =>
-                                                          Navigator.pop(
-                                                              context));
-                                                },
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                                height: 600,
-                                radius: 30,
-                              );
-                              // Navigator.of(context).pushNamed(
-                              //   RouteName.approvalSequenceMainScreen,
-                              //   arguments: {},
-                              // );
-                            },
-                          ),
+                              btnColor: AppColor.blueSkyLight800,
+                              textStyle: AppStyle.elevatedButtonStyle.copyWith(
+                                color: AppColor.blackModern50Light,
+                                fontSize: 20,
+                              ),
+                              text: "respond_to_ownership_transfer".tr(),
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ApprovalSequenceAttachmentsScreen()),
+                                );
+                              }
+                              // onPressed: () {
+                              //   CustomPopUpsWidgets.showBottomSheet(
+                              //     context,
+                              //     child: BlocProvider.value(
+                              //       value: bloc!,
+                              //       child: BlocBuilder<
+                              //           RequestOwnershipTransferDetailsCubit,
+                              //           RequestOwnershipTransferDetailsState>(
+                              //         builder: (blocContext, state) {
+                              //           if (state.status == BlocRequestStatus.submissionUpdateLoading) {
+                              //             return const Center(
+                              //                 child: CircularProgressIndicator());
+                              //           }
+                              //           return Padding(
+                              //             padding: const EdgeInsets.all(10.0),
+                              //             child: Column(
+                              //               mainAxisAlignment:
+                              //                   MainAxisAlignment.spaceEvenly,
+                              //               children: [
+                              //                 Align(
+                              //                   alignment: Alignment.topLeft,
+                              //                   child: GestureDetector(
+                              //                     onTap: () {
+                              //                       Navigator.pop(context);
+                              //                     },
+                              //                     child: CircleIcon(
+                              //                       icon: Icons.close,
+                              //                       circleSize: 50,
+                              //                       iconColor:
+                              //                           AppColor.primary600Light,
+                              //                       backgroundColor: AppColor
+                              //                           .geyser
+                              //                           .withOpacity(0.4),
+                              //                       iconSize: 25,
+                              //                     ),
+                              //                   ),
+                              //                 ),
+                              //                 SvgPicture.asset(
+                              //                   IconPath.switchProfileIcon,
+                              //                   width: 100,
+                              //                   height: 100,
+                              //                   colorFilter:
+                              //                       const ColorFilter.mode(
+                              //                     AppColor.blueSkyLight800,
+                              //                     BlendMode.srcIn,
+                              //                   ),
+                              //                 ),
+                              //                 Text(
+                              //                   'respond_to_ownership_transfer'
+                              //                       .tr(),
+                              //                   style: const TextStyle(
+                              //                       fontSize: 28,
+                              //                       fontWeight: FontWeight.bold),
+                              //                 ),
+                              //                 Text(
+                              //                   'respond_to_ownership_transfer_warning'
+                              //                       .tr(),
+                              //                   textAlign: TextAlign.center,
+                              //                   style:
+                              //                       const TextStyle(fontSize: 20),
+                              //                 ),
+                              //                 Container(
+                              //                   height: 55,
+                              //                   width: double.infinity,
+                              //                   child: CustomElevatedButtonWidget(
+                              //                     btnRadius: 5.0,
+                              //                     btnColor:
+                              //                         AppColor.blueSkyLight800,
+                              //                     textStyle: AppStyle
+                              //                         .elevatedButtonStyle
+                              //                         .copyWith(
+                              //                       color: AppColor
+                              //                           .blackModern50Light,
+                              //                       fontSize: 20,
+                              //                     ),
+                              //                     btnHeight: 40,
+                              //                     text:
+                              //                         "accept_ownership_transfer"
+                              //                             .tr(),
+                              //                     onPressed: () {
+                              //                       bloc!
+                              //                           .acceptCommercialRequestTransfer(
+                              //                               requestNumber)
+                              //                           .then((value) =>
+                              //                               Navigator.of(context)
+                              //                                   .pushNamed(
+                              //                                 RouteName
+                              //                                     .approvalSequenceMainScreen,
+                              //                                 arguments:
+                              //                                     requestNumber,
+                              //                               ));
+                              //                     },
+                              //                   ),
+                              //                 ),
+                              //                 Container(
+                              //                   height: 55,
+                              //                   width: double.infinity,
+                              //                   child: CustomElevatedButtonWidget(
+                              //                     btnRadius: 5.0,
+                              //                     btnBorderColor: Colors.red[900],
+                              //                     btnColor: Colors.white,
+                              //                     textStyle: AppStyle
+                              //                         .elevatedButtonStyle
+                              //                         .copyWith(
+                              //                       color: Colors.red[900],
+                              //                       fontSize: 20,
+                              //                     ),
+                              //                     btnHeight: 40,
+                              //                     text:
+                              //                         "reject_ownership_transfer"
+                              //                             .tr(),
+                              //                     onPressed: () {
+                              //                       bloc!
+                              //                           .rejectCommercialRequestTransfer(
+                              //                               requestNumber)
+                              //                           .then((value) =>
+                              //                               Navigator.pop(
+                              //                                   context));
+                              //                     },
+                              //                   ),
+                              //                 ),
+                              //               ],
+                              //             ),
+                              //           );
+                              //         },
+                              //       ),
+                              //     ),
+                              //     height: 600,
+                              //     radius: 30,
+                              //   );
+                              //   // Navigator.of(context).pushNamed(
+                              //   //   RouteName.approvalSequenceMainScreen,
+                              //   //   arguments: {},
+                              //   // );
+                              // },
+                              ),
                         )
                 ],
               ),

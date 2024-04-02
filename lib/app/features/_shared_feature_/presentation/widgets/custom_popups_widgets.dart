@@ -282,14 +282,15 @@ class CustomPopUpsWidgets {
       )) ??
       false;
 
-  static Future<dynamic> showBottomSheetWithBlock(BuildContext context, RequestOwnershipTransferDetailsCubit? bloc,
+  static Future<dynamic> showBottomSheetWithBlock(
+      BuildContext context, RequestOwnershipTransferDetailsCubit? bloc,
       {required Widget child,
       bool isFullHeight = true,
       double? height,
       double? radius}) async {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenStatusBarHeight = MediaQuery.of(context).padding.top + 5;
-    return ( showModalBottomSheet(
+    return (showModalBottomSheet(
           context: context,
           isDismissible: true,
           isScrollControlled: true,
@@ -303,40 +304,36 @@ class CustomPopUpsWidgets {
             height: isFullHeight
                 ? height ?? screenHeight - screenStatusBarHeight
                 : null,
-            child: BlocProvider.value(value: bloc!,
-            child: child),
+            child: BlocProvider.value(value: bloc!, child: child),
           ),
-
-
         )) ??
         false;
   }
 
-
   static Future<dynamic> showBottomSheet(BuildContext context,
       {required Widget child,
-        bool isFullHeight = true,
-        double? height,
-        double? radius}) async {
+      bool isFullHeight = true,
+      double? height,
+      double? radius}) async {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenStatusBarHeight = MediaQuery.of(context).padding.top + 5;
-    return ( showModalBottomSheet(
-      context: context,
-      isDismissible: true,
-      isScrollControlled: true,
-      enableDrag: false,
-      shape: RoundedRectangleBorder(
-        borderRadius:
-        BorderRadius.vertical(top: Radius.circular(radius ?? 10)),
-      ),
-      builder: (context) => SizedBox(
-        // height: height ?? screenHeight * 0.90, // 90% from screenHeight
-        height: isFullHeight
-            ? height ?? screenHeight - screenStatusBarHeight
-            : null,
-        child: child,
-      ),
-    )) ??
+    return (showModalBottomSheet(
+          context: context,
+          isDismissible: true,
+          isScrollControlled: true,
+          enableDrag: false,
+          shape: RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.vertical(top: Radius.circular(radius ?? 10)),
+          ),
+          builder: (context) => SizedBox(
+            // height: height ?? screenHeight * 0.90, // 90% from screenHeight
+            height: isFullHeight
+                ? height ?? screenHeight - screenStatusBarHeight
+                : null,
+            child: child,
+          ),
+        )) ??
         false;
   }
 }

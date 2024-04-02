@@ -6,6 +6,7 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../commercial_license/domain/entities/save_shop_details_request.dart';
 import '../../domain/entities/save_selected_requests_permits_request.dart';
+import '../../domain/entities/save_shop_info_request.dart';
 import '../../domain/repositories/repository.dart';
 import '../data_sources/remote_data_source.dart';
 import '../models/request_permits_model/permit.dart';
@@ -34,10 +35,12 @@ class RequestApprovalSequenceRepositoryImplementation
 
   @override
   Future<Either<Failure, bool>> saveSelectedRequestPermits(
-      int requestNumber ,SaveSelectedRequestsPermitsRequest saveSelectedRequestsPermitsRequest ) async {
+      int requestNumber,
+      SaveSelectedRequestsPermitsRequest
+          saveSelectedRequestsPermitsRequest) async {
     try {
-      final data =
-          await remoteDataSource.saveSelectedRequestsPermits(requestNumber,saveSelectedRequestsPermitsRequest);
+      final data = await remoteDataSource.saveSelectedRequestsPermits(
+          requestNumber, saveSelectedRequestsPermitsRequest);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -47,9 +50,9 @@ class RequestApprovalSequenceRepositoryImplementation
   }
 
   @override
-  Future<Either<Failure, bool>> saveShopInfo(int requestNumber) async {
+  Future<Either<Failure, bool>> saveShopInfo(int requestNumber,SaveShopInfoRequest params) async {
     try {
-      final data = await remoteDataSource.saveShopInfo(requestNumber);
+      final data = await remoteDataSource.saveShopInfo(requestNumber,params);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -58,12 +61,11 @@ class RequestApprovalSequenceRepositoryImplementation
     }
   }
 
-
-
   @override
-  Future<Either<Failure, bool>> saveShopDetails(SaveShopDetailsRequest req) async {
+  Future<Either<Failure, bool>> saveShopDetails(
+      SaveShopDetailsRequest req) async {
     try {
-      final data = await remoteDataSource.saveShopDetails( params: req);
+      final data = await remoteDataSource.saveShopDetails(params: req);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());

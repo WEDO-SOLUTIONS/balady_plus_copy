@@ -315,7 +315,6 @@ class ApiUrl {
   static String ComercialLicenseTransferShopInfo(int requestId) =>
       'v1/superapp-commercial-ownership-services/transfer/shop-ownership-info/$requestId';
 
-
   static String validateApprovals(int requestId) =>
       'v1/balady-commercial-services/validate-approvals/request/$requestId';
 

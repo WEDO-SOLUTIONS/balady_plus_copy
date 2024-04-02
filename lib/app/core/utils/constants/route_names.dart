@@ -364,7 +364,8 @@ class RouteName {
 
   static const commercialLicenseTransferOverView =
       'commercialLicenseTransferOverView_Screen';
-  static const approvalSequenceShopLocationScreen = '/ApprovalSequenceShopLocationScreen';
+  static const approvalSequenceShopLocationScreen =
+      '/ApprovalSequenceShopLocationScreen';
 
   static const homeSequence = 'HomeSequenceScreen';
   static const transferLicensePermits = 'transferLicensePermits_Screen';

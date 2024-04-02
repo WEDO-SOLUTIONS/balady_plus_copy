@@ -128,6 +128,8 @@ class _ApprovalSequenceShopInfoScreenState
                 child: ElevatedButtonWidget.next(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
+                      widget.stepInterface.nextPage();
+
                       // bloc?.validateNewOwner(
                       //     bloc!.licenseNumber!, _crNumberController.text);
                     }

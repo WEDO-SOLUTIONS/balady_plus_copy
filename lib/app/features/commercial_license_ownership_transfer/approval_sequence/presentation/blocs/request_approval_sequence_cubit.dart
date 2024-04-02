@@ -22,6 +22,7 @@ import '../../../request_details/data/models/commercial_licence_details.dart';
 
 import '../../data/models/request_permits_model/request_permits_model.dart';
 import '../../domain/entities/save_selected_requests_permits_request.dart';
+import '../../domain/entities/save_shop_info_request.dart';
 import '../../domain/repositories/repository.dart';
 
 part 'request_approval_sequence_state.dart';
@@ -30,7 +31,8 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
   RequestApprovalSequenceRepository requestApprovalSequenceRepository;
   int? requestNumber;
   bool isChecked;
-    SaveSelectedRequestsPermitsRequest saveSelectedRequestsPermitsRequest = SaveSelectedRequestsPermitsRequest();
+  SaveSelectedRequestsPermitsRequest saveSelectedRequestsPermitsRequest =
+      SaveSelectedRequestsPermitsRequest();
 
   final GetInvestmentContracts _getInvestmentContracts;
   final GetDeedInfo _getDeedInfo;
@@ -38,14 +40,11 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
   final GetDeedOptions _getDeedOptions;
   var dto;
 
-
   //  TransferLicenseRequest request= TransferLicenseRequest();
-  RequestApprovalSequenceCubit(
-      {
-        required this.requestApprovalSequenceRepository,
-        required this.isChecked,
-      })
-      : _getInvestmentContracts = GetInvestmentContracts(repository: sl()),
+  RequestApprovalSequenceCubit({
+    required this.requestApprovalSequenceRepository,
+    required this.isChecked,
+  })  : _getInvestmentContracts = GetInvestmentContracts(repository: sl()),
         _getDeedInfo = GetDeedInfo(repository: sl()),
         _getEjarInfo = GetEjarInfo(repository: sl()),
         _getDeedOptions = GetDeedOptions(repository: sl()),
@@ -76,14 +75,14 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
     );
   }
 
-  Future<void> saveSelectedRequestPermits(
-    int requestNumber,
-    SaveSelectedRequestsPermitsRequest saveSelectedRequestsPermitsRequest
-    /*TransferLicenseRequest request*/
-  ) async {
+  Future<void> saveSelectedRequestPermits(int requestNumber,
+      SaveSelectedRequestsPermitsRequest saveSelectedRequestsPermitsRequest
+      /*TransferLicenseRequest request*/
+      ) async {
     emit(LoadingState());
-    final failureOrSuccess = await requestApprovalSequenceRepository
-        .saveSelectedRequestPermits(requestNumber,saveSelectedRequestsPermitsRequest);
+    final failureOrSuccess =
+        await requestApprovalSequenceRepository.saveSelectedRequestPermits(
+            requestNumber, saveSelectedRequestsPermitsRequest);
     failureOrSuccess.fold(
       (failure) {
         if (failure is NoDataFoundException) {
@@ -101,12 +100,12 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
   }
 
   Future<void> saveShopInfo(
-    int requestNumber,
+    int requestNumber,SaveShopInfoRequest params
     /*TransferLicenseRequest request*/
   ) async {
     emit(LoadingState());
-    final failureOrSuccess = await requestApprovalSequenceRepository
-        .saveShopInfo(requestNumber);
+    final failureOrSuccess =
+        await requestApprovalSequenceRepository.saveShopInfo(requestNumber,params);
     failureOrSuccess.fold(
       (failure) {
         if (failure is NoDataFoundException) {
@@ -125,28 +124,25 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
 
   void InitForm() async {
     RequestOwnershipTransferDetailsCubit bloc = sl();
-     dto= bloc.state.commercialLicenceDetails?.shopInfo?.contractInfoResponseDto;
+    dto =
+        bloc.state.commercialLicenceDetails?.shopInfo?.contractInfoResponseDto;
     emit(DTOState());
-
   }
 
   void getInvestmentContracts() async {
-    if(state is DTOState) {
-
+    if (state is DTOState) {
       var ST = state as DTOState;
       if (ST.crContractType == CRContractType.invest &&
           ST.crSubmitterType == CRSubmitterType.rental &&
           ST.crContractOption == CRContractOption.service) {
-
         RequestOwnershipTransferDetailsCubit bloc = sl();
         int requestId = int.parse(bloc.requestID!);
-        var CurrentState =state as DTOState;
+        var CurrentState = state as DTOState;
         emit(CurrentState.copyWith(investmentListStatus: BlocStatus.loading));
         final response = await _getInvestmentContracts(
             InvestmentContractRequest(requestId: requestId));
         response.fold(
-                (failure) =>
-                emit(CurrentState.copyWith(
+            (failure) => emit(CurrentState.copyWith(
                   investmentListStatus: BlocStatus.failure,
                   errorMessage: (failure as ServerFailure).errorMessage,
                 )), (success) {
@@ -158,207 +154,198 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
     }
   }
 
+  void getDeedOwnerShipsTypes() async {
+    RequestOwnershipTransferDetailsCubit bloc = sl();
+    var ST = state as DTOState;
+    emit(ST.copyWith(deedOptionsStatus: BlocStatus.loading));
+    final response = await _getDeedOptions(int.parse(bloc.requestID!));
+    response.fold(
+        (failure) => emit(ST.copyWith(
+              deedOptionsStatus: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) {
+      emit(ST.copyWith(
+          deedOptionsStatus: BlocStatus.success, deedOptions: success));
+    });
+  }
 
-    void getDeedOwnerShipsTypes() async {
-      RequestOwnershipTransferDetailsCubit bloc = sl();
-      var ST = state as DTOState;
-      emit(ST.copyWith(deedOptionsStatus: BlocStatus.loading));
-      final response = await _getDeedOptions(int.parse(bloc.requestID!));
-      response.fold(
-              (failure) =>
-              emit(ST.copyWith(
-                deedOptionsStatus: BlocStatus.failure,
-                errorMessage: (failure as ServerFailure).errorMessage,
-              )), (success) {
-        emit(ST.copyWith(
-            deedOptionsStatus: BlocStatus.success, deedOptions: success));
-      });
-    }
+  void updateSubmitterType(CRSubmitterType type) {
+    var CurrentState = state as DTOState;
+    //CurrentState.dto ??= dto;
+    emit(CurrentState.copyWith(
+        crSubmitterType: type,
+        dto: dto,
+        status: null,
+        investmentListStatus: null,
+        deedOptionsStatus: null));
+  }
 
-    void updateSubmitterType(CRSubmitterType type) {
-      var CurrentState = state as DTOState;
-      //CurrentState.dto ??= dto;
-      emit(CurrentState.copyWith(crSubmitterType: type,
-          dto: dto,
-          status: null,
-          investmentListStatus: null,
-          deedOptionsStatus: null));
-    }
+  void updateCRContractType(CRContractType type) {
+    var CurrentState = state as DTOState;
+    emit(CurrentState.copyWith(
+        crContractType: type,
+        dto: dto,
+        status: null,
+        investmentListStatus: null,
+        deedOptionsStatus: null));
+  }
 
+  void updateCRContractOption(CRContractOption type) {
+    var CurrentState = state as DTOState;
+    emit(CurrentState.copyWith(
+        crContractOption: type,
+        status: null,
+        investmentListStatus: null,
+        deedOptionsStatus: null));
+    getInvestmentContracts();
+  }
 
-    void updateCRContractType(CRContractType type) {
-      var CurrentState = state as DTOState;
+  void updateContractNumber(String value) {
+    var CurrentState = state as DTOState;
+    emit(CurrentState.copyWith(
+        contractNumber: value,
+        status: null,
+        investmentListStatus: null,
+        deedOptionsStatus: null));
+  }
+
+  void updateContractDate(String value) {
+    var CurrentState = state as DTOState;
+    emit(CurrentState.copyWith(
+        contractDate: value,
+        status: null,
+        investmentListStatus: null,
+        deedOptionsStatus: null));
+  }
+
+  void updateDeedInfo({String? ownershipType, String? deedNumber}) {
+    var CurrentState = state as DTOState;
+    CurrentState.copyWith(status: BlocStatus.loading, errorMessage: "");
+
+    var ST = state as DTOState;
+    DeedInfoRequest deedInfoRequst =
+        ST.deedInfoRequst ?? DeedInfoRequest(requestId: requestNumber!);
+
+    deedInfoRequst = deedInfoRequst.copyWith(
+      ownershipType: ownershipType,
+      deedNumber: deedNumber,
+    );
+
+    emit(CurrentState.copyWith(
+        status: BlocStatus.success,
+        deedInfoRequst: deedInfoRequst,
+        deedVerified: false,
+        errorMessage: ""));
+  }
+
+  Future<void> getDeedInfoHandler() async {
+    var CurrentState = state as DTOState;
+    emit(CurrentState.copyWith(status: BlocStatus.loading, errorMessage: ""));
+    var ST = state as DTOState;
+    final failOrSuccess = await _getDeedInfo(ST.deedInfoRequst ??
+        DeedInfoRequest(
+          requestId: requestNumber!,
+        ));
+    failOrSuccess.fold((l) {
       emit(CurrentState.copyWith(
-          crContractType: type,
-          dto: dto,
-          status: null,
-          investmentListStatus: null,
-          deedOptionsStatus: null
-
-      ));
-    }
-    void updateCRContractOption(CRContractOption type) {
-      var CurrentState = state as DTOState;
-      emit(CurrentState.copyWith(crContractOption: type,
-          status: null,
-          investmentListStatus: null,
-          deedOptionsStatus: null));
-      getInvestmentContracts();
-    }
-
-    void updateContractNumber(String value) {
-      var CurrentState = state as DTOState;
-      emit(CurrentState.copyWith(contractNumber: value,
-          status: null,
-          investmentListStatus: null,
-          deedOptionsStatus: null));
-    }
-
-    void updateContractDate(String value) {
-      var CurrentState = state as DTOState;
-      emit(CurrentState.copyWith(contractDate: value,
-          status: null,
-          investmentListStatus: null,
-          deedOptionsStatus: null));
-    }
-
-
-    void updateDeedInfo({String? ownershipType, String? deedNumber}) {
-      var CurrentState = state as DTOState;
-      CurrentState.copyWith(status: BlocStatus.loading, errorMessage: "");
-
-      var ST = state as DTOState;
-      DeedInfoRequest deedInfoRequst =
-          ST.deedInfoRequst ?? DeedInfoRequest(requestId: requestNumber!);
-
-      deedInfoRequst = deedInfoRequst.copyWith(
-        ownershipType: ownershipType,
-        deedNumber: deedNumber,
-      );
-
-      emit(CurrentState.copyWith(
-          status: BlocStatus.success,
-          deedInfoRequst: deedInfoRequst,
+          status: BlocStatus.failure,
           deedVerified: false,
-          errorMessage: ""));
-    }
-
-
-    Future<void> getDeedInfoHandler() async {
-      var CurrentState = state as DTOState;
-      emit(CurrentState.copyWith(status: BlocStatus.loading, errorMessage: ""));
-      var ST = state as DTOState;
-      final failOrSuccess = await _getDeedInfo(ST.deedInfoRequst ??
-          DeedInfoRequest(
-            requestId: requestNumber!,
-          ));
-      failOrSuccess.fold((l) {
-        emit(CurrentState.copyWith(
-            status: BlocStatus.failure,
-            deedVerified: false,
-            errorMessage: (l as ServerFailure).errorMessage));
-      }, (r) {
-        print(r);
-        emit(CurrentState.copyWith(
-            status: BlocStatus.success, deedVerified: true));
-      });
-    }
-
-    void updateTenancyInfo(
-        {String? id, String? tenancyContractNumber, String? versionNumber}) {
-      var CurrentState = state as DTOState;
-      CurrentState.copyWith(status: BlocStatus.loading, errorMessage: "");
-
-      var ST = state as DTOState;
-      EjarInfoRequest ejarInfoRequst = ST.ejarInfoRequst ?? EjarInfoRequest();
-
-      String nationalId = ejarInfoRequst.nationalId ?? "";
-      String iqamaNumber = ejarInfoRequst.iqamaNumber ?? "";
-
-      if (id?.startsWith("1") ?? false) {
-        nationalId = id!;
-        iqamaNumber = "";
-      }
-      if (id?.startsWith("2") ?? false) {
-        nationalId = "";
-        iqamaNumber = id!;
-      }
-      ejarInfoRequst = ejarInfoRequst.copyWith(
-        iqamaNumber: iqamaNumber,
-        nationalId: nationalId,
-        tenancyContractNumber: tenancyContractNumber,
-        versionNumber: versionNumber,
-      );
-
+          errorMessage: (l as ServerFailure).errorMessage));
+    }, (r) {
+      print(r);
       emit(CurrentState.copyWith(
-          status: BlocStatus.success,
-          ejarInfoRequst: ejarInfoRequst,
+          status: BlocStatus.success, deedVerified: true));
+    });
+  }
+
+  void updateTenancyInfo(
+      {String? id, String? tenancyContractNumber, String? versionNumber}) {
+    var CurrentState = state as DTOState;
+    CurrentState.copyWith(status: BlocStatus.loading, errorMessage: "");
+
+    var ST = state as DTOState;
+    EjarInfoRequest ejarInfoRequst = ST.ejarInfoRequst ?? EjarInfoRequest();
+
+    String nationalId = ejarInfoRequst.nationalId ?? "";
+    String iqamaNumber = ejarInfoRequst.iqamaNumber ?? "";
+
+    if (id?.startsWith("1") ?? false) {
+      nationalId = id!;
+      iqamaNumber = "";
+    }
+    if (id?.startsWith("2") ?? false) {
+      nationalId = "";
+      iqamaNumber = id!;
+    }
+    ejarInfoRequst = ejarInfoRequst.copyWith(
+      iqamaNumber: iqamaNumber,
+      nationalId: nationalId,
+      tenancyContractNumber: tenancyContractNumber,
+      versionNumber: versionNumber,
+    );
+
+    emit(CurrentState.copyWith(
+        status: BlocStatus.success,
+        ejarInfoRequst: ejarInfoRequst,
+        ejarVerified: false,
+        errorMessage: ""));
+  }
+
+  Future<void> getEjarInfoHandler() async {
+    var CurrentState = state as DTOState;
+    emit(CurrentState.copyWith(status: BlocStatus.loading, errorMessage: ""));
+    var ST = state as DTOState;
+    final failOrSuccess =
+        await _getEjarInfo(ST.ejarInfoRequst ?? EjarInfoRequest());
+
+    failOrSuccess.fold((l) {
+      emit(CurrentState.copyWith(
+          status: BlocStatus.failure,
           ejarVerified: false,
-          errorMessage: ""));
-    }
-
-
-    Future<void> getEjarInfoHandler() async {
-      var CurrentState = state as DTOState;
-      emit(CurrentState.copyWith(status: BlocStatus.loading, errorMessage: ""));
-      var ST = state as DTOState;
-      final failOrSuccess =
-      await _getEjarInfo(ST.ejarInfoRequst ?? EjarInfoRequest());
-
-      failOrSuccess.fold((l) {
-        emit(CurrentState.copyWith(
-            status: BlocStatus.failure,
-            ejarVerified: false,
-            errorMessage: (l as ServerFailure).errorMessage));
-      }, (r) {
-        emit(CurrentState.copyWith(
-            status: BlocStatus.success, ejarVerified: true));
-      });
-    }
-
-    void selectInvestmentContract(InvestmentContractItem? item) {
-      var CurrentState = state as DTOState;
+          errorMessage: (l as ServerFailure).errorMessage));
+    }, (r) {
       emit(CurrentState.copyWith(
-        errorMessage: "",
-        selectedInvestmentContract: item,
-      ));
-    }
+          status: BlocStatus.success, ejarVerified: true));
+    });
+  }
 
-
+  void selectInvestmentContract(InvestmentContractItem? item) {
+    var CurrentState = state as DTOState;
+    emit(CurrentState.copyWith(
+      errorMessage: "",
+      selectedInvestmentContract: item,
+    ));
+  }
 
   void saveData() async {
-
-    var CurrentState =state as DTOState;
+    var CurrentState = state as DTOState;
     emit(CurrentState.copyWith(status: BlocStatus.loading, errorMessage: ""));
 
     SaveShopDetailsRequest request = SaveShopDetailsRequest(
-        requestId: requestNumber,
-        contractDate: CommonFunctions.padHijriDate(CurrentState.contractDate ?? ""),
-        contractNumber: CurrentState.contractNumber,
-        contractType: CurrentState.crContractType?.name,
-        contractOption: CurrentState.crContractOption?.name,
-        investmentContractNumber:
-        CurrentState.selectedInvestmentContract?.siteContractId,
-        ejarContractInfo:
-        CurrentState.ejarVerified == true ? CurrentState.ejarInfoRequst : null,
-        deedInfo: CurrentState.deedVerified == true ? CurrentState.deedInfoRequst : null,
+      requestId: requestNumber,
+      contractDate:
+          CommonFunctions.padHijriDate(CurrentState.contractDate ?? ""),
+      contractNumber: CurrentState.contractNumber,
+      contractType: CurrentState.crContractType?.name,
+      contractOption: CurrentState.crContractOption?.name,
+      investmentContractNumber:
+          CurrentState.selectedInvestmentContract?.siteContractId,
+      ejarContractInfo: CurrentState.ejarVerified == true
+          ? CurrentState.ejarInfoRequst
+          : null,
+      deedInfo: CurrentState.deedVerified == true
+          ? CurrentState.deedInfoRequst
+          : null,
     );
-    RequestApprovalSequenceRepository dateSource =sl();
+    RequestApprovalSequenceRepository dateSource = sl();
     final failOrSuccess = await dateSource.saveShopDetails(request);
 
-
-
     failOrSuccess.fold(
-            (failure) => emit(CurrentState.copyWith(
-          status: BlocStatus.failure,
-          errorMessage: (failure as ServerFailure).errorMessage,
-        )), (success) {
-
-
-
+        (failure) => emit(CurrentState.copyWith(
+              status: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) {
       emit(CurrentState.copyWith(status: BlocStatus.success));
     });
-
   }
-
 }

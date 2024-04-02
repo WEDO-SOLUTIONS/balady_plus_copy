@@ -851,7 +851,7 @@ class ContractInfoDto {
     // required this.deedInfoResponse,
     // required this.contractDate,
     required this.contractNumber,
-     required this.contractOptionsResponseDto,
+    required this.contractOptionsResponseDto,
     // required this.investmentContractNumber,
   });
 
@@ -863,7 +863,8 @@ class ContractInfoDto {
         // deedInfoResponse: json["deedInfoResponse"],
         // contractDate: json["contractDate"],
         contractNumber: json["contractNumber"] ?? '',
-         contractOptionsResponseDto: ContractOptionsResponseDto.fromJson(json["contractOptionsResponseDto"]),
+        contractOptionsResponseDto: ContractOptionsResponseDto.fromJson(
+            json["contractOptionsResponseDto"]),
         // investmentContractNumber: json["investmentContractNumber"],
       );
 
@@ -917,12 +918,12 @@ class ContractOptionsResponseDto {
     required this.investOptions,
   });
 
-  factory ContractOptionsResponseDto.fromJson(Map<String, dynamic> json) => ContractOptionsResponseDto(
-    ejarOptions: List<String>.from(json["ejarOptions"].map((x) => x)),
-    deedOptions: List<String>.from(json["deedOptions"].map((x) => x)),
-    investOptions: List<String>.from(json["investOptions"].map((x) => x)),
-  );
-
+  factory ContractOptionsResponseDto.fromJson(Map<String, dynamic> json) =>
+      ContractOptionsResponseDto(
+        ejarOptions: List<String>.from(json["ejarOptions"].map((x) => x)),
+        deedOptions: List<String>.from(json["deedOptions"].map((x) => x)),
+        investOptions: List<String>.from(json["investOptions"].map((x) => x)),
+      );
 }
 
 class SubmitterInfo {
@@ -985,9 +986,7 @@ class SubmitterInfo {
 class Warnings {
   Warnings();
 
-  factory Warnings.fromJson(Map<String, dynamic> json) => Warnings(
-  );
+  factory Warnings.fromJson(Map<String, dynamic> json) => Warnings();
 
-  Map<String, dynamic> toJson() => {
-  };
+  Map<String, dynamic> toJson() => {};
 }

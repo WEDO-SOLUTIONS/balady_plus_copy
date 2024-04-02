@@ -1,4 +1,3 @@
-
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/commercial_license/presentation/step4/bloc/cr_step4_shop_data_cubit.dart';
 import 'package:flutter/material.dart';
@@ -19,16 +18,17 @@ import '../../../../vd/presentation/widgets/details_widgets/incident_desc_widget
 import '../blocs/request_approval_sequence_cubit.dart';
 
 class ApprovalSequenceShopLocationScreen extends StatefulWidget {
-
-
   StepInterface stepInterface;
-   ApprovalSequenceShopLocationScreen({Key? key, required this.stepInterface}) : super(key: key);
+  ApprovalSequenceShopLocationScreen({Key? key, required this.stepInterface})
+      : super(key: key);
 
   @override
-  State<ApprovalSequenceShopLocationScreen> createState() => _ApprovalSequenceShopLocationScreenState();
+  State<ApprovalSequenceShopLocationScreen> createState() =>
+      _ApprovalSequenceShopLocationScreenState();
 }
 
-class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceShopLocationScreen> {
+class _ApprovalSequenceShopLocationScreenState
+    extends State<ApprovalSequenceShopLocationScreen> {
   TextEditingController _deedServiceController = TextEditingController();
   @override
   void initState() {
@@ -38,34 +38,24 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
     Future.microtask(() {
       context.read<RequestApprovalSequenceCubit>().InitForm();
       context.read<RequestApprovalSequenceCubit>().getDeedOwnerShipsTypes();
-
     });
-
-
-
   }
 
   @override
   Widget build(BuildContext context) {
     return getBody();
-
   }
 
- Widget getBody (){
-    return  BlocConsumer<RequestApprovalSequenceCubit, RequestApprovalSequenceState>(
-        listener: (context, state) {
-
-
-
-          if ((state is DTOState &&
+  Widget getBody() {
+    return BlocConsumer<RequestApprovalSequenceCubit,
+        RequestApprovalSequenceState>(listener: (context, state) {
+      if ((state is DTOState &&
               (state as DTOState).deedOptionsStatus == BlocStatus.failure) ||
-              ((state as DTOState).status == BlocStatus.failure)||
-              (state as DTOState).investmentListStatus == BlocStatus.failure) {
-            CommonFunctions.showError(state.errorMessage ?? "");
-          }
-
-
-        }, builder: (context, state) {
+          ((state as DTOState).status == BlocStatus.failure) ||
+          (state as DTOState).investmentListStatus == BlocStatus.failure) {
+        CommonFunctions.showError(state.errorMessage ?? "");
+      }
+    }, builder: (context, state) {
       return Stack(
         children: [
           if (state is DTOState)
@@ -79,7 +69,6 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-
                           CRHeaderDesc(header: "step4Title".tr()),
                           const SizedBox(height: 16),
 
@@ -190,7 +179,6 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                               isValidate: state.deedVerified ?? false,
                               currentValue: state.contractNumber,
                               verify: () {
-
                                 //check contract number
                                 context
                                     .read<RequestApprovalSequenceCubit>()
@@ -287,12 +275,12 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                               keyboardType: TextInputType.number,
                               bottomMargin: 24,
                               initialValue:
-                              state.ejarInfoRequst?.tenancyContractNumber,
+                                  state.ejarInfoRequst?.tenancyContractNumber,
                               onChanged: (value) {
                                 context
                                     .read<RequestApprovalSequenceCubit>()
                                     .updateTenancyInfo(
-                                    tenancyContractNumber: value);
+                                        tenancyContractNumber: value);
                               },
                             ),
                             CustomTextFieldWidget(
@@ -347,7 +335,7 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                                 if (state.showServiceInvest())
                                   RadioItem<CRContractOption>(
                                       radioText:
-                                      "user_attach_invest_contract".tr(),
+                                          "user_attach_invest_contract".tr(),
                                       radioValue: CRContractOption.service),
                               ],
                               onChanged: (value) {
@@ -365,16 +353,17 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                           if (state.crContractType == CRContractType.invest &&
                               state.crSubmitterType == CRSubmitterType.rental &&
                               state.crContractOption ==
-                                  CRContractOption.service && state.investmentListStatus != null &&
-                              state.investmentListStatus
-                                  !.isSubmissionSuccess) ...[
+                                  CRContractOption.service &&
+                              state.investmentListStatus != null &&
+                              state.investmentListStatus!
+                                  .isSubmissionSuccess) ...[
                             MediaQuery.removePadding(
                               removeTop: true,
                               context: context,
                               child: ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: state.investmentContractResponse
-                                      ?.items?.length ??
+                                          ?.items?.length ??
                                       0,
                                   itemBuilder: (ctx, index) {
                                     return InvestMentContractCard(
@@ -383,16 +372,15 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                                         onSelect:
                                             (InvestmentContractItem? item) {
                                           context
-                                              .read<RequestApprovalSequenceCubit>()
+                                              .read<
+                                                  RequestApprovalSequenceCubit>()
                                               .selectInvestmentContract(item);
                                         },
                                         selected:
-                                        state.selectedInvestmentContract);
+                                            state.selectedInvestmentContract);
                                   }),
                             ),
                           ],
-
-
 
                           //
                           // HorizontalRadioGroup<String>(
@@ -449,10 +437,9 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                     ),
                   ),
                 ),
-
-                SizedBox(height: 20,),
-
-
+                SizedBox(
+                  height: 20,
+                ),
                 Container(
                   decoration: const BoxDecoration(
                       borderRadius: BorderRadius.only(
@@ -461,35 +448,30 @@ class _ApprovalSequenceShopLocationScreenState extends State<ApprovalSequenceSho
                       ),
                       color: Colors.white),
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
+                      const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
                   child: ElevatedButtonWidget.next(
                     onPressed: () {
-                      if(!state.isFormValid()){
-
+                      if (!state.isFormValid()) {
                         context.read<RequestApprovalSequenceCubit>().saveData();
-                      //  widget.stepInterface.nextPage();
+                        //  widget.stepInterface.nextPage();
                       } else {
                         CommonFunctions.showError("terms_error".tr());
                       }
                     },
                   ),
                 ),
-
-
-
-
               ],
             ),
-          if ( state is DTOState&& (state as DTOState).deedOptionsStatus == BlocStatus.failure)
+          if (state is DTOState &&
+              (state as DTOState).deedOptionsStatus == BlocStatus.failure)
             RetryWidget(
               onRetry: () {
-                context.read<RequestApprovalSequenceCubit>().getDeedOwnerShipsTypes();
-
+                context
+                    .read<RequestApprovalSequenceCubit>()
+                    .getDeedOwnerShipsTypes();
               },
             ),
-
-          if (state == BlocStatus.loading)
-            const CustomCircularLoadingWidget(),
+          if (state == BlocStatus.loading) const CustomCircularLoadingWidget(),
         ],
       );
     });

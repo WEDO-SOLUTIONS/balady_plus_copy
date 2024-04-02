@@ -273,31 +273,23 @@ void initialize() {
       () => RequestOwnershipTransferRemoteDataSourceImplementation(
           webService: sl()));
 
-  sl.registerLazySingleton<RequestApprovalSequenceRepository>(
-      () => RequestApprovalSequenceRepositoryImplementation(
-          remoteDataSource: sl()));
+  sl.registerLazySingleton<RequestApprovalSequenceRepository>(() =>
+      RequestApprovalSequenceRepositoryImplementation(remoteDataSource: sl()));
 
   sl.registerLazySingleton<RequestPermitsRemoteDataSource>(
-          () => RequestPermitsRemoteDataSourceImplementation(
-           webService: sl()));
+      () => RequestPermitsRemoteDataSourceImplementation(webService: sl()));
 
-
-  sl.registerLazySingleton<RequestOwnershipTransferDetailsRepository>(
-          () => RequestOwnershipTransferRepositoryImplementation(
-          remoteDataSource: sl()));
+  sl.registerLazySingleton<RequestOwnershipTransferDetailsRepository>(() =>
+      RequestOwnershipTransferRepositoryImplementation(remoteDataSource: sl()));
 
   sl.registerLazySingleton<AcceptOrRejectRequestOwnershipTransferRepository>(
-          () => RequestOwnershipTransferRepositoryImplementation(
+      () => RequestOwnershipTransferRepositoryImplementation(
           remoteDataSource: sl()));
 
-  sl.registerLazySingleton<RequestOwnershipTransferDetailsCubit>(
-          () => RequestOwnershipTransferDetailsCubit(
-          requestOwnershipTransferDetailsRepository: sl(), acceptOrRejectRequestOwnershipTransferRepository: sl()));
-
-
-
-
-
+  sl.registerLazySingleton<RequestOwnershipTransferDetailsCubit>(() =>
+      RequestOwnershipTransferDetailsCubit(
+          requestOwnershipTransferDetailsRepository: sl(),
+          acceptOrRejectRequestOwnershipTransferRepository: sl()));
 
   //noification
   sl.registerLazySingleton<NotificationsRemoteDataSource>(
@@ -306,10 +298,4 @@ void initialize() {
       () => NotificationRepositoryImplementation(remoteDataSource: sl()));
   sl.registerLazySingleton<NotificationManager>(
       () => NotificationManager(repository: sl()));
-
-
-
-
-
-
 }
