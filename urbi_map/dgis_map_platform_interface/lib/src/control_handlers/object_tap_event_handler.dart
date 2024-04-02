@@ -48,14 +48,16 @@ class ObjectTapEventHandler {
     final id = map["id"] as String;
     final cluster = map["cluster"];
 
-    const textStyleKey = "textStyle";
+    final textStyle = cluster["textStyle"];
+    final position = cluster["position"];
+
     final clusterObject = SimpleClusterObject(
       api,
       cluster["id"],
       GeoPointWithElevationMessage(
-        latitude: cluster["position"]["latitude"],
-        longitude: cluster["position"]["longitude"],
-        elevation: cluster["position"]["elevation"],
+        latitude: position["latitude"],
+        longitude: position["longitude"],
+        elevation: position["elevation"],
       ),
       cluster["objectCount"],
       (cluster["objects"] as List<Object?>).map((x) => x as String).toList(),
@@ -65,16 +67,15 @@ class ObjectTapEventHandler {
       ),
       cluster["iconOpacity"],
       MarkerTextStyleMessage(
-        fontSize: cluster[textStyleKey]["fontSize"],
-        color: cluster[textStyleKey]["color"],
-        strokeWidth: cluster[textStyleKey]["strokeWidth"],
-        strokeColor: cluster[textStyleKey]["strokeColor"],
+        fontSize: textStyle["fontSize"],
+        color: textStyle["color"],
+        strokeWidth: textStyle["strokeWidth"],
+        strokeColor: textStyle["strokeColor"],
         textPlacement: MarkerTextPlacementMessage(
-          placement: TextPlacementMessage
-              .values[cluster[textStyleKey]["textPlacement"]],
+          placement: TextPlacementMessage.values[textStyle["textPlacement"]],
         ),
-        textOffset: cluster[textStyleKey]["textOffset"],
-        fontName: cluster[textStyleKey]["fontName"],
+        textOffset: textStyle["textOffset"],
+        fontName: textStyle["fontName"],
       ),
       cluster["iconWidth"],
       cluster["iconMapDirection"] != null

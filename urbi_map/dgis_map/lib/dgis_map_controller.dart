@@ -371,10 +371,10 @@ class DgisMapController {
 
   /// Remove all markers, polygons, polylines
   /// that were added with [addMarker], [addPolygons], [addPolyline].
-  Future<void> removeAll({MapObjectManagerMessage? toManager}) async {
-    await _instance.removeAllMarkers(toManager);
-    await _instance.removeAllPolygons(toManager);
-    await _instance.removeAllPolylines(toManager);
+  Future<void> removeAll({MapObjectManagerMessage? fromManager}) async {
+    await _instance.removeAllMarkers(fromManager);
+    await _instance.removeAllPolygons(fromManager);
+    await _instance.removeAllPolylines(fromManager);
   }
 
   /// Add polygon to map.
