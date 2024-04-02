@@ -62,6 +62,7 @@ jobs:
           FILE_BALADY_MOBILEPROVISION: ${{ secrets.FILE_BALADY_MOBILEPROVISION }}
           FILE_BALADY_P12: ${{ secrets.FILE_BALADY_P12 }}
         run: |
+          env
           zsh .github/scripts/setup_keychain.sh
 
       - name: Setup Flutter
@@ -83,6 +84,7 @@ jobs:
 
       - name: Build app
         run: |
+          env
           KC="$HOME/Library/Keychains/build.keychain"
           KC_PASS='build-pass'
 
@@ -144,8 +146,9 @@ jobs:
       - name: Cleanup keychain
         if: ${{ always() }}
         run: |
-          LKC="$HOME/Library/Keychains/login.keychain"
-          KC="$HOME/Library/Keychains/build.keychain"
+          env
+          LKC="${HOME}/Library/Keychains/login.keychain"
+          KC="${HOME}/Library/Keychains/build.keychain"
 
           security list-keychains -s $LKC
           security default-keychain -s $LKC
