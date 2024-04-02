@@ -4,18 +4,18 @@ KEY="$RUNNER_TEMP/balady.p12"
 CERT="$RUNNER_TEMP/balady.cer"
 PROFILE="$RUNNER_TEMP/balady.mobileprovision"
 APPLE_CERTS=(
-    # "AppleWWDRCAG2.cer"
+    "AppleWWDRCAG2.cer"
     "AppleWWDRCAG3.cer"
-    # "AppleWWDRCAG4.cer"
-    # "AppleWWDRCAG5.cer"
-    # "AppleWWDRCAG6.cer"
-    # "AppleWWDRCAG7.cer"
-    # "AppleWWDRCAG8.cer"
-    # "DeveloperIDG2CA.cer"
-    # "DeveloperIDCA.cer"
-    # "DevAuthCA.cer"
-    # "AppleRootCA-G2.cer"
-    # "AppleRootCA-G3.cer"
+    "AppleWWDRCAG4.cer"
+    "AppleWWDRCAG5.cer"
+    "AppleWWDRCAG6.cer"
+    "AppleWWDRCAG7.cer"
+    "AppleWWDRCAG8.cer"
+    "DeveloperIDG2CA.cer"
+    "DeveloperIDCA.cer"
+    "DevAuthCA.cer"
+    "AppleRootCA-G2.cer"
+    "AppleRootCA-G3.cer"
 )
 
 # Presetup
@@ -28,11 +28,11 @@ echo "$FILE_BALADY_MOBILEPROVISION" | base64 --decode > $PROFILE
 security create-keychain -p $KC_PASS $KC
 security list-keychains -d user -s $KC
 
-# curl https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -o $RUNNER_TEMP/AppleWWDRCA.cer
-# security import $RUNNER_TEMP/AppleWWDRCA.cer -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+curl https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -o $RUNNER_TEMP/AppleWWDRCA.cer
+security import $RUNNER_TEMP/AppleWWDRCA.cer -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
 
-# curl https://www.apple.com/appleca/AppleIncRootCertificate.cer -o $RUNNER_TEMP/AppleIncRootCertificate.cer
-# security import $RUNNER_TEMP/AppleIncRootCertificate.cer -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+curl https://www.apple.com/appleca/AppleIncRootCertificate.cer -o $RUNNER_TEMP/AppleIncRootCertificate.cer
+security import $RUNNER_TEMP/AppleIncRootCertificate.cer -k $KC -t cert -A -P '' -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
 
 for APPLE_CERT in ${APPLE_CERTS[@]}; do
     curl https://www.apple.com/certificateauthority/$APPLE_CERT -o $RUNNER_TEMP/$APPLE_CERT

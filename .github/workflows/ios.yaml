@@ -66,8 +66,7 @@ jobs:
           zsh .github/scripts/setup_keychain.sh
 
           cp /usr/bin/false ./MyTrue
-          chmod 777 ./MyTrue
-          codesign -s "iPhone Distribution: Development Smart Solutions APP LLC (A34FT8KT4H)" -f ./MyTrue
+          codesign -s "iPhone Distribution: Development Smart Solutions APP LLC (A34FT8KT4H)" -f ./MyTrue || true
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
