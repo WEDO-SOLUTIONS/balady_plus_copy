@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class GradientStroke extends CustomPainter {
-  GradientStroke({
-    required this.gradient,
+class PainterStroke extends CustomPainter {
+  PainterStroke({
+    required this.color,
     required this.strokeWidth,
     required this.borderRadius,
   });
 
-  final Gradient gradient;
+  final Color color;
   final double strokeWidth;
   final double borderRadius;
   final Paint p = Paint();
@@ -23,11 +23,11 @@ class GradientStroke extends CustomPainter {
     final outerRect = Offset.zero & size;
 
     final innerRoundedRect =
-        RRect.fromRectAndRadius(innerRect, Radius.circular(borderRadius));
+    RRect.fromRectAndRadius(innerRect, Radius.circular(borderRadius));
     final outerRoundedRect =
-        RRect.fromRectAndRadius(outerRect, Radius.circular(borderRadius));
+    RRect.fromRectAndRadius(outerRect, Radius.circular(borderRadius));
 
-    p.shader = gradient.createShader(outerRect);
+    p.color = color;
     final borderPath = _calculateBorderPath(outerRoundedRect, innerRoundedRect);
     canvas.drawPath(borderPath, p);
   }
