@@ -149,7 +149,7 @@ jobs:
           env
           LKC="${HOME}/Library/Keychains/login.keychain"
           KC="${HOME}/Library/Keychains/build.keychain"
-
+          echo "TTT ${KC}"
           security list-keychains -s $LKC
           security default-keychain -s $LKC
           security delete-keychain $KC
