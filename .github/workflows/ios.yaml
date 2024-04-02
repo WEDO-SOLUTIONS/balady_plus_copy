@@ -34,6 +34,8 @@ jobs:
     if: github.event.pull_request.draft == false
     runs-on: [self-hosted, macOS, ARM64]
     timeout-minutes: 60
+    env:
+      LANG: en_US.UTF-8
     steps:
       - name: ⬇️ Checkout repository
         uses: actions/checkout@v4
@@ -56,7 +58,6 @@ jobs:
 
       - name: Setup keychain
         env:
-          LANG: en_US.UTF-8
           FILE_BALADY_CER: ${{ secrets.FILE_BALADY_CER }}
           FILE_BALADY_MOBILEPROVISION: ${{ secrets.FILE_BALADY_MOBILEPROVISION }}
           FILE_BALADY_P12: ${{ secrets.FILE_BALADY_P12 }}
