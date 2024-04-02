@@ -222,9 +222,10 @@ class _ContentState extends ConsumerState<_Content>
         ],
       ),
     );
+    final language = ref.watch(appLanguageProvider);
 
     return Directionality(
-      textDirection: switch (ref.watch(appLanguageProvider)) {
+      textDirection: switch (language) {
         Language.arabic => TextDirection.rtl,
         Language.english => TextDirection.ltr,
       },

@@ -31,10 +31,11 @@ class ContentMyLocation extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final viewModel = PoiCardViewModel(ref: ref);
+    final language = ref.watch(appLanguageProvider);
     _cameraAnimation(ref);
 
     return Directionality(
-      textDirection: switch (ref.watch(appLanguageProvider)) {
+      textDirection: switch (language) {
         Language.arabic => TextDirection.rtl,
         Language.english => TextDirection.ltr,
       },

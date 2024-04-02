@@ -39,12 +39,12 @@ class PoiCardViewModel {
     }
   }
 
-  String _myLocationDeepling(LatLng location) =>
+  String _myLocationDeeplink(LatLng location) =>
       'https://apps.balady.gov.sa/#/poi-map?lat=${location.latitude}&lon=${location.longitude}&type=my-location';
 
   void shareMyLocation(LatLng? location) {
     if (location != null) {
-      Share.share(_myLocationDeepling(location));
+      Share.share(_myLocationDeeplink(location));
     } else {
       onError();
     }
@@ -53,7 +53,7 @@ class PoiCardViewModel {
   Future<void> copyToClipboard(LatLng? location) async {
     if (location != null) {
       await Clipboard.setData(
-        ClipboardData(text: _myLocationDeepling(location)),
+        ClipboardData(text: _myLocationDeeplink(location)),
       );
     }
   }

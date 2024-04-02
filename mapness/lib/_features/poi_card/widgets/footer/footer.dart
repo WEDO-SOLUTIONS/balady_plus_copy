@@ -17,7 +17,7 @@ part 'widgets/phone_item.dart';
 part 'widgets/entrance_item.dart';
 part 'widgets/car_item.dart';
 part 'widgets/share_item.dart';
-part 'widgets/favourite_item.dart';
+part 'widgets/favorite_item.dart';
 part 'widgets/wrapper.dart';
 
 class PoiCardFooter2 extends ConsumerWidget {
@@ -51,7 +51,7 @@ class PoiCardFooter2 extends ConsumerWidget {
     if (hasContactsAndHasEntrances) {
       return _Wrapper(
         children: [
-          _FavouriveItem(
+          _FavoriteItem(
             objectMessage: data,
             objectId: objectId,
           ),
@@ -88,7 +88,7 @@ class PoiCardFooter2 extends ConsumerWidget {
             flex: 2,
             onTap: callPhone,
           ),
-        _FavouriveItem(
+        _FavoriteItem(
           objectMessage: data,
           objectId: objectId,
         ),

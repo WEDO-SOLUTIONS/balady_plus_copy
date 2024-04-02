@@ -1,11 +1,11 @@
 part of '../footer.dart';
 
-class _FavouriveItem extends ConsumerWidget {
+class _FavoriteItem extends ConsumerWidget {
   static const flex = 2;
   final int? objectId;
   final DirectoryObjectMessage objectMessage;
 
-  const _FavouriveItem({
+  const _FavoriteItem({
     required this.objectId,
     required this.objectMessage,
   });
