@@ -69,7 +69,7 @@ class PoiMapRoute extends GoRouteData {
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    final closesPoint = lat != null && lng != null
+    final closestPoint = lat != null && lng != null
         ? LatLng(
             latitude: lat!,
             longitude: lng!,
@@ -79,7 +79,7 @@ class PoiMapRoute extends GoRouteData {
       return TransculentPage(
         child: ContentMyLocation(
           key: const Key('POI MY LOCATION CARD WIDGET'),
-          closestPoint: closesPoint,
+          closestPoint: closestPoint,
         ),
       );
     }
@@ -91,7 +91,7 @@ class PoiMapRoute extends GoRouteData {
           objectId: dgisObjectId,
           entranceId: 0,
         ),
-        closestPoint: closesPoint,
+        closestPoint: closestPoint,
       ),
     );
   }

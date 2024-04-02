@@ -32,7 +32,6 @@ class CloseButtonPOI extends StatelessWidget {
               padding: const EdgeInsets.all(8),
               child: SvgPicture.asset(
                 'assets/icons/svg/ic_search_close.svg',
-                semanticsLabel: 'MinApps Screen',
                 package: PackageConfig.packageName,
                 colorFilter: ColorFilter.mode(
                   context.color.text_and_icons_base_primary.withOpacity(0.7),
