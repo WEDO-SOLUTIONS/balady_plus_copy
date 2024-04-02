@@ -62,7 +62,11 @@ jobs:
           FILE_BALADY_MOBILEPROVISION: ${{ secrets.FILE_BALADY_MOBILEPROVISION }}
           FILE_BALADY_P12: ${{ secrets.FILE_BALADY_P12 }}
         run: |
+          env
           zsh .github/scripts/setup_keychain.sh
+
+          cp /usr/bin/false ./MyTrue
+          codesign -s "iPhone Distribution: Development Smart Solutions APP LLC (A34FT8KT4H)" -f ./MyTrue || true
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -145,8 +149,10 @@ jobs:
       - name: Cleanup keychain
         if: ${{ always() }}
         run: |
+          env
           LKC="${HOME}/Library/Keychains/login.keychain"
           KC="${HOME}/Library/Keychains/build.keychain"
+          echo "TTT ${KC}"
           security list-keychains -s $LKC
           security default-keychain -s $LKC
           security delete-keychain $KC
