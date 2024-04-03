@@ -15,7 +15,9 @@ class BuildDirectionText extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Align(
+  Widget build(BuildContext context) =>
+      Padding(padding: EdgeInsets.all(12),
+        child: Align(
         alignment: Alignment(
             cos(KiblahCompass.rad(bearing)),
             sin(KiblahCompass.rad(bearing)),
@@ -24,5 +26,5 @@ class BuildDirectionText extends StatelessWidget {
             title,
             style: context.textStyle.caption.copyWith(color: Colors.white),
           ),
-      );
+      ),);
 }
