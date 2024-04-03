@@ -292,7 +292,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final latLng = LatLng(latitude: latitude, longitude: longitude);
     PoiMapRoute.open(
       ref.read(goRouterProvider),
-      -1,
+      -2,
       latLng: latLng,
     );
   }

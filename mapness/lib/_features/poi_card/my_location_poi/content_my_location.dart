@@ -19,12 +19,17 @@ import '../ui_kit_tmp/poi_header.dart';
 
 part 'poi_my_location_action.dart';
 part 'poi_my_location_content.dart';
+part 'poi_deeplink_location_content.dart';
+
+enum LocationType { myLocation, deeplinkLocation }
 
 class ContentMyLocation extends ConsumerWidget {
   final LatLng? closestPoint;
+  final LocationType locationType;
 
   const ContentMyLocation({
     required this.closestPoint,
+    required this.locationType,
     super.key,
   });
 
@@ -61,10 +66,20 @@ class ContentMyLocation extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  PoiMyLocationContent(
-                    location: closestPoint!,
-                    onTapClose: context.pop,
-                  ),
+                  Builder(builder: (context) {
+                    switch (locationType) {
+                      case LocationType.myLocation:
+                        return PoiMyLocationContent(
+                          location: closestPoint!,
+                          onTapClose: context.pop,
+                        );
+                      case LocationType.deeplinkLocation:
+                        return PoiDeeplinkContent(
+                          location: closestPoint!,
+                          onTapClose: context.pop,
+                        );
+                    }
+                  }),
                   MyLocationPoiActions(
                     onShare: () => viewModel.shareMyLocation(closestPoint),
                     onCopy: () => viewModel.copyToClipboard(closestPoint),

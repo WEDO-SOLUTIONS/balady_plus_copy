@@ -32,6 +32,12 @@ class PoiMapRoute extends GoRouteData {
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
+  /// Open PoiMapRoute. Because [dgisObjectId] is required, to open this route you need to provide it.
+  /// So if we want to open my location or deeplink location:
+  /// `dgisObjectId = -1` - for my location
+  /// `dgisObjectId = -2` - for deeplink location for other person
+  ///
+  /// [zoom], [bearing], [tilt] - camera settings
   static void open(
     GoRouter router,
     int dgisObjectId, {
@@ -80,6 +86,15 @@ class PoiMapRoute extends GoRouteData {
         child: ContentMyLocation(
           key: const Key('POI MY LOCATION CARD WIDGET'),
           closestPoint: closestPoint,
+          locationType: LocationType.myLocation,
+        ),
+      );
+    } else if (dgisObjectId == -2) {
+      return TransculentPage(
+        child: ContentMyLocation(
+          key: const Key('POI OTHER LOCATION CARD WIDGET'),
+          closestPoint: closestPoint,
+          locationType: LocationType.deeplinkLocation,
         ),
       );
     }

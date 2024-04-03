@@ -7,12 +7,12 @@ class PoiHeader extends StatelessWidget {
   final Function()? onTapClose;
 
   final String text;
-  final String subTitle;
+  final String? subTitle;
 
   const PoiHeader({
     required this.onTapClose,
     required this.text,
-    required this.subTitle,
+    this.subTitle,
     super.key,
   });
 
@@ -44,13 +44,14 @@ class PoiHeader extends StatelessWidget {
                 maxLines: 2,
                 textAlign: TextAlign.start,
               ),
-              Text(
-                subTitle,
-                style: subTitleStyle,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                textAlign: TextAlign.start,
-              ),
+              if (subTitle != null)
+                Text(
+                  subTitle!,
+                  style: subTitleStyle,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  textAlign: TextAlign.start,
+                ),
             ],
           ),
         ),
