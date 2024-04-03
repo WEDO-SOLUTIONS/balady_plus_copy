@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_bearing.dart';
@@ -8,6 +9,7 @@ import 'package:mapness/pages/kiblah/ui/widgets/build_direction_text.dart';
 import 'package:mapness/pages/kiblah/ui/widgets/center_compass_widget.dart';
 import 'package:mapness/pages/kiblah/ui/widgets/fake_kaab_icon.dart';
 import 'package:mapness/pages/kiblah/ui/widgets/kaaba_icon.dart';
+import 'package:mapness/pages/kiblah/ui/widgets/radar_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/compass.dart';
 import 'package:mapness/shared/ui/painter_stroke.dart';
