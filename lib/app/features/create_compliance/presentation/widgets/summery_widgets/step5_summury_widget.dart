@@ -139,17 +139,6 @@ class ComplianceFieldData extends StatelessWidget {
               ),
             ],
           ),
-          CustomTextWidget(
-            item.notes ?? "",
-            fontColor: AppColor.blackModern600Light,
-            fontWeight: AppFontWeight.medium,
-            fontSize: 12,
-          ),
-          if (item.attachmentDto?.attachUrl != null)
-            ComplainceAttachment(
-              url: item.attachmentDto?.attachUrl?.toString() ?? "",
-              name: item.attachmentDto?.name.toString(),
-            ),
           if (item.itemData?.isNotEmpty ?? false) ...[
             if (lastNote != null) ComplianceClauseNotesItem(item: lastNote),
             SizedBox(

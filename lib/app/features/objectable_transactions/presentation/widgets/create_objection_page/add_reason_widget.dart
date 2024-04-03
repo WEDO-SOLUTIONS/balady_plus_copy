@@ -15,18 +15,26 @@ class AddReasonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CreateObjectionBloc, CreateObjectionState>(
         builder: (context, state) {
+      bool enableAddButton = state.reasons?.last.notes?.isNotEmpty ?? false;
       return CustomElevatedIconButtonWidget(
         text: ("add_reason").tr(),
-        icon: const CustomSvgIconWidget(IconPath.add, iconSize: 18.0),
+        icon: CustomSvgIconWidget(
+          IconPath.add,
+          iconSize: 18.0,
+          iconColor: enableAddButton ? null : AppColor.blackModern500Light,
+        ),
         btnColor: Colors.transparent,
         textStyle: AppStyle.elevatedButtonStyle.copyWith(
-          color: AppColor.primary800Light,
+          color: enableAddButton
+              ? AppColor.primary800Light
+              : AppColor.blackModern500Light,
           fontWeight: FontWeight.w700,
           fontSize: 16,
         ),
         btnAlignment: MainAxisAlignment.start,
         onPressed: () {
-          context.read<CreateObjectionBloc>().add(AddNewReasonEvent());
+          if (enableAddButton)
+            context.read<CreateObjectionBloc>().add(AddNewReasonEvent());
         },
       );
     });

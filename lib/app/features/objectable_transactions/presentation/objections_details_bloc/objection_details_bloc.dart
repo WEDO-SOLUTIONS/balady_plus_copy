@@ -93,6 +93,10 @@ class ObjectionsDetailsBloc
             isObjections: true);
       }
     } else if (state.details?.serviceGroupId == "1200") {
+      var splitted = state.details?.requestSubmitterData?.objectedTransactionUrl
+          ?.split("/requestType/");
+
+      hash = splitted?[0].split("/").lastOrNull;
       var typeName = serviceTypeId == "1" ? 'requests' : "licenses";
       CommonFunctions.openBaladyWebView(RemoteConfig.baladyBaseUrl +
           "/dashboardclient/" +
@@ -102,6 +106,10 @@ class ObjectionsDetailsBloc
           '/requestType/' +
           "1200");
     } else if (state.details?.serviceGroupId == "1100") {
+      var splitted = state.details?.requestSubmitterData?.objectedTransactionUrl
+          ?.split("/requestType/");
+
+      hash = splitted?[0].split("/").lastOrNull;
       var typeName = serviceTypeId == "1" ? 'requests' : "licenses";
       CommonFunctions.openBaladyWebView(RemoteConfig.baladyBaseUrl +
           "/dashboardclient/" +

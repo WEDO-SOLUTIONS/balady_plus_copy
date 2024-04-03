@@ -242,13 +242,16 @@ class _ComplianceClauseSubmitItemState
                   ),
                 ],
                 ElevatedButtonWidget.custom(
-                  isDisabled: widget.item.submitterAnswer == null ||
-                      widget.item.showNoteAndAttachments(widget.isReturned) &&
-                          ((widget.item.isAttachmentRequired(
-                                      widget.isReturned) &&
-                                  widget.item.file == null) ||
-                              (widget.item.isNoteRequired(widget.isReturned)) &&
-                                  (widget.item.notes?.isEmpty ?? true)),
+                  isDisabled: (widget.item.submitterAnswer == null ||
+                          widget.item
+                                  .showNoteAndAttachments(widget.isReturned) &&
+                              ((widget.item.isAttachmentRequired(
+                                          widget.isReturned) &&
+                                      widget.item.file == null) ||
+                                  (widget.item
+                                          .isNoteRequired(widget.isReturned)) &&
+                                      (widget.item.notes?.isEmpty ?? true))) &&
+                      widget.item.edit == true,
                   text: widget.item.edit != true
                       ? "complaince_edit_clause".tr()
                       : "complaince_save_clause".tr(),
