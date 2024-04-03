@@ -24,42 +24,42 @@ class KiblahPage extends ConsumerWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // Align(
-            //   alignment: AlignmentDirectional.centerStart,
-            //   child: BaladyTopBar(
-            //     onLeadingPressed: () {
-            //       ref.read(mapControlsProvider.notifier).update(MapControlsStateDashboard());
-            //       const LandingRoute().go(context);
-            //     },
-            //     leading: Icon(
-            //       BaladyIcons.Arrow_Corner_Left_L,
-            //       color: context.color.textAndIconsBaseInversePrimary,
-            //     ),
-            //     title: isReady ? '$userBearing°' : context.l10n.calibrating,
-            //     textStyle: context.textStyle.footNoteBold.copyWith(color: context.color.textAndIconsBaseInversePrimary),
-            //   ),
-            // ),
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: BaladyTopBar(
+                onLeadingPressed: () {
+                  ref.read(mapControlsProvider.notifier).update(MapControlsStateDashboard());
+                  const LandingRoute().go(context);
+                },
+                leading: Icon(
+                  BaladyIcons.Arrow_Corner_Left_L,
+                  color: context.color.textAndIconsBaseInversePrimary,
+                ),
+                title: isReady ? '$userBearing°' : context.l10n.calibrating,
+                textStyle: context.textStyle.footNoteBold.copyWith(color: context.color.textAndIconsBaseInversePrimary),
+              ),
+            ),
             const Center(child: KiblahCompass()),
-            // Align(
-            //   alignment: Alignment.bottomCenter,
-            //   child: Container(
-            //     width: double.infinity,
-            //     margin: const EdgeInsets.symmetric(
-            //       horizontal: Spacing.horizontalPaddingInsideWrapper,
-            //       vertical: Spacing.horizontalPaddingInsideCell,
-            //     ),
-            //     child: AppButton(
-            //       primaryIcon: BaladyIcons.Mosq2,
-            //       primaryLabel: context.l10n.mosquesNearYou,
-            //       buttonColorScheme: ButtonColorScheme.primary,
-            //       onTap: () {
-            //         ref.read(mapControlsProvider.notifier).update(MapControlsStateDashboard());
-            //         const LandingRoute(focusMaker: LangingFocusMaker.mosques)
-            //             .go(context);
-            //       },
-            //     ),
-            //   ),
-            // ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                width: double.infinity,
+                margin: const EdgeInsets.symmetric(
+                  horizontal: Spacing.horizontalPaddingInsideWrapper,
+                  vertical: Spacing.horizontalPaddingInsideCell,
+                ),
+                child: AppButton(
+                  primaryIcon: BaladyIcons.Mosq2,
+                  primaryLabel: context.l10n.mosquesNearYou,
+                  buttonColorScheme: ButtonColorScheme.primary,
+                  onTap: () {
+                    ref.read(mapControlsProvider.notifier).update(MapControlsStateDashboard());
+                    const LandingRoute(focusMaker: LangingFocusMaker.mosques)
+                        .go(context);
+                  },
+                ),
+              ),
+            ),
           ],
         ),
       ),
