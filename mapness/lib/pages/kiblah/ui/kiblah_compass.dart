@@ -35,10 +35,8 @@ class KiblahCompass extends ConsumerWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(50),
-              child: Container(
-                color: Colors.amber,
-                child: CustomPaint(
-                  painter: PainterStroke(
+              child: CustomPaint(
+                painter: PainterStroke(
                     color: correct ? context.color.surfaceStatusPositive : context.color.surfaceStatusAccent,
                     strokeWidth: 2,
                     borderRadius: 1000,
@@ -48,14 +46,14 @@ class KiblahCompass extends ConsumerWidget {
                     padding: const EdgeInsets.all(22),
                     child: Stack(
                       children: [
-                        RadarWidget(
-                          backgroundColor: correct
-                              ? NonThemeColor.color3.withOpacity(0.2)
-                              : context.color.textAndIconsBasePrimary.withOpacity(0.2),
-                          radarColor: correct
-                              ? NonThemeColor.color3.withOpacity(0.7)
-                              : context.color.textAndIconsBasePrimary.withOpacity(0.7),
-                        ),
+                        // RadarWidget(
+                        //   backgroundColor: correct
+                        //       ? NonThemeColor.color3.withOpacity(0.2)
+                        //       : context.color.textAndIconsBasePrimary.withOpacity(0.2),
+                        //   radarColor: correct
+                        //       ? NonThemeColor.color3.withOpacity(0.7)
+                        //       : context.color.textAndIconsBasePrimary.withOpacity(0.7),
+                        // ),
                         CenterCompassWidget(
                           backgroundColor: correct
                               ? context.color.surfaceStatusPositive.withOpacity(0.2)
@@ -65,10 +63,9 @@ class KiblahCompass extends ConsumerWidget {
                     ),
                   ),
                 ),
-              ),
             ),
             Padding(
-              padding: const EdgeInsets.all(50.5),
+              padding: const EdgeInsets.all(36),
               child: isReady
                   ? Align(
                       alignment: Alignment(
