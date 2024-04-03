@@ -203,6 +203,8 @@ class DgisMapPlugin extends FlutterMapApi {
             return _indoorEventHandler.activeLevelEvent(map);
           case ObjectTapEvent.name:
             return _objectTapEventHandler.objectTapEvent(map);
+          case MyLocationTapEvent.name:
+            return _objectTapEventHandler.myLocationTapEvent(map);
           case RoadEventTapEvent.name:
             return _objectTapEventHandler.roadEventTapEvent(map);
           case MarkerTapEvent.name:
