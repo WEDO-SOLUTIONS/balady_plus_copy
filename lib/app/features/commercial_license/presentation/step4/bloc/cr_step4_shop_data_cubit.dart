@@ -751,7 +751,6 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
       QrLookUpItem? selectedMall = state.selectedMall;
 
       try {
-        print("EXXXXXX {$requestData?.shopInfo?.mallDto}");
         if (requestData?.shopInfo?.mallDto != null &&
             requestData?.shopInfo?.mallDto["id"] != null &&
             requestData?.shopInfo?.mallDto["name"] != null) {

@@ -482,6 +482,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
   }
 
   Future<void> _getLicensesHandler(GetLicensesEvent e, Emitter emitter) async {
+    if (state.licenseStatus == BlocRequestStatus.submissionGetSuccess) return;
     emitter(state.copyWith(
       licenseStatus: BlocRequestStatus.submissionGetLoading,
     ));
@@ -532,31 +533,31 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     }, (r) async {
       if (r.submitterThrough == "BENEFICARY") {
         List<AttachmentData> attachmentData = [];
-        if (showDetails == true) {
-          attachmentData = (r.requestAttachments ?? [])
-              .map(
-                (e) => AttachmentData(
-                  id: e.id.toString(),
-                  memo: e.name ?? "",
-                  title: "${e.name} ${e.allowedFilesExtension}",
-                  isRequired: true,
-                  isUploaded: false,
-                ),
-              )
-              .toList();
-        } else {
-          attachmentData = (r.beneficaryAttachments ?? [])
-              .map(
-                (e) => AttachmentData(
-                  id: e.id.toString(),
-                  memo: e.name ?? "",
-                  title: "${e.name} ${e.allowedFilesExtension}",
-                  isRequired: e.isMandatory ?? false,
-                  isUploaded: false,
-                ),
-              )
-              .toList();
-        }
+        List<AttachmentData> viewAttachmentData = [];
+
+        attachmentData = (r.beneficaryAttachments ?? [])
+            .map(
+              (e) => AttachmentData(
+                id: e.id.toString(),
+                memo: e.name ?? "",
+                title: "${e.name} ${e.allowedFilesExtension}",
+                isRequired: e.isMandatory ?? false,
+                isUploaded: false,
+              ),
+            )
+            .toList();
+
+        viewAttachmentData = (r.requestAttachments ?? [])
+            .map(
+              (e) => AttachmentData(
+                id: e.id.toString(),
+                memo: e.name ?? "",
+                title: "${e.name} ${e.allowedFilesExtension}",
+                isRequired: true,
+                isUploaded: false,
+              ),
+            )
+            .toList();
 
         ComplinaceLookUpItem? selectedMainUsage = state.selectedMainUsage;
         ComplinaceLookUpItem? selectedSubUsage = state.selectedSubUsage;
@@ -576,13 +577,13 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
 
         emitter(
           state.copyWith(
-            requestDetails: r,
-            errorMessage: "",
-            selectedMainUsage: selectedMainUsage,
-            selectedSubUsage: Nullable(selectedSubUsage),
-            detailsStatus: BlocRequestStatus.submissionGetSuccess,
-            attachments: attachmentData,
-          ),
+              requestDetails: r,
+              errorMessage: "",
+              selectedMainUsage: selectedMainUsage,
+              selectedSubUsage: Nullable(selectedSubUsage),
+              detailsStatus: BlocRequestStatus.submissionGetSuccess,
+              attachments: attachmentData,
+              viewAttachments: viewAttachmentData),
         );
 
         if (event.requestId == null) {
@@ -614,29 +615,30 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
 
   void setUpDraft(ComplianceRequestDetails? r) {
     List<AttachmentData> attachmentData = [];
-    if (showDetails == true) {
-      attachmentData = (r?.requestAttachments ?? [])
-          .map((e) => AttachmentData(
-              id: e.id.toString(),
-              memo: e.name ?? "",
-              fileName: e.fileName,
-              filePath: e.attachUrl,
-              title: "${e.name} ${e.allowedFilesExtension}",
-              isRequired: true,
-              isUploaded: e.attached ?? false))
-          .toList();
-    } else {
-      attachmentData = (r?.beneficaryAttachments ?? [])
-          .map((e) => AttachmentData(
-              id: e.id.toString(),
-              memo: e.name ?? "",
-              fileName: e.fileName,
-              filePath: e.attachUrl,
-              title: "${e.name} ${e.allowedFilesExtension}",
-              isRequired: e.isMandatory ?? false,
-              isUploaded: e.attached ?? false))
-          .toList();
-    }
+    List<AttachmentData> viewAttachmentData = [];
+
+    attachmentData = (r?.beneficaryAttachments ?? [])
+        .map((e) => AttachmentData(
+            id: e.id.toString(),
+            memo: e.name ?? "",
+            fileName: e.fileName,
+            filePath: e.attachUrl,
+            title: "${e.name} ${e.allowedFilesExtension}",
+            isRequired: e.isMandatory ?? false,
+            isUploaded: e.attached ?? false))
+        .toList();
+
+    viewAttachmentData = (r?.requestAttachments ?? [])
+        .map((e) => AttachmentData(
+            id: e.id.toString(),
+            memo: e.name ?? "",
+            fileName: e.fileName,
+            filePath: e.attachUrl,
+            title: "${e.name} ${e.allowedFilesExtension}",
+            isRequired: true,
+            isUploaded: e.attached ?? false))
+        .toList();
+
     ComplinaceLookUpItem? selectedMainUsage = state.selectedMainUsage;
     ComplinaceLookUpItem? selectedSubUsage = state.selectedSubUsage;
     ComplinaceLookUpItem? selectedOwnerShip = state.selectedOwnerShip;
@@ -683,71 +685,73 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     }
     requestId = r?.requestId;
 
+//String applicantNotes = r?.applicantNotes?.firstWhereOrNull((element) => element.)
     emit(
       state.copyWith(
-        requestDetails: r,
-        isDraft: true,
-        currentStep: 3,
-        requestId: requestId,
-        selectedReciptType: Nullable(selectedReciptType),
-        contactMobileVerified: Nullable(true),
-        selectedOwnerShip: Nullable(selectedOwnerShip),
-        ownershipText:
-            Nullable(r?.ownershipDocInfoDto?.ownershipDocumentNo ?? ""),
-        ownershipDate:
-            Nullable(r?.ownershipDocInfoDto?.ownershipDocumentDate ?? ""),
-        gisParams: r?.locationResponseInfoDto?.gisParams(),
-        gisResponse: r?.locationResponseInfoDto?.municipalityId != null
-            ? ComplainceGISResponse(
-                amanaCode: r?.locationResponseInfoDto?.municipalityId,
-                amanaName: r?.locationResponseInfoDto?.municipalityName,
-                municipalityCode: r?.locationResponseInfoDto?.subMunicipalityId,
-                municipalityName:
-                    r?.locationResponseInfoDto?.subMunicipalityName,
-                districtCode: r?.locationResponseInfoDto?.districtId != null
-                    ? r?.locationResponseInfoDto?.districtId.toString()
-                    : null,
-                districtName: r?.locationResponseInfoDto?.districtName,
-                streetCode: r?.locationResponseInfoDto?.streetId != null
-                    ? r?.locationResponseInfoDto?.streetId.toString()
-                    : null,
-                city: r?.locationResponseInfoDto?.cityName,
-                cityCode: r?.locationResponseInfoDto?.cityId != null
-                    ? r?.locationResponseInfoDto?.cityId.toString()
-                    : null,
-                planName: r?.locationResponseInfoDto?.mapName,
-                planNo: r?.locationResponseInfoDto?.mapNumber,
-                parcelNo: r?.locationResponseInfoDto?.landsInfo?.landsInfo
-                    ?.firstOrNull?.landNumber,
-                area: r?.locationResponseInfoDto?.landsInfo?.landsInfo
-                    ?.firstOrNull?.landArea,
-                guid: r?.locationResponseInfoDto?.guid,
-                streetName: r?.locationResponseInfoDto?.guid,
-              )
-            : null,
-        ownerShipAgreement: true,
-        benificiaryTypeSelection: submitterThrough,
-        documentTypeSelection: certificateBaseType,
-        errorMessage: "",
-        /*  emtethalAgreement: true,
+          requestDetails: r,
+          isDraft: true,
+          currentStep: 3,
+          requestId: requestId,
+          selectedReciptType: Nullable(selectedReciptType),
+          contactMobileVerified: Nullable(true),
+          selectedOwnerShip: Nullable(selectedOwnerShip),
+          ownershipText:
+              Nullable(r?.ownershipDocInfoDto?.ownershipDocumentNo ?? ""),
+          ownershipDate:
+              Nullable(r?.ownershipDocInfoDto?.ownershipDocumentDate ?? ""),
+          gisParams: r?.locationResponseInfoDto?.gisParams(),
+          gisResponse: r?.locationResponseInfoDto?.municipalityId != null
+              ? ComplainceGISResponse(
+                  amanaCode: r?.locationResponseInfoDto?.municipalityId,
+                  amanaName: r?.locationResponseInfoDto?.municipalityName,
+                  municipalityCode:
+                      r?.locationResponseInfoDto?.subMunicipalityId,
+                  municipalityName:
+                      r?.locationResponseInfoDto?.subMunicipalityName,
+                  districtCode: r?.locationResponseInfoDto?.districtId != null
+                      ? r?.locationResponseInfoDto?.districtId.toString()
+                      : null,
+                  districtName: r?.locationResponseInfoDto?.districtName,
+                  streetCode: r?.locationResponseInfoDto?.streetId != null
+                      ? r?.locationResponseInfoDto?.streetId.toString()
+                      : null,
+                  city: r?.locationResponseInfoDto?.cityName,
+                  cityCode: r?.locationResponseInfoDto?.cityId != null
+                      ? r?.locationResponseInfoDto?.cityId.toString()
+                      : null,
+                  planName: r?.locationResponseInfoDto?.mapName,
+                  planNo: r?.locationResponseInfoDto?.mapNumber,
+                  parcelNo: r?.locationResponseInfoDto?.landsInfo?.landsInfo
+                      ?.firstOrNull?.landNumber,
+                  area: r?.locationResponseInfoDto?.landsInfo?.landsInfo
+                      ?.firstOrNull?.landArea,
+                  guid: r?.locationResponseInfoDto?.guid,
+                  streetName: r?.locationResponseInfoDto?.streetName,
+                )
+              : null,
+          ownerShipAgreement: true,
+          benificiaryTypeSelection: submitterThrough,
+          documentTypeSelection: certificateBaseType,
+          errorMessage: "",
+          /*  emtethalAgreement: true,
         ownerShipAgreement: r?.emtithalItems?.firstWhereOrNull(
                     (element) => element.submitterAnswer == null) !=
                 null
             ? false
             : true,*/
-        selectedLicense: r?.licenseNumber != null
-            ? Nullable(ComplianceLisenseItem(
-                licenseId: r?.licenseNumber?.toDouble(),
-                expirationDate: r?.licenseExpiryDate,
-                issuingDate: r?.licenseIssueDate,
-                statusName: r?.licenseStatusName,
-                statusId: r?.licenseStatusId))
-            : null,
-        selectedMainUsage: selectedMainUsage,
-        selectedSubUsage: Nullable(selectedSubUsage),
-        detailsStatus: BlocRequestStatus.submissionGetSuccess,
-        attachments: attachmentData,
-      ),
+          selectedLicense: r?.licenseNumber != null
+              ? Nullable(ComplianceLisenseItem(
+                  licenseId: r?.licenseNumber?.toDouble(),
+                  expirationDate: r?.licenseExpiryDate,
+                  issuingDate: r?.licenseIssueDate,
+                  statusName: r?.licenseStatusName,
+                  statusId: r?.licenseStatusId))
+              : null,
+          selectedMainUsage: selectedMainUsage,
+          selectedSubUsage: Nullable(selectedSubUsage),
+          detailsStatus: BlocRequestStatus.submissionGetSuccess,
+          attachments: attachmentData,
+          viewAttachments: viewAttachmentData),
     );
   }
 
@@ -960,7 +964,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       showCustomDialog(SaveDraftDialog(
         onClose: () {},
         onSave: () {
-          if (state.currentStep == 5 || isLastPage()) {
+          if (state.currentStep == 6 || isLastPage()) {
             bool Function(Route<dynamic>) predicate =
                 ModalRoute.withName(RouteName.bottomNavigation);
             NavigationService.navigatorKey.currentState!.popUntil((predicate));

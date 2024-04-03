@@ -31,9 +31,8 @@ class _CompleteCompliancePageState extends State<CompleteCompliancePage> {
     widget.bloc
       ..add(const GetMainUsagesEvent())
       ..add(const GetOwnerShipTypesEvent())
-      ..add(const GetReciptTypesEvent())
-      // ..add(const GetEngOfficesListEvent())
-      ..add(GetLicensesEvent());
+      ..add(const GetReciptTypesEvent());
+    // ..add(const GetEngOfficesListEvent())
 
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       widget.bloc.pageController.jumpToPage(3);

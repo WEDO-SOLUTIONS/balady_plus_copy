@@ -232,7 +232,8 @@ class EmtithalItem {
   bool showNoteAndAttachments(bool isReturned) {
     if (isReturned) {
       if ((submitterAnswer == 1 && (empAnswer != null && empAnswer != 1)) ||
-          submitterAnswer == 2) {
+          submitterAnswer == 2 ||
+          (empAnswer == 1 && submitterAnswer == 1)) {
         return true;
       }
     } else {

@@ -16,9 +16,9 @@ class SplashScreenAnimator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (CommonFunctions.isFoundationDay()) {
+    if (CommonFunctions.changeSpalsh()) {
       return Image.asset(
-        "assets/images/foundation-day-splash-min.png",
+        "assets/images/eid-splash.png",
         fit: BoxFit.fill,
       );
     }

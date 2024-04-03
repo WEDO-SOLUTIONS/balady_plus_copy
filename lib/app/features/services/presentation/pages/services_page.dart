@@ -56,7 +56,8 @@ class _ServicesPageState extends State<ServicesPage> {
 
   @override
   Widget build(BuildContext context) {
-    Color? color = CommonFunctions.isFoundationDay() ? Color(0xff6B4E45) : null;
+    //Color? color = CommonFunctions.isFoundationDay() ? Color(0xff6B4E45) : null;
+    Color? color;
 
     return BlocConsumer<DashboardBloc, DashboardState>(
         listener: (context, dashboardState) {},

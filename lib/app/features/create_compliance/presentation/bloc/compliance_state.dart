@@ -62,6 +62,8 @@ class ComplianceState extends Equatable {
   final ComplainceGISResponse? gisResponse;
   final GISParams? gisParams;
   final List<AttachmentData>? attachments;
+  final List<AttachmentData>? viewAttachments;
+
   final ApplyCreateComplianceRequest? applyRequest;
   final String? contactMobileNumber;
   final bool? agreement;
@@ -117,6 +119,7 @@ class ComplianceState extends Equatable {
       this.gisResponse,
       this.gisParams,
       this.attachments,
+      this.viewAttachments,
       this.engOffices,
       this.selectedEngOffice,
       this.engOfficeDetails,
@@ -163,6 +166,7 @@ class ComplianceState extends Equatable {
       final ComplainceGISResponse? gisResponse,
       final GISParams? gisParams,
       final List<AttachmentData>? attachments,
+      final List<AttachmentData>? viewAttachments,
       final ApplyCreateComplianceRequest? applyRequest,
       final String? contactMobileNumber,
       final Nullable<ComplinaecEngOfficeItem?>? selectedEngOffice,
@@ -221,6 +225,7 @@ class ComplianceState extends Equatable {
         gisResponse: gisResponse ?? this.gisResponse,
         gisParams: gisParams ?? this.gisParams,
         attachments: attachments ?? this.attachments,
+        viewAttachments: viewAttachments ?? this.viewAttachments,
         applyRequest: applyRequest ?? this.applyRequest,
         engOffices: engOffices ?? this.engOffices,
         selectedEngOffice: selectedEngOffice == null
@@ -465,6 +470,7 @@ class ComplianceState extends Equatable {
         selectedLicense,
         detailsStatus,
         attachments,
+        viewAttachments,
         applyRequest,
         documentTypeSelection,
         contactMobileNumber,
