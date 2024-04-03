@@ -382,56 +382,6 @@ class _ApprovalSequenceShopLocationScreenState
                             ),
                           ],
 
-                          //
-                          // HorizontalRadioGroup<String>(
-                          //   groupName: 'municipalAdvisorBoards'.tr(),
-                          //   currentItem: state.boardContractSetting,
-                          //   items: [
-                          //     if (state.boardContractsOPTINAL() ||
-                          //         state.boardContractsContract())
-                          //       RadioItem<String>(
-                          //           radioText: "cr_add_board_contract".tr(),
-                          //           radioValue: "CONTRACT"),
-                          //     if (state.boardContractsOPTINAL() ||
-                          //         state.boardContractsMANUAL())
-                          //       RadioItem<String>(
-                          //           radioText:
-                          //           "cr_add_board_data_contract".tr(),
-                          //           radioValue: "MANUAL"),
-                          //   ],
-                          //   onChanged: (value) {
-                          //     if (value != null) {
-                          //       context
-                          //           .read<RequestApprovalSequenceCubit>()
-                          //           .updateBoardContractSetting(value);
-                          //     }
-                          //   },
-                          // ),
-                          // if ((state.boardContractSetting == "CONTRACT") &&
-                          //     (state.boardContractsStatus ==
-                          //         BlocStatus.success)) ...[
-                          //   ListView.builder(
-                          //       shrinkWrap: true,
-                          //       physics: const NeverScrollableScrollPhysics(),
-                          //       itemCount:
-                          //       state.boardContractItems?.length ?? 0,
-                          //       itemBuilder: (ctx, index) {
-                          //         return BoardContractCard(
-                          //             item: state.boardContractItems![index],
-                          //             onSelect: (BoardContractItem? item) {
-                          //               context
-                          //                   .read<RequestApprovalSequenceCubit>()
-                          //                   .selectBoardContractNumber(item!);
-                          //             },
-                          //             selected: state.boardContractNumber);
-                          //       }),
-                          // ],
-                          // if (state.boardContractSetting == "MANUAL") ...[
-                          //   const BillboardComponent(),
-                          //   NotesWidget(
-                          //     notes: [CommonFunctions.getIssueCrWarning3()],
-                          //   ),
-                          // ]
                         ],
                       ),
                     ),
@@ -452,11 +402,8 @@ class _ApprovalSequenceShopLocationScreenState
                   child: ElevatedButtonWidget.next(
                     onPressed: () {
                       //  if (!state.isFormValid()) {
-                      context.read<RequestApprovalSequenceCubit>().saveData();
-                      //  widget.stepInterface.nextPage();
-                      // } else {
-                      //   CommonFunctions.showError("terms_error".tr());
-                      // }
+                      context.read<RequestApprovalSequenceCubit>().saveData( widget.stepInterface);
+
                     },
                   ),
                 ),

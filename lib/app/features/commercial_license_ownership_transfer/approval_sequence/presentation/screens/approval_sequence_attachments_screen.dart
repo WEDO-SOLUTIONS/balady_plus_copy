@@ -26,6 +26,8 @@ import '../../../../commercial_license/presentation/commercial_license/widgets/p
 import '../../../../commercial_license/presentation/step5/bloc/cr_step5_attachment_data_cubit.dart';
 import '../../../../commercial_license/presentation/step5/widgets/credence_components.dart';
 import '../../../../transaction_inquiry/customer_voice_exports.dart';
+import '../blocs/request_approval_sequence_cubit.dart';
+import '../widgets/AttachmentComponents.dart';
 
 class ApprovalSequenceAttachmentsScreen extends StatefulWidget {
   StepInterface stepInterface;
@@ -43,111 +45,133 @@ class _ApprovalSequenceAttachmentsScreenState
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
 
-    context.read<CRStep5AttachmentCubit>().getAttachments();
-    context.read<CRStep5AttachmentCubit>().getCredneces();
+    context.read<RequestApprovalSequenceCubit>().InitAttachmentForm();
+    Future.microtask(() {
+
+      context.read<RequestApprovalSequenceCubit>().getAttachments();
+    });
+
+    //context.read<RequestApprovalSequenceCubit>().getCredneces();
+
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: ((context) => CRStep5AttachmentCubit())),
-        BlocProvider(create: ((context) => CommercialLicenseBloc()))
-      ],
-      child: BlocConsumer<CRStep5AttachmentCubit, CRStep5AttachmentState>(
-        listener: (context, state) {
-          if (state.status == BlocStatus.failure) {
-            CommonFunctions.showError(state.errorMessage ?? "");
-          }
-        },
-        builder: (context, state) {
-          return Stack(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CRHeaderDesc(
-                              maxLines: null,
-                              textHeight: 1.5,
-                              header: "step11title3".tr(),
-                              desc: "",
-                            ),
-                            const SizedBox(height: 12),
-                            if (state.attachments != null)
-                              AttachmentListWidget(
-                                attachments: state.attachments ?? [],
-                                deleteFile: (int index) {
-                                  context
-                                      .read<CRStep5AttachmentCubit>()
-                                      .deleteFile(index);
-                                },
-                                saveFile: (int index, String filePath,
-                                    String fileName, String base64) {
-                                  context
-                                      .read<CRStep5AttachmentCubit>()
-                                      .saveFile(
-                                          index: index,
-                                          fileName: fileName,
-                                          fileBase64: base64,
-                                          filePath: filePath);
-                                },
-                              ),
-                            if (state.attachmentStatus == BlocStatus.failure)
-                              RetryWidget(
-                                onRetry: () {
-                                  context
-                                      .read<CRStep5AttachmentCubit>()
-                                      .getAttachments();
-                                  context
-                                      .read<CRStep5AttachmentCubit>()
-                                      .getCredneces();
-                                },
-                              ),
-                            CustomTextFieldWidget(
-                              label: "cr_benf_notes".tr(),
-                              initialValue: state.notes,
-                              maxLines: 10,
-                              onChanged: (String? text) {
+    return BlocConsumer<RequestApprovalSequenceCubit, RequestApprovalSequenceState>(
+      listener: (context, state) {
+        // if ((state as AttachmentState).status == BlocStatus.failure) {
+        //   CommonFunctions.showError((state as AttachmentState).errorMessage ?? "");
+        // }
+      },
+      builder: (context, state) {
+        
+        
+        return Stack(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CRHeaderDesc(
+                            maxLines: null,
+                            textHeight: 1.5,
+                            header: "step11title3".tr(),
+                            desc: "",
+                          ),
+                          const SizedBox(height: 12),
+                          if ((state as AttachmentState).attachments != null)
+                            AttachmentListWidget(
+                              attachments: (state as AttachmentState).attachments ?? [],
+                              deleteFile: (int index) {
                                 context
-                                    .read<CRStep5AttachmentCubit>()
-                                    .updateNotes(text);
+                                    .read<RequestApprovalSequenceCubit>()
+                                    .deleteFile(index);
+                              },
+                              saveFile: (int index, String filePath,
+                                  String fileName, String base64) {
+                                context
+                                    .read<RequestApprovalSequenceCubit>()
+                                    .saveFile(
+                                        index: index,
+                                        fileName: fileName,
+                                        fileBase64: base64,
+                                        filePath: filePath);
                               },
                             ),
-                            const SizedBox(
-                              height: 8,
+                          if ((state as AttachmentState).attachmentStatus == BlocStatus.failure)
+                            RetryWidget(
+                              onRetry: () {
+                                context
+                                    .read<RequestApprovalSequenceCubit>()
+                                    .getAttachments();
+                                // context
+                                //     .read<RequestApprovalSequenceCubit>()
+                                //     .getCredneces();
+                              },
                             ),
-                            const CredenceComponents(),
-                          ],
-                        ),
+
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          //const AttachmentComponents(),
+                        ],
                       ),
                     ),
                   ),
-                  CRPreviousNextButtons(
-                      onPressed: () {
-                        context
-                            .read<CRStep5AttachmentCubit>()
-                            .addBeneficiaryNotes();
-                      },
-                      isBtnDisabled: !state.isFormValid()),
-                ],
-              ),
-              if (state.attachmentStatus.isSubmissionLoading ||
-                  state.status.isSubmissionLoading ||
-                  state.credenceStatus.isSubmissionLoading)
-                const CustomCircularLoadingWidget(),
-            ],
-          );
-        },
-      ),
+                ),
+
+
+                Container(
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(36),
+                        topRight: Radius.circular(36),
+                      ),
+                      color: Colors.white),
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
+                  child: ElevatedButtonWidget.next(
+                    onPressed: () {
+
+
+                      context.read<RequestApprovalSequenceCubit>().submitApprove()
+                          .then((requestId) => {
+
+
+                        if(requestId >0)
+                          {
+                          Navigator.of(context).pushNamed(
+                        RouteName.SucessfullScreen,
+                        arguments: "$requestId",
+                      )
+                          }
+
+
+
+                      }
+                      );
+
+
+                    },
+                  ),
+                ),
+              ],
+            ),
+            if ((state as AttachmentState).attachmentStatus.isSubmissionLoading ||
+                (state as AttachmentState).status.isSubmissionLoading ||
+                (state as AttachmentState).credenceStatus.isSubmissionLoading)
+              const CustomCircularLoadingWidget(),
+          ],
+        );
+      },
     );
   }
 }

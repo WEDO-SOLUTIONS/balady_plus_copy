@@ -817,6 +817,11 @@ class ApiUrl {
       '/v1/superapp-commercial-ownership-services/transfer/selected-permits/by-new-owner/$requestId';
   static String transferShopInfo(int requestId) =>
       '/v1/superapp-commercial-ownership-services/transfer/shop-info/$requestId';
+
+  static String submitApprovel(int requestId) =>
+      '/v1/superapp-commercial-ownership-services/transfer/submit/by-new-owner/$requestId';
+
+
   static String transferRequestAttachments(int requestId) =>
       '/v1/superapp-commercial-ownership-services/transfer/attachments/$requestId';
   static String transferUploadAttachments(int requestId) =>

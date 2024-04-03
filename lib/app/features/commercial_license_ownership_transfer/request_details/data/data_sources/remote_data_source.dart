@@ -1,12 +1,15 @@
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
 import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/data/models/commercial_licence_details.dart';
 import 'package:dio/dio.dart' show DioError, DioException, Options;
 import 'package:dio/src/response.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
+
+import '../../../../../core/errors/exceptions.dart';
 
 abstract class RequestOwnershipTransferDetailsRemoteDataSource {
   Future<CommercialLicenceDetails> getRequestOwnershipTransferDetails(
@@ -72,21 +75,32 @@ class RequestOwnershipTransferRemoteDataSourceImplementation
       } else {
         return false;
       }
-    } on Exception catch (exception) {
+    } on ServerException catch (exception) {
       CommonFunctions.sendEvent(
-        dioError: exception is DioException ? exception : null,
+        dioError: null,
         response: response,
         ex: exception,
       );
-      rethrow;
+
+
+      throw ServerException(
+        "errors_server_error_2".tr(),
+        exception: APIException(
+          errorMessage: exception.errorMessage,
+        ),
+        response: response,
+      );
     } catch (exception) {
       CommonFunctions.sendEvent(
         dioError: null,
         response: response,
         ex: Exception(exception.toString()),
       );
+      CommonFunctions.showError(exception.toString());
       rethrow;
-    }
+  }
+
+
   }
 
   @override

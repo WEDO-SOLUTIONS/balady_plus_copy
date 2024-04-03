@@ -114,18 +114,36 @@ class _ApprovalSequencePermitsScreenState
                             btnWidth: 20,
                             text: "transfer_all".tr(),
                             onPressed: () {
+                              // for (var index = 0;
+                              //     index < permitsList.permits!.length;
+                              //     index++) {
+                              //   if (lstPermits.contains(permitsList.permits![index].permitNumber!) ==
+                              //       false) {
+                              //     lstPermits.add(permitsList
+                              //         .permits![index].permitNumber!);
+                              //   }
+                              //   permitsList.permits![index].selected = true;
+                              // }
+                              // setState(() {});
+
+
                               for (var index = 0;
-                                  index < permitsList.permits!.length;
-                                  index++) {
+                              index < permitsList.permits!.length;
+                              index++) {
+                                permitsList.permits![index].selected = true;
                                 if (lstPermits.contains(permitsList
-                                        .permits![index].permitNumber!) ==
+                                    .permits![index].permitNumber!) ==
                                     false) {
                                   lstPermits.add(permitsList
                                       .permits![index].permitNumber!);
                                 }
-                                permitsList.permits![index].selected = true;
                               }
                               setState(() {});
+
+
+
+
+
                             },
                           ),
                         ],
@@ -160,16 +178,19 @@ class _ApprovalSequencePermitsScreenState
                                         const Spacer(),
                                         CustomElevatedButtonWidget(
                                           btnBorderColor:
-                                              permit.selected == false
-                                                  ? AppColor.white
-                                                  : AppColor.blueSkyLight800,
-                                          btnColor: permit.selected == false
+                                          permit.selected == false ||
+                                              permit.selected == null
+                                              ? AppColor.white
+                                              : AppColor.blueSkyLight800,
+                                          btnColor: permit.selected == false ||
+                                              permit.selected == null
                                               ? AppColor.blueSkyLight800
                                               : AppColor.white,
                                           textStyle: AppStyle
                                               .elevatedButtonStyle
                                               .copyWith(
-                                            color: permit.selected == false
+                                            color: permit.selected == false ||
+                                                permit.selected == null
                                                 ? AppColor.white
                                                 : AppColor.blueSkyLight800,
                                             fontWeight: FontWeight.w700,
@@ -178,7 +199,8 @@ class _ApprovalSequencePermitsScreenState
                                           btnPadding: EdgeInsets.all(8.0),
                                           btnHeight: 30,
                                           btnWidth: 20,
-                                          text: permit.selected == false
+                                          text: permit.selected == false ||
+                                              permit.selected == null
                                               ? "tranfer_permit".tr()
                                               : "dont_tranfer_permit".tr(),
                                           onPressed: () {

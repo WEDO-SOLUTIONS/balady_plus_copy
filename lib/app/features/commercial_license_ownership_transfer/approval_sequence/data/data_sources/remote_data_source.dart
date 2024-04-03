@@ -24,8 +24,9 @@ import '../../domain/entities/save_selected_requests_permits_request.dart';
 import '../../domain/entities/save_shop_info_request.dart';
 import '../models/request_permits_model/permit.dart';
 import '../models/request_permits_model/request_permits_model.dart';
+import '../models/submit_approvel_model.dart';
 import '../models/transfer_attachment_response/request_attachments_response.dart';
-import '../models/transfer_attachment_response/result_list.dart';
+
 import '../models/upload_attachments.dart';
 import '../../../../../core/remote_services/web_service.dart' as web;
 
@@ -38,6 +39,12 @@ abstract class RequestPermitsRemoteDataSource {
   Future<bool> saveShopInfo(int requestNumber, SaveShopInfoRequest params);
   Future<List<RequestAttachmentsResponse>> requestAttachments(int requestNumber);
   Future<bool>? uploadAttachments({required CrAttachmentRequest params});
+  Future<bool> saveAttachment( CrAttachmentRequest params);
+  Future<bool>? uploadCredence( CrAttachmentRequest params);
+  Future<bool> submitApprovel(int requestNumber);
+
+
+
 }
 
 class RequestPermitsRemoteDataSourceImplementation
@@ -167,7 +174,7 @@ class RequestPermitsRemoteDataSourceImplementation
   }
 
   @override
-  Future saveShopDetails({required SaveShopDetailsRequest params}) async {
+  Future<bool> saveShopDetails({required SaveShopDetailsRequest params}) async {
     var response;
 
     try {
@@ -177,10 +184,12 @@ class RequestPermitsRemoteDataSourceImplementation
           ),
           data: params.toMap());
 
+
+
       final decodedResponse =
           ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: null);
 
-      return null;
+      return true;
     } on DioError catch (error) {
       print(error);
       var errorCode;
@@ -220,13 +229,19 @@ class RequestPermitsRemoteDataSourceImplementation
 
     try {
       response =
-          await webService.dio.get(ApiUrl.getRequestPermits(requestNumber));
+          await webService.dio.get(ApiUrl.transferRequestAttachments(requestNumber));
       final data = response.data;
 
-      final dataResponse = ResponseBodyModel.fromMap(data).data!;
+      // final dataResponse = ResponseBodyModel.fromMap(data).data!;
 
 
-      return ResultList.fromJson(dataResponse);
+
+
+      List<RequestAttachmentsResponse> lst = (data["data"]["result"] as List)
+          .map((data) => RequestAttachmentsResponse.fromJson(data))
+          .toList();
+
+      return lst;
 
     } on DioException catch (error) {
       if (error is NoDataFoundException) {
@@ -253,43 +268,6 @@ class RequestPermitsRemoteDataSourceImplementation
     }
   }
 
-  // @override
-  // Future<UploadAttachments> uploadAttachments(
-  //     int requestNumber, FileDataItem file) async {
-  //   Response? response;
-
-  //   try {
-  //     response =
-  //         await webService.dio.get(ApiUrl.transferUploadAttachments(requestNumber));
-  //     final data = response.data;
-
-  //     final result = ResponseBodyModel.fromMap(data).data?.result;
-
-  //     return UploadAttachments.fromJson(result);
-  //   } on DioException catch (error) {
-  //     if (error is NoDataFoundException) {
-  //       rethrow;
-  //     }
-
-  //     throw ServerException(
-  //       error.toString(),
-  //       statusCode: error.response?.statusCode,
-  //       dioError: error,
-  //     );
-  //   } catch (ex) {
-  //     if (ex is ServerException) {
-  //       rethrow;
-  //     } else {
-  //       throw ServerException(
-  //         "errors_server_error_2".tr(),
-  //         exception: APIException(
-  //           errorMessage: ex.toString(),
-  //         ),
-  //         response: response,
-  //       );
-  //     }
-  //   }
-  // }
 
   @override
   Future<bool>? uploadAttachments({required CrAttachmentRequest params}) async {
@@ -336,4 +314,145 @@ class RequestPermitsRemoteDataSourceImplementation
       );
     }
   }
+
+
+  @override
+  Future<bool> saveAttachment( CrAttachmentRequest params) async {
+    final mimeType = lookupMimeType(params.data?.filePath ?? "");
+
+    final body = await locator<web.WebService>().uploadFileSSO(
+      ApiUrl.crAttachment(params.requestId!, params.data!.id!),
+      base64: base64Decode(params.data?.base64 ?? ""),
+      fileName: params.data?.fileName,
+      mimeType: mimeType,
+    );
+    ;
+    bool state = body['state'];
+    dynamic data = body['data'];
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+
+    try {
+      if (state == true) {
+        return true;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: data,
+          ),
+        );
+      }
+    } catch (ex) {
+      print(ex);
+      try {
+        Helpers.sendLog(
+            url: ApiUrl.complianceAttachment(
+                params.requestId.toString(), params.data!.id),
+            data: data,
+            errorMsg: ex.toString());
+      } catch (ex) {}
+
+      throw ServerException(
+        "errors_server_error_2".tr(),
+        exception: APIException(
+          errorMessage: ex.toString(),
+        ),
+      );
+    }
+  }
+
+
+
+
+  @override
+  Future<bool>? uploadCredence( CrAttachmentRequest params) async {
+    final mimeType = lookupMimeType(params.data?.filePath ?? "");
+
+    final body = await locator<web.WebService>().uploadFileSSO(
+      ApiUrl.uploadCredences(params.requestId!, params.data!.id),
+      base64: base64Decode(params.data?.base64 ?? ""),
+      fileName: params.data?.fileName,
+      mimeType: mimeType,
+    );
+    ;
+    print(ApiUrl.uploadCredences(params.requestId!, params.data!.id));
+    bool state = body['state'];
+    dynamic data = body['data'];
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+
+    try {
+      if (state == true) {
+        return true;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: data,
+          ),
+        );
+      }
+    } catch (ex) {
+      print(ex);
+      try {
+        Helpers.sendLog(
+            url: ApiUrl.complianceAttachment(
+                params.requestId.toString(), params.data!.id),
+            data: data,
+            errorMsg: ex.toString());
+      } catch (ex) {}
+
+      throw ServerException(
+        "errors_server_error_2".tr(),
+        exception: APIException(
+          errorMessage: ex.toString(),
+        ),
+      );
+    }
+  }
+
+
+  @override
+  Future<bool> submitApprovel(
+      int requestNumber) async {
+    Response? response;
+
+    try {
+
+      SubmitApprovelModel obj = SubmitApprovelModel();
+      response = await webService.dio
+          .post(ApiUrl.submitApprovel(requestNumber) ,data: obj.toJson());
+      final data = response.data;
+
+      final statusCode = ResponseBodyModel.fromMap(data).statusDetails!.code;
+      if (statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } on DioException catch (error) {
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: ex.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+  }
+
+
 }

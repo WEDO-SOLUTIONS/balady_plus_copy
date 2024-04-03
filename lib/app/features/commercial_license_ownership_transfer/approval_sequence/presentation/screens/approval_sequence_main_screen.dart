@@ -39,11 +39,14 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
   String? requestNumber;
   RequestOwnershipTransferDetailsCubit? requestDetailsBloc;
 
+
   late List<Widget>? pagesList = [
+
     ApprovalSequencePermitsScreen(stepInterface: this),
     ApprovalSequenceShopInfoScreen(stepInterface: this),
     ApprovalSequenceShopLocationScreen(stepInterface: this),
     ApprovalSequenceAttachmentsScreen(stepInterface: this),
+
   ];
 
   @override

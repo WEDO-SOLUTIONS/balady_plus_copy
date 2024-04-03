@@ -10,6 +10,8 @@ import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/enums/enums.dart';
 
 import '../../../../Commercial_license_transfer/persentation/interface/step_interface.dart';
+import '../../../../_shared_feature_/data/entities/file_data_item.dart';
+import '../../../../comercial_license_renew/domain/entities/cr_attachment_request.dart';
 import '../../../../comercial_license_renew/domain/entities/cr_attachment_response.dart';
 import '../../../../commercial_license/domain/entities/credence_response.dart';
 import '../../../../commercial_license/domain/entities/deed_info_request.dart';
@@ -133,6 +135,11 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
     emit(DTOState());
   }
 
+
+  void InitAttachmentForm() async {
+
+    emit(AttachmentState());
+  }
   void getInvestmentContracts() async {
     if (state is DTOState) {
       var ST = state as DTOState;
@@ -321,7 +328,7 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
     ));
   }
 
-  void saveData() async {
+  void saveData(StepInterface stepInterface) async {
     var CurrentState = state as DTOState;
     emit(CurrentState.copyWith(status: BlocStatus.loading, errorMessage: ""));
 
@@ -345,34 +352,41 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
     final failOrSuccess = await dateSource.saveShopDetails(request);
 
     failOrSuccess.fold(
-        (failure) => emit(CurrentState.copyWith(
+        (failure) =>
+            emit(CurrentState.copyWith(
               status: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) {
+
+
       emit(CurrentState.copyWith(status: BlocStatus.success));
+
+      stepInterface.nextPage();
+
     });
   }
 
-  void getAttachments(int requestId) async {
+  void getAttachments() async {
     //4517311700
 
     emit((state as AttachmentState)
         .copyWith(attachmentStatus: BlocStatus.loading));
     final response =
-        await requestApprovalSequenceRepository.requestAttachments(requestId);
+        await requestApprovalSequenceRepository.requestAttachments(requestNumber!);
     response.fold(
-        (failure) => emit((state as AttachmentState).copyWith(
+        (failure) =>
+            emit((state as AttachmentState).copyWith(
               attachmentStatus: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) {
-      List<AttachmentData> attachmentData = (success.items ?? [])
+      List<AttachmentData> attachmentData = (success ?? [])
           .map((e) => AttachmentData(
               id: e.id.toString(),
               memo: e.name ?? "",
               title: "${e.name} ${e.allowedFilesExtension}",
               isRequired: e.isMandatory ?? false,
               filePath: e.attachUrl,
-              fileName: e.fileName,
+              fileName: e.originFileName,
               isUploaded: e.attached ?? false))
           .toList();
 
@@ -381,18 +395,84 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
     });
   }
 
-  void uploadAttachment(FileDataItem item, int index) async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+  deleteFile(int index) async {
+    emit((state as AttachmentState).copyWith(status: BlocStatus.loading));
 
-    emit(state.copyWith(
+    List<AttachmentData> attachments = (state as AttachmentState).attachments ?? [];
+    attachments[index].base64 = null;
+    attachments[index].fileName = null;
+    attachments[index].filePath = null;
+    attachments[index].isUploaded = false;
+    emit((state as AttachmentState).copyWith(status: BlocStatus.success, attachments: attachments));
+  }
+
+  void updateNotes(String? notes) {
+    emit((state as AttachmentState).copyWith(
+      notes: notes,
+      errorMessage: "",
+    ));
+  }
+
+  saveFile(
+      {required int index,
+        required String filePath,
+        required String fileName,
+        required String fileBase64}) async {
+
+
+    emit((state as AttachmentState).copyWith(
       status: BlocStatus.loading,
       errorMessage: "",
     ));
 
-    final failOrSuccess = await _uploadCredence(CrAttachmentRequest(
-        requestId: requestId,
+    final failOrSuccess = await requestApprovalSequenceRepository.saveAttachment(CrAttachmentRequest(
+        requestId: requestNumber,
+        data: (state as AttachmentState).attachments![index].copyWith(
+            fileName: fileName, filePath: filePath, base64: fileBase64)));
+
+    failOrSuccess.fold((l) {
+      emit((state as AttachmentState).copyWith(
+        errorMessage: (l as ServerFailure).errorMessage,
+        status: BlocStatus.failure,
+      ));
+    }, (r) {
+      List<AttachmentData> attachments = (state as AttachmentState).attachments ?? [];
+      attachments[index].base64 = fileBase64;
+      attachments[index].fileName = fileName;
+      attachments[index].filePath = filePath;
+      attachments[index].isUploaded = true;
+      emit(
+          (state as AttachmentState).copyWith(status: BlocStatus.success, attachments: attachments));
+    });
+  }
+
+
+  deleteCredence(int index) async {
+    emit((state as AttachmentState).copyWith(
+      status: BlocStatus.loading,
+      errorMessage: "",
+    ));
+
+    List<CredenceItem> attachments = (state as AttachmentState).crdences ?? [];
+    attachments[index].attachmentUrl = null;
+
+    emit((state as AttachmentState).copyWith(status: BlocStatus.success, crdences: attachments));
+  }
+
+
+
+  void uploadCrednece(FileDataItem item, int index) async {
+
+
+    emit((state as AttachmentState).copyWith(
+      status: BlocStatus.loading,
+      errorMessage: "",
+    ));
+
+    final failOrSuccess = await requestApprovalSequenceRepository.uploadCredence(CrAttachmentRequest(
+        requestId: requestNumber,
         data: AttachmentData(
-            id: state.crdences![index].credenceId!.toString(),
+            id: (state as AttachmentState).crdences![index].credenceId!.toString(),
             fileName: item.fileName,
             filePath: item.filePath,
             base64: item.fileBase64,
@@ -402,15 +482,45 @@ class RequestApprovalSequenceCubit extends Cubit<RequestApprovalSequenceState> {
             isUploaded: false)));
 
     failOrSuccess.fold((l) {
-      emit(state.copyWith(
+      emit((state as AttachmentState).copyWith(
         errorMessage: (l as ServerFailure).errorMessage,
         status: BlocStatus.failure,
       ));
     }, (r) {
-      List<CredenceItem> attachments = state.crdences ?? [];
+      List<CredenceItem> attachments = (state as AttachmentState).crdences ?? [];
       attachments[index].attachmentUrl = item.filePath;
 
-      emit(state.copyWith(status: BlocStatus.success, crdences: attachments));
+      emit((state as AttachmentState).copyWith(status: BlocStatus.success, crdences: attachments));
     });
   }
+
+
+
+  Future<int> submitApprove() async {
+    int requestId=0;
+    emit((state as AttachmentState)
+        .copyWith(attachmentStatus: BlocStatus.loading));
+    final response =
+    await requestApprovalSequenceRepository.submitApprovel(requestNumber!);
+    response.fold(
+            (failure) {
+              requestId= -1;
+            emit((state as AttachmentState).copyWith(
+              attachmentStatus: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            ));
+
+                }
+
+            , (success) {
+
+      requestId = requestNumber!;
+      emit((state as AttachmentState).copyWith(
+          attachmentStatus: BlocStatus.success));
+
+    });
+
+    return requestId;
+  }
+
 }

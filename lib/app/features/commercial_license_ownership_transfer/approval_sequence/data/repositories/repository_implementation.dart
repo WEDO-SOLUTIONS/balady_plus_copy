@@ -13,6 +13,7 @@ import '../data_sources/remote_data_source.dart';
 import '../models/request_attachments/request_attachments.dart';
 import '../models/request_permits_model/permit.dart';
 import '../models/request_permits_model/request_permits_model.dart';
+import '../models/transfer_attachment_response/request_attachments_response.dart';
 
 class RequestApprovalSequenceRepositoryImplementation
     implements RequestApprovalSequenceRepository {
@@ -78,7 +79,7 @@ class RequestApprovalSequenceRepositoryImplementation
   }
 
   @override
-  Future<Either<Failure, RequestAttachments>> requestAttachments(
+  Future<Either<Failure, List<RequestAttachmentsResponse>>> requestAttachments(
       int requestNumber) async {
     try {
       final data = await remoteDataSource.requestAttachments(requestNumber);
@@ -100,6 +101,42 @@ class RequestApprovalSequenceRepositoryImplementation
       return Left(NoDataFoundFailure());
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> saveAttachment(
+       CrAttachmentRequest params) async {
+    try {
+      final data = await remoteDataSource.saveAttachment(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+
+  @override
+  Future<Either<Failure, bool>> uploadCredence(CrAttachmentRequest params) async {
+    try {
+      final data = await remoteDataSource.uploadCredence(params);
+      return Right(data!);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+
+  @override
+  Future<Either<Failure, bool>> submitApprovel(int requestNumber) async{
+    try {
+      final data = await remoteDataSource.submitApprovel(requestNumber);
+      return Right(data!);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
     }
   }
 }

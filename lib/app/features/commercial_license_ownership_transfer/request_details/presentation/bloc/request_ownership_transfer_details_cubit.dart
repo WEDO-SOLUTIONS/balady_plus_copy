@@ -48,34 +48,44 @@ class RequestOwnershipTransferDetailsCubit
     );
   }
 
-  Future<void> acceptCommercialRequestTransfer(String id) async {
+  Future<String?> acceptCommercialRequestTransfer(String id) async {
+
+    String? Message = null;
+
     emit(
       state.copyWith(
         status: BlocRequestStatus.submissionUpdateLoading,
         errorMessage: null,
       ),
     );
-    final failureOrSuccess =
-        await acceptOrRejectRequestOwnershipTransferRepository
-            .acceptCommercialRequestTransfer(id);
+    final failureOrSuccess = await acceptOrRejectRequestOwnershipTransferRepository.acceptCommercialRequestTransfer(id);
     failureOrSuccess.fold(
       (failure) {
+
+        Message= failure.toString();
         emit(
           state.copyWith(
             status: BlocRequestStatus.submissionGetFailure,
             errorMessage: failure.toString(),
           ),
         );
+
       },
-      (statusCode) {
+      (statusCode)
+      {
+
+        Message= "sucessfull";
         emit(
           state.copyWith(
             status: BlocRequestStatus.submissionUpdateSuccess,
             errorMessage: null,
           ),
         );
+
+
       },
     );
+    return Message;
   }
 
   Future<void> rejectCommercialRequestTransfer(String id) async {

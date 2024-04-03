@@ -111,38 +111,7 @@ class _RequestOwnershipTransferDetailsPageState
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  // Container(
-                  //   height: 80,
-                  //   width: double.infinity,
-                  //   margin: const EdgeInsets.symmetric(horizontal: 20),
-                  //   child: Card(
-                  //     shape: RoundedRectangleBorder(
-                  //         borderRadius: BorderRadius.circular(15.0)),
-                  //     color: AppColor.blue50Light,
-                  //     child: Padding(
-                  //       padding: const EdgeInsets.all(8.0),
-                  //       child: Row(
-                  //         crossAxisAlignment: CrossAxisAlignment.start,
-                  //         children: [
-                  //           SvgPicture.asset(
-                  //             IconPath.infoCircle,
-                  //             colorFilter: const ColorFilter.mode(
-                  //               AppColor.orange800,
-                  //               BlendMode.srcIn,
-                  //             ),
-                  //           ),
-                  //           const SizedBox(
-                  //             width: 5,
-                  //           ),
-                  //           const Text('sfdsfsdsd'),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  isReadonly ?? false
-                      ? Container()
-                      : Container(
+                 if (isReadonly ?? false) Container() else Container(
                           margin: const EdgeInsets.symmetric(horizontal: 20),
                           height: 60,
                           width: double.infinity,
@@ -168,6 +137,8 @@ class _RequestOwnershipTransferDetailsPageState
                                         return const Center(
                                             child: CircularProgressIndicator());
                                       }
+
+
                                       return Padding(
                                         padding: const EdgeInsets.all(10.0),
                                         child: Column(
@@ -235,17 +206,24 @@ class _RequestOwnershipTransferDetailsPageState
                                                     "accept_ownership_transfer"
                                                         .tr(),
                                                 onPressed: () {
-                                                  bloc!
-                                                      .acceptCommercialRequestTransfer(
-                                                          requestNumber)
-                                                      .then((value) {
-                                                    Navigator.of(context)
-                                                        .pushNamed(
-                                                      RouteName
-                                                          .approvalSequenceMainScreen,
-                                                      arguments: bloc,
-                                                    );
-                                                  });
+                                                  bloc!.acceptCommercialRequestTransfer(requestNumber)
+                                                      .then((value) => {
+
+
+                                                        if(value == "sucessfull")
+                                                          {
+                                                            Navigator.of(context)
+                                                                .pushNamed(
+                                                              RouteName
+                                                                  .approvalSequenceMainScreen,
+                                                              arguments: bloc,
+                                                            )
+                                                          }
+
+
+
+                                                  }
+                                                  );
                                                 },
                                               ),
                                             ),
