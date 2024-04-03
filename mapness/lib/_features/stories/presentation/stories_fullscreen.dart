@@ -6,8 +6,9 @@ import 'package:mapness/_features/stories/data/story_service.dart';
 import 'package:mapness/_features/stories/domain/frame/story_frame_action.dart';
 import 'package:mapness/_features/stories/presentation/frame/story_frames_player.dart';
 
-class StoriesFullscreen extends ConsumerStatefulWidget {
+import 'frame/story_frame_controller.dart';
 
+class StoriesFullscreen extends ConsumerStatefulWidget {
   const StoriesFullscreen({
     required this.handleDeeplink,
     required this.initialStoryId,
@@ -24,9 +25,12 @@ class StoriesFullscreen extends ConsumerStatefulWidget {
   ConsumerState<StoriesFullscreen> createState() => _StoriesFullscreenState();
 }
 
-class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
+class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
+    with WidgetsBindingObserver {
   late final PageController _storyController;
   late int initialPage;
+
+  late final StoryFrameController _storyFrameController;
 
   void _onChangeStory(int pageIndex, int length) {
     if (pageIndex == 0 || pageIndex == length + 1) {
@@ -51,9 +55,26 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _storyFrameController.play?.call();
+    } else {
+      _storyFrameController.pause?.call();
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
+    _storyFrameController = StoryFrameController();
     initialPage = 1;
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
@@ -118,6 +139,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
               blank,
               ...stories.map(
                 (story) => StoryFramesPlayer(
+                  controller: _storyFrameController,
                   onActionPressed: (action) => onActionPressed(action, context),
                   story: story,
                   onNextStory: _nextStory,
