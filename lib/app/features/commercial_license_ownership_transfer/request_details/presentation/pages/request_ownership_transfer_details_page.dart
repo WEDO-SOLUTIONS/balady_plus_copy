@@ -33,7 +33,7 @@ class _RequestOwnershipTransferDetailsPageState
   void initState() {
     super.initState();
 
-    Future.microtask((){
+    Future.microtask(() {
       bloc!.getCommercialLicenseDetailsById(bloc!.requestID!);
     });
     CommonFunctions.sendUXCamEvent(UXCamEvents.openLicensesDetails);
@@ -46,8 +46,9 @@ class _RequestOwnershipTransferDetailsPageState
     bool? isReadonly = data['isReadonly'];
     return BlocProvider(
       create: (context) {
-         bloc = RequestOwnershipTransferDetailsCubit(
-             requestOwnershipTransferDetailsRepository: sl(), acceptOrRejectRequestOwnershipTransferRepository: sl());
+        bloc = RequestOwnershipTransferDetailsCubit(
+            requestOwnershipTransferDetailsRepository: sl(),
+            acceptOrRejectRequestOwnershipTransferRepository: sl());
 
         bloc?.requestID = requestNumber;
 
@@ -161,7 +162,9 @@ class _RequestOwnershipTransferDetailsPageState
                                       RequestOwnershipTransferDetailsCubit,
                                       RequestOwnershipTransferDetailsState>(
                                     builder: (blocContext, state) {
-                                      if (state.status == BlocRequestStatus.submissionUpdateLoading) {
+                                      if (state.status ==
+                                          BlocRequestStatus
+                                              .submissionUpdateLoading) {
                                         return const Center(
                                             child: CircularProgressIndicator());
                                       }
@@ -236,16 +239,12 @@ class _RequestOwnershipTransferDetailsPageState
                                                       .acceptCommercialRequestTransfer(
                                                           requestNumber)
                                                       .then((value) {
-
-
-                                                          Navigator.of(context)
-                                                              .pushNamed(
-                                                            RouteName
-                                                                .approvalSequenceMainScreen,
-                                                            arguments:
-                                                            bloc,
-                                                          );
-
+                                                    Navigator.of(context)
+                                                        .pushNamed(
+                                                      RouteName
+                                                          .approvalSequenceMainScreen,
+                                                      arguments: bloc,
+                                                    );
                                                   });
                                                 },
                                               ),

@@ -43,7 +43,7 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
     ApprovalSequencePermitsScreen(stepInterface: this),
     ApprovalSequenceShopInfoScreen(stepInterface: this),
     ApprovalSequenceShopLocationScreen(stepInterface: this),
-    // ApprovalSequenceAttachmentsScreen(stepInterface: this),
+    ApprovalSequenceAttachmentsScreen(stepInterface: this),
   ];
 
   @override
@@ -52,7 +52,8 @@ class _ApprovalSequenceMainScreenState extends State<ApprovalSequenceMainScreen>
     super.initState();
 
     Future.microtask(() {
-      requestDetailsBloc = ModalRoute.of(context)!.settings.arguments as RequestOwnershipTransferDetailsCubit;
+      requestDetailsBloc = ModalRoute.of(context)!.settings.arguments
+          as RequestOwnershipTransferDetailsCubit;
 
       setState(() {
         requestNumber = requestDetailsBloc?.requestID;

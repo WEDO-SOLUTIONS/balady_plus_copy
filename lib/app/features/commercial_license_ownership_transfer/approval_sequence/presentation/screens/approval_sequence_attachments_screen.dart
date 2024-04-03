@@ -28,9 +28,10 @@ import '../../../../commercial_license/presentation/step5/widgets/credence_compo
 import '../../../../transaction_inquiry/customer_voice_exports.dart';
 
 class ApprovalSequenceAttachmentsScreen extends StatefulWidget {
-  // StepInterface stepInterface;
+  StepInterface stepInterface;
 
-  ApprovalSequenceAttachmentsScreen({Key? key}) : super(key: key);
+  ApprovalSequenceAttachmentsScreen({Key? key, required this.stepInterface})
+      : super(key: key);
 
   @override
   State<ApprovalSequenceAttachmentsScreen> createState() =>
@@ -42,24 +43,17 @@ class _ApprovalSequenceAttachmentsScreenState
   @override
   void initState() {
     // TODO: implement initState
-
-    Future.microtask(() {
-      var x = context.read<CRStep5AttachmentCubit>();
-      //     context.read<CRStep5AttachmentCubit>().getAttachments();
-      //  context.read<CRStep5AttachmentCubit>().getCredneces();
-    });
     super.initState();
+
+    context.read<CRStep5AttachmentCubit>().getAttachments();
+    context.read<CRStep5AttachmentCubit>().getCredneces();
   }
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: ((context) {
-          var bloc = CRStep5AttachmentCubit();
-          bloc.getAttachments();
-          return bloc;
-        })),
+        BlocProvider(create: ((context) => CRStep5AttachmentCubit())),
         BlocProvider(create: ((context) => CommercialLicenseBloc()))
       ],
       child: BlocConsumer<CRStep5AttachmentCubit, CRStep5AttachmentState>(
@@ -118,6 +112,19 @@ class _ApprovalSequenceAttachmentsScreenState
                                       .getCredneces();
                                 },
                               ),
+                            CustomTextFieldWidget(
+                              label: "cr_benf_notes".tr(),
+                              initialValue: state.notes,
+                              maxLines: 10,
+                              onChanged: (String? text) {
+                                context
+                                    .read<CRStep5AttachmentCubit>()
+                                    .updateNotes(text);
+                              },
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
                             const CredenceComponents(),
                           ],
                         ),

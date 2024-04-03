@@ -52,9 +52,7 @@ class _ApprovalSequencePermitsScreenState
   Widget getBody() {
     return BlocBuilder<RequestApprovalSequenceCubit,
         RequestApprovalSequenceState>(
-
       builder: (blocContext, state) {
-
         if (state is LoadingState) {
           return ListView.builder(
             itemCount: 3,
@@ -300,8 +298,10 @@ class _ApprovalSequencePermitsScreenState
                         bloc?.saveSelectedRequestsPermitsRequest
                             .selectedPermits = lstPermits;
 
-                        bloc?.saveSelectedRequestPermits(bloc!.requestNumber!,  bloc!.saveSelectedRequestsPermitsRequest,widget.stepInterface);
-
+                        bloc?.saveSelectedRequestPermits(
+                            bloc!.requestNumber!,
+                            bloc!.saveSelectedRequestsPermitsRequest,
+                            widget.stepInterface);
                       } else {
                         CommonFunctions.showError("terms_error".tr());
                       }

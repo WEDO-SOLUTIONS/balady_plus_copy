@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
+import 'package:balady_plus/app/features/comercial_license_renew/domain/entities/cr_attachment_request.dart';
 import 'package:balady_plus/app/features/commercial_license_details/data/data_sources/remote_data_source.dart';
 import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_licence_details.dart';
 import 'package:balady_plus/app/features/commercial_license_details/domain/repositories/repository.dart';
@@ -9,6 +10,7 @@ import '../../domain/entities/save_selected_requests_permits_request.dart';
 import '../../domain/entities/save_shop_info_request.dart';
 import '../../domain/repositories/repository.dart';
 import '../data_sources/remote_data_source.dart';
+import '../models/request_attachments/request_attachments.dart';
 import '../models/request_permits_model/permit.dart';
 import '../models/request_permits_model/request_permits_model.dart';
 
@@ -50,9 +52,10 @@ class RequestApprovalSequenceRepositoryImplementation
   }
 
   @override
-  Future<Either<Failure, bool>> saveShopInfo(int requestNumber,SaveShopInfoRequest params) async {
+  Future<Either<Failure, bool>> saveShopInfo(
+      int requestNumber, SaveShopInfoRequest params) async {
     try {
-      final data = await remoteDataSource.saveShopInfo(requestNumber,params);
+      final data = await remoteDataSource.saveShopInfo(requestNumber, params);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -66,6 +69,32 @@ class RequestApprovalSequenceRepositoryImplementation
       SaveShopDetailsRequest req) async {
     try {
       final data = await remoteDataSource.saveShopDetails(params: req);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, RequestAttachments>> requestAttachments(
+      int requestNumber) async {
+    try {
+      final data = await remoteDataSource.requestAttachments(requestNumber);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool?>> uploadAttachments(
+      CrAttachmentRequest params) async {
+    try {
+      final data = await remoteDataSource.uploadAttachments(params: params);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());

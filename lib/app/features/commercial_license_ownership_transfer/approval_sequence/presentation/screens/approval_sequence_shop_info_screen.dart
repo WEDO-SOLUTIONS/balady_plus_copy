@@ -37,94 +37,91 @@ class _ApprovalSequenceShopInfoScreenState
   void initState() {
     // TODO: implement initState
     super.initState();
-
   }
+
   @override
   Widget build(BuildContext context) {
     bloc = context.read<RequestApprovalSequenceCubit>();
     return BlocBuilder<RequestApprovalSequenceCubit,
-        RequestApprovalSequenceState>(
-      builder: (blocContext, state) {
-
-          return Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(
-                            bottom: 30, right: 30, left: 30, top: 0),
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CustomTextWidget(
-                                "issue_commercial_shop_info".tr(),
-                                textStyle: AppStyle.complianceTitleStyle,
-                                maxLines: 4,
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              CustomTextFieldWidget(
-                                label: "${"shopName".tr()} *",
-                                controller: _crNumberController,
-                                focusNode: _crNumberDescFocusNode,
-                                keyboardType: TextInputType.text,
-                                fillColor: Colors.transparent,
-                                onValidate: (text) {
-                                  if (text.toString().isEmpty) {
-                                    return ("new_owner_cr_number_error").tr();
-                                  }
-                                  return null;
-                                },
-                                textInputAction: TextInputAction.done,
-                                spacerSize: 10,
-                              ),
-                              YesNoRadioGroupWidget(
-                                groupName: "step4GroupName".tr(),
-                                currentValue: brandChecked,
-                                onChanged: (value) {
-                                  setState(() {
-                                    brandChecked = value!;
-                                  });
-                                },
-                              ),
-                            ],
+        RequestApprovalSequenceState>(builder: (blocContext, state) {
+      return Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(
+                        bottom: 30, right: 30, left: 30, top: 0),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomTextWidget(
+                            "issue_commercial_shop_info".tr(),
+                            textStyle: AppStyle.complianceTitleStyle,
+                            maxLines: 4,
                           ),
-                        ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          CustomTextFieldWidget(
+                            label: "${"shopName".tr()} *",
+                            controller: _crNumberController,
+                            focusNode: _crNumberDescFocusNode,
+                            keyboardType: TextInputType.text,
+                            fillColor: Colors.transparent,
+                            onValidate: (text) {
+                              if (text.toString().isEmpty) {
+                                return ("new_owner_cr_number_error").tr();
+                              }
+                              return null;
+                            },
+                            textInputAction: TextInputAction.done,
+                            spacerSize: 10,
+                          ),
+                          YesNoRadioGroupWidget(
+                            groupName: "step4GroupName".tr(),
+                            currentValue: brandChecked,
+                            onChanged: (value) {
+                              setState(() {
+                                brandChecked = value!;
+                              });
+                            },
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(36),
-                      topRight: Radius.circular(36),
                     ),
-                    color: Colors.white),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
-                child: ElevatedButtonWidget.next(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-
-                      bloc?.saveShopInfo(
-                          bloc!.requestNumber!, SaveShopInfoRequest(shopName: _crNumberController.text,hasBrand: brandChecked),widget.stepInterface);
-                    }
-                  },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(36),
+                  topRight: Radius.circular(36),
                 ),
-              )
-            ],
-          );
-        }
-
-
-    );
+                color: Colors.white),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
+            child: ElevatedButtonWidget.next(
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  bloc?.saveShopInfo(
+                      bloc!.requestNumber!,
+                      SaveShopInfoRequest(
+                          shopName: _crNumberController.text,
+                          hasBrand: brandChecked),
+                      widget.stepInterface);
+                }
+              },
+            ),
+          )
+        ],
+      );
+    });
   }
 }

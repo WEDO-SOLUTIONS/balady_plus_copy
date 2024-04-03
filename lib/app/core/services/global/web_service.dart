@@ -125,13 +125,17 @@ class AppInterceptors extends Interceptor {
     }
     if (options.uri.toString().toLowerCase().contains("validate-license") ||
         options.uri.toString().toLowerCase().contains("license/permits") ||
-        options.uri.toString().toLowerCase().contains("send-to-new-owner")||
-        options.uri.toString().toLowerCase().contains("selected/permits")||
-        options.uri.toString().toLowerCase().contains("selected-permits/by-new-owner")||
-        options.uri.toString().toLowerCase().contains("transfer/shop-info")||
-        options.uri.toString().toLowerCase().contains("transfer/shop-ownership-info")
-
-        ) {
+        options.uri.toString().toLowerCase().contains("send-to-new-owner") ||
+        options.uri.toString().toLowerCase().contains("selected/permits") ||
+        options.uri
+            .toString()
+            .toLowerCase()
+            .contains("selected-permits/by-new-owner") ||
+        options.uri.toString().toLowerCase().contains("transfer/shop-info") ||
+        options.uri
+            .toString()
+            .toLowerCase()
+            .contains("transfer/shop-ownership-info")) {
       options.headers.putIfAbsent(ApiHeaders.xSubmitterRelation,
           () => CommonProperties.selectedDelegator?.getRole() ?? "HIMSELF");
     }
