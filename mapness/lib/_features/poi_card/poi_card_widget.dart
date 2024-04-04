@@ -12,7 +12,7 @@ import 'package:mapness/_features/poi_card/widgets/about.dart';
 import 'package:mapness/_features/poi_card/widgets/contacts_info.dart';
 import 'package:mapness/_features/poi_card/widgets/description.dart';
 import 'package:mapness/_features/poi_card/widgets/favourites.dart';
-import 'package:mapness/_features/poi_card/widgets/footer.dart';
+import 'package:mapness/_features/poi_card/widgets/footer/footer.dart';
 import 'package:mapness/_features/poi_card/widgets/header.dart';
 import 'package:mapness/_features/poi_card/widgets/opening_hours.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
@@ -195,7 +195,8 @@ class _ContentState extends ConsumerState<_Content>
         children: [
           Favourites(data),
           About(
-            data,
+            title: data.address?.buildingName ?? data.title,
+            exits: data.entrances.length,
             onEntranceTap: () => showEntrance(data),
           ),
           if (about.isNotEmpty)
@@ -221,9 +222,10 @@ class _ContentState extends ConsumerState<_Content>
         ],
       ),
     );
+    final language = ref.watch(appLanguageProvider);
 
     return Directionality(
-      textDirection: switch (ref.watch(appLanguageProvider)) {
+      textDirection: switch (language) {
         Language.arabic => TextDirection.rtl,
         Language.english => TextDirection.ltr,
       },
@@ -247,12 +249,11 @@ class _ContentState extends ConsumerState<_Content>
           objectId: objectId,
           expansion: _expansion,
         ),
-        actions: PoiCardFooter(
+        actions: PoiCardFooter2(
           data: data,
-          viewModel: viewModel,
-          onEntranceTap: () {
-            showEntrance(data);
-          },
+          share: () => viewModel.share(objectId: objectId),
+          callPhone: () => viewModel.callPhone(data: data),
+          onEntranceTap: () => showEntrance(data),
         ),
         scrollableBody: (context, controller) =>
             DgisBottomSheetScrollableContent(

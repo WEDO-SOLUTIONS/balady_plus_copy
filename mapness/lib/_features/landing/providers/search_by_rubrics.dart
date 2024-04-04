@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 import 'package:mapness/app/router.dart';
@@ -33,48 +35,46 @@ class SearchByRubrics extends _$SearchByRubrics {
         ref.watch(searchInRectProvider.select((value) => value.$1));
     final dgisController = ref.read(dgisControllerProvider.notifier);
 
-    return performSearch(
+    unawaited(performSearch(
       filter.$1,
       searchRect ??
           dgisController.visibleRectSubject.value?.visibleRect.geoRectMessage(),
-    );
+    ));
+
+    return null;
   }
 
-  List<Marker>? performSearch(QuickFilter filter, GeoRectMessage? searchRect) {
+  Future<void> performSearch(
+      QuickFilter filter, GeoRectMessage? searchRect) async {
     final dgisController = ref.watch(dgisControllerProvider).value;
+
+    if (dgisController == null) {
+      return;
+    }
 
     if (filter.rubrics.isEmpty && filter.query != null) {
       final category = getCategoryByTag(filter.query!);
       if (category == null) {
-        return null;
+        return;
       }
-      dgisController
-          ?.searchByCategory(
+
+      final searchResults = await dgisController.searchByCategory(
         category,
         sortingType: SortingTypeMessage.byRelevance,
         searchRect: searchRect,
-      )
-          .then(
-        (value) async {
-          final markers = await _showAndReturnMarkers(value);
-          return state = AsyncValue.data(markers);
-        },
       );
-    }
-    dgisController
-        ?.searchByRubrics(
-      filter.rubrics,
-      sortingType: SortingTypeMessage.byRelevance,
-      searchRect: searchRect,
-    )
-        .then(
-      (value) async {
-        final markers = await _showAndReturnMarkers(value);
-        return state = AsyncValue.data(markers);
-      },
-    );
 
-    return null;
+      final markers = await _showAndReturnMarkers(searchResults);
+      state = AsyncValue.data(markers);
+    } else {
+      final searchResults = await dgisController.searchByRubrics(
+        filter.rubrics,
+        sortingType: SortingTypeMessage.byRelevance,
+        searchRect: searchRect,
+      );
+      final markers = await _showAndReturnMarkers(searchResults);
+      state = AsyncValue.data(markers);
+    }
   }
 
   Future<List<Marker>?> _showAndReturnMarkers(SearchResultMessage value) async {
@@ -93,7 +93,9 @@ class SearchByRubrics extends _$SearchByRubrics {
           id: markerInfo?.objectId?.objectId.toString() ?? 'invalid',
           onTap: () {
             PoiMapRoute.open(
-                ref.read(goRouterProvider), markerInfo.objectId!.objectId,);
+              ref.read(goRouterProvider),
+              markerInfo.objectId!.objectId,
+            );
           },
           options: MarkerOptionsMessage(
             position: markerInfo!.geoPoint,

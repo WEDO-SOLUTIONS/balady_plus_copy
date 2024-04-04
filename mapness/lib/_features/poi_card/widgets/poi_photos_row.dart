@@ -67,11 +67,15 @@ class PoiPhotosRow extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 3),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: LoadingShimmerImage(
-                        onImageTap: (name, {isAsset}) =>
-                            PhotoViewer.open(context, index, photos),
-                        imageUrl: photo,
-                        fit: BoxFit.cover,
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        key: ValueKey(photo),
+                        child: LoadingShimmerImage(
+                          onImageTap: (name, {isAsset}) =>
+                              PhotoViewer.open(context, index, photos),
+                          imageUrl: photo,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
