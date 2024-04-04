@@ -61,7 +61,7 @@ class _ComplianceClauseSubmitItemState
   Widget build(BuildContext context) {
     ItemData? lastNote = widget.item.itemData?.firstOrNull;
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.only(left: 10, right: 10, top: 16, bottom: 16),
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
           color: widget.item.edit != true ? AppColor.blackModern200Light : null,
@@ -140,10 +140,12 @@ class _ComplianceClauseSubmitItemState
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
+                      flex: 1,
                       child: SingleRatioOption(
                         value: 1,
                         selected: widget.item.submitterAnswer,
                         title: 'yes'.tr(),
+                        flex: true,
                         height: MediaQuery.of(context).size.height * 0.05,
                         titleStyle: AppStyle.complianceClausesOptionStyle,
                         onChanged: (int val) {
@@ -158,9 +160,11 @@ class _ComplianceClauseSubmitItemState
                       width: 6,
                     ),
                     Expanded(
+                      flex: 1,
                       child: SingleRatioOption(
                         title: 'no'.tr(),
                         value: 0,
+                        flex: true,
                         selected: widget.item.submitterAnswer,
                         height: MediaQuery.of(context).size.height * 0.05,
                         titleStyle: AppStyle.complianceClausesOptionStyle,
@@ -177,9 +181,11 @@ class _ComplianceClauseSubmitItemState
                     ),
                     if (widget.item.showNotApplicable == true)
                       Expanded(
+                        flex: 1,
                         child: SingleRatioOption(
                           title: 'Not_Applicable'.tr(),
                           value: 2,
+                          flex: true,
                           selected: widget.item.submitterAnswer,
                           height: MediaQuery.of(context).size.height * 0.05,
                           titleStyle: AppStyle.complianceClausesOptionStyle,

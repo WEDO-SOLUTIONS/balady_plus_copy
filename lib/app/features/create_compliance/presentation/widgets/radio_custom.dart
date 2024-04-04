@@ -14,6 +14,7 @@ class SingleRatioOption extends StatelessWidget {
       this.height,
       this.value,
       this.selected,
+      this.flex = true,
       required this.onChanged});
   final String title;
   final TextStyle titleStyle;
@@ -22,6 +23,7 @@ class SingleRatioOption extends StatelessWidget {
   final int? value;
   final int? selected;
   final Function onChanged;
+  final bool flex;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,7 @@ class SingleRatioOption extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(8),
         ),
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.only(top: 8, bottom: 8),
         height: height,
         width: width,
         child: Row(
@@ -47,17 +49,28 @@ class SingleRatioOption extends StatelessWidget {
             Radio<int>(
               value: value ?? 0,
               groupValue: selected,
+              visualDensity: const VisualDensity(
+                horizontal: VisualDensity.minimumDensity,
+                vertical: VisualDensity.minimumDensity,
+              ),
               onChanged: (val) => onChanged(val),
               activeColor: selected == value ? Color(0xff447F91) : null,
             ),
+            // if (flex)
             Flexible(
-              child: CustomAutoSizeTextWidget(
+              child: CustomTextWidget(
+                title,
+                textStyle: titleStyle,
+                maxLines: 10,
+                fontSize: 15,
+              ),
+            ),
+            /* if (!flex)
+              CustomTextWidget(
                 title,
                 textStyle: titleStyle,
                 maxLines: 1,
-                minFontSize: 10,
-              ),
-            ),
+              ),*/
           ],
         ),
       ),
