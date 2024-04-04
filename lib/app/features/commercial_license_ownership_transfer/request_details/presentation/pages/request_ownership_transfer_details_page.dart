@@ -99,7 +99,7 @@ class _RequestOwnershipTransferDetailsPageState
             padding: EdgeInsets.all(16.0),
             child: RequestOwnershipTransferDetailsBody(),
           ),
-          SizedBox(
+          if (isReadonly ?? false) Container() else  SizedBox(
             height: 200,
             width: double.infinity,
             child: Card(
@@ -111,7 +111,7 @@ class _RequestOwnershipTransferDetailsPageState
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                 if (isReadonly ?? false) Container() else Container(
+                  Container(
                           margin: const EdgeInsets.symmetric(horizontal: 20),
                           height: 60,
                           width: double.infinity,

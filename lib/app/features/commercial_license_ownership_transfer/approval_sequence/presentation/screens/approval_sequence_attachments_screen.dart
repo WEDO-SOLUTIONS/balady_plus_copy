@@ -148,10 +148,9 @@ class _ApprovalSequenceAttachmentsScreenState
 
                         if(requestId >0)
                           {
-                          Navigator.of(context).pushNamed(
-                        RouteName.SucessfullScreen,
-                        arguments: "$requestId",
-                      )
+
+                           Navigator.of(context).pop(true),
+                            Navigator.of(context).pushNamed(RouteName.SucessfullScreen, arguments: "$requestId",)
                           }
 
 
