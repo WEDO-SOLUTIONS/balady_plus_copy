@@ -65,7 +65,14 @@ class _RequestSequencePledgesScreenState
           Navigator.of(context).pop(true);
           Navigator.of(context).pushNamed(
             RouteName.SucessfullScreen,
-            arguments: "${state.applyRequestDataModel?.result}",
+            arguments:
+
+            {
+              "requestId": "${state.applyRequestDataModel?.result}",
+              "isFromRequest": true
+            }
+
+
           );
         }
       },

@@ -26,6 +26,7 @@ class SucessfullScreen extends StatefulWidget {
 
 class _SucessfullScreenState extends State<SucessfullScreen> {
   String? requestId;
+  bool isfromRequest = true ;
 
   @override
   void initState() {
@@ -34,7 +35,9 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
 
   @override
   Widget build(BuildContext context) {
-    requestId = ModalRoute.of(context)!.settings.arguments as String;
+     Map data  = ModalRoute.of(context)!.settings.arguments as Map;
+    requestId = data['requestId'];
+     isfromRequest= data['isFromRequest'];
     return Scaffold(body: getBody());
   }
 
@@ -113,10 +116,17 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
                       fontSize: 16,
                     ),
                     btnHeight: 56,
-                    text: "go_to_license".tr(),
+                    text: isfromRequest ?"go_to_license".tr():"go_to_request".tr(),
                     onPressed: () {
-                      Navigator.popUntil(
-                          context, ModalRoute.withName(RouteName.licenses));
+                      if(isfromRequest == true) {
+                        Navigator.popUntil(
+                            context, ModalRoute.withName(RouteName.licenses));
+                      }
+                      else
+                        {
+                          Navigator.popUntil(
+                              context, ModalRoute.withName(RouteName.requests));
+                        }
                     },
                   ),
                   const SizedBox(
