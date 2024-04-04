@@ -40,7 +40,7 @@ class PoiDeeplinkContent extends ConsumerWidget {
                 const SizedBox(height: 12),
                 Text(
                   '${location.latitude}, ${location.longitude}',
-                  style: context.textStyle.textM,
+                  style: context.textStyle.text,
                 ),
               ],
             );

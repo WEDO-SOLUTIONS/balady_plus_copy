@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -36,8 +36,8 @@ class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
   Widget build(BuildContext context) {
     final style = Theme.of(context)
         .extension<ThemeTextStyles>()!
-        .textM
-        .copyWith(color: context.color.text_and_icons_base_primary);
+        .text
+        .copyWith(color: context.color.textAndIconsBasePrimary);
 
     return TextField(
       minLines: _minMaxLines,
@@ -46,10 +46,10 @@ class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
       controller: _controller,
       onChanged: widget.onChanged,
       style: style,
-      cursorColor: context.color.stroke_accent,
+      cursorColor: context.color.strokeAccent,
       decoration: InputDecoration(
         filled: true,
-        fillColor: context.color.surface_base_primary,
+        fillColor: context.color.surfaceBasePrimary,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide.none,
