@@ -27,10 +27,7 @@ class PoiFavoriteDialog extends ConsumerStatefulWidget {
 class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
   void _withPop(Future<void> future) {
     unawaited(future);
-
-    if (context.mounted) {
-      Navigator.of(context).pop();
-    }
+    Navigator.of(context).pop();
   }
 
   @override

@@ -11,6 +11,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class Favourites extends ConsumerWidget {
   const Favourites(this.data, {super.key});
+
   final DirectoryObjectMessage? data;
 
   @override
@@ -67,10 +68,8 @@ class WorkCard extends StatelessWidget {
             ),
             Text(
               context.l10n.work,
-              style: TextStyle(
+              style: context.textStyle.text.copyWith(
                 color: context.color.textAndIconsBasePrimary,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
               ),
             ),
           ],
