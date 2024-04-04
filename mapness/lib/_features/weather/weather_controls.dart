@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
@@ -86,8 +86,8 @@ class Legend extends ConsumerWidget {
     final measureUnit = weatherMapState.type.measureUnit();
     final style = Theme.of(context)
         .extension<ThemeTextStyles>()!
-        .accentXS
-        .copyWith(color: context.color.text_and_icons_base_primary);
+        .caption
+        .copyWith(color: context.color.textAndIconsBasePrimary);
     return Column(
       children: [
         Container(

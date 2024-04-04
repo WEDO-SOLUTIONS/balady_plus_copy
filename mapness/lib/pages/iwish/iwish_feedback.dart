@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -90,7 +90,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
               ),
               const SizedBox(height: 16),
               Material(
-                color: context.color.surface_base_primary,
+                color: context.color.surfaceBasePrimary,
                 borderRadius: BorderRadius.circular(8),
                 child: InkWell(
                   onTap: () =>
@@ -101,14 +101,23 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
                       vertical: 10,
                       horizontal: 16,
                     ),
-                    child: Text(
-                      feedback.comment ?? context.l10n.shareYourFeedback,
-                      style: Theme.of(context)
-                          .extension<ThemeTextStyles>()!
-                          .textM
-                          .copyWith(color: context.color.text_and_icons_base_primary),
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    child: Builder(builder: (context) {
+                      final textStyle =
+                          Theme.of(context).extension<ThemeTextStyles>()!.text;
+                      final color =
+                          feedback.comment == null || feedback.comment!.isEmpty
+                              ? context.color.textAndIconsBaseTertiary
+                              : context.color.textAndIconsBasePrimary;
+                      final style = textStyle.copyWith(color: color);
+                      final text =
+                          feedback.comment ?? context.l10n.shareYourFeedback;
+
+                      return Text(
+                        text,
+                        style: style,
+                        overflow: TextOverflow.ellipsis,
+                      );
+                    }),
                   ),
                 ),
               ),

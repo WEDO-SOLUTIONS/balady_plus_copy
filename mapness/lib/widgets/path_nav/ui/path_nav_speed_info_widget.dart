@@ -1,5 +1,5 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -40,13 +40,13 @@ class PathNavSpeedInfoWidget extends StatelessWidget {
                       baselineType: TextBaseline.alphabetic,
                       baseline: Theme.of(context)
                           .extension<ThemeTextStyles>()!
-                          .headingL
+                          .accent
                           .fontSize!,
                       child: Text(
                         '${info.speed}',
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
-                            .headingL
+                            .accent
                             .copyWith(
                               color: Colors.black,
                             ),
@@ -78,13 +78,13 @@ class PathNavSpeedInfoWidget extends StatelessWidget {
                       baselineType: TextBaseline.alphabetic,
                       baseline: Theme.of(context)
                           .extension<ThemeTextStyles>()!
-                          .headingM
+                          .heading1
                           .fontSize!,
                       child: Text(
                         "${info.speedLimit ?? '--'}",
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
-                            .headingM
+                            .heading1
                             .copyWith(
                               color: info.speedExceed
                                   ? Colors.white

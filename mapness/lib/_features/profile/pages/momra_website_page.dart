@@ -1,5 +1,5 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -86,7 +86,7 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
                               width: 40,
                               child: Material(
                                 borderRadius: BorderRadius.circular(8),
-                                color: context.color.surface_base_secondary,
+                                color: context.color.surfaceBaseSecondary,
                                 child: InkWell(
                                   onTap: () {
                                     context.pop();
@@ -103,7 +103,7 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
                                       package: PackageConfig.packageName,
                                       colorFilter: ColorFilter.mode(
                                         context
-                                            .color.text_and_icons_base_primary,
+                                            .color.textAndIconsBasePrimary,
                                         BlendMode.srcIn,
                                       ),
                                     ),
@@ -118,10 +118,10 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
                           context.l10n.baladyWebsite,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
-                              .accentM
+                              .callout
                               .copyWith(
                                   color: context
-                                      .color.text_and_icons_base_primary),
+                                      .color.textAndIconsBasePrimary),
                         ),
                         const Spacer(),
                         const SizedBox(

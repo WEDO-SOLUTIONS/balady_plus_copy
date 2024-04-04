@@ -1,6 +1,6 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_uikit/colors/app_color_scheme.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/app_color_scheme.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/color_scheme.dart';
@@ -21,9 +21,9 @@ class SnapAndSendCard extends ConsumerWidget {
               context.l10n.contributedToImproving,
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()!
-                  .accentL
+                  .heading2
                   .copyWith(
-                    color: context.color.text_and_icons_base_primary,
+                    color: context.color.textAndIconsBasePrimary,
                   ),
             ),
             const SizedBox(
@@ -61,7 +61,7 @@ class SnapAndSendCard extends ConsumerWidget {
                             context.l10n.snapAndSendTitle,
                             style: Theme.of(context)
                                 .extension<ThemeTextStyles>()!
-                                .accentL
+                                .heading2
                                 .apply(color: Colors.white),
                           ),
                           const SizedBox(
@@ -72,7 +72,7 @@ class SnapAndSendCard extends ConsumerWidget {
                             maxLines: 3,
                             style: Theme.of(context)
                                 .extension<ThemeTextStyles>()!
-                                .textXS
+                                .caption
                                 .apply(color: Colors.white),
                           ),
                           const SizedBox(

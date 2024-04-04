@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
@@ -30,8 +30,8 @@ class DashboardProfile extends ConsumerWidget {
                 _greeting(context),
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
-                    .accentL
-                    .apply(color: context.color.stroke_accent),
+                    .heading2
+                    .apply(color: context.color.strokeAccent),
                 textAlign: TextAlign.end,
               ),
           data: (userInfo) {
@@ -51,8 +51,8 @@ class DashboardProfile extends ConsumerWidget {
               name ?? _greeting(context),
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()!
-                  .accentL
-                  .apply(color: context.color.stroke_accent),
+                  .heading2
+                  .apply(color: context.color.strokeAccent),
               textAlign: TextAlign.end,
             );
           },),

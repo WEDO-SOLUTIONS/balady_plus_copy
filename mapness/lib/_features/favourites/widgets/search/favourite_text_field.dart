@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -76,7 +76,7 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
                 ),
               ),
               cursorHeight: 22,
-              style: Theme.of(context).extension<ThemeTextStyles>()!.textM,
+              style: Theme.of(context).extension<ThemeTextStyles>()!.text,
             ),
           ),
           Align(
@@ -88,7 +88,7 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
                 semanticsLabel: 'MinApps Screen',
                 package: 'mapness',
                 colorFilter: ColorFilter.mode(
-                  context.color.stroke_accent,
+                  context.color.strokeAccent,
                   BlendMode.srcIn,
                 ),
               ),

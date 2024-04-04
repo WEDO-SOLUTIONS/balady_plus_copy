@@ -80,8 +80,8 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
             // padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: const BoxDecoration(
               color: Colors.white,
-              // color: context.color.surface_base_primary,
-              // color: context.color.surface_base_primary,
+              // color: context.color.surfaceBasePrimary,
+              // color: context.color.surfaceBasePrimary,
 
               borderRadius: BorderRadius.only(
                 topRight: Radius.circular(16),

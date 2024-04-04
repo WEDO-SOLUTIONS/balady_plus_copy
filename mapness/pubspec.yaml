@@ -36,11 +36,12 @@ dependencies:
   dgis_map:
     path: ../urbi_map/dgis_map
 
-  balady_uikit:
-    path: ../balady_uikit
-
   balady_plus:
     path: ..
+
+  balady_uikit:
+    git:
+      url: git@github.com:urbi-ae/balady_uikit.git
 
   google_fonts: ^6.1.0
   collection: ^1.17.1

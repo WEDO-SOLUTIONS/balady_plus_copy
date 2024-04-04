@@ -1,5 +1,5 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/entities/routing/route_point.dart';
@@ -86,9 +86,9 @@ class DestinationRow extends StatelessWidget {
             child: SvgPicture.asset(
               icon,
               package: PackageConfig.packageName,
-              color: context.color.text_and_icons_status_accent,
+              color: context.color.textAndIconsStatusAccent,
               // colorFilter: ColorFilter.mode(
-                // index == 0 ? NonThemeColor.color3 : context.color.stroke_accent,
+                // index == 0 ? NonThemeColor.color3 : context.color.strokeAccent,
                 // BlendMode.srcATop,
               // ),
             ),
@@ -101,7 +101,7 @@ class DestinationRow extends StatelessWidget {
               value,
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()!
-                  .textM
+                  .text
                   .copyWith(color: color),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,

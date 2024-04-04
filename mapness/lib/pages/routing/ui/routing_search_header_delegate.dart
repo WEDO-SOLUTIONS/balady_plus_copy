@@ -55,7 +55,7 @@ class DashboardHeader extends ConsumerWidget {
               height: 4,
               width: 26,
               decoration:  BoxDecoration(
-                color: context.color.surface_base_primary,
+                color: context.color.surfaceBasePrimary,
                 borderRadius: const BorderRadius.all(Radius.circular(24)),
               ),
             ),

@@ -1,7 +1,6 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -38,8 +37,8 @@ class _AboutState extends State<About> {
             data?.address?.buildingName ?? data?.title ?? '',
             style: Theme.of(context)
                 .extension<ThemeTextStyles>()!
-                .textM
-                .copyWith(color: context.color.text_and_icons_base_primary),
+                .text
+                .copyWith(color: context.color.textAndIconsBasePrimary),
             overflow: TextOverflow.ellipsis,
             maxLines: 5,
             textAlign: TextAlign.start,
@@ -61,7 +60,7 @@ class _AboutState extends State<About> {
               height: 8,
             ),
             Material(
-              color: context.color.text_and_icons_base_primary.withAlpha(10),
+              color: context.color.textAndIconsBasePrimary.withAlpha(10),
               borderRadius: borderRadius,
               child: InkWell(
                 onTap: widget.onEntranceTap,
@@ -72,8 +71,8 @@ class _AboutState extends State<About> {
                     '${context.l10n.exits} ${exits ?? ''}',
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
-                        .accentS
-                        .copyWith(color: context.color.text_and_icons_base_primary),
+                        .heading1
+                        .copyWith(color: context.color.textAndIconsBasePrimary),
                   ),
                 ),
               ),
