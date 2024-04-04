@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -22,7 +22,7 @@ class ClosureCard extends StatelessWidget {
         child: Container(
           margin: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: context.color.surface_base_primary,
+            color: context.color.surfaceBasePrimary,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Container(
@@ -45,19 +45,19 @@ class ClosureCard extends StatelessWidget {
                             title,
                             style: Theme.of(context)
                                 .extension<ThemeTextStyles>()!
-                                .headingS
+                                .heading1
                                 .copyWith(
-                                  color: context.color.text_and_icons_base_primary,
+                                  color: context.color.textAndIconsBasePrimary,
                                 ),
                           ),
                           Text(
                             description,
                             style: Theme.of(context)
                                 .extension<ThemeTextStyles>()!
-                                .textS
+                                .footNote
                                 .copyWith(
                                   color:
-                                      context.color.text_and_icons_base_primary.withOpacity(0.64),
+                                      context.color.textAndIconsBasePrimary.withOpacity(0.64),
                                 ),
                           ),
                         ],
@@ -75,9 +75,9 @@ class ClosureCard extends StatelessWidget {
                       workDuration!,
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
-                          .textXS
+                          .caption
                           .copyWith(
-                            color: context.color.text_and_icons_base_primary.withOpacity(0.64),
+                            color: context.color.textAndIconsBasePrimary.withOpacity(0.64),
                           ),
                     ),
                   ),

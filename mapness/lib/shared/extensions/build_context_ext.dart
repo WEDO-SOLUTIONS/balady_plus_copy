@@ -1,5 +1,5 @@
-import 'package:balady_uikit/colors/app_colors_theme.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/app_colors_theme.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 

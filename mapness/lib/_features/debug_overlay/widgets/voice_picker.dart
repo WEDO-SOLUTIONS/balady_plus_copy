@@ -1,5 +1,5 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -80,8 +80,8 @@ class VoiceRow extends ConsumerWidget {
                   '$progress%',
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()
-                      ?.textXS
-                      .copyWith(color: context.color.text_and_icons_base_primary),
+                      ?.caption
+                      .copyWith(color: context.color.textAndIconsBasePrimary),
                 ),
               const Spacer(),
               Column(
@@ -91,17 +91,17 @@ class VoiceRow extends ConsumerWidget {
                     packageInfo.name,
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()
-                        ?.textM
-                        .copyWith(color: context.color.text_and_icons_base_primary),
+                        ?.text
+                        .copyWith(color: context.color.textAndIconsBasePrimary),
                   ),
                   Text(
                     "${packageInfo.installed ? "Installed" : "Not installed"}${packageInfo.hasUpdate ? " · Update available" : ""}",
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()
-                        ?.textXS
+                        ?.caption
                         .copyWith(
                             color: packageInfo.installed
-                                ? context.color.stroke_accent
+                                ? context.color.strokeAccent
                                 : NonThemeColor.color1,),
                   ),
                 ],

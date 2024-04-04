@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:expansion_widget/expansion_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -26,7 +26,7 @@ class ExpandableCell extends StatelessWidget {
       child: ExpansionWidget(
         titleBuilder:
             (animationValue, easeInValue, isExpanded, toggleFunction) => Material(
-            color: context.color.surface_base_secondary,
+            color: context.color.surfaceBaseSecondary,
             borderRadius: BorderRadius.only(
               topLeft: const Radius.circular(8),
               topRight: const Radius.circular(8),
@@ -53,7 +53,7 @@ class ExpandableCell extends StatelessWidget {
                       height: 24,
                       width: 24,
                       package: PackageConfig.packageName,
-                      color: context.color.text_and_icons_status_accent,
+                      color: context.color.textAndIconsStatusAccent,
                     ),
                     const SizedBox(
                       width: 12,
@@ -68,7 +68,7 @@ class ExpandableCell extends StatelessWidget {
                             style: DefaultTextStyle.of(context).style.copyWith(
                                   fontSize: 16,
                                   height: 1.4,
-                                  color: context.color.text_and_icons_base_primary,
+                                  color: context.color.textAndIconsBasePrimary,
                                 ),
                           ),
                           if (subtitle != null) ...[
@@ -79,8 +79,8 @@ class ExpandableCell extends StatelessWidget {
                               subtitle!,
                               style: Theme.of(context)
                                   .extension<ThemeTextStyles>()!
-                                  .textXS
-                                  .copyWith(color: context.color.text_and_icons_base_primary),
+                                  .caption
+                                  .copyWith(color: context.color.textAndIconsBasePrimary),
                             ),
                           ],
                         ],
@@ -94,8 +94,8 @@ class ExpandableCell extends StatelessWidget {
                           '$count',
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
-                              .textM
-                              .copyWith(color: context.color.text_and_icons_base_primary),
+                              .text
+                              .copyWith(color: context.color.textAndIconsBasePrimary),
                         ),
                       ),
                     const SizedBox(

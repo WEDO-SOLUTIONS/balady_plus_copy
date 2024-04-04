@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_eta.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -13,7 +13,7 @@ class PathNavContinueTrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-      color: context.color.stroke_accent,
+      color: context.color.strokeAccent,
       borderRadius: BorderRadius.circular(16),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
@@ -27,7 +27,7 @@ class PathNavContinueTrip extends StatelessWidget {
                 context.l10n.continueTrip,
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
-                    .headingS
+                    .heading1
                     .copyWith(color: Colors.white),
               ),
               Row(
@@ -37,7 +37,7 @@ class PathNavContinueTrip extends StatelessWidget {
                     eta?.arrivalTime ?? '-',
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
-                        .textXS
+                        .caption
                         .copyWith(
                           color: Colors.white.withOpacity(0.800000011920929),
                         ),
@@ -56,7 +56,7 @@ class PathNavContinueTrip extends StatelessWidget {
                     eta?.distanceEta ?? '-',
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
-                        .textXS
+                        .caption
                         .copyWith(
                           color: Colors.white.withOpacity(0.800000011920929),
                         ),

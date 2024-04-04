@@ -1,4 +1,4 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
@@ -41,7 +41,7 @@ class HappinesFeedbackButton extends StatelessWidget {
         Colors.white,
 
       /// not match
-      _ => context.color.stroke_accent,
+      _ => context.color.strokeAccent,
     };
 
     return Ink(

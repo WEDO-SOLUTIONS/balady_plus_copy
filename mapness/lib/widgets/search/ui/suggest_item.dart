@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -40,7 +40,7 @@ class SuggestItem extends StatelessWidget {
               SvgPicture.asset(
                 'assets/icons/svg/ic_suggest_$icon.svg',
                 package: PackageConfig.packageName,
-                color: context.color.text_and_icons_status_accent,
+                color: context.color.textAndIconsStatusAccent,
               ),
               const SizedBox(
                 width: 12,
@@ -65,10 +65,10 @@ class SuggestItem extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
-                              .textM
+                              .text
                               .copyWith(
                                   color: context
-                                      .color.text_and_icons_base_tertiary,),
+                                      .color.textAndIconsBaseTertiary,),
                         ),
                     ],
                   ),
@@ -106,8 +106,8 @@ List<TextSpan> buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
       text: title,
       style: Theme.of(context)
           .extension<ThemeTextStyles>()!
-          .textM
-          .copyWith(color: context.color.text_and_icons_base_primary),
+          .text
+          .copyWith(color: context.color.textAndIconsBasePrimary),
     ),
   ];
 }

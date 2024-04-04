@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
@@ -30,7 +30,7 @@ class JobsAroundCard extends ConsumerWidget {
             children: [
               Text(context.l10n.jobsAraundYou,
                   style:
-                      Theme.of(context).extension<ThemeTextStyles>()!.accentL,),
+                      Theme.of(context).extension<ThemeTextStyles>()!.heading2,),
               const SizedBox(height: 12),
               Stack(
                 children: [
@@ -70,7 +70,7 @@ class JobsAroundCard extends ConsumerWidget {
                                 jobs?.jobsCount?.toString() ?? '',
                                 style: Theme.of(context)
                                     .extension<ThemeTextStyles>()!
-                                    .accentL
+                                    .heading2
                                     .apply(
                                       color: Colors.white,
                                     ),
@@ -79,7 +79,7 @@ class JobsAroundCard extends ConsumerWidget {
                                 context.l10n.jobVacancy,
                                 style: Theme.of(context)
                                     .extension<ThemeTextStyles>()!
-                                    .textS
+                                    .footNote
                                     .apply(
                                       color: Colors.white,
                                     ),

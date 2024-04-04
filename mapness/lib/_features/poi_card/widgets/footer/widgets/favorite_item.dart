@@ -23,7 +23,7 @@ class _FavoriteItem extends ConsumerWidget {
     return FooterIconButton(
       flex: flex,
       assetName: assetName,
-      colorIcon: context.color.text_and_icons_status_accent,
+      colorIcon: context.color.textAndIconsStatusAccent,
       onTap: () => _onFavTap(context: context, item: favouriteItem, ref: ref),
     );
   }

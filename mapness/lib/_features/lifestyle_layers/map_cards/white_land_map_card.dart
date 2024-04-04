@@ -1,4 +1,4 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 

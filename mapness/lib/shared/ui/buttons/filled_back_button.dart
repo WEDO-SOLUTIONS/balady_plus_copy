@@ -42,7 +42,7 @@ class FilledBackButton extends StatelessWidget {
                     matchTextDirection: true,
                     package: PackageConfig.packageName,
                     colorFilter: ColorFilter.mode(
-                      context.color.text_and_icons_base_primary,
+                      context.color.textAndIconsBasePrimary,
                       BlendMode.srcIn,
                     ),
                   ),

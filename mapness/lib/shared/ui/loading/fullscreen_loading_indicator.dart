@@ -22,14 +22,14 @@ class FullscreenLoadingIndicator extends StatelessWidget {
             const SizedBox(height: 32),
             Text(
               title ?? context.l10n.loading,
-              style: context.textStyle.headingS
-                  .copyWith(color: context.color.text_and_icons_base_primary),
+              style: context.textStyle.heading1
+                  .copyWith(color: context.color.textAndIconsBasePrimary),
             ),
             const SizedBox(height: 12),
             Text(
               context.l10n.loading_in_progress,
-              style: context.textStyle.textM
-                  .copyWith(color: context.color.text_and_icons_base_primary),
+              style: context.textStyle.text
+                  .copyWith(color: context.color.textAndIconsBasePrimary),
             ),
           ],
         ),

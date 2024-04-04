@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,7 +40,7 @@ class HelpCenterPage extends ConsumerWidget {
                         width: 40,
                         child: Material(
                           borderRadius: BorderRadius.circular(8),
-                          color: context.color.surface_base_secondary,
+                          color: context.color.surfaceBaseSecondary,
                           child: InkWell(
                             onTap: () {
                               context.pop();
@@ -56,7 +56,7 @@ class HelpCenterPage extends ConsumerWidget {
                                 width: 24,
                                 package: PackageConfig.packageName,
                                 colorFilter:  ColorFilter.mode(
-                                  context.color.text_and_icons_base_primary,
+                                  context.color.textAndIconsBasePrimary,
                                   BlendMode.srcIn,
                                 ),
                               ),
@@ -69,8 +69,8 @@ class HelpCenterPage extends ConsumerWidget {
                         context.l10n.helpCenter,
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
-                            .accentM
-                            .copyWith(color: context.color.text_and_icons_base_primary),
+                            .callout
+                            .copyWith(color: context.color.textAndIconsBasePrimary),
                       ),
                       const Spacer(),
                       const SizedBox(
@@ -89,7 +89,7 @@ class HelpCenterPage extends ConsumerWidget {
                   height: 52,
                   child: Material(
                     borderRadius: BorderRadius.circular(12),
-                    color: context.color.surface_base_secondary,
+                    color: context.color.surfaceBaseSecondary,
                     child: InkWell(
                       onTap: () {
                         const MomraWebsitePageRoute().push(context);
@@ -108,7 +108,7 @@ class HelpCenterPage extends ConsumerWidget {
                               width: 24,
                               package: PackageConfig.packageName,
                               colorFilter:  ColorFilter.mode(
-                                context.color.text_and_icons_status_accent,
+                                context.color.textAndIconsStatusAccent,
                                 BlendMode.srcIn,
                               ),
                             ),
@@ -119,8 +119,8 @@ class HelpCenterPage extends ConsumerWidget {
                               context.l10n.baladyWebsite,
                               style: Theme.of(context)
                                   .extension<ThemeTextStyles>()!
-                                  .textM
-                                  .copyWith(color: context.color.text_and_icons_base_primary),
+                                  .text
+                                  .copyWith(color: context.color.textAndIconsBasePrimary),
                             ),
                             const Spacer(),
                             SvgPicture.asset(
@@ -131,7 +131,7 @@ class HelpCenterPage extends ConsumerWidget {
                               width: 24,
                               package: PackageConfig.packageName,
                               colorFilter:  ColorFilter.mode(
-                                context.color.text_and_icons_base_primary,
+                                context.color.textAndIconsBasePrimary,
                                 BlendMode.srcIn,
                               ),
                             ),
@@ -168,10 +168,10 @@ class HelpCenterPage extends ConsumerWidget {
               //           textDirection: direction,
               //           style: Theme.of(context)
               //               .extension<ThemeTextStyles>()!
-              //               .textXS
+              //               .caption
               //               .copyWith(
               //                   color:
-              //                       context.color.text_and_icons_base_primary.withOpacity(0.36)),
+              //                       context.color.textAndIconsBasePrimary.withOpacity(0.36)),
               //         ),
               //       ),
               //     ],

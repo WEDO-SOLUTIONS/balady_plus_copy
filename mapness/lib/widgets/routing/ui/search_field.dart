@@ -1,5 +1,5 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
@@ -70,7 +70,7 @@ class _SearchFieldState extends State<SearchField> {
               ),
             ),
             cursorHeight: 22,
-            style: Theme.of(context).extension<ThemeTextStyles>()!.textM,
+            style: Theme.of(context).extension<ThemeTextStyles>()!.text,
           ),
         ),
         Align(
@@ -80,7 +80,7 @@ class _SearchFieldState extends State<SearchField> {
             child: SvgPicture.asset(
               'assets/icons/svg/ic_routing_circle.svg',
               colorFilter: ColorFilter.mode(
-                context.color.text_and_icons_status_accent,
+                context.color.textAndIconsStatusAccent,
                 BlendMode.srcATop,
               ),
               package: PackageConfig.packageName,

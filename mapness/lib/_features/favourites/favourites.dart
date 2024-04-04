@@ -1,4 +1,4 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -48,10 +48,10 @@ class _FavouritesState extends ConsumerState<Favourites> {
         },
       ),
       loading: (_) => Material(
-        color: context.color.surface_base_primary,
+        color: context.color.surfaceBasePrimary,
         child: Center(
           child: CircularProgressIndicator(
-            color: context.color.text_and_icons_status_accent,
+            color: context.color.textAndIconsStatusAccent,
           ),
         ),
       ),
@@ -171,7 +171,7 @@ class _FavouritesState extends ConsumerState<Favourites> {
                 ),
                 Expanded(
                   child: Container(
-                    color: context.color.surface_base_primary,
+                    color: context.color.surfaceBasePrimary,
                     child: state.items.isEmpty == true
                         ? Padding(
                             padding: const EdgeInsets.only(

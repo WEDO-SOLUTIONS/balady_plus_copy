@@ -1,18 +1,17 @@
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_plus/app/features/home_page/presentation/widgets/home_bottom_sheet/prayer_next_home.dart';
+import 'package:balady_plus/app/features/public_services_features/prayer_times/prayer_times_exports.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:mapness/_features/poi_card/widgets/shimmer.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:provider/provider.dart';
-
-import '../../../../../../core/utils/utils_exports.dart';
-import '../../../../shared_feature_exports.dart';
-import '../../../../../public_services_features/prayer_times/prayer_times_exports.dart';
-import 'prayer_next_home.dart';
 
 class PrayerHomeCard extends StatelessWidget {
   const PrayerHomeCard({
@@ -36,10 +35,7 @@ class PrayerHomeCard extends StatelessWidget {
                 children: [
                   Text(
                     "prayerTimes".tr(),
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()
-                        ?.accentL
-                        .copyWith(
+                    style: Theme.of(context).extension<ThemeTextStyles>()?.heading2.copyWith(
                           color: const Color(0xFF1E2A36),
                         ),
                   ),
@@ -97,10 +93,7 @@ class PrayerHomeCard extends StatelessWidget {
                                                   "{}",
                                                   state.nextPrayer!.prayer.label
                                                       .tr()),
-                                              style: Theme.of(context)
-                                                  .extension<ThemeTextStyles>()!
-                                                  .accentXS
-                                                  .copyWith(
+                                              style: Theme.of(context).extension<ThemeTextStyles>()!.caption.copyWith(
                                                     color: Colors.white,
                                                   ),
                                             ),
@@ -143,9 +136,10 @@ class PrayerHomeCard extends StatelessWidget {
                                                 "assets/icons/svg/ic_notification.svg",
                                                 package:
                                                     PackageConfig.packageName,
-                                                color: isNotificationDisabled
-                                                    ? const Color(0x99FFFFFF)
-                                                    : Colors.white,
+                                                colorFilter: ColorFilter.mode(
+                                                  isNotificationDisabled ? const Color(0x99FFFFFF) : Colors.white,
+                                                  BlendMode.color,
+                                                ),
                                                 width: 24,
                                                 height: 24,
                                               );
@@ -159,10 +153,7 @@ class PrayerHomeCard extends StatelessWidget {
                                   state.nextPrayer != null
                                       ? Text(
                                           "${"pray".tr()} ${state.nextPrayer!.prayer.label.tr()}",
-                                          style: Theme.of(context)
-                                              .extension<ThemeTextStyles>()!
-                                              .accentXS
-                                              .copyWith(
+                                          style: Theme.of(context).extension<ThemeTextStyles>()!.caption.copyWith(
                                                 color: Colors.white,
                                               ),
                                         )
@@ -181,7 +172,7 @@ class PrayerHomeCard extends StatelessWidget {
                                                   : "AM",
                                               style: Theme.of(context)
                                                   .extension<ThemeTextStyles>()!
-                                                  .accentM
+                                                  .callout
                                                   .copyWith(
                                                     color: Colors.white,
                                                   ),
@@ -192,7 +183,7 @@ class PrayerHomeCard extends StatelessWidget {
                                                   state.nextPrayer!.dateTime),
                                               style: Theme.of(context)
                                                   .extension<ThemeTextStyles>()!
-                                                  .accentM
+                                                  .callout
                                                   .copyWith(
                                                     color: Colors.white,
                                                   ),
@@ -227,7 +218,7 @@ class PrayerHomeCard extends StatelessWidget {
                                           'prayer_timings'.tr(),
                                           style: Theme.of(context)
                                               .extension<ThemeTextStyles>()!
-                                              .accentM
+                                              .callout
                                               .copyWith(
                                                 color: Colors.black,
                                               ),

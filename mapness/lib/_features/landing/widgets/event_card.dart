@@ -1,6 +1,6 @@
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 
 class EventCard extends StatelessWidget {
@@ -42,7 +42,7 @@ class EventCard extends StatelessWidget {
                       title,
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
-                          .accentL
+                          .heading2
                           .copyWith(color: Colors.white),
                     ),
                     const SizedBox(
@@ -52,7 +52,7 @@ class EventCard extends StatelessWidget {
                       subtitle,
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
-                          .textS
+                          .footNote
                           .copyWith(color: Colors.white.withOpacity(0.8)),
                     ),
                   ],

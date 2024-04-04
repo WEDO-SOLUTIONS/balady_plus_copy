@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -14,8 +14,8 @@ List<TextSpan> buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
         text: suggest.title.text,
         style: Theme.of(context)
             .extension<ThemeTextStyles>()!
-            .textM
-            .copyWith(color: context.color.text_and_icons_base_tertiary),
+            .text
+            .copyWith(color: context.color.textAndIconsBaseTertiary),
       ),
     ];
   }
@@ -34,8 +34,8 @@ List<TextSpan> buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
         text: suggest.title.text,
         style: Theme.of(context)
             .extension<ThemeTextStyles>()!
-            .textM
-            .copyWith(color: context.color.text_and_icons_base_tertiary),
+            .text
+            .copyWith(color: context.color.textAndIconsBaseTertiary),
       ),
     ];
   }
@@ -48,8 +48,8 @@ List<TextSpan> buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
       ),
       style: Theme.of(context)
           .extension<ThemeTextStyles>()!
-          .textM
-          .copyWith(color: context.color.text_and_icons_base_tertiary),
+          .text
+          .copyWith(color: context.color.textAndIconsBaseTertiary),
     ),
   );
 
@@ -62,8 +62,8 @@ List<TextSpan> buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
         ),
         style: Theme.of(context)
             .extension<ThemeTextStyles>()!
-            .textM
-            .copyWith(color: context.color.text_and_icons_base_primary),
+            .text
+            .copyWith(color: context.color.textAndIconsBasePrimary),
       ),
     );
     if (i != matchedParts.length - 1) {
@@ -75,8 +75,8 @@ List<TextSpan> buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
           ),
           style: Theme.of(context)
               .extension<ThemeTextStyles>()!
-              .textM
-              .copyWith(color: context.color.text_and_icons_base_tertiary),
+              .text
+              .copyWith(color: context.color.textAndIconsBaseTertiary),
         ),
       );
     }
@@ -89,8 +89,8 @@ List<TextSpan> buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
       ),
       style: Theme.of(context)
           .extension<ThemeTextStyles>()!
-          .textM
-          .copyWith(color: context.color.text_and_icons_base_tertiary),
+          .text
+          .copyWith(color: context.color.textAndIconsBaseTertiary),
     ),
   );
 

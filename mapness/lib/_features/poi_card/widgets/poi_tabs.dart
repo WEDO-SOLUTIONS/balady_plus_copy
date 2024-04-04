@@ -1,5 +1,5 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
@@ -123,11 +123,11 @@ class _PoiTabItem extends StatelessWidget {
                       title,
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
-                          .accentS
+                          .footNoteBold
                           .copyWith(
                             color: isActive ?? false
-                                ? context.color.text_and_icons_base_primary
-                                : context.color.text_and_icons_base_primary.withOpacity(0.5),
+                                ? context.color.textAndIconsBasePrimary
+                                : context.color.textAndIconsBasePrimary.withOpacity(0.5),
                           ),
                     ),
                     if (count != null)
@@ -148,14 +148,14 @@ class _PoiTabItem extends StatelessWidget {
                                 ? BoxShape.circle
                                 : BoxShape.rectangle,
                             color: isActive ?? false
-                                ? context.color.stroke_accent
+                                ? context.color.strokeAccent
                                 : NonThemeColor.color72.withOpacity(0.3),
                           ),
                           child: Text(
                             '$count',
                             style: Theme.of(context)
                                 .extension<ThemeTextStyles>()!
-                                .textXS
+                                .caption
                                 .copyWith(
                                   color: Colors.white,
                                 ),

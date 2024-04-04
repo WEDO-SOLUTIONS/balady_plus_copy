@@ -1,4 +1,4 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
@@ -33,7 +33,7 @@ class QuickFilters extends StatelessWidget {
               item: item,
               selected: index == selectedIndex,
               // background: itemBackground,
-              background: context.color.surface_base_secondary,
+              background: context.color.surfaceBaseSecondary,
             );
           },
         ),

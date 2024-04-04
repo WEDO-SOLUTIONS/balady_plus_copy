@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -52,9 +52,9 @@ class KiblahCompass extends ConsumerWidget {
                             NonThemeColor.color3,
                           ]
                         : [
-                            context.color.stroke_accent,
+                            context.color.strokeAccent,
                             NonThemeColor.color67,
-                            context.color.stroke_accent,
+                            context.color.strokeAccent,
                           ],
                     stops: const [0, 0.48, 1],
                   ),
@@ -70,11 +70,11 @@ class KiblahCompass extends ConsumerWidget {
                 child: RadarWidget(
                   backgroundColor: correct
                       ? NonThemeColor.color3.withOpacity(0.2)
-                      : context.color.text_and_icons_base_primary
+                      : context.color.textAndIconsBasePrimary
                           .withOpacity(0.2),
                   radarColor: correct
                       ? NonThemeColor.color3.withOpacity(0.7)
-                      : context.color.text_and_icons_base_primary
+                      : context.color.textAndIconsBasePrimary
                           .withOpacity(0.7),
                 ),
               ),
@@ -114,7 +114,7 @@ class KiblahCompass extends ConsumerWidget {
                     context.l10n.north,
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
-                        .textXS
+                        .caption
                         .copyWith(color: Colors.white),
                   ),
                 ),
@@ -130,7 +130,7 @@ class KiblahCompass extends ConsumerWidget {
                     context.l10n.east,
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
-                        .textXS
+                        .caption
                         .copyWith(color: Colors.white),
                   ),
                 ),
@@ -146,7 +146,7 @@ class KiblahCompass extends ConsumerWidget {
                     context.l10n.south,
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
-                        .textXS
+                        .caption
                         .copyWith(color: Colors.white),
                   ),
                 ),
@@ -162,7 +162,7 @@ class KiblahCompass extends ConsumerWidget {
                     context.l10n.west,
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
-                        .textXS
+                        .caption
                         .copyWith(color: Colors.white),
                   ),
                 ),
@@ -182,7 +182,7 @@ class _KaabaIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         decoration: BoxDecoration(
-          color: isCorrect ? NonThemeColor.color3 : context.color.stroke_accent,
+          color: isCorrect ? NonThemeColor.color3 : context.color.strokeAccent,
           borderRadius: BorderRadius.circular(16),
         ),
         width: 32,
