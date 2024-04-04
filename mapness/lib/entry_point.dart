@@ -339,7 +339,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
 Future<void> setupMapness(EnvType envType) async {
   final vendorConfig = switch (envType) {
-    EnvType.stg => VendorConfigMessage.momrahProd,
+    EnvType.stg => VendorConfigMessage.momrahStg,
     EnvType.pre || EnvType.prod => VendorConfigMessage.momrahProd,
     EnvType.urbiPre || EnvType.dev => VendorConfigMessage.urbiPreProd,
   };
