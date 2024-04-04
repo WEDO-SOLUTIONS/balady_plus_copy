@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:provider/provider.dart';
 
 class ExpandableTextWidget extends StatelessWidget {
@@ -24,7 +25,7 @@ class ExpandableTextWidget extends StatelessWidget {
           return InkWell(
             onTap: () {
               provider.expandableText();
-              if(onTap != null) {
+              if (onTap != null) {
                 onTap!();
               }
             },
@@ -38,14 +39,16 @@ class ExpandableTextWidget extends StatelessWidget {
                       horizontal: 6.0,
                       vertical: 8,
                     ),
-                    child: Text(
-                      text,
+                    child: Linkify(
+                      onOpen: (link) =>
+                          CommonFunctions.openBaladyWebView(link.url),
+                      text: text,
+                      maxLines: isExpandable ? null : 1,
                       style: AppStyle.nearbyItemSubTitleTextStyle.copyWith(
                         fontWeight: FontWeight.w500,
                         fontSize: 11,
                         color: AppColor.warmGrey2,
                       ),
-                      maxLines: isExpandable ? null : 1,
                       overflow: TextOverflow.clip,
                     ),
                   ),

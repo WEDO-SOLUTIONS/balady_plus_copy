@@ -4271,5 +4271,6 @@
   "realEstateRequestId":"Real Estate Request Id", 
   "realEstateSurveyId":"Real Estate Survey Id", 
   "realEstateId":"Real Estate Id", 
-  "realEstateRequestIdNote":"Consolidation service starts with LMS. Segmentation service starts with LSS. Plan sorting service starts with LSBP. Electronic or paper instrument update service. The application number or cadastral decision number is entered."
+  "realEstateRequestIdNote":"Consolidation service starts with LMS. Segmentation service starts with LSS. Plan sorting service starts with LSBP. Electronic or paper instrument update service. The application number or cadastral decision number is entered.",
+  "delete_all_notifications_confirmation":"Are you sure that you want delete all notifications ?"
 }

@@ -3985,5 +3985,7 @@
   "realEstateRequestId": "رقم الطلب",
   "realEstateSurveyId": "رقم القرار المساحي",
   "realEstateId": "رقم الهوية العقارية",
-  "realEstateRequestIdNote": "خدمة الدمج يبدأ ب LMS خدمة التجزئة يبدأ ب LSS خدمة فرز مخطط يبدأ ب LSBP خدمة تحديث صك الكتروني أو ورقي يتم ادخال رقم الطلب أو رقم القرار المساحي"
+  "realEstateRequestIdNote": "خدمة الدمج يبدأ ب LMS خدمة التجزئة يبدأ ب LSS خدمة فرز مخطط يبدأ ب LSBP خدمة تحديث صك الكتروني أو ورقي يتم ادخال رقم الطلب أو رقم القرار المساحي",
+  "delete_all_notifications_confirmation": "هل أنت متأكد من حذف كافة الإشعارات ؟"
+
 }

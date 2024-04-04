@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
+
 class ActionShowTypeDateWidget extends StatelessWidget {
   const ActionShowTypeDateWidget({super.key});
 
@@ -13,7 +15,7 @@ class ActionShowTypeDateWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     NotificationsListCubit cubit = context.watch<NotificationsListCubit>();
     return AppPopupMenu<int>(
-      menuItems:  [
+      menuItems: [
         PopupMenuItem(
           value: 1,
           child: Row(
@@ -38,27 +40,29 @@ class ActionShowTypeDateWidget extends StatelessWidget {
         ),
       ],
       initialValue: 0,
-      onSelected: (int value) {
+      onSelected: (int value) async {
         print(value);
-        switch(value) {
+        switch (value) {
           case 1:
             cubit.markReadNotificationsMessages();
             break;
           case 2:
-            cubit.deletedNotificationsMessages();
+            await CustomPopUpsWidgets.showConfirmAppMessageDialog(
+                context, ("delete_all_notifications_confirmation").tr(),
+                primaryBtn: () {
+              cubit.deletedNotificationsMessages();
+              Navigator.of(context).pop(true);
+            });
             break;
         }
       },
-      onCanceled: () {
-
-      },
+      onCanceled: () {},
       tooltip: "",
       elevation: 12,
       icon: SvgPicture.asset(IconPath.dotsVertical),
       offset: const Offset(0, 65),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-
       ),
       color: Colors.white,
     );
