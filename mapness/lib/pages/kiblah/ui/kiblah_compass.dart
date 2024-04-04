@@ -46,14 +46,14 @@ class KiblahCompass extends ConsumerWidget {
                     padding: const EdgeInsets.all(22),
                     child: Stack(
                       children: [
-                        // RadarWidget(
-                        //   backgroundColor: correct
-                        //       ? NonThemeColor.color3.withOpacity(0.2)
-                        //       : context.color.textAndIconsBasePrimary.withOpacity(0.2),
-                        //   radarColor: correct
-                        //       ? NonThemeColor.color3.withOpacity(0.7)
-                        //       : context.color.textAndIconsBasePrimary.withOpacity(0.7),
-                        // ),
+                        RadarWidget(
+                          backgroundColor: correct
+                              ? NonThemeColor.color3.withOpacity(0.2)
+                              : context.color.textAndIconsBasePrimary.withOpacity(0.2),
+                          radarColor: correct
+                              ? NonThemeColor.color3.withOpacity(0.7)
+                              : context.color.textAndIconsBasePrimary.withOpacity(0.7),
+                        ),
                         CenterCompassWidget(
                           backgroundColor: correct
                               ? context.color.surfaceStatusPositive.withOpacity(0.2)
