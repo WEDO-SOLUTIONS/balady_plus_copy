@@ -162,7 +162,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 const SizedBox(
                   height: 16,
                 ),
-                const NotificationsSettingCell()
+
+               //hamed hide nofication settings
+               // const NotificationsSettingCell()
               ],
             ),
           ),
