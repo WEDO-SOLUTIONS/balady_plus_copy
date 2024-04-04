@@ -145,6 +145,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
           ref.read(goRouterProvider),
           event.dgisObjectId.objectId,
           latLng: event.latLng,
+          zoom: 16,
         );
       }
     } else if (event is RoadEventTapEvent) {
@@ -155,6 +156,9 @@ class _LandingPageState extends ConsumerState<LandingPage> {
           ref.read(goRouterProvider),
           -1,
           latLng: event.latLng,
+          zoom: 17,
+          bearing: 0,
+          tilt: 0,
         );
       }
     }
