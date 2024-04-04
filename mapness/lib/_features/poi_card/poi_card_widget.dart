@@ -239,8 +239,8 @@ class _ContentState extends ConsumerState<_Content>
         showBarrier: false,
         availableExpansions: Expansion.values.toSet(),
         initialExpansion: Expansion.middle,
-        collapsedHeight: heightOfScreen / 4,
-        middleHeight: heightOfScreen / 3,
+        collapsedHeight: math.min(heightOfScreen / 4, 100),
+        middleHeight: math.min(heightOfScreen / 3, 110),
         hiddenHeight: math.min(heightOfScreen / 4, 100),
         controller: _bottomSheetController,
         mapControlsBuilder:
