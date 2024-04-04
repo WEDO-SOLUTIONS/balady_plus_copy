@@ -353,6 +353,10 @@ static const DirectRentalPage = 'DirectRentalPage';
       'QueryCommercialLicense_query_details_Screen';
 
 
+
+  static const notificationsListScreen = 'notifications_list_screen';
+  static const notificationsDetailsScreen = 'notifications_details_screen';
+
   static const surveyReportInqueryOverView =
       'SurveyReportOverview_Screen';
   static const surveyReportInquery =

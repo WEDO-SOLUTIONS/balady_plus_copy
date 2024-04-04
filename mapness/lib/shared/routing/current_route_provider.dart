@@ -6,13 +6,12 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'current_route_provider.g.dart';
 
 class RouteState {
-
   RouteState({this.currentPath, this.previousPath});
   final String? currentPath;
   final String? previousPath;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class CurrentRoute extends _$CurrentRoute {
   @override
   RouteState? build() => null;

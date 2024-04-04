@@ -40,8 +40,11 @@ import 'package:url_launcher/url_launcher.dart'
     show LaunchMode, canLaunchUrl, launchUrl;
 import 'package:uuid/uuid.dart';
 
+import 'package:balady_plus/app/features/notifications/data/model/notification_request.dart';
+
 import '../../app.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
+import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/presentation/dialogs/location_backgorund_consent.dart';
 import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
 import '../../features/_shared_feature_/presentation/pages/pdf_view.dart';
@@ -49,6 +52,7 @@ import '../../features/_shared_feature_/presentation/widgets/custom_popups_widge
 import '../../features/calendar/presentation/bloc/calendar_bloc.dart';
 import '../../features/entry_point/domain/use_cases/get_cookie.dart';
 import '../../features/events/presentation/bloc/events_bloc.dart';
+import '../../features/notifications/manager/notification_manager.dart';
 import '../../features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../../features/profile_features/delegators/domain/entities/user_profile_entity.dart';
 import '../../features/vd/domain/entities/gis/gis_params.dart';
@@ -61,6 +65,7 @@ import './utils_exports.dart'
         AppLanguage,
         BlocStatus,
         EnvType,
+        GeneralKey,
         MimeType,
         RouteName,
         UIHelper,
@@ -178,6 +183,26 @@ Map<String, String> carEnPlateLetters = {
 };
 
 class CommonFunctions {
+  static void updateNotificationSettings(String fcm) async {
+
+    return;
+    NotificationManager manager = sl();
+
+    DeviceDetails details = sl();
+    Device device = Device();
+    device.typeId = GeneralKey.typeId;
+    device.id = details.deviceId;
+    device.osTypeId = details.deviceOs;
+
+    PackageDetails info = sl();
+    NotificationRequest request = NotificationRequest();
+    request.fcmToken = fcm;
+    request.appId = GeneralKey.appId;
+    request.device = device;
+    request.appVersion = info.version;
+    manager.updateNotificationSettings(request);
+  }
+
   static EventTransformer<Event> debounce<Event>([Duration? duration]) =>
       (events, mapper) =>
           events.debounce(duration ?? UIHelper.duration).switchMap(mapper);
@@ -1374,6 +1399,18 @@ class CommonFunctions {
 
   static String getDMSUrl(String id) {
     return RemoteConfig.apigeeURL + "/v1/dms-mobile/files/$id";
+  }
+
+  static bool changeSpalsh() {
+    DateTime today = DateTime.now();
+
+    int todayDay = today.day;
+    int todayMonth = today.month;
+    int todayYear = today.year;
+    var allowedDays = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+    if (allowedDays.contains(todayDay) && todayMonth == 4 && todayYear == 2024)
+      return true;
+    return false;
   }
 
   static bool isFoundationDay() {

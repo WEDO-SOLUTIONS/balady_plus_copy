@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:balady_plus/app/features/_shared_features/notifications_count/cubit_notification_count/notifications_item_cubit.dart';
 import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
 import 'package:bot_toast/bot_toast.dart'
     show BotToastInit, BotToastNavigatorObserver;
@@ -10,6 +11,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation, translator;
+import 'package:mapness/entry_point.dart';
 import 'package:provider/provider.dart';
 
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
@@ -103,6 +105,7 @@ class _AppWidgetState extends State<AppWidget> {
           navigatorObservers: [
             BotToastNavigatorObserver(),
             FlutterUxcamNavigatorObserver(),
+            MapnessRouteObserver(),
           ],
           localizationsDelegates: translator.delegates.toList()
             ..add(CountryLocalizations.delegate), // Android + iOS Delegates
@@ -114,6 +117,7 @@ class _AppWidgetState extends State<AppWidget> {
       ),
     );
   }
+
   void hideKeyboard(BuildContext context) {
     FocusScopeNode currentFocus = FocusScope.of(context);
     if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {

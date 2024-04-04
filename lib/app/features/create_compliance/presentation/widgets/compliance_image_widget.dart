@@ -63,7 +63,7 @@ class ComplianceImageWidget extends StatelessWidget {
                 height: MediaQuery.of(context).size.height * 0.05,
                 titleStyle: AppStyle.complianceClausesOptionStyle,
                 onChanged: (int val) {
-                  item?.submitterAnswer = true;
+                  item?.submitterAnswer = val;
                   onChange(item);
                 },
               ),
@@ -78,7 +78,7 @@ class ComplianceImageWidget extends StatelessWidget {
                 height: MediaQuery.of(context).size.height * 0.05,
                 titleStyle: AppStyle.complianceClausesOptionStyle,
                 onChanged: (int val) {
-                  item?.submitterAnswer = false;
+                  item?.submitterAnswer = val;
                   onChange(item);
                 },
               ),

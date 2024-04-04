@@ -14,12 +14,15 @@ import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/failures.dart';
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/common_functions.dart';
+import '../../../../../core/utils/constants/route_names.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../transaction_inquiry/customer_voice_exports.dart';
 import '../../../../vd/domain/entities/gis/gis_params.dart';
 import '../../../../vd/domain/entities/map/map_screen_params.dart';
 import '../../../domain/entities/compliance_gis_resopnse.dart';
+import '../../../domain/use_cases/cancel_compliance_certificate.dart';
 import '../../dialogs/compliance_municipality_dialog_msr.dart';
+import '../../dialogs/confirm_cancel_request_dialog.dart';
 
 part 'map_event.dart';
 part 'map_state.dart';
@@ -27,9 +30,12 @@ part 'map_state.dart';
 class MapBloc extends Bloc<MapEvent, MapState> {
   final GetComplianceGIS _getGisData;
   late GoogleMapController mapController;
+  final CancelComplianceCertificate _cancelComplianceCertificate;
 
   MapBloc({MapScreenParams? params})
       : _getGisData = GetComplianceGIS(repository: sl()),
+        _cancelComplianceCertificate =
+            CancelComplianceCertificate(repository: sl()),
         super(MapState(
             gisResponse: params?.complianceGIS,
             location: params?.gisParams,
@@ -41,6 +47,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
     on<GetCurentUserLocationEvent>(_getCurrenttUserLocationHandler);
     on<SelectLocationEvent>(_selectLocationEventHandler);
+    on<CancelComplianceCertificateEvent>(_cancelComplainceCertificate);
   }
 
   Future<void> _getGisDataHandler(GetGISDataEvent e, Emitter emitter) async {
@@ -63,17 +70,55 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         gisResponse: success,
         errorMessage: "",
       ));
-
       if (e.popPage) {
         if (success.amanaCode?.startsWith("004") ?? false) {
           showCustomDialog(ComplianceMunicipalityMSRDialog());
         } else if (success.guid == null) {
           CommonFunctions.showError("complianec_no_guid_error".tr());
+        } else if (success.targetBuilding == false) {
+          showCustomDialog(ConfirmCancelRequestDialog(
+            onSelect: (value) {
+              if (value == true) {
+                success.isEmtithalMand = value;
+                NavigationService.navigatorKey.currentState?.pop(
+                    MapScreenParams(
+                        gisParams: e.params, complianceGIS: success));
+              } else if (value == false) {
+                add(CancelComplianceCertificateEvent());
+              }
+            },
+          ));
         } else {
-          NavigationService.navigatorKey.currentState?.pop(MapScreenParams(
-              gisParams: e.params, complianceGIS: state.gisResponse));
+          NavigationService.navigatorKey.currentState?.pop(
+              MapScreenParams(gisParams: e.params, complianceGIS: success));
         }
       }
+    });
+  }
+
+  Future<void> _cancelComplainceCertificate(
+      CancelComplianceCertificateEvent e, Emitter emitter) async {
+    emitter(state.copyWith(
+      status: BlocStatus.loading,
+    ));
+
+    final failOrSuccess = await _cancelComplianceCertificate(
+      state.requestNo!,
+    );
+
+    failOrSuccess.fold((l) {
+      emitter(state.copyWith(
+        errorMessage: (l as ServerFailure).errorMessage,
+        status: BlocStatus.failure,
+      ));
+    }, (r) async {
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+      ));
+
+      bool Function(Route<dynamic>) predicate =
+          ModalRoute.withName(RouteName.bottomNavigation);
+      NavigationService.navigatorKey.currentState!.popUntil((predicate));
     });
   }
 

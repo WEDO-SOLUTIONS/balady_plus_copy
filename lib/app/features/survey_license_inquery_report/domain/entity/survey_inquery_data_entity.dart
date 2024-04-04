@@ -58,7 +58,7 @@ class SurveyInqueryData {
 
 class Parcel {
   int? id;
-  int? area;
+  double? area;
   double? areaAccordingToScheme;
   String? landNo;
 

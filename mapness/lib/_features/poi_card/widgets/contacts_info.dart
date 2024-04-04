@@ -10,9 +10,10 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ContactsInfo extends StatefulWidget {
-
   const ContactsInfo({
-    required this.viewModel, required this.data, super.key,
+    required this.viewModel,
+    required this.data,
+    super.key,
   });
   final PoiCardViewModel viewModel;
   final DirectoryObjectMessage data;
@@ -22,94 +23,94 @@ class ContactsInfo extends StatefulWidget {
 }
 
 class _ContactsInfoState extends State<ContactsInfo> {
-  late List<Widget> contactInfoWidgets;
-
   @override
-  void initState() {
-    contactInfoWidgets = prepareWidgets();
-    super.initState();
-  }
+  Widget build(BuildContext context) {
+    final contactInfoWidgets = prepareWidgets();
 
-  @override
-  Widget build(BuildContext context) => contactInfoWidgets.isEmpty
+    return contactInfoWidgets.isEmpty
         ? const SizedBox.shrink()
         : CardContent(
             child: ListView.separated(
-            padding: EdgeInsets.zero,
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemBuilder: (ctx, i) => contactInfoWidgets[i],
-            separatorBuilder: (ctx, index) => const Divider(indent: 24),
-            itemCount: contactInfoWidgets.length,
-          ),);
+              padding: EdgeInsets.zero,
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemBuilder: (ctx, i) => contactInfoWidgets[i],
+              separatorBuilder: (ctx, index) => const Divider(indent: 24),
+              itemCount: contactInfoWidgets.length,
+            ),
+          );
+  }
 
-  List<Widget> prepareWidgets() => widget.data.getContactsInfoModels().map((contactsModel) {
-      final text = contactsModel.displayText;
-      var displayText = text;
-      if (contactsModel.type == ContactsInfoType.website) {
-        if (text != null) {
-          displayText = RegExp('^(?:https?://)?(?:ftp://)?(?:www.)?([^/]+)')
-              .stringMatch(text);
-        }
-      }
-
-      return GestureDetector(
-        onTap: () {
-          final value = contactsModel.value;
-          if (value != null) {
-            switch (contactsModel.type) {
-              case ContactsInfoType.phone:
-                widget.viewModel.callPhone(data: widget.data);
-              case ContactsInfoType.email:
-                widget.viewModel.sendEmail(value);
-              default:
-                widget.viewModel.launch(value);
-            }
+  List<Widget> prepareWidgets() =>
+      widget.data.getContactsInfoModels().map((contactsModel) {
+        final text = contactsModel.displayText;
+        var displayText = text;
+        if (contactsModel.type == ContactsInfoType.website) {
+          if (text != null) {
+            displayText = RegExp('^(?:https?://)?(?:ftp://)?(?:www.)?([^/]+)')
+                .stringMatch(text);
           }
-        },
-        child: SizedBox(
-          width: double.infinity,
-          child: Row(
-            children: [
-              SvgPicture.asset(
-                contactsModel.type.getIconResource(),
-                package: PackageConfig.packageName,
-                height: 16,
-                width: 16,
-                color: context.color.stroke_accent,
-              ),
-              const SizedBox(
-                width: 12,
-              ),
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Directionality(
-                      textDirection: TextDirection.ltr,
-                      child: buildText(
+        }
+
+        return GestureDetector(
+          onTap: () {
+            final value = contactsModel.value;
+            if (value != null) {
+              switch (contactsModel.type) {
+                case ContactsInfoType.phone:
+                  widget.viewModel.callPhone(data: widget.data);
+                case ContactsInfoType.email:
+                  widget.viewModel.sendEmail(value);
+                default:
+                  widget.viewModel.launch(value);
+              }
+            }
+          },
+          child: SizedBox(
+            width: double.infinity,
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  contactsModel.type.getIconResource(),
+                  package: PackageConfig.packageName,
+                  height: 16,
+                  width: 16,
+                  color: context.color.stroke_accent,
+                ),
+                const SizedBox(
+                  width: 12,
+                ),
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Directionality(
+                        textDirection: TextDirection.ltr,
+                        child: buildText(
                           text: displayText,
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
                           color: context.color.text_and_icons_base_primary,
-                          maxLines: 1,),
-                    ),
-                    Directionality(
-                      textDirection: TextDirection.ltr,
-                      child: buildText(
-                        maxLines: 1,
-                        text: contactsModel.comment,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: context.color.text_and_icons_base_primary.withOpacity(.5),
+                          maxLines: 1,
+                        ),
                       ),
-                    ),
-                  ],
+                      Directionality(
+                        textDirection: TextDirection.ltr,
+                        child: buildText(
+                          maxLines: 1,
+                          text: contactsModel.comment,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: context.color.text_and_icons_base_primary
+                              .withOpacity(.5),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      );
-    }).toList();
+        );
+      }).toList();
 }

@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../domain/entities/comliance_request_details.dart';
+import '../compliance_clauses_submit_item_widget.dart';
 import '../compliance_consetnt.dart';
 
 class FourthStepCompliance extends StatelessWidget {
@@ -36,9 +37,24 @@ class FourthStepCompliance extends StatelessWidget {
                 ),
                 ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: state.requestDetails?.emtithalItems?.length ?? 0,
                   itemBuilder: (ctx, index) {
+                    return ComplianceClauseSubmitItem(
+                      isReturned: state.requestDetails
+                              ?.isRequestReturnedFromMunicipality ??
+                          false,
+                      item: state.requestDetails!.emtithalItems![index],
+                      index: index,
+                      onSubmit: (EmtithalItem item) {
+                        context.read<ComplianceBloc>().add(
+                            SaveImtethalItemEvent(item: item, index: index));
+                      },
+                      onChange: (EmtithalItem val) {
+                        context.read<ComplianceBloc>().add(
+                            ChangeImtethalItemEvent(index: index, item: val));
+                      },
+                    );
                     return ComplianceImageWidget(
                       item: state.requestDetails?.emtithalItems?[index],
                       onChange: (EmtithalItem val) {

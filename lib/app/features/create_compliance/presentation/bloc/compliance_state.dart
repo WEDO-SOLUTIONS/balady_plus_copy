@@ -11,9 +11,6 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:collection/collection.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
-import '../../../../core/utils/common_functions.dart';
-import '../../../../core/utils/enums/date_form.dart';
-import '../../../../core/utils/nullable.dart';
 import 'package:balady_plus/app/features/transaction_inquiry/presentation/core/models/attachment_model.dart';
 import '../../../_shared_feature_/data/entities/validators/phone_number_validation.dart';
 import '../../data/models/apply_create_compliance_request_model.dart';
@@ -60,12 +57,13 @@ class ComplianceState extends Equatable {
   final String? ownershipDate;
   final DateForm? form;
   final ComplianceEngOfficeDetails? engOfficeDetails;
-
   final ComplinaecLicensesReponse? licenes;
   final ComplianceLisenseItem? selectedLicense;
   final ComplainceGISResponse? gisResponse;
   final GISParams? gisParams;
   final List<AttachmentData>? attachments;
+  final List<AttachmentData>? viewAttachments;
+
   final ApplyCreateComplianceRequest? applyRequest;
   final String? contactMobileNumber;
   final bool? agreement;
@@ -78,6 +76,9 @@ class ComplianceState extends Equatable {
   final ComplianceDeedInfo? deedInfo;
   final LandSubsidyContract? landSubsidyContract;
   final bool? showEksanId;
+  final String? applicantNotes;
+  final bool? showDetails;
+
   PhoneNumberValidation get phoneValidator => contactMobileNumber == null
       ? PhoneNumberValidation.pure()
       : PhoneNumberValidation.dirty(value: contactMobileNumber);
@@ -118,6 +119,7 @@ class ComplianceState extends Equatable {
       this.gisResponse,
       this.gisParams,
       this.attachments,
+      this.viewAttachments,
       this.engOffices,
       this.selectedEngOffice,
       this.engOfficeDetails,
@@ -130,7 +132,9 @@ class ComplianceState extends Equatable {
       this.reciptLists,
       this.deedInfo,
       this.landSubsidyContract,
-      this.showEksanId});
+      this.showEksanId,
+      this.applicantNotes,
+      this.showDetails});
   ComplianceState copyWith(
       {final BlocStatus? status,
       final int? currentStep,
@@ -162,6 +166,7 @@ class ComplianceState extends Equatable {
       final ComplainceGISResponse? gisResponse,
       final GISParams? gisParams,
       final List<AttachmentData>? attachments,
+      final List<AttachmentData>? viewAttachments,
       final ApplyCreateComplianceRequest? applyRequest,
       final String? contactMobileNumber,
       final Nullable<ComplinaecEngOfficeItem?>? selectedEngOffice,
@@ -176,7 +181,9 @@ class ComplianceState extends Equatable {
       final ComplinaceLookUpResponse? reciptLists,
       final Nullable<ComplianceDeedInfo?>? deedInfo,
       final Nullable<LandSubsidyContract?>? landSubsidyContract,
-      final bool? showEksanId}) {
+      final bool? showEksanId,
+      final String? applicantNotes,
+      final bool? showDetails}) {
     return ComplianceState(
         status: status ?? this.status,
         contactMobileNumber: contactMobileNumber ?? this.contactMobileNumber,
@@ -218,6 +225,7 @@ class ComplianceState extends Equatable {
         gisResponse: gisResponse ?? this.gisResponse,
         gisParams: gisParams ?? this.gisParams,
         attachments: attachments ?? this.attachments,
+        viewAttachments: viewAttachments ?? this.viewAttachments,
         applyRequest: applyRequest ?? this.applyRequest,
         engOffices: engOffices ?? this.engOffices,
         selectedEngOffice: selectedEngOffice == null
@@ -245,7 +253,9 @@ class ComplianceState extends Equatable {
         landSubsidyContract: landSubsidyContract == null
             ? this.landSubsidyContract
             : landSubsidyContract.value,
-        showEksanId: showEksanId ?? this.showEksanId);
+        applicantNotes: applicantNotes ?? this.applicantNotes,
+        showEksanId: showEksanId ?? this.showEksanId,
+        showDetails: showDetails ?? this.showDetails);
   }
 
   bool isNextButtonEnabled() {
@@ -318,6 +328,9 @@ class ComplianceState extends Equatable {
       }
       return isValid;
     } else if ((currentStep == 6)) {
+      if (requestDetails?.isRequestReturnedFromMunicipality == true &&
+          (applicantNotes?.isEmpty ?? true)) return false;
+    } else if ((currentStep == 7)) {
       return agreement ?? false;
     }
     return true;
@@ -457,6 +470,7 @@ class ComplianceState extends Equatable {
         selectedLicense,
         detailsStatus,
         attachments,
+        viewAttachments,
         applyRequest,
         documentTypeSelection,
         contactMobileNumber,
@@ -474,6 +488,7 @@ class ComplianceState extends Equatable {
         selectedReciptType,
         reciptTypesStatus,
         reciptLists,
-        showEksanId
+        showEksanId,
+        applicantNotes
       ];
 }

@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_features/notifications_cell/widgets/notifications_setting_cell.dart';
 import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -158,6 +159,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     ],
                   ),
                 ),
+                const SizedBox(
+                  height: 16,
+                ),
+
+               //hamed hide nofication settings
+               // const NotificationsSettingCell()
               ],
             ),
           ),

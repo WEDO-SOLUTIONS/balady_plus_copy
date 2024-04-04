@@ -175,6 +175,8 @@ class CreateObjectionBloc
           serviceTypeId: item?.serviceTypeId,
           objectionTypeId: item?.objectionTypeId,
           objectedTransactionId: details?.violationId,
+          //   licenseNumber: item?.licenseNumber,
+          //  licenseTypeID: item?.licenseTypeId,
           submitterRole: CommonProperties.selectedDelegator != null
               ? CommonProperties.selectedDelegator?.roleId
               : "001",

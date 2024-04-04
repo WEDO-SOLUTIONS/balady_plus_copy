@@ -961,7 +961,6 @@
   "vhr_title": "Vehicles recovery requests",
   "req_title": "Municipal service requests",
   "tsr_title": "Supporter",
-  "mun_title": "Municipal services",
   "inq_title": "Inquiries",
   "crm_request_classification": "Classification",
   "Maps": "Maps",
@@ -2465,7 +2464,7 @@
   "viewLicenseDetails": "View license details",
   "wallet": "Portfolio",
   "theBusinessLicense": "Commercial licenses",
-  "healthCertificates": "Health certificates",
+  "healthCertificates": "Digital Health certificates",
   "businessLicense": "Commercial license",
   "createdAt": "Issued by",
   "name": "Name",
@@ -4124,6 +4123,18 @@
   "chat_bot_not_working_title": "Sorry, the service is currently unavailable",
   "chat_bot_not_working_message": "We apologize for the inconvenience. The current service is experiencing technical difficulties, and we are working diligently to resolve the issue. Please try again later. Thank you for your understanding.",
   "calendar_type_invoice": "Invoice not paid",
+
+  "enable_disable_notifications": "You can enable or disable notifications from here",
+  "manage_notification": "Manage notifications for services",
+
+
+  "make_all_read":"Mark all as read",
+  "delete_all": "Delete all",
+  "locale": "en",
+  "no_notifications": "",
+  "notification_read": "read",
+  "notification_unread": "unread",
+
   "commercial_licenseـquery_title": "Insert the following",
   "submitter_compliance_text":"Compliance status of the Submitter: ",
   "emp_compliance_text":"Compliance status of the Employee: " ,
@@ -4260,5 +4271,16 @@
   "realEstateRequestId":"Real Estate Request Id", 
   "realEstateSurveyId":"Real Estate Survey Id", 
   "realEstateId":"Real Estate Id", 
-  "realEstateRequestIdNote":"Consolidation service starts with LMS. Segmentation service starts with LSS. Plan sorting service starts with LSBP. Electronic or paper instrument update service. The application number or cadastral decision number is entered."
+  "realEstateRequestIdNote":"Consolidation service starts with LMS. Segmentation service starts with LSS. Plan sorting service starts with LSBP. Electronic or paper instrument update service. The application number or cadastral decision number is entered.", 
+  "objection_enquiry_none": "Sorry, there are no Enquiry Requests from the Objections and Complaints Review Committee", 
+
+  "health_cert_riyadh_new":"Dear beneficiary, to issue a health certificate.", 
+  "health_cert_riyadh_renew":"Dear beneficiary, to renew the health certificate", 
+  "health_cert_riyadh_agree":"Click here", 
+
+
+  "municipal_cert_riyadh_new":"Dear beneficiary, to request a municipal service", 
+  "municipal_cert_riyadh_agree":"Click here", 
+  "objection_download_commite_decision":"Download a copy of the decision of the Objections Review Committee", 
+  "delete_all_notifications_confirmation":"Are you sure that you want delete all notifications ?"
 }

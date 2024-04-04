@@ -16,8 +16,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 3.9.7+203
-
+#version: 3.9.7+203
+version: 3.10.0+206
 environment:
   sdk: ">=3.0.1 <4.0.0"
 
@@ -35,6 +35,9 @@ dependencies:
   async: ^2.11.0
   # Localization app to support multiple languages
   localize_and_translate:
+    git:
+      url: https://github.com/Demezy/localize_and_translate
+      ref: 4.1.2-dev-fixes
   ##! Logic
   # To manage state and separate business logic from UI
   flutter_bloc: ^8.1.2
@@ -196,6 +199,14 @@ dependencies:
   preload_page_view: ^0.2.0
   flutter_linkify: ^6.0.0
   screenshot: ^2.1.0
+
+
+#  Show App Popup Menu form button in poiation
+  app_popup_menu: ^1.0.0
+
+  jiffy:
+  gif: ^2.3.0
+
 
 dependency_overrides:
   geolocator_android: ^4.2.2
