@@ -3,20 +3,19 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
+import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/favorite_card.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class Favourites extends ConsumerWidget {
-
   const Favourites(this.data, {super.key});
   final DirectoryObjectMessage? data;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final favouritesState = ref.watch(favouriteRepositoryProvider);
+    final favouritesState = ref.watch(favouriteCacheProvider);
 
     return favouritesState.map(
       data: (result) {
@@ -68,7 +67,7 @@ class WorkCard extends StatelessWidget {
             ),
             Text(
               context.l10n.work,
-              style:  TextStyle(
+              style: TextStyle(
                 color: context.color.textAndIconsBasePrimary,
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
@@ -101,7 +100,7 @@ class HomeCard extends StatelessWidget {
             ),
             Text(
               context.l10n.home,
-              style:  TextStyle(
+              style: TextStyle(
                 color: context.color.textAndIconsBasePrimary,
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
