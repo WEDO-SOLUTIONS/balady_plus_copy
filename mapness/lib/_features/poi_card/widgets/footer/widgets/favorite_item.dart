@@ -45,28 +45,36 @@ class _FavoriteItem extends ConsumerWidget {
           return;
         }
 
-        final favItem = favouriteItem ??
-            FavouriteItem(
-              coordinates: Coordinates(
-                latitude: objectMessage.markerPosition?.latitude ?? 0,
-                longitude: objectMessage.markerPosition?.longitude ?? 0,
-              ),
-              id: 'overriden',
-              subtitle: objectMessage.subtitle,
-              title: objectMessage.title,
-              entity: FavouriteItemEntity(
-                sourceType: EntitySourceType.urbi,
-                id: objectMessage.id?.objectId.toString() ?? 'id',
-              ),
-            );
+        FavouriteItem? favItem = favouriteItem;
+        if (favItem == null &&
+            objectMessage.markerPosition != null &&
+            objectMessage.id != null) {
+          favItem = FavouriteItem(
+            coordinates: Coordinates(
+              latitude: objectMessage.markerPosition!.latitude,
+              longitude: objectMessage.markerPosition!.longitude,
+            ),
+            id: 'overriden',
+            subtitle: objectMessage.subtitle,
+            title: objectMessage.title,
+            entity: FavouriteItemEntity(
+              sourceType: EntitySourceType.urbi,
+              id: objectMessage.id!.objectId.toString(),
+            ),
+          );
+        }
 
-          /// do not show dialog if home and work are set
-          if (favState?.home != null && favState?.work != null) {
-            favRepo.addItem(objectMessage.mapToFavourite());
-          } else {
-            /// show dialog to choose home, work or regular
-            _showDialog(context, favItem);
-          }
+        if (favItem == null) {
+          return;
+        }
+
+        /// do not show dialog if home and work are set
+        if (favState?.home != null && favState?.work != null) {
+          favRepo.addItem(objectMessage.mapToFavourite());
+        } else {
+          /// show dialog to choose home, work or regular
+          _showDialog(context, favItem);
+        }
       },
     );
   }

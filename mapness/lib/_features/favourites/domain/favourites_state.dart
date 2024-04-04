@@ -5,7 +5,11 @@ class FavouritesState {
   final FavouriteItem? home;
   final FavouriteItem? work;
 
-  FavouritesState({required this.items, this.home, this.work});
+  const FavouritesState({
+    required this.items,
+    this.home,
+    this.work,
+  });
 
   FavouritesState copyWith({
     List<FavouriteItem>? items,

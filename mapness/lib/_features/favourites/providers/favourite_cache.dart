@@ -48,7 +48,7 @@ class _FavouriteCache extends _$FavouriteCache {
       if (oldDataState.work != null) oldDataState.work!,
     ];
 
-    final newState = FavouritesState(items: []);
+    const newState = FavouritesState(items: []);
     await _updateState(newState);
 
     try {
