@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dgis_map_platform_interface/library.dart';
+import 'package:dgis_map_platform_interface/src/events/object_tap_events.dart';
 
 typedef void OnObjectTap();
 typedef SimpleClusterOptionsMessage ClusterRenderer(int objectCount);
@@ -144,6 +145,17 @@ class ObjectTapEventHandler {
         longitude: latLngMap["longitude"],
       ),
       map["levelId"],
+    ));
+  }
+
+  void myLocationTapEvent(Map<dynamic, dynamic> map) {
+    final latLngMap = map["latlng"];
+
+    _objectTapController.sink.add(MyLocationTapEvent(
+      LatLng(
+        latitude: latLngMap["latitude"],
+        longitude: latLngMap["longitude"],
+      ),
     ));
   }
 

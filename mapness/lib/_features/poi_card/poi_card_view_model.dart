@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/poi_card/enums/contacts_info_type.dart';
@@ -9,7 +10,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PoiCardViewModel {
-
   PoiCardViewModel({
     required this.ref,
   });
@@ -30,8 +30,32 @@ class PoiCardViewModel {
     }
   }
 
-  void share(DirectoryObjectMessage? data) {
-    Share.share('balady://poi-map?dgis-object-id=${data?.id?.objectId}');
+  void share({required int? objectId}) {
+    if (objectId != null) {
+      Share.share(
+          'https://apps.balady.gov.sa/#/poi-map?dgis-object-id=$objectId');
+    } else {
+      onError();
+    }
+  }
+
+  String _myLocationDeeplink(LatLng location) =>
+      'https://apps.balady.gov.sa/#/poi-map?lat=${location.latitude}&lon=${location.longitude}&type=my-location';
+
+  void shareMyLocation(LatLng? location) {
+    if (location != null) {
+      Share.share(_myLocationDeeplink(location));
+    } else {
+      onError();
+    }
+  }
+
+  Future<void> copyToClipboard(LatLng? location) async {
+    if (location != null) {
+      await Clipboard.setData(
+        ClipboardData(text: _myLocationDeeplink(location)),
+      );
+    }
   }
 
   Future<void> sendEmail(String value) async {
@@ -62,29 +86,6 @@ class PoiCardViewModel {
       await launchUrl(Uri(scheme: 'tel', path: value));
     }
   }
-
-
-  // void removeFromFavourite(FavouriteItem data) {
-  //   ref.read(favouriteRepositoryProvider.notifier).delete(data);
-  // }
-  //
-  // void addToFavourites(DirectoryObjectMessage data) {
-  //   ref.read(favouriteRepositoryProvider.notifier).addItem(
-  //         FavouriteItem(
-  //           coordinates: Coordinates(
-  //             latitude: data.markerPosition?.latitude ?? 24.712301,
-  //             longitude: data.markerPosition?.longitude ?? 46.674175,
-  //           ),
-  //           id: '${data.id?.objectId ?? 'id'}',
-  //           subtitle: data.subtitle,
-  //           title: data.title,
-  //           entity: FavouriteItemEntity(
-  //             id: '${data.id?.objectId ?? '70030076201324251'}',
-  //             sourceType: EntitySourceType.urbi,
-  //           ),
-  //         ),
-  //       );
-  // }
 
   void resetMapControlsState() {
     ref.read(mapControlsProvider.notifier).update(

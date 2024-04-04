@@ -1,4 +1,4 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -18,7 +18,6 @@ import 'package:mapness/widgets/iwish/ui/iwish_feedback_mood.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_feedback_tags.dart';
 
 class IwishFeedback extends ConsumerStatefulWidget {
-
   const IwishFeedback({required this.iwishId, super.key});
   final String iwishId;
 
@@ -58,18 +57,27 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
       Future.delayed(
         const Duration(seconds: 5),
         () {
-          if (!mounted) return;
-          IwishCardRoute(iwishId: widget.iwishId).replace(context);
+          if (mounted) {
+            IwishCardRoute(iwishId: widget.iwishId).replace(context);
+          }
         },
       );
       return const ThanksSheet();
     }
 
+    final title = isCompleted
+        ? context.l10n.shareYourFeelingsAboutPark
+        : context.l10n.voteWhatDoYouWantToHaveInThePark;
+    final onPressedSubmit = () async {
+      await CommonFunctions.authOrOpen(
+        context,
+        callback: feedbackNotifier.submitFeedback,
+      );
+    };
+
     return LabeledDraggableSheet(
-      onClose: () => context.pop(),
-      title: isCompleted
-          ? context.l10n.shareYourFeelingsAboutPark
-          : context.l10n.voteWhatDoYouWantToHaveInThePark,
+      onClose: context.pop,
+      title: title,
       child: SafeArea(
         top: false,
         child: Column(
@@ -90,7 +98,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
               ),
               const SizedBox(height: 16),
               Material(
-                color: context.color.surfaceBasePrimary,
+                color: context.color.surface_base_primary,
                 borderRadius: BorderRadius.circular(8),
                 child: InkWell(
                   onTap: () =>
@@ -103,11 +111,11 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
                     ),
                     child: Builder(builder: (context) {
                       final textStyle =
-                          Theme.of(context).extension<ThemeTextStyles>()!.text;
+                          Theme.of(context).extension<ThemeTextStyles>()!.textM;
                       final color =
                           feedback.comment == null || feedback.comment!.isEmpty
-                              ? context.color.textAndIconsBaseTertiary
-                              : context.color.textAndIconsBasePrimary;
+                              ? context.color.text_and_icons_base_tertiary
+                              : context.color.text_and_icons_base_primary;
                       final style = textStyle.copyWith(color: color);
                       final text =
                           feedback.comment ?? context.l10n.shareYourFeedback;
@@ -123,9 +131,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
               ),
               const SizedBox(height: 16),
               LabeledElevatedButton(
-                onPressed: () async {
-                  await CommonFunctions.authOrOpen(context, callback: feedbackNotifier.submitFeedback,);
-                },
+                onPressed: onPressedSubmit,
                 label: context.l10n.sendFeedback,
               ),
             ],

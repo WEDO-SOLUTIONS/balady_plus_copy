@@ -67,6 +67,8 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
   @override
   void initState() {
     super.initState();
+    widget.controller?.pause = pauseProgress;
+    widget.controller?.play = resumeProgress;
     widget.controller?.nextPage = _onNext;
     widget.controller?.prevPage = _onPrevious;
     _controller = AnimationController(

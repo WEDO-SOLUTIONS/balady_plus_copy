@@ -1,4 +1,4 @@
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/colors/non_theme_colors.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,10 +52,13 @@ class IwishPlaceCard extends ConsumerWidget {
                     DateTime.fromMillisecondsSinceEpoch(0) ||
                 metadata.areaName != '';
 
+            final minSheetSize = entity.photos.isEmpty ? 0.25 : 0.4;
+
             return SafeArea(
               bottom: false,
               child: DraggableScrollableSheet(
-                initialChildSize: 0.25,
+                initialChildSize: minSheetSize,
+                minChildSize: minSheetSize,
                 builder: (context, scrollController) => Column(
                   children: [
                     if (entity.photos.isNotEmpty)
@@ -70,149 +73,143 @@ class IwishPlaceCard extends ConsumerWidget {
                         ),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: context.color.surfaceBasePrimary,
+                            color: context.color.surface_base_primary,
                             borderRadius: const BorderRadius.vertical(
                                 top: Radius.circular(12)),
                           ),
-                          child: SafeArea(
-                            top: false,
-                            child: ListView(
-                              controller: scrollController,
-                              padding: EdgeInsets.zero,
-                              shrinkWrap: true,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.only(
-                                    left: 16,
-                                    right: 16,
-                                    bottom: 16,
-                                  ),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(12),
-                                    ),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.topCenter,
-                                        child: Container(
-                                          margin: const EdgeInsets.only(
-                                            top: 8,
-                                          ),
-                                          height: 4,
-                                          width: 40,
-                                          decoration: BoxDecoration(
-                                            color: Colors.grey[300],
-                                            borderRadius:
-                                                BorderRadius.circular(2),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      IwishInfo(
-                                        iwish: entity,
-                                        distance: distance,
-                                        onClose: () => context.pop(),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      IwishStateLabel(state: entity.state),
-                                      const SizedBox(height: 16),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: LabeledElevatedButton(
-                                              enabled: !entity.feedbackSent,
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                vertical: 8,
-                                                horizontal: 9,
-                                              ),
-                                              onPressed: () async {
-                                                await CommonFunctions
-                                                    .authOrOpen(
-                                                  context,
-                                                  callback: () {
-                                                    IwishFeedbackRoute(
-                                                      iwishId: iwishId,
-                                                    ).replace(context);
-                                                  },
-                                                );
-                                              },
-                                              label: entity.feedbackSent
-                                                  ? context.l10n.wishesSent
-                                                  : context.l10n.sendFeedback,
-                                            ),
-                                          ),
-                                          BriefRouteButton(
-                                            padding: const EdgeInsetsDirectional
-                                                .only(
-                                              start: 8,
-                                            ),
-                                            foreground: context.color
-                                                .textAndIconsBasePrimary,
-                                            background: NonThemeColor.color60,
-                                            finishPoint:
-                                                RouteSearchPointMessage(
-                                              coordinates: GeoPointMessage(
-                                                latitude:
-                                                    entity.location.latitude,
-                                                longitude:
-                                                    entity.location.longitude,
-                                              ),
-                                              objectId: DgisObjectIdMessage(
-                                                objectId: 0,
-                                                entranceId: 0,
-                                              ),
-                                            ),
-                                            onTap: () {
-                                              RoutingRoutesRoute(
-                                                finishLabel: entity.title,
-                                                finishLatitude:
-                                                    entity.location.latitude,
-                                                finishLongitude:
-                                                    entity.location.longitude,
-                                                finishObjectId: null,
-                                                finishEntranceId: null,
-                                                finishLevelId: null,
-                                                startLabel:
-                                                    context.l10n.myLocation,
-                                                startLatitude: null,
-                                                startLongitude: null,
-                                                startObjectId: null,
-                                                startEntranceId: null,
-                                                startLevelId: null,
-                                              ).pushReplacement(context);
-                                            },
-                                            routeType:
-                                                RouteSearchOptionsMessage.car,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                          child: ListView(
+                            controller: scrollController,
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.only(
+                                  left: 16,
+                                  right: 16,
+                                  bottom: 16,
+                                ),
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(12),
                                   ),
                                 ),
-                                const SizedBox(height: 16),
-                                if (showMetadata)
-                                  Container(
-                                    margin: const EdgeInsets.symmetric(
-                                      horizontal: 16,
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.topCenter,
+                                      child: Container(
+                                        margin: const EdgeInsets.only(
+                                          top: 8,
+                                        ),
+                                        height: 4,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[300],
+                                          borderRadius:
+                                              BorderRadius.circular(2),
+                                        ),
+                                      ),
                                     ),
-                                    padding: const EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(12),
+                                    const SizedBox(height: 4),
+                                    IwishInfo(
+                                      iwish: entity,
+                                      distance: distance,
+                                      onClose: () => context.pop(),
                                     ),
-                                    child: IwishAboutPark(
-                                      metadata: entity.metadata,
-                                      parkSize: entity.parkSize,
+                                    const SizedBox(height: 8),
+                                    IwishStateLabel(state: entity.state),
+                                    const SizedBox(height: 16),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: LabeledElevatedButton(
+                                            enabled: !entity.feedbackSent,
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 8,
+                                              horizontal: 9,
+                                            ),
+                                            onPressed: () async {
+                                              await CommonFunctions.authOrOpen(
+                                                context,
+                                                callback: () {
+                                                  IwishFeedbackRoute(
+                                                    iwishId: iwishId,
+                                                  ).replace(context);
+                                                },
+                                              );
+                                            },
+                                            label: entity.feedbackSent
+                                                ? context.l10n.wishesSent
+                                                : context.l10n.sendFeedback,
+                                          ),
+                                        ),
+                                        BriefRouteButton(
+                                          padding:
+                                              const EdgeInsetsDirectional.only(
+                                            start: 8,
+                                          ),
+                                          foreground: context.color
+                                              .text_and_icons_base_primary,
+                                          background: NonThemeColor.color60,
+                                          finishPoint: RouteSearchPointMessage(
+                                            coordinates: GeoPointMessage(
+                                              latitude:
+                                                  entity.location.latitude,
+                                              longitude:
+                                                  entity.location.longitude,
+                                            ),
+                                            objectId: DgisObjectIdMessage(
+                                              objectId: 0,
+                                              entranceId: 0,
+                                            ),
+                                          ),
+                                          onTap: () {
+                                            RoutingRoutesRoute(
+                                              finishLabel: entity.title,
+                                              finishLatitude:
+                                                  entity.location.latitude,
+                                              finishLongitude:
+                                                  entity.location.longitude,
+                                              finishObjectId: null,
+                                              finishEntranceId: null,
+                                              finishLevelId: null,
+                                              startLabel:
+                                                  context.l10n.myLocation,
+                                              startLatitude: null,
+                                              startLongitude: null,
+                                              startObjectId: null,
+                                              startEntranceId: null,
+                                              startLevelId: null,
+                                            ).pushReplacement(context);
+                                          },
+                                          routeType:
+                                              RouteSearchOptionsMessage.car,
+                                        ),
+                                      ],
                                     ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              if (showMetadata)
+                                Container(
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 16,
                                   ),
-                              ],
-                            ),
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: IwishAboutPark(
+                                    metadata: entity.metadata,
+                                    parkSize: entity.parkSize,
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
                       ),

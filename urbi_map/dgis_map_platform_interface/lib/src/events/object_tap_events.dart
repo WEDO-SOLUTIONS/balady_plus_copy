@@ -42,6 +42,21 @@ class ObjectTapEvent extends TapEvent {
   final LatLng latLng;
 }
 
+/// Event for tap on my location blue point
+/// iOS: [MyLocationMapObject] received on tap and
+/// [sendDgisMyLocationEvent] send event to Flutter app
+/// Android: WIP
+class MyLocationTapEvent extends TapEvent {
+
+  /// Constructor
+  const MyLocationTapEvent(this.latLng);
+  /// Event name
+  static const name = "onMyLocationTap";
+
+  /// Location of my location
+  final LatLng latLng;
+}
+
 class RoadEventTapEvent extends TapEvent {
   RoadEventTapEvent(
     this.id,

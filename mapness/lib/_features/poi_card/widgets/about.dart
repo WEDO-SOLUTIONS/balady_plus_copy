@@ -1,15 +1,19 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
-import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/_features/poi_card/widgets/style.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class About extends StatefulWidget {
+  const About({
+    required this.onEntranceTap,
+    required this.title,
+    required this.exits,
+    super.key,
+  });
 
-  const About(this.data, {required this.onEntranceTap, super.key});
-  final DirectoryObjectMessage? data;
-
+  final String title;
+  final int? exits;
   final Function() onEntranceTap;
 
   @override
@@ -17,69 +21,40 @@ class About extends StatefulWidget {
 }
 
 class _AboutState extends State<About> {
-  int? exits;
-
   @override
-  void initState() {
-    exits = widget.data?.entrances.length;
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final data = widget.data;
-    final entrances = data?.entrances;
-    return CardContent(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            data?.address?.buildingName ?? data?.title ?? '',
-            style: Theme.of(context)
-                .extension<ThemeTextStyles>()!
-                .text
-                .copyWith(color: context.color.textAndIconsBasePrimary),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 5,
-            textAlign: TextAlign.start,
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-          // Text(
-          //   data!.makeAddress(),
-          //   style: Theme.of(context)
-          //       .extension<ThemeTextStyles>()!
-          //       .textS
-          //       .copyWith(color: context.color.text_and_icons_base_primary),
-          //   maxLines: 5,
-          //   textAlign: TextAlign.start,
-          // ),
-          if (entrances != null && entrances.isNotEmpty) ...[
-            const SizedBox(
-              height: 8,
+  Widget build(BuildContext context) => CardContent(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.title,
+              style: context.textStyle.textM
+                  .copyWith(color: context.color.text_and_icons_base_primary),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 5,
+              textAlign: TextAlign.start,
             ),
-            Material(
-              color: context.color.textAndIconsBasePrimary.withAlpha(10),
-              borderRadius: borderRadius,
-              child: InkWell(
-                onTap: widget.onEntranceTap,
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: boxDecoration(),
-                  child: Text(
-                    '${context.l10n.exits} ${exits ?? ''}',
-                    style: Theme.of(context)
-                        .extension<ThemeTextStyles>()!
-                        .heading1
-                        .copyWith(color: context.color.textAndIconsBasePrimary),
+            const SizedBox(height: 8),
+            if (widget.exits != null && widget.exits != 0) ...[
+              const SizedBox(height: 8),
+              Material(
+                color: context.color.text_and_icons_base_primary.withAlpha(10),
+                borderRadius: borderRadius,
+                child: InkWell(
+                  onTap: widget.onEntranceTap,
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: boxDecoration(),
+                    child: Text(
+                      '${context.l10n.exits} ${widget.exits ?? ''}',
+                      style: context.textStyle.accentS.copyWith(
+                          color: context.color.text_and_icons_base_primary),
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ],
-        ],
-      ),
-    );
-  }
+        ),
+      );
 }

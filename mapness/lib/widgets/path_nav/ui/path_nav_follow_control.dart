@@ -3,6 +3,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/follow_state.dart';
 
@@ -30,8 +31,20 @@ class PathNavFollowControl extends ConsumerWidget {
             case LocationFollowType.followPosition:
               return;
             case LocationFollowType.off:
+              final cameraPosition = ref.read(cameraPositionProvider);
               final dgisController =
                   await ref.read(dgisControllerProvider.future);
+              if (cameraPosition != null) {
+                // Animate to the entrance
+                await dgisController.setCameraPosition(
+                  CameraPositionMessage(
+                    point: cameraPosition.point,
+                    zoom: 18,
+                    tilt: cameraPosition.tilt,
+                    bearing: cameraPosition.tilt,
+                  ),
+                );
+              }
               await dgisController.followNavigation();
           }
         },
