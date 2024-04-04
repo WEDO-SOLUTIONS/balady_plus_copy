@@ -55,6 +55,7 @@ class DgisBottomSheet extends StatefulWidget {
     this.hiddenHeight = 0,
     this.controller,
     this.mapControlsBuilder,
+    this.scrollBehavior = const DisabledOverscrollScrollBehavior(),
   })  : assert(
           !availableExpansions.contains(Expansion.collapsed) ||
               collapsedHeight != null && collapsedHeight > 0,
@@ -112,6 +113,7 @@ class DgisBottomSheet extends StatefulWidget {
   final void Function(Expansion expansion, {bool byUser})? onExpansionChanged;
   final ValueChanged<double>? onVisibleHeightChanged;
   final bool printDebugLogs;
+  final ScrollBehavior scrollBehavior;
 
   @override
   State<DgisBottomSheet> createState() => _DgisBottomSheetState();
@@ -346,7 +348,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
         Material(
           type: MaterialType.transparency,
           child: ScrollConfiguration(
-            behavior: DisabledOverscrollScrollBehavior(),
+            behavior: widget.scrollBehavior,
             child:
                 // todo(somebody): provide theme when ready
                 WillPopScope(
