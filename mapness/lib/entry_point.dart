@@ -284,6 +284,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     PoiMapRoute.open(
       ref.read(goRouterProvider),
       dgisId,
+      zoom: 17,
     );
   }
 
@@ -333,6 +334,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     PoiMapRoute.open(
       ref.read(goRouterProvider),
       dgisId,
+      zoom: 17,
     );
   }
 }
