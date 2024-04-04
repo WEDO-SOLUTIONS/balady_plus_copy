@@ -58,7 +58,7 @@ class PoiCardFooter extends ConsumerWidget {
           assetName: isFav
               ? 'assets/icons/svg/ic_fav_solid.svg'
               : 'assets/icons/svg/ic_fav_poi.svg',
-          colorIcon: context.color.text_and_icons_status_accent,
+          colorIcon: context.color.textAndIconsStatusAccent,
           onTap: () => _onFavTap(
             context: context,
             favouriteItem: favData,

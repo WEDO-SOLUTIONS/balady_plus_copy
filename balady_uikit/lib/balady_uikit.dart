@@ -1,1 +1,0 @@
-library balady_uikit;

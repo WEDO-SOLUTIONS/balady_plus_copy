@@ -1,6 +1,6 @@
-import 'package:balady_uikit/colors/app_color_scheme.dart';
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/app_color_scheme.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -33,7 +33,7 @@ class StoryThumbnailWidget extends ConsumerWidget {
                 width: 2,
                 color: isWatched
                     ? Colors.transparent
-                    : context.color.stroke_accent,
+                    : context.color.strokeAccent,
               ),
               borderRadius: BorderRadius.circular(16),
             ),
@@ -97,7 +97,7 @@ class StoryThumbnailWidget extends ConsumerWidget {
                         // TODO: move to theme
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
-                            .accentS
+                            .footNoteBold
                             .copyWith(color: Colors.white),
                       ),
                     ],

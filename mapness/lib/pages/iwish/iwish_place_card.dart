@@ -1,4 +1,4 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -70,7 +70,7 @@ class IwishPlaceCard extends ConsumerWidget {
                         ),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: context.color.surface_base_primary,
+                            color: context.color.surfaceBasePrimary,
                             borderRadius: const BorderRadius.vertical(
                                 top: Radius.circular(12)),
                           ),
@@ -153,7 +153,7 @@ class IwishPlaceCard extends ConsumerWidget {
                                               start: 8,
                                             ),
                                             foreground: context.color
-                                                .text_and_icons_base_primary,
+                                                .textAndIconsBasePrimary,
                                             background: NonThemeColor.color60,
                                             finishPoint:
                                                 RouteSearchPointMessage(

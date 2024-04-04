@@ -1,5 +1,5 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/favourites/widgets/screen/delete_icon.dart';
@@ -48,7 +48,7 @@ class PinnedPlaceWidget extends StatelessWidget {
                   context.l10n.delete,
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
-                      .textS
+                      .footNote
                       .copyWith(color: Colors.white),
                 ),
               ),
@@ -59,7 +59,7 @@ class PinnedPlaceWidget extends StatelessWidget {
         child: Ink(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            color: context.color.surface_base_primary,
+            color: context.color.surfaceBasePrimary,
           ),
           child: InkWell(
             borderRadius: BorderRadius.circular(8),
@@ -79,10 +79,10 @@ class PinnedPlaceWidget extends StatelessWidget {
                           textAlign: TextAlign.right,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
-                              .textL
+                              .heading2
                               .copyWith(
                                   color: context
-                                      .color.text_and_icons_base_primary),
+                                      .color.textAndIconsBasePrimary),
                         ),
                         Text(
                           address,
@@ -91,10 +91,10 @@ class PinnedPlaceWidget extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
-                              .textS
+                              .footNote
                               .copyWith(
                                 color: isAdded
-                                    ? context.color.stroke_accent
+                                    ? context.color.strokeAccent
                                     : NonThemeColor.color34,
                               ),
                         ),
@@ -108,14 +108,14 @@ class PinnedPlaceWidget extends StatelessWidget {
                     height: 38,
                     width: 38,
                     decoration: BoxDecoration(
-                      color: context.color.surface_base_primary,
+                      color: context.color.surfaceBasePrimary,
                       shape: BoxShape.circle,
                     ),
                     child: Center(
                       child: SvgPicture.asset(
                         iconAsset,
                         colorFilter: ColorFilter.mode(
-                          context.color.stroke_accent,
+                          context.color.strokeAccent,
                           BlendMode.srcATop,
                         ),
                         package: PackageConfig.packageName,

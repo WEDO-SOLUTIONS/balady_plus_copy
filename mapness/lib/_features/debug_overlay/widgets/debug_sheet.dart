@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -70,9 +70,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                           Text(
                             'development-menu',
                             style: Theme.of(context)
-                                .extension<ThemeTextStyles>()
-                                ?.headingS
-                                .copyWith(color: Colors.black),
+                                .extension<ThemeTextStyles>()?.heading1.copyWith(color: Colors.black),
                           ),
                           RichText(
                             text: TextSpan(
@@ -81,7 +79,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                                   text: 'App version: ',
                                   style: Theme.of(context)
                                       .extension<ThemeTextStyles>()
-                                      ?.textS
+                                      ?.footNote
                                       .copyWith(color: Colors.black54),
                                 ),
                                 TextSpan(
@@ -89,7 +87,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                                       '${_packageInfo?.version}(${_packageInfo?.buildNumber})',
                                   style: Theme.of(context)
                                       .extension<ThemeTextStyles>()
-                                      ?.accentS
+                                      ?.footNoteBold
                                       .copyWith(color: Colors.black87),
                                 ),
                               ],
@@ -118,16 +116,12 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   Text(
                     'Git branch:',
                     style: Theme.of(context)
-                        .extension<ThemeTextStyles>()
-                        ?.textS
-                        .copyWith(color: Colors.black),
+                        .extension<ThemeTextStyles>()?.footNote.copyWith(color: Colors.black),
                   ),
                   Text(
                     PackageConfig.gitBranch,
                     style: Theme.of(context)
-                        .extension<ThemeTextStyles>()
-                        ?.accentL
-                        .copyWith(color: Colors.black),
+                        .extension<ThemeTextStyles>()?.heading2.copyWith(color: Colors.black),
                   ),
                   const SizedBox(
                     height: 16,
@@ -135,16 +129,12 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   Text(
                     'Git commit:',
                     style: Theme.of(context)
-                        .extension<ThemeTextStyles>()
-                        ?.textS
-                        .copyWith(color: Colors.black),
+                        .extension<ThemeTextStyles>()?.footNote.copyWith(color: Colors.black),
                   ),
                   Text(
                     PackageConfig.gitCommit,
                     style: Theme.of(context)
-                        .extension<ThemeTextStyles>()
-                        ?.accentL
-                        .copyWith(color: Colors.black),
+                        .extension<ThemeTextStyles>()?.heading2.copyWith(color: Colors.black),
                   ),
                   const SizedBox(
                     height: 16,
@@ -152,16 +142,12 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   Text(
                     'Vendor:',
                     style: Theme.of(context)
-                        .extension<ThemeTextStyles>()
-                        ?.textS
-                        .copyWith(color: Colors.black),
+                        .extension<ThemeTextStyles>()?.footNote.copyWith(color: Colors.black),
                   ),
                   Text(
                     PackageConfig.vendorConfig,
                     style: Theme.of(context)
-                        .extension<ThemeTextStyles>()
-                        ?.accentL
-                        .copyWith(color: Colors.black),
+                        .extension<ThemeTextStyles>()?.heading2.copyWith(color: Colors.black),
                   ),
                   const SizedBox(
                     height: 16,
@@ -169,16 +155,12 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   Text(
                     'Uuid:',
                     style: Theme.of(context)
-                        .extension<ThemeTextStyles>()
-                        ?.textS
-                        .copyWith(color: Colors.black),
+                        .extension<ThemeTextStyles>()?.footNote.copyWith(color: Colors.black),
                   ),
                   Text(
                     ref.watch(uuidProviderProvider),
                     style: Theme.of(context)
-                        .extension<ThemeTextStyles>()
-                        ?.accentS
-                        .copyWith(color: Colors.black),
+                        .extension<ThemeTextStyles>()?.footNoteBold.copyWith(color: Colors.black),
                   ),
                   const SizedBox(height: 8),
                   LabeledElevatedButton(

@@ -1,5 +1,5 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -25,7 +25,7 @@ class FavouritesHeader extends StatelessWidget {
         children: [
           Text(
             context.l10n.favourites,
-            style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: context.color.text_and_icons_base_primary),
+            style: Theme.of(context).extension<ThemeTextStyles>()!.heading2.copyWith(color: context.color.textAndIconsBasePrimary),
           ),
           const SizedBox(
             height: 40,
@@ -36,7 +36,7 @@ class FavouritesHeader extends StatelessWidget {
                       onTap: onDeleteAllTap,
                       child: Text(
                         context.l10n.deleteAll,
-                        style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: context.color.text_and_icons_base_primary),
+                        style: Theme.of(context).extension<ThemeTextStyles>()!.heading2.copyWith(color: context.color.textAndIconsBasePrimary),
                       ),
                     ) else Material(
                       borderRadius: BorderRadius.circular(8),
@@ -54,7 +54,7 @@ class FavouritesHeader extends StatelessWidget {
                             width: 24,
                             package: PackageConfig.packageName,
                             colorFilter: ColorFilter.mode(
-                              context.color.text_and_icons_base_primary,
+                              context.color.textAndIconsBasePrimary,
                               BlendMode.srcIn,
                             ),
                           ),
@@ -66,7 +66,7 @@ class FavouritesHeader extends StatelessWidget {
                 onTap: isEditing ? onEditTap : onDoneTap,
                 child: Text(
                   isEditing ? context.l10n.done : context.l10n.edit,
-                  style: Theme.of(context).extension<ThemeTextStyles>()!.textL.copyWith(color: context.color.text_and_icons_base_primary),
+                  style: Theme.of(context).extension<ThemeTextStyles>()!.heading2.copyWith(color: context.color.textAndIconsBasePrimary),
                 ),
               ),
             ],

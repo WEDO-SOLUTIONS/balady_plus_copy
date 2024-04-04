@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -42,7 +42,7 @@ class BriefRouteButton extends ConsumerWidget {
         ? Padding(
             padding: padding ?? const EdgeInsets.all(0),
             child: Material(
-              color: background ?? context.color.stroke_accent,
+              color: background ?? context.color.strokeAccent,
               borderRadius: BorderRadius.circular(8),
               child: InkWell(
                 onTap: onTap,
@@ -90,8 +90,8 @@ class BriefRouteInfo extends ConsumerWidget {
     return (briefInfo != null && appFeatures.naviEnabled)
         ? _BriefRouteInfo(
             iconSize: 16,
-            iconColor: context.color.text_and_icons_base_tertiary,
-            textColor: context.color.text_and_icons_base_primary,
+            iconColor: context.color.textAndIconsBaseTertiary,
+            textColor: context.color.textAndIconsBasePrimary,
             briefInfo: briefInfo,
           )
         : const SizedBox.shrink();
@@ -135,7 +135,7 @@ class _BriefRouteInfo extends StatelessWidget {
               getBriefRouteDescription(briefInfo!, context.l10n),
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()!
-                  .accentS
+                  .footNoteBold
                   .copyWith(
                     color: textColor,
                   ),

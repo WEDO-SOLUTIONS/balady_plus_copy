@@ -2,18 +2,17 @@ import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/balady_features/widgets/home/calendar_card/calendar_home_item_card.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
+import 'package:balady_plus/app/features/calendar/domain/entities/search_calendar/search_calendar_item.dart';
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_bloc.dart';
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart';
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_state.dart';
-import 'package:balady_uikit/colors/app_color_scheme.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_plus/etmam_app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_shimmer_widget.dart';
+import 'package:balady_uikit/core/colors/app_color_scheme.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-
-import '../../../../../../core/dependency_injection/injection_container.dart';
-import '../../../../../calendar/domain/entities/search_calendar/search_calendar_item.dart';
-import '../../../../presentation/widgets/custom_shimmer_list_widget.dart';
 
 class CalendarHomeCard extends StatelessWidget {
   final AppColorScheme colorScheme;
@@ -57,7 +56,7 @@ class CalendarHomeCard extends StatelessWidget {
                       'saudi_calendar'.tr(),
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()
-                          ?.accentL
+                          ?.heading2
                           .copyWith(color: const Color(0xFF1E2A36)),
                     ),
                     GestureDetector(
@@ -70,7 +69,7 @@ class CalendarHomeCard extends StatelessWidget {
                         "show_all".tr(),
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()
-                            ?.accentS
+                            ?.footNoteBold
                             .copyWith(
                               color: const Color(0xFF1E2A36).withOpacity(0.5),
                             ),

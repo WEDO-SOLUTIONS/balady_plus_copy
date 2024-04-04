@@ -1,5 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -112,15 +112,15 @@ class Data extends ConsumerWidget {
     final condition = allWeatherInfo?.current?.condition?.text ?? '';
     final placeName = allWeatherInfo?.location?.name ?? '';
 
-    final textStyle = context.textStyle.accentXS.copyWith(
+    final textStyle = context.textStyle.caption.copyWith(
       height: 1.4,
-      color: context.color.text_and_icons_base_primary,
+      color: context.color.textAndIconsBasePrimary,
     );
 
     return Container(
       height: weatherHeaderSize,
       decoration: const BoxDecoration(
-        // color: context.color.surface_base_primary,
+        // color: context.color.surfaceBasePrimary,
         color: Colors.white,
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(16),
@@ -151,7 +151,7 @@ class Data extends ConsumerWidget {
                 placeName,
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
-                    .accentL
+                    .heading2
                     .copyWith(fontSize: 19, color: Colors.black),
               ),
             ],),
@@ -162,7 +162,7 @@ class Data extends ConsumerWidget {
               onTap: onTap,
               child: Container(
                   decoration: BoxDecoration(
-                      color: context.color.surface_base_secondary,
+                      color: context.color.surfaceBaseSecondary,
                       borderRadius: BorderRadius.circular(16),),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -208,11 +208,9 @@ class Data extends ConsumerWidget {
                                       textAlign: TextAlign.end,
                                       style: Theme.of(context)
                                           .extension<ThemeTextStyles>()!
-                                          .textXS
+                                          .caption
                                           .copyWith(
-                                            color: context.color
-                                                .text_and_icons_base_primary
-                                                .withOpacity(0.5),
+                                            color: context.color.textAndIconsBasePrimary.withOpacity(0.5),
                                           ),
                                     ),
                                     const SizedBox(height: 16),
@@ -232,25 +230,25 @@ class Data extends ConsumerWidget {
                                             tempC,
                                             style: Theme.of(context)
                                                 .extension<ThemeTextStyles>()!
-                                                .textL
+                                                .heading2
                                                 .copyWith(
                                                   height: 1,
                                                   fontSize: 64,
                                                   fontWeight: FontWeight.w400,
                                                   color: context.color
-                                                      .text_and_icons_base_primary,
+                                                      .textAndIconsBasePrimary,
                                                 ),
                                           ),
                                         ),
                                         Text(
                                           '℃',
                                           style:
-                                              context.textStyle.textL.copyWith(
+                                              context.textStyle.heading2.copyWith(
                                             fontSize: 27,
                                             height: 1,
                                             fontWeight: FontWeight.w600,
                                             color: context.color
-                                                .text_and_icons_base_primary,
+                                                .textAndIconsBasePrimary,
                                           ),
                                         ),
                                       ],
@@ -260,10 +258,10 @@ class Data extends ConsumerWidget {
                                     AutoSizeText(
                                       condition,
                                       maxLines: 1,
-                                      style: context.textStyle.accentM.copyWith(
+                                      style: context.textStyle.callout.copyWith(
                                         fontWeight: FontWeight.w700,
                                         color: context
-                                            .color.text_and_icons_base_primary,
+                                            .color.textAndIconsBasePrimary,
                                       ),
                                     ),
                                   ],
@@ -323,7 +321,7 @@ class Data extends ConsumerWidget {
                 borderRadius: const BorderRadius.all(
                   Radius.circular(8),
                 ),
-                color: context.color.surface_base_primary,
+                color: context.color.surfaceBasePrimary,
               ),
               padding: const EdgeInsets.all(8),
               child: SvgPicture.asset(
@@ -331,7 +329,7 @@ class Data extends ConsumerWidget {
                 semanticsLabel: 'MinApps Screen',
                 package: PackageConfig.packageName,
                 colorFilter: ColorFilter.mode(
-                  context.color.text_and_icons_base_primary.withOpacity(0.7),
+                  context.color.textAndIconsBasePrimary.withOpacity(0.7),
                   BlendMode.srcIn,
                 ),
               ),
@@ -345,7 +343,7 @@ class Data extends ConsumerWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: borderRadius,
-              color: context.color.text_and_icons_base_primary.withOpacity(0.1),
+              color: context.color.textAndIconsBasePrimary.withOpacity(0.1),
             ),
             height: 4,
             width: 40,
@@ -396,7 +394,7 @@ class Data extends ConsumerWidget {
                   width: 24,
                   colorFilter: ColorFilter.mode(
                     colorIcon ??
-                        context.color.text_and_icons_base_primary
+                        context.color.textAndIconsBasePrimary
                             .withOpacity(0.7),
                     BlendMode.srcIn,
                   ),

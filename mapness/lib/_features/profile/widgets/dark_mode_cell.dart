@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,7 +23,7 @@ class DarkModeCell extends ConsumerWidget {
         ),
         child: Material(
           borderRadius: BorderRadius.circular(8),
-          color: context.color.surface_base_secondary,
+          color: context.color.surfaceBaseSecondary,
           child: InkWell(
             onTap: () {
               ref.read(darkModeProvider.notifier).toggle();
@@ -40,7 +40,7 @@ class DarkModeCell extends ConsumerWidget {
                       height: 24,
                       width: 24,
                       package: PackageConfig.packageName,
-                      color: context.color.text_and_icons_status_accent,
+                      color: context.color.textAndIconsStatusAccent,
                     ),
                     const SizedBox(
                       width: 12,
@@ -51,14 +51,14 @@ class DarkModeCell extends ConsumerWidget {
                         context.l10n.darkMap,
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
-                            .textM
-                            .copyWith(color: context.color.text_and_icons_base_primary),
+                            .text
+                            .copyWith(color: context.color.textAndIconsBasePrimary),
                       ),
                     ),
                     const Spacer(),
                     IgnorePointer(
                       child: CupertinoSwitch(
-                        activeColor: context.color.text_and_icons_status_accent,
+                        activeColor: context.color.textAndIconsStatusAccent,
                         onChanged: (value) {},
                         value: darkMode,
                       ),
