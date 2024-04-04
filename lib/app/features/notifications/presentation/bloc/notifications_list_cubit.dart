@@ -28,6 +28,7 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
   Future<void> getNotificationsMessagesList({bool loadMore = false}) async {
     if(!loadMore) {
       params.page = 0;
+      emit(InitialNotificationsListState());
     }
 
     NotificationsListState stateType = state;

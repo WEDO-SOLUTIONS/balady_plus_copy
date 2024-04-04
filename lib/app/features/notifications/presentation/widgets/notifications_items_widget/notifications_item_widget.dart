@@ -66,24 +66,30 @@ class NotificationsItemWidget extends StatelessWidget {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(6)),
                             ),
-                            color: state.message.status.id == "read" ? Colors.green.shade800.withAlpha(60): Colors.red.shade800.withAlpha(60) ,
+                            color: state.message.status.id == "read"
+                                ? Colors.green.shade800.withAlpha(60)
+                                : Colors.red.shade800.withAlpha(60),
                             elevation: 0,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 5),
                               child: Text(
-                                state.message.status.id == "read" ? ('notification_read').tr() :'notification_unread'.tr() ,
+                                state.message.status.id == "read"
+                                    ? ('notification_read').tr()
+                                    : 'notification_unread'.tr(),
                                 style: AppStyle.nearbyItemSubTitleTextStyle
                                     .copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: state.message.status.id == "read" ? Colors.green.shade800 : Colors.red.shade800,
+                                  color: state.message.status.id == "read"
+                                      ? Colors.green.shade800
+                                      : Colors.red.shade800,
                                 ),
                               ),
                             ),
                           ),
                           Flexible(
                             child: Text(
-                              "${Jiffy.parseFromDateTime(message.createTime).Hm} ,${Jiffy.parseFromDateTime(message.createTime).fromNow()}",
+                              "${Jiffy.parseFromDateTime(message.createTime).toLocal().Hm} ,${Jiffy.parseFromDateTime(message.createTime).toLocal().fromNow()}",
                               style:
                                   AppStyle.nearbyItemSubTitleTextStyle.copyWith(
                                 fontWeight: FontWeight.w500,
@@ -97,8 +103,10 @@ class NotificationsItemWidget extends StatelessWidget {
                       ExpandableTextWidget(
                         text: message.body,
                         onTap: () {
-                          if(message.status.id != "read") {
-                            contextBloc.read<NotificationsItemCubit>().markReadNotificationsMessages();
+                          if (message.status.id != "read") {
+                            contextBloc
+                                .read<NotificationsItemCubit>()
+                                .markReadNotificationsMessages();
                           }
                         },
                       ),

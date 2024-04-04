@@ -4281,8 +4281,6 @@
 
   "municipal_cert_riyadh_new":"Dear beneficiary, to request a municipal service", 
   "municipal_cert_riyadh_agree":"Click here", 
-  "objection_download_commite_decision":"Download a copy of the decision of the Objections Review Committee"
-
-
-
+  "objection_download_commite_decision":"Download a copy of the decision of the Objections Review Committee", 
+  "delete_all_notifications_confirmation":"Are you sure that you want delete all notifications ?"
 }

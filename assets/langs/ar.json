@@ -4017,9 +4017,7 @@
     "compliance_submitter_reply":"رد مقدم الطلب", 
     "compliance_office_reply":"رد الامانة / البلدية", 
     "complinace_clause":"بند", 
-    "notes_on_the_requests":"ملاحظات الطلب"
-
-
-
+    "notes_on_the_requests":"ملاحظات الطلب", 
+  "delete_all_notifications_confirmation": "هل أنت متأكد من حذف كافة الإشعارات ؟"
 
 }
