@@ -16,6 +16,7 @@ export 'src/events/indoor_events.dart'
 export 'src/events/object_tap_events.dart'
     show
         ObjectTapEvent,
+        MyLocationTapEvent,
         TapEvent,
         IdleTapEvent,
         IoTapEvent,
