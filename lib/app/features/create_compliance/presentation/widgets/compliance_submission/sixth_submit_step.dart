@@ -10,6 +10,7 @@ import 'package:balady_plus/app/features/create_compliance/presentation/widgets/
 import 'package:balady_plus/app/features/create_compliance/presentation/widgets/compliance_title_widget.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -44,6 +45,9 @@ class SixthComplianceSubmitStep extends StatelessWidget {
               children: [
                 CustomTextFieldWidget(
                   label: 'notes'.tr(),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.deny(RegExp('[٠١٢٣٤٥٦٧٨٩]')),
+                  ],
                   onChanged: (String? t) {
                     context
                         .read<ComplianceBloc>()
@@ -247,6 +251,7 @@ class NoteItemWidget extends StatelessWidget {
             fontColor: AppColor.blackModern600Light,
             fontWeight: AppFontWeight.medium,
             fontSize: 12,
+            maxLines: 1000,
           ),
           const SizedBox(
             height: 16,

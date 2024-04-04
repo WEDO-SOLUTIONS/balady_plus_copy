@@ -964,7 +964,9 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       showCustomDialog(SaveDraftDialog(
         onClose: () {},
         onSave: () {
-          if (state.currentStep == 6 || isLastPage()) {
+          if (state.currentStep == 6 ||
+              state.currentStep == 5 ||
+              isLastPage()) {
             bool Function(Route<dynamic>) predicate =
                 ModalRoute.withName(RouteName.bottomNavigation);
             NavigationService.navigatorKey.currentState!.popUntil((predicate));
@@ -1102,14 +1104,22 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
         status: BlocStatus.success,
       ));
 
-      int nextPage = state.currentStep + 1;
-      emitter(state.copyWith(
-        status: BlocStatus.performing,
-      ));
-      emitter(state.copyWith(
-          status: BlocStatus.success, currentStep: nextPage, errorMessage: ""));
-      pageController.jumpToPage(nextPage);
-      sendEventPage(nextPage);
+      if (e.save == true) {
+        bool Function(Route<dynamic>) predicate =
+            ModalRoute.withName(RouteName.bottomNavigation);
+        NavigationService.navigatorKey.currentState!.popUntil((predicate));
+      } else {
+        int nextPage = state.currentStep + 1;
+        emitter(state.copyWith(
+          status: BlocStatus.performing,
+        ));
+        emitter(state.copyWith(
+            status: BlocStatus.success,
+            currentStep: nextPage,
+            errorMessage: ""));
+        pageController.jumpToPage(nextPage);
+        sendEventPage(nextPage);
+      }
     });
   }
 
