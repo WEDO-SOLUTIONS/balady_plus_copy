@@ -2,7 +2,9 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
+import 'package:mapness/_features/poi_card/ui_kit_tmp/poi_header_deeplink.dart';
 import 'package:mapness/_features/poi_card/widgets/footer/footer_style.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
 import 'package:mapness/_features/profile/domain/user_profile_data.dart';
@@ -25,11 +27,13 @@ enum LocationType { myLocation, deeplinkLocation }
 
 class ContentMyLocation extends ConsumerWidget {
   final LatLng? closestPoint;
+  final PoiCameraConfig? cameraConfig;
   final LocationType locationType;
 
   const ContentMyLocation({
     required this.closestPoint,
     required this.locationType,
+    this.cameraConfig,
     super.key,
   });
 
@@ -98,7 +102,7 @@ class ContentMyLocation extends ConsumerWidget {
       final mapObjectManager = ref.watch(
         mapObjectManagerProvider(
           named: 'my_location',
-          layerId: '977194',
+          layerId: MapObjectLayers.priorityLayer.layerId,
         ).notifier,
       );
       await mapObjectManager.removeAllMarkers();
@@ -116,9 +120,9 @@ class ContentMyLocation extends ConsumerWidget {
               point: GeoPointMessage(
                   latitude: closestPoint!.latitude,
                   longitude: closestPoint!.longitude),
-              zoom: 17,
-              tilt: 0,
-              bearing: 0,
+              zoom: cameraConfig?.zoom ?? 16,
+              tilt: cameraConfig?.tilt ?? 0,
+              bearing: cameraConfig?.bearing ?? 0,
             ),
           );
     }

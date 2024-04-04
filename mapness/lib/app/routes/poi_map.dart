@@ -85,6 +85,7 @@ class PoiMapRoute extends GoRouteData {
       return TransculentPage(
         child: ContentMyLocation(
           key: const Key('POI MY LOCATION CARD WIDGET'),
+          cameraConfig: cameraConfig,
           closestPoint: closestPoint,
           locationType: LocationType.myLocation,
         ),
@@ -93,6 +94,7 @@ class PoiMapRoute extends GoRouteData {
       return TransculentPage(
         child: ContentMyLocation(
           key: const Key('POI OTHER LOCATION CARD WIDGET'),
+          cameraConfig: cameraConfig,
           closestPoint: closestPoint,
           locationType: LocationType.deeplinkLocation,
         ),

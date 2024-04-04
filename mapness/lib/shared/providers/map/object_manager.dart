@@ -4,6 +4,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'object_manager.g.dart';
 
+enum MapObjectLayers {
+  defaultLayer('920277'),
+  priorityLayer('977194');
+
+  final String layerId;
+
+  const MapObjectLayers(this.layerId);
+}
+
 @riverpod
 class MapObjectManager extends _$MapObjectManager {
   @override

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -227,7 +229,7 @@ class _ContentState extends ConsumerState<_Content>
       ),
     );
     final language = ref.watch(appLanguageProvider);
-
+    final heightOfScreen = MediaQuery.of(context).size.height;
     return Directionality(
       textDirection: switch (language) {
         Language.arabic => TextDirection.rtl,
@@ -237,9 +239,9 @@ class _ContentState extends ConsumerState<_Content>
         showBarrier: false,
         availableExpansions: Expansion.values.toSet(),
         initialExpansion: Expansion.middle,
-        collapsedHeight: 300,
-        middleHeight: 600,
-        hiddenHeight: 100,
+        collapsedHeight: heightOfScreen / 4,
+        middleHeight: heightOfScreen / 3,
+        hiddenHeight: math.min(heightOfScreen / 4, 100),
         controller: _bottomSheetController,
         mapControlsBuilder:
             (context, scrollController, biggestHeight, smallestHeight) =>
