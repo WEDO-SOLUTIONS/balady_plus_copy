@@ -27,7 +27,7 @@ class TransparentBackButton extends StatelessWidget {
                   package: PackageConfig.packageName,
                   matchTextDirection: true,
                   colorFilter: ColorFilter.mode(
-                    context.color.surface_base_tertiary,
+                    context.color.surfaceBaseTertiary,
                     BlendMode.srcIn,
                   ),
                 ),

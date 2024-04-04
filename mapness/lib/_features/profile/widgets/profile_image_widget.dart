@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:balady_uikit/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -102,7 +102,7 @@ class ProfileImageWidget extends ConsumerWidget {
               //       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               //       child: const Icon(
               //         Icons.edit,
-              //         color: context.color.text_and_icons_status_accent,
+              //         color: context.color.textAndIconsStatusAccent,
               //       ),
               //     ),
               //   ),

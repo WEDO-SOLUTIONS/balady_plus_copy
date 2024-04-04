@@ -1,5 +1,5 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -16,7 +16,7 @@ class IwishInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final black = context.color.text_and_icons_base_primary;
+    final black = context.color.textAndIconsBasePrimary;
     const grey = NonThemeColor.color38;
 
     return Column(
@@ -35,14 +35,14 @@ class IwishInfo extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
-                        .headingS
+                        .heading1
                         .copyWith(color: black),
                   ),
                   Text(
                     'JOY Park',
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
-                        .textS
+                        .footNote
                         .copyWith(color: grey),
                   ),
                 ],
@@ -60,7 +60,7 @@ class IwishInfo extends StatelessWidget {
                 iwish.subtitle,
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
-                    .textS
+                    .footNote
                     .copyWith(color: black),
               ),
             ),
@@ -68,7 +68,7 @@ class IwishInfo extends StatelessWidget {
             // Text(
             //   distance,
             //   overflow: TextOverflow.ellipsis,
-            //   style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(color: grey),
+            //   style: Theme.of(context).extension<ThemeTextStyles>()!.footNote.copyWith(color: grey),
             // ),
           ],
         ),

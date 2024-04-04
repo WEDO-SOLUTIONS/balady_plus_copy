@@ -18,18 +18,18 @@ class PoiHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final titleTextStyle = context.textStyle.accentL
-        .copyWith(color: context.color.text_and_icons_base_primary);
+    final titleTextStyle = context.textStyle.heading1
+        .copyWith(color: context.color.textAndIconsBasePrimary);
 
-    final subTitleStyle = context.textStyle.textM.copyWith(
-        color: context.color.text_and_icons_base_primary.withOpacity(0.5));
+    final subTitleStyle = context.textStyle.text.copyWith(
+        color: context.color.textAndIconsBasePrimary.withOpacity(0.5));
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         ProfileImageWidget(
           dimension: 48,
-          color: context.color.stroke_accent,
+          color: context.color.strokeAccent,
         ),
         const SizedBox(width: 12),
         Expanded(

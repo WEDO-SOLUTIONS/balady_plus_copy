@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -93,7 +93,7 @@ class PoiHeader extends ConsumerWidget {
               builder: (context) => Container(
                   decoration: BoxDecoration(
                     borderRadius: borderRadius,
-                    color: context.color.text_and_icons_base_primary
+                    color: context.color.textAndIconsBasePrimary
                         .withOpacity(0.1),
                   ),
                   height: 4,
@@ -110,8 +110,8 @@ class PoiHeader extends ConsumerWidget {
               text,
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()!
-                  .textS
-                  .copyWith(color: context.color.text_and_icons_base_primary),
+                  .footNote
+                  .copyWith(color: context.color.textAndIconsBasePrimary),
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
               // textAlign: TextAlign.right,
@@ -130,8 +130,8 @@ class PoiHeader extends ConsumerWidget {
   Widget _title(BuildContext context, String text) {
     final titleTextStyle = Theme.of(context)
         .extension<ThemeTextStyles>()!
-        .headingS
-        .copyWith(color: context.color.text_and_icons_base_primary);
+        .heading1
+        .copyWith(color: context.color.textAndIconsBasePrimary);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -161,9 +161,9 @@ class PoiHeader extends ConsumerWidget {
               text,
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()!
-                  .textS
+                  .footNote
                   .copyWith(
-                  color: context.color.text_and_icons_base_primary.withOpacity(
+                  color: context.color.textAndIconsBasePrimary.withOpacity(
                       0.5,),),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
@@ -193,7 +193,7 @@ class PoiHeader extends ConsumerWidget {
                     borderRadius:  const BorderRadius.all(
                       Radius.circular(8),
                     ),
-                    color: context.color.text_and_icons_base_primary.withAlpha(10),
+                    color: context.color.textAndIconsBasePrimary.withAlpha(10),
                   ),
                   padding: const EdgeInsets.all(8),
                   child: SvgPicture.asset(
@@ -201,7 +201,7 @@ class PoiHeader extends ConsumerWidget {
                     semanticsLabel: 'MinApps Screen',
                     package: PackageConfig.packageName,
                     colorFilter: ColorFilter.mode(
-                      context.color.text_and_icons_base_primary.withOpacity(0.7),
+                      context.color.textAndIconsBasePrimary.withOpacity(0.7),
                       BlendMode.srcIn,
                     ),
                   ),

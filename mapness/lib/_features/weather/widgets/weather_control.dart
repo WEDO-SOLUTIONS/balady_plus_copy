@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -50,9 +50,9 @@ class WeatherControl extends ConsumerWidget {
               textAlign: TextAlign.center,
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()!
-                  .textM
+                  .text
                   .copyWith(
-                    color: context.color.text_and_icons_base_primary,
+                    color: context.color.textAndIconsBasePrimary,
                   ),
             ),
           ),

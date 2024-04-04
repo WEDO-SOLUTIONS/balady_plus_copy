@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -85,10 +85,10 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
                           maxLines: 3,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
-                              .textS
+                              .footNote
                               .copyWith(
                                   color: context
-                                      .color.text_and_icons_base_primary),
+                                      .color.textAndIconsBasePrimary),
                         ),
                         Text(
                           item.makeAddress(),
@@ -96,22 +96,22 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
-                              .textS
+                              .footNote
                               .copyWith(
                                   color: context
-                                      .color.text_and_icons_base_primary),
+                                      .color.textAndIconsBasePrimary),
                         ),
                         if (item.workStatus != null)
                           Text(
                             item.workStatus!.desc,
                             style: Theme.of(context)
                                 .extension<ThemeTextStyles>()!
-                                .textS
+                                .footNote
                                 .copyWith(
                                   color: item.workStatus!.isOpen
-                                      ? context.color.stroke_accent
+                                      ? context.color.strokeAccent
                                       : context
-                                          .color.text_and_icons_base_primary,
+                                          .color.textAndIconsBasePrimary,
                                 ),
                           ),
                       ],
@@ -122,7 +122,7 @@ class _FavouritesSearchState extends ConsumerState<FavouritesSearch> {
                   ),
                   // Text(
                   //   "0 ${context.l10n.km}",
-                  //   style: Theme.of(context).extension<ThemeTextStyles>()!.textS,
+                  //   style: Theme.of(context).extension<ThemeTextStyles>()!.footNote,
                   // ),
                 ],
               ),

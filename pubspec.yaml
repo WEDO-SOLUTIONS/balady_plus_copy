@@ -180,7 +180,9 @@ dependencies:
 
   # Mapness
   balady_uikit:
-    path: balady_uikit
+    git:
+      url: git@github.com:urbi-ae/balady_uikit.git
+
   mapness:
     path: mapness
 

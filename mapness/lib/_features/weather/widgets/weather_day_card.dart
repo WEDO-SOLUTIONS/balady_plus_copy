@@ -1,5 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:balady_uikit/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -43,7 +43,7 @@ class WeatherDayCard extends ConsumerWidget {
     final minTemp = '${forecastDay?.day?.mintempC}º';
 
     return CustomExpansionTile(
-      collapsedBackgroundColor: context.color.surface_base_secondary,
+      collapsedBackgroundColor: context.color.surfaceBaseSecondary,
       backgroundColor: NonThemeColor.color9,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
@@ -65,8 +65,8 @@ class WeatherDayCard extends ConsumerWidget {
             Expanded(
               child: Text(
                 dayText,
-                style: style.accentM.copyWith(
-                  color: context.color.text_and_icons_base_primary,
+                style: style.callout.copyWith(
+                  color: context.color.textAndIconsBasePrimary,
                 ),
                 maxLines: 1,
               ),
@@ -77,14 +77,14 @@ class WeatherDayCard extends ConsumerWidget {
                   CustomSvgIconWidget(
                     conditionIconPath,
                     iconSize: 16,
-                    iconColor: context.color.stroke_accent,
+                    iconColor: context.color.strokeAccent,
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: AutoSizeText(
                       conditionText,
-                      style: style.accentM.copyWith(
-                        color: context.color.text_and_icons_base_primary,
+                      style: style.callout.copyWith(
+                        color: context.color.textAndIconsBasePrimary,
                       ),
                       maxLines: 1,
                     ),
@@ -99,8 +99,8 @@ class WeatherDayCard extends ConsumerWidget {
                   Text(
                     maxTemp,
                     textDirection: TextDirection.ltr,
-                    style: style.accentS.copyWith(
-                      color: context.color.text_and_icons_base_primary,
+                    style: style.footNoteBold.copyWith(
+                      color: context.color.textAndIconsBasePrimary,
                     ),
                     maxLines: 1,
                   ),
@@ -110,8 +110,8 @@ class WeatherDayCard extends ConsumerWidget {
                   Text(
                     minTemp,
                     textDirection: TextDirection.ltr,
-                    style: style.textXS.copyWith(
-                      color: context.color.text_and_icons_base_primary,
+                    style: style.caption.copyWith(
+                      color: context.color.textAndIconsBasePrimary,
                     ),
                     maxLines: 1,
                   ),
@@ -162,7 +162,7 @@ class WeatherDayCard extends ConsumerWidget {
                                 height: 24,
                                 width: 24,
                                 colorFilter: ColorFilter.mode(
-                                  context.color.stroke_accent,
+                                  context.color.strokeAccent,
                                   BlendMode.srcIn,
                                 ),
                               ),
@@ -172,7 +172,7 @@ class WeatherDayCard extends ConsumerWidget {
                           Center(
                             child: Text(
                               time,
-                              style: style.textXS.copyWith(
+                              style: style.caption.copyWith(
                                 color: NonThemeColor.color10,
                               ),
                             ),
@@ -180,9 +180,9 @@ class WeatherDayCard extends ConsumerWidget {
                           Center(
                             child: Text(
                               temperature,
-                              style: style.accentS.copyWith(
+                              style: style.footNoteBold.copyWith(
                                 color:
-                                    context.color.text_and_icons_base_primary,
+                                    context.color.textAndIconsBasePrimary,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w700,
                               ),

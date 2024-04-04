@@ -1,5 +1,5 @@
 
-import 'package:balady_uikit/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
@@ -53,7 +53,7 @@ Widget buildIconButton({
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: Material(
-            color: colorButton ?? context.color.text_and_icons_base_primary.withOpacity(0.05),
+            color: colorButton ?? context.color.textAndIconsBasePrimary.withOpacity(0.05),
             borderRadius: borderRadius,
             child: InkWell(
               borderRadius: borderRadius,

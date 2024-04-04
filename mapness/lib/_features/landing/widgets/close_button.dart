@@ -1,4 +1,4 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -13,7 +13,7 @@ class CloseButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: context.color.surface_base_primary,
+          color: context.color.surfaceBasePrimary,
           borderRadius: BorderRadius.circular(8),
         ),
         padding: const EdgeInsets.all(8),

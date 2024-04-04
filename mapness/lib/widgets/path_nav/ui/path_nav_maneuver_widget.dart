@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_expression_function_bodies
 
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_maneuver.dart';
@@ -51,13 +51,13 @@ class PathNavManeuverWidget extends StatelessWidget {
                   maneuver.distance,
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
-                      .headingL
+                      .accent
                       .copyWith(height: 0.7),
                 ),
                 const SizedBox(width: 2),
                 Text(
                   maneuver.unit,
-                  style: Theme.of(context).extension<ThemeTextStyles>()!.textS,
+                  style: Theme.of(context).extension<ThemeTextStyles>()!.footNote,
                 ),
               ],
             ),
@@ -68,7 +68,7 @@ class PathNavManeuverWidget extends StatelessWidget {
                 maneuver.roadName,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).extension<ThemeTextStyles>()!.textS,
+                style: Theme.of(context).extension<ThemeTextStyles>()!.footNote,
               ),
             ),
           ],

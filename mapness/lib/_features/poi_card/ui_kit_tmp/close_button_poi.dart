@@ -27,14 +27,14 @@ class CloseButtonPOI extends StatelessWidget {
                 borderRadius: const BorderRadius.all(
                   Radius.circular(8),
                 ),
-                color: context.color.text_and_icons_base_primary.withAlpha(10),
+                color: context.color.textAndIconsBasePrimary.withAlpha(10),
               ),
               padding: const EdgeInsets.all(8),
               child: SvgPicture.asset(
                 'assets/icons/svg/ic_search_close.svg',
                 package: PackageConfig.packageName,
                 colorFilter: ColorFilter.mode(
-                  context.color.text_and_icons_base_primary.withOpacity(0.7),
+                  context.color.textAndIconsBasePrimary.withOpacity(0.7),
                   BlendMode.srcIn,
                 ),
               ),

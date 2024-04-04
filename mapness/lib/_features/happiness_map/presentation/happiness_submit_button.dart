@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,7 +10,7 @@ class HappinessSubmitButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final color = context.color.stroke_accent;
+    final color = context.color.strokeAccent;
 
     return Ink(
       decoration: BoxDecoration(
@@ -24,7 +24,7 @@ class HappinessSubmitButton extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
           child: Text(
             context.l10n.sendFeedback,
-            style: Theme.of(context).extension<ThemeTextStyles>()!.accentM.copyWith(color: Colors.white),
+            style: Theme.of(context).extension<ThemeTextStyles>()!.callout.copyWith(color: Colors.white),
             textAlign: TextAlign.center,
           ),
         ),

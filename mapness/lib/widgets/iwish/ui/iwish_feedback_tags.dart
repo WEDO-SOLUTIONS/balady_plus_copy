@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/entities/iwish/models/iwish_feedback_tag.dart';
@@ -33,12 +33,12 @@ class IwishFeedbackTags extends StatelessWidget {
               color: Colors.transparent,
               child: Ink(
                 decoration: BoxDecoration(
-                  color: context.color.surface_base_primary,
+                  color: context.color.surfaceBasePrimary,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
                     color: selectedTags.contains(e.id)
-                        ? context.color.stroke_accent
-                        : context.color.surface_base_primary,
+                        ? context.color.strokeAccent
+                        : context.color.surfaceBasePrimary,
                     width: 2,
                   ),
                 ),
@@ -79,9 +79,9 @@ class IwishFeedbackTags extends StatelessWidget {
                                   : TextAlign.left,
                               style: Theme.of(context)
                                   .extension<ThemeTextStyles>()!
-                                  .textM
+                                  .text
                                   .copyWith(
-                                    color: context.color.text_and_icons_base_primary,
+                                    color: context.color.textAndIconsBasePrimary,
                                   ),
                             ),
                           ),
