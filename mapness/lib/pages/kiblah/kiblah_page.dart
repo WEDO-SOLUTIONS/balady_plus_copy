@@ -24,20 +24,30 @@ class KiblahPage extends ConsumerWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: BaladyTopBar(
-                onLeadingPressed: () {
-                  ref.read(mapControlsProvider.notifier).update(MapControlsStateDashboard());
-                  const LandingRoute().go(context);
-                },
-                leading: Icon(
-                  BaladyIcons.Arrow_Corner_Left_L,
-                  color: context.color.textAndIconsBaseInversePrimary,
+            BaladyTopBar(
+              onLeadingPressed: () {
+                ref.read(mapControlsProvider.notifier).update(MapControlsStateDashboard());
+                const LandingRoute().go(context);
+              },
+              leading: Padding(
+                padding: const EdgeInsets.only(left: NumericBase.$4x),
+                child: Row(
+                  children: [
+                    Icon(
+                      BaladyIcons.Arrow_Corner_Left_L,
+                      color: context.color.textAndIconsBaseInversePrimary,
+                    ),
+                    const SizedBox(width: NumericBase.$0_5x),
+                   Text(
+                        context.l10n.back,
+                        style: context.textStyle.footNoteBold
+                            .copyWith(color: context.staticColor.textAndIconsBaseInversePrimary),
+                    )
+                  ],
                 ),
-                title: isReady ? '$userBearing°' : context.l10n.calibrating,
-                textStyle: context.textStyle.footNoteBold.copyWith(color: context.color.textAndIconsBaseInversePrimary),
               ),
+              title: isReady ? '$userBearing°' : context.l10n.calibrating,
+              textStyle: context.textStyle.footNoteBold.copyWith(color: context.color.textAndIconsBaseInversePrimary),
             ),
             const Center(child: KiblahCompass()),
             Align(
