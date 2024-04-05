@@ -480,7 +480,10 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    if (widget.scrollHeader != null) widget.scrollHeader!,
+                    if (widget.scrollHeader != null)
+                      _wrappedWithVerticalScrollListener(
+                        child: widget.scrollHeader!,
+                      ),
                     Expanded(
                       child: widget.scrollableBody == null
                           ? SingleChildScrollView(
