@@ -130,6 +130,7 @@ jobs:
           BALADY_UIKIT_DEPLOY_KEY: ${{ secrets.BALADY_UIKIT_DEPLOY_KEY }}
         run: |
           cd urbi_map/dgis_map
+          eval $(ssh-agent -s)
           echo "${FILE_BALADY_CER}" | base64 --decode > .balady-uikit.key
           ssh-add .balady-uikit.key
           flutter pub get
