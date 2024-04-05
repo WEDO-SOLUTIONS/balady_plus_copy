@@ -10,6 +10,7 @@ import 'package:mapness/_features/landing/widgets/dashboard_header.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_profile.dart';
 import 'package:mapness/_features/landing/widgets/events_home_card_wrapper.dart';
 import 'package:mapness/_features/landing/widgets/interesting_places_cards.dart';
+import 'package:mapness/_features/landing/widgets/mini_apps.dart';
 import 'package:mapness/_features/landing/widgets/shopping_malls_cards.dart';
 import 'package:mapness/_features/landing/widgets/snap_and_send_card.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
@@ -153,6 +154,10 @@ class _DashboardState extends ConsumerState<Dashboard> {
                               height: 20,
                             ),
                             const StoriesWidget(),
+                            const MiniAppsList(),
+                            const SizedBox(
+                              height: 20,
+                            ),
                             const InterestingPlacesCardsList(),
                             const SizedBox(
                               height: 20,
