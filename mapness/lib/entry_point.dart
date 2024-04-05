@@ -7,6 +7,7 @@ import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
+import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -163,8 +164,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                   useMaterial3: false,
                   extensions: [
                     ThemeTextStyles.arabic(),
+                    ThemeTextStyles.english(),
                     AppColorsThemeExt.palette(colorScheme, isDark: false),
-                    AppStaticColorsThemeExt.palette(colorScheme, isDark: false),
+                    AppStaticColorsThemeExt.palette(colorScheme, isDark: false)
                   ],
                 ),
                 locale: language.locale,
