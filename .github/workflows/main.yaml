@@ -127,8 +127,11 @@ jobs:
       - name: 🤖🔨 Development setup dgis_map
         env: # Set the secret as an environment variable
           BALADY_DEVELOPERS_PASS: ${{ secrets.BALADY_DEVELOPERS_PASS }}
+          BALADY_UIKIT_DEPLOY_KEY: ${{ secrets.BALADY_UIKIT_DEPLOY_KEY }}
         run: |
           cd urbi_map/dgis_map
+          echo "${FILE_BALADY_CER}" | base64 --decode > .balady-uikit.key
+          ssh-add .balady-uikit.key
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
           mkdir -p android/_delete_me_ ios/_DELETE_ME_
