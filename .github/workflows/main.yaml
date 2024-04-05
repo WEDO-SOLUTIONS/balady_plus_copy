@@ -131,7 +131,7 @@ jobs:
         run: |
           cd urbi_map/dgis_map
           eval $(ssh-agent -s)
-          echo "${FILE_BALADY_CER}" | base64 --decode > .balady-uikit.key
+          echo "${BALADY_UIKIT_DEPLOY_KEY}" | base64 --decode > .balady-uikit.key
           chmod 600 .balady-uikit.key
           ssh-add .balady-uikit.key
 
