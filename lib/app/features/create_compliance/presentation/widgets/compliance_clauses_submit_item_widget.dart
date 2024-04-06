@@ -144,7 +144,7 @@ class _ComplianceClauseSubmitItemState
                       child: SingleRatioOption(
                         value: 1,
                         selected: widget.item.submitterAnswer,
-                        title: 'yes'.tr(),
+                        title: 'compliance'.tr(),
                         flex: true,
                         height: MediaQuery.of(context).size.height * 0.05,
                         titleStyle: AppStyle.complianceClausesOptionStyle,
@@ -162,7 +162,7 @@ class _ComplianceClauseSubmitItemState
                     Expanded(
                       flex: 1,
                       child: SingleRatioOption(
-                        title: 'no'.tr(),
+                        title: 'nonـcompliance'.tr(),
                         value: 0,
                         flex: true,
                         selected: widget.item.submitterAnswer,
