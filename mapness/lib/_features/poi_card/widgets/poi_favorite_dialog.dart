@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +17,7 @@ class PoiFavoriteDialog extends ConsumerStatefulWidget {
     required this.favItem,
     super.key,
   });
+
   final FavouriteItem favItem;
 
   @override
@@ -22,12 +25,9 @@ class PoiFavoriteDialog extends ConsumerStatefulWidget {
 }
 
 class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
-  Future<void> _awaitPop(Future<void> future) async {
-    await future;
-
-    if (context.mounted) {
-      Navigator.of(context).pop();
-    }
+  void _withPop(Future<void> future) {
+    unawaited(future);
+    Navigator.of(context).pop();
   }
 
   @override
@@ -75,7 +75,7 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
                       title: context.l10n.work,
                       showBorder: true,
                       onTap: () =>
-                          _awaitPop(favNotifier.setWork(widget.favItem)),
+                          _withPop(favNotifier.setWork(widget.favItem)),
                     ),
                   if (showHome)
                     PoiFavoriteDialogButton(
@@ -83,7 +83,7 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
                       title: context.l10n.home,
                       showBorder: true,
                       onTap: () =>
-                          _awaitPop(favNotifier.setHome(widget.favItem)),
+                          _withPop(favNotifier.setHome(widget.favItem)),
                     ),
                   PoiFavoriteDialogButton(
                     iconAsset: 'assets/icons/svg/ic_bookmark.svg',
@@ -112,7 +112,7 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
       context,
       callback: () {
         final favNotifier = ref.read(favouriteCacheProvider.notifier);
-        _awaitPop(
+        _withPop(
           isFavourite
               ? favNotifier.deleteItem(widget.favItem)
               : favNotifier.addItem(widget.favItem),

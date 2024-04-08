@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
+import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/_features/favourites/widgets/empty_result_widget.dart';
 import 'package:mapness/_features/favourites/widgets/screen/favourite_item_widget.dart';
 import 'package:mapness/shared/config/package_config.dart';
@@ -16,7 +16,7 @@ class FavouritesPicker extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncState = ref.watch(favouriteRepositoryProvider);
+    final asyncState = ref.watch(favouriteCacheProvider);
 
     if (asyncState.isLoading) {
       return Material(
@@ -32,9 +32,7 @@ class FavouritesPicker extends ConsumerWidget {
       return ErrorSheet(
         buttonLabel: 'Reload',
         onClose: () => context.pop(),
-        onRetry: () {
-          ref.invalidate(favouriteRepositoryProvider);
-        },
+        onRetry: () => ref.invalidate(favouriteCacheProvider),
       );
     }
     final state = asyncState.requireValue;
