@@ -150,7 +150,11 @@ class _ContentState extends ConsumerState<_Content>
     /// error handling or invalid data
     if (state.hasError || objectId == null || data == null) {
       if (state.error is PlatformException &&
-          (state.error! as PlatformException).code == 'NotFoundException') {
+
+          /// sometimes error code is in message and sometimes in code, idk, probably changed in releases
+          ((state.error! as PlatformException).code == 'NotFoundException' ||
+              (state.error! as PlatformException).message ==
+                  'NotFoundException')) {
         return Column(
           children: [
             const Spacer(flex: 3),
