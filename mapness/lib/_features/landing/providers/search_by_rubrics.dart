@@ -11,8 +11,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search_by_rubrics.g.dart';
 
-const _objectManager = 'QuickFilters';
-
 @riverpod
 class SearchByRubricsQuery extends _$SearchByRubricsQuery {
   @override
@@ -78,9 +76,11 @@ class SearchByRubrics extends _$SearchByRubrics {
   }
 
   Future<List<Marker>?> _showAndReturnMarkers(SearchResultMessage value) async {
+    final mapSetting = MapObjectManagerSettings.quickFilter();
     final searchObjectManager = ref.read(
       mapObjectManagerProvider(
-        named: _objectManager,
+        named: mapSetting.name,
+        layerId: mapSetting.layerId,
       ).notifier,
     );
 
