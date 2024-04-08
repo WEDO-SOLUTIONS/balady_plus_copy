@@ -13,6 +13,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/disable_overscroll_behavior.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
@@ -75,12 +76,12 @@ class ContentMyLocation extends ConsumerWidget {
                       case LocationType.myLocation:
                         return PoiMyLocationContent(
                           location: closestPoint!,
-                          onTapClose: context.pop,
+                          onTapClose: () => onClose(context, ref),
                         );
                       case LocationType.deeplinkLocation:
                         return PoiDeeplinkContent(
                           location: closestPoint!,
-                          onTapClose: context.pop,
+                          onTapClose: () => onClose(context, ref),
                         );
                     }
                   }),
@@ -97,12 +98,19 @@ class ContentMyLocation extends ConsumerWidget {
     );
   }
 
+  Future<void> onClose(BuildContext context, WidgetRef ref) async {
+    context.pop();
+    final read = ref.read(selectedMarkerProvider.notifier);
+    await read.removeAllMarkers();
+  }
+
   Future<void> _cameraAnimation(WidgetRef ref) async {
     if (closestPoint != null) {
+      final settings = MapObjectManagerSettings.myLocation();
       final mapObjectManager = ref.watch(
         mapObjectManagerProvider(
-          named: 'my_location',
-          layerId: MapObjectLayers.priorityLayer.layerId,
+          named: settings.name,
+          layerId: settings.layerId,
         ).notifier,
       );
       await mapObjectManager.removeAllMarkers();
@@ -113,6 +121,10 @@ class ContentMyLocation extends ConsumerWidget {
           elevation: 1,
         ),
       );
+
+      final read = ref.read(selectedMarkerProvider.notifier);
+      await read.removeAllMarkers();
+
       await mapObjectManager.addMarker(marker);
 
       await ref.read(cameraPositionProvider.notifier).animateTo(
