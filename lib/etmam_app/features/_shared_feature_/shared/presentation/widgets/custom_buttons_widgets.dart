@@ -35,7 +35,8 @@ class CustomTextButtonWidget extends StatelessWidget {
     return TextButton(
       onPressed: btnPressed,
       style: TextButton.styleFrom(
-          primary: Colors.transparent,
+        
+          foregroundColor: Colors.transparent,
           padding: EdgeInsets.zero,
           alignment: alignment ?? AlignmentDirectional.centerStart,
           minimumSize: btnSize,
@@ -108,7 +109,7 @@ class CustomTextButtonWithIconWidget extends StatelessWidget {
         alignment: btnAlignment,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         visualDensity: VisualDensity.compact,
-        primary: btnEffectColor ?? btnBackgroundColor ?? btnTextColor,
+        foregroundColor: btnEffectColor ?? btnBackgroundColor ?? btnTextColor,
       ),
       child: Row(
         mainAxisSize: mainAxisSize,
@@ -378,7 +379,7 @@ class CustomGoToDetailsButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       style: TextButton.styleFrom(
-        primary: effectColor ?? Colors.transparent,
+        foregroundColor: effectColor ?? Colors.transparent,
         backgroundColor: bgColor ?? Colors.transparent,
         shape: RoundedRectangleBorder(
           side: borderColor != null
