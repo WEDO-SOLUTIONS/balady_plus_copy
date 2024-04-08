@@ -145,4 +145,50 @@ class BaladyServices {
   static bool getLocationTrackingStatus() {
     return sharedPrefs.getLocationConsent() ?? false;
   }
+
+  Future<String?> getHijtiDate(String date) async {
+    try {
+      var url = sl<EnvType>().domain + "v1/kacst/hijri-date?sDate=$date";
+      final response = await webService.dio.get(
+        url,
+        options: Options(headers: {
+          'verifyingKEY': CommonFunctions.hashRequest(url, "GET"),
+        }),
+      );
+
+      String d = response.data["data"]["result"];
+
+      List<String> dd = d.split("/");
+      int? year = int.tryParse(dd[2]);
+      int? month = int.tryParse(dd[1]);
+      int? day = int.tryParse(dd[0]);
+
+      return "$year/${month.toString().padLeft(2, "0")}/${day.toString().padLeft(2, "0")}";
+    } catch (ex) {}
+
+    return null;
+  }
+
+  Future<String?> getGorgianDate(String date) async {
+    try {
+      var url = sl<EnvType>().domain + "v1/kacst/gregorian-date?sDate=$date";
+      final response = await webService.dio.get(
+        url,
+        options: Options(headers: {
+          'verifyingKEY': CommonFunctions.hashRequest(url, "GET"),
+        }),
+      );
+
+      String d = response.data["data"]["result"];
+
+      List<String> dd = d.split("/");
+      int? year = int.tryParse(dd[2]);
+      int? month = int.tryParse(dd[1]);
+      int? day = int.tryParse(dd[0]);
+
+      return "$year/${month.toString().padLeft(2, "0")}/${day.toString().padLeft(2, "0")}";
+    } catch (ex) {}
+
+    return null;
+  }
 }
