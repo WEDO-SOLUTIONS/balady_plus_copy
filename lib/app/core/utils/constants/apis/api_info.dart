@@ -787,6 +787,7 @@ class ApiUrl {
   static const chatBotStream = 'v1/chatbot-services/chat-stream';
   static const chatBotEnabled = 'v1/chatbot-services/service-enabled';
 
+
   static const String submitRating =
       '/v1/balady-commercial-services/rating/submit';
 
@@ -855,6 +856,8 @@ class ApiUrl {
   //! Delete
 
   //! Patch
+
+  static const getJoodShowStatus = 'v1/joodeskan-services/service-enabled';
 }
 
 /// It has any header which used inside any API
