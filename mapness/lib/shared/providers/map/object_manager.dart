@@ -1,16 +1,66 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'object_manager.g.dart';
 
-enum MapObjectLayers {
-  defaultLayer('920277'),
-  priorityLayer('977194');
+class MapObjectLayers {
+  /// Default layer for map objects. Used for all objects e.g. POI.
+  static const defaultLayerId = '920277';
 
-  final String layerId;
+  /// Layer for markers that should be on the top of all other objects.
+  /// E.g. My location marker because it should be on top of my location circle.
+  static const priorityLayerId = '977194';
+}
 
-  const MapObjectLayers(this.layerId);
+class MapObjectManagerSettings {
+  final String name;
+  final String? layerId;
+
+  const MapObjectManagerSettings._({required this.name, required this.layerId});
+
+  factory MapObjectManagerSettings.favourites() =>
+      const MapObjectManagerSettings._(
+        name: 'favourite-markers',
+        layerId: MapObjectLayers.defaultLayerId,
+      );
+  factory MapObjectManagerSettings.esri() => const MapObjectManagerSettings._(
+        name: 'esri_markers',
+        layerId: MapObjectLayers.defaultLayerId,
+      );
+
+  factory MapObjectManagerSettings.mappness() =>
+      const MapObjectManagerSettings._(
+        name: MapnessConsts.mapLayerName,
+        layerId: MapObjectLayers.defaultLayerId,
+      );
+  factory MapObjectManagerSettings.quickFilter() =>
+      const MapObjectManagerSettings._(
+        name: 'QuickFilters',
+        layerId: MapObjectLayers.defaultLayerId,
+      );
+  factory MapObjectManagerSettings.myLocation() =>
+      const MapObjectManagerSettings._(
+        name: 'my_location',
+        layerId: MapObjectLayers.priorityLayerId,
+      );
+
+  factory MapObjectManagerSettings.jobs() => const MapObjectManagerSettings._(
+        name: 'jobs',
+        layerId: MapObjectLayers.defaultLayerId,
+      );
+
+  factory MapObjectManagerSettings.search() => const MapObjectManagerSettings._(
+        name: 'mapSearchManager',
+        layerId: MapObjectLayers.defaultLayerId,
+      );
+
+  factory MapObjectManagerSettings.selectedMarker() =>
+      const MapObjectManagerSettings._(
+        name: 'selected-marker',
+        layerId: MapObjectLayers.defaultLayerId,
+      );
 }
 
 @riverpod
@@ -18,7 +68,7 @@ class MapObjectManager extends _$MapObjectManager {
   @override
   Future<MapObjectManagerMessage> build({
     required String named,
-    String? layerId = '920277',
+    String? layerId = MapObjectLayers.defaultLayerId,
     ClusteringMapObjectManager? clustering,
   }) async {
     final dgisController = await ref.watch(dgisControllerProvider.future);
