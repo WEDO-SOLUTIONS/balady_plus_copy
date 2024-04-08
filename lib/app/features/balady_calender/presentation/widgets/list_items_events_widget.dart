@@ -77,9 +77,14 @@ class ListItemsEventsWidget extends StatelessWidget {
                     ),
                     Text(
                       (bloc.params.commonParams.commonParams.hijri
-                          ? " ${HijriCalendar.fromDate(event.eventDate!).dayWeName} ${HijriCalendar.fromDate(event.eventDate!).hDay} "
-                          : DateFormat(' EEEE dd ', Localizations.localeOf(context).languageCode,).format(event.eventDate!) )
-                          + ((event.entityType ?? '') == ScreenTage.appmt.name ? event.metadata?.time ?? '' : ''),
+                              ? " ${HijriCalendar.fromDate(event.eventDate!).dayWeName} ${HijriCalendar.fromDate(event.eventDate!).hDay}"
+                              : DateFormat(
+                                  ' EEEE dd ',
+                                  Localizations.localeOf(context).languageCode,
+                                ).format(event.eventDate!)) +
+                          ((event.entityType ?? '') == ScreenTage.appmt.name
+                              ? "\n${event.metadata?.time}" ?? ''
+                              : ''),
                       style: AppStyle.signInFullTextStyle
                           .copyWith(fontWeight: FontWeight.w600),
                     ),

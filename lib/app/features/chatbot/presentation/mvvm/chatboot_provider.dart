@@ -40,6 +40,7 @@ class ChatBotProvider extends BaseViewModel {
             sectionId: sectionId,
           ),
         ),
+        scrollController: scrollController,
       );
 
       chatBotMessage.value.add(provider);
@@ -49,12 +50,11 @@ class ChatBotProvider extends BaseViewModel {
           notifyListeners();
         }
 
-
         if (scrollController.position.maxScrollExtent > scrollController.offset ) {
           scrollController.animateTo(
-            scrollController.position.maxScrollExtent + 150 ,
+            scrollController.position.maxScrollExtent + 100 ,
             curve: Curves.linear,
-            duration: const Duration(milliseconds: 500),
+            duration: const Duration(milliseconds: 600),
           );
         }
       });

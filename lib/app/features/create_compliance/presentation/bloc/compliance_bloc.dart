@@ -106,8 +106,9 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
   final GetReciptTypes _getReciptTypes;
   final GetDeedInfo _getDeedInfo;
   final GetLandContract _getLandContract;
+  final bool? showDetails;
 
-  ComplianceBloc()
+  ComplianceBloc({this.showDetails})
       : _applyCompliance = ApplyCompliance(repository: sl()),
         _getComplianceByRequestId = GetComplianceByRequestId(repository: sl()),
         _getComplianceEngOfficesDetails =
@@ -504,17 +505,32 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       );
     }, (r) async {
       if (r.submitterThrough == "BENEFICARY") {
-        List<AttachmentData> attachmentData = (r.beneficaryAttachments ?? [])
-            .map(
-              (e) => AttachmentData(
-                id: e.id.toString(),
-                memo: e.name ?? "",
-                title: "${e.name} ${e.allowedFilesExtension}",
-                isRequired: e.isMandatory ?? false,
-                isUploaded: false,
-              ),
-            )
-            .toList();
+        List<AttachmentData> attachmentData = [];
+        if (showDetails == true) {
+          attachmentData = (r.requestAttachments ?? [])
+              .map(
+                (e) => AttachmentData(
+                  id: e.id.toString(),
+                  memo: e.name ?? "",
+                  title: "${e.name} ${e.allowedFilesExtension}",
+                  isRequired: true,
+                  isUploaded: false,
+                ),
+              )
+              .toList();
+        } else {
+          attachmentData = (r.beneficaryAttachments ?? [])
+              .map(
+                (e) => AttachmentData(
+                  id: e.id.toString(),
+                  memo: e.name ?? "",
+                  title: "${e.name} ${e.allowedFilesExtension}",
+                  isRequired: e.isMandatory ?? false,
+                  isUploaded: false,
+                ),
+              )
+              .toList();
+        }
 
         ComplinaceLookUpItem? selectedMainUsage = state.selectedMainUsage;
         ComplinaceLookUpItem? selectedSubUsage = state.selectedSubUsage;
@@ -571,17 +587,30 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
   }
 
   void setUpDraft(ComplianceRequestDetails? r) {
-    List<AttachmentData> attachmentData = (r?.beneficaryAttachments ?? [])
-        .map((e) => AttachmentData(
-            id: e.id.toString(),
-            memo: e.name ?? "",
-            fileName: e.fileName,
-            filePath: e.attachUrl,
-            title: "${e.name} ${e.allowedFilesExtension}",
-            isRequired: e.isMandatory ?? false,
-            isUploaded: e.attached ?? false))
-        .toList();
-
+    List<AttachmentData> attachmentData = [];
+    if (showDetails == true) {
+      attachmentData = (r?.requestAttachments ?? [])
+          .map((e) => AttachmentData(
+              id: e.id.toString(),
+              memo: e.name ?? "",
+              fileName: e.fileName,
+              filePath: e.attachUrl,
+              title: "${e.name} ${e.allowedFilesExtension}",
+              isRequired: true,
+              isUploaded: e.attached ?? false))
+          .toList();
+    } else {
+      attachmentData = (r?.beneficaryAttachments ?? [])
+          .map((e) => AttachmentData(
+              id: e.id.toString(),
+              memo: e.name ?? "",
+              fileName: e.fileName,
+              filePath: e.attachUrl,
+              title: "${e.name} ${e.allowedFilesExtension}",
+              isRequired: e.isMandatory ?? false,
+              isUploaded: e.attached ?? false))
+          .toList();
+    }
     ComplinaceLookUpItem? selectedMainUsage = state.selectedMainUsage;
     ComplinaceLookUpItem? selectedSubUsage = state.selectedSubUsage;
     ComplinaceLookUpItem? selectedOwnerShip = state.selectedOwnerShip;
