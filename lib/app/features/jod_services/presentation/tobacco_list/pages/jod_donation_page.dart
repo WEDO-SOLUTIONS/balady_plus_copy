@@ -1,10 +1,15 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/components/bottom_sheets/generic_bottom_sheet_list.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/drop_downs/drop_down_box_with_title.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
+import 'package:balady_plus/app/features/jod_services/presentation/models/regions.dart';
 import 'package:balady_plus/app/features/jod_services/presentation/tobacco_list/mvvm/jod_donation_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -45,8 +50,44 @@ class _JodDonationPageState extends State<JodDonationPage> {
             children: [
               Text("donating_joud_housing".tr()),
               const SizedBox(height: 22),
+              Consumer<JodDonationViewModel>(
+                builder: (context, provider, child) {
+                  return !provider.isLoading
+                      ? DropDownWithTitle(
+                          title: "city_region".tr(),
+                          selectedValue: provider.region?.text,
+                          status: null,
+                          onRetry: () {
+                            // context.read<ComplianceBloc>().add(
+                            //   const GetMainUsagesEvent(),
+                            // );
+                          },
+                          onTap: () {
+                            BottomSheetDialog.showDraggableSheet(
+                              context,
+                              dialogKeyName: DialogName.reasonCancelDialog,
+                              currentRouteName: RouteName.jodDonationPage,
+                              child: GenericBottomSheetList<Regions>(
+                                title: "city_region".tr(),
+                                items: provider.regions ?? [],
+                                selectedValue: provider.region,
+                                onTap: (item) {
+                                  provider.selectedRegion(item);
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            );
+                          },
+                        )
+                      : const ShimmerEffectWidget(
+                          height: 55,
+                          borderRadius: 6,
+                        );
+                },
+              ),
+              const SizedBox(height: 16),
               Text("cost".tr(), style: AppStyle.sectionTitleStyle),
-              const SizedBox(height: 22),
+              const SizedBox(height: 16),
               Selector<JodDonationViewModel, double?>(
                 builder: (BuildContext context, amount, Widget? child) {
                   return Row(
@@ -161,24 +202,29 @@ class _JodDonationPageState extends State<JodDonationPage> {
                 child: ElevatedButtonWidget.primaryCustom(
                   onPressed: () async {
                     NavigatorState navigator = Navigator.of(context);
-                    if ((provider.amount != null && provider.amount != 0)) {
-                      String? url = await provider
-                          .getJoodEskanServicesGenerateDonationUrl();
-                      if (url != null) {
-                        CommonFunctions.sendUXCamEvent(
-                          UXCamEvents.openWebDonateScreen,
-                        );
-                        navigator.pushNamed(
-                          RouteName.inappWebview,
-                          arguments: (
-                            requestNum: "jod".tr(),
-                            url: url,
-                            isObjections: false,
-                          ),
-                        );
+                    if (provider.region != null) {
+                      if ((provider.amount != null && provider.amount != 0)) {
+                        String? url = await provider
+                            .getJoodEskanServicesGenerateDonationUrl();
+                        if (url != null) {
+                          CommonFunctions.sendUXCamEvent(
+                            UXCamEvents.openWebDonateScreen,
+                          );
+                          navigator.pushNamed(
+                            RouteName.inappWebview,
+                            arguments: (
+                              requestNum: "jod".tr(),
+                              url: url,
+                              isObjections: false,
+                            ),
+                          );
+                        }
+                      } else {
+                        CommonFunctions.showError(
+                            'you_must_choose_amount'.tr());
                       }
                     } else {
-                      CommonFunctions.showError('you_must_choose_amount'.tr());
+                      CommonFunctions.showError('select_region'.tr());
                     }
                   },
                   text: 'donate'.tr(),
