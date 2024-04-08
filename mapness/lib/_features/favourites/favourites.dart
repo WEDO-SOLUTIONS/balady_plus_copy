@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
-import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
 import 'package:mapness/_features/favourites/widgets/delete_all/delete_all_content.dart';
 import 'package:mapness/_features/favourites/widgets/empty_result_widget.dart';
 import 'package:mapness/_features/favourites/widgets/favourites_header.dart';
@@ -107,7 +106,7 @@ class _FavouritesState extends ConsumerState<Favourites> {
                             return;
                           }
                           await ref
-                              .read(favouriteRepositoryProvider.notifier)
+                              .read(favouriteCacheProvider.notifier)
                               .deleteAll();
                         }
                       },
@@ -193,7 +192,7 @@ class _FavouritesState extends ConsumerState<Favourites> {
                               right: 16,
                               top: 16,
                             ),
-                            itemCount: state.items.length ?? 0,
+                            itemCount: state.items.length,
                             separatorBuilder: (_, __) =>
                                 const SizedBox(height: 8),
                             itemBuilder: (_, index) {
