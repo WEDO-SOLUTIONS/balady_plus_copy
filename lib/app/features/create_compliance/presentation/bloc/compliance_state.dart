@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
 import 'package:balady_plus/app/features/create_compliance/create_compliance_exports.dart';
 import 'package:balady_plus/app/features/vd/domain/entities/gis/gis_params.dart';
 import 'package:balady_plus/app/features/vd/domain/entities/gis/gis_response.dart';
@@ -9,6 +10,7 @@ import 'package:hijri/hijri_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:collection/collection.dart';
 
+import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/enums/date_form.dart';
 import '../../../../core/utils/nullable.dart';
@@ -358,29 +360,73 @@ class ComplianceState extends Equatable {
     );
   }
 
-  DateTime? getOwnerShipDate() {
+  Future<DateTime?> getOwnerShipDate() async {
     if (ownershipDate != null) {
       List<String> date = ownershipDate!.split("/");
       int? year = int.tryParse(date[0]);
       int? month = int.tryParse(date[1]);
       int? day = int.tryParse(date[2]);
       if (year != null && month != null && day != null) {
-        HijriCalendar calendar = HijriCalendar();
+        if (year >= 1356) {
+          HijriCalendar calendar = HijriCalendar();
 
-        calendar.hDay = day;
-        calendar.hMonth = month;
-        calendar.hYear = year;
-        return calendar.hijriToGregorian(year, month, day);
+          calendar.hDay = day;
+          calendar.hMonth = month;
+          calendar.hYear = year;
+          return calendar.hijriToGregorian(year, month, day);
+        } else {
+          String d =
+              "${day.toString().padLeft(2, "0")}/${month.toString().padLeft(2, "0")}/$year";
+
+          String hijri =
+              await BaladyServices(webService: sl()).getGorgianDate(d) ?? "";
+          List<String> date = hijri!.split("/");
+          int? year1 = int.tryParse(date[0]);
+          int? month1 = int.tryParse(date[1]);
+          int? day1 = int.tryParse(date[2]);
+          if (year1 != null && month1 != null && day1 != null) {
+            HijriCalendar calendar = HijriCalendar();
+
+            calendar.hDay = day1;
+            calendar.hMonth = month1;
+            calendar.hYear = year1;
+            return calendar.hijriToGregorian(year1, month1, day1);
+          }
+        }
+        return null;
       }
-      return null;
     }
   }
 
-  String? getOwnerShipDateStr() {
+  DateTime? getOwnerShipDateTime() {
+    try {
+      if (ownershipDate != null) {
+        List<String> date = ownershipDate!.split("/");
+        int? year = int.tryParse(date[0]);
+        int? month = int.tryParse(date[1]);
+        int? day = int.tryParse(date[2]);
+        if (year != null && month != null && day != null) {
+          HijriCalendar calendar = HijriCalendar();
+
+          calendar.hDay = day;
+          calendar.hMonth = month;
+          calendar.hYear = year;
+          return calendar.hijriToGregorian(year, month, day);
+
+          return null;
+        }
+      }
+    } catch (ex) {}
+  }
+
+  Future<String?> getOwnerShipDateStr() async {
     if ((ownershipDate != null && form == null) || form == DateForm.hijri) {
       return ownershipDate!;
     } else {
-      return DateTime.tryParse(ownershipDate ?? "")!.toHijriFormattedDate1();
+      String date =
+          await DateTime.tryParse(ownershipDate ?? "")!.toHijriFormattedDate1();
+
+      return date;
     }
     return null;
   }

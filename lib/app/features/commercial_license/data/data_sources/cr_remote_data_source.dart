@@ -22,6 +22,7 @@ import '../models/additional_activity_response.dart';
 import '../models/board_contract_response.dart';
 import '../models/citizen_info_model.dart';
 import '../models/commercial_request_details_response.dart';
+import '../models/conclusion_response_model.dart';
 import '../models/cr_attachment_response_model.dart';
 import '../models/cr_submit_response_model.dart';
 import '../models/qr/qr_lookup.dart';
@@ -127,6 +128,9 @@ abstract class CrRemoteDataSource {
   Future<CitizenInfoModel> getCizenInfo({required CitizenInfoParams params});
 
   Future<CommercialRequestDetailsResponse> getRequestDetails(
+      {required int params});
+
+  Future<IssueCommercialConculsion> getCommercialConculsion(
       {required int params});
 }
 
@@ -2450,6 +2454,57 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
         try {
           //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<IssueCommercialConculsion> getCommercialConculsion(
+      {required int params}) async {
+    var response;
+
+    try {
+      response =
+          await webService.dio.get(ApiUrl.requestConclusionCommercial(params));
+
+      var data = response.data["data"]["result"];
+
+      var parsedResult =
+          data != null ? IssueCommercialConculsion.fromJson(data) : null;
+
+      final decodedResponse =
+          ResponseBodyModel<IssueCommercialConculsion>.fromMap(response.data,
+              parsedResult: parsedResult);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse =
+            ResponseBodyModel<IssueCommercialConculsion>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {} catch (ex) {}
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: ex.toString(),

@@ -21,11 +21,14 @@ class FieldData extends StatelessWidget {
         children: [
           Row(
             children: [
-              CustomTextWidget(
-                title,
-                fontColor: AppColor.primary700Light,
-                fontSize: 12,
-                fontWeight: AppFontWeight.semiBold,
+              Flexible(
+                child: CustomTextWidget(
+                  title,
+                  fontColor: AppColor.primary700Light,
+                  fontSize: 12,
+                  maxLines: 3,
+                  fontWeight: AppFontWeight.semiBold,
+                ),
               ),
             ],
           ),
