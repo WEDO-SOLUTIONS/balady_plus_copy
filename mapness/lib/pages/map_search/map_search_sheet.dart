@@ -18,7 +18,6 @@ import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
 const searchScope = 'MapSearch';
-const searchManagerName = 'mapSearchManager';
 
 class MapSearchSheet extends StatelessWidget {
   const MapSearchSheet({
@@ -109,9 +108,11 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
   }
 
   Future<void> _drawSearchMarkers(SearchState searchState) async {
+    final settings = MapObjectManagerSettings.search();
     final searchObjectManager = ref.read(
       mapObjectManagerProvider(
-        named: searchManagerName,
+        named: settings.name,
+        layerId: settings.layerId,
         clustering: _clustering,
       ).notifier,
     );
@@ -126,7 +127,9 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
                 context.l10n.invalid,
             onTap: () {
               PoiMapRoute.open(
-                  ref.read(goRouterProvider), markerInfo.objectId!.objectId,);
+                ref.read(goRouterProvider),
+                markerInfo.objectId!.objectId,
+              );
             },
             options: MarkerOptionsMessage(
               position: markerInfo!.geoPoint,
@@ -183,8 +186,10 @@ class _MapSearchSheetState extends ConsumerState<_MapSearchSheet> {
       )
       ..listen<RouteState?>(currentRouteProvider, _currentRouteListener);
 
-    final closable = ref.watch(searchProvider(searchScope)
-            .select((value) => value is! SearchStateResults),) ||
+    final closable = ref.watch(
+          searchProvider(searchScope)
+              .select((value) => value is! SearchStateResults),
+        ) ||
         closing;
 
     return Directionality(
