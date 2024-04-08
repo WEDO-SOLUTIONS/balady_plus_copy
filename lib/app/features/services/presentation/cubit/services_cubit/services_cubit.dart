@@ -54,7 +54,6 @@ class ServicesCubit extends Cubit<ServicesState> {
 
   Future<bool> checkForjoodService() async {
     WebService webService = sl();
-
     Response? response;
     try {
       response = await webService.dio.get(ApiUrl.getJoodShowStatus);
@@ -62,7 +61,7 @@ class ServicesCubit extends Cubit<ServicesState> {
       final result = ResponseBodyModel.fromMap(data).data?.result;
       return result['isEnabled'];
     } catch (ex) {
-      return false;
+      return true;
     }
   }
 
