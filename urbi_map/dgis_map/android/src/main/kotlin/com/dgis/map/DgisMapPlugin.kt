@@ -38,14 +38,14 @@ class DgisMapPlugin : FlutterPlugin, PluginApi, ActivityAware {
             Messages.VendorConfigMessage.MOMRAH_STG -> "assets/maps/configs/momrah-staging-vendor-config.jsonx"
             null -> "assets/maps/configs/momrah-prod-vendor-config.jsonx"
         }
-        val styleAsset = FlutterInjector
+        val vendorAsset = FlutterInjector
             .instance()
             .flutterLoader()
             .getLookupKeyForAsset(vendorConfigFile)
 
         val vendorContent = context
                 .assets
-                .open(styleAsset)
+                .open(vendorAsset)
                 .bufferedReader()
                 .use(BufferedReader::readText)
         vendorConfig = vendorContent.let { VendorConfig.from(it) }
@@ -53,7 +53,7 @@ class DgisMapPlugin : FlutterPlugin, PluginApi, ActivityAware {
             appContext,
             logOptions = logOptions ?: LogOptions(),
             vendorConfig = VendorConfig(
-                fromAsset = VendorConfigFromAsset(styleAsset)
+                fromAsset = VendorConfigFromAsset(vendorAsset)
             )
         )
     }

@@ -1,6 +1,6 @@
 library dgis_map_platform_interface;
 
-export 'src/dgis_map_platform_interface.dart' show DgisMapPlugin;
+export 'src/dgis_map_plugin.dart' show DgisMapPlugin;
 
 export 'src/pigeons/messages.g.dart';
 
@@ -16,6 +16,7 @@ export 'src/events/indoor_events.dart'
 export 'src/events/object_tap_events.dart'
     show
         ObjectTapEvent,
+        MyLocationTapEvent,
         TapEvent,
         IdleTapEvent,
         IoTapEvent,

@@ -9,7 +9,6 @@ import 'package:mapness/widgets/messages/errror_message.dart';
 import 'package:shimmer/shimmer.dart';
 
 class PoiPhotoCard extends ConsumerWidget {
-
   const PoiPhotoCard({required this.model, super.key});
   final PoiModel model;
 
@@ -75,7 +74,7 @@ class PoiPhotoCard extends ConsumerWidget {
         (context, index) => LoadingShimmerImage(
           imageUrl: photoItems[index].url,
           fit: BoxFit.cover,
-          onImageTap: (name, isAsset) =>
+          onImageTap: (name, {isAsset}) =>
               PhotoViewer.open(context, index, photosUrls),
         ),
       ),

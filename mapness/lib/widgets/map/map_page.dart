@@ -63,7 +63,6 @@ class _MapPageState extends ConsumerState<MapPage>
     ref.watch(selectedMarkerProvider);
     ref.watch(mapObjectManagerProvider(named: selectedMarkerManagerId));
 
-
     return DgisMap(
       key: ValueKey(_keyIndex),
       androidUseExpensive: true,

@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/image/loading_image/loading_image.dart';
 import 'package:mapness/_features/stories/domain/frame/story_frame_action.dart';
 import 'package:mapness/_features/stories/domain/frame/story_frame_data.dart';
+import 'package:mapness/_features/stories/helper/locale_helper.dart';
 import 'package:mapness/_features/stories/presentation/frame/frame_action_button.dart';
 import 'package:mapness/_features/stories/presentation/frame/frame_progress_indicator.dart';
 import 'package:mapness/_features/stories/presentation/frame/story_frame_content.dart';
 import 'package:mapness/_features/stories/presentation/frame/story_frame_controller.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/loading/loading_circular.dart';
 
 class StoryFrameWidget extends StatefulWidget {
-
   const StoryFrameWidget({
     required this.duration,
     required this.frame,
@@ -48,9 +49,26 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
 
   late bool isLoading = _frame.isAssetImage == false;
 
+  String _keyToLocale(String key) => switch (key) {
+        'next' => StoryLocalization.of(context)?.l10n.next ?? '',
+        'try_now' => StoryLocalization.of(context)?.l10n.tryNow ?? '',
+        _ => ''
+      };
+
+  String get _actionTitleOrFailback {
+    final action = widget.frame.action;
+    return switch (action) {
+      VerbatimStoryFrameAction() => action.title,
+      LocaleKeyFrameAction() => _keyToLocale(action.titleLocaleKey),
+      null => '',
+    };
+  }
+
   @override
   void initState() {
     super.initState();
+    widget.controller?.pause = pauseProgress;
+    widget.controller?.play = resumeProgress;
     widget.controller?.nextPage = _onNext;
     widget.controller?.prevPage = _onPrevious;
     _controller = AnimationController(
@@ -65,7 +83,9 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
       switch (_progress.status) {
         case AnimationStatus.completed:
           widget.onNext();
-        default:
+        case AnimationStatus.dismissed:
+        case AnimationStatus.forward:
+        case AnimationStatus.reverse:
           break;
       }
     });
@@ -118,12 +138,12 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
     widget.onPrevious();
   }
 
-  onTapDown(_) {
+  void onTapDown(_) {
     pauseProgress();
     _lastTap = DateTime.now();
   }
 
-  onTapUp(Function action) {
+  void onTapUp(VoidCallback action) {
     if (DateTime.now().difference(_lastTap) <
         const Duration(milliseconds: 150)) {
       action();
@@ -135,91 +155,89 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
 
   @override
   Widget build(BuildContext context) => Material(
-      child: Directionality(
-        textDirection: Directionality.of(context),
-        child: Stack(
-          children: [
-            Container(color: Colors.black),
-            Positioned.fill(
-              child: LoadingImage(
-                isAssetImg: widget.frame.isAssetImage,
-                onImageReady: imageLoaded,
-                imageUrl: widget.frame.imageUrl,
-                fit: BoxFit.cover,
-                loadingWidget: Container(
-                  color: context.color.surface_base_primary,
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.black,
+        child: Directionality(
+          textDirection: Directionality.of(context),
+          child: Stack(
+            children: [
+              Container(color: Colors.black),
+              Positioned.fill(
+                child: LoadingImage(
+                  isAssetImg: widget.frame.isAssetImage,
+                  onImageReady: imageLoaded,
+                  imageUrl: widget.frame.imageUrl,
+                  fit: BoxFit.cover,
+                  loadingWidget: Container(
+                    color: context.color.surface_base_primary,
+                    child: const Center(
+                      child: LoadingCircular(),
                     ),
                   ),
                 ),
               ),
-            ),
-            SafeArea(
-              child: Stack(
-                children: [
-                  /// story content
-                  if (!isLoading)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 81),
-                      child: StoryFrameContent(frame: widget.frame),
-                    ),
+              SafeArea(
+                child: Stack(
+                  children: [
+                    /// story content
+                    if (!isLoading)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 81),
+                        child: StoryFrameContent(frame: widget.frame),
+                      ),
 
-                  /// left right click handlers
-                  if (!isLoading)
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 30,
-                          child: GestureDetector(
-                            onTapDown: onTapDown,
-                            onTapUp: (_) => onTapUp(_onPrevious),
+                    /// left right click handlers
+                    if (!isLoading)
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 30,
+                            child: GestureDetector(
+                              onTapDown: onTapDown,
+                              onTapUp: (_) => onTapUp(_onPrevious),
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          flex: 70,
-                          child: GestureDetector(
-                            onTapDown: onTapDown,
-                            onTapUp: (_) => onTapUp(_onNext),
+                          Expanded(
+                            flex: 70,
+                            child: GestureDetector(
+                              onTapDown: onTapDown,
+                              onTapUp: (_) => onTapUp(_onNext),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
 
-                  /// progress indicator and exit button
-                  AnimatedBuilder(
-                    animation: _progress,
-                    builder: (context, old) => FrameProgressIndicator(
-                      onClose: widget.onClose,
-                      progress: _progress.value,
-                      frameIndex: widget.frameIndex,
-                      framesLength: widget.frameLength,
-                    ),
-                  ),
-
-                  /// action button
-                  if (!isLoading &&
-                      widget.frame.action != null &&
-                      widget.onActionPressed != null &&
-                      widget.frame.action!.deeplinkUrl.isNotEmpty)
-                    Positioned(
-                      bottom: 24,
-                      left: 16,
-                      right: 16,
-                      child: FrameActionButton(
-                        title: widget.frame.action!.title,
-                        onPressed: () =>
-                            widget.onActionPressed!(widget.frame.action!),
-                        textStyle: widget.frame.action?.textStyle,
-                        backgroundColor: widget.frame.action?.backgroundColor,
+                    /// progress indicator and exit button
+                    AnimatedBuilder(
+                      animation: _progress,
+                      builder: (context, old) => FrameProgressIndicator(
+                        onClose: widget.onClose,
+                        progress: _progress.value,
+                        frameIndex: widget.frameIndex,
+                        framesLength: widget.frameLength,
                       ),
                     ),
-                ],
+
+                    /// action button
+                    if (!isLoading &&
+                        widget.frame.action != null &&
+                        widget.onActionPressed != null &&
+                        widget.frame.action!.deeplinkUrl.isNotEmpty)
+                      Positioned(
+                        bottom: 24,
+                        left: 16,
+                        right: 16,
+                        child: FrameActionButton(
+                          title: _actionTitleOrFailback,
+                          onPressed: () =>
+                              widget.onActionPressed!(widget.frame.action!),
+                          textStyle: widget.frame.action?.textStyle,
+                          backgroundColor: widget.frame.action?.backgroundColor,
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
 }

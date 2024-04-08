@@ -115,6 +115,10 @@ class ObjectTapHandler(
                     return
                 }
             }
+            is MyLocationMapObject -> {
+                sendDgisMyLocationEvent(roi.closestMapPoint)
+                return
+            }
             is DgisMapObject -> {
                 onDgisMapObjectTap(tappedObject, roi)
                 return
@@ -820,6 +824,18 @@ class ObjectTapHandler(
         )
     }
 
+    private fun sendDgisMyLocationEvent(position: GeoPointWithElevation) {
+        eventSink.success(
+            mapOf(
+                "event" to Events.onMyLocationTap.name,
+                "latlng" to mapOf(
+                    "latitude" to position.latitude.value,
+                    "longitude" to position.longitude.value,
+                ),
+            )
+        )
+    }
+
     fun getNearestObjects(result: Result<List<RenderedObjectMessage>>) {
         val cameraPosition = map.camera.position
         val screenPoint = map.camera.projection.mapToScreen(cameraPosition.point)
@@ -884,11 +900,12 @@ private enum class Events {
     onMarkerWithPhotoTap,
     onIoTap,
     onIdleTap,
-    onMarkerTap,
     onRoadEventTap,
-    onClusterTap,
+    onMarkerTap,
     onPolygonTap,
     onPolylineTap,
+    onClusterTap,
+    onMyLocationTap,
 }
 
 private fun Attributes.mapIo(point: GeoPointWithElevation): Map<String, Any> = mapOf(

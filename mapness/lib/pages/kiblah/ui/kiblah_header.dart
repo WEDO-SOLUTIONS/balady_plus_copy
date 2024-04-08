@@ -20,8 +20,13 @@ class KiblahHeader extends ConsumerWidget {
 
     final isReady = userBearing != null && kaabaBearing != null;
 
-    final bearingDiff =
+    int bearingDiff =
         isReady ? (kaabaBearing.floor() - userBearing.floor()).abs() : 0;
+
+    final turnClockwise = bearingDiff > 180;
+    if (turnClockwise) {
+      bearingDiff = 360 - bearingDiff;
+    }
 
     return Padding(
       padding: const EdgeInsets.only(
