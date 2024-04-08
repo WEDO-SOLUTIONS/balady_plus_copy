@@ -17,8 +17,8 @@ class PoiHeaderDeeplink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final titleTextStyle = context.textStyle.accentL
-        .copyWith(color: context.color.text_and_icons_base_primary);
+    final titleTextStyle = context.textStyle.heading2
+        .copyWith(color: context.color.textAndIconsBasePrimary);
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,7 +30,7 @@ class PoiHeaderDeeplink extends StatelessWidget {
           width: 48,
           package: PackageConfig.packageName,
           colorFilter: ColorFilter.mode(
-            context.color.stroke_accent,
+            context.color.strokeAccent,
             BlendMode.srcIn,
           ),
         ),
