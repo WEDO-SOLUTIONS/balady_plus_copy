@@ -149,6 +149,14 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       }
     } else if (event is RoadEventTapEvent) {
       EventsRoute.open(context, event);
+    } else if (event is MyLocationTapEvent) {
+      if (context.mounted) {
+        PoiMapRoute.open(
+          ref.read(goRouterProvider),
+          -1,
+          latLng: event.latLng,
+        );
+      }
     }
   }
 }

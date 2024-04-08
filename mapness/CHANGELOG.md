@@ -1,6 +1,12 @@
-## 3.9.2(1) - Current
+## 3.9.6(1) - Current
 
-- BALADY-1324 [Marketing] should show a descriptive message when location permission is off and user try to navigate
+- BALADY-1464: [Arch] Sync TFS:dev /w Urbi
+- BALADY-1544: [Design] [Favourites] there is no backround in search card when user searches ardess for home/work
+- BALADY-548: [iWish] - Incorrect logic of the system button/back gesture on screens 
+
+## 3.9.2(1)
+
+- BALADY-1324: [Marketing] should show a descriptive message when location permission is off and user try to navigate
 - BALADY-1430: [Landing Page] remove pop-up from Foundation Day
 - BALADY-1412: Update SDK Version to 10.2.1
 - BALADY-1136: [Navi] street direction card localizationat

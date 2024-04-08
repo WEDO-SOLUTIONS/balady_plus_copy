@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../core/utils/enums/enums.dart';
 import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 
 class PreviousNextButtons extends StatelessWidget {

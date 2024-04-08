@@ -2,6 +2,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
+import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/layers_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
@@ -78,33 +79,45 @@ class PathNavMapControlls extends ConsumerWidget {
                   right: 12,
                   bottom: 16,
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const LayersControl(),
-                    const SizedBox(
-                      height: 8,
+                    const Column(
+                      children: [
+                        Spacer(),
+                        IndoorControl(),
+                        Spacer(),
+                      ],
                     ),
-                    Consumer(
-                      builder: (context, ref, _) {
-                        final navi = ref.watch(appFeaturesProvider);
-                        return Visibility(
-                          visible: navi.naviEnabled,
-                          replacement: const SizedBox.square(
-                            dimension: 28,
-                          ),
-                          child: const TrafficControl(),
-                        );
-                      },
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        const LayersControl(),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Consumer(
+                          builder: (context, ref, _) {
+                            final navi = ref.watch(appFeaturesProvider);
+                            return Visibility(
+                              visible: navi.naviEnabled,
+                              replacement: const SizedBox.square(
+                                dimension: 28,
+                              ),
+                              child: const TrafficControl(),
+                            );
+                          },
+                        ),
+                        const Spacer(),
+                        const ZoomControl(),
+                        const Spacer(),
+                        const CompassControl(),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        const PathNavFollowControl(),
+                      ],
                     ),
-                    const Spacer(),
-                    const ZoomControl(),
-                    const Spacer(),
-                    const CompassControl(),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    const PathNavFollowControl(),
                   ],
                 ),
               ),
