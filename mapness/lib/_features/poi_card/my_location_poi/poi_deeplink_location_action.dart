@@ -47,15 +47,18 @@ class PoiDeeplinkPersonActions extends StatelessWidget {
                 colorButton: accent,
                 onTap: onGo,
               ),
-              FooterIconButton(
-                desc: Text(
-                  context.l10n.save,
-                  style: textStyle.copyWith(color: accent),
+              // BALADY-211: In the future, we will add the ability to save a random point to favorites
+              // But now it is out of scope of the task
+              if (onSave != null)
+                FooterIconButton(
+                  desc: Text(
+                    context.l10n.save,
+                    style: textStyle.copyWith(color: accent),
+                  ),
+                  assetName: 'assets/icons/svg/ic_fav.svg',
+                  colorIcon: accent,
+                  onTap: onSave,
                 ),
-                assetName: 'assets/icons/svg/ic_fav.svg',
-                colorIcon: accent,
-                onTap: onSave,
-              ),
               FooterIconButton(
                 desc: Text(
                   context.l10n.share,
