@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/poi_card/ui_kit_tmp/close_button_poi.dart';
-import 'package:mapness/_features/profile/widgets/profile_image_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PoiHeader extends StatelessWidget {
   final Function()? onTapClose;
-
+  final Widget? profileImage;
   final String text;
   final String? subTitle;
 
@@ -13,25 +12,25 @@ class PoiHeader extends StatelessWidget {
     required this.onTapClose,
     required this.text,
     this.subTitle,
+    this.profileImage,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final titleTextStyle = context.textStyle.heading1
+    final titleTextStyle = context.textStyle.heading2
         .copyWith(color: context.color.textAndIconsBasePrimary);
 
-    final subTitleStyle = context.textStyle.text.copyWith(
-        color: context.color.textAndIconsBasePrimary.withOpacity(0.5));
+    final subTitleStyle = context.textStyle.text
+        .copyWith(color: context.color.textAndIconsBasePrimary);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        ProfileImageWidget(
-          dimension: 48,
-          color: context.color.strokeAccent,
-        ),
-        const SizedBox(width: 12),
+        if (profileImage != null) ...[
+          profileImage!,
+          const SizedBox(width: 12),
+        ],
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

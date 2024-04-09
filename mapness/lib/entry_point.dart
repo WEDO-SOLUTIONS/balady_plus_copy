@@ -267,6 +267,20 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     );
     final data = geocoderResponse.data as Map<String, dynamic>;
 
+    // In case of 404 error, open map with the provided coordinates
+    if (data.containsKey('meta') &&
+        data['meta'] is Map<String, dynamic> &&
+        (data['meta'] as Map<String, dynamic>).containsKey('code') &&
+        (data['meta'] as Map<String, dynamic>)['code'] == 404) {
+      // Dgis object id -2 is used to open map with provided coordinates not with poi id
+      PoiMapRoute.open(
+        ref.read(goRouterProvider),
+        -2,
+        latLng: LatLng(latitude: latitude, longitude: longitude),
+        zoom: 17,
+      );
+    }
+
     if (!data.containsKey('result')) return;
 
     final result = data['result'] as Map<String, dynamic>;
@@ -284,6 +298,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     PoiMapRoute.open(
       ref.read(goRouterProvider),
       dgisId,
+      zoom: 17,
     );
   }
 
@@ -333,6 +348,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     PoiMapRoute.open(
       ref.read(goRouterProvider),
       dgisId,
+      zoom: 17,
     );
   }
 }
