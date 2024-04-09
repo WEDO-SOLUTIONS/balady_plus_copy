@@ -11,7 +11,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'favourite_markers.g.dart';
 
 final favouriteMarkersProvider = _favouriteMarkersProvider;
-const favouriteMarkersLayerName = 'favourite-markers';
 
 @riverpod
 class FavouriteToggle extends _$FavouriteToggle {
@@ -62,8 +61,12 @@ class FavouriteToggle extends _$FavouriteToggle {
 class _FavouriteMarkers extends _$FavouriteMarkers {
   @override
   Future<void> build() async {
+    final settings = MapObjectManagerSettings.favourites();
     final mapObjectManager = ref.watch(
-      mapObjectManagerProvider(named: favouriteMarkersLayerName).notifier,
+      mapObjectManagerProvider(
+        named: settings.name,
+        layerId: settings.layerId,
+      ).notifier,
     );
     final router = ref.watch(goRouterProvider);
     final favItemsAsync = ref.watch(favouriteCacheProvider);
