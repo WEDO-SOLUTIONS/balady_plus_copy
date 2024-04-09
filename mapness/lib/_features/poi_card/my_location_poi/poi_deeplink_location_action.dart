@@ -1,0 +1,74 @@
+part of 'content_my_location.dart';
+
+class PoiDeeplinkPersonActions extends StatelessWidget {
+  final Function()? onShare;
+  final Function()? onSave;
+  final Function()? onGo;
+
+  const PoiDeeplinkPersonActions({
+    super.key,
+    this.onShare,
+    this.onSave,
+    this.onGo,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = context.textStyle.footNoteBold;
+    final accent = context.color.textAndIconsStatusAccent;
+    final primary = context.color.textAndIconsBaseInversePrimary;
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: context.color.surfaceBasePrimary,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.06),
+            offset: const Offset(0.0, -1.0),
+            blurRadius: 2,
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(8),
+      child: SafeArea(
+        top: false,
+        child: SizedBox(
+          height: 40,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FooterIconButton(
+                desc: Text(
+                  context.l10n.go,
+                  style: textStyle.copyWith(color: primary),
+                ),
+                colorIcon: primary,
+                colorButton: accent,
+                onTap: onGo,
+              ),
+              FooterIconButton(
+                desc: Text(
+                  context.l10n.save,
+                  style: textStyle.copyWith(color: accent),
+                ),
+                assetName: 'assets/icons/svg/ic_fav.svg',
+                colorIcon: accent,
+                onTap: onSave,
+              ),
+              FooterIconButton(
+                desc: Text(
+                  context.l10n.share,
+                  style: textStyle.copyWith(color: accent),
+                ),
+                assetName: 'assets/icons/svg/ic_share.svg',
+                colorIcon: accent,
+                onTap: onShare,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
