@@ -33,14 +33,16 @@ class PoiDeeplinkContent extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 16),
-                PoiHeaderDeeplink(
+                PoiHeader(
                   onTapClose: onTapClose,
                   text: title,
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  '${location.latitude}, ${location.longitude}',
-                  style: context.textStyle.text,
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: Text(
+                    '${location.latitude}, ${location.longitude}',
+                    style: context.textStyle.text,
+                  ),
                 ),
               ],
             );

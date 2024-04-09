@@ -18,7 +18,16 @@ class MyLocationPoiActions extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(color: Colors.white),
+      decoration: BoxDecoration(
+        color: context.color.surfaceBasePrimary,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.06),
+            offset: const Offset(0.0, -1.0),
+            blurRadius: 2,
+          ),
+        ],
+      ),
       padding: const EdgeInsets.all(8),
       child: SafeArea(
         top: false,

@@ -4,10 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/_features/poi_card/poi_card_view_model.dart';
-import 'package:mapness/_features/poi_card/ui_kit_tmp/poi_header_deeplink.dart';
 import 'package:mapness/_features/poi_card/widgets/footer/footer_style.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls.dart';
 import 'package:mapness/_features/profile/domain/user_profile_data.dart';
+import 'package:mapness/_features/profile/widgets/profile_image_widget.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -23,6 +23,7 @@ import '../ui_kit_tmp/poi_header.dart';
 part 'poi_my_location_action.dart';
 part 'poi_my_location_content.dart';
 part 'poi_deeplink_location_content.dart';
+part 'poi_deeplink_location_action.dart';
 
 enum LocationType { myLocation, deeplinkLocation }
 
@@ -85,10 +86,24 @@ class ContentMyLocation extends ConsumerWidget {
                         );
                     }
                   }),
-                  MyLocationPoiActions(
-                    onShare: () => viewModel.shareMyLocation(closestPoint),
-                    onCopy: () => viewModel.copyToClipboard(closestPoint),
-                  ),
+                  Builder(builder: (context) {
+                    switch (locationType) {
+                      case LocationType.myLocation:
+                        return MyLocationPoiActions(
+                          onShare: () =>
+                              viewModel.shareMyLocation(closestPoint),
+                          onCopy: () => viewModel.copyToClipboard(closestPoint),
+                        );
+                      case LocationType.deeplinkLocation:
+                        return PoiDeeplinkPersonActions(
+                          onShare: () =>
+                              viewModel.shareMyLocation(closestPoint),
+                          onSave:
+                              () {}, // () => viewModel.copyToClipboard(closestPoint),
+                          onGo: () {},
+                        );
+                    }
+                  }),
                 ],
               ),
             ),
