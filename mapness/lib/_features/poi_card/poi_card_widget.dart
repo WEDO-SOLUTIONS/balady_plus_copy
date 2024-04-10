@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -227,6 +229,14 @@ class _ContentState extends ConsumerState<_Content>
       ),
     );
     final language = ref.watch(appLanguageProvider);
+    final heightOfScreen = MediaQuery.of(context).size.height;
+
+    const collapsedHeight = 300.0;
+    const hiddenHeight = 100.0;
+
+    /// The middle height should be higher than the collapsed height
+    /// if [availableExpansions] contains [Expansion.middle] and [Expansion.collapsed]
+    final middleHeight = math.max(heightOfScreen / 3, collapsedHeight + 1);
 
     return Directionality(
       textDirection: switch (language) {
@@ -237,9 +247,9 @@ class _ContentState extends ConsumerState<_Content>
         showBarrier: false,
         availableExpansions: Expansion.values.toSet(),
         initialExpansion: Expansion.middle,
-        collapsedHeight: 300,
-        middleHeight: 600,
-        hiddenHeight: 100,
+        collapsedHeight: collapsedHeight,
+        middleHeight: middleHeight,
+        hiddenHeight: hiddenHeight,
         controller: _bottomSheetController,
         mapControlsBuilder:
             (context, scrollController, biggestHeight, smallestHeight) =>

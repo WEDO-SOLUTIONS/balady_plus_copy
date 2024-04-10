@@ -51,15 +51,9 @@ class ProfileImageWidget extends ConsumerWidget {
       onTap: editable ? () => _onEdit(ref) : null,
       child: Builder(
         builder: (context) {
-          final defaultImage = SvgPicture.asset(
-            'assets/icons/svg/ic_nav_profile.svg',
-            height: dimension,
-            width: dimension,
-            package: PackageConfig.packageName,
-            colorFilter: ColorFilter.mode(
-              color ?? NonThemeColor.color40,
-              BlendMode.srcIn,
-            ),
+          final defaultImage = DefaultProfileImageWidget(
+            dimension: dimension,
+            color: color,
           );
 
           final imageWidget = profileImage.when(
@@ -113,4 +107,26 @@ class ProfileImageWidget extends ConsumerWidget {
       ),
     );
   }
+}
+
+class DefaultProfileImageWidget extends StatelessWidget {
+  final double dimension;
+  final Color? color;
+  const DefaultProfileImageWidget({
+    required this.dimension,
+    super.key,
+    this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) => SvgPicture.asset(
+        'assets/icons/svg/ic_nav_profile.svg',
+        height: dimension,
+        width: dimension,
+        package: PackageConfig.packageName,
+        colorFilter: ColorFilter.mode(
+          color ?? NonThemeColor.color40,
+          BlendMode.srcIn,
+        ),
+      );
 }

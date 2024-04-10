@@ -37,10 +37,12 @@ class PoiDeeplinkContent extends ConsumerWidget {
                   onTapClose: onTapClose,
                   text: title,
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  '${location.latitude}, ${location.longitude}',
-                  style: context.textStyle.text,
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: Text(
+                    '${location.latitude}, ${location.longitude}',
+                    style: context.textStyle.text,
+                  ),
                 ),
               ],
             );
