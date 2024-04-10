@@ -41,11 +41,17 @@ class PoiMyLocationContent extends ConsumerWidget {
                   onTapClose: onTapClose,
                   text: title,
                   subTitle: subTitle,
+                  profileImage: ProfileImageWidget(
+                    dimension: 48,
+                    color: context.color.strokeAccent,
+                  ),
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  '${location.latitude}, ${location.longitude}',
-                  style: context.textStyle.text,
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: Text(
+                    '${location.latitude}, ${location.longitude}',
+                    style: context.textStyle.text,
+                  ),
                 ),
               ],
             );

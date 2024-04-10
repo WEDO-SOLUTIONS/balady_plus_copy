@@ -17,7 +17,7 @@ const customBoxDecoration = BoxDecoration(borderRadius: borderRadius);
 
 class FooterIconButton extends StatelessWidget {
   const FooterIconButton({
-    required this.assetName,
+    this.assetName,
     this.desc,
     this.onTap,
     this.colorIcon,
@@ -26,7 +26,7 @@ class FooterIconButton extends StatelessWidget {
     super.key,
   });
 
-  final String assetName;
+  final String? assetName;
   final void Function()? onTap;
   final Color? colorIcon;
   final Color? colorButton;
@@ -35,8 +35,9 @@ class FooterIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final describtion = desc;
-    final defaultBgColor = context.color.textAndIconsBasePrimary.withOpacity(0.05);
+    final description = desc;
+    final defaultBgColor =
+        context.color.textAndIconsBasePrimary.withOpacity(0.05);
     return Flexible(
       flex: flex,
       child: Padding(
@@ -59,21 +60,22 @@ class FooterIconButton extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SvgPicture.asset(
-                      key: ValueKey(assetName),
-                      assetName,
-                      height: 24,
-                      width: 24,
-                      colorFilter: ColorFilter.mode(
-                        colorIcon ?? context.color.textAndIconsBasePrimary,
-                        BlendMode.srcATop,
+                    if (assetName != null)
+                      SvgPicture.asset(
+                        key: ValueKey(assetName),
+                        assetName!,
+                        height: 24,
+                        width: 24,
+                        colorFilter: ColorFilter.mode(
+                          colorIcon ?? context.color.textAndIconsBasePrimary,
+                          BlendMode.srcATop,
+                        ),
+                        package: PackageConfig.packageName,
+                        matchTextDirection: true,
                       ),
-                      package: PackageConfig.packageName,
-                      matchTextDirection: true,
-                    ),
-                    if (describtion != null) ...[
+                    if (description != null) ...[
                       const SizedBox(width: 8),
-                      Flexible(child: describtion),
+                      Flexible(child: description),
                     ],
                   ],
                 ),
