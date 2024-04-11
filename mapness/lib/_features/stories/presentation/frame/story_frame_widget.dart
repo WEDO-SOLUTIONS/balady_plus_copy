@@ -203,7 +203,10 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                       right: 16,
                       top: 100,
                       bottom: 64,
-                      child: StoryFrameContent(frame: widget.frame),
+                      child: Align(
+                        alignment: AlignmentDirectional.topStart,
+                        child: StoryFrameContent(frame: widget.frame),
+                      ),
                     ),
 
                   /// left right click handlers
@@ -247,7 +250,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                         color: widget.frame.action?.backgroundColor,
                         textColor: widget.frame.action?.textStyle?.color,
                         buttonColorScheme:
-                            widget.frame.action?.backgroundColor == null &&
+                            widget.frame.action?.backgroundColor == null ||
                                     widget.frame.action?.textStyle?.color ==
                                         null
                                 ? ButtonColorScheme.primary
