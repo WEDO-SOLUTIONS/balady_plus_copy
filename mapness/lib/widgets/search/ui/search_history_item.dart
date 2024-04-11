@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/entities/search/models/search_history.dart' as models;
@@ -21,7 +21,7 @@ class SearchHistoryItem extends StatelessWidget {
             SvgPicture.asset(
               'assets/icons/svg/ic_history.svg',
               colorFilter: ColorFilter.mode(
-                context.color.text_and_icons_status_accent,
+                context.color.textAndIconsStatusAccent,
                 BlendMode.srcATop,
               ),
               package: PackageConfig.packageName,
@@ -42,9 +42,9 @@ class SearchHistoryItem extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
-                          .textM
+                          .text
                           .copyWith(
-                              color: context.color.text_and_icons_base_primary,),
+                              color: context.color.textAndIconsBasePrimary,),
                     ),
                   ),
                   if (result.address.isNotEmpty)
@@ -53,10 +53,10 @@ class SearchHistoryItem extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
-                          .textM
+                          .text
                           .copyWith(
                               color:
-                                  context.color.text_and_icons_base_tertiary,),
+                                  context.color.textAndIconsBaseTertiary,),
                     ),
                 ],
               ),

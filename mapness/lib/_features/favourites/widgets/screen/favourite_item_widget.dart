@@ -1,5 +1,5 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
@@ -61,7 +61,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
                       context.l10n.delete,
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
-                          .textS
+                          .footNote
                           .copyWith(color: Colors.white),
                     ),
                   ),
@@ -95,15 +95,15 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
                       widget.item.title,
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
-                          .textM
-                          .copyWith(color: context.color.text_and_icons_base_primary),
+                          .text
+                          .copyWith(color: context.color.textAndIconsBasePrimary),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       widget.item.subtitle,
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()!
-                          .textS
+                          .footNote
                           .copyWith(color: NonThemeColor.color33),
                       overflow: TextOverflow.ellipsis,
                     ),

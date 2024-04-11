@@ -1,5 +1,5 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -54,10 +54,10 @@ class RouteTimelineRow extends StatelessWidget {
         ),
         child: Text(
           point,
-          style: Theme.of(context).extension<ThemeTextStyles>()!.textS.copyWith(
+          style: Theme.of(context).extension<ThemeTextStyles>()!.footNote.copyWith(
               color: index == 0
-                  ? context.color.text_and_icons_base_tertiary
-                  : context.color.text_and_icons_base_primary,),
+                  ? context.color.textAndIconsBaseTertiary
+                  : context.color.textAndIconsBasePrimary,),
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
@@ -68,7 +68,7 @@ class RouteTimelineRow extends StatelessWidget {
           'assets/icons/svg/ic_routing_circle_small.svg',
           package: PackageConfig.packageName,
           colorFilter: ColorFilter.mode(
-            index == 0 ? NonThemeColor.color3 : context.color.stroke_accent,
+            index == 0 ? NonThemeColor.color3 : context.color.strokeAccent,
             BlendMode.srcATop,
           ),
         ),

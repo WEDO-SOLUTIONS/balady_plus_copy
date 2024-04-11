@@ -1,5 +1,5 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/config/package_config.dart';
@@ -21,7 +21,7 @@ class PoiFavoriteDialogButton extends StatelessWidget {
           ? BoxDecoration(
               border: Border(
                 bottom: BorderSide(
-                  color: context.color.surface_base_primary,
+                  color: context.color.surfaceBasePrimary,
                 ),
               ),
             )
@@ -40,7 +40,7 @@ class PoiFavoriteDialogButton extends StatelessWidget {
               Expanded(
                 child: Text(
                   title,
-                  style: Theme.of(context).extension<ThemeTextStyles>()?.textM,
+                  style: Theme.of(context).extension<ThemeTextStyles>()?.text,
                 ),
               ),
               const SizedBox(width: 8),

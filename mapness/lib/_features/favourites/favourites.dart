@@ -1,10 +1,9 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
-import 'package:mapness/_features/favourites/providers/favourite_repository.dart';
 import 'package:mapness/_features/favourites/widgets/delete_all/delete_all_content.dart';
 import 'package:mapness/_features/favourites/widgets/empty_result_widget.dart';
 import 'package:mapness/_features/favourites/widgets/favourites_header.dart';
@@ -48,10 +47,10 @@ class _FavouritesState extends ConsumerState<Favourites> {
         },
       ),
       loading: (_) => Material(
-        color: context.color.surface_base_primary,
+        color: context.color.surfaceBasePrimary,
         child: Center(
           child: CircularProgressIndicator(
-            color: context.color.text_and_icons_status_accent,
+            color: context.color.textAndIconsStatusAccent,
           ),
         ),
       ),
@@ -107,7 +106,7 @@ class _FavouritesState extends ConsumerState<Favourites> {
                             return;
                           }
                           await ref
-                              .read(favouriteRepositoryProvider.notifier)
+                              .read(favouriteCacheProvider.notifier)
                               .deleteAll();
                         }
                       },
@@ -171,7 +170,7 @@ class _FavouritesState extends ConsumerState<Favourites> {
                 ),
                 Expanded(
                   child: Container(
-                    color: context.color.surface_base_primary,
+                    color: context.color.surfaceBasePrimary,
                     child: state.items.isEmpty == true
                         ? Padding(
                             padding: const EdgeInsets.only(
@@ -193,7 +192,7 @@ class _FavouritesState extends ConsumerState<Favourites> {
                               right: 16,
                               top: 16,
                             ),
-                            itemCount: state.items.length ?? 0,
+                            itemCount: state.items.length,
                             separatorBuilder: (_, __) =>
                                 const SizedBox(height: 8),
                             itemBuilder: (_, index) {

@@ -88,7 +88,7 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
         duration: const Duration(milliseconds: 300),
         child: switch (state) {
           ImageState.error => Container(
-              color: context.color.surface_base_primary,
+              color: context.color.surfaceBasePrimary,
               child: Center(
                 child: StoryRefreshButton(
                   onPressed: () {

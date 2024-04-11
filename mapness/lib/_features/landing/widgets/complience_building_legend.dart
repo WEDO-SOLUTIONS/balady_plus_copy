@@ -1,5 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:balady_uikit/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
@@ -40,7 +40,7 @@ class ComplienceBuildingLegend extends ConsumerWidget {
             AutoSizeText(
               locale.legendComplienceBuildingTitle,
               maxLines: 1,
-              style: textStyles.accentS,
+              style: textStyles.footNoteBold,
             ),
             const SizedBox(height: 8),
             _LegendItem(
@@ -51,7 +51,7 @@ class ComplienceBuildingLegend extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             _LegendItem(
-              color: context.color.surface_base_primary,
+              color: context.color.surfaceBasePrimary,
               borderColor: NonThemeColor.color43,
               text: locale.legendComplienceBuildingGrey,
               group: sizeGroupItems,
@@ -99,7 +99,7 @@ class _LegendItem extends StatelessWidget {
         Expanded(
           child: AutoSizeText(
             text,
-            style: textStyles.textXS,
+            style: textStyles.caption,
             group: group,
             minFontSize: 8,
             maxLines: 2,

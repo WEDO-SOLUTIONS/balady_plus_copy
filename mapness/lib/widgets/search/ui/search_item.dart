@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -50,8 +50,8 @@ class SearchItem extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
-                    .textM
-                    .copyWith(color: context.color.text_and_icons_base_primary),
+                    .text
+                    .copyWith(color: context.color.textAndIconsBasePrimary),
               ),
               Row(
                 children: [
@@ -61,8 +61,8 @@ class SearchItem extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
-                        .textM
-                        .copyWith(color: context.color.text_and_icons_base_primary),
+                        .text
+                        .copyWith(color: context.color.textAndIconsBasePrimary),
                   ),
                   const SizedBox(
                     width: 12,
@@ -71,7 +71,7 @@ class SearchItem extends StatelessWidget {
                   // Text(
                   //   "1.3 ${context.l10n.km}",
                   //   overflow: TextOverflow.ellipsis,
-                  //   style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: context.color.text_and_icons_base_primary),
+                  //   style: Theme.of(context).extension<ThemeTextStyles>()!.text.copyWith(color: context.color.textAndIconsBasePrimary),
                   // ),
                 ],
               ),
@@ -84,8 +84,8 @@ class SearchItem extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
-                    .textM
-                    .copyWith(color: context.color.text_and_icons_base_primary),
+                    .text
+                    .copyWith(color: context.color.textAndIconsBasePrimary),
               ),
             ],
           ),

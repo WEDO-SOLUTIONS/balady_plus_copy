@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -91,7 +91,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                               height: 4,
                               width: 40,
                               decoration: BoxDecoration(
-                                color: context.color.surface_base_primary,
+                                color: context.color.surfaceBasePrimary,
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(24)),
                               ),
@@ -105,7 +105,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                                   context.l10n.layersOnTheMap,
                                   style: Theme.of(context)
                                       .extension<ThemeTextStyles>()!
-                                      .headingS,
+                                      .heading1,
                                 ),
                                 const Spacer(),
                                 CustomCloseButton(
@@ -152,7 +152,7 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                   if (state.isLoading)
                     Center(
                         child: CircularProgressIndicator(
-                      color: context.color.text_and_icons_status_accent,
+                      color: context.color.textAndIconsStatusAccent,
                     ),),
                 ],
               ),
@@ -179,7 +179,7 @@ class FilterRow extends StatelessWidget {
       Radius.circular(8),
     );
 
-    final textM = Theme.of(context).extension<ThemeTextStyles>()!.textM;
+    final textM = Theme.of(context).extension<ThemeTextStyles>()!.text;
 
     return Material(
       color: Colors.white,
@@ -196,7 +196,7 @@ class FilterRow extends StatelessWidget {
                 semanticsLabel: 'MinApps Screen',
                 package: 'mapness',
                 color: isSelected
-                    ? context.color.stroke_accent
+                    ? context.color.strokeAccent
                     : const Color.fromRGBO(30, 42, 54, 0.5),
               ),
               const SizedBox(
@@ -205,7 +205,7 @@ class FilterRow extends StatelessWidget {
               Text(
                 value.titleLocale(context.l10n),
                 style: textM.copyWith(
-                  color: isSelected ? context.color.stroke_accent : textM.color,
+                  color: isSelected ? context.color.strokeAccent : textM.color,
                 ),
               ),
             ],

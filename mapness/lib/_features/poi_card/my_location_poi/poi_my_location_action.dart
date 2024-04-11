@@ -12,13 +12,22 @@ class MyLocationPoiActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = context.textStyle.accentM;
-    final accent = context.color.text_and_icons_status_accent;
-    final primary = context.color.text_and_icons_base_inverse_primary;
+    final textStyle = context.textStyle.footNoteBold;
+    final accent = context.color.textAndIconsStatusAccent;
+    final primary = context.color.textAndIconsBaseInversePrimary;
 
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(color: Colors.white),
+      decoration: BoxDecoration(
+        color: context.color.surfaceBasePrimary,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.06),
+            offset: const Offset(0.0, -1.0),
+            blurRadius: 2,
+          ),
+        ],
+      ),
       padding: const EdgeInsets.all(8),
       child: SafeArea(
         top: false,

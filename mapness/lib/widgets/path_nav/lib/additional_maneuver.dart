@@ -1,4 +1,4 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -18,7 +18,7 @@ class _AdditionalManeuver extends StatelessWidget {
           bottomLeft: Radius.circular(16),
           bottomRight: Radius.circular(16),
         ),
-        color: context.color.surface_base_primary,
+        color: context.color.surfaceBasePrimary,
       ),
       child: Column(
         children: [

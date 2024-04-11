@@ -53,7 +53,7 @@ class RoutePointMyLocation extends RoutePoint {
 
   @override
   Color titleColor(BuildContext context) =>
-      context.color.text_and_icons_base_primary;
+      context.color.textAndIconsBasePrimary;
 }
 
 class RoutePointCoordinates extends RoutePoint {
@@ -87,7 +87,7 @@ class RoutePointCoordinates extends RoutePoint {
 
   @override
   Color titleColor(BuildContext context) =>
-      context.color.text_and_icons_base_primary;
+      context.color.textAndIconsBasePrimary;
 }
 
 class RoutePointDirectoryObject extends RoutePoint {
@@ -120,8 +120,8 @@ class RoutePointDirectoryObject extends RoutePoint {
 
   @override
   Color titleColor(BuildContext context) => object == null
-      ? context.color.text_and_icons_base_tertiary
-      : context.color.text_and_icons_base_primary;
+      ? context.color.textAndIconsBaseTertiary
+      : context.color.textAndIconsBasePrimary;
 }
 
 class RoutePointFavouriteItem extends RoutePoint {
@@ -154,6 +154,6 @@ class RoutePointFavouriteItem extends RoutePoint {
 
   @override
   Color titleColor(BuildContext context) => item == null
-      ? context.color.text_and_icons_base_tertiary
-      : context.color.text_and_icons_base_primary;
+      ? context.color.textAndIconsBaseTertiary
+      : context.color.textAndIconsBasePrimary;
 }

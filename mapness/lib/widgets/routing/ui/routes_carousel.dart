@@ -1,5 +1,5 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,9 +55,9 @@ class RoutesCarousel extends ConsumerWidget {
                   context.l10n.routeNotFound,
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
-                      .textM
+                      .text
                       .copyWith(
-                        color: context.color.text_and_icons_base_primary,
+                        color: context.color.textAndIconsBasePrimary,
                       ),
                 ),
                 const SizedBox(
@@ -149,20 +149,20 @@ class RouteCell extends ConsumerWidget {
                           duration.formatDuration(context.l10n),
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
-                              .accentM
+                              .callout
                               .copyWith(
                                 color:
-                                    context.color.text_and_icons_base_primary,
+                                    context.color.textAndIconsBasePrimary,
                               ),
                         ),
                         Text(
                           distance.formatDistance(context.l10n),
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
-                              .textS
+                              .footNote
                               .copyWith(
                                 color:
-                                    context.color.text_and_icons_base_primary,
+                                    context.color.textAndIconsBasePrimary,
                               ),
                         ),
                       ],
@@ -170,7 +170,7 @@ class RouteCell extends ConsumerWidget {
                   ),
                   const Spacer(),
                   Material(
-                    color: context.color.stroke_accent,
+                    color: context.color.strokeAccent,
                     borderRadius: BorderRadius.circular(8),
                     child: InkWell(
                       onTap: startNavigation,
@@ -187,7 +187,7 @@ class RouteCell extends ConsumerWidget {
                               context.l10n.go,
                               style: Theme.of(context)
                                   .extension<ThemeTextStyles>()!
-                                  .accentXS
+                                  .caption
                                   .copyWith(color: Colors.white),
                             ),
                           ),
@@ -254,14 +254,14 @@ class HealthInfo extends StatelessWidget {
           const SizedBox(width: 3),
           Text(
             title,
-            style: context.textStyle.textS
-                .copyWith(color: context.color.text_and_icons_base_primary),
+            style: context.textStyle.footNote
+                .copyWith(color: context.color.textAndIconsBasePrimary),
           ),
           const SizedBox(width: 3),
           Text(
             '$count',
-            style: context.textStyle.textS
-                .copyWith(color: context.color.text_and_icons_base_tertiary),
+            style: context.textStyle.footNote
+                .copyWith(color: context.color.textAndIconsBaseTertiary),
           ),
         ],
       );

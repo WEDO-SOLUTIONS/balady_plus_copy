@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -32,9 +32,9 @@ class ExpandableContainerState extends State<ExpandableContainer> {
                   '•',
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
-                      .textM
+                      .text
                       .apply(
-                        color: context.color.text_and_icons_base_primary,
+                        color: context.color.textAndIconsBasePrimary,
                       ),
                 ),
                 const SizedBox(width: 8),
@@ -43,9 +43,9 @@ class ExpandableContainerState extends State<ExpandableContainer> {
                     e,
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
-                        .textM
+                        .text
                         .apply(
-                          color: context.color.text_and_icons_base_primary,
+                          color: context.color.textAndIconsBasePrimary,
                         ),
                   ),
                 ),
@@ -73,8 +73,8 @@ class ExpandableContainerState extends State<ExpandableContainer> {
                   widget.title,
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
-                      .accentL
-                      .apply(color: context.color.text_and_icons_base_primary),
+                      .heading2
+                      .apply(color: context.color.textAndIconsBasePrimary),
                 ),
                 if (widget.data.split('\n').length > 5)
                   Icon(
@@ -93,9 +93,9 @@ class ExpandableContainerState extends State<ExpandableContainer> {
                   '...',
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
-                      .textM
+                      .text
                       .apply(
-                        color: context.color.text_and_icons_base_primary,
+                        color: context.color.textAndIconsBasePrimary,
                       ),
                 ),
               ),

@@ -15,7 +15,6 @@ import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
-import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -100,14 +99,19 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final esri = MapObjectManagerSettings.esri();
+    final mappness = MapObjectManagerSettings.mappness();
     ref
       ..watch(layersControlsProvider)
       ..watch(favouriteMarkersProvider.select((value) => null))
 
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
-      ..watch(mapObjectManagerProvider(named: mapLayerName).notifier)
+      ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId)
+          .notifier)
       // ref.watch(iwishMarkersProvider.select((value) => null));
-      ..watch(mapObjectManagerProvider(named: MapnessConsts.mapLayerName));
+      ..watch(mapObjectManagerProvider(
+              named: mappness.name, layerId: mappness.layerId)
+          .notifier);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -145,6 +149,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
           ref.read(goRouterProvider),
           event.dgisObjectId.objectId,
           latLng: event.latLng,
+          zoom: 16,
         );
       }
     } else if (event is RoadEventTapEvent) {
@@ -155,6 +160,9 @@ class _LandingPageState extends ConsumerState<LandingPage> {
           ref.read(goRouterProvider),
           -1,
           latLng: event.latLng,
+          zoom: 17,
+          bearing: 0,
+          tilt: 0,
         );
       }
     }

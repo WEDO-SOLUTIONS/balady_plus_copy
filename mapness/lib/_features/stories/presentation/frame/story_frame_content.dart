@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/stories/domain/frame/story_frame_data.dart';
 import 'package:mapness/_features/stories/presentation/story_localizations.dart';
@@ -25,7 +25,7 @@ class StoryFrameContent extends StatelessWidget {
                   frame.titleOrFailback(StoryLocalizations.of(context)!.locale),
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
-                      .headingL
+                      .accent
                       .copyWith(
                         color: frame.titleStyle?.color ?? Colors.white,
                       ),
@@ -35,7 +35,7 @@ class StoryFrameContent extends StatelessWidget {
                     frame.subtitle!,
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
-                        .headingL
+                        .accent
                         .copyWith(
                           color: frame.titleStyle?.color ?? Colors.white,
                         ),
@@ -48,7 +48,7 @@ class StoryFrameContent extends StatelessWidget {
                         '',
                     style: Theme.of(context)
                         .extension<ThemeTextStyles>()!
-                        .textM
+                        .text
                         .copyWith(
                           color: frame.descriptionStyle?.color ?? Colors.white,
                         ),

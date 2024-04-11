@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 
 import 'package:mapness/_features/stories/domain/frame/story_text_style.dart';
@@ -27,8 +27,8 @@ class FrameActionButton extends StatelessWidget {
       onPressed: onPressed,
       child: Text(
         title,
-        style: Theme.of(context).extension<ThemeTextStyles>()!.accentS.copyWith(
-              color: textStyle?.color ?? context.color.stroke_accent,
+        style: Theme.of(context).extension<ThemeTextStyles>()!.footNoteBold.copyWith(
+              color: textStyle?.color ?? context.color.strokeAccent,
             ),
       ),
     );

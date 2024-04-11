@@ -84,6 +84,9 @@ class DgisBottomSheet extends StatefulWidget {
           availableExpansions.isNotEmpty,
           "AvailableExpansions can't be empty",
         );
+
+  /// Height of the bottom sheet when [Expansion.middle] provided in [availableExpansions]
+  /// You can use it to set the height of the bottom sheet on you screen
   final double? middleHeight;
   final double? collapsedHeight;
   final double hiddenHeight;
@@ -480,7 +483,10 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    if (widget.scrollHeader != null) widget.scrollHeader!,
+                    if (widget.scrollHeader != null)
+                      _wrappedWithVerticalScrollListener(
+                        child: widget.scrollHeader!,
+                      ),
                     Expanded(
                       child: widget.scrollableBody == null
                           ? SingleChildScrollView(

@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:mapness/_features/landing/providers/interesting_places.dart';
 import 'package:mapness/_features/landing/widgets/poi_card.dart';
@@ -35,9 +35,9 @@ class PlacesHorizontalList extends StatelessWidget {
                 title,
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
-                    .accentL
+                    .heading2
                     .copyWith(
-                      color: context.color.text_and_icons_base_primary,
+                      color: context.color.textAndIconsBasePrimary,
                     ),
               ),
             ),
