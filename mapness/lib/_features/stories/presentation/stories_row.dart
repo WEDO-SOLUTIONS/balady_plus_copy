@@ -1,26 +1,26 @@
 import 'dart:math';
 
+import 'package:balady_uikit/balady_uikit.dart' show Stories;
 import 'package:flutter/material.dart';
-import 'package:mapness/_features/common/animated/animated_scroll_view_item.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
 import 'package:mapness/_features/stories/domain/story_data.dart';
-import 'package:mapness/_features/stories/presentation/thumbnails/story_thumbnail_widget.dart';
 
-class StoryThumbnails extends StatelessWidget {
-
-  const StoryThumbnails({
-    required this.onThumbnailPressed, required this.stories, super.key,
-  });
+class StoriesRow extends StatelessWidget {
   final List<StoryData> stories;
+
   final void Function(String storyId) onThumbnailPressed;
 
+  const StoriesRow({
+    required this.onThumbnailPressed,
+    required this.stories,
+    super.key,
+  });
+
   @override
-  Widget build(BuildContext context) => LayoutBuilder(
-      builder: (context, constraints) => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // const StoryThumbnailLabel(title: 'جديدنا'),
-            SizedBox(
+  Widget build(BuildContext context) => Column(
+        children: [
+          LayoutBuilder(
+            builder: (context, constraints) => SizedBox(
               width: constraints.maxWidth,
               height: min(constraints.maxHeight, 120),
               child: ScrollConfiguration(
@@ -33,15 +33,12 @@ class StoryThumbnails extends StatelessWidget {
                   itemCount: stories.length,
                   itemBuilder: (context, i) {
                     final story = stories[i];
-                    return AnimatedScrollViewItem(
+                    return Stories(
                       key: ValueKey(story.storyId),
-                      child: StoryThumbnailWidget(
-                        // thumbnail: story,
-                        onPress: () => onThumbnailPressed(story.storyId),
-                        imageUrl: story.thumbnail.imageUrl,
-                        isWatched: story.isViewed,
-                        title: story.thumbnail.title,
-                      ),
+                      title: story.thumbnail.title,
+                      networkImage: story.thumbnail.imageUrl,
+                      onTap: () => onThumbnailPressed(story.storyId),
+                      isWatched: story.isViewed,
                     );
                   },
                   separatorBuilder: (context, index) =>
@@ -49,7 +46,7 @@ class StoryThumbnails extends StatelessWidget {
                 ),
               ),
             ),
-          ],
-        ),
-    );
+          ),
+        ],
+      );
 }
