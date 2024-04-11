@@ -16,7 +16,7 @@ class StoryFrameContent extends StatelessWidget {
     final AppLocalizations l10n = StoryLocalizations.of(context)!.locale;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
