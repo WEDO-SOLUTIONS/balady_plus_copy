@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -24,8 +24,8 @@ class HappinessTagWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
             color:
-            isSelected ? context.color.stroke_accent : context.color
-                .surface_base_primary,
+            isSelected ? context.color.strokeAccent : context.color
+                .surfaceBasePrimary,
             width: 2,),
         color: NonThemeColor.color37,
       ),
@@ -50,8 +50,8 @@ class HappinessTagWidget extends StatelessWidget {
                 group: tagSizeGroup,
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
-                    .accentXS
-                    .copyWith(color: context.color.text_and_icons_base_primary),
+                    .caption
+                    .copyWith(color: context.color.textAndIconsBasePrimary),
               ),
             ],
           ),

@@ -55,8 +55,8 @@ class _SearchFieldState extends State<SearchField> {
             decoration: InputDecoration(
               filled: true,
               hintText: context.l10n.search,
-              // fillColor: context.color.surface_base_secondary.withOpacity(0.05),
-              fillColor: context.color.surface_base_secondary,
+              // fillColor: context.color.surfaceBaseSecondary.withOpacity(0.05),
+              fillColor: context.color.surfaceBaseSecondary,
               contentPadding: const EdgeInsetsDirectional.only(
                 start: 8,
                 end: 38,
@@ -71,7 +71,7 @@ class _SearchFieldState extends State<SearchField> {
             ),
             cursorHeight: 22,
             style:  TextStyle(
-              color: context.color.text_and_icons_base_primary,
+              color: context.color.textAndIconsBasePrimary,
               fontSize: 14,
               fontWeight: FontWeight.w400,
               height: 1.5,

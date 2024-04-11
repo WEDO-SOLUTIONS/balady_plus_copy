@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -24,8 +24,8 @@ class RoutingHistoryEmpty extends StatelessWidget {
             textAlign: TextAlign.center,
             style: Theme.of(context)
                 .extension<ThemeTextStyles>()!
-                .textS
-                .copyWith(color: context.color.text_and_icons_base_primary),
+                .footNote
+                .copyWith(color: context.color.textAndIconsBasePrimary),
           ),
         ),
       ),

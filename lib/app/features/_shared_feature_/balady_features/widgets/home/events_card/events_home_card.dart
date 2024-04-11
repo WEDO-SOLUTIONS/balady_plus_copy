@@ -1,19 +1,18 @@
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/balady_features/balady_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
-import 'package:balady_uikit/colors/app_color_scheme.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
+import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart';
+import 'package:balady_plus/app/features/events/presentation/bloc/events_state.dart';
+import 'package:balady_plus/etmam_app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_shimmer_widget.dart';
+import 'package:balady_uikit/core/colors/app_color_scheme.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../../core/dependency_injection/injection_container.dart';
-import '../../../../../events/domain/entities/search_events/search_events_item.dart';
-import '../../../../../events/presentation/bloc/events_bloc.dart';
-import '../../../../../events/presentation/bloc/events_event.dart';
-import '../../../../../events/presentation/bloc/events_state.dart';
-import '../../../../presentation/widgets/custom_shimmer_list_widget.dart';
-import 'events_item_card.dart';
 
 class EventsHomeCard extends StatelessWidget {
   final AppColorScheme colorScheme;
@@ -57,7 +56,7 @@ class EventsHomeCard extends StatelessWidget {
                       'events'.tr(),
                       style: Theme.of(context)
                           .extension<ThemeTextStyles>()
-                          ?.accentL
+                          ?.heading2
                           .copyWith(color: const Color(0xFF1E2A36)),
                     ),
                     GestureDetector(
@@ -69,7 +68,7 @@ class EventsHomeCard extends StatelessWidget {
                         "show_all".tr(),
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()
-                            ?.accentS
+                            ?.footNoteBold
                             .copyWith(
                               color: const Color(0xFF1E2A36).withOpacity(0.5),
                             ),

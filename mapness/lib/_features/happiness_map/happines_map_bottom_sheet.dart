@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
@@ -143,7 +143,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                       height: 4,
                       width: 26,
                       decoration: BoxDecoration(
-                        color: context.color.surface_base_primary,
+                        color: context.color.surfaceBasePrimary,
                         borderRadius:
                             const BorderRadius.all(Radius.circular(24)),
                       ),
@@ -166,10 +166,10 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                                     context.l10n.shareYourFeelings,
                                     style: Theme.of(context)
                                         .extension<ThemeTextStyles>()!
-                                        .headingS
+                                        .heading1
                                         .copyWith(
                                           color: context.color
-                                              .text_and_icons_base_primary,
+                                              .textAndIconsBasePrimary,
                                         ),
                                   ),
                                 ),
@@ -204,7 +204,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                               HappinessTagsGrid(),
                               const SizedBox(height: 20),
                               Material(
-                                color: context.color.surface_base_primary,
+                                color: context.color.surfaceBasePrimary,
                                 borderRadius: BorderRadius.circular(8),
                                 child: InkWell(
                                   onTap: () => const HappinessMapCommentRoute()
@@ -220,10 +220,10 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                                           : state.comment,
                                       style: Theme.of(context)
                                           .extension<ThemeTextStyles>()!
-                                          .textM
+                                          .text
                                           .copyWith(
                                             color: context.color
-                                                .text_and_icons_base_primary,
+                                                .textAndIconsBasePrimary,
                                           ),
                                       overflow: TextOverflow.ellipsis,
                                     ),

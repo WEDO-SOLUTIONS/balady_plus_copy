@@ -13,13 +13,13 @@ class _ShareItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (hasContactsAndHasEntrances) {
-      final textStyle = context.textStyle.accentS;
-      final color = context.color.text_and_icons_status_accent;
+      final textStyle = context.textStyle.footNoteBold;
+      final color = context.color.textAndIconsStatusAccent;
       final style = textStyle.copyWith(color: color);
       return FooterIconButton(
         flex: flex,
         assetName: 'assets/icons/svg/ic_share.svg',
-        colorIcon: context.color.text_and_icons_status_accent,
+        colorIcon: context.color.textAndIconsStatusAccent,
         desc: Text(
           context.l10n.share,
           style: style,
@@ -34,8 +34,8 @@ class _ShareItem extends StatelessWidget {
       flex: flex,
 
       assetName: 'assets/icons/svg/ic_share.svg',
-      colorIcon: context.color.text_and_icons_status_accent,
-      onTap: onTap, // () => viewModel.share(objectMessage),
+      colorIcon: context.color.textAndIconsStatusAccent,
+      onTap: onTap,
     );
   }
 }

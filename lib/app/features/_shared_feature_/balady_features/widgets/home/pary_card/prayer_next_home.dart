@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import '../../../../../../core/utils/utils_exports.dart' show Prayers;
 
@@ -74,7 +74,7 @@ class _NextPrayerState extends State<NextPrayerHome> {
                 "$hours:$minutes:$seconds",
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
-                    .headingL
+                    .accent
                     .copyWith(
                       color: Colors.white,
                     ),
@@ -83,7 +83,7 @@ class _NextPrayerState extends State<NextPrayerHome> {
                 "$minutes:$seconds",
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
-                    .headingL
+                    .accent
                     .copyWith(
                       color: Colors.white,
                     ),

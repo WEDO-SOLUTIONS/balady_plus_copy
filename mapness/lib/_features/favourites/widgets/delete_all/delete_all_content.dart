@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -15,9 +15,9 @@ class DeleteAllContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final textStyle = Theme.of(context)
         .extension<ThemeTextStyles>()!
-        .textL
+        .heading2
         .copyWith(color: Colors.white);
-    final color = context.color.stroke_accent;
+    final color = context.color.strokeAccent;
 
     return Material(
       color: Colors.black.withOpacity(0.8),

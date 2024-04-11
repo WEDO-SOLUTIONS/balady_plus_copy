@@ -31,7 +31,7 @@ class FrameProgressIndicator extends StatelessWidget {
             Expanded(
               child: ProgressIndicatorTheme(
                 data: ProgressIndicatorThemeData(
-                  linearTrackColor: context.color.surface_base_primary,
+                  linearTrackColor: context.color.surfaceBasePrimary,
                   linearMinHeight: 2,
                   color: Colors.white,
                 ),

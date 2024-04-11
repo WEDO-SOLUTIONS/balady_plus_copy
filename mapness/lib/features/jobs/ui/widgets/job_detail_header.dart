@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/jobs/providers/job_detail_provider.dart';
@@ -99,16 +99,16 @@ class DashboardHeader extends ConsumerWidget {
                         data?.name ?? '',
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
-                            .accentL,
+                            .heading2,
                       ),
                       Text(
                         data?.provider?.name ?? '',
                         maxLines: 2,
                         style: Theme.of(context)
                             .extension<ThemeTextStyles>()!
-                            .textS
+                            .footNote
                             .apply(
-                              color: context.color.text_and_icons_base_primary.withOpacity(.5),
+                              color: context.color.textAndIconsBasePrimary.withOpacity(.5),
                             ),
                       ),
                     ],

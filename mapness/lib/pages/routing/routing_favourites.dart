@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -26,7 +26,7 @@ class RoutingFavouritesPage extends StatelessWidget {
                   context.l10n.favourites,
                   style: Theme.of(context)
                       .extension<ThemeTextStyles>()!
-                      .accentM
+                      .callout
                       .copyWith(color: Colors.white),
                 ),
               ),
@@ -48,7 +48,7 @@ class RoutingFavouritesPage extends StatelessWidget {
                         width: 24,
                         package: PackageConfig.packageName,
                         colorFilter:  ColorFilter.mode(
-                          context.color.text_and_icons_base_primary,
+                          context.color.textAndIconsBasePrimary,
                           BlendMode.srcIn,
                         ),
                       ),

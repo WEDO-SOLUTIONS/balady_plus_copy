@@ -57,9 +57,12 @@ class _JobMapBottomSheetState extends ConsumerState<JobMapBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final jobsList = ref.watch(jobListProvider());
-
+    final settings = MapObjectManagerSettings.jobs();
     final jobsObjectManager = ref.watch(
-      mapObjectManagerProvider(named: 'jobs').notifier,
+      mapObjectManagerProvider(
+        named: settings.name,
+        layerId: settings.layerId,
+      ).notifier,
     );
     ref.listen(
       jobListProvider(),
@@ -87,7 +90,7 @@ class _JobMapBottomSheetState extends ConsumerState<JobMapBottomSheet> {
           textDirection: Directionality.of(context),
           child: Container(
             decoration: BoxDecoration(
-              color: context.color.surface_base_primary,
+              color: context.color.surfaceBasePrimary,
               borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(16),
                 topLeft: Radius.circular(16),

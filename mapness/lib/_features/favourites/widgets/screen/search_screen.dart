@@ -24,11 +24,11 @@ class SearchScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
-        backgroundColor: context.color.surface_base_primary,
+        backgroundColor: context.color.surfaceBasePrimary,
         body: Column(
           children: [
             Container(
-              color: context.color.surface_base_primary,
+              color: context.color.surfaceBasePrimary,
               padding: EdgeInsets.only(
                 left: 16,
                 right: 16,

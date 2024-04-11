@@ -1,5 +1,5 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
@@ -17,8 +17,8 @@ class IwishAboutPark extends StatelessWidget {
   Widget build(BuildContext context) {
     final locale = context.l10n;
     final textStyles = Theme.of(context).extension<ThemeTextStyles>()!;
-    final title = textStyles.textM;
-    final data = textStyles.textS.copyWith(color: NonThemeColor.color16);
+    final title = textStyles.text;
+    final data = textStyles.footNote.copyWith(color: NonThemeColor.color16);
 
     final showSize = parkSize != ParkSize.unknown;
     final showArea = metadata.areaSize != 0;
@@ -32,7 +32,7 @@ class IwishAboutPark extends StatelessWidget {
         ///
         Text(
           locale.aboutPark,
-          style: textStyles.accentM,
+          style: textStyles.callout,
         ),
         const SizedBox(height: 21),
 

@@ -1,5 +1,5 @@
-import 'package:balady_uikit/colors/non_theme_colors.dart';
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_message.dart';
 
@@ -37,7 +37,7 @@ class PathNavMessageWidget extends StatelessWidget {
                 textAlign: TextAlign.end,
                 style: Theme.of(context)
                     .extension<ThemeTextStyles>()!
-                    .textM
+                    .text
                     .copyWith(color: Colors.white),
               ),
             ),

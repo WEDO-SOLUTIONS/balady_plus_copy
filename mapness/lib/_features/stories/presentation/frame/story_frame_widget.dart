@@ -167,7 +167,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                   imageUrl: widget.frame.imageUrl,
                   fit: BoxFit.cover,
                   loadingWidget: Container(
-                    color: context.color.surface_base_primary,
+                    color: context.color.surfaceBasePrimary,
                     child: const Center(
                       child: LoadingCircular(),
                     ),

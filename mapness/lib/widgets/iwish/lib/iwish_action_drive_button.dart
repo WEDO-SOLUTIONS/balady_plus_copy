@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -16,7 +16,7 @@ class IwishActionDriveButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-      color: context.color.stroke_accent,
+      color: context.color.strokeAccent,
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
         onTap: onPressed,
@@ -36,7 +36,7 @@ class IwishActionDriveButton extends StatelessWidget {
               const SizedBox(width: 5),
               Text(
                 label,
-                style: Theme.of(context).extension<ThemeTextStyles>()!.textM.copyWith(color: Colors.white),
+                style: Theme.of(context).extension<ThemeTextStyles>()!.text.copyWith(color: Colors.white),
               ),
             ],
           ),

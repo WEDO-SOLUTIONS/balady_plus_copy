@@ -1,4 +1,4 @@
-import 'package:balady_uikit/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/poi_card/widgets/card_content.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -22,9 +22,8 @@ class Description extends StatelessWidget {
               context.l10n.about,
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()
-                  ?.textM
-                  .copyWith(
-                    color: context.color.text_and_icons_base_primary,
+                  ?.text.copyWith(
+                    color: context.color.textAndIconsBasePrimary,
                     height: 1.5,
                   ),
             ),
@@ -35,9 +34,9 @@ class Description extends StatelessWidget {
               text,
               style: Theme.of(context)
                   .extension<ThemeTextStyles>()
-                  ?.textS
+                  ?.footNote
                   .copyWith(
-                    color: context.color.text_and_icons_base_tertiary,
+                    color: context.color.textAndIconsBaseTertiary,
                     height: 1.5,
                   ),
             ),

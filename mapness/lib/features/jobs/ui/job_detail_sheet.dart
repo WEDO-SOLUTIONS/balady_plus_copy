@@ -51,7 +51,7 @@ class _JobDetailSheetState extends ConsumerState<JobDetailSheet> {
           textDirection: Directionality.of(context),
           child: Container(
             decoration:  BoxDecoration(
-              color: context.color.surface_base_primary,
+              color: context.color.surfaceBasePrimary,
               borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(16),
                 topLeft: Radius.circular(16),
