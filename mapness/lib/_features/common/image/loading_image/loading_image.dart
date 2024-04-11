@@ -85,7 +85,8 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
     );
 
     return AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 350),
+        switchOutCurve: Curves.easeOut,
         child: switch (state) {
           ImageState.error => Container(
               color: context.color.surfaceBasePrimary,

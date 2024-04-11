@@ -9,6 +9,17 @@ import 'package:mapness/_features/stories/presentation/frame/story_frame_control
 import 'package:mapness/_features/stories/presentation/frame/story_frame_widget.dart';
 
 class StoryFramesPlayer extends ConsumerStatefulWidget {
+  final StoryFrameController? controller;
+
+  final StoryData story;
+
+  final VoidCallback onNextStory;
+  final VoidCallback onPreviousStory;
+  final VoidCallback onClose;
+
+  final void Function(StoryFrameAction action)? onActionPressed;
+  final void Function(String id, int page)? onMarkReed;
+
   const StoryFramesPlayer({
     required this.onClose,
     required this.onNextStory,
@@ -19,17 +30,6 @@ class StoryFramesPlayer extends ConsumerStatefulWidget {
     this.onActionPressed,
     this.onMarkReed,
   });
-  final StoryFrameController? controller;
-
-  final StoryData story;
-
-  final VoidCallback onNextStory;
-  final VoidCallback onPreviousStory;
-  final VoidCallback onClose;
-
-  final void Function(StoryFrameAction action)? onActionPressed;
-
-  final void Function(String id, int page)? onMarkReed;
 
   @override
   ConsumerState<StoryFramesPlayer> createState() => _StoryFramesPlayerState();
