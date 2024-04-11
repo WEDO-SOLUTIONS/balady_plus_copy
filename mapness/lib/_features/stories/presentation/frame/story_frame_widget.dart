@@ -201,7 +201,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                     Positioned(
                       left: 16,
                       right: 16,
-                      top: 88,
+                      top: 100,
                       bottom: 64,
                       child: StoryFrameContent(frame: widget.frame),
                     ),
