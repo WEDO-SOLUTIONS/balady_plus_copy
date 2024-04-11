@@ -47,17 +47,15 @@ class KiblahCompass extends ConsumerWidget {
                     child: Stack(
                       children: [
                         RadarWidget(
-                          backgroundColor: correct
-                              ? NonThemeColor.color3.withOpacity(0.2)
-                              : context.color.textAndIconsBasePrimary.withOpacity(0.2),
+                          backgroundColor: Colors.transparent,
                           radarColor: correct
                               ? NonThemeColor.color3.withOpacity(0.7)
-                              : context.color.textAndIconsBasePrimary.withOpacity(0.7),
+                              : context.color.textAndIconsBasePrimary.withOpacity(0.9),
                         ),
                         CenterCompassWidget(
                           backgroundColor: correct
-                              ? context.color.surfaceStatusPositive.withOpacity(0.2)
-                              : context.color.surfaceStatusAccent.withOpacity(0.2),
+                              ? context.staticColor.surfaceStatusPositive.withOpacity(0.2)
+                              : context.staticColor.surfaceStatusAccent.withOpacity(0.2),
                         ),
                       ],
                     ),
