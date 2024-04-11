@@ -156,7 +156,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
   void _onActionPressed() {
     final action = widget.frame.action;
     if (action != null) {
-      widget.onActionPressed?.call(widget.frame.action!);
+      widget.onActionPressed?.call(action);
     }
   }
 

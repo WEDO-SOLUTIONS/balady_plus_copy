@@ -74,6 +74,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _storyFrameController.dispose();
     super.dispose();
   }
 
