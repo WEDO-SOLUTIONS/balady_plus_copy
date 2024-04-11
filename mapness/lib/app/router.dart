@@ -14,7 +14,7 @@ GoRouter goRouter(GoRouterRef ref) {
   final homeRoute = home.homeShellRoute(naviEnabled: appFeatures.naviEnabled);
 
   final router = GoRouter(
-    initialLocation: '/kiblah',
+    initialLocation: '/landing',
     navigatorKey: rootNavigatorKey,
     debugLogDiagnostics: true,
     routes: [
