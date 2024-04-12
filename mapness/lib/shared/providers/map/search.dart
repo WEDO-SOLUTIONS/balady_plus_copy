@@ -1,5 +1,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search.g.dart';
@@ -7,6 +8,8 @@ part 'search.g.dart';
 @riverpod
 class Search extends _$Search {
   PageMessage? _currentPage;
+
+  static const name = 'search';
 
   @override
   List<DirectoryObjectMessage> build() {
@@ -42,15 +45,24 @@ class Search extends _$Search {
   }
 
   Future<void> removeMarkers() async {
-    final dgisController = ref.read(dgisControllerProvider);
+    final mapObjectManager = ref.read(
+      mapObjectManagerProvider(
+        named: name,
+      ).notifier,
+    );
 
-    await dgisController.value?.removeAll();
+    await mapObjectManager.removeAll();
   }
 
   Future<void> _dispose() async {
-    final dgisController = ref.read(dgisControllerProvider);
+    final mapObjectManager = ref.read(
+      mapObjectManagerProvider(
+        named: name,
+      ).notifier,
+    );
+    await mapObjectManager.removeAll();
 
-    await dgisController.value?.removeAll();
+    final dgisController = ref.read(dgisControllerProvider);
     if (_currentPage != null) {
       await dgisController.value?.releasePage(_currentPage!);
     }
@@ -61,7 +73,11 @@ class Search extends _$Search {
     MarkerIconMessage? icon,
     Function(DgisObjectIdMessage?)? onTap,
   }) async {
-    final dgisController = ref.read(dgisControllerProvider);
+    final mapObjectManager = ref.read(
+      mapObjectManagerProvider(
+        named: name,
+      ).notifier,
+    );
 
     final markers = <Marker>[];
     for (final markerInfo
@@ -71,9 +87,6 @@ class Search extends _$Search {
           id: markerInfo?.objectId?.objectId.toString() ?? 'invalid',
           onTap: () {
             onTap?.call(markerInfo.objectId);
-            // ref
-            //     .read(mapControlsProvider.notifier)
-            //     .update(MapControlsStatePoI(markerInfo.objectId!));
           },
           options: MarkerOptionsMessage(
             position: markerInfo!.geoPoint,
@@ -88,7 +101,7 @@ class Search extends _$Search {
     }
 
     await removeMarkers();
-    await dgisController.value?.addMarkers(markers);
+    await mapObjectManager.addMarkers(markers);
 
     _currentPage = result?.firstPage;
 
@@ -106,7 +119,7 @@ class Search extends _$Search {
     PageMessage? page;
     try {
       page = await dgisController.value?.fetchNextPage(_currentPage!);
-    } catch (e) {
+    } on Exception catch (_) {
       return false;
     }
 
