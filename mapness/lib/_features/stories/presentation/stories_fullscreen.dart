@@ -42,11 +42,10 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
 
   Future<void> _precacheStories() async {
     ref.read(storyServiceProvider).whenData((data) {
-      final nearStories = data.skip(initialPage - 1).take(3);
+      final nearStories = data.skip(initialPage - 1);
 
       for (final story in nearStories) {
-        final unseenFrames =
-            story.frames.where((element) => element.isWatched == false).take(2);
+        final unseenFrames = story.frames.take(2);
 
         for (final element in unseenFrames) {
           precacheImage(NetworkImage(element.imageUrl), context);

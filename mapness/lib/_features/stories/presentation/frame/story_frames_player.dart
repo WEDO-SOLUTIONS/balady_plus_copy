@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -76,13 +77,12 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // precache next 2 images
     final frames = widget.story.frames;
-    for (var i = currentIndex; i < min(frames.length, 2); i++) {
+    for (var i = currentIndex; i < frames.length; i++) {
       if (frames[i].isAssetImage == true) {
         continue;
       }
-      precacheImage(NetworkImage(frames[i].imageUrl), context);
+      unawaited(precacheImage(NetworkImage(frames[i].imageUrl), context));
     }
   }
 
