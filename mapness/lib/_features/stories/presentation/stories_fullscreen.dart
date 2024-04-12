@@ -5,6 +5,7 @@ import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/stories/data/story_service.dart';
 import 'package:mapness/_features/stories/domain/frame/story_frame_action.dart';
 import 'package:mapness/_features/stories/presentation/frame/story_frames_player.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 import 'frame/story_frame_controller.dart';
 
@@ -130,26 +131,30 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen>
         final stories = storiesData;
         final direction = ref.read(uiDirectionProvider);
 
-        return Directionality(
-          textDirection: direction,
-          child: CubePageView(
-            onPageChanged: (index) => _onChangeStory(index, stories.length),
-            controller: _storyController,
-            startPage: initialPage,
-            children: [
-              blank,
-              ...stories.map(
-                (story) => StoryFramesPlayer(
-                  controller: _storyFrameController,
-                  onActionPressed: (action) => onActionPressed(action, context),
-                  story: story,
-                  onNextStory: _nextStory,
-                  onPreviousStory: _previousStory,
-                  onClose: onClose,
+        return Material(
+          color: context.color.surfaceBaseInversePrimary,
+          child: Directionality(
+            textDirection: direction,
+            child: CubePageView(
+              onPageChanged: (index) => _onChangeStory(index, stories.length),
+              controller: _storyController,
+              startPage: initialPage,
+              children: [
+                blank,
+                ...stories.map(
+                  (story) => StoryFramesPlayer(
+                    controller: _storyFrameController,
+                    onActionPressed: (action) =>
+                        onActionPressed(action, context),
+                    story: story,
+                    onNextStory: _nextStory,
+                    onPreviousStory: _previousStory,
+                    onClose: onClose,
+                  ),
                 ),
-              ),
-              blank,
-            ],
+                blank,
+              ],
+            ),
           ),
         );
       },

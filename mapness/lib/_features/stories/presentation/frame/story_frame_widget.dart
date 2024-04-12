@@ -162,7 +162,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
 
   @override
   Widget build(BuildContext context) => Material(
-        color: Colors.black,
+        color: context.color.surfaceBaseInversePrimary,
         child: SafeArea(
           left: false,
           right: false,
@@ -175,7 +175,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                   Container(
                     width: double.infinity,
                     height: double.infinity,
-                    color: Colors.black,
+                    color: context.color.surfaceBaseInversePrimary,
                   ),
                   Positioned.fill(
                     child: LoadingImage(
