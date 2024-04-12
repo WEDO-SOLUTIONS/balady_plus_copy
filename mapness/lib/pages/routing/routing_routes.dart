@@ -2,6 +2,8 @@ import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/app/routes/path_nav.dart';
@@ -14,6 +16,7 @@ import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/shared/ui/buttons/nav_button.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
@@ -84,6 +87,21 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   @override
   Widget build(BuildContext context) {
     ref.watch(locationProvider);
+
+    //TODO(Someone): Fix layers lifecicle
+    final esri = MapObjectManagerSettings.esri();
+    final mappness = MapObjectManagerSettings.mappness();
+
+    ref
+      ..watch(layersControlsProvider)
+      ..watch(favouriteMarkersProvider.select((value) => null))
+
+      /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
+      ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId)
+          .notifier)
+      ..watch(mapObjectManagerProvider(
+              named: mappness.name, layerId: mappness.layerId)
+          .notifier);
 
     return Directionality(
       textDirection: TextDirection.rtl,

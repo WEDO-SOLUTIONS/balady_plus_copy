@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
@@ -75,6 +76,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> {
       _setNavigationState(PathNavState.finished);
       const RoutingRoute(collapseInitially: true).go(context);
     }
+
+    ref.read(layersControlsProvider.notifier).updateLayerInfo();
   }
 
   void _naviEvent(NavigationEvent event) {
