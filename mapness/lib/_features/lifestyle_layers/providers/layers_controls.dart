@@ -225,8 +225,9 @@ class LayersControls extends _$LayersControls {
       _removeLayersState();
     }
 
-    final read = ref.read(favouriteToggleProvider.notifier);
-    read.ref.invalidateSelf();
+    ref
+      ..invalidate(favouriteToggleProvider)
+      ..invalidate(favouriteMarkersProvider);
 
     state = LayersState(
       investmentsMarkers: state.investmentsMarkers,
