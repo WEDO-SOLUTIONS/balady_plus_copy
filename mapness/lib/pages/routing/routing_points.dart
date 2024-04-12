@@ -95,7 +95,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   @override
   // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
-    //TODO(Someone): Fix layers livecicle
+    //TODO(Someone): Fix layers lifecicle
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
 
@@ -109,6 +109,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
       ..watch(mapObjectManagerProvider(
               named: mappness.name, layerId: mappness.layerId)
           .notifier);
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Stack(
