@@ -1210,7 +1210,7 @@ abstract class MapApi {
   );
 
   @async
-  void removeMapObjectManager(MapObjectManagerMessage id);
+  void removeMapObjectManager(MapObjectManagerMessage manager);
 
   @async
   void setClusterIcon(String id, String icon);
@@ -1225,28 +1225,37 @@ abstract class MapApi {
   );
 
   @async
-  void addPolygon(PolygonMessage polygon);
+  void addPolygon(PolygonMessage polygon, MapObjectManagerMessage? manager);
 
   @async
-  void addPolygons(List<PolygonMessage> polygons);
+  void addPolygons(
+    List<PolygonMessage> polygons,
+    MapObjectManagerMessage? manager,
+  );
 
   @async
-  void removePolygon(String id);
+  void removePolygon(String id, MapObjectManagerMessage? manager);
 
   @async
-  void removeAllPolygons();
+  void removeAllPolygons(MapObjectManagerMessage? manager);
 
   @async
-  void addPolyline(PolylineMessage polyline);
+  void addPolyline(
+    PolylineMessage polyline,
+    MapObjectManagerMessage? manager,
+  );
 
   @async
-  void addPolylines(List<PolylineMessage> polylines);
+  void addPolylines(
+    List<PolylineMessage> polylines,
+    MapObjectManagerMessage? manager,
+  );
 
   @async
-  void removePolyline(String id);
+  void removePolyline(String id, MapObjectManagerMessage? manager);
 
   @async
-  void removeAllPolylines();
+  void removeAllPolylines(MapObjectManagerMessage? manager);
 
   @async
   void setHighlighted(List<DgisObjectIdMessage> objectIds);

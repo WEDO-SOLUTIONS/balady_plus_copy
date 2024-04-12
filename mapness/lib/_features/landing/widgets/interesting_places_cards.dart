@@ -28,7 +28,7 @@ class InterestingPlacesCardsList extends ConsumerWidget {
               )
               .toList();
 
-          return PlacesHorizontalList(
+          return PlacesList(
             title: context.l10n.placesToVisit,
             places: places,
             onItemTap: (index) {

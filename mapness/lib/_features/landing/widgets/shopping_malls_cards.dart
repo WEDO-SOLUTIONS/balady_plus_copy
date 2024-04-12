@@ -27,7 +27,7 @@ class ShoppingMallsCardsList extends ConsumerWidget {
               )
               .toList();
 
-          return PlacesHorizontalList(
+          return PlacesList(
             title: context.l10n.placesToShop,
             places: places,
             onItemTap: (index) {
