@@ -300,7 +300,10 @@ class _FavouriteCache extends _$FavouriteCache {
       }),
     );
     try {
-      await dio.post('favourites', data: request.writeToBuffer());
+      final raw = await dio.post('favourites', data: request.writeToBuffer());
+      final newState =
+          proto.FavouritesResponse.fromBuffer(raw.data as List<int>).toDomain();
+      await _updateState(newState);
     } on DioException catch (e) {
       debugPrint(proto.ErrorResponse.fromBuffer(e.response!.data as List<int>)
           .toString());
