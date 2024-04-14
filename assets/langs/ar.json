@@ -3851,7 +3851,6 @@
   "commercial_licenseـquery_title": "يرجى إدخال البيانات التالية",
   "enable_disable_notifications": "يمكنك من هنا أو إلغاء تفعيل الإشعار",
   "manage_notification": "إدارة الإشعارات للخدمات",
-=========
     "10": "10 صباحا",
     "11": "11 صباحا",
     "12": "12 ظهرا",
@@ -7728,18 +7727,12 @@
     "license_number_municipality": "رقم الرخصة من الأمانة",
     "building_type":"نوع البناء",
   
->>>>>>>>> Temporary merge branch 2
 
   "make_all_read":"تحديد الكل كمقروء",
   "delete_all": "حذف الكل",
   "locale": "ar",
   "no_notifications": "",
-  "": ""
-
-<<<<<<<<< Temporary merge branch 1
-}
-=========
-
+  "": "",
 
 
     "issue_commercial_conclusion_owner_data": "بيانات مالك الرخصة", 

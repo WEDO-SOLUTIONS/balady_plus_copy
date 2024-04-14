@@ -164,7 +164,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ),
 
                //hamed hide nofication settings
-               // const NotificationsSettingCell()
+                const NotificationsSettingCell()
               ],
             ),
           ),

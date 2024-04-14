@@ -62,7 +62,7 @@ class DashboardProfile extends ConsumerWidget {
             },),
 
           // hamed hide notifcations
-          //const NotificationsCountIcon(),
+          const NotificationsCountIcon(),
         ],
       ),
     );

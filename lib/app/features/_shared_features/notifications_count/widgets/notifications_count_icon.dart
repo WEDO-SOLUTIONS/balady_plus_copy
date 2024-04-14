@@ -19,28 +19,10 @@ class NotificationsCountIcon extends StatelessWidget {
             return NotificationsCountCubit(webService: sl());
           },
           child: BlocBuilder<NotificationsCountCubit, SucceedCountState>(
-            builder: (contextCubit, state) {
-              return InkWell(
-                onTap: () {
-                  NavigationService.navigatorKey.currentState!.pushNamed(
-                    RouteName.notificationsListScreen,
-                  );
-                },
-<<<<<<< Updated upstream
-                child: Stack(
-                  alignment: AlignmentDirectional.topStart,
-                  children: [
-                    Card(
-                      elevation: 2,
-                      color: Colors.grey.shade200,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(6)),
-=======
-                child: BlocBuilder<NotificationsCountCubit, SucceedCountState>(
                   builder: (contextCubit, state) {
                     NotificationsCountCubit cubit =
                         contextCubit.watch<NotificationsCountCubit>();
-                    return InkWell(
+                    return   InkWell(
                       onTap: () {
                         NavigationService.navigatorKey.currentState!
                             .pushNamed(
@@ -89,43 +71,10 @@ class NotificationsCountIcon extends StatelessWidget {
                                 )
                               : const SizedBox(),
                         ],
->>>>>>> Stashed changes
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 9,
-                          vertical: 7,
-                        ),
-                        child: SvgPicture.asset(
-                          IconPath.notificationIc2,
-                          colorFilter: const ColorFilter.mode(
-                            Colors.black,
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                      ),
-                    ),
-                    state.count != null && state.count! > 0
-                        ? Card(
-                      margin: EdgeInsets.zero,
-                      color: Colors.red.shade600,
-                      child: Padding(
-                        padding: const EdgeInsets.all(2.0),
-                        child: Text(
-                          state.count!.toString(),
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    )
-                        : const SizedBox(),
-                  ],
+                      );
+                  },
                 ),
-              );
-            },
-          ),
         ) : const SizedBox();
       },
     );

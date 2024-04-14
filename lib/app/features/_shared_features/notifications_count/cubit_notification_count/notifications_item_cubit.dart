@@ -14,7 +14,7 @@ class NotificationsCountCubit extends Cubit<SucceedCountState> {
 
   NotificationsCountCubit({
     required this.webService,
-  }) : super(const SucceedCountState(count: null)){
+  }) : super(const SucceedCountState(count: null)) {
     getUnreadMessages();
   }
 
@@ -24,7 +24,18 @@ class NotificationsCountCubit extends Cubit<SucceedCountState> {
       // dataHeaders['x-correlation-id'] = CommonFunctions.generateGUID();
       response = await webService.dio.get(
         ApiUrl.notificationsUnreadMessages,
-        queryParameters: {"status-id": 2},
+        queryParameters: {
+          "status-id": "sent",
+        },
+        options: Options(
+          headers: {
+            "x-actor-type-id": "user",
+            "x-actor-context-id": "beneficiaries",
+            "x-platform-id": "super-app",
+            "x-channel-id": "mobile",
+            "notification-channel-id": "mobile",
+          },
+        ),
       );
       final data = response.data;
       final int result = ResponseBodyModel.fromMap(data).data?.result;
