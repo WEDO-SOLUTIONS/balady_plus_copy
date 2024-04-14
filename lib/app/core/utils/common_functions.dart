@@ -184,7 +184,6 @@ Map<String, String> carEnPlateLetters = {
 
 class CommonFunctions {
   static void updateNotificationSettings(String fcm) async {
-
     NotificationManager manager = sl();
 
     DeviceDetails details = sl();

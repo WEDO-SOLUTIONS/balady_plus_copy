@@ -41,6 +41,8 @@ String getScreenName(String tag, {int? typeId}) {
           return RouteName.complianceDetailsPage;
         case 1008 || 1005 || 1004:
           return RouteName.requestCommercialLicenseDetails;
+        case 1006:
+          return RouteName.requestOwnershipTransferDetailsPage;
         case 1042 || 1043:
           return RouteName.posterReqeuestDetailsPage;
         case 1028:

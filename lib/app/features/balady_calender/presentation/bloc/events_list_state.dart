@@ -33,7 +33,7 @@ final class SucceedEventsListState extends EventsListState {
   SucceedEventsListState({required this.event, required this.listMonths});
 
   @override
-  List<Object?> get props => [event, listMonths,listMonths.length];
+  List<Object?> get props => [event, listMonths, listMonths.length];
 }
 
 // final class SucceedWithLoadingEventsListState extends SucceedEventsListState {
@@ -47,14 +47,16 @@ final class SucceedEventsListState extends EventsListState {
 //   List<Object?> get props => [event];
 // }
 
-final class SucceedWithPaginationEventsListState extends SucceedEventsListState {
-
+final class SucceedWithPaginationEventsListState
+    extends SucceedEventsListState {
   // to get new state
   final int page;
 
-  SucceedWithPaginationEventsListState({required this.page,required event, required listMonths})
+  SucceedWithPaginationEventsListState(
+      {required this.page, required event, required listMonths})
       : super(event: event, listMonths: listMonths);
 
   @override
-  List<Object?> get props => [page,event.length,listMonths,listMonths.length];
+  List<Object?> get props =>
+      [page, event.length, listMonths, listMonths.length];
 }

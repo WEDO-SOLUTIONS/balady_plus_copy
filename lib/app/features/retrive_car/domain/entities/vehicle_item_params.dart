@@ -7,7 +7,7 @@ class VehicleItemParams {
   String? commercialRegistrationNumber;
   String? agencyNumber;
   String? carOwnerId;
-String? beneficiaryID; 
+  String? beneficiaryID;
   VehicleItemParams(
       {required this.action,
       this.pageNumber,
@@ -16,7 +16,8 @@ String? beneficiaryID;
       this.agencyNumber,
       this.carOwnerId,
       this.commercialRegistrationNumber,
-      required this.type, this.beneficiaryID});
+      required this.type,
+      this.beneficiaryID});
 
   Map<String, dynamic> toMap() => {
         "Action": action,
@@ -26,7 +27,7 @@ String? beneficiaryID;
         if (commercialRegistrationNumber != null)
           "CommercialRegistrationNumber": commercialRegistrationNumber,
         if (agencyNumber != null) "AgencyNumber": agencyNumber,
-        if (carOwnerId != null) "CarOwnerId": carOwnerId, 
-        if (beneficiaryID != null) "BeneficiaryID":beneficiaryID
+        if (carOwnerId != null) "CarOwnerId": carOwnerId,
+        if (beneficiaryID != null) "BeneficiaryID": beneficiaryID
       };
 }

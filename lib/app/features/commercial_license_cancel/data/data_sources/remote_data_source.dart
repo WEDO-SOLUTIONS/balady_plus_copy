@@ -3,7 +3,6 @@ import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
 import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_licence_details.dart';
-import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_license_details_model.dart';
 import 'package:dio/dio.dart' show DioError;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
@@ -14,7 +13,8 @@ abstract class CommercialLicenseDetailsRemoteDataSource {
   );
 }
 
-class CommercialLicenseDetailsRemoteDataSourceImplementation implements CommercialLicenseDetailsRemoteDataSource {
+class CommercialLicenseDetailsRemoteDataSourceImplementation
+    implements CommercialLicenseDetailsRemoteDataSource {
   final WebService webService;
 
   CommercialLicenseDetailsRemoteDataSourceImplementation(
@@ -30,8 +30,9 @@ class CommercialLicenseDetailsRemoteDataSourceImplementation implements Commerci
       );
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
-      CommercialLicenceDetails commercialLicenceDetails = CommercialLicenceDetails.fromJson(result!);
-      return  commercialLicenceDetails;
+      CommercialLicenceDetails commercialLicenceDetails =
+          CommercialLicenceDetails.fromJson(result!);
+      return commercialLicenceDetails;
     } on DioError catch (error) {
       // "DioError $error".errorLog();
       if (error is NoDataFoundException) {

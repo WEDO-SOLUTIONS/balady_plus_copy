@@ -12,8 +12,7 @@ class EmployeeInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
-      padding: const EdgeInsets.symmetric(
-          horizontal: 16, vertical: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(16)),
         color: AppColor.white,
@@ -128,7 +127,6 @@ class EmployeeInfoCard extends StatelessWidget {
               ),
             ],
           ),
-
         ],
       ),
     );

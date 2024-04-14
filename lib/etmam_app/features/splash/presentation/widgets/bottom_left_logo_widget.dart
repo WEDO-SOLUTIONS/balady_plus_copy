@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/utils/utils_exports.dart' show  IconPath;
-import '../../../_shared_feature_/shared/shared_feature_exports.dart' show CustomHorizontalSpace, CustomSvgIconWidget;
+import '../../../../core/utils/utils_exports.dart' show IconPath;
+import '../../../_shared_feature_/shared/shared_feature_exports.dart'
+    show CustomHorizontalSpace, CustomSvgIconWidget;
 import '../../splash_exports.dart' show SplashAnimation;
 
 class BottomLeftLogoWidget extends StatelessWidget {

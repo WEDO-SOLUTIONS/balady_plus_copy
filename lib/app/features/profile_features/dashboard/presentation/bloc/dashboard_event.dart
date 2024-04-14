@@ -47,4 +47,3 @@ class DashboardOnProductSelected extends DashboardEvent {
 }
 
 class DashboardRetry extends DashboardEvent {}
-

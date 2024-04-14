@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart' show EdgeInsets, TextStyle;
 
-import 'utils_exports.dart'
-    show AppColor, AppConfig, AppFontWeight,  UIHelper;
+import 'utils_exports.dart' show AppColor, AppConfig, AppFontWeight, UIHelper;
 
 class AppStyle {
   static get fontFamily =>

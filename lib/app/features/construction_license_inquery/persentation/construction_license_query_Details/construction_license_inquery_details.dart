@@ -30,13 +30,11 @@ class _ConstructionLicenseInqueryDetailsState
   void initState() {
     super.initState();
 
-
     Future.microtask(() {
       setState(() {
         licenseNumber = "${bloc!.licenseNumber}#";
       });
-      bloc!.getLicenseQueryDetails(
-          bloc!.licenseNumber,bloc!.licenseDate);
+      bloc!.getLicenseQueryDetails(bloc!.licenseNumber, bloc!.licenseDate);
     });
   }
 
@@ -62,8 +60,7 @@ class _ConstructionLicenseInqueryDetailsState
                   width: 10,
                 )),
                 TextSpan(
-                    text: licenseNumber,
-                    style: AppStyle.listTitleTextStyle),
+                    text: licenseNumber, style: AppStyle.listTitleTextStyle),
               ],
             ),
           ),
@@ -75,7 +72,6 @@ class _ConstructionLicenseInqueryDetailsState
       ),
     );
   }
-
 
   Widget getBody() {
     return BlocConsumer<ConstructionLicenseInqueryDetailsCubit,
@@ -97,12 +93,10 @@ class _ConstructionLicenseInqueryDetailsState
             ),
           );
         } else if (state.licenceQueryDetails != null) {
-          final licenceQueryDetails =
-          state.licenceQueryDetails!;
+          final licenceQueryDetails = state.licenceQueryDetails!;
           return SingleChildScrollView(
             child: Column(
               children: [
-
                 ExpandableCard(
                   title: 'license_details'.tr(),
                   icon: IconPath.editIcon,
@@ -110,9 +104,7 @@ class _ConstructionLicenseInqueryDetailsState
                   children: [
                     CardParameter(
                       title: 'unified_license_number'.tr(),
-                      value: licenceQueryDetails.licenseId
-                          .toString() ??
-                          '',
+                      value: licenceQueryDetails.licenseId.toString() ?? '',
                       bgColor: AppColor.mystic,
                     ),
                     licenceQueryDetails.oldLicenseId != null || licenceQueryDetails.oldLicenseId != 0?
@@ -126,12 +118,9 @@ class _ConstructionLicenseInqueryDetailsState
                       value: licenceQueryDetails.licenseIssueDateDesc ?? "",
                       bgColor: AppColor.mystic,
                     ),
-
-
                     CardParameter(
                       title: 'license_status'.tr(),
-                      value:
-                      licenceQueryDetails.statusName ?? '',
+                      value: licenceQueryDetails.statusName ?? '',
                       bgColor: AppColor.mystic,
                     ),
                     CardParameter(
@@ -378,17 +367,13 @@ class _ConstructionLicenseInqueryDetailsState
             errorMessage: "no_data_found".tr(),
             onTab: () {
               bloc!.getLicenseQueryDetails(
-                  bloc!.licenseNumber,bloc!.licenseDate);
+                  bloc!.licenseNumber, bloc!.licenseDate);
             },
           ),
         );
       },
     );
   }
-
-
-
-
 
   static Future<void> navigateTo(double lat, double lng) async {
     String url = '';

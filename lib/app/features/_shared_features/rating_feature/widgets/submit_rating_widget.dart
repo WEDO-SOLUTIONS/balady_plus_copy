@@ -125,7 +125,8 @@ class SubmitRatingSheet extends StatelessWidget {
                                 int? id = await provider.submitRating();
                                 if (id != null) {
                                   navigator.pop(true);
-                                  CommonFunctions.showSuccess("done_send_rating".tr());
+                                  CommonFunctions.showSuccess(
+                                      "done_send_rating".tr());
                                 }
                               } else {
                                 CommonFunctions.showError('select_rating'.tr());

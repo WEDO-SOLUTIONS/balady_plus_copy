@@ -11,29 +11,29 @@ import 'package:localize_and_translate/localize_and_translate.dart'
 import '../model/survey_inquery_data_model.dart';
 
 abstract class SurveyInqueryRemoteDataSource {
-  Future< ResponseBodyModel<SurveyDataModel>> getLicenseData(
-      int licenseNumber,String date
-      );
+  Future<ResponseBodyModel<SurveyDataModel>> getLicenseData(
+      int licenseNumber, String date);
 }
 
-class SurveyInqueryRemoteDataSourceImplementation implements SurveyInqueryRemoteDataSource {
+class SurveyInqueryRemoteDataSourceImplementation
+    implements SurveyInqueryRemoteDataSource {
   final WebService webService;
 
-  SurveyInqueryRemoteDataSourceImplementation(
-      {required this.webService});
+  SurveyInqueryRemoteDataSourceImplementation({required this.webService});
 
   @override
   Future<ResponseBodyModel<SurveyDataModel>> getLicenseData(
-      int licenseNumber,String date) async {
+      int licenseNumber, String date) async {
     var response;
     try {
       response = await webService.dio.get(
-        ApiUrl.getSurveyLicenseData(licenseNumber,date),
+        ApiUrl.getSurveyLicenseData(licenseNumber, date),
       );
       final data = response.data;
 
-
-      var parsedResult = data != null ? SurveyDataModel.fromJson(data["data"]["result"]) : null;
+      var parsedResult = data != null
+          ? SurveyDataModel.fromJson(data["data"]["result"])
+          : null;
       final decodedResponse = ResponseBodyModel<SurveyDataModel>.fromMap(
           response.data,
           parsedResult: parsedResult);
@@ -52,7 +52,6 @@ class SurveyInqueryRemoteDataSourceImplementation implements SurveyInqueryRemote
     } catch (ex) {
       // "Catched $ex".errorLog();
 
-
       if (ex is ServerException) {
         rethrow;
       } else {
@@ -66,8 +65,4 @@ class SurveyInqueryRemoteDataSourceImplementation implements SurveyInqueryRemote
       }
     }
   }
-
-
-
-
 }

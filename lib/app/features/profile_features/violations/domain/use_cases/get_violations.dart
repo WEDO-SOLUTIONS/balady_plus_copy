@@ -4,7 +4,6 @@ import '../../../../../core/errors/errors_exports.dart' show Failure;
 import '../../../../../core/services/services_exports.dart' show UseCase;
 import '../../violations_exports.dart';
 
-
 class GetViolations extends UseCase<List<ViolationsEntity>, ViolationsPrams> {
   final ViolationsRepository repository;
 

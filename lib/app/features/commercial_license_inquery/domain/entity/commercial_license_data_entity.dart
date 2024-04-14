@@ -1,5 +1,3 @@
-
-
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/common_functions.dart';
@@ -54,12 +52,9 @@ class CommercialLicenseData {
     this.workTimes,
   });
 
-
-
-
   String getTodayWorkingHours() {
     WorkTimes? workTimes = this.workTimes;
-    bool isOpenNow  = checkIsOpenNow();
+    bool isOpenNow = checkIsOpenNow();
 
     if (workTimes == null) return "";
 
@@ -161,7 +156,7 @@ class CommercialLicenseData {
               date.year, date.month, date.day, firstFromHour, firstFromMinute);
           final currentTime = DateTime.now();
           if (currentTime.isBefore(startTime)) {
-            return "open_at".tr()+
+            return "open_at".tr() +
                 CommonFunctions.convert24TimeTo12WithPeriod(
                     workTimes.getToday()?.firstFromTime);
           }
@@ -173,7 +168,7 @@ class CommercialLicenseData {
               secondFromHour, secondFromMinute);
           final currentTime = DateTime.now();
           if (currentTime.isBefore(startTime)) {
-            return "open_at".tr()+
+            return "open_at".tr() +
                 CommonFunctions.convert24TimeTo12WithPeriod(
                     workTimes.getToday()?.secondFromTime);
           }
@@ -313,7 +308,6 @@ class CommercialLicenseData {
     }
     return isOpenedNow;
   }
-
 }
 
 class LicenseActivity {
@@ -328,7 +322,6 @@ class LicenseActivity {
     this.detailedActivityId,
     this.detailedActivityName,
   });
-
 }
 
 class Info {
@@ -339,7 +332,6 @@ class Info {
     this.id,
     this.name,
   });
-
 }
 
 // class WorkTimes {
@@ -398,5 +390,3 @@ class Info {
 //
 //
 // }
-
-

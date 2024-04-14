@@ -37,8 +37,7 @@ final class FailureNotificationsSettingsState
 final class SucceedEventsNotificationState extends NotificationsSettingState {
   final bool isChecked;
 
-  SucceedEventsNotificationState(
-      {required this.isChecked});
+  SucceedEventsNotificationState({required this.isChecked});
 
   @override
   List<Object?> get props => [isChecked];

@@ -19,7 +19,10 @@ class DashboardCardsModel extends DashboardCards {
     required super.cards,
   });
 
-  factory DashboardCardsModel.fromList(List<dynamic> list) => DashboardCardsModel(
-        cards: list.map((e) => DashboardCardModel.fromMap(e as Map<String, dynamic>)).toList(),
+  factory DashboardCardsModel.fromList(List<dynamic> list) =>
+      DashboardCardsModel(
+        cards: list
+            .map((e) => DashboardCardModel.fromMap(e as Map<String, dynamic>))
+            .toList(),
       );
 }

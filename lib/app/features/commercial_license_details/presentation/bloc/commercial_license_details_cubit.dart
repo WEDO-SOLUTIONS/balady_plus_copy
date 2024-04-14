@@ -1,21 +1,20 @@
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_licence_details.dart';
-import 'package:balady_plus/app/features/commercial_license_details/domain/entities/commercial_license_details_entity.dart';
 import 'package:balady_plus/app/features/commercial_license_details/domain/use_cases/get_commercial_license_details.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 part 'commercial_license_details_state.dart';
 
-class CommercialLicenseDetailsCubit extends Cubit<CommercialLicenseDetailsState> {
+class CommercialLicenseDetailsCubit
+    extends Cubit<CommercialLicenseDetailsState> {
   final GetCommercialLicenseDetails getCommercialLicenseDetails;
   final int commercialLicenseId;
 
   CommercialLicenseDetailsCubit(
     this.getCommercialLicenseDetails,
     this.commercialLicenseId,
-  ) : super(const CommercialLicenseDetailsState()){
+  ) : super(const CommercialLicenseDetailsState()) {
     getCommercialLicenseDetailsById(
       commercialLicenseId,
     );

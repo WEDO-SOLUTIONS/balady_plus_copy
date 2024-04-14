@@ -1,4 +1,3 @@
-
 class CommercialLicensePermits {
   bool accepted;
   String expirationDate;
@@ -16,21 +15,22 @@ class CommercialLicensePermits {
     required this.selected,
   });
 
-  factory CommercialLicensePermits.fromJson(Map<String, dynamic> json) => CommercialLicensePermits(
-    accepted: json["accepted"] ?? false,
-    expirationDate: json["expirationDate"],
-    id: json["id"],
-    permitNumber: json["permitNumber"],
-    permitType: json["permitType"],
-    selected: json["selected"],
-  );
+  factory CommercialLicensePermits.fromJson(Map<String, dynamic> json) =>
+      CommercialLicensePermits(
+        accepted: json["accepted"] ?? false,
+        expirationDate: json["expirationDate"],
+        id: json["id"],
+        permitNumber: json["permitNumber"],
+        permitType: json["permitType"],
+        selected: json["selected"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "accepted": accepted,
-    "expirationDate": expirationDate,
-    "id": id,
-    "permitNumber": permitNumber,
-    "permitType": permitType,
-    "selected": selected,
-  };
+        "accepted": accepted,
+        "expirationDate": expirationDate,
+        "id": id,
+        "permitNumber": permitNumber,
+        "permitType": permitType,
+        "selected": selected,
+      };
 }

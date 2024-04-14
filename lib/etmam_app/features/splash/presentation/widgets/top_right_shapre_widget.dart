@@ -17,8 +17,8 @@ class TopRightLogoWidget extends StatelessWidget {
     return Align(
       alignment: Alignment.center,
       child: Transform(
-        transform:
-            Matrix4.translationValues(0, _animation.topRightShapeTranslation.value, 0),
+        transform: Matrix4.translationValues(
+            0, _animation.topRightShapeTranslation.value, 0),
         child: const CustomSvgIconWidget(
           IconPath.splashLogo,
           iconSize: 96,

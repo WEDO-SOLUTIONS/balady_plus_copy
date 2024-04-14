@@ -22,7 +22,7 @@ class ProviderServicesSection extends StatelessWidget {
       builder: (context, state) {
         return state.args.supportedServices != null
             ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                 CustomTextWidget(
+                CustomTextWidget(
                   trans("provider_services"),
                   fontColor: AppColor.blackModern800Light,
                   fontSize: 16,

@@ -40,8 +40,6 @@ class ViolationsSortChangedEvent extends ViolationsEvent {
   List<Object> get props => [sortType];
 }
 
-
-
 class SearchWithViolationNumberEvent extends ViolationsEvent {
   final String query;
 
@@ -60,7 +58,6 @@ class SearchWithLicenseNumberEvent extends ViolationsEvent {
   List<Object> get props => [query];
 }
 
-
 class ViolationsLoadLookupsEvent extends ViolationsEvent {}
 
 class ViolationsLoadMoreEvent extends ViolationsEvent {}
@@ -69,16 +66,19 @@ class ObjectionLastApplyDateSelectedEvent extends ViolationsEvent {
   final DateTime date;
   final DateForm formDate;
 
-  const ObjectionLastApplyDateSelectedEvent({required this.date, required this.formDate});
+  const ObjectionLastApplyDateSelectedEvent(
+      {required this.date, required this.formDate});
 
   @override
   List<Object> get props => [date];
 }
+
 class ViolationIssueDateSelectedEvent extends ViolationsEvent {
   final DateTime date;
   final DateForm formDate;
 
-  const ViolationIssueDateSelectedEvent({required this.date, required this.formDate});
+  const ViolationIssueDateSelectedEvent(
+      {required this.date, required this.formDate});
 
   @override
   List<Object> get props => [date];

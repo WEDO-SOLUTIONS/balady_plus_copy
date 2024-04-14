@@ -20,12 +20,14 @@ class CommercialLicenseQueryScreen extends StatefulWidget {
   const CommercialLicenseQueryScreen({Key? key}) : super(key: key);
 
   @override
-  State<CommercialLicenseQueryScreen> createState() => _CommercialLicenseQueryScreenState();
+  State<CommercialLicenseQueryScreen> createState() =>
+      _CommercialLicenseQueryScreenState();
 }
 
-class _CommercialLicenseQueryScreenState extends State<CommercialLicenseQueryScreen> {
-
-  final TextEditingController _licenseNumberController = TextEditingController();
+class _CommercialLicenseQueryScreenState
+    extends State<CommercialLicenseQueryScreen> {
+  final TextEditingController _licenseNumberController =
+      TextEditingController();
   final TextEditingController _agentNumberController = TextEditingController();
   final FocusNode _licenseNumberDescFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
@@ -44,14 +46,10 @@ class _CommercialLicenseQueryScreenState extends State<CommercialLicenseQueryScr
       appBar: DefaultAppBarWidget(
         title: "back".tr(),
         showBack: true,
-
       ),
       body: getBody(),
-
-
     );
   }
-
 
   Widget getBody() {
     return Column(
@@ -59,7 +57,6 @@ class _CommercialLicenseQueryScreenState extends State<CommercialLicenseQueryScr
         Expanded(
           child: SingleChildScrollView(
             child: Column(
-
               children: [
                 Container(
                   padding: const EdgeInsets.only(
@@ -69,14 +66,11 @@ class _CommercialLicenseQueryScreenState extends State<CommercialLicenseQueryScr
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
-
-
                       children: [
                         CustomTextWidget(
                           "commercial_licenseـquery_title".tr(),
                           textStyle: AppStyle.complianceTitleStyle,
                           maxLines: 4,
-
                         ),
                         const SizedBox(
                           height: 10,
@@ -94,18 +88,14 @@ class _CommercialLicenseQueryScreenState extends State<CommercialLicenseQueryScr
                           ],
                           fillColor: Colors.transparent,
                           onValidate: (text) {
-                            if (text
-                                .toString()
-                                .isEmpty) {
+                            if (text.toString().isEmpty) {
                               return ("commercial_license_error").tr();
                             }
                             return null;
                           },
-
                           textInputAction: TextInputAction.done,
                           spacerSize: 10,
                         ),
-
                         CustomTextFieldWidget(
                           label: "${"agentNumber".tr()} *",
                           controller: _agentNumberController,
@@ -115,23 +105,18 @@ class _CommercialLicenseQueryScreenState extends State<CommercialLicenseQueryScr
                             FilteringTextInputFormatter.digitsOnly,
                           ],
                           onValidate: (text) {
-                            if (text
-                                .toString()
-                                .isEmpty) {
+                            if (text.toString().isEmpty) {
                               return ("agentNumberError").tr();
                             }
                             return null;
                           },
-
                           textInputAction: TextInputAction.done,
                           spacerSize: 10,
                         ),
-
                       ],
                     ),
                   ),
                 ),
-
               ],
             ),
           ),
@@ -143,8 +128,7 @@ class _CommercialLicenseQueryScreenState extends State<CommercialLicenseQueryScr
                 topRight: Radius.circular(36),
               ),
               color: Colors.white),
-          padding: const EdgeInsets.symmetric(
-              horizontal: 18, vertical: 26),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
           child: CustomElevatedButtonWidget(
             btnColor: AppColor.primary800Light,
             textStyle: AppStyle.elevatedButtonStyle.copyWith(
@@ -156,25 +140,20 @@ class _CommercialLicenseQueryScreenState extends State<CommercialLicenseQueryScr
             text: "query".tr(),
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-
                 NavigatorState navigator = Navigator.of(context);
-
 
                 navigator.pushNamed(
                   RouteName.commercialLicenseQueryDetails,
                   arguments: CommercialLicenseQueryDetailsCubit(
-                    GetCommercialLicenseQueryData(
-                      repository: CommercialLicenseQueryRepositoryImplementation(
-                          remoteDataSource:
-                          CommercialLicenseQueryRemoteDataSourceImplementation(
-                              webService: sl())),
-                    ),
+                      GetCommercialLicenseQueryData(
+                        repository: CommercialLicenseQueryRepositoryImplementation(
+                            remoteDataSource:
+                                CommercialLicenseQueryRemoteDataSourceImplementation(
+                                    webService: sl())),
+                      ),
                       int.parse(_licenseNumberController.text),
-                      int.parse(_agentNumberController.text)
-                  ),
+                      int.parse(_agentNumberController.text)),
                 );
-
-
               }
             },
           ),

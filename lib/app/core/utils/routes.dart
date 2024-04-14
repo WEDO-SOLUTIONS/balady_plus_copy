@@ -7,6 +7,8 @@ import 'package:balady_plus/app/features/commercial_license_cancel/presentation/
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/submit_application_successfully_cancel/screens/submit_application_successfully_cancel.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/submit_application_successfully_cancel/screens/submit_rating_cancel_screen.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/pages/commercial_license_details_page.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/approval_sequence/presentation/screens/approval_sequence_main_screen.dart';
+import 'package:balady_plus/app/features/commercial_license_ownership_transfer/request_details/presentation/pages/request_ownership_transfer_details_page.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/pages/create_compliance_location_confirm_page.dart';
 import 'package:balady_plus/app/features/commercial_license/commercial_license_exports.dart';
 import 'package:balady_plus/app/features/athkar/presentation/pages/athkar_entity_content.dart';
@@ -67,6 +69,11 @@ import '../../core/utils/utils_exports.dart'
         RouteName,
         ScaleRotatePage,
         SliderUpPage;
+import '../../features/Commercial_license_transfer/persentation/commercail_license_tranfer_overview/commercial_license_transfer_overview_screen.dart';
+import '../../features/Commercial_license_transfer/persentation/license_premits/request_sequence_home.dart';
+import '../../features/Commercial_license_transfer/persentation/license_premits/request_sequence_new_owner.dart';
+import '../../features/Commercial_license_transfer/persentation/license_premits/request_sequence_premits.dart';
+import '../../features/Commercial_license_transfer/persentation/license_premits/sucessfull_page.dart';
 import '../../features/_shared_feature_/presentation/pages/qiblah_webview_page.dart';
 import '../../features/_shared_feature_/presentation/pages/view_apigee_image_screen.dart';
 import '../../features/calculator/presentation/pages/service_calculator_result_screen.dart';
@@ -786,11 +793,28 @@ class Routes {
         RouteName.surveyReportInqueryDetails: (context) =>
             const SurveyReportInqueryDetails(),
 
+        RouteName.constructionLicenseOverView: (context) =>
+            const ConstructionLicenseOverviewScreen(),
+        RouteName.constructionLicenseInquery: (context) =>
+            const ConstructionLicenseInqueryScreen(),
+        RouteName.constructionLicenseInqueryDetails: (context) =>
+            const ConstructionLicenseInqueryDetails(),
 
-    RouteName.notificationsListScreen: (context) =>
-    const NotificationsListScreen(),
-    RouteName.notificationsDetailsScreen: (context) =>
-    const NotificationsDetailsScreen(),
+        ///////////////////////////////////
+
+
+        RouteName.approvalSequenceMainScreen: (context) =>
+            const ApprovalSequenceMainScreen(),
+
+        RouteName.requestOwnershipTransferDetailsPage: (context) =>
+            const RequestOwnershipTransferDetailsPage(),
+
+        RouteName.commercialLicenseTransferOverView: (context) =>
+            const CommercialLicenseTransferOverviewScreen(),
+        // RouteName.transferLicensePermits: (context) => const PremitsScreen(),
+        RouteName.SucessfullScreen: (context) => SucessfullScreen(),
+        RouteName.homeSequence: (context) => const RequestSequenceHomeScreen(),
+
 
 
 

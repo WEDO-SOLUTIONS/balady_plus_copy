@@ -146,9 +146,6 @@ class AppEvents {
   static const String issueCommercialLicenseSuccess =
       "Super_App_Success_Issue_Commercial_License";
 
-
   static const String queryCommercialLicenseOpen =
       "Super_App_Open_query_Commercial_License";
-
-
 }

@@ -6,7 +6,6 @@ import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
 import 'package:balady_plus/app/core/utils/extensions/delay.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
 import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_licence_details.dart';
-import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_license_details_model.dart';
 import 'package:dio/dio.dart' show DioError;
 import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
@@ -16,36 +15,36 @@ import '../../domain/entity/commercial_license_data_entity.dart';
 import '../model/commercial_license_data_model.dart';
 
 abstract class CommercialLicenseQueryRemoteDataSource {
-  Future< ResponseBodyModel<CommercialLicenseDataModel>> getCommercialLicenseData(
-      int licenseNumber,int unifiedFacilityNumber
-      );
+  Future<ResponseBodyModel<CommercialLicenseDataModel>>
+      getCommercialLicenseData(int licenseNumber, int unifiedFacilityNumber);
 }
 
-class CommercialLicenseQueryRemoteDataSourceImplementation implements CommercialLicenseQueryRemoteDataSource {
+class CommercialLicenseQueryRemoteDataSourceImplementation
+    implements CommercialLicenseQueryRemoteDataSource {
   final WebService webService;
 
   CommercialLicenseQueryRemoteDataSourceImplementation(
       {required this.webService});
 
   @override
-  Future<ResponseBodyModel<CommercialLicenseDataModel>> getCommercialLicenseData(
-      int licenseNumber,int unifiedFacilityNumber) async {
+  Future<ResponseBodyModel<CommercialLicenseDataModel>>
+      getCommercialLicenseData(
+          int licenseNumber, int unifiedFacilityNumber) async {
     var response;
     try {
       response = await webService.dio.get(
-        ApiUrl.getCommercialLicenseData(licenseNumber,unifiedFacilityNumber),
+        ApiUrl.getCommercialLicenseData(licenseNumber, unifiedFacilityNumber),
       );
       final data = response.data;
 
-
-      var parsedResult = data != null ? CommercialLicenseDataModel.fromJson(data["data"]["result"]) : null;
-      final decodedResponse = ResponseBodyModel<CommercialLicenseDataModel>.fromMap(
-          response.data,
-          parsedResult: parsedResult);
+      var parsedResult = data != null
+          ? CommercialLicenseDataModel.fromJson(data["data"]["result"])
+          : null;
+      final decodedResponse =
+          ResponseBodyModel<CommercialLicenseDataModel>.fromMap(response.data,
+              parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-
-
 
       // final result = ResponseBodyModel.fromMap(data).data?.result;
       // CommercialLicenseDataModel commercialLicencedata = CommercialLicenseDataModel.fromJson(result!);
@@ -63,7 +62,6 @@ class CommercialLicenseQueryRemoteDataSourceImplementation implements Commercial
     } catch (ex) {
       // "Catched $ex".errorLog();
 
-
       if (ex is ServerException) {
         rethrow;
       } else {
@@ -77,8 +75,4 @@ class CommercialLicenseQueryRemoteDataSourceImplementation implements Commercial
       }
     }
   }
-
-
-
-
 }

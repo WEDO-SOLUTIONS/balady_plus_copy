@@ -23,7 +23,8 @@ class TobaccoSchedule {
 
     for (var x in (json["disclosureSchedules"] ?? [])) {
       DisclosureSchedule disclosureSchedule = DisclosureSchedule.fromJson(x);
-      if (tobaccoSchedule.disclosureSchedules[disclosureSchedule.year] == null) {
+      if (tobaccoSchedule.disclosureSchedules[disclosureSchedule.year] ==
+          null) {
         tobaccoSchedule.disclosureSchedules[disclosureSchedule.year] = [
           disclosureSchedule
         ];
@@ -39,7 +40,7 @@ class TobaccoSchedule {
         tobaccoSchedule.disclosures[disclosureSchedule.year] = [
           disclosureSchedule
         ];
-        if(!tobaccoSchedule.years.contains(disclosureSchedule.year)){
+        if (!tobaccoSchedule.years.contains(disclosureSchedule.year)) {
           tobaccoSchedule.years.add(disclosureSchedule.year);
         }
       } else {
@@ -47,7 +48,7 @@ class TobaccoSchedule {
             .add(disclosureSchedule);
       }
     }
-    tobaccoSchedule.years.sort((x,y) => y.compareTo(x));
+    tobaccoSchedule.years.sort((x, y) => y.compareTo(x));
     return tobaccoSchedule;
   }
 }

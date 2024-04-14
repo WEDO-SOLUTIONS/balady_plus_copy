@@ -8,4 +8,3 @@ class SucceedMessageState extends Equatable {
   @override
   List<Object?> get props => [message];
 }
-

@@ -6,7 +6,8 @@ import '../../../../../core/services/services_exports.dart'
 import '../../municipal_advisor_exports.dart'
     show AccommodationTypeEntity, MunicipalAdvisorRepository;
 
-class GetAccommodationTypes extends UseCase<List<AccommodationTypeEntity>, NoParams> {
+class GetAccommodationTypes
+    extends UseCase<List<AccommodationTypeEntity>, NoParams> {
   final MunicipalAdvisorRepository repository;
 
   GetAccommodationTypes(this.repository);

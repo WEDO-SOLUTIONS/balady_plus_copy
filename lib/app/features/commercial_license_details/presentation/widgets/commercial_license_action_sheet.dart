@@ -19,15 +19,20 @@ import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
+import '../../../Commercial_license_transfer/domain/use_cases/get_license_permits_data.dart';
+import '../../../Commercial_license_transfer/domain/use_cases/get_validate_license.dart';
+import '../../../Commercial_license_transfer/persentation/bloc/license_tranfer_cubit.dart';
 import '../../../posters/presentation/blocs/posters_license_bloc.dart';
 
 class CommercialLicenseActionSheet extends StatelessWidget {
-  const CommercialLicenseActionSheet({super.key});
+  LicenseTransferCubit licenseTransferCubit;
+  CommercialLicenseActionSheet({super.key, required this.licenseTransferCubit});
 
   @override
   Widget build(BuildContext context) {
     CommercialLicenseActionViewModel provider =
         context.watch<CommercialLicenseActionViewModel>();
+
     return BottomSheetWithActions(
       title: "procedures".tr(),
       body: Column(
@@ -44,6 +49,15 @@ class CommercialLicenseActionSheet extends StatelessWidget {
                                 (action) => InkWell(
                                   onTap: () {
                                     switch (action.id) {
+                                      case 1006:
+
+                                        //fawzi static license id
+                                        licenseTransferCubit.validateLicense(
+                                            "${provider.licenseId}");
+                                        //  licenseTransferCubit.validateLicense("45019775725");
+
+                                        break;
+
                                       case 1008:
                                         BottomSheetDialog.showDraggableSheet(
                                           context,

@@ -1,7 +1,8 @@
 import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/errors_exports.dart' show Failure;
-import '../../../../../core/services/services_exports.dart' show NoParams, UseCase;
+import '../../../../../core/services/services_exports.dart'
+    show NoParams, UseCase;
 import '../../requests_exports.dart'
     show RequestStatusEntity, RequestsRepository;
 

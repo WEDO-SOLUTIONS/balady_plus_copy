@@ -40,6 +40,6 @@ class SelectFormFieldDataEvent extends SubmitRequestEvent {
 }
 
 class ValidateFormEvent extends SubmitRequestEvent {
-  final SubmitParams params; 
+  final SubmitParams params;
   const ValidateFormEvent({required this.params});
 }
