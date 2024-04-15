@@ -8,7 +8,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
-import '../../../../Commercial_license_transfer/persentation/interface/step_interface.dart';
+
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 
 import 'package:dio/dio.dart';
@@ -26,6 +26,7 @@ import '../../../../commercial_license/presentation/commercial_license/widgets/p
 import '../../../../commercial_license/presentation/step5/bloc/cr_step5_attachment_data_cubit.dart';
 import '../../../../commercial_license/presentation/step5/widgets/credence_components.dart';
 import '../../../../transaction_inquiry/customer_voice_exports.dart';
+import '../../../old_owner_transfer/persentation/interface/step_interface.dart';
 import '../blocs/request_approval_sequence_cubit.dart';
 import '../widgets/AttachmentComponents.dart';
 

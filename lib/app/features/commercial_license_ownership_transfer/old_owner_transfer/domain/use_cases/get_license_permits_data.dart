@@ -1,8 +1,9 @@
-import 'package:balady_plus/app/features/Commercial_license_transfer/domain/entity/permits_response_entity.dart';
 import 'package:dartz/dartz.dart' show Either;
-import '../../../../core/errors/failures.dart';
-import '../../../../core/services/local/use_case.dart';
-import '../../../_shared_feature_/shared_feature_exports.dart';
+
+import '../../../../../core/errors/failures.dart';
+import '../../../../../core/services/local/use_case.dart';
+import '../../../../_shared_feature_/data/models/response_body_model.dart';
+import '../entity/permits_response_entity.dart';
 import '../repository/repository.dart';
 
 class GetLicensePermitsData

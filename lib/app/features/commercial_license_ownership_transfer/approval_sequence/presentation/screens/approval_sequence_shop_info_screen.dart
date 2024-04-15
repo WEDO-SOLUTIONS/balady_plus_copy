@@ -6,13 +6,13 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../core/utils/constants/app_style.dart';
-import '../../../../Commercial_license_transfer/persentation/interface/step_interface.dart';
 import '../../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../commercial_license/presentation/step4/widgets/yes_no_radio_group_widget.dart';
+import '../../../old_owner_transfer/persentation/interface/step_interface.dart';
 import '../../domain/entities/save_shop_info_request.dart';
 import '../blocs/request_approval_sequence_cubit.dart';
 

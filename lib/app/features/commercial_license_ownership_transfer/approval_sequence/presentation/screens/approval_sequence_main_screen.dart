@@ -1,10 +1,7 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/features/Commercial_license_transfer/domain/use_cases/get_validate_license.dart';
-import 'package:balady_plus/app/features/Commercial_license_transfer/persentation/license_premits/request_sequence_pledges.dart';
-import 'package:balady_plus/app/features/Commercial_license_transfer/persentation/license_premits/request_sequence_premits.dart';
-import 'package:balady_plus/app/features/Commercial_license_transfer/persentation/license_premits/sucessfull_page.dart';
+
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart';
@@ -13,8 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import '../../../../Commercial_license_transfer/persentation/interface/step_interface.dart';
-import '../../../../Commercial_license_transfer/persentation/license_premits/request_sequence_new_owner.dart';
+import '../../../old_owner_transfer/persentation/interface/step_interface.dart';
 import '../../../request_details/presentation/bloc/request_ownership_transfer_details_cubit.dart';
 import '../blocs/request_approval_sequence_cubit.dart';
 import 'approval_sequence_attachments_screen.dart';

@@ -23,8 +23,8 @@ import 'package:provider/provider.dart';
 
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/ux_cam_events.dart';
-import '../../../Commercial_license_transfer/domain/use_cases/get_validate_license.dart';
-import '../../../Commercial_license_transfer/persentation/bloc/license_tranfer_cubit.dart';
+import '../../../commercial_license_ownership_transfer/old_owner_transfer/domain/use_cases/get_validate_license.dart';
+import '../../../commercial_license_ownership_transfer/old_owner_transfer/persentation/bloc/license_tranfer_cubit.dart';
 
 class CommercialLicenseDetailsPage extends StatefulWidget {
   const CommercialLicenseDetailsPage({super.key});
