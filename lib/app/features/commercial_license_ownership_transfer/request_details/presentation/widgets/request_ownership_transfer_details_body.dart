@@ -72,7 +72,7 @@ class _RequestOwnershipTransferDetailsBodyState
                 create: (BuildContext context) {
                   return SelectedPermitsViewModel(
                     webService: sl(),
-                    requestId: commercialRequestDetails.requestId,
+                    requestId: commercialRequestDetails.requestId!,
                   );
                 },
               ),
@@ -106,7 +106,7 @@ class _RequestOwnershipTransferDetailsBodyState
                             children: [
                               CustomTextWidget(
                                 commercialRequestDetails
-                                    .licenseInfo!.statusDesc,
+                                    .licenseInfo?.statusDesc ?? '',
                                 textStyle: AppStyle.tagTextStyle,
                               ),
                             ],
@@ -128,7 +128,7 @@ class _RequestOwnershipTransferDetailsBodyState
                       ),
                       CardParameter(
                         title: 'issue_commercial_conclusion_owner_data_cr'.tr(),
-                        value: commercialRequestDetails.submitterInfo!.crNumber,
+                        value: commercialRequestDetails.submitterInfo?.crNumber ?? '',
                       ),
                     ],
                   ),
@@ -146,13 +146,13 @@ class _RequestOwnershipTransferDetailsBodyState
                       CardParameter(
                         title: 'submitterIdNumber'.tr(),
                         value: commercialRequestDetails
-                            .submitterInfo!.submitterIdNumber
-                            .toString(),
+                            .submitterInfo?.submitterIdNumber
+                            .toString() ?? '',
                       ),
                       CardParameter(
                         title: 'applicantDesc'.tr(),
                         value: commercialRequestDetails
-                            .submitterInfo!.submitterType,
+                            .submitterInfo?.submitterType ?? '',
                       ),
                     ],
                   ),
@@ -189,21 +189,19 @@ class _RequestOwnershipTransferDetailsBodyState
                             'issue_commercial_conclusion_activity_data_main_area'
                                 .tr(),
                         value: commercialRequestDetails.mainActivityArea
-                            .toString(),
+                            ?.toString() ?? '',
                       ),
                       CardParameter(
                         title:
                             'issue_commercial_conclusion_activity_data_marsom'
                                 .tr(),
-                        value: commercialRequestDetails.mainActivityArea
-                            .toString(),
+                        value: commercialRequestDetails.mainActivityArea?.toString() ?? '',
                       ),
                       CardParameter(
                         title: 'issue_commercial_conclusion_activity_facility'
                             .tr(),
                         value: commercialRequestDetails
-                                .submitterInfo?.entityType ??
-                            ''.toString(),
+                                .submitterInfo?.entityType.toString() ?? '',
                       ),
                       CardParameter(
                         title:
@@ -362,20 +360,17 @@ class _RequestOwnershipTransferDetailsBodyState
                               // from whats
                               title: 'shopUnitNumber'.tr(),
                               value: commercialRequestDetails
-                                  .shopInfo!.shopUnitNumber
-                                  .toString(),
+                                  .shopInfo!.shopUnitNumber?.toString() ?? '',
                             ),
                             CardParameter(
                               title: 'blockNumber'.tr(),
                               value: commercialRequestDetails
-                                  .shopInfo!.blockNumber
-                                  .toString(),
+                                  .shopInfo!.blockNumber?.toString() ?? '',
                             ),
                             CardParameter(
                               title: 'holesCount'.tr(),
                               value: commercialRequestDetails
-                                  .shopInfo!.holesCount
-                                  .toString(),
+                                  .shopInfo!.holesCount?.toString() ?? '',
                             ),
                             CardParameter(
                               // from whats
@@ -400,8 +395,7 @@ class _RequestOwnershipTransferDetailsBodyState
                             CardParameter(
                               title: 'floorCount'.tr(),
                               value: commercialRequestDetails
-                                  .shopInfo!.floorCount
-                                  .toString(),
+                                  .shopInfo!.floorCount?.toString() ?? '',
                             ),
                             CardParameter(
                               title: 'noOfCameras'.tr(),
@@ -444,21 +438,18 @@ class _RequestOwnershipTransferDetailsBodyState
                                       CardParameter(
                                         title: 'contractType'.tr(),
                                         value: commercialRequestDetails
-                                            .shopInfo!.contractInfoResponseDto!
-                                            .getDisplayContractTypeName(),
+                                            .shopInfo!.contractInfoResponseDto?.getDisplayContractTypeName() ?? '',
                                       ),
                                       CardParameter(
                                         title: 'contractNumber'.tr(),
                                         value: commercialRequestDetails
                                             .shopInfo!
-                                            .contractInfoResponseDto!
-                                            .contractNumber,
+                                            .contractInfoResponseDto?.contractNumber ?? '',
                                       ),
                                       CardParameter(
                                         title: 'contractOption'.tr(),
                                         value: (commercialRequestDetails
-                                            .shopInfo!.contractInfoResponseDto!
-                                            .getDisplayCleanContractName()),
+                                            .shopInfo!.contractInfoResponseDto?.getDisplayCleanContractName() ?? ''),
                                       ),
                                     ],
                                   )

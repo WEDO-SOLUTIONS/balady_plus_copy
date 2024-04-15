@@ -2,8 +2,8 @@ import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class CommercialLicenceDetails {
-  int requestId;
-  double mainActivityArea;
+  int? requestId;
+  double? mainActivityArea;
   DateTime? creationDate;
 
   // String entityType;
