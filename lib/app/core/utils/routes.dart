@@ -69,11 +69,6 @@ import '../../core/utils/utils_exports.dart'
         RouteName,
         ScaleRotatePage,
         SliderUpPage;
-import '../../features/Commercial_license_transfer/persentation/commercail_license_tranfer_overview/commercial_license_transfer_overview_screen.dart';
-import '../../features/Commercial_license_transfer/persentation/license_premits/request_sequence_home.dart';
-import '../../features/Commercial_license_transfer/persentation/license_premits/request_sequence_new_owner.dart';
-import '../../features/Commercial_license_transfer/persentation/license_premits/request_sequence_premits.dart';
-import '../../features/Commercial_license_transfer/persentation/license_premits/sucessfull_page.dart';
 import '../../features/_shared_feature_/presentation/pages/qiblah_webview_page.dart';
 import '../../features/_shared_feature_/presentation/pages/view_apigee_image_screen.dart';
 import '../../features/calculator/presentation/pages/service_calculator_result_screen.dart';
@@ -87,6 +82,9 @@ import '../../features/commercial_license/presentation/submit_application_succes
 import '../../features/commercial_license_inquery/persentation/commercial_license_overview/commercial_license_overview_screen.dart';
 import '../../features/commercial_license_inquery/persentation/commercial_license_query/commercial_license_query_screen.dart';
 import '../../features/commercial_license_inquery/persentation/commercial_license_query_Details/commercial_license_query_details.dart';
+import '../../features/commercial_license_ownership_transfer/old_owner_transfer/persentation/commercail_license_tranfer_overview/commercial_license_transfer_overview_screen.dart';
+import '../../features/commercial_license_ownership_transfer/old_owner_transfer/persentation/license_premits/request_sequence_home.dart';
+import '../../features/commercial_license_ownership_transfer/old_owner_transfer/persentation/license_premits/sucessfull_page.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_overview/construction_license_overview_screen.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_query/construction_license_inquery_screen.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_query_Details/construction_license_inquery_details.dart';
