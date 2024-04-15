@@ -99,181 +99,226 @@ class _RequestOwnershipTransferDetailsPageState
             padding: EdgeInsets.all(16.0),
             child: RequestOwnershipTransferDetailsBody(),
           ),
-          if (isReadonly ?? false) Container() else  SizedBox(
-            height: 200,
-            width: double.infinity,
-            child: Card(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadiusDirectional.horizontal(
-                    start: Radius.circular(15.0), end: Radius.circular(15.0)),
-              ),
-              margin: EdgeInsets.zero,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 20),
-                          height: 60,
-                          width: double.infinity,
-                          child: CustomElevatedButtonWidget(
-                            btnColor: AppColor.blueSkyLight800,
-                            textStyle: AppStyle.elevatedButtonStyle.copyWith(
-                              color: AppColor.blackModern50Light,
-                              fontSize: 20,
-                            ),
-                            text: "respond_to_ownership_transfer".tr(),
-                            onPressed: () {
-                              CustomPopUpsWidgets.showBottomSheet(
-                                context,
-                                child: BlocProvider.value(
-                                  value: bloc!,
-                                  child: BlocBuilder<
-                                      RequestOwnershipTransferDetailsCubit,
-                                      RequestOwnershipTransferDetailsState>(
-                                    builder: (blocContext, state) {
-                                      if (state.status ==
-                                          BlocRequestStatus
-                                              .submissionUpdateLoading) {
-                                        return const Center(
-                                            child: CircularProgressIndicator());
-                                      }
-
-
-                                      return Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Align(
-                                              alignment: Alignment.topLeft,
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: CircleIcon(
-                                                  icon: Icons.close,
-                                                  circleSize: 50,
-                                                  iconColor:
-                                                      AppColor.primary600Light,
-                                                  backgroundColor: AppColor
-                                                      .geyser
-                                                      .withOpacity(0.4),
-                                                  iconSize: 25,
-                                                ),
-                                              ),
-                                            ),
-                                            SvgPicture.asset(
-                                              IconPath.switchProfileIcon,
-                                              width: 100,
-                                              height: 100,
-                                              colorFilter:
-                                                  const ColorFilter.mode(
-                                                AppColor.blueSkyLight800,
-                                                BlendMode.srcIn,
-                                              ),
-                                            ),
-                                            Text(
-                                              'respond_to_ownership_transfer'
-                                                  .tr(),
-                                              style: const TextStyle(
-                                                  fontSize: 28,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(
-                                              'respond_to_ownership_transfer_warning'
-                                                  .tr(),
-                                              textAlign: TextAlign.center,
-                                              style:
-                                                  const TextStyle(fontSize: 20),
-                                            ),
-                                            Container(
-                                              height: 55,
-                                              width: double.infinity,
-                                              child: CustomElevatedButtonWidget(
-                                                btnRadius: 5.0,
-                                                btnColor:
-                                                    AppColor.blueSkyLight800,
-                                                textStyle: AppStyle
-                                                    .elevatedButtonStyle
-                                                    .copyWith(
-                                                  color: AppColor
-                                                      .blackModern50Light,
-                                                  fontSize: 20,
-                                                ),
-                                                btnHeight: 40,
-                                                text:
-                                                    "accept_ownership_transfer"
-                                                        .tr(),
-                                                onPressed: () {
-                                                  bloc!.acceptCommercialRequestTransfer(requestNumber)
-                                                      .then((value) => {
-
-
-                                                        if(value == "sucessfull")
-                                                          {
-                                                            Navigator.of(context)
-                                                                .pushNamed(
-                                                              RouteName
-                                                                  .approvalSequenceMainScreen,
-                                                              arguments: bloc,
-                                                            )
-                                                          }
-
-
-
-                                                  }
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                            Container(
-                                              height: 55,
-                                              width: double.infinity,
-                                              child: CustomElevatedButtonWidget(
-                                                btnRadius: 5.0,
-                                                btnBorderColor: Colors.red[900],
-                                                btnColor: Colors.white,
-                                                textStyle: AppStyle
-                                                    .elevatedButtonStyle
-                                                    .copyWith(
-                                                  color: Colors.red[900],
-                                                  fontSize: 20,
-                                                ),
-                                                btnHeight: 40,
-                                                text:
-                                                    "reject_ownership_transfer"
-                                                        .tr(),
-                                                onPressed: () {
-                                                  bloc!
-                                                      .rejectCommercialRequestTransfer(
-                                                          requestNumber)
-                                                      .then((value) =>
-                                                          Navigator.pop(
-                                                              context));
-                                                },
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                                height: 600,
-                                radius: 30,
-                              );
-                              // Navigator.of(context).pushNamed(
-                              //   RouteName.approvalSequenceMainScreen,
-                              //   arguments: {},
-                              // );
-                            },
+          if (isReadonly ?? false)
+            Container()
+          else
+            BlocBuilder<RequestOwnershipTransferDetailsCubit,
+                RequestOwnershipTransferDetailsState>(
+              builder: (blocContext, state) {
+                return state.status == BlocRequestStatus.submissionGetSuccess
+                    ? SizedBox(
+                        height: 200,
+                        width: double.infinity,
+                        child: Card(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadiusDirectional.horizontal(
+                                start: Radius.circular(15.0),
+                                end: Radius.circular(15.0)),
                           ),
-                        )
-                ],
-              ),
-            ),
-          )
+                          margin: EdgeInsets.zero,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              state.commercialLicenceDetails?.warnings
+                                          .partialHeldWarnings ==
+                                      null
+                                  ? const SizedBox.shrink()
+                                  : Row(
+                                      children: [
+                                        SvgPicture.asset(
+                                          IconPath.infoCircle,
+                                          width: 100,
+                                          height: 100,
+                                          colorFilter: const ColorFilter.mode(
+                                            AppColor.darkRed,
+                                            BlendMode.srcIn,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(state
+                                                .commercialLicenceDetails
+                                                ?.warnings
+                                                .partialHeldWarnings ??
+                                            '')
+                                      ],
+                                    ),
+                              Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                height: 60,
+                                width: double.infinity,
+                                child: CustomElevatedButtonWidget(
+                                  btnColor: AppColor.blueSkyLight800,
+                                  textStyle:
+                                      AppStyle.elevatedButtonStyle.copyWith(
+                                    color: AppColor.blackModern50Light,
+                                    fontSize: 20,
+                                  ),
+                                  text: "respond_to_ownership_transfer".tr(),
+                                  onPressed: () {
+                                    CustomPopUpsWidgets.showBottomSheet(
+                                      context,
+                                      child: BlocProvider.value(
+                                        value: bloc!,
+                                        child: BlocBuilder<
+                                            RequestOwnershipTransferDetailsCubit,
+                                            RequestOwnershipTransferDetailsState>(
+                                          builder: (blocContext, state) {
+                                            if (state.status ==
+                                                BlocRequestStatus
+                                                    .submissionUpdateLoading) {
+                                              return const Center(
+                                                  child:
+                                                      CircularProgressIndicator());
+                                            }
+
+                                            return Padding(
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  Align(
+                                                    alignment:
+                                                        Alignment.topLeft,
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: CircleIcon(
+                                                        icon: Icons.close,
+                                                        circleSize: 50,
+                                                        iconColor: AppColor
+                                                            .primary600Light,
+                                                        backgroundColor:
+                                                            AppColor.geyser
+                                                                .withOpacity(
+                                                                    0.4),
+                                                        iconSize: 25,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SvgPicture.asset(
+                                                    IconPath.switchProfileIcon,
+                                                    width: 100,
+                                                    height: 100,
+                                                    colorFilter:
+                                                        const ColorFilter.mode(
+                                                      AppColor.blueSkyLight800,
+                                                      BlendMode.srcIn,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    'respond_to_ownership_transfer'
+                                                        .tr(),
+                                                    style: const TextStyle(
+                                                        fontSize: 28,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  Text(
+                                                    'respond_to_ownership_transfer_warning'
+                                                        .tr(),
+                                                    textAlign: TextAlign.center,
+                                                    style: const TextStyle(
+                                                        fontSize: 20),
+                                                  ),
+                                                  Container(
+                                                    height: 55,
+                                                    width: double.infinity,
+                                                    child:
+                                                        CustomElevatedButtonWidget(
+                                                      btnRadius: 5.0,
+                                                      btnColor: AppColor
+                                                          .blueSkyLight800,
+                                                      textStyle: AppStyle
+                                                          .elevatedButtonStyle
+                                                          .copyWith(
+                                                        color: AppColor
+                                                            .blackModern50Light,
+                                                        fontSize: 20,
+                                                      ),
+                                                      btnHeight: 40,
+                                                      text:
+                                                          "accept_ownership_transfer"
+                                                              .tr(),
+                                                      onPressed: () {
+                                                        bloc!
+                                                            .acceptCommercialRequestTransfer(
+                                                                requestNumber)
+                                                            .then((value) => {
+                                                                  if (value ==
+                                                                      "sucessfull")
+                                                                    {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pushNamed(
+                                                                        RouteName
+                                                                            .approvalSequenceMainScreen,
+                                                                        arguments:
+                                                                            bloc,
+                                                                      )
+                                                                    }
+                                                                });
+                                                      },
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    height: 55,
+                                                    width: double.infinity,
+                                                    child:
+                                                        CustomElevatedButtonWidget(
+                                                      btnRadius: 5.0,
+                                                      btnBorderColor:
+                                                          Colors.red[900],
+                                                      btnColor: Colors.white,
+                                                      textStyle: AppStyle
+                                                          .elevatedButtonStyle
+                                                          .copyWith(
+                                                        color: Colors.red[900],
+                                                        fontSize: 20,
+                                                      ),
+                                                      btnHeight: 40,
+                                                      text:
+                                                          "reject_ownership_transfer"
+                                                              .tr(),
+                                                      onPressed: () {
+                                                        bloc!
+                                                            .rejectCommercialRequestTransfer(
+                                                                requestNumber)
+                                                            .then((value) =>
+                                                                Navigator.pop(
+                                                                    context));
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                      height: 600,
+                                      radius: 30,
+                                    );
+                                    // Navigator.of(context).pushNamed(
+                                    //   RouteName.approvalSequenceMainScreen,
+                                    //   arguments: {},
+                                    // );
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    : const SizedBox.shrink();
+              },
+            )
         ]),
       ),
     );

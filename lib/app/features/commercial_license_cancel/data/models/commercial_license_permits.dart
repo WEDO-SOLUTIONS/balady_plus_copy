@@ -18,11 +18,11 @@ class CommercialLicensePermits {
   factory CommercialLicensePermits.fromJson(Map<String, dynamic> json) =>
       CommercialLicensePermits(
         accepted: json["accepted"] ?? false,
-        expirationDate: json["expirationDate"],
-        id: json["id"],
-        permitNumber: json["permitNumber"],
-        permitType: json["permitType"],
-        selected: json["selected"],
+        expirationDate: json["expirationDate"] ?? json["permitEndDate"] ?? "",
+        id: json["id"] ?? 0,
+        permitNumber: json["permitNumber"] ?? "",
+        permitType: json["permitType"] ?? json["permitName"] ?? "",
+        selected: json["selected"] ?? false,
       );
 
   Map<String, dynamic> toJson() => {
