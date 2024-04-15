@@ -80,15 +80,13 @@ class _StoriesOnboardingState extends ConsumerState<StoriesOnboarding> {
     );
   }
 
-  void onActionPressed(StoryFrameAction action, BuildContext context) {
+  void _onActionPressed(StoryFrameAction action, BuildContext context) {
     switch (action.action) {
       case StoryAction.next:
         _frameController.nextPage?.call();
 
-      case null:
-      case StoryAction.close:
-      case StoryAction.deeplink:
-      case StoryAction.route:
+      // ignore: no_default_cases
+      default:
         onClose();
         break;
     }
@@ -118,7 +116,7 @@ class _StoriesOnboardingState extends ConsumerState<StoriesOnboarding> {
             ...stories.map(
               (story) => StoryFramesPlayer(
                 controller: _frameController,
-                onActionPressed: (action) => onActionPressed(action, context),
+                onActionPressed: (action) => _onActionPressed(action, context),
                 story: story,
                 onNextStory: _previousStory,
                 onPreviousStory: _nextStory,
