@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
-import '../../../../core/utils/common_functions.dart';
-import '../../../../core/utils/constants/app_colors.dart';
-import '../../../../core/utils/constants/app_style.dart';
-import '../../../../core/utils/constants/constants.dart';
-import '../../../../core/utils/constants/paths/icon_paths.dart';
-import '../../../../core/utils/constants/paths/image_paths.dart';
-import '../../../../core/utils/constants/route_names.dart';
-import '../../../_shared_feature_/balady_features/widgets/shared/circle_icon.dart';
-import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
-import '../../../_shared_feature_/presentation/widgets/draw_icon_based_type_widget.dart';
-import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
-import '../bloc/license_tranfer_cubit.dart';
-import '../interface/step_interface.dart';
+
+import '../../../../../core/utils/constants/app_colors.dart';
+import '../../../../../core/utils/constants/app_style.dart';
+import '../../../../../core/utils/constants/paths/icon_paths.dart';
+import '../../../../../core/utils/constants/route_names.dart';
+import '../../../../_shared_feature_/balady_features/widgets/shared/circle_icon.dart';
+import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import '../../../../_shared_feature_/presentation/widgets/draw_icon_based_type_widget.dart';
+import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+
 
 class SucessfullScreen extends StatefulWidget {
   SucessfullScreen({Key? key}) : super(key: key);

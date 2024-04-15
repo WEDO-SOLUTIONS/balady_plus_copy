@@ -9,7 +9,7 @@ import '../../../../../core/errors/failures.dart';
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/enums/enums.dart';
 
-import '../../../../Commercial_license_transfer/persentation/interface/step_interface.dart';
+
 import '../../../../_shared_feature_/data/entities/file_data_item.dart';
 import '../../../../comercial_license_renew/domain/entities/cr_attachment_request.dart';
 import '../../../../comercial_license_renew/domain/entities/cr_attachment_response.dart';
@@ -24,6 +24,7 @@ import '../../../../commercial_license/domain/use_cases/get_deed_options.dart';
 import '../../../../commercial_license/domain/use_cases/get_ejar_info.dart';
 import '../../../../commercial_license/domain/use_cases/get_investment_contracts.dart';
 import '../../../../transaction_inquiry/presentation/core/models/attachment_model.dart';
+import '../../../old_owner_transfer/persentation/interface/step_interface.dart';
 import '../../../request_details/data/models/commercial_licence_details.dart';
 
 import '../../data/models/request_permits_model/request_permits_model.dart';

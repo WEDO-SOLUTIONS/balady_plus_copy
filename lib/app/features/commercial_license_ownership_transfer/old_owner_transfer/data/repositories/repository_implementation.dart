@@ -1,7 +1,7 @@
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
 
 import 'package:dartz/dartz.dart';
-import '../../../_shared_feature_/data/models/response_body_model.dart';
+import '../../../../_shared_feature_/data/models/response_body_model.dart';
 import '../../domain/entity/permits_response_entity.dart';
 import '../../domain/entity/transfer_license_request.dart';
 import '../../domain/entity/validate_owner_entity.dart';

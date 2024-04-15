@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../core/utils/enums/enums.dart';
-import '../../../../Commercial_license_transfer/persentation/interface/step_interface.dart';
+
 import '../../../../_shared_feature_/presentation/widgets/check_boxes/text_field_with_check_btn.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/radio_buttons/vertical_radio_group_component.dart';
@@ -15,6 +15,7 @@ import '../../../../commercial_license/domain/entities/investment_contracts_resp
 import '../../../../commercial_license/presentation/commercial_license/widgets/previous_next_button.dart';
 import '../../../../commercial_license/presentation/step4/widgets/investment_contract_card.dart';
 import '../../../../vd/presentation/widgets/details_widgets/incident_desc_widgets/vd_create_incident_addetional_fields.dart';
+import '../../../old_owner_transfer/persentation/interface/step_interface.dart';
 import '../blocs/request_approval_sequence_cubit.dart';
 
 class ApprovalSequenceShopLocationScreen extends StatefulWidget {

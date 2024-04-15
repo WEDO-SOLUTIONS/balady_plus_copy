@@ -19,10 +19,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
-import '../../../Commercial_license_transfer/domain/use_cases/get_license_permits_data.dart';
-import '../../../Commercial_license_transfer/domain/use_cases/get_validate_license.dart';
-import '../../../Commercial_license_transfer/persentation/bloc/license_tranfer_cubit.dart';
-import '../../../posters/presentation/blocs/posters_license_bloc.dart';
+import '../../../commercial_license_ownership_transfer/old_owner_transfer/persentation/bloc/license_tranfer_cubit.dart';
 
 class CommercialLicenseActionSheet extends StatelessWidget {
   LicenseTransferCubit licenseTransferCubit;

@@ -1,7 +1,8 @@
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/errors/failures.dart';
+
+import '../../../../../core/errors/failures.dart';
 import '../../data/model/apply_request_data_model.dart';
 import '../../data/model/permits_response_data_model.dart';
 import '../../data/model/validate_license_data_model.dart';

@@ -39,11 +39,7 @@ import 'package:get_it/get_it.dart' show GetIt;
 import 'package:internet_connection_checker/internet_connection_checker.dart'
     show InternetConnectionChecker;
 import 'package:balady_plus/app/core/dependency_injection/features/commercials_tobacco_injection.dart';
-import '../../features/Commercial_license_transfer/data/data_source/remote_data_source.dart';
-import '../../features/Commercial_license_transfer/data/repositories/repository_implementation.dart';
-import '../../features/Commercial_license_transfer/domain/repository/repository.dart';
 import '../../features/_shared_feature_/balady_features/services/services.dart';
-
 import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
@@ -52,6 +48,9 @@ import '../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubi
 import '../../features/commercial_license_ownership_transfer/approval_sequence/data/data_sources/remote_data_source.dart';
 import '../../features/commercial_license_ownership_transfer/approval_sequence/data/repositories/repository_implementation.dart';
 import '../../features/commercial_license_ownership_transfer/approval_sequence/domain/repositories/repository.dart';
+import '../../features/commercial_license_ownership_transfer/old_owner_transfer/data/data_source/remote_data_source.dart';
+import '../../features/commercial_license_ownership_transfer/old_owner_transfer/data/repositories/repository_implementation.dart';
+import '../../features/commercial_license_ownership_transfer/old_owner_transfer/domain/repository/repository.dart';
 import '../../features/commercial_license_ownership_transfer/request_details/data/data_sources/remote_data_source.dart';
 import '../../features/commercial_license_ownership_transfer/request_details/data/repositories/repository_implementation.dart';
 import '../../features/commercial_license_ownership_transfer/request_details/domain/repositories/repository.dart';

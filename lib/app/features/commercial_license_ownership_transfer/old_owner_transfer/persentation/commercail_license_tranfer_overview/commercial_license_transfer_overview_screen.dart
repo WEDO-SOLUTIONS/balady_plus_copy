@@ -1,15 +1,16 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
-import 'package:balady_plus/app/features/Commercial_license_transfer/domain/use_cases/get_license_permits_data.dart';
+
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:balady_plus/app/features/services/presentation/mvvm/service_data_view_model.dart';
 import 'package:balady_plus/app/features/services/presentation/widgets/service_cards_dynamic/service_card_desc_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/utils/app_analytics_events.dart';
-import '../../../../core/utils/common_functions.dart';
-import '../../../../core/utils/constants/ux_cam_events.dart';
-import '../bloc/license_tranfer_cubit.dart';
+
+import '../../../../../core/utils/app_analytics_events.dart';
+import '../../../../../core/utils/common_functions.dart';
+import '../../../../../core/utils/constants/ux_cam_events.dart';
+
 
 class CommercialLicenseTransferOverviewScreen extends StatefulWidget {
   const CommercialLicenseTransferOverviewScreen({Key? key}) : super(key: key);

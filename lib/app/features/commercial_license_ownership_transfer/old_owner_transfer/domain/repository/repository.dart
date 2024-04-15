@@ -1,8 +1,8 @@
-import 'package:balady_plus/app/features/Commercial_license_transfer/domain/entity/permits_response_entity.dart';
 import 'package:dartz/dartz.dart';
-import '../../../../core/errors/failures.dart';
-import '../../../_shared_feature_/data/models/response_body_model.dart';
+import '../../../../../core/errors/failures.dart';
+import '../../../../_shared_feature_/data/models/response_body_model.dart';
 import '../entity/apply_request_entity.dart';
+import '../entity/permits_response_entity.dart';
 import '../entity/transfer_license_request.dart';
 import '../entity/validate_license_entity.dart';
 import '../entity/validate_owner_entity.dart';
