@@ -37,10 +37,7 @@ class StoryFrameContent extends StatelessWidget {
         const SizedBox(height: 12),
         if (frame.description != null)
           Text(
-            frame.descriptionOrFailback(
-                  l10n,
-                ) ??
-                '',
+            frame.descriptionOrFailback(l10n) ?? '',
             style: context.textStyle.footNote.copyWith(
               color: frame.descriptionStyle?.color ??
                   context.color.textAndIconsBaseInversePrimary,
