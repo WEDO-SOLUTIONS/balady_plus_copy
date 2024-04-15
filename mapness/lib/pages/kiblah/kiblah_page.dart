@@ -30,18 +30,25 @@ class KiblahPage extends ConsumerWidget {
                 const LandingRoute().go(context);
               },
               leading: Padding(
-                padding: const EdgeInsets.only(left: NumericBase.$4x),
+                padding: const EdgeInsets.only(left: NumericBase.$4x, right: NumericBase.$4x),
                 child: Row(
                   children: [
-                    Icon(
-                      BaladyIcons.Arrow_Corner_Left_L,
-                      color: context.color.textAndIconsBaseInversePrimary,
-                    ),
-                    const SizedBox(width: NumericBase.$0_5x),
-                   Text(
-                        context.l10n.back,
-                        style: context.textStyle.footNoteBold
+                    Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: Row(
+                        children: [
+                          Icon(
+                            BaladyIcons.Arrow_Corner_Left_L,
+                            color: context.color.textAndIconsBaseInversePrimary,
+                          ),
+                          const SizedBox(width: NumericBase.$0_5x),
+                          Text(
+                            context.l10n.back,
+                            style: context.textStyle.footNoteBold
                             .copyWith(color: context.staticColor.textAndIconsBaseInversePrimary),
+                          )
+                        ],
+                      ),
                     )
                   ],
                 ),
