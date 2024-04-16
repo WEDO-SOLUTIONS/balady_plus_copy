@@ -383,7 +383,7 @@ class _RemoteConfig {
     stgVal: {
 
       "survey_report_inquery": {
-        "id": 11544,
+        "id": 11428,
         "Key_name": "license_query",
 
       },
@@ -431,7 +431,7 @@ class _RemoteConfig {
     urbiPreVal: {
 
       "survey_report_inquery": {
-        "id": 11544,
+        "id": 11428,
         "Key_name": "license_query",
 
       },
