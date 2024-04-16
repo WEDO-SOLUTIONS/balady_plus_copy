@@ -79,7 +79,7 @@ class SuccessfullySubmitRatingSheet extends StatelessWidget {
                   context,
                   RouteName.requestCommercialLicenseDetails,
                   arguments: {
-                    "requestNumber": provider.submitResponse.requestId
+                    "requestNumber": provider.submitResponse.requestId.toString()
                   },
                 );
               },
