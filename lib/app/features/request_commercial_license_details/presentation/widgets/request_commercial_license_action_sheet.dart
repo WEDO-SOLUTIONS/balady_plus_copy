@@ -61,6 +61,8 @@ class RequestCommercialLicenseActionSheet extends StatelessWidget {
                                                     provider.reasonCancel,
                                                 "availableCloseDate":
                                                     provider.availableCloseDate,
+                                                "crNumber": "",
+                                                "crType": "",
                                               },
                                             );
                                           } catch (e) {}
