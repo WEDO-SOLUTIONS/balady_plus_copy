@@ -17,6 +17,7 @@ class KiblahPage extends ConsumerWidget {
     final kaabaBearing = ref.watch(kaabaBearingProvider);
     final userBearing = ref.watch(compassProvider)?.floor().abs();
     final isReady = userBearing != null && kaabaBearing != null;
+    final isArabic = Directionality.of(context) == TextDirection.rtl;
 
     return Material(
       color: Colors.black.withOpacity(0.7),
@@ -33,22 +34,15 @@ class KiblahPage extends ConsumerWidget {
                 padding: const EdgeInsets.only(left: NumericBase.$4x, right: NumericBase.$4x),
                 child: Row(
                   children: [
-                    Directionality(
-                      textDirection: TextDirection.ltr,
-                      child: Row(
-                        children: [
-                          Icon(
-                            BaladyIcons.Arrow_Corner_Left_L,
-                            color: context.color.textAndIconsBaseInversePrimary,
-                          ),
-                          const SizedBox(width: NumericBase.$0_5x),
-                          Text(
-                            context.l10n.back,
-                            style: context.textStyle.footNoteBold
-                            .copyWith(color: context.staticColor.textAndIconsBaseInversePrimary),
-                          )
-                        ],
-                      ),
+                    Icon(
+                      isArabic ? BaladyIcons.Arrow_Corner_Right_L : BaladyIcons.Arrow_Corner_Left_L,
+                      color: context.color.textAndIconsBaseInversePrimary,
+                    ),
+                    const SizedBox(width: NumericBase.$0_5x),
+                    Text(
+                      context.l10n.back,
+                      style: context.textStyle.footNoteBold
+                          .copyWith(color: context.staticColor.textAndIconsBaseInversePrimary),
                     )
                   ],
                 ),
