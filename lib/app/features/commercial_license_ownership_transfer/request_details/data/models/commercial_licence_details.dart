@@ -984,9 +984,10 @@ class SubmitterInfo {
 }
 
 class Warnings {
-  Warnings();
-
-  factory Warnings.fromJson(Map<String, dynamic> json) => Warnings();
+  String? partialHeldWarnings;
+  Warnings({this.partialHeldWarnings});
+  factory Warnings.fromJson(Map<String, dynamic> json) =>
+      Warnings(partialHeldWarnings: json["PARTIAL_HELD_WARNINGS"]);
 
   Map<String, dynamic> toJson() => {};
 }

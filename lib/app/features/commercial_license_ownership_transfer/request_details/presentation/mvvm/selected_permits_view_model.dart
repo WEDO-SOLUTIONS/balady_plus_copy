@@ -27,12 +27,10 @@ class SelectedPermitsViewModel extends BaseViewModel {
     try {
       isLoading = true;
       notifyListeners();
-      response = await webService.dio.get(
-        ApiUrl.commercialLicensePermits(requestId),
-      );
+      response = await webService.dio.get(ApiUrl.getRequestPermits(requestId));
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
-      permits = result
+      permits = result['permits']
           .map<CommercialLicensePermits>((e) =>
               CommercialLicensePermits.fromJson(e as Map<String, dynamic>))
           .toList();
