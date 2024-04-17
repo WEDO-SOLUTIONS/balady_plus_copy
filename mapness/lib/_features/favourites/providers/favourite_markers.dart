@@ -2,6 +2,7 @@ import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/favourites/lib/construct_marker.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -87,7 +88,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
       markers.add(
         constructMarker(
           element,
-          'packages/mapness/assets/icons/svg/ic_fav_pin_v2.svg',
+          LayersSvgPaths.favourites,
           router,
         ),
       );
@@ -98,7 +99,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
       markers.add(
         constructMarker(
           favItems.home!,
-          'packages/mapness/assets/icons/svg/ic_fav_home_v2.svg',
+          LayersSvgPaths.home,
           router,
         ),
       );
@@ -109,7 +110,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
       markers.add(
         constructMarker(
           favItems.work!,
-          'packages/mapness/assets/icons/svg/ic_fav_work_v2.svg',
+          LayersSvgPaths.work,
           router,
         ),
       );
