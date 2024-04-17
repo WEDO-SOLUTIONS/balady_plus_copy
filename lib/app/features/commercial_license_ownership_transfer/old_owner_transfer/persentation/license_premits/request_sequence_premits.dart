@@ -64,6 +64,8 @@ class _ReuestSequencePremitsScreenState
           );
         } else if (state.licencePermitsResponse != null) {
           final permitResponse = state.licencePermitsResponse!;
+
+
           return Padding(
             padding: const EdgeInsets.only(left: 15.0, right: 15, top: 0),
             child: Column(
@@ -121,10 +123,10 @@ class _ReuestSequencePremitsScreenState
                                   index++) {
                                 permitResponse.permits![index].selected = true;
                                 if (lstPermits.contains(permitResponse
-                                        .permits![index].permitNumber!) ==
+                                        .permits![index].requestId!) ==
                                     false) {
                                   lstPermits.add(permitResponse
-                                      .permits![index].permitNumber!);
+                                      .permits![index].requestId!);
                                 }
                               }
                               setState(() {});
@@ -260,7 +262,22 @@ class _ReuestSequencePremitsScreenState
                           },
                         ),
                       )
-                    : const Spacer(),
+                    : Expanded(
+                      child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+
+
+                  CustomTextWidget(
+                      ('data_not_have_permits').tr(),
+                      fontSize: 14,
+                      fontColor: AppColor.primary900Light,
+                      textAlign: TextAlign.center,
+                  ),
+
+                ],),
+                    ),
                 permitResponse.term != null
                     ? getCardView(
                         Row(
