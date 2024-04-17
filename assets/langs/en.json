@@ -4291,5 +4291,25 @@
   "respond_to_ownership_transfer": "Respond to ownership transfer",
   "accept_ownership_transfer": "Accept ownership transfer",
   "reject_ownership_transfer": "Reject ownership transfer",
-  "respond_to_ownership_transfer_warning": "respond_to_ownership_transfer_warning"
+  "respond_to_ownership_transfer_warning": "respond_to_ownership_transfer_warning",
+
+
+
+
+
+  "isicActivity_area": "isic activity area",
+
+
+  "permitName": "Permit Name",
+
+
+  "HIMSELF": "Himself",
+  "AGENT": "Agent",
+  "OWNER_MANAGER": "OWNER / Manager",
+  "ENGINEERING_OFFICE": "Engineering Office",
+  "DELEGATOR": "Delegator"
+
+
+
+
 }
