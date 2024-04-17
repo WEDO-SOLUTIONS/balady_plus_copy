@@ -1,8 +1,7 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/balady_uikit.dart' as ui_kit;
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/lifestyle_layers/map_controls.dart';
@@ -35,15 +34,17 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
       }
     });
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      _draggableScrollableController.isAttached
-          ? _draggableScrollableController.animateTo(
-              .6,
-              duration: const Duration(milliseconds: 100),
-              curve: Curves.linear,
-            )
-          : null;
-    });
+    SchedulerBinding.instance.addPostFrameCallback(
+      (_) {
+        if (_draggableScrollableController.isAttached) {
+          _draggableScrollableController.animateTo(
+            .6,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.linear,
+          );
+        }
+      },
+    );
   }
 
   @override
@@ -86,47 +87,47 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                       SliverToBoxAdapter(
                         child: Material(
                           color: Colors.transparent,
-                          child: Column(children: [
-                            Container(
-                              height: 4,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                color: context.color.surfaceBasePrimary,
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(24)),
+                          child: Column(
+                            children: [
+                              Container(
+                                height: 4,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  color: context.color.surfaceBasePrimary,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(24)),
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                              height: 16,
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  context.l10n.layersOnTheMap,
-                                  style: Theme.of(context)
-                                      .extension<ThemeTextStyles>()!
-                                      .heading1,
-                                ),
-                                const Spacer(),
-                                CustomCloseButton(
-                                  onClose: () => context.pop(),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 16,
-                            ),
-                          ],),
+                              const SizedBox(height: 16),
+                              Row(
+                                children: [
+                                  Text(
+                                    context.l10n.layersOnTheMap,
+                                    style: Theme.of(context)
+                                        .extension<ui_kit.ThemeTextStyles>()!
+                                        .heading1,
+                                  ),
+                                  const Spacer(),
+                                  CustomCloseButton(
+                                    onClose: () => context.pop(),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                            ],
+                          ),
                         ),
                       ),
                       SliverList.separated(
-                        separatorBuilder: (_, __) => const SizedBox(height: 16),
+                        separatorBuilder: (_, __) => const SizedBox(height: 4),
                         itemCount: LayerType.values.length,
                         itemBuilder: (_, index) {
                           final value = LayerType.values[index];
-
-                          return FilterRow(
-                            value: value,
+                          final isSelected = state.selectedType == value;
+                          final textColor = isSelected
+                              ? context.color.textAndIconsStatusAccent
+                              : context.color.textAndIconsBasePrimary;
+                          return ui_kit.ContentRow(
                             onTap: () async {
                               ref
                                   .read(searchByRubricsQueryProvider.notifier)
@@ -143,7 +144,19 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                                 watch.handleTap(value);
                               }
                             },
-                            isSelected: state.selectedType == value,
+                            options: ui_kit.ContentRowOptions(
+                              wrapperEnabled: true,
+                              wrapperColor: isSelected
+                                  ? context.color.surfaceStatusContrastAccent
+                                      .withOpacity(0.12)
+                                  : Colors.transparent,
+                              leadingIcon:
+                                  value.iconData().icon(color: textColor),
+                              title: value.titleLocale(context.l10n),
+                              titleStyle: context.textStyle.text.copyWith(
+                                color: textColor,
+                              ),
+                            ),
                           );
                         },
                       ),
@@ -151,67 +164,16 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                   ),
                   if (state.isLoading)
                     Center(
-                        child: CircularProgressIndicator(
-                      color: context.color.textAndIconsStatusAccent,
-                    ),),
+                      child: CircularProgressIndicator(
+                        color: context.color.textAndIconsStatusAccent,
+                      ),
+                    ),
                 ],
               ),
             ),
           ),
         ),
       ],
-    );
-  }
-}
-
-class FilterRow extends StatelessWidget {
-
-  const FilterRow({
-    required this.value, required this.onTap, required this.isSelected, super.key,
-  });
-  final LayerType value;
-  final Function() onTap;
-  final bool isSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    const borderRadius = BorderRadius.all(
-      Radius.circular(8),
-    );
-
-    final textM = Theme.of(context).extension<ThemeTextStyles>()!.text;
-
-    return Material(
-      color: Colors.white,
-      borderRadius: borderRadius,
-      child: InkWell(
-        borderRadius: borderRadius,
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Row(
-            children: [
-              SvgPicture.asset(
-                value.iconPath(),
-                semanticsLabel: 'MinApps Screen',
-                package: 'mapness',
-                color: isSelected
-                    ? context.color.strokeAccent
-                    : const Color.fromRGBO(30, 42, 54, 0.5),
-              ),
-              const SizedBox(
-                width: 14,
-              ),
-              Text(
-                value.titleLocale(context.l10n),
-                style: textM.copyWith(
-                  color: isSelected ? context.color.strokeAccent : textM.color,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
