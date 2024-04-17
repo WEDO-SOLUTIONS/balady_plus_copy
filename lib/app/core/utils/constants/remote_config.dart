@@ -399,7 +399,7 @@ class _RemoteConfig {
     preVal: {
 
       "survey_report_inquery": {
-        "id": 11428,
+        "id": 11544,
         "Key_name": "license_query",
 
       },
