@@ -20,9 +20,6 @@ class CenterCompassWidget extends StatelessWidget {
           child: SvgPicture.asset(
             'assets/icons/svg/ic_arrow_compass.svg',
             package: PackageConfig.packageName,
-            fit: BoxFit.cover,
-            width: 132,
-            height: 180,
           ),
         ),
       );
