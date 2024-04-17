@@ -14,6 +14,7 @@ import 'package:mapness/_features/lifestyle_layers/domain/investment_sites.dart'
 import 'package:mapness/_features/lifestyle_layers/domain/map_requests_params.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/white_lands.dart';
+import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
 import 'package:mapness/app/router.dart';
@@ -520,8 +521,7 @@ class LayersControls extends _$LayersControls {
                     elevation: 0,
                   ),
                   icon: MarkerIconMessage(
-                    path:
-                        'packages/mapness/assets/icons/svg/layers/investment_opportunities.svg',
+                    path: LayersSvgPaths.invest,
                     width: 30,
                   ),
                   textStyle: MarkerTextStyleMessage(
