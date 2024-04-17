@@ -87,7 +87,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
       markers.add(
         constructMarker(
           element,
-          'packages/mapness/assets/icons/svg/ic_fav_pin.svg',
+          'packages/mapness/assets/icons/svg/ic_fav_pin_v2.svg',
           router,
         ),
       );
@@ -98,7 +98,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
       markers.add(
         constructMarker(
           favItems.home!,
-          'packages/mapness/assets/icons/svg/ic_home_pin.svg',
+          'packages/mapness/assets/icons/svg/ic_fav_home_v2.svg',
           router,
         ),
       );
@@ -109,7 +109,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
       markers.add(
         constructMarker(
           favItems.work!,
-          'packages/mapness/assets/icons/svg/ic_work_pin.svg',
+          'packages/mapness/assets/icons/svg/ic_fav_work_v2.svg',
           router,
         ),
       );
