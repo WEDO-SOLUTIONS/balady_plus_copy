@@ -98,9 +98,9 @@ class ComplianceFieldData extends StatelessWidget {
               ),
               CustomTextWidget(
                 item.submitterAnswer == 1
-                    ? "yes".tr()
+                    ? "compliance".tr()
                     : item.submitterAnswer == 0
-                        ? "no".tr()
+                        ? "nonـcompliance".tr()
                         : item.submitterAnswer == 2
                             ? "Not_Applicable".tr()
                             : "",
@@ -125,9 +125,9 @@ class ComplianceFieldData extends StatelessWidget {
               ),
               CustomTextWidget(
                 item.empAnswer == 1
-                    ? "yes".tr()
+                    ? "compliance".tr()
                     : item.empAnswer == 0
-                        ? "no".tr()
+                        ? "nonـcompliance".tr()
                         : item.empAnswer == 2
                             ? "Not_Applicable".tr()
                             : "",

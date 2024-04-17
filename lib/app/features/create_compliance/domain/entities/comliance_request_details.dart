@@ -197,9 +197,9 @@ class EmtithalItem {
 
     switch (ans) {
       case 0:
-        return "no".tr();
+        return "nonـcompliance".tr();
       case 1:
-        return "yes".tr();
+        return "compliance".tr();
       case 2:
         return "Not_Applicable".tr();
     }
@@ -602,9 +602,9 @@ class ItemData {
   String? getCurrentAnswer() {
     switch (answer) {
       case 0:
-        return "no".tr();
+        return "nonـcompliance".tr();
       case 1:
-        return "yes".tr();
+        return "compliance".tr();
       case 2:
         return "Not_Applicable".tr();
     }

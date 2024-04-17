@@ -58,7 +58,7 @@ class ComplianceImageWidget extends StatelessWidget {
               SingleRatioOption(
                 value: 1,
                 selected: (item?.submitterAnswer == true) ? 1 : 0,
-                title: 'yes'.tr(),
+                title: 'compliance'.tr(),
                 width: MediaQuery.of(context).size.width * 0.4,
                 height: MediaQuery.of(context).size.height * 0.05,
                 titleStyle: AppStyle.complianceClausesOptionStyle,
@@ -71,7 +71,7 @@ class ComplianceImageWidget extends StatelessWidget {
                 width: 6,
               ),
               SingleRatioOption(
-                title: 'no'.tr(),
+                title: 'nonـcompliance'.tr(),
                 value: 2,
                 selected: (item?.submitterAnswer == false) ? 2 : 0,
                 width: MediaQuery.of(context).size.width * 0.4,

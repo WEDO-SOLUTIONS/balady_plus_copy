@@ -7,6 +7,7 @@ import 'package:balady_plus/app/features/posters/domain/entities/poster_item.dar
 import 'package:balady_plus/app/features/posters/presentation/widgets/steps/step2/poster_types_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -155,6 +156,11 @@ class _AddPosterDialogState extends State<AddPosterDialog> {
                             label: "poster_length".tr(),
                             keyboardType: TextInputType.number,
                             isDigitsOnly: true,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r"^(?!0$)\d+$")),
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
                             initialValue:
                                 length != null ? length.toString() : null,
                             suffixIcon: Text("poster_cm".tr()),
@@ -174,6 +180,12 @@ class _AddPosterDialogState extends State<AddPosterDialog> {
                           child: CustomTextFieldWidget(
                             label: "poster_width".tr(),
                             keyboardType: TextInputType.number,
+                            isDigitsOnly: true,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r"^(?!0$)\d+$")),
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
                             initialValue:
                                 width != null ? width.toString() : null,
                             suffixIcon: Text("poster_cm".tr()),

@@ -1,3 +1,6 @@
+import 'package:balady_plus/app/core/errors/exceptions.dart';
+import 'package:balady_plus/app/core/services/global/web_service.dart';
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -17,6 +20,8 @@ import '../../../services_exports.dart'
         HelpServices,
         BusinessLicenseServices,
         ServiceEntity;
+
+import 'package:dio/dio.dart' show Response, DioError;
 
 part 'services_state.dart';
 
@@ -47,10 +52,30 @@ class ServicesCubit extends Cubit<ServicesState> {
     loadServices();
   }
 
+  Future<bool> checkForjoodService() async {
+    WebService webService = sl();
+    Response? response;
+    try {
+      response = await webService.dio.get(ApiUrl.getJoodShowStatus);
+      final data = response.data;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+      return result['isEnabled'];
+    } catch (ex) {
+      return true;
+    }
+  }
+
   Future<void> loadServices() async {
     print("load services ");
     emit(state.copyWith(status: BlocStatus.loading));
     final islamicServicesList = await islamicServices(NoParams());
+    final bool checkForJood = await checkForjoodService();
+
+    List<ServiceEntity>? islamicServicesListValue =
+        islamicServicesList.getOrElse(() => []);
+
+    islamicServicesListValue
+        .removeWhere((element) => (element.id == 103 && !checkForJood));
 
     final businessLicenseServicesList =
         await businessLicenseServices(NoParams());
@@ -64,7 +89,7 @@ class ServicesCubit extends Cubit<ServicesState> {
       status: BlocStatus.success,
       importantServices: [],
       newServices: [],
-      islamicServices: islamicServicesList.getOrElse(() => []),
+      islamicServices: islamicServicesListValue,
       municipalServices: municpalServicesList.getOrElse(() => []),
       customerVoiceServices: [],
       businessLicenseServices: businessLicenseServicesList.getOrElse(() => []),
@@ -77,6 +102,19 @@ class ServicesCubit extends Cubit<ServicesState> {
     emit(state.copyWith(status: BlocStatus.loading));
 
     final islamicServicesList = await islamicServices(NoParams());
+    final bool checkForJood = await checkForjoodService();
+
+    List<ServiceEntity>? islamicServicesListValue =
+        islamicServicesList.getOrElse(() => []).where((service) {
+      return service.title
+          .tr()
+          .toLowerCase()
+          .contains(searchQuery!.toLowerCase());
+    }).toList();
+
+    islamicServicesListValue
+        .removeWhere((element) => (element.id == 103 && !checkForJood));
+
     final municpalServicesList = await municipalServices(NoParams());
     final ekramServicesList = await ekramServices(NoParams());
 
@@ -101,12 +139,7 @@ class ServicesCubit extends Cubit<ServicesState> {
             .toLowerCase()
             .contains(searchQuery!.toLowerCase());
       }).toList(),
-      islamicServices: islamicServicesList.getOrElse(() => []).where((service) {
-        return service.title
-            .tr()
-            .toLowerCase()
-            .contains(searchQuery!.toLowerCase());
-      }).toList(),
+      islamicServices: islamicServicesListValue,
       municipalServices:
           municpalServicesList.getOrElse(() => []).where((service) {
         return service.title
