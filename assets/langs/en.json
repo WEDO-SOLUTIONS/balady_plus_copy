@@ -4314,5 +4314,6 @@
   "permit_info": "Permits Information",
   "terms_error": "Please accept terms",
   "tranfer_permit":"transfer permit",
-  "dont_tranfer_permit": "deselect permit"
+  "dont_tranfer_permit": "deselect permit",
+  "respond_to_ownership_transfer_warning": "respond_to_ownership_transfer_warning"
 }
