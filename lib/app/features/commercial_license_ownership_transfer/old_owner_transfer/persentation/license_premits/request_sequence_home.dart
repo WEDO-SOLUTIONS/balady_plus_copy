@@ -100,7 +100,7 @@ class _RequestSequenceHomeScreenState extends State<RequestSequenceHomeScreen>
                 }
               },
               onTapCloseAction: () => showBackDialog(),
-              requestNum: null,
+              requestNum: licenseNumber != null ? int.parse(licenseNumber!) : 0,
             ),
             body: PageView.builder(
               itemCount: pagesList!.length,
