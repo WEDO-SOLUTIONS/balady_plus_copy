@@ -25,16 +25,16 @@ class LocationInfoWidget extends StatelessWidget {
                 child: GoogleMap(
                   initialCameraPosition: CameraPosition(
                       target: LatLng(
-                        double.parse(locationInfo.latitude!),
-                        double.parse(locationInfo.longitude!),
+                        double.parse(locationInfo!.latitude!),
+                        double.parse(locationInfo!.longitude!),
                       ),
                       zoom: 16),
                   markers: {
                     Marker(
                       markerId: const MarkerId('position'),
                       position: LatLng(
-                        double.parse(locationInfo.latitude!),
-                        double.parse(locationInfo.longitude!),
+                        double.parse(locationInfo!.latitude!),
+                        double.parse(locationInfo!.longitude!),
                       ),
                     )
                   },
@@ -50,10 +50,10 @@ class LocationInfoWidget extends StatelessWidget {
             title: 'municipalityName'.tr(),
             value: locationInfo!.municipalityName ?? ""),
             //TODO: map on city
-        CardParameter(
-            // from whats
-            title: 'city'.tr(),
-            value: locationInfo.cityName ?? ""),
+        // CardParameter(
+        //     // from whats
+        //     title: 'city'.tr(),
+        //     value: locationInfo.municipalityName ?? ""),
         CardParameter(
           // from whats
           title: 'subMunicipalityName'.tr(),

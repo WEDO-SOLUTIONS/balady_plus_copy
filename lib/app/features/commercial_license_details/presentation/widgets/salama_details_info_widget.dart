@@ -9,6 +9,7 @@ import '../../../commercial_license_details/data/models/commercial_licence_detai
 
 class SalamaDetailsInfoWidget extends StatelessWidget {
   final SalamaDetailsInfo salamaDetailsInfo;
+
   const SalamaDetailsInfoWidget({super.key, required this.salamaDetailsInfo});
 
   @override
@@ -22,41 +23,31 @@ class SalamaDetailsInfoWidget extends StatelessWidget {
           title: 'fire_approval_type'.tr(),
           value: salamaDetailsInfo.documentName ?? '',
         ),
-
-
-
-        
+        ///////////////////
         CardParameter(
           title: 'status'.tr(),
           value: "تم اعتماد الطلب من قبل منصة الدفاع المدني",
         ),
-        ///////////////////
-        CardParameter(
-          title: 'fire_approval_type'.tr(),
-          value: 'فاتورة أدوات سلامة',
-        ),
-        CardParameter(
-          title: 'salamaBillNumber_2'.tr(),
-          value: salamaDetailsInfo.salamaBillNumber ?? '',
-        ),
-        CardParameter(
-          title: 'fire_approval_type'.tr(),
-          value: 'تقرير فني',
-        ),
-        CardParameter(
-          title: 'map_digging_permit_number'.tr(),
-          value: salamaDetailsInfo.salamaPermitNumber ?? '',
-        ),
-        CardParameter(
-          title: 'fire_approval_type'.tr(),
-          value: 'تصريح سلامة',
-        ),
-        CardParameter(
-          title: 'slamaReportNumber'.tr(),
-          value: salamaDetailsInfo.salamaReportNumber ?? '',
-        ),
+
+        salamaDetailsInfo.salamaBillNumber != null
+            ? CardParameter(
+                title: 'salamaBillNumber_2'.tr(),
+                value: salamaDetailsInfo.salamaBillNumber ?? '',
+              )
+            : const SizedBox(),
+        salamaDetailsInfo.salamaPermitNumber != null
+            ? CardParameter(
+                title: 'map_digging_permit_number'.tr(),
+                value: salamaDetailsInfo.salamaPermitNumber ?? '',
+              )
+            : const SizedBox(),
+        salamaDetailsInfo.salamaReportNumber != null
+            ? CardParameter(
+                title: 'slamaReportNumber'.tr(),
+                value: salamaDetailsInfo.salamaReportNumber ?? '',
+              )
+            : const SizedBox(),
       ],
     );
   }
 }
-
