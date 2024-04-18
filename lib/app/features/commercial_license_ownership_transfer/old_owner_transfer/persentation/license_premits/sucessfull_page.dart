@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:balady_plus/app/features/_shared_features/rating_feature/widgets/submit_rating_widget.dart';
+
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/app_style.dart';
 import '../../../../../core/utils/constants/paths/icon_paths.dart';
@@ -10,8 +10,6 @@ import '../../../../_shared_feature_/balady_features/widgets/shared/circle_icon.
 import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/draw_icon_based_type_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
-import 'package:balady_plus/app/features/_shared_features/rating_feature/models/rating_request.dart';
 
 
 class SucessfullScreen extends StatefulWidget {
@@ -79,21 +77,7 @@ class _SucessfullScreenState extends State<SucessfullScreen> {
                     ),
                     btnHeight: 56,
                     text: "service_evaluation".tr(),
-                    onPressed: () {
-                                BottomSheetDialog.showSheet(
-            context,
-            child: SubmitRatingSheet(
-              title: 'rating_chat_bot_title'.tr(),
-              ratingRequest: RatingRequest(
-                requestId: int.parse(requestId!),
-              ),
-            ),
-            isFullHeight: false,
-            isScrollControlled: true,
-            backgroundColor: Colors.white,
-            height: MediaQuery.of(context).size.height * 0.6,
-          );
-                    },
+                    onPressed: () {},
                   ),
                   Spacer(),
                   CustomElevatedButtonWidget(

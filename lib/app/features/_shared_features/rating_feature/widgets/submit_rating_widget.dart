@@ -25,7 +25,7 @@ class SubmitRatingSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (BuildContext context) => SubmitRatingViewModel(
-        webService: sl(),  
+        webService: sl(),
         ratingRequest: ratingRequest,
       ),
       child: Builder(

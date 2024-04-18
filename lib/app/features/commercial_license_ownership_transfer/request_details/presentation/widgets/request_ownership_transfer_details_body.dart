@@ -105,7 +105,8 @@ class _RequestOwnershipTransferDetailsBodyState
                           child: Row(
                             children: [
                               CustomTextWidget(
-                                commercialRequestDetails.statusName ,
+                                commercialRequestDetails
+                                    .licenseInfo?.statusDesc ?? '',
                                 textStyle: AppStyle.tagTextStyle,
                               ),
                             ],

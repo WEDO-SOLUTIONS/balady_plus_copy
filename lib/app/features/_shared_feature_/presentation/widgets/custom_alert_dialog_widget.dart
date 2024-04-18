@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 import 'package:url_launcher/url_launcher.dart';
@@ -259,22 +258,27 @@ class CustomHTMLAlertDialogWidget extends StatelessWidget {
             ),
             Flexible(
               child: content ??
-                  Linkify(
-                      onOpen: (link) =>
-                          CommonFunctions.openBaladyWebView(link.url),
-                      text:contentText ?? "",
-                      softWrap: true,
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                          fontSize: 14.0,
+                  Html(
+                    shrinkWrap: true,
+                    data: contentText ?? "",
+                    onLinkTap:
+                        (String? url, Map<String, String> attributes, element) {
+                      //open URL in webview, or launch URL in browser, or any other logic here
+                      if (url != null) {
+                        CommonFunctions.openBaladyWebView(url);
+                      }
+                    },
+                    style: {
+                      "body": Style(
+                          fontSize: FontSize(14.0),
                           fontWeight: FontWeight.w600,
-                          height: 1.4,
+                          lineHeight: const LineHeight(1.4),
+                          textAlign: TextAlign.start,
+                          maxLines: 50,
                           color: contentTextColor,
-                          fontFamily: Constants.appFontType,
-                      ))
-
-
-
+                          fontFamily: Constants.appFontType),
+                    },
+                  ),
             ),
           ],
         ),

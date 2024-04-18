@@ -6,9 +6,12 @@ import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/data/repositories/repository_implementation.dart';
+import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/commercial_license_attachments_view_model.dart';
+import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/commercial_license_permits_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_details/data/data_sources/remote_data_source.dart';
 import 'package:balady_plus/app/features/commercial_license_details/domain/use_cases/get_commercial_license_details.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/bloc/commercial_license_details_cubit.dart';
@@ -182,9 +185,64 @@ class _CommercialLicenseDetailsPageState
               return Stack(
                 alignment: AlignmentDirectional.topCenter,
                 children: [
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.all(16),
-                    child: CommercialLicenseDetailsBody(),
+                    child: BlocBuilder<CommercialLicenseDetailsCubit,
+                        CommercialLicenseDetailsState>(
+                      builder: (context, state) {
+                        CommercialLicenseDetailsCubit bloc =
+                            context.watch<CommercialLicenseDetailsCubit>();
+                        if (state.status ==
+                            BlocRequestStatus.submissionGetLoading) {
+                          return ListView.builder(
+                            itemCount: 3,
+                            itemBuilder: (_, __) => Container(
+                              height: 200,
+                              margin: const EdgeInsets.only(top: 16),
+                              child: const ShimmerEffectWidget(),
+                            ),
+                          );
+                        } else if (state.commercialLicenceDetails != null) {
+                          final commercialLicenceDetails =
+                              state.commercialLicenceDetails!;
+                          return MultiProvider(
+                            providers: [
+                              ChangeNotifierProvider(
+                                create: (BuildContext context) {
+                                  return CommercialLicenseAttachmentsViewModel(
+                                    webService: sl(),
+                                    licenseId: bloc.commercialLicenseId,
+                                  );
+                                },
+                              ),
+                              ChangeNotifierProvider(
+                                create: (BuildContext context) {
+                                  return CommercialLicensePermitsViewModel(
+                                    webService: sl(),
+                                    requestId: commercialLicenceDetails
+                                            .licenseInfo!.licenseId ??
+                                        0,
+                                  );
+                                },
+                              ),
+                            ],
+                            child: CommercialLicenseDetailsBody(
+                              commercialLicenceDetails:
+                                  commercialLicenceDetails,
+                            ),
+                          );
+                        }
+
+                        return Center(
+                          child: ReloadWidget(
+                            onTab: () {
+                              bloc.getCommercialLicenseDetailsById(
+                                  bloc.commercialLicenseId);
+                            },
+                          ),
+                        );
+                      },
+                    ),
                   ),
                   state.status == BlocRequestStatus.submissionGetLoading
                       ? const CircularProgressIndicator()

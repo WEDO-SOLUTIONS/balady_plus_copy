@@ -4292,6 +4292,28 @@
   "accept_ownership_transfer": "Accept ownership transfer",
   "reject_ownership_transfer": "Reject ownership transfer",
   "respond_to_ownership_transfer_warning": "respond_to_ownership_transfer_warning",
+
+
+
+
+
+  "isicActivity_area": "isic activity area",
+
+
+  "permitName": "Permit Name",
+
+
+  "HIMSELF": "Himself",
+  "AGENT": "Agent",
+  "OWNER_MANAGER": "OWNER / Manager",
+  "ENGINEERING_OFFICE": "Engineering Office",
+  "DELEGATOR": "Delegator",
+
+  "cleanOptionName": "الآلية",
+  "cleanOptionDesc": "الرسوم"
+
+
+
   "create_request": "Submit the Request",
   "pledges_condtions": "I acknowledge and pledge the accuracy of all data and attachments uploaded to the Application, and I assume full legal liability for false and malicious reports in accordance with the laws and instructions if otherwise found.",
   "request_number": "You have submit request number",
