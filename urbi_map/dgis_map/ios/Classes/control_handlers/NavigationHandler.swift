@@ -29,6 +29,8 @@ class NavigationHandler {
     private let dashboardControlModel: DashboardControlModel
     private let messageControlModel: MessageControlModel
     private let maneuverControlModel: ManeuverControlModel
+    
+    private(set) var isNavigating: Bool = false
 
     init(map: Map, mapView: UIView & IMapView, sdk: Container, eventChannel: DgisStreamHandler, view: UIView) {
         let context = try! sdk.context
@@ -37,8 +39,7 @@ class NavigationHandler {
         self.eventChannel = eventChannel
         
         self.navigationManager = try! NavigationManager(platformContext: context)
-        navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
-        navigationManager.alternativeRoutesProviderSettings.betterRouteEnabled = false
+
         self.navigationManager.mapManager.addMap(map: self.map)
         
         self.voiceManager = getVoiceManager(context: context)
@@ -85,14 +86,25 @@ class NavigationHandler {
                 "event": Events.navigationEvent,
                 "state": Events.stateDisabled
             ])
+            self.isNavigating = false
         case State.finished:
             self.eventChannel.success([
                 "event": Events.navigationEvent,
                 "state": Events.stateFinished
             ])
+            self.isNavigating = false
             stopNavigation()
-        default:
-            return
+        case State.navigation:
+            self.isNavigating = true
+        case State.routeSearch:
+            self.isNavigating = true
+        }
+    }
+    
+    func onRouteTap(_ route: RouteMapObject) {
+        let trafficRoute = route.route
+        if !route.isActive {
+            self.navigationManager.alternativeRouteSelector.selectAlternativeRoute(trafficRoute: trafficRoute)
         }
     }
     

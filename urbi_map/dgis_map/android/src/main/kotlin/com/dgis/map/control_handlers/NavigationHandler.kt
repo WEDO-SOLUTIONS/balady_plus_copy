@@ -23,6 +23,7 @@ import ru.dgis.sdk.map.Map
 import ru.dgis.sdk.map.MyLocationController
 import ru.dgis.sdk.map.MyLocationMapObjectSource
 import ru.dgis.sdk.map.Padding
+import ru.dgis.sdk.map.RouteMapObject
 import ru.dgis.sdk.map.SimpleMapObject
 import ru.dgis.sdk.map.StyleZoom
 import ru.dgis.sdk.map.Tilt
@@ -53,6 +54,9 @@ class NavigationHandler(
 
     private var prevCameraBehaviour: CameraBehaviour? = null
 
+    var isNavigating: Boolean = false
+        private set
+
     // Models to observe channels and send events to Flutter
     private val speedControlModel = SpeedControlModel(
         model = navigationManager.uiModel,
@@ -72,9 +76,6 @@ class NavigationHandler(
     init {
         navigationView.visibility = View.INVISIBLE
         navigationView.navigationManager = navigationManager
-
-        navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
-        navigationManager.alternativeRoutesProviderSettings.betterRouteEnabled = false
 
         dashboardControlModel = DashboardControlModel(
             navigationManager.uiModel,
@@ -210,13 +211,15 @@ class NavigationHandler(
 
     private fun stateChannelListener(state: State) {
         when (state) {
-            State.DISABLED -> eventSink.success(
-                mapOf(
-                    "event" to Event.navigationEvent.name,
-                    "state" to Event.stateDisabled
+            State.DISABLED -> {
+                eventSink.success(
+                        mapOf(
+                                "event" to Event.navigationEvent.name,
+                                "state" to Event.stateDisabled
+                        )
                 )
-            )
-
+                isNavigating = false
+            }
             State.FINISHED -> {
                 eventSink.success(
                         mapOf(
@@ -225,9 +228,21 @@ class NavigationHandler(
                         )
                 )
                 stopNavigation()
+                isNavigating = true
             }
+            State.NAVIGATION -> {
+                isNavigating = true
+            }
+            State.ROUTE_SEARCH -> {
+                isNavigating = true
+            }
+        }
+    }
 
-            else -> {}
+    fun onRouteTap(route: RouteMapObject) {
+        val trafficRoute = route.route
+        if (!route.isActive) {
+            this.navigationManager.alternativeRouteSelector.selectAlternativeRoute(trafficRoute)
         }
     }
 

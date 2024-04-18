@@ -107,12 +107,6 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             eventChannel: eventChannel
         )
         
-        self.routeHandler = RouteHandler(
-            map: map,
-            sdk: self.sdk,
-            eventChannel: eventChannel,
-            positioningService: self.positioningService
-        )
         
         self.navigationHandler = NavigationHandler(
             map: map,
@@ -120,6 +114,14 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             sdk: self.sdk,
             eventChannel: eventChannel,
             view: self._view
+        )
+        
+        self.routeHandler = RouteHandler(
+            map: map,
+            sdk: self.sdk,
+            eventChannel: eventChannel,
+            navigationHandler: navigationHandler!,
+            positioningService: self.positioningService
         )
         
         self.searchHandler = SearchHandler(

@@ -28,6 +28,7 @@ class RouteHandler(
     sdkContext: Context,
     private val eventSink: EventChannel.EventSink,
     private val locationSource: FusedLocationSource,
+    private val navigationHandler: NavigationHandler,
 ) : AutoCloseable {
     private val closables = mutableListOf<AutoCloseable>()
 
@@ -152,7 +153,11 @@ class RouteHandler(
     }
 
     fun onRouteTap(route: RouteMapObject) {
-        this.routesEditor.setActiveRouteIndex(route.routeIndex)
+        if (navigationHandler.isNavigating) {
+            navigationHandler.onRouteTap(route)
+        } else {
+            this.routesEditor.setActiveRouteIndex(route.routeIndex)
+        }
     }
 
     private fun getRouteSearchOptions(opts: Messages.RouteSearchOptionsMessage): RouteSearchOptions {
