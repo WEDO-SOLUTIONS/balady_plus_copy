@@ -23,6 +23,14 @@ class OwnerShipInfoWidget extends StatelessWidget {
           title: 'issue_commercial_location_type'.tr(),
           value: ownershipInfo.contractType?.name ?? '',
         ),
+        ownershipInfo.contractType?.id == "EJAR_ATTACH" ||  ownershipInfo.contractType?.id == "عقد تملك المبني (الصك) مرفق"
+            ? CardParameter(
+                title: 'issue_commercial_location_type_tenancy_date'.tr(),
+                value: ownershipInfo.tenancyContractInfo?.contractEndDate ?? '',
+              )
+            : const SizedBox(),
+
+
 
         ownershipInfo.contractType?.id != "عقد استثمار الكتروني"
             ? CardParameter(
@@ -32,17 +40,10 @@ class OwnerShipInfoWidget extends StatelessWidget {
                         '',
               )
             : const SizedBox(),
-
         ownershipInfo.contractType?.id == "عقد ايجار الكتروني"
             ? CardParameter(
                 title: 'issue_commercial_location_type_tenancy_ve'.tr(),
                 value: ownershipInfo.tenancyContractInfo?.versionNumber ?? '',
-              )
-            : const SizedBox(),
-        ownershipInfo.contractType?.id == "EJAR_ATTACH" || ownershipInfo.contractType?.id == "عقد تملك المبني (الصك) مرفق"
-            ? CardParameter(
-                title: 'issue_commercial_location_type_tenancy_date'.tr(),
-                value: ownershipInfo.tenancyContractInfo?.contractEndDate ?? '',
               )
             : const SizedBox(),
       ],

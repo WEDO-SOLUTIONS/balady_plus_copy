@@ -2,7 +2,6 @@ import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class CommercialLicenceDetails {
-
   int? requestId;
   int? mainActivityArea;
   DateTime? creationDate;
@@ -268,7 +267,6 @@ class CommercialLicenceDetails {
         ? OwnershipInfo.fromJson(json['ownershipInfo'])
         : null;
   }
-
 }
 
 class LicenseAllowedPermitsInfo {
@@ -846,6 +844,7 @@ class LocationInfo {
     this.regionName,
     this.vehiclePathDesc,
     this.krokiUrl,
+    this.cityName
   });
 
   LocationInfo.fromJson(dynamic json) {
@@ -866,6 +865,7 @@ class LocationInfo {
     regionName = json['regionName'];
     vehiclePathDesc = json['vehiclePathDesc'];
     krokiUrl = json['krokiUrl'];
+    cityName = json['cityName'];
   }
 
   String? subMunicipalityGisCode;
@@ -885,6 +885,7 @@ class LocationInfo {
   String? regionName;
   dynamic vehiclePathDesc;
   String? krokiUrl;
+  String? cityName;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -1173,7 +1174,7 @@ class CleanContractInfo {
   String contractOption;
   String cleanOptionName;
   String cleanOptionDesc;
-  String cleanContractEndDate;
+  String? cleanContractEndDate;
 
   CleanContractInfo({
     this.contractNumber,
@@ -1191,7 +1192,7 @@ class CleanContractInfo {
         contractOption: json['contractOption'] ?? "",
         cleanOptionName: json['salamaApprovedCenterName'] ?? "",
         cleanOptionDesc: json['cleanOptionDesc'] ?? "",
-        cleanContractEndDate: json['cleanContractEndDate'] ?? "",
+        cleanContractEndDate: json['cleanContractEndDate'],
       );
 }
 
