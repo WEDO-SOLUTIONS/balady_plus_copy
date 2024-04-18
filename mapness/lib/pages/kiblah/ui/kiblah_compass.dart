@@ -20,7 +20,6 @@ class KiblahCompass extends ConsumerWidget {
   static double rad(double degree) => pi * degree / 180 - 0.5 * pi;
 
   // Constants
-  static const double paddingSize = 50.0;
   static const double strokeWidth = 2.0;
   static const double compassBackgroundOpacity = 0.2;
   static const double radarOpacity = 0.7;
@@ -40,7 +39,7 @@ class KiblahCompass extends ConsumerWidget {
           alignment: Alignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.all(paddingSize),
+              padding: const EdgeInsets.all(50),
               child: CustomPaint(
                 painter: PainterStroke(
                   color: correct ? context.color.surfaceStatusPositive : context.color.surfaceStatusAccent,
@@ -49,14 +48,14 @@ class KiblahCompass extends ConsumerWidget {
                 ),
                 size: Size.infinite,
                 child: Padding(
-                  padding: const EdgeInsets.all(paddingSize / 2),
+                  padding: const EdgeInsets.all(22),
                   child: Stack(
                     children: [
                       RadarWidget(
                         backgroundColor: Colors.transparent,
                         radarColor: correct
                             ? NonThemeColor.color3.withOpacity(radarOpacity)
-                            : context.color.textAndIconsBasePrimary.withOpacity(1.0 - radarOpacity),
+                            : context.color.textAndIconsBasePrimary.withOpacity(0.9),
                       ),
                       CenterCompassWidget(
                         backgroundColor: correct
@@ -69,7 +68,7 @@ class KiblahCompass extends ConsumerWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(paddingSize * 0.72),
+              padding: const EdgeInsets.all(36),
               child: isReady
                   ? Align(
                       alignment: Alignment(
@@ -83,22 +82,10 @@ class KiblahCompass extends ConsumerWidget {
                   : const FakeKaabIcon(),
             ),
             if (isReady) ...[
-              BuildDirectionText(
-                title: context.l10n.north,
-                bearing: userBearing,
-              ),
-              BuildDirectionText(
-                title: context.l10n.east,
-                bearing: userBearing - 90,
-              ),
-              BuildDirectionText(
-                title: context.l10n.south,
-                bearing: userBearing - 180,
-              ),
-              BuildDirectionText(
-                title: context.l10n.west,
-                bearing: userBearing - 270,
-              ),
+              BuildDirectionText(title: context.l10n.north, bearing: userBearing),
+              BuildDirectionText(title: context.l10n.east, bearing: userBearing - 90),
+              BuildDirectionText(title: context.l10n.south, bearing: userBearing - 180),
+              BuildDirectionText(title: context.l10n.west, bearing: userBearing - 270),
             ],
           ],
         ),
