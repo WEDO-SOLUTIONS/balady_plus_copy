@@ -87,13 +87,14 @@ class _CommercialLicenseCancelScreenState
             // ),
             BlocProvider(
               create: (context) => CommercialLicenseCancelBloc(
-                  webService: sl(),
-                  from: "request",
-                  crNumber: CommonProperties.selectedDelegator!.crNumber!,
-                  crType: CommonProperties.selectedDelegator!.crType,
-                  reasonCancel: data['reasonCancel'],
-                  requestId: data['requestId'],
-                  availableCloseDate: data['availableCloseDate']),
+                webService: sl(),
+                from: data['from'],
+                crNumber: data['crNumber'],
+                crType: data['crType'],
+                reasonCancel: data['reasonCancel'],
+                requestId: data['requestId'],
+                availableCloseDate: data['availableCloseDate'],
+              ),
             ),
           ],
           child: Column(
